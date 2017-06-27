@@ -32,15 +32,15 @@ std::unique_ptr<CPluginSource> CPluginSource::FromExtension(CAddonInfo addonInfo
 {
   std::string provides = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "provides");
   if (!provides.empty())
-    addonInfo.extrainfo.insert(make_pair("provides", provides));
+    addonInfo.AddExtraInfo("provides", provides);
   return std::unique_ptr<CPluginSource>(new CPluginSource(std::move(addonInfo), provides));
 }
 
 CPluginSource::CPluginSource(CAddonInfo addonInfo) : CAddon(std::move(addonInfo))
 {
   std::string provides;
-  InfoMap::const_iterator i = m_addonInfo.extrainfo.find("provides");
-  if (i != m_addonInfo.extrainfo.end())
+  InfoMap::const_iterator i = m_addonInfo.ExtraInfo().find("provides");
+  if (i != m_addonInfo.ExtraInfo().end())
     provides = i->second;
   SetProvides(provides);
 }

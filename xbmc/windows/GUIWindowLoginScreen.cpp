@@ -32,6 +32,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogOK.h"
+#include "favourites/FavouritesService.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -327,6 +328,8 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   // restart PVR services
   CServiceBroker::GetPVRManager().Reinit();
+
+  CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
 
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);

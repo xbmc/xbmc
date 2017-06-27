@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Leita..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Birta aðdáendamyndir sem bakgrunn"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Bíóhamur"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Breyta ham"
@@ -31,6 +39,58 @@ msgstr "Breyta ham"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Horfa á í 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Handahófskenndar kvikmyndir"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Óskoðaðar kvikmyndir"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Virkja viðmótshluta fyrir flokka"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Sækja táknmyndir"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Kvikmyndir í gangi"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Mest spiluðu hljómplötur"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Handahófskenndar hljómplötur"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Handahófskenndir flytjendur"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Óspilaðar hljómplötur"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nýlegar upptökur"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nýlega spilaðar rásir"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Einkunn"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Nýlega spilaðar rásir"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,13 +104,61 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Ýmsir valkostir"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Raða eftir"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "GerðÁsýndar"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Veldu einkunn til að birta með margmiðlunaratriðum"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Engin eftirlæti fundust. Þú getur bætt við hvaða atriði sem er úr margmiðlunarásýndum með því að nota samhengisvalmyndina."
+
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Tímaflakk"
 
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Birta aðdáendamyndir"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Síðast skráður inn"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Minnisnotkun kerfis"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Upplýsingar um útgáfu"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Röðun"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Einkunnin þín"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Ítarlegar upplýsingar"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Síður"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "atriði"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -60,9 +168,17 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Hratt áfram"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Framleiðandi myndavélar"
+
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Valkostir lagalista"
+msgstr "Valkostir spilunarlista"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Veldu hvaða tegund og bættu við reglum til að útbúa snjallan-spilunarlista. Slíkir spilunarlistar eru breytilegir og innifela alla þá margmiðlun úr gagnagrunninum þínum sem fellur undir viðkomandi reglur."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -76,25 +192,125 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Eyða hóp"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Tiltækt"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Ýttu á [B]OK[/B] til að stoppa"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Víxla tungumáli"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "síað"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Byggt á Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Ýttu á [B]Vinstri[/B] til að spóla til baka, eða [B]Hægri[/B] til að spóla hratt áfram"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Fara í spilunarlista"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Birta innskráningarskjá við ræsingu"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Sjálfvirk innskráning í ræsingu"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Atriði í aðalvalmynd"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Veldu pakka með aðdáendamyndum fyrir veður"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Hlutar"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Myndskeiðalistar"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Lagalistar"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Atvikaskrá"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Veldu forstillingar"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Síðast uppfært"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "eftir"
+
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Orkukostir"
+msgstr "Valkostir orkustýringar"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Kvikmyndasett"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Hlutverkaskrá ekki tiltæk"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Endar á"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Viðbót fyrir lagatexta"
 
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Stillingar lagatextaviðbótar"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Stillingar á sjónrænni upplifun"
+
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Tiltækir hópar"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Leita að stiklu"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Myndefnisvalmynd"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Birta veðurupplýsingar á toppstiku"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Nota rennslishreyfingar"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -108,6 +324,234 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Veldu Kodi notanda[CR]til að skrá þig inn og halda áfram"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Táknmyndaveggur"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Upplýsingaveggur"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Skjáveggur"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Settu hér inn texta..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Safnið þitt er tómt eins og er. Til að fylla inn í það með þínum eigin margmiðlunarskrám, farðu inn í 'Skrár'-hlutann, bættu við efnisveitu og stilltu hana. Eftir að veitu hefur verið bætt við og hún efnistekin, geturðu vafrað um safnið þitt."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Bættu við veitum fyrir myndskeið og stilltu viðeigandi gerð efnis til að fylla inn í myndskeiðasöfnin þín."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Textavarp"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Breiðlisti"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Fara í skráa-hlutann"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Skoðaðu þínar eigin myndir eða náðu í einhverja af fjölmörgum ljósmyndaviðbótum úr opinbera hugbúnaðarsafninu."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Víxla hljóðstreymi"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Leita í safni á tölvu"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Leita á YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Leita á TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Fjarlægja þetta atriði úr aðalvalmynd"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Breyta hnútum"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Fara í viðbóta-skoðara"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Þú ert ekki með uppsettar neinar viðbætur. Farðu í viðbóta-skoðarann til að skoða viðbætur í safninu okkar og bættu þannig við upplifun þína í Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Þú ert ekki með uppsetta neina veðurþjónustu. Til að sjá veðurupplýsingar, þarftu að setja upp veðurþjónustu og staðsetninguna þína."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Settu veðurþjónustu"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Óskoðaðir sjónvarpsþættir"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Sami Lleikstjóri"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Birta myndir á landakorti"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Ýttu á upp fyrir upplýsingar um leikara"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Ýttu á 'Í lagi' til að lesa efniságrip"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Birta táknmyndir"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Þátttakendur"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Almennar stillingar sem eiga við alla þætti skinnsins."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Stillingar sem tengjast aðalvalmynd: Stilltu upphafsskjáinn eins og þér finnst henta."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Veldu pakka með aðdáendamyndum fyrir skinn"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Eftir"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Smelltu hér til að sjá síðustu breytingar..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Upplýsingar um PVR-upptöku"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Upplýsingar um framvindu spilara"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Myndmerkisafkóðari"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Snið mynddíla"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Breytingar í útgáfunni"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Hraði afspilunar"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Þú ert ekki búinn að setja upp PVR-upptökutæki. Til að geta notað PVR-upptöku, veldu þér PVR-biðlaraviðbót og stilltu hana. Skoðaðu http://kodi.wiki/view/PVR til að fá nánari upplýsingar."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Fara í viðbóta-skoðara"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Leita að viðbótum"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Flokkar"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Veldu pakka með aðdáendamyndum fyrir flokkun"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Gagnahirsla"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Óskoðuð tónlistarmyndbönd"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Handahófskennd tónlistarmyndbönd"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Þú ert ekki með uppsetta neina viðbót af þessari gerð. Farðu í viðbóta-skoðarann til að sækja viðbætur sem samfélagið okkar býður upp á."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Ýttu á 'Í lagi' til að skipta á milli staðsetninga"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Engin bókamerki útbúin ennþá."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Veldu bakgrunnsmynstur"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Breyta flokkum"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Snertihamur"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Myndskreytingar"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Birta flögg gagnamiðla"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Talnaborð"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Spilaðu þína eigin leiki eða náðu í einhverja af fjölmörgum leikjaviðbótum úr opinbera hugbúnaðarsafninu."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Birta aðdáendamynd sem bakgrunn"

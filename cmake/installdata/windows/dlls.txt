@@ -1,3 +1,5 @@
 system/*.dll .
+project/BuildDependencies/${ARCH}/bin/libbluray*.jar .
 project/Win32BuildSetup/dependencies/python27.dll .
 project/BuildDependencies/${ARCH}/bin/*.dll .
+project/BuildDependencies/mingwlibs/${ARCH}/bin/*.dll .

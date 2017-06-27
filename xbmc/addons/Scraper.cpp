@@ -188,7 +188,7 @@ bool CScraper::Supports(const CONTENT_TYPE &content) const
 bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string& xml)
 {
   m_pathContent = content;
-  if (!LoadSettings())
+  if (!LoadSettings(false, false))
     return false;
 
   if (xml.empty())
@@ -201,7 +201,7 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string& xml)
 
 std::string CScraper::GetPathSettings()
 {
-  if (!LoadSettings())
+  if (!LoadSettings(false))
     return "";
 
   std::stringstream stream;

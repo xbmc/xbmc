@@ -45,6 +45,9 @@ class CEvent;
  *   3) When the wizard's active feature loses focus, the wizard is cancelled
  *      and the prompt for input ends.
  */
+
+namespace KODI
+{
 namespace GAME
 {
   class CControllerFeature;
@@ -55,7 +58,7 @@ namespace GAME
   class IControllerList
   {
   public:
-    virtual ~IControllerList(void) { }
+    virtual ~IControllerList() = default;
 
     /*!
      * \brief  Initialize the resource
@@ -105,7 +108,7 @@ namespace GAME
   class IFeatureList
   {
   public:
-    virtual ~IFeatureList(void) { }
+    virtual ~IFeatureList() = default;
 
     /*!
      * \brief  Initialize the resource
@@ -145,7 +148,7 @@ namespace GAME
   class IFeatureButton
   {
   public:
-    virtual ~IFeatureButton(void) { }
+    virtual ~IFeatureButton() = default;
 
     /*!
      * \brief Get the feature represented by this button
@@ -173,7 +176,7 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't an
      *         analog stick or the prompt is finished
      */
-    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
+    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
 
     /*!
      * \brief Reset button after prompting for input has finished
@@ -187,7 +190,7 @@ namespace GAME
   class IConfigurationWizard
   {
   public:
-    virtual ~IConfigurationWizard(void) { }
+    virtual ~IConfigurationWizard() = default;
 
     /*!
      * \brief Start the wizard at the specified feature
@@ -208,4 +211,5 @@ namespace GAME
      */
     virtual bool Abort(bool bWait = true) = 0;
   };
+}
 }

@@ -81,7 +81,7 @@ public:
   CDateTime LastUsed() const override { return m_addonInfo.LastUsed(); }
   std::string Origin() const override { return m_addonInfo.Origin(); }
   uint64_t PackageSize() const override { return m_addonInfo.PackageSize(); }
-  const InfoMap& ExtraInfo() const override { return m_addonInfo.extrainfo; }
+  const InfoMap& ExtraInfo() const override { return m_addonInfo.ExtraInfo(); }
   const ADDONDEPS& GetDeps() const override { return m_addonInfo.GetDeps(); }
 
   std::string FanArt() const override
@@ -229,10 +229,11 @@ protected:
 
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
+   \param loadUserSettings whether or not to load user settings
    \return true if settings exist, false otherwise
    \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool LoadSettings(bool bForce = false);
+  bool LoadSettings(bool bForce, bool loadUserSettings = true);
 
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise

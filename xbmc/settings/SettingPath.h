@@ -46,6 +46,7 @@ public:
   void SetMasking(const std::string& masking) { m_masking = masking; }
 
 private:
+  using CSettingString::copy;
   void copy(const CSettingPath &setting);
 
   bool m_writable = true;

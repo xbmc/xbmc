@@ -3,14 +3,14 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libbluray
-VERSION=0.9.3
+VERSION=1.0.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
   --disable-examples --disable-doxygen-doc \
-  --disable-bdjava --without-libxml2 --without-freetype
+  --disable-bdjava-jar --without-libxml2 --without-freetype
 
 LIBDYLIB=$(PLATFORM)/src/.libs/libbluray.la
 
@@ -26,6 +26,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(PLATFORM)/Makefile.am
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
+ifeq ($(TARGET_PLATFORM),appletvos)
+	cd $(PLATFORM); patch -p0 < ../tvos.patch
+endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

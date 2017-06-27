@@ -21,6 +21,7 @@
 #include "SavestateTranslator.h"
 #include "SavestateDefines.h"
 
+using namespace KODI;
 using namespace GAME;
 
 SAVETYPE CSavestateTranslator::TranslateType(const std::string& type)

@@ -23,6 +23,8 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace GAME
 {
   class CBasicMemoryStream : public IMemoryStream
@@ -53,4 +55,5 @@ namespace GAME
     std::unique_ptr<uint8_t[]> m_frameBuffer;
     bool                       m_bHasFrame;
   };
+}
 }

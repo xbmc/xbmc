@@ -34,7 +34,6 @@
 
 CGUIDialogSettingsManualBase::CGUIDialogSettingsManualBase(int windowId, const std::string &xmlFile)
   : CGUIDialogSettingsManagerBase(windowId, xmlFile)
-  , m_section(nullptr)
   , m_settingsManager(nullptr)
 { }
 

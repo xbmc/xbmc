@@ -32,7 +32,7 @@ namespace KEYBOARD
   class IKeyboardHandler
   {
   public:
-    virtual ~IKeyboardHandler(void) { }
+    virtual ~IKeyboardHandler() = default;
 
     /*!
      * \brief A key has been pressed

@@ -27,9 +27,11 @@ class CDVDAudioCodec;
 class CProcessInfo;
 class IAEStream;
 
-namespace GAME
+namespace KODI
 {
-  class CRetroPlayerAudio : public IGameAudioCallback
+namespace RETRO
+{
+  class CRetroPlayerAudio : public GAME::IGameAudioCallback
   {
   public:
     CRetroPlayerAudio(CProcessInfo& processInfo);
@@ -50,4 +52,5 @@ namespace GAME
     std::unique_ptr<CDVDAudioCodec> m_pAudioCodec;
     bool       m_bAudioEnabled;
   };
+}
 }

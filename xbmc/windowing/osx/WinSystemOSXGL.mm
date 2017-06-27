@@ -20,13 +20,9 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include "guilib/Texture.h"
 #include "WinSystemOSXGL.h"
 #include "rendering/gl/RenderSystemGL.h"
-#undef BOOL
 
 
 CWinSystemOSXGL::CWinSystemOSXGL()
@@ -41,7 +37,7 @@ void CWinSystemOSXGL::PresentRenderImpl(bool rendered)
 {
   if (rendered)
     FlushBuffer();
-  
+
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
@@ -52,7 +48,7 @@ void CWinSystemOSXGL::PresentRenderImpl(bool rendered)
 void CWinSystemOSXGL::SetVSyncImpl(bool enable)
 {
   EnableVSync(false);
-  
+
   if (enable)
   {
     EnableVSync(true);
@@ -63,12 +59,12 @@ bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
 {
   CWinSystemOSX::ResizeWindow(newWidth, newHeight, newLeft, newTop);
   CRenderSystemGL::ResetRenderSystem(newWidth, newHeight, false, 0);
-  
+
   if (m_bVSync)
   {
     EnableVSync(m_bVSync);
-  } 
-  
+  }
+
   return true;
 }
 
@@ -76,12 +72,12 @@ bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 {
   CWinSystemOSX::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  
+
   if (m_bVSync)
   {
     EnableVSync(m_bVSync);
-  } 
-  
+  }
+
   return true;
 }
 

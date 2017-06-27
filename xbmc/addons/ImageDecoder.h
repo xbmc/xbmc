@@ -18,23 +18,17 @@
  */
 #pragma once
 
-#include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/ImageDecoder.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 #include "guilib/iimage.h"
 
 namespace ADDON
 {
-  class CImageDecoder : public CAddonDll,
+  class CImageDecoder : public IAddonInstanceHandler,
                         public IImage
   {
   public:
-    static std::unique_ptr<CImageDecoder> FromExtension(CAddonInfo&&,
-                                                        const cp_extension_t* ext);
-    explicit CImageDecoder(CAddonInfo addonInfo) :
-      CAddonDll(std::move(addonInfo))
-    {}
-
-    CImageDecoder(CAddonInfo&& addonInfo, std::string mimetypes, std::string extensions);
+    CImageDecoder(ADDON::BinaryAddonBasePtr addonBase);
     virtual ~CImageDecoder();
 
     bool Create(const std::string& mimetype);
@@ -51,8 +45,8 @@ namespace ADDON
 
     const std::string& GetMimetypes() const { return m_mimetype; }
     const std::string& GetExtensions() const { return m_extension; }
+
   protected:
-    void* m_image = nullptr;
     std::string m_mimetype;
     std::string m_extension;
     AddonInstance_ImageDecoder m_struct = {};

@@ -18,9 +18,7 @@
  *
  */
 
-#define BOOL XBMC_BOOL
 #include "windowing/osx/WinEventsOSX.h"
-#undef BOOL
 
 // place holder for future native osx event handler
 
@@ -31,4 +29,3 @@ CWinEventsOSX::CWinEventsOSX()
 CWinEventsOSX::~CWinEventsOSX()
 {
 }
-

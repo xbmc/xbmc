@@ -440,6 +440,8 @@ if %build32%==yes (
             echo.
             echo.BITS='32bit'
             echo.export BITS
+            echo.ARCHITECTURE='win32'
+            echo.export ARCHITECTURE
             )>>%instdir%\local32\etc\profile.local
         )
 
@@ -493,6 +495,8 @@ if %build64%==yes (
             echo.
             echo.BITS='64bit'
             echo.export BITS
+            echo.ARCHITECTURE='x64'
+            echo.export ARCHITECTURE
             )>>%instdir%\local64\etc\profile.local
         )
 

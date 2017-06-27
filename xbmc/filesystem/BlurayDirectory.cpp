@@ -17,8 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-#ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -204,4 +202,3 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
 }
 
 } /* namespace XFILE */
-#endif

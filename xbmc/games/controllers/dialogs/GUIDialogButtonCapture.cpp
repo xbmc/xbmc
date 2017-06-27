@@ -50,8 +50,6 @@ std::string CGUIDialogButtonCapture::ControllerID(void) const
 
 void CGUIDialogButtonCapture::Show()
 {
-  using namespace KODI::MESSAGING;
-
   if (!IsRunning())
   {
     InstallHooks();

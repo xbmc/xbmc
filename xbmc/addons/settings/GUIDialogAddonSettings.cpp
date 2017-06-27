@@ -90,6 +90,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool sa
     return false;
 
   dialog->m_addon = addon;
+  dialog->m_saveToDisk = saveToDisk;
   dialog->Open();
 
   if (!dialog->IsConfirmed())
@@ -99,6 +100,24 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool sa
     addon->SaveSettings();
 
   return true;
+}
+
+void CGUIDialogAddonSettings::SaveAndClose()
+{
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return;
+
+  // get the dialog
+  CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  if (dialog == nullptr || !dialog->IsActive())
+    return;
+
+  // check if we need to save the settings
+  if (dialog->m_saveToDisk && dialog->m_addon != nullptr)
+    dialog->m_addon->SaveSettings();
+
+  // close the dialog
+  dialog->Close();
 }
 
 std::string CGUIDialogAddonSettings::GetCurrentAddonID() const
@@ -120,6 +139,9 @@ void CGUIDialogAddonSettings::SetupView()
 
   CGUIDialogSettingsManagerBase::SetupView();
 
+  // set addon id as window property
+  SetProperty("Addon.ID", m_addon->ID());
+
   // set heading
   SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s", m_addon->Name().c_str())); // "Settings - AddonName"
 
@@ -138,7 +160,7 @@ std::string CGUIDialogAddonSettings::GetLocalizedString(uint32_t labelId) const
   return CGUIDialogSettingsManagerBase::GetLocalizedString(labelId);
 }
 
-std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<CSetting> setting)
+std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<ISetting> setting)
 {
   if (setting == nullptr)
     return "";

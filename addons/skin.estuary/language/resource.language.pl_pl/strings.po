@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Film nieobejrzane"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Aktywuj gadżety kategorii"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Pobierz ikony"
@@ -108,6 +112,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Widok"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Wybiec ocenę wyświetlaną z mediami"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Brak ulubionych. Możesz dodać dowolną pozycję do tej listy, z poziomu widoków mediów, przy użyciu menu kontekstowego."
@@ -118,7 +126,7 @@ msgstr "Przesunięcie czasowe"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Pokaż fototapetę"
+msgstr "Fototapeta"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -434,7 +442,7 @@ msgstr "Ogólne ustawienia mające zastosowanie we wszystkich obszarach skóry."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Umożliwia dostosowanie ekranu startowego do swoich upodobań."
+msgstr "Umożliwia dostosowanie menu startowego do własnych upodobań."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -539,3 +547,11 @@ msgstr "Pokazuj etykiety mediów"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Klawiatura numeryczna"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Zagraj w posiadane gry lub pobierz jedną z gier z oficjalnego repozytorium."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Pokazuj fototapetę w tle interfejsu"

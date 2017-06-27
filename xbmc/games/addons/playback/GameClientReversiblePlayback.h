@@ -28,6 +28,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -91,4 +93,5 @@ namespace GAME
     unsigned int m_totalTimeMs;
     unsigned int m_cacheTimeMs;
   };
+}
 }

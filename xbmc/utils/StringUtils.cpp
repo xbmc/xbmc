@@ -1293,9 +1293,9 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
   if (bytes < 1000)
     return Format("%" PRIu64 "B", bytes);
 
-  unsigned int i = 0;
+  size_t i = 0;
   double value = static_cast<double>(bytes);
-  while (i < static_cast<int>(units.size()) - 1 && value >= 999.5)
+  while (i + 1 < units.size() && value >= 999.5)
   {
     ++i;
     value /= 1024.0;

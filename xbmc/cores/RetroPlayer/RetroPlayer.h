@@ -30,7 +30,9 @@
 
 class CProcessInfo;
 
-namespace GAME
+namespace KODI
+{
+namespace RETRO
 {
   class CRetroPlayerAudio;
   class CRetroPlayerVideo;
@@ -154,7 +156,8 @@ namespace GAME
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;
-    GameClientPtr                      m_gameClient;
+    GAME::GameClientPtr                m_gameClient;
     CCriticalSection                   m_mutex;
   };
+}
 }

@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Unwatched movies"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Enable category widgets"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download icons"
@@ -107,6 +111,10 @@ msgstr "Sort by"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Viewtype"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Choose rating to display for media items"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Show media flags"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Numeric pad"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Play your personal games or download one of the many game add-ons from the official repository."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Show Fanart background"

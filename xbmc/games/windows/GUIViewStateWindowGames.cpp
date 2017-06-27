@@ -37,6 +37,7 @@
 #include <assert.h>
 #include <set>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items) :

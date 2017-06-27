@@ -25,6 +25,7 @@
 
 #include <cmath>
 
+using namespace KODI;
 using namespace GAME;
 
 #define DEFAULT_FPS  60  // In case fps is 0 (shouldn't happen)

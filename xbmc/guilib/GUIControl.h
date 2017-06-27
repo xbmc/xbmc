@@ -227,7 +227,7 @@ public:
   void SetVisibleCondition(const std::string &expression, const std::string &allowHiddenFocus = "");
   bool HasVisibleCondition() const { return m_visibleCondition != NULL; };
   void SetEnableCondition(const std::string &expression);
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual void UpdateVisibility(const CGUIListItem *item);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
   virtual void SetInvalid() { m_bInvalidated = true; };
@@ -256,6 +256,8 @@ public:
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
+  virtual CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
+
 
   void SetControlStats(GUICONTROLSTATS *controlStats) { m_controlStats = controlStats; };
   virtual void UpdateControlStats();

@@ -160,9 +160,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     { // toggle the aspect ratio mode (only if the info is onscreen)
       if (m_dwShowViewModeTimeout)
       {
-#ifdef HAS_VIDEO_PLAYBACK
         g_application.m_pPlayer->SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
-#endif
       }
       else
         m_viewModeChanged = true;

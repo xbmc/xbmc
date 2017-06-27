@@ -2,8 +2,10 @@
 Version=1.0
 Name=@APP_NAME@
 GenericName=Media Center
+GenericName[zh_CN]=媒体中心
 Comment=Manage and view your media
 Comment[ru]=Просмотр и управление мультимедиа
+Comment[zh_CN]=管理和查看您的媒体
 Exec=@APP_NAME_LC@
 Icon=@APP_NAME_LC@
 Terminal=false
@@ -14,8 +16,10 @@ Actions=Fullscreen;Standalone;
 
 [Desktop Action Fullscreen]
 Name=Open in fullscreen
+Name[zh_CN]=全屏打开
 Exec=@APP_NAME_LC@ -fs
 
 [Desktop Action Standalone]
 Name=Open in standalone mode
+Name[zh_CN]=在独立模式下打开
 Exec=@APP_NAME_LC@ --standalone

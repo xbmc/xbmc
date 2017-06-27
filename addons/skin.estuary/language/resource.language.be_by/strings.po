@@ -24,6 +24,10 @@ msgctxt "#31019"
 msgid "Forecast"
 msgstr "Прагноз"
 
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Дзеянні"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Rewind"

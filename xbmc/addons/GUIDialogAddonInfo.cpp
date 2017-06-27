@@ -60,6 +60,7 @@
 #define CONTROL_BTN_AUTOUPDATE      13
 #define CONTROL_LIST_SCREENSHOTS    50
 
+using namespace KODI;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -480,7 +481,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   if (!item || !item->HasAddonInfo())
     return false;
 
-  m_item = item;
+  m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
   CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
   return true;

@@ -26,6 +26,8 @@
 
 class CVariant;
 
+namespace KODI
+{
 namespace GAME
 {
   enum class SAVETYPE
@@ -100,4 +102,5 @@ namespace GAME
     CDateTime    m_timestamp;
     std::string  m_thumbnail;
   };
+}
 }

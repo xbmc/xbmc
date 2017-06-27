@@ -20,7 +20,6 @@
 
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
 
-#define BOOL XBMC_BOOL
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
@@ -29,7 +28,6 @@
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
 #include "windowing/WindowingFactory.h"
-#undef BOOL
 
 #include <sstream>
 #include <AudioToolbox/AudioToolbox.h>
@@ -72,12 +70,12 @@ static int16_t SineWaveGeneratorNextSampleInt16(SineWaveGenerator *ctx)
 static float SineWaveGeneratorNextSampleFloat(SineWaveGenerator *ctx)
 {
   float sample = MAXFLOAT * sinf(ctx->currentPhase);
-  
+
   ctx->currentPhase += ctx->phaseIncrement;
   // Keep the value between 0 and 2*M_PI
   while (ctx->currentPhase > 2*M_PI)
     ctx->currentPhase -= 2*M_PI;
-  
+
   return sample / 4;
 }
 #endif
@@ -112,7 +110,7 @@ class CAAudioUnitSink
     bool         checkSessionProperties();
     bool         activateAudioSession();
     void         deactivateAudioSession();
- 
+
     // callbacks
     static void sessionPropertyCallback(void *inClientData,
                   AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData);
@@ -180,7 +178,7 @@ bool CAAudioUnitSink::open(AudioStreamBasicDescription outputFormat)
 bool CAAudioUnitSink::close()
 {
   deactivateAudioSession();
-  
+
   delete m_buffer;
   m_buffer = NULL;
 
@@ -189,7 +187,7 @@ bool CAAudioUnitSink::close()
 }
 
 bool CAAudioUnitSink::play(bool mute)
-{    
+{
   if (!m_playing)
   {
     if (activateAudioSession())
@@ -210,7 +208,7 @@ bool CAAudioUnitSink::mute(bool mute)
 }
 
 bool CAAudioUnitSink::pause()
-{	
+{
   if (m_playing)
     m_playing = AudioOutputUnitStop(m_audioUnit);
 
@@ -262,7 +260,7 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
   unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_frameSize);
   if (write_frames)
     m_buffer->Write(data, write_frames * m_frameSize);
-  
+
   return write_frames;
 }
 
@@ -346,7 +344,7 @@ bool CAAudioUnitSink::setupAudio()
 
   AudioSessionAddPropertyListener(kAudioSessionProperty_CurrentHardwareOutputVolume,
     sessionPropertyCallback, this);
- 
+
   // Audio Unit Setup
   // Describe a default output unit.
   AudioComponentDescription description = {};
@@ -363,9 +361,9 @@ bool CAAudioUnitSink::setupAudio()
     CLog::Log(LOGERROR, "%s error creating audioUnit (error: %d)", __PRETTY_FUNCTION__, (int)status);
     return false;
   }
-  
+
   setCoreAudioPreferredSampleRate();
- 
+
 	// Get the output samplerate for knowing what was setup in reality
   Float64 realisedSampleRate = getCoreAudioRealisedSampleRate();
   if (m_outputFormat.mSampleRate != realisedSampleRate)
@@ -442,7 +440,7 @@ bool CAAudioUnitSink::checkSessionProperties()
   if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration,
     &ioDataSize, &m_bufferDuration) != noErr)
     CLog::Log(LOGERROR, "%s: error getting CurrentHardwareIOBufferDuration", __FUNCTION__);
-   
+
   CLog::Log(LOGDEBUG, "%s: volume = %f, latency = %f, buffer = %f", __FUNCTION__, m_outputVolume, m_outputLatency, m_bufferDuration);
   return true;
 }
@@ -501,7 +499,7 @@ inline void LogLevel(unsigned int got, unsigned int wanted)
     {
       CLog::Log(LOGWARNING, "DARWINIOS: %sflow (%u vs %u bytes)", got > wanted ? "over" : "under", got, wanted);
       lastReported = got;
-    }    
+    }
   }
   else
     lastReported = INT_MAX; // indicate we were good at least once
@@ -522,7 +520,7 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
     sink->m_buffer->Read((unsigned char*)ioData->mBuffers[i].mData, bytes);
     LogLevel(bytes, wanted);
-    
+
     if (bytes == 0)
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
   }
@@ -615,7 +613,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       break;
     }
   }
-  
+
   if (!found)
     return false;
 
@@ -634,7 +632,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   format.m_channelLayout = m_info.m_channels;
   format.m_frameSize = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
 
-  
+
   audioFormat.mFormatID = kAudioFormatLinearPCM;
   switch(format.m_sampleRate)
   {
@@ -658,17 +656,17 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
       audioFormat.mSampleRate = 48000;
       break;
   }
-  
+
   if (forceRaw)//make sure input and output samplerate match for preventing resampling
     audioFormat.mSampleRate = CAAudioUnitSink::getCoreAudioRealisedSampleRate();
-  
+
   audioFormat.mFramesPerPacket = 1;
   audioFormat.mChannelsPerFrame= 2;// ios only supports 2 channels
   audioFormat.mBitsPerChannel  = CAEUtil::DataFormatToBits(format.m_dataFormat);
   audioFormat.mBytesPerFrame   = format.m_frameSize;
   audioFormat.mBytesPerPacket  = audioFormat.mBytesPerFrame * audioFormat.mFramesPerPacket;
   audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsPacked;
-  
+
 #if DO_440HZ_TONE_TEST
   SineWaveGeneratorInitWithFrequency(&m_SineWaveGenerator, 440.0, audioFormat.mSampleRate);
 #endif
@@ -720,7 +718,7 @@ unsigned int CAESinkDARWINIOS::AddPackets(uint8_t **data, unsigned int frames, u
       *samples++ = sample;
       *samples++ = sample;
     }
-    
+
   }
   else
   {

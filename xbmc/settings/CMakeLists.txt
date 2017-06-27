@@ -33,4 +33,8 @@ set(HEADERS AdvancedSettings.h
             SkinSettings.h
             VideoSettings.h)
 
+if(BLURAY_FOUND)
+  list(APPEND SOURCES DiscSettings.cpp)
+endif()
+
 core_add_library(settings)

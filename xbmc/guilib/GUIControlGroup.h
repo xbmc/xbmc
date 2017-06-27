@@ -27,13 +27,13 @@
 
 #include <vector>
 
-#include "GUIControl.h"
+#include "GUIControlLookup.h"
 
 /*!
  \ingroup controls
  \brief group of controls, useful for remembering last control + animating/hiding together
  */
-class CGUIControlGroup : public CGUIControl
+class CGUIControlGroup : public CGUIControlLookup
 {
 public:
   CGUIControlGroup();
@@ -67,8 +67,6 @@ public:
 
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
-  const CGUIControl *GetControl(int id) const;
-  CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
   virtual CGUIControl *GetFirstFocusableControl(int id);
 
   virtual void AddControl(CGUIControl *control, int position = -1);
@@ -86,28 +84,12 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  /*!
-   \brief Check whether a given control is valid
-   Runs through controls and returns whether this control is valid.  Only functional
-   for controls with non-zero id.
-   \param control to check
-   \return true if the control is valid, false otherwise.
-   */
-  bool IsValidControl(const CGUIControl *control) const;
-
   // sub controls
   std::vector<CGUIControl *> m_children, m_idCollector;
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
   typedef std::vector<CGUIControl *>::reverse_iterator rControls;
   typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
-
-  // fast lookup by id
-  typedef std::multimap<int, CGUIControl *> LookupMap;
-  void AddLookup(CGUIControl *control);
-  void RemoveLookup(CGUIControl *control);
-  const LookupMap &GetLookup() const { return m_lookup; };
-  LookupMap m_lookup;
 
   int  m_defaultControl;
   bool m_defaultAlways;

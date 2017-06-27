@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "還沒看過的電影"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "啟用類別小工具"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "下載圖示"
@@ -78,7 +82,7 @@ msgstr "最近的錄影"
 
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "最近收聽的頻道"
+msgstr "最近收看的頻道"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -107,6 +111,10 @@ msgstr "排序以"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "檢視模式"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "選擇欲顯示的評等類型"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "顯示媒體內容標籤"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "數字鍵盤"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "執行您收藏的遊戲，或下載官方的眾多遊戲附加元件"
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "顯示劇照背景"

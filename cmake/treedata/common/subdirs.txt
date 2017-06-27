@@ -1,5 +1,6 @@
 xbmc                                            xbmc
 xbmc/addons                                     addons
+xbmc/addons/binary-addons                       addons_binary-addons
 xbmc/addons/interfaces                          addonsBinaryInterfaces
 xbmc/addons/interfaces/Addon                    addonCallbacks_Addon
 xbmc/addons/interfaces/GUI                      addons_interfaces_gui

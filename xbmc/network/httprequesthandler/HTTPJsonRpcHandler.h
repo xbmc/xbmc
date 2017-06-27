@@ -61,7 +61,7 @@ private:
   {
   public:
     CHTTPTransportLayer() = default;
-    ~CHTTPTransportLayer() = default;
+    virtual ~CHTTPTransportLayer() = default;
 
     // implementations of JSONRPC::ITransportLayer
     bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
@@ -73,8 +73,14 @@ private:
   class CHTTPClient : public JSONRPC::IClient
   {
   public:
-    virtual int  GetPermissionFlags();
-    virtual int  GetAnnouncementFlags();
-    virtual bool SetAnnouncementFlags(int flags);
+    CHTTPClient(HTTPMethod method);
+    virtual ~CHTTPClient() = default;
+
+    int GetPermissionFlags() override { return m_permissionFlags; }
+    int GetAnnouncementFlags() override;
+    bool SetAnnouncementFlags(int flags) override;
+
+  private:
+    int m_permissionFlags;
   };
 };

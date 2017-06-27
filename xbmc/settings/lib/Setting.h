@@ -72,10 +72,6 @@ public:
   virtual bool CheckValidity(const std::string &value) const = 0;
   virtual void Reset() = 0;
 
-  int GetLabel() const { return m_label; }
-  void SetLabel(int label) { m_label = label; }
-  int GetHelp() const { return m_help; }
-  void SetHelp(int help) { m_help = help; }
   bool IsEnabled() const;
   void SetEnabled(bool enabled);
   bool IsDefault() const { return !m_changed; }
@@ -114,8 +110,6 @@ protected:
   }
 
   ISettingCallback *m_callback = nullptr;
-  int m_label = -1;
-  int m_help = -1;
   bool m_enabled = true;
   std::string m_parentSetting;
   SettingLevel m_level = SettingLevel::Standard;

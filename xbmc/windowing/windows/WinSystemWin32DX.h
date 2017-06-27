@@ -36,7 +36,7 @@ public:
   CWinSystemWin32DX();
   ~CWinSystemWin32DX();
 
-  virtual bool CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual void OnMove(int x, int y);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);

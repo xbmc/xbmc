@@ -34,7 +34,8 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 
-using namespace GAME;
+using namespace KODI;
+using namespace RETRO;
 
 CRetroPlayerAudio::CRetroPlayerAudio(CProcessInfo& processInfo) :
   m_processInfo(processInfo),

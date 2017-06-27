@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Films non visionnés"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Activer les widgets de catégories"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Télécharger des icônes"
@@ -108,6 +112,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Type de vue"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Choisir l'évaluation à afficher pour les éléments multimédias"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Aucun favori trouvé. Vous pouvez ajouter à cette liste n'importe quel élément des vues de médias en utilisant le menu contextuel."
@@ -154,7 +162,7 @@ msgstr "éléments"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Retour rapide"
+msgstr "Rebobinage"
 
 msgctxt "#31039"
 msgid "Fast forward"
@@ -206,7 +214,7 @@ msgstr "Basé sur Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Peser sur [B]Gauche[/B] pour un retour rapide, ou [B]Droite[/B] pour une avance rapide"
+msgstr "Peser sur [B]Gauche[/B] pour rebobiner ou [B]Droite[/B] pour une avance rapide"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -386,7 +394,7 @@ msgstr "Modifier les nœuds"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Se rendre au navigateur d'addiciels"
+msgstr "Accéder au navigateur d'addiciels"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -474,11 +482,11 @@ msgstr "Vitesse de lecture"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Aucun numériscope n'est en place. Pour utiliser un numériscope, choisissez un addiciel de client de numériscope et configurez-le. Veuillez visiter http://kodi.wiki/view/PVR pour davantage d'informations."
+msgstr "Aucun numériscope configuré. Pour utiliser un numériscope, choisissez un addiciel de client de numériscope et configurez-le. Veuillez visiter http://kodi.wiki/view/PVR pour davantage d'informations."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Se rendre au navigateur d'addiciels"
+msgstr "Accéder au navigateur d'addiciels"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -539,3 +547,11 @@ msgstr "Afficher les drapeaux de médias"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Pavé numérique"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Jouez à vos jeux personnels ou téléchargez l'un des nombreux addiciels de jeux du dépôt officiel."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Afficher le fanart en arrière-plan"

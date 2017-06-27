@@ -21,7 +21,7 @@
 #include "Select.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Select.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
@@ -44,7 +44,7 @@ void Interface_GUIDialogSelect::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogSelect);
 }
 
-int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, bool autoclose)
+int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, unsigned int autoclose)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

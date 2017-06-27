@@ -67,7 +67,7 @@ bool CDarwinNSUserDefaults::SetKey(const std::string &key, const std::string &va
   if (!key.empty() && !value.empty())
   {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
+
     NSString *nsstring_key = [NSString stringWithUTF8String: key.c_str()];
     NSString *nsstring_value = [NSString stringWithUTF8String: value.c_str()];
 

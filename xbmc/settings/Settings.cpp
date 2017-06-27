@@ -87,9 +87,11 @@
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
+#include "DiscSettings.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 
+using namespace KODI;
 using namespace XFILE;
 
 const std::string CSettings::SETTING_LOOKANDFEEL_SKIN = "lookandfeel.skin";
@@ -511,6 +513,15 @@ bool CSettings::Save(const std::string &file)
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
   return GetSettingsManager()->LoadSetting(node, settingId);
+}
+
+bool CSettings::GetBool(const std::string& id) const
+{
+  // Backward compatibility (skins use this setting)
+  if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
+    return CSettingsBase::GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
+
+  return CSettingsBase::GetBool(id);
 }
 
 bool CSettings::Initialize(const std::string &file)
@@ -1056,6 +1067,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_GAMES_ENABLEREWIND);
   settingSet.insert(CSettings::SETTING_GAMES_REWINDTIME);
   GetSettingsManager()->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
+
+#ifdef HAVE_LIBBLURAY
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_DISC_PLAYBACK);
+  GetSettingsManager()->RegisterCallback(&CDiscSettings::GetInstance(), settingSet);
+#endif
 }
 
 void CSettings::UninitializeISettingCallbacks()
@@ -1086,6 +1103,9 @@ GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
   GetSettingsManager()->UnregisterCallback(&CWakeOnAccess::GetInstance());
+#ifdef HAVE_LIBBLURAY
+  GetSettingsManager()->UnregisterCallback(&CDiscSettings::GetInstance());
+#endif
 }
 
 bool CSettings::Reset()

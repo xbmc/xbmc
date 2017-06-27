@@ -66,19 +66,19 @@ msgstr "PVR informasjon"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr "Spiller prosess informasjon"
+msgstr "Prosessinformasjon for avspiller"
 
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr "Video dekoder"
+msgstr "Videodekoder"
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr "Piksel format"
+msgstr "Pikselformat"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "System minne bruk"
+msgstr "Systemminnebruk"
 
 msgctxt "#31024"
 msgid "Page"
@@ -166,7 +166,7 @@ msgstr "Datatilbyder"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "System Minne Brukt:"
+msgstr "Systemminne brukt:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -238,11 +238,11 @@ msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Hjemme meny"
+msgstr "Hjemmemeny"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Hjemme tillegg"
+msgstr "Hjemme-tillegg"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -314,15 +314,15 @@ msgstr "Første gang"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Det er to ting du må vite om å navigere i Estouchy"
+msgstr "Det er to ting du må vite om navigering i Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Kodi logoen fungerer som 'HJEM' knapp. Når du trykker på den vil du bli sendt til hjem skjermen."
+msgstr "Kodi-logoen fungerer som 'HJEM'-knapp. Når du trykker på den vil du bli sendt til hjemmeskjermen."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Når du spiller av lyd eller video vil tittelen vises i toppen av skjermen. Dersom du trykker på den vil du få fullskjermsvisning eller video vindu."
+msgstr "Når du spiller av lyd eller video vil tittelen vises i toppen av skjermen. Dersom du trykker på den vil du få fullskjermsvisualisering eller videovindu."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

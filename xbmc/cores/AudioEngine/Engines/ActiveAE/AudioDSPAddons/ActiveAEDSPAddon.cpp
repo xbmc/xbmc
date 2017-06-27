@@ -22,8 +22,6 @@
 #include "Application.h"
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSP.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
-#include "cores/AudioEngine/Interfaces/AESound.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -35,8 +33,8 @@ using namespace ActiveAE;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CActiveAEDSPAddon::CActiveAEDSPAddon(CAddonInfo addonInfo) :
-    CAddonDll(std::move(addonInfo))
+CActiveAEDSPAddon::CActiveAEDSPAddon(BinaryAddonBasePtr addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_ADSP, addonInfo)
 {
   ResetProperties();
 }
@@ -44,47 +42,6 @@ CActiveAEDSPAddon::CActiveAEDSPAddon(CAddonInfo addonInfo) :
 CActiveAEDSPAddon::~CActiveAEDSPAddon(void)
 {
   Destroy();
-}
-
-void CActiveAEDSPAddon::OnDisabled()
-{
-  //! @todo reactive this with AudioDSP V2.0
-  //CServiceBroker::GetADSP().UpdateAddons();
-}
-
-void CActiveAEDSPAddon::OnEnabled()
-{
-  //! @todo reactive this with AudioDSP V2.0
-  //CServiceBroker::GetADSP().UpdateAddons();
-}
-
-AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
-{
-  return AddonPtr();
-}
-
-void CActiveAEDSPAddon::OnPreInstall()
-{
-  //! @todo reactive this with AudioDSP V2.0
-  //CServiceBroker::GetADSP().UpdateAddons();
-}
-
-void CActiveAEDSPAddon::OnPostInstall(bool restart, bool update)
-{
-  //! @todo reactive this with AudioDSP V2.0
-  //CServiceBroker::GetADSP().UpdateAddons();
-}
-
-void CActiveAEDSPAddon::OnPreUnInstall()
-{
-  //! @todo implement unloading adsp addons
-  //CServiceBroker::GetADSP().Deactivate();
-}
-
-void CActiveAEDSPAddon::OnPostUnInstall()
-{
-  //! @todo reactive this with AudioDSP V2.0
-  //CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_ID */)
@@ -99,34 +56,23 @@ void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_
   m_strAudioDSPVersion    = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
   m_strAudioDSPName       = DEFAULT_INFO_STRING_VALUE;
-  memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
+  m_addonCapabilities = {0};
 
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct = {0};
   m_struct.props.strUserPath = m_strUserPath.c_str();
   m_struct.props.strAddonPath = m_strAddonPath.c_str();
 
   m_struct.toKodi.kodiInstance = this;
-  m_struct.toKodi.AddMenuHook = cb_add_menu_hook;
-  m_struct.toKodi.RemoveMenuHook = cb_remove_menu_hook;
-  m_struct.toKodi.RegisterMode = cb_register_mode;
-  m_struct.toKodi.UnregisterMode = cb_unregister_mode;
-
-  m_struct.toKodi.SoundPlay_GetHandle = cb_sound_play_get_handle;
-  m_struct.toKodi.SoundPlay_ReleaseHandle = cb_sound_play_release_handle;
-  m_struct.toKodi.SoundPlay_Play = cb_sound_play_play;
-  m_struct.toKodi.SoundPlay_Stop = cb_sound_play_stop;
-  m_struct.toKodi.SoundPlay_IsPlaying = cb_sound_play_is_playing;
-  m_struct.toKodi.SoundPlay_SetChannel = cb_sound_play_set_channel;
-  m_struct.toKodi.SoundPlay_GetChannel = cb_sound_play_get_channel;
-  m_struct.toKodi.SoundPlay_SetVolume = cb_sound_play_set_volume;
-  m_struct.toKodi.SoundPlay_GetVolume = cb_sound_play_get_volume;
+  m_struct.toKodi.add_menu_hook = cb_add_menu_hook;
+  m_struct.toKodi.remove_menu_hook = cb_remove_menu_hook;
+  m_struct.toKodi.register_mode = cb_register_mode;
+  m_struct.toKodi.unregister_mode = cb_unregister_mode;
 }
 
-ADDON_STATUS CActiveAEDSPAddon::Create(int iClientId)
+bool CActiveAEDSPAddon::Create(int iClientId)
 {
-  ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   if (iClientId <= AE_DSP_INVALID_ADDON_ID)
-    return status;
+    return false;
 
   /* ensure that a previous instance is destroyed */
   Destroy();
@@ -135,19 +81,18 @@ ADDON_STATUS CActiveAEDSPAddon::Create(int iClientId)
   ResetProperties(iClientId);
 
   /* initialise the add-on */
-  bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - creating audio dsp add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll::Create(ADDON_INSTANCE_ADSP, &m_struct, &m_struct.props)) == ADDON_STATUS_OK)
-    bReadyToUse = GetAddonProperties();
+  /* Open the class "kodi::addon::CInstanceAudioDSP" on add-on side */
+  m_bReadyToUse = CreateInstance(&m_struct);
+  if (!m_bReadyToUse)
+  {
+    CLog::Log(LOGFATAL, "ActiveAE DSP: failed to create instance for '%s' and not usable!", ID().c_str());
+    return false;
+  }
 
-  m_bReadyToUse = bReadyToUse;
+  GetAddonProperties();
 
-  return status;
-}
-
-bool CActiveAEDSPAddon::DllLoaded(void) const
-{
-  return CAddonDll::DllLoaded();
+  return true;
 }
 
 void CActiveAEDSPAddon::Destroy(void)
@@ -159,8 +104,8 @@ void CActiveAEDSPAddon::Destroy(void)
 
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - destroying audio dsp add-on '%s'", __FUNCTION__, GetFriendlyName().c_str());
 
-  /* destroy the add-on */
-  CAddonDll::Destroy();
+  /* Destroy the class "kodi::addon::CInstanceAudioDSP" on add-on side */
+  DestroyInstance();
 
   /* reset all properties to defaults */
   ResetProperties();
@@ -190,35 +135,28 @@ bool CActiveAEDSPAddon::IsInUse() const
   return m_isInUse;
 }
 
-bool CActiveAEDSPAddon::GetAddonProperties(void)
+void CActiveAEDSPAddon::GetAddonProperties(void)
 {
   AE_DSP_ADDON_CAPABILITIES addonCapabilities;
 
   /* get the capabilities */
-  memset(&addonCapabilities, 0, sizeof(addonCapabilities));
-  AE_DSP_ERROR retVal = m_struct.toAddon.GetAddonCapabilities(&addonCapabilities);
-  if (retVal != AE_DSP_ERROR_NO_ERROR)
-  {
-    CLog::Log(LOGERROR, "ActiveAE DSP - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
-    return false;
-  }
+  addonCapabilities = {0};
+  m_struct.toAddon.get_capabilities(&m_struct, &addonCapabilities);
 
   /* get the name of the dsp addon */
-  std::string strDSPName = m_struct.toAddon.GetDSPName();
+  std::string strDSPName = m_struct.toAddon.get_dsp_name(&m_struct);
 
   /* display name = backend name string */
   std::string strFriendlyName = StringUtils::Format("%s", strDSPName.c_str());
 
   /* backend version number */
-  std::string strAudioDSPVersion = m_struct.toAddon.GetDSPVersion();
+  std::string strAudioDSPVersion = m_struct.toAddon.get_dsp_version(&m_struct);
 
   /* update the members */
   m_strAudioDSPName     = strDSPName;
   m_strFriendlyName     = strFriendlyName;
   m_strAudioDSPVersion  = strAudioDSPVersion;
   m_addonCapabilities   = addonCapabilities;
-
-  return true;
 }
 
 AE_DSP_ADDON_CAPABILITIES CActiveAEDSPAddon::GetAddonCapabilities(void) const
@@ -265,12 +203,12 @@ void CActiveAEDSPAddon::CallMenuHook(const AE_DSP_MENUHOOK &hook, AE_DSP_MENUHOO
   if (!m_bReadyToUse || hookData.category == AE_DSP_MENUHOOK_UNKNOWN)
     return;
 
-  m_struct.toAddon.MenuHook(hook, hookData);
+  m_struct.toAddon.menu_hook(&m_struct, &hook, &hookData);
 }
 
 AE_DSP_ERROR CActiveAEDSPAddon::StreamCreate(const AE_DSP_SETTINGS *addonSettings, const AE_DSP_STREAM_PROPERTIES* pProperties, ADDON_HANDLE handle)
 {
-  AE_DSP_ERROR retVal = m_struct.toAddon.StreamCreate(addonSettings, pProperties, handle);
+  AE_DSP_ERROR retVal = m_struct.toAddon.stream_create(&m_struct, addonSettings, pProperties, handle);
   if (retVal == AE_DSP_ERROR_NO_ERROR)
     m_isInUse = true;
   LogError(retVal, __FUNCTION__);
@@ -280,14 +218,14 @@ AE_DSP_ERROR CActiveAEDSPAddon::StreamCreate(const AE_DSP_SETTINGS *addonSetting
 
 void CActiveAEDSPAddon::StreamDestroy(const ADDON_HANDLE handle)
 {
-  m_struct.toAddon.StreamDestroy(handle);
+  m_struct.toAddon.stream_destroy(&m_struct, handle);
 
   m_isInUse = false;
 }
 
 bool CActiveAEDSPAddon::StreamIsModeSupported(const ADDON_HANDLE handle, AE_DSP_MODE_TYPE type, unsigned int addon_mode_id, int unique_db_mode_id)
 {
-  AE_DSP_ERROR retVal = m_struct.toAddon.StreamIsModeSupported(handle, type, addon_mode_id, unique_db_mode_id);
+  AE_DSP_ERROR retVal = m_struct.toAddon.stream_is_mode_supported(&m_struct, handle, type, addon_mode_id, unique_db_mode_id);
   if (retVal == AE_DSP_ERROR_NO_ERROR)
     return true;
   else if (retVal != AE_DSP_ERROR_IGNORE_ME)
@@ -298,7 +236,7 @@ bool CActiveAEDSPAddon::StreamIsModeSupported(const ADDON_HANDLE handle, AE_DSP_
 
 AE_DSP_ERROR CActiveAEDSPAddon::StreamInitialize(const ADDON_HANDLE handle, const AE_DSP_SETTINGS *addonSettings)
 {
-  AE_DSP_ERROR retVal = m_struct.toAddon.StreamInitialize(handle, addonSettings);
+  AE_DSP_ERROR retVal = m_struct.toAddon.stream_initialize(&m_struct, handle, addonSettings);
   LogError(retVal, __FUNCTION__);
 
   return retVal;
@@ -306,47 +244,47 @@ AE_DSP_ERROR CActiveAEDSPAddon::StreamInitialize(const ADDON_HANDLE handle, cons
 
 bool CActiveAEDSPAddon::InputProcess(const ADDON_HANDLE handle, const float **array_in, unsigned int samples)
 {
-  return m_struct.toAddon.InputProcess(handle, array_in, samples);
+  return m_struct.toAddon.input_process(&m_struct, handle, array_in, samples);
 }
 
 unsigned int CActiveAEDSPAddon::InputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.InputResampleProcessNeededSamplesize(handle);
+  return m_struct.toAddon.input_resample_process_needed_samplesize(&m_struct, handle);
 }
 
-unsigned int CActiveAEDSPAddon::InputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
+unsigned int CActiveAEDSPAddon::InputResampleProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples)
 {
-  return m_struct.toAddon.InputResampleProcess(handle, array_in, array_out, samples);
+  return m_struct.toAddon.input_resample_process(&m_struct, handle, array_in, array_out, samples);
 }
 
 int CActiveAEDSPAddon::InputResampleSampleRate(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.InputResampleSampleRate(handle);
+  return m_struct.toAddon.input_resample_samplerate(&m_struct, handle);
 }
 
 float CActiveAEDSPAddon::InputResampleGetDelay(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.InputResampleGetDelay(handle);
+  return m_struct.toAddon.input_resample_get_delay(&m_struct, handle);
 }
 
 unsigned int CActiveAEDSPAddon::PreProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_struct.toAddon.PreProcessNeededSamplesize(handle, mode_id);
+  return m_struct.toAddon.pre_process_needed_samplesize(&m_struct, handle, mode_id);
 }
 
 float CActiveAEDSPAddon::PreProcessGetDelay(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_struct.toAddon.PreProcessGetDelay(handle, mode_id);
+  return m_struct.toAddon.pre_process_get_delay(&m_struct, handle, mode_id);
 }
 
-unsigned int CActiveAEDSPAddon::PreProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples)
+unsigned int CActiveAEDSPAddon::PreProcess(const ADDON_HANDLE handle, unsigned int mode_id, const float **array_in, float **array_out, unsigned int samples)
 {
-  return m_struct.toAddon.PostProcess(handle, mode_id, array_in, array_out, samples);
+  return m_struct.toAddon.pre_process(&m_struct, handle, mode_id, array_in, array_out, samples);
 }
 
 AE_DSP_ERROR CActiveAEDSPAddon::MasterProcessSetMode(const ADDON_HANDLE handle, AE_DSP_STREAMTYPE type, unsigned int mode_id, int unique_db_mode_id)
 {
-  AE_DSP_ERROR retVal = m_struct.toAddon.MasterProcessSetMode(handle, type, mode_id, unique_db_mode_id);
+  AE_DSP_ERROR retVal = m_struct.toAddon.master_process_set_mode(&m_struct, handle, type, mode_id, unique_db_mode_id);
   LogError(retVal, __FUNCTION__);
 
   return retVal;
@@ -354,22 +292,22 @@ AE_DSP_ERROR CActiveAEDSPAddon::MasterProcessSetMode(const ADDON_HANDLE handle, 
 
 unsigned int CActiveAEDSPAddon::MasterProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.MasterProcessNeededSamplesize(handle);
+  return m_struct.toAddon.master_process_needed_samplesize(&m_struct, handle);
 }
 
 float CActiveAEDSPAddon::MasterProcessGetDelay(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.MasterProcessGetDelay(handle);
+  return m_struct.toAddon.master_process_get_delay(&m_struct, handle);
 }
 
 int CActiveAEDSPAddon::MasterProcessGetOutChannels(const ADDON_HANDLE handle, unsigned long &out_channel_present_flags)
 {
-  return m_struct.toAddon.MasterProcessGetOutChannels(handle, out_channel_present_flags);
+  return m_struct.toAddon.master_process_get_out_channels(&m_struct, handle, &out_channel_present_flags);
 }
 
-unsigned int CActiveAEDSPAddon::MasterProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
+unsigned int CActiveAEDSPAddon::MasterProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples)
 {
-  return m_struct.toAddon.MasterProcess(handle, array_in, array_out, samples);
+  return m_struct.toAddon.master_process(&m_struct, handle, array_in, array_out, samples);
 }
 
 std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
@@ -379,43 +317,43 @@ std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HAND
   if (!m_bReadyToUse)
     return strReturn;
 
-  strReturn = m_struct.toAddon.MasterProcessGetStreamInfoString(handle);
+  strReturn = m_struct.toAddon.master_process_get_stream_info_string(&m_struct, handle);
   return strReturn;
 }
 
 unsigned int CActiveAEDSPAddon::PostProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_struct.toAddon.PostProcessNeededSamplesize(handle, mode_id);
+  return m_struct.toAddon.post_process_needed_samplesize(&m_struct, handle, mode_id);
 }
 
 float CActiveAEDSPAddon::PostProcessGetDelay(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_struct.toAddon.PostProcessGetDelay(handle, mode_id);
+  return m_struct.toAddon.post_process_get_delay(&m_struct, handle, mode_id);
 }
 
-unsigned int CActiveAEDSPAddon::PostProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples)
+unsigned int CActiveAEDSPAddon::PostProcess(const ADDON_HANDLE handle, unsigned int mode_id, const float **array_in, float **array_out, unsigned int samples)
 {
-  return m_struct.toAddon.PostProcess(handle, mode_id, array_in, array_out, samples);
+  return m_struct.toAddon.post_process(&m_struct, handle, mode_id, array_in, array_out, samples);
 }
 
 unsigned int CActiveAEDSPAddon::OutputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.OutputResampleProcessNeededSamplesize(handle);
+  return m_struct.toAddon.output_resample_process_needed_samplesize(&m_struct, handle);
 }
 
-unsigned int CActiveAEDSPAddon::OutputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
+unsigned int CActiveAEDSPAddon::OutputResampleProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples)
 {
-  return m_struct.toAddon.OutputResampleProcess(handle, array_in, array_out, samples);
+  return m_struct.toAddon.output_resample_process(&m_struct, handle, array_in, array_out, samples);
 }
 
 int CActiveAEDSPAddon::OutputResampleSampleRate(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.OutputResampleSampleRate(handle);
+  return m_struct.toAddon.output_resample_samplerate(&m_struct, handle);
 }
 
 float CActiveAEDSPAddon::OutputResampleGetDelay(const ADDON_HANDLE handle)
 {
-  return m_struct.toAddon.OutputResampleGetDelay(handle);
+  return m_struct.toAddon.output_resample_get_delay(&m_struct, handle);
 }
 
 bool CActiveAEDSPAddon::SupportsInputInfoProcess(void) const
@@ -548,11 +486,11 @@ void CActiveAEDSPAddon::cb_register_mode(void* kodiInstance, AE_DSP_MODES::AE_DS
 
   if (idMode > AE_DSP_INVALID_ADDON_ID)
   {
-          CLog::Log(LOGDEBUG, "Audio DSP - %s - successfully registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+    CLog::Log(LOGDEBUG, "Audio DSP - %s - successfully registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
   }
   else
   {
-          CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+    CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
   }
 }
 
@@ -567,116 +505,4 @@ void CActiveAEDSPAddon::cb_unregister_mode(void* kodiInstance, AE_DSP_MODES::AE_
 
   CActiveAEDSPMode transferMode(*mode, addon->GetID());
   transferMode.Delete();
-}
-
-ADSPHANDLE CActiveAEDSPAddon::cb_sound_play_get_handle(void *kodiInstance, const char *filename)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!filename || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return NULL;
-  }
-
-  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
-  if (!sound)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
-    return NULL;
-  }
-
-  return sound;
-}
-
-void CActiveAEDSPAddon::cb_sound_play_release_handle(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  CServiceBroker::GetActiveAE().FreeSound(reinterpret_cast<IAESound*>(handle));
-}
-
-void CActiveAEDSPAddon::cb_sound_play_play(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Play();
-}
-
-void CActiveAEDSPAddon::cb_sound_play_stop(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Stop();
-}
-
-bool CActiveAEDSPAddon::cb_sound_play_is_playing(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return false;
-  }
-  return ((IAESound*)handle)->IsPlaying();
-}
-
-void CActiveAEDSPAddon::cb_sound_play_set_channel(void *kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  ((IAESound*)handle)->SetChannel(CActiveAEDSP::GetKODIChannel(channel));
-}
-
-AE_DSP_CHANNEL CActiveAEDSPAddon::cb_sound_play_get_channel(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return AE_DSP_CH_INVALID;
-  }
-
-  return CActiveAEDSP::GetDSPChannel(((IAESound*)handle)->GetChannel());
-}
-
-void CActiveAEDSPAddon::cb_sound_play_set_volume(void *kodiInstance, ADSPHANDLE handle, float volume)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  ((IAESound*)handle)->SetVolume(volume);
-}
-
-float CActiveAEDSPAddon::cb_sound_play_get_volume(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return 0.0f;
-  }
-
-  return ((IAESound*)handle)->GetVolume();
 }

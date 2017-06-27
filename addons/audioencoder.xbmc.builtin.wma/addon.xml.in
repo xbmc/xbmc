@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="audioencoder.kodi.builtin.wma"
+  version="1.0.0"
+  name="WMA encoder"
+  provider-name="spiff">
+  <extension
+    point="kodi.audioencoder"
+    extension=".wma"
+    library_@CORE_SYSTEM_NAME@="dummy.so"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">WMA Audio Encoder</summary>
+    <description lang="en">Windows Media Audio, Microsoft’s lossy audio format.</description>
+    <platform>all</platform>
+  </extension>
+</addon>

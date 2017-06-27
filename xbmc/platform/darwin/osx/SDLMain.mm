@@ -16,13 +16,9 @@
 #import <unistd.h>
 
 #import "platform/darwin/osx/CocoaInterface.h"
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
-#undef BOOL
 
 #import "platform/darwin/osx/HotKeyController.h"
 #import "platform/darwin/DarwinUtils.h"
@@ -138,13 +134,13 @@ static void setupWindowMenu(void)
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
   [windowMenu addItem:menuItem];
   [menuItem release];
-  
+
   // "Title Bar" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Title Bar" action:@selector(titlebarToggle:) keyEquivalent:@""];
   [windowMenu addItem:menuItem];
   [menuItem setState: true];
   [menuItem release];
-  
+
   // Put menu into the menubar
   windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
   [windowMenuItem setSubmenu:windowMenu];
@@ -214,7 +210,7 @@ static void setupWindowMenu(void)
   BOOL isSet = [window styleMask] & NSTitledWindowMask;
   [window setMovableByWindowBackground: !isSet];
   [sender setState: isSet];
-  
+
 }
 
 
@@ -416,7 +412,7 @@ static void setupWindowMenu(void)
   return TRUE;
 }
 
-- (void) deviceDidMountNotification:(NSNotification *) note 
+- (void) deviceDidMountNotification:(NSNotification *) note
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -425,7 +421,7 @@ static void setupWindowMenu(void)
   [pool release];
 }
 
-- (void) deviceDidUnMountNotification:(NSNotification *) note 
+- (void) deviceDidUnMountNotification:(NSNotification *) note
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];

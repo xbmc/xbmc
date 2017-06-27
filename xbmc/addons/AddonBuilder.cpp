@@ -20,12 +20,10 @@
 
 #include "addons/AddonBuilder.h"
 #include "addons/AudioDecoder.h"
-#include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
 #include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
-#include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
 #include "addons/PluginSource.h"
 #include "addons/Repository.h"
@@ -35,14 +33,14 @@
 #include "addons/Skin.h"
 #include "addons/UISoundsResource.h"
 #include "addons/VFSEntry.h"
-#include "addons/Visualisation.h"
+#include "addons/Visualization.h"
 #include "addons/Webinterface.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "peripherals/addons/PeripheralAddon.h"
 #include "addons/PVRClient.h"
 #include "utils/StringUtils.h"
+
+using namespace KODI;
 
 namespace ADDON
 {
@@ -78,8 +76,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (type == ADDON_AUDIOENCODER)
   {
     // built in audio encoder
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.xbmc.builtin."))
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
+    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.kodi.builtin."))
+      return std::make_shared<CAddonDll>(std::move(m_addonInfo));
   }
 
   // Ensure binary types have a valid library for the platform
@@ -122,28 +120,18 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
-#if defined(HAS_VISUALISATION)
+    case ADDON_ADSPDLL:
+    case ADDON_AUDIOENCODER:
+    case ADDON_IMAGEDECODER:
+    case ADDON_INPUTSTREAM:
+    case ADDON_PERIPHERALDLL:
     case ADDON_VIZ:
-      return std::make_shared<CVisualisation>(std::move(m_addonInfo));
-#endif
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
-#ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
-      return PVR::CPVRClient::FromExtension(std::move(m_addonInfo), m_extPoint);
-#endif
-    case ADDON_ADSPDLL:
-      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
-    case ADDON_AUDIOENCODER:
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_IMAGEDECODER:
-      return CImageDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_INPUTSTREAM:
-      return CInputStream::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_PERIPHERALDLL:
-      return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_VFS:
@@ -200,18 +188,16 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CScraper(std::move(addonInfo)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
-#if defined(HAS_VISUALISATION)
+    case ADDON_ADSPDLL:
+    case ADDON_AUDIOENCODER:
+    case ADDON_IMAGEDECODER:
+    case ADDON_INPUTSTREAM:
+    case ADDON_PERIPHERALDLL:
     case ADDON_VIZ:
-      return AddonPtr(new CVisualisation(std::move(addonInfo)));
-#endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonInfo)));
-    case ADDON_ADSPDLL:
-      return AddonPtr(new ActiveAE::CActiveAEDSPAddon(std::move(addonInfo)));
-    case ADDON_AUDIOENCODER:
-      return AddonPtr(new CAudioEncoder(std::move(addonInfo)));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(std::move(addonInfo)));
     case ADDON_RESOURCE_IMAGES:
@@ -226,16 +212,10 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CRepository(std::move(addonInfo)));
     case ADDON_CONTEXT_ITEM:
       return AddonPtr(new CContextMenuAddon(std::move(addonInfo)));
-    case ADDON_INPUTSTREAM:
-      return AddonPtr(new CInputStream(std::move(addonInfo)));
-    case ADDON_PERIPHERALDLL:
-      return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonInfo), false, false)); //! @todo implement
     case ADDON_GAME_CONTROLLER:
       return AddonPtr(new GAME::CController(std::move(addonInfo)));
     case ADDON_GAMEDLL:
       return AddonPtr(new GAME::CGameClient(std::move(addonInfo)));
-    case ADDON_IMAGEDECODER:
-      return AddonPtr(new CImageDecoder(std::move(addonInfo)));
     case ADDON_VFS:
       return AddonPtr(new CVFSEntry(std::move(addonInfo),"","",false,false,false));
     default:

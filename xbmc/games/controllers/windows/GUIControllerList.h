@@ -31,6 +31,8 @@ class CGUIButtonControl;
 class CGUIControlGroupList;
 class CGUIWindow;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIControllerWindow;
@@ -69,4 +71,5 @@ namespace GAME
     ControllerVector      m_controllers;
     int                   m_focusedController;
   };
+}
 }

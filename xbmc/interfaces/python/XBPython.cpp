@@ -192,7 +192,7 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 }
 
 // message all registered callbacks that player is seeking
-void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
+void XBPython::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 {
   XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);

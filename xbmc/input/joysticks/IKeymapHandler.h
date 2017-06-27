@@ -35,7 +35,7 @@ namespace JOYSTICK
   class IKeymapHandler
   {
   public:
-    virtual ~IKeymapHandler(void) { }
+    virtual ~IKeymapHandler() = default;
 
     /*!
      * \brief Get the type of action mapped to the specified key ID

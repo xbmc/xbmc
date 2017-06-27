@@ -21,7 +21,7 @@
 #import <unistd.h>
 #import <sys/mount.h>
 
-#define BOOL XBMC_BOOL 
+#define BOOL XBMC_BOOL
 #include "utils/log.h"
 #include "CompileInfo.h"
 #include "windowing/WindowingFactory.h"
@@ -45,7 +45,7 @@
 //static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 //display link for display management
-static CVDisplayLinkRef displayLink = NULL; 
+static CVDisplayLinkRef displayLink = NULL;
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
@@ -58,12 +58,12 @@ uint32_t Cocoa_GL_GetCurrentDisplayID(void)
 {
   // Find which display we are on from the current context (default to main display)
   CGDirectDisplayID display_id = kCGDirectMainDisplay;
-  
+
   NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
   if (context)
   {
     NSView* view;
-  
+
     view = [context view];
     if (view)
     {
@@ -77,7 +77,7 @@ uint32_t Cocoa_GL_GetCurrentDisplayID(void)
       }
     }
   }
-  
+
   return((uint32_t)display_id);
 }
 
@@ -85,8 +85,8 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
 {
   CVReturn status = kCVReturnError;
   CGDirectDisplayID display_id;
-    
-  // OpenGL Flush synchronised with vertical retrace                       
+
+  // OpenGL Flush synchronised with vertical retrace
   GLint swapInterval = 1;
   [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 
@@ -108,7 +108,7 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
     // Activate the display link
     status = CVDisplayLinkStart(displayLink);
   }
-  
+
   return(status == kCVReturnSuccess);
 }
 
@@ -129,7 +129,7 @@ void Cocoa_CVDisplayLinkUpdate(void)
   if (displayLink)
   {
     CGDirectDisplayID display_id;
-    
+
     display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
     // Set the display link to the current display
     CVDisplayLinkSetCurrentCGDisplay(displayLink, display_id);
@@ -146,7 +146,7 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
     cvtime = CVDisplayLinkGetNominalOutputVideoRefreshPeriod(displayLink);
     if (cvtime.timeValue > 0)
       fps = (double)cvtime.timeScale / (double)cvtime.timeValue;
-    
+
     fps = CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink);
     if (fps > 0.0)
       fps = 1.0 / fps;
@@ -155,7 +155,7 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
   }
   else
   {
-    
+
     CGDisplayModeRef display_mode;
     display_mode = CGDisplayCopyDisplayMode((CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID());
     fps = CGDisplayModeGetRefreshRate(display_mode);
@@ -163,7 +163,7 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
     if (fps <= 0.0)
       fps = 60.0;
   }
-  
+
   return(fps);
 }
 
@@ -178,7 +178,7 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
   [scriptObject release];
 }
-  
+
 void Cocoa_DoAppleScriptFile(const char* filePath)
 {
   NSString* scriptFile = [NSString stringWithUTF8String:filePath];
@@ -260,7 +260,7 @@ char* Cocoa_MountPoint2DeviceName(char *path)
   {
     struct statfs *mntbufp;
     int i, mounts;
-    
+
     // find a match for /Volumes/<disk name>
     mounts = getmntinfo(&mntbufp, MNT_WAIT);  // NOT THREAD SAFE!
     for (i = 0; i < mounts; i++)
@@ -285,12 +285,12 @@ bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::strin
   NSFileManager *fm = [NSFileManager defaultManager];
   NSArray *mountedVolumeUrls = [fm mountedVolumeURLsIncludingResourceValuesForKeys:@[ NSURLVolumeNameKey, NSURLPathKey ] options:0];
   bool resolved = false;
-  
+
   for (NSURL *volumeURL in mountedVolumeUrls)
   {
     NSString *path;
     BOOL success = [volumeURL getResourceValue:&path forKey:NSURLPathKey error:nil];
-    
+
     if (success && path != nil)
     {
       std::string mountpoint = [path UTF8String];
@@ -336,9 +336,9 @@ void SetPIDFrontProcess(pid_t pid) {
                                 userInfo:nil
                                 repeats:YES];
 
-    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer
                                 forMode:NSDefaultRunLoopMode];
-    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer
                                 forMode:NSEventTrackingRunLoopMode]; //Ensure timer fires during resize
 }
 
@@ -346,15 +346,15 @@ void SetPIDFrontProcess(pid_t pid) {
 - (void)timerFired:(id)sender
 {
     // It is good practice in a Cocoa application to allow the system to send the -drawRect:
-    // message when it needs to draw, and not to invoke it directly from the timer. 
+    // message when it needs to draw, and not to invoke it directly from the timer.
     // All we do here is tell the display it needs a refresh
     [self setNeedsDisplay:YES];
 }
 
-[newWindow setFrameAutosaveName:@"some name"] 
+[newWindow setFrameAutosaveName:@"some name"]
 
-and the window's frame is automatically saved for you in the application 
-defaults each time its location changes. 
+and the window's frame is automatically saved for you in the application
+defaults each time its location changes.
 */
 
 
@@ -378,7 +378,7 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
 
   // try for display we are running on
   display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
- 
+
   io_registry_entry_t dspPort = CGDisplayIOServicePort(display_id);
   // if fails, go for main display
   if (dspPort == MACH_PORT_NULL)
@@ -410,7 +410,7 @@ const char *Cocoa_Paste()
       return [contents UTF8String];
     }
   }
-  
+
   return NULL;
 }
 

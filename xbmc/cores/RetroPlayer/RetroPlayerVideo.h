@@ -31,9 +31,11 @@ class CProcessInfo;
 class CRenderManager;
 struct VideoPicture;
 
-namespace GAME
+namespace KODI
 {
-  class CRetroPlayerVideo : public IGameVideoCallback
+namespace RETRO
+{
+  class CRetroPlayerVideo : public GAME::IGameVideoCallback
                             //protected CThread
   {
   public:
@@ -70,4 +72,5 @@ namespace GAME
     std::unique_ptr<CPixelConverter> m_pixelConverter;
     std::unique_ptr<CDVDVideoCodec>  m_pVideoCodec;
   };
+}
 }

@@ -79,13 +79,8 @@ void CAndroidMouse::MouseMove(float x, float y)
   memset(&newEvent, 0, sizeof(newEvent));
 
   newEvent.type = XBMC_MOUSEMOTION;
-  newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.which = 0;
-  newEvent.motion.state = 0;
   newEvent.motion.x = x;
   newEvent.motion.y = y;
-  newEvent.motion.xrel = 0;
-  newEvent.motion.yrel = 0;
   CWinEvents::MessagePush(&newEvent);
 }
 
@@ -103,8 +98,6 @@ void CAndroidMouse::MouseButton(float x, float y, int32_t action, int32_t button
     checkButtons = m_lastButtonState;
 
   newEvent.type = (action ==  AMOTION_EVENT_ACTION_DOWN) ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
-  newEvent.button.state = (action ==  AMOTION_EVENT_ACTION_DOWN) ? XBMC_PRESSED : XBMC_RELEASED;
-  newEvent.button.type = newEvent.type;
   newEvent.button.x = x;
   newEvent.button.y = y;
   if (checkButtons & AMOTION_EVENT_BUTTON_PRIMARY)
@@ -130,27 +123,22 @@ void CAndroidMouse::MouseWheel(float x, float y, float value)
   if (value > 0.0f)
   {
     newEvent.type = XBMC_MOUSEBUTTONDOWN;
-    newEvent.button.state = XBMC_PRESSED;
     newEvent.button.button = XBMC_BUTTON_WHEELUP;
   }
   else if (value < 0.0f)
   {
     newEvent.type = XBMC_MOUSEBUTTONDOWN;
-    newEvent.button.state = XBMC_PRESSED;
     newEvent.button.button = XBMC_BUTTON_WHEELDOWN;
   }
   else
     return;
 
-  newEvent.button.type = newEvent.type;
   newEvent.button.x = x;
   newEvent.button.y = y;
 
   CWinEvents::MessagePush(&newEvent);
 
   newEvent.type = XBMC_MOUSEBUTTONUP;
-  newEvent.button.state = XBMC_RELEASED;
-  newEvent.button.type = newEvent.type;
 
   CWinEvents::MessagePush(&newEvent);
 }

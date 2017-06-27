@@ -36,6 +36,7 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUIMoverControl.h"
+#include "GUIRenderingControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
@@ -64,6 +65,7 @@
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
+using namespace KODI;
 using namespace PVR;
 
 typedef struct

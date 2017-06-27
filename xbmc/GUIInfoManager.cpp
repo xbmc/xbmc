@@ -34,8 +34,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
 #include "PartyModeManager.h"
-#include "addons/Visualisation.h"
-#include "input/ButtonTranslator.h"
+#include "guilib/GUIVisualisationControl.h"
+#include "input/WindowTranslator.h"
 #include "utils/AlarmClock.h"
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
@@ -5627,7 +5627,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     {
       if (prop.name == "property" && prop.num_params() == 1)
       { //! @todo this doesn't support foo.xml
-        int winID = cat.param().empty() ? 0 : CButtonTranslator::TranslateWindow(cat.param());
+        int winID = cat.param().empty() ? 0 : CWindowTranslator::TranslateWindow(cat.param());
         if (winID != WINDOW_INVALID)
           return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(prop.param())));
       }
@@ -5637,7 +5637,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         { //! @todo The parameter for these should really be on the first not the second property
           if (prop.param().find("xml") != std::string::npos)
             return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
-          int winID = prop.param().empty() ? WINDOW_INVALID : CButtonTranslator::TranslateWindow(prop.param());
+          int winID = prop.param().empty() ? WINDOW_INVALID : CWindowTranslator::TranslateWindow(prop.param());
           return winID != WINDOW_INVALID ? AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0)) : window_bools[i].val;
         }
       }
@@ -6666,11 +6666,10 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation* viz = NULL;
-        viz = (CVisualisation*)msg.GetPointer();
+        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
         if (viz)
         {
-          strLabel = viz->GetPresetName();
+          strLabel = viz->GetActivePresetName();
           URIUtils::RemoveExtension(strLabel);
         }
       }
@@ -6847,12 +6846,15 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
     return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
-  std::pair<INFOBOOLTYPE::const_iterator, bool> res;
+  std::pair<INFOBOOLTYPE::iterator, bool> res;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
     res = m_bools.insert(std::make_shared<InfoExpression>(condition, context, m_refreshCounter));
   else
     res = m_bools.insert(std::make_shared<InfoSingle>(condition, context, m_refreshCounter));
+
+  if (res.second)
+    res.first->get()->Initialize();
 
   return *(res.first);
 }
@@ -7318,7 +7320,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         g_windowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
-          CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
+          CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
           bReturn = pVis->IsLocked();
         }
       }
@@ -7349,8 +7351,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation* viz = NULL;
-        viz = (CVisualisation*)msg.GetPointer();
+        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
         bReturn = (viz && viz->HasPresets());
       }
     }

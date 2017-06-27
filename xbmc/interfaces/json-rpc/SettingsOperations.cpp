@@ -779,7 +779,7 @@ bool CSettingsOperations::SerializeSettingControl(std::shared_ptr<const ISetting
     else
       obj["formatvalue"] = range->GetValueFormat();
   }
-  else if (type != "toggle")
+  else if (type != "toggle" && type != "label")
     return false;
 
   return true;

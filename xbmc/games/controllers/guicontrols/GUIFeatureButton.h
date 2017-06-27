@@ -25,6 +25,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIFeatureButton : public CGUIButtonControl,
@@ -37,14 +39,14 @@ namespace GAME
                       const CControllerFeature& feature,
                       unsigned int index);
 
-    virtual ~CGUIFeatureButton(void) { }
+    virtual ~CGUIFeatureButton() = default;
 
     // implementation of CGUIControl via CGUIButtonControl
     virtual void OnUnFocus(void) override;
 
     // partial implementation of IFeatureButton
     virtual const CControllerFeature& Feature(void) const override { return m_feature; }
-    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override { return KODI::JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN; }
+    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override { return JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN; }
 
   protected:
     bool DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent);
@@ -61,4 +63,5 @@ namespace GAME
   private:
     IConfigurationWizard* const  m_wizard;
   };
+}
 }

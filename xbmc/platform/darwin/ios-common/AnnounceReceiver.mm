@@ -20,9 +20,6 @@
 
 #import <UIKit/UIKit.h>
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #import "system.h"
 
 #import "Application.h"
@@ -41,8 +38,6 @@
 #import "platform/darwin/ios/XBMCController.h"
 #endif
 #import "utils/Variant.h"
-#undef BOOL
-
 
 id objectFromVariant(const CVariant &data);
 
@@ -114,7 +109,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
         item_type = nonConstData["item"]["type"].asString();
       }
     }
-  
+
     // if we got an id from the passed data
     // we need to get title, track, album and artist from the db
     if (item_id >= 0)
@@ -219,7 +214,7 @@ void CAnnounceReceiver::DeInitialize()
 void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   // can be called from c++, we need an auto poll here.
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];	
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   AnnounceBridge(flag, sender, message, data);
   [pool release];
 }

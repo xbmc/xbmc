@@ -66,6 +66,7 @@ namespace ADDON
     ADDON_SCRIPT_LIBRARY,
     ADDON_SCRIPT_MODULE,
     ADDON_GAME_CONTROLLER,
+    ADDON_VIDEOCODEC,
 
     /**
      * @brief virtual addon types
@@ -93,17 +94,10 @@ namespace ADDON
     CAddonInfo();
     CAddonInfo(std::string id, TYPE type);
 
-    bool IsUsable() const { return m_usable; }
-
-    /*!
-     * @brief Parts used from ADDON::CAddonDatabase
-     */
-    //@{
-    void SetInstallDate(CDateTime installDate) { m_installDate = installDate; }
-    void SetLastUpdated(CDateTime lastUpdated) { m_lastUpdated = lastUpdated; }
-    void SetLastUsed(CDateTime lastUsed) { m_lastUsed = lastUsed; }
-    void SetOrigin(std::string origin) { m_origin = std::move(origin); }
-    //@}
+    void SetMainType(TYPE type) { m_mainType = type; }
+    void SetLibName(const std::string& libname) { m_libname = libname; }
+    void SetPath(const std::string& path) { m_path = path; }
+    void AddExtraInfo(const std::string& idName, const std::string& value) { m_extrainfo[idName] = value; }
 
     const std::string& ID() const { return m_id; }
     TYPE MainType() const { return m_mainType; }
@@ -117,7 +111,6 @@ namespace ADDON
     const std::string& Author() const { return m_author; }
     const std::string& Source() const { return m_source; }
     const std::string& Path() const { return m_path; }
-    void SetPath(const std::string& path) { m_path = path; }
     const std::string& ChangeLog() const { return m_changelog; }
     const std::string& Icon() const { return m_icon; }
     const ArtMap& Art() const { return m_art; }
@@ -131,6 +124,7 @@ namespace ADDON
     const std::string& Origin() const { return m_origin; }
     uint64_t PackageSize() const { return m_packageSize; }
     const std::string& Language() const { return m_language; }
+    const InfoMap& ExtraInfo() const { return m_extrainfo; }
     bool MeetsVersion(const AddonVersion &version) const;
 
     /*!
@@ -143,12 +137,8 @@ namespace ADDON
     static TYPE TranslateSubContent(const std::string &content);
     //@}
 
-    InfoMap extrainfo; // defined here, but removed in future with cpluff
-
   private:
     friend class ADDON::CAddonBuilder;
-
-    bool m_usable;
 
     std::string m_id;
     TYPE m_mainType;
@@ -175,8 +165,8 @@ namespace ADDON
     std::string m_origin;
     uint64_t m_packageSize;
     std::string m_language;
-
     std::string m_libname;
+    InfoMap m_extrainfo;
   };
 
 } /* namespace ADDON */

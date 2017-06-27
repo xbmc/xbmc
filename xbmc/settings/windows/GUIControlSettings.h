@@ -147,8 +147,7 @@ public:
 private:
   bool GetItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
   bool GetIntegerItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
-
-  static bool GetStringItems(std::shared_ptr<const CSetting> setting, CFileItemList &items);
+  bool GetStringItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
 
   CGUIButtonControl *m_pButton;
 };
@@ -229,7 +228,8 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pImage; }
   virtual bool OnClick() { return false; }
-  virtual void Update() {}
+  using CGUIControlBaseSetting::Update;
+  void Update() {}
   virtual void Clear() { m_pImage = NULL; }
 private:
   CGUIImage *m_pImage;
@@ -243,8 +243,22 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pLabel; }
   virtual bool OnClick() { return false; }
-  virtual void Update() {}
+  using CGUIControlBaseSetting::Update;
+  void Update() {}
   virtual void Clear() { m_pLabel = NULL; }
 private:
   CGUILabelControl *m_pLabel;
+};
+
+class CGUIControlLabelSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlLabelSetting(CGUIButtonControl* pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
+  virtual ~CGUIControlLabelSetting() = default;
+
+  CGUIControl* GetControl() override { return (CGUIControl*)m_pButton; }
+  void Clear() override { m_pButton = NULL; }
+
+private:
+  CGUIButtonControl *m_pButton;
 };

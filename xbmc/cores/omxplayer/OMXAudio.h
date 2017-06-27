@@ -48,6 +48,24 @@ typedef struct tGUID
   BYTE  Data4[8];
 } __attribute__((__packed__)) GUID;
 
+// Audio stuff
+typedef struct tWAVEFORMATEX
+{
+  WORD    wFormatTag;
+  WORD    nChannels;
+  DWORD   nSamplesPerSec;
+  DWORD   nAvgBytesPerSec;
+  WORD    nBlockAlign;
+  WORD    wBitsPerSample;
+  WORD    cbSize;
+ } __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
+
+ #define WAVE_FORMAT_UNKNOWN           0x0000
+ #define WAVE_FORMAT_PCM               0x0001
+ #define WAVE_FORMAT_ADPCM             0x0002
+ #define WAVE_FORMAT_IEEE_FLOAT        0x0003
+ #define WAVE_FORMAT_EXTENSIBLE        0xFFFE
+
 typedef struct tWAVEFORMATEXTENSIBLE
 {
   WAVEFORMATEX Format;
@@ -162,4 +180,3 @@ protected:
 
   CCriticalSection m_critSection;
 };
-

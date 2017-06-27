@@ -32,6 +32,7 @@
 
 #include <cstring>
 
+using namespace KODI;
 using namespace ADDON;
 using namespace GAME;
 using namespace XFILE;

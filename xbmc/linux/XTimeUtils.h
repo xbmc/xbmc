@@ -22,17 +22,16 @@
 
 #include "PlatformDefs.h"
 
-VOID GetLocalTime(LPSYSTEMTIME);
+void GetLocalTime(LPSYSTEMTIME);
 
-void WINAPI Sleep(DWORD dwMilliSeconds);
+void WINAPI Sleep(uint32_t dwMilliSeconds);
 
-BOOL   FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime);
-BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime);
-LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2);
-BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime);
-BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime);
-VOID   GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime);
+int FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime);
+int SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime);
+long CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2);
+int FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime);
+int LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime);
+void GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime);
 
-BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT);
-BOOL  TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime);
-
+int FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT);
+int TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime);

@@ -200,6 +200,17 @@
 				<texture>$INFO[Player.Art(thumb)]</texture>
 			</control>
 			<control type="label">
+				<left>20</left>
+				<width>220</width>
+				<top>-80</top>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.ChannelNumberLabel]</label>
+				<shadowcolor>black</shadowcolor>
+				<align>center</align>
+				<font>WeatherTemp</font>
+				<aligny>center</aligny>
+			</control>
+			<control type="label">
 				<right>20</right>
 				<width>800</width>
 				<top>190</top>
@@ -209,21 +220,11 @@
 				<aligny>center</aligny>
 				<visible>VideoPlayer.HasEpg</visible>
 			</control>
-			<control type="label">
-				<left>260</left>
-				<right>50</right>
-				<top>20</top>
-				<height>25</height>
-				<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.EpisodeName, (,)]</label>
-				<align>left</align>
-				<font>font36_title</font>
-				<aligny>center</aligny>
-			</control>
 			<control type="textbox">
 				<left>260</left>
-				<top>55</top>
+				<top>20</top>
 				<right>50</right>
-				<height>120</height>
+				<height>155</height>
 				<label fallback="416">$INFO[VideoPlayer.Plot]</label>
 				<align>justify</align>
 				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>

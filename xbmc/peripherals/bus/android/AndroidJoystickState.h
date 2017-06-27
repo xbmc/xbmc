@@ -19,7 +19,7 @@
  *
  */
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 
 #include <string>
 #include <utility>
@@ -62,16 +62,16 @@ namespace PERIPHERALS
     /*!
      * Get events that have occurred since the last call to GetEvents()
      */
-    void GetEvents(std::vector<ADDON::PeripheralEvent>& events) const;
+    void GetEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
 
   private:
     bool SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON buttonValue);
     bool SetHatValue(const std::vector<int>& axisIds, JOYSTICK_STATE_HAT hatValue);
     bool SetAxisValue(const std::vector<int>& axisIds, JOYSTICK_STATE_AXIS axisValue);
 
-    void GetButtonEvents(std::vector<ADDON::PeripheralEvent>& events) const;
-    void GetHatEvents(std::vector<ADDON::PeripheralEvent>& events) const;
-    void GetAxisEvents(std::vector<ADDON::PeripheralEvent>& events) const;
+    void GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
+    void GetHatEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
+    void GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
 
     static float Contain(float value, float min, float max);
     static float Scale(float value, float max, float scaledMax);

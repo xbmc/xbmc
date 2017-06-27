@@ -102,7 +102,7 @@ msgstr "AVANCE RAPIDE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "RETOUR RAPIDE"
+msgstr "REBOBINAGE"
 
 msgctxt "#31046"
 msgid "Play speed"

@@ -21,7 +21,7 @@
 
 #include "GameClientProperties.h"
 #include "GameClientTiming.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/controllers/ControllerTypes.h"
 #include "games/GameTypes.h"
@@ -36,6 +36,8 @@
 
 class CFileItem;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -202,3 +204,4 @@ private:
 };
 
 } // namespace GAME
+} // namespace KODI

@@ -76,7 +76,7 @@ uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
 
-PHANDLE_EVENT_FUNC CWinEventsWin32::m_pEventFunc = NULL;
+CWinEventsWin32::PHANDLE_EVENT_FUNC CWinEventsWin32::m_pEventFunc = NULL;
 int CWinEventsWin32::m_originalZoomDistance = 0;
 Pointer CWinEventsWin32::m_touchPointer;
 CGenericTouchSwipeDetector* CWinEventsWin32::m_touchSwipeDetector = NULL;
@@ -389,12 +389,6 @@ bool CWinEventsWin32::MessagePump()
   return true;
 }
 
-size_t CWinEventsWin32::GetQueueSize()
-{
-  MSG  msg;
-  return PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
-}
-
 LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   XBMC_Event newEvent;
@@ -600,7 +594,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
     {
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
-      newEvent.appcommand.type = XBMC_APPCOMMAND;
+      newEvent.type = XBMC_APPCOMMAND;
       newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
       if (m_pEventFunc(newEvent))
         return TRUE;
@@ -629,14 +623,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
-      newEvent.motion.state = 0;
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
       newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.state = XBMC_PRESSED;
       newEvent.button.x = GET_X_LPARAM(lParam);
       newEvent.button.y = GET_Y_LPARAM(lParam);
       newEvent.button.button = 0;
@@ -649,7 +641,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
       newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.state = XBMC_RELEASED;
       newEvent.button.x = GET_X_LPARAM(lParam);
       newEvent.button.y = GET_Y_LPARAM(lParam);
       newEvent.button.button = 0;
@@ -664,7 +655,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         // followed by a MOUSEBUTTONUP message.  As this is a momentary event, we just
         // react on the MOUSEBUTTONUP message, resetting the state after processing.
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.state = XBMC_PRESSED;
         // the coordinates in WM_MOUSEWHEEL are screen, not client coordinates
         POINT point;
         point.x = GET_X_LPARAM(lParam);
@@ -675,7 +665,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
         m_pEventFunc(newEvent);
         newEvent.type = XBMC_MOUSEBUTTONUP;
-        newEvent.button.state = XBMC_RELEASED;
         m_pEventFunc(newEvent);
       }
       return(0);

@@ -117,11 +117,7 @@ struct mntent *dll_getmntent(FILE *fp);
 
 void *__wrap_dlopen(const char *filename, int flag)
 {
-#if defined(TARGET_ANDROID)
-  return dll_dlopen(filename, flag);
-#else
   return dlopen(filename, flag);
-#endif
 }
 
 FILE *__wrap_popen(const char *command, const char *mode)

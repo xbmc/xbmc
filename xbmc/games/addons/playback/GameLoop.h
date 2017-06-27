@@ -23,6 +23,8 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class IGameLoopCallback
@@ -72,4 +74,5 @@ namespace GAME
     CEvent                   m_sleepEvent;
     CCriticalSection         m_mutex;
   };
+}
 }

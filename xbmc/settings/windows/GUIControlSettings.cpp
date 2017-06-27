@@ -148,7 +148,7 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
   return true;
 }
 
-static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions)
+static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions, ILocalizer* localizer)
 {
   std::shared_ptr<const CSettingString> pSettingString = NULL;
   if (setting->GetType() == SettingType::String)
@@ -180,7 +180,7 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
     {
       const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(g_localizeStrings.Get(option.first), option.second));
+        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
       break;
     }
 
@@ -296,8 +296,16 @@ bool CGUIControlSpinExSetting::OnClick()
       break;
 
     case SettingType::Number:
-      SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSpin->GetFloatValue()));
+    {
+      auto pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      const auto& controlFormat = m_pSetting->GetControl()->GetFormat();
+      if (controlFormat == "number")
+        SetValid(pSettingNumber->SetValue(m_pSpin->GetFloatValue()));
+      else
+        SetValid(pSettingNumber->SetValue(pSettingNumber->GetMinimum() + pSettingNumber->GetStep() * m_pSpin->GetValue()));
+
       break;
+    }
     
     case SettingType::String:
       SetValid(std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(m_pSpin->GetStringValue()));
@@ -352,12 +360,36 @@ void CGUIControlSpinExSetting::FillControl()
 
     if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
+    else if (m_pSetting->GetType() == SettingType::Number)
+    {
+      std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
+      int index = 0;
+      int currentIndex = 0;
+      for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
+      {
+        if (value == pSettingNumber->GetValue())
+          currentIndex = index;
+
+        std::string strLabel;
+        if (value == pSettingNumber->GetMinimum() && control->GetMinimumLabel() > -1)
+          strLabel = Localize(control->GetMinimumLabel());
+        else if (control->GetFormatLabel() > -1)
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel()).c_str(), value);
+        else
+          strLabel = StringUtils::Format(control->GetFormatString().c_str(), value);
+
+        m_pSpin->AddLabel(strLabel, index);
+      }
+
+      m_pSpin->SetValue(currentIndex);
+    }
     else if (m_pSetting->GetType() == SettingType::String)
     {
       StringSettingOptions options;
       std::set<std::string> selectedValues;
       // get the string options
-      if (!GetStringOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
+      if (!GetStringOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
         return;
 
       // add them to the spinner
@@ -545,12 +577,12 @@ bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting, CFileItemL
   return true;
 }
 
-bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemList &items)
+bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemList &items) const
 {
   StringSettingOptions options;
   std::set<std::string> selectedValues;
   // get the string options
-  if (!GetStringOptions(setting, options, selectedValues))
+  if (!GetStringOptions(setting, options, selectedValues, m_localizer))
     return false;
 
   // turn them into CFileItems and add them to the item list
@@ -909,8 +941,6 @@ void CGUIControlEditSetting::Update(bool updateDisplayOnly /* = false */)
     std::shared_ptr<CSettingUrlEncodedString> urlEncodedSetting = std::static_pointer_cast<CSettingUrlEncodedString>(m_pSetting);
     m_pEdit->SetLabel2(urlEncodedSetting->GetDecodedValue());
   }
-  else if (control->IsHidden() || control->GetFormat() == "md5")
-    m_pEdit->SetLabel2(std::string(m_pSetting->ToString().size(), '*'));
   else
     m_pEdit->SetLabel2(m_pSetting->ToString());
 }
@@ -1295,3 +1325,14 @@ CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLa
 
 CGUIControlGroupTitleSetting::~CGUIControlGroupTitleSetting()
 { }
+
+CGUIControlLabelSetting::CGUIControlLabelSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
+{
+  m_pButton = pButton;
+  if (m_pButton == NULL)
+    return;
+
+  m_pButton->SetID(id);
+  Update();
+}

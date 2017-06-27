@@ -28,3 +28,23 @@ enum BDPlaybackMode
   BD_PLAYBACK_DISC_MENU,
   BD_PLAYBACK_MAIN_TITLE,
 };
+
+#include "settings/lib/ISettingCallback.h"
+
+class DllLibbluray;
+
+class CDiscSettings : public ISettingCallback
+{
+public:
+  /* ISettingCallback*/
+
+  static CDiscSettings& GetInstance();
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+ 
+protected:
+  CDiscSettings();
+  virtual ~CDiscSettings();
+
+  DllLibbluray*       m_dll;
+
+};

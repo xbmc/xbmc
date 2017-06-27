@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVAudioSession.h>
 
@@ -28,7 +28,7 @@
 #import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate
-XBMCController *m_xbmcController;  
+XBMCController *m_xbmcController;
 
 // - iOS6 rotation API - will be called on iOS7 runtime!--------
 // - on iOS7 first application is asked for supported orientation
@@ -93,13 +93,13 @@ XBMCController *m_xbmcController;
 
 - (void)registerScreenNotifications:(BOOL)bRegister
 {
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];  
-  
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
   if( bRegister )
   {
     //register to screen notifications
-    [nc addObserver:self selector:@selector(screenDidConnect:) name:UIScreenDidConnectNotification object:nil]; 
-    [nc addObserver:self selector:@selector(screenDidDisconnect:) name:UIScreenDidDisconnectNotification object:nil]; 
+    [nc addObserver:self selector:@selector(screenDidConnect:) name:UIScreenDidConnectNotification object:nil];
+    [nc addObserver:self selector:@selector(screenDidDisconnect:) name:UIScreenDidDisconnectNotification object:nil];
   }
   else
   {
@@ -109,15 +109,15 @@ XBMCController *m_xbmcController;
   }
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application 
+- (void)applicationDidFinishLaunching:(UIApplication *)application
 {
   PRINT_SIGNATURE();
 
   [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
   UIScreen *currentScreen = [UIScreen mainScreen];
 
-  m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];  
-  m_xbmcController.wantsFullScreenLayout = YES;  
+  m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
+  m_xbmcController.wantsFullScreenLayout = YES;
   [m_xbmcController startAnimation];
   [self registerScreenNotifications:YES];
 
@@ -181,30 +181,30 @@ void handleKeyCode(UniChar keyCode)
     //LOG(@"%s: tmp key unsupported :(", __PRETTY_FUNCTION__);
     return; // not supported by us - return...
   }
-  
+
   [g_xbmcController sendKey:key];
 }
 
 static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
-{ 
+{
   // call super implementation
   UIApplication$sendEvent$Orig(_self, _cmd, event);
 
-  if ([event respondsToSelector:@selector(_gsEvent)]) 
+  if ([event respondsToSelector:@selector(_gsEvent)])
   {
     // Key events come in form of UIInternalEvents.
-    // They contain a GSEvent object which contains 
+    // They contain a GSEvent object which contains
     // a GSEventRecord among other things
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     NSInteger *eventMem = (NSInteger *)[event performSelector:@selector(_gsEvent)];
 #pragma clang diagnostic pop
 
-    if (eventMem) 
+    if (eventMem)
     {
       // So far we got a GSEvent :)
       NSInteger eventType = eventMem[GSEVENT_TYPE];
-      if (eventType == GSEVENT_TYPE_KEYUP) 
+      if (eventType == GSEVENT_TYPE_KEYUP)
       {
         // support 32 and 64bit arm here...
         int idx = GSEVENTKEY_KEYCODE;
@@ -214,7 +214,7 @@ static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
           idx = GSEVENTKEY_KEYCODE_IOS7;
 
         // Now we got a GSEventKey!
-        
+
         // Read flags from GSEvent
         // for modifier keys if we want to use them somehow at a later time
         //int eventFlags = eventMem[GSEVENT_FLAGS];
@@ -236,7 +236,7 @@ __attribute__((constructor)) static void HookKeyboard(void)
   }
   else
     LOG(@"Detected 32bit system!!!");
-  
+
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
   {
     // Hook into sendEvent: to get keyboard events.
@@ -263,27 +263,27 @@ static void SigPipeHandler(int s)
 }
 
 int main(int argc, char *argv[]) {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
+  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
   int retVal = 0;
-  
-  signal(SIGPIPE, SigPipeHandler);  
+
+  signal(SIGPIPE, SigPipeHandler);
 
   @try
   {
     retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
     //UIApplicationMain(argc, argv, nil, nil);
-  } 
-  @catch (id theException) 
+  }
+  @catch (id theException)
   {
     ELOG(@"%@", theException);
   }
-  @finally 
+  @finally
   {
     ILOG(@"This always happens.");
   }
-    
+
   [pool release];
-	
+
   return retVal;
 
 }

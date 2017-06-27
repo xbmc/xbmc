@@ -34,10 +34,11 @@ class CWinEventsMir : public IWinEvents
 public:
   virtual ~CWinEventsMir() {};
   bool MessagePump() override;
-  size_t GetQueueSize() override;
   void  MessagePush(XBMC_Event* ev);
 
 private:
+  size_t GetQueueSize();
+
   std::queue<XBMC_Event> m_events;
   std::mutex m_mutex;
 };

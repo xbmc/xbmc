@@ -21,6 +21,8 @@
 
 #include "GUIFeatureButton.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIScalarFeatureButton : public CGUIFeatureButton
@@ -31,7 +33,7 @@ namespace GAME
                             const CControllerFeature& feature,
                             unsigned int index);
 
-    virtual ~CGUIScalarFeatureButton(void) { }
+    virtual ~CGUIScalarFeatureButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;
@@ -47,4 +49,5 @@ namespace GAME
 
     STATE m_state;
   };
+}
 }

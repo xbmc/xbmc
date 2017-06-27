@@ -35,7 +35,7 @@ CGUIControlGroup::CGUIControlGroup()
 }
 
 CGUIControlGroup::CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height)
-: CGUIControl(parentID, controlID, posX, posY, width, height)
+: CGUIControlLookup(parentID, controlID, posX, posY, width, height)
 {
   m_defaultControl = 0;
   m_defaultAlways = false;
@@ -45,7 +45,7 @@ CGUIControlGroup::CGUIControlGroup(int parentID, int controlID, float posX, floa
 }
 
 CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
-: CGUIControl(from)
+: CGUIControlLookup(from)
 {
   m_defaultControl = from.m_defaultControl;
   m_defaultAlways = from.m_defaultAlways;
@@ -100,7 +100,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   CRect rect;
   for (auto *control : m_children)
   {
-    control->UpdateVisibility();
+    control->UpdateVisibility(nullptr);
     unsigned int oldDirty = dirtyregions.size();
     control->DoProcess(currentTime, dirtyregions);
     if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
@@ -244,6 +244,10 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_REFRESH_TIMER:
+    if (!IsVisible() || !IsVisibleFromSkin())
+      return true;
+    break;
   }
   bool handled(false);
   //not intented for any specific control, send to all childs and our base handler.
@@ -264,7 +268,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
 
 bool CGUIControlGroup::SendControlMessage(CGUIMessage &message)
 {
-  CGUIControl *ctrl = GetControl(message.GetControlId(), &m_idCollector);
+  CGUIControl *ctrl(GetControl(message.GetControlId(), &m_idCollector));
   // see if a child matches, and send to the child control if so
   if (ctrl && ctrl->OnMessage(message))
     return true;
@@ -398,50 +402,6 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
   CGUIControl::UnfocusFromPoint(point);
 }
 
-CGUIControl *CGUIControlGroup::GetControl(int iControl, std::vector<CGUIControl*> *idCollector)
-{
-  if (idCollector)
-    idCollector->clear();
-
-  CGUIControl* pPotential(nullptr);
-
-  LookupMap::iterator first = m_lookup.find(iControl);
-  if (first != m_lookup.end())
-  {
-    LookupMap::iterator last = m_lookup.upper_bound(iControl);
-    for (LookupMap::iterator i = first; i != last; ++i)
-    {
-      CGUIControl *control = i->second;
-      if (control->IsVisible())
-        return control;
-      else if (idCollector)
-        idCollector->push_back(control);
-      else if (!pPotential)
-        pPotential = control;
-    }
-  }
-  return pPotential;
-}
-
-const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
-{
-  const CGUIControl *pPotential = NULL;
-  LookupMap::const_iterator first = m_lookup.find(iControl);
-  if (first != m_lookup.end())
-  {
-    LookupMap::const_iterator last = m_lookup.upper_bound(iControl);
-    for (LookupMap::const_iterator i = first; i != last; ++i)
-    {
-      const CGUIControl *control = i->second;
-      if (control->IsVisible())
-        return control;
-      else if (!pPotential)
-        pPotential = control;
-    }
-  }
-  return pPotential;
-}
-
 int CGUIControlGroup::GetFocusedControlID() const
 {
   if (m_focusedControl) return m_focusedControl;
@@ -456,7 +416,8 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
   if (m_focusedControl)
   {
     // we may have multiple controls with same id - we pick first that has focus
-    std::pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
+    std::pair<LookupMap::const_iterator, LookupMap::const_iterator> range = GetLookupControls(m_focusedControl);
+
     for (LookupMap::const_iterator i = range.first; i != range.second; ++i)
     {
       if (i->second->HasFocus())
@@ -470,11 +431,12 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
     // Avoid calling HasFocus() on control group as it will (possibly) recursively
     // traverse entire group tree just to check if there is focused control.
     // We are recursively traversing it here so no point in doing it twice.
-    if (control->IsGroup())
+    CGUIControlGroup *groupControl(dynamic_cast<CGUIControlGroup*>(control));
+    if (groupControl)
     {
-      CGUIControl* focusedControl = ((CGUIControlGroup *)control)->GetFocusedControl();
+      CGUIControl* focusedControl = groupControl->GetFocusedControl();
       if (focusedControl)
-        return (CGUIControl *)focusedControl;
+        return focusedControl;
     }
     else if (control->HasFocus())
       return (CGUIControl *)control;
@@ -489,9 +451,9 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
   if (id && id == (int) GetID()) return this; // we're focusable and they want us
   for (auto *pControl : m_children)
   {
-    if (pControl->IsGroup())
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(pControl));
+    if (group)
     {
-      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
@@ -514,74 +476,14 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
   SetInvalid();
 }
 
-void CGUIControlGroup::AddLookup(CGUIControl *control)
-{
-  if (control->IsGroup())
-  { // first add all the subitems of this group (if they exist)
-    const LookupMap map = ((CGUIControlGroup *)control)->GetLookup();
-    for (const auto &i : map)
-      m_lookup.insert(m_lookup.upper_bound(i.first), std::make_pair(i.first, i.second));
-  }
-  if (control->GetID())
-    m_lookup.insert(m_lookup.upper_bound(control->GetID()), std::make_pair(control->GetID(), control));
-  // ensure that our size is what it should be
-  if (m_parentControl)
-    ((CGUIControlGroup *)m_parentControl)->AddLookup(control);
-}
-
-void CGUIControlGroup::RemoveLookup(CGUIControl *control)
-{
-  if (control->IsGroup())
-  { // remove the group's lookup
-    const LookupMap &map = ((CGUIControlGroup *)control)->GetLookup();
-    for (const auto &i : map)
-    { // remove this control
-      for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); ++it)
-      {
-        if (i.second == it->second)
-        {
-          m_lookup.erase(it);
-          break;
-        }
-      }
-    }
-  }
-  // remove the actual control
-  if (control->GetID())
-  {
-    for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); ++it)
-    {
-      if (control == it->second)
-      {
-        m_lookup.erase(it);
-        break;
-      }
-    }
-  }
-  if (m_parentControl)
-    ((CGUIControlGroup *)m_parentControl)->RemoveLookup(control);
-}
-
-bool CGUIControlGroup::IsValidControl(const CGUIControl *control) const
-{
-  if (control->GetID())
-  {
-    for (const auto &i : m_lookup)
-    {
-      if (control == i.second)
-        return true;
-    }
-  }
-  return false;
-}
-
 bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *insertPoint)
 {
   // find our position
   for (unsigned int i = 0; i < m_children.size(); i++)
   {
     CGUIControl *child = m_children[i];
-    if (child->IsGroup() && ((CGUIControlGroup *)child)->InsertControl(control, insertPoint))
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(child));
+    if (group && group->InsertControl(control, insertPoint))
       return true;
     else if (child == insertPoint)
     {
@@ -606,7 +508,8 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->IsGroup() && ((CGUIControlGroup *)child)->RemoveControl(control))
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(child));
+    if (group && group->RemoveControl(control))
       return true;
     if (control == child)
     {
@@ -622,11 +525,8 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
 void CGUIControlGroup::ClearAll()
 {
   // first remove from the lookup table
-  if (m_parentControl)
-  {
-    for (auto *control : m_children)
-      ((CGUIControlGroup *)m_parentControl)->RemoveLookup(control);
-  }
+  RemoveLookup();
+
   // and delete all our children
   for (auto *control : m_children)
   {
@@ -634,7 +534,7 @@ void CGUIControlGroup::ClearAll()
   }
   m_focusedControl = 0;
   m_children.clear();
-  m_lookup.clear();
+  ClearLookup();
   SetInvalid();
 }
 

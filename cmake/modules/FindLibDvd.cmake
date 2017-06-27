@@ -203,7 +203,7 @@ if(NOT WIN32)
     endif()
 else()
   # Dynamically loaded on Windows
-  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h PATHS ${CMAKE_SOURCE_DIR}/lib/libdvd/include)
+  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDvd REQUIRED_VARS LIBDVD_INCLUDE_DIR)

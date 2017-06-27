@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Ajusts de l'àudio"
+msgstr "Opcions de l'àudio"
 
 msgctxt "#31003"
 msgid "IP"
@@ -210,7 +210,7 @@ msgstr "Configureu la visualització · Configureu l'àudio · Configureu l'acc�
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Configureu els vostres complements instal·lats · Navegueu i instal·leu els complements des de kodi.tv · Modifiqueu els ajusts del complement"
+msgstr "Gestioneu els vostres complements instal·lats · Navegueu i instal·leu els complements des de kodi.tv · Modifiqueu les opcions del complement"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
@@ -266,7 +266,7 @@ msgstr "Fons:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configureu els ajusts de la TV · Canvieu la pantalla completa d'informació · Gestioneu els ajusts de les dades de la guia electrònica de programació (EPG)"
+msgstr "Configureu les opcions de la TV · Canvieu la pantalla completa d'informació · Gestioneu les opcions de les dades de la guia electrònica de programació (EPG)"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -282,7 +282,7 @@ msgstr "Oculta el fons de la visualització"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Ajusts dels canals"
+msgstr "Opcions dels canals"
 
 msgctxt "#31560"
 msgid "Available groups"

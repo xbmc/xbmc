@@ -28,6 +28,7 @@
 #include "guilib/WindowIDs.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 bool CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable, GameClientPtr& gameClient)

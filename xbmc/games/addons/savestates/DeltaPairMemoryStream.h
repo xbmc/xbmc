@@ -24,6 +24,8 @@
 #include <deque>
 #include <vector>
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -62,7 +64,7 @@ namespace GAME
       uint32_t delta;
     };
 
-    typedef std::vector<DeltaPair> DeltaPairVector;
+    using DeltaPairVector = std::vector<DeltaPair>;
 
     struct MemoryFrame
     {
@@ -72,4 +74,5 @@ namespace GAME
 
     std::deque<MemoryFrame> m_rewindBuffer;
   };
+}
 }

@@ -149,9 +149,10 @@
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/windows/GUIWindowGames.h"
 
+using namespace KODI;
 using namespace PVR;
 using namespace PERIPHERALS;
-using namespace KODI::MESSAGING;
+using namespace MESSAGING;
 
 CGUIWindowManager::CGUIWindowManager()
 {
@@ -1230,7 +1231,10 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 void CGUIWindowManager::DeInitialize()
 {
   CSingleLock lock(g_graphicsContext);
-  for (const auto& entry : m_mapWindows)
+
+  // Need a copy bacause addon-dialogs remove itself on Close()
+  std::unordered_map<int, CGUIWindow*> closeMap(m_mapWindows);
+  for (const auto& entry : closeMap)
   {
     CGUIWindow* pWindow = entry.second;
     if (IsWindowActive(entry.first, false))

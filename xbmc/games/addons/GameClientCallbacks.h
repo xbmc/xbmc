@@ -28,12 +28,14 @@
 
 class CAEChannelInfo;
 
+namespace KODI
+{
 namespace GAME
 {
   class IGameAudioCallback
   {
   public:
-    virtual ~IGameAudioCallback() { }
+    virtual ~IGameAudioCallback() = default;
 
     virtual unsigned int NormalizeSamplerate(unsigned int samplerate) const = 0;
     virtual bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
@@ -45,11 +47,12 @@ namespace GAME
   class IGameVideoCallback
   {
   public:
-    virtual ~IGameVideoCallback() { }
+    virtual ~IGameVideoCallback() = default;
 
     virtual bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, double framerate, unsigned int orientationDeg) = 0;
     virtual bool OpenEncodedStream(AVCodecID codec) = 0;
     virtual void AddData(const uint8_t* data, unsigned int size) = 0;
     virtual void CloseStream() = 0;
   };
+}
 }

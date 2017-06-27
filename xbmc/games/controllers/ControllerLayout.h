@@ -26,6 +26,8 @@
 
 class TiXmlElement;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -58,4 +60,5 @@ private:
   std::vector<CControllerFeature> m_features;
 };
 
+}
 }

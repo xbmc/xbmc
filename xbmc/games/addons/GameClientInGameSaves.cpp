@@ -30,6 +30,7 @@
 
 #include <assert.h>
 
+using namespace KODI;
 using namespace GAME;
 
 #define INGAME_SAVES_DIRECTORY          "InGameSaves"

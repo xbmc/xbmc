@@ -21,7 +21,7 @@
 #include "SettingsSlider.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/SettingsSlider.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

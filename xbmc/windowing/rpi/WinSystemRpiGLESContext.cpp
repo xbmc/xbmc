@@ -18,8 +18,10 @@
  *
  */
 
+#include "Application.h"
 #include "VideoSyncPi.h"
 #include "WinSystemRpiGLESContext.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
 bool CWinSystemRpiGLESContext::InitWindowSystem()
@@ -41,8 +43,7 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
 
 bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
-                                               RESOLUTION_INFO& res,
-                                               PHANDLE_EVENT_FUNC userFunction)
+                                               RESOLUTION_INFO& res)
 {
   m_pGLContext.Detach();
 
@@ -51,7 +52,7 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!CWinSystemRpi::CreateNewWindow(name, fullScreen, res, userFunction))
+  if (!CWinSystemRpi::CreateNewWindow(name, fullScreen, res))
   {
     return false;
   }
@@ -95,7 +96,7 @@ bool CWinSystemRpiGLESContext::ResizeWindow(int newWidth, int newHeight, int new
 
 bool CWinSystemRpiGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CreateNewWindow("", fullScreen, res, NULL);
+  CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   return true;
 }
@@ -112,6 +113,8 @@ void CWinSystemRpiGLESContext::SetVSyncImpl(bool enable)
 
 void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 {
+  CWinSystemRpi::SetVisible(g_windowManager.HasVisibleControls() || g_application.m_pPlayer->IsRenderingGuiLayer());
+
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;

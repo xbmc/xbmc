@@ -296,10 +296,6 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
     {
       XBMC_Event newEvent;
       newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.xrel = 0;
-      newEvent.motion.yrel = 0;
-      newEvent.motion.state = 0;
-      newEvent.motion.which = 0x10;  // just a different value to distinguish between mouse and event client device.
       newEvent.motion.x = (uint16_t)pos.x;
       newEvent.motion.y = (uint16_t)pos.y;
       g_application.OnEvent(newEvent);  // had to call this to update g_Mouse position
@@ -411,12 +407,12 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       }
       else
       {
-        if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+        if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
         {
           if (it->driverHandler->OnButtonPress(newEvent.button.button))
             handled = true;
         }
-        else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+        else if (newEvent.type == XBMC_MOUSEBUTTONUP)
         {
           it->driverHandler->OnButtonRelease(newEvent.button.button);
         }

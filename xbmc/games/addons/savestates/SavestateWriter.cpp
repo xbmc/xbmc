@@ -31,6 +31,7 @@
 #include "Application.h"
 #include "XBDateTime.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CSavestateWriter::CSavestateWriter() :

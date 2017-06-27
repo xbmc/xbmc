@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "İzlenmemiş filmler"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Kategori pencere öğelerini etkinleştir"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Simgeleri indir"
@@ -107,6 +111,10 @@ msgstr "Sırala"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Görünüm türü"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Medya öğeleri için gösterilecek derecelendirmeyi seçin"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Medya etiketlerini göster"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Sayısal tuş takımı"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Kişisel oyunlarınızı oynayın veya resmi depodaki birçok oyun eklentisinden birini indirin."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Arka plan fanartını göster"

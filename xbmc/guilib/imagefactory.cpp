@@ -20,8 +20,8 @@
 
 #include "imagefactory.h"
 #include "guilib/FFmpegImage.h"
-#include "addons/BinaryAddonCache.h"
 #include "addons/ImageDecoder.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
@@ -46,16 +46,15 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
-  VECADDONS codecs;
-  ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(codecs, ADDON::ADDON_IMAGEDECODER);
-  for (auto& codec : codecs)
+  BinaryAddonBaseList addonInfos;
+
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER);
+  for (auto addonInfo : addonInfos)
   {
-    std::shared_ptr<CImageDecoder> enc(std::static_pointer_cast<CImageDecoder>(codec));
-    std::vector<std::string> mime = StringUtils::Split(enc->GetMimetypes(), "|");
+    std::vector<std::string> mime = StringUtils::Split(addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@mimetype").asString(), "|");
     if (std::find(mime.begin(), mime.end(), strMimeType) != mime.end())
     {
-      CImageDecoder* result = new CImageDecoder(*enc);
+      CImageDecoder* result = new CImageDecoder(addonInfo);
       result->Create(strMimeType);
       return result;
     }

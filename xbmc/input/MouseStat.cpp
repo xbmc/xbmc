@@ -67,7 +67,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   m_mouseState.y  = std::max(0, std::min(m_maxY, m_mouseState.y + dy));
 
   // Fill in the public members
-  if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+  if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
   {
     if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = true;
     if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = true;
@@ -79,7 +79,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 1;
     if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = -1;
   }
-  else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+  else if (newEvent.type == XBMC_MOUSEBUTTONUP)
   {
     if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = false;
     if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = false;

@@ -68,6 +68,10 @@ CRPIUtils::CRPIUtils()
 
   m_height = 1280;
   m_width = 720;
+  m_screen_width = 1280;
+  m_screen_height = 720;
+  m_shown = false;
+
   m_initDesktopRes = true;
 }
 
@@ -218,13 +222,16 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
   m_width   = res.iWidth;
   m_height  = res.iHeight;
 
+  m_screen_width   = res.iScreenWidth;
+  m_screen_height  = res.iScreenHeight;
+
   VC_RECT_T dst_rect;
   VC_RECT_T src_rect;
 
   dst_rect.x      = 0;
   dst_rect.y      = 0;
-  dst_rect.width  = res.iScreenWidth;
-  dst_rect.height = res.iScreenHeight;
+  dst_rect.width  = m_screen_width;
+  dst_rect.height = m_screen_height;
 
   src_rect.x      = 0;
   src_rect.y      = 0;
@@ -275,6 +282,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
 
   m_DllBcmHost->vc_dispmanx_display_set_background(dispman_update, m_dispman_display, 0x00, 0x00, 0x00);
   m_DllBcmHost->vc_dispmanx_update_submit_sync(dispman_update);
+  m_shown = true;
 
   return true;
 }
@@ -469,6 +477,39 @@ void CRPIUtils::DestroyDispmanxWindow()
     g_RBP.CloseDisplay(m_dispman_display);
     m_dispman_display = DISPMANX_NO_HANDLE;
   }
+}
+
+void CRPIUtils::SetVisible(bool enable)
+{
+  if(!m_DllBcmHost || m_shown == enable)
+    return;
+
+  CLog::Log(LOGDEBUG, "CRPIUtils::EnableDispmanxWindow(%d)", enable);
+
+  DISPMANX_UPDATE_HANDLE_T dispman_update = m_DllBcmHost->vc_dispmanx_update_start(0);
+
+  if (m_dispman_element != DISPMANX_NO_HANDLE)
+  {
+    VC_RECT_T dst_rect;
+    if (enable)
+    {
+      dst_rect.x      = 0;
+      dst_rect.y      = 0;
+      dst_rect.width  = m_screen_width;
+      dst_rect.height = m_screen_height;
+    }
+    else
+    {
+      dst_rect.x      = m_screen_width;
+      dst_rect.y      = m_screen_height;
+      dst_rect.width  = m_screen_width;
+      dst_rect.height = m_screen_height;
+    }
+    m_shown = enable;
+    m_DllBcmHost->vc_dispmanx_element_change_attributes(dispman_update, m_dispman_element,
+        (1<<2), 0, 0, &dst_rect, nullptr, 0, DISPMANX_NO_ROTATE);
+  }
+  m_DllBcmHost->vc_dispmanx_update_submit(dispman_update, nullptr, nullptr);
 }
 
 void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions)

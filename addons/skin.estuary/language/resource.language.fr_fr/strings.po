@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Films non vus"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Activer les widgets de catégorie"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Télécharger les icônes"
@@ -82,7 +86,7 @@ msgstr "Chaînes vues récemment"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Noté"
+msgstr "Classé"
 
 msgctxt "#31018"
 msgid "Recently played channels"
@@ -107,6 +111,10 @@ msgstr "Trier par "
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Type de vue"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Choisir la notation à afficher pour les éléments de média"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Afficher les drapeaux de médias"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Clavier numérique"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Jouer à vos jeux préférés ou télécharger une extension de jeu parmi celles disponibles depuis le dépôt officiel."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Afficher le FanArt d'arrière-plan"

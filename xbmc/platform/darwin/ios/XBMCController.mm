@@ -18,9 +18,6 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
 #include <sys/resource.h>
 #include <signal.h>
 
@@ -53,8 +50,6 @@ using namespace KODI::MESSAGING;
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
-
-#undef BOOL
 
 #import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>
@@ -150,19 +145,19 @@ XBMCController *g_xbmcController;
 }
 // - old rotation API will be called on iOS6 and lower - removed in iOS7
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{  
+{
   //on external screens somehow the logic is rotated by 90°
   //so we have to do this with our supported orientations then aswell
   if([[IOSScreenManager sharedInstance] isExternalScreen])
   {
-    if(interfaceOrientation == UIInterfaceOrientationPortrait) 
+    if(interfaceOrientation == UIInterfaceOrientationPortrait)
     {
       return YES;
     }
   }
   else//internal screen
   {
-    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft)
     {
       return YES;
     }
@@ -183,7 +178,7 @@ XBMCController *g_xbmcController;
     orientation = toInterfaceOrientation;
     CGRect srect = [IOSScreenManager getLandscapeResolution: [m_glView getCurrentScreen]];
     CGRect rect = srect;;
-  
+
     switch(toInterfaceOrientation)
     {
       case UIInterfaceOrientationPortrait:
@@ -211,11 +206,11 @@ XBMCController *g_xbmcController;
 {
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
-  
+
   //newEvent.key.keysym.unicode = key;
   newEvent.key.keysym.sym = key;
   [self sendKeypressEvent:newEvent];
-  
+
 }
 //--------------------------------------------------------------
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -228,7 +223,7 @@ XBMCController *g_xbmcController;
     return YES;
   }
 
-  
+
   return NO;
 }
 //--------------------------------------------------------------
@@ -258,7 +253,7 @@ XBMCController *g_xbmcController;
   [tapGesture release];
 }
 //--------------------------------------------------------------
-- (void)createGestureRecognizers 
+- (void)createGestureRecognizers
 {
   //1 finger single tap
   [self addTapGesture:1];
@@ -273,7 +268,7 @@ XBMCController *g_xbmcController;
 
   //1 finger single long tap - right mouse - alternative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+    initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];
 
   singleFingerSingleLongTap.delaysTouchesBegan = NO;
   singleFingerSingleLongTap.delaysTouchesEnded = NO;
@@ -353,7 +348,7 @@ XBMCController *g_xbmcController;
 - (void) deactivateKeyboard:(UIView *)view
 {
   [view removeFromSuperview];
-  m_glView.userInteractionEnabled = YES; 
+  m_glView.userInteractionEnabled = YES;
   [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
@@ -373,7 +368,7 @@ XBMCController *g_xbmcController;
 {
   if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= screenScale;
     point.y *= screenScale;
 
@@ -420,10 +415,10 @@ XBMCController *g_xbmcController;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)handlePan:(UIPanGestureRecognizer *)sender 
+- (IBAction)handlePan:(UIPanGestureRecognizer *)sender
 {
   if( m_glView && [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
-  { 
+  {
     CGPoint velocity = [sender velocityInView:m_glView];
 
     if( [sender state] == UIGestureRecognizerStateBegan && sender.numberOfTouches )
@@ -443,17 +438,17 @@ XBMCController *g_xbmcController;
       bool bNotify = false;
       CGFloat yMovement=point.y - lastGesturePoint.y;
       CGFloat xMovement=point.x - lastGesturePoint.x;
-      
+
       if( xMovement )
       {
         bNotify = true;
       }
-      
+
       if( yMovement )
       {
         bNotify = true;
       }
-      
+
       if( bNotify )
       {
         if( !touchBeginSignaled )
@@ -463,17 +458,17 @@ XBMCController *g_xbmcController;
         }
 
         CGenericTouchActionHandler::GetInstance().OnTouchGesturePan((float)point.x, (float)point.y,
-                                                            (float)xMovement, (float)yMovement, 
+                                                            (float)xMovement, (float)yMovement,
                                                             (float)velocity.x, (float)velocity.y);
         lastGesturePoint = point;
       }
     }
-    
+
     if( touchBeginSignaled && ([sender state] == UIGestureRecognizerStateEnded || [sender state] == UIGestureRecognizerStateCancelled))
     {
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
       CGenericTouchActionHandler::GetInstance().OnTouchGestureEnd((float)lastGesturePoint.x, (float)lastGesturePoint.y,
-                                                             (float)0.0, (float)0.0, 
+                                                             (float)0.0, (float)0.0,
                                                              (float)velocity.x, (float)velocity.y);
 
       touchBeginSignaled = false;
@@ -485,8 +480,8 @@ XBMCController *g_xbmcController;
 {
   if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    
-    
+
+
     if (sender.state == UIGestureRecognizerStateRecognized)
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
@@ -550,16 +545,16 @@ XBMCController *g_xbmcController;
     {
       CGenericTouchActionHandler::GetInstance().OnSingleTouchMove((float)point.x, (float)point.y, point.x - lastGesturePoint.x, point.y - lastGesturePoint.y, 0, 0);
     }
-    
+
     if (sender.state == UIGestureRecognizerStateEnded)
-    {	
+    {
       CGenericTouchActionHandler::GetInstance().OnLongPress((float)point.x, (float)point.y);
     }
   }
 }
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
-{ 
+{
   PRINT_SIGNATURE();
   m_screenIdx = 0;
   self = [super init];
@@ -573,12 +568,12 @@ XBMCController *g_xbmcController;
   m_playbackState = IOS_PLAYBACK_STOPPED;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
-  [m_window setRootViewController:self];  
+  [m_window setRootViewController:self];
   m_window.screen = screen;
   /* Turn off autoresizing */
   m_window.autoresizingMask = 0;
   m_window.autoresizesSubviews = NO;
-  
+
   NSNotificationCenter *center;
   center = [NSNotificationCenter defaultCenter];
   [center addObserver: self
@@ -597,16 +592,16 @@ XBMCController *g_xbmcController;
     // in ios sdks older then 8.0 the landscape mode is 90 degrees
     // rotated
     srect.size = CGSizeMake( frame.size.height, frame.size.width );
-  
+
     m_glView = [[IOSEAGLView alloc] initWithFrame: srect withScreen:screen];
     [[IOSScreenManager sharedInstance] setView:m_glView];
     [m_glView setMultipleTouchEnabled:YES];
-  
+
     /* Check if screen is Retina */
     screenScale = [m_glView getScreenScale:screen];
 
     [self.view addSubview: m_glView];
-  
+
     [self createGestureRecognizers];
     [m_window addSubview: self.view];
   }
@@ -625,16 +620,16 @@ XBMCController *g_xbmcController;
   {
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.view.autoresizesSubviews = YES;
-  
+
     m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
     [[IOSScreenManager sharedInstance] setView:m_glView];
     [m_glView setMultipleTouchEnabled:YES];
-  
+
     /* Check if screen is Retina */
     screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
-  
+
     [self.view addSubview: m_glView];
-  
+
     [self createGestureRecognizers];
   }
 }
@@ -659,19 +654,19 @@ XBMCController *g_xbmcController;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
-  
+
   [super dealloc];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
   PRINT_SIGNATURE();
-  
+
   // move this later into CocoaPowerSyscall
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-  
+
   [self resumeAnimation];
-  
+
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
@@ -684,14 +679,14 @@ XBMCController *g_xbmcController;
 }
 //--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
-{  
+{
   PRINT_SIGNATURE();
-  
+
   [self pauseAnimation];
-  
+
   // move this later into CocoaPowerSyscall
   [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-	
+
   [super viewWillDisappear:animated];
 }
 //--------------------------------------------------------------
@@ -715,7 +710,7 @@ XBMCController *g_xbmcController;
   [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
   [self resignFirstResponder];
 
-	[super viewDidUnload];	
+	[super viewDidUnload];
 }
 //--------------------------------------------------------------
 - (void) setFramebuffer
@@ -731,7 +726,7 @@ XBMCController *g_xbmcController;
 - (CGSize) getScreenSize
 {
   screensize.width  = m_glView.bounds.size.width * screenScale;
-  screensize.height = m_glView.bounds.size.height * screenScale;  
+  screensize.height = m_glView.bounds.size.height * screenScale;
   return screensize;
 }
 //--------------------------------------------------------------
@@ -742,7 +737,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 - (BOOL) recreateOnReselect
-{ 
+{
   PRINT_SIGNATURE();
   return YES;
 }
@@ -751,7 +746,7 @@ XBMCController *g_xbmcController;
 {
   // Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
-  
+
   // Release any cached data, images, etc. that aren't in use.
 }
 //--------------------------------------------------------------
@@ -930,12 +925,12 @@ XBMCController *g_xbmcController;
 - (void)pauseAnimation
 {
   PRINT_SIGNATURE();
-  
+
   [m_glView pauseAnimation];
 }
 //--------------------------------------------------------------
 - (void)resumeAnimation
-{  
+{
   PRINT_SIGNATURE();
 
   [m_glView resumeAnimation];

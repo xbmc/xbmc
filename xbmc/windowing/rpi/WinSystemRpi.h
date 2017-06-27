@@ -40,14 +40,14 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res,
-                       PHANDLE_EVENT_FUNC userFunction) override;
+                       RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
   void UpdateResolutions() override;
 
   bool Hide() override;
   bool Show(bool raise = true) override;
+  void SetVisible(bool visible);
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 protected:

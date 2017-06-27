@@ -30,6 +30,8 @@ namespace PERIPHERALS
   class CPeripherals;
 }
 
+namespace KODI
+{
 namespace GAME
 {
   class CPortManager;
@@ -56,4 +58,5 @@ namespace GAME
     // Port paremters
     std::map<PERIPHERALS::PeripheralPtr, PortPtr> m_portMap;
   };
+}
 }

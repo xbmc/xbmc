@@ -42,8 +42,7 @@ bool CWinSystemAmlogicGLESContext::InitWindowSystem()
 
 bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
-                                               RESOLUTION_INFO& res,
-                                               PHANDLE_EVENT_FUNC userFunction)
+                                               RESOLUTION_INFO& res)
 {
   m_pGLContext.Detach();
 
@@ -52,7 +51,7 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!CWinSystemAmlogic::CreateNewWindow(name, fullScreen, res, userFunction))
+  if (!CWinSystemAmlogic::CreateNewWindow(name, fullScreen, res))
   {
     return false;
   }
@@ -96,7 +95,7 @@ bool CWinSystemAmlogicGLESContext::ResizeWindow(int newWidth, int newHeight, int
 
 bool CWinSystemAmlogicGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CreateNewWindow("", fullScreen, res, NULL);
+  CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   return true;
 }
