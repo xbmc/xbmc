@@ -26,25 +26,22 @@ CVariant CDBusUtil::GetVariant(const char *destination, const char *object, cons
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "Get");
   CVariant result;
 
-  if (message.AppendArgument(interface) && message.AppendArgument(property))
+  message.AppendArgument(interface);
+  message.AppendArgument(property);
+  DBusMessage *reply = message.SendSystem();
+
+  if (reply)
   {
-    DBusMessage *reply = message.SendSystem();
+    DBusMessageIter iter;
 
-    if (reply)
+    if (dbus_message_iter_init(reply, &iter))
     {
-      DBusMessageIter iter;
-
-      if (dbus_message_iter_init(reply, &iter))
-      {
-        if (!dbus_message_has_signature(reply, "v"))
-          CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
-        else
-          result = ParseVariant(&iter);
-      }
+      if (!dbus_message_has_signature(reply, "v"))
+        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
+      else
+        result = ParseVariant(&iter);
     }
   }
-  else
-    CLog::Log(LOGERROR, "DBus: append arguments failed");
 
   return result;
 }
@@ -165,4 +162,145 @@ CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
   }
 
   return value;
+}
+
+bool CDBusUtil::TryMethodCall(DBusBusType bus, const char* destination, const char* object, const char* interface, const char* method)
+{
+  CDBusMessage message(destination, object, interface, method);
+  CDBusError error;
+  message.Send(bus, error);
+  if (error)
+  {
+    error.Log(LOGDEBUG, std::string("DBus method call to ") + interface + "." + method + " at " + object + " of " + destination + " failed");
+  }
+  return !error;
+}
+
+bool CDBusUtil::TryMethodCall(DBusBusType bus, std::string const& destination, std::string const& object, std::string const& interface, std::string const& method)
+{
+  return TryMethodCall(bus, destination.c_str(), object.c_str(), interface.c_str(), method.c_str());
+}
+
+CDBusConnection::CDBusConnection()
+{}
+
+bool CDBusConnection::Connect(DBusBusType bus, bool openPrivate)
+{
+  CDBusError error;
+  Connect(bus, error, openPrivate);
+  if (error)
+  {
+    error.Log(LOGWARNING, "DBus connection failed");
+    return false;
+  }
+
+  return true;
+}
+
+bool CDBusConnection::Connect(DBusBusType bus, CDBusError& error, bool openPrivate)
+{
+  if (m_connection)
+  {
+    throw std::logic_error("Cannot reopen connected DBus connection");
+  }
+
+  m_connection.get_deleter().closeBeforeUnref = openPrivate;
+
+  if (openPrivate)
+  {
+    m_connection.reset(dbus_bus_get_private(bus, error));
+  }
+  else
+  {
+    m_connection.reset(dbus_bus_get(bus, error));
+  }
+
+  return !!m_connection;
+}
+
+CDBusConnection::operator DBusConnection*()
+{
+  return m_connection.get();
+}
+
+void CDBusConnection::DBusConnectionDeleter::operator()(DBusConnection* connection) const
+{
+  if (closeBeforeUnref)
+  {
+    dbus_connection_close(connection);
+  }
+  dbus_connection_unref(connection);
+}
+
+void CDBusConnection::Destroy()
+{
+  m_connection.reset();
+}
+
+
+CDBusError::CDBusError()
+{
+  dbus_error_init(&m_error);
+}
+
+CDBusError::~CDBusError()
+{
+  Reset();
+}
+
+void CDBusError::Reset()
+{
+ dbus_error_free(&m_error);
+}
+
+CDBusError::operator DBusError*()
+{
+  return &m_error;
+}
+
+bool CDBusError::IsSet() const
+{
+  return dbus_error_is_set(&m_error);
+}
+
+CDBusError::operator bool()
+{
+  return IsSet();
+}
+
+CDBusError::operator bool() const
+{
+  return IsSet();
+}
+
+std::string CDBusError::Name() const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot retrieve name of unset DBus error");
+  }
+  return m_error.name;
+}
+
+std::string CDBusError::Message() const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot retrieve message of unset DBus error");
+  }
+  return m_error.message;
+}
+
+void CDBusError::Log(std::string const& message) const
+{
+  Log(LOGERROR, message);
+}
+
+void CDBusError::Log(int level, const std::string& message) const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot log unset DBus error");
+  }
+  CLog::Log(level, "%s: %s - %s", message.c_str(), m_error.name, m_error.message);
 }

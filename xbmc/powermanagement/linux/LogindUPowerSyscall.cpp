@@ -61,38 +61,29 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   if (m_hasUPower)
     UpdateBatteryLevel();
 
-  DBusError error;
-  dbus_error_init(&error);
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &error);
-
-  if (dbus_error_is_set(&error))
+  if (!m_connection.Connect(DBUS_BUS_SYSTEM, true))
   {
-    CLog::Log(LOGERROR, "LogindUPowerSyscall: Failed to get dbus connection: %s", error.message);
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-    m_connection = NULL;
-    dbus_error_free(&error);
     return;
   }
 
+  CDBusError error;
   dbus_connection_set_exit_on_disconnect(m_connection, false);
-  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", NULL);
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", error);
 
-  if (m_hasUPower)
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", NULL);
+  if (!error && m_hasUPower)
+    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", error);
 
   dbus_connection_flush(m_connection);
-  dbus_error_free(&error);
+
+  if (error)
+  {
+    error.Log("UPowerSyscall: Failed to attach to signal");
+    m_connection.Destroy();
+  }
 }
 
 CLogindUPowerSyscall::~CLogindUPowerSyscall()
 {
-  if (m_connection)
-  {
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-  }
-
   ReleaseDelayLock();
 }
 
@@ -221,15 +212,15 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   if (m_connection)
   {
     dbus_connection_read_write(m_connection, 0);
-    DBusMessage *msg = dbus_connection_pop_message(m_connection);
+    DBusMessagePtr msg(dbus_connection_pop_message(m_connection));
 
     if (msg)
     {
-      if (dbus_message_is_signal(msg, "org.freedesktop.login1.Manager", "PrepareForSleep"))
+      if (dbus_message_is_signal(msg.get(), "org.freedesktop.login1.Manager", "PrepareForSleep"))
       {
         dbus_bool_t arg;
         // the boolean argument defines whether we are going to sleep (true) or just woke up (false)
-        dbus_message_get_args(msg, NULL, DBUS_TYPE_BOOLEAN, &arg, DBUS_TYPE_INVALID);
+        dbus_message_get_args(msg.get(), NULL, DBUS_TYPE_BOOLEAN, &arg, DBUS_TYPE_INVALID);
         CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Received PrepareForSleep with arg %i", (int)arg);
         if (arg)
         {
@@ -244,7 +235,7 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 
         result = true;
       }
-      else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "DeviceChanged"))
+      else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UPower", "DeviceChanged"))
       {
         bool lowBattery = m_lowBattery;
         UpdateBatteryLevel();
@@ -254,9 +245,7 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
         result = true;
       }
       else
-        CLog::Log(LOGDEBUG, "LogindUPowerSyscall - Received unknown signal %s", dbus_message_get_member(msg));
-
-      dbus_message_unref(msg);
+        CLog::Log(LOGDEBUG, "LogindUPowerSyscall - Received unknown signal %s", dbus_message_get_member(msg.get()));
     }
   }
 

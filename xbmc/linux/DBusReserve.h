@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-struct DBusConnection;
+#include "DBusUtil.h"
 
 class CDBusReserve
 {
@@ -34,7 +34,7 @@ public:
   bool ReleaseDevice(const std::string &device);
 
 private:
-  DBusConnection *m_conn;
+  CDBusConnection m_conn;
   std::vector<std::string> m_devs;
 };
 

@@ -173,25 +173,23 @@ std::string CUDiskDevice::toString()
 
 CUDisksProvider::CUDisksProvider()
 {
-  dbus_error_init (&m_error);
   //! @todo do not use dbus_connection_pop_message() that requires the use of a
   //! private connection
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
-
-  if (m_connection)
+  if (!m_connection.Connect(DBUS_BUS_SYSTEM, true))
   {
-    dbus_connection_set_exit_on_disconnect(m_connection, false);
-
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", &m_error);
-    dbus_connection_flush(m_connection);
+    return;
   }
+  
+  dbus_connection_set_exit_on_disconnect(m_connection, false);
 
-  if (dbus_error_is_set(&m_error))
+  CDBusError error;
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", error);
+  dbus_connection_flush(m_connection);
+
+  if (error)
   {
-    CLog::Log(LOGERROR, "UDisks: Failed to attach to signal %s", m_error.message);
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-    m_connection = NULL;
+    error.Log("UDisks: Failed to attach to signal");
+    m_connection.Destroy();
   }
 }
 
@@ -203,15 +201,6 @@ CUDisksProvider::~CUDisksProvider()
     delete m_AvailableDevices[itr->first];
 
   m_AvailableDevices.clear();
-
-  if (m_connection)
-  {
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-    m_connection = NULL;
-  }
-
-  dbus_error_free (&m_error);
 }
 
 void CUDisksProvider::Initialize()
@@ -254,22 +243,21 @@ bool CUDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
   if (m_connection)
   {
     dbus_connection_read_write(m_connection, 0);
-    DBusMessage *msg = dbus_connection_pop_message(m_connection);
+    DBusMessagePtr msg(dbus_connection_pop_message(m_connection));
 
     if (msg)
     {
       char *object;
-      if (dbus_message_get_args (msg, NULL, DBUS_TYPE_OBJECT_PATH, &object, DBUS_TYPE_INVALID))
+      if (dbus_message_get_args (msg.get(), NULL, DBUS_TYPE_OBJECT_PATH, &object, DBUS_TYPE_INVALID))
       {
         result = true;
-        if (dbus_message_is_signal(msg, "org.freedesktop.UDisks", "DeviceAdded"))
+        if (dbus_message_is_signal(msg.get(), "org.freedesktop.UDisks", "DeviceAdded"))
           DeviceAdded(object, callback);
-        else if (dbus_message_is_signal(msg, "org.freedesktop.UDisks", "DeviceRemoved"))
+        else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UDisks", "DeviceRemoved"))
           DeviceRemoved(object, callback);
-        else if (dbus_message_is_signal(msg, "org.freedesktop.UDisks", "DeviceChanged"))
+        else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UDisks", "DeviceChanged"))
           DeviceChanged(object, callback);
       }
-      dbus_message_unref(msg);
     }
   }
   return result;
@@ -277,26 +265,7 @@ bool CUDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
 bool CUDisksProvider::HasUDisks()
 {
-  bool hasUDisks = false;
-  CDBusMessage message("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "EnumerateDevices");
-
-  DBusError error;
-  dbus_error_init (&error);
-  DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-
-  if (con)
-    message.Send(con, &error);
-
-  if (!dbus_error_is_set(&error))
-    hasUDisks = true;
-  else
-    CLog::Log(LOGDEBUG, "UDisks: %s - %s", error.name, error.message);
-
-  dbus_error_free (&error);
-  if (con)
-    dbus_connection_unref(con);
-
-  return hasUDisks;
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "EnumerateDevices");
 }
 
 void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)

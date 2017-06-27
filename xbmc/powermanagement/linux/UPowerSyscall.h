@@ -47,7 +47,6 @@ class CUPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CUPowerSyscall();
-  virtual ~CUPowerSyscall();
   virtual bool Powerdown();
   virtual bool Suspend();
   virtual bool Hibernate();
@@ -68,8 +67,7 @@ protected:
   void UpdateCapabilities();
 private:
   std::list<CUPowerSource> m_powerSources;
-  DBusConnection *m_connection;
-  DBusError m_error;
+  CDBusConnection m_connection;
 
   bool m_lowBattery;
   void EnumeratePowerSources();
