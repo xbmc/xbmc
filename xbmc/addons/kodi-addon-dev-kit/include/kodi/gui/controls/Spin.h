@@ -97,7 +97,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CSpin
     /// @brief Destructor
     ///
-    virtual ~CSpin() = default;
+    ~CSpin() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

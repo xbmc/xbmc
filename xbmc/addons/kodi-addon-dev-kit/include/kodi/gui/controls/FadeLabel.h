@@ -78,7 +78,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CFadeLabel
     /// @brief Destructor.
     ///
-    virtual ~CFadeLabel() = default;
+    ~CFadeLabel() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

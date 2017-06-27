@@ -203,7 +203,7 @@ public:
     m_controlHandle = m_cb->ListItem_Create(m_Handle->addonData, label, label2, iconImage, thumbnailImage, path);
   }
 
-  virtual ~CAddonListItem() = default;
+  ~CAddonListItem() override = default;
 
   const char *GetLabel()
   {
@@ -293,7 +293,7 @@ public:
     }
   }
 
-  virtual ~CAddonGUIWindow()
+  ~CAddonGUIWindow() override
   {
     if (m_Handle && m_cb && m_controlHandle)
     {
@@ -506,7 +506,7 @@ public:
   {
     m_controlHandle = m_cb->Window_GetControl_Spin(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
-  ~CAddonGUISpinControl(void) {}
+  ~CAddonGUISpinControl(void) override {}
 
   void SetVisible(bool yesNo)
   {
@@ -555,7 +555,7 @@ public:
   {
     m_controlHandle = m_cb->Window_GetControl_RadioButton(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
-  ~CAddonGUIRadioButton() {}
+  ~CAddonGUIRadioButton() override {}
 
   void SetVisible(bool yesNo)
   {
@@ -593,7 +593,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_Progress(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
-  ~CAddonGUIProgressControl(void) {}
+  ~CAddonGUIProgressControl(void) override {}
 
   void SetPercentage(float fPercent)
   {
@@ -641,7 +641,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_Slider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
-  ~CAddonGUISliderControl(void) {}
+  ~CAddonGUISliderControl(void) override {}
 
   void SetVisible(bool yesNo)
   {
@@ -731,7 +731,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_SettingsSlider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
   
-  ~CAddonGUISettingsSliderControl(void) {}
+  ~CAddonGUISettingsSliderControl(void) override {}
 
   void SetVisible(bool yesNo)
   {
@@ -832,7 +832,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_RenderAddon(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
-  virtual ~CAddonGUIRenderingControl()
+  ~CAddonGUIRenderingControl() override
   {
     m_cb->RenderAddon_Delete(m_Handle->addonData, m_controlHandle);
   }

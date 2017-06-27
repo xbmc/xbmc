@@ -72,7 +72,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CLabel
     /// @brief Destructor
     ///
-    virtual ~CLabel() = default;
+    ~CLabel() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

@@ -146,7 +146,7 @@ namespace addon
       SetAddonStruct(instance);
     }
 
-    virtual ~CInstanceVisualization() = default;
+    ~CInstanceVisualization() override = default;
 
     virtual bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) { return true; }
     virtual void Stop() {}

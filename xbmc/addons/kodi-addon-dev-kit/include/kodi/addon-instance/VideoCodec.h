@@ -164,7 +164,7 @@ namespace kodi
         SetAddonStruct(instance);
       }
 
-      virtual ~CInstanceVideoCodec() = default;
+      ~CInstanceVideoCodec() override = default;
 
       //! \copydoc CInstanceVideoCodec::Open
       virtual bool Open(VIDEOCODEC_INITDATA &initData) { return false; };

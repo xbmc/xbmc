@@ -128,7 +128,7 @@ namespace addon
       SetAddonStruct(instance);
     }
 
-    virtual ~CInstanceVFS() = default;
+    ~CInstanceVFS() override = default;
 
     /// @brief Open a file for input
     ///

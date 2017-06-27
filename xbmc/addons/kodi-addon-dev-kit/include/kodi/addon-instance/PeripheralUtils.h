@@ -271,7 +271,7 @@ namespace addon
     {
     }
 
-    virtual ~Joystick(void) { }
+    ~Joystick(void) override { }
 
     Joystick& operator=(const Joystick& rhs)
     {

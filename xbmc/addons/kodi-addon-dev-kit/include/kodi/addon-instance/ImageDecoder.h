@@ -91,7 +91,7 @@ namespace addon
     }
     //--------------------------------------------------------------------------
 
-    virtual ~CInstanceImageDecoder() = default;
+    ~CInstanceImageDecoder() override = default;
 
     //==========================================================================
     /// @brief Initialize an encoder
