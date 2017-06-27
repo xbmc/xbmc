@@ -63,6 +63,19 @@ public:
   }
   void AppendArgument(const char **arrayString, unsigned int length);
 
+  template<typename TFirst>
+  void AppendArguments(const TFirst first)
+  {
+    AppendArgument(first);
+    // Recursion end
+  }
+  template<typename TFirst, typename... TArgs>
+  void AppendArguments(const TFirst first, const TArgs... args)
+  {
+    AppendArgument(first);
+    AppendArguments(args...);
+  }
+
   DBusMessage *SendSystem();
   DBusMessage *SendSession();
   DBusMessage *SendSystem(CDBusError& error);
