@@ -41,19 +41,19 @@ public:
    \param[in] showProgress Whether to show a progress bar or not
    */
   CVideoLibraryScanningJob(const std::string& directory, bool scanAll = false, bool showProgress = true);
-  virtual ~CVideoLibraryScanningJob();
+  ~CVideoLibraryScanningJob() override;
 
   // specialization of CVideoLibraryJob
-  virtual bool CanBeCancelled() const { return true; }
-  virtual bool Cancel();
+  bool CanBeCancelled() const override { return true; }
+  bool Cancel() override;
 
   // specialization of CJob
-  virtual const char *GetType() const { return "VideoLibraryScanningJob"; }
-  virtual bool operator==(const CJob* job) const;
+  const char *GetType() const override { return "VideoLibraryScanningJob"; }
+  bool operator==(const CJob* job) const override;
 
 protected:
   // implementation of CVideoLibraryJob
-  virtual bool Work(CVideoDatabase &db);
+  bool Work(CVideoDatabase &db) override;
 
 private:
   VIDEO::CVideoInfoScanner m_scanner;

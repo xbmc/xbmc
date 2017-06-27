@@ -80,9 +80,9 @@ public:
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const std::string &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
-  virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value) const;
-  virtual void ToSortable(SortItem& sortable, Field field) const;
+  void Archive(CArchive& ar) override;
+  void Serialize(CVariant& value) const override;
+  void ToSortable(SortItem& sortable, Field field) const override;
   const CRating GetRating(std::string type = "") const;
   const std::string& GetDefaultRating() const;
   const std::string GetUniqueID(std::string type = "") const;

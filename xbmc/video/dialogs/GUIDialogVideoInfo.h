@@ -30,7 +30,7 @@ class CGUIDialogVideoInfo :
 {
 public:
   CGUIDialogVideoInfo(void);
-  virtual ~CGUIDialogVideoInfo(void);
+  ~CGUIDialogVideoInfo(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
   void SetMovie(const CFileItem *item);

@@ -26,19 +26,19 @@ class CGUIWindowVideoPlaylist : public CGUIWindowVideoBase
 {
 public:
   CGUIWindowVideoPlaylist(void);
-  virtual ~CGUIWindowVideoPlaylist(void);
+  ~CGUIWindowVideoPlaylist(void) override;
 
-  virtual bool OnMessage(CGUIMessage& message) override;
-  virtual bool OnAction(const CAction &action) override;
-  virtual bool OnBack(int actionID) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
 
 protected:
-  virtual bool OnPlayMedia(int iItem, const std::string &player = "") override;
-  virtual void UpdateButtons() override;
+  bool OnPlayMedia(int iItem, const std::string &player = "") override;
+  void UpdateButtons() override;
   void MarkPlaying();
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
   void OnMove(int iItem, int iAction);
 

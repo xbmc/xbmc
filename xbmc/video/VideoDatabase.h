@@ -426,10 +426,10 @@ public:
   };
 
   CVideoDatabase(void);
-  virtual ~CVideoDatabase(void);
+  ~CVideoDatabase(void) override;
 
-  virtual bool Open();
-  virtual bool CommitTransaction();
+  bool Open() override;
+  bool CommitTransaction() override;
 
   int AddMovie(const std::string& strFilenameAndPath);
   int AddEpisode(int idShow, const std::string& strFilenameAndPath);
@@ -839,7 +839,7 @@ public:
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
   void RemoveTagsFromItem(int idItem, const std::string &type);
 
-  virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
+  bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting) override;
 
   /*! \brief Will check if the season exists and if that is not the case add it to the database.
   \param showID The id of the show in question.
@@ -928,9 +928,9 @@ protected:
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:
-  virtual void CreateTables();
-  virtual void CreateAnalytics();
-  virtual void UpdateTables(int version);
+  void CreateTables() override;
+  void CreateAnalytics() override;
+  void UpdateTables(int version) override;
   void CreateLinkIndex(const char *table);
   void CreateForeignLinkIndex(const char *table, const char *foreignkey);
 
@@ -969,10 +969,10 @@ private:
    */
   int GetPlayCount(int iFileId);
 
-  virtual int GetMinSchemaVersion() const { return 75; };
-  virtual int GetSchemaVersion() const;
+  int GetMinSchemaVersion() const override { return 75; };
+  int GetSchemaVersion() const override;
   virtual int GetExportVersion() const { return 1; };
-  const char *GetBaseDBName() const { return "MyVideos"; };
+  const char *GetBaseDBName() const override { return "MyVideos"; };
 
   void ConstructPath(std::string& strDest, const std::string& strPath, const std::string& strFileName);
   void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);

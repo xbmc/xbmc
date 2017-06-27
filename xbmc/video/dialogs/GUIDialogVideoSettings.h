@@ -30,23 +30,23 @@ class CGUIDialogVideoSettings : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogVideoSettings();
-  virtual ~CGUIDialogVideoSettings();
+  ~CGUIDialogVideoSettings() override;
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   void AddVideoStreams(std::shared_ptr<CSettingGroup> group, const std::string & settingId);
   static void VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
-  virtual void SetupView();
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override;
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  void InitializeSettings() override;
 
 private:
   int m_videoStream;

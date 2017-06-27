@@ -39,18 +39,18 @@ public:
   \param action the action to perform.
   \return true if the action is considered handled, false if it should be handled elsewhere.
   */
-  virtual bool OnAction(const CAction &action);
+  bool OnAction(const CAction &action) override;
 
   /*! \brief Callback from the slider dialog.
    \sa CGUIDialogSlider
    */
-  virtual void OnSliderChange(void *data, CGUISliderControl *slider);
+  void OnSliderChange(void *data, CGUISliderControl *slider) override;
 
 protected:
   CPlayerController();
   CPlayerController(const CPlayerController&);
   CPlayerController& operator=(CPlayerController const&);
-  virtual ~CPlayerController();
+  ~CPlayerController() override;
 
 private:
   /*! \brief pop up a slider dialog for a particular action
