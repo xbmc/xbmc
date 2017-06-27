@@ -62,5 +62,5 @@ private:
 
   void * m_lastPictureBuffer;
 
-  BufferPool *m_bufferPool;
+  std::map<void *,CVideoBuffer *> m_map;
 };
