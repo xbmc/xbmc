@@ -891,14 +891,14 @@ public:
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 
-                    NPT_Size* bytes_read);
-    NPT_Result Seek(NPT_Position offset) { 
+                    NPT_Size* bytes_read) override;
+    NPT_Result Seek(NPT_Position offset) override { 
         return NPT_BsdSocketStream::Seek(offset); }
-    NPT_Result Tell(NPT_Position& where) {
+    NPT_Result Tell(NPT_Position& where) override {
         return NPT_BsdSocketStream::Tell(where);
     }
-    NPT_Result GetSize(NPT_LargeSize& size);
-    NPT_Result GetAvailable(NPT_LargeSize& available);
+    NPT_Result GetSize(NPT_LargeSize& size) override;
+    NPT_Result GetAvailable(NPT_LargeSize& available) override;
 };
 
 /*----------------------------------------------------------------------
@@ -1004,13 +1004,13 @@ public:
     // NPT_OutputStream methods
     NPT_Result Write(const void* buffer, 
                      NPT_Size    bytes_to_write, 
-                     NPT_Size*   bytes_written);
-    NPT_Result Seek(NPT_Position offset) { 
+                     NPT_Size*   bytes_written) override;
+    NPT_Result Seek(NPT_Position offset) override { 
         return NPT_BsdSocketStream::Seek(offset); }
-    NPT_Result Tell(NPT_Position& where) {
+    NPT_Result Tell(NPT_Position& where) override {
         return NPT_BsdSocketStream::Tell(where);
     }
-    NPT_Result Flush();
+    NPT_Result Flush() override;
 };
 
 /*----------------------------------------------------------------------
@@ -1128,21 +1128,21 @@ class NPT_BsdSocket : public NPT_SocketInterface
  public:
     // constructors and destructor
              NPT_BsdSocket(SocketFd fd, NPT_Flags flags);
-    virtual ~NPT_BsdSocket();
+    ~NPT_BsdSocket() override;
 
     // methods
     NPT_Result RefreshInfo();
 
     // NPT_SocketInterface methods
-    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true);
-    NPT_Result Connect(const NPT_SocketAddress& address, NPT_Timeout timeout);
-    NPT_Result WaitForConnection(NPT_Timeout timeout);
-    NPT_Result GetInputStream(NPT_InputStreamReference& stream);
-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
-    NPT_Result GetInfo(NPT_SocketInfo& info);
-    NPT_Result SetReadTimeout(NPT_Timeout timeout);
-    NPT_Result SetWriteTimeout(NPT_Timeout timeout);
-    NPT_Result Cancel(bool shutdown);
+    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) override;
+    NPT_Result Connect(const NPT_SocketAddress& address, NPT_Timeout timeout) override;
+    NPT_Result WaitForConnection(NPT_Timeout timeout) override;
+    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override;
+    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override;
+    NPT_Result GetInfo(NPT_SocketInfo& info) override;
+    NPT_Result SetReadTimeout(NPT_Timeout timeout) override;
+    NPT_Result SetWriteTimeout(NPT_Timeout timeout) override;
+    NPT_Result Cancel(bool shutdown) override;
 
  protected:
     // members
@@ -1428,18 +1428,18 @@ class NPT_BsdUdpSocket : public    NPT_UdpSocketInterface,
  public:
     // constructor and destructor
              NPT_BsdUdpSocket(NPT_Flags flags);
-    virtual ~NPT_BsdUdpSocket() {}
+    ~NPT_BsdUdpSocket() override {}
 
     // NPT_SocketInterface methods
-    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true);
+    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) override;
     NPT_Result Connect(const NPT_SocketAddress& address,
-                       NPT_Timeout              timeout);
+                       NPT_Timeout              timeout) override;
 
     // NPT_UdpSocketInterface methods
     NPT_Result Send(const NPT_DataBuffer&    packet, 
-                    const NPT_SocketAddress* address);
+                    const NPT_SocketAddress* address) override;
     NPT_Result Receive(NPT_DataBuffer&     packet, 
-                       NPT_SocketAddress*  address);
+                       NPT_SocketAddress*  address) override;
 
     // friends
     friend class NPT_UdpSocket;
@@ -1696,15 +1696,15 @@ class NPT_BsdUdpMulticastSocket : public    NPT_UdpMulticastSocketInterface,
  public:
     // methods
      NPT_BsdUdpMulticastSocket(NPT_Flags flags);
-    ~NPT_BsdUdpMulticastSocket();
+    ~NPT_BsdUdpMulticastSocket() override;
 
     // NPT_UdpMulticastSocketInterface methods
     NPT_Result JoinGroup(const NPT_IpAddress& group,
-                         const NPT_IpAddress& iface);
+                         const NPT_IpAddress& iface) override;
     NPT_Result LeaveGroup(const NPT_IpAddress& group,
-                          const NPT_IpAddress& iface);
-    NPT_Result SetTimeToLive(unsigned char ttl);
-    NPT_Result SetInterface(const NPT_IpAddress& iface);
+                          const NPT_IpAddress& iface) override;
+    NPT_Result SetTimeToLive(unsigned char ttl) override;
+    NPT_Result SetInterface(const NPT_IpAddress& iface) override;
 
     // friends 
     friend class NPT_UdpMulticastSocket;
@@ -1919,12 +1919,12 @@ class NPT_BsdTcpClientSocket : protected NPT_BsdSocket
  public:
     // methods
      NPT_BsdTcpClientSocket(NPT_Flags flags);
-    ~NPT_BsdTcpClientSocket();
+    ~NPT_BsdTcpClientSocket() override;
 
     // NPT_SocketInterface methods
     NPT_Result Connect(const NPT_SocketAddress& address,
-                       NPT_Timeout              timeout);
-    NPT_Result WaitForConnection(NPT_Timeout timeout);
+                       NPT_Timeout              timeout) override;
+    NPT_Result WaitForConnection(NPT_Timeout timeout) override;
 
 protected:
     // friends
@@ -2030,25 +2030,25 @@ class NPT_BsdTcpServerSocket : public    NPT_TcpServerSocketInterface,
  public:
     // methods
      NPT_BsdTcpServerSocket(NPT_Flags flags);
-    ~NPT_BsdTcpServerSocket();
+    ~NPT_BsdTcpServerSocket() override;
 
     // NPT_SocketInterface methods
-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
+    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {
         // no stream
         stream = NULL;
         return NPT_ERROR_NOT_SUPPORTED;
     }
-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) {
+    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override {
         // no stream
         stream = NULL;
         return NPT_ERROR_NOT_SUPPORTED;
     }
 
     // NPT_TcpServerSocket methods
-    NPT_Result Listen(unsigned int max_clients);
+    NPT_Result Listen(unsigned int max_clients) override;
     NPT_Result WaitForNewClient(NPT_Socket*& client, 
                                 NPT_Timeout  timeout,
-                                NPT_Flags    flags);
+                                NPT_Flags    flags) override;
 
 protected:
     // members

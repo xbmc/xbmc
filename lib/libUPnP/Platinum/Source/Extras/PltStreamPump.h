@@ -99,9 +99,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
 {
 public:
     PLT_PipeInputStreamPump(NPT_OutputStreamReference& output, NPT_Size size = 65535);
-    virtual ~PLT_PipeInputStreamPump();
+    ~PLT_PipeInputStreamPump() override;
 
-    NPT_Result Receive(NPT_InputStream& input, NPT_Size max_bytes_to_read, NPT_Size* bytes_read);
+    NPT_Result Receive(NPT_InputStream& input, NPT_Size max_bytes_to_read, NPT_Size* bytes_read) override;
 
 protected:
     NPT_OutputStreamReference   m_Output;
@@ -118,9 +118,9 @@ public:
     PLT_PipeOutputStreamPump(NPT_InputStreamReference& input, 
                              NPT_Size                  size = 65535,
                              NPT_Size                  max_bytes_to_read = 0);
-    virtual ~PLT_PipeOutputStreamPump();
+    ~PLT_PipeOutputStreamPump() override;
 
-    NPT_Result Transmit(NPT_OutputStream& output);
+    NPT_Result Transmit(NPT_OutputStream& output) override;
 
 protected:
     NPT_InputStreamReference    m_Input;

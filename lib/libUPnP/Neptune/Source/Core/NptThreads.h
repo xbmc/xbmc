@@ -78,9 +78,9 @@ class NPT_Mutex : public NPT_MutexInterface
  public:
     // methods
                NPT_Mutex();
-              ~NPT_Mutex() { delete m_Delegate; }
-    NPT_Result Lock()   { return m_Delegate->Lock();   }
-    NPT_Result Unlock() { return m_Delegate->Unlock(); }
+              ~NPT_Mutex() override { delete m_Delegate; }
+    NPT_Result Lock() override   { return m_Delegate->Lock();   }
+    NPT_Result Unlock() override { return m_Delegate->Unlock(); }
 
  private:
     // members
@@ -151,17 +151,17 @@ class NPT_SharedVariable : public NPT_SharedVariableInterface
  public:
     // methods
                NPT_SharedVariable(int value = 0);
-              ~NPT_SharedVariable() { delete m_Delegate; }
-    void SetValue(int value) { 
+              ~NPT_SharedVariable() override { delete m_Delegate; }
+    void SetValue(int value) override { 
         m_Delegate->SetValue(value); 
     }
-    int GetValue() { 
+    int GetValue() override { 
         return m_Delegate->GetValue(); 
     }
-    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
+    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override { 
         return m_Delegate->WaitUntilEquals(value, timeout); 
     }
-    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
+    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override { 
         return m_Delegate->WaitWhileEquals(value, timeout); 
     }
 
@@ -192,11 +192,11 @@ class NPT_AtomicVariable : public NPT_AtomicVariableInterface
  public:
     // methods
          NPT_AtomicVariable(int value = 0);
-        ~NPT_AtomicVariable() { delete m_Delegate;             }
-    int  Increment()          { return m_Delegate->Increment();}
-    int  Decrement()          { return m_Delegate->Decrement();}
-    void SetValue(int value)  { m_Delegate->SetValue(value);   }
-    int  GetValue()           { return m_Delegate->GetValue(); }
+        ~NPT_AtomicVariable() override { delete m_Delegate;             }
+    int  Increment() override          { return m_Delegate->Increment();}
+    int  Decrement() override          { return m_Delegate->Decrement();}
+    void SetValue(int value) override  { m_Delegate->SetValue(value);   }
+    int  GetValue() override           { return m_Delegate->GetValue(); }
 
  private:
     // members
@@ -220,7 +220,7 @@ class NPT_ThreadInterface: public NPT_Runnable, public NPT_Interruptible
 {
  public:
     // methods
-    virtual           ~NPT_ThreadInterface() {}
+              ~NPT_ThreadInterface() override {}
     virtual NPT_Result Start() = 0;
     virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
     virtual NPT_Result SetPriority(int /*priority*/) { return NPT_SUCCESS; } 
@@ -244,27 +244,27 @@ class NPT_Thread : public NPT_ThreadInterface
     // methods
     explicit NPT_Thread(bool detached = false);
     explicit NPT_Thread(NPT_Runnable& target, bool detached = false);
-   ~NPT_Thread() { delete m_Delegate; }
+   ~NPT_Thread() override { delete m_Delegate; }
 
     // NPT_ThreadInterface methods
-    NPT_Result Start() { 
+    NPT_Result Start() override { 
         return m_Delegate->Start(); 
     } 
-    NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE)  { 
+    NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override  { 
         return m_Delegate->Wait(timeout);  
     }
-    NPT_Result SetPriority(int priority) {
+    NPT_Result SetPriority(int priority) override {
         return m_Delegate->SetPriority(priority);
     }    
-    NPT_Result GetPriority(int& priority) {
+    NPT_Result GetPriority(int& priority) override {
         return m_Delegate->GetPriority(priority);
     }
 
     // NPT_Runnable methods
-    virtual void Run() {}
+    void Run() override {}
 
     // NPT_Interruptible methods
-    virtual NPT_Result Interrupt() { return m_Delegate->Interrupt(); }
+    NPT_Result Interrupt() override { return m_Delegate->Interrupt(); }
 
  private:
     // members

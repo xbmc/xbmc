@@ -94,31 +94,31 @@ public:
     PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint, 
                          bool                               use_cache = false, 
                          PLT_MediaContainerChangesListener* listener = NULL);
-    virtual ~PLT_SyncMediaBrowser();
+    ~PLT_SyncMediaBrowser() override;
 
     // PLT_MediaBrowser methods
-    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
-    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
+    NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) override;
+    NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) override;
 
     // PLT_MediaBrowserDelegate methods
-    virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
-                                           NPT_List<PLT_StateVariable*>* vars);
-    virtual void OnBrowseResult(NPT_Result               res, 
+    void OnMSStateVariablesChanged(PLT_Service*                  service, 
+                                           NPT_List<PLT_StateVariable*>* vars) override;
+    void OnBrowseResult(NPT_Result               res, 
                                 PLT_DeviceDataReference& device, 
                                 PLT_BrowseInfo*          info, 
-                                void*                    userdata);
-    virtual void OnSearchResult(NPT_Result               res, 
+                                void*                    userdata) override;
+    void OnSearchResult(NPT_Result               res, 
                                 PLT_DeviceDataReference& device, 
                                 PLT_BrowseInfo*          info, 
-                                void*                    userdata);
-    virtual void OnGetSearchCapabilitiesResult(NPT_Result               res, 
+                                void*                    userdata) override;
+    void OnGetSearchCapabilitiesResult(NPT_Result               res, 
                                                PLT_DeviceDataReference& device, 
                                                NPT_String               searchCapabilities, 
-                                               void*                    userdata);
-    virtual void OnGetSortCapabilitiesResult(NPT_Result               res,
+                                               void*                    userdata) override;
+    void OnGetSortCapabilitiesResult(NPT_Result               res,
                                              PLT_DeviceDataReference& device,
                                              NPT_String               sortCapabilities,
-                                             void*                    userdata);
+                                             void*                    userdata) override;
 
     // methods
     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {

@@ -71,9 +71,9 @@ public:
         m_StreamValidator(stream_validator) {}
 
     // NPT_HttpRequestHandler methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
                                      const NPT_HttpRequestContext& context,
-                                     NPT_HttpResponse&             response);
+                                     NPT_HttpResponse&             response) override;
 
 private:
     PLT_StreamValidator& m_StreamValidator;
@@ -90,9 +90,9 @@ public:
                     NPT_IpAddress        address = NPT_IpAddress::Any,
                     NPT_UInt16           port = 0,
                     bool                 policy_server_enabled = false);
-    virtual ~PLT_FrameServer();
+    ~PLT_FrameServer() override;
     
-    virtual NPT_Result Start();
+    NPT_Result Start() override;
 
 protected:
     PLT_SocketPolicyServer* m_PolicyServer;

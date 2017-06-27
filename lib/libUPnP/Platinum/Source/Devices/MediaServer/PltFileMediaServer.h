@@ -63,35 +63,35 @@ public:
                                            const char*        file_path);
     // constructor & destructor
     PLT_FileMediaServerDelegate(const char* url_root, const char* file_root, bool use_cache = false);
-    virtual ~PLT_FileMediaServerDelegate();
+    ~PLT_FileMediaServerDelegate() override;
     
 protected:
     // PLT_MediaServerDelegate methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
+    NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
                                         const char*                   object_id, 
                                         const char*                   filter,
                                         NPT_UInt32                    starting_index,
                                         NPT_UInt32                    requested_count,
                                         const char*                   sort_criteria,
-                                        const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                        const PLT_HttpRequestContext& context) override;
+    NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
                                               const char*                   object_id, 
                                               const char*                   filter,
                                               NPT_UInt32                    starting_index,
                                               NPT_UInt32                    requested_count,
                                               const char*                   sort_criteria,
-                                              const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                              const PLT_HttpRequestContext& context) override;
+    NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
                                          const char*                   object_id, 
                                          const char*                   search_criteria,
                                          const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
                                          const char*                   sort_criteria, 
-                                         const PLT_HttpRequestContext& context);
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
+                                         const PLT_HttpRequestContext& context) override;
+    NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
                                           const NPT_HttpRequestContext& context,
-                                          NPT_HttpResponse&             response);
+                                          NPT_HttpResponse&             response) override;
     
     // overridable methods
     virtual NPT_Result ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& file_path);
@@ -145,7 +145,7 @@ public:    // constructor
         PLT_FileMediaServerDelegate("/", file_root) {SetDelegate(this);}
 
 protected:
-    virtual ~PLT_FileMediaServer() {}
+    ~PLT_FileMediaServer() override {}
 };
 
 #endif /* _PLT_FILE_MEDIA_SERVER_H_ */

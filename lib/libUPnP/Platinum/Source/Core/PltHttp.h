@@ -155,12 +155,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
 public:
     PLT_HttpRequestHandler(NPT_HttpRequestHandler* delegate) : 
         m_Delegate(delegate) {}
-    virtual ~PLT_HttpRequestHandler() {}
+    ~PLT_HttpRequestHandler() override {}
 
     // NPT_HttpRequestHandler methods
     NPT_Result SetupResponse(NPT_HttpRequest&              request, 
                              const NPT_HttpRequestContext& context,
-                             NPT_HttpResponse&             response) {
+                             NPT_HttpResponse&             response) override {
         return m_Delegate->SetupResponse(request, context, response);
     }
 

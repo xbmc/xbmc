@@ -1,0 +1,2301 @@
+From 0133a1fb26d860df1fcb9b0cb0eea1f9797acb3e Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Tue, 27 Jun 2017 11:41:35 +0100
+Subject: [PATCH] [modernize][libUPnP] Prefer 'override' usage
+
+---
+ .../Neptune/Source/Core/NptAutoreleasePool.h       |  2 +-
+ .../Neptune/Source/Core/NptBufferedStreams.h       | 12 ++--
+ .../Neptune/Source/Core/NptDynamicLibraries.h      |  6 +-
+ lib/libUPnP/Neptune/Source/Core/NptFile.h          | 10 +--
+ lib/libUPnP/Neptune/Source/Core/NptHttp.cpp        | 16 ++---
+ lib/libUPnP/Neptune/Source/Core/NptHttp.h          | 56 ++++++++--------
+ lib/libUPnP/Neptune/Source/Core/NptLogging.cpp     | 12 ++--
+ lib/libUPnP/Neptune/Source/Core/NptLogging.h       |  8 +--
+ lib/libUPnP/Neptune/Source/Core/NptMessaging.h     |  8 +--
+ .../Source/Core/NptSelectableMessageQueue.h        |  8 +--
+ lib/libUPnP/Neptune/Source/Core/NptSerialPort.h    | 10 +--
+ .../Neptune/Source/Core/NptSimpleMessageQueue.h    |  8 +--
+ lib/libUPnP/Neptune/Source/Core/NptSockets.h       | 44 ++++++-------
+ lib/libUPnP/Neptune/Source/Core/NptStreams.h       | 54 ++++++++--------
+ lib/libUPnP/Neptune/Source/Core/NptThreads.h       | 42 ++++++------
+ lib/libUPnP/Neptune/Source/Core/NptTls.cpp         |  4 +-
+ lib/libUPnP/Neptune/Source/Core/NptTls.h           |  8 +--
+ lib/libUPnP/Neptune/Source/Core/NptXml.h           | 12 ++--
+ lib/libUPnP/Neptune/Source/Core/NptZip.h           | 28 ++++----
+ .../Neptune/Source/System/Bsd/NptBsdSockets.cpp    | 74 +++++++++++-----------
+ .../Neptune/Source/System/Posix/NptPosixQueue.cpp  |  8 +--
+ .../Source/System/Posix/NptPosixThreads.cpp        | 40 ++++++------
+ lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.h    | 14 ++--
+ .../Platinum/Source/Core/PltCtrlPointTask.h        | 24 +++----
+ .../Platinum/Source/Core/PltDatagramStream.h       | 24 +++----
+ lib/libUPnP/Platinum/Source/Core/PltDeviceHost.h   | 10 +--
+ lib/libUPnP/Platinum/Source/Core/PltHttp.h         |  4 +-
+ .../Platinum/Source/Core/PltHttpClientTask.h       | 10 +--
+ lib/libUPnP/Platinum/Source/Core/PltHttpServer.h   |  6 +-
+ .../Platinum/Source/Core/PltHttpServerTask.h       | 16 ++---
+ lib/libUPnP/Platinum/Source/Core/PltService.h      |  2 +-
+ lib/libUPnP/Platinum/Source/Core/PltSsdp.h         | 24 +++----
+ lib/libUPnP/Platinum/Source/Core/PltThreadTask.h   |  4 +-
+ .../Source/Devices/MediaConnect/PltMediaConnect.h  | 24 +++----
+ .../Source/Devices/MediaConnect/PltXbox360.h       | 12 ++--
+ .../Devices/MediaRenderer/PltMediaController.h     | 10 +--
+ .../Devices/MediaRenderer/PltMediaRenderer.h       |  8 +--
+ .../Devices/MediaServer/PltFileMediaServer.h       | 20 +++---
+ .../Source/Devices/MediaServer/PltMediaBrowser.h   | 10 +--
+ .../Source/Devices/MediaServer/PltMediaItem.h      | 18 +++---
+ .../Source/Devices/MediaServer/PltMediaServer.h    | 12 ++--
+ .../Devices/MediaServer/PltSyncMediaBrowser.h      | 26 ++++----
+ lib/libUPnP/Platinum/Source/Extras/PltDownloader.h |  8 +--
+ .../Platinum/Source/Extras/PltFrameServer.h        |  8 +--
+ .../Platinum/Source/Extras/PltFrameStream.h        | 14 ++--
+ .../Platinum/Source/Extras/PltRingBufferStream.h   | 20 +++---
+ lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h |  8 +--
+ 47 files changed, 403 insertions(+), 403 deletions(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h b/lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h
+index cc63664cb19c..6f704f72b114 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h
+@@ -48,7 +48,7 @@ class NPT_AutoreleasePool : public NPT_AutoreleasePoolInterface
+ {
+ public:
+     NPT_AutoreleasePool();
+-    virtual ~NPT_AutoreleasePool();
++    ~NPT_AutoreleasePool() override;
+ 
+ private:
+     NPT_AutoreleasePoolInterface* m_Delegate;
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptBufferedStreams.h b/lib/libUPnP/Neptune/Source/Core/NptBufferedStreams.h
+index 1c0e0d6839df..6e3705150ea8 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptBufferedStreams.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptBufferedStreams.h
+@@ -55,7 +55,7 @@ class NPT_BufferedInputStream : public NPT_InputStream
+     // constructors and destructor
+     NPT_BufferedInputStream(NPT_InputStreamReference& stream,
+                             NPT_Size buffer_size = NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE);
+-    virtual ~NPT_BufferedInputStream();
++    ~NPT_BufferedInputStream() override;
+ 
+     // methods
+     virtual NPT_Result ReadLine(NPT_String& line,
+@@ -73,11 +73,11 @@ class NPT_BufferedInputStream : public NPT_InputStream
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = NULL);
+-    NPT_Result Seek(NPT_Position offset);
+-    NPT_Result Tell(NPT_Position& offset);
+-    NPT_Result GetSize(NPT_LargeSize& size);
+-    NPT_Result GetAvailable(NPT_LargeSize& available);
++                    NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position offset) override;
++    NPT_Result Tell(NPT_Position& offset) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ 
+ protected:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptDynamicLibraries.h b/lib/libUPnP/Neptune/Source/Core/NptDynamicLibraries.h
+index 4a2751ee21c1..50186ccfaac1 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptDynamicLibraries.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptDynamicLibraries.h
+@@ -63,13 +63,13 @@ class NPT_DynamicLibrary : public NPT_DynamicLibraryInterface
+     static NPT_Result Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*& library);
+     
+     // destructor
+-    ~NPT_DynamicLibrary() { delete m_Delegate; }
++    ~NPT_DynamicLibrary() override { delete m_Delegate; }
+     
+     // NPT_DynamicLibraryInterface methods
+-    virtual NPT_Result FindSymbol(const char* name, void*& symbol) {
++    NPT_Result FindSymbol(const char* name, void*& symbol) override {
+         return m_Delegate->FindSymbol(name, symbol);
+     }
+-    virtual NPT_Result Unload() {
++    NPT_Result Unload() override {
+         return m_Delegate->Unload();
+     }
+     
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptFile.h b/lib/libUPnP/Neptune/Source/Core/NptFile.h
+index e93bb2b43d81..c6b2db219525 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptFile.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptFile.h
+@@ -174,7 +174,7 @@ class NPT_File : public NPT_FileInterface
+     
+     // constructors and destructor
+     NPT_File(const char* path);
+-   ~NPT_File() { delete m_Delegate; }
++   ~NPT_File() override { delete m_Delegate; }
+ 
+     // methods
+     NPT_Result          Load(NPT_DataBuffer& buffer);
+@@ -186,16 +186,16 @@ class NPT_File : public NPT_FileInterface
+     NPT_Result          Rename(const char* path);
+     
+     // NPT_FileInterface methods
+-    NPT_Result Open(OpenMode mode) {
++    NPT_Result Open(OpenMode mode) override {
+         return m_Delegate->Open(mode);
+     }
+-    NPT_Result Close() {
++    NPT_Result Close() override {
+         return m_Delegate->Close();
+     }
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {
+         return m_Delegate->GetInputStream(stream);
+     }
+-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) {
++    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override {
+         return m_Delegate->GetOutputStream(stream);
+     }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp b/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
+index 8c5d587ff143..af4f6dc9497a 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
+@@ -332,7 +332,7 @@ class NPT_HttpEntityBodyInputStream : public NPT_InputStream
+                                   bool                              chunked,
+                                   NPT_HttpClient::Connection*       connection,
+                                   bool                              should_persist);
+-    virtual ~NPT_HttpEntityBodyInputStream();
++    ~NPT_HttpEntityBodyInputStream() override;
+                                   
+     // methods
+     bool SizeIsKnown() { return m_SizeIsKnown; }
+@@ -340,19 +340,19 @@ class NPT_HttpEntityBodyInputStream : public NPT_InputStream
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = NULL);
+-    NPT_Result Seek(NPT_Position /*offset*/) { 
++                    NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position /*offset*/) override { 
+         return NPT_ERROR_NOT_SUPPORTED; 
+     }
+-    NPT_Result Tell(NPT_Position& offset) { 
++    NPT_Result Tell(NPT_Position& offset) override { 
+         offset = m_Position; 
+         return NPT_SUCCESS; 
+     }
+-    NPT_Result GetSize(NPT_LargeSize& size) {
++    NPT_Result GetSize(NPT_LargeSize& size) override {
+         size = m_Size;
+         return NPT_SUCCESS; 
+     }
+-    NPT_Result GetAvailable(NPT_LargeSize& available);
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+     
+ private:
+     // methods
+@@ -1007,7 +1007,7 @@ class NPT_HttpEnvProxySelector : public NPT_HttpProxySelector,
+     static NPT_HttpEnvProxySelector* GetInstance();
+     
+     // NPT_HttpProxySelector methods
+-    NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy);
++    NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy) override;
+ 
+ private:    
+     // class variables
+@@ -1220,7 +1220,7 @@ class NPT_HttpStaticProxySelector : public NPT_HttpProxySelector
+                                 NPT_UInt16  htts_proxy_port);
+ 
+     // NPT_HttpProxySelector methods
+-    NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy);
++    NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy) override;
+ 
+ private:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptHttp.h b/lib/libUPnP/Neptune/Source/Core/NptHttp.h
+index 402d515e0e9a..fd5bfd66b733 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptHttp.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptHttp.h
+@@ -135,7 +135,7 @@ class NPT_HttpUrl : public NPT_Url {
+     NPT_HttpUrl(const char* url, bool ignore_scheme = false);
+ 
+     // methods
+-    virtual NPT_String ToString(bool with_fragment = true) const;
++    NPT_String ToString(bool with_fragment = true) const override;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -293,7 +293,7 @@ class NPT_HttpRequest : public NPT_HttpMessage {
+     NPT_HttpRequest(const char*        url,
+                     const char*        method,
+                     const char*        protocol = NPT_HTTP_PROTOCOL_1_0);
+-    virtual ~NPT_HttpRequest();
++    ~NPT_HttpRequest() override;
+ 
+     // methods
+     const NPT_HttpUrl& GetUrl() const { return m_Url; }
+@@ -322,7 +322,7 @@ class NPT_HttpResponse : public NPT_HttpMessage {
+              NPT_HttpResponse(NPT_HttpStatusCode status_code,
+                               const char*        reason_phrase,
+                               const char*        protocol = NPT_HTTP_PROTOCOL_1_0);
+-    virtual ~NPT_HttpResponse();
++    ~NPT_HttpResponse() override;
+ 
+     // methods
+     NPT_Result         SetStatus(NPT_HttpStatusCode status_code,
+@@ -503,16 +503,16 @@ class NPT_HttpConnectionManager : public NPT_Thread,
+                    NPT_SocketReference&       socket,
+                    NPT_InputStreamReference   input_stream,
+                    NPT_OutputStreamReference  output_stream);
+-        virtual ~Connection();
++        ~Connection() override;
+                    
+         // NPT_HttpClient::Connection methods
+-        virtual NPT_InputStreamReference&  GetInputStream()      { return m_InputStream;           }
+-        virtual NPT_OutputStreamReference& GetOutputStream()     { return m_OutputStream;          }
+-        virtual NPT_Result                 GetInfo(NPT_SocketInfo& info) { return m_Socket->GetInfo(info); }
+-        virtual bool                       SupportsPersistence() { return true;                    }
+-        virtual bool                       IsRecycled()          { return m_IsRecycled;            }
+-        virtual NPT_Result                 Recycle();
+-        virtual NPT_Result                 Abort()               { return m_Socket->Cancel(); }
++        NPT_InputStreamReference&  GetInputStream() override      { return m_InputStream;           }
++        NPT_OutputStreamReference& GetOutputStream() override     { return m_OutputStream;          }
++        NPT_Result                 GetInfo(NPT_SocketInfo& info) override { return m_Socket->GetInfo(info); }
++        bool                       SupportsPersistence() override { return true;                    }
++        bool                       IsRecycled() override          { return m_IsRecycled;            }
++        NPT_Result                 Recycle() override;
++        NPT_Result                 Abort() override               { return m_Socket->Cancel(); }
+ 
+         // members
+         NPT_HttpConnectionManager& m_Manager;
+@@ -524,7 +524,7 @@ class NPT_HttpConnectionManager : public NPT_Thread,
+     };
+     
+     // destructor
+-    ~NPT_HttpConnectionManager();
++    ~NPT_HttpConnectionManager() override;
+     
+     // methods
+     Connection* FindConnection(NPT_SocketAddress& address);
+@@ -545,7 +545,7 @@ class NPT_HttpConnectionManager : public NPT_Thread,
+     NPT_HttpConnectionManager();
+     
+     // NPT_Thread methods
+-    void Run();
++    void Run() override;
+     
+     // methods
+     NPT_Result      UntrackConnection(NPT_HttpClient::Connection* connection);
+@@ -629,9 +629,9 @@ class NPT_HttpStaticRequestHandler : public NPT_HttpRequestHandler
+                                  bool        copy = true);
+ 
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
++    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+ private:
+     NPT_String     m_MimeType;
+@@ -659,9 +659,9 @@ class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
+                                const char* auto_index = NULL);
+ 
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
++    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+     
+     // class methods
+     static const char* GetDefaultContentType(const char* extension);
+@@ -816,16 +816,16 @@ class NPT_HttpChunkedInputStream : public NPT_InputStream
+ public:
+     // constructors and destructor
+     NPT_HttpChunkedInputStream(NPT_BufferedInputStreamReference& stream);
+-    virtual ~NPT_HttpChunkedInputStream();
++    ~NPT_HttpChunkedInputStream() override;
+ 
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = NULL);
+-    NPT_Result Seek(NPT_Position offset);
+-    NPT_Result Tell(NPT_Position& offset);
+-    NPT_Result GetSize(NPT_LargeSize& size);
+-    NPT_Result GetAvailable(NPT_LargeSize& available);
++                    NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position offset) override;
++    NPT_Result Tell(NPT_Position& offset) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ 
+ protected:
+     // members
+@@ -842,15 +842,15 @@ class NPT_HttpChunkedOutputStream : public NPT_OutputStream
+ public:
+     // constructors and destructor
+     NPT_HttpChunkedOutputStream(NPT_OutputStream& stream);
+-    virtual ~NPT_HttpChunkedOutputStream();
++    ~NPT_HttpChunkedOutputStream() override;
+ 
+     // NPT_OutputStream methods
+     NPT_Result Write(const void* buffer, 
+                      NPT_Size    bytes_to_write, 
+-                     NPT_Size*   bytes_written = NULL);
+-    NPT_Result Seek(NPT_Position /*offset*/) { return NPT_ERROR_NOT_SUPPORTED;}
+-    NPT_Result Tell(NPT_Position& offset)    { return m_Stream.Tell(offset);  }
+-    NPT_Result Flush()                       { return m_Stream.Flush();       }
++                     NPT_Size*   bytes_written = NULL) override;
++    NPT_Result Seek(NPT_Position /*offset*/) override { return NPT_ERROR_NOT_SUPPORTED;}
++    NPT_Result Tell(NPT_Position& offset) override    { return m_Stream.Tell(offset);  }
++    NPT_Result Flush() override                       { return m_Stream.Flush();       }
+ 
+ protected:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptLogging.cpp b/lib/libUPnP/Neptune/Source/Core/NptLogging.cpp
+index 08037427ab09..5c75afe908d0 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptLogging.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptLogging.cpp
+@@ -67,7 +67,7 @@ class NPT_LogConsoleHandler : public NPT_LogHandler {
+     static NPT_Result Create(const char* logger_name, NPT_LogHandler*& handler);
+ 
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+ 
+ private:
+     // members
+@@ -82,7 +82,7 @@ class NPT_LogFileHandler : public NPT_LogHandler {
+     static NPT_Result Create(const char* logger_name, NPT_LogHandler*& handler);
+ 
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+ 
+ private:
+     NPT_Result Open(bool append = true);
+@@ -104,7 +104,7 @@ class NPT_LogTcpHandler : public NPT_LogHandler {
+     static NPT_Result Create(const char* logger_name, NPT_LogHandler*& handler);
+ 
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+ 
+ private:
+     // methods
+@@ -122,7 +122,7 @@ class NPT_LogUdpHandler : public NPT_LogHandler {
+     static NPT_Result Create(const char* logger_name, NPT_LogHandler*& handler);
+ 
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+ 
+ private:
+     // members
+@@ -136,7 +136,7 @@ class NPT_LogNullHandler : public NPT_LogHandler {
+     static NPT_Result Create(NPT_LogHandler*& handler);
+ 
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+ };
+ 
+ class NPT_LogCustomHandler : public NPT_LogHandler {
+@@ -146,7 +146,7 @@ class NPT_LogCustomHandler : public NPT_LogHandler {
+     static NPT_Result Create(NPT_LogHandler*& handler);
+     
+     // methods
+-    void Log(const NPT_LogRecord& record);
++    void Log(const NPT_LogRecord& record) override;
+     
+ private:
+     static CustomHandlerExternalFunction s_ExternalFunction;
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptLogging.h b/lib/libUPnP/Neptune/Source/Core/NptLogging.h
+index 3168424a3bc8..60966c922e52 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptLogging.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptLogging.h
+@@ -189,16 +189,16 @@ class NPT_HttpLoggerConfigurator : NPT_HttpRequestHandler, public NPT_Thread {
+     // constructor and destructor
+     NPT_HttpLoggerConfigurator(NPT_UInt16 port = NPT_HTTP_LOGGER_CONFIGURATOR_DEFAULT_PORT,
+                                bool       detached = true);
+-    virtual ~NPT_HttpLoggerConfigurator();
++    ~NPT_HttpLoggerConfigurator() override;
+ 
+     // NPT_Runnable (NPT_Thread) methods
+-    virtual void Run();
++    void Run() override;
+ 
+ private:
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
++    NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+     // members
+     NPT_HttpServer* m_Server;
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptMessaging.h b/lib/libUPnP/Neptune/Source/Core/NptMessaging.h
+index 3e61919f56a8..3da21a0901bb 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptMessaging.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptMessaging.h
+@@ -89,11 +89,11 @@ class NPT_MessageHandlerProxy : public NPT_MessageHandler
+     NPT_MessageHandlerProxy(NPT_MessageHandler* handler);
+     
+     // destructor
+-    virtual ~NPT_MessageHandlerProxy();
++    ~NPT_MessageHandlerProxy() override;
+ 
+     // NPT_MessageHandler methods
+-    virtual void OnMessage(NPT_Message*);
+-    virtual NPT_Result HandleMessage(NPT_Message* message);
++    void OnMessage(NPT_Message*) override;
++    NPT_Result HandleMessage(NPT_Message* message) override;
+     
+     /**
+      * Detach the proxy from the handler implementation.
+@@ -153,7 +153,7 @@ class NPT_TerminateMessage : public NPT_Message
+ {
+ public:
+     // methods
+-    NPT_Result Dispatch(NPT_MessageHandler* /*handler*/) {
++    NPT_Result Dispatch(NPT_MessageHandler* /*handler*/) override {
+         return NPT_ERROR_TERMINATED;
+     }
+ };
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptSelectableMessageQueue.h b/lib/libUPnP/Neptune/Source/Core/NptSelectableMessageQueue.h
+index 23dd4991537d..56b55d083a4a 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptSelectableMessageQueue.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptSelectableMessageQueue.h
+@@ -46,12 +46,12 @@ class NPT_SelectableMessageQueue : public NPT_SimpleMessageQueue
+ public:
+     // methods
+              NPT_SelectableMessageQueue();
+-    virtual ~NPT_SelectableMessageQueue();
++    ~NPT_SelectableMessageQueue() override;
+     
+     // NPT_MessageQueue methods
+-    virtual NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+-    virtual NPT_Result QueueMessage(NPT_Message*        message,
+-                                    NPT_MessageHandler* handler);
++    NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override;
++    NPT_Result QueueMessage(NPT_Message*        message,
++                                    NPT_MessageHandler* handler) override;
+ 
+     // methods
+     int  GetEventFd() { return m_Pipe[0]; }
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptSerialPort.h b/lib/libUPnP/Neptune/Source/Core/NptSerialPort.h
+index 1e23a3d37fdc..b543c112c65c 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptSerialPort.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptSerialPort.h
+@@ -92,22 +92,22 @@ class NPT_SerialPort : public NPT_SerialPortInterface
+ public:
+     // constructors and destructor
+     NPT_SerialPort(const char* name);
+-   ~NPT_SerialPort() { delete m_Delegate; }
++   ~NPT_SerialPort() override { delete m_Delegate; }
+ 
+     // NPT_SerialPortInterface methods
+     NPT_Result Open(unsigned int              speed, 
+                     NPT_SerialPortStopBits    stop_bits = NPT_SERIAL_PORT_STOP_BITS_1,
+                     NPT_SerialPortFlowControl flow_control = NPT_SERIAL_PORT_FLOW_CONTROL_NONE,
+-                    NPT_SerialPortParity      parity = NPT_SERIAL_PORT_PARITY_NONE) {
++                    NPT_SerialPortParity      parity = NPT_SERIAL_PORT_PARITY_NONE) override {
+         return m_Delegate->Open(speed, stop_bits, flow_control, parity);
+     }
+-    NPT_Result Close() {
++    NPT_Result Close() override {
+         return m_Delegate->Close();
+     }
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {
+         return m_Delegate->GetInputStream(stream);
+     }
+-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) {
++    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override {
+         return m_Delegate->GetOutputStream(stream);
+     }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptSimpleMessageQueue.h b/lib/libUPnP/Neptune/Source/Core/NptSimpleMessageQueue.h
+index 158b6ff0297a..cad3ce124690 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptSimpleMessageQueue.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptSimpleMessageQueue.h
+@@ -53,12 +53,12 @@ class NPT_SimpleMessageQueue : public NPT_MessageQueue
+  public:
+     // members
+     NPT_SimpleMessageQueue();
+-    virtual ~NPT_SimpleMessageQueue();
++    ~NPT_SimpleMessageQueue() override;
+ 
+     // NPT_MessageQueue methods
+-    virtual NPT_Result QueueMessage(NPT_Message*        message, 
+-                                    NPT_MessageHandler* handler);
+-    virtual NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
++    NPT_Result QueueMessage(NPT_Message*        message, 
++                                    NPT_MessageHandler* handler) override;
++    NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override;
+ 
+  private:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptSockets.h b/lib/libUPnP/Neptune/Source/Core/NptSockets.h
+index 789939a5341d..fcd2830715ef 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptSockets.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptSockets.h
+@@ -190,35 +190,35 @@ class NPT_Socket : public NPT_SocketInterface
+ public:
+     // constructor and destructor
+     explicit NPT_Socket(NPT_SocketInterface* delegate) : m_SocketDelegate(delegate) {}
+-    virtual ~NPT_Socket();
++    ~NPT_Socket() override;
+ 
+     // delegate NPT_SocketInterface methods
+-    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) {             
++    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) override {             
+         return m_SocketDelegate->Bind(address, reuse_address);                            
+     }                                                               
+     NPT_Result Connect(const NPT_SocketAddress& address,            
+-                       NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
++                       NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override {
+        return m_SocketDelegate->Connect(address, timeout);                 
+     }                                                               
+-    NPT_Result WaitForConnection(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
++    NPT_Result WaitForConnection(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override {
+         return m_SocketDelegate->WaitForConnection(timeout);                 
+     } 
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {   
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {   
+         return m_SocketDelegate->GetInputStream(stream);                   
+     }                                                               
+-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) { 
++    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override { 
+     return m_SocketDelegate->GetOutputStream(stream);                      
+     }                                                               
+-    NPT_Result GetInfo(NPT_SocketInfo& info) {                      
++    NPT_Result GetInfo(NPT_SocketInfo& info) override {                      
+         return m_SocketDelegate->GetInfo(info);                            
+     }                                                               
+-    NPT_Result SetReadTimeout(NPT_Timeout timeout) {                      
++    NPT_Result SetReadTimeout(NPT_Timeout timeout) override {                      
+         return m_SocketDelegate->SetReadTimeout(timeout);                            
+     }                                                          
+-    NPT_Result SetWriteTimeout(NPT_Timeout timeout) {                      
++    NPT_Result SetWriteTimeout(NPT_Timeout timeout) override {                      
+         return m_SocketDelegate->SetWriteTimeout(timeout);                            
+     }                                                          
+-    NPT_Result Cancel(bool shutdown=true) {                      
++    NPT_Result Cancel(bool shutdown=true) override {                      
+         return m_SocketDelegate->Cancel(shutdown);                            
+     }                                                          
+ 
+@@ -241,15 +241,15 @@ class NPT_UdpSocket : public NPT_Socket,
+  public:
+     // constructor and destructor
+              NPT_UdpSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+-    virtual ~NPT_UdpSocket();
++    ~NPT_UdpSocket() override;
+ 
+     // delegate NPT_UdpSocketInterface methods
+     NPT_Result Send(const NPT_DataBuffer&    packet,           
+-                    const NPT_SocketAddress* address = NULL) {
++                    const NPT_SocketAddress* address = NULL) override {
+         return m_UdpSocketDelegate->Send(packet, address);              
+     }                                                         
+     NPT_Result Receive(NPT_DataBuffer&     packet,            
+-                       NPT_SocketAddress*  address = NULL) {  
++                       NPT_SocketAddress*  address = NULL) override {  
+         return m_UdpSocketDelegate->Receive(packet, address);           
+     }
+ 
+@@ -270,23 +270,23 @@ class NPT_UdpMulticastSocket : public NPT_UdpSocket,
+ public:
+     // constructor and destructor
+              NPT_UdpMulticastSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+-    virtual ~NPT_UdpMulticastSocket();
++    ~NPT_UdpMulticastSocket() override;
+ 
+     // delegate NPT_UdpMulticastSocketInterface methods
+     NPT_Result JoinGroup(const NPT_IpAddress& group,            
+                          const NPT_IpAddress& iface =           
+-                         NPT_IpAddress::Any) {                  
++                         NPT_IpAddress::Any) override {                  
+         return m_UdpMulticastSocketDelegate->JoinGroup(group, iface);
+     }                                                           
+     NPT_Result LeaveGroup(const NPT_IpAddress& group,           
+                           const NPT_IpAddress& iface =          
+-                          NPT_IpAddress::Any) {                 
++                          NPT_IpAddress::Any) override {                 
+         return m_UdpMulticastSocketDelegate->LeaveGroup(group, iface);
+     }                                                          
+-    NPT_Result SetTimeToLive(unsigned char ttl) {     
++    NPT_Result SetTimeToLive(unsigned char ttl) override {     
+         return m_UdpMulticastSocketDelegate->SetTimeToLive(ttl); 
+     }
+-    NPT_Result SetInterface(const NPT_IpAddress& iface) {
++    NPT_Result SetInterface(const NPT_IpAddress& iface) override {
+         return m_UdpMulticastSocketDelegate->SetInterface(iface);
+     }
+ 
+@@ -303,7 +303,7 @@ class NPT_TcpClientSocket : public NPT_Socket
+ public:
+     // constructors and destructor
+              NPT_TcpClientSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+-    virtual ~NPT_TcpClientSocket();
++    ~NPT_TcpClientSocket() override;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -315,15 +315,15 @@ class NPT_TcpServerSocket : public NPT_Socket,
+ public:
+     // constructors and destructor
+              NPT_TcpServerSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+-    virtual ~NPT_TcpServerSocket();
++    ~NPT_TcpServerSocket() override;
+ 
+     // delegate NPT_TcpServerSocketInterface methods
+-    NPT_Result Listen(unsigned int max_clients) {   
++    NPT_Result Listen(unsigned int max_clients) override {   
+         return m_TcpServerSocketDelegate->Listen(max_clients);
+     }
+     NPT_Result WaitForNewClient(NPT_Socket*& client, 
+                                 NPT_Timeout  timeout = NPT_TIMEOUT_INFINITE,
+-                                NPT_Flags    flags = 0) {
++                                NPT_Flags    flags = 0) override {
+         return m_TcpServerSocketDelegate->WaitForNewClient(client, timeout, flags);
+     }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptStreams.h b/lib/libUPnP/Neptune/Source/Core/NptStreams.h
+index 6cdab10fcb27..bb22903a9137 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptStreams.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptStreams.h
+@@ -139,10 +139,10 @@ class NPT_DelegatingInputStream : public NPT_InputStream
+ {
+ public:
+     // NPT_InputStream methods
+-    NPT_Result Seek(NPT_Position offset) {
++    NPT_Result Seek(NPT_Position offset) override {
+         return InputSeek(offset);
+     }
+-    NPT_Result Tell(NPT_Position& offset) {
++    NPT_Result Tell(NPT_Position& offset) override {
+         return InputTell(offset);
+     }
+ 
+@@ -165,10 +165,10 @@ class NPT_DelegatingOutputStream : public NPT_OutputStream
+ {
+ public:
+     // NPT_OutputStream methods
+-    NPT_Result Seek(NPT_Position offset) {
++    NPT_Result Seek(NPT_Position offset) override {
+         return OutputSeek(offset);
+     }
+-    NPT_Result Tell(NPT_Position& offset) {
++    NPT_Result Tell(NPT_Position& offset) override {
+         return OutputTell(offset);
+     }
+ 
+@@ -189,7 +189,7 @@ class NPT_MemoryStream :
+     // constructor and destructor
+     NPT_MemoryStream(NPT_Size initial_capacity = 0);
+     NPT_MemoryStream(const void* data, NPT_Size size);
+-    virtual ~NPT_MemoryStream() {}
++    ~NPT_MemoryStream() override {}
+ 
+     // accessors
+     const NPT_DataBuffer& GetBuffer() const { return m_Buffer; }
+@@ -197,12 +197,12 @@ class NPT_MemoryStream :
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = NULL);
+-    NPT_Result GetSize(NPT_LargeSize& size)  { 
++                    NPT_Size* bytes_read = NULL) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override  { 
+         size = m_Buffer.GetDataSize();    
+         return NPT_SUCCESS;
+     }
+-    NPT_Result GetAvailable(NPT_LargeSize& available) { 
++    NPT_Result GetAvailable(NPT_LargeSize& available) override { 
+         available = (NPT_LargeSize)m_Buffer.GetDataSize()-m_ReadOffset; 
+         return NPT_SUCCESS;
+     }
+@@ -210,7 +210,7 @@ class NPT_MemoryStream :
+     // NPT_OutputStream methods
+     NPT_Result Write(const void* buffer, 
+                      NPT_Size    bytes_to_write, 
+-                     NPT_Size*   bytes_written = NULL);
++                     NPT_Size*   bytes_written = NULL) override;
+ 
+     // methods delegated to m_Buffer
+     const NPT_Byte* GetData() const { return m_Buffer.GetData(); }
+@@ -223,15 +223,15 @@ class NPT_MemoryStream :
+ 
+ private:
+     // NPT_DelegatingInputStream methods
+-    NPT_Result InputSeek(NPT_Position offset);
+-    NPT_Result InputTell(NPT_Position& offset) { 
++    NPT_Result InputSeek(NPT_Position offset) override;
++    NPT_Result InputTell(NPT_Position& offset) override { 
+         offset = m_ReadOffset; 
+         return NPT_SUCCESS;
+     }
+ 
+     // NPT_DelegatingOutputStream methods
+-    NPT_Result OutputSeek(NPT_Position offset);
+-    NPT_Result OutputTell(NPT_Position& offset) {
++    NPT_Result OutputSeek(NPT_Position offset) override;
++    NPT_Result OutputTell(NPT_Position& offset) override {
+         offset = m_WriteOffset; 
+         return NPT_SUCCESS;
+     }
+@@ -254,16 +254,16 @@ class NPT_StringOutputStream : public NPT_OutputStream
+     // methods
+     NPT_StringOutputStream(NPT_Size size = 4096);
+     NPT_StringOutputStream(NPT_String* storage);
+-    virtual ~NPT_StringOutputStream() ;
++    ~NPT_StringOutputStream() override ;
+ 
+     const NPT_String& GetString() const { return *m_String; }
+     NPT_Result Reset() { if (m_String) m_String->SetLength(0); return NPT_SUCCESS; }
+ 
+     // NPT_OutputStream methods
+-    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL);
++    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL) override;
+ 
+-    NPT_Result Seek(NPT_Position /*offset*/)  { return NPT_ERROR_NOT_SUPPORTED;   }
+-    NPT_Result Tell(NPT_Position& offset) { offset = m_String->GetLength(); return NPT_SUCCESS; }
++    NPT_Result Seek(NPT_Position /*offset*/) override  { return NPT_ERROR_NOT_SUPPORTED;   }
++    NPT_Result Tell(NPT_Position& offset) override { offset = m_String->GetLength(); return NPT_SUCCESS; }
+ 
+ protected:
+     NPT_String* m_String;
+@@ -284,13 +284,13 @@ class NPT_SubInputStream : public NPT_InputStream
+                        NPT_LargeSize             size); 
+ 
+     // methods
+-    virtual NPT_Result Read(void*     buffer, 
++    NPT_Result Read(void*     buffer, 
+                             NPT_Size  bytes_to_read, 
+-                            NPT_Size* bytes_read = NULL);
+-    virtual NPT_Result Seek(NPT_Position offset);
+-    virtual NPT_Result Tell(NPT_Position& offset);
+-    virtual NPT_Result GetSize(NPT_LargeSize& size);
+-    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
++                            NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position offset) override;
++    NPT_Result Tell(NPT_Position& offset) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ 
+ private:
+     NPT_InputStreamReference m_Source;
+@@ -307,13 +307,13 @@ class NPT_NullOutputStream : public NPT_OutputStream
+ public:
+     // methods
+     NPT_NullOutputStream() {}
+-    virtual ~NPT_NullOutputStream() {}
++    ~NPT_NullOutputStream() override {}
+ 
+     // NPT_OutputStream methods
+-    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL);
++    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL) override;
+ 
+-    NPT_Result Seek(NPT_Position /*offset*/)  { return NPT_ERROR_NOT_SUPPORTED;   }
+-    NPT_Result Tell(NPT_Position& /*offset*/)  { return NPT_ERROR_NOT_SUPPORTED;   }
++    NPT_Result Seek(NPT_Position /*offset*/) override  { return NPT_ERROR_NOT_SUPPORTED;   }
++    NPT_Result Tell(NPT_Position& /*offset*/) override  { return NPT_ERROR_NOT_SUPPORTED;   }
+ };
+ 
+ typedef NPT_Reference<NPT_NullOutputStream> NPT_NullOutputStreamReference;
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptThreads.h b/lib/libUPnP/Neptune/Source/Core/NptThreads.h
+index 9a7455f44b28..4bf73c8d5c9b 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptThreads.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptThreads.h
+@@ -78,9 +78,9 @@ class NPT_Mutex : public NPT_MutexInterface
+  public:
+     // methods
+                NPT_Mutex();
+-              ~NPT_Mutex() { delete m_Delegate; }
+-    NPT_Result Lock()   { return m_Delegate->Lock();   }
+-    NPT_Result Unlock() { return m_Delegate->Unlock(); }
++              ~NPT_Mutex() override { delete m_Delegate; }
++    NPT_Result Lock() override   { return m_Delegate->Lock();   }
++    NPT_Result Unlock() override { return m_Delegate->Unlock(); }
+ 
+  private:
+     // members
+@@ -151,17 +151,17 @@ class NPT_SharedVariable : public NPT_SharedVariableInterface
+  public:
+     // methods
+                NPT_SharedVariable(int value = 0);
+-              ~NPT_SharedVariable() { delete m_Delegate; }
+-    void SetValue(int value) { 
++              ~NPT_SharedVariable() override { delete m_Delegate; }
++    void SetValue(int value) override { 
+         m_Delegate->SetValue(value); 
+     }
+-    int GetValue() { 
++    int GetValue() override { 
+         return m_Delegate->GetValue(); 
+     }
+-    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
++    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override { 
+         return m_Delegate->WaitUntilEquals(value, timeout); 
+     }
+-    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
++    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override { 
+         return m_Delegate->WaitWhileEquals(value, timeout); 
+     }
+ 
+@@ -192,11 +192,11 @@ class NPT_AtomicVariable : public NPT_AtomicVariableInterface
+  public:
+     // methods
+          NPT_AtomicVariable(int value = 0);
+-        ~NPT_AtomicVariable() { delete m_Delegate;             }
+-    int  Increment()          { return m_Delegate->Increment();}
+-    int  Decrement()          { return m_Delegate->Decrement();}
+-    void SetValue(int value)  { m_Delegate->SetValue(value);   }
+-    int  GetValue()           { return m_Delegate->GetValue(); }
++        ~NPT_AtomicVariable() override { delete m_Delegate;             }
++    int  Increment() override          { return m_Delegate->Increment();}
++    int  Decrement() override          { return m_Delegate->Decrement();}
++    void SetValue(int value) override  { m_Delegate->SetValue(value);   }
++    int  GetValue() override           { return m_Delegate->GetValue(); }
+ 
+  private:
+     // members
+@@ -220,7 +220,7 @@ class NPT_ThreadInterface: public NPT_Runnable, public NPT_Interruptible
+ {
+  public:
+     // methods
+-    virtual           ~NPT_ThreadInterface() {}
++              ~NPT_ThreadInterface() override {}
+     virtual NPT_Result Start() = 0;
+     virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
+     virtual NPT_Result SetPriority(int /*priority*/) { return NPT_SUCCESS; } 
+@@ -244,27 +244,27 @@ class NPT_Thread : public NPT_ThreadInterface
+     // methods
+     explicit NPT_Thread(bool detached = false);
+     explicit NPT_Thread(NPT_Runnable& target, bool detached = false);
+-   ~NPT_Thread() { delete m_Delegate; }
++   ~NPT_Thread() override { delete m_Delegate; }
+ 
+     // NPT_ThreadInterface methods
+-    NPT_Result Start() { 
++    NPT_Result Start() override { 
+         return m_Delegate->Start(); 
+     } 
+-    NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE)  { 
++    NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override  { 
+         return m_Delegate->Wait(timeout);  
+     }
+-    NPT_Result SetPriority(int priority) {
++    NPT_Result SetPriority(int priority) override {
+         return m_Delegate->SetPriority(priority);
+     }    
+-    NPT_Result GetPriority(int& priority) {
++    NPT_Result GetPriority(int& priority) override {
+         return m_Delegate->GetPriority(priority);
+     }
+ 
+     // NPT_Runnable methods
+-    virtual void Run() {}
++    void Run() override {}
+ 
+     // NPT_Interruptible methods
+-    virtual NPT_Result Interrupt() { return m_Delegate->Interrupt(); }
++    NPT_Result Interrupt() override { return m_Delegate->Interrupt(); }
+ 
+  private:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptTls.cpp b/lib/libUPnP/Neptune/Source/Core/NptTls.cpp
+index c622bb78aa2d..9118352ed5de 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptTls.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptTls.cpp
+@@ -1052,10 +1052,10 @@ NPT_HttpTlsConnector::VerifyPeer(NPT_TlsClientSession& session, const char* host
+ class NPT_HttpSimpleTlsConnection : public NPT_HttpClient::Connection
+ {
+ public:
+-    virtual NPT_InputStreamReference&  GetInputStream() {
++    NPT_InputStreamReference&  GetInputStream() override {
+         return m_InputStream;
+     }
+-    virtual NPT_OutputStreamReference& GetOutputStream() {
++    NPT_OutputStreamReference& GetOutputStream() override {
+         return m_OutputStream;
+     }
+     
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptTls.h b/lib/libUPnP/Neptune/Source/Core/NptTls.h
+index 4a392fdcc7b1..dafe8ef304ba 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptTls.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptTls.h
+@@ -131,7 +131,7 @@ class NPT_TlsContext : public NPT_AutomaticCleaner::Singleton
+         OPTION_NO_SESSION_CACHE           = 8
+     };
+     NPT_TlsContext(NPT_Flags options=0);
+-   ~NPT_TlsContext();
++   ~NPT_TlsContext() override;
+    
+     // methods
+     NPT_Result LoadKey(NPT_TlsKeyFormat     key_format, 
+@@ -281,12 +281,12 @@ class NPT_HttpTlsConnector : public NPT_HttpClient::Connector
+ class NPT_HttpTlsConnector : public NPT_HttpClient::Connector
+ {
+ public:
+-    virtual ~NPT_HttpTlsConnector() {}
+-    virtual NPT_Result Connect(const NPT_HttpUrl&           url,
++    ~NPT_HttpTlsConnector() override {}
++    NPT_Result Connect(const NPT_HttpUrl&           url,
+                                NPT_HttpClient&              client,
+                                const NPT_HttpProxyAddress*  proxy,
+                                bool                         reuse,
+-                               NPT_HttpClient::Connection*& connection);
++                               NPT_HttpClient::Connection*& connection) override;
+ };
+ #endif
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptXml.h b/lib/libUPnP/Neptune/Source/Core/NptXml.h
+index b5d18ea38148..f76243bff453 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptXml.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptXml.h
+@@ -175,7 +175,7 @@ class NPT_XmlElementNode : public NPT_XmlNode
+     // methods
+                             NPT_XmlElementNode(const char* tag);
+                             NPT_XmlElementNode(const char* prefix, const char* tag);
+-    virtual                ~NPT_XmlElementNode();
++                   ~NPT_XmlElementNode() override;
+     NPT_List<NPT_XmlNode*>& GetChildren() { return m_Children; }
+     const NPT_List<NPT_XmlNode*>& 
+                             GetChildren() const { return m_Children; }
+@@ -211,12 +211,12 @@ class NPT_XmlElementNode : public NPT_XmlNode
+     const NPT_String* GetNamespacePrefix(const char* uri) const;
+ 
+     // type casting
+-    NPT_XmlElementNode*       AsElementNode()       { return this; }
+-    const NPT_XmlElementNode* AsElementNode() const { return this; }
++    NPT_XmlElementNode*       AsElementNode() override       { return this; }
++    const NPT_XmlElementNode* AsElementNode() const override { return this; }
+ 
+ protected:
+     // methods
+-    void SetParent(NPT_XmlNode* parent);
++    void SetParent(NPT_XmlNode* parent) override;
+     void SetNamespaceParent(NPT_XmlElementNode* parent);
+     void RelinkNamespaceMaps();
+ 
+@@ -263,8 +263,8 @@ class NPT_XmlTextNode : public NPT_XmlNode
+     const NPT_String& GetString() const { return m_Text; }
+ 
+     // type casting
+-    NPT_XmlTextNode*       AsTextNode()       { return this; }
+-    const NPT_XmlTextNode* AsTextNode() const { return this; }
++    NPT_XmlTextNode*       AsTextNode() override       { return this; }
++    const NPT_XmlTextNode* AsTextNode() const override { return this; }
+ 
+  private:
+     // members  
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptZip.h b/lib/libUPnP/Neptune/Source/Core/NptZip.h
+index 3720451e7079..d8b692acca7c 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptZip.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptZip.h
+@@ -141,16 +141,16 @@ class NPT_ZipInflatingInputStream : public NPT_InputStream
+ {
+ public:
+     NPT_ZipInflatingInputStream(NPT_InputStreamReference& source, bool raw = false);
+-   ~NPT_ZipInflatingInputStream();
++   ~NPT_ZipInflatingInputStream() override;
+    
+     // NPT_InputStream methods
+-    virtual NPT_Result Read(void*     buffer, 
++    NPT_Result Read(void*     buffer, 
+                             NPT_Size  bytes_to_read, 
+-                            NPT_Size* bytes_read = NULL);
+-    virtual NPT_Result Seek(NPT_Position offset);
+-    virtual NPT_Result Tell(NPT_Position& offset);
+-    virtual NPT_Result GetSize(NPT_LargeSize& size);
+-    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
++                            NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position offset) override;
++    NPT_Result Tell(NPT_Position& offset) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ 
+ private:
+     NPT_InputStreamReference m_Source;
+@@ -172,16 +172,16 @@ class NPT_ZipDeflatingInputStream : public NPT_InputStream
+     NPT_ZipDeflatingInputStream(NPT_InputStreamReference& source,
+                                 int                       compression_level = NPT_ZIP_COMPRESSION_LEVEL_DEFAULT,
+                                 NPT_Zip::Format           format = NPT_Zip::ZLIB);
+-   ~NPT_ZipDeflatingInputStream();
++   ~NPT_ZipDeflatingInputStream() override;
+    
+     // NPT_InputStream methods
+-    virtual NPT_Result Read(void*     buffer, 
++    NPT_Result Read(void*     buffer, 
+                             NPT_Size  bytes_to_read, 
+-                            NPT_Size* bytes_read = NULL);
+-    virtual NPT_Result Seek(NPT_Position offset);
+-    virtual NPT_Result Tell(NPT_Position& offset);
+-    virtual NPT_Result GetSize(NPT_LargeSize& size);
+-    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
++                            NPT_Size* bytes_read = NULL) override;
++    NPT_Result Seek(NPT_Position offset) override;
++    NPT_Result Tell(NPT_Position& offset) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ 
+ private:
+     NPT_InputStreamReference m_Source;
+diff --git a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+index 6174ff96f902..ee86dbf4b092 100644
+--- a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+@@ -891,14 +891,14 @@ class NPT_BsdSocketInputStream : public NPT_InputStream,
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read);
+-    NPT_Result Seek(NPT_Position offset) { 
++                    NPT_Size* bytes_read) override;
++    NPT_Result Seek(NPT_Position offset) override { 
+         return NPT_BsdSocketStream::Seek(offset); }
+-    NPT_Result Tell(NPT_Position& where) {
++    NPT_Result Tell(NPT_Position& where) override {
+         return NPT_BsdSocketStream::Tell(where);
+     }
+-    NPT_Result GetSize(NPT_LargeSize& size);
+-    NPT_Result GetAvailable(NPT_LargeSize& available);
++    NPT_Result GetSize(NPT_LargeSize& size) override;
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -1004,13 +1004,13 @@ class NPT_BsdSocketOutputStream : public NPT_OutputStream,
+     // NPT_OutputStream methods
+     NPT_Result Write(const void* buffer, 
+                      NPT_Size    bytes_to_write, 
+-                     NPT_Size*   bytes_written);
+-    NPT_Result Seek(NPT_Position offset) { 
++                     NPT_Size*   bytes_written) override;
++    NPT_Result Seek(NPT_Position offset) override { 
+         return NPT_BsdSocketStream::Seek(offset); }
+-    NPT_Result Tell(NPT_Position& where) {
++    NPT_Result Tell(NPT_Position& where) override {
+         return NPT_BsdSocketStream::Tell(where);
+     }
+-    NPT_Result Flush();
++    NPT_Result Flush() override;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -1128,21 +1128,21 @@ class NPT_BsdSocket : public NPT_SocketInterface
+  public:
+     // constructors and destructor
+              NPT_BsdSocket(SocketFd fd, NPT_Flags flags);
+-    virtual ~NPT_BsdSocket();
++    ~NPT_BsdSocket() override;
+ 
+     // methods
+     NPT_Result RefreshInfo();
+ 
+     // NPT_SocketInterface methods
+-    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true);
+-    NPT_Result Connect(const NPT_SocketAddress& address, NPT_Timeout timeout);
+-    NPT_Result WaitForConnection(NPT_Timeout timeout);
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream);
+-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
+-    NPT_Result GetInfo(NPT_SocketInfo& info);
+-    NPT_Result SetReadTimeout(NPT_Timeout timeout);
+-    NPT_Result SetWriteTimeout(NPT_Timeout timeout);
+-    NPT_Result Cancel(bool shutdown);
++    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) override;
++    NPT_Result Connect(const NPT_SocketAddress& address, NPT_Timeout timeout) override;
++    NPT_Result WaitForConnection(NPT_Timeout timeout) override;
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override;
++    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override;
++    NPT_Result GetInfo(NPT_SocketInfo& info) override;
++    NPT_Result SetReadTimeout(NPT_Timeout timeout) override;
++    NPT_Result SetWriteTimeout(NPT_Timeout timeout) override;
++    NPT_Result Cancel(bool shutdown) override;
+ 
+  protected:
+     // members
+@@ -1428,18 +1428,18 @@ class NPT_BsdUdpSocket : public    NPT_UdpSocketInterface,
+  public:
+     // constructor and destructor
+              NPT_BsdUdpSocket(NPT_Flags flags);
+-    virtual ~NPT_BsdUdpSocket() {}
++    ~NPT_BsdUdpSocket() override {}
+ 
+     // NPT_SocketInterface methods
+-    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true);
++    NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) override;
+     NPT_Result Connect(const NPT_SocketAddress& address,
+-                       NPT_Timeout              timeout);
++                       NPT_Timeout              timeout) override;
+ 
+     // NPT_UdpSocketInterface methods
+     NPT_Result Send(const NPT_DataBuffer&    packet, 
+-                    const NPT_SocketAddress* address);
++                    const NPT_SocketAddress* address) override;
+     NPT_Result Receive(NPT_DataBuffer&     packet, 
+-                       NPT_SocketAddress*  address);
++                       NPT_SocketAddress*  address) override;
+ 
+     // friends
+     friend class NPT_UdpSocket;
+@@ -1696,15 +1696,15 @@ class NPT_BsdUdpMulticastSocket : public    NPT_UdpMulticastSocketInterface,
+  public:
+     // methods
+      NPT_BsdUdpMulticastSocket(NPT_Flags flags);
+-    ~NPT_BsdUdpMulticastSocket();
++    ~NPT_BsdUdpMulticastSocket() override;
+ 
+     // NPT_UdpMulticastSocketInterface methods
+     NPT_Result JoinGroup(const NPT_IpAddress& group,
+-                         const NPT_IpAddress& iface);
++                         const NPT_IpAddress& iface) override;
+     NPT_Result LeaveGroup(const NPT_IpAddress& group,
+-                          const NPT_IpAddress& iface);
+-    NPT_Result SetTimeToLive(unsigned char ttl);
+-    NPT_Result SetInterface(const NPT_IpAddress& iface);
++                          const NPT_IpAddress& iface) override;
++    NPT_Result SetTimeToLive(unsigned char ttl) override;
++    NPT_Result SetInterface(const NPT_IpAddress& iface) override;
+ 
+     // friends 
+     friend class NPT_UdpMulticastSocket;
+@@ -1919,12 +1919,12 @@ class NPT_BsdTcpClientSocket : protected NPT_BsdSocket
+  public:
+     // methods
+      NPT_BsdTcpClientSocket(NPT_Flags flags);
+-    ~NPT_BsdTcpClientSocket();
++    ~NPT_BsdTcpClientSocket() override;
+ 
+     // NPT_SocketInterface methods
+     NPT_Result Connect(const NPT_SocketAddress& address,
+-                       NPT_Timeout              timeout);
+-    NPT_Result WaitForConnection(NPT_Timeout timeout);
++                       NPT_Timeout              timeout) override;
++    NPT_Result WaitForConnection(NPT_Timeout timeout) override;
+ 
+ protected:
+     // friends
+@@ -2030,25 +2030,25 @@ class NPT_BsdTcpServerSocket : public    NPT_TcpServerSocketInterface,
+  public:
+     // methods
+      NPT_BsdTcpServerSocket(NPT_Flags flags);
+-    ~NPT_BsdTcpServerSocket();
++    ~NPT_BsdTcpServerSocket() override;
+ 
+     // NPT_SocketInterface methods
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {
+         // no stream
+         stream = NULL;
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) {
++    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override {
+         // no stream
+         stream = NULL;
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+ 
+     // NPT_TcpServerSocket methods
+-    NPT_Result Listen(unsigned int max_clients);
++    NPT_Result Listen(unsigned int max_clients) override;
+     NPT_Result WaitForNewClient(NPT_Socket*& client, 
+                                 NPT_Timeout  timeout,
+-                                NPT_Flags    flags);
++                                NPT_Flags    flags) override;
+ 
+ protected:
+     // members
+diff --git a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixQueue.cpp b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixQueue.cpp
+index f32dfe54eef4..553cda38ad67 100644
+--- a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixQueue.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixQueue.cpp
+@@ -38,10 +38,10 @@ class NPT_PosixQueue : public NPT_GenericQueue
+ public:
+     // methods
+                NPT_PosixQueue(NPT_Cardinal max_items);
+-              ~NPT_PosixQueue();
+-    NPT_Result Push(NPT_QueueItem* item, NPT_Timeout timeout); 
+-    NPT_Result Pop(NPT_QueueItem*& item, NPT_Timeout timeout);
+-    NPT_Result Peek(NPT_QueueItem*& item, NPT_Timeout timeout);
++              ~NPT_PosixQueue() override;
++    NPT_Result Push(NPT_QueueItem* item, NPT_Timeout timeout) override; 
++    NPT_Result Pop(NPT_QueueItem*& item, NPT_Timeout timeout) override;
++    NPT_Result Peek(NPT_QueueItem*& item, NPT_Timeout timeout) override;
+ 
+ private:
+     void       Abort();
+diff --git a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
+index 36eb9978b085..010ba9be0fe9 100644
+--- a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
+@@ -41,11 +41,11 @@ class NPT_PosixMutex : public NPT_MutexInterface
+ public:
+     // methods
+              NPT_PosixMutex();
+-    virtual ~NPT_PosixMutex();
++    ~NPT_PosixMutex() override;
+ 
+     // NPT_Mutex methods
+-    virtual NPT_Result Lock();
+-    virtual NPT_Result Unlock();
++    NPT_Result Lock() override;
++    NPT_Result Unlock() override;
+ 
+ private:
+     // members
+@@ -109,11 +109,11 @@ class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
+ public:
+     // methods
+                NPT_PosixSharedVariable(int value);
+-              ~NPT_PosixSharedVariable();
+-    void       SetValue(int value);
+-    int        GetValue();
+-    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout);
+-    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout);
++              ~NPT_PosixSharedVariable() override;
++    void       SetValue(int value) override;
++    int        GetValue() override;
++    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout) override;
++    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout) override;
+ 
+  private:
+     // members
+@@ -267,11 +267,11 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
+  public:
+     // methods
+          NPT_PosixAtomicVariable(int value);
+-        ~NPT_PosixAtomicVariable();
+-    int  Increment(); 
+-    int  Decrement();
+-    int  GetValue();
+-    void SetValue(int value);
++        ~NPT_PosixAtomicVariable() override;
++    int  Increment() override; 
++    int  Decrement() override;
++    int  GetValue() override;
++    void SetValue(int value) override;
+ 
+  private:
+     // members
+@@ -365,11 +365,11 @@ class NPT_PosixThread : public NPT_ThreadInterface
+                 NPT_PosixThread(NPT_Thread*   delegator,
+                                 NPT_Runnable& target,
+                                 bool          detached);
+-               ~NPT_PosixThread();
+-    NPT_Result  Start(); 
+-    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+-    NPT_Result  SetPriority(int priority);
+-    NPT_Result  GetPriority(int& priority);
++               ~NPT_PosixThread() override;
++    NPT_Result  Start() override; 
++    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override;
++    NPT_Result  SetPriority(int priority) override;
++    NPT_Result  GetPriority(int& priority) override;
+     
+     // class methods
+     static NPT_Result GetPriority(NPT_Thread::ThreadId thread_id, int& priority);
+@@ -380,10 +380,10 @@ class NPT_PosixThread : public NPT_ThreadInterface
+     static void* EntryPoint(void* argument);
+ 
+     // NPT_Runnable methods
+-    void Run();
++    void Run() override;
+ 
+     // NPT_Interruptible methods
+-    NPT_Result Interrupt() { return NPT_ERROR_NOT_IMPLEMENTED; }
++    NPT_Result Interrupt() override { return NPT_ERROR_NOT_IMPLEMENTED; }
+ 
+     // members
+     NPT_Thread*        m_Delegator;
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.h b/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.h
+index 65baa7b10c45..401c863a6a76 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.h
+@@ -92,7 +92,7 @@ class PLT_CtrlPoint : public PLT_SsdpPacketListener,
+ {
+ public:
+     PLT_CtrlPoint(const char* search_criteria = "upnp:rootdevice"); // pass NULL to prevent repeated automatic search
+-    virtual ~PLT_CtrlPoint();
++    ~PLT_CtrlPoint() override;
+     
+     /**
+      Returns the port used by the internal HTTP server for all incoming event notifications.
+@@ -138,17 +138,17 @@ class PLT_CtrlPoint : public PLT_SsdpPacketListener,
+                                  void*        userdata = NULL);
+ 
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
++    NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+     // PLT_SsdpSearchResponseListener methods
+-    virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result                    res, 
++    NPT_Result ProcessSsdpSearchResponse(NPT_Result                    res, 
+                                                  const NPT_HttpRequestContext& context,
+-                                                 NPT_HttpResponse*             response);
++                                                 NPT_HttpResponse*             response) override;
+     // PLT_SsdpPacketListener method
+-    virtual NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
+-                                    const NPT_HttpRequestContext& context);
++    NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
++                                    const NPT_HttpRequestContext& context) override;
+ 
+ protected:
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltCtrlPointTask.h b/lib/libUPnP/Platinum/Source/Core/PltCtrlPointTask.h
+index 48e204483665..15ac8870f345 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltCtrlPointTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltCtrlPointTask.h
+@@ -67,14 +67,14 @@ class PLT_CtrlPointGetDescriptionTask : public PLT_HttpClientSocketTask
+                                     PLT_CtrlPoint*     ctrl_point,
+                                     NPT_TimeInterval   leasetime,
+                                     NPT_String         uuid);
+-    virtual ~PLT_CtrlPointGetDescriptionTask();
++    ~PLT_CtrlPointGetDescriptionTask() override;
+ 
+ protected:
+     // PLT_HttpClientSocketTask methods
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response);
++                               NPT_HttpResponse*             response) override;
+ 
+ protected:
+     PLT_CtrlPoint*   m_CtrlPoint;
+@@ -97,7 +97,7 @@ class PLT_CtrlPointGetSCPDRequest : public NPT_HttpRequest
+                                 const char*              method = "GET",
+                                 const char*              protocol = NPT_HTTP_PROTOCOL_1_1) : // 1.1 for pipelining
+         NPT_HttpRequest(url, method, protocol), m_Device(device) {}
+-    virtual ~PLT_CtrlPointGetSCPDRequest() {}
++    ~PLT_CtrlPointGetSCPDRequest() override {}
+ 
+     // members
+     PLT_DeviceDataReference m_Device;
+@@ -114,14 +114,14 @@ class PLT_CtrlPointGetSCPDsTask : public PLT_HttpClientSocketTask
+ {
+ public:
+     PLT_CtrlPointGetSCPDsTask(PLT_CtrlPoint* ctrl_point, PLT_DeviceDataReference& root_device);
+-    virtual ~PLT_CtrlPointGetSCPDsTask() {}
++    ~PLT_CtrlPointGetSCPDsTask() override {}
+ 
+     NPT_Result AddSCPDRequest(PLT_CtrlPointGetSCPDRequest* request) {
+         return PLT_HttpClientSocketTask::AddRequest((NPT_HttpRequest*)request);
+     }
+ 
+     // override to prevent calling this directly
+-    NPT_Result AddRequest(NPT_HttpRequest*) {
++    NPT_Result AddRequest(NPT_HttpRequest*) override {
+         // only queuing PLT_CtrlPointGetSCPDRequest allowed
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+@@ -131,7 +131,7 @@ class PLT_CtrlPointGetSCPDsTask : public PLT_HttpClientSocketTask
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response);   
++                               NPT_HttpResponse*             response) override;   
+ 
+ protected:
+     PLT_CtrlPoint*          m_CtrlPoint;
+@@ -152,14 +152,14 @@ class PLT_CtrlPointInvokeActionTask : public PLT_HttpClientSocketTask
+                                   PLT_CtrlPoint*       ctrl_point, 
+                                   PLT_ActionReference& action,
+                                   void*                userdata);
+-    virtual ~PLT_CtrlPointInvokeActionTask();
++    ~PLT_CtrlPointInvokeActionTask() override;
+ 
+ protected:
+     // PLT_HttpClientSocketTask methods
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response);   
++                               NPT_HttpResponse*             response) override;   
+ 
+ protected:
+     PLT_CtrlPoint*      m_CtrlPoint;
+@@ -181,10 +181,10 @@ class PLT_CtrlPointHouseKeepingTask : public PLT_ThreadTask
+                                   NPT_TimeInterval timer = NPT_TimeInterval(5.));
+ 
+ protected:
+-    ~PLT_CtrlPointHouseKeepingTask() {}
++    ~PLT_CtrlPointHouseKeepingTask() override {}
+ 
+     // PLT_ThreadTask methods
+-    virtual void DoRun();
++    void DoRun() override;
+ 
+ protected:
+     PLT_CtrlPoint*   m_CtrlPoint;
+@@ -206,14 +206,14 @@ class PLT_CtrlPointSubscribeEventTask : public PLT_HttpClientSocketTask
+ 									PLT_DeviceDataReference& device,
+                                     PLT_Service*             service,
+                                     void*                    userdata = NULL);
+-    virtual ~PLT_CtrlPointSubscribeEventTask();
++    ~PLT_CtrlPointSubscribeEventTask() override;
+     
+ protected:
+     // PLT_HttpClientSocketTask methods
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response);
++                               NPT_HttpResponse*             response) override;
+ 
+ protected:
+     PLT_CtrlPoint*          m_CtrlPoint;
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDatagramStream.h b/lib/libUPnP/Platinum/Source/Core/PltDatagramStream.h
+index 0e132b97fed9..86ba105a6b3b 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDatagramStream.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltDatagramStream.h
+@@ -58,20 +58,20 @@ class PLT_InputDatagramStream : public NPT_InputStream
+     // methods
+     PLT_InputDatagramStream(NPT_UdpSocket* socket,
+                             NPT_Size       buffer_size = 2000);
+-    virtual ~PLT_InputDatagramStream();
++    ~PLT_InputDatagramStream() override;
+     
+     NPT_Result GetInfo(NPT_SocketInfo& info);
+ 
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = 0);
++                    NPT_Size* bytes_read = 0) override;
+ 
+-    NPT_Result Seek(NPT_Position offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result Skip(NPT_Size offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result Tell(NPT_Position& offset){ NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result GetSize(NPT_LargeSize& size)   { NPT_COMPILER_UNUSED(size); return NPT_FAILURE; }
+-    NPT_Result GetAvailable(NPT_LargeSize& available) { NPT_COMPILER_UNUSED(available); return NPT_FAILURE; }
++    NPT_Result Seek(NPT_Position offset) override { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Skip(NPT_Size offset) override { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Tell(NPT_Position& offset) override{ NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result GetSize(NPT_LargeSize& size) override   { NPT_COMPILER_UNUSED(size); return NPT_FAILURE; }
++    NPT_Result GetAvailable(NPT_LargeSize& available) override { NPT_COMPILER_UNUSED(available); return NPT_FAILURE; }
+         
+ protected:
+     NPT_UdpSocket*      m_Socket;
+@@ -97,14 +97,14 @@ class PLT_OutputDatagramStream : public NPT_OutputStream
+     PLT_OutputDatagramStream(NPT_UdpSocket*           socket, 
+                              NPT_Size                 size = 4096,
+                              const NPT_SocketAddress* address = NULL);
+-    virtual ~PLT_OutputDatagramStream();
++    ~PLT_OutputDatagramStream() override;
+ 
+     // NPT_OutputStream methods
+-    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL);
+-    NPT_Result Flush();
++    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL) override;
++    NPT_Result Flush() override;
+ 
+-    NPT_Result Seek(NPT_Position offset)  { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result Tell(NPT_Position& offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Seek(NPT_Position offset) override  { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Tell(NPT_Position& offset) override { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+ 
+ protected:
+     NPT_UdpSocket*     m_Socket;
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.h b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.h
+index 9c31484d92bb..8cf611866414 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.h
+@@ -90,7 +90,7 @@ class PLT_DeviceHost : public PLT_DeviceData,
+                    bool         show_ip = false,
+                    NPT_UInt16   port = 0,
+                    bool         port_rebind = false);
+-    virtual ~PLT_DeviceHost();
++    ~PLT_DeviceHost() override;
+     
+     virtual void SetExtraBroadcast(bool broadcast) { m_ExtraBroascast = broadcast; }
+      
+@@ -123,9 +123,9 @@ class PLT_DeviceHost : public PLT_DeviceData,
+      @param context the context of the request
+      @param response the response to set up
+      */
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
++    NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+     /**
+      Static method similar to Announce.
+@@ -156,8 +156,8 @@ class PLT_DeviceHost : public PLT_DeviceData,
+      @param request SSDP packet
+      @param context the context of the request
+      */
+-    virtual NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
+-                                    const NPT_HttpRequestContext& context);
++    NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
++                                    const NPT_HttpRequestContext& context) override;
+ 
+     /**
+      Static method similar to SendSsdpSearchResponse.
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttp.h b/lib/libUPnP/Platinum/Source/Core/PltHttp.h
+index fc3d1b55c0ff..00e2b9f570e3 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttp.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttp.h
+@@ -155,12 +155,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
+ public:
+     PLT_HttpRequestHandler(NPT_HttpRequestHandler* delegate) : 
+         m_Delegate(delegate) {}
+-    virtual ~PLT_HttpRequestHandler() {}
++    ~PLT_HttpRequestHandler() override {}
+ 
+     // NPT_HttpRequestHandler methods
+     NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                              const NPT_HttpRequestContext& context,
+-                             NPT_HttpResponse&             response) {
++                             NPT_HttpResponse&             response) override {
+         return m_Delegate->SetupResponse(request, context, response);
+     }
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+index 293c59207a5f..62ac723cd0d4 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+@@ -62,15 +62,15 @@ friend class PLT_ThreadTask;
+ public:
+     PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
+                              bool             wait_forever = false);
+-    virtual ~PLT_HttpClientSocketTask();
++    ~PLT_HttpClientSocketTask() override;
+ 
+     virtual NPT_Result AddRequest(NPT_HttpRequest* request);
+     virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
+ 
+ protected:
+     // PLT_ThreadTask methods
+-    virtual void DoAbort();
+-    virtual void DoRun();
++    void DoAbort() override;
++    void DoRun() override;
+ 
+     virtual NPT_Result ProcessResponse(NPT_Result                    res, 
+                                        const NPT_HttpRequest&        request, 
+@@ -103,14 +103,14 @@ class PLT_HttpClientTask : public PLT_HttpClientSocketTask
+                                                      NPT_HTTP_PROTOCOL_1_1)), 
+                                  m_Data(data) {}
+  protected:
+-    virtual ~PLT_HttpClientTask<T>() {}
++    ~PLT_HttpClientTask<T>() override {}
+ 
+ protected:
+     // PLT_HttpClientSocketTask method
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response) {
++                               NPT_HttpResponse*             response) override {
+         return m_Data->ProcessResponse(res, request, context, response);
+     }
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttpServer.h b/lib/libUPnP/Platinum/Source/Core/PltHttpServer.h
+index 562e141431ff..04c47fce03b5 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttpServer.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttpServer.h
+@@ -61,7 +61,7 @@ class PLT_HttpServer : public NPT_HttpRequestHandler,
+                    bool          allow_random_port_on_bind_failure = false,
+                    NPT_Cardinal  max_clients = 50,
+                    bool          reuse_address = false);
+-    virtual ~PLT_HttpServer();
++    ~PLT_HttpServer() override;
+     
+     // class methods
+     static NPT_Result ServeFile(const NPT_HttpRequest&        request, 
+@@ -75,9 +75,9 @@ class PLT_HttpServer : public NPT_HttpRequestHandler,
+                                   const char*                   content_type);
+ 
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
++    NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+     // methods
+     virtual NPT_Result   Start();
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttpServerTask.h b/lib/libUPnP/Platinum/Source/Core/PltHttpServerTask.h
+index 58b2a3fb761f..dc5cbd3ad859 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttpServerTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttpServerTask.h
+@@ -64,7 +64,7 @@ class PLT_HttpServerSocketTask : public PLT_ThreadTask
+     PLT_HttpServerSocketTask(NPT_Socket* socket, bool stay_alive_forever = false);
+ 
+ protected:
+-    virtual ~PLT_HttpServerSocketTask();
++    ~PLT_HttpServerSocketTask() override;
+ 
+ protected:
+     // Request callback handler
+@@ -77,8 +77,8 @@ class PLT_HttpServerSocketTask : public PLT_ThreadTask
+     virtual NPT_Result GetInfo(NPT_SocketInfo& info);
+ 
+     // PLT_ThreadTask methods
+-    virtual void DoAbort() { if (m_Socket) m_Socket->Cancel(); }
+-    virtual void DoRun();
++    void DoAbort() override { if (m_Socket) m_Socket->Cancel(); }
++    void DoRun() override;
+ 
+ private:
+     virtual NPT_Result Read(NPT_BufferedInputStreamReference& buffered_input_stream, 
+@@ -117,11 +117,11 @@ class PLT_HttpServerTask : public PLT_HttpServerSocketTask
+         PLT_HttpServerSocketTask(socket, keep_alive), m_Handler(handler) {}
+ 
+ protected:
+-    virtual ~PLT_HttpServerTask() {}
++    ~PLT_HttpServerTask() override {}
+ 
+     NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                              const NPT_HttpRequestContext& context,
+-                             NPT_HttpResponse&             response) {
++                             NPT_HttpResponse&             response) override {
+         return m_Handler->SetupResponse(request, context, response);
+     }
+ 
+@@ -145,14 +145,14 @@ class PLT_HttpListenTask : public PLT_ThreadTask
+         m_Handler(handler), m_Socket(socket), m_OwnsSocket(owns_socket) {}
+ 
+ protected:
+-    virtual ~PLT_HttpListenTask() { 
++    ~PLT_HttpListenTask() override { 
+         if (m_OwnsSocket && m_Socket) delete m_Socket;
+     }
+ 
+ protected:
+     // PLT_ThreadTask methods
+-    virtual void DoAbort() { if (m_Socket) m_Socket->Cancel(); }
+-    virtual void DoRun();
++    void DoAbort() override { if (m_Socket) m_Socket->Cancel(); }
++    void DoRun() override;
+ 
+ protected:
+     NPT_HttpRequestHandler* m_Handler;
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltService.h b/lib/libUPnP/Platinum/Source/Core/PltService.h
+index 0401ea287e00..ebca19542c67 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltService.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltService.h
+@@ -293,7 +293,7 @@ class PLT_Service
+     public:
+         PLT_ServiceEventTask(PLT_Service* service) : m_Service(service) {}
+         
+-        void DoRun() { 
++        void DoRun() override { 
+             while (!IsAborting(100)) m_Service->NotifyChanged();
+         }
+         
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltSsdp.h b/lib/libUPnP/Platinum/Source/Core/PltSsdp.h
+index 21015e53b160..0bbbd75952ca 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltSsdp.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltSsdp.h
+@@ -162,10 +162,10 @@ class PLT_SsdpDeviceSearchResponseTask : public PLT_ThreadTask
+         m_Device(device), m_RemoteAddr(remote_addr), m_ST(st) {}
+ 
+ protected:
+-    virtual ~PLT_SsdpDeviceSearchResponseTask() {}
++    ~PLT_SsdpDeviceSearchResponseTask() override {}
+ 
+     // PLT_ThreadTask methods
+-    virtual void DoRun();
++    void DoRun() override;
+     
+ protected:
+     PLT_DeviceHost*     m_Device;
+@@ -240,10 +240,10 @@ class PLT_SsdpDeviceAnnounceTask : public PLT_ThreadTask
+         m_ExtraBroadcast(extra_broadcast) {}
+ 
+ protected:
+-    virtual ~PLT_SsdpDeviceAnnounceTask() {}
++    ~PLT_SsdpDeviceAnnounceTask() override {}
+ 
+     // PLT_ThreadTask methods
+-    virtual void DoRun();
++    void DoRun() override;
+ 
+ protected:
+     PLT_DeviceHost*             m_Device;
+@@ -333,17 +333,17 @@ class PLT_SsdpListenTask : public PLT_HttpServerSocketTask
+     }
+     
+     // PLT_Task methods
+-    void DoAbort();
++    void DoAbort() override;
+ 
+ protected:
+-    virtual ~PLT_SsdpListenTask() {}
++    ~PLT_SsdpListenTask() override {}
+ 
+     // PLT_HttpServerSocketTask methods
+-    NPT_Result GetInputStream(NPT_InputStreamReference& stream);
+-    NPT_Result GetInfo(NPT_SocketInfo& info);
++    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override;
++    NPT_Result GetInfo(NPT_SocketInfo& info) override;
+     NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                              const NPT_HttpRequestContext& context,
+-                             NPT_HttpResponse&             response);
++                             NPT_HttpResponse&             response) override;
+ 
+ protected:
+     PLT_InputDatagramStreamReference  m_Datagram;
+@@ -367,11 +367,11 @@ class PLT_SsdpSearchTask : public PLT_ThreadTask
+                        NPT_TimeInterval                frequency = NPT_TimeInterval(0.)); // pass 0 for one time
+ 
+ protected:
+-    virtual ~PLT_SsdpSearchTask();
++    ~PLT_SsdpSearchTask() override;
+ 
+     // PLT_ThreadTask methods
+-    virtual void DoAbort();
+-    virtual void DoRun();
++    void DoAbort() override;
++    void DoRun() override;
+ 
+     virtual NPT_Result ProcessResponse(NPT_Result                    res, 
+                                        const NPT_HttpRequest&        request,  
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltThreadTask.h b/lib/libUPnP/Platinum/Source/Core/PltThreadTask.h
+index 8315999c8e15..49bda3d24d7b 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltThreadTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltThreadTask.h
+@@ -116,13 +116,13 @@ class PLT_ThreadTask : public NPT_Runnable
+      The task manager will destroy the task when finished if m_AutoDestroy is 
+      true otherwise the owner of this task must use the Kill method.
+      */
+-    virtual ~PLT_ThreadTask();
++    ~PLT_ThreadTask() override;
+     
+ private:    
+     NPT_Result StartThread();
+     
+     // NPT_Thread methods
+-    void Run();
++    void Run() override;
+ 
+ protected:
+     // members
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.h b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.h
+index c9ada4174175..b628d9b11112 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltMediaConnect.h
+@@ -60,19 +60,19 @@ class PLT_MediaConnect : public PLT_MediaServer
+                      bool         port_rebind = false);
+ 
+ protected:
+-    virtual ~PLT_MediaConnect();
++    ~PLT_MediaConnect() override;
+     
+     // PLT_DeviceHost methods
+-    virtual NPT_Result SetupServices();
+-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+-                                const PLT_HttpRequestContext& context);
+-    virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
++    NPT_Result SetupServices() override;
++    NPT_Result OnAction(PLT_ActionReference&          action, 
++                                const PLT_HttpRequestContext& context) override;
++    NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
+                                              const NPT_HttpRequestContext& context,
+-                                             NPT_HttpResponse&             response);
+-    virtual NPT_Result ProcessGetSCPD(PLT_Service*                  service,
++                                             NPT_HttpResponse&             response) override;
++    NPT_Result ProcessGetSCPD(PLT_Service*                  service,
+                                       NPT_HttpRequest&              request,
+                                       const NPT_HttpRequestContext& context,
+-                                      NPT_HttpResponse&             response);
++                                      NPT_HttpResponse&             response) override;
+ 
+     // X_MS_MediaReceiverRegistrar
+     virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action);
+@@ -93,18 +93,18 @@ class PLT_FileMediaConnectDelegate : public PLT_FileMediaServerDelegate
+     // constructor & destructor
+     PLT_FileMediaConnectDelegate(const char* url_root, const char* file_root) :
+         PLT_FileMediaServerDelegate(url_root, file_root) {}
+-    virtual ~PLT_FileMediaConnectDelegate() {}
++    ~PLT_FileMediaConnectDelegate() override {}
+     
+     // PLT_FileMediaServerDelegate methods
+-    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
+-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
++    NPT_Result GetFilePath(const char* object_id, NPT_String& filepath) override;
++    NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                          const char*                   object_id, 
+                                          const char*                   search_criteria,
+                                          const char*                   filter,
+                                          NPT_UInt32                    starting_index,
+                                          NPT_UInt32                    requested_count,
+                                          const char*                   sort_criteria, 
+-                                         const PLT_HttpRequestContext& context);
++                                         const PLT_HttpRequestContext& context) override;
+ };
+ 
+ #endif /* _PLT_MEDIA_CONNECT_H_ */
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltXbox360.h b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltXbox360.h
+index 6bae726213af..346ce57b40ae 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltXbox360.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaConnect/PltXbox360.h
+@@ -49,8 +49,8 @@ class PLT_Xbox360 : public PLT_MediaRenderer
+ 
+ protected:
+     // PLT_DeviceHost methods
+-    virtual NPT_Result SetupServices();
+-    virtual NPT_Result SetupIcons();
++    NPT_Result SetupServices() override;
++    NPT_Result SetupIcons() override;
+     virtual NPT_Result InitServiceURLs(PLT_Service* service, const char* service_name);
+     
+     virtual NPT_Result Announce(PLT_DeviceData*      device, 
+@@ -59,12 +59,12 @@ class PLT_Xbox360 : public PLT_MediaRenderer
+                                 PLT_SsdpAnnounceType type);
+ 
+     // PLT_DeviceData methods
+-    virtual NPT_Result GetDescription(NPT_String& desc) { return PLT_MediaRenderer::GetDescription(desc); }
+-    virtual NPT_Result GetDescription(NPT_XmlElementNode*  parent, 
+-                                      NPT_XmlElementNode** device = NULL);
++    NPT_Result GetDescription(NPT_String& desc) override { return PLT_MediaRenderer::GetDescription(desc); }
++    NPT_Result GetDescription(NPT_XmlElementNode*  parent, 
++                                      NPT_XmlElementNode** device = NULL) override;
+ 
+ protected:
+-    virtual ~PLT_Xbox360();
++    ~PLT_Xbox360() override;
+ 
+     virtual NPT_Result AnnouncePresence(NPT_UdpSocket& socket, 
+                                         const char*    serial_number);
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
+index bfd909ca783f..743c94ff7481 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaController.h
+@@ -245,7 +245,7 @@ class PLT_MediaController : public PLT_CtrlPointListener
+ public:
+     PLT_MediaController(PLT_CtrlPointReference&      ctrl_point, 
+                         PLT_MediaControllerDelegate* delegate = NULL);
+-    virtual ~PLT_MediaController();
++    ~PLT_MediaController() override;
+ 
+     // public methods
+     virtual void SetDelegate(PLT_MediaControllerDelegate* delegate) {
+@@ -253,10 +253,10 @@ class PLT_MediaController : public PLT_CtrlPointListener
+     }
+ 
+     // PLT_CtrlPointListener methods
+-    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
+-    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
+-    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata);
+-    virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
++    NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) override;
++    NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) override;
++    NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata) override;
++    NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars) override;
+ 
+     // AVTransport
+     NPT_Result GetCurrentTransportActions(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, void* userdata);
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h
+index bc0ac327fae0..ec30a36daaf2 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h
+@@ -84,12 +84,12 @@ class PLT_MediaRenderer : public PLT_DeviceHost
+     virtual void SetDelegate(PLT_MediaRendererDelegate* delegate) { m_Delegate = delegate; }
+ 
+     // PLT_DeviceHost methods
+-    virtual NPT_Result SetupServices();
+-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+-                                const PLT_HttpRequestContext& context);
++    NPT_Result SetupServices() override;
++    NPT_Result OnAction(PLT_ActionReference&          action, 
++                                const PLT_HttpRequestContext& context) override;
+ 
+ protected:
+-    virtual ~PLT_MediaRenderer();
++    ~PLT_MediaRenderer() override;
+ 
+     // PLT_MediaRendererInterface methods
+     // ConnectionManager
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltFileMediaServer.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltFileMediaServer.h
+index 49ff9d8ab68c..fa4b5e426a36 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltFileMediaServer.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltFileMediaServer.h
+@@ -63,35 +63,35 @@ class PLT_FileMediaServerDelegate : public PLT_MediaServerDelegate
+                                            const char*        file_path);
+     // constructor & destructor
+     PLT_FileMediaServerDelegate(const char* url_root, const char* file_root, bool use_cache = false);
+-    virtual ~PLT_FileMediaServerDelegate();
++    ~PLT_FileMediaServerDelegate() override;
+     
+ protected:
+     // PLT_MediaServerDelegate methods
+-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
++    NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
+                                         const char*                   object_id, 
+                                         const char*                   filter,
+                                         NPT_UInt32                    starting_index,
+                                         NPT_UInt32                    requested_count,
+                                         const char*                   sort_criteria,
+-                                        const PLT_HttpRequestContext& context);
+-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
++                                        const PLT_HttpRequestContext& context) override;
++    NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                               const char*                   object_id, 
+                                               const char*                   filter,
+                                               NPT_UInt32                    starting_index,
+                                               NPT_UInt32                    requested_count,
+                                               const char*                   sort_criteria,
+-                                              const PLT_HttpRequestContext& context);
+-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
++                                              const PLT_HttpRequestContext& context) override;
++    NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                          const char*                   object_id, 
+                                          const char*                   search_criteria,
+                                          const char*                   filter,
+                                          NPT_UInt32                    starting_index,
+                                          NPT_UInt32                    requested_count,
+                                          const char*                   sort_criteria, 
+-                                         const PLT_HttpRequestContext& context);
+-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
++                                         const PLT_HttpRequestContext& context) override;
++    NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
+                                           const NPT_HttpRequestContext& context,
+-                                          NPT_HttpResponse&             response);
++                                          NPT_HttpResponse&             response) override;
+     
+     // overridable methods
+     virtual NPT_Result ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& file_path);
+@@ -145,7 +145,7 @@ class PLT_FileMediaServer : public PLT_MediaServer,
+         PLT_FileMediaServerDelegate("/", file_root) {SetDelegate(this);}
+ 
+ protected:
+-    virtual ~PLT_FileMediaServer() {}
++    ~PLT_FileMediaServer() override {}
+ };
+ 
+ #endif /* _PLT_FILE_MEDIA_SERVER_H_ */
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+index 41ed84ea3af4..2484dcc2b75c 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaBrowser.h
+@@ -116,7 +116,7 @@ class PLT_MediaBrowser : public PLT_CtrlPointListener
+ public:
+     PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point,
+                      PLT_MediaBrowserDelegate* delegate = NULL);
+-    virtual ~PLT_MediaBrowser();
++    ~PLT_MediaBrowser() override;
+ 
+     // ContentDirectory service
+     virtual NPT_Result Browse(PLT_DeviceDataReference& device, 
+@@ -149,10 +149,10 @@ class PLT_MediaBrowser : public PLT_CtrlPointListener
+ 
+ protected:
+     // PLT_CtrlPointListener methods
+-    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
+-    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
+-    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata);
+-    virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
++    NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) override;
++    NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) override;
++    NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata) override;
++    NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars) override;
+     
+     // ContentDirectory service responses
+     virtual NPT_Result OnBrowseResponse(NPT_Result               res, 
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 65022976053b..3a13967f5f9b 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -285,12 +285,12 @@ class PLT_MediaItem : public PLT_MediaObject
+     NPT_IMPLEMENT_DYNAMIC_CAST_D(PLT_MediaItem, PLT_MediaObject)
+ 
+     PLT_MediaItem();
+-    virtual ~PLT_MediaItem();
++    ~PLT_MediaItem() override;
+ 
+     // PLT_MediaObject methods
+-    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
+-    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
+-    NPT_Result FromDidl(NPT_XmlElementNode* entry);
++    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl) override;
++    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl) override;
++    NPT_Result FromDidl(NPT_XmlElementNode* entry) override;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -307,13 +307,13 @@ class PLT_MediaContainer : public PLT_MediaObject
+     NPT_IMPLEMENT_DYNAMIC_CAST_D(PLT_MediaContainer, PLT_MediaObject)
+ 
+     PLT_MediaContainer();
+-    virtual ~PLT_MediaContainer();
++    ~PLT_MediaContainer() override;
+ 
+     // PLT_MediaObject methods
+-    NPT_Result Reset();
+-    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
+-    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
+-    NPT_Result FromDidl(NPT_XmlElementNode* entry);
++    NPT_Result Reset() override;
++    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl) override;
++    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl) override;
++    NPT_Result FromDidl(NPT_XmlElementNode* entry) override;
+ 
+ public:
+     NPT_List<PLT_SearchClass> m_SearchClasses;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.h
+index 6af8aa183a26..d35d8d894eeb 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.h
+@@ -133,15 +133,15 @@ class PLT_MediaServer : public PLT_DeviceHost
+     virtual void UpdateContainerUpdateID(const char* id, NPT_UInt32 update);
+     
+ protected:
+-    virtual ~PLT_MediaServer();
++    ~PLT_MediaServer() override;
+     
+     // PLT_DeviceHost methods
+-    virtual NPT_Result SetupServices();
+-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+-                                const PLT_HttpRequestContext& context);
+-    virtual NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request, 
++    NPT_Result SetupServices() override;
++    NPT_Result OnAction(PLT_ActionReference&          action, 
++                                const PLT_HttpRequestContext& context) override;
++    NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request, 
+                                              const NPT_HttpRequestContext& context,
+-                                             NPT_HttpResponse&             response);
++                                             NPT_HttpResponse&             response) override;
+     
+     // ConnectionManager
+     virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference&          action, 
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index 1493a50fc4a7..6da21cb18a3e 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -94,31 +94,31 @@ class PLT_SyncMediaBrowser : public PLT_MediaBrowser,
+     PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint, 
+                          bool                               use_cache = false, 
+                          PLT_MediaContainerChangesListener* listener = NULL);
+-    virtual ~PLT_SyncMediaBrowser();
++    ~PLT_SyncMediaBrowser() override;
+ 
+     // PLT_MediaBrowser methods
+-    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
+-    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
++    NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) override;
++    NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) override;
+ 
+     // PLT_MediaBrowserDelegate methods
+-    virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
+-                                           NPT_List<PLT_StateVariable*>* vars);
+-    virtual void OnBrowseResult(NPT_Result               res, 
++    void OnMSStateVariablesChanged(PLT_Service*                  service, 
++                                           NPT_List<PLT_StateVariable*>* vars) override;
++    void OnBrowseResult(NPT_Result               res, 
+                                 PLT_DeviceDataReference& device, 
+                                 PLT_BrowseInfo*          info, 
+-                                void*                    userdata);
+-    virtual void OnSearchResult(NPT_Result               res, 
++                                void*                    userdata) override;
++    void OnSearchResult(NPT_Result               res, 
+                                 PLT_DeviceDataReference& device, 
+                                 PLT_BrowseInfo*          info, 
+-                                void*                    userdata);
+-    virtual void OnGetSearchCapabilitiesResult(NPT_Result               res, 
++                                void*                    userdata) override;
++    void OnGetSearchCapabilitiesResult(NPT_Result               res, 
+                                                PLT_DeviceDataReference& device, 
+                                                NPT_String               searchCapabilities, 
+-                                               void*                    userdata);
+-    virtual void OnGetSortCapabilitiesResult(NPT_Result               res,
++                                               void*                    userdata) override;
++    void OnGetSortCapabilitiesResult(NPT_Result               res,
+                                              PLT_DeviceDataReference& device,
+                                              NPT_String               sortCapabilities,
+-                                             void*                    userdata);
++                                             void*                    userdata) override;
+ 
+     // methods
+     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
+diff --git a/lib/libUPnP/Platinum/Source/Extras/PltDownloader.h b/lib/libUPnP/Platinum/Source/Extras/PltDownloader.h
+index 9581ec293550..15d9279ba5bf 100644
+--- a/lib/libUPnP/Platinum/Source/Extras/PltDownloader.h
++++ b/lib/libUPnP/Platinum/Source/Extras/PltDownloader.h
+@@ -65,7 +65,7 @@ class PLT_Downloader : public PLT_HttpClientSocketTask
+ public:
+     PLT_Downloader(NPT_HttpUrl&               url, 
+                    NPT_OutputStreamReference& output);
+-    virtual ~PLT_Downloader();
++    ~PLT_Downloader() override;
+     
+     Plt_DowloaderState GetState() { return m_State; }
+ 
+@@ -73,11 +73,11 @@ class PLT_Downloader : public PLT_HttpClientSocketTask
+     NPT_Result ProcessResponse(NPT_Result                    res, 
+                                const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response);
++                               NPT_HttpResponse*             response) override;
+ 
+ protected:
+-    virtual void DoRun();
+-    virtual void DoAbort();
++    void DoRun() override;
++    void DoAbort() override;
+     
+ private:
+     // members
+diff --git a/lib/libUPnP/Platinum/Source/Extras/PltFrameServer.h b/lib/libUPnP/Platinum/Source/Extras/PltFrameServer.h
+index 62a730a09efa..e5c119258317 100644
+--- a/lib/libUPnP/Platinum/Source/Extras/PltFrameServer.h
++++ b/lib/libUPnP/Platinum/Source/Extras/PltFrameServer.h
+@@ -71,9 +71,9 @@ class PLT_HttpStreamRequestHandler : public NPT_HttpRequestHandler
+         m_StreamValidator(stream_validator) {}
+ 
+     // NPT_HttpRequestHandler methods
+-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
++    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                      const NPT_HttpRequestContext& context,
+-                                     NPT_HttpResponse&             response);
++                                     NPT_HttpResponse&             response) override;
+ 
+ private:
+     PLT_StreamValidator& m_StreamValidator;
+@@ -90,9 +90,9 @@ class PLT_FrameServer : public PLT_HttpServer
+                     NPT_IpAddress        address = NPT_IpAddress::Any,
+                     NPT_UInt16           port = 0,
+                     bool                 policy_server_enabled = false);
+-    virtual ~PLT_FrameServer();
++    ~PLT_FrameServer() override;
+     
+-    virtual NPT_Result Start();
++    NPT_Result Start() override;
+ 
+ protected:
+     PLT_SocketPolicyServer* m_PolicyServer;
+diff --git a/lib/libUPnP/Platinum/Source/Extras/PltFrameStream.h b/lib/libUPnP/Platinum/Source/Extras/PltFrameStream.h
+index 0eda3c3bdae7..6d6deb8681c6 100644
+--- a/lib/libUPnP/Platinum/Source/Extras/PltFrameStream.h
++++ b/lib/libUPnP/Platinum/Source/Extras/PltFrameStream.h
+@@ -50,18 +50,18 @@ class PLT_InputFrameStream : public NPT_InputStream
+     // methods
+     PLT_InputFrameStream(NPT_Reference<PLT_FrameBuffer>& frame_buffer,
+                          const char*                     boundary);
+-    virtual ~PLT_InputFrameStream();
++    ~PLT_InputFrameStream() override;
+ 
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = 0);
++                    NPT_Size* bytes_read = 0) override;
+ 
+-    NPT_Result Seek(NPT_Position offset)      { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result Skip(NPT_Size offset)          { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result Tell(NPT_Position& offset)     { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+-    NPT_Result GetSize(NPT_LargeSize& size)   { NPT_COMPILER_UNUSED(size);   return NPT_FAILURE; }
+-    NPT_Result GetAvailable(NPT_LargeSize& available);
++    NPT_Result Seek(NPT_Position offset) override      { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Skip(NPT_Size offset) override          { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result Tell(NPT_Position& offset) override     { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
++    NPT_Result GetSize(NPT_LargeSize& size) override   { NPT_COMPILER_UNUSED(size);   return NPT_FAILURE; }
++    NPT_Result GetAvailable(NPT_LargeSize& available) override;
+         
+ private:
+     NPT_Result FillBuffer();
+diff --git a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h b/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
+index d8ecd11d8eca..e5f98b2f350f 100644
+--- a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
++++ b/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
+@@ -51,7 +51,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+ public:
+     PLT_RingBufferStream(NPT_Size buffer_size = 4096, bool blocking = true);
+     PLT_RingBufferStream(NPT_RingBufferReference& buffer, bool blocking = true);
+-    virtual ~PLT_RingBufferStream();
++    ~PLT_RingBufferStream() override;
+     
+     // methods
+     bool IsAborted() { return m_Aborted; }
+@@ -59,8 +59,8 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+     // NPT_InputStream methods
+     NPT_Result Read(void*     buffer, 
+                     NPT_Size  bytes_to_read, 
+-                    NPT_Size* bytes_read = NULL);
+-    NPT_Result GetSize(NPT_LargeSize& size)  {
++                    NPT_Size* bytes_read = NULL) override;
++    NPT_Result GetSize(NPT_LargeSize& size) override  {
+         NPT_COMPILER_UNUSED(size);
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+@@ -69,7 +69,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+         space = m_RingBuffer->GetSpace();
+         return NPT_SUCCESS;
+     }
+-    NPT_Result GetAvailable(NPT_LargeSize& available) { 
++    NPT_Result GetAvailable(NPT_LargeSize& available) override { 
+         NPT_AutoLock autoLock(m_Lock);
+         available = m_RingBuffer->GetAvailable();
+         return NPT_SUCCESS;
+@@ -78,29 +78,29 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+     // NPT_OutputStream methods
+     NPT_Result Write(const void* buffer, 
+                      NPT_Size    bytes_to_write, 
+-                     NPT_Size*   bytes_written = NULL);
+-    NPT_Result Flush();
++                     NPT_Size*   bytes_written = NULL) override;
++    NPT_Result Flush() override;
+     NPT_Result SetEOS();
+     NPT_Result Abort();
+ 
+ protected:
+     // NPT_DelegatingInputStream methods
+-    NPT_Result InputSeek(NPT_Position offset) {
++    NPT_Result InputSeek(NPT_Position offset) override {
+         NPT_COMPILER_UNUSED(offset);
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+-    NPT_Result InputTell(NPT_Position& offset) { 
++    NPT_Result InputTell(NPT_Position& offset) override { 
+         NPT_AutoLock autoLock(m_Lock);
+         offset = m_TotalBytesRead; 
+         return NPT_SUCCESS;
+     }
+ 
+     // NPT_DelegatingOutputStream methods
+-    NPT_Result OutputSeek(NPT_Position offset) {
++    NPT_Result OutputSeek(NPT_Position offset) override {
+         NPT_COMPILER_UNUSED(offset);
+         return NPT_ERROR_NOT_SUPPORTED;
+     }
+-    NPT_Result OutputTell(NPT_Position& offset) {
++    NPT_Result OutputTell(NPT_Position& offset) override {
+         NPT_AutoLock autoLock(m_Lock);
+         offset = m_TotalBytesWritten; 
+         return NPT_SUCCESS;
+diff --git a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h b/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
+index 58ef256581a5..a022b88518e4 100644
+--- a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
++++ b/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
+@@ -99,9 +99,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
+ {
+ public:
+     PLT_PipeInputStreamPump(NPT_OutputStreamReference& output, NPT_Size size = 65535);
+-    virtual ~PLT_PipeInputStreamPump();
++    ~PLT_PipeInputStreamPump() override;
+ 
+-    NPT_Result Receive(NPT_InputStream& input, NPT_Size max_bytes_to_read, NPT_Size* bytes_read);
++    NPT_Result Receive(NPT_InputStream& input, NPT_Size max_bytes_to_read, NPT_Size* bytes_read) override;
+ 
+ protected:
+     NPT_OutputStreamReference   m_Output;
+@@ -118,9 +118,9 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
+     PLT_PipeOutputStreamPump(NPT_InputStreamReference& input, 
+                              NPT_Size                  size = 65535,
+                              NPT_Size                  max_bytes_to_read = 0);
+-    virtual ~PLT_PipeOutputStreamPump();
++    ~PLT_PipeOutputStreamPump() override;
+ 
+-    NPT_Result Transmit(NPT_OutputStream& output);
++    NPT_Result Transmit(NPT_OutputStream& output) override;
+ 
+ protected:
+     NPT_InputStreamReference    m_Input;

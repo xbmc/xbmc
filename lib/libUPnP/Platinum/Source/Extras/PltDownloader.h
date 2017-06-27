@@ -65,7 +65,7 @@ class PLT_Downloader : public PLT_HttpClientSocketTask
 public:
     PLT_Downloader(NPT_HttpUrl&               url, 
                    NPT_OutputStreamReference& output);
-    virtual ~PLT_Downloader();
+    ~PLT_Downloader() override;
     
     Plt_DowloaderState GetState() { return m_State; }
 
@@ -73,11 +73,11 @@ public:
     NPT_Result ProcessResponse(NPT_Result                    res, 
                                const NPT_HttpRequest&        request, 
                                const NPT_HttpRequestContext& context, 
-                               NPT_HttpResponse*             response);
+                               NPT_HttpResponse*             response) override;
 
 protected:
-    virtual void DoRun();
-    virtual void DoAbort();
+    void DoRun() override;
+    void DoAbort() override;
     
 private:
     // members

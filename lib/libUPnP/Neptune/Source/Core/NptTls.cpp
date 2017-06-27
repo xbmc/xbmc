@@ -1052,10 +1052,10 @@ NPT_HttpTlsConnector::VerifyPeer(NPT_TlsClientSession& session, const char* host
 class NPT_HttpSimpleTlsConnection : public NPT_HttpClient::Connection
 {
 public:
-    virtual NPT_InputStreamReference&  GetInputStream() {
+    NPT_InputStreamReference&  GetInputStream() override {
         return m_InputStream;
     }
-    virtual NPT_OutputStreamReference& GetOutputStream() {
+    NPT_OutputStreamReference& GetOutputStream() override {
         return m_OutputStream;
     }
     

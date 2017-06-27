@@ -63,13 +63,13 @@ public:
     static NPT_Result Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*& library);
     
     // destructor
-    ~NPT_DynamicLibrary() { delete m_Delegate; }
+    ~NPT_DynamicLibrary() override { delete m_Delegate; }
     
     // NPT_DynamicLibraryInterface methods
-    virtual NPT_Result FindSymbol(const char* name, void*& symbol) {
+    NPT_Result FindSymbol(const char* name, void*& symbol) override {
         return m_Delegate->FindSymbol(name, symbol);
     }
-    virtual NPT_Result Unload() {
+    NPT_Result Unload() override {
         return m_Delegate->Unload();
     }
     

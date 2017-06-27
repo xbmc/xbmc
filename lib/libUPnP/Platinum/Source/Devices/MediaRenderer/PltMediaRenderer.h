@@ -84,12 +84,12 @@ public:
     virtual void SetDelegate(PLT_MediaRendererDelegate* delegate) { m_Delegate = delegate; }
 
     // PLT_DeviceHost methods
-    virtual NPT_Result SetupServices();
-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const PLT_HttpRequestContext& context);
+    NPT_Result SetupServices() override;
+    NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const PLT_HttpRequestContext& context) override;
 
 protected:
-    virtual ~PLT_MediaRenderer();
+    ~PLT_MediaRenderer() override;
 
     // PLT_MediaRendererInterface methods
     // ConnectionManager

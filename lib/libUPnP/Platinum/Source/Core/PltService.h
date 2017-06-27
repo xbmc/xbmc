@@ -293,7 +293,7 @@ private:
     public:
         PLT_ServiceEventTask(PLT_Service* service) : m_Service(service) {}
         
-        void DoRun() { 
+        void DoRun() override { 
             while (!IsAborting(100)) m_Service->NotifyChanged();
         }
         

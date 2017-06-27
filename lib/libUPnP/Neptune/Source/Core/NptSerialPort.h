@@ -92,22 +92,22 @@ class NPT_SerialPort : public NPT_SerialPortInterface
 public:
     // constructors and destructor
     NPT_SerialPort(const char* name);
-   ~NPT_SerialPort() { delete m_Delegate; }
+   ~NPT_SerialPort() override { delete m_Delegate; }
 
     // NPT_SerialPortInterface methods
     NPT_Result Open(unsigned int              speed, 
                     NPT_SerialPortStopBits    stop_bits = NPT_SERIAL_PORT_STOP_BITS_1,
                     NPT_SerialPortFlowControl flow_control = NPT_SERIAL_PORT_FLOW_CONTROL_NONE,
-                    NPT_SerialPortParity      parity = NPT_SERIAL_PORT_PARITY_NONE) {
+                    NPT_SerialPortParity      parity = NPT_SERIAL_PORT_PARITY_NONE) override {
         return m_Delegate->Open(speed, stop_bits, flow_control, parity);
     }
-    NPT_Result Close() {
+    NPT_Result Close() override {
         return m_Delegate->Close();
     }
-    NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
+    NPT_Result GetInputStream(NPT_InputStreamReference& stream) override {
         return m_Delegate->GetInputStream(stream);
     }
-    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) {
+    NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) override {
         return m_Delegate->GetOutputStream(stream);
     }
 

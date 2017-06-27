@@ -116,7 +116,7 @@ class PLT_MediaBrowser : public PLT_CtrlPointListener
 public:
     PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point,
                      PLT_MediaBrowserDelegate* delegate = NULL);
-    virtual ~PLT_MediaBrowser();
+    ~PLT_MediaBrowser() override;
 
     // ContentDirectory service
     virtual NPT_Result Browse(PLT_DeviceDataReference& device, 
@@ -149,10 +149,10 @@ public:
 
 protected:
     // PLT_CtrlPointListener methods
-    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
-    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
-    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata);
-    virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
+    NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) override;
+    NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) override;
+    NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata) override;
+    NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars) override;
     
     // ContentDirectory service responses
     virtual NPT_Result OnBrowseResponse(NPT_Result               res, 
