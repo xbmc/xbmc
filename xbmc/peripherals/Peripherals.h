@@ -58,7 +58,7 @@ namespace PERIPHERALS
   public:
     CPeripherals();
 
-    virtual ~CPeripherals();
+    ~CPeripherals() override;
 
     /*!
      * @brief Initialise the peripherals manager.
@@ -252,7 +252,7 @@ namespace PERIPHERALS
     }
 
     // implementation of IEventScannerCallback
-    virtual void ProcessEvents(void) override;
+    void ProcessEvents(void) override;
 
     /*!
      * \brief Initialize button mapping
@@ -299,15 +299,15 @@ namespace PERIPHERALS
     void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
     // implementation of ISettingCallback
-    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
     // implementation of IMessageTarget
-    virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
-    virtual int GetMessageMask() override;
+    void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+    int GetMessageMask() override;
 
     // implementation of IAnnouncer
-    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
   private:
     bool LoadMappings();

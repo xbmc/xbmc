@@ -48,16 +48,16 @@ namespace PERIPHERALS
                         KODI::JOYSTICK::IInputHandler* handler,
                         KODI::JOYSTICK::IDriverReceiver* receiver);
 
-    virtual ~CAddonInputHandling(void);
+    ~CAddonInputHandling(void) override;
 
     // implementation of IDriverHandler
-    virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    virtual bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
-    virtual void ProcessAxisMotions(void) override;
+    bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
+    bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
+    bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
+    void ProcessAxisMotions(void) override;
 
     // implementation of IInputReceiver
-    virtual bool SetRumbleState(const KODI::JOYSTICK::FeatureName& feature, float magnitude) override;
+    bool SetRumbleState(const KODI::JOYSTICK::FeatureName& feature, float magnitude) override;
 
   private:
     std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_driverHandler;

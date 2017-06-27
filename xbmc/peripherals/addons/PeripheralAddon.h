@@ -53,7 +53,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo);
-    virtual ~CPeripheralAddon(void);
+    ~CPeripheralAddon(void) override;
 
     /*!
      * @brief Initialise the instance of this add-on

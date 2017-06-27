@@ -31,11 +31,11 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralImon(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    virtual ~CPeripheralImon(void) {}
-    virtual bool InitialiseFeature(const PeripheralFeature feature);
-    virtual void OnSettingChanged(const std::string &strChangedSetting);
-    virtual void OnDeviceRemoved();
-    virtual void AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order);
+    ~CPeripheralImon(void) override {}
+    bool InitialiseFeature(const PeripheralFeature feature) override;
+    void OnSettingChanged(const std::string &strChangedSetting) override;
+    void OnDeviceRemoved() override;
+    void AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order) override;
     inline bool IsImonConflictsWithDInput() 
     { return m_bImonConflictsWithDInput;}
     static inline long GetCountOfImonsConflictWithDInput()

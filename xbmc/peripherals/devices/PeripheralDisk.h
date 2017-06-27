@@ -27,6 +27,6 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralDisk(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    virtual ~CPeripheralDisk(void) {};
+    ~CPeripheralDisk(void) override {};
   };
 }

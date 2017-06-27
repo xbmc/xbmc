@@ -39,7 +39,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBusAndroid(CPeripherals& manager);
-    virtual ~CPeripheralBusAndroid();
+    ~CPeripheralBusAndroid() override;
 
     // specialisation of CPeripheralBus
     bool InitializeProperties(CPeripheral& peripheral) override;
