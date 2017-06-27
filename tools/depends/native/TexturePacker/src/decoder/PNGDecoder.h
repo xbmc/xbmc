@@ -24,12 +24,12 @@
 class PNGDecoder : public IDecoder
 {
   public:
-    virtual ~PNGDecoder(){}
-    virtual bool CanDecode(const std::string &filename);
-    virtual bool LoadFile(const std::string &filename, DecodedFrames &frames);
-    virtual void FreeDecodedFrames(DecodedFrames &frames);
-    virtual const char* GetImageFormatName() { return "PNG"; }
-    virtual const char* GetDecoderName() { return "libpng"; }
+    ~PNGDecoder() override{}
+    bool CanDecode(const std::string &filename) override;
+    bool LoadFile(const std::string &filename, DecodedFrames &frames) override;
+    void FreeDecodedFrames(DecodedFrames &frames) override;
+    const char* GetImageFormatName() override { return "PNG"; }
+    const char* GetDecoderName() override { return "libpng"; }
   protected:
-    virtual void FillSupportedExtensions();
+    void FillSupportedExtensions() override;
 };

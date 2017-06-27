@@ -31,7 +31,7 @@ class CXBTFWriter : public CXBTFBase
 {
 public:
   CXBTFWriter(const std::string& outputFile);
-  ~CXBTFWriter();
+  ~CXBTFWriter() override;
 
   bool Create();
   bool Close();
