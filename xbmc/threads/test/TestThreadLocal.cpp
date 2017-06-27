@@ -53,7 +53,7 @@ public:
   ThreadLocal<Thingy>& threadLocal;
 
   inline Runnable(ThreadLocal<Thingy>& tl) : waiting(false), threadLocal(tl) {}
-  inline void Run()
+  inline void Run() override
   {
     staticThingy = new Thingy;
     staticThreadLocal.set(staticThingy);

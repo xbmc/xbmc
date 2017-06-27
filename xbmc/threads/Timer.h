@@ -37,7 +37,7 @@ class CTimer : protected CThread
 public:
   CTimer(ITimerCallback *callback);
   explicit CTimer(std::function<void()> const& callback);
-  virtual ~CTimer();
+  ~CTimer() override;
 
   bool Start(uint32_t timeout, bool interval = false);
   bool Stop(bool wait = false);
@@ -50,7 +50,7 @@ public:
   float GetElapsedMilliseconds() const;
   
 protected:
-  virtual void Process();
+  void Process() override;
   
 private:
   std::function<void()> m_callback;

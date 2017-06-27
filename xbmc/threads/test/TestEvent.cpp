@@ -41,7 +41,7 @@ public:
 
   waiter(CEvent& o, bool& flag) : event(o), result(flag), waiting(false) {}
   
-  void Run()
+  void Run() override
   {
     waiting = true;
     result = event.Wait();
@@ -60,7 +60,7 @@ public:
 
   timed_waiter(CEvent& o, int& flag, int waitTimeMillis) : event(o), waitTime(waitTimeMillis), result(flag), waiting(false) {}
   
-  void Run()
+  void Run() override
   {
     waiting = true;
     result = 0;
@@ -80,7 +80,7 @@ public:
   group_wait(CEventGroup& o) : event(o), timeout(-1), result(NULL), waiting(false) {}
   group_wait(CEventGroup& o, int timeout_) : event(o), timeout(timeout_), result(NULL), waiting(false) {}
 
-  void Run()
+  void Run() override
   {
     waiting = true;
     if (timeout == -1)
@@ -542,7 +542,7 @@ public:
 
   mass_waiter() : event(*g_event), waiting(false) {}
   
-  void Run()
+  void Run() override
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
@@ -561,7 +561,7 @@ public:
 
   poll_mass_waiter() : event(*g_event), waiting(false) {}
   
-  void Run()
+  void Run() override
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
