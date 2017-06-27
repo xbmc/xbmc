@@ -91,6 +91,13 @@ void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   strides[2] = geo.stride_c;
 }
 
+void CMMALYUVBuffer::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
+{
+  std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+  assert(pool);
+  pool->SetDimensions(width, height, alignedWidth, alignedHeight);
+}
+
 //-----------------------------------------------------------------------------
 // MMAL Decoder
 //-----------------------------------------------------------------------------

@@ -119,7 +119,7 @@ bool CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
     m_pTarget.videoBuffer = nullptr;
   }
 
-  m_pTarget.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth, pPicture->iHeight);
+  m_pTarget.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight * 3 / 2);
   if (!m_pTarget.videoBuffer)
   {
     return false;
