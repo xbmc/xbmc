@@ -1,13 +1,17 @@
-set(SOURCES DeviceKitDisksProvider.cpp
-            UDisksProvider.cpp)
+set(SOURCES "")
 
-set(HEADERS DeviceKitDisksProvider.h
-            LinuxStorageProvider.h
-            UDisksProvider.h)
+set(HEADERS LinuxStorageProvider.h)
+
+if(DBUS_FOUND)
+  list(APPEND SOURCES UDisksProvider.cpp)
+  list(APPEND HEADERS UDisksProvider.h)
+endif()
 
 if(UDEV_FOUND)
   list(APPEND SOURCES UDevProvider.cpp)
   list(APPEND HEADERS UDevProvider.h)
 endif()
 
-core_add_library(storage_linux)
+if(SOURCES)
+  core_add_library(storage_linux)
+endif()

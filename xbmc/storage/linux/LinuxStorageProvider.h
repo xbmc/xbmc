@@ -22,7 +22,6 @@
 #include <vector>
 
 #include "storage/IStorageProvider.h"
-#include "DeviceKitDisksProvider.h"
 #include "UDevProvider.h"
 #include "UDisksProvider.h"
 #include "PosixMountProvider.h"
@@ -37,8 +36,6 @@ public:
 #ifdef HAS_DBUS
     if (CUDisksProvider::HasUDisks())
       m_instance = new CUDisksProvider();
-    else if (CDeviceKitDisksProvider::HasDeviceKitDisks())
-      m_instance = new CDeviceKitDisksProvider();
 #endif
 #ifdef HAVE_LIBUDEV
     if (m_instance == NULL)
