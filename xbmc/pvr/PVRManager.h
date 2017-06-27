@@ -89,7 +89,7 @@ namespace PVR
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
      */
-    virtual ~CPVRManager(void);
+    ~CPVRManager(void) override;
 
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 

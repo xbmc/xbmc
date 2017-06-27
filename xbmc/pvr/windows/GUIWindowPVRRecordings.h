@@ -32,7 +32,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRRecordingsBase();
+    ~CGUIWindowPVRRecordingsBase() override;
 
     void OnWindowLoaded() override;
     bool OnMessage(CGUIMessage& message) override;

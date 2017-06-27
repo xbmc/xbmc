@@ -29,7 +29,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRTVTimerRules();
-    virtual ~CGUIWindowPVRTVTimerRules() = default;
+    ~CGUIWindowPVRTVTimerRules() override = default;
 
   protected:
     std::string GetDirectoryPath() override;
@@ -39,7 +39,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRRadioTimerRules();
-    virtual ~CGUIWindowPVRRadioTimerRules() = default;
+    ~CGUIWindowPVRRadioTimerRules() override = default;
 
   protected:
     std::string GetDirectoryPath() override;

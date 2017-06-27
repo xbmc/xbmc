@@ -29,7 +29,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRGuideInfo(void);
-    virtual ~CGUIDialogPVRGuideInfo(void);
+    ~CGUIDialogPVRGuideInfo(void) override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnInfo(int actionID) override;
     bool HasListItems() const override { return true; }

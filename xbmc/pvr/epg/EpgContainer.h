@@ -55,7 +55,7 @@ namespace PVR
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CPVREpgContainer(void);
+    ~CPVREpgContainer(void) override;
 
     /*!
      * @brief Get a pointer to the database instance.

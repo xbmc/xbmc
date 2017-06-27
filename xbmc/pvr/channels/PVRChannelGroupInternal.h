@@ -38,7 +38,7 @@ namespace PVR
 
     CPVRChannelGroupInternal(const CPVRChannelGroup &group);
 
-    virtual ~CPVRChannelGroupInternal(void);
+    ~CPVRChannelGroupInternal(void) override;
 
     /**
      * @brief The amount of channels in this container.

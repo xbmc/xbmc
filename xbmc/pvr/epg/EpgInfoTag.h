@@ -70,7 +70,7 @@ namespace PVR
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    virtual ~CPVREpgInfoTag();
+    ~CPVREpgInfoTag() override;
 
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;

@@ -27,7 +27,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRRecordingInfo(void);
-    virtual ~CGUIDialogPVRRecordingInfo(void) = default;
+    ~CGUIDialogPVRRecordingInfo(void) override = default;
     bool OnMessage(CGUIMessage& message) override;
     bool OnInfo(int actionID) override;
     bool HasListItems() const override { return true; }

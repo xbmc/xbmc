@@ -42,7 +42,7 @@ namespace PVR
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CPVREpgDatabase(void) = default;
+    ~CPVREpgDatabase(void) override = default;
 
     /*!
      * @brief Open the database.

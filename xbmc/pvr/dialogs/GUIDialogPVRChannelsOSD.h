@@ -36,7 +36,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRChannelsOSD(void);
-    virtual ~CGUIDialogPVRChannelsOSD(void);
+    ~CGUIDialogPVRChannelsOSD(void) override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction &action) override;
     void OnWindowLoaded() override;

@@ -38,12 +38,12 @@ namespace PVR
   {
   public:
     CPVRGUIInfo(void);
-    virtual ~CPVRGUIInfo(void);
+    ~CPVRGUIInfo(void) override;
 
     void Start(void);
     void Stop(void);
 
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     bool TranslateBoolInfo(DWORD dwInfo) const;
     bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
@@ -177,7 +177,7 @@ namespace PVR
 
     void ResetProperties(void);
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
-    void Process(void);
+    void Process(void) override;
 
     void UpdatePlayingTag(void);
     void UpdateTimersCache(void);

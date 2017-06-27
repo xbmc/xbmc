@@ -80,7 +80,7 @@ namespace PVR
   {
   public:
     CPVRTimers(void);
-    virtual ~CPVRTimers(void);
+    ~CPVRTimers(void) override;
 
     /**
      * (re)load the timers from the clients.
@@ -268,7 +268,7 @@ namespace PVR
      */
     void UpdateChannels(void);
 
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     /*!
      * Get a timer tag given it's unique ID

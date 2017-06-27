@@ -39,7 +39,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRTimerSettings();
-    virtual ~CGUIDialogPVRTimerSettings();
+    ~CGUIDialogPVRTimerSettings() override;
 
     bool CanBeActivated() const override;
 

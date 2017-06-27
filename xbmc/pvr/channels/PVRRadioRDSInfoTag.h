@@ -49,7 +49,7 @@ private:
   const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
   
 public:
-  virtual ~CPVRRadioRDSInfoTag();
+  ~CPVRRadioRDSInfoTag() override;
 
   bool operator ==(const CPVRRadioRDSInfoTag& tag) const;
   bool operator !=(const CPVRRadioRDSInfoTag& tag) const;

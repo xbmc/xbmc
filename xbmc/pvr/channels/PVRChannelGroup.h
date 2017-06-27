@@ -84,7 +84,7 @@ namespace PVR
      */
     CPVRChannelGroup(const CPVRChannelGroup &group);
 
-    virtual ~CPVRChannelGroup(void);
+    ~CPVRChannelGroup(void) override;
 
     bool operator ==(const CPVRChannelGroup &right) const;
     bool operator !=(const CPVRChannelGroup &right) const;
