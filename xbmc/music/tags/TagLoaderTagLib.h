@@ -34,7 +34,7 @@ class CTagLoaderTagLib : public MUSIC_INFO::IMusicInfoTagLoader
 {
 public:
   CTagLoaderTagLib() = default;
-  virtual ~CTagLoaderTagLib() = default;
+  ~CTagLoaderTagLib() override = default;
   bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = nullptr) override;
   bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = NULL);
 

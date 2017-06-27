@@ -28,11 +28,11 @@ class CGUIWindowVisualisation :
 {
 public:
   CGUIWindowVisualisation(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void FrameMove();
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  void FrameMove() override;
 protected:
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
   CStopWatch m_initTimer;
   CStopWatch m_lockedTimer;

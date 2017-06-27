@@ -28,8 +28,8 @@ class CMusicInfoTagLoaderSHN: public IMusicInfoTagLoader
 {
 public:
   CMusicInfoTagLoaderSHN(void);
-  virtual ~CMusicInfoTagLoaderSHN();
+  ~CMusicInfoTagLoaderSHN() override;
 
-  virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+  bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) override;
 };
 }

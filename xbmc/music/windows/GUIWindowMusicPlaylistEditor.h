@@ -28,20 +28,20 @@ class CGUIWindowMusicPlaylistEditor : public CGUIWindowMusicBase
 {
 public:
   CGUIWindowMusicPlaylistEditor(void);
-  virtual ~CGUIWindowMusicPlaylistEditor(void);
+  ~CGUIWindowMusicPlaylistEditor(void) override;
 
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnBack(int actionID);
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnBack(int actionID) override;
 
 protected:
-  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
-  virtual void UpdateButtons();
-  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-  virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnQueueItem(int iItem);
-  virtual std::string GetStartFolder(const std::string &dir) { return ""; };
+  bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+  void UpdateButtons() override;
+  bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+  void OnPrepareFileItems(CFileItemList &items) override;
+  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  void OnQueueItem(int iItem) override;
+  std::string GetStartFolder(const std::string &dir) override { return ""; };
 
   void OnPlaylistContext();
   int GetCurrentPlaylistItem();
@@ -56,7 +56,7 @@ protected:
   void LoadPlaylist(const std::string &playlist);
 
   // new method
-  virtual void PlayItem(int iItem);
+  void PlayItem(int iItem) override;
 
   void DeleteRemoveableMediaDirectoryCache();
 

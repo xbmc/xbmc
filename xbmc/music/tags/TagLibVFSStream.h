@@ -35,17 +35,17 @@ namespace MUSIC_INFO
     /*!
      * Destroys this ByteVectorStream instance.
      */
-    virtual ~TagLibVFSStream();
+    ~TagLibVFSStream() override;
     
     /*!
      * Returns the file name in the local file system encoding.
      */
-    TagLib::FileName name() const;
+    TagLib::FileName name() const override;
 
     /*!
      * Reads a block of size \a length at the current get pointer.
      */
-    TagLib::ByteVector readBlock(TagLib::ulong length);
+    TagLib::ByteVector readBlock(TagLib::ulong length) override;
 
     /*!
      * Attempts to write the block \a data at the current get pointer.  If the
@@ -56,7 +56,7 @@ namespace MUSIC_INFO
      * for a ByteVector.  And even this function is significantly slower than
      * doing output with a char[].
      */
-    void writeBlock(const TagLib::ByteVector &data);
+    void writeBlock(const TagLib::ByteVector &data) override;
 
     /*!
      * Insert \a data at position \a start in the file overwriting \a replace
@@ -65,7 +65,7 @@ namespace MUSIC_INFO
      * \note This method is slow since it requires rewriting all of the file
      * after the insertion point.
      */
-    void insert(const TagLib::ByteVector &data, TagLib::ulong start = 0, TagLib::ulong replace = 0);
+    void insert(const TagLib::ByteVector &data, TagLib::ulong start = 0, TagLib::ulong replace = 0) override;
 
     /*!
      * Removes a block of the file starting a \a start and continuing for
@@ -74,18 +74,18 @@ namespace MUSIC_INFO
      * \note This method is slow since it involves rewriting all of the file
      * after the removed portion.
      */
-    void removeBlock(TagLib::ulong start = 0, TagLib::ulong length = 0);
+    void removeBlock(TagLib::ulong start = 0, TagLib::ulong length = 0) override;
 
     /*!
      * Returns true if the file is read only (or if the file can not be opened).
      */
-    bool readOnly() const;
+    bool readOnly() const override;
 
     /*!
      * Since the file can currently only be opened as an argument to the
      * constructor (sort-of by design), this returns if that open succeeded.
      */
-    bool isOpen() const;
+    bool isOpen() const override;
 
     /*!
      * Move the I/O pointer to \a offset in the file from position \a p.  This
@@ -93,27 +93,27 @@ namespace MUSIC_INFO
      *
      * \see Position
      */
-    void seek(long offset, TagLib::IOStream::Position p = Beginning);
+    void seek(long offset, TagLib::IOStream::Position p = Beginning) override;
 
     /*!
      * Reset the end-of-file and error flags on the file.
      */
-    void clear();
+    void clear() override;
 
     /*!
      * Returns the current offset within the file.
      */
-    long tell() const;
+    long tell() const override;
 
     /*!
      * Returns the length of the file.
      */
-    long length();
+    long length() override;
 
     /*!
      * Truncates the file to a \a length.
      */
-    void truncate(long length);
+    void truncate(long length) override;
 
   protected:
     /*!
