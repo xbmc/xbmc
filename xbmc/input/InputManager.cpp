@@ -23,6 +23,8 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "InputManager.h"
+#include "IRTranslator.h"
+#include "KeymapEnvironment.h"
 #include "input/keyboard/IKeyboardHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/IMouseDriverHandler.h"
@@ -74,6 +76,9 @@ using namespace KODI;
 using namespace MESSAGING;
 
 CInputManager::CInputManager() :
+  m_keymapEnvironment(new CKeymapEnvironment),
+  m_buttonTranslator(new CButtonTranslator),
+  m_irTranslator(new CIRTranslator),
   m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
   m_keyboardEasterEgg(new KEYBOARD::CKeyboardEasterEgg)
 {
@@ -83,12 +88,6 @@ CInputManager::CInputManager() :
 CInputManager::~CInputManager()
 {
   UnregisterKeyboardHandler(m_keyboardEasterEgg.get());
-}
-
-CInputManager& CInputManager::GetInstance()
-{
-  static CInputManager inputManager;
-  return inputManager;
 }
 
 void CInputManager::InitializeInputs()
@@ -150,7 +149,7 @@ bool CInputManager::ProcessMouse(int windowId)
 
   // Retrieve the corresponding action
   CKey key(mousekey, (unsigned int)0);
-  CAction mouseaction = CButtonTranslator::GetInstance().GetAction(windowId, key);
+  CAction mouseaction = m_buttonTranslator->GetAction(windowId, key);
 
   // Deactivate mouse if non-mouse action
   if (!mouseaction.IsMouse())
@@ -234,7 +233,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
         std::string actionName;
         
         // Translate using custom controller translator.
-        if (CButtonTranslator::GetInstance().TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
+        if (m_buttonTranslator->TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
         {
           // break screensaver
           g_application.ResetSystemIdleTimer();
@@ -364,7 +363,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       // Do not repeat long presses
       break;
     }
-    if (!CButtonTranslator::GetInstance().HasLongpressMapping(g_windowManager.GetActiveWindowID(), key))
+    if (!m_buttonTranslator->HasLongpressMapping(g_windowManager.GetActiveWindowID(), key))
     {
       m_LastKey.Reset();
       OnKey(key);
@@ -442,7 +441,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     else
     {
       int iWin = g_windowManager.GetActiveWindowID();
-      CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
+      m_buttonTranslator->TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
     }
 
     if (actionId <= 0)
@@ -496,7 +495,7 @@ bool CInputManager::OnKey(const CKey& key)
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
-  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+  CAction action = m_buttonTranslator->GetAction(iWin, key);
 
   // a key has been pressed.
   // reset Idle Timer
@@ -559,7 +558,7 @@ bool CInputManager::OnKey(const CKey& key)
     {
       // use the virtualkeyboard section of the keymap, and send keyboard-specific or navigation
       // actions through if that's what they are
-      CAction action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
+      CAction action = m_buttonTranslator->GetAction(WINDOW_DIALOG_KEYBOARD, key);
       if (!(action.GetID() == ACTION_MOVE_LEFT ||
         action.GetID() == ACTION_MOVE_RIGHT ||
         action.GetID() == ACTION_MOVE_UP ||
@@ -571,7 +570,7 @@ bool CInputManager::OnKey(const CKey& key)
         action.GetID() == ACTION_VOICE_RECOGNIZE))
       {
         // the action isn't plain navigation - check for a keyboard-specific keymap
-        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
+        action = m_buttonTranslator->GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
         if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
             action.GetID() == ACTION_BACKSPACE ||
             action.GetID() == ACTION_SHIFT ||
@@ -620,10 +619,10 @@ bool CInputManager::OnKey(const CKey& key)
     if (key.GetFromService())
     {
       if (key.GetButtonCode() != KEY_INVALID)
-        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+        action = m_buttonTranslator->GetAction(iWin, key);
     }
     else
-      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+      action = m_buttonTranslator->GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
     CLog::LogF(LOGDEBUG, "%s pressed, action is %s", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
@@ -866,6 +865,63 @@ bool CInputManager::OnAction(const CAction& action)
   }
 
   return false;
+}
+
+bool CInputManager::LoadKeymaps()
+{
+  if (!m_buttonTranslator->Load())
+    return false;
+
+  m_irTranslator->Load();
+
+  return true;
+}
+
+bool CInputManager::ReloadKeymaps()
+{
+  //! @todo
+  ClearKeymaps();
+
+  if (!LoadKeymaps())
+    return false;
+
+  return true;
+}
+
+void CInputManager::ClearKeymaps()
+{
+  m_buttonTranslator->Clear();
+  m_irTranslator->Clear();
+}
+
+void CInputManager::AddKeymap(const std::string &keymap)
+{
+  m_buttonTranslator->AddDevice(keymap);
+}
+
+void CInputManager::RemoveKeymap(const std::string &keymap)
+{
+  m_buttonTranslator->RemoveDevice(keymap);
+}
+
+CAction CInputManager::GetAction(int window, const CKey &key, bool fallback /* = true */)
+{
+  return m_buttonTranslator->GetAction(window, key, fallback);
+}
+
+CAction CInputManager::GetGlobalAction(const CKey &key)
+{
+  return m_buttonTranslator->GetGlobalAction(key);
+}
+
+std::vector<const IWindowKeymap*> CInputManager::GetJoystickKeymaps() const
+{
+  return m_buttonTranslator->JoystickKeymaps();
+}
+
+int CInputManager::TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton)
+{
+  return m_irTranslator->TranslateButton(szDevice, szButton);
 }
 
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)

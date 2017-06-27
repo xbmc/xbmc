@@ -39,6 +39,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/InputManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
@@ -881,7 +882,7 @@ bool CGameClient::SetRumble(unsigned int port, const std::string& feature, float
 
 void CGameClient::OpenKeyboard(void)
 {
-  m_keyboard.reset(new CGameClientKeyboard(this, &m_struct.toAddon));
+  m_keyboard.reset(new CGameClientKeyboard(this, &m_struct.toAddon, &CServiceBroker::GetInputManager()));
 }
 
 void CGameClient::CloseKeyboard(void)
@@ -891,7 +892,7 @@ void CGameClient::CloseKeyboard(void)
 
 void CGameClient::OpenMouse(void)
 {
-  m_mouse.reset(new CGameClientMouse(this, &m_struct.toAddon));
+  m_mouse.reset(new CGameClientMouse(this, &m_struct.toAddon, &CServiceBroker::GetInputManager()));
 
   CSingleLock lock(m_critSection);
 

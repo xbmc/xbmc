@@ -24,7 +24,7 @@
 #include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/RumbleGenerator.h"
-#include "input/ButtonTranslator.h"
+#include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/android/PeripheralBusAndroid.h"
@@ -32,6 +32,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 
@@ -81,7 +82,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        m_appInput.reset(new CKeymapHandling(this, false, CButtonTranslator::GetInstance().KeymapEnvironment()));
+        m_appInput.reset(new CKeymapHandling(this, false, CServiceBroker::GetInputManager().KeymapEnvironment()));
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }

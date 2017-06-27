@@ -628,7 +628,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
   if (!m_mainWindow)
   {
-    CInputManager::GetInstance().SetMouseActive(false);
+    CServiceBroker::GetInputManager().SetMouseActive(false);
   }
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
@@ -658,7 +658,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       }
     }
 
-    CInputManager::GetInstance().SetMouseActive(false);
+    CServiceBroker::GetInputManager().SetMouseActive(false);
     OnLostDevice();
     DestroyWindow();
     m_windowDirty = true;

@@ -33,9 +33,7 @@
 class CKey;
 class TiXmlNode;
 class CCustomControllerTranslator;
-class CIRTranslator;
 class CTouchTranslator;
-class IKeymapEnvironment;
 class IWindowKeymap;
 
 /// singleton class to map from buttons to actions
@@ -46,23 +44,18 @@ class CButtonTranslator
   friend class EVENTCLIENT::CEventButtonState;
 #endif
 
-private:
-  //private construction, and no assignments; use the provided singleton methods
+public:
   CButtonTranslator();
   CButtonTranslator(const CButtonTranslator&) = delete;
   CButtonTranslator const& operator=(CButtonTranslator const&) = delete;
-  virtual ~CButtonTranslator() = default;
-
-public:
-  ///access to singleton
-  static CButtonTranslator& GetInstance();
+  virtual ~CButtonTranslator();
 
   // Add/remove a HID device with custom mappings
-  void AddDevice(std::string& strDevice);
-  void RemoveDevice(std::string& strDevice);
+  void AddDevice(const std::string& strDevice);
+  void RemoveDevice(const std::string& strDevice);
 
   /// loads Keymap.xml
-  bool Load(bool AlwaysLoad = false);
+  bool Load();
 
   /// clears the maps
   void Clear();
@@ -88,17 +81,11 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
-
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
-  const IKeymapEnvironment *KeymapEnvironment() const { return m_keymapEnvironment.get(); }
-
-  const IWindowKeymap *JoystickKeymap(const std::string &controllerId) const;
-
-  const std::vector<std::string> &GetControllers() const { return m_controllerIds; }
+  std::vector<const IWindowKeymap*> JoystickKeymaps() const;
 
 private:
   struct CButtonAction
@@ -122,9 +109,7 @@ private:
 
   bool LoadKeymap(const std::string &keymapPath);
 
-  std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
   std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
-  std::unique_ptr<CIRTranslator> m_irTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
   std::map<std::string, std::unique_ptr<IWindowKeymap>> m_joystickKeymaps; // Controller ID -> keymap
   std::vector<std::string> m_controllerIds;

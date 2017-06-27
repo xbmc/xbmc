@@ -4,6 +4,7 @@ set(SOURCES KeyboardEasterEgg.cpp
 
 set(HEADERS IActionMap.h
             IKeyboardHandler.h
+            IKeyboardInputProvider.h
             KeyboardEasterEgg.h
             KeymapActionMap.h
 )

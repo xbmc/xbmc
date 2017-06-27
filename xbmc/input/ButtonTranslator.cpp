@@ -31,7 +31,6 @@
 #include "IRTranslator.h"
 #include "Key.h"
 #include "KeyboardTranslator.h"
-#include "KeymapEnvironment.h"
 #include "MouseTranslator.h"
 #include "TouchTranslator.h"
 #include "WindowKeymap.h"
@@ -112,22 +111,18 @@ namespace
 
 // --- CButtonTranslator -------------------------------------------------------
 
-CButtonTranslator& CButtonTranslator::GetInstance()
-{
-  static CButtonTranslator sl_instance;
-  return sl_instance;
-}
-
 CButtonTranslator::CButtonTranslator() :
-  m_keymapEnvironment(new CKeymapEnvironment),
   m_customControllerTranslator(new CCustomControllerTranslator),
-  m_irTranslator(new CIRTranslator),
   m_touchTranslator(new CTouchTranslator)
 {
 }
 
+CButtonTranslator::~CButtonTranslator()
+{
+}
+
 // Add the supplied device name to the list of connected devices
-void CButtonTranslator::AddDevice(std::string& strDevice)
+void CButtonTranslator::AddDevice(const std::string& strDevice)
 {
   // Only add the device if it isn't already in the list
   if (m_deviceList.find(strDevice) != m_deviceList.end())
@@ -140,7 +135,7 @@ void CButtonTranslator::AddDevice(std::string& strDevice)
   Load();
 }
 
-void CButtonTranslator::RemoveDevice(std::string& strDevice)
+void CButtonTranslator::RemoveDevice(const std::string& strDevice)
 {
   // Find the device
   auto it = m_deviceList.find(strDevice);
@@ -154,7 +149,7 @@ void CButtonTranslator::RemoveDevice(std::string& strDevice)
   Load();
 }
 
-bool CButtonTranslator::Load(bool AlwaysLoad)
+bool CButtonTranslator::Load()
 {
   m_translatorMap.clear();
   m_customControllerTranslator->Clear();
@@ -213,8 +208,6 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
     return false;
   }
 
-  m_irTranslator->Load();
-
   // Done!
   return true;
 }
@@ -265,11 +258,6 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
   }
 
   return true;
-}
-
-int CButtonTranslator::TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton)
-{
-  return m_irTranslator->TranslateButton(szDevice, szButton);
 }
 
 bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
@@ -581,20 +569,22 @@ void CButtonTranslator::Clear()
 {
   m_translatorMap.clear();
 
-  m_irTranslator->Clear();
   m_customControllerTranslator->Clear();
   m_touchTranslator->Clear();
   m_joystickKeymaps.clear();
   m_controllerIds.clear();
 }
 
-const IWindowKeymap *CButtonTranslator::JoystickKeymap(const std::string &controllerId) const
+std::vector<const IWindowKeymap*> CButtonTranslator::JoystickKeymaps() const
 {
-  IWindowKeymap *keymap = nullptr;
+  std::vector<const IWindowKeymap*> keymaps;
 
-  auto it = m_joystickKeymaps.find(controllerId);
-  if (it != m_joystickKeymaps.end())
-    keymap = it->second.get();
+  for (const auto &controllerId : m_controllerIds)
+  {
+    auto it = m_joystickKeymaps.find(controllerId);
+    if (it != m_joystickKeymaps.end())
+      keymaps.push_back(it->second.get());
+  }
 
-  return keymap;
+  return keymaps;
 }

@@ -32,12 +32,13 @@
 #ifdef HAVE_INOTIFY
 #include <sys/inotify.h>
 #endif
-#include "input/ButtonTranslator.h"
+#include "input/InputManager.h"
 #include "linux/PlatformDefs.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
+#include "ServiceBroker.h"
 
 CRemoteControl::CRemoteControl()
   : CThread("RemoteControl")
@@ -255,7 +256,7 @@ void CRemoteControl::Update()
       buttonName[ buttonNameLen - 2 ] = '\0';
     }
 
-    m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, buttonName);
+    m_button = CServiceBroker::GetInputManager().TranslateLircRemoteString(deviceName, buttonName);
 
     char *end = NULL;
     long repeat = strtol(repeatStr, &end, 16);

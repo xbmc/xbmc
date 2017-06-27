@@ -31,6 +31,7 @@
 #include "xbmc/FileItem.h"
 #include "xbmc/music/tags/MusicInfoTag.h"
 #include "xbmc/music/MusicDatabase.h"
+#include "ServiceBroker.h"
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
@@ -132,7 +133,7 @@ void CGUIDialogMusicOSD::FrameMove()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (CInputManager::GetInstance().IsMouseActive() ||
+    if (CServiceBroker::GetInputManager().IsMouseActive() ||
         g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS) ||
         g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST) ||
         g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS) ||

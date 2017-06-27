@@ -72,6 +72,8 @@ namespace PERIPHERALS
   class CPeripherals;
 }
 
+class CInputManager;
+
 class CServiceManager
 {
 public:
@@ -109,6 +111,7 @@ public:
 
   CSettings& GetSettings();
   CFavouritesService& GetFavouritesService();
+  CInputManager &GetInputManager();
 
 protected:
   struct delete_dataCacheCore
@@ -150,4 +153,5 @@ protected:
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;
   std::unique_ptr<PERIPHERALS::CPeripherals> m_peripherals;
   std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
+  std::unique_ptr<CInputManager> m_inputManager;
 };

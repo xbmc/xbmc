@@ -41,7 +41,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
-#include "input/ButtonTranslator.h"
+#include "input/InputManager.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
 #include "guiinfo/GUIInfoLabels.h"
@@ -111,7 +111,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
       g_infoManager.IsPlayerChannelPreviewActive() &&
-      (action.GetID() == ACTION_SELECT_ITEM || CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
+      (action.GetID() == ACTION_SELECT_ITEM || CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
   {
     // If confirm channel switch is active, channel preview is currently shown
     // and the button that caused this action matches (global) action "Select" (OK)

@@ -384,17 +384,17 @@ void CGUIConfigurationWizard::InstallHooks(void)
 
   // If we're not using emulation, allow keyboard input to abort prompt
   if (!m_bEmulation)
-    CInputManager::GetInstance().RegisterKeyboardHandler(this);
+    CServiceBroker::GetInputManager().RegisterKeyboardHandler(this);
 
-  CInputManager::GetInstance().RegisterMouseHandler(this);
+  CServiceBroker::GetInputManager().RegisterMouseHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
-  CInputManager::GetInstance().UnregisterMouseHandler(this);
+  CServiceBroker::GetInputManager().UnregisterMouseHandler(this);
 
   if (!m_bEmulation)
-    CInputManager::GetInstance().UnregisterKeyboardHandler(this);
+    CServiceBroker::GetInputManager().UnregisterKeyboardHandler(this);
 
   CServiceBroker::GetPeripherals().UnregisterObserver(this);
   CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);

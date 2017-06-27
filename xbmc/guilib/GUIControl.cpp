@@ -28,6 +28,7 @@
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "ServiceBroker.h"
 
 CGUIControl::CGUIControl() :
   m_hitColor(0xffffffff),
@@ -584,8 +585,8 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
-  if (CInputManager::GetInstance().GetMouseState() != MOUSE_STATE_DRAG)
-    CInputManager::GetInstance().SetMouseState(MOUSE_STATE_FOCUS);
+  if (CServiceBroker::GetInputManager().GetMouseState() != MOUSE_STATE_DRAG)
+    CServiceBroker::GetInputManager().SetMouseState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   if (!HasFocus())
   {

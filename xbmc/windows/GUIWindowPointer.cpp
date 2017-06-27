@@ -22,6 +22,8 @@
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
 #include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+
 #define ID_POINTER 10
 
 CGUIWindowPointer::CGUIWindowPointer(void)
@@ -58,7 +60,7 @@ void CGUIWindowPointer::UpdateVisibility()
 {
   if(g_Windowing.HasCursor())
   {
-    if (CInputManager::GetInstance().IsMouseActive())
+    if (CServiceBroker::GetInputManager().IsMouseActive())
       Open();
     else
       Close();
@@ -80,14 +82,14 @@ void CGUIWindowPointer::OnWindowLoaded()
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  bool active = CInputManager::GetInstance().IsMouseActive();
+  bool active = CServiceBroker::GetInputManager().IsMouseActive();
   if (active != m_active)
   {
     MarkDirtyRegion();
     m_active = active;
   }
-  MousePosition pos = CInputManager::GetInstance().GetMousePosition();
+  MousePosition pos = CServiceBroker::GetInputManager().GetMousePosition();
   SetPosition((float)pos.x, (float)pos.y);
-  SetPointer(CInputManager::GetInstance().GetMouseState());
+  SetPointer(CServiceBroker::GetInputManager().GetMouseState());
   return CGUIWindow::Process(currentTime, dirtyregions);
 }

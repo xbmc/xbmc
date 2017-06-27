@@ -25,6 +25,7 @@
 #include "input/Keymap.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <utility>
@@ -35,20 +36,13 @@ using namespace JOYSTICK;
 CKeymapHandling::CKeymapHandling(IInputProvider *inputProvider, bool pPromiscuous, const IKeymapEnvironment *environment) :
   m_inputProvider(inputProvider)
 {
-  const std::vector<std::string> &controllersIds = CButtonTranslator::GetInstance().GetControllers();
-
-  for (auto itController = controllersIds.rbegin(); itController != controllersIds.rend(); ++itController)
+  for (auto windowKeymap : CServiceBroker::GetInputManager().GetJoystickKeymaps())
   {
-    // Connect to joystick interfaces
-    IActionListener *actionHandler = &CInputManager::GetInstance();
-    const IWindowKeymap *windowKeymap = CButtonTranslator::GetInstance().JoystickKeymap(*itController);
-    if (windowKeymap == nullptr)
-      continue;
-
     // Create keymap
     std::unique_ptr<IKeymap> keymap(new CKeymap(windowKeymap, environment));
 
     // Create keymap handler
+    IActionListener *actionHandler = &CServiceBroker::GetInputManager();
     std::unique_ptr<IInputHandler> inputHandler(new CKeymapHandler(actionHandler, keymap.get()));
 
     // Register the handler with the input provider

@@ -22,23 +22,24 @@
 #include "GameClient.h"
 #include "GameClientTranslator.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
-#include "input/InputManager.h"
+#include "input/mouse/IMouseInputProvider.h"
 #include "input/Key.h"
 #include "utils/log.h"
 
 using namespace KODI;
 using namespace GAME;
 
-CGameClientMouse::CGameClientMouse(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct) :
+CGameClientMouse::CGameClientMouse(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct, MOUSE::IMouseInputProvider *inputProvider) :
   m_gameClient(gameClient),
   m_dllStruct(dllStruct),
-  m_controllerId(CInputManager::GetInstance().RegisterMouseHandler(this))
+  m_inputProvider(inputProvider),
+  m_controllerId(inputProvider->RegisterMouseHandler(this))
 {
 }
 
 CGameClientMouse::~CGameClientMouse()
 {
-  CInputManager::GetInstance().UnregisterMouseHandler(this);
+  m_inputProvider->UnregisterMouseHandler(this);
 }
 
 std::string CGameClientMouse::ControllerID(void) const

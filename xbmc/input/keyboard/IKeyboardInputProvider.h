@@ -17,19 +17,36 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#include "KeymapActionMap.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Action.h"
-#include "input/InputManager.h"
-#include "input/Key.h"
-#include "ServiceBroker.h"
-
-using namespace KODI;
-using namespace KEYBOARD;
-
-unsigned int CKeymapActionMap::GetActionID(const CKey& key)
+namespace KODI
 {
-  CAction action = CServiceBroker::GetInputManager().GetAction(g_windowManager.GetActiveWindowID(), key);
-  return action.GetID();
+namespace KEYBOARD
+{
+  class IKeyboardHandler;
+
+  /*!
+   * \ingroup mouse
+   * \brief Interface for classes that can provide mouse input
+   */
+  class IKeyboardInputProvider
+  {
+  public:
+    virtual ~IKeyboardInputProvider() = default;
+
+    /*!
+     * \brief Registers a handler to be called on keyboard input
+     *
+     * \param handler The handler to receive keyboard input provided by this class
+     */
+    virtual void RegisterKeyboardHandler(IKeyboardHandler* handler) = 0;
+
+    /*!
+     * \brief Unregisters handler from keyboard input
+     *
+     * \param handler The handler that was receiving keyboard input
+     */
+    virtual void UnregisterKeyboardHandler(IKeyboardHandler* handler) = 0;
+  };
+}
 }

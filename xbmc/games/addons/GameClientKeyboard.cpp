@@ -22,7 +22,7 @@
 #include "GameClient.h"
 #include "GameClientTranslator.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
-#include "input/InputManager.h"
+#include "input/keyboard/IKeyboardInputProvider.h"
 #include "input/Key.h"
 #include "utils/log.h"
 
@@ -31,16 +31,17 @@ using namespace GAME;
 
 #define BUTTON_INDEX_MASK  0x01ff
 
-CGameClientKeyboard::CGameClientKeyboard(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct) :
+CGameClientKeyboard::CGameClientKeyboard(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct, KEYBOARD::IKeyboardInputProvider *inputProvider) :
   m_gameClient(gameClient),
-  m_dllStruct(dllStruct)
+  m_dllStruct(dllStruct),
+  m_inputProvider(inputProvider)
 {
-  CInputManager::GetInstance().RegisterKeyboardHandler(this);
+  m_inputProvider->RegisterKeyboardHandler(this);
 }
 
 CGameClientKeyboard::~CGameClientKeyboard()
 {
-  CInputManager::GetInstance().UnregisterKeyboardHandler(this);
+  m_inputProvider->UnregisterKeyboardHandler(this);
 }
 
 bool CGameClientKeyboard::OnKeyPress(const CKey& key)
