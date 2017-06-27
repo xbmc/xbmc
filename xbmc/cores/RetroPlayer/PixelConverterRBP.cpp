@@ -94,7 +94,8 @@ bool CPixelConverterRBP::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, uns
     return false;
   }
 
-  m_pixelBufferPool->Configure(m_targetFormat, width, height);
+  m_pixelBufferPool->Configure(m_targetFormat, 0);
+  m_pixelBufferPool->SetDimensions(width, height, width, height);
 
   return true;
 }
