@@ -52,7 +52,7 @@ public:
   };
 
   CFDEventMonitor();
-  ~CFDEventMonitor();
+  ~CFDEventMonitor() override;
 
   void AddFD(const MonitoredFD& monitoredFD, int& id);
   void AddFDs(const std::vector<MonitoredFD>& monitoredFDs, std::vector<int>& ids);
@@ -61,7 +61,7 @@ public:
   void RemoveFDs(const std::vector<int>& ids);
 
 protected:
-  virtual void Process();
+  void Process() override;
 
 private:
   void AddFDLocked(const MonitoredFD& monitoredFD, int& id);
