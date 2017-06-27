@@ -91,11 +91,11 @@ public:
 
   std::vector<std::string> GetDiskUsage();
 
-  virtual void OnStorageAdded(const std::string &label, const std::string &path);
-  virtual void OnStorageSafelyRemoved(const std::string &label);
-  virtual void OnStorageUnsafelyRemoved(const std::string &label);
+  void OnStorageAdded(const std::string &label, const std::string &path) override;
+  void OnStorageSafelyRemoved(const std::string &label) override;
+  void OnStorageUnsafelyRemoved(const std::string &label) override;
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override { }
 protected:
   std::vector<CNetworkLocation> m_locations;
 

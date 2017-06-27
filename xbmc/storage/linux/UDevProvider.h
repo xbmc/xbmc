@@ -33,19 +33,19 @@ class CUDevProvider : public IStorageProvider
 {
 public:
   CUDevProvider();
-  virtual ~CUDevProvider() { }
+  ~CUDevProvider() override { }
 
-  virtual void Initialize();
-  virtual void Stop();
+  void Initialize() override;
+  void Stop() override;
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives);
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives);
+  void GetLocalDrives(VECSOURCES &localDrives) override;
+  void GetRemovableDrives(VECSOURCES &removableDrives) override;
 
-  virtual bool Eject(const std::string& mountpath);
+  bool Eject(const std::string& mountpath) override;
 
-  virtual std::vector<std::string> GetDiskUsage();
+  std::vector<std::string> GetDiskUsage() override;
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+  bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 
 private:
   void GetDisks(VECSOURCES& devices, bool removable);
