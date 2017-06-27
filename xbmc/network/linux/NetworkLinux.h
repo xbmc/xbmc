@@ -32,29 +32,29 @@ class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
    CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]);
-   ~CNetworkInterfaceLinux(void);
+   ~CNetworkInterfaceLinux(void) override;
 
-   virtual std::string& GetName(void);
+   std::string& GetName(void) override;
 
-   virtual bool IsEnabled(void);
-   virtual bool IsConnected(void);
-   virtual bool IsWireless(void);
+   bool IsEnabled(void) override;
+   bool IsConnected(void) override;
+   bool IsWireless(void) override;
 
-   virtual std::string GetMacAddress(void);
-   virtual void GetMacAddressRaw(char rawMac[6]);
+   std::string GetMacAddress(void) override;
+   void GetMacAddressRaw(char rawMac[6]) override;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac);
+   bool GetHostMacAddress(unsigned long host, std::string& mac) override;
 
-   virtual std::string GetCurrentIPAddress();
-   virtual std::string GetCurrentNetmask();
-   virtual std::string GetCurrentDefaultGateway(void);
-   virtual std::string GetCurrentWirelessEssId(void);
+   std::string GetCurrentIPAddress() override;
+   std::string GetCurrentNetmask() override;
+   std::string GetCurrentDefaultGateway(void) override;
+   std::string GetCurrentWirelessEssId(void) override;
 
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
-   virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
+   void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
 
    // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
+   std::vector<NetworkAccessPoint> GetAccessPoints(void) override;
     
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
@@ -68,18 +68,18 @@ class CNetworkLinux : public CNetwork
 {
 public:
    CNetworkLinux(void);
-   virtual ~CNetworkLinux(void);
+   ~CNetworkLinux(void) override;
 
    // Return the list of interfaces
-   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
-   virtual CNetworkInterface* GetFirstConnectedInterface(void);        
+   std::vector<CNetworkInterface*>& GetInterfaceList(void) override;
+   CNetworkInterface* GetFirstConnectedInterface(void) override;        
     
    // Ping remote host
-   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
+   bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 
    // Get/set the nameserver(s)
-   virtual std::vector<std::string> GetNameServers(void);
-   virtual void SetNameServers(const std::vector<std::string>& nameServers);
+   std::vector<std::string> GetNameServers(void) override;
+   void SetNameServers(const std::vector<std::string>& nameServers) override;
 
    friend class CNetworkInterfaceLinux;
 

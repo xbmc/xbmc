@@ -27,7 +27,7 @@ class CHTTPVfsHandler : public CHTTPFileHandler
 {
 public:
   CHTTPVfsHandler() { }
-  virtual ~CHTTPVfsHandler() { }
+  ~CHTTPVfsHandler() override { }
   
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPVfsHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

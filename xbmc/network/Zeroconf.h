@@ -145,7 +145,7 @@ private:
     CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);
     CPublish(const tServiceMap& servmap);
 
-    bool DoWork();
+    bool DoWork() override;
 
   private:
     tServiceMap m_servmap;

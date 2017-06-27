@@ -40,20 +40,20 @@ class CZeroconfAvahi : public CZeroconf
 {
 public:
   CZeroconfAvahi();
-  ~CZeroconfAvahi();
+  ~CZeroconfAvahi() override;
 
 protected:
   //implement base CZeroConf interface
-  virtual bool doPublishService(const std::string& fcr_identifier,
-                                const std::string& fcr_type,
-                                const std::string& fcr_name,
-                                unsigned int f_port,
-                                const std::vector<std::pair<std::string, std::string> >& txt);
+  bool doPublishService(const std::string& fcr_identifier,
+                        const std::string& fcr_type,
+                        const std::string& fcr_name,
+                        unsigned int f_port,
+                        const std::vector<std::pair<std::string, std::string> >& txt) override;
 
-  virtual bool doForceReAnnounceService(const std::string& fcr_identifier);
-  virtual bool doRemoveService(const std::string& fcr_ident);
+  bool doForceReAnnounceService(const std::string& fcr_identifier) override;
+  bool doRemoveService(const std::string& fcr_ident) override;
 
-  virtual void doStop();
+  void doStop() override;
 
 private:
   ///this is where the client calls us if state changes

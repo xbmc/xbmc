@@ -33,9 +33,9 @@ class CGUIDialogAccessPoints : public CGUIDialog
 {
 public:
   CGUIDialogAccessPoints(void);
-  virtual ~CGUIDialogAccessPoints(void);
-  virtual void OnInitWindow();
-  virtual bool OnAction(const CAction &action);
+  ~CGUIDialogAccessPoints(void) override;
+  void OnInitWindow() override;
+  bool OnAction(const CAction &action) override;
   void SetInterfaceName(std::string interfaceName);
   std::string GetSelectedAccessPointEssId();
   EncMode GetSelectedAccessPointEncMode();

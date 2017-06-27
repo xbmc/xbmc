@@ -37,11 +37,11 @@ public:
                       NET_PROTOCOL_SFTP,
                       NET_PROTOCOL_NFS};
   CGUIDialogNetworkSetup(void);
-  virtual ~CGUIDialogNetworkSetup(void);
-  virtual bool OnMessage(CGUIMessage& message) override;
-  virtual bool OnBack(int actionID) override;
-  virtual void OnInitWindow() override;
-  virtual void OnDeinitWindow(int nextWindowID) override;
+  ~CGUIDialogNetworkSetup(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnBack(int actionID) override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
   static bool ShowAndGetNetworkAddress(std::string &path);
 
@@ -51,16 +51,16 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  virtual void Save() override { }
-  virtual void SetupView() override;
+  void Save() override { }
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings() override;
+  void InitializeSettings() override;
 
   void OnProtocolChange();
   void OnServerBrowse();

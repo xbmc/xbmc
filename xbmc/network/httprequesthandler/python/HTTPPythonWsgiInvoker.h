@@ -39,16 +39,16 @@ class CHTTPPythonWsgiInvoker : public CHTTPPythonInvoker
 {
 public:
   CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request);
-  virtual ~CHTTPPythonWsgiInvoker();
+  ~CHTTPPythonWsgiInvoker() override;
 
   // implementations of CHTTPPythonInvoker
-  virtual HTTPPythonRequest* GetRequest();
+  HTTPPythonRequest* GetRequest() override;
 
 protected:
   // overrides of CPythonInvoker
-  virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
-  virtual std::map<std::string, PythonModuleInitialization> getModules() const;
-  virtual const char* getInitializationScript() const;
+  void executeScript(void *fp, const std::string &script, void *module, void *moduleDict) override;
+  std::map<std::string, PythonModuleInitialization> getModules() const override;
+  const char* getInitializationScript() const override;
 
 private:
   static std::map<std::string, std::string> createCgiEnvironment(const HTTPPythonRequest* httpRequest, ADDON::AddonPtr addon);

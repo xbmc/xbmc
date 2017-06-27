@@ -161,7 +161,7 @@ class CUPnPCleaner : public NPT_Thread
 {
 public:
     CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
-    void Run() {
+    void Run() override {
         delete m_UPnP;
     }
 
@@ -182,7 +182,7 @@ public:
     }
 
     // PLT_MediaBrowser methods
-    virtual bool OnMSAdded(PLT_DeviceDataReference& device)
+    bool OnMSAdded(PLT_DeviceDataReference& device) override
     {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
@@ -190,7 +190,7 @@ public:
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
-    virtual void OnMSRemoved(PLT_DeviceDataReference& device)
+    void OnMSRemoved(PLT_DeviceDataReference& device) override
     {
         PLT_SyncMediaBrowser::OnMSRemoved(device);
 
@@ -202,9 +202,9 @@ public:
     }
 
     // PLT_MediaContainerChangesListener methods
-    virtual void OnContainerChanged(PLT_DeviceDataReference& device,
+    void OnContainerChanged(PLT_DeviceDataReference& device,
                                     const char*              item_id,
-                                    const char*              update_id)
+                                    const char*              update_id) override
     {
         NPT_String path = "upnp://"+device->GetUUID()+"/";
         if (!NPT_StringsEqual(item_id, "0")) {
@@ -316,7 +316,7 @@ public:
     PLT_MediaController::SetDelegate(this);
   }
 
-  ~CMediaController()
+  ~CMediaController() override
   {
     for (std::set<std::string>::const_iterator itRenderer = m_registeredRenderers.begin(); itRenderer != m_registeredRenderers.end(); ++itRenderer)
       unregisterRenderer(*itRenderer);
@@ -328,62 +328,62 @@ public:
       return;                                    \
   } while(0)
 
-  virtual void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnStopResult(res, device, userdata);
   }
 
-  virtual void OnSetPlayModeResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnSetPlayModeResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetPlayModeResult(res, device, userdata);
   }
 
-  virtual void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetAVTransportURIResult(res, device, userdata);
   }
 
-  virtual void OnSeekResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnSeekResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSeekResult(res, device, userdata);
   }
 
-  virtual void OnPreviousResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnPreviousResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPreviousResult(res, device, userdata);
   }
 
-  virtual void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPlayResult(res, device, userdata);
   }
 
-  virtual void OnPauseResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnPauseResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPauseResult(res, device, userdata);
   }
 
-  virtual void OnNextResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnNextResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnNextResult(res, device, userdata);
   }
 
-  virtual void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata)
+  void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetMediaInfoResult(res, device, info, userdata);
   }
 
-  virtual void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata)
+  void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetPositionInfoResult(res, device, info, userdata);
   }
 
-  virtual void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata)
+  void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata) override
   { CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetTransportInfoResult(res, device, info, userdata);
   }
 
-  virtual bool OnMRAdded(PLT_DeviceDataReference& device )
+  bool OnMRAdded(PLT_DeviceDataReference& device ) override
   {
     if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
       return false;
@@ -395,7 +395,7 @@ public:
     return true;
   }
 
-  virtual void OnMRRemoved(PLT_DeviceDataReference& device )
+  void OnMRRemoved(PLT_DeviceDataReference& device ) override
   {
     if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
       return;

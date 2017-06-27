@@ -38,53 +38,53 @@ class CUPnPServer : public PLT_MediaConnect,
 {
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
-    ~CUPnPServer();
-    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+    ~CUPnPServer() override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
     // PLT_MediaServer methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
-                                        const char*                   object_id,
-                                        const char*                   filter,
-                                        NPT_UInt32                    starting_index,
-                                        NPT_UInt32                    requested_count,
-                                        const char*                   sort_criteria,
-                                        const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action,
-                                              const char*                   object_id,
-                                              const char*                   filter,
-                                              NPT_UInt32                    starting_index,
-                                              NPT_UInt32                    requested_count,
-                                              const char*                   sort_criteria,
-                                              const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action,
-                                         const char*                   container_id,
-                                         const char*                   search_criteria,
-                                         const char*                   filter,
-                                         NPT_UInt32                    starting_index,
-                                         NPT_UInt32                    requested_count,
-                                         const char*                   sort_criteria,
-                                         const PLT_HttpRequestContext& context);
+    NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
+                                const char*                   object_id,
+                                const char*                   filter,
+                                NPT_UInt32                    starting_index,
+                                NPT_UInt32                    requested_count,
+                                const char*                   sort_criteria,
+                                const PLT_HttpRequestContext& context) override;
+    NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action,
+                                      const char*                   object_id,
+                                      const char*                   filter,
+                                      NPT_UInt32                    starting_index,
+                                      NPT_UInt32                    requested_count,
+                                      const char*                   sort_criteria,
+                                      const PLT_HttpRequestContext& context) override;
+    NPT_Result OnSearchContainer(PLT_ActionReference&          action,
+                                 const char*                   container_id,
+                                 const char*                   search_criteria,
+                                 const char*                   filter,
+                                 NPT_UInt32                    starting_index,
+                                 NPT_UInt32                    requested_count,
+                                 const char*                   sort_criteria,
+                                 const PLT_HttpRequestContext& context) override;
 
-    virtual NPT_Result OnUpdateObject(PLT_ActionReference&             action,
-                                      const char*                      object_id,
-                                      NPT_Map<NPT_String,NPT_String>&  current_vals,
-                                      NPT_Map<NPT_String,NPT_String>&  new_vals,
-                                      const PLT_HttpRequestContext&    context);
+    NPT_Result OnUpdateObject(PLT_ActionReference&             action,
+                              const char*                      object_id,
+                              NPT_Map<NPT_String,NPT_String>&  current_vals,
+                              NPT_Map<NPT_String,NPT_String>&  new_vals,
+                              const PLT_HttpRequestContext&    context) override;
 
     // PLT_FileMediaServer methods
-    virtual NPT_Result ServeFile(const NPT_HttpRequest&              request,
-                                 const NPT_HttpRequestContext& context,
-                                 NPT_HttpResponse&             response,
-                                 const NPT_String&             file_path);
+    NPT_Result ServeFile(const NPT_HttpRequest&        request,
+                         const NPT_HttpRequestContext& context,
+                         NPT_HttpResponse&             response,
+                         const NPT_String&             file_path) override;
 
     // PLT_DeviceHost methods
-    virtual NPT_Result ProcessGetSCPD(PLT_Service*                  service,
-                                      NPT_HttpRequest&              request,
-                                      const NPT_HttpRequestContext& context,
-                                      NPT_HttpResponse&             response);
+    NPT_Result ProcessGetSCPD(PLT_Service*                  service,
+                              NPT_HttpRequest&              request,
+                              const NPT_HttpRequestContext& context,
+                              NPT_HttpResponse&             response) override;
 
-    virtual NPT_Result SetupServices();
-    virtual NPT_Result SetupIcons();
+    NPT_Result SetupServices() override;
+    NPT_Result SetupIcons() override;
     NPT_String BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
                                     const char*        host,
                                     const char*        file_path);
@@ -114,14 +114,14 @@ private:
                            const PLT_HttpRequestContext& context,
                            NPT_Reference<CThumbLoader>&  thumbLoader,
                            const char*                   parent_id = NULL);
-    NPT_Result       BuildResponse(PLT_ActionReference&          action,
-                                   CFileItemList&                items,
-                                   const char*                   filter,
-                                   NPT_UInt32                    starting_index,
-                                   NPT_UInt32                    requested_count,
-                                   const char*                   sort_criteria,
-                                   const PLT_HttpRequestContext& context,
-                                   const char*                   parent_id /* = NULL */);
+    NPT_Result BuildResponse(PLT_ActionReference&          action,
+                             CFileItemList&                items,
+                             const char*                   filter,
+                             NPT_UInt32                    starting_index,
+                             NPT_UInt32                    requested_count,
+                             const char*                   sort_criteria,
+                             const PLT_HttpRequestContext& context,
+                             const char*                   parent_id /* = NULL */);
 
     // class methods
     static bool SortItems(CFileItemList& items, const char* sort_criteria);
@@ -133,9 +133,9 @@ private:
         return file_path.Left(index);
     }
 
-    NPT_Mutex                       m_CacheMutex;
+    NPT_Mutex m_CacheMutex;
 
-    NPT_Mutex                       m_FileMutex;
+    NPT_Mutex m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
 
     std::map<std::string, std::pair<bool, unsigned long> > m_UpdateIDs;

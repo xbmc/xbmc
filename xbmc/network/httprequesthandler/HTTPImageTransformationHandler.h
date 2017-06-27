@@ -29,7 +29,7 @@ class CHTTPImageTransformationHandler : public IHTTPRequestHandler
 {
 public:
   CHTTPImageTransformationHandler();
-  virtual ~CHTTPImageTransformationHandler();
+  ~CHTTPImageTransformationHandler() override;
 
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPImageTransformationHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request)const  override;

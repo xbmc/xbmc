@@ -90,7 +90,7 @@ class CMACDiscoveryJob : public CJob
 public:
   CMACDiscoveryJob(const std::string& host) : m_host(host) {}
 
-  virtual bool DoWork();
+  bool DoWork() override;
 
   const std::string& GetMAC() const { return m_macAddress; }
   const std::string& GetHost() const { return m_host; }
@@ -236,7 +236,7 @@ public:
   NetworkStartWaiter (unsigned settle_time_ms, const std::string& host) : m_settle_time_ms (settle_time_ms), m_host(host)
   {
   }
-  virtual bool SuccessWaiting () const
+  bool SuccessWaiting () const override
   {
     unsigned long address = ntohl(HostToIP(m_host));
     bool online = g_application.getNetwork().HasInterfaceForIP(address);
@@ -264,16 +264,16 @@ public:
       m_jobId = CJobManager::GetInstance().AddJob(job, this);
     }
   }
-  ~PingResponseWaiter()
+  ~PingResponseWaiter() override
   {
     CJobManager::GetInstance().CancelJob(m_jobId);
   }
-  virtual bool SuccessWaiting () const
+  bool SuccessWaiting () const override
   {
     return m_jobId ? m_hostOnline : Ping(m_server);
   }
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override
   {
     m_hostOnline = success;
   }
@@ -291,7 +291,7 @@ private:
     public:
       CHostProberJob(const CWakeOnAccess::WakeUpEntry& server) : m_server (server) {}
 
-      virtual bool DoWork()
+      bool DoWork() override
       {
         while (!ShouldCancel(0,0))
         {
