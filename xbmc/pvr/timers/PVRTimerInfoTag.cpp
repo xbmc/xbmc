@@ -90,7 +90,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
 
   ResetChildState();
   UpdateSummary();
-  UpdateEpgInfoTag();
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId) :
@@ -115,13 +114,13 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iChannelNumber(channel ? CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0),
   m_bIsRadio(channel && channel->IsRadio()),
   m_iTimerId(0),
-  m_channel(channel),
   m_iMarginStart(timer.iMarginStart),
   m_iMarginEnd(timer.iMarginEnd),
   m_StartTime(timer.startTime + g_advancedSettings.m_iPVRTimeCorrection),
   m_StopTime(timer.endTime + g_advancedSettings.m_iPVRTimeCorrection),
   m_FirstDay(timer.firstDay + g_advancedSettings.m_iPVRTimeCorrection),
-  m_iEpgUid(timer.iEpgUid)
+  m_iEpgUid(timer.iEpgUid),
+  m_channel(channel)
 {
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::Log(LOGERROR, "%s: invalid client index supplied by client %d (must be > 0)!", __FUNCTION__, m_iClientId);
@@ -604,6 +603,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_iEpgUid             = tag->m_iEpgUid;
   m_epgTag              = tag->m_epgTag;
   m_strSummary          = tag->m_strSummary;
+  m_channel             = tag->m_channel;
 
   SetTimerType(tag->m_timerType);
 
@@ -966,7 +966,15 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
 {
   if (!m_epgTag && bCreate)
   {
-    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+    CPVRChannelPtr channel(m_channel);
+    if (!channel)
+    {
+      channel = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+
+      CSingleLock lock(m_critSection);
+      m_channel = channel;
+    }
+
     if (channel)
     {
       const CPVREpgPtr epg(channel->GetEPG());
