@@ -31,13 +31,13 @@ class CGUIDialogFavourites :
 {
 public:
   CGUIDialogFavourites(void);
-  virtual ~CGUIDialogFavourites(void);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual void OnInitWindow();
+  ~CGUIDialogFavourites(void) override;
+  bool OnMessage(CGUIMessage &message) override;
+  void OnInitWindow() override;
 
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-  virtual bool HasListItems() const { return true; }
+  bool HasListItems() const override { return true; }
 
   static bool ChooseAndSetNewName(const CFileItemPtr &item);
   static bool ChooseAndSetNewThumbnail(const CFileItemPtr &item);
