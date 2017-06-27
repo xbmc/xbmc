@@ -19,6 +19,8 @@
  *
  */
 
+#include <functional>
+
 #include "Event.h"
 #include "Thread.h"
 
@@ -34,6 +36,7 @@ class CTimer : protected CThread
 {
 public:
   CTimer(ITimerCallback *callback);
+  explicit CTimer(std::function<void()> const& callback);
   virtual ~CTimer();
 
   bool Start(uint32_t timeout, bool interval = false);
@@ -50,7 +53,7 @@ protected:
   virtual void Process();
   
 private:
-  ITimerCallback *m_callback;
+  std::function<void()> m_callback;
   uint32_t m_timeout;
   bool m_interval;
   uint32_t m_endTime;

@@ -21,13 +21,14 @@
 #ifndef WINDOW_SYSTEM_BASE_H
 #define WINDOW_SYSTEM_BASE_H
 
+#include "OSScreenSaver.h"
 #include "VideoSync.h"
 #include "WinEvents.h"
 #include "guilib/Resolution.h"
 #include <memory>
 #include <vector>
 
-typedef enum _WindowSystemType
+enum WindowSystemType
 {
   WINDOW_SYSTEM_WIN32,
   WINDOW_SYSTEM_OSX,
@@ -39,7 +40,7 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_RPI,
   WINDOW_SYSTEM_AML,
   WINDOW_SYSTEM_ANDROID
-} WindowSystemType;
+};
 
 struct RESOLUTION_WHR
 {
@@ -95,9 +96,15 @@ public:
   virtual void OnMove(int x, int y) {}
 
   // OS System screensaver
-  virtual void EnableSystemScreenSaver(bool bEnable) {};
-  virtual bool IsSystemScreenSaverEnabled() {return false;}
-  virtual void ResetOSScreensaver() {};
+  /**
+   * Get OS screen saver inhibit implementation if available
+   * 
+   * \return OS screen saver implementation that can be used with this windowing system
+   *         or nullptr if unsupported.
+   *         Lifetime of the returned object will usually end with \ref DestroyWindowSystem, so
+   *         do not use any more after calling that.
+   */
+  KODI::WINDOWING::COSScreenSaverManager* GetOSScreenSaver();
 
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
@@ -122,6 +129,7 @@ public:
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
+  virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
   WindowSystemType  m_eWindowSystem;
   int               m_nWidth;
@@ -133,6 +141,7 @@ protected:
   int               m_nScreen;
   bool              m_bBlankOtherDisplay;
   float             m_fRefreshRate;
+  std::unique_ptr<KODI::WINDOWING::COSScreenSaverManager> m_screenSaverManager;
 };
 
 

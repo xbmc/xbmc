@@ -3348,7 +3348,7 @@
       <group id="1" label="16000">
         <setting id="screensaver.mode" type="addon" label="356" help="36130">
           <level>0</level>
-          <default>screensaver.xbmc.builtin.dim</default>
+          <default>default</default> <!-- will be properly set on startup -->
           <constraints>
             <addontype>xbmc.ui.screensaver</addontype>
             <allowempty>true</allowempty>
