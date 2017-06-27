@@ -38,7 +38,7 @@ class CBackgroundPicLoader : public CThread
 {
 public:
   CBackgroundPicLoader();
-  ~CBackgroundPicLoader();
+  ~CBackgroundPicLoader() override;
 
   void Create(CGUIWindowSlideShow *pCallback);
   void LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight);
@@ -47,7 +47,7 @@ public:
   int Pic() const { return m_iPic; }
 
 private:
-  void Process();
+  void Process() override;
   int m_iPic;
   int m_iSlideNumber;
   std::string m_strFileName;
@@ -64,7 +64,7 @@ class CGUIWindowSlideShow : public CGUIDialog
 {
 public:
   CGUIWindowSlideShow(void);
-  virtual ~CGUIWindowSlideShow() {};
+  ~CGUIWindowSlideShow() override {};
 
   bool OnMessage(CGUIMessage& message) override;
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;

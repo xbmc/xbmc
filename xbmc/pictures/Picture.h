@@ -81,8 +81,8 @@ class CThumbnailWriter : public CJob
   public:
     //WARNING: buffer is deleted from DoWork()
     CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const std::string& thumbFile);
-    ~CThumbnailWriter();
-    bool DoWork();
+    ~CThumbnailWriter() override;
+    bool DoWork() override;
 
   private:
     unsigned char* m_buffer;

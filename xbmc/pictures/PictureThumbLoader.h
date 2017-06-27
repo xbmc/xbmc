@@ -26,11 +26,11 @@ class CPictureThumbLoader : public CThumbLoader, public CJobQueue
 {
 public:
   CPictureThumbLoader();
-  virtual ~CPictureThumbLoader();
+  ~CPictureThumbLoader() override;
 
-  virtual bool LoadItem(CFileItem* pItem);
-  virtual bool LoadItemCached(CFileItem* pItem);
-  virtual bool LoadItemLookup(CFileItem* pItem);
+  bool LoadItem(CFileItem* pItem) override;
+  bool LoadItemCached(CFileItem* pItem) override;
+  bool LoadItemLookup(CFileItem* pItem) override;
   void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
   static void ProcessFoldersAndArchives(CFileItem *pItem);
 
@@ -41,10 +41,10 @@ public:
 
    \sa CImageLoader, IJobCallback
    */
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
 protected:
-  virtual void OnLoaderFinish();
+  void OnLoaderFinish() override;
 
 private:
   bool m_regenerateThumbs;
