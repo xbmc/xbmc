@@ -31,8 +31,8 @@ class CAddonDatabase : public CDatabase
 {
 public:
   CAddonDatabase();
-  virtual ~CAddonDatabase();
-  virtual bool Open();
+  ~CAddonDatabase() override;
+  bool Open() override;
 
   /*! @deprecated: use CAddonMgr::FindInstallableById */
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
@@ -146,12 +146,12 @@ public:
 
 
 protected:
-  virtual void CreateTables();
-  virtual void CreateAnalytics();
-  virtual void UpdateTables(int version);
-  virtual int GetMinSchemaVersion() const;
-  virtual int GetSchemaVersion() const;
-  const char *GetBaseDBName() const { return "Addons"; }
+  void CreateTables() override;
+  void CreateAnalytics() override;
+  void UpdateTables(int version) override;
+  int GetMinSchemaVersion() const override;
+  int GetSchemaVersion() const override;
+  const char *GetBaseDBName() const override { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
   void DeleteRepository(const std::string& id);

@@ -58,16 +58,16 @@ typedef std::shared_ptr<CSkinSetting> CSkinSettingPtr;
 class CSkinSettingString : public CSkinSetting
 {
 public:
-  virtual ~CSkinSettingString() { }
+  ~CSkinSettingString() override { }
 
-  virtual std::string GetType() const { return "string"; }
+  std::string GetType() const override { return "string"; }
 
-  virtual bool Deserialize(const TiXmlElement* element);
+  bool Deserialize(const TiXmlElement* element) override;
 
   std::string value;
 
 protected:
-  virtual bool SerializeSetting(TiXmlElement* element) const;
+  bool SerializeSetting(TiXmlElement* element) const override;
 };
 
 typedef std::shared_ptr<CSkinSettingString> CSkinSettingStringPtr;
@@ -78,16 +78,16 @@ public:
   CSkinSettingBool()
     : value(false)
   { }
-  virtual ~CSkinSettingBool() { }
+  ~CSkinSettingBool() override { }
 
-  virtual std::string GetType() const { return "bool"; }
+  std::string GetType() const override { return "bool"; }
 
-  virtual bool Deserialize(const TiXmlElement* element);
+  bool Deserialize(const TiXmlElement* element) override;
 
   bool value;
 
 protected:
-  virtual bool SerializeSetting(TiXmlElement* element) const;
+  bool SerializeSetting(TiXmlElement* element) const override;
 };
 
 typedef std::shared_ptr<CSkinSettingBool> CSkinSettingBoolPtr;
@@ -173,7 +173,7 @@ public:
    */
   void GetSkinPaths(std::vector<std::string> &paths) const;
 
-  bool IsInUse() const;
+  bool IsInUse() const override;
 
   const std::string& GetCurrentAspect() const { return m_currentAspect; }
 
@@ -188,8 +188,8 @@ public:
 
   /*! \brief Don't handle skin settings like normal addon settings
    */
-  virtual bool HasSettings() { return false; }
-  virtual bool HasUserSettings() { return false; }
+  bool HasSettings() override { return false; }
+  bool HasUserSettings() override { return false; }
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;
@@ -204,8 +204,8 @@ public:
 
   static std::set<CSkinSettingPtr> ParseSettings(const TiXmlElement* rootElement);
 
-  virtual void OnPreInstall();
-  virtual void OnPostInstall(bool update, bool modal);
+  void OnPreInstall() override;
+  void OnPostInstall(bool update, bool modal) override;
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate

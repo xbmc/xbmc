@@ -28,9 +28,9 @@ class CUISoundsResource : public CResource
 {
 public:
   CUISoundsResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)) {};
-  virtual bool IsAllowed(const std::string &file) const;
-  virtual bool IsInUse() const;
-  virtual void OnPostInstall(bool update, bool modal);
+  bool IsAllowed(const std::string &file) const override;
+  bool IsInUse() const override;
+  void OnPostInstall(bool update, bool modal) override;
 };
 
 }

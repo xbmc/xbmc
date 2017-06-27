@@ -40,7 +40,7 @@ namespace ADDON
   {
   public:
     CAddonSettings(std::shared_ptr<const IAddon> addon);
-    virtual ~CAddonSettings() = default;
+    ~CAddonSettings() override = default;
 
     // specialization of CSettingsBase
     bool Initialize() override { return false; }

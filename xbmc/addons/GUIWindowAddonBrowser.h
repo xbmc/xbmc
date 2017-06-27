@@ -36,8 +36,8 @@ class CGUIWindowAddonBrowser : public CGUIMediaWindow
 {
 public:
   CGUIWindowAddonBrowser(void);
-  virtual ~CGUIWindowAddonBrowser(void);
-  virtual bool OnMessage(CGUIMessage& message) override;
+  ~CGUIWindowAddonBrowser(void) override;
+  bool OnMessage(CGUIMessage& message) override;
 
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
@@ -68,11 +68,11 @@ public:
   bool UseFileDirectories() override { return false; }
   
 protected:
-  virtual bool OnClick(int iItem, const std::string &player = "") override;
-  virtual void UpdateButtons() override;
-  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
-  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-  virtual std::string GetStartFolder(const std::string &dir) override;
+  bool OnClick(int iItem, const std::string &player = "") override;
+  void UpdateButtons() override;
+  bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+  bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+  std::string GetStartFolder(const std::string &dir) override;
 
   std::string GetRootPath() const override { return "addons://"; }
 

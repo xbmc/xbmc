@@ -29,7 +29,7 @@ class CVisualization : public IAddonInstanceHandler
 {
 public:
   CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, float y, float w, float h);
-  virtual ~CVisualization();
+  ~CVisualization() override;
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
   void Stop();

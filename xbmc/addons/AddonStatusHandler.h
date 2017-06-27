@@ -38,12 +38,12 @@ namespace ADDON
   {
     public:
       CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread = true);
-      ~CAddonStatusHandler();
+      ~CAddonStatusHandler() override;
 
       /* Thread handling */
-      virtual void Process();
-      virtual void OnStartup();
-      virtual void OnExit();
+      void Process() override;
+      void OnStartup() override;
+      void OnExit() override;
 
     private:
       static CCriticalSection   m_critSection;

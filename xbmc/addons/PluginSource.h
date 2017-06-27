@@ -35,8 +35,8 @@ public:
   explicit CPluginSource(CAddonInfo addonInfo);
   CPluginSource(CAddonInfo addonInfo, const std::string& provides);
 
-  virtual TYPE FullType() const;
-  virtual bool IsType(TYPE type) const;
+  TYPE FullType() const override;
+  bool IsType(TYPE type) const override;
   bool Provides(const Content& content) const
   {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0;

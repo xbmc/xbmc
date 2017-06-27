@@ -37,10 +37,10 @@ public:
   explicit CImageResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)) {};
   CImageResource(CAddonInfo addonInfo, std::string type);
 
-  virtual void OnPreUnInstall();
+  void OnPreUnInstall() override;
 
-  virtual bool IsAllowed(const std::string &file) const;
-  virtual std::string GetFullPath(const std::string &filePath) const;
+  bool IsAllowed(const std::string &file) const override;
+  std::string GetFullPath(const std::string &filePath) const override;
 
   //! \brief Returns type of image collection
   const std::string& GetType() const { return m_type; }

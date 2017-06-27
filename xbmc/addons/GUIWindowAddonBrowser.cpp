@@ -164,7 +164,7 @@ void CGUIWindowAddonBrowser::SetProperties()
 
 class UpdateAddons : public IRunnable
 {
-  virtual void Run()
+  void Run() override
   {
     for (const auto& addon : CAddonMgr::GetInstance().GetAvailableUpdates())
       CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());

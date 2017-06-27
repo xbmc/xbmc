@@ -55,7 +55,7 @@ namespace ADDON
     //! \brief Construct from add-on properties.
     //! \param addonInfo General addon properties
     CVFSEntry(BinaryAddonBasePtr addonInfo);
-    virtual ~CVFSEntry();
+    ~CVFSEntry() override;
 
     // Things that MUST be supplied by the child classes
     void* Open(const CURL& url);
@@ -108,34 +108,34 @@ namespace ADDON
     CVFSEntryIFileWrapper(VFSEntryPtr ptr);
 
     //! \brief Empty destructor.
-    virtual ~CVFSEntryIFileWrapper();
+    ~CVFSEntryIFileWrapper() override;
 
     //! \brief Open a file.
     //! \param[in] url URL to open.
     //! \returns True if file was opened, false otherwise.
-    virtual bool Open(const CURL& url);
+    bool Open(const CURL& url) override;
 
     //! \brief Open a file for writing.
     //! \param[in] url URL to open.
     //! \param[in] bOverWrite If true, overwrite an existing file.
     //! \returns True if file was opened, false otherwise.
-    virtual bool OpenForWrite(const CURL& url, bool bOverWrite);
+    bool OpenForWrite(const CURL& url, bool bOverWrite) override;
 
     //! \brief Check for file existence.
     //! \param[in] url URL of file.
-    virtual bool Exists(const CURL& url);
+    bool Exists(const CURL& url) override;
 
     //! \brief Stat a file.
     //! \param[in] url URL of file.
     //! \param[out] buffer The stat info.
     //! \details Returns 0 on success, non-zero otherwise (see fstat() return values).
-    virtual int  Stat(const CURL& url, struct __stat64* buffer);
+    int  Stat(const CURL& url, struct __stat64* buffer) override;
 
     //! \brief Read data from file:
     //! \param lpBuf Buffer to read data into.
     //! \param[in] uiBufSize Number of bytes to read.
     //! \returns Number of bytes read.
-    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
+    ssize_t Read(void* lpBuf, size_t uiBufSize) override;
 
     //! \brief Write data to file.
     //! \param[in] lpBuf Data to write.
@@ -147,35 +147,35 @@ namespace ADDON
     //! \param[in] iFilePosition Position to seek to.
     //! \param[in] whence Origin for position.
     //! \returns New file position.
-    virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+    int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) override;
 
     //! \brief Truncate a file.
     //! \param[in] size Size of new file.
-    virtual int Truncate(int64_t size);
+    int Truncate(int64_t size) override;
 
     //! \brief Close file.
-    virtual void Close();
+    void Close() override;
 
     //! \brief Obtain current file position.
-    virtual int64_t GetPosition();
+    int64_t GetPosition() override;
 
     //! \brief Obtain file size.
-    virtual int64_t GetLength();
+    int64_t GetLength() override;
 
     //! \brief Obtain chunksize of file.
-    virtual int GetChunkSize();
+    int GetChunkSize() override;
 
     //! \brief Perform I/O controls for file.
-    virtual int IoControl(XFILE::EIoControl request, void* param);
+    int IoControl(XFILE::EIoControl request, void* param) override;
 
     //! \brief Delete a file.
     //! \param[in] url URL of file to delete.
-    virtual bool Delete(const CURL& url);
+    bool Delete(const CURL& url) override;
 
     //! \brief Rename a file.
     //! \param[in] url URL of file to rename.
     //! \param[in] url2 New URL of file.
-    virtual bool Rename(const CURL& url, const CURL& url2);
+    bool Rename(const CURL& url, const CURL& url2) override;
   protected:
     void* m_context; //!< Opaque add-on specific context for opened file.
     VFSEntryPtr m_addon; //!< Pointer to wrapped CVFSEntry.
@@ -192,25 +192,25 @@ namespace ADDON
     CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr);
 
     //! \brief Empty destructor.
-    virtual ~CVFSEntryIDirectoryWrapper() {}
+    ~CVFSEntryIDirectoryWrapper() override {}
 
     //! \brief Return directory listing.
     //! \param[in] url URL to file to list.
     //! \param items List of items in file.
     //! \return True if listing succeeded, false otherwise.
-    virtual bool GetDirectory(const CURL& strPath, CFileItemList& items);
+    bool GetDirectory(const CURL& strPath, CFileItemList& items) override;
 
     //! \brief Check if directory exists.
     //! \param[in] url URL to check.
-    virtual bool Exists(const CURL& strPath);
+    bool Exists(const CURL& strPath) override;
 
     //! \brief Delete directory.
     //! \param[in] url URL to delete.
-    virtual bool Remove(const CURL& strPath);
+    bool Remove(const CURL& strPath) override;
 
     //! \brief Create directory.
     //! \param[in] url URL to delete.
-    virtual bool Create(const CURL& strPath);
+    bool Create(const CURL& strPath) override;
 
     //! \brief Static helper for doing a keyboard callback.
     static bool DoGetKeyboardInput(void* context, const char* heading,
@@ -249,11 +249,11 @@ namespace ADDON
     CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr) : CVFSEntryIDirectoryWrapper(ptr) {}
 
     //! \brief Empty destructor.
-    virtual ~CVFSEntryIFileDirectoryWrapper() {}
+    ~CVFSEntryIFileDirectoryWrapper() override {}
 
     //! \brief Check if the given file should be treated as a directory.
     //! \param[in] URL URL for file to probe.
-    bool ContainsFiles(const CURL& url)
+    bool ContainsFiles(const CURL& url) override
     {
       return m_addon->ContainsFiles(url, m_items);
     }
@@ -262,28 +262,28 @@ namespace ADDON
     //! \param[in] url URL to file to list.
     //! \param items List of items in file.
     //! \return True if listing succeeded, false otherwise.
-    bool GetDirectory(const CURL& url, CFileItemList& items)
+    bool GetDirectory(const CURL& url, CFileItemList& items) override
     {
       return CVFSEntryIDirectoryWrapper::GetDirectory(url, items);
     }
 
     //! \brief Check if directory exists.
     //! \param[in] url URL to check.
-    bool Exists(const CURL& url)
+    bool Exists(const CURL& url) override
     {
       return CVFSEntryIDirectoryWrapper::Exists(url);
     }
 
     //! \brief Delete directory.
     //! \param[in] url URL to delete.
-    bool Remove(const CURL& url)
+    bool Remove(const CURL& url) override
     {
       return CVFSEntryIDirectoryWrapper::Remove(url);
     }
 
     //! \brief Create directory.
     //! \param[in] url URL to delete.
-    bool Create(const CURL& url)
+    bool Create(const CURL& url) override
     {
       return CVFSEntryIDirectoryWrapper::Create(url);
     }

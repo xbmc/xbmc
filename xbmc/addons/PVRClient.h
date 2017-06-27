@@ -56,7 +56,7 @@ namespace PVR
   {
   public:
     explicit CPVRClient(ADDON::CAddonInfo addonInfo);
-    ~CPVRClient(void);
+    ~CPVRClient(void) override;
 
     void OnDisabled() override;
     void OnEnabled() override;

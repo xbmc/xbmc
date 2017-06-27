@@ -43,11 +43,11 @@ public:
       const std::string& dvdLanguageSubtitle,
       const std::set<std::string>& sortTokens);
 
-  virtual bool IsInUse() const;
+  bool IsInUse() const override;
 
-  virtual void OnPostInstall(bool update, bool modal);
+  void OnPostInstall(bool update, bool modal) override;
 
-  virtual bool IsAllowed(const std::string &file) const;
+  bool IsAllowed(const std::string &file) const override;
 
   const CLocale& GetLocale() const { return m_locale; }
 

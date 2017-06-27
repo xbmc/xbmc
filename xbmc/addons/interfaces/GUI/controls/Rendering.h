@@ -75,10 +75,10 @@ namespace ADDON
     CGUIAddonRenderingControl(CGUIRenderingControl *pControl);
     virtual ~CGUIAddonRenderingControl() {}
 
-    virtual bool Create(int x, int y, int w, int h, void *device);
-    virtual void Render();
-    virtual void Stop();
-    virtual bool IsDirty();
+    bool Create(int x, int y, int w, int h, void *device) override;
+    void Render() override;
+    void Stop() override;
+    bool IsDirty() override;
     virtual void Delete();
 
   protected:
