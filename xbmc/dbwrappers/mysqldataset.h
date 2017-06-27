@@ -42,47 +42,47 @@ public:
 /* default constructor */
   MysqlDatabase();
 /* destructor */
-  ~MysqlDatabase();
+  ~MysqlDatabase() override;
 
-  Dataset *CreateDataset() const;
+  Dataset *CreateDataset() const override;
 
 /* func. returns connection handle with MySQL-server */
   MYSQL *getHandle() {  return conn; }
 /* func. returns current status about MySQL-server connection */
-  virtual int status();
-  virtual int setErr(int err_code,const char * qry);
+  int status() override;
+  int setErr(int err_code,const char * qry) override;
 /* func. returns error message if error occurs */
-  virtual const char *getErrorMsg();
+  const char *getErrorMsg() override;
 
 /* func. connects to database-server */
-  virtual int connect(bool create);
+  int connect(bool create) override;
 /* func. disconnects from database-server */
-  virtual void disconnect();
+  void disconnect() override;
 /* func. creates new database */
-  virtual int create();
+  int create() override;
 /* func. deletes database */
-  virtual int drop();
+  int drop() override;
 /* check if database exists (ie has tables/views defined) */
-  virtual bool exists();
+  bool exists() override;
 
 /* \brief copy database */
-  virtual int copy(const char *backup_name);
+  int copy(const char *backup_name) override;
 
 /* \brief drop all extra analytics from database */
-  virtual int drop_analytics(void);
+  int drop_analytics(void) override;
 
-  virtual long nextid(const char* seq_name);
+  long nextid(const char* seq_name) override;
 
 /* virtual methods for transaction */
 
-  virtual void start_transaction();
-  virtual void commit_transaction();
-  virtual void rollback_transaction();
+  void start_transaction() override;
+  void commit_transaction() override;
+  void rollback_transaction() override;
 
 /* virtual methods for formatting */
-  virtual std::string vprepare(const char *format, va_list args);
+  std::string vprepare(const char *format, va_list args) override;
 
-  bool in_transaction() {return _in_transaction;};
+  bool in_transaction() override {return _in_transaction;};
   int query_with_reconnect(const char* query);
   void configure_connection();
 
@@ -115,16 +115,16 @@ protected:
 /* Makes direct queries to database */
   virtual void make_query(StringList &_sql);
 /* Makes direct inserts into database */
-  virtual void make_insert();
+  void make_insert() override;
 /* Edit SQL */
-  virtual void make_edit();
+  void make_edit() override;
 /* Delete SQL */
-  virtual void make_deletion();
+  void make_deletion() override;
 
 
 /* This function works only with MySQL database
   Filling the fields information from select statement */
-  virtual void fill_fields();
+  void fill_fields() override;
 /* Changing field values during dataset navigation */
   virtual void free_row();  // free the memory allocated for the current row
 
@@ -134,44 +134,44 @@ public:
   MysqlDataset(MysqlDatabase *newDb);
 
 /* destructor */
-  ~MysqlDataset();
+  ~MysqlDataset() override;
 
 /* set autorefresh boolean value (if true - refresh the data after edit() 
 or insert() operations default = false) */
   void set_autorefresh(bool val);
 
 /* opens a query  & then sets a query results */
-  virtual void open();
-  virtual void open(const std::string &sql);
+  void open() override;
+  void open(const std::string &sql) override;
 /* func. executes a query without results to return */
-  virtual int  exec ();
-  virtual int  exec (const std::string &sql);
-  virtual const void* getExecRes();
+  int  exec () override;
+  int  exec (const std::string &sql) override;
+  const void* getExecRes() override;
 /* as open, but with our query exec Sql */
-  virtual bool query(const std::string &query);
+  bool query(const std::string &query) override;
 /* func. closes a query */
-  virtual void close(void);
+  void close(void) override;
 /* Cancel changes, made in insert or edit states of dataset */
-  virtual void cancel();
+  void cancel() override;
 /* last insert id */
-  virtual int64_t lastinsertid();
+  int64_t lastinsertid() override;
 /* sequence numbers */
-  virtual long nextid(const char *seq_name);
+  long nextid(const char *seq_name) override;
 /* sequence numbers */
-  virtual int num_rows();
+  int num_rows() override;
 /* interrupt any pending database operation  */
-  virtual void interrupt();
+  void interrupt() override;
 
-  virtual bool bof();
-  virtual bool eof();
-  virtual void first();
-  virtual void last();
-  virtual void prev();
-  virtual void next();
+  bool bof() override;
+  bool eof() override;
+  void first() override;
+  void last() override;
+  void prev() override;
+  void next() override;
 /* Go to record No (starting with 0) */
-  virtual bool seek(int pos=0);
+  bool seek(int pos=0) override;
 
-  virtual bool dropIndex(const char *table, const char *index);
+  bool dropIndex(const char *table, const char *index) override;
 };
 } //namespace
 
