@@ -27,7 +27,7 @@ class CPlayListURL :
 {
 public:
   CPlayListURL(void);
-  virtual ~CPlayListURL(void);
-  virtual bool Load(const std::string& strFileName);
+  ~CPlayListURL(void) override;
+  bool Load(const std::string& strFileName) override;
 };
 }

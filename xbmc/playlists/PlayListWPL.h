@@ -28,8 +28,8 @@ class CPlayListWPL :
 {
 public:
   CPlayListWPL(void);
-  virtual ~CPlayListWPL(void);
-  virtual bool LoadData(std::istream& stream);
-  virtual void Save(const std::string& strFileName) const;
+  ~CPlayListWPL(void) override;
+  bool LoadData(std::istream& stream) override;
+  void Save(const std::string& strFileName) const override;
 };
 }
