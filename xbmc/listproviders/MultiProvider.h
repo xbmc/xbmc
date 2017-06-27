@@ -36,13 +36,13 @@ class CMultiProvider : public IListProvider
 public:
   CMultiProvider(const TiXmlNode *first, int parentID);
   
-  virtual bool Update(bool forceRefresh) override;
-  virtual void Fetch(std::vector<CGUIListItemPtr> &items) override;
-  virtual bool IsUpdating() const override;
-  virtual void Reset() override;
-  virtual bool OnClick(const CGUIListItemPtr &item) override;
-  virtual bool OnInfo(const CGUIListItemPtr &item) override;
-  virtual bool OnContextMenu(const CGUIListItemPtr &item) override;
+  bool Update(bool forceRefresh) override;
+  void Fetch(std::vector<CGUIListItemPtr> &items) override;
+  bool IsUpdating() const override;
+  void Reset() override;
+  bool OnClick(const CGUIListItemPtr &item) override;
+  bool OnInfo(const CGUIListItemPtr &item) override;
+  bool OnContextMenu(const CGUIListItemPtr &item) override;
   
 protected:
   typedef size_t item_key_type;
