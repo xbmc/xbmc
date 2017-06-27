@@ -27,8 +27,8 @@ class CConsoleUPowerSyscall : public CUPowerSyscall
 {
 public:
   CConsoleUPowerSyscall();
-  virtual bool Powerdown();
-  virtual bool Reboot();
+  bool Powerdown() override;
+  bool Reboot() override;
   static bool HasConsoleKitAndUPower();
 private:
   static bool ConsoleKitMethodCall(const char *method);

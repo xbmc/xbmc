@@ -45,20 +45,20 @@ enum PowerState
 class CNullPowerSyscall : public CAbstractPowerSyscall
 {
 public:
-  virtual bool Powerdown()    { return false; }
-  virtual bool Suspend()      { return false; }
-  virtual bool Hibernate()    { return false; }
-  virtual bool Reboot()       { return false; }
+  bool Powerdown() override { return false; }
+  bool Suspend() override { return false; }
+  bool Hibernate() override { return false; }
+  bool Reboot() override { return false; }
 
-  virtual bool CanPowerdown() { return true; }
-  virtual bool CanSuspend()   { return true; }
-  virtual bool CanHibernate() { return true; }
-  virtual bool CanReboot()    { return true; }
+  bool CanPowerdown() override { return true; }
+  bool CanSuspend() override { return true; }
+  bool CanHibernate() override { return true; }
+  bool CanReboot() override { return true; }
 
-  virtual int  BatteryLevel() { return 0; }
+  int  BatteryLevel() override { return 0; }
 
 
-  virtual bool PumpPowerEvents(IPowerEventsCallback *callback) { return false; }
+  bool PumpPowerEvents(IPowerEventsCallback *callback) override { return false; }
 };
 
 // This class will wrap and handle PowerSyscalls.
@@ -67,7 +67,7 @@ class CPowerManager : public IPowerEventsCallback
 {
 public:
   CPowerManager();
-  ~CPowerManager();
+  ~CPowerManager() override;
 
   void Initialize();
   void SetDefaults();
@@ -89,10 +89,10 @@ public:
   static void SettingOptionsShutdownStatesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 private:
-  void OnSleep();
-  void OnWake();
+  void OnSleep() override;
+  void OnWake() override;
 
-  void OnLowBattery();
+  void OnLowBattery() override;
 
   IPowerSyscall *m_instance;
 };

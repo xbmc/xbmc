@@ -27,18 +27,18 @@ class CConsoleDeviceKitPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CConsoleDeviceKitPowerSyscall();
-  virtual ~CConsoleDeviceKitPowerSyscall() { }
+  ~CConsoleDeviceKitPowerSyscall() override { }
 
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
+  bool Powerdown() override;
+  bool Suspend() override;
+  bool Hibernate() override;
+  bool Reboot() override;
 
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
-  virtual int  BatteryLevel();
+  bool CanPowerdown() override;
+  bool CanSuspend() override;
+  bool CanHibernate() override;
+  bool CanReboot() override;
+  int  BatteryLevel() override;
 
   static bool HasDeviceConsoleKit();
 private:
