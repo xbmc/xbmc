@@ -222,7 +222,7 @@ uint32_t CMMALPool::TranslateFormat(AVPixelFormat pixfmt)
   return MMAL_ENCODING_UNKNOWN;
 }
 
-void CMMALPool::Configure(AVPixelFormat format, int width, int height, int aligned_width, int aligned_height, int size)
+void CMMALPool::Configure(AVPixelFormat format, int width, int height, int alignedWidth, int alignedHeight, int size)
 {
   CSingleLock lock(m_critSection);
   if (m_mmal_format == MMAL_ENCODING_UNKNOWN)
@@ -235,18 +235,18 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
 
   if (m_mmal_format != MMAL_ENCODING_UNKNOWN)
   {
-    m_geo = g_RBP.GetFrameGeometry(m_mmal_format, aligned_width, aligned_height);
+    m_geo = g_RBP.GetFrameGeometry(m_mmal_format, alignedWidth, alignedHeight);
     if (m_mmal_format != MMAL_ENCODING_YUVUV128)
     {
-      if (aligned_width)
+      if (alignedWidth)
       {
-        m_geo.stride_y = aligned_width;
-        m_geo.stride_c = aligned_width>>1;
+        m_geo.stride_y = alignedWidth;
+        m_geo.stride_c = alignedWidth>>1;
       }
-      if (aligned_height)
+      if (alignedHeight)
       {
-        m_geo.height_y = aligned_height;
-        m_geo.height_c = aligned_height>>1;
+        m_geo.height_y = alignedHeight;
+        m_geo.height_c = alignedHeight>>1;
       }
     }
   }
@@ -256,12 +256,17 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
     const unsigned int size_c = m_geo.stride_c * m_geo.height_c;
     m_size = (size_y + size_c * m_geo.planes_c) * m_geo.stripes;
   }
-  CLog::Log(LOGDEBUG, "%s::%s pool:%p %dx%d (%dx%d) pix:%d size:%d fmt:%.4s", CLASSNAME, __func__, m_mmal_pool, width, height, aligned_width, aligned_height, format, size, (char *)&m_mmal_format);
+  CLog::Log(LOGDEBUG, "%s::%s pool:%p %dx%d (%dx%d) pix:%d size:%d fmt:%.4s", CLASSNAME, __func__, m_mmal_pool, width, height, alignedWidth, alignedHeight, format, size, (char *)&m_mmal_format);
 }
 
-void CMMALPool::Configure(AVPixelFormat format, int width, int height)
+void CMMALPool::Configure(AVPixelFormat format, int size)
 {
-  Configure(format, width, height, width, height, 0);
+  Configure(format, 0, 0, 0, 0, size);
+}
+
+void CMMALPool::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
+{
+  Configure(AV_PIX_FMT_NONE, width, height, alignedWidth, alignedHeight, 0);
 }
 
 inline bool CMMALPool::IsConfigured()
@@ -270,16 +275,11 @@ inline bool CMMALPool::IsConfigured()
   return m_configured;
 }
 
-bool CMMALPool::IsCompatible(AVPixelFormat format, int width, int height)
+bool CMMALPool::IsCompatible(AVPixelFormat format, int size)
 {
   CSingleLock lock(m_critSection);
-  int size = m_size;
   uint32_t mmal_format = TranslateFormat(format);
   if (m_mmal_format == mmal_format &&
-      m_width == width &&
-      m_height == height &&
-      AlignedWidth() == width &&
-      AlignedHeight() == height &&
       m_size == size)
     return true;
 
@@ -390,6 +390,13 @@ void CMMALPool::SetVideoDeintMethod(std::string method)
   CSingleLock lock(m_critSection);
   if (m_processInfo)
     m_processInfo->SetVideoDeintMethod(method);
+}
+
+void CMMALPool::Released(CVideoBufferManager &videoBufferManager)
+{
+  /* Create dummy component with attached pool */
+  std::shared_ptr<IVideoBufferPool> pool = std::make_shared<CMMALPool>(MMAL_COMPONENT_DEFAULT_VIDEO_DECODER, false, MMAL_NUM_OUTPUT_BUFFERS, 0, MMAL_ENCODING_UNKNOWN, MMALStateFFDec);
+  videoBufferManager.RegisterPool(pool);
 }
 
 #undef CLASSNAME
