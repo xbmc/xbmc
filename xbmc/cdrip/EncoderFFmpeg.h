@@ -32,11 +32,11 @@ class CEncoderFFmpeg : public IEncoder
 {
 public:
   CEncoderFFmpeg();
-  virtual ~CEncoderFFmpeg() {}
+  ~CEncoderFFmpeg() override {}
 
-  bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks);
-  int Encode(int nNumBytesRead, uint8_t *pbtStream);
-  bool Close();
+  bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
+  int Encode(int nNumBytesRead, uint8_t *pbtStream) override;
+  bool Close() override;
 private:
 
   AVFormatContext  *m_Format;
