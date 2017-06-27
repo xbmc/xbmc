@@ -19,37 +19,45 @@
 #pragma once
 
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VFS.h"
 #include "filesystem/IFile.h"
 #include "filesystem/IDirectory.h"
 #include "filesystem/IFileDirectory.h"
 
 namespace ADDON
 {
-  //! \brief A virtual filesystem entry add-on.
-  class CVFSEntry : public CAddonDll
+
+  class CVFSEntry;
+  typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
+
+  class CVFSAddonCache
   {
   public:
-    static std::unique_ptr<CVFSEntry> FromExtension(CAddonInfo addonInfo,
-                                                    const cp_extension_t* ext);
+    virtual ~CVFSAddonCache();
+    void Init();
+    void Deinit();
+    const std::vector<VFSEntryPtr> GetAddonInstances();
+    VFSEntryPtr GetAddonInstance(const std::string& strId, TYPE type);
 
+  protected:
+    void Update();
+    void OnEvent(const AddonEvent& event);
+
+    CCriticalSection m_critSection;
+    std::vector<VFSEntryPtr> m_addonsInstances;
+  };
+
+  //! \brief A virtual filesystem entry add-on.
+  class CVFSEntry : public IAddonInstanceHandler
+  {
+  public:
     //! \brief Construct from add-on properties.
     //! \param addonInfo General addon properties
-    //! \param protocols Protocols associated with add-on
-    //! \param extensions File extensions associated with add-on (filedirectories)
-    //! \param files If true, add-on provides files
-    //! \param directories If true, add-on provides directory listings
-    //! \param filedirectories If true, add-on provides filedirectories
-    explicit CVFSEntry(CAddonInfo addonInfo,
-                      const std::string& protocols,
-                      const std::string& extensions,
-                      bool files, bool directories, bool filedirectories);
-
-    //! \brief Empty destructor.
-    virtual ~CVFSEntry() {}
+    CVFSEntry(BinaryAddonBasePtr addonInfo);
+    virtual ~CVFSEntry();
 
     // Things that MUST be supplied by the child classes
-    bool Create();
     void* Open(const CURL& url);
     void* OpenForWrite(const CURL& url, bool bOverWrite);
     bool Exists(const CURL& url);
@@ -89,9 +97,7 @@ namespace ADDON
     AddonInstance_VFSEntry m_struct; //!< VFS callback table
   };
 
-  typedef std::shared_ptr<CVFSEntry> VFSEntryPtr; //!< Convenience typedef.
-
-  //! \brief Wrapper equpping a CVFSEntry with an IFile interface.
+  //! \brief Wrapper equipping a CVFSEntry with an IFile interface.
   //! \details Needed as CVFSEntry implements several VFS interfaces
   //!          with overlapping methods.
   class CVFSEntryIFileWrapper : public XFILE::IFile
@@ -208,10 +214,10 @@ namespace ADDON
 
     //! \brief Static helper for doing a keyboard callback.
     static bool DoGetKeyboardInput(void* context, const char* heading,
-                                   char** input);
+                                   char** input, bool hidden_input);
 
     //! \brief Get keyboard input.
-    bool GetKeyboardInput2(const char* heading, char** input);
+    bool GetKeyboardInput2(const char* heading, char** input, bool hidden_input);
 
     //! \brief Static helper for displaying an error dialog.
     static void DoSetErrorDialog(void* ctx, const char* heading,

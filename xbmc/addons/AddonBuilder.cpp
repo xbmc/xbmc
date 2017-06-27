@@ -125,6 +125,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
     case ADDON_PERIPHERALDLL:
+    case ADDON_VFS:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
@@ -134,8 +135,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_VFS:
-      return CVFSEntry::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_IMAGES:
@@ -193,6 +192,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
     case ADDON_PERIPHERALDLL:
+    case ADDON_VFS:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
@@ -216,8 +216,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new GAME::CController(std::move(addonInfo)));
     case ADDON_GAMEDLL:
       return AddonPtr(new GAME::CGameClient(std::move(addonInfo)));
-    case ADDON_VFS:
-      return AddonPtr(new CVFSEntry(std::move(addonInfo),"","",false,false,false));
     default:
       break;
   }
