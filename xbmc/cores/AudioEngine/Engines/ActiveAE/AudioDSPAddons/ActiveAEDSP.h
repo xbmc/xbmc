@@ -70,7 +70,7 @@ namespace ActiveAE
     /*!
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
-    virtual ~CActiveAEDSP();
+    ~CActiveAEDSP() override;
   //@}
 
   /*! @name initialization and configuration methods */
@@ -107,7 +107,7 @@ namespace ActiveAE
 
   /*! @name Settings and action callback methods */
   //@{
-    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   //@}
 
   /*! @name Backend methods */

@@ -106,7 +106,7 @@ public:
   CSinkDataProtocol m_dataPort;
 
 protected:
-  void Process();
+  void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   void PrintSinks();
   void GetDeviceFriendlyName(std::string &device);

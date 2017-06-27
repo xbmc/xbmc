@@ -44,7 +44,7 @@ namespace ActiveAE
   {
   public:
     explicit CActiveAEDSPAddon(ADDON::BinaryAddonBasePtr addonInfo);
-    ~CActiveAEDSPAddon(void);
+    ~CActiveAEDSPAddon(void) override;
 
     /** @name Audio DSP add-on methods */
     //@{
