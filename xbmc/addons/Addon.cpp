@@ -443,12 +443,6 @@ void OnPreInstall(const AddonPtr& addon)
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 {
   AddonPtr localAddon;
-  if (CAddonMgr::GetInstance().ServicesHasStarted())
-  {
-    if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
-      std::static_pointer_cast<CService>(localAddon)->Start();
-  }
-
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_REPOSITORY))
     CRepositoryUpdater::GetInstance().ScheduleUpdate(); //notify updater there is a new addon or version
 
