@@ -28,7 +28,7 @@ class CRenderSystemGL : public CRenderSystemBase
 {
 public:
   CRenderSystemGL();
-  virtual ~CRenderSystemGL();
+  ~CRenderSystemGL() override;
   void CheckOpenGLQuirks();
   bool InitRenderSystem() override;
   bool DestroyRenderSystem() override;
