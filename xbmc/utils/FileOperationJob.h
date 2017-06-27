@@ -48,9 +48,9 @@ public:
   static std::string GetActionString(FileAction action);
 
   // implementations of CJob
-  virtual bool DoWork();
-  virtual const char* GetType() const { return m_displayProgress ? "filemanager" : ""; }
-  virtual bool operator==(const CJob *job) const;
+  bool DoWork() override;
+  const char* GetType() const override { return m_displayProgress ? "filemanager" : ""; }
+  bool operator==(const CJob *job) const override;
 
   void SetFileOperation(FileAction action, CFileItemList &items, const std::string &strDestFile);
 
@@ -68,7 +68,7 @@ private:
   public:
     CFileOperation(FileAction action, const std::string &strFileA, const std::string &strFileB, int64_t time);
 
-    virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
+    bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) override;
 
     bool ExecuteOperation(CFileOperationJob *base, double &current, double opWeight);
 

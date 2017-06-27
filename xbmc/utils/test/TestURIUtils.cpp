@@ -33,7 +33,7 @@ class TestURIUtils : public testing::Test
 {
 protected:
   TestURIUtils(){}
-  ~TestURIUtils()
+  ~TestURIUtils() override
   {
     g_advancedSettings.m_pathSubstitutions.clear();
   }

@@ -34,7 +34,7 @@ class CCharsetConverter : public ISettingCallback
 public:
   CCharsetConverter();
 
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   static void reset();
   static void resetSystemCharset();

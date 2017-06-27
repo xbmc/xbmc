@@ -78,8 +78,8 @@ namespace XbmcUtils
   class LogImplementation : public XbmcCommons::ILogger
   {
   public:
-    virtual ~LogImplementation() {}
-    inline virtual void log(int logLevel, IN_STRING const char* message) { CLog::Log(logLevel, "%s", message); }
+    ~LogImplementation() override {}
+    inline void log(int logLevel, IN_STRING const char* message) override { CLog::Log(logLevel, "%s", message); }
   };
 }
 

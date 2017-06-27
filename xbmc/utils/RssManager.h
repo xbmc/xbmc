@@ -44,10 +44,10 @@ class CRssManager : public ISettingCallback, public ISettingsHandler
 public:
   static CRssManager& GetInstance();
 
-  virtual void OnSettingsLoaded() override;
-  virtual void OnSettingsUnloaded() override;
+  void OnSettingsLoaded() override;
+  void OnSettingsUnloaded() override;
 
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   void Start();
   void Stop();
@@ -61,7 +61,7 @@ public:
 
 protected:
   CRssManager();
-  ~CRssManager();
+  ~CRssManager() override;
 
 private:
   CRssManager(const CRssManager&);

@@ -42,8 +42,8 @@ public:
 
   static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnAction(const CAction &action) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  bool OnAction(const CAction &action) override;
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void SeekSeconds(int seconds);
@@ -61,7 +61,7 @@ protected:
   CSeekHandler();
   CSeekHandler(const CSeekHandler&);
   CSeekHandler& operator=(CSeekHandler const&);
-  virtual ~CSeekHandler();
+  ~CSeekHandler() override;
   bool SeekTimeCode(const CAction &action);
   void ChangeTimeCode(int remote);
 

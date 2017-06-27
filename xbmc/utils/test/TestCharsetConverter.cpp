@@ -115,7 +115,7 @@ protected:
     g_charsetConverter.clear();
   }
 
-  ~TestCharsetConverter()
+  ~TestCharsetConverter() override
   {
     CServiceBroker::GetSettings().Unload();
   }

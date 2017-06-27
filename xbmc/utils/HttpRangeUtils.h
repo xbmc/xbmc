@@ -61,7 +61,7 @@ public:
   CHttpResponseRange(uint64_t firstPosition, uint64_t lastPosition);
   CHttpResponseRange(const void* data, uint64_t firstPosition, uint64_t lastPosition);
   CHttpResponseRange(const void* data, uint64_t length);
-  virtual ~CHttpResponseRange() { }
+  ~CHttpResponseRange() override { }
 
   bool operator==(const CHttpResponseRange &other) const;
   bool operator!=(const CHttpResponseRange &other) const;
@@ -71,7 +71,7 @@ public:
   void SetData(const void* data, uint64_t length);
   void SetData(const void* data, uint64_t firstPosition, uint64_t lastPosition);
 
-  virtual bool IsValid() const;
+  bool IsValid() const override;
 
 protected:
   const void* m_data;
