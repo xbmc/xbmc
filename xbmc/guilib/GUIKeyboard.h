@@ -36,7 +36,7 @@ class CGUIKeyboard : public ITimerCallback
 {
   public:
     CGUIKeyboard():m_idleTimer(this){};
-    virtual ~CGUIKeyboard(){ };
+    ~CGUIKeyboard() override{ };
 
     // entrypoint
     /*!
@@ -66,7 +66,7 @@ class CGUIKeyboard : public ITimerCallback
     virtual int GetWindowId() const {return 0;}
 
     // CTimer Interface for autoclose
-    virtual void OnTimeout()
+    void OnTimeout() override
     {
       Cancel();
     }

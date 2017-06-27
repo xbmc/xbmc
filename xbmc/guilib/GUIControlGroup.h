@@ -39,31 +39,31 @@ public:
   CGUIControlGroup();
   CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIControlGroup(const CGUIControlGroup &from);
-  virtual ~CGUIControlGroup(void);
-  virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
+  ~CGUIControlGroup(void) override;
+  CGUIControlGroup *Clone() const override { return new CGUIControlGroup(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual void RenderEx();
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  void RenderEx() override;
+  bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage& message) override;
   virtual bool SendControlMessage(CGUIMessage& message);
-  virtual bool HasFocus() const;
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual bool CanFocus() const;
+  bool HasFocus() const override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  bool CanFocus() const override;
 
-  virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UnfocusFromPoint(const CPoint &point);
+  EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  void UnfocusFromPoint(const CPoint &point) override;
 
-  virtual void SetInitialVisibility();
+  void SetInitialVisibility() override;
 
-  virtual bool IsAnimating(ANIMATION_TYPE anim);
-  virtual bool HasAnimation(ANIMATION_TYPE anim);
-  virtual void QueueAnimation(ANIMATION_TYPE anim);
-  virtual void ResetAnimation(ANIMATION_TYPE anim);
-  virtual void ResetAnimations();
+  bool IsAnimating(ANIMATION_TYPE anim) override;
+  bool HasAnimation(ANIMATION_TYPE anim) override;
+  void QueueAnimation(ANIMATION_TYPE anim) override;
+  void ResetAnimation(ANIMATION_TYPE anim) override;
+  void ResetAnimations() override;
 
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
@@ -76,12 +76,12 @@ public:
   void SetDefaultControl(int id, bool always) { m_defaultControl = id; m_defaultAlways = always; };
   void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
 
-  virtual void SaveStates(std::vector<CControlState> &states);
+  void SaveStates(std::vector<CControlState> &states) override;
 
-  virtual bool IsGroup() const { return true; };
+  bool IsGroup() const override { return true; };
 
 #ifdef _DEBUG
-  virtual void DumpTextureUse();
+  void DumpTextureUse() override;
 #endif
 protected:
   // sub controls

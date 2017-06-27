@@ -57,20 +57,20 @@ public:
   } RangeSelector;
 
   CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation);
-  virtual ~CGUISliderControl(void);
-  virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
+  ~CGUISliderControl(void) override;
+  CGUISliderControl *Clone() const override { return new CGUISliderControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnAction(const CAction &action);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override;
   virtual bool IsActive() const { return true; };
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
-  virtual bool OnMessage(CGUIMessage& message);
+  bool OnMessage(CGUIMessage& message) override;
   bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScale, RangeSelector selector);
   void SetRangeSelection(bool rangeSelection);
   bool GetRangeSelection() const { return m_rangeSelection; }
@@ -87,13 +87,13 @@ public:
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
   int GetType() const { return m_iType; }
-  virtual std::string GetDescription() const;
+  std::string GetDescription() const override;
   void SetTextValue(const std::string &textValue) { m_textValue = textValue; };
   void SetAction(const std::string &action);
 protected:
-  virtual bool HitTest(const CPoint &point) const;
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  bool HitTest(const CPoint &point) const override;
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  bool UpdateColors() override;
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point, bool guessSelector = false);
   /*! \brief Get the current position of the slider as a proportion

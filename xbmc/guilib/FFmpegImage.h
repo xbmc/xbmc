@@ -68,18 +68,18 @@ class CFFmpegImage : public IImage
 {
 public:
   explicit CFFmpegImage(const std::string& strMimeType);
-  virtual ~CFFmpegImage();
+  ~CFFmpegImage() override;
 
-  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
-                                   unsigned int width, unsigned int height);
-  virtual bool Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
-                      unsigned int pitch, unsigned int format);
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width,
-                                          unsigned int height, unsigned int format,
-                                          unsigned int pitch, const std::string& destFile, 
-                                          unsigned char* &bufferout,
-                                          unsigned int &bufferoutSize);
-  virtual void ReleaseThumbnailBuffer();
+  bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
+                           unsigned int width, unsigned int height) override;
+  bool Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
+              unsigned int pitch, unsigned int format) override;
+  bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width,
+                                  unsigned int height, unsigned int format,
+                                  unsigned int pitch, const std::string& destFile, 
+                                  unsigned char* &bufferout,
+                                  unsigned int &bufferoutSize) override;
+  void ReleaseThumbnailBuffer() override;
 
   bool Initialize(unsigned char* buffer, unsigned int bufSize);
 

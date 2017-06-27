@@ -48,27 +48,27 @@ public:
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
-  virtual ~CGUIResizeControl(void);
-  virtual CGUIResizeControl *Clone() const { return new CGUIResizeControl(*this); };
+  ~CGUIResizeControl(void) override;
+  CGUIResizeControl *Clone() const override { return new CGUIResizeControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnAction(const CAction &action);
-  virtual void OnUp();
-  virtual void OnDown();
-  virtual void OnLeft();
-  virtual void OnRight();
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
-  virtual void SetPosition(float posX, float posY);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override;
+  void OnUp() override;
+  void OnDown() override;
+  void OnLeft() override;
+  void OnRight() override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  void SetPosition(float posX, float posY) override;
   void SetLimits(float x1, float y1, float x2, float y2);
-  virtual bool CanFocus() const { return true; };
+  bool CanFocus() const override { return true; };
 
 protected:
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  bool UpdateColors() override;
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);

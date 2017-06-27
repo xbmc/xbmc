@@ -44,28 +44,28 @@ public:
                       const CTextureInfo& leftTexture, const CTextureInfo& midTexture,
                       const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture,
                       bool reveal=false);
-  virtual ~CGUIProgressControl(void);
-  virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
+  ~CGUIProgressControl(void) override;
+  CGUIProgressControl *Clone() const override { return new CGUIProgressControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool CanFocus() const;
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void SetPosition(float posX, float posY);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool CanFocus() const override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  bool OnMessage(CGUIMessage& message) override;
+  void SetPosition(float posX, float posY) override;
   void SetPercentage(float fPercent);
   void SetInfo(int iInfo);
   int GetInfo() const {return m_iInfoCode;};
 
   float GetPercentage() const;
-  std::string GetDescription() const;
-  virtual void UpdateInfo(const CGUIListItem *item = NULL);
+  std::string GetDescription() const override;
+  void UpdateInfo(const CGUIListItem *item = NULL) override;
   bool UpdateLayout(void);
 protected:
-  virtual bool UpdateColors();
+  bool UpdateColors() override;
   CGUITexture m_guiBackground;
   CGUITexture m_guiLeft;
   CGUITexture m_guiMid;

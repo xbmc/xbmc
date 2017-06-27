@@ -30,9 +30,9 @@ public:
     : CGUIControl(parentID, controlID, posX, posY, width, height) {}
   CGUIControlLookup(const CGUIControlLookup &from)
     : CGUIControl(from) {}
-  virtual ~CGUIControlLookup(void) = default;
+  ~CGUIControlLookup(void) override = default;
 
-  virtual CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
+  CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr) override;
 protected:
   typedef std::multimap<int, CGUIControl *> LookupMap;
 

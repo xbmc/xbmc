@@ -44,20 +44,20 @@ class CGUIDialog :
 {
 public:
   CGUIDialog(int id, const std::string &xmlFile, DialogModalityType modalityType = DialogModalityType::MODAL);
-  virtual ~CGUIDialog(void);
+  ~CGUIDialog(void) override;
 
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
+  bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage& message) override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
 
   void Open(const std::string &param = "");
   
-  virtual bool OnBack(int actionID);
+  bool OnBack(int actionID) override;
 
-  virtual bool IsDialogRunning() const { return m_active; };
-  virtual bool IsDialog() const { return true;};
-  virtual bool IsModalDialog() const { return m_modalityType == DialogModalityType::MODAL || m_modalityType == DialogModalityType::PARENTLESS_MODAL; };
+  bool IsDialogRunning() const override { return m_active; };
+  bool IsDialog() const override { return true;};
+  bool IsModalDialog() const override { return m_modalityType == DialogModalityType::MODAL || m_modalityType == DialogModalityType::PARENTLESS_MODAL; };
   virtual DialogModalityType GetModalityType() const { return m_modalityType; };
 
   void SetAutoClose(unsigned int timeoutMs);
@@ -65,18 +65,18 @@ public:
   void CancelAutoClose(void);
   bool IsAutoClosed(void) const { return m_bAutoClosed; };
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
-  virtual bool IsSoundEnabled() const { return m_enableSound; };
+  bool IsSoundEnabled() const override { return m_enableSound; };
 
 protected:
   bool Load(TiXmlElement *pRootElement) override;
-  virtual void SetDefaults();
-  virtual void OnWindowLoaded();
+  void SetDefaults() override;
+  void OnWindowLoaded() override;
   using CGUIWindow::UpdateVisibility;
   virtual void UpdateVisibility();
 
   virtual void Open_Internal(const std::string &param = "");
   virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param = "");
-  virtual void OnDeinitWindow(int nextWindowID);
+  void OnDeinitWindow(int nextWindowID) override;
 
   void ProcessRenderLoop(bool renderOnly = false);
 

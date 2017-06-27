@@ -63,8 +63,8 @@ public:
    */
   CGUIStaticItem(const TiXmlElement *element, int contextWindow);
   CGUIStaticItem(const CFileItem &item); // for python
-  virtual ~CGUIStaticItem() {};
-  virtual CGUIListItem *Clone() const { return new CGUIStaticItem(*this); };
+  ~CGUIStaticItem() override {};
+  CGUIListItem *Clone() const override { return new CGUIStaticItem(*this); };
   
   /*! \brief update any infolabels in the items properties
    Runs through all the items properties, updating any that should be

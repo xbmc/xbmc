@@ -56,7 +56,7 @@ class CLocalizeStrings : public ILocalizer
 {
 public:
   CLocalizeStrings(void);
-  virtual ~CLocalizeStrings(void);
+  ~CLocalizeStrings(void) override;
   bool Load(const std::string& strPathName, const std::string& strLanguage);
   bool LoadSkinStrings(const std::string& path, const std::string& language);
   bool LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId);

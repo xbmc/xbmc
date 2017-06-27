@@ -39,7 +39,7 @@ public:
   IGUIContainer(int parentID, int controlID, float posX, float posY, float width, float height)
    : CGUIControl(parentID, controlID, posX, posY, width, height), m_type(VIEW_TYPE_NONE) {}
 
-  virtual bool IsContainer() const { return true; };
+  bool IsContainer() const override { return true; };
 
   VIEW_TYPE GetType() const { return m_type; };
   const std::string &GetLabel() const { return m_label; };

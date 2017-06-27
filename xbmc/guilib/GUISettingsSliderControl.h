@@ -40,35 +40,35 @@ class CGUISettingsSliderControl :
 {
 public:
   CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType);
-  virtual ~CGUISettingsSliderControl(void);
-  virtual CGUISettingsSliderControl *Clone() const override { return new CGUISettingsSliderControl(*this); }
+  ~CGUISettingsSliderControl(void) override;
+  CGUISettingsSliderControl *Clone() const override { return new CGUISettingsSliderControl(*this); }
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
-  virtual void Render() override;
-  virtual bool OnAction(const CAction &action) override;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override;
   void OnUnFocus() override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
   void SetActive();
   bool IsActive() const override { return m_active; };
-  virtual void AllocResources() override;
-  virtual void FreeResources(bool immediately = false) override;
-  virtual void DynamicResourceAlloc(bool bOnOff) override;
-  virtual void SetInvalid() override;
-  virtual void SetPosition(float posX, float posY) override;
-  virtual float GetWidth() const override { return m_buttonControl.GetWidth(); }
-  virtual void SetWidth(float width) override;
-  virtual float GetHeight() const override { return m_buttonControl.GetHeight(); }
-  virtual void SetHeight(float height) override;
-  virtual void SetEnabled(bool bEnable) override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  void SetPosition(float posX, float posY) override;
+  float GetWidth() const override { return m_buttonControl.GetWidth(); }
+  void SetWidth(float width) override;
+  float GetHeight() const override { return m_buttonControl.GetHeight(); }
+  void SetHeight(float height) override;
+  void SetEnabled(bool bEnable) override;
 
   void SetText(const std::string &label) {m_buttonControl.SetLabel(label);};
-  virtual float GetXPosition() const override { return m_buttonControl.GetXPosition();};
-  virtual float GetYPosition() const override { return m_buttonControl.GetYPosition();};
-  virtual std::string GetDescription() const override;
-  virtual bool HitTest(const CPoint &point) const override { return m_buttonControl.HitTest(point); };
+  float GetXPosition() const override { return m_buttonControl.GetXPosition();};
+  float GetYPosition() const override { return m_buttonControl.GetYPosition();};
+  std::string GetDescription() const override;
+  bool HitTest(const CPoint &point) const override { return m_buttonControl.HitTest(point); };
 
 protected:
-  virtual bool UpdateColors() override;
+  bool UpdateColors() override;
   virtual void ProcessText();
 
 private:
