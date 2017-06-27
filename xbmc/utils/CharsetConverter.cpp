@@ -20,7 +20,6 @@
 
 #include "CharsetConverter.h"
 
-#include <cerrno>
 #include <algorithm>
 
 #include <iconv.h>
@@ -32,7 +31,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "system.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 

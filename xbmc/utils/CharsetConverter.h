@@ -1,6 +1,3 @@
-#ifndef CCHARSET_CONVERTER
-#define CCHARSET_CONVERTER
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -21,13 +18,14 @@
  *
  */
 
+#pragma once
+
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
-#include "utils/uXstrings.h"
 
 class CSetting;
 
@@ -175,4 +173,3 @@ private:
 
 XBMC_GLOBAL_REF(CCharsetConverter,g_charsetConverter);
 #define g_charsetConverter XBMC_GLOBAL_USE(CCharsetConverter)
-#endif

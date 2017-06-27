@@ -160,7 +160,6 @@ set(HEADERS ActorProtocol.h
             URIUtils.h
             UrlOptions.h
             Utf8Utils.h
-            uXstrings.h
             Variant.h
             VC1BitstreamParser.h
             Vector.h
