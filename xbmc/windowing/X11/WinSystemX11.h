@@ -37,7 +37,7 @@ class CWinSystemX11 : public CWinSystemBase
 {
 public:
   CWinSystemX11();
-  virtual ~CWinSystemX11();
+  ~CWinSystemX11() override;
 
   // CWinSystemBase
   bool InitWindowSystem() override;

@@ -32,7 +32,7 @@ class CWinSystemX11GLContext : public CWinSystemX11, public CRenderSystemGL
 {
 public:
   CWinSystemX11GLContext();
-  virtual ~CWinSystemX11GLContext();
+  ~CWinSystemX11GLContext() override;
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
@@ -42,7 +42,7 @@ public:
   bool IsExtSupported(const char* extension) override;
 
   // videosync
-  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
   GLXWindow GetWindow() const;
   GLXContext GetGlxContext() const;

@@ -28,7 +28,7 @@
 class CWinEventsX11 : public IWinEvents
 {
 public:
-  virtual bool MessagePump();
+  bool MessagePump() override;
 };
 
 class CWinEventsX11Imp
