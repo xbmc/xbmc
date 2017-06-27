@@ -53,6 +53,7 @@ struct YuvImage
 
 class CVideoBuffer;
 class IVideoBufferPool;
+class CVideoBufferManager;
 
 class IVideoBufferPool : public std::enable_shared_from_this<IVideoBufferPool>
 {
@@ -66,19 +67,23 @@ public:
   virtual void Return(int id) = 0;
 
   // required if pool is registered with BufferManager BM call configure
-  // as soon as it knows paramters: pixFmx, width, height
-  virtual void Configure(AVPixelFormat format, int width, int height) {};
+  // as soon as it knows parameters: pixFmx, size
+  virtual void Configure(AVPixelFormat format, int size) {};
+
+  // configure dimensions of pool. May be called after first buffer is allocated
+  // so renderer knows dimensions of buffer
+  virtual void SetDimensions(int width, int height, int alignedWidth, int alignedHeight) {};
 
   // required if pool is registered with BufferManager
   virtual bool IsConfigured() { return false;};
 
   // required if pool is registered with BufferManager
   // called before Get() to check if buffer pool is suitable
-  virtual bool IsCompatible(AVPixelFormat format, int width, int height) { return false;};
+  virtual bool IsCompatible(AVPixelFormat format, int size) { return false;};
 
   // callback when BM releases buffer pool. i.e. before a new codec is created
   // clients can register a new pool on this callback
-  virtual void Released() {};
+  virtual void Released(CVideoBufferManager &videoBufferManager) {};
 
   // call on Get() before returning buffer to caller
   std::shared_ptr<IVideoBufferPool> GetPtr() { return shared_from_this(); };
@@ -97,6 +102,7 @@ public:
   virtual AVPixelFormat GetFormat();
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) {};
+  virtual void SetDimensions(int width, int height, int alignedWidth, int alignedHeight) {};
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);
@@ -134,13 +140,17 @@ class CVideoBufferPoolSysMem : public IVideoBufferPool
 public:
   virtual CVideoBuffer* Get() override;
   virtual void Return(int id) override;
-  virtual void Configure(AVPixelFormat format, int width, int height) override;
+  virtual void SetDimensions(int width, int height, int alignedWidth, int alignedHeight) override;
+  virtual void Configure(AVPixelFormat format, int size) override;
   virtual bool IsConfigured() override;
-  virtual bool IsCompatible(AVPixelFormat format, int width, int height) override;
+  virtual bool IsCompatible(AVPixelFormat format, int size) override;
 
 protected:
   int m_width = 0;
   int m_height = 0;
+  int m_alignedWidth = 0;
+  int m_alignedHeight = 0;
+  int m_size = 0;
   AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   bool m_configured = false;
   CCriticalSection m_critSection;
@@ -160,7 +170,7 @@ public:
   CVideoBufferManager();
   void RegisterPool(std::shared_ptr<IVideoBufferPool> pool);
   void ReleasePools();
-  CVideoBuffer* Get(AVPixelFormat format, int width, int height);
+  CVideoBuffer* Get(AVPixelFormat format, int size);
 
 protected:
   CCriticalSection m_critSection;
