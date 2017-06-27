@@ -38,12 +38,12 @@ namespace MOUSE
   public:
     CMouseInputHandling(IMouseInputHandler* handler, IMouseButtonMap* buttonMap);
 
-    virtual ~CMouseInputHandling(void) = default;
+    ~CMouseInputHandling(void) override = default;
 
     // implementation of IMouseDriverHandler
-    virtual bool OnPosition(int x, int y) override;
-    virtual bool OnButtonPress(unsigned int button) override;
-    virtual void OnButtonRelease(unsigned int button) override;
+    bool OnPosition(int x, int y) override;
+    bool OnButtonPress(unsigned int button) override;
+    void OnButtonRelease(unsigned int button) override;
 
   private:
     // Construction parameters

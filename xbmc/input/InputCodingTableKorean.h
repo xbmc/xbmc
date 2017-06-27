@@ -29,14 +29,14 @@ class CInputCodingTableKorean : public IInputCodingTable
 {
 public:
   CInputCodingTableKorean();
-  virtual ~CInputCodingTableKorean() {}
+  ~CInputCodingTableKorean() override {}
 
-  virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage);
-  virtual std::vector<std::wstring> GetResponse(int);
+  bool GetWordListPage(const std::string& strCode, bool isFirstPage) override;
+  std::vector<std::wstring> GetResponse(int) override;
 
-  virtual void SetTextPrev(const std::string& strTextPrev);
-  virtual std::string ConvertString(const std::string& strCode);
-  virtual int GetType() { return TYPE_CONVERT_STRING;  }
+  void SetTextPrev(const std::string& strTextPrev) override;
+  std::string ConvertString(const std::string& strCode) override;
+  int GetType() override { return TYPE_CONVERT_STRING;  }
 
 protected:
   int MergeCode(int choseong, int jungseong, int jongseong);

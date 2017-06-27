@@ -32,12 +32,12 @@ class CGenericTouchSwipeDetector : public IGenericTouchGestureDetector
 {
 public:
   CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi);
-  virtual ~CGenericTouchSwipeDetector() { }
+  ~CGenericTouchSwipeDetector() override { }
 
-  virtual bool OnTouchDown(unsigned int index, const Pointer &pointer);
-  virtual bool OnTouchUp(unsigned int index, const Pointer &pointer);
-  virtual bool OnTouchMove(unsigned int index, const Pointer &pointer);
-  virtual bool OnTouchUpdate(unsigned int index, const Pointer &pointer);
+  bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchUp(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchMove(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchUpdate(unsigned int index, const Pointer &pointer) override;
 
 private:
   /*!
