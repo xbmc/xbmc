@@ -103,18 +103,18 @@ namespace XFILE
   {
   public:
     CSFTPFile();
-    virtual ~CSFTPFile();
-    virtual void Close();
-    virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
-    virtual bool Open(const CURL& url);
-    virtual bool Exists(const CURL& url);
-    virtual int Stat(const CURL& url, struct __stat64* buffer);
-    virtual int Stat(struct __stat64* buffer);
-    virtual int64_t GetLength();
-    virtual int64_t GetPosition();
-    virtual int     GetChunkSize() {return 1;};
-    virtual int     IoControl(EIoControl request, void* param);
+    ~CSFTPFile() override;
+    void Close() override;
+    int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) override;
+    ssize_t Read(void* lpBuf, size_t uiBufSize) override;
+    bool Open(const CURL& url) override;
+    bool Exists(const CURL& url) override;
+    int Stat(const CURL& url, struct __stat64* buffer) override;
+    int Stat(struct __stat64* buffer) override;
+    int64_t GetLength() override;
+    int64_t GetPosition() override;
+    int GetChunkSize() override {return 1;};
+    int IoControl(EIoControl request, void* param) override;
   private:
     std::string m_file;
     CSFTPSessionPtr m_session;

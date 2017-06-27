@@ -122,12 +122,12 @@ namespace XCURL
     void easy_acquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle);
     void easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle);
     void easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HANDLE** easy_out, CURLM** multi_out);
-    CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle);
+    CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle) override;
     void CheckIdle();
 
     /* overloaded load and unload with reference counter */
-    virtual bool Load();
-    virtual void Unload();
+    bool Load() override;
+    void Unload() override;
 
     /* structure holding a session info */
     typedef struct SSession

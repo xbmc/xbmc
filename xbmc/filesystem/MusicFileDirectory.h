@@ -29,11 +29,11 @@ namespace XFILE
   {
     public:
       CMusicFileDirectory(void);
-      virtual ~CMusicFileDirectory(void);
-      virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-      virtual bool Exists(const CURL& url);
-      virtual bool ContainsFiles(const CURL& url);
-      virtual bool AllowAll() const { return true; }
+      ~CMusicFileDirectory(void) override;
+      bool GetDirectory(const CURL& url, CFileItemList &items) override;
+      bool Exists(const CURL& url) override;
+      bool ContainsFiles(const CURL& url) override;
+      bool AllowAll() const override { return true; }
     protected:
       virtual int GetTrackCount(const std::string& strPath) = 0;
       std::string m_strExt;

@@ -29,12 +29,12 @@ class CSMBDirectory : public IDirectory
 {
 public:
   CSMBDirectory(void);
-  virtual ~CSMBDirectory(void);
-  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
-  virtual bool Create(const CURL& url);
-  virtual bool Exists(const CURL& url);
-  virtual bool Remove(const CURL& url);
+  ~CSMBDirectory(void) override;
+  bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ONCE; };
+  bool Create(const CURL& url) override;
+  bool Exists(const CURL& url) override;
+  bool Remove(const CURL& url) override;
 
   int Open(const CURL &url);
 

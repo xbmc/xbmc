@@ -27,9 +27,9 @@ namespace XFILE
   {
   public:
     CZipDirectory();
-    ~CZipDirectory();
-    virtual bool GetDirectory(const CURL& url, CFileItemList& items);
-    virtual bool ContainsFiles(const CURL& url);
-    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ALWAYS; };
+    ~CZipDirectory() override;
+    bool GetDirectory(const CURL& url, CFileItemList& items) override;
+    bool ContainsFiles(const CURL& url) override;
+    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ALWAYS; };
   };
 }

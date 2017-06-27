@@ -30,11 +30,11 @@ namespace XFILE
   {
   public:
     CSmartPlaylistDirectory();
-    ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CURL& url, CFileItemList& items);
-    virtual bool AllowAll() const { return true; }
-    virtual bool ContainsFiles(const CURL& url);
-    virtual bool Remove(const CURL& url);
+    ~CSmartPlaylistDirectory() override;
+    bool GetDirectory(const CURL& url, CFileItemList& items) override;
+    bool AllowAll() const override { return true; }
+    bool ContainsFiles(const CURL& url) override;
+    bool Remove(const CURL& url) override;
 
     static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const std::string &strBaseDir = "", bool filter = false);
 

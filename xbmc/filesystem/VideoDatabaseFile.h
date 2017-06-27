@@ -28,12 +28,12 @@ class CVideoDatabaseFile : public COverrideFile
 {
 public:
   CVideoDatabaseFile(void);
-  virtual ~CVideoDatabaseFile(void);
+  ~CVideoDatabaseFile(void) override;
 
   static CVideoInfoTag GetVideoTag(const CURL& url);
   
 protected:
-  virtual std::string TranslatePath(const CURL& url);
+  std::string TranslatePath(const CURL& url) override;
   static VIDEODB_CONTENT_TYPE GetType(const CURL& url);
 };
 }

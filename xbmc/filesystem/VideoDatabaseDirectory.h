@@ -29,10 +29,10 @@ namespace XFILE
   {
   public:
     CVideoDatabaseDirectory(void);
-    virtual ~CVideoDatabaseDirectory(void);
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool Exists(const CURL& url);
-    virtual bool AllowAll() const { return true; }
+    ~CVideoDatabaseDirectory(void) override;
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
+    bool Exists(const CURL& url) override;
+    bool AllowAll() const override { return true; }
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const std::string& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const std::string& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const std::string& strPath);

@@ -68,10 +68,10 @@ public:
   CNfsConnection();
   ~CNfsConnection();
   bool Connect(const CURL &url, std::string &relativePath);
-  struct nfs_context *GetNfsContext(){return m_pNfsContext;}
-  uint64_t          GetMaxReadChunkSize(){return m_readChunkSize;}
-  uint64_t          GetMaxWriteChunkSize(){return m_writeChunkSize;} 
-  DllLibNfs        *GetImpl(){return m_pLibNfs;}
+  struct nfs_context *GetNfsContext() {return m_pNfsContext;}
+  uint64_t GetMaxReadChunkSize() {return m_readChunkSize;}
+  uint64_t GetMaxWriteChunkSize() {return m_writeChunkSize;} 
+  DllLibNfs *GetImpl() {return m_pLibNfs;}
   std::list<std::string> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
@@ -95,7 +95,7 @@ public:
   
   const std::string& GetConnectedIp() const {return m_resolvedHostName;}
   const std::string& GetConnectedExport() const {return m_exportPath;}
-  const std::string  GetContextMapId() const {return m_hostName + m_exportPath;}
+  const std::string GetContextMapId() const {return m_hostName + m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context
@@ -116,7 +116,7 @@ private:
  
   void clearMembers();
   struct nfs_context *getContextFromMap(const std::string &exportname, bool forceCacheHit = false);
-  int  getContextForExport(const std::string &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
+  int getContextForExport(const std::string &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
   void destroyOpenContexts();
   void destroyContext(const std::string &exportName);
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
@@ -131,32 +131,32 @@ namespace XFILE
   {
   public:
     CNFSFile();
-    virtual ~CNFSFile();
-    virtual void Close();
-    virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-    virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
-    virtual bool Open(const CURL& url);
-    virtual bool Exists(const CURL& url);
-    virtual int Stat(const CURL& url, struct __stat64* buffer);
-    virtual int Stat(struct __stat64* buffer);
-    virtual int64_t GetLength();
-    virtual int64_t GetPosition();
-    virtual ssize_t Write(const void* lpBuf, size_t uiBufSize);
-    virtual int Truncate(int64_t iSize);
+    ~CNFSFile() override;
+    void Close() override;
+    int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) override;
+    ssize_t Read(void* lpBuf, size_t uiBufSize) override;
+    bool Open(const CURL& url) override;
+    bool Exists(const CURL& url) override;
+    int Stat(const CURL& url, struct __stat64* buffer) override;
+    int Stat(struct __stat64* buffer) override;
+    int64_t GetLength() override;
+    int64_t GetPosition() override;
+    ssize_t Write(const void* lpBuf, size_t uiBufSize) override;
+    int Truncate(int64_t iSize) override;
 
     //implement iocontrol for seek_possible for preventing the stat in File class for
     //getting this info ...
-    virtual int IoControl(EIoControl request, void* param){ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};    
-    virtual int  GetChunkSize() {return gNfsConnection.GetMaxReadChunkSize();}
+    int IoControl(EIoControl request, void* param) override{ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};    
+    int GetChunkSize() override {return gNfsConnection.GetMaxReadChunkSize();}
     
-    virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
-    virtual bool Delete(const CURL& url);
-    virtual bool Rename(const CURL& url, const CURL& urlnew);    
+    bool OpenForWrite(const CURL& url, bool bOverWrite = false) override;
+    bool Delete(const CURL& url) override;
+    bool Rename(const CURL& url, const CURL& urlnew) override;    
   protected:
     CURL m_url;
     bool IsValidFile(const std::string& strFileName);
     int64_t m_fileSize;
-    struct nfsfh  *m_pFileHandle;
+    struct nfsfh *m_pFileHandle;
     struct nfs_context *m_pNfsContext;//current nfs context
     std::string m_exportPath;
   };

@@ -30,7 +30,7 @@ namespace XFILE
     public:
       CDirectoryNodeRecentlyAddedMovies(const std::string& strEntryName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items) const;
+      bool GetContent(CFileItemList& items) const override;
     };
   }
 }

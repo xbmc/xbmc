@@ -196,17 +196,17 @@ class CFileStreamBuffer
   : public std::streambuf
 {
 public:
-  ~CFileStreamBuffer();
+  ~CFileStreamBuffer() override;
   CFileStreamBuffer(int backsize = 0);
 
   void Attach(IFile *file);
   void Detach();
 
 private:
-  virtual int_type underflow();
-  virtual std::streamsize showmanyc();
-  virtual pos_type seekoff(off_type, std::ios_base::seekdir,std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
-  virtual pos_type seekpos(pos_type, std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
+  int_type underflow() override;
+  std::streamsize showmanyc() override;
+  pos_type seekoff(off_type, std::ios_base::seekdir,std::ios_base::openmode = std::ios_base::in | std::ios_base::out) override;
+  pos_type seekpos(pos_type, std::ios_base::openmode = std::ios_base::in | std::ios_base::out) override;
 
   IFile* m_file;
   char*  m_buffer;
@@ -220,7 +220,7 @@ class CFileStream
 {
 public:
   CFileStream(int backsize = 0);
-  ~CFileStream();
+  ~CFileStream() override;
 
   bool Open(const std::string& filename);
   bool Open(const CURL& filename);

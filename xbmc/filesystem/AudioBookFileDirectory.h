@@ -30,11 +30,11 @@ namespace XFILE
   {
     public:
       CAudioBookFileDirectory(void);
-      virtual ~CAudioBookFileDirectory(void);
-      virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-      virtual bool Exists(const CURL& url);
-      virtual bool ContainsFiles(const CURL& url);
-      virtual bool IsAllowed(const CURL& url) const { return true; };
+      ~CAudioBookFileDirectory(void) override;
+      bool GetDirectory(const CURL& url, CFileItemList &items) override;
+      bool Exists(const CURL& url) override;
+      bool ContainsFiles(const CURL& url) override;
+      bool IsAllowed(const CURL& url) const override { return true; };
     protected:
       AVIOContext* m_ioctx;
       AVFormatContext* m_fctx;

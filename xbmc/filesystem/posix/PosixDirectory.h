@@ -28,12 +28,12 @@ class CPosixDirectory : public IDirectory
 {
 public:
   CPosixDirectory(void);
-  virtual ~CPosixDirectory(void);
-  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-  virtual bool Create(const CURL& url);
-  virtual bool Exists(const CURL& url);
-  virtual bool Remove(const CURL& url);
-  virtual bool RemoveRecursive(const CURL& url);
+  ~CPosixDirectory(void) override;
+  bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  bool Create(const CURL& url) override;
+  bool Exists(const CURL& url) override;
+  bool Remove(const CURL& url) override;
+  bool RemoveRecursive(const CURL& url) override;
 private:
   bool Create(std::string path);
 };

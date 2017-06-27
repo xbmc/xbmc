@@ -33,8 +33,8 @@ namespace XFILE
   public:
     CFavouritesDirectory() = default;
 
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool Exists(const CURL& url);
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
+    bool Exists(const CURL& url) override;
   };
   
 }
