@@ -744,6 +744,11 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     }
 
     newTimer->SetTimerType(timerType);
+
+    if (epgTag)
+      newTimer->SetEpgTag(epgTag);
+    else
+      newTimer->UpdateEpgInfoTag();
   }
 
   /* no matter the timer was created from an epg tag, overwrite timer start and end times. */
@@ -764,9 +769,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0;
   newTimer->m_iMarginEnd = 0;
-
-  /* set epg tag at timer & timer at epg tag */
-  newTimer->UpdateEpgInfoTag();
 
   /* unused only for reference */
   newTimer->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
@@ -815,7 +817,8 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
     // create epg-based timer rule
     timerType = CPVRTimerType::CreateFromAttributes(
       PVR_TIMER_TYPE_IS_REPEATING,
-      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE, channel->ClientID());
+      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE,
+      channel->ClientID());
 
     if (timerType)
     {
@@ -837,7 +840,8 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
     // create one-shot epg-based timer
     timerType = CPVRTimerType::CreateFromAttributes(
       PVR_TIMER_TYPE_ATTRIBUTE_NONE,
-      PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE, channel->ClientID());
+      PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE,
+      channel->ClientID());
   }
 
   if (!timerType)
@@ -848,7 +852,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
 
   newTag->SetTimerType(timerType);
   newTag->UpdateSummary();
-  newTag->UpdateEpgInfoTag();
+  newTag->SetEpgTag(tag);
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
