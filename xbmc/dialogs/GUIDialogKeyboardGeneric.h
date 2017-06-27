@@ -37,9 +37,9 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     CGUIDialogKeyboardGeneric();
 
     //CGUIKeyboard Interface
-    virtual bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput);
-    virtual void Cancel();
-    virtual int GetWindowId() const;
+    bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput) override;
+    void Cancel() override;
+    int GetWindowId() const override;
 
     void SetHeading(const std::string& heading);
     void SetText(const std::string& text);
@@ -49,11 +49,11 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     bool IsInputHidden() const { return m_hiddenInput; };
 
   protected:
-    virtual void OnWindowLoaded();
-    virtual void OnInitWindow();
-    virtual bool OnAction(const CAction &action);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void OnDeinitWindow(int nextWindowID);
+    void OnWindowLoaded() override;
+    void OnInitWindow() override;
+    bool OnAction(const CAction &action) override;
+    bool OnMessage(CGUIMessage& message) override;
+    void OnDeinitWindow(int nextWindowID) override;
     void SetControlLabel(int id, const std::string &label);
     void OnShift();
     void MoveCursor(int iAmount);

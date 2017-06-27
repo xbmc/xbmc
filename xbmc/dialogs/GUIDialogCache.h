@@ -31,7 +31,7 @@ class CGUIDialogCache : public CThread, public XFILE::IFileCallback
 {
 public:
   CGUIDialogCache(DWORD dwDelay = 0, const std::string& strHeader="", const std::string& strMsg="");
-  virtual ~CGUIDialogCache();
+  ~CGUIDialogCache() override;
   void SetHeader(const std::string& strHeader);
   void SetHeader(int nHeader);
   void SetMessage(const std::string& strMessage);
@@ -41,8 +41,8 @@ public:
 
   void Close(bool bForceClose = false);
 
-  virtual void Process();
-  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
+  void Process() override;
+  bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) override;
 
 protected:
 

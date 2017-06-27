@@ -40,7 +40,7 @@ public:
   }
 
   // 'this' is actually deleted from the thread where it's on the stack
-  virtual void Process()
+  void Process() override
   {
     std::shared_ptr<CEvent> e_done(m_done);
 

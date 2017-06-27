@@ -29,10 +29,10 @@ class CGUIDialogBusy: public CGUIDialog
 {
 public:
   CGUIDialogBusy(void);
-  virtual ~CGUIDialogBusy(void);
-  virtual bool OnBack(int actionID);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
+  ~CGUIDialogBusy(void) override;
+  bool OnBack(int actionID) override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
   /*! \brief set the current progress of the busy operation
    \param progress a percentage of progress
    */
@@ -59,7 +59,7 @@ public:
    */
   static bool WaitOnEvent(CEvent &event, unsigned int displaytime = 100, bool allowCancel = true);
 protected:
-  virtual void Open_Internal(const std::string &param = "");
+  void Open_Internal(const std::string &param = "") override;
   bool m_bCanceled;
   bool m_bLastVisible;
   float m_progress; ///< current progress

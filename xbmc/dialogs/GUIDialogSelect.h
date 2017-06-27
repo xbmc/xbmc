@@ -33,9 +33,9 @@ class CGUIDialogSelect : public CGUIDialogBoxBase
 {
 public:
   CGUIDialogSelect();
-  virtual ~CGUIDialogSelect(void);
-  virtual bool OnMessage(CGUIMessage& message) override;
-  virtual bool OnBack(int actionID) override;
+  ~CGUIDialogSelect(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnBack(int actionID) override;
 
   void Reset();
   int  Add(const std::string& strLabel);
@@ -56,11 +56,11 @@ public:
 
 protected:
   CGUIDialogSelect(int windowid);
-  virtual CGUIControl *GetFirstFocusableControl(int id) override;
-  virtual void OnWindowLoaded() override;
-  virtual void OnInitWindow() override;
-  virtual void OnDeinitWindow(int nextWindowID) override;
-  virtual void OnWindowUnload() override;
+  CGUIControl *GetFirstFocusableControl(int id) override;
+  void OnWindowLoaded() override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
+  void OnWindowUnload() override;
 
   virtual void OnSelect(int idx);
 

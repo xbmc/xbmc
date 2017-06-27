@@ -41,8 +41,8 @@ class CGUIDialogBoxBase :
 {
 public:
   CGUIDialogBoxBase(int id, const std::string &xmlFile);
-  virtual ~CGUIDialogBoxBase(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  ~CGUIDialogBoxBase(void) override;
+  bool OnMessage(CGUIMessage& message) override;
   bool IsConfirmed() const;
   void SetLine(unsigned int iLine, CVariant line);
   void SetText(CVariant text);
@@ -58,9 +58,9 @@ protected:
    */
   std::string GetLocalized(const CVariant &var) const;
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
   bool m_bConfirmed;
   bool m_hasTextbox;

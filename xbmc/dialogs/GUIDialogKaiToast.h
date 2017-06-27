@@ -31,7 +31,7 @@ class CGUIDialogKaiToast: public CGUIDialog
 {
 public:
   CGUIDialogKaiToast(void);
-  virtual ~CGUIDialogKaiToast(void);
+  ~CGUIDialogKaiToast(void) override;
 
   enum eMessageType { Default = 0, Info, Warning, Error };
 
@@ -53,8 +53,8 @@ public:
   static void QueueNotification(const std::string& aImageFile, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
   bool DoWork();
 
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void FrameMove();
+  bool OnMessage(CGUIMessage& message) override;
+  void FrameMove() override;
   void ResetTimer();
 
 protected:

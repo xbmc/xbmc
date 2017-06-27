@@ -32,11 +32,11 @@ public:
   enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_ALBUMS, TYPE_ARTISTS, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
 
   CGUIDialogSmartPlaylistEditor(void);
-  virtual ~CGUIDialogSmartPlaylistEditor(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnBack(int actionID);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
+  ~CGUIDialogSmartPlaylistEditor(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnBack(int actionID) override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
   static bool EditPlaylist(const std::string &path, const std::string &type = "");
   static bool NewPlaylist(const std::string &type);

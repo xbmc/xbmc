@@ -39,10 +39,10 @@ class CGUIDialogMediaFilter : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogMediaFilter();
-  virtual ~CGUIDialogMediaFilter();
+  ~CGUIDialogMediaFilter() override;
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
+  bool OnMessage(CGUIMessage &message) override;
 
   static void ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter);
 
@@ -61,20 +61,20 @@ public:
 
 protected:
   // specializations of CGUIWindow
-  virtual void OnWindowLoaded();
-  virtual void OnInitWindow();
+  void OnWindowLoaded() override;
+  void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save() { }
-  virtual unsigned int GetDelayMs() const { return 500; }
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override { }
+  unsigned int GetDelayMs() const override { return 500; }
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void SetupView();
-  virtual void InitializeSettings();
+  void SetupView() override;
+  void InitializeSettings() override;
 
   bool SetPath(const std::string &path);
   void UpdateControls();

@@ -118,10 +118,10 @@ class CGUIDialogContextMenu :
 {
 public:
   CGUIDialogContextMenu(void);
-  virtual ~CGUIDialogContextMenu(void);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction& action);
-  virtual void SetPosition(float posX, float posY);
+  ~CGUIDialogContextMenu(void) override;
+  bool OnMessage(CGUIMessage &message) override;
+  bool OnAction(const CAction& action) override;
+  void SetPosition(float posX, float posY) override;
 
   static bool SourcesMenu(const std::string &strType, const CFileItemPtr& item, float posX, float posY);
   static void SwitchMedia(const std::string& strType, const std::string& strPath);
@@ -145,11 +145,11 @@ protected:
    */
   void PositionAtCurrentFocus();
 
-  virtual float GetWidth() const;
-  virtual float GetHeight() const;
-  virtual void OnInitWindow();
-  virtual void OnWindowLoaded();
-  virtual void OnDeinitWindow(int nextWindowID);
+  float GetWidth() const override;
+  float GetHeight() const override;
+  void OnInitWindow() override;
+  void OnWindowLoaded() override;
+  void OnDeinitWindow(int nextWindowID) override;
   static std::string GetDefaultShareNameByType(const std::string &strType);
   static void SetDefault(const std::string &strType, const std::string &strDefault);
   static void ClearDefault(const std::string &strType);

@@ -58,9 +58,9 @@ class CGUIDialogExtendedProgressBar : public CGUIDialog
 {
 public:
   CGUIDialogExtendedProgressBar(void);
-  virtual ~CGUIDialogExtendedProgressBar(void) {};
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  ~CGUIDialogExtendedProgressBar(void) override {};
+  bool OnMessage(CGUIMessage& message) override;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
   CGUIDialogProgressBarHandle *GetHandle(const std::string &strTitle);
 

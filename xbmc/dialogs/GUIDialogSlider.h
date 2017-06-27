@@ -27,9 +27,9 @@ class CGUIDialogSlider : public CGUIDialog
 {
 public:
   CGUIDialogSlider();
-  virtual ~CGUIDialogSlider(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  ~CGUIDialogSlider(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
 
   void SetModalityType(DialogModalityType type);
 
@@ -61,7 +61,7 @@ public:
   static void Display(int label, float value, float min, float delta, float max, ISliderCallback *callback);
 protected:
   void SetSlider(const std::string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
-  virtual void OnWindowLoaded();
+  void OnWindowLoaded() override;
 
   ISliderCallback *m_callback;
   void *m_callbackData;

@@ -28,11 +28,11 @@ class CGUIDialogSmartPlaylistRule :
 {
 public:
   CGUIDialogSmartPlaylistRule(void);
-  virtual ~CGUIDialogSmartPlaylistRule(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnBack(int actionID);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
+  ~CGUIDialogSmartPlaylistRule(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnBack(int actionID) override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
   static bool EditRule(CSmartPlaylistRule &rule, const std::string& type="songs");
 
