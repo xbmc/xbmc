@@ -21,7 +21,6 @@
 #include "VideoBuffer.h"
 #include "threads/SingleLock.h"
 #include <string.h>
-#include <assert.h>
 
 //-----------------------------------------------------------------------------
 // CVideoBuffer
@@ -318,11 +317,19 @@ void CVideoBufferPoolSysMem::Return(int id)
   m_free.push_back(id);
 }
 
-void CVideoBufferPoolSysMem::Configure(AVPixelFormat format, int width, int height)
+void CVideoBufferPoolSysMem::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
 {
-  m_pixFormat = format;
   m_width = width;
   m_height = height;
+  m_alignedWidth = alignedWidth;
+  m_alignedHeight = alignedHeight;
+  m_configured = true;
+}
+
+void CVideoBufferPoolSysMem::Configure(AVPixelFormat format, int size)
+{
+  m_pixFormat = format;
+  m_size = size;
   m_configured = true;
 }
 
@@ -331,11 +338,10 @@ inline bool CVideoBufferPoolSysMem::IsConfigured()
   return m_configured;
 }
 
-bool CVideoBufferPoolSysMem::IsCompatible(AVPixelFormat format, int width, int height)
+bool CVideoBufferPoolSysMem::IsCompatible(AVPixelFormat format, int size)
 {
   if (m_pixFormat == format &&
-      m_width == width &&
-      m_height == height)
+      m_size == size)
     return true;
 
   return false;
@@ -369,20 +375,20 @@ void CVideoBufferManager::ReleasePools()
 
   for (auto pool : pools)
   {
-    pool->Released();
+    pool->Released(*this);
   }
 }
 
-CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int width, int height)
+CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size)
 {
   CSingleLock lock(m_critSection);
   for (auto pool: m_pools)
   {
     if (!pool->IsConfigured())
     {
-      pool->Configure(format, width, height);
+      pool->Configure(format, size);
     }
-    if (pool->IsCompatible(format, width, height))
+    if (pool->IsCompatible(format, size))
     {
       return pool->Get();
     }
