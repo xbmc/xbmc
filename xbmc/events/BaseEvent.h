@@ -26,20 +26,20 @@
 class CBaseEvent : public IEvent
 {
 public:
-  virtual ~CBaseEvent() { }
+  ~CBaseEvent() override { }
 
-  virtual std::string GetIdentifier() const { return m_identifier; }
-  virtual EventLevel GetLevel() const { return m_level; }
-  virtual std::string GetLabel() const;
-  virtual std::string GetIcon() const { return m_icon; }
-  virtual std::string GetDescription() const;
-  virtual std::string GetDetails() const;
-  virtual std::string GetExecutionLabel() const;
-  virtual CDateTime GetDateTime() const { return m_dateTime; }
+  std::string GetIdentifier() const override { return m_identifier; }
+  EventLevel GetLevel() const override { return m_level; }
+  std::string GetLabel() const override;
+  std::string GetIcon() const override { return m_icon; }
+  std::string GetDescription() const override;
+  std::string GetDetails() const override;
+  std::string GetExecutionLabel() const override;
+  CDateTime GetDateTime() const override { return m_dateTime; }
 
-  virtual bool CanExecute() const { return !GetExecutionLabel().empty(); }
+  bool CanExecute() const override { return !GetExecutionLabel().empty(); }
 
-  virtual void ToSortable(SortItem& sortable, Field field) const;
+  void ToSortable(SortItem& sortable, Field field) const override;
 
 protected:
   CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level = EventLevel::Information);

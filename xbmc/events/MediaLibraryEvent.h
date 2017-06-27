@@ -29,13 +29,13 @@ public:
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevel::Information);
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevel::Information);
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevel::Information);
-  virtual ~CMediaLibraryEvent() { }
+  ~CMediaLibraryEvent() override { }
 
-  virtual const char* GetType() const { return "MediaLibraryEvent"; }
-  virtual std::string GetExecutionLabel() const;
+  const char* GetType() const override { return "MediaLibraryEvent"; }
+  std::string GetExecutionLabel() const override;
 
-  virtual bool CanExecute() const { return !m_mediaType.empty(); }
-  virtual bool Execute() const;
+  bool CanExecute() const override { return !m_mediaType.empty(); }
+  bool Execute() const override;
 
 protected:
   MediaType m_mediaType;
