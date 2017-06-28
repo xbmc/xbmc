@@ -46,15 +46,17 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
   if (m_freeBuffers.empty())
   {
     m_freeBuffers.push_back(m_videoBuffers.size());
-    m_videoBuffers.push_back(new CDVDAmlogicVideoBuffer(< static_cast<int>(m_videoBuffers.size())));
+    m_videoBuffers.push_back(new CAMLVideoBuffer(static_cast<int>(m_videoBuffers.size())));
   }
   int bufferIdx(m_freeBuffers.back());
   m_freeBuffers.pop_back();
 
-  return m_videoBuffers[bufferIdx].Aquire(this);
+  m_videoBuffers[bufferIdx]->Acquire(shared_from_this());
+
+  return m_videoBuffers[bufferIdx];
 }
 
-CVideoBuffer* CAMLVideoBufferPool::Return(int id)
+void CAMLVideoBufferPool::Return(int id)
 {
   m_freeBuffers.push_back(id);
 }
@@ -68,20 +70,20 @@ typedef struct frame_queue {
   struct frame_queue *nextframe;
 } frame_queue;
 
-CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo),
-  m_Codec(NULL),
-  m_pFormatName("amcodec"),
-  m_opened(false),
-  m_codecControlFlags(0),
-  m_last_pts(0.0),
-  m_frame_queue(NULL),
-  m_queue_depth(0),
-  m_framerate(0.0),
-  m_video_rate(0),
-  m_mpeg2_sequence(NULL),
-  m_has_keyframe(false),
-  m_bitparser(NULL),
-  m_bitstream(NULL)
+CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo)
+  : CDVDVideoCodec(processInfo)
+  , m_pFormatName("amcodec")
+  , m_opened(false)
+  , m_codecControlFlags(0)
+  , m_last_pts(0.0)
+  , m_frame_queue(NULL)
+  , m_queue_depth(0)
+  , m_framerate(0.0)
+  , m_video_rate(0)
+  , m_mpeg2_sequence(NULL)
+  , m_has_keyframe(false)
+  , m_bitparser(NULL)
+  , m_bitstream(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -243,7 +245,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   }
 
   m_aspect_ratio = m_hints.aspect;
-  m_Codec = new CAMLCodec();
+
+  m_Codec = std::shared_ptr<CAMLCodec>(new CAMLCodec());
   if (!m_Codec)
   {
     CLog::Log(LOGERROR, "%s: Failed to create Amlogic Codec", __MODULE_NAME__);
@@ -256,10 +259,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
   m_videobuffer.dts = DVD_NOPTS_VALUE;
   m_videobuffer.pts = DVD_NOPTS_VALUE;
-  m_videobuffer.format = RENDER_FMT_AML;
   m_videobuffer.color_range  = 0;
   m_videobuffer.color_matrix = 4;
-  m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
+  m_videobuffer.iFlags  = 0;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
   m_videobuffer.hwPic = NULL;
