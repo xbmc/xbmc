@@ -34,6 +34,7 @@ class CKey;
 class TiXmlNode;
 class CCustomControllerTranslator;
 class CTouchTranslator;
+class IButtonMapper;
 class IWindowKeymap;
 
 /// singleton class to map from buttons to actions
@@ -81,11 +82,8 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
-
-  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
-
-  std::vector<const IWindowKeymap*> JoystickKeymaps() const;
+  void RegisterMapper(const std::string &device, IButtonMapper *mapper);
+  void UnregisterMapper(IButtonMapper *mapper);
 
 private:
   struct CButtonAction
@@ -109,8 +107,5 @@ private:
 
   bool LoadKeymap(const std::string &keymapPath);
 
-  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
-  std::unique_ptr<CTouchTranslator> m_touchTranslator;
-  std::map<std::string, std::unique_ptr<IWindowKeymap>> m_joystickKeymaps; // Controller ID -> keymap
-  std::vector<std::string> m_controllerIds;
+  std::map<std::string, IButtonMapper*> m_buttonMappers;
 };

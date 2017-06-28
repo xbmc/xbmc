@@ -42,8 +42,11 @@
 #include "threads/CriticalSection.h"
 
 class CButtonTranslator;
+class CCustomControllerTranslator;
 class CIRTranslator;
+class CJoystickMapper;
 class CKey;
+class CTouchTranslator;
 class IKeymapEnvironment;
 class IWindowKeymap;
 
@@ -127,6 +130,11 @@ public:
    * \brief Call once during application startup to initialize peripherals that need it
    */
   void InitializeInputs();
+
+  /*!
+   * \brief Deinitialize input and keymaps
+   */
+  void Deinitialize();
 
   /*! \brief Enable or disable the joystick
    *
@@ -266,6 +274,10 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
+  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
+
+  bool TranslateTouchAction(int windowId, int touchAction, int touchPointers, int &action, std::string &actionString);
+
   std::vector<const IWindowKeymap*> GetJoystickKeymaps() const;
 
   int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
@@ -346,6 +358,9 @@ private:
   std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
   std::unique_ptr<CButtonTranslator> m_buttonTranslator;
   std::unique_ptr<CIRTranslator> m_irTranslator;
+  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
+  std::unique_ptr<CTouchTranslator> m_touchTranslator;
+  std::unique_ptr<CJoystickMapper> m_joystickTranslator;
 
   std::vector<KODI::KEYBOARD::IKeyboardHandler*> m_keyboardHandlers;
 

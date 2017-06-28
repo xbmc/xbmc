@@ -20,32 +20,37 @@
 #pragma once
 
 #include "IButtonMapper.h"
+#include "input/joysticks/JoystickTypes.h"
+#include "input/IKeymap.h"
 
 #include <map>
+#include <memory>
+#include <set>
 #include <string>
+#include <vector>
 
+//class IWindowKeymap;
+class TiXmlElement;
 class TiXmlNode;
 
-class CCustomControllerTranslator : public IButtonMapper
+class CJoystickMapper : public IButtonMapper
 {
 public:
-  CCustomControllerTranslator() = default;
+  CJoystickMapper() = default;
+  virtual ~CJoystickMapper();
 
   // implementation of IButtonMapper
   virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;
   virtual void Clear() override;
 
-  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
+  std::vector<const IWindowKeymap*> GetJoystickKeymaps() const;
 
 private:
-  bool TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
+  void DeserializeJoystickNode(const TiXmlNode* pDevice, std::string &controllerId);
+  bool DeserializeButton(const TiXmlElement *pButton, std::string &feature, KODI::JOYSTICK::ANALOG_STICK_DIRECTION &dir, unsigned int& holdtimeMs, std::set<std::string>& hotkeys, std::string &actionStr);
 
-  // Maps button id to action
-  using CustomControllerButtonMap = std::map<int, std::string>;
+  using ControllerID = std::string;
+  std::map<ControllerID, std::unique_ptr<IWindowKeymap>> m_joystickKeymaps;
 
-  // Maps window id to controller button map
-  using CustomControllerWindowMap = std::map<int, CustomControllerButtonMap>;
-
-  // Maps custom controller name to controller Window map
-  std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
+  std::vector<std::string> m_controllerIds;
 };

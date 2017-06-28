@@ -22,9 +22,12 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "CustomControllerTranslator.h"
 #include "InputManager.h"
 #include "IRTranslator.h"
+#include "JoystickMapper.h"
 #include "KeymapEnvironment.h"
+#include "TouchTranslator.h"
 #include "input/keyboard/IKeyboardHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/IMouseDriverHandler.h"
@@ -79,15 +82,26 @@ CInputManager::CInputManager() :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
   m_irTranslator(new CIRTranslator),
+  m_customControllerTranslator(new CCustomControllerTranslator),
+  m_touchTranslator(new CTouchTranslator),
+  m_joystickTranslator(new CJoystickMapper),
   m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
   m_keyboardEasterEgg(new KEYBOARD::CKeyboardEasterEgg)
 {
+  m_buttonTranslator->RegisterMapper("touch", m_touchTranslator.get());
+  m_buttonTranslator->RegisterMapper("customcontroller", m_customControllerTranslator.get());
+  m_buttonTranslator->RegisterMapper("joystick", m_joystickTranslator.get());
+
   RegisterKeyboardHandler(m_keyboardEasterEgg.get());
 }
 
 CInputManager::~CInputManager()
 {
   UnregisterKeyboardHandler(m_keyboardEasterEgg.get());
+
+  m_buttonTranslator->UnregisterMapper(m_touchTranslator.get());
+  m_buttonTranslator->UnregisterMapper(m_customControllerTranslator.get());
+  m_buttonTranslator->UnregisterMapper(m_joystickTranslator.get());
 }
 
 void CInputManager::InitializeInputs()
@@ -100,6 +114,10 @@ void CInputManager::InitializeInputs()
 
   m_Mouse.Initialize();
   m_Mouse.SetEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+}
+
+void CInputManager::Deinitialize()
+{
 }
 
 void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
@@ -233,7 +251,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
         std::string actionName;
         
         // Translate using custom controller translator.
-        if (m_buttonTranslator->TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
+        if (m_customControllerTranslator->TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
         {
           // break screensaver
           g_application.ResetSystemIdleTimer();
@@ -441,7 +459,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     else
     {
       int iWin = g_windowManager.GetActiveWindowID();
-      m_buttonTranslator->TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
+      m_touchTranslator->TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
     }
 
     if (actionId <= 0)
@@ -914,9 +932,19 @@ CAction CInputManager::GetGlobalAction(const CKey &key)
   return m_buttonTranslator->GetGlobalAction(key);
 }
 
+bool CInputManager::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
+{
+  return m_customControllerTranslator->TranslateCustomControllerString(windowId, controllerName, buttonId, action, strAction);
+}
+
+bool CInputManager::TranslateTouchAction(int windowId, int touchAction, int touchPointers, int &action, std::string &actionString)
+{
+  return m_touchTranslator->TranslateTouchAction(windowId, touchAction, touchPointers, action, actionString);
+}
+
 std::vector<const IWindowKeymap*> CInputManager::GetJoystickKeymaps() const
 {
-  return m_buttonTranslator->JoystickKeymaps();
+  return m_joystickTranslator->GetJoystickKeymaps();
 }
 
 int CInputManager::TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton)
