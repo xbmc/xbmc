@@ -103,10 +103,6 @@ namespace ADDON
 
     virtual ADDON_STATUS TransferSettings();
 
-    static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
-    static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
-    static void AddOnOpenSettings(const char *url, bool bReload);
-    static void AddOnOpenOwnSettings(void *userData, bool bReload);
     bool UpdateSettingInActiveDialog(const char* id, const std::string& value);
 
     /// addon to kodi basic callbacks below
