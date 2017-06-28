@@ -20,6 +20,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 class TiXmlElement;
 
@@ -27,5 +28,5 @@ class CKeyboardTranslator
 {
 public:
   static uint32_t TranslateButton(const TiXmlElement *pButton);
-  static uint32_t TranslateString(const char *szButton);
+  static uint32_t TranslateString(const std::string &szButton);
 };

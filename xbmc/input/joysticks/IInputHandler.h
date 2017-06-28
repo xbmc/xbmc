@@ -58,16 +58,12 @@ namespace JOYSTICK
 
     /*!
      * \brief Return true if the input handler is currently accepting input
-     */
-    virtual bool AcceptsInput(void) = 0;
-
-    /*!
-     * \brief Get the type of input handled by the specified feature
      *
-     * \return INPUT_TYPE::DIGITAL for digital buttons, INPUT::ANALOG for analog
-     *         buttons, or INPUT::UNKNOWN otherwise
+     * \param feature A feature belonging to the controller specified by ControllerID()
+     *
+     * \return True if the feature is currently accepting input, false otherwise
      */
-    virtual INPUT_TYPE GetInputType(const FeatureName& feature) const = 0;
+    virtual bool AcceptsInput(const FeatureName &feature) const = 0;
 
     /*!
      * \brief Get the delay before this feature should be processed
@@ -105,10 +101,11 @@ namespace JOYSTICK
      * \param feature      The feature changing state
      * \param magnitude    The button pressure or trigger travel distance in the
      *                     closed interval [0, 1]
+     * \param motionTimeMs The time elapsed since the magnitude was 0
      *
      * \return True if the event was handled otherwise false
      */
-    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude) = 0;
+    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) = 0;
 
     /*!
      * \brief An analog stick has moved
@@ -121,7 +118,7 @@ namespace JOYSTICK
      *
      * \return True if the event was handled otherwise false
      */
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) = 0;
+    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) = 0;
 
     /*!
      * \brief An accelerometer's state has changed

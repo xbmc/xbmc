@@ -59,14 +59,9 @@ bool CGameClientJoystick::HasFeature(const std::string& feature) const
   return false;
 }
 
-bool CGameClientJoystick::AcceptsInput(void)
+bool CGameClientJoystick::AcceptsInput(const std::string &feature) const
 {
   return m_gameClient->AcceptsInput();
-}
-
-JOYSTICK::INPUT_TYPE CGameClientJoystick::GetInputType(const std::string& feature) const
-{
-  return m_controller->GetInputType(feature);
 }
 
 bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPressed)
@@ -95,7 +90,7 @@ bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPresse
   return bHandled;
 }
 
-bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magnitude)
+bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs)
 {
   bool bHandled = false;
 
@@ -121,7 +116,7 @@ bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magni
   return bHandled;
 }
 
-bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs /* = 0 */)
+bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
 {
   bool bHandled = false;
 

@@ -19,11 +19,14 @@
  */
 
 #include "FeatureHandling.h"
+#include "games/controllers/Controller.h"
+#include "games/GameServices.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IInputHandler.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 #include <vector>
 
@@ -50,7 +53,7 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
 
   if (m_bEnabled)
   {
-    if (m_handler->AcceptsInput())
+    if (m_handler->AcceptsInput(m_name))
       bAcceptsInput = true;
   }
 
@@ -61,7 +64,6 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
 
 CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
-  m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
   m_bDigitalHandled(false),
   m_bDigitalPressSent(false),
@@ -70,6 +72,9 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   m_analogEvent(false),
   m_bDiscrete(true)
 {
+  GAME::ControllerPtr controller = CServiceBroker::GetGameServices().GetController(handler->ControllerID());
+  if (controller)
+    m_inputType = controller->GetInputType(name);
 }
 
 bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
@@ -108,10 +113,12 @@ void CScalarFeature::ProcessMotions(void)
   {
     float magnitude = m_analogState;
 
+    // Calculate time elapsed since motion began
+    const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+
     // If analog value is discrete, ramp up magnitude
     if (m_bDiscrete)
     {
-      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
       if (elapsed < DISCRETE_ANALOG_RAMPUP_TIME_MS)
       {
         magnitude *= static_cast<float>(elapsed) / DISCRETE_ANALOG_RAMPUP_TIME_MS;
@@ -120,7 +127,7 @@ void CScalarFeature::ProcessMotions(void)
       }
     }
 
-    m_handler->OnButtonMotion(m_name, magnitude);
+    m_handler->OnButtonMotion(m_name, magnitude, elapsed);
 
     // Disable sending events after feature is reset
     if (m_analogState == 0.0f)

@@ -29,6 +29,7 @@ namespace JOYSTICK
   class CDriverPrimitive;
 
   /*!
+   * \ingroup joystick
    * \brief Interface for translating features to action IDs
    */
   class IActionMap
@@ -54,7 +55,7 @@ namespace JOYSTICK
      * \return The action ID from Key.h, or ACTION_NONE if no action is mapped
      *         to the specified feature
      */
-    virtual int GetActionID(const FeatureName& feature) = 0;
+    virtual unsigned int GetActionID(const FeatureName& feature) = 0;
   };
 }
 }

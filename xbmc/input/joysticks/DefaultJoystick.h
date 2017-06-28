@@ -51,17 +51,16 @@ namespace JOYSTICK
     // implementation of IInputHandler
     virtual std::string ControllerID(void) const override;
     virtual bool HasFeature(const FeatureName& feature) const override;
-    virtual bool AcceptsInput(void) override;
-    virtual INPUT_TYPE GetInputType(const FeatureName& feature) const override;
+    virtual bool AcceptsInput(const FeatureName &feature) const override;
     virtual unsigned int GetDelayMs(const FeatureName& feature) const override;
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
     virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override;
-    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude) override;
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) override;
+    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
+    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
 
     // implementation of IActionMap
-    virtual int GetActionID(const FeatureName& feature) override;
+    virtual unsigned int GetActionID(const FeatureName& feature) override;
 
   protected:
     /*!
@@ -118,7 +117,6 @@ namespace JOYSTICK
     IKeymapHandler* const m_handler;
 
     // State variables used to process joystick input
-    std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
     std::map<FeatureName, ANALOG_STICK_DIRECTION> m_currentDirections; // Analog stick name -> direction
   };
 }

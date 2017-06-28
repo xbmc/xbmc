@@ -19,40 +19,36 @@
  */
 #pragma once
 
-#include <memory>
-
-namespace PERIPHERALS
-{
-  class CPeripheral;
-}
-
 namespace KODI
 {
 namespace JOYSTICK
 {
   class IInputHandler;
-  class IInputProvider;
-}
 
-namespace GAME
-{
-  class CGameClient;
-
-  class CPort
+  /*!
+   * \ingroup joystick
+   * \brief Interface for classes that can provide input
+   */
+  class IInputProvider
   {
   public:
-    CPort(JOYSTICK::IInputHandler* gameInput, CGameClient& gameClient);
-    ~CPort();
+    virtual ~IInputProvider() = default;
 
-    void RegisterInput(JOYSTICK::IInputProvider *provider);
-    void UnregisterInput(JOYSTICK::IInputProvider *provider);
+    /*!
+     * \brief Register a handler for the provided input
+     *
+     * \param handler The handler to receive input provided by this class
+     * \param bPromiscuous  If true, receives all input (including handled input)
+     *                      in the background
+     */
+    virtual void RegisterInputHandler(IInputHandler* handler, bool bPromiscuous) = 0;
 
-    JOYSTICK::IInputHandler *InputHandler() { return m_gameInput; }
-
-  private:
-    JOYSTICK::IInputHandler* const m_gameInput;
-    std::unique_ptr<JOYSTICK::IInputHandler> m_appInput;
-    std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;
+    /*!
+     * \brief Unregister a handler
+     *
+     * \param handler The handler that was receiving input
+     */
+    virtual void UnregisterInputHandler(IInputHandler* handler) = 0;
   };
 }
 }

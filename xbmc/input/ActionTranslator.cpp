@@ -281,14 +281,13 @@ bool CActionTranslator::IsAnalog(unsigned int actionID)
   }
 }
 
-bool CActionTranslator::TranslateString(const char *szAction, unsigned int &actionId)
+bool CActionTranslator::TranslateString(std::string strAction, unsigned int &actionId)
 {
   actionId = ACTION_NONE;
 
-  if (szAction == nullptr)
+  if (strAction.empty())
     return false;
 
-  std::string strAction = szAction;
   StringUtils::ToLower(strAction);
 
   auto it = ActionMappings.find(strAction);
@@ -299,7 +298,7 @@ bool CActionTranslator::TranslateString(const char *szAction, unsigned int &acti
 
   if (actionId == ACTION_NONE)
   {
-    CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", szAction);
+    CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
     return false;
   }
 

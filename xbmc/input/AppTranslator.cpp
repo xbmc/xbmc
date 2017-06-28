@@ -63,7 +63,7 @@ static const std::map<ActionName, CommandID> AppCommands =
 
 } // anonymous namespace
 
-uint32_t CAppTranslator::TranslateAppCommand(const char *szButton)
+uint32_t CAppTranslator::TranslateAppCommand(const std::string &szButton)
 {
 #ifdef TARGET_WINDOWS
   std::string strAppCommand = szButton;
@@ -73,7 +73,7 @@ uint32_t CAppTranslator::TranslateAppCommand(const char *szButton)
   if (it != AppCommands.end())
     return it->second | KEY_APPCOMMAND;
 
-  CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton);
+  CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton.c_str());
 #endif
 
   return 0;

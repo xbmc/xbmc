@@ -47,7 +47,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -817,8 +816,7 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
 
 bool CGameClient::AcceptsInput(void) const
 {
-  return g_application.IsAppFocused() &&
-         g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME;
+  return g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME;
 }
 
 void CGameClient::ClearPorts(void)

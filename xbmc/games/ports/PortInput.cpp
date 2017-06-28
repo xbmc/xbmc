@@ -30,7 +30,7 @@ CPortInput::CPortInput(CGameClient &gameClient) :
 {
 }
 
-bool CPortInput::AcceptsInput(void)
+bool CPortInput::AcceptsInput(const std::string &feature) const
 {
   return m_gameClient.AcceptsInput();
 }

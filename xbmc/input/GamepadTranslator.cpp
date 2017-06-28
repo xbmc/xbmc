@@ -25,12 +25,11 @@
 
 #include <string>
 
-uint32_t CGamepadTranslator::TranslateString(const char *szButton)
+uint32_t CGamepadTranslator::TranslateString(std::string strButton)
 {
-  if (szButton == nullptr)
+  if (strButton.empty())
     return 0;
 
-  std::string strButton = szButton;
   StringUtils::ToLower(strButton);
 
   uint32_t buttonCode = 0;

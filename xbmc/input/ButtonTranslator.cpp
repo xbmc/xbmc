@@ -196,7 +196,7 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
   return true;
 }
 
-int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
+int CButtonTranslator::TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton)
 {
   return m_irTranslator->TranslateButton(szDevice, szButton);
 }
@@ -401,7 +401,7 @@ unsigned int CButtonTranslator::GetActionCode(int window, const CKey &key, std::
   return action;
 }
 
-void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map)
+void CButtonTranslator::MapAction(uint32_t buttonCode, const std::string &szAction, unsigned int holdtimeMs, buttonMap &map)
 {
   unsigned int action = ACTION_NONE;
   if (!CActionTranslator::TranslateString(szAction, action) || buttonCode == 0)

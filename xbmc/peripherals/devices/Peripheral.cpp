@@ -561,7 +561,7 @@ void CPeripheral::ClearSettings(void)
   m_settings.clear();
 }
 
-void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler, bool bPromiscuous)
+void CPeripheral::RegisterInputHandler(IInputHandler* handler, bool bPromiscuous)
 {
   auto it = m_inputHandlers.find(handler);
   if (it == m_inputHandlers.end())
@@ -572,7 +572,7 @@ void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler, bool bPro
   }
 }
 
-void CPeripheral::UnregisterJoystickInputHandler(IInputHandler* handler)
+void CPeripheral::UnregisterInputHandler(IInputHandler* handler)
 {
   handler->ResetInputReceiver();
 

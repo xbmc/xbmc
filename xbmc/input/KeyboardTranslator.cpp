@@ -87,7 +87,7 @@ uint32_t CKeyboardTranslator::TranslateButton(const TiXmlElement *pButton)
   return button_id;
 }
 
-uint32_t CKeyboardTranslator::TranslateString(const char *szButton)
+uint32_t CKeyboardTranslator::TranslateString(const std::string &szButton)
 {
   uint32_t buttonCode = 0;
   XBMCKEYTABLE keytable;
@@ -100,7 +100,7 @@ uint32_t CKeyboardTranslator::TranslateString(const char *szButton)
   else
   {
     // The lookup failed i.e. the key name wasn't found
-    CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", szButton);
+    CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", szButton.c_str());
   }
 
   buttonCode |= KEY_VKEY;

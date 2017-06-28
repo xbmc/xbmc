@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <string>
+
 namespace
 {
 

@@ -24,6 +24,7 @@
 #include "JoystickIDs.h"
 #include "JoystickTranslator.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
 #include "Application.h"
 
@@ -37,7 +38,7 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
-  m_handler(new CKeymapHandler)
+  m_handler(new CKeymapHandler(&CInputManager::GetInstance()))
 {
 }
 
@@ -66,14 +67,9 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
   return false;
 }
 
-bool CDefaultJoystick::AcceptsInput()
+bool CDefaultJoystick::AcceptsInput(const FeatureName &feature) const
 {
-  return g_application.IsAppFocused();
-}
-
-INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
-{
-  return m_handler->GetInputType(GetKeyID(feature), GetWindowID(), GetFallthrough());
+  return true;
 }
 
 unsigned int CDefaultJoystick::GetDelayMs(const FeatureName& feature) const
@@ -90,13 +86,8 @@ bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
   const int windowId = GetWindowID();
   const bool bFallthrough = GetFallthrough();
 
-  if (m_handler->GetInputType(keyId, windowId, bFallthrough) == INPUT_TYPE::DIGITAL)
-  {
-    m_handler->OnDigitalKey(keyId, windowId, bFallthrough, bPressed);
-    return true;
-  }
-
-  return false;
+  m_handler->OnDigitalKey(keyId, windowId, bFallthrough, bPressed);
+  return true;
 }
 
 void CDefaultJoystick::OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs)
@@ -108,19 +99,14 @@ void CDefaultJoystick::OnButtonHold(const FeatureName& feature, unsigned int hol
   m_handler->OnDigitalKey(keyId, windowId, bFallthrough, true, holdTimeMs);
 }
 
-bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude)
+bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs)
 {
   const unsigned int keyId = GetKeyID(feature);
   const int windowId = GetWindowID();
   const bool bFallthrough = GetFallthrough();
 
-  if (m_handler->GetInputType(keyId, windowId, bFallthrough) == INPUT_TYPE::ANALOG)
-  {
-    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
-    return true;
-  }
-
-  return false;
+  m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude, motionTimeMs);
+  return true;
 }
 
 bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
@@ -152,7 +138,7 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
   return false; //! @todo implement
 }
 
-int CDefaultJoystick::GetActionID(const FeatureName& feature)
+unsigned int CDefaultJoystick::GetActionID(const FeatureName& feature)
 {
   const unsigned int keyId = GetKeyID(feature);
   const int windowId = GetWindowID();
@@ -177,34 +163,9 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
   const unsigned int  keyId     = GetKeyID(feature, dir);
   const int           windowId  = GetWindowID();
   const bool          bFallthrough = GetFallthrough();
-  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId, bFallthrough);
 
-  if (inputType == INPUT_TYPE::DIGITAL)
-  {
-    unsigned int holdTimeMs = 0;
-
-    const bool bIsPressed = (magnitude >= ANALOG_DIGITAL_THRESHOLD);
-    if (bIsPressed)
-    {
-      const bool bIsHeld = (m_holdStartTimes.find(keyId) != m_holdStartTimes.end());
-      if (bIsHeld)
-        holdTimeMs = motionTimeMs - m_holdStartTimes[keyId];
-      else
-        m_holdStartTimes[keyId] = motionTimeMs;
-    }
-    else
-    {
-      m_holdStartTimes.erase(keyId);
-    }
-
-    m_handler->OnDigitalKey(keyId, windowId, bFallthrough, bIsPressed, holdTimeMs);
-    bHandled = true;
-  }
-  else if (inputType == INPUT_TYPE::ANALOG)
-  {
-    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
-    bHandled = true;
-  }
+  m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude, motionTimeMs);
+  bHandled = true;
 
   if (bHandled)
     m_currentDirections[feature] = dir;
@@ -220,18 +181,9 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
     const unsigned int  keyId     = GetKeyID(feature, dir);
     const int           windowId  = GetWindowID();
     const bool          bFallthrough = GetFallthrough();
-    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId, bFallthrough);
 
-    if (inputType == INPUT_TYPE::DIGITAL)
-    {
-      m_handler->OnDigitalKey(keyId, windowId, bFallthrough, false);
-    }
-    else if (inputType == INPUT_TYPE::ANALOG)
-    {
-      m_handler->OnAnalogKey(keyId, windowId, bFallthrough, 0.0f);
-    }
+    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, 0.0f, 0);
 
-    m_holdStartTimes.erase(keyId);
     m_currentDirections[feature] = ANALOG_STICK_DIRECTION::UNKNOWN;
   }
 }

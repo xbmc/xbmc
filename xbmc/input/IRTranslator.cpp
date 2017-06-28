@@ -110,9 +110,9 @@ bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
   return true;
 }
 
-void CIRTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
+void CIRTranslator::MapRemote(TiXmlNode *pRemote, const std::string &szDevice)
 {
-  CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
+  CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice.c_str());
 
   std::vector<std::string> remoteNames;
 
@@ -137,7 +137,7 @@ void CIRTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 
   for (const auto& remoteName : remoteNames)
   {
-    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, remoteName.c_str());
+    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice.c_str(), remoteName.c_str());
     m_irRemotesMap[remoteName] = buttons;
   }
 }
@@ -147,7 +147,7 @@ void CIRTranslator::Clear()
   m_irRemotesMap.clear();
 }
 
-unsigned int CIRTranslator::TranslateButton(const char* szDevice, const char *szButton)
+unsigned int CIRTranslator::TranslateButton(const std::string &szDevice, const std::string &szButton)
 {
   // Find the device
   auto it = m_irRemotesMap.find(szDevice);
@@ -161,19 +161,18 @@ unsigned int CIRTranslator::TranslateButton(const char* szDevice, const char *sz
 
   // Convert the button to code
   if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
-    return TranslateUniversalRemoteString((*it2).second.c_str());
+    return TranslateUniversalRemoteString((*it2).second);
 
-  return TranslateString((*it2).second.c_str());
+  return TranslateString((*it2).second);
 }
 
-uint32_t CIRTranslator::TranslateString(const char *szButton)
+uint32_t CIRTranslator::TranslateString(std::string strButton)
 {
-  if (!szButton) 
+  if (strButton.empty()) 
     return 0;
 
   uint32_t buttonCode = 0;
 
-  std::string strButton = szButton;
   StringUtils::ToLower(strButton);
 
   if (strButton == "left") buttonCode = XINPUT_IR_REMOTE_LEFT;
@@ -246,12 +245,12 @@ uint32_t CIRTranslator::TranslateString(const char *szButton)
   return buttonCode;
 }
 
-uint32_t CIRTranslator::TranslateUniversalRemoteString(const char *szButton)
+uint32_t CIRTranslator::TranslateUniversalRemoteString(const std::string &szButton)
 {
-  if (szButton == nullptr || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) 
+  if (szButton.empty() || szButton.length() < 4 || strnicmp(szButton.c_str(), "obc", 3)) 
     return 0;
 
-  const char *szCode = szButton + 3;
+  const char *szCode = szButton.c_str() + 3;
 
   // Button Code is 255 - OBC (Original Button Code) of the button
   uint32_t buttonCode = 255 - atol(szCode);

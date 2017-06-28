@@ -23,6 +23,7 @@
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "interfaces/IActionListener.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -30,10 +31,13 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
+#define DIGITAL_ANALOG_THRESHOLD  0.5f
+
 #define HOLD_TIMEOUT_MS     500
 #define REPEAT_TIMEOUT_MS   50
 
-CKeymapHandler::CKeymapHandler(void) :
+CKeymapHandler::CKeymapHandler(IActionListener *actionHandler) :
+    m_actionHandler(actionHandler),
     m_lastButtonPress(0),
     m_lastDigitalActionMs(0)
 {
@@ -43,32 +47,18 @@ CKeymapHandler::~CKeymapHandler(void)
 {
 }
 
-INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const
+unsigned int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
     action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
-  if (action.GetID() > ACTION_NONE)
-  {
-    if (action.IsAnalog())
-      return INPUT_TYPE::ANALOG;
-    else
-      return INPUT_TYPE::DIGITAL;
-  }
-
-  return INPUT_TYPE::UNKNOWN;
-}
-
-int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
-{
-  CAction action(ACTION_NONE);
-
-  if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
-
-  return action.GetID();
+  //! @todo make CAction::GetID() return unsigned
+  if (action.GetID() >= 0)
+    return action.GetID();
+  else
+    return ACTION_NONE;
 }
 
 unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const
@@ -78,30 +68,65 @@ unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, boo
 
 void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
+  CAction action(ACTION_NONE);
+
   if (keyId != 0)
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), bFallthrough);
+
+  if (action.GetID() != ACTION_NONE)
   {
-    if (bPressed)
+    if (action.IsAnalog())
     {
-      CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), bFallthrough));
-      SendAction(action);
+      OnAnalogKey(keyId, windowId, bFallthrough, bPressed ? 1.0f : 0.0f, 0);
     }
     else
     {
-      ProcessButtonRelease(keyId);
+      if (bPressed)
+        SendDigitalAction(action);
+      else
+        ProcessButtonRelease(keyId);
     }
   }
 }
 
-void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude)
+void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude, unsigned int motionTimeMs)
 {
+  CAction action(ACTION_NONE);
+
   if (keyId != 0)
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
+
+  if (action.GetID() != ACTION_NONE)
   {
-    CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough));
-    SendAnalogAction(action, magnitude);
+    if (action.IsAnalog())
+    {
+      CAction actionWithAmount(action.GetID(), magnitude, 0.0f, action.GetName());
+      m_actionHandler->OnAction(actionWithAmount);
+    }
+    else
+    {
+      unsigned int holdTimeMs = 0;
+      
+      const bool bIsPressed = (magnitude >= DIGITAL_ANALOG_THRESHOLD);
+      if (bIsPressed)
+      {
+        const bool bIsHeld = (m_holdStartTimes.find(keyId) != m_holdStartTimes.end());
+        if (bIsHeld)
+          holdTimeMs = motionTimeMs - m_holdStartTimes[keyId];
+        else
+          m_holdStartTimes[keyId] = motionTimeMs;
+      }
+      else
+      {
+        m_holdStartTimes.erase(keyId);
+      }
+
+      OnDigitalKey(keyId, windowId, bFallthrough, bIsPressed, holdTimeMs);
+    }
   }
 }
 
-void CKeymapHandler::SendAction(const CAction& action)
+void CKeymapHandler::SendDigitalAction(const CAction& action)
 {
   const unsigned int keyId = action.GetButtonCode();
   const unsigned int holdTimeMs = action.GetHoldTime();
@@ -111,17 +136,20 @@ void CKeymapHandler::SendAction(const CAction& action)
     m_pressedButtons.push_back(keyId);
 
     // Only dispatch action if button was pressed this frame
-    if (holdTimeMs == 0 && SendDigitalAction(action))
+    if (holdTimeMs == 0)
     {
-      m_lastButtonPress = keyId;
-      m_lastDigitalActionMs = holdTimeMs;
+      if (m_actionHandler->OnAction(action))
+      {
+        m_lastButtonPress = keyId;
+        m_lastDigitalActionMs = holdTimeMs;
+      }
     }
   }
   else if (keyId == m_lastButtonPress && holdTimeMs > HOLD_TIMEOUT_MS)
   {
     if (holdTimeMs > m_lastDigitalActionMs + REPEAT_TIMEOUT_MS)
     {
-      SendDigitalAction(action);
+      m_actionHandler->OnAction(action);
       m_lastDigitalActionMs = holdTimeMs;
     }
   }
@@ -146,55 +174,4 @@ void CKeymapHandler::ProcessButtonRelease(unsigned int keyId)
 bool CKeymapHandler::IsPressed(unsigned int keyId) const
 {
   return std::find(m_pressedButtons.begin(), m_pressedButtons.end(), keyId) != m_pressedButtons.end();
-}
-
-bool CKeymapHandler::SendDigitalAction(const CAction& action)
-{
-  if (action.GetID() > 0)
-  {
-    // If button was pressed this frame, send action
-    if (action.GetHoldTime() == 0)
-    {
-      CInputManager::GetInstance().QueueAction(action);
-    }
-    else
-    {
-      // Only send repeated actions for basic navigation commands
-      bool bIsNavigation = false;
-
-      switch (action.GetID())
-      {
-      case ACTION_MOVE_LEFT:
-      case ACTION_MOVE_RIGHT:
-      case ACTION_MOVE_UP:
-      case ACTION_MOVE_DOWN:
-      case ACTION_PAGE_UP:
-      case ACTION_PAGE_DOWN:
-        bIsNavigation = true;
-        break;
-
-      default:
-        break;
-      }
-
-      if (bIsNavigation)
-        CInputManager::GetInstance().QueueAction(action);
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CKeymapHandler::SendAnalogAction(const CAction& action, float magnitude)
-{
-  if (action.GetID() > 0)
-  {
-    CAction actionWithAmount(action.GetID(), magnitude, 0.0f, action.GetName());
-    CInputManager::GetInstance().QueueAction(actionWithAmount);
-    return true;
-  }
-
-  return false;
 }
