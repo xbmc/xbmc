@@ -102,7 +102,6 @@ namespace ADDON
     DllAddon* m_pDll;
     bool m_initialized;
     bool LoadDll();
-    bool m_needsavedsettings;
     std::map<std::string, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
 
     virtual ADDON_STATUS TransferSettings();

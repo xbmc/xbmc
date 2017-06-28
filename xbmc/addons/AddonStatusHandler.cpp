@@ -103,7 +103,7 @@ void CAddonStatusHandler::Process()
     CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Some required settings are missing/invalid */
-  else if ((m_status == ADDON_STATUS_NEED_SETTINGS) || (m_status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+  else if (m_status == ADDON_STATUS_NEED_SETTINGS)
   {
     CGUIDialogYesNo* pDialogYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
