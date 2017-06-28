@@ -887,39 +887,50 @@ bool CInputManager::OnAction(const CAction& action)
 
 bool CInputManager::LoadKeymaps()
 {
-  if (!m_buttonTranslator->Load())
-    return false;
+  bool bSuccess = false;
 
-  m_irTranslator->Load();
+  if (m_buttonTranslator->Load())
+  {
+    m_irTranslator->Load();
+    bSuccess = true;
+  }
 
-  return true;
+  SetChanged();
+  NotifyObservers(ObservableMessageButtonMapsChanged);
+
+  return bSuccess;
 }
 
 bool CInputManager::ReloadKeymaps()
 {
-  //! @todo
-  ClearKeymaps();
-
-  if (!LoadKeymaps())
-    return false;
-
-  return true;
+  return LoadKeymaps();
 }
 
 void CInputManager::ClearKeymaps()
 {
   m_buttonTranslator->Clear();
   m_irTranslator->Clear();
+
+  SetChanged();
+  NotifyObservers(ObservableMessageButtonMapsChanged);
 }
 
 void CInputManager::AddKeymap(const std::string &keymap)
 {
-  m_buttonTranslator->AddDevice(keymap);
+  if (m_buttonTranslator->AddDevice(keymap))
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessageButtonMapsChanged);
+  }
 }
 
 void CInputManager::RemoveKeymap(const std::string &keymap)
 {
-  m_buttonTranslator->RemoveDevice(keymap);
+  if (m_buttonTranslator->RemoveDevice(keymap))
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessageButtonMapsChanged);
+  }
 }
 
 CAction CInputManager::GetAction(int window, const CKey &key, bool fallback /* = true */)
@@ -942,7 +953,7 @@ bool CInputManager::TranslateTouchAction(int windowId, int touchAction, int touc
   return m_touchTranslator->TranslateTouchAction(windowId, touchAction, touchPointers, action, actionString);
 }
 
-std::vector<const IWindowKeymap*> CInputManager::GetJoystickKeymaps() const
+std::vector<std::shared_ptr<const IWindowKeymap>> CInputManager::GetJoystickKeymaps() const
 {
   return m_joystickTranslator->GetJoystickKeymaps();
 }

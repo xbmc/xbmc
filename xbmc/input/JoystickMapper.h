@@ -21,7 +21,6 @@
 
 #include "IButtonMapper.h"
 #include "input/joysticks/JoystickTypes.h"
-#include "input/IKeymap.h"
 
 #include <map>
 #include <memory>
@@ -29,7 +28,7 @@
 #include <string>
 #include <vector>
 
-//class IWindowKeymap;
+class IWindowKeymap;
 class TiXmlElement;
 class TiXmlNode;
 
@@ -43,14 +42,14 @@ public:
   virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;
   virtual void Clear() override;
 
-  std::vector<const IWindowKeymap*> GetJoystickKeymaps() const;
+  std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
 
 private:
   void DeserializeJoystickNode(const TiXmlNode* pDevice, std::string &controllerId);
   bool DeserializeButton(const TiXmlElement *pButton, std::string &feature, KODI::JOYSTICK::ANALOG_STICK_DIRECTION &dir, unsigned int& holdtimeMs, std::set<std::string>& hotkeys, std::string &actionStr);
 
   using ControllerID = std::string;
-  std::map<ControllerID, std::unique_ptr<IWindowKeymap>> m_joystickKeymaps;
+  std::map<ControllerID, std::shared_ptr<IWindowKeymap>> m_joystickKeymaps;
 
   std::vector<std::string> m_controllerIds;
 };

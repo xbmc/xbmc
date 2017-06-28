@@ -34,32 +34,18 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CKeymapHandling::CKeymapHandling(IInputProvider *inputProvider, bool pPromiscuous, const IKeymapEnvironment *environment) :
-  m_inputProvider(inputProvider)
+  m_inputProvider(inputProvider),
+  m_pPromiscuous(pPromiscuous),
+  m_environment(environment)
 {
-  for (auto windowKeymap : CServiceBroker::GetInputManager().GetJoystickKeymaps())
-  {
-    // Create keymap
-    std::unique_ptr<IKeymap> keymap(new CKeymap(windowKeymap, environment));
-
-    // Create keymap handler
-    IActionListener *actionHandler = &CServiceBroker::GetInputManager();
-    std::unique_ptr<IInputHandler> inputHandler(new CKeymapHandler(actionHandler, keymap.get()));
-
-    // Register the handler with the input provider
-    m_inputProvider->RegisterInputHandler(inputHandler.get(), pPromiscuous);
-
-    // Save the keymap and handler
-    m_keymaps.emplace_back(std::move(keymap));
-    m_inputHandlers.emplace_back(std::move(inputHandler));
-  }
+  LoadKeymaps();
+  CServiceBroker::GetInputManager().RegisterObserver(this);
 }
 
 CKeymapHandling::~CKeymapHandling()
 {
-  for (auto it = m_inputHandlers.rbegin(); it != m_inputHandlers.rend(); ++it)
-    m_inputProvider->UnregisterInputHandler(it->get());
-  m_inputHandlers.clear();
-  m_keymaps.clear();
+  CServiceBroker::GetInputManager().UnregisterObserver(this);
+  UnloadKeymaps();
 }
 
 IInputReceiver *CKeymapHandling::GetInputReceiver(const std::string &controllerId) const
@@ -88,4 +74,42 @@ IKeymap *CKeymapHandling::GetKeymap(const std::string &controllerId) const
     return it->get();
 
   return nullptr;
+}
+
+void CKeymapHandling::Notify(const Observable &obs, const ObservableMessage msg)
+{
+  if (msg == ObservableMessageButtonMapsChanged)
+    LoadKeymaps();
+}
+
+void CKeymapHandling::LoadKeymaps()
+{
+  UnloadKeymaps();
+
+  auto &inputManager = CServiceBroker::GetInputManager();
+
+  for (auto &windowKeymap : inputManager.GetJoystickKeymaps())
+  {
+    // Create keymap
+    std::unique_ptr<IKeymap> keymap(new CKeymap(std::move(windowKeymap), m_environment));
+
+    // Create keymap handler
+    std::unique_ptr<IInputHandler> inputHandler(new CKeymapHandler(&inputManager, keymap.get()));
+
+    // Register the handler with the input provider
+    m_inputProvider->RegisterInputHandler(inputHandler.get(), m_pPromiscuous);
+
+    // Save the keymap and handler
+    m_keymaps.emplace_back(std::move(keymap));
+    m_inputHandlers.emplace_back(std::move(inputHandler));
+  }
+}
+
+void CKeymapHandling::UnloadKeymaps()
+{
+  for (auto it = m_inputHandlers.rbegin(); it != m_inputHandlers.rend(); ++it)
+    m_inputProvider->UnregisterInputHandler(it->get());
+
+  m_inputHandlers.clear();
+  m_keymaps.clear();
 }

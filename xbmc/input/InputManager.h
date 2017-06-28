@@ -40,6 +40,7 @@
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 class CButtonTranslator;
 class CCustomControllerTranslator;
@@ -81,7 +82,8 @@ namespace MOUSE
 class CInputManager : public ISettingCallback,
                       public IActionListener,
                       public KODI::KEYBOARD::IKeyboardInputProvider,
-                      public KODI::MOUSE::IMouseInputProvider
+                      public KODI::MOUSE::IMouseInputProvider,
+                      public Observable
 {
 public:
   CInputManager();
@@ -278,7 +280,7 @@ public:
 
   bool TranslateTouchAction(int windowId, int touchAction, int touchPointers, int &action, std::string &actionString);
 
-  std::vector<const IWindowKeymap*> GetJoystickKeymaps() const;
+  std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
 
   int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
 

@@ -52,31 +52,35 @@ CButtonTranslator::~CButtonTranslator()
 }
 
 // Add the supplied device name to the list of connected devices
-void CButtonTranslator::AddDevice(const std::string& strDevice)
+bool CButtonTranslator::AddDevice(const std::string& strDevice)
 {
   // Only add the device if it isn't already in the list
   if (m_deviceList.find(strDevice) != m_deviceList.end())
-    return;
+    return false;
 
   // Add the device
   m_deviceList.insert(strDevice);
 
   // New device added so reload the key mappings
   Load();
+
+  return true;
 }
 
-void CButtonTranslator::RemoveDevice(const std::string& strDevice)
+bool CButtonTranslator::RemoveDevice(const std::string& strDevice)
 {
   // Find the device
   auto it = m_deviceList.find(strDevice);
   if (it == m_deviceList.end())
-    return;
+    return false;
 
   // Remove the device
   m_deviceList.erase(it);
 
   // Device removed so reload the key mappings
   Load();
+
+  return true;
 }
 
 bool CButtonTranslator::Load()

@@ -52,8 +52,8 @@ public:
   virtual ~CButtonTranslator();
 
   // Add/remove a HID device with custom mappings
-  void AddDevice(const std::string& strDevice);
-  void RemoveDevice(const std::string& strDevice);
+  bool AddDevice(const std::string& strDevice);
+  bool RemoveDevice(const std::string& strDevice);
 
   /// loads Keymap.xml
   bool Load();

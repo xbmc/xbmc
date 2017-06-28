@@ -23,8 +23,8 @@
 
 using namespace KODI;
 
-CKeymap::CKeymap(const IWindowKeymap *keymap, const IKeymapEnvironment *environment) :
-  m_keymap(keymap),
+CKeymap::CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment *environment) :
+  m_keymap(std::move(keymap)),
   m_environment(environment)
 {
 }

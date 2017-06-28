@@ -90,15 +90,15 @@ void CJoystickMapper::Clear()
   m_controllerIds.clear();
 }
 
-std::vector<const IWindowKeymap*> CJoystickMapper::GetJoystickKeymaps() const
+std::vector<std::shared_ptr<const IWindowKeymap>> CJoystickMapper::GetJoystickKeymaps() const
 {
-  std::vector<const IWindowKeymap*> keymaps;
+  std::vector<std::shared_ptr<const IWindowKeymap>> keymaps;
 
   for (const auto &controllerId : m_controllerIds)
   {
     auto it = m_joystickKeymaps.find(controllerId);
     if (it != m_joystickKeymaps.end())
-      keymaps.push_back(it->second.get());
+      keymaps.emplace_back(it->second);
   }
 
   return keymaps;

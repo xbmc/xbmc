@@ -21,12 +21,14 @@
 
 #include "IKeymap.h"
 
+#include <memory>
+
 class IKeymapEnvironment;
 
 class CKeymap : public IKeymap
 {
 public:
-  CKeymap(const IWindowKeymap *keymap, const IKeymapEnvironment *environment);
+  CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment *environment);
 
   // implementation of IKeymap
   virtual std::string ControllerID() const override ;
@@ -35,6 +37,6 @@ public:
 
 private:
   // Construction parameters
-  const IWindowKeymap *const m_keymap;
+  const std::shared_ptr<const IWindowKeymap> m_keymap;
   const IKeymapEnvironment *const m_environment;
 };
