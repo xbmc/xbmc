@@ -51,7 +51,6 @@ namespace ADDON
 CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
   : CAddon(std::move(addonInfo)),
     m_pHelpers(nullptr),
-    m_bIsChild(false),
     m_binaryAddonBase(addonBase),
     m_pDll(nullptr),
     m_initialized(false),
@@ -62,23 +61,11 @@ CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
 CAddonDll::CAddonDll(CAddonInfo addonInfo)
   : CAddon(std::move(addonInfo)),
     m_pHelpers(nullptr),
-    m_bIsChild(false),
     m_binaryAddonBase(nullptr),
     m_pDll(nullptr),
     m_initialized(false),
     m_interface{0}
 {
-}
-
-CAddonDll::CAddonDll(const CAddonDll &rhs)
-  : CAddon(rhs),
-    m_bIsChild(true)
-{
-  m_initialized       = rhs.m_initialized;
-  m_pDll              = rhs.m_pDll;
-  m_pHelpers          = rhs.m_pHelpers;
-  m_parentLib = rhs.m_parentLib;
-  m_interface = rhs.m_interface;
 }
 
 CAddonDll::~CAddonDll()
@@ -92,38 +79,8 @@ bool CAddonDll::LoadDll()
   if (m_pDll)
     return true;
 
-  std::string strFileName;
+  std::string strFileName = LibPath();
   std::string strAltFileName;
-  if (!m_bIsChild)
-  {
-    strFileName = LibPath();
-  }
-  else
-  {
-    std::string libPath = LibPath();
-    if (!XFILE::CFile::Exists(libPath))
-    {
-      std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/");
-      std::string tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
-      libPath.erase(0, temp.size());
-      libPath = tempbin + libPath;
-      if (!XFILE::CFile::Exists(libPath))
-      {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_addonInfo.LibName().c_str());
-        return false;
-      }
-    }
-
-    std::stringstream childcount;
-    childcount << GetChildCount();
-    std::string extension = URIUtils::GetExtension(libPath);
-    strFileName = "special://temp/" + ID() + "-" + childcount.str() + extension;
-
-    XFILE::CFile::Copy(libPath, strFileName);
-
-    m_parentLib = libPath;
-    CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
-  }
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
 #if defined(TARGET_ANDROID)
@@ -328,8 +285,6 @@ void CAddonDll::Destroy()
   m_pHelpers = NULL;
   if (m_pDll)
   {
-    if (m_bIsChild)
-      XFILE::CFile::Delete(m_pDll->GetFile());
     delete m_pDll;
     m_pDll = NULL;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());

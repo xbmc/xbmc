@@ -33,10 +33,8 @@ namespace ADDON
   public:
     CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase);
     CAddonDll(CAddonInfo addonInfo);
-
-    //FIXME: does shallow pointer copy. no copy assignment op
-    CAddonDll(const CAddonDll &rhs);
     ~CAddonDll() override;
+
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
@@ -74,9 +72,8 @@ namespace ADDON
 
   protected:
     bool Initialized() { return m_initialized; }
-    static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
+
     CAddonInterfaces* m_pHelpers;
-    bool m_bIsChild;
     std::string m_parentLib;
 
   private:
