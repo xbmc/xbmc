@@ -35,6 +35,32 @@
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 
+CAMLVideoBufferPool::~CAMLVideoBufferPool()
+{
+  for (auto buffer : m_videoBuffers)
+    delete buffer;
+}
+
+CVideoBuffer* CAMLVideoBufferPool::Get()
+{
+  if (m_freeBuffers.empty())
+  {
+    m_freeBuffers.push_back(m_videoBuffers.size());
+    m_videoBuffers.push_back(new CDVDAmlogicVideoBuffer(< static_cast<int>(m_videoBuffers.size())));
+  }
+  int bufferIdx(m_freeBuffers.back());
+  m_freeBuffers.pop_back();
+
+  return m_videoBuffers[bufferIdx].Aquire(this);
+}
+
+CVideoBuffer* CAMLVideoBufferPool::Return(int id)
+{
+  m_freeBuffers.push_back(id);
+}
+
+/***************************************************************************/
+
 typedef struct frame_queue {
   double dts;
   double pts;
