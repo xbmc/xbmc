@@ -26,11 +26,14 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/Directory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace kodi; // addon-dev-kit namespace
 
@@ -47,6 +50,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_language = get_language;
   addonInterface->toKodi->kodi->queue_notification = queue_notification;
   addonInterface->toKodi->kodi->get_md5 = get_md5;
+  addonInterface->toKodi->kodi->get_temp_path = get_temp_path;
 }
 
 void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
@@ -237,6 +241,22 @@ void Interface_General::get_md5(void* kodiBase, const char* text, char* md5)
 
   std::string md5Int = XBMC::XBMC_MD5::GetMD5(std::string(text));
   strncpy(md5, md5Int.c_str(), 40);
+}
+
+char* Interface_General::get_temp_path(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - called with empty kodi instance pointer", __FUNCTION__);
+    return nullptr;
+  }
+
+  const std::string tempPath = URIUtils::AddFileToFolder("special://temp/addons", addon->ID());
+  if (!XFILE::CDirectory::Exists(tempPath))
+    XFILE::CDirectory::Create(tempPath);
+
+  return strdup(CSpecialProtocol::TranslatePath(tempPath).c_str());
 }
 
 } /* namespace ADDON */
