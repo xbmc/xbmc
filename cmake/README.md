@@ -40,7 +40,7 @@ For Windows the dependencies can be found in the
 install the [Windows Software Development Kit (SDK)](https://dev.windows.com/en-us/downloads/sdk-archive) for your Windows version. This is required for HLSL shader offline compiling with the [Effect-Compiler Tool](https://msdn.microsoft.com/de-de/library/windows/desktop/bb232919(v=vs.85).aspx) (fxc.exe).
 
 On Windows, the CMake based buildsystem requires that the binary dependencies
-are downloaded using `DownloadBuildDeps.bat` and `DownloadMingwBuildEnv.bat`
+are downloaded using `download-dependencies.bat` and `download-msys2.bat`
 and that the mingw libs (ffmpeg, libdvd and others) are built using
 `make-mingwlibs.bat`.
 
