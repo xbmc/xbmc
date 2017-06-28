@@ -31,7 +31,7 @@ CAudioEncoder::CAudioEncoder(BinaryAddonBasePtr addonInfo)
 bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
 {
   m_struct.toKodi = callbacks;
-  if (!CreateInstance(&m_struct) || !m_struct.toAddon.start)
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.start)
     return false;
 
   return m_struct.toAddon.start(&m_struct,

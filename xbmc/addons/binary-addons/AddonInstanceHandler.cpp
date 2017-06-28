@@ -83,10 +83,10 @@ AddonVersion IAddonInstanceHandler::Version() const
   return m_addon ? m_addon->Version() : AddonVersion("0.0.0");
 }
 
-bool IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
+ADDON_STATUS IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
 {
   if (!m_addon)
-    return false;
+    return ADDON_STATUS_UNKNOWN;
 
   ADDON_STATUS status = m_addon->CreateInstance(m_type, m_instanceId, instance, m_parentInstance);
   if (status != ADDON_STATUS_OK)
@@ -95,9 +95,8 @@ bool IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
                 __FUNCTION__,
                 m_addon->ID().c_str(),
                 kodi::TranslateAddonStatus(status).c_str());
-    return false;
   }
-  return true;
+  return status;
 }
 
 void IAddonInstanceHandler::DestroyInstance()

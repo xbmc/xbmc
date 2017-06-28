@@ -83,7 +83,7 @@ bool CActiveAEDSPAddon::Create(int iClientId)
   /* initialise the add-on */
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - creating audio dsp add-on instance '%s'", __FUNCTION__, Name().c_str());
   /* Open the class "kodi::addon::CInstanceAudioDSP" on add-on side */
-  m_bReadyToUse = CreateInstance(&m_struct);
+  m_bReadyToUse = (CreateInstance(&m_struct) == ADDON_STATUS_OK);
   if (!m_bReadyToUse)
   {
     CLog::Log(LOGFATAL, "ActiveAE DSP: failed to create instance for '%s' and not usable!", ID().c_str());
