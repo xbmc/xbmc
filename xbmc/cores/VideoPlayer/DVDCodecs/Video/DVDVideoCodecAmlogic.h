@@ -35,10 +35,10 @@ class CBitstreamConverter;
 
 class CDVDVideoCodecAmlogic;
 
-class CDVDAmlogicVideoBuffer : public CVideoBuffer
+class CAMLVideoBuffer : public CVideoBuffer
 {
 public:
-  CDVDAmlogicVideoBuffer(int id) : CVideoBuffer(id) = default;
+  CAMLVideoBuffer(int id) : CVideoBuffer(id) {};
 
   CDVDVideoCodecAmlogic* m_codec;
   std::shared_ptr<CAMLCodec> m_amlCodec;
@@ -46,7 +46,7 @@ public:
   uint32_t m_bufferIndex;
 };
 
-class CAMLPool : public CAMLVideoBufferPool
+class CAMLVideoBufferPool : public IVideoBufferPool
 {
 public:
   virtual ~CAMLVideoBufferPool();
@@ -55,7 +55,7 @@ public:
   virtual void Return(int id) override;
 
 private:
-  std::vector<CDVDAmlogicVideoBuffer*> m_videoBuffers;
+  std::vector<CAMLVideoBuffer*> m_videoBuffers;
   std::vector<int> m_freeBuffers;
 };
 
@@ -81,7 +81,7 @@ protected:
   void            FrameQueuePop(void);
   void            FrameQueuePush(double dts, double pts);
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
-  void            RemoveInfo(CDVDAmlogicInfo* info);
+  //void            RemoveInfo(CDVDAmlogicInfo* info);
 
   std::shared_ptr<CAMLCodec> m_Codec;
 
@@ -104,7 +104,7 @@ protected:
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
 private:
-  CAMLPool m_bufferPool;
+  std::shared_ptr<CAMLVideoBufferPool> m_bufferPool;
 
   CCriticalSection m_secure;
   static std::atomic<bool> m_InstanceGuard;
