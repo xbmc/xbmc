@@ -22,6 +22,7 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "threads/CriticalSection.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 #include <set>
 #include <atomic>
@@ -34,32 +35,28 @@ class CBitstreamConverter;
 
 class CDVDVideoCodecAmlogic;
 
-class CDVDAmlogicInfo
+class CDVDAmlogicVideoBuffer : public CVideoBuffer
 {
 public:
-  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts, int amlDuration, uint32_t bufferIndex);
-
-  // reference counting
-  CDVDAmlogicInfo* Retain();
-  long             Release();
-
-  CAMLCodec *getAmlCodec() const;
-  int GetOmxPts() const { return m_omxPts; }
-  int GetAmlDuration() const { return m_amlDuration; }
-  uint32_t GetBufferIndex() const { return m_bufferIndex; };
-  void invalidate();
-  void SetRendered() { m_rendered = true; };
-  bool IsRendered() { return m_rendered; };
-
-protected:
-  long m_refs;
-  CCriticalSection    m_section;
+  CDVDAmlogicVideoBuffer(int id) : CVideoBuffer(id) = default;
 
   CDVDVideoCodecAmlogic* m_codec;
-  CAMLCodec* m_amlCodec;
+  std::shared_ptr<CAMLCodec> m_amlCodec;
   int m_omxPts, m_amlDuration;
   uint32_t m_bufferIndex;
-  bool m_rendered;
+};
+
+class CAMLPool : public CAMLVideoBufferPool
+{
+public:
+  virtual ~CAMLVideoBufferPool();
+
+  virtual CVideoBuffer* Get() override;
+  virtual void Return(int id) override;
+
+private:
+  std::vector<CDVDAmlogicVideoBuffer*> m_videoBuffers;
+  std::vector<int> m_freeBuffers;
 };
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
@@ -86,8 +83,8 @@ protected:
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
   void            RemoveInfo(CDVDAmlogicInfo* info);
 
-  CAMLCodec      *m_Codec;
-  std::set<CDVDAmlogicInfo*> m_inflight;
+  std::shared_ptr<CAMLCodec> m_Codec;
+
   const char     *m_pFormatName;
   VideoPicture m_videobuffer;
   bool            m_opened;
@@ -107,6 +104,8 @@ protected:
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
 private:
-  CCriticalSection    m_secure;
+  CAMLPool m_bufferPool;
+
+  CCriticalSection m_secure;
   static std::atomic<bool> m_InstanceGuard;
 };
