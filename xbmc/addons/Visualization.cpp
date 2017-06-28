@@ -56,7 +56,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_struct.toKodi.transfer_preset = transfer_preset;
 
   /* Open the class "kodi::addon::CInstanceVisualization" on add-on side */
-  if (!CreateInstance(&m_struct))
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
   {
     CLog::Log(LOGFATAL, "Visualization: failed to create instance for '%s' and not usable!", ID().c_str());
     return;

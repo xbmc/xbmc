@@ -45,7 +45,7 @@ namespace ADDON
     std::string Profile() const;
     AddonVersion Version() const;
 
-    bool CreateInstance(KODI_HANDLE instance);
+    ADDON_STATUS CreateInstance(KODI_HANDLE instance);
     void DestroyInstance();
     const AddonDllPtr& Addon() { return m_addon; }
     BinaryAddonBasePtr GetAddonBase() { return m_addonBase; };

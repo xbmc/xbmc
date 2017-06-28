@@ -71,7 +71,7 @@ bool CImageDecoder::Create(const std::string& mimetype)
 {
   m_struct.props.mimetype = mimetype.c_str();
   m_struct.toKodi.kodi_instance = this;
-  return CreateInstance(&m_struct);
+  return (CreateInstance(&m_struct) == ADDON_STATUS_OK);
 }
 
 } /*namespace ADDON*/

@@ -123,7 +123,7 @@ bool CInputStreamAddon::Open()
   m_struct.toKodi.free_demux_packet = cb_free_demux_packet;
   m_struct.toKodi.allocate_demux_packet = cb_allocate_demux_packet;
   m_struct.toKodi.allocate_encrypted_demux_packet = cb_allocate_encrypted_demux_packet;
-  if (!CreateInstance(&m_struct) || !m_struct.toAddon.open)
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
     return false;
 
   INPUTSTREAM props;

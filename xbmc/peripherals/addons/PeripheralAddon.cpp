@@ -103,13 +103,14 @@ bool CPeripheralAddon::CreateAddon(void)
 
   // Initialise the add-on
   CLog::Log(LOGDEBUG, "PERIPHERAL - %s - creating peripheral add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if (CreateInstance(&m_struct))
+
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
+    return false;
+
+  if (!GetAddonProperties())
   {
-    if (!GetAddonProperties())
-    {
-      DestroyInstance();
-      return false;
-    }
+    DestroyInstance();
+    return false;
   }
 
   return true;
