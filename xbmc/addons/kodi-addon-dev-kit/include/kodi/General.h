@@ -40,6 +40,7 @@ typedef struct AddonToKodiFuncTable_kodi
   char* (*get_language)(void* kodiBase, int format, bool region);
   bool (*queue_notification)(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
   void (*get_md5)(void* kodiBase, const char* text, char* md5);
+  char* (*get_temp_path)(void* kodiBase);
 } AddonToKodiFuncTable_kodi;
 
 //==============================================================================
@@ -407,3 +408,37 @@ inline std::string GetMD5(const std::string& text)
 }
 } /* namespace kodi */
 //----------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief To get a temporary path for the addon
+///
+/// This gives a temporary path which the addon can use individually for its things.
+///
+/// The content of this folder will be deleted when Kodi is finished!
+///
+/// @param[in] append A string to append to returned temporary path
+/// @return Individual path for the addon
+///
+inline std::string GetTempAddonPath(const std::string& append = "")
+{
+  char* str = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_temp_path(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
+  std::string ret = str;
+  ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, str);
+  if (!append.empty())
+  {
+    if (append.at(0) != '\\' &&
+        append.at(0) != '/')
+#ifdef TARGET_WINDOWS
+      ret.append("\\");
+#else
+      ret.append("/");
+#endif
+    ret.append(append);
+  }
+  return ret;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
