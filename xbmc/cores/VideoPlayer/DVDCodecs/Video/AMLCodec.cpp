@@ -1958,8 +1958,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
 
   if (DequeueBuffer() == 0)
   {
-    pVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-    pVideoPicture->format = RENDER_FMT_AML;
+    pVideoPicture->iFlags = 0;
 
     if (m_last_pts <= 0)
       pVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
