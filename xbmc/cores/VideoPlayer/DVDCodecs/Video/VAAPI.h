@@ -356,7 +356,7 @@ public:
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
-  static void Register(void *eglDisplay);
+  static void Register(bool hevc);
 
 protected:
   void SetWidthHeight(int width, int height);
