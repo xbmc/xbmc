@@ -24,6 +24,7 @@
 #include <float.h>
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Resolution.h"
 #include "settings/Settings.h"
@@ -77,6 +78,8 @@ CWinSystemAmlogic::~CWinSystemAmlogic()
 bool CWinSystemAmlogic::InitWindowSystem()
 {
   m_nativeDisplay = EGL_DEFAULT_DISPLAY;
+
+  CLinuxRendererGLES::Register();
 
   return CWinSystemBase::InitWindowSystem();
 }
