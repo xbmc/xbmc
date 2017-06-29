@@ -19,7 +19,11 @@
  */
 #pragma once
 
+#ifdef HAS_GL
 #include <OpenGL/gl.h>
+#else
+#include <OpenGLES/ES2/gl.h>
+#endif
 
 #include "DVDVideoCodecFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
