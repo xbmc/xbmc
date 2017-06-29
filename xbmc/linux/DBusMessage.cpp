@@ -59,6 +59,12 @@ void CDBusMessage::AppendArgument<bool>(const bool arg)
   AppendWithType(DBUS_TYPE_BOOLEAN, &convArg);
 }
 
+template<>
+void CDBusMessage::AppendArgument<std::string>(const std::string arg)
+{
+  AppendArgument(arg.c_str());
+}
+
 void CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
 {
   PrepareArgument();
