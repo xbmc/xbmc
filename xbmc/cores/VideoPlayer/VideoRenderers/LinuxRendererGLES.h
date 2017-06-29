@@ -210,7 +210,6 @@ protected:
 
     YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
-    GLuint pbo[3]; // one pbo for 3 planes
 
     CVideoBuffer *videoBuffer;
     bool loaded;
