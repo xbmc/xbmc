@@ -26,6 +26,7 @@
 
 #include "LinuxRendererGL.h"
 #include "Application.h"
+#include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -109,6 +110,17 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
 CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
 {
 
+}
+
+CBaseRenderer* CLinuxRendererGL::Create(CVideoBuffer *buffer)
+{
+  return new CLinuxRendererGL();
+}
+
+bool CLinuxRendererGL::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("default", CLinuxRendererGL::Create);
+  return true;
 }
 
 CLinuxRendererGL::CLinuxRendererGL()
