@@ -107,6 +107,10 @@ public:
   CLinuxRendererGLES();
   virtual ~CLinuxRendererGLES();
 
+  // Registration
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
   // Player functions
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
