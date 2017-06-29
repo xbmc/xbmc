@@ -26,6 +26,7 @@
 #include "libavcodec/avcodec.h"
 #include "libavcodec/d3d11va.h"
 #include "threads/Event.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 class CProcessInfo;
@@ -145,6 +146,9 @@ class CDecoder
 public:
   CDecoder(CProcessInfo& processInfo);
  ~CDecoder();
+
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static bool Register();
 
   // IHardwareDecoder overrides
   bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
