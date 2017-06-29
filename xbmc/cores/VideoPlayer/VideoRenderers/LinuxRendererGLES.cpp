@@ -425,12 +425,6 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (IsGuiLayer())
     return;
-  
-  if (m_renderMethod & RENDER_BYPASS)
-  {
-    ManageRenderArea();
-    return;
-  }
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -521,13 +515,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
     {
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_GLSL:
-        if (1) //m_format == RENDER_FMT_BYPASS)
-        {
-          CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
-          m_renderMethod = RENDER_BYPASS;
-          break;
-        }
-
         // Try GLSL shaders if supported and user requested auto or GLSL.
         if (glCreateProgram)
         {
@@ -616,9 +603,7 @@ inline void CLinuxRendererGLES::ReorderDrawPoints()
 
 bool CLinuxRendererGLES::CreateTexture(int index)
 {
-  if (1) //(m_format == RENDER_FMT_BYPASS)
-    return CreateBYPASSTexture(index);
-  else if (m_format == AV_PIX_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12)
     return CreateNV12Texture(index);
   else
     return CreateYV12Texture(index);
@@ -628,9 +613,7 @@ void CLinuxRendererGLES::DeleteTexture(int index)
 {
   ReleaseBuffer(index);
 
-  if (1)
-    DeleteBYPASSTexture(index);
-  else if (m_format == AV_PIX_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12)
     DeleteNV12Texture(index);
   else
     DeleteYV12Texture(index);
@@ -646,13 +629,11 @@ bool CLinuxRendererGLES::UploadTexture(int index)
 
   bool ret = false;
 
-  // Now that we now the render method, setup texture function handlers
-  if (1) //(m_format == RENDER_FMT_BYPASS)
-  {
-    UploadBYPASSTexture(index);
-    ret = true;
-  }
-  else if (m_format == AV_PIX_FMT_NV12)
+  YuvImage &dst = m_buffers[index].image;
+  m_buffers[index].videoBuffer->GetPlanes(dst.plane);
+  m_buffers[index].videoBuffer->GetStrides(dst.stride);
+
+  if (m_format == AV_PIX_FMT_NV12)
   {
     return UploadNV12Texture(index);
   }
@@ -666,10 +647,6 @@ bool CLinuxRendererGLES::UploadTexture(int index)
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
-  // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS)
-    return;
-
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_TOP)
     m_currentField = FIELD_TOP;
@@ -829,14 +806,6 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
   if (!m_bValidated)
     return false;
-
-  // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS)
-  {
-    capture->BeginRender();
-    capture->EndRender();
-    return true;
-  }
 
   // save current video rect
   CRect saveSize = m_destRect;
@@ -1280,20 +1249,6 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 }
 
 //********************************************************************************************************
-// BYPASS creation, deletion, copying + clearing
-//********************************************************************************************************
-void CLinuxRendererGLES::UploadBYPASSTexture(int index)
-{
-}
-void CLinuxRendererGLES::DeleteBYPASSTexture(int index)
-{
-}
-bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
-{
-  return true;
-}
-
-//********************************************************************************************************
 // SurfaceTexture creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGLES::SetTextureFilter(GLenum method)
@@ -1373,10 +1328,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 
 bool CLinuxRendererGLES::IsGuiLayer()
 {
-  if (1) //m_format == RENDER_FMT_BYPASS)
-    return false;
-  else
-    return true;
+  return true;
 }
 
 #endif
