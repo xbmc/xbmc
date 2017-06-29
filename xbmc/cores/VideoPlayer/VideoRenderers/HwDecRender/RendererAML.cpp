@@ -29,6 +29,7 @@
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
+#include "../RenderFactory.h"
 #include "settings/AdvancedSettings.h"
 
 CRendererAML::CRendererAML()
@@ -36,10 +37,24 @@ CRendererAML::CRendererAML()
  , m_bConfigured(false)
  , m_iRenderBuffer(0)
 {
+  CLog::Log(LOGINFO, "Constructing CRendererAML");
 }
 
 CRendererAML::~CRendererAML()
 {
+}
+
+CBaseRenderer* CRendererAML::Create(CVideoBuffer *buffer)
+{
+  if (buffer && dynamic_cast<CAMLVideoBuffer*>(buffer))
+    return new CRendererAML();
+  return nullptr;
+}
+
+bool CRendererAML::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("amlogic", CRendererAML::Create);
+  return true;
 }
 
 bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
