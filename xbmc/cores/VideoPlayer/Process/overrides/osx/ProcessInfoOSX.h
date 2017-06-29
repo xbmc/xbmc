@@ -28,4 +28,5 @@ public:
   CProcessInfoOSX();
   virtual ~CProcessInfoOSX();
   void SetSwDeinterlacingMethods() override;
+  std::vector<AVPixelFormat> GetRenderFormats() override;
 };
