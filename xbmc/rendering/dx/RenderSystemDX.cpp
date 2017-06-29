@@ -685,6 +685,12 @@ bool CRenderSystemDX::CreateDevice()
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
+	
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  DXVA::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CWinRenderer::Register();
 
   // tell any shared objects about our resurrection
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
@@ -1916,12 +1922,6 @@ void CRenderSystemDX::CheckDeviceCaps()
     m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
     m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
   }
-
-  // register platform dependent objects
-  CDVDFactoryCodec::ClearHWAccels();
-  DXVA::CDecoder::Register();
-  VIDEOPLAYER::CRendererFactory::ClearRenderer();
-  CWinRenderer::Register();
 }
 
 void CRenderSystemDX::InitHooks()
