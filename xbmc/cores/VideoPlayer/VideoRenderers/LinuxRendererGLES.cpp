@@ -73,6 +73,8 @@ CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
+  CLog::Log(LOGINFO, "Constructing CLinuxRendererGLES");
+
   m_textureTarget = GL_TEXTURE_2D;
 
   m_renderMethod = RENDER_GLSL;
@@ -302,7 +304,7 @@ void CLinuxRendererGLES::LoadPlane(YUVPLANE& plane, int type,
   glBindTexture(m_textureTarget, plane.id);
 
   // OpenGL ES does not support strided texture input.
-  if (stride != width * bps)
+  if (stride != static_cast<int>(width * bps))
   {
     unsigned char* src = (unsigned char*)data;
     for (unsigned int y = 0; y < height;++y, src += stride)
@@ -516,7 +518,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_GLSL:
         // Try GLSL shaders if supported and user requested auto or GLSL.
-        if (glCreateProgram)
+        if (glCreateProgram())
         {
           // create regular scan shader
           CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
@@ -585,6 +587,8 @@ void CLinuxRendererGLES::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
+
+  glFinish();
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
@@ -919,13 +923,7 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
   }
 
   for(int p = 0;p<YuvImage::MAX_PLANES;p++)
-  {
-    if (im.plane[p])
-    {
-      delete[] im.plane[p];
-      im.plane[p] = NULL;
-    }
-  }
+    im.plane[p] = NULL;
 }
 
 static GLint GetInternalFormat(GLint format, int bpp)
@@ -1242,13 +1240,7 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
   }
 
   for(int p = 0;p<2;p++)
-  {
-    if (im.plane[p])
-    {
-      delete[] im.plane[p];
-      im.plane[p] = NULL;
-    }
-  }
+    im.plane[p] = NULL;
 }
 
 //********************************************************************************************************
