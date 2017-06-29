@@ -10,6 +10,7 @@ set(SOURCES ConvUtils.cpp
 set(HEADERS ConvUtils.h
             LinuxResourceCounter.h
             LinuxTimezone.h
+            PlatformConstants.h
             PlatformDefs.h
             PlatformInclude.h
             PosixMountProvider.h

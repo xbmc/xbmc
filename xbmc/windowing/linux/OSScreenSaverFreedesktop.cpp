@@ -20,8 +20,10 @@
 
 #include "OSScreenSaverFreedesktop.h"
 
+#include "guilib/LocalizeStrings.h"
 #include "linux/DBusMessage.h"
 #include "linux/DBusUtil.h"
+#include "linux/PlatformConstants.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::LINUX;
@@ -51,7 +53,7 @@ void COSScreenSaverFreedesktop::Inhibit()
   }
 
   CDBusMessage inhibitMessage(SCREENSAVER_INTERFACE, SCREENSAVER_OBJECT, SCREENSAVER_INTERFACE, "Inhibit");
-  inhibitMessage.AppendArguments("kodi", "Playing"); // FIXME constant, i18n
+  inhibitMessage.AppendArguments(KODI::LINUX::DESKTOP_FILE_NAME, g_localizeStrings.Get(14086));
   if (!inhibitMessage.SendSession())
   {
     // DBus call failed
