@@ -24,6 +24,10 @@
 #include <DirectXPackedVector.h>
 #include "Application.h"
 #include "RenderSystemDX.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
@@ -1912,6 +1916,12 @@ void CRenderSystemDX::CheckDeviceCaps()
     m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
     m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
   }
+
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  DXVA::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CWinRenderer::Register();
 }
 
 void CRenderSystemDX::InitHooks()
