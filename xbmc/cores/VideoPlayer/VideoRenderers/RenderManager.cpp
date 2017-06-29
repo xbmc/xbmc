@@ -21,6 +21,7 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
+#include "RenderFactory.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "guilib/GraphicContext.h"
 #include "utils/MathUtils.h"
@@ -36,41 +37,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 
-#if defined(HAS_GL)
-#include "LinuxRendererGL.h"
-#include "HwDecRender/RendererVAAPIGL.h"
-#include "HwDecRender/RendererVDPAU.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "HwDecRender/RendererVTBGL.h"
-#endif
-#elif HAS_GLES == 2
-  #include "LinuxRendererGLES.h"
-  #include "HwDecRender/RendererVAAPIGLES.h"
-#if defined(HAS_MMAL)
-#include "HwDecRender/MMALRenderer.h"
-#endif
-#if defined(TARGET_DARWIN_IOS)
-#include "HwDecRender/RendererVTBGLES.h"
-#endif
-#if defined(HAS_IMXVPU)
-#include "HwDecRender/RendererIMX.h"
-#endif
-#if defined(HAS_LIBAMCODEC)
-#include "HwDecRender/RendererAML.h"
-#endif
-#if defined(HAVE_LIBOPENMAX)
-#include "HwDecRender/RendererOpenMax.h"
-#endif
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#elif defined(HAS_SDL)
-  #include "LinuxRenderer.h"
-#endif
-
-#if defined(TARGET_ANDROID)
-#include "HwDecRender/RendererMediaCodec.h"
-#include "HwDecRender/RendererMediaCodecSurface.h"
-#endif
 
 #if defined(TARGET_POSIX)
 #include "linux/XTimeUtils.h"
@@ -248,7 +214,7 @@ bool CRenderManager::Configure()
     DeleteRenderer();
   }
 
-  if(!m_pRenderer)
+  if (!m_pRenderer)
   {
     CreateRenderer();
     if (!m_pRenderer)
@@ -502,79 +468,23 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
+    CVideoBuffer *buffer = nullptr;
     if (m_pConfigPicture)
-    {
-      if (0)
-      {
-      }
-#if defined(HAVE_LIBVA)
-      else if (CRendererVAAPI::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
-      {
-        m_pRenderer = new CRendererVAAPI;
-      }
-#endif
-#if defined(HAVE_LIBVDPAU)
-      else if (CRendererVDPAU::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
-      {
-        m_pRenderer = new CRendererVDPAU;
-      }
-#endif
-#if defined(TARGET_DARWIN)
-      else if (CRendererVTB::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
-      {
-        m_pRenderer = new CRendererVTB;
-      }
-#endif
-#if defined(TARGET_ANDROID)
-      else if (0)
-      {
-        m_pRenderer = new CRendererMediaCodec;
-      }
-#endif
-#if defined(TARGET_ANDROID)
-      else if (0)
-      {
-        m_pRenderer = new CRendererMediaCodecSurface;
-      }
-#endif
-#if defined(HAS_MMAL)
-      else if (1)
-      {
-        m_pRenderer = new MMAL::CMMALRenderer;
-      }
-#endif
-#if defined(HAS_IMXVPU)
-      else if (0)
-      {
-        m_pRenderer = new CRendererIMX;
-      }
-#endif
-#if defined(HAS_DX)
-      else if(CWinRenderer::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
-      {
-        m_pRenderer = new CWinRenderer;
-      }
-#endif
-#if defined(HAS_LIBAMCODEC)
-      else if (0)
-      {
-        m_pRenderer = new CRendererAML;
-      }
-#endif
-#if defined(HAS_GL)
-      else
-      {
-        m_pRenderer = new CLinuxRendererGL;
-      }
-#endif
-    }
+      buffer = m_pConfigPicture->videoBuffer;
 
-#if defined(HAS_GL)
-    else
+    auto renderers = VIDEOPLAYER::CRendererFactory::GetRenderers();
+    for (auto &id : renderers)
     {
-      m_pRenderer = new CLinuxRendererGL;
+      if (id == "default")
+        continue;
+
+      m_pRenderer = VIDEOPLAYER::CRendererFactory::CreateRenderer(id, buffer);
+      if (m_pRenderer)
+      {
+        return;
+      }
     }
-#endif
+    m_pRenderer = VIDEOPLAYER::CRendererFactory::CreateRenderer("default", buffer);
   }
 }
 
