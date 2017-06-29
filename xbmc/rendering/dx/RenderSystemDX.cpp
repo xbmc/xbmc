@@ -24,6 +24,10 @@
 #include <DirectXPackedVector.h>
 #include "Application.h"
 #include "RenderSystemDX.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
@@ -681,6 +685,12 @@ bool CRenderSystemDX::CreateDevice()
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
+	
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  DXVA::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CWinRenderer::Register();
 
   // tell any shared objects about our resurrection
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)

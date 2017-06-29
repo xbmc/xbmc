@@ -21,6 +21,7 @@
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
+#include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/FFmpeg.h"
@@ -58,6 +59,17 @@ static RenderMethodDetail *FindRenderMethod(RenderMethod m)
       return &RenderMethodDetails[i];
   }
   return nullptr;
+}
+
+CBaseRenderer* CWinRenderer::Create(CVideoBuffer *buffer)
+{
+  return new CWinRenderer();
+}
+
+bool CWinRenderer::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("default", CWinRenderer::Create);
+  return true;
 }
 
 CWinRenderer::CWinRenderer()
