@@ -20,6 +20,7 @@
 
 #include <math.h>
 
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDVideoCodecAmlogic.h"
 #include "TimingConstants.h"
 #include "DVDStreamInfo.h"
@@ -95,6 +96,16 @@ CDVDVideoCodecAmlogic::~CDVDVideoCodecAmlogic()
 {
   Dispose();
   pthread_mutex_destroy(&m_queue_mutex);
+}
+
+CDVDVideoCodec* CDVDVideoCodecAmlogic::Create(CProcessInfo &processInfo)
+{
+  return new CDVDVideoCodecAmlogic(processInfo);
+}
+
+bool CDVDVideoCodecAmlogic::Register()
+{
+  CDVDFactoryCodec::RegisterHWVideoCodec("amlogic_dec", &CDVDVideoCodecAmlogic::Create);
 }
 
 std::atomic<bool> CDVDVideoCodecAmlogic::m_InstanceGuard(false);
