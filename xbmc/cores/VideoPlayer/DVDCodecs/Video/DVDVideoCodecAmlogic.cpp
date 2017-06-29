@@ -43,6 +43,8 @@ CAMLVideoBufferPool::~CAMLVideoBufferPool()
 
 CVideoBuffer* CAMLVideoBufferPool::Get()
 {
+  CSingleLock lock(m_criticalSection);
+
   if (m_freeBuffers.empty())
   {
     m_freeBuffers.push_back(m_videoBuffers.size());
@@ -58,6 +60,7 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
 
 void CAMLVideoBufferPool::Return(int id)
 {
+  CSingleLock lock(m_criticalSection);
   m_freeBuffers.push_back(id);
 }
 
@@ -264,7 +267,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_videobuffer.iFlags  = 0;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
-  m_videobuffer.hwPic = NULL;
+  m_videobuffer.videoBuffer = nullptr;
 
   m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
@@ -294,20 +297,16 @@ FAIL:
 
 void CDVDVideoCodecAmlogic::Dispose(void)
 {
-  {
-    CSingleLock lock(m_secure);
-    for (std::set<CDVDAmlogicInfo*>::iterator it = m_inflight.begin(); it != m_inflight.end(); ++it)
-      (*it)->invalidate();
-  }
+  m_videoBufferPool = nullptr;
 
   if (m_Codec)
-    m_Codec->CloseDecoder(), delete m_Codec, m_Codec = NULL, m_InstanceGuard.exchange(false);
+    m_Codec->CloseDecoder(), m_Codec = nullptr;
 
   if (m_opened)
     m_InstanceGuard.exchange(false);
 
-  if (m_videobuffer.iFlags)
-    m_videobuffer.iFlags = 0;
+  m_videobuffer.iFlags = 0;
+
   if (m_mpeg2_sequence)
     delete m_mpeg2_sequence, m_mpeg2_sequence = NULL;
 
@@ -365,6 +364,9 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
       if (m_Codec && !m_Codec->OpenDecoder(m_hints))
         CLog::Log(LOGERROR, "%s: Failed to open Amlogic Codec", __MODULE_NAME__);
+
+      m_videoBufferPool = std::shared_ptr<CAMLVideoBufferPool>(new CAMLVideoBufferPool());
+
       m_opened = true;
     }
   }
@@ -393,15 +395,9 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAmlogic::GetPicture(VideoPicture* pVideoP
 
   *pVideoPicture = m_videobuffer;
 
-  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec, 
-   m_Codec->GetOMXPts(), m_Codec->GetAmlDuration(), m_Codec->GetBufferIndex());
-
-  {
-    CSingleLock lock(m_secure);
-    m_inflight.insert(info);
-  }
-
-  pVideoPicture->hwPic = info->Retain();
+  pVideoPicture->videoBuffer = m_videoBufferPool->Get();
+  static_cast<CAMLVideoBuffer*>(pVideoPicture->videoBuffer)->Set(this, m_Codec,
+   m_Codec->GetOMXPts(), m_Codec->GetAmlDuration(), m_Codec->GetBufferIndex());;
 
   // check for mpeg2 aspect ratio changes
   if (m_mpeg2_sequence && pVideoPicture->pts >= m_mpeg2_sequence_pts)
@@ -617,55 +613,3 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
     FrameQueuePop();
   }
 }
-
-void CDVDVideoCodecAmlogic::RemoveInfo(CDVDAmlogicInfo *info)
-{
-  CSingleLock lock(m_secure);
-  m_inflight.erase(m_inflight.find(info));
-}
-
-CDVDAmlogicInfo::CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts, int amlDuration, uint32_t bufferIndex)
-  : m_refs(0)
-  , m_codec(codec)
-  , m_amlCodec(amlcodec)
-  , m_omxPts(omxPts)
-  , m_amlDuration(amlDuration)
-  , m_bufferIndex(bufferIndex)
-  , m_rendered(false)
-{
-}
-
-CDVDAmlogicInfo *CDVDAmlogicInfo::Retain()
-{
-  ++m_refs;
-  return this;
-}
-
-long CDVDAmlogicInfo::Release()
-{
-  long count = --m_refs;
-  if (count == 0)
-  {
-    if (m_codec)
-      m_codec->RemoveInfo(this);
-    delete this;
-  }
-
-  return count;
-}
-
-CAMLCodec *CDVDAmlogicInfo::getAmlCodec() const
-{
-  CSingleLock lock(m_section);
-
-  return m_amlCodec;
-}
-
-void CDVDAmlogicInfo::invalidate()
-{
-  CSingleLock lock(m_section);
-
-  m_codec = NULL;
-  m_amlCodec = NULL;
-}
-
