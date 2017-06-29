@@ -31,8 +31,8 @@ class CGenericTouchSwipeDetector;
 class CWinEventsWin32 : public IWinEvents
 {
 public:
-  void MessagePush(XBMC_Event *newEvent);
-  bool MessagePump();
+  void MessagePush(XBMC_Event *newEvent) override;
+  bool MessagePump() override;
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:
