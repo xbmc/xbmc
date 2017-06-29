@@ -70,11 +70,12 @@ private:
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
-  friend class CDVDAmlogicInfo;
-
 public:
   CDVDVideoCodecAmlogic(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecAmlogic();
+
+  static CDVDVideoCodec* Create(CProcessInfo &processInfo);
+  static bool Register();
 
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
