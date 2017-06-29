@@ -28,4 +28,5 @@ public:
   CProcessInfoLinux();
   virtual ~CProcessInfoLinux();
   void SetSwDeinterlacingMethods() override;
+  std::vector<AVPixelFormat> GetRenderFormats() override;
 };
