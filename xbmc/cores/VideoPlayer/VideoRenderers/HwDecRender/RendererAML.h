@@ -32,6 +32,10 @@ public:
   CRendererAML();
   virtual ~CRendererAML();
 
+  // Registration
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
