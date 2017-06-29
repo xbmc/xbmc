@@ -19,7 +19,7 @@
  */
 
 #include "RendererVAAPIGL.h"
-
+#include "../RenderFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "settings/Settings.h"
@@ -30,6 +30,23 @@
 
 using namespace VAAPI;
 
+CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
+{
+  CVaapiRenderPicture *vb = dynamic_cast<CVaapiRenderPicture*>(buffer);
+  if (vb)
+    return new CRendererVAAPI();
+
+  return nullptr;
+}
+
+void CRendererVAAPI::Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
+{
+  general = CVaapiTexture::TestInterop(vaDpy, eglDisplay);
+  hevc = CVaapiTexture::TestInteropHevc(vaDpy, eglDisplay);
+  if (general)
+    VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
+}
+
 CRendererVAAPI::CRendererVAAPI() = default;
 
 CRendererVAAPI::~CRendererVAAPI()
@@ -38,15 +55,6 @@ CRendererVAAPI::~CRendererVAAPI()
   {
     DeleteTexture(i);
   }
-}
-
-bool CRendererVAAPI::HandlesVideoBuffer(CVideoBuffer *buffer)
-{
-  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(buffer);
-  if (pic)
-    return true;
-
-  return false;
 }
 
 bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)

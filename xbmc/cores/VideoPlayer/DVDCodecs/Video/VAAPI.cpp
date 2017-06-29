@@ -1189,143 +1189,15 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
   return nullptr;
 }
 
-void CDecoder::Register(EGLDisplay eglDisplay)
+void CDecoder::Register(bool hevc)
 {
   CVaapiConfig config;
   if (!CVAAPIContext::EnsureContext(&config.context, nullptr))
     return;
 
-  config.dpy = config.context->GetDisplay();
-  config.surfaceWidth = 1920;
-  config.surfaceHeight = 1080;
-  config.profile = VAProfileH264Main;
-  config.attrib = config.context->GetAttrib(config.profile);
-  if ((config.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
-  {
-    config.context->Release(nullptr);
-    return;
-  }
-
-  config.configId = config.context->CreateConfig(config.profile, config.attrib);
-  if (config.configId == VA_INVALID_ID)
-  {
-    config.context->Release(nullptr);
-    return;
-  }
-
-  // create surfaces
-  VASurfaceID surface;
-  VAStatus status;
-  VAImage image;
-  VABufferInfo bufferInfo;
-
-  if (vaCreateSurfaces(config.dpy,  VA_RT_FORMAT_YUV420,
-                       config.surfaceWidth, config.surfaceHeight,
-                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
-  {
-    config.context->Release(nullptr);
-    return;
-  }
-
-  // check interop
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-  if (!eglCreateImageKHR || !eglDestroyImageKHR)
-  {
-    config.context->Release(nullptr);
-    return;
-  }
-
-  status = vaDeriveImage(config.dpy, surface, &image);
-  if (status == VA_STATUS_SUCCESS)
-  {
-    memset(&bufferInfo, 0, sizeof(bufferInfo));
-    bufferInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
-    status = vaAcquireBufferHandle(config.dpy, image.buf, &bufferInfo);
-    if (status == VA_STATUS_SUCCESS)
-    {
-      EGLImageKHR eglImage;
-      GLint attribs[23], *attrib;
-
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('R', '8', ' ', ' ');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = image.width;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = image.height;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)bufferInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = image.offsets[0];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = image.pitches[0];
-      *attrib++ = EGL_NONE;
-      eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                   attribs);
-      if (eglImage)
-      {
-        eglDestroyImageKHR(eglDisplay, eglImage);
-        m_capGeneral = true;
-        CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
-      }
-
-    }
-    vaDestroyImage(config.dpy, image.image_id);
-  }
-  vaDestroySurfaces(config.dpy, &surface, 1);
-
-  // check hevc
-  // create surfaces
-  if (vaCreateSurfaces(config.dpy,  VA_RT_FORMAT_YUV420_10BPP,
-                       config.surfaceWidth, config.surfaceHeight,
-                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
-  {
-    config.context->Release(nullptr);
-    return;
-  }
-
-  // check interop
-  status = vaDeriveImage(config.dpy, surface, &image);
-  if (status == VA_STATUS_SUCCESS)
-  {
-    memset(&bufferInfo, 0, sizeof(bufferInfo));
-    bufferInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
-    status = vaAcquireBufferHandle(config.dpy, image.buf, &bufferInfo);
-    if (status == VA_STATUS_SUCCESS)
-    {
-      EGLImageKHR eglImage;
-      GLint attribs[23], *attrib;
-
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('G', 'R', '3', '2');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = (image.width +1) >> 1;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = (image.height +1) >> 1;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)bufferInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = image.offsets[1];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = image.pitches[1];
-      *attrib++ = EGL_NONE;
-      eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                   attribs);
-      if (eglImage)
-      {
-        eglDestroyImageKHR(eglDisplay, eglImage);
-        m_capHevc = true;
-      }
-
-    }
-    vaDestroyImage(config.dpy, image.image_id);
-  }
-  vaDestroySurfaces(config.dpy, &surface, 1);
-
+  m_capGeneral = true;
+  m_capHevc = hevc;
+  CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 }
 

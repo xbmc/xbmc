@@ -19,7 +19,7 @@
  */
 
 #include "RendererVAAPIGLES.h"
-
+#include "../RenderFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "settings/Settings.h"
@@ -57,15 +57,6 @@ CRendererVAAPI::~CRendererVAAPI()
   {
     DeleteTexture(i);
   }
-}
-
-bool CRendererVAAPI::HandlesVideoBuffer(CVideoBuffer *buffer)
-{
-  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(buffer);
-  if (pic)
-    return true;
-
-  return false;
 }
 
 bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
