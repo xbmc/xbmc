@@ -156,6 +156,9 @@ public:
   CWinRenderer();
   ~CWinRenderer();
 
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
   void Update() override;
   bool RenderCapture(CRenderCapture* capture) override;
 
