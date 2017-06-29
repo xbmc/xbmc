@@ -42,25 +42,24 @@ CRendererAML::~CRendererAML()
 {
 }
 
-bool CRendererAML::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
   // Save the flags.
   m_iFlags = flags;
-  m_format = format;
 
   // Calculate the input frame aspect ratio.
-  CalculateFrameAspectRatio(d_width, d_height);
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
 
   for (int i = 0 ; i < m_numRenderBuffers ; ++i)
-    m_buffers[i].hwDec = 0;
+    m_buffers[i].videoBuffer = nullptr;
 
   return true;
 }
@@ -68,9 +67,9 @@ bool CRendererAML::Configure(unsigned int width, unsigned int height, unsigned i
 CRenderInfo CRendererAML::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats.push_back(RENDER_FMT_BYPASS);
   info.max_buffer_size = m_numRenderBuffers;
   info.optimal_buffer_size = m_numRenderBuffers;
+  info.opaque_pointer = (void *)this;
   return info;
 }
 
@@ -82,39 +81,29 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-int CRendererAML::GetImage(YuvImage *image, int source, bool readonly)
-{
-  if (image == nullptr)
-    return -1;
-
-  /* take next available buffer */
-  if (source == -1)
-   source = (m_iRenderBuffer + 1) % m_numRenderBuffers;
-
-  return source;
-}
-
-void CRendererAML::AddVideoPictureHW(VideoPicture &picture, int index)
+void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index)
 {
   BUFFER &buf = m_buffers[index];
-  if (picture.hwPic)
-    buf.hwDec = static_cast<CDVDAmlogicInfo*>(picture.hwPic)->Retain();
+  if (picture.videoBuffer)
+  {
+    buf.videoBuffer = picture.videoBuffer;
+    buf.videoBuffer->Acquire();
+  }
 }
 
 void CRendererAML::ReleaseBuffer(int idx)
 {
   BUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
+  if (buf.videoBuffer)
   {
-    CDVDAmlogicInfo *amli = static_cast<CDVDAmlogicInfo *>(buf.hwDec);
+    CAMLVideoBuffer *amli(dynamic_cast<CAMLVideoBuffer*>(buf.videoBuffer));
     if (amli)
     {
-      CAMLCodec *amlcodec;
-      if (!amli->IsRendered() && (amlcodec = amli->getAmlCodec()))
-        amlcodec->ReleaseFrame(amli->GetBufferIndex(), true);
-      SAFE_RELEASE(amli);
+      if (amli->m_amlCodec)
+        amli->m_amlCodec->ReleaseFrame(amli->m_bufferIndex, true);
+      amli->Release();
     }
-    buf.hwDec = NULL;
+    buf.videoBuffer = nullptr;
   }
 }
 
@@ -126,21 +115,6 @@ void CRendererAML::FlipPage(int source)
     m_iRenderBuffer = (m_iRenderBuffer + 1) % m_numRenderBuffers;
 
   return;
-}
-
-bool CRendererAML::IsGuiLayer()
-{
-  return false;
-}
-
-bool CRendererAML::Supports(EINTERLACEMETHOD method)
-{
-  return false;
-}
-
-bool CRendererAML::Supports(ESCALINGMETHOD method)
-{
-  return false;
 }
 
 bool CRendererAML::Supports(ERENDERFEATURE feature)
@@ -156,11 +130,6 @@ bool CRendererAML::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-EINTERLACEMETHOD CRendererAML::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_NONE;
-}
-
 void CRendererAML::Reset()
 {
   m_prevVPts = -1;
@@ -170,17 +139,15 @@ void CRendererAML::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   ManageRenderArea();
 
-  CDVDAmlogicInfo *amli = static_cast<CDVDAmlogicInfo *>(m_buffers[m_iRenderBuffer].hwDec);
-  CAMLCodec *amlcodec = amli ? amli->getAmlCodec() : 0;
-
-  if(amlcodec)
+  CAMLVideoBuffer *amli = dynamic_cast<CAMLVideoBuffer *>(m_buffers[m_iRenderBuffer].videoBuffer);
+  if(amli && amli->m_amlCodec)
   {
-    int pts = amli->GetOmxPts();
+    int pts = amli->m_omxPts;
     if (pts != m_prevVPts)
     {
-      amlcodec->ReleaseFrame(amli->GetBufferIndex());
-      amlcodec->SetVideoRect(m_sourceRect, m_destRect);
-      amli->SetRendered();
+      amli->m_amlCodec->ReleaseFrame(amli->m_bufferIndex);
+      amli->m_amlCodec->SetVideoRect(m_sourceRect, m_destRect);
+      amli->m_amlCodec = nullptr; //Mark frame as processed
       m_prevVPts = pts;
     }
   }
