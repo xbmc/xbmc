@@ -1248,7 +1248,9 @@ void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection>
         else
         {
           referencedSetting = itReferencedSetting->second.setting;
-          m_settings.erase(FindSetting(referenceSetting->GetId()));
+          itReferencedSetting = FindSetting(referenceSetting->GetId());
+          if (itReferencedSetting != m_settings.end())
+            m_settings.erase(itReferencedSetting);
         }
 
         group->ReplaceSetting(referenceSetting, referencedSetting);
