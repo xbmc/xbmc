@@ -42,7 +42,8 @@
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
-#include "xbmc/Application.h"
+#include "Application.h"
+#include "RenderFactory.h"
 #include "cores/IPlayer.h"
 
 #if defined(__ARM_NEON__) && !defined(__LP64__)
@@ -114,6 +115,17 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   UnInit();
 
   ReleaseShaders();
+}
+
+CBaseRenderer* CLinuxRendererGLES::Create(CVideoBuffer *buffer)
+{
+  return new CLinuxRendererGLES();
+}
+
+bool CLinuxRendererGLES::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("default", CLinuxRendererGLES::Create);
+  return true;
 }
 
 bool CLinuxRendererGLES::ValidateRenderTarget()
