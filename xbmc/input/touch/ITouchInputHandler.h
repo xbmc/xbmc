@@ -19,6 +19,7 @@
  *
  */
 
+#include <atomic>
 #include <stdint.h>
 
 #include "input/touch/ITouchInputHandling.h"
@@ -101,5 +102,5 @@ protected:
   /*!
    * \brief DPI value of the touch screen
    */
-  float m_dpi;
+  std::atomic<float> m_dpi;
 };
