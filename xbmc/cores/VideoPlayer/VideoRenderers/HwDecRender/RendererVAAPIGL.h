@@ -31,11 +31,13 @@ public:
   CRendererVAAPI();
   virtual ~CRendererVAAPI();
 
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static void Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
+
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
   virtual bool ConfigChanged(const VideoPicture &picture) override;
-  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
   virtual void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
 
