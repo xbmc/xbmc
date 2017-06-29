@@ -635,13 +635,17 @@ bool CLinuxRendererGLES::UploadTexture(int index)
 
   if (m_format == AV_PIX_FMT_NV12)
   {
-    return UploadNV12Texture(index);
+    ret = UploadNV12Texture(index);
   }
   else
   {
     // default to YV12 texture handlers
-    return UploadYV12Texture(index);
+    ret = UploadYV12Texture(index);
   }
+
+  if (ret)
+    m_buffers[index].loaded = true;
+
   return ret;
 }
 
@@ -660,7 +664,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   // call texture load function
   if (!UploadTexture(index))
     return;
-  
+
   if (RenderHook(index))
     ;
   else if (m_renderMethod & RENDER_GLSL)
@@ -1216,7 +1220,6 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 {
   YUVBUFFER& buf = m_buffers[index];
   YuvImage &im = buf.image;
-  GLuint *pbo = buf.pbo;
 
   if (buf.fields[FIELD_FULL][0].id == 0)
     return;
