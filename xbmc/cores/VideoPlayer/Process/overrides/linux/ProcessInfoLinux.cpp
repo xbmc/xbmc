@@ -53,5 +53,18 @@ void CProcessInfoLinux::SetSwDeinterlacingMethods()
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
+
+std::vector<AVPixelFormat> CProcessInfoLinux::GetRenderFormats()
+{
+  std::vector<AVPixelFormat> formats;
+  formats.push_back(AV_PIX_FMT_YUV420P);
+  formats.push_back(AV_PIX_FMT_YUV420P10);
+  formats.push_back(AV_PIX_FMT_YUV420P16);
+  formats.push_back(AV_PIX_FMT_NV12);
+  formats.push_back(AV_PIX_FMT_YUYV422);
+  formats.push_back(AV_PIX_FMT_UYVY422);
+
+  return formats;
+}
 #endif
 
