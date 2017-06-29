@@ -29,11 +29,14 @@
 #include <d3d11.h>
 #include <Initguid.h>
 #include <windows.h>
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "../DVDCodecUtils.h"
 #include "DXVA.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
@@ -742,6 +745,20 @@ CRenderPicture::~CRenderPicture()
 //-----------------------------------------------------------------------------
 // DXVA Decoder
 //-----------------------------------------------------------------------------
+
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+{
+  if (DXVA::CDecoder::Supports(fmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+    return new CDecoder(processInfo);
+
+  return nullptr;
+}
+
+bool CDecoder::Register()
+{
+  CDVDFactoryCodec::RegisterHWAccel("dxva", CDecoder::Create);
+  return true;
+}
 
 CDecoder::CDecoder(CProcessInfo& processInfo)
  : m_event(true),
