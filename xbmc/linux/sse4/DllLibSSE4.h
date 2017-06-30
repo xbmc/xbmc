@@ -28,7 +28,7 @@ extern "C" {
 class DllLibSSE4Interface
 {
 public:
-  virtual ~DllLibSSE4Interface() {}
+  virtual ~DllLibSSE4Interface() = default;
   virtual void copy_frame(void * pSrc, void * pDest, void * pCacheBlock, UINT width, UINT height, UINT pitch) = 0;
 };
 

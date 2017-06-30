@@ -181,8 +181,7 @@ bool CDBusUtil::TryMethodCall(DBusBusType bus, std::string const& destination, s
   return TryMethodCall(bus, destination.c_str(), object.c_str(), interface.c_str(), method.c_str());
 }
 
-CDBusConnection::CDBusConnection()
-{}
+CDBusConnection::CDBusConnection() = default;
 
 bool CDBusConnection::Connect(DBusBusType bus, bool openPrivate)
 {
