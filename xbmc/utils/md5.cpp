@@ -34,8 +34,7 @@ XBMC::XBMC_MD5::XBMC_MD5(void)
   MD5Init(&m_ctx);
 }
 
-XBMC::XBMC_MD5::~XBMC_MD5(void)
-{}
+XBMC::XBMC_MD5::~XBMC_MD5(void) = default;
 
 void XBMC::XBMC_MD5::append(const void *inBuf, size_t inLen)
 {

@@ -35,11 +35,9 @@ static const char* const logLevelNames[] =
 // s_globals is used as static global with CLog global variables
 #define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
 
-CLog::CLog()
-{}
+CLog::CLog() = default;
 
-CLog::~CLog()
-{}
+CLog::~CLog() = default;
 
 void CLog::Close()
 {

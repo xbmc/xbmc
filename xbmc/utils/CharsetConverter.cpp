@@ -561,9 +561,7 @@ static struct SCharsetMapping
   , { NULL, NULL }
 };
 
-CCharsetConverter::CCharsetConverter()
-{
-}
+CCharsetConverter::CCharsetConverter() = default;
 
 void CCharsetConverter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {

@@ -56,11 +56,9 @@ struct ISO3166_1
 extern const std::array<ISO639, 189> LanguageCodes;
 extern const std::array<ISO3166_1, 245> RegionCodes;
 
-CLangCodeExpander::CLangCodeExpander()
-{ }
+CLangCodeExpander::CLangCodeExpander() = default;
 
-CLangCodeExpander::~CLangCodeExpander()
-{ }
+CLangCodeExpander::~CLangCodeExpander() = default;
 
 void CLangCodeExpander::Clear()
 {

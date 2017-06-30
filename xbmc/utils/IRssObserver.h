@@ -27,7 +27,7 @@ typedef std::vector<character_t> vecText;
 class IRssObserver
 {
 public:
-  virtual ~IRssObserver() {}
+  virtual ~IRssObserver() = default;
 
   virtual void OnFeedUpdate(const vecText &feed) = 0;
   virtual void OnFeedRelease() = 0;

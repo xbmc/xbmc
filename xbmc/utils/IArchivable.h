@@ -26,6 +26,6 @@ class IArchivable
 {
 public:
   virtual void Archive(CArchive& ar) = 0;
-  virtual ~IArchivable() {}
+  virtual ~IArchivable() = default;
 };
 

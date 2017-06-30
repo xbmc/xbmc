@@ -26,7 +26,7 @@ class CVC1BitstreamParser
 {
 public:
   CVC1BitstreamParser();
-  ~CVC1BitstreamParser() {};
+  ~CVC1BitstreamParser() = default;
 
   void Reset();
 

@@ -37,9 +37,7 @@ CAlarmClock::CAlarmClock() : CThread("AlarmClock"), m_bIsRunning(false)
 {
 }
 
-CAlarmClock::~CAlarmClock()
-{
-}
+CAlarmClock::~CAlarmClock() = default;
 
 void CAlarmClock::Start(const std::string& strName, float n_secs, const std::string& strCommand, bool bSilent /* false */, bool bLoop /* false */)
 {

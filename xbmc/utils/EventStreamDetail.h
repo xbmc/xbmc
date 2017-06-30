@@ -32,7 +32,7 @@ public:
   virtual void HandleEvent(const Event& event) = 0;
   virtual void Cancel() = 0;
   virtual bool IsOwnedBy(void* obj) = 0;
-  virtual ~ISubscription() {}
+  virtual ~ISubscription() = default;
 };
 
 template<typename Event, typename Owner>

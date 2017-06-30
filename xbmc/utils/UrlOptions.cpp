@@ -23,8 +23,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-CUrlOptions::CUrlOptions()
-{ }
+CUrlOptions::CUrlOptions() = default;
 
 CUrlOptions::CUrlOptions(const std::string &options, const char *strLead /* = "" */)
   : m_strLead(strLead)
@@ -32,8 +31,7 @@ CUrlOptions::CUrlOptions(const std::string &options, const char *strLead /* = ""
   AddOptions(options);
 }
 
-CUrlOptions::~CUrlOptions()
-{ }
+CUrlOptions::~CUrlOptions() = default;
 
 std::string CUrlOptions::GetOptionsString(bool withLeadingSeparator /* = false */) const
 {

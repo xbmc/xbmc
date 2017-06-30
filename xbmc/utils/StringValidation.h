@@ -32,5 +32,5 @@ public:
   static bool IsTime(const std::string &input, void *data);
 
 private:
-  StringValidation() { }
+  StringValidation() = default;
 };

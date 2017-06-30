@@ -47,7 +47,7 @@ public:
                     m_updatePlayCount(updatePlayCount),
                     m_videoSettings(videoSettings),
                     m_audioSettings(audioSettings) {}
-        ~CSaveFileStateJob() override {}
+        ~CSaveFileStateJob() override = default;
   bool  DoWork() override;
 };
 
