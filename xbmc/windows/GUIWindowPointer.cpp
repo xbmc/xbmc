@@ -36,9 +36,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
   m_renderOrder = RENDER_ORDER_WINDOW_POINTER;
 }
 
-CGUIWindowPointer::~CGUIWindowPointer(void)
-{
-}
+CGUIWindowPointer::~CGUIWindowPointer(void) = default;
 
 void CGUIWindowPointer::SetPointer(int pointer)
 {

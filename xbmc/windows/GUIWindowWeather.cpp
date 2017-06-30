@@ -63,8 +63,7 @@ CGUIWindowWeather::CGUIWindowWeather(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIWindowWeather::~CGUIWindowWeather(void)
-{}
+CGUIWindowWeather::~CGUIWindowWeather(void) = default;
 
 bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 {

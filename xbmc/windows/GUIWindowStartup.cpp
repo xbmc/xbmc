@@ -28,9 +28,7 @@ CGUIWindowStartup::CGUIWindowStartup(void)
 {
 }
 
-CGUIWindowStartup::~CGUIWindowStartup(void)
-{
-}
+CGUIWindowStartup::~CGUIWindowStartup(void) = default;
 
 bool CGUIWindowStartup::OnAction(const CAction &action)
 {

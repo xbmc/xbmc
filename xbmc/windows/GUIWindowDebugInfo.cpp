@@ -47,9 +47,7 @@ CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   m_renderOrder = RENDER_ORDER_WINDOW_DEBUG;
 }
 
-CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void)
-{
-}
+CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void) = default;
 
 void CGUIWindowDebugInfo::UpdateVisibility()
 {
