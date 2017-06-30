@@ -371,22 +371,23 @@ void Xcddb::addTitle(const char *buffer)
   if (buffer[7] == '=')
   { //Einstellig
     trk_nr = buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    strncpy(value, buffer + 8, sizeof(value) - 1);
   }
   else if (buffer[8] == '=')
   { //Zweistellig
     trk_nr = ((buffer[6] - 48) * 10) + buffer[7] - 47;
-    strcpy(value, buffer + 9);
+    strncpy(value, buffer + 9, sizeof(value) - 1);
   }
   else if (buffer[9] == '=')
   { //Dreistellig
     trk_nr = ((buffer[6] - 48) * 100) + ((buffer[7] - 48) * 10) + buffer[8] - 47;
-    strcpy(value, buffer + 10);
+    strncpy(value, buffer + 10, sizeof(value) - 1);
   }
   else
   {
     return ;
   }
+  value[sizeof(value) - 1] = '\0';
 
   // track artist" / "track title
   std::vector<std::string> values = StringUtils::Split(value, " / ");
