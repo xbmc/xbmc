@@ -30,8 +30,7 @@ CGUIDialogTextViewer::CGUIDialogTextViewer(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogTextViewer::~CGUIDialogTextViewer(void)
-{}
+CGUIDialogTextViewer::~CGUIDialogTextViewer(void) = default;
 
 bool CGUIDialogTextViewer::OnAction(const CAction &action)
 {

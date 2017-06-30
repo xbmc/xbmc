@@ -30,9 +30,7 @@ CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
   m_bCanceled = false;
 }
 
-CGUIDialogYesNo::~CGUIDialogYesNo()
-{
-}
+CGUIDialogYesNo::~CGUIDialogYesNo() = default;
 
 bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 {

@@ -28,8 +28,7 @@ CGUIDialogOK::CGUIDialogOK(void)
 {
 }
 
-CGUIDialogOK::~CGUIDialogOK(void)
-{}
+CGUIDialogOK::~CGUIDialogOK(void) = default;
 
 bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 {

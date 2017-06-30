@@ -78,9 +78,7 @@ CGUIDialogContextMenu::CGUIDialogContextMenu(void)
   m_coordY = 0.0f;
 }
 
-CGUIDialogContextMenu::~CGUIDialogContextMenu(void)
-{
-}
+CGUIDialogContextMenu::~CGUIDialogContextMenu(void) = default;
 
 bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
 {

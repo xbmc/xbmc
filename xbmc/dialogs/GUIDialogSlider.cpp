@@ -36,9 +36,7 @@ CGUIDialogSlider::CGUIDialogSlider(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogSlider::~CGUIDialogSlider(void)
-{
-}
+CGUIDialogSlider::~CGUIDialogSlider(void) = default;
 
 bool CGUIDialogSlider::OnAction(const CAction &action)
 {
