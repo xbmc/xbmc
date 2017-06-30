@@ -61,7 +61,7 @@ namespace XbmcCommons
   class ILogger
   {
   public:
-    virtual ~ILogger() {}
+    virtual ~ILogger() = default;
     void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...) PARAM3_PRINTF_FORMAT;
 
     virtual void log(int loglevel, IN_STRING const char* message) = 0;
