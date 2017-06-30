@@ -23,7 +23,7 @@
 class IPlayerCallback
 {
 public:
-  virtual ~IPlayerCallback() {}
+  virtual ~IPlayerCallback() = default;
   virtual void OnPlayBackEnded() = 0;
   virtual void OnPlayBackStarted() = 0;
   virtual void OnPlayBackPaused() {};
