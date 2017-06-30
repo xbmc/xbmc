@@ -32,8 +32,8 @@ class CVariant;
 class CTextureRule : public CDatabaseQueryRule
 {
 public:
-  CTextureRule() {};
-  ~CTextureRule() override {};
+  CTextureRule() = default;
+  ~CTextureRule() override = default;
 
   static void GetAvailableFields(std::vector<std::string> &fieldList);
 protected:

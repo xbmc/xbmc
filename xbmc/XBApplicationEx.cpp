@@ -49,9 +49,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_renderGUI = false;
 }
 
-CXBApplicationEx::~CXBApplicationEx()
-{
-}
+CXBApplicationEx::~CXBApplicationEx() = default;
 
 /* Destroy the app */
 VOID CXBApplicationEx::Destroy()

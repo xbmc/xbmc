@@ -66,13 +66,9 @@ void CThumbLoader::SetCachedImage(const CFileItem &item, const std::string &type
   }
 }
 
-CProgramThumbLoader::CProgramThumbLoader()
-{
-}
+CProgramThumbLoader::CProgramThumbLoader() = default;
 
-CProgramThumbLoader::~CProgramThumbLoader()
-{
-}
+CProgramThumbLoader::~CProgramThumbLoader() = default;
 
 bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 {

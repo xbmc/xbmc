@@ -25,7 +25,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
-CInfoScanner::~CInfoScanner() {}
+CInfoScanner::~CInfoScanner() = default;
 
 bool CInfoScanner::HasNoMedia(const std::string &strDirectory) const
 {

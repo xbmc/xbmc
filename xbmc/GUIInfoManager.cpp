@@ -127,7 +127,7 @@ class CSetCurrentItemJob : public CJob
   CFileItemPtr m_itemCurrentFile;
 public:
   CSetCurrentItemJob(const CFileItemPtr item) : m_itemCurrentFile(item) { }
-  ~CSetCurrentItemJob(void) override {}
+  ~CSetCurrentItemJob(void) override = default;
 
   bool DoWork(void) override
   {

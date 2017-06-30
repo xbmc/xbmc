@@ -97,7 +97,7 @@ public:
   CDateTime(const time_t& time);
   CDateTime(const tm& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
-  ~CDateTime() override {}
+  ~CDateTime() override = default;
 
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();

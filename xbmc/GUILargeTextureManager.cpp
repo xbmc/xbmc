@@ -136,13 +136,9 @@ void CGUILargeTextureManager::CLargeTexture::SetTexture(CBaseTexture* texture)
     m_texture.Set(texture, texture->GetWidth(), texture->GetHeight());
 }
 
-CGUILargeTextureManager::CGUILargeTextureManager()
-{
-}
+CGUILargeTextureManager::CGUILargeTextureManager() = default;
 
-CGUILargeTextureManager::~CGUILargeTextureManager()
-{
-}
+CGUILargeTextureManager::~CGUILargeTextureManager() = default;
 
 void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {

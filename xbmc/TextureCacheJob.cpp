@@ -43,9 +43,7 @@ CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &ol
 {
 }
 
-CTextureCacheJob::~CTextureCacheJob()
-{
-}
+CTextureCacheJob::~CTextureCacheJob() = default;
 
 bool CTextureCacheJob::operator==(const CJob* job) const
 {
