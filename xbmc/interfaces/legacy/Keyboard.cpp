@@ -37,7 +37,7 @@ namespace XBMCAddon
     {
     }
 
-    Keyboard::~Keyboard() {}
+    Keyboard::~Keyboard() = default;
 
     void Keyboard::doModal(int autoclose)
     {

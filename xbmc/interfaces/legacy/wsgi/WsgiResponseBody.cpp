@@ -28,8 +28,7 @@ namespace XBMCAddon
       : m_data()
     { }
 
-    WsgiResponseBody::~WsgiResponseBody()
-    { }
+    WsgiResponseBody::~WsgiResponseBody() = default;
 
     void WsgiResponseBody::operator()(const String& data)
     {

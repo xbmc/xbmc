@@ -25,7 +25,7 @@
 namespace XBMCAddon
 {
   // just need a place for the vtab
-  LanguageHook::~LanguageHook() {}
+  LanguageHook::~LanguageHook() = default;
 
   static XbmcThreads::ThreadLocal<LanguageHook> addonLanguageHookTls;
   static bool threadLocalInitialized = false;

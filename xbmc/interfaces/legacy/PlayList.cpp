@@ -44,7 +44,7 @@ namespace XBMCAddon
       iPlayList = playList;
     }
 
-    PlayList::~PlayList()  { }
+    PlayList::~PlayList() = default;
 
     void PlayList::add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem, int index)
     {
