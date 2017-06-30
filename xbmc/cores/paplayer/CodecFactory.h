@@ -27,8 +27,8 @@ class CFileItem;
 class CodecFactory
 {
 public:
-  CodecFactory() {}
-  virtual ~CodecFactory() {}
+  CodecFactory() = default;
+  virtual ~CodecFactory() = default;
   static ICodec* CreateCodec(const std::string &type);
   static ICodec* CreateCodecDemux(const CFileItem& file, unsigned int filecache);
 };
