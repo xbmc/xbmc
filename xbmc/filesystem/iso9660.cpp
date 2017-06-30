@@ -738,7 +738,8 @@ HANDLE iso9660::OpenFile(const char *filename)
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 
-  strcpy(work, filename );
+  strncpy(work, filename, sizeof(work) - 1);
+  work[sizeof(work) - 1] = '\0';
   pointer2 = work;
 
   while ( strpbrk(pointer2 + 1, "\\" ) )
