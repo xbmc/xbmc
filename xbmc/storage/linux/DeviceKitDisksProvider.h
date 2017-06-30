@@ -30,7 +30,7 @@ class CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDevice(const char *DeviceKitUDI);
-  virtual ~CDeviceKitDiskDevice() { }
+  virtual ~CDeviceKitDiskDevice() = default;
 
   virtual void Update() = 0;
 
@@ -52,7 +52,7 @@ class CDeviceKitDiskDeviceNewAPI : public CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDeviceNewAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
-  ~CDeviceKitDiskDeviceNewAPI() override { }
+  ~CDeviceKitDiskDeviceNewAPI() override = default;
 
   void Update() override;
 };
@@ -61,7 +61,7 @@ class CDeviceKitDiskDeviceOldAPI : public CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDeviceOldAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
-  ~CDeviceKitDiskDeviceOldAPI() override { }
+  ~CDeviceKitDiskDeviceOldAPI() override = default;
 
   void Update() override;
 };

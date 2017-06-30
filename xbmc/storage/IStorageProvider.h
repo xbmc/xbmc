@@ -31,7 +31,7 @@
 class IStorageEventsCallback
 {
 public:
-  virtual ~IStorageEventsCallback() { }
+  virtual ~IStorageEventsCallback() = default;
 
   virtual void OnStorageAdded(const std::string &label, const std::string &path) = 0;
   virtual void OnStorageSafelyRemoved(const std::string &label) = 0;
@@ -41,7 +41,7 @@ public:
 class IStorageProvider
 {
 public:
-  virtual ~IStorageProvider() { }
+  virtual ~IStorageProvider() = default;
 
   virtual void Initialize() = 0;
   virtual void Stop() = 0;

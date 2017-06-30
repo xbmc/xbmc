@@ -30,7 +30,7 @@ class CUDiskDevice
 {
 public:
   CUDiskDevice(const char *DeviceKitUDI);
-  ~CUDiskDevice() { }
+  ~CUDiskDevice() = default;
 
   void Update();
 

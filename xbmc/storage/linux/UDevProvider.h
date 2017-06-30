@@ -33,7 +33,7 @@ class CUDevProvider : public IStorageProvider
 {
 public:
   CUDevProvider();
-  ~CUDevProvider() override { }
+  ~CUDevProvider() override = default;
 
   void Initialize() override;
   void Stop() override;

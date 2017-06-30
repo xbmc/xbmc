@@ -253,9 +253,7 @@ CCdIoSupport::CCdIoSupport()
   m_nStartTrack = 0;
 }
 
-CCdIoSupport::~CCdIoSupport()
-{
-}
+CCdIoSupport::~CCdIoSupport() = default;
 
 bool CCdIoSupport::EjectTray()
 {
