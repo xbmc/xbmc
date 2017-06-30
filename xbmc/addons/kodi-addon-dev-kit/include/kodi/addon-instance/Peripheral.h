@@ -325,7 +325,7 @@ namespace addon
       SetAddonStruct(instance);
     }
 
-    ~CInstancePeripheral() override { }
+    ~CInstancePeripheral() override = default;
 
     /// @name Peripheral operations
     ///{
