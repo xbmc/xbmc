@@ -72,8 +72,8 @@ class IAE
 {
 protected:
 
-  IAE() {}
-  virtual ~IAE() {}
+  IAE() = default;
+  virtual ~IAE() = default;
 
   /**
    * Returns true when it should be possible to initialize this engine, if it returns false

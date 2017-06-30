@@ -63,8 +63,8 @@ class IAEStream
 {
 protected:
   friend class IAE;
-  IAEStream() {}
-  virtual ~IAEStream() {}
+  IAEStream() = default;
+  virtual ~IAEStream() = default;
 
 public:
   /**

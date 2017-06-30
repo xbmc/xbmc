@@ -34,12 +34,12 @@ public:
   /**
    * Constructor
    */
-  IAEEncoder() {};
+  IAEEncoder() = default;
 
   /**
    * Destructor
    */
-  virtual ~IAEEncoder() {};
+  virtual ~IAEEncoder() = default;
 
   /**
    * Return true if the supplied format is compatible with the current open encoder.
