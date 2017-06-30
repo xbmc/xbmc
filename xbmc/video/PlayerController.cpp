@@ -40,9 +40,7 @@ CPlayerController::CPlayerController()
 {
 }
 
-CPlayerController::~CPlayerController()
-{
-}
+CPlayerController::~CPlayerController() = default;
 
 CPlayerController& CPlayerController::GetInstance()
 {

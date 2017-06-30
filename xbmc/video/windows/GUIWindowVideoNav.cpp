@@ -85,9 +85,7 @@ CGUIWindowVideoNav::CGUIWindowVideoNav(void)
   m_thumbLoader.SetObserver(this);
 }
 
-CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
-{
-}
+CGUIWindowVideoNav::~CGUIWindowVideoNav(void) = default;
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {

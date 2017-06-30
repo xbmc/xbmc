@@ -37,9 +37,7 @@ CGUIDialogTeletext::CGUIDialogTeletext()
   m_renderOrder = RENDER_ORDER_DIALOG_TELETEXT;
 }
 
-CGUIDialogTeletext::~CGUIDialogTeletext()
-{
-}
+CGUIDialogTeletext::~CGUIDialogTeletext() = default;
 
 bool CGUIDialogTeletext::OnAction(const CAction& action)
 {

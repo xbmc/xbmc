@@ -71,8 +71,7 @@ CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
     m_dspEnabled(false)
 { }
 
-CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings()
-{ }
+CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings() = default;
 
 void CGUIDialogAudioSubtitleSettings::FrameMove()
 {

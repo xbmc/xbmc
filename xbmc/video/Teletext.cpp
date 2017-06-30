@@ -461,9 +461,7 @@ CTeletextDecoder::CTeletextDecoder()
   m_YOffset = 0;
 }
 
-CTeletextDecoder::~CTeletextDecoder()
-{
-}
+CTeletextDecoder::~CTeletextDecoder() = default;
 
 bool CTeletextDecoder::HandleAction(const CAction &action)
 {

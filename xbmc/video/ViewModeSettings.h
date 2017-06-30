@@ -31,7 +31,7 @@ class CViewModeSettings
 {
 private:
   CViewModeSettings();
-  ~CViewModeSettings() {};
+  ~CViewModeSettings() = default;
 
 public:
   /** Gets the next view mode for quick cycling through the modes

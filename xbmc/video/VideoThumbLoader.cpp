@@ -68,9 +68,7 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item,
     m_item.SetPath(CStackDirectory::GetFirstStackedFile(m_item.GetPath()));
 }
 
-CThumbExtractor::~CThumbExtractor()
-{
-}
+CThumbExtractor::~CThumbExtractor() = default;
 
 bool CThumbExtractor::operator==(const CJob* job) const
 {

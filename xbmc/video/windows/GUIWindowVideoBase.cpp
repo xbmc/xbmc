@@ -93,9 +93,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const std::string &xmlFile)
   m_dlgProgress = NULL;
 }
 
-CGUIWindowVideoBase::~CGUIWindowVideoBase()
-{
-}
+CGUIWindowVideoBase::~CGUIWindowVideoBase() = default;
 
 bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
