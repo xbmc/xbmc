@@ -28,8 +28,8 @@
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPJsonRpcHandler() { }
-  ~CHTTPJsonRpcHandler() override { }
+  CHTTPJsonRpcHandler() = default;
+  ~CHTTPJsonRpcHandler() override = default;
   
   // implementations of IHTTPRequestHandler
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPJsonRpcHandler(request); }

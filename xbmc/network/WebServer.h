@@ -39,7 +39,7 @@ class CWebServer
 {
 public:
   CWebServer();
-  virtual ~CWebServer() { }
+  virtual ~CWebServer() = default;
 
   bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();

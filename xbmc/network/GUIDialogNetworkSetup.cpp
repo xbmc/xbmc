@@ -51,9 +51,7 @@ CGUIDialogNetworkSetup::CGUIDialogNetworkSetup(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
-{
-}
+CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup() = default;
 
 bool CGUIDialogNetworkSetup::OnBack(int actionID)
 {

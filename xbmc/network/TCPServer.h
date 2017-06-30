@@ -63,7 +63,7 @@ namespace JSONRPC
       //when adding a member variable, make sure to copy it in CTCPClient::Copy
       CTCPClient(const CTCPClient& client);
       CTCPClient& operator=(const CTCPClient& client);
-      ~CTCPClient() override { };
+      ~CTCPClient() override = default;
 
       int GetPermissionFlags() override;
       int GetAnnouncementFlags() override;
