@@ -677,7 +677,8 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 #ifdef TARGET_WINDOWS
     wcscpy_s(wfdFile->cFileName, MAX_PATH, KODI::PLATFORM::WINDOWS::ToW(m_searchpointer->name).c_str());
 #else
-    strcpy(wfdFile->cFileName, m_searchpointer->name );
+    strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1);
+    wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = '\0';
 #endif
 
     if ( m_searchpointer->type == 2 )
