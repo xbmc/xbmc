@@ -63,11 +63,9 @@ using namespace XFILE;
 */
 
 
-CPlayListXML::CPlayListXML(void)
-{}
+CPlayListXML::CPlayListXML(void) = default;
 
-CPlayListXML::~CPlayListXML(void)
-{}
+CPlayListXML::~CPlayListXML(void) = default;
 
 
 static inline std::string GetString( const TiXmlElement* pRootElement, const char *tagName )

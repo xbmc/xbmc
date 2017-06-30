@@ -35,7 +35,7 @@ class CSmartPlaylistRule : public CDatabaseQueryRule
 {
 public:
   CSmartPlaylistRule();
-  ~CSmartPlaylistRule() override { }
+  ~CSmartPlaylistRule() override = default;
 
   std::string GetLocalizedRule() const;
 
@@ -83,8 +83,8 @@ private:
 class CSmartPlaylistRuleCombination : public CDatabaseQueryRuleCombination
 {
 public:
-  CSmartPlaylistRuleCombination() { }
-  ~CSmartPlaylistRuleCombination() override { }
+  CSmartPlaylistRuleCombination() = default;
+  ~CSmartPlaylistRuleCombination() override = default;
 
   std::string GetWhereClause(const CDatabase &db,
                              const std::string& strType,
@@ -99,7 +99,7 @@ class CSmartPlaylist : public IDatabaseQueryRuleFactory
 {
 public:
   CSmartPlaylist();
-  virtual ~CSmartPlaylist() { }
+  virtual ~CSmartPlaylist() = default;
 
   bool Load(const CURL& url);
   bool Load(const std::string &path);
