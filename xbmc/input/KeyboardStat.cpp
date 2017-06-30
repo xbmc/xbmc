@@ -49,9 +49,7 @@ CKeyboardStat::CKeyboardStat()
   m_lastKeyTime = 0;
 }
 
-CKeyboardStat::~CKeyboardStat()
-{
-}
+CKeyboardStat::~CKeyboardStat() = default;
 
 void CKeyboardStat::Initialize()
 {

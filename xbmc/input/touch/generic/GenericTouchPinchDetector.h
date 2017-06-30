@@ -34,7 +34,7 @@ public:
   CGenericTouchPinchDetector(ITouchActionHandler *handler, float dpi)
     : IGenericTouchGestureDetector(handler, dpi)
   { }
-  ~CGenericTouchPinchDetector() override { }
+  ~CGenericTouchPinchDetector() override = default;
 
   bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
   bool OnTouchUp(unsigned int index, const Pointer &pointer) override;

@@ -33,9 +33,7 @@ CMouseStat::CMouseStat()
   m_Key = KEY_MOUSE_NOOP;
 }
 
-CMouseStat::~CMouseStat()
-{
-}
+CMouseStat::~CMouseStat() = default;
 
 void CMouseStat::Initialize()
 {

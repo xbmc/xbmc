@@ -42,7 +42,7 @@ typedef enum {
 class ITouchActionHandler
 {
 public:
-  virtual ~ITouchActionHandler() { }
+  virtual ~ITouchActionHandler() = default;
 
   /*!
    * \brief A touch action has been aborted

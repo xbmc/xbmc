@@ -32,7 +32,7 @@ class CGenericTouchSwipeDetector : public IGenericTouchGestureDetector
 {
 public:
   CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi);
-  ~CGenericTouchSwipeDetector() override { }
+  ~CGenericTouchSwipeDetector() override = default;
 
   bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
   bool OnTouchUp(unsigned int index, const Pointer &pointer) override;
