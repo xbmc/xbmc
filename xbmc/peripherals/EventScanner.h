@@ -31,7 +31,7 @@ namespace PERIPHERALS
   class IEventScannerCallback
   {
   public:
-    virtual ~IEventScannerCallback(void) { }
+    virtual ~IEventScannerCallback(void) = default;
 
     virtual void ProcessEvents(void) = 0;
   };
@@ -52,7 +52,7 @@ namespace PERIPHERALS
   public:
     CEventScanner(IEventScannerCallback* callback);
 
-    ~CEventScanner(void) override { }
+    ~CEventScanner(void) override = default;
 
     void Start(void);
     void Stop(void);

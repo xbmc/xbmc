@@ -33,7 +33,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBusApplication(CPeripherals& manager);
-    ~CPeripheralBusApplication(void) override { }
+    ~CPeripheralBusApplication(void) override = default;
 
     // implementation of CPeripheralBus
     void Initialise(void) override;
