@@ -23,7 +23,7 @@
 class IPowerEventsCallback
 {
 public:
-  virtual ~IPowerEventsCallback() { }
+  virtual ~IPowerEventsCallback() = default;
 
   virtual void OnSleep() = 0;
   virtual void OnWake() = 0;
@@ -34,7 +34,7 @@ public:
 class IPowerSyscall
 {
 public:
-  virtual ~IPowerSyscall() {};
+  virtual ~IPowerSyscall() = default;
   virtual bool Powerdown()    = 0;
   virtual bool Suspend()      = 0;
   virtual bool Hibernate()    = 0;

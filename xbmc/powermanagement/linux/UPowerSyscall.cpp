@@ -36,9 +36,7 @@ CUPowerSource::CUPowerSource(const char *powerSource)
   Update();
 }
 
-CUPowerSource::~CUPowerSource() 
-{ 
-}
+CUPowerSource::~CUPowerSource() = default;
 
 void CUPowerSource::Update()
 {
