@@ -58,8 +58,7 @@ CGUIDialogLockSettings::CGUIDialogLockSettings()
       m_buttonLabel(20091)
 { }
 
-CGUIDialogLockSettings::~CGUIDialogLockSettings()
-{ }
+CGUIDialogLockSettings::~CGUIDialogLockSettings() = default;
 
 bool CGUIDialogLockSettings::ShowAndGetLock(LockType &lockMode, std::string &password, int header /* = 20091 */)
 {
