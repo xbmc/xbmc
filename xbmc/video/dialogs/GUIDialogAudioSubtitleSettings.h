@@ -32,10 +32,10 @@ class CGUIDialogAudioSubtitleSettings : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogAudioSubtitleSettings();
-  virtual ~CGUIDialogAudioSubtitleSettings();
+  ~CGUIDialogAudioSubtitleSettings() override;
 
   // specialization of CGUIWindow
-  virtual void FrameMove();
+  void FrameMove() override;
 
   static std::string FormatDelay(float value, float interval);
   static std::string FormatDecibel(float value);
@@ -45,16 +45,16 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
-  virtual void SetupView();
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override;
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  void InitializeSettings() override;
 
   bool SupportsAudioFeature(int feature);
   bool SupportsSubtitleFeature(int feature);

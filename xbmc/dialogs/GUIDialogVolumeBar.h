@@ -26,7 +26,7 @@ class CGUIDialogVolumeBar : public CGUIDialog
 {
 public:
   CGUIDialogVolumeBar(void);
-  virtual ~CGUIDialogVolumeBar(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  ~CGUIDialogVolumeBar(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
 };

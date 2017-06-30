@@ -98,8 +98,8 @@ public:
   void InstallUpdatesAndWait();
   void InstallUpdates();
 
-  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
-  void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
+  void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) override;
 
   class CDownloadJob
   {
@@ -120,7 +120,7 @@ private:
   CAddonInstaller();
   CAddonInstaller(const CAddonInstaller&);
   CAddonInstaller const& operator=(CAddonInstaller const&);
-  virtual ~CAddonInstaller();
+  ~CAddonInstaller() override;
 
   /*! \brief Install an addon from a repository or zip
    \param addon the AddonPtr describing the addon
@@ -157,7 +157,7 @@ public:
   CAddonInstallJob(const ADDON::AddonPtr& addon, const ADDON::AddonPtr& repo,
       const std::string& hash, bool isAutoUpdate);
 
-  virtual bool DoWork();
+  bool DoWork() override;
 
   /*! \brief Find the add-on and itshash for the given add-on ID
    *  \param addonID ID of the add-on to find
@@ -196,7 +196,7 @@ class CAddonUnInstallJob : public CFileOperationJob
 public:
   CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
-  virtual bool DoWork();
+  bool DoWork() override;
 
 private:
   void ClearFavourites();

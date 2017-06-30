@@ -27,13 +27,13 @@ class CGUIDialogTextViewer :
 {
 public:
   CGUIDialogTextViewer(void);
-  virtual ~CGUIDialogTextViewer(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  ~CGUIDialogTextViewer(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
   void SetText(const std::string& strText) { m_strText = strText; }
   void SetHeading(const std::string& strHeading) { m_strHeading = strHeading; }
 protected:
-  virtual void OnDeinitWindow(int nextWindowID);
+  void OnDeinitWindow(int nextWindowID) override;
 
   std::string m_strText;
   std::string m_strHeading;

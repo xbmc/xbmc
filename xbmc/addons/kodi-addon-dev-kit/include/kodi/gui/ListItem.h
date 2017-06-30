@@ -122,7 +122,7 @@ namespace gui
     /// \ingroup cpp_kodi_gui_CListItem
     /// @brief Class destructor
     ///
-    virtual ~CListItem()
+    ~CListItem() override
     {
       m_interface->kodi_gui->listItem->destroy(m_interface->kodiBase, m_controlHandle);
     }

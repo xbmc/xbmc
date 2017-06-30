@@ -30,17 +30,17 @@ class CMusicInfoLoader : public CBackgroundInfoLoader
 {
 public:
   CMusicInfoLoader();
-  virtual ~CMusicInfoLoader();
+  ~CMusicInfoLoader() override;
 
   void UseCacheOnHD(const std::string& strFileName);
-  virtual bool LoadItem(CFileItem* pItem);
-  virtual bool LoadItemCached(CFileItem* pItem);
-  virtual bool LoadItemLookup(CFileItem* pItem);
+  bool LoadItem(CFileItem* pItem) override;
+  bool LoadItemCached(CFileItem* pItem) override;
+  bool LoadItemLookup(CFileItem* pItem) override;
   static bool LoadAdditionalTagInfo(CFileItem* pItem);
 
 protected:
-  virtual void OnLoaderStart();
-  virtual void OnLoaderFinish();
+  void OnLoaderStart() override;
+  void OnLoaderFinish() override;
   void LoadCache(const std::string& strFileName, CFileItemList& items);
   void SaveCache(const std::string& strFileName, CFileItemList& items);
 protected:

@@ -52,37 +52,37 @@ class CDeviceKitDiskDeviceNewAPI : public CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDeviceNewAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
-  virtual ~CDeviceKitDiskDeviceNewAPI() { }
+  ~CDeviceKitDiskDeviceNewAPI() override { }
 
-  virtual void Update();
+  void Update() override;
 };
 
 class CDeviceKitDiskDeviceOldAPI : public CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDeviceOldAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
-  virtual ~CDeviceKitDiskDeviceOldAPI() { }
+  ~CDeviceKitDiskDeviceOldAPI() override { }
 
-  virtual void Update();
+  void Update() override;
 };
 
 class CDeviceKitDisksProvider : public IStorageProvider
 {
 public:
   CDeviceKitDisksProvider();
-  virtual ~CDeviceKitDisksProvider();
+  ~CDeviceKitDisksProvider() override;
 
-  virtual void Initialize();
-  virtual void Stop() { }
+  void Initialize() override;
+  void Stop() override { }
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDisks(localDrives, false); }
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives) { GetDisks(removableDrives, true); }
+  void GetLocalDrives(VECSOURCES &localDrives) override { GetDisks(localDrives, false); }
+  void GetRemovableDrives(VECSOURCES &removableDrives) override { GetDisks(removableDrives, true); }
 
-  virtual bool Eject(const std::string& mountpath);
+  bool Eject(const std::string& mountpath) override;
 
-  virtual std::vector<std::string> GetDiskUsage();
+  std::vector<std::string> GetDiskUsage() override;
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+  bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 
   static bool HasDeviceKitDisks();
 private:

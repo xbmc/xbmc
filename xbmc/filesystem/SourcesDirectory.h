@@ -32,10 +32,10 @@ namespace XFILE
   {
   public:
     CSourcesDirectory(void);
-    virtual ~CSourcesDirectory(void);
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+    ~CSourcesDirectory(void) override;
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool GetDirectory(const VECSOURCES &sources, CFileItemList &items);
-    virtual bool Exists(const CURL& url);
-    virtual bool AllowAll() const { return true; }
+    bool Exists(const CURL& url) override;
+    bool AllowAll() const override { return true; }
   };
 }

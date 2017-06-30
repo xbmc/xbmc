@@ -28,7 +28,7 @@ class CHTTPWebinterfaceHandler : public CHTTPFileHandler
 {
 public:
   CHTTPWebinterfaceHandler() { }
-  virtual ~CHTTPWebinterfaceHandler() { }
+  ~CHTTPWebinterfaceHandler() override { }
   
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPWebinterfaceHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

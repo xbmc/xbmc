@@ -67,18 +67,18 @@ class XBPython :
 {
 public:
   XBPython();
-  virtual ~XBPython();
-  virtual void OnPlayBackEnded();
-  virtual void OnPlayBackStarted();
-  virtual void OnPlayBackPaused();
-  virtual void OnPlayBackResumed();
-  virtual void OnPlayBackStopped();
-  virtual void OnPlayBackSpeedChanged(int iSpeed);
-  virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset);
-  virtual void OnPlayBackSeekChapter(int iChapter);
-  virtual void OnQueueNextItem();
+  ~XBPython() override;
+  void OnPlayBackEnded() override;
+  void OnPlayBackStarted() override;
+  void OnPlayBackPaused() override;
+  void OnPlayBackResumed() override;
+  void OnPlayBackStopped() override;
+  void OnPlayBackSpeedChanged(int iSpeed) override;
+  void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) override;
+  void OnPlayBackSeekChapter(int iChapter) override;
+  void OnQueueNextItem() override;
 
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
   void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
@@ -94,15 +94,15 @@ public:
   void OnCleanFinished(const std::string &library);
   void OnNotification(const std::string &sender, const std::string &method, const std::string &data);
 
-  virtual void Process();
-  virtual void PulseGlobalEvent();
-  virtual void Uninitialize();
-  virtual bool OnScriptInitialized(ILanguageInvoker *invoker);
-  virtual void OnScriptStarted(ILanguageInvoker *invoker);
-  virtual void OnScriptAbortRequested(ILanguageInvoker *invoker);
-  virtual void OnScriptEnded(ILanguageInvoker *invoker);
-  virtual void OnScriptFinalized(ILanguageInvoker *invoker);
-  virtual ILanguageInvoker* CreateInvoker();
+  void Process() override;
+  void PulseGlobalEvent() override;
+  void Uninitialize() override;
+  bool OnScriptInitialized(ILanguageInvoker *invoker) override;
+  void OnScriptStarted(ILanguageInvoker *invoker) override;
+  void OnScriptAbortRequested(ILanguageInvoker *invoker) override;
+  void OnScriptEnded(ILanguageInvoker *invoker) override;
+  void OnScriptFinalized(ILanguageInvoker *invoker) override;
+  ILanguageInvoker* CreateInvoker() override;
 
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 

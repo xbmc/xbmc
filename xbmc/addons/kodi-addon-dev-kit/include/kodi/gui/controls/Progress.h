@@ -73,7 +73,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CProgress
     /// @brief Destructor
     ///
-    virtual ~CProgress() = default;
+    ~CProgress() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

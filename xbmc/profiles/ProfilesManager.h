@@ -33,9 +33,9 @@ class CProfilesManager : public ISettingsHandler
 public:
   static CProfilesManager& GetInstance();
 
-  virtual void OnSettingsLoaded() override;
-  virtual void OnSettingsSaved() const override;
-  virtual void OnSettingsCleared() override;
+  void OnSettingsLoaded() override;
+  void OnSettingsSaved() const override;
+  void OnSettingsCleared() override;
 
   bool Load();
   /*! \brief Load the user profile information from disk
@@ -181,7 +181,7 @@ protected:
   CProfilesManager();
   CProfilesManager(const CProfilesManager&);
   CProfilesManager const& operator=(CProfilesManager const&);
-  virtual ~CProfilesManager();
+  ~CProfilesManager() override;
 
 private:
   /*! \brief Set the current profile id and update the special://profile path

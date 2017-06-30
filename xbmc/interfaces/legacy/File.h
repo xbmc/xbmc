@@ -71,7 +71,7 @@ namespace XBMCAddon
           file->Open(filepath, XFILE::READ_NO_CACHE);
       }
 
-      inline ~File() { delete file; }
+      inline ~File() override { delete file; }
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

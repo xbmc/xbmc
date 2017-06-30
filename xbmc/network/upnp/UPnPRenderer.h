@@ -42,33 +42,33 @@ public:
                   const char*  uuid = NULL,
                   unsigned int port = 0);
 
-    virtual ~CUPnPRenderer();
+    ~CUPnPRenderer() override;
 
-    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
     void UpdateState();
 
     // Http server handler
-    virtual NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request,
+    NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
-                                             NPT_HttpResponse&             response);
+                                             NPT_HttpResponse&             response) override;
 
     // AVTransport methods
-    virtual NPT_Result OnNext(PLT_ActionReference& action);
-    virtual NPT_Result OnPause(PLT_ActionReference& action);
-    virtual NPT_Result OnPlay(PLT_ActionReference& action);
-    virtual NPT_Result OnPrevious(PLT_ActionReference& action);
-    virtual NPT_Result OnStop(PLT_ActionReference& action);
-    virtual NPT_Result OnSeek(PLT_ActionReference& action);
-    virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action);
-    virtual NPT_Result OnSetNextAVTransportURI(PLT_ActionReference& action);
+    NPT_Result OnNext(PLT_ActionReference& action) override;
+    NPT_Result OnPause(PLT_ActionReference& action) override;
+    NPT_Result OnPlay(PLT_ActionReference& action) override;
+    NPT_Result OnPrevious(PLT_ActionReference& action) override;
+    NPT_Result OnStop(PLT_ActionReference& action) override;
+    NPT_Result OnSeek(PLT_ActionReference& action) override;
+    NPT_Result OnSetAVTransportURI(PLT_ActionReference& action) override;
+    NPT_Result OnSetNextAVTransportURI(PLT_ActionReference& action) override;
 
     // RenderingControl methods
-    virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
-    virtual NPT_Result OnSetMute(PLT_ActionReference& action);
+    NPT_Result OnSetVolume(PLT_ActionReference& action) override;
+    NPT_Result OnSetMute(PLT_ActionReference& action) override;
 
 private:
-    NPT_Result SetupServices();
-    NPT_Result SetupIcons();
+    NPT_Result SetupServices() override;
+    NPT_Result SetupIcons() override;
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const NPT_String& uri,
                          const NPT_String& meta,

@@ -69,7 +69,7 @@ public:
 class CAbstractPowerSyscall : public IPowerSyscall
 {
 public:
-  virtual int CountPowerFeatures()
+  int CountPowerFeatures() override
   {
       return (CanPowerdown() ? 1 : 0)
              + (CanSuspend() ? 1 : 0)
@@ -83,10 +83,10 @@ class CPowerSyscallWithoutEvents : public CAbstractPowerSyscall
 public:
   CPowerSyscallWithoutEvents() { m_OnResume = false; m_OnSuspend = false; }
 
-  virtual bool Suspend() { m_OnSuspend = true; return false; }
-  virtual bool Hibernate() { m_OnSuspend = true; return false; }
+  bool Suspend() override { m_OnSuspend = true; return false; }
+  bool Hibernate() override { m_OnSuspend = true; return false; }
 
-  virtual bool PumpPowerEvents(IPowerEventsCallback *callback)
+  bool PumpPowerEvents(IPowerEventsCallback *callback) override
   {
     if (m_OnSuspend)
     {

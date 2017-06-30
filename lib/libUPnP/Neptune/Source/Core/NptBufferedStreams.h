@@ -55,7 +55,7 @@ public:
     // constructors and destructor
     NPT_BufferedInputStream(NPT_InputStreamReference& stream,
                             NPT_Size buffer_size = NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE);
-    virtual ~NPT_BufferedInputStream();
+    ~NPT_BufferedInputStream() override;
 
     // methods
     virtual NPT_Result ReadLine(NPT_String& line,
@@ -73,11 +73,11 @@ public:
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 
-                    NPT_Size* bytes_read = NULL);
-    NPT_Result Seek(NPT_Position offset);
-    NPT_Result Tell(NPT_Position& offset);
-    NPT_Result GetSize(NPT_LargeSize& size);
-    NPT_Result GetAvailable(NPT_LargeSize& available);
+                    NPT_Size* bytes_read = NULL) override;
+    NPT_Result Seek(NPT_Position offset) override;
+    NPT_Result Tell(NPT_Position& offset) override;
+    NPT_Result GetSize(NPT_LargeSize& size) override;
+    NPT_Result GetAvailable(NPT_LargeSize& available) override;
 
 protected:
     // members

@@ -30,12 +30,12 @@ class CPVRDirectory
 {
 public:
   CPVRDirectory();
-  virtual ~CPVRDirectory();
+  ~CPVRDirectory() override;
 
-  virtual bool GetDirectory(const CURL& url, CFileItemList &items) override;
-  virtual bool AllowAll() const override { return true; }
-  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_NEVER; };
-  virtual bool Exists(const CURL& url) override;
+  bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  bool AllowAll() const override { return true; }
+  DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_NEVER; };
+  bool Exists(const CURL& url) override;
 
   static bool SupportsWriteFileOperations(const std::string& strPath);
   static bool IsLiveTV(const std::string& strPath);

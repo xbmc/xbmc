@@ -51,7 +51,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
 public:
     PLT_RingBufferStream(NPT_Size buffer_size = 4096, bool blocking = true);
     PLT_RingBufferStream(NPT_RingBufferReference& buffer, bool blocking = true);
-    virtual ~PLT_RingBufferStream();
+    ~PLT_RingBufferStream() override;
     
     // methods
     bool IsAborted() { return m_Aborted; }
@@ -59,8 +59,8 @@ public:
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 
-                    NPT_Size* bytes_read = NULL);
-    NPT_Result GetSize(NPT_LargeSize& size)  {
+                    NPT_Size* bytes_read = NULL) override;
+    NPT_Result GetSize(NPT_LargeSize& size) override  {
         NPT_COMPILER_UNUSED(size);
         return NPT_ERROR_NOT_SUPPORTED;
     }
@@ -69,7 +69,7 @@ public:
         space = m_RingBuffer->GetSpace();
         return NPT_SUCCESS;
     }
-    NPT_Result GetAvailable(NPT_LargeSize& available) { 
+    NPT_Result GetAvailable(NPT_LargeSize& available) override { 
         NPT_AutoLock autoLock(m_Lock);
         available = m_RingBuffer->GetAvailable();
         return NPT_SUCCESS;
@@ -78,29 +78,29 @@ public:
     // NPT_OutputStream methods
     NPT_Result Write(const void* buffer, 
                      NPT_Size    bytes_to_write, 
-                     NPT_Size*   bytes_written = NULL);
-    NPT_Result Flush();
+                     NPT_Size*   bytes_written = NULL) override;
+    NPT_Result Flush() override;
     NPT_Result SetEOS();
     NPT_Result Abort();
 
 protected:
     // NPT_DelegatingInputStream methods
-    NPT_Result InputSeek(NPT_Position offset) {
+    NPT_Result InputSeek(NPT_Position offset) override {
         NPT_COMPILER_UNUSED(offset);
         return NPT_ERROR_NOT_SUPPORTED;
     }
-    NPT_Result InputTell(NPT_Position& offset) { 
+    NPT_Result InputTell(NPT_Position& offset) override { 
         NPT_AutoLock autoLock(m_Lock);
         offset = m_TotalBytesRead; 
         return NPT_SUCCESS;
     }
 
     // NPT_DelegatingOutputStream methods
-    NPT_Result OutputSeek(NPT_Position offset) {
+    NPT_Result OutputSeek(NPT_Position offset) override {
         NPT_COMPILER_UNUSED(offset);
         return NPT_ERROR_NOT_SUPPORTED;
     }
-    NPT_Result OutputTell(NPT_Position& offset) {
+    NPT_Result OutputTell(NPT_Position& offset) override {
         NPT_AutoLock autoLock(m_Lock);
         offset = m_TotalBytesWritten; 
         return NPT_SUCCESS;

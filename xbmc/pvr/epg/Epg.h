@@ -61,7 +61,7 @@ namespace PVR
     /*!
      * @brief Destroy this EPG instance.
      */
-    virtual ~CPVREpg(void);
+    ~CPVREpg(void) override;
 
     CPVREpg &operator =(const CPVREpg &right);
 

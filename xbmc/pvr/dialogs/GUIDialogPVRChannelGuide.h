@@ -32,7 +32,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRChannelGuide(void);
-    virtual ~CGUIDialogPVRChannelGuide(void);
+    ~CGUIDialogPVRChannelGuide(void) override;
     bool OnMessage(CGUIMessage& message) override;
     void OnWindowLoaded() override;
     void OnWindowUnload() override;

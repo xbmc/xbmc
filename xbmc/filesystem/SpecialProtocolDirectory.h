@@ -27,10 +27,10 @@ namespace XFILE
   {
   public:
     CSpecialProtocolDirectory(void);
-    virtual ~CSpecialProtocolDirectory(void);
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+    ~CSpecialProtocolDirectory(void) override;
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
   protected:
-    virtual std::string TranslatePath(const CURL &url);
+    std::string TranslatePath(const CURL &url) override;
   };
 }

@@ -81,7 +81,7 @@ namespace XBMCAddon
       inline ProxyExistingWindowInterceptor(CGUIWindow* window) :
         cguiwindow(window) { XBMC_TRACE; }
 
-      virtual CGUIWindow* get();
+      CGUIWindow* get() override;
     };
 
     CGUIWindow* ProxyExistingWindowInterceptor::get() { XBMC_TRACE; return cguiwindow; }

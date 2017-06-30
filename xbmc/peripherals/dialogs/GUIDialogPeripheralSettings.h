@@ -29,25 +29,25 @@ class CGUIDialogPeripheralSettings : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogPeripheralSettings();
-  virtual ~CGUIDialogPeripheralSettings();
+  ~CGUIDialogPeripheralSettings() override;
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
+  bool OnMessage(CGUIMessage &message) override;
 
   virtual void SetFileItem(const CFileItem *item);
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
-  virtual void OnResetSettings();
-  virtual void SetupView();
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override;
+  void OnResetSettings() override;
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  void InitializeSettings() override;
 
   CFileItem *m_item;
   bool m_initialising;

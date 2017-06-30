@@ -30,10 +30,10 @@ namespace KEYBOARD
   public:
     CKeymapActionMap(void) = default;
 
-    virtual ~CKeymapActionMap(void) = default;
+    ~CKeymapActionMap(void) override = default;
 
     // implementation of IActionMap
-    virtual unsigned int GetActionID(const CKey& key) override;
+    unsigned int GetActionID(const CKey& key) override;
   };
 }
 }

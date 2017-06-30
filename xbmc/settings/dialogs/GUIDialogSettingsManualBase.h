@@ -50,15 +50,15 @@ class CGUIDialogSettingsManualBase : public CGUIDialogSettingsManagerBase
 {
 public:
   CGUIDialogSettingsManualBase(int windowId, const std::string &xmlFile);
-  virtual ~CGUIDialogSettingsManualBase();
+  ~CGUIDialogSettingsManualBase() override;
 
 protected:
   // implementation of CGUIDialogSettingsBase
-  virtual std::shared_ptr<CSettingSection> GetSection() { return m_section; }
-  virtual void SetupView();
+  std::shared_ptr<CSettingSection> GetSection() override { return m_section; }
+  void SetupView() override;
 
   // implementation of CGUIDialogSettingsManagerBase
-  virtual CSettingsManager* GetSettingsManager() const override;
+  CSettingsManager* GetSettingsManager() const override;
 
   virtual void InitializeSettings();
 

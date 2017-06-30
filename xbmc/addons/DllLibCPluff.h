@@ -65,7 +65,7 @@ class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
   DllLibCPluff(DllLibCPluff&&);
   DllLibCPluff& operator=(DllLibCPluff&&);
 
-  virtual ~DllLibCPluff()
+  ~DllLibCPluff() override
   {
     if (IsLoaded())
       destroy();

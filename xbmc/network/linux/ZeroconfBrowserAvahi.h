@@ -40,16 +40,16 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
 {
   public:
     CZeroconfBrowserAvahi();
-    ~CZeroconfBrowserAvahi();
+    ~CZeroconfBrowserAvahi() override;
 
   private:
     ///implementation if CZeroconfBrowser interface
     ///@{
-    virtual bool doAddServiceType(const std::string& fcr_service_type);
-    virtual bool doRemoveServiceType(const std::string& fcr_service_type);
+    bool doAddServiceType(const std::string& fcr_service_type) override;
+    bool doRemoveServiceType(const std::string& fcr_service_type) override;
 
-    virtual std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices();
-    virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
+    std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices() override;
+    bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout) override;
     ///@}
 
     /// avahi callbacks

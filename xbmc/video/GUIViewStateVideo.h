@@ -28,21 +28,21 @@ public:
   CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items) {}
 
 protected:
-  virtual VECSOURCES& GetSources();
-  virtual std::string GetLockType();
-  virtual int GetPlaylist();
-  virtual std::string GetExtensions();
+  VECSOURCES& GetSources() override;
+  std::string GetLockType() override;
+  int GetPlaylist() override;
+  std::string GetExtensions() override;
 };
 
 class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoNav(const CFileItemList& items);
-  virtual bool AutoPlayNextItem();
+  bool AutoPlayNextItem() override;
 
 protected:
-  virtual void SaveViewState();
-  virtual VECSOURCES& GetSources();
+  void SaveViewState() override;
+  VECSOURCES& GetSources() override;
 };
 
 class CGUIViewStateWindowVideoPlaylist : public CGUIViewStateWindowVideo
@@ -51,10 +51,10 @@ public:
   CGUIViewStateWindowVideoPlaylist(const CFileItemList& items);
 
 protected:
-  virtual void SaveViewState();
-  virtual bool HideExtensions();
-  virtual bool HideParentDirItems();
-  virtual VECSOURCES& GetSources();
+  void SaveViewState() override;
+  bool HideExtensions() override;
+  bool HideParentDirItems() override;
+  VECSOURCES& GetSources() override;
 };
 
 class CGUIViewStateVideoMovies : public CGUIViewStateWindowVideo
@@ -62,7 +62,7 @@ class CGUIViewStateVideoMovies : public CGUIViewStateWindowVideo
 public:
   CGUIViewStateVideoMovies(const CFileItemList& items);
 protected:
-  virtual void SaveViewState();
+  void SaveViewState() override;
 };
 
 class CGUIViewStateVideoMusicVideos : public CGUIViewStateWindowVideo
@@ -70,7 +70,7 @@ class CGUIViewStateVideoMusicVideos : public CGUIViewStateWindowVideo
 public:
   CGUIViewStateVideoMusicVideos(const CFileItemList& items);
 protected:
-  virtual void SaveViewState();
+  void SaveViewState() override;
 };
 
 class CGUIViewStateVideoTVShows : public CGUIViewStateWindowVideo
@@ -78,7 +78,7 @@ class CGUIViewStateVideoTVShows : public CGUIViewStateWindowVideo
 public:
   CGUIViewStateVideoTVShows(const CFileItemList& items);
 protected:
-  virtual void SaveViewState();
+  void SaveViewState() override;
 };
 
 class CGUIViewStateVideoEpisodes : public CGUIViewStateWindowVideo
@@ -86,6 +86,6 @@ class CGUIViewStateVideoEpisodes : public CGUIViewStateWindowVideo
 public:
   CGUIViewStateVideoEpisodes(const CFileItemList& items);
 protected:
-  virtual void SaveViewState();
+  void SaveViewState() override;
 };
 

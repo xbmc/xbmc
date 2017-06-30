@@ -75,7 +75,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CSettingsSlider
     /// @brief Destructor
     ///
-    virtual ~CSettingsSlider() = default;
+    ~CSettingsSlider() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

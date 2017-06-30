@@ -73,9 +73,9 @@ class CGraphicContext : public CCriticalSection,
 {
 public:
   CGraphicContext(void);
-  virtual ~CGraphicContext(void);
+  ~CGraphicContext(void) override;
 
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }

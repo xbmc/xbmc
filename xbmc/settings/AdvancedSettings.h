@@ -118,10 +118,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     static CAdvancedSettings* getInstance();
 
-    virtual void OnSettingsLoaded() override;
-    virtual void OnSettingsUnloaded() override;
+    void OnSettingsLoaded() override;
+    void OnSettingsUnloaded() override;
 
-    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     void Initialize();
     bool Initialized() { return m_initialized; };

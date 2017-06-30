@@ -57,7 +57,7 @@ namespace SOCKETS
       sockaddr_in6 saddr6;
       sockaddr saddr_generic;
     } saddr;
-    socklen_t   size;
+    socklen_t size;
 
   public:
     CAddress()
@@ -149,10 +149,10 @@ namespace SOCKETS
     virtual void Close() {};
 
     // state functions
-    bool        Ready()  { return m_bReady; }
-    bool        Bound()  { return m_bBound; }
-    SocketType  Type()   { return m_Type; }
-    int         Port()   { return m_iPort; }
+    bool Ready() { return m_bReady; }
+    bool Bound() { return m_bBound; }
+    SocketType Type() { return m_Type; }
+    int Port() { return m_iPort; }
     virtual SOCKET Socket() = 0;
 
   protected:
@@ -161,9 +161,9 @@ namespace SOCKETS
 
   protected:
     SocketType m_Type;
-    bool       m_bReady;
-    bool       m_bBound;
-    int        m_iPort;
+    bool m_bReady;
+    bool m_bBound;
+    int m_iPort;
   };
 
   /**********************************************************************/
@@ -181,7 +181,7 @@ namespace SOCKETS
                        const void* buffer) = 0;
 
     // read datagrams, return no. of bytes read or -1 or error
-    virtual int  Read(CAddress& addr, const int buffersize, void *buffer) = 0;
+    virtual int Read(CAddress& addr, const int buffersize, void *buffer) = 0;
     virtual bool Broadcast(const CAddress& addr, const int datasize,
                            const void* data) = 0;
   };
@@ -200,21 +200,21 @@ namespace SOCKETS
         m_ipv6Socket = false;
       }
 
-    bool Bind(bool localOnly, int port, int range=0);
-    bool Connect() { return false; }
+    bool Bind(bool localOnly, int port, int range=0) override;
+    bool Connect() override { return false; }
     bool Listen(int timeout);
-    int  SendTo(const CAddress& addr, const int datasize, const void* data);
-    int  Read(CAddress& addr, const int buffersize, void *buffer);
-    bool Broadcast(const CAddress& addr, const int datasize, const void* data)
+    int SendTo(const CAddress& addr, const int datasize, const void* data) override;
+    int Read(CAddress& addr, const int buffersize, void *buffer) override;
+    bool Broadcast(const CAddress& addr, const int datasize, const void* data) override
     {
       //! @todo implement
       return false;
     }
-    SOCKET  Socket() { return m_iSock; }
-    void Close();
+    SOCKET Socket() override { return m_iSock; }
+    void Close() override;
 
   protected:
-    SOCKET   m_iSock;
+    SOCKET m_iSock;
     CAddress m_addr;
 
   private:
@@ -241,18 +241,18 @@ namespace SOCKETS
   {
   public:
     CSocketListener();
-    void         AddSocket(CBaseSocket *);
-    bool         Listen(int timeoutMs); // in ms, -1=>never timeout, 0=>poll
-    void         Clear();
+    void AddSocket(CBaseSocket *);
+    bool Listen(int timeoutMs); // in ms, -1=>never timeout, 0=>poll
+    void Clear();
     CBaseSocket* GetFirstReadySocket();
     CBaseSocket* GetNextReadySocket();
 
   protected:
     std::vector<CBaseSocket*> m_sockets;
-    int                       m_iReadyCount;
-    int                       m_iMaxSockets;
-    int                       m_iCurrentSocket;
-    fd_set                    m_fdset;
+    int m_iReadyCount;
+    int m_iMaxSockets;
+    int m_iCurrentSocket;
+    fd_set m_fdset;
   };
 
 }

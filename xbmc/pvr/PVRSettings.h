@@ -32,7 +32,7 @@ namespace PVR
   {
   public:
     CPVRSettings(const std::set<std::string> & settingNames);
-    virtual ~CPVRSettings();
+    ~CPVRSettings() override;
 
     // ISettingCallback implementation
     void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;

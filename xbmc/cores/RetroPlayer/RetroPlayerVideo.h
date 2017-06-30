@@ -41,13 +41,13 @@ namespace RETRO
   public:
     CRetroPlayerVideo(CRenderManager& m_renderManager, CProcessInfo& m_processInfo);
 
-    virtual ~CRetroPlayerVideo();
+    ~CRetroPlayerVideo() override;
 
     // implementation of IGameVideoCallback
-    virtual bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, double framerate, unsigned int orientationDeg) override;
-    virtual bool OpenEncodedStream(AVCodecID codec) override;
-    virtual void AddData(const uint8_t* data, unsigned int size) override;
-    virtual void CloseStream() override;
+    bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, double framerate, unsigned int orientationDeg) override;
+    bool OpenEncodedStream(AVCodecID codec) override;
+    void AddData(const uint8_t* data, unsigned int size) override;
+    void CloseStream() override;
 
     /*
   protected:

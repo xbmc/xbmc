@@ -325,7 +325,7 @@ namespace addon
       SetAddonStruct(instance);
     }
 
-    virtual ~CInstancePeripheral() { }
+    ~CInstancePeripheral() override { }
 
     /// @name Peripheral operations
     ///{

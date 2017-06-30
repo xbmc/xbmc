@@ -38,52 +38,52 @@ class CUPnPPlayer
 {
 public:
   CUPnPPlayer(IPlayerCallback& callback, const char* uuid);
-  virtual ~CUPnPPlayer();
+  ~CUPnPPlayer() override;
 
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
-  virtual bool QueueNextFile(const CFileItem &file) override;
-  virtual bool CloseFile(bool reopen = false) override;
-  virtual bool IsPlaying() const override;
-  virtual void Pause() override;
-  virtual bool HasVideo() const override { return false; }
-  virtual bool HasAudio() const override { return false; }
-  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
-  virtual void SeekPercentage(float fPercent = 0) override;
-  virtual float GetPercentage() override;
-  virtual void SetVolume(float volume) override;
-  virtual bool CanRecord() override { return false; }
-  virtual bool IsRecording() override { return false; }
-  virtual bool Record(bool bOnOff) override { return false; }
+  bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
+  bool QueueNextFile(const CFileItem &file) override;
+  bool CloseFile(bool reopen = false) override;
+  bool IsPlaying() const override;
+  void Pause() override;
+  bool HasVideo() const override { return false; }
+  bool HasAudio() const override { return false; }
+  void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
+  void SeekPercentage(float fPercent = 0) override;
+  float GetPercentage() override;
+  void SetVolume(float volume) override;
+  bool CanRecord() override { return false; }
+  bool IsRecording() override { return false; }
+  bool Record(bool bOnOff) override { return false; }
 
-  virtual int  GetChapterCount() override                               { return 0; }
-  virtual int  GetChapter() override                                    { return -1; }
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) override { }
-  virtual int  SeekChapter(int iChapter) override                       { return -1; }
+  int GetChapterCount() override { return 0; }
+  int GetChapter() override { return -1; }
+  void GetChapterName(std::string& strChapterName, int chapterIdx = -1) override { }
+  int SeekChapter(int iChapter) override { return -1; }
 
-  virtual void SeekTime(int64_t iTime = 0) override;
-  virtual int64_t GetTime() override;
-  virtual int64_t GetTotalTime() override;
-  virtual void SetSpeed(float speed = 0) override;
-  virtual float GetSpeed() override;
+  void SeekTime(int64_t iTime = 0) override;
+  int64_t GetTime() override;
+  int64_t GetTotalTime() override;
+  void SetSpeed(float speed = 0) override;
+  float GetSpeed() override;
 
-  virtual bool IsCaching() const override { return false; }
-  virtual int GetCacheLevel() const override { return -1; }
-  virtual void DoAudioWork() override;
-  virtual bool OnAction(const CAction &action) override;
+  bool IsCaching() const override { return false; }
+  int GetCacheLevel() const override { return -1; }
+  void DoAudioWork() override;
+  bool OnAction(const CAction &action) override;
 
-  virtual std::string GetPlayingTitle() override;
+  std::string GetPlayingTitle() override;
 
   int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 
 private:
   bool IsPaused() const;
 
-  PLT_MediaController*   m_control;
+  PLT_MediaController* m_control;
   CUPnPPlayerController* m_delegate;
-  std::string            m_current_uri;
-  std::string            m_current_meta;
-  bool                   m_started;
-  bool                   m_stopremote;
+  std::string m_current_uri;
+  std::string m_current_meta;
+  bool m_started;
+  bool m_stopremote;
 };
 
 } /* namespace UPNP */

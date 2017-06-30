@@ -66,11 +66,11 @@ class CTextureCacheJob : public CJob
 {
 public:
   CTextureCacheJob(const std::string &url, const std::string &oldHash = "");
-  virtual ~CTextureCacheJob();
+  ~CTextureCacheJob() override;
 
-  virtual const char* GetType() const { return kJobTypeCacheImage; };
-  virtual bool operator==(const CJob *job) const;
-  virtual bool DoWork();
+  const char* GetType() const override { return kJobTypeCacheImage; };
+  bool operator==(const CJob *job) const override;
+  bool DoWork() override;
 
   /*! \brief retrieve a hash for the given image
    Combines the size, ctime and mtime of the image file into a "unique" hash
@@ -134,9 +134,9 @@ class CTextureUseCountJob : public CJob
 public:
   CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
 
-  virtual const char* GetType() const { return "usecount"; };
-  virtual bool operator==(const CJob *job) const;
-  virtual bool DoWork();
+  const char* GetType() const override { return "usecount"; };
+  bool operator==(const CJob *job) const override;
+  bool DoWork() override;
 
 private:
   std::vector<CTextureDetails> m_textures;

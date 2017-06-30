@@ -27,10 +27,10 @@ namespace XFILE
   {
     public:
       CHTTPDirectory(void);
-      virtual ~CHTTPDirectory(void);
-      virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-      virtual bool Exists(const CURL& url);
-      virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
+      ~CHTTPDirectory(void) override;
+      bool GetDirectory(const CURL& url, CFileItemList &items) override;
+      bool Exists(const CURL& url) override;
+      DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ONCE; };
     private:
   };
 }

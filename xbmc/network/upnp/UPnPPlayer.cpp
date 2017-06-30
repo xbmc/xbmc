@@ -66,7 +66,7 @@ public:
     m_device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", m_transport);
   }
 
-  virtual void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
       CLog::Log(LOGERROR, "UPNP: CUPnPPlayer : OnSetAVTransportURIResult failed");
@@ -74,7 +74,7 @@ public:
     m_resevent.Set();
   }
 
-  virtual void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
       CLog::Log(LOGERROR, "UPNP: CUPnPPlayer : OnPlayResult failed");
@@ -82,7 +82,7 @@ public:
     m_resevent.Set();
   }
 
-  virtual void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata)
+  void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
       CLog::Log(LOGERROR, "UPNP: CUPnPPlayer : OnStopResult failed");
@@ -90,13 +90,13 @@ public:
     m_resevent.Set();
   }
 
-  virtual void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata)
+  void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
   {
     if(NPT_FAILED(res) || info == NULL)
       CLog::Log(LOGERROR, "UPNP: CUPnPPlayer : OnGetMediaInfoResult failed");
   }
 
-  virtual void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata)
+  void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata) override
   {
     CSingleLock lock(m_section);
 
@@ -123,7 +123,7 @@ public:
     m_postime = 0;
   }
 
-  virtual void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata)
+  void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata) override
   {
     CSingleLock lock(m_section);
 
@@ -139,7 +139,7 @@ public:
   }
 
 
-  ~CUPnPPlayerController()
+  ~CUPnPPlayerController() override
   {
   }
 

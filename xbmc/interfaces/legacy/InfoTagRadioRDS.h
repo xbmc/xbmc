@@ -64,7 +64,7 @@ namespace XBMCAddon
       InfoTagRadioRDS(const PVR::CPVRRadioRDSInfoTagPtr tag);
 #endif
       InfoTagRadioRDS();
-      virtual ~InfoTagRadioRDS();
+      ~InfoTagRadioRDS() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

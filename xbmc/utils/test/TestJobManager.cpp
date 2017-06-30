@@ -48,7 +48,7 @@ protected:
     */
   }
 
-  ~TestJobManager()
+  ~TestJobManager() override
   {
     /* Always cancel jobs test completion */
     CJobManager::GetInstance().CancelJobs();
@@ -111,12 +111,12 @@ public:
     m_block.notifyAll();
   }
 
-  const char * GetType() const
+  const char * GetType() const override
   {
     return "BroadcastingJob";
   }
 
-  bool DoWork()
+  bool DoWork() override
   {
     {
       CSingleLock lock(m_package.jobCreatedMutex);

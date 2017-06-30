@@ -56,16 +56,16 @@ public:
    \brief Creates a new (uninitialized) settings manager.
    */
   CSettingsManager() = default;
-  virtual ~CSettingsManager();
+  ~CSettingsManager() override;
 
   static const uint32_t Version = 1;
   static const uint32_t MinimumSupportedVersion = 0;
 
   // implementation of ISettingCreator
-  virtual std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = nullptr) const override;
+  std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = nullptr) const override;
 
   // implementation of ISettingControlCreator
-  virtual std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
+  std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
 
   /*!
    \brief Try to get the version of the setting definitions/values represented by the given XML element.
@@ -99,7 +99,7 @@ public:
    \param root XML node
    \return True if the setting values were successfully saved, false otherwise
    */
-  virtual bool Save(TiXmlNode *root) const override;
+  bool Save(TiXmlNode *root) const override;
   /*!
    \brief Unloads the previously loaded setting values.
 
@@ -456,22 +456,22 @@ public:
 
 private:
   // implementation of ISettingCallback
-  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
-  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
+  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
 
   // implementation of ISettingsHandler
-  virtual bool OnSettingsLoading() override;
-  virtual void OnSettingsLoaded() override;
-  virtual void OnSettingsUnloaded() override;
-  virtual bool OnSettingsSaving() const override;
-  virtual void OnSettingsSaved() const override;
-  virtual void OnSettingsCleared() override;
+  bool OnSettingsLoading() override;
+  void OnSettingsLoaded() override;
+  void OnSettingsUnloaded() override;
+  bool OnSettingsSaving() const override;
+  void OnSettingsSaved() const override;
+  void OnSettingsCleared() override;
 
   // implementation of ISubSettings
-  virtual bool Load(const TiXmlNode *settings) override;
+  bool Load(const TiXmlNode *settings) override;
 
   bool Serialize(TiXmlNode *parent) const;
   bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);

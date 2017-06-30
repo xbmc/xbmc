@@ -24,26 +24,26 @@
 class CUnionDirtyRegionSolver : public IDirtyRegionSolver
 {
 public:
-  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
+  void Solve(const CDirtyRegionList &input, CDirtyRegionList &output) override;
 };
 
 class CFillViewportAlwaysRegionSolver : public IDirtyRegionSolver
 {
 public:
-  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
+  void Solve(const CDirtyRegionList &input, CDirtyRegionList &output) override;
 };
 
 class CFillViewportOnChangeRegionSolver : public IDirtyRegionSolver
 {
 public:
-  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
+  void Solve(const CDirtyRegionList &input, CDirtyRegionList &output) override;
 };
 
 class CGreedyDirtyRegionSolver : public IDirtyRegionSolver
 {
 public:
   CGreedyDirtyRegionSolver();
-  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
+  void Solve(const CDirtyRegionList &input, CDirtyRegionList &output) override;
 private:
   float m_costNewRegion;
   float m_costPerArea;

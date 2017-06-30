@@ -74,13 +74,13 @@ class CGUIDialogSettingsBase
 {
 public:
   CGUIDialogSettingsBase(int windowId, const std::string &xmlFile);
-  virtual ~CGUIDialogSettingsBase();
+  ~CGUIDialogSettingsBase() override;
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message) override;
-  virtual bool OnAction(const CAction &action) override;
-  virtual bool OnBack(int actionID) override;
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  bool OnMessage(CGUIMessage &message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
   virtual bool IsConfirmed() const { return m_confirmed; }
 
@@ -89,14 +89,14 @@ public:
 
 protected:
   // specializations of CGUIWindow
-  virtual void OnInitWindow() override;
+  void OnInitWindow() override;
 
   // implementations of ITimerCallback
-  virtual void OnTimeout() override;
+  void OnTimeout() override;
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
 
   // new virtual methods
   virtual bool AllowResettingSettings() const { return true; }

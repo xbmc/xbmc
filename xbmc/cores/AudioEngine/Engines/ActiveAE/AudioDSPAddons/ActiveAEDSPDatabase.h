@@ -40,13 +40,13 @@ namespace ActiveAE
      * @brief Create a new instance of the audio DSP database.
      */
     CActiveAEDSPDatabase(void) {};
-    virtual ~CActiveAEDSPDatabase(void) {};
+    ~CActiveAEDSPDatabase(void) override {};
 
     /*!
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
      */
-    virtual bool Open();
+    bool Open() override;
 
     /*!
      * @brief Get the minimal database version that is required to operate correctly.
@@ -58,7 +58,7 @@ namespace ActiveAE
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName() const { return "ADSP"; };
+    const char *GetBaseDBName() const override { return "ADSP"; };
 
     /*! @name mode methods */
     //@{
@@ -204,15 +204,15 @@ namespace ActiveAE
     /*!
      * @brief Create the audio DSP database tables.
      */
-    virtual void CreateTables();
-    virtual void CreateAnalytics();
+    void CreateTables() override;
+    void CreateAnalytics() override;
 
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
      */
-    virtual void UpdateTables(int version);
-    virtual int GetSchemaVersion() const { return 0; }
+    void UpdateTables(int version) override;
+    int GetSchemaVersion() const override { return 0; }
 
     void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
   };

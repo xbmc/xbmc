@@ -45,22 +45,22 @@ class CGUIVisualisationControl : public CGUIControl, public IAudioCallback
 public:
   CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIVisualisationControl(const CGUIVisualisationControl &from);
-  virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); }; //! @todo check for naughties
+  CGUIVisualisationControl *Clone() const override { return new CGUIVisualisationControl(*this); }; //! @todo check for naughties
 
   // Child functions related to IAudioCallback
-  virtual void OnInitialize(int channels, int samplesPerSec, int bitsPerSample);
-  virtual void OnAudioData(const float* audioData, unsigned int audioDataLength);
+  void OnInitialize(int channels, int samplesPerSec, int bitsPerSample) override;
+  void OnAudioData(const float* audioData, unsigned int audioDataLength) override;
 
   // Child functions related to CGUIControl
-  virtual void FreeResources(bool immediately = false);
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  void FreeResources(bool immediately = false) override;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   virtual bool IsDirty();
-  virtual void Render();
-  virtual void UpdateVisibility(const CGUIListItem *item = nullptr);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual bool CanFocus() const { return false; }
-  virtual bool CanFocusFromPoint(const CPoint &point) const;
+  void Render() override;
+  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
+  bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage &message) override;
+  bool CanFocus() const override { return false; }
+  bool CanFocusFromPoint(const CPoint &point) const override;
 
   std::string Name();
   void UpdateTrack();

@@ -43,26 +43,26 @@ public:
                          const CTextureInfo& radioOffFocus, const CTextureInfo& radioOffNoFocus,
                          const CTextureInfo& radioOnDisabled, const CTextureInfo& radioOffDisabled);
 
-  virtual ~CGUIRadioButtonControl(void);
-  virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
+  ~CGUIRadioButtonControl(void) override;
+  CGUIRadioButtonControl *Clone() const override { return new CGUIRadioButtonControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnAction(const CAction &action) ;
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
-  virtual void SetPosition(float posX, float posY);
-  virtual void SetWidth(float width);
-  virtual void SetHeight(float height);
-  virtual std::string GetDescription() const;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override ;
+  bool OnMessage(CGUIMessage& message) override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  void SetPosition(float posX, float posY) override;
+  void SetWidth(float width) override;
+  void SetHeight(float height) override;
+  std::string GetDescription() const override;
   void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(const std::string &toggleSelect);
   bool IsSelected() const { return m_bSelected; };
 protected:
-  virtual bool UpdateColors();
+  bool UpdateColors() override;
   CGUITexture m_imgRadioOnFocus;
   CGUITexture m_imgRadioOnNoFocus;
   CGUITexture m_imgRadioOffFocus;

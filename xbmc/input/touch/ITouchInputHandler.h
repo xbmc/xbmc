@@ -50,7 +50,7 @@ public:
   ITouchInputHandler()
     : m_dpi(160.0f)
   { }
-  virtual ~ITouchInputHandler() { }
+  ~ITouchInputHandler() override { }
 
   /*!
    * \brief Handle a touch event

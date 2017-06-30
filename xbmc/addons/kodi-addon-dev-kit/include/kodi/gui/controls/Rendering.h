@@ -88,7 +88,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CRendering
     /// @brief Destructor
     ///
-    virtual ~CRendering()
+    ~CRendering() override
     {
       m_interface->kodi_gui->control_rendering->destroy(m_interface->kodiBase, m_controlHandle);
     }

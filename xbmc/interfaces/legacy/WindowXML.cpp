@@ -62,30 +62,30 @@ namespace XBMCAddon
         InterceptorDialog<CGUIMediaWindow>("CGUIMediaWindow",_window,windowid,xmlfile), xwin(_window) 
       { }
 
-      virtual void AllocResources(bool forceLoad = false) override
+      void AllocResources(bool forceLoad = false) override
       { XBMC_TRACE; if(up()) CGUIMediaWindow::AllocResources(forceLoad); else checkedv(AllocResources(forceLoad)); }
-      virtual  void FreeResources(bool forceUnLoad = false) override
+       void FreeResources(bool forceUnLoad = false) override
       { XBMC_TRACE; if(up()) CGUIMediaWindow::FreeResources(forceUnLoad); else checkedv(FreeResources(forceUnLoad)); }
-      virtual bool OnClick(int iItem, const std::string &player = "") override { XBMC_TRACE; return up() ? CGUIMediaWindow::OnClick(iItem, player) : checkedb(OnClick(iItem)); }
+      bool OnClick(int iItem, const std::string &player = "") override { XBMC_TRACE; return up() ? CGUIMediaWindow::OnClick(iItem, player) : checkedb(OnClick(iItem)); }
 
-      virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override
+      void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override
       { XBMC_TRACE; if(up()) CGUIMediaWindow::Process(currentTime,dirtyregions); else checkedv(Process(currentTime,dirtyregions)); }
 
       // this is a hack to SKIP the CGUIMediaWindow
-      virtual bool OnAction(const CAction &action) override
+      bool OnAction(const CAction &action) override
       { XBMC_TRACE; return up() ? CGUIWindow::OnAction(action) : checkedb(OnAction(action)); }
 
     protected:
       // CGUIWindow
-      virtual bool LoadXML(const std::string &strPath, const std::string &strPathLower) override
+      bool LoadXML(const std::string &strPath, const std::string &strPathLower) override
       { XBMC_TRACE; return up() ? CGUIMediaWindow::LoadXML(strPath,strPathLower) : xwin->LoadXML(strPath,strPathLower); }
 
       // CGUIMediaWindow
-      virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override
+      void GetContextButtons(int itemNumber, CContextButtons &buttons) override
       { XBMC_TRACE; if (up()) CGUIMediaWindow::GetContextButtons(itemNumber,buttons); else xwin->GetContextButtons(itemNumber,buttons); }
-      virtual bool Update(const std::string &strPath) override
+      bool Update(const std::string &strPath) override
       { XBMC_TRACE; return up() ? CGUIMediaWindow::Update(strPath) : xwin->Update(strPath); }
-      virtual void SetupShares() override { XBMC_TRACE; if(up()) CGUIMediaWindow::SetupShares(); else checkedv(SetupShares()); }
+      void SetupShares() override { XBMC_TRACE; if(up()) CGUIMediaWindow::SetupShares(); else checkedv(SetupShares()); }
 
       friend class WindowXML;
       friend class WindowXMLDialog;

@@ -49,8 +49,8 @@ public:
 
 protected:
     // PLT_DeviceHost methods
-    virtual NPT_Result SetupServices();
-    virtual NPT_Result SetupIcons();
+    NPT_Result SetupServices() override;
+    NPT_Result SetupIcons() override;
     virtual NPT_Result InitServiceURLs(PLT_Service* service, const char* service_name);
     
     virtual NPT_Result Announce(PLT_DeviceData*      device, 
@@ -59,12 +59,12 @@ protected:
                                 PLT_SsdpAnnounceType type);
 
     // PLT_DeviceData methods
-    virtual NPT_Result GetDescription(NPT_String& desc) { return PLT_MediaRenderer::GetDescription(desc); }
-    virtual NPT_Result GetDescription(NPT_XmlElementNode*  parent, 
-                                      NPT_XmlElementNode** device = NULL);
+    NPT_Result GetDescription(NPT_String& desc) override { return PLT_MediaRenderer::GetDescription(desc); }
+    NPT_Result GetDescription(NPT_XmlElementNode*  parent, 
+                                      NPT_XmlElementNode** device = NULL) override;
 
 protected:
-    virtual ~PLT_Xbox360();
+    ~PLT_Xbox360() override;
 
     virtual NPT_Result AnnouncePresence(NPT_UdpSocket& socket, 
                                         const char*    serial_number);

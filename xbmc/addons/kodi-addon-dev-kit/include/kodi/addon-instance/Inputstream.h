@@ -226,7 +226,7 @@ namespace addon
       SetAddonStruct(instance);
     }
 
-    virtual ~CInstanceInputStream() = default;
+    ~CInstanceInputStream() override = default;
 
     /*!
      * Open a stream.

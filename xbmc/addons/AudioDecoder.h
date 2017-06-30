@@ -52,20 +52,20 @@ namespace ADDON
     CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype, bool tags,
         bool tracks, std::string codecName, std::string strExt);
 
-    virtual ~CAudioDecoder();
+    ~CAudioDecoder() override;
 
     // Things that MUST be supplied by the child classes
     bool Create();
     bool Init(const CFileItem& file, unsigned int filecache) override;
-    int ReadPCM(uint8_t* buffer, int size, int* actualsize);
-    bool Seek(int64_t time);
-    bool CanInit() { return true; }
+    int ReadPCM(uint8_t* buffer, int size, int* actualsize) override;
+    bool Seek(int64_t time) override;
+    bool CanInit() override { return true; }
     void DeInit();
     void Destroy();
     bool Load(const std::string& strFileName,
               MUSIC_INFO::CMusicInfoTag& tag,
-              MUSIC_INFO::EmbeddedArt *art = NULL);
-    int GetTrackCount(const std::string& strPath);
+              MUSIC_INFO::EmbeddedArt *art = NULL) override;
+    int GetTrackCount(const std::string& strPath) override;
 
     const std::string& GetExtensions() const { return m_extension; }
     const std::string& GetMimetypes() const { return m_mimetype; }

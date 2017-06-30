@@ -30,7 +30,7 @@ namespace XFILE
     public:
       CDirectoryNodeAlbumTop100Song(const std::string& strName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items) const;
+      bool GetContent(CFileItemList& items) const override;
     };
   }
 }

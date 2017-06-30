@@ -62,7 +62,7 @@ namespace XBMCAddon
       InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag);
 #endif
       InfoTagMusic();
-      virtual ~InfoTagMusic();
+      ~InfoTagMusic() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

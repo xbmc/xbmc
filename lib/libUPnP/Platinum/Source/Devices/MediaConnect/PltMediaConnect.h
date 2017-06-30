@@ -60,19 +60,19 @@ public:
                      bool         port_rebind = false);
 
 protected:
-    virtual ~PLT_MediaConnect();
+    ~PLT_MediaConnect() override;
     
     // PLT_DeviceHost methods
-    virtual NPT_Result SetupServices();
-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const PLT_HttpRequestContext& context);
-    virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
+    NPT_Result SetupServices() override;
+    NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const PLT_HttpRequestContext& context) override;
+    NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
-                                             NPT_HttpResponse&             response);
-    virtual NPT_Result ProcessGetSCPD(PLT_Service*                  service,
+                                             NPT_HttpResponse&             response) override;
+    NPT_Result ProcessGetSCPD(PLT_Service*                  service,
                                       NPT_HttpRequest&              request,
                                       const NPT_HttpRequestContext& context,
-                                      NPT_HttpResponse&             response);
+                                      NPT_HttpResponse&             response) override;
 
     // X_MS_MediaReceiverRegistrar
     virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action);
@@ -93,18 +93,18 @@ public:
     // constructor & destructor
     PLT_FileMediaConnectDelegate(const char* url_root, const char* file_root) :
         PLT_FileMediaServerDelegate(url_root, file_root) {}
-    virtual ~PLT_FileMediaConnectDelegate() {}
+    ~PLT_FileMediaConnectDelegate() override {}
     
     // PLT_FileMediaServerDelegate methods
-    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+    NPT_Result GetFilePath(const char* object_id, NPT_String& filepath) override;
+    NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
                                          const char*                   object_id, 
                                          const char*                   search_criteria,
                                          const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
                                          const char*                   sort_criteria, 
-                                         const PLT_HttpRequestContext& context);
+                                         const PLT_HttpRequestContext& context) override;
 };
 
 #endif /* _PLT_MEDIA_CONNECT_H_ */

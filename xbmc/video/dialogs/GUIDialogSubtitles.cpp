@@ -66,16 +66,16 @@ public:
   {
     m_items = new CFileItemList;
   }
-  virtual ~CSubtitlesJob()
+  ~CSubtitlesJob() override
   {
     delete m_items;
   }
-  virtual bool DoWork()
+  bool DoWork() override
   {
     CDirectory::GetDirectory(m_url.Get(), *m_items);
     return true;
   }
-  virtual bool operator==(const CJob *job) const
+  bool operator==(const CJob *job) const override
   {
     if (strcmp(job->GetType(),GetType()) == 0)
     {

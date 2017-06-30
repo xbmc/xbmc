@@ -42,7 +42,7 @@ public:
    */
   CPVRChannelNumberInputHandler(int iDelay, int iMaxDigits = CHANNEL_NUMBER_INPUT_MAX_DIGITS);
 
-  virtual ~CPVRChannelNumberInputHandler() = default;
+  ~CPVRChannelNumberInputHandler() override = default;
 
   // implementation of ITimerCallback
   void OnTimeout() override;

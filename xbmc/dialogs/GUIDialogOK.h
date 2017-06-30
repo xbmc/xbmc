@@ -30,11 +30,11 @@ class CGUIDialogOK :
 {
 public:
   CGUIDialogOK(void);
-  virtual ~CGUIDialogOK(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  ~CGUIDialogOK(void) override;
+  bool OnMessage(CGUIMessage& message) override;
   static bool ShowAndGetInput(CVariant heading, CVariant text);
   static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2);
 protected:
-  virtual void OnInitWindow();
-  virtual int GetDefaultLabelID(int controlId) const;
+  void OnInitWindow() override;
+  int GetDefaultLabelID(int controlId) const override;
 };

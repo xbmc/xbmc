@@ -28,17 +28,17 @@ class CLogindUPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CLogindUPowerSyscall();
-  ~CLogindUPowerSyscall();
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
-  virtual int BatteryLevel();
-  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
+  ~CLogindUPowerSyscall() override;
+  bool Powerdown() override;
+  bool Suspend() override;
+  bool Hibernate() override;
+  bool Reboot() override;
+  bool CanPowerdown() override;
+  bool CanSuspend() override;
+  bool CanHibernate() override;
+  bool CanReboot() override;
+  int BatteryLevel() override;
+  bool PumpPowerEvents(IPowerEventsCallback *callback) override;
   // we don't require UPower because everything except the battery level works fine without it
   static bool HasLogind();  
 private:

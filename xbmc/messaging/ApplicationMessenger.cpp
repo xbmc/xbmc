@@ -37,7 +37,7 @@ class CDelayedMessage : public CThread
 {
   public:
     CDelayedMessage(ThreadMessage& msg, unsigned int delay);
-    virtual void Process() override;
+    void Process() override;
 
   private:
     unsigned int   m_delay;

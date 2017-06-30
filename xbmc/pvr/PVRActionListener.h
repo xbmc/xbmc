@@ -30,7 +30,7 @@ class CPVRActionListener : public IActionListener, public ISettingCallback
 {
 public:
   CPVRActionListener();
-  virtual ~CPVRActionListener();
+  ~CPVRActionListener() override;
 
   // IActionListener implementation
   bool OnAction(const CAction &action) override;

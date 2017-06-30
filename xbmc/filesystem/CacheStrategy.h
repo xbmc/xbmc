@@ -79,25 +79,25 @@ protected:
 class CSimpleFileCache : public CCacheStrategy {
 public:
   CSimpleFileCache();
-  virtual ~CSimpleFileCache();
+  ~CSimpleFileCache() override;
 
-  virtual int Open() ;
-  virtual void Close() ;
+  int Open() override;
+  void Close() override;
 
-  virtual size_t GetMaxWriteSize(const size_t& iRequestSize) ;
-  virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
-  virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
-  virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
+  size_t GetMaxWriteSize(const size_t& iRequestSize) override;
+  int WriteToCache(const char *pBuffer, size_t iSize) override;
+  int ReadFromCache(char *pBuffer, size_t iMaxSize) override;
+  int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) override;
 
-  virtual int64_t Seek(int64_t iFilePosition);
-  virtual bool Reset(int64_t iSourcePosition, bool clearAnyway=true);
-  virtual void EndOfInput();
+  int64_t Seek(int64_t iFilePosition) override;
+  bool Reset(int64_t iSourcePosition, bool clearAnyway=true) override;
+  void EndOfInput() override;
 
-  virtual int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition);
-  virtual int64_t CachedDataEndPos();
-  virtual bool IsCachedPosition(int64_t iFilePosition);
+  int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition) override;
+  int64_t CachedDataEndPos() override;
+  bool IsCachedPosition(int64_t iFilePosition) override;
 
-  virtual CCacheStrategy *CreateNew();
+  CCacheStrategy *CreateNew() override;
 
   int64_t  GetAvailableRead();
 
@@ -114,27 +114,27 @@ protected:
 class CDoubleCache : public CCacheStrategy{
 public:
   CDoubleCache(CCacheStrategy *impl);
-  virtual ~CDoubleCache();
+  ~CDoubleCache() override;
 
-  virtual int Open() ;
-  virtual void Close() ;
+  int Open() override;
+  void Close() override;
 
-  virtual size_t GetMaxWriteSize(const size_t& iRequestSize) ;
-  virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
-  virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
-  virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
+  size_t GetMaxWriteSize(const size_t& iRequestSize) override;
+  int WriteToCache(const char *pBuffer, size_t iSize) override;
+  int ReadFromCache(char *pBuffer, size_t iMaxSize) override;
+  int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) override;
 
-  virtual int64_t Seek(int64_t iFilePosition);
-  virtual bool Reset(int64_t iSourcePosition, bool clearAnyway=true);
-  virtual void EndOfInput();
-  virtual bool IsEndOfInput();
-  virtual void ClearEndOfInput();
+  int64_t Seek(int64_t iFilePosition) override;
+  bool Reset(int64_t iSourcePosition, bool clearAnyway=true) override;
+  void EndOfInput() override;
+  bool IsEndOfInput() override;
+  void ClearEndOfInput() override;
 
-  virtual int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition);
-  virtual int64_t CachedDataEndPos();
-  virtual bool IsCachedPosition(int64_t iFilePosition);
+  int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition) override;
+  int64_t CachedDataEndPos() override;
+  bool IsCachedPosition(int64_t iFilePosition) override;
 
-  virtual CCacheStrategy *CreateNew();
+  CCacheStrategy *CreateNew() override;
 
 protected:
   CCacheStrategy *m_pCache;

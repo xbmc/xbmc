@@ -26,7 +26,7 @@ class CVideoFileItemListModifier : public IFileItemListModifier
 {
 public:
   CVideoFileItemListModifier() { }
-  virtual ~CVideoFileItemListModifier() { }
+  ~CVideoFileItemListModifier() override { }
 
   bool CanModify(const CFileItemList &items) const override;
   bool Modify(CFileItemList &items) const override;

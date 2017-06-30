@@ -74,11 +74,11 @@ protected:
 class LinearTweener : public Tweener
 {
 public:
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     return change * time / duration + start;
   }
-  virtual bool HasResumePoint() const { return false; }
+  bool HasResumePoint() const override { return false; }
 };
 
 
@@ -86,7 +86,7 @@ class QuadTweener : public Tweener
 {
 public:
   QuadTweener(float a = 1.0f) { _a=a; }
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
       {
@@ -118,7 +118,7 @@ private:
 class CubicTweener : public Tweener
 {
 public:
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
       {
@@ -148,7 +148,7 @@ public:
 class CircleTweener : public Tweener
 {
 public:
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
       {
@@ -180,7 +180,7 @@ class BackTweener : public Tweener
 public:
   BackTweener(float s=1.70158) { _s=s; }
 
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     float s = _s;
     switch (m_tweenerType)
@@ -218,7 +218,7 @@ private:
 class SineTweener : public Tweener
 {
 public:
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     time /= duration;
     switch (m_tweenerType)
@@ -243,7 +243,7 @@ public:
 class BounceTweener : public Tweener
 {
 public:
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
       {
@@ -290,7 +290,7 @@ class ElasticTweener : public Tweener
 public:
   ElasticTweener(float a=0.0, float p=0.0) { _a=a; _p=p; }
 
-  virtual float Tween(float time, float start, float change, float duration)
+  float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
       {

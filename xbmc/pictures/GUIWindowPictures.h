@@ -29,7 +29,7 @@ class CGUIWindowPictures : public CGUIMediaWindow, public IBackgroundLoaderObser
 {
 public:
   CGUIWindowPictures(void);
-  virtual ~CGUIWindowPictures(void);
+  ~CGUIWindowPictures(void) override;
   bool OnMessage(CGUIMessage& message) override;
   void OnInitWindow() override;
 

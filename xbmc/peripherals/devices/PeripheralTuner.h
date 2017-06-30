@@ -27,6 +27,6 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralTuner(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    virtual ~CPeripheralTuner(void) {};
+    ~CPeripheralTuner(void) override {};
   };
 }

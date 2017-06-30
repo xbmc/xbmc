@@ -34,7 +34,7 @@ class Testlog : public testing::Test
 {
 protected:
   Testlog(){}
-  ~Testlog()
+  ~Testlog() override
   {
     CLog::Close();
   }

@@ -43,7 +43,7 @@ public:
  
 protected:
   CDiscSettings();
-  virtual ~CDiscSettings();
+  ~CDiscSettings() override;
 
   DllLibbluray*       m_dll;
 

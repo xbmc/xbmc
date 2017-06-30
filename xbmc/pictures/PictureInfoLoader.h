@@ -26,16 +26,16 @@ class CPictureInfoLoader : public CBackgroundInfoLoader
 {
 public:
   CPictureInfoLoader();
-  virtual ~CPictureInfoLoader();
+  ~CPictureInfoLoader() override;
 
   void UseCacheOnHD(const std::string& strFileName);
-  virtual bool LoadItem(CFileItem* pItem);
-  virtual bool LoadItemCached(CFileItem* pItem);
-  virtual bool LoadItemLookup(CFileItem* pItem);
+  bool LoadItem(CFileItem* pItem) override;
+  bool LoadItemCached(CFileItem* pItem) override;
+  bool LoadItemLookup(CFileItem* pItem) override;
 
 protected:
-  virtual void OnLoaderStart();
-  virtual void OnLoaderFinish();
+  void OnLoaderStart() override;
+  void OnLoaderFinish() override;
 
   CFileItemList* m_mapFileItems;
   unsigned int m_tagReads;

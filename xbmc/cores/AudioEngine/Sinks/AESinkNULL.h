@@ -26,29 +26,29 @@
 class CAESinkNULL : public CThread, public IAESink
 {
 public:
-  virtual const char *GetName() { return "NULL"; }
+  const char *GetName() override { return "NULL"; }
 
   CAESinkNULL();
-  virtual ~CAESinkNULL();
+  ~CAESinkNULL() override;
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
+  bool Initialize(AEAudioFormat &format, std::string &device) override;
+  void Deinitialize() override;
 
-  virtual void         GetDelay        (AEDelayStatus& status);
-  virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void         Drain           ();
+  void GetDelay(AEDelayStatus& status) override;
+  double GetCacheTotal() override;
+  unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
+  void Drain() override;
 
-  static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
+  static void EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
-  virtual void         Process();
+  void Process() override;
 
-  CEvent               m_wake;
-  CEvent               m_inited;
-  volatile bool        m_draining;
-  AEAudioFormat        m_format;
-  unsigned int         m_sink_frameSize;
-  unsigned int         m_sinkbuffer_size;  ///< total size of the buffer
-  unsigned int         m_sinkbuffer_level; ///< current level in the buffer
-  double               m_sinkbuffer_sec_per_byte;
+  CEvent m_wake;
+  CEvent m_inited;
+  volatile bool m_draining;
+  AEAudioFormat m_format;
+  unsigned int m_sink_frameSize;
+  unsigned int m_sinkbuffer_size;  ///< total size of the buffer
+  unsigned int m_sinkbuffer_level; ///< current level in the buffer
+  double m_sinkbuffer_sec_per_byte;
 };

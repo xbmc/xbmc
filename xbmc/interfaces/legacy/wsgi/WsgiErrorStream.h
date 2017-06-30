@@ -45,7 +45,7 @@ namespace XBMCAddon
     {
     public:
       WsgiErrorStream();
-      virtual ~WsgiErrorStream();
+      ~WsgiErrorStream() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

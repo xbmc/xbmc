@@ -87,7 +87,7 @@ public:
   {
     m_opened = m_file.Open(strFile);
   }
-  virtual bool ReadLine(std::string &line)
+  bool ReadLine(std::string &line) override
   {
     // Read the next line.
     while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
@@ -101,11 +101,11 @@ public:
     }
     return false;
   }
-  virtual bool ready() const
+  bool ready() const override
   {
     return m_opened;
   }
-  virtual ~FileReader()
+  ~FileReader() override
   {
     if (m_opened)
       m_file.Close();
@@ -126,7 +126,7 @@ public:
     , m_pos(0)
   {
   }
-  virtual bool ReadLine(std::string &line)
+  bool ReadLine(std::string &line) override
   {
     // Read the next line.
     line.clear();
@@ -146,7 +146,7 @@ public:
     }
     return false;
   }
-  virtual bool ready() const
+  bool ready() const override
   {
     return m_data.size() > 0;
   }

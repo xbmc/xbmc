@@ -45,7 +45,7 @@ namespace XBMCAddon
     inline LanguageHook() {}
 
   public:
-    virtual ~LanguageHook();
+    ~LanguageHook() override;
 
     /**
      * If the scripting language needs special handling for calls 

@@ -66,7 +66,7 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
   friend CGUIMediaWindow;
 public:
   CGUIWindowManager();
-  virtual ~CGUIWindowManager();
+  ~CGUIWindowManager() override;
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
@@ -85,8 +85,8 @@ public:
   void CloseDialogs(bool forceClose = false) const;
   void CloseInternalModalDialogs(bool forceClose = false) const;
 
-  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
-  virtual int GetMessageMask() override;
+  void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+  int GetMessageMask() override;
 
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the

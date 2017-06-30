@@ -56,7 +56,7 @@ namespace PVR
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
   {
   public:
-    virtual ~CGUIWindowPVRBase(void);
+    ~CGUIWindowPVRBase(void) override;
 
     void OnInitWindow(void) override;
     void OnDeinitWindow(int nextWindowID) override;

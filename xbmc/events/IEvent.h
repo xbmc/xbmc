@@ -37,7 +37,7 @@ enum class EventLevel
 class IEvent : public ISortable
 {
 public:
-  virtual ~IEvent() { }
+  ~IEvent() override { }
 
   virtual const char* GetType() const = 0;
   virtual std::string GetIdentifier() const = 0;
@@ -52,7 +52,7 @@ public:
   virtual bool CanExecute() const = 0;
   virtual bool Execute() const = 0;
 
-  virtual void ToSortable(SortItem& sortable, Field field) const = 0;
+  void ToSortable(SortItem& sortable, Field field) const override = 0;
 };
 
 typedef std::shared_ptr<const IEvent> EventPtr;

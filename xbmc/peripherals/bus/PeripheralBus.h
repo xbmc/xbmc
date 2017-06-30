@@ -44,7 +44,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBus(const std::string &threadname, CPeripherals& manager, PeripheralBusType type);
-    virtual ~CPeripheralBus(void) { Clear(); }
+    ~CPeripheralBus(void) override { Clear(); }
 
     /*!
      * @return The bus type
@@ -179,7 +179,7 @@ namespace PERIPHERALS
     virtual void PowerOff(const std::string& strLocation) { }
 
   protected:
-    virtual void Process(void);
+    void Process(void) override;
     virtual bool ScanForDevices(void);
     virtual void UnregisterRemovedDevices(const PeripheralScanResults &results);
     virtual void RegisterNewDevices(const PeripheralScanResults &results);

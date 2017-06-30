@@ -317,7 +317,7 @@ namespace XBMCAddon
 #else
       bool abortRequested();
 #endif
-      virtual ~Monitor();
+      ~Monitor() override;
     };
     /** @} */
   }

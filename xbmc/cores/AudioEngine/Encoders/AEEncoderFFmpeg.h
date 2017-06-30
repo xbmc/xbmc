@@ -32,19 +32,19 @@ class CAEEncoderFFmpeg: public IAEEncoder
 {
 public:
   CAEEncoderFFmpeg();
-  virtual ~CAEEncoderFFmpeg();
+  ~CAEEncoderFFmpeg() override;
 
-  virtual bool IsCompatible(const AEAudioFormat& format);
-  virtual bool Initialize(AEAudioFormat &format, bool allow_planar_input = false);
-  virtual void Reset();
+  bool IsCompatible(const AEAudioFormat& format) override;
+  bool Initialize(AEAudioFormat &format, bool allow_planar_input = false) override;
+  void Reset() override;
 
-  virtual unsigned int GetBitRate();
-  virtual AVCodecID GetCodecID();
-  virtual unsigned int GetFrames();
+  unsigned int GetBitRate() override;
+  AVCodecID GetCodecID() override;
+  unsigned int GetFrames() override;
 
-  virtual int Encode(uint8_t *in, int in_size, uint8_t *out, int out_size);
-  virtual int GetData(uint8_t **data);
-  virtual double GetDelay(unsigned int bufferSize);
+  int Encode(uint8_t *in, int in_size, uint8_t *out, int out_size) override;
+  int GetData(uint8_t **data) override;
+  double GetDelay(unsigned int bufferSize) override;
 private:
   unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
 

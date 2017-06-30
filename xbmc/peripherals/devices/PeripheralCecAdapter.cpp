@@ -1689,9 +1689,9 @@ class CPeripheralCecAdapterReopenJob : public CJob
 public:
   CPeripheralCecAdapterReopenJob(CPeripheralCecAdapter *adapter)
     : m_adapter(adapter) {}
-  virtual ~CPeripheralCecAdapterReopenJob() {}
+  ~CPeripheralCecAdapterReopenJob() override {}
 
-  bool DoWork(void)
+  bool DoWork(void) override
   {
     return m_adapter->ReopenConnection(false);
   }

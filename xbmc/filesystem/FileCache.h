@@ -34,50 +34,50 @@ namespace XFILE
   public:
     CFileCache(const unsigned int flags);
     CFileCache(CCacheStrategy *pCache, bool bDeleteCache = true);
-    virtual ~CFileCache();
+    ~CFileCache() override;
 
     void SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache = true);
 
     // CThread methods
-    virtual void Process();
-    virtual void OnExit();
-    virtual void StopThread(bool bWait = true);
+    void Process() override;
+    void OnExit() override;
+    void StopThread(bool bWait = true) override;
 
     // IFIle methods
-    virtual bool          Open(const CURL& url);
-    virtual void          Close();
-    virtual bool          Exists(const CURL& url);
-    virtual int           Stat(const CURL& url, struct __stat64* buffer);
+    bool Open(const CURL& url) override;
+    void Close() override;
+    bool Exists(const CURL& url) override;
+    int Stat(const CURL& url, struct __stat64* buffer) override;
 
-    virtual ssize_t       Read(void* lpBuf, size_t uiBufSize);
+    ssize_t Read(void* lpBuf, size_t uiBufSize) override;
 
-    virtual int64_t       Seek(int64_t iFilePosition, int iWhence);
-    virtual int64_t       GetPosition();
-    virtual int64_t       GetLength();
+    int64_t Seek(int64_t iFilePosition, int iWhence) override;
+    int64_t GetPosition() override;
+    int64_t GetLength() override;
 
-    virtual int           IoControl(EIoControl request, void* param);
+    int IoControl(EIoControl request, void* param) override;
 
     IFile *GetFileImp();
 
-    virtual std::string GetContent();
-    virtual std::string GetContentCharset(void);
+    std::string GetContent() override;
+    std::string GetContentCharset(void) override;
 
   private:
     CCacheStrategy *m_pCache;
-    bool      m_bDeleteCache;
-    int        m_seekPossible;
-    CFile      m_source;
-    std::string    m_sourcePath;
-    CEvent      m_seekEvent;
-    CEvent      m_seekEnded;
-    int64_t      m_nSeekResult;
-    int64_t      m_seekPos;
-    int64_t      m_readPos;
-    int64_t      m_writePos;
-    unsigned     m_chunkSize;
-    unsigned     m_writeRate;
-    unsigned     m_writeRateActual;
-    int64_t      m_forwardCacheSize;
+    bool m_bDeleteCache;
+    int m_seekPossible;
+    CFile m_source;
+    std::string m_sourcePath;
+    CEvent m_seekEvent;
+    CEvent m_seekEnded;
+    int64_t m_nSeekResult;
+    int64_t m_seekPos;
+    int64_t m_readPos;
+    int64_t m_writePos;
+    unsigned m_chunkSize;
+    unsigned m_writeRate;
+    unsigned m_writeRateActual;
+    int64_t m_forwardCacheSize;
     std::atomic<int64_t> m_fileSize;
     unsigned int m_flags;
     CCriticalSection m_sync;

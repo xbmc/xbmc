@@ -36,9 +36,9 @@ class InfoSingle : public InfoBool
 public:
   InfoSingle(const std::string &expression, int context, unsigned int &refreshCounter)
     : InfoBool(expression, context, refreshCounter) {};
-  virtual void Initialize() override;
+  void Initialize() override;
 
-  virtual void Update(const CGUIListItem *item);
+  void Update(const CGUIListItem *item) override;
 private:
   int m_condition;             ///< actual condition this represents
 };
@@ -50,11 +50,11 @@ class InfoExpression : public InfoBool
 public:
   InfoExpression(const std::string &expression, int context, unsigned int &refreshCounter)
     : InfoBool(expression, context, refreshCounter) {};
-  virtual ~InfoExpression() {};
+  ~InfoExpression() override {};
 
-  virtual void Initialize() override;
+  void Initialize() override;
 
-  virtual void Update(const CGUIListItem *item);
+  void Update(const CGUIListItem *item) override;
 private:
   typedef enum
   {
@@ -89,8 +89,8 @@ private:
   {
   public:
     InfoLeaf(InfoPtr info, bool invert) : m_info(info), m_invert(invert) {};
-    virtual bool Evaluate(const CGUIListItem *item);
-    virtual node_type_t Type() const { return NODE_LEAF; };
+    bool Evaluate(const CGUIListItem *item) override;
+    node_type_t Type() const override { return NODE_LEAF; };
   private:
     InfoPtr m_info;
     bool m_invert;
@@ -103,8 +103,8 @@ private:
     InfoAssociativeGroup(node_type_t type, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
     void AddChild(const InfoSubexpressionPtr &child);
     void Merge(std::shared_ptr<InfoAssociativeGroup> other);
-    virtual bool Evaluate(const CGUIListItem *item);
-    virtual node_type_t Type() const { return m_type; };
+    bool Evaluate(const CGUIListItem *item) override;
+    node_type_t Type() const override { return m_type; };
   private:
     node_type_t m_type;
     std::list<InfoSubexpressionPtr> m_children;

@@ -27,8 +27,8 @@ namespace MUSIC_INFO
   {
   public:
     CMusicInfoTagLoaderFFmpeg(void);
-    virtual ~CMusicInfoTagLoaderFFmpeg();
+    ~CMusicInfoTagLoaderFFmpeg() override;
 
-    virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+    bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) override;
   };
 }

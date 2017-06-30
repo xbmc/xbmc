@@ -44,7 +44,7 @@ class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 public:
   CMusicInfoTag(void);
   CMusicInfoTag(const CMusicInfoTag& tag);
-  virtual ~CMusicInfoTag();
+  ~CMusicInfoTag() override;
   const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
@@ -175,9 +175,9 @@ public:
   void SetContributors(const VECMUSICROLES& contributors);
   bool HasContributors() const { return !m_musicRoles.empty(); }
 
-  virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& ar) const;
-  virtual void ToSortable(SortItem& sortable, Field field) const;
+  void Archive(CArchive& ar) override;
+  void Serialize(CVariant& ar) const override;
+  void ToSortable(SortItem& sortable, Field field) const override;
 
   void Clear();
 

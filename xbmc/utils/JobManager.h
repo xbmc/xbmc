@@ -32,9 +32,9 @@ class CJobWorker : public CThread
 {
 public:
   CJobWorker(CJobManager *manager);
-  virtual ~CJobWorker();
+  ~CJobWorker() override;
 
-  void Process();
+  void Process() override;
 private:
   CJobManager  *m_jobManager;
 };
@@ -92,7 +92,7 @@ public:
    Cancels any in-process jobs, and destroys the job queue.
    \sa CJob
    */
-  virtual ~CJobQueue();
+  ~CJobQueue() override;
 
   /*!
    \brief Add a job to the queue
@@ -138,7 +138,7 @@ public:
 
    \sa CJobManager, IJobCallback and  CJob
    */
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
 protected:
   /*!

@@ -29,9 +29,9 @@ namespace ADDON
     CSettingUrlEncodedString(const std::string &id, CSettingsManager *settingsManager = NULL);
     CSettingUrlEncodedString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
     CSettingUrlEncodedString(const std::string &id, const CSettingUrlEncodedString &setting);
-    virtual ~CSettingUrlEncodedString() { }
+    ~CSettingUrlEncodedString() override { }
 
-    virtual SettingPtr Clone(const std::string &id) const override { return std::make_shared<CSettingUrlEncodedString>(id, *this); }
+    SettingPtr Clone(const std::string &id) const override { return std::make_shared<CSettingUrlEncodedString>(id, *this); }
 
     std::string GetDecodedValue() const;
     bool SetDecodedValue(const std::string& decodedValue);

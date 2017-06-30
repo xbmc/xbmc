@@ -138,7 +138,7 @@ class TestRegExpLog : public testing::Test
 {
 protected:
   TestRegExpLog(){}
-  ~TestRegExpLog()
+  ~TestRegExpLog() override
   {
     CLog::Close();
   }

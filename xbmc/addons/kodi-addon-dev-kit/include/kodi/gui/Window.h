@@ -110,7 +110,7 @@ namespace gui
     ///
     ///
     ///
-    virtual ~CWindow()
+    ~CWindow() override
     {
       if (m_controlHandle)
         m_interface->kodi_gui->window->destroy(m_interface->kodiBase, m_controlHandle);

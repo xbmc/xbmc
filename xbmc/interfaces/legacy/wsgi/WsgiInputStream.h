@@ -34,7 +34,7 @@ namespace XBMCAddon
     {
     public:
       WsgiInputStreamIterator();
-      virtual ~WsgiInputStreamIterator();
+      ~WsgiInputStreamIterator() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStream
@@ -115,7 +115,7 @@ namespace XBMCAddon
     {
     public:
       WsgiInputStream();
-      virtual ~WsgiInputStream();
+      ~WsgiInputStream() override;
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       WsgiInputStreamIterator* begin();

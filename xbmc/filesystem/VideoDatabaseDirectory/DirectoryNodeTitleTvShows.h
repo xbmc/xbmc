@@ -30,9 +30,9 @@ namespace XFILE
     public:
       CDirectoryNodeTitleTvShows(const std::string& strName, CDirectoryNode* pParent);
     protected:
-      virtual NODE_TYPE GetChildType() const;
-      virtual bool GetContent(CFileItemList& items) const;
-      virtual std::string GetLocalizedName() const;
+      NODE_TYPE GetChildType() const override;
+      bool GetContent(CFileItemList& items) const override;
+      std::string GetLocalizedName() const override;
     };
   }
 }

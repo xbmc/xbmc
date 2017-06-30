@@ -41,23 +41,23 @@ public:
                          const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
                          float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems);
 //#endif
-  virtual ~CGUIListContainer(void);
-  virtual CGUIListContainer *Clone() const { return new CGUIListContainer(*this); };
+  ~CGUIListContainer(void) override;
+  CGUIListContainer *Clone() const override { return new CGUIListContainer(*this); };
 
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
+  bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage& message) override;
 
-  virtual bool HasNextPage() const;
-  virtual bool HasPreviousPage() const;
+  bool HasNextPage() const override;
+  bool HasPreviousPage() const override;
 
 protected:
-  virtual void Scroll(int amount);
-  void SetCursor(int cursor);
-  virtual bool MoveDown(bool wrapAround);
-  virtual bool MoveUp(bool wrapAround);
-  virtual void ValidateOffset();
-  virtual void SelectItem(int item);
-  virtual bool SelectItemFromPoint(const CPoint &point);
-  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const;
+  void Scroll(int amount) override;
+  void SetCursor(int cursor) override;
+  bool MoveDown(bool wrapAround) override;
+  bool MoveUp(bool wrapAround) override;
+  void ValidateOffset() override;
+  void SelectItem(int item) override;
+  bool SelectItemFromPoint(const CPoint &point) override;
+  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
 };
 

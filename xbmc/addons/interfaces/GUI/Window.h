@@ -131,7 +131,7 @@ namespace ADDON
 
   public:
     CGUIAddonWindow(int id, const std::string& strXML, ADDON::CAddonDll* addon, bool isMedia);
-    virtual ~CGUIAddonWindow() = default;
+    ~CGUIAddonWindow() override = default;
 
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction &action) override;

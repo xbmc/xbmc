@@ -31,16 +31,16 @@ namespace PERIPHERALS
   public:
     CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
-    virtual ~CPeripheralJoystickEmulation(void);
+    ~CPeripheralJoystickEmulation(void) override;
 
     // implementation of CPeripheral
-    virtual bool InitialiseFeature(const PeripheralFeature feature) override;
-    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
-    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
+    bool InitialiseFeature(const PeripheralFeature feature) override;
+    void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
+    void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
 
     // implementation of IKeyboardHandler
-    virtual bool OnKeyPress(const CKey& key) override;
-    virtual void OnKeyRelease(const CKey& key) override;
+    bool OnKeyPress(const CKey& key) override;
+    void OnKeyRelease(const CKey& key) override;
 
     /*!
      * \brief Number of the emulated controller (1-indexed)

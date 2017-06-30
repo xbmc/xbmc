@@ -72,7 +72,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CImage
     /// @brief Destructor
     ///
-    virtual ~CImage() = default;
+    ~CImage() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

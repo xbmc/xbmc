@@ -31,12 +31,12 @@ class CVideoSyncGLX : public CVideoSync, IDispResource
 {
 public:
   CVideoSyncGLX(void *clock) : CVideoSync(clock) {};
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnLostDisplay();
-  virtual void OnResetDisplay();
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(std::atomic<bool>& stop) override;
+  void Cleanup() override;
+  float GetFps() override;
+  void OnLostDisplay() override;
+  void OnResetDisplay() override;
 
 private:
   int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);

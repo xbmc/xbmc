@@ -105,9 +105,9 @@ class CActiveAEDSPModeUpdateJob : public CJob
 {
 public:
   CActiveAEDSPModeUpdateJob() {}
-  ~CActiveAEDSPModeUpdateJob(void) {}
+  ~CActiveAEDSPModeUpdateJob(void) override {}
 
-  bool DoWork(void)
+  bool DoWork(void) override
   {
     return true;
   }

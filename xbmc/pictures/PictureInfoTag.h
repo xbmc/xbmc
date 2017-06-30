@@ -97,9 +97,9 @@ class CPictureInfoTag : public IArchivable, public ISerializable, public ISortab
 public:
   CPictureInfoTag() { Reset(); };
   void Reset();
-  virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value) const;
-  virtual void ToSortable(SortItem& sortable, Field field) const;
+  void Archive(CArchive& ar) override;
+  void Serialize(CVariant& value) const override;
+  void ToSortable(SortItem& sortable, Field field) const override;
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   const std::string GetInfo(int info) const;
 

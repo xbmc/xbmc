@@ -27,28 +27,28 @@ class CGUIWindowSettingsCategory : public CGUIDialogSettingsManagerBase
 {
 public:
   CGUIWindowSettingsCategory();
-  virtual ~CGUIWindowSettingsCategory();
+  ~CGUIWindowSettingsCategory() override;
 
   // specialization of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnBack(int actionID);
-  virtual int GetID() const { return CGUIDialogSettingsManagerBase::GetID() + m_iSection; };
+  bool OnMessage(CGUIMessage &message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
+  int GetID() const override { return CGUIDialogSettingsManagerBase::GetID() + m_iSection; };
 
   // specialization of CGUIWindow
-  virtual bool IsDialog() const { return false; }
+  bool IsDialog() const override { return false; }
 
 protected:
   // specialization of CGUIWindow
-  virtual void OnWindowLoaded();
+  void OnWindowLoaded() override;
 
   // implementation of CGUIDialogSettingsBase
-  virtual int GetSettingLevel() const;
-  virtual std::shared_ptr<CSettingSection> GetSection();
-  virtual void Save();
+  int GetSettingLevel() const override;
+  std::shared_ptr<CSettingSection> GetSection() override;
+  void Save() override;
 
   // implementation of CGUIDialogSettingsManagerBase
-  virtual CSettingsManager* GetSettingsManager() const override;
+  CSettingsManager* GetSettingsManager() const override;
 
   /*!
    * Set focus to a category or setting in this window. The setting/category must be active in the

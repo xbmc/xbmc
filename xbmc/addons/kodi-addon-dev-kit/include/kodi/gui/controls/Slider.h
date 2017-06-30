@@ -73,7 +73,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CSlider
     /// @brief Destructor
     ///
-    virtual ~CSlider() = default;
+    ~CSlider() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

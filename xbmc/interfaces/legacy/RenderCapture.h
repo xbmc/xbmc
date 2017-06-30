@@ -59,7 +59,7 @@ namespace XBMCAddon
         m_width = 0;
         m_height = 0;
       }
-      inline virtual ~RenderCapture()
+      inline ~RenderCapture() override
       {
         g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
         delete [] m_buffer;

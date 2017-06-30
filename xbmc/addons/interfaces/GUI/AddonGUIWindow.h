@@ -40,7 +40,7 @@ friend class CAddonCallbacksGUI;
 
 public:
   CGUIAddonWindow(int id, const std::string& strXML, ADDON::CAddon* addon);
-  virtual ~CGUIAddonWindow(void);
+  ~CGUIAddonWindow(void) override;
 
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
@@ -88,14 +88,14 @@ class CGUIAddonWindowDialog : public CGUIAddonWindow
 {
 public:
   CGUIAddonWindowDialog(int id, const std::string& strXML, ADDON::CAddon* addon);
-  virtual ~CGUIAddonWindowDialog(void);
+  ~CGUIAddonWindowDialog(void) override;
 
   void            Show(bool show = true);
-  virtual bool    OnMessage(CGUIMessage &message);
-  virtual bool    IsDialogRunning() const { return m_bRunning; }
-  virtual bool    IsDialog() const { return true;};
-  virtual bool    IsModalDialog() const { return true; };
-  virtual bool    IsMediaWindow() const { return false; };
+  bool    OnMessage(CGUIMessage &message) override;
+  bool    IsDialogRunning() const override { return m_bRunning; }
+  bool    IsDialog() const override { return true;};
+  bool    IsModalDialog() const override { return true; };
+  bool    IsMediaWindow() const override { return false; };
 
   void Show_Internal(bool show = true);
 

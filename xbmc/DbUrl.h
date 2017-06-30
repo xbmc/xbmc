@@ -30,7 +30,7 @@ class CDbUrl : CUrlOptions
 {
 public:
   CDbUrl();
-  virtual ~CDbUrl();
+  ~CDbUrl() override;
 
   bool IsValid() const { return m_valid; }
   void Reset();

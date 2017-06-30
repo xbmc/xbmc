@@ -30,7 +30,7 @@ namespace XFILE
     public:
       CDirectoryNodeRoot(const std::string& strName, CDirectoryNode* pParent);
     protected:
-      virtual NODE_TYPE GetChildType() const;
+      NODE_TYPE GetChildType() const override;
     };
   }
 }

@@ -46,15 +46,15 @@ public:
   \param[in] progressBar Progress bar to be used to display the cleaning progress
   */
   CVideoLibraryCleaningJob(const std::set<int>& paths, CGUIDialogProgressBarHandle* progressBar);
-  virtual ~CVideoLibraryCleaningJob();
+  ~CVideoLibraryCleaningJob() override;
 
   // specialization of CJob
-  virtual const char *GetType() const { return "VideoLibraryCleaningJob"; }
-  virtual bool operator==(const CJob* job) const;
+  const char *GetType() const override { return "VideoLibraryCleaningJob"; }
+  bool operator==(const CJob* job) const override;
 
 protected:
   // implementation of CVideoLibraryJob
-  virtual bool Work(CVideoDatabase &db);
+  bool Work(CVideoDatabase &db) override;
 
 private:
   std::set<int> m_paths;

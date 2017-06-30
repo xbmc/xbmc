@@ -28,10 +28,10 @@ namespace XFILE
   {
   public:
     CLibraryDirectory();
-    virtual ~CLibraryDirectory();
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool Exists(const CURL& url);
-    virtual bool AllowAll() const { return true; }
+    ~CLibraryDirectory() override;
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
+    bool Exists(const CURL& url) override;
+    bool AllowAll() const override { return true; }
   private:
     /*! \brief parse the given path and return the node corresponding to this path
      \param path the library:// path to parse

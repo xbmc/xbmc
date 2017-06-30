@@ -138,9 +138,9 @@ class CPVREpgContainerStartJob : public CJob
 {
 public:
   CPVREpgContainerStartJob() = default;
-  virtual ~CPVREpgContainerStartJob(void) = default;
+  ~CPVREpgContainerStartJob(void) override = default;
 
-  bool DoWork(void)
+  bool DoWork(void) override
   {
     CServiceBroker::GetPVRManager().EpgContainer().Start(false);
     return true;

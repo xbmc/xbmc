@@ -63,10 +63,10 @@ public:
       m_limit(limit),
       m_parentID(parentID)
   { }
-  virtual ~CDirectoryJob() { }
+  ~CDirectoryJob() override { }
 
-  virtual const char* GetType() const { return "directory"; }
-  virtual bool operator==(const CJob *job) const
+  const char* GetType() const override { return "directory"; }
+  bool operator==(const CJob *job) const override
   {
     if (strcmp(job->GetType(),GetType()) == 0)
     {
@@ -77,7 +77,7 @@ public:
     return false;
   }
 
-  virtual bool DoWork()
+  bool DoWork() override
   {
     CFileItemList items;
     if (CDirectory::GetDirectory(m_url, items, ""))

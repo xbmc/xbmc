@@ -31,24 +31,24 @@ class CCircularCache : public CCacheStrategy
 {
 public:
     CCircularCache(size_t front, size_t back);
-    virtual ~CCircularCache();
+    ~CCircularCache() override;
 
-    virtual int Open() ;
-    virtual void Close();
+    int Open() override;
+    void Close() override;
 
-    virtual size_t GetMaxWriteSize(const size_t& iRequestSize) ;
-    virtual int WriteToCache(const char *buf, size_t len) ;
-    virtual int ReadFromCache(char *buf, size_t len) ;
-    virtual int64_t WaitForData(unsigned int minimum, unsigned int iMillis) ;
+    size_t GetMaxWriteSize(const size_t& iRequestSize) override;
+    int WriteToCache(const char *buf, size_t len) override;
+    int ReadFromCache(char *buf, size_t len) override;
+    int64_t WaitForData(unsigned int minimum, unsigned int iMillis) override;
 
-    virtual int64_t Seek(int64_t pos) ;
-    virtual bool Reset(int64_t pos, bool clearAnyway=true) ;
+    int64_t Seek(int64_t pos) override;
+    bool Reset(int64_t pos, bool clearAnyway=true) override;
 
-    virtual int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition);
-    virtual int64_t CachedDataEndPos(); 
-    virtual bool IsCachedPosition(int64_t iFilePosition);
+    int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition) override;
+    int64_t CachedDataEndPos() override; 
+    bool IsCachedPosition(int64_t iFilePosition) override;
 
-    virtual CCacheStrategy *CreateNew();
+    CCacheStrategy *CreateNew() override;
 protected:
     int64_t           m_beg;       /**< index in file (not buffer) of beginning of valid data */
     int64_t           m_end;       /**< index in file (not buffer) of end of valid data */

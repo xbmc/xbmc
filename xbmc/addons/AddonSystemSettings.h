@@ -62,7 +62,7 @@ private:
   CAddonSystemSettings& operator=(const CAddonSystemSettings&) = default;
   CAddonSystemSettings(CAddonSystemSettings&&);
   CAddonSystemSettings& operator=(CAddonSystemSettings&&);
-  virtual ~CAddonSystemSettings() = default;
+  ~CAddonSystemSettings() override = default;
 
   const std::map<ADDON::TYPE, std::string> m_activeSettings;
 };

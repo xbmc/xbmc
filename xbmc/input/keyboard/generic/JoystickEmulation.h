@@ -42,11 +42,11 @@ namespace KEYBOARD
   public:
     CJoystickEmulation(JOYSTICK::IDriverHandler* handler);
 
-    virtual ~CJoystickEmulation(void) = default;
+    ~CJoystickEmulation(void) override = default;
 
     // implementation of IKeyboardHandler
-    virtual bool OnKeyPress(const CKey& key) override;
-    virtual void OnKeyRelease(const CKey& key) override;
+    bool OnKeyPress(const CKey& key) override;
+    void OnKeyRelease(const CKey& key) override;
 
   private:
     struct KeyEvent

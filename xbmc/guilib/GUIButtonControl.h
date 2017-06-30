@@ -44,18 +44,18 @@ public:
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label, bool wrapMultiline = false);
 
-  virtual ~CGUIButtonControl(void);
-  virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
+  ~CGUIButtonControl(void) override;
+  CGUIButtonControl *Clone() const override { return new CGUIButtonControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnAction(const CAction &action) ;
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
-  virtual void SetPosition(float posX, float posY);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override ;
+  bool OnMessage(CGUIMessage& message) override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  void SetPosition(float posX, float posY) override;
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
@@ -66,8 +66,8 @@ public:
   virtual std::string GetLabel() const { return GetDescription(); };
   virtual std::string GetLabel2() const;
   void SetSelected(bool bSelected);
-  virtual std::string GetDescription() const;
-  virtual float GetWidth() const;
+  std::string GetDescription() const override;
+  float GetWidth() const override;
   virtual void SetMinWidth(float minWidth);
   void SetAlpha(unsigned char alpha);
 
@@ -77,15 +77,15 @@ public:
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); };
 
-  virtual bool UpdateColors();
+  bool UpdateColors() override;
 
-  virtual CRect CalcRenderRegion() const;
+  CRect CalcRenderRegion() const override;
 
 protected:
   friend class CGUISpinControlEx;
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  void OnFocus();
-  void OnUnFocus();
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  void OnFocus() override;
+  void OnUnFocus() override;
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;

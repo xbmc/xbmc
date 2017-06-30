@@ -48,23 +48,23 @@ class CGUIRSSControl : public CGUIControl, public IRssObserver
 public:
   CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, std::string& strRSSTags);
   CGUIRSSControl(const CGUIRSSControl &from);
-  virtual ~CGUIRSSControl(void);
-  virtual CGUIRSSControl *Clone() const { return new CGUIRSSControl(*this); };
+  ~CGUIRSSControl(void) override;
+  CGUIRSSControl *Clone() const override { return new CGUIRSSControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual void OnFeedUpdate(const vecText &feed);
-  virtual void OnFeedRelease();
-  virtual bool CanFocus() const { return true; };
-  virtual CRect CalcRenderRegion() const;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  void OnFeedUpdate(const vecText &feed) override;
+  void OnFeedRelease() override;
+  bool CanFocus() const override { return true; };
+  CRect CalcRenderRegion() const override;
 
-  virtual void OnFocus();
-  virtual void OnUnFocus();
+  void OnFocus() override;
+  void OnUnFocus() override;
 
   void SetUrlSet(const int urlset);
 
 protected:
-  virtual bool UpdateColors();
+  bool UpdateColors() override;
 
   CCriticalSection m_criticalSection;
 

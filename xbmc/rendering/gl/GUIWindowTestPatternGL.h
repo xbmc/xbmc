@@ -28,16 +28,16 @@ class CGUIWindowTestPatternGL : public CGUIWindowTestPattern
 {
 public:
   CGUIWindowTestPatternGL(void);
-  virtual ~CGUIWindowTestPatternGL(void);
+  ~CGUIWindowTestPatternGL(void) override;
 
 private:
-  virtual void DrawVerticalLines(int top, int left, int bottom, int right);
-  virtual void DrawHorizontalLines(int top, int left, int bottom, int right);
-  virtual void DrawCheckers(int top, int left, int bottom, int right);
-  virtual void DrawBouncingRectangle(int top, int left, int bottom, int right);
-  virtual void DrawContrastBrightnessPattern(int top, int left, int bottom, int right);
-  virtual void DrawCircle(int originX, int originY, int radius);
-  virtual void BeginRender();
-  virtual void EndRender();  
+  void DrawVerticalLines(int top, int left, int bottom, int right) override;
+  void DrawHorizontalLines(int top, int left, int bottom, int right) override;
+  void DrawCheckers(int top, int left, int bottom, int right) override;
+  void DrawBouncingRectangle(int top, int left, int bottom, int right) override;
+  void DrawContrastBrightnessPattern(int top, int left, int bottom, int right) override;
+  void DrawCircle(int originX, int originY, int radius) override;
+  void BeginRender() override;
+  void EndRender() override;  
 };
 

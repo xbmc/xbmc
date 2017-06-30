@@ -119,10 +119,10 @@ namespace XBMCAddon
     {
       std::string classname;
     protected:
-      virtual CGUIWindow* get() { return this; }
+      CGUIWindow* get() override { return this; }
 
       // this is only called from XBMC core and we only want it to return true every time
-      virtual bool     Update(const String &strPath) { return true; }
+      virtual bool Update(const String &strPath) { return true; }
 
     public:
       Interceptor(const char* specializedName,
@@ -150,7 +150,7 @@ namespace XBMCAddon
         P::SetLoadType(CGUIWindow::LOAD_ON_GUI_INIT);
       }
 
-      virtual ~Interceptor()
+      ~Interceptor() override
       { 
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
@@ -158,28 +158,28 @@ namespace XBMCAddon
 #endif
       }
 
-      virtual bool    OnMessage(CGUIMessage& message) 
+      bool OnMessage(CGUIMessage& message) override 
       { XBMC_TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }
-      virtual bool    OnAction(const CAction &action) 
+      bool OnAction(const CAction &action) override 
       { XBMC_TRACE; return up() ? P::OnAction(action) : checkedb(OnAction(action)); }
 
       // NOTE!!: This ALWAYS skips up to the CGUIWindow instance.
-      virtual bool    OnBack(int actionId) 
+      bool OnBack(int actionId) override 
       { XBMC_TRACE; return up() ? CGUIWindow::OnBack(actionId) : checkedb(OnBack(actionId)); }
 
-      virtual void OnDeinitWindow(int nextWindowID)
+      void OnDeinitWindow(int nextWindowID) override
       { XBMC_TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
 
-      virtual bool    IsModalDialog() const { XBMC_TRACE; return checkedb(IsModalDialog()); };
+      bool IsModalDialog() const override { XBMC_TRACE; return checkedb(IsModalDialog()); };
 
-      virtual bool    IsDialogRunning() const { XBMC_TRACE; return checkedb(IsDialogRunning()); };
-      virtual bool    IsDialog() const { XBMC_TRACE; return checkedb(IsDialog()); };
-      virtual bool    IsMediaWindow() const { XBMC_TRACE; return checkedb(IsMediaWindow());; };
+      bool IsDialogRunning() const override { XBMC_TRACE; return checkedb(IsDialogRunning()); };
+      bool IsDialog() const override { XBMC_TRACE; return checkedb(IsDialog()); };
+      bool IsMediaWindow() const override { XBMC_TRACE; return checkedb(IsMediaWindow());; };
 
-      virtual void    SetRenderOrder(int renderOrder) { XBMC_TRACE; P::m_renderOrder = renderOrder; }
+      void SetRenderOrder(int renderOrder) override { XBMC_TRACE; P::m_renderOrder = renderOrder; }
 
-      virtual void    setActive(bool active) { XBMC_TRACE; P::m_active = active; }
-      virtual bool    isActive() { XBMC_TRACE; return P::m_active; }
+      void setActive(bool active) override { XBMC_TRACE; P::m_active = active; }
+      bool isActive() override { XBMC_TRACE; return P::m_active; }
     };
 
     template <class P /* extends CGUIWindow*/> class InterceptorDialog : 

@@ -50,7 +50,7 @@ protected:
     }
   }
 
-  ~TestFileFactory()
+  ~TestFileFactory() override
   {
     g_advancedSettings.Clear();
     CServiceBroker::GetSettings().Unload();

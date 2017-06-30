@@ -26,11 +26,11 @@ class CGUIWindowScreensaverDim : public CGUIDialog
 public:
   CGUIWindowScreensaverDim();
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
 
 protected:
-  virtual void UpdateVisibility();
+  void UpdateVisibility() override;
 
 private:
   float m_dimLevel;

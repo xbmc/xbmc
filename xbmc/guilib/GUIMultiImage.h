@@ -44,22 +44,22 @@ class CGUIMultiImage : public CGUIControl, public IJobCallback
 public:
   CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd);
   CGUIMultiImage(const CGUIMultiImage &from);
-  virtual ~CGUIMultiImage(void);
-  virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };
+  ~CGUIMultiImage(void) override;
+  CGUIMultiImage *Clone() const override { return new CGUIMultiImage(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void UpdateInfo(const CGUIListItem *item = NULL);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
-  virtual void SetInvalid();
-  virtual bool CanFocus() const;
-  virtual std::string GetDescription() const;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void UpdateInfo(const CGUIListItem *item = NULL) override;
+  bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage &message) override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  bool IsDynamicallyAllocated() override { return m_bDynamicResourceAlloc; };
+  void SetInvalid() override;
+  bool CanFocus() const override;
+  std::string GetDescription() const override;
 
   void SetInfo(const CGUIInfoLabel &info);
   void SetAspectRatio(const CAspectRatio &ratio);
@@ -70,14 +70,14 @@ protected:
   void CancelLoading();
 
   enum DIRECTORY_STATUS { UNLOADED = 0, LOADING, LOADED, READY };
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   class CMultiImageJob : public CJob
   {
   public:
     CMultiImageJob(const std::string &path);
-    virtual bool DoWork();
-    virtual const char *GetType() const { return "multiimage"; };
+    bool DoWork() override;
+    const char *GetType() const override { return "multiimage"; };
 
     std::vector<std::string> m_files;
     std::string              m_path;

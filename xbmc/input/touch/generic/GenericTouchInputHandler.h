@@ -51,15 +51,15 @@ public:
   static CGenericTouchInputHandler &GetInstance();
 
   // implementation of ITouchInputHandler
-  virtual bool HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer = 0, float size = 0.0f);
-  virtual bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f);
+  bool HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer = 0, float size = 0.0f) override;
+  bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f) override;
 
 private:
   // private construction, and no assignments; use the provided singleton methods
   CGenericTouchInputHandler();
   CGenericTouchInputHandler(const CGenericTouchInputHandler&);
   CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&);
-  virtual ~CGenericTouchInputHandler();
+  ~CGenericTouchInputHandler() override;
 
   typedef enum {
     TouchGestureUnknown = 0,
@@ -80,7 +80,7 @@ private:
   } TouchGestureState;
 
   // implementation of ITimerCallback
-  virtual void OnTimeout();
+  void OnTimeout() override;
 
   void saveLastTouch();
   void setGestureState(TouchGestureState gestureState) { m_gestureStateOld = m_gestureState; m_gestureState = gestureState; }

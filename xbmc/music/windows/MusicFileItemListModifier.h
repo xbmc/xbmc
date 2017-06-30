@@ -26,7 +26,7 @@ class CMusicFileItemListModifier : public IFileItemListModifier
 {
 public:
   CMusicFileItemListModifier() { }
-  virtual ~CMusicFileItemListModifier() { }
+  ~CMusicFileItemListModifier() override { }
 
   bool CanModify(const CFileItemList &items) const override;
   bool Modify(CFileItemList &items) const override;

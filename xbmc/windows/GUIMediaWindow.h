@@ -35,7 +35,7 @@ class CGUIMediaWindow : public CGUIWindow
 {
 public:
   CGUIMediaWindow(int id, const char *xmlFile);
-  virtual ~CGUIMediaWindow(void);
+  ~CGUIMediaWindow(void) override;
 
   // specializations of CGUIControl
   bool OnAction(const CAction &action) override;

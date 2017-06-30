@@ -104,7 +104,7 @@ namespace XBMCAddon
       }
 #endif
 
-      virtual ~ListItem();
+      ~ListItem() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

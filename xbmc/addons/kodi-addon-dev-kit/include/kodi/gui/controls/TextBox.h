@@ -73,7 +73,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CTextBox
     /// @brief Destructor
     ///
-    virtual ~CTextBox() = default;
+    ~CTextBox() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

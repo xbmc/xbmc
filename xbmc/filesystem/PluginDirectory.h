@@ -43,12 +43,12 @@ class CPluginDirectory : public IDirectory
 {
 public:
   CPluginDirectory();
-  ~CPluginDirectory(void);
-  virtual bool GetDirectory(const CURL& url, CFileItemList& items);
-  virtual bool AllowAll() const { return true; }
-  virtual bool Exists(const CURL& url) { return true; }
-  virtual float GetProgress() const;
-  virtual void CancelDirectory();
+  ~CPluginDirectory(void) override;
+  bool GetDirectory(const CURL& url, CFileItemList& items) override;
+  bool AllowAll() const override { return true; }
+  bool Exists(const CURL& url) override { return true; }
+  float GetProgress() const override;
+  void CancelDirectory() override;
   static bool RunScriptWithParams(const std::string& strPath);
   static bool GetPluginResult(const std::string& strPath, CFileItem &resultItem);
 

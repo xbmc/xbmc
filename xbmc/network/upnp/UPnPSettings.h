@@ -28,7 +28,7 @@ class CUPnPSettings : public ISettingsHandler
 public:
   static CUPnPSettings& GetInstance();
   
-  virtual void OnSettingsUnloaded() override;
+  void OnSettingsUnloaded() override;
 
   bool Load(const std::string &file);
   bool Save(const std::string &file) const;
@@ -50,7 +50,7 @@ protected:
   CUPnPSettings();
   CUPnPSettings(const CUPnPSettings&);
   CUPnPSettings const& operator=(CUPnPSettings const&);
-  virtual ~CUPnPSettings();
+  ~CUPnPSettings() override;
 
 private:
   std::string m_serverUUID;

@@ -75,7 +75,7 @@ private:
   CInputManager();
   CInputManager(const CInputManager&);
   CInputManager const& operator=(CInputManager const&);
-  virtual ~CInputManager();
+  ~CInputManager() override;
 
 public:
   /*! \brief static method to get the current instance of the class. Creates a new instance the first time it's called.
@@ -236,10 +236,10 @@ public:
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
   // implementation of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // implementation of IActionListener
-  virtual bool OnAction(const CAction& action) override;
+  bool OnAction(const CAction& action) override;
 
   /*! \brief Registers a handler to be called on keyboard input (e.g a game client).
    *

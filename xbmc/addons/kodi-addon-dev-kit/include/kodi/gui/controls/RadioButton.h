@@ -75,7 +75,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CRadioButton
     /// @brief Destructor
     ///
-    virtual ~CRadioButton() = default;
+    ~CRadioButton() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

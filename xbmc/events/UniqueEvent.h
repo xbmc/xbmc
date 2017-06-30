@@ -25,7 +25,7 @@
 class CUniqueEvent : public CBaseEvent
 {
 public:
-  virtual ~CUniqueEvent() { }
+  ~CUniqueEvent() override { }
 
 protected:
   CUniqueEvent(const CVariant& label, const CVariant& description, EventLevel level = EventLevel::Information)

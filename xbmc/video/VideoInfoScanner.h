@@ -57,7 +57,7 @@ namespace VIDEO
   {
   public:
     CVideoInfoScanner();
-    virtual ~CVideoInfoScanner();
+    ~CVideoInfoScanner() override;
 
     /*! \brief Scan a folder using the background scanner
      \param strDirectory path to scan

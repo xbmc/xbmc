@@ -44,10 +44,10 @@ public:
    \param settingsManager Reference to the settings manager
    */
   CSettingGroup(const std::string &id, CSettingsManager *settingsManager = nullptr);
-  ~CSettingGroup() = default;
+  ~CSettingGroup() override = default;
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of settings belonging to the setting group.
@@ -98,10 +98,10 @@ public:
    \param settingsManager Reference to the settings manager
    */
   CSettingCategory(const std::string &id, CSettingsManager *settingsManager = nullptr);
-  ~CSettingCategory() = default;
+  ~CSettingCategory() override = default;
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting groups belonging to the setting
@@ -154,10 +154,10 @@ public:
    \param settingsManager Reference to the settings manager
    */
   CSettingSection(const std::string &id, CSettingsManager *settingsManager = nullptr);
-  ~CSettingSection() = default;
+  ~CSettingSection() override = default;
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting categories belonging to the setting

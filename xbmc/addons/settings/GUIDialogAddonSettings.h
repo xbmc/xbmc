@@ -26,10 +26,10 @@ class CGUIDialogAddonSettings : public CGUIDialogSettingsManagerBase
 {
 public:
   CGUIDialogAddonSettings();
-  ~CGUIDialogAddonSettings() = default;
+  ~CGUIDialogAddonSettings() override = default;
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
+  bool OnMessage(CGUIMessage &message) override;
 
   static bool ShowForAddon(const ADDON::AddonPtr &addon, bool saveToDisk = true);
   static void SaveAndClose();

@@ -30,11 +30,11 @@ class CGUIWindowTestPattern : public CGUIWindow
 {
 public:
   CGUIWindowTestPattern(void);
-  virtual ~CGUIWindowTestPattern(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  ~CGUIWindowTestPattern(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  void Render() override;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
 protected:
   virtual void DrawVerticalLines(int top, int left, int bottom, int right) = 0;

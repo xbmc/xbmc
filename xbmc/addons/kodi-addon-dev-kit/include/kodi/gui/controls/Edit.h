@@ -131,7 +131,7 @@ namespace controls
     /// \ingroup cpp_kodi_gui_controls_CEdit
     /// @brief Destructor
     ///
-    virtual ~CEdit() = default;
+    ~CEdit() override = default;
     //--------------------------------------------------------------------------
 
     //==========================================================================

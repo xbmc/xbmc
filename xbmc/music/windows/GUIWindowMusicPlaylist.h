@@ -27,24 +27,24 @@ class CGUIWindowMusicPlayList : public CGUIWindowMusicBase
 {
 public:
   CGUIWindowMusicPlayList(void);
-  virtual ~CGUIWindowMusicPlayList(void);
+  ~CGUIWindowMusicPlayList(void) override;
 
-  virtual bool OnMessage(CGUIMessage& message) override;
-  virtual bool OnAction(const CAction &action) override;
-  virtual bool OnBack(int actionID) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
 
   void RemovePlayListItem(int iItem);
   void MoveItem(int iStart, int iDest);
 
 protected:
-  virtual bool GoParentFolder() override { return false; };
-  virtual void UpdateButtons() override;
-  virtual void OnItemLoaded(CFileItem* pItem) override;
-  virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  bool GoParentFolder() override { return false; };
+  void UpdateButtons() override;
+  void OnItemLoaded(CFileItem* pItem) override;
+  bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
+  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   void OnMove(int iItem, int iAction);
-  virtual bool OnPlayMedia(int iItem, const std::string &player = "") override;
+  bool OnPlayMedia(int iItem, const std::string &player = "") override;
 
   void SavePlayList();
   void ClearPlayList();

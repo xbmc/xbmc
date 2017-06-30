@@ -63,7 +63,7 @@ private:
       , m_imp(imp)
     {}
   public:
-    virtual bool DoWork()
+    bool DoWork() override
     {
       m_result->m_list.SetURL(m_result->m_listDir);
       m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);

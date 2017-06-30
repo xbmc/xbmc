@@ -28,11 +28,11 @@ public:
   CSettingAddon(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSettingAddon(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = nullptr);
   CSettingAddon(const std::string &id, const CSettingAddon &setting);
-  virtual ~CSettingAddon() = default;
+  ~CSettingAddon() override = default;
 
-  virtual SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   ADDON::TYPE GetAddonType() const { return m_addonType; }
   void SetAddonType(ADDON::TYPE addonType) { m_addonType = addonType; }

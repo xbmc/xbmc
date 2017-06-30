@@ -61,7 +61,7 @@ namespace PVR
   {
   public:
     CPVRClients(void);
-    virtual ~CPVRClients(void);
+    ~CPVRClients(void) override;
 
     /*!
      * @brief Start the backend.

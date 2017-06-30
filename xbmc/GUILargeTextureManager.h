@@ -39,12 +39,12 @@ class CImageLoader : public CJob
 {
 public:
   CImageLoader(const std::string &path, const bool useCache);
-  virtual ~CImageLoader();
+  ~CImageLoader() override;
 
   /*!
    \brief Work function that loads in a particular image.
    */
-  virtual bool DoWork();
+  bool DoWork() override;
 
   bool          m_use_cache; ///< Whether or not to use any caching with this image
   std::string    m_path; ///< path of image to load
@@ -64,7 +64,7 @@ class CGUILargeTextureManager : public IJobCallback
 {
 public:
   CGUILargeTextureManager();
-  virtual ~CGUILargeTextureManager();
+  ~CGUILargeTextureManager() override;
 
   /*!
    \brief Callback from CImageLoader on completion of a loaded image
@@ -73,7 +73,7 @@ public:
 
    \sa CImageLoader, IJobCallback
    */
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   /*!
    \brief Request a texture to be loaded in the background.

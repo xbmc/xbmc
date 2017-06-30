@@ -30,9 +30,9 @@ public:
   CSettingRequirementCondition(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionItem(settingsManager)
   { }
-  virtual ~CSettingRequirementCondition() = default;
+  ~CSettingRequirementCondition() override = default;
 
-  virtual bool Check() const;
+  bool Check() const override;
 };
 
 class CSettingRequirementConditionCombination : public CSettingConditionCombination
@@ -41,18 +41,18 @@ public:
   CSettingRequirementConditionCombination(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionCombination(settingsManager)
   { }
-  virtual ~CSettingRequirementConditionCombination() = default;
+  ~CSettingRequirementConditionCombination() override = default;
 
-  virtual bool Check() const;
+  bool Check() const override;
 
 private:
-  virtual CBooleanLogicOperation* newOperation() { return new CSettingRequirementConditionCombination(m_settingsManager); }
-  virtual CBooleanLogicValue* newValue() { return new CSettingRequirementCondition(m_settingsManager); }
+  CBooleanLogicOperation* newOperation() override { return new CSettingRequirementConditionCombination(m_settingsManager); }
+  CBooleanLogicValue* newValue() override { return new CSettingRequirementCondition(m_settingsManager); }
 };
 
 class CSettingRequirement : public CSettingCondition
 {
 public:
   CSettingRequirement(CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingRequirement() = default;
+  ~CSettingRequirement() override = default;
 };

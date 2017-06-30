@@ -56,19 +56,19 @@ public:
   } UpdateState;
 
   CDirectoryProvider(const TiXmlElement *element, int parentID);
-  virtual ~CDirectoryProvider();
+  ~CDirectoryProvider() override;
 
-  virtual bool Update(bool forceRefresh) override;
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
-  virtual void Fetch(std::vector<CGUIListItemPtr> &items) override;
-  virtual void Reset() override;
-  virtual bool OnClick(const CGUIListItemPtr &item) override;
+  bool Update(bool forceRefresh) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+  void Fetch(std::vector<CGUIListItemPtr> &items) override;
+  void Reset() override;
+  bool OnClick(const CGUIListItemPtr &item) override;
   bool OnInfo(const CGUIListItemPtr &item) override;
   bool OnContextMenu(const CGUIListItemPtr &item) override;
-  virtual bool IsUpdating() const override;
+  bool IsUpdating() const override;
 
   // callback from directory job
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 private:
   UpdateState      m_updateState;
   bool             m_isAnnounced;

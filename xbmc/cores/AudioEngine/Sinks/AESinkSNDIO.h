@@ -30,19 +30,19 @@
 class CAESinkSNDIO : public IAESink
 {
 public:
-  virtual const char *GetName() { return "sndio"; }
+  const char *GetName() override { return "sndio"; }
 
   CAESinkSNDIO();
-  virtual ~CAESinkSNDIO();
+  ~CAESinkSNDIO() override;
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
+  bool Initialize(AEAudioFormat &format, std::string &device) override;
+  void Deinitialize() override;
 
   virtual void Stop();
-  virtual void GetDelay(AEDelayStatus& status);
-  virtual double GetCacheTotal() { return 0.0; }
-  virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void Drain();
+  void GetDelay(AEDelayStatus& status) override;
+  double GetCacheTotal() override { return 0.0; }
+  unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
+  void Drain() override;
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
   void AudioFormatToPar(AEAudioFormat& format);

@@ -52,10 +52,10 @@ class CGUIAudioManager : public ISettingCallback
 
 public:
   CGUIAudioManager();
-  ~CGUIAudioManager();
+  ~CGUIAudioManager() override;
 
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   void Initialize();
   void DeInitialize();

@@ -35,7 +35,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRGuideBase();
+    ~CGUIWindowPVRGuideBase() override;
 
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
@@ -99,9 +99,9 @@ namespace PVR
   {
   public:
     CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow);
-    virtual ~CPVRRefreshTimelineItemsThread();
+    ~CPVRRefreshTimelineItemsThread() override;
 
-    virtual void Process();
+    void Process() override;
 
     void DoRefresh();
     void Stop();

@@ -47,15 +47,15 @@ class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer, public IActionListener,
 {
 public:
   // ANNOUNCEMENT::IAnnouncer
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
   void RegisterActionListener(bool doRegister);
   static void EnableActionProcessing(bool enable);
   // IACtionListener
-  virtual bool OnAction(const CAction &action);
+  bool OnAction(const CAction &action) override;
   
   //CThread
-  virtual void Process();
+  void Process() override;
 
   static bool StartServer(int port, bool nonlocal, bool usePassword, const std::string &password="");
   static void StopServer(bool bWait);
@@ -68,7 +68,7 @@ public:
 
 private:
   CAirTunesServer(int port, bool nonlocal);
-  ~CAirTunesServer();
+  ~CAirTunesServer() override;
   bool Initialize(const std::string &password);
   void Deinitialize();
   static void RefreshCoverArt(const char *outputFilename = NULL);

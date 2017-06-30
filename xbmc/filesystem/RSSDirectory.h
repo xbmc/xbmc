@@ -30,12 +30,12 @@ namespace XFILE
   {
   public:
     CRSSDirectory();
-    virtual ~CRSSDirectory();
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool Exists(const CURL& url);
-    virtual bool AllowAll() const { return true; }
-    virtual bool ContainsFiles(const CURL& url);
-    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
+    ~CRSSDirectory() override;
+    bool GetDirectory(const CURL& url, CFileItemList &items) override;
+    bool Exists(const CURL& url) override;
+    bool AllowAll() const override { return true; }
+    bool ContainsFiles(const CURL& url) override;
+    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ONCE; };
   protected:
     // key is path, value is cache invalidation date
     static std::map<std::string,CDateTime> m_cache;

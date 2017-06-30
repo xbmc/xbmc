@@ -35,23 +35,23 @@ class CGUIFixedListContainer : public CGUIBaseContainer
 {
 public:
   CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange);
-  virtual ~CGUIFixedListContainer(void);
-  virtual CGUIFixedListContainer *Clone() const { return new CGUIFixedListContainer(*this); };
+  ~CGUIFixedListContainer(void) override;
+  CGUIFixedListContainer *Clone() const override { return new CGUIFixedListContainer(*this); };
 
-  virtual bool OnAction(const CAction &action);
+  bool OnAction(const CAction &action) override;
 
 protected:
-  virtual void Scroll(int amount);
-  virtual bool MoveDown(bool wrapAround);
-  virtual bool MoveUp(bool wrapAround);
-  virtual bool GetOffsetRange(int &minOffset, int &maxOffset) const;
-  virtual void ValidateOffset();
-  virtual bool SelectItemFromPoint(const CPoint &point);
-  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const;
-  virtual void SelectItem(int item);
-  virtual bool HasNextPage() const;
-  virtual bool HasPreviousPage() const;
-  virtual int GetCurrentPage() const;
+  void Scroll(int amount) override;
+  bool MoveDown(bool wrapAround) override;
+  bool MoveUp(bool wrapAround) override;
+  bool GetOffsetRange(int &minOffset, int &maxOffset) const override;
+  void ValidateOffset() override;
+  bool SelectItemFromPoint(const CPoint &point) override;
+  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
+  void SelectItem(int item) override;
+  bool HasNextPage() const override;
+  bool HasPreviousPage() const override;
+  int GetCurrentPage() const override;
 
 private:
   /*!

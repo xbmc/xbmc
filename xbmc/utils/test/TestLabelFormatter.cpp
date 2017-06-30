@@ -46,7 +46,7 @@ protected:
     */
   }
 
-  ~TestLabelFormatter()
+  ~TestLabelFormatter() override
   {
     CServiceBroker::GetSettings().Unload();
   }

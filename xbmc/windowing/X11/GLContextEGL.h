@@ -28,7 +28,7 @@ class CGLContextEGL : public CGLContext
 {
 public:
   CGLContextEGL(Display *dpy);
-  virtual ~CGLContextEGL();
+  ~CGLContextEGL() override;
   bool Refresh(bool force, int screen, Window glWindow, bool &newContext) override;
   void Destroy() override;
   void Detach() override;

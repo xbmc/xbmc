@@ -44,10 +44,10 @@ class CGUIFontTTFGL : public CGUIFontTTFBase
 {
 public:
   CGUIFontTTFGL(const std::string& strFileName);
-  virtual ~CGUIFontTTFGL(void);
+  ~CGUIFontTTFGL(void) override;
 
-  virtual bool FirstBegin();
-  virtual void LastEnd();
+  bool FirstBegin() override;
+  void LastEnd() override;
 #if HAS_GLES
   virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const;
   virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const;
@@ -56,9 +56,9 @@ public:
 #endif
 
 protected:
-  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
-  virtual void DeleteHardwareTexture();
+  CBaseTexture* ReallocTexture(unsigned int& newHeight) override;
+  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
+  void DeleteHardwareTexture() override;
 
 #if HAS_GLES
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)

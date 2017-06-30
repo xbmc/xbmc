@@ -29,26 +29,26 @@ class CGUIDialogProfileSettings : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogProfileSettings();
-  virtual ~CGUIDialogProfileSettings();
+  ~CGUIDialogProfileSettings() override;
 
   static bool ShowForProfile(unsigned int iProfile, bool firstLogin = false);
 
 protected:
   // specializations of CGUIWindow
-  virtual void OnWindowLoaded();
+  void OnWindowLoaded() override;
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save() { }
-  virtual void OnCancel();
-  virtual void SetupView();
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override { }
+  void OnCancel() override;
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  void InitializeSettings() override;
 
   /*! \brief Prompt for a change in profile path
    \param directory Current directory for the profile, new profile directory will be returned here

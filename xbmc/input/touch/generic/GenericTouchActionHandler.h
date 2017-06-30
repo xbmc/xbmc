@@ -37,28 +37,28 @@ public:
   static CGenericTouchActionHandler &GetInstance();
 
   // implementation of ITouchActionHandler
-  virtual void OnTouchAbort();
+  void OnTouchAbort() override;
 
-  virtual bool OnSingleTouchStart(float x, float y);
-  virtual bool OnSingleTouchHold(float x, float y);
-  virtual bool OnSingleTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
-  virtual bool OnSingleTouchEnd(float x, float y);
+  bool OnSingleTouchStart(float x, float y) override;
+  bool OnSingleTouchHold(float x, float y) override;
+  bool OnSingleTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY) override;
+  bool OnSingleTouchEnd(float x, float y) override;
 
-  virtual bool OnMultiTouchDown(float x, float y, int32_t pointer);
-  virtual bool OnMultiTouchHold(float x, float y, int32_t pointers = 2);
-  virtual bool OnMultiTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY, int32_t pointer);
-  virtual bool OnMultiTouchUp(float x, float y, int32_t pointer);
+  bool OnMultiTouchDown(float x, float y, int32_t pointer) override;
+  bool OnMultiTouchHold(float x, float y, int32_t pointers = 2) override;
+  bool OnMultiTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY, int32_t pointer) override;
+  bool OnMultiTouchUp(float x, float y, int32_t pointer) override;
 
-  virtual bool OnTouchGestureStart(float x, float y);
-  virtual bool OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
-  virtual bool OnTouchGestureEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
+  bool OnTouchGestureStart(float x, float y) override;
+  bool OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY) override;
+  bool OnTouchGestureEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY) override;
 
   // convenience events
-  virtual void OnTap(float x, float y, int32_t pointers = 1);
-  virtual void OnLongPress(float x, float y, int32_t pointers = 1);
-  virtual void OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers = 1);
-  virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);
-  virtual void OnRotate(float centerX, float centerY, float angle);
+  void OnTap(float x, float y, int32_t pointers = 1) override;
+  void OnLongPress(float x, float y, int32_t pointers = 1) override;
+  void OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers = 1) override;
+  void OnZoomPinch(float centerX, float centerY, float zoomFactor) override;
+  void OnRotate(float centerX, float centerY, float angle) override;
 
   /*!
    \brief Asks the control at the given coordinates for a list of the supported gestures.
@@ -75,7 +75,7 @@ private:
   CGenericTouchActionHandler() { }
   CGenericTouchActionHandler(const CGenericTouchActionHandler&);
   CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&);
-  virtual ~CGenericTouchActionHandler() { }
+  ~CGenericTouchActionHandler() override { }
 
   void touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);
   void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, int pointers = 1);

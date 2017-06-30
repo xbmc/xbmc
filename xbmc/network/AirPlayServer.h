@@ -42,7 +42,7 @@ class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {
 public:
   // IAnnouncer IF
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
   //AirPlayServer impl.
   static bool StartServer(int port, bool nonlocal);
@@ -55,11 +55,11 @@ public:
   static int m_isPlaying;
 
 protected:
-  void Process();
+  void Process() override;
 
 private:
   CAirPlayServer(int port, bool nonlocal);
-  ~CAirPlayServer();
+  ~CAirPlayServer() override;
   bool SetInternalCredentials(bool usePassword, const std::string& password);
   bool Initialize();
   void Deinitialize();

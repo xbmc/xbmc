@@ -34,9 +34,9 @@ public:
   CGenericTouchPinchDetector(ITouchActionHandler *handler, float dpi)
     : IGenericTouchGestureDetector(handler, dpi)
   { }
-  virtual ~CGenericTouchPinchDetector() { }
+  ~CGenericTouchPinchDetector() override { }
 
-  virtual bool OnTouchDown(unsigned int index, const Pointer &pointer);
-  virtual bool OnTouchUp(unsigned int index, const Pointer &pointer);
-  virtual bool OnTouchMove(unsigned int index, const Pointer &pointer);
+  bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchUp(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchMove(unsigned int index, const Pointer &pointer) override;
 };

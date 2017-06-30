@@ -233,7 +233,7 @@ namespace XBMCAddon
        */
       Window(bool discrim);
 
-      virtual void deallocating();
+      void deallocating() override;
 
       /**
        * This helper retrieves the next available id. It is assumed that the
@@ -267,7 +267,7 @@ namespace XBMCAddon
     public:
       Window(int existingWindowId = -1);
 
-      virtual ~Window();
+      ~Window() override;
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage& message);

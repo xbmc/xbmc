@@ -35,11 +35,11 @@ namespace KEYBOARD
   {
   public:
     CKeyboardEasterEgg(void);
-    virtual ~CKeyboardEasterEgg() = default;
+    ~CKeyboardEasterEgg() override = default;
 
     // implementation of IKeyboardHandler
-    virtual bool OnKeyPress(const CKey& key);
-    virtual void OnKeyRelease(const CKey& key) { }
+    bool OnKeyPress(const CKey& key) override;
+    void OnKeyRelease(const CKey& key) override { }
 
   private:
     static std::vector<XBMCVKey> m_sequence;

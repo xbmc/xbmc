@@ -41,12 +41,12 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBusCEC(CPeripherals& manager);
-    virtual ~CPeripheralBusCEC(void);
+    ~CPeripheralBusCEC(void) override;
 
     /*!
      * @see PeripheralBus::PerformDeviceScan()
      */
-    bool PerformDeviceScan(PeripheralScanResults &results);
+    bool PerformDeviceScan(PeripheralScanResults &results) override;
 
   private:
     DllLibCEC*                m_dll;

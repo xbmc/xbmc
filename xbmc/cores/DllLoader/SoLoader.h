@@ -32,15 +32,15 @@ class SoLoader : public LibraryLoader
 {
 public:
   SoLoader(const std::string &so, bool bGlobal = false);
-  ~SoLoader();
+  ~SoLoader() override;
 
-  virtual bool Load();
-  virtual void Unload();
+  bool Load() override;
+  void Unload() override;
 
-  virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true);
-  virtual bool IsSystemDll();
-  virtual HMODULE GetHModule();
-  virtual bool HasSymbols();
+  int ResolveExport(const char* symbol, void** ptr, bool logging = true) override;
+  bool IsSystemDll() override;
+  HMODULE GetHModule() override;
+  bool HasSymbols() override;
 
 private:
   void* m_soHandle;

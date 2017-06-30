@@ -41,11 +41,11 @@ class CSettingControlCreator : public ISettingControlCreator
 {
 public:
   // implementation of ISettingControlCreator
-  virtual std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
+  std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
 
 protected:
   CSettingControlCreator() = default;
-  virtual ~CSettingControlCreator() = default;
+  ~CSettingControlCreator() override = default;
 };
 
 class CSettingControlCheckmark : public ISettingControl
@@ -55,19 +55,19 @@ public:
   {
     m_format = "boolean";
   }
-  virtual ~CSettingControlCheckmark() = default;
+  ~CSettingControlCheckmark() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "toggle"; }
-  virtual bool SetFormat(const std::string &format) override;
+  std::string GetType() const override { return "toggle"; }
+  bool SetFormat(const std::string &format) override;
 };
 
 class CSettingControlFormattedRange : public ISettingControl
 {
 public:
-  virtual ~CSettingControlFormattedRange() = default;
+  ~CSettingControlFormattedRange() override = default;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   int GetFormatLabel() const { return m_formatLabel; }
   void SetFormatLabel(int formatLabel) { m_formatLabel = formatLabel; }
@@ -88,13 +88,13 @@ class CSettingControlSpinner : public CSettingControlFormattedRange
 {
 public:
   CSettingControlSpinner() = default;
-  virtual ~CSettingControlSpinner() = default;
+  ~CSettingControlSpinner() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "spinner"; }
+  std::string GetType() const override { return "spinner"; }
 
   // specialization of CSettingControlFormattedRange
-  virtual bool SetFormat(const std::string &format) override;
+  bool SetFormat(const std::string &format) override;
 };
 
 class CSettingControlEdit : public ISettingControl
@@ -104,12 +104,12 @@ public:
   {
     m_delayed = true;
   }
-  virtual ~CSettingControlEdit() = default;
+  ~CSettingControlEdit() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "edit"; }
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
-  virtual bool SetFormat(const std::string &format) override;
+  std::string GetType() const override { return "edit"; }
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool SetFormat(const std::string &format) override;
 
   bool IsHidden() const { return m_hidden; }
   void SetHidden(bool hidden) { m_hidden = hidden; }
@@ -128,12 +128,12 @@ class CSettingControlButton : public ISettingControl
 {
 public:
   CSettingControlButton() = default;
-  virtual ~CSettingControlButton() = default;
+  ~CSettingControlButton() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "button"; }
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
-  virtual bool SetFormat(const std::string &format) override;
+  std::string GetType() const override { return "button"; }
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool SetFormat(const std::string &format) override;
 
   int GetHeading() const { return m_heading; }
   void SetHeading(int heading) { m_heading = heading; }
@@ -184,14 +184,14 @@ class CSettingControlList : public CSettingControlFormattedRange
 {
 public:
   CSettingControlList() = default;
-  virtual ~CSettingControlList() = default;
+  ~CSettingControlList() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "list"; }
+  std::string GetType() const override { return "list"; }
 
   // specialization of CSettingControlFormattedRange
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
-  virtual bool SetFormat(const std::string &format) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool SetFormat(const std::string &format) override;
   
   int GetHeading() const { return m_heading; }
   void SetHeading(int heading) { m_heading = heading; }
@@ -217,12 +217,12 @@ class CSettingControlSlider : public ISettingControl
 {
 public:
   CSettingControlSlider() = default;
-  virtual ~CSettingControlSlider() = default;
+  ~CSettingControlSlider() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "slider"; }
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
-  virtual bool SetFormat(const std::string &format) override;
+  std::string GetType() const override { return "slider"; }
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool SetFormat(const std::string &format) override;
 
   int GetHeading() const { return m_heading; }
   void SetHeading(int heading) { m_heading = heading; }
@@ -248,12 +248,12 @@ class CSettingControlRange : public ISettingControl
 {
 public:
   CSettingControlRange() = default;
-  virtual ~CSettingControlRange() = default;
+  ~CSettingControlRange() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "range"; }
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
-  virtual bool SetFormat(const std::string &format) override;
+  std::string GetType() const override { return "range"; }
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool SetFormat(const std::string &format) override;
 
   int GetFormatLabel() const { return m_formatLabel; }
   void SetFormatLabel(int formatLabel) { m_formatLabel = formatLabel; }
@@ -272,11 +272,11 @@ class CSettingControlTitle : public ISettingControl
 {
 public:
   CSettingControlTitle() = default;
-  virtual ~CSettingControlTitle() = default;
+  ~CSettingControlTitle() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "title"; }
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  std::string GetType() const override { return "title"; }
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   bool IsSeparatorHidden() const { return m_separatorHidden; }
   void SetSeparatorHidden(bool hidden) { m_separatorHidden = hidden; }
@@ -292,8 +292,8 @@ class CSettingControlLabel : public ISettingControl
 {
 public:
   CSettingControlLabel();
-  virtual ~CSettingControlLabel() = default;
+  ~CSettingControlLabel() override = default;
 
   // implementation of ISettingControl
-  virtual std::string GetType() const override { return "label"; }
+  std::string GetType() const override { return "label"; }
 };

@@ -61,9 +61,9 @@ class GUIFontManager : public IMsgTargetCallback
 {
 public:
   GUIFontManager(void);
-  virtual ~GUIFontManager(void);
+  ~GUIFontManager(void) override;
 
-  virtual bool OnMessage(CGUIMessage &message);
+  bool OnMessage(CGUIMessage &message) override;
 
   void Unload(const std::string& strFontName);
   void LoadFonts(const std::string &fontSet);

@@ -47,23 +47,23 @@ class CGUISpinControl : public CGUIControl
 {
 public:
   CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CTextureInfo& textureUpDisabled, const CTextureInfo& textureDownDisabled, const CLabelInfo& labelInfo, int iType);
-  virtual ~CGUISpinControl(void);
-  virtual CGUISpinControl *Clone() const { return new CGUISpinControl(*this); };
+  ~CGUISpinControl(void) override;
+  CGUISpinControl *Clone() const override { return new CGUISpinControl(*this); };
 
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnAction(const CAction &action);
-  virtual void OnLeft();
-  virtual void OnRight();
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void AllocResources();
-  virtual void FreeResources(bool immediately = false);
-  virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
-  virtual void SetPosition(float posX, float posY);
-  virtual float GetWidth() const;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnAction(const CAction &action) override;
+  void OnLeft() override;
+  void OnRight() override;
+  bool HitTest(const CPoint &point) const override;
+  bool OnMouseOver(const CPoint &point) override;
+  bool OnMessage(CGUIMessage& message) override;
+  void AllocResources() override;
+  void FreeResources(bool immediately = false) override;
+  void DynamicResourceAlloc(bool bOnOff) override;
+  void SetInvalid() override;
+  void SetPosition(float posX, float posY) override;
+  float GetWidth() const override;
   void SetRange(int iStart, int iEnd);
   void SetFloatRange(float fStart, float fEnd);
   void SetValue(int iValue);
@@ -87,14 +87,14 @@ public:
   void SetShowRange(bool bOnoff) ;
   void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
   void Clear();
-  virtual std::string GetDescription() const;
+  std::string GetDescription() const override;
   bool IsFocusedOnUp() const;
 
-  virtual bool IsVisible() const;
+  bool IsVisible() const override;
 
 protected:
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  bool UpdateColors() override;
   /*! \brief Render the spinner text
    \param posX position of the left edge of the text
    \param posY positing of the top edge of the text

@@ -36,12 +36,12 @@ namespace ADDON
 
     //FIXME: does shallow pointer copy. no copy assignment op
     CAddonDll(const CAddonDll &rhs);
-    virtual ~CAddonDll();
+    ~CAddonDll() override;
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
-    virtual void SaveSettings();
-    virtual std::string GetSetting(const std::string& key);
+    void SaveSettings() override;
+    std::string GetSetting(const std::string& key) override;
 
     ADDON_STATUS Create(ADDON_TYPE type, void* funcTable, void* info);
     void Destroy();

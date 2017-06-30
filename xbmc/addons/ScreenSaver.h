@@ -29,7 +29,7 @@ class CScreenSaver : public IAddonInstanceHandler
 {
 public:
   CScreenSaver(BinaryAddonBasePtr addonBase);
-  virtual ~CScreenSaver();
+  ~CScreenSaver() override;
 
   bool Start();
   void Stop();

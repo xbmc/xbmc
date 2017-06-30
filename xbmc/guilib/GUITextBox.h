@@ -45,34 +45,34 @@ public:
   CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
               const CLabelInfo &labelInfo, int scrollTime = 200);
   CGUITextBox(const CGUITextBox &from);
-  virtual ~CGUITextBox(void);
-  virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
+  ~CGUITextBox(void) override;
+  CGUITextBox *Clone() const override { return new CGUITextBox(*this); };
 
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual float GetHeight() const;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Render() override;
+  bool OnMessage(CGUIMessage& message) override;
+  float GetHeight() const override;
   void SetMinHeight(float minHeight);
 
   void SetPageControl(int pageControl);
 
-  virtual bool CanFocus() const;
+  bool CanFocus() const override;
   void SetInfo(const CGUIInfoLabel &info);
   void SetAutoScrolling(const TiXmlNode *node);
   void SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition = "");
   void ResetAutoScrolling();
 
-  virtual bool GetCondition(int condition, int data) const;
+  bool GetCondition(int condition, int data) const override;
   virtual std::string GetLabel(int info) const;
-  std::string GetDescription() const;
+  std::string GetDescription() const override;
 
   void Scroll(unsigned int offset);
 
 protected:
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual bool UpdateColors();
-  virtual void UpdateInfo(const CGUIListItem *item = NULL);
+  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  bool UpdateColors() override;
+  void UpdateInfo(const CGUIListItem *item = NULL) override;
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
   unsigned int GetRows() const;

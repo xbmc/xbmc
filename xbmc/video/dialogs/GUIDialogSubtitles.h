@@ -38,13 +38,13 @@ class CGUIDialogSubtitles : public CGUIDialog, CJobQueue
 {
 public:
   CGUIDialogSubtitles(void);
-  virtual ~CGUIDialogSubtitles(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnInitWindow();
+  ~CGUIDialogSubtitles(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  void OnInitWindow() override;
 
 protected:
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   bool SetService(const std::string &service);
   const CFileItemPtr GetService() const;

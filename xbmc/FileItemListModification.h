@@ -26,12 +26,12 @@
 class CFileItemListModification : public IFileItemListModifier
 {
 public:
-  ~CFileItemListModification();
+  ~CFileItemListModification() override;
 
   static CFileItemListModification& GetInstance();
 
-  virtual bool CanModify(const CFileItemList &items) const;
-  virtual bool Modify(CFileItemList &items) const;
+  bool CanModify(const CFileItemList &items) const override;
+  bool Modify(CFileItemList &items) const override;
 
 private:
   CFileItemListModification();

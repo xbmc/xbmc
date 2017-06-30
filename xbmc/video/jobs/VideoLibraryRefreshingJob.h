@@ -41,15 +41,15 @@ public:
   */
   CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo = false, const std::string& searchTitle = "");
 
-  virtual ~CVideoLibraryRefreshingJob();
+  ~CVideoLibraryRefreshingJob() override;
 
   // specialization of CJob
-  virtual const char *GetType() const { return "VideoLibraryRefreshingJob"; }
-  virtual bool operator==(const CJob* job) const;
+  const char *GetType() const override { return "VideoLibraryRefreshingJob"; }
+  bool operator==(const CJob* job) const override;
 
 protected:
   // implementation of CVideoLibraryJob
-  virtual bool Work(CVideoDatabase &db);
+  bool Work(CVideoDatabase &db) override;
 
 private:
   CFileItemPtr m_item;

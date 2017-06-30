@@ -62,9 +62,9 @@ namespace Shaders {
   {
   public:
     CVertexShader() { m_vertexShader = 0; }
-    virtual ~CVertexShader() { Free(); }
-    virtual void Free() {}
-    virtual GLuint Handle() { return m_vertexShader; }
+    ~CVertexShader() override { Free(); }
+    void Free() override {}
+    GLuint Handle() override { return m_vertexShader; }
 
   protected:
     GLuint m_vertexShader;
@@ -73,16 +73,16 @@ namespace Shaders {
   class CGLSLVertexShader : public CVertexShader
   {
   public:
-    virtual void Free();
-    virtual bool Compile();
+    void Free() override;
+    bool Compile() override;
   };
 
 #ifndef HAS_GLES
   class CARBVertexShader : public CVertexShader
   {
   public:
-    virtual void Free();
-    virtual bool Compile();
+    void Free() override;
+    bool Compile() override;
   };
 #endif
 
@@ -94,9 +94,9 @@ namespace Shaders {
   {
   public:
     CPixelShader() { m_pixelShader = 0; }
-    virtual ~CPixelShader() { Free(); }
-    virtual void Free() {}
-    virtual GLuint Handle() { return m_pixelShader; }
+    ~CPixelShader() override { Free(); }
+    void Free() override {}
+    GLuint Handle() override { return m_pixelShader; }
 
   protected:
     GLuint m_pixelShader;
@@ -106,16 +106,16 @@ namespace Shaders {
   class CGLSLPixelShader : public CPixelShader
   {
   public:
-    virtual void Free();
-    virtual bool Compile();
+    void Free() override;
+    bool Compile() override;
   };
 
 #ifndef HAS_GLES
   class CARBPixelShader : public CPixelShader
   {
   public:
-    virtual void Free();
-    virtual bool Compile();
+    void Free() override;
+    bool Compile() override;
   };
 #endif
 
@@ -204,16 +204,16 @@ namespace Shaders {
       }
 
     // enable the shader
-    virtual bool Enable();
+    bool Enable() override;
 
     // disable the shader
-    virtual void Disable();
+    void Disable() override;
 
     // free resources
-    virtual void Free();
+    void Free() override;
 
     // compile and link the shaders
-    virtual bool CompileAndLink();
+    bool CompileAndLink() override;
 
   protected:
     GLint         m_lastProgram;
@@ -241,16 +241,16 @@ namespace Shaders {
       }
 
     // enable the shader
-    virtual bool Enable();
+    bool Enable() override;
 
     // disable the shader
-    virtual void Disable();
+    void Disable() override;
 
     // free resources
-    virtual void Free();
+    void Free() override;
 
     // compile and link the shaders
-    virtual bool CompileAndLink();
+    bool CompileAndLink() override;
 
   protected:
 

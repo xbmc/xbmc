@@ -92,7 +92,7 @@ class PLT_CtrlPoint : public PLT_SsdpPacketListener,
 {
 public:
     PLT_CtrlPoint(const char* search_criteria = "upnp:rootdevice"); // pass NULL to prevent repeated automatic search
-    virtual ~PLT_CtrlPoint();
+    ~PLT_CtrlPoint() override;
     
     /**
      Returns the port used by the internal HTTP server for all incoming event notifications.
@@ -138,17 +138,17 @@ public:
                                  void*        userdata = NULL);
 
     // NPT_HttpRequestHandler methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
+    NPT_Result SetupResponse(NPT_HttpRequest&              request,
                                      const NPT_HttpRequestContext& context,
-                                     NPT_HttpResponse&             response);
+                                     NPT_HttpResponse&             response) override;
 
     // PLT_SsdpSearchResponseListener methods
-    virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result                    res, 
+    NPT_Result ProcessSsdpSearchResponse(NPT_Result                    res, 
                                                  const NPT_HttpRequestContext& context,
-                                                 NPT_HttpResponse*             response);
+                                                 NPT_HttpResponse*             response) override;
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
-                                    const NPT_HttpRequestContext& context);
+    NPT_Result OnSsdpPacket(const NPT_HttpRequest&        request, 
+                                    const NPT_HttpRequestContext& context) override;
 
 protected:
 
