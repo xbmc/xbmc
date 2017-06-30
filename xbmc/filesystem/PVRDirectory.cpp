@@ -35,13 +35,9 @@
 using namespace XFILE;
 using namespace PVR;
 
-CPVRDirectory::CPVRDirectory()
-{
-}
+CPVRDirectory::CPVRDirectory() = default;
 
-CPVRDirectory::~CPVRDirectory()
-{
-}
+CPVRDirectory::~CPVRDirectory() = default;
 
 bool CPVRDirectory::Exists(const CURL& url)
 {

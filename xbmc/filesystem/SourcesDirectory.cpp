@@ -31,13 +31,9 @@
 
 using namespace XFILE;
 
-CSourcesDirectory::CSourcesDirectory(void)
-{
-}
+CSourcesDirectory::CSourcesDirectory(void) = default;
 
-CSourcesDirectory::~CSourcesDirectory(void)
-{
-}
+CSourcesDirectory::~CSourcesDirectory(void) = default;
 
 bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

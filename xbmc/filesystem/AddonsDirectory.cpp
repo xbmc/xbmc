@@ -49,9 +49,9 @@ using namespace ADDON;
 namespace XFILE
 {
 
-CAddonsDirectory::CAddonsDirectory(void) {}
+CAddonsDirectory::CAddonsDirectory(void) = default;
 
-CAddonsDirectory::~CAddonsDirectory(void) {}
+CAddonsDirectory::~CAddonsDirectory(void) = default;
 
 const auto CATEGORY_INFO_PROVIDERS = "category.infoproviders";
 const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";

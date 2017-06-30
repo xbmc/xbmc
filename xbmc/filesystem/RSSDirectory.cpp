@@ -71,13 +71,9 @@ namespace {
 std::map<std::string,CDateTime> CRSSDirectory::m_cache;
 CCriticalSection CRSSDirectory::m_section;
 
-CRSSDirectory::CRSSDirectory()
-{
-}
+CRSSDirectory::CRSSDirectory() = default;
 
-CRSSDirectory::~CRSSDirectory()
-{
-}
+CRSSDirectory::~CRSSDirectory() = default;
 
 bool CRSSDirectory::ContainsFiles(const CURL& url)
 {

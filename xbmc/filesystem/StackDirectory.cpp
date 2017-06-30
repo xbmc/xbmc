@@ -29,13 +29,9 @@
 
 namespace XFILE
 {
-  CStackDirectory::CStackDirectory()
-  {
-  }
+  CStackDirectory::CStackDirectory() = default;
 
-  CStackDirectory::~CStackDirectory()
-  {
-  }
+  CStackDirectory::~CStackDirectory() = default;
 
   bool CStackDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {

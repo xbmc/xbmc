@@ -70,7 +70,7 @@ public:
 
 protected:
     // constructors and destructors
-    virtual ~NPT_XbmcFileStream() {}
+    virtual ~NPT_XbmcFileStream() = default;
 
     // members
     NPT_XbmcFileReference m_FileReference;

@@ -47,9 +47,7 @@ CCacheStrategy::CCacheStrategy() : m_bEndOfInput(false)
 }
 
 
-CCacheStrategy::~CCacheStrategy()
-{
-}
+CCacheStrategy::~CCacheStrategy() = default;
 
 void CCacheStrategy::EndOfInput() {
   m_bEndOfInput = true;

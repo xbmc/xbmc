@@ -39,7 +39,7 @@ namespace XFILE
 class IPipeListener
 {
 public:
-  virtual ~IPipeListener() {}
+  virtual ~IPipeListener() = default;
   virtual void OnPipeOverFlow() = 0;
   virtual void OnPipeUnderFlow() = 0;
 };

@@ -37,14 +37,9 @@ using namespace XFILE;
 
 static const size_t ZC_FLAG_EFS = 1 << 11; // general purpose bit 11 - zip holds utf-8 filenames
 
-CZipManager::CZipManager()
-{
-}
+CZipManager::CZipManager() = default;
 
-CZipManager::~CZipManager()
-{
-
-}
+CZipManager::~CZipManager() = default;
 
 bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 {

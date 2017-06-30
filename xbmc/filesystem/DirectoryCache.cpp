@@ -62,9 +62,7 @@ CDirectoryCache::CDirectoryCache(void)
 #endif
 }
 
-CDirectoryCache::~CDirectoryCache(void)
-{
-}
+CDirectoryCache::~CDirectoryCache(void) = default;
 
 bool CDirectoryCache::GetDirectory(const std::string& strPath, CFileItemList &items, bool retrieveAll)
 {

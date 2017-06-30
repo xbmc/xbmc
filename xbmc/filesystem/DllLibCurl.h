@@ -34,7 +34,7 @@ namespace XCURL
   class DllLibCurlInterface
   {
   public:
-    virtual ~DllLibCurlInterface() {}
+    virtual ~DllLibCurlInterface() = default;
     virtual CURLcode global_init(long flags)=0;
     virtual void global_cleanup(void)=0;
     virtual CURL_HANDLE * easy_init(void)=0;

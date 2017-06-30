@@ -40,7 +40,7 @@ struct __stat64;
 class DllLibNfsInterface
 {
 public:
-  virtual ~DllLibNfsInterface() {}
+  virtual ~DllLibNfsInterface() = default;
 
 //  virtual struct rpc_context *rpc_init_context(void)=0;
 //  virtual void rpc_destroy_context(struct rpc_context *rpc)=0;

@@ -49,7 +49,7 @@ class IFileCallback
 {
 public:
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
-  virtual ~IFileCallback() {};
+  virtual ~IFileCallback() = default;
 };
 
 class CFileStreamBuffer;

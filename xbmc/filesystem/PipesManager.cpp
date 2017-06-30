@@ -42,9 +42,7 @@ Pipe::Pipe(const std::string &name, int nMaxSize)
   m_bReadyForRead = true; // open threshold disabled atm
 }
 
-Pipe::~Pipe()
-{
-}
+Pipe::~Pipe() = default;
 
 void Pipe::SetOpenThreshold(int threshold)
 {
@@ -271,9 +269,7 @@ PipesManager::PipesManager() : m_nGenIdHelper(1)
 {
 }
 
-PipesManager::~PipesManager()
-{
-}
+PipesManager::~PipesManager() = default;
 
 PipesManager &PipesManager::GetInstance()
 {

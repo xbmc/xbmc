@@ -34,11 +34,9 @@
 
 using namespace XFILE;
 
-CISO9660Directory::CISO9660Directory(void)
-{}
+CISO9660Directory::CISO9660Directory(void) = default;
 
-CISO9660Directory::~CISO9660Directory(void)
-{}
+CISO9660Directory::~CISO9660Directory(void) = default;
 
 bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
