@@ -34,7 +34,7 @@ class ThreadMessage;
 class IMessageTarget
 {
 public:
-  virtual ~IMessageTarget() { }
+  virtual ~IMessageTarget() = default;
   /*!
    * \brief Should return the message mask that it wishes to receive
    *        messages for
