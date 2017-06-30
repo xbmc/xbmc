@@ -292,6 +292,7 @@ extern "C" {
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
     bool bSupportsRecordingEdl;         /*!< @brief true if the backend supports retrieving an edit decision list for recordings. */
+    bool bSupportsRecordingsRename;     /*!< @brief true if the backend supports renaming recordings. */
     bool bSupportsDescrambleInfo;       /*!< @brief true if the backend supports descramble information for playing channels. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 

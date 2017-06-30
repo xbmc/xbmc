@@ -646,6 +646,13 @@ namespace PVR
     bool HandlesDemuxing(int iClientId) const;
     bool HandlesInputStream(int iClientId) const;
 
+    /*!
+     * @brief Check whether the given client does support renaming of recordings.
+     * @param iClientId The client id
+     * @return True if renaming recordings is supported, false otherwise.
+     */
+    bool SupportsRecordingsRename(int iClientId) const;
+
     bool GetPlayingClient(PVR_CLIENT &client) const;
 
     std::string GetBackendHostnameByClientId(int iClientId) const;

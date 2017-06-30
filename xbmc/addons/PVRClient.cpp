@@ -1331,6 +1331,11 @@ bool CPVRClient::SupportsRecordingPlayCount(void) const
   return m_addonCapabilities.bSupportsRecordingPlayCount;
 }
 
+bool CPVRClient::SupportsRecordingsRename(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingsRename;
+}
+
 bool CPVRClient::SupportsRecordingEdl(void) const
 {
   return m_addonCapabilities.bSupportsRecordingEdl;

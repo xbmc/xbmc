@@ -218,7 +218,9 @@ namespace PVR
     bool RenameRecording::IsVisible(const CFileItem &item) const
     {
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (recording && !recording->IsDeleted())
+      if (recording &&
+          !recording->IsDeleted() &&
+          CServiceBroker::GetPVRManager().Clients()->SupportsRecordingsRename(recording->ClientID()))
         return true;
 
       return false;

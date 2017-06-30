@@ -1092,6 +1092,12 @@ bool CPVRClients::SupportsRecordingEdl(int iClientId) const
   return GetCreatedClient(iClientId, client) && client->SupportsRecordingEdl();
 }
 
+bool CPVRClients::SupportsRecordingsRename(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetCreatedClient(iClientId, client) && client->SupportsRecordingsRename();
+}
+
 bool CPVRClients::SupportsTimers(int iClientId) const
 {
   PVR_CLIENT client;

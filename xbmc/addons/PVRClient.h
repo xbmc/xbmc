@@ -573,6 +573,11 @@ namespace PVR
     bool HandlesDemuxing(void) const;
     bool HandlesInputStream(void) const;
 
+    /*!
+     * @brief Check whether the backend supports renaming recordings
+     */
+    bool SupportsRecordingsRename(void) const;
+
     bool IsPlayingLiveStream(void) const;
     bool IsPlayingLiveTV(void) const;
     bool IsPlayingLiveRadio(void) const;
