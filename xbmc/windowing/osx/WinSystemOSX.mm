@@ -824,7 +824,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
       // we don't have a window to get the current screen on
       // in that case ResizeWindow is called at a later stage from SetFullScreen(false)
       // and we can grab the correct display number here then
-      m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen( [window screen] ));;
+      m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen( [window screen] ));
     }
   }
 
