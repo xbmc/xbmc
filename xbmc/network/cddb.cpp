@@ -585,22 +585,23 @@ void Xcddb::addExtended(const char *buffer)
   if (buffer[5] == '=')
   { //Einstellig
     trk_nr = buffer[4] - 47;
-    strcpy(value, buffer + 6);
+    strncpy(value, buffer + 6, sizeof(value) - 1);
   }
   else if (buffer[6] == '=')
   { //Zweistellig
     trk_nr = ((buffer[4] - 48) * 10) + buffer[5] - 47;
-    strcpy(value, buffer + 7);
+    strncpy(value, buffer + 7, sizeof(value) - 1);
   }
   else if (buffer[7] == '=')
   { //Dreistellig
     trk_nr = ((buffer[4] - 48) * 100) + ((buffer[5] - 48) * 10) + buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    strncpy(value, buffer + 8, sizeof(value) - 1);
   }
   else
   {
     return ;
   }
+  value[sizeof(value) - 1] = '\0';
 
   std::string strValue;
   std::string strValueUtf8=value;
