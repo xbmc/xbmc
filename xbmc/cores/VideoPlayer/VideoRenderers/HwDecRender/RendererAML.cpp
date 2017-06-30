@@ -33,15 +33,16 @@
 #include "settings/AdvancedSettings.h"
 
 CRendererAML::CRendererAML()
- : m_prevVPts(-1)
+ : m_iRenderBuffer(0)
+ , m_prevVPts(-1)
  , m_bConfigured(false)
- , m_iRenderBuffer(0)
 {
   CLog::Log(LOGINFO, "Constructing CRendererAML");
 }
 
 CRendererAML::~CRendererAML()
 {
+  Reset();
 }
 
 CBaseRenderer* CRendererAML::Create(CVideoBuffer *buffer)
@@ -73,9 +74,6 @@ bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned fl
 
   m_bConfigured = true;
 
-  for (int i = 0 ; i < m_numRenderBuffers ; ++i)
-    m_buffers[i].videoBuffer = nullptr;
-
   return true;
 }
 
@@ -98,7 +96,9 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
 
 void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index)
 {
-  BUFFER &buf = m_buffers[index];
+  ReleaseBuffer(index);
+
+  BUFFER &buf(m_buffers[index]);
   if (picture.videoBuffer)
   {
     buf.videoBuffer = picture.videoBuffer;
@@ -108,7 +108,7 @@ void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index)
 
 void CRendererAML::ReleaseBuffer(int idx)
 {
-  BUFFER &buf = m_buffers[idx];
+  BUFFER &buf(m_buffers[idx]);
   if (buf.videoBuffer)
   {
     CAMLVideoBuffer *amli(dynamic_cast<CAMLVideoBuffer*>(buf.videoBuffer));
@@ -148,6 +148,14 @@ bool CRendererAML::Supports(ERENDERFEATURE feature)
 void CRendererAML::Reset()
 {
   m_prevVPts = -1;
+  for (int i = 0 ; i < m_numRenderBuffers ; ++i)
+  {
+    if (m_buffers[i].videoBuffer)
+    {
+      m_buffers[i].videoBuffer->Release();
+      m_buffers[i].videoBuffer = nullptr;
+    }
+  }
 }
 
 void CRendererAML::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
