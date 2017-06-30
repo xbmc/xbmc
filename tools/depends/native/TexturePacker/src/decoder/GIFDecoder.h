@@ -24,7 +24,7 @@
 class GIFDecoder : public IDecoder
 {
   public:
-    ~GIFDecoder() override{}
+    ~GIFDecoder() override = default;
     bool CanDecode(const std::string &filename) override;
     bool LoadFile(const std::string &filename, DecodedFrames &frames) override;
     void FreeDecodedFrames(DecodedFrames &frames) override;

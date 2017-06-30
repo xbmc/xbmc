@@ -24,7 +24,7 @@
 class JPGDecoder : public IDecoder
 {
   public:
-    ~JPGDecoder() override{}
+    ~JPGDecoder() override = default;
     bool CanDecode(const std::string &filename) override;
     bool LoadFile(const std::string &filename, DecodedFrames &frames) override;
     void FreeDecodedFrames(DecodedFrames &frames) override;
