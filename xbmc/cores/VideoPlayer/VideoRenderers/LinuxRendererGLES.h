@@ -70,7 +70,6 @@ enum RenderMethod
   RENDER_POT    = 0x010,
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
-  RENDER_BYPASS = 0x100,
   RENDER_MEDIACODEC = 0x400,
   RENDER_MEDIACODECSURFACE = 0x800,
   RENDER_IMXMAP = 0x1000
@@ -106,6 +105,10 @@ class CLinuxRendererGLES : public CBaseRenderer
 public:
   CLinuxRendererGLES();
   virtual ~CLinuxRendererGLES();
+
+  // Registration
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
 
   // Player functions
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
@@ -155,16 +158,12 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
-  void UploadBYPASSTexture(int index);
-  void DeleteBYPASSTexture(int index);
-  bool CreateBYPASSTexture(int index);
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
-  
+
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
@@ -211,7 +210,6 @@ protected:
 
     YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
-    GLuint pbo[3]; // one pbo for 3 planes
 
     CVideoBuffer *videoBuffer;
     bool loaded;
