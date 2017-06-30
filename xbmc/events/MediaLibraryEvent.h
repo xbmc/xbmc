@@ -29,7 +29,7 @@ public:
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevel::Information);
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevel::Information);
   CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevel::Information);
-  ~CMediaLibraryEvent() override { }
+  ~CMediaLibraryEvent() override = default;
 
   const char* GetType() const override { return "MediaLibraryEvent"; }
   std::string GetExecutionLabel() const override;

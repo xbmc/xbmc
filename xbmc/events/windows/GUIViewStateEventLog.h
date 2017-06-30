@@ -25,7 +25,7 @@ class CGUIViewStateEventLog : public CGUIViewState
 {
 public:
   CGUIViewStateEventLog(const CFileItemList& items);
-  ~CGUIViewStateEventLog() override { }
+  ~CGUIViewStateEventLog() override = default;
 
   // specializations of CGUIViewState
   bool HideExtensions() override { return true; }
