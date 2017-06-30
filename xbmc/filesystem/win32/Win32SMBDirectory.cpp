@@ -642,15 +642,15 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   {
     CLog::LogF(LOGERROR, "Can't convert username \"%s\" to wide string", url.GetUserName().c_str());
     return false;
-    std::wstring domainW;
-    if (!url.GetDomain().empty() && !g_charsetConverter.utf8ToW(url.GetDomain(), domainW, false, false, true))
-    {
-      CLog::LogF(LOGERROR, "Can't convert domain name \"%s\" to wide string", url.GetDomain().c_str());
-      return false;
-    }
-    if (!domainW.empty())
-      usernameW += L'@' + domainW;
   }
+  std::wstring domainW;
+  if (!url.GetDomain().empty() && !g_charsetConverter.utf8ToW(url.GetDomain(), domainW, false, false, true))
+  {
+    CLog::LogF(LOGERROR, "Can't convert domain name \"%s\" to wide string", url.GetDomain().c_str());
+    return false;
+  }
+  if (!domainW.empty())
+    usernameW += L'@' + domainW;
 
   std::wstring passwordW;
   if (!url.GetPassWord().empty() && !g_charsetConverter.utf8ToW(url.GetPassWord(), passwordW, false, false, true))
