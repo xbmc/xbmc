@@ -39,6 +39,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "TimingConstants.h"
 
 extern "C" {
@@ -502,7 +503,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
     if (!m_queue_render && !CServiceBroker::GetSettings().GetBool("videoplayer.usedisplayasclock"))
     {
       m_queue_render = mmal_queue_create();
-      Create();
+      CThread::Create();
     }
   }
   SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
@@ -1434,5 +1435,16 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
   // give buffers to deint
   if (m_deint_output_pool)
     m_deint_output_pool->Prime();
+  return true;
+}
+
+CBaseRenderer* CMMALRenderer::Create(CVideoBuffer *buffer)
+{
+  return new CMMALRenderer();
+}
+
+bool CMMALRenderer::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("mmal", CMMALRenderer::Create);
   return true;
 }
