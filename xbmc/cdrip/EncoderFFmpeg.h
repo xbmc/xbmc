@@ -32,7 +32,7 @@ class CEncoderFFmpeg : public IEncoder
 {
 public:
   CEncoderFFmpeg();
-  ~CEncoderFFmpeg() override {}
+  ~CEncoderFFmpeg() override = default;
 
   bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
   int Encode(int nNumBytesRead, uint8_t *pbtStream) override;

@@ -63,9 +63,7 @@ CCDDARipper::CCDDARipper()
 {
 }
 
-CCDDARipper::~CCDDARipper()
-{
-}
+CCDDARipper::~CCDDARipper() = default;
 
 // rip a single track from cd
 bool CCDDARipper::RipTrack(CFileItem* pItem)

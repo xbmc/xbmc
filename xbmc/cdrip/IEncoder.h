@@ -33,7 +33,7 @@ public:
     m_iInBitsPerSample(0)
   {
   }
-  virtual ~IEncoder() {}
+  virtual ~IEncoder() = default;
   virtual bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) = 0;
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
   virtual bool Close() = 0;
