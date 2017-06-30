@@ -1160,6 +1160,14 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
       }
       Sleep(1);
     }
+    /*
+    Finding album using xml scraper may request data from Musicbrainz.
+    MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
+    returns 503 errors for all calls from that IP address.
+    To stay below the rate-limit threshold wait 1s before proceeding
+    */
+    if (!info->IsPython())
+      Sleep(1000);
   }
 
   CGUIDialogSelect *pDlg = NULL;
@@ -1277,9 +1285,17 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
     }
     Sleep(1);
   }
-
   if (!scraper.Succeeded())
     return INFO_ERROR;
+  /*
+  Fetching album details using xml scraper may makes requests for data from Musicbrainz.
+  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
+  returns 503 errors for all calls from that IP address.
+  To stay below the rate-limit threshold wait 1s before proceeding incase next action is
+  to scrape another album or artist
+  */
+  if (!info->IsPython())
+    Sleep(1000);
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
   
@@ -1375,6 +1391,14 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
       }
       Sleep(1);
     }
+    /*
+    Finding artist using xml scraper makes a request for data from Musicbrainz.
+    MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter
+    the server returns 503 errors for all calls from that IP address. To stay 
+    below the rate-limit threshold wait 1s before proceeding
+    */
+    if (!info->IsPython())
+      Sleep(1000); 
   }
 
   int iSelectedArtist = 0;
@@ -1440,6 +1464,15 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
     else
       return INFO_NOT_FOUND;
   }
+  /*
+  Fetching artist details using xml scraper makes requests for data from Musicbrainz.
+  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
+  returns 503 errors for all calls from that IP address.
+  To stay below the rate-limit threshold wait 1s before proceeding incase next action is
+  to scrape another album or artist
+  */
+  if (!info->IsPython())
+    Sleep(1000);
 
   scraper.LoadArtistInfo(iSelectedArtist, artist.strArtist);
   while (!scraper.Completed())
@@ -1481,13 +1514,6 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
 
   if (!musicBrainzURL.m_url.empty())
   {
-    if (!preferredScraper->IsPython())
-    {
-      Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
-                   // they start serving up the 'you hit the rate-limiter' page fast - meaning
-                   // we will never get below the rate-limit threshold again in a specific run.
-                   // This helps us to avoid the rate-limiter as far as possible.
-    }
     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",preferredScraper->Name().c_str());
     CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
     bMusicBrainz = true;
