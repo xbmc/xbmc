@@ -193,7 +193,7 @@ class CRenderCaptureGL : public CRenderCaptureBase
 class CRenderCapture : public CRenderCaptureGL
 {
   public:
-    CRenderCapture() {};
+    CRenderCapture() = default;
 };
 
 #elif HAS_DX /*HAS_GL*/

@@ -26,7 +26,7 @@
 template<typename T> struct IDVDResourceCounted
 {
   IDVDResourceCounted() : m_refs(1) {}
-  virtual ~IDVDResourceCounted() {}
+  virtual ~IDVDResourceCounted() = default;
 
   IDVDResourceCounted(const IDVDResourceCounted &) = delete;
   IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;

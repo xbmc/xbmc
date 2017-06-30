@@ -30,7 +30,7 @@ struct DemuxCryptoInfo;
 
 typedef struct DemuxPacket
 {
-  DemuxPacket() {};
+  DemuxPacket() = default;
 
   DemuxPacket(unsigned char *pData, int const iSize, double const pts, double const dts)
     : pData(pData)

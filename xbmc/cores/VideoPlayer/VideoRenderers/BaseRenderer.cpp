@@ -57,9 +57,7 @@ CBaseRenderer::CBaseRenderer()
   }
 }
 
-CBaseRenderer::~CBaseRenderer()
-{
-}
+CBaseRenderer::~CBaseRenderer() = default;
 
 float CBaseRenderer::GetAspectRatio() const
 {

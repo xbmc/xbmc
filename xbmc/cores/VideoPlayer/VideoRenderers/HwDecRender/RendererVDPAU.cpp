@@ -28,10 +28,7 @@
 #include "utils/GLUtils.h"
 #include "windowing/WindowingFactory.h"
 
-CRendererVDPAU::CRendererVDPAU()
-{
-
-}
+CRendererVDPAU::CRendererVDPAU() = default;
 
 CRendererVDPAU::~CRendererVDPAU()
 {

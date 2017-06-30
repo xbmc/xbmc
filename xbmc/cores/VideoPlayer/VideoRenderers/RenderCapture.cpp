@@ -40,9 +40,7 @@ CRenderCaptureBase::CRenderCaptureBase()
   m_asyncChecked   = false;
 }
 
-CRenderCaptureBase::~CRenderCaptureBase()
-{
-}
+CRenderCaptureBase::~CRenderCaptureBase() = default;
 
 bool CRenderCaptureBase::UseOcclusionQuery()
 {

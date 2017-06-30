@@ -40,10 +40,7 @@ CProcessInfo::CProcessInfo()
   ResetVideoCodecInfo();
 }
 
-CProcessInfo::~CProcessInfo()
-{
-
-}
+CProcessInfo::~CProcessInfo() = default;
 
 void CProcessInfo::ResetVideoCodecInfo()
 {

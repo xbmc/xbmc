@@ -27,10 +27,7 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 
-CRendererVAAPI::CRendererVAAPI()
-{
-
-}
+CRendererVAAPI::CRendererVAAPI() = default;
 
 CRendererVAAPI::~CRendererVAAPI()
 {

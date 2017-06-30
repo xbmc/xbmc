@@ -488,7 +488,7 @@ protected:
 class CPostproc
 {
 public:
-  virtual ~CPostproc() {};
+  virtual ~CPostproc() = default;
   virtual bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) = 0;
   virtual bool Init(EINTERLACEMETHOD method) = 0;
   virtual bool AddPicture(CVaapiDecodedPicture &inPic) = 0;

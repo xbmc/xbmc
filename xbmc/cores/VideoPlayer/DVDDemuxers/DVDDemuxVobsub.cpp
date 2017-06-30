@@ -30,9 +30,7 @@
 
 #include <string.h>
 
-CDVDDemuxVobsub::CDVDDemuxVobsub()
-{
-}
+CDVDDemuxVobsub::CDVDDemuxVobsub() = default;
 
 CDVDDemuxVobsub::~CDVDDemuxVobsub()
 {
