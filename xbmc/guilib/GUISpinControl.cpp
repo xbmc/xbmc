@@ -56,8 +56,7 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
   m_showOnePage = true;
 }
 
-CGUISpinControl::~CGUISpinControl(void)
-{}
+CGUISpinControl::~CGUISpinControl(void) = default;
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {

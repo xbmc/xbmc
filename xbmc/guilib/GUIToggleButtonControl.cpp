@@ -31,9 +31,7 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, fl
   ControlType = GUICONTROL_TOGGLEBUTTON;
 }
 
-CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
-{
-}
+CGUIToggleButtonControl::~CGUIToggleButtonControl(void) = default;
 
 void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {

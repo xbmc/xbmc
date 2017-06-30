@@ -89,7 +89,7 @@ class CFadeEffect : public CAnimEffect
 public:
   CFadeEffect(const TiXmlElement *node, bool reverseDefaults);
   CFadeEffect(float start, float end, unsigned int delay, unsigned int length);
-  ~CFadeEffect() override {};
+  ~CFadeEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
 
@@ -101,7 +101,7 @@ class CSlideEffect : public CAnimEffect
 {
 public:
   CSlideEffect(const TiXmlElement *node);
-  ~CSlideEffect() override {};
+  ~CSlideEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
 
@@ -115,7 +115,7 @@ class CRotateEffect : public CAnimEffect
 {
 public:
   CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect);
-  ~CRotateEffect() override {};
+  ~CRotateEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
 
@@ -130,7 +130,7 @@ class CZoomEffect : public CAnimEffect
 {
 public:
   CZoomEffect(const TiXmlElement *node, const CRect &rect);
-  ~CZoomEffect() override {};
+  ~CZoomEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
 

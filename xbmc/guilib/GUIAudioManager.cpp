@@ -43,9 +43,7 @@ CGUIAudioManager::CGUIAudioManager()
   m_bEnabled = false;
 }
 
-CGUIAudioManager::~CGUIAudioManager()
-{
-}
+CGUIAudioManager::~CGUIAudioManager() = default;
 
 void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {

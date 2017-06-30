@@ -41,9 +41,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_minSize = 0;
 }
 
-CGUIControlGroupList::~CGUIControlGroupList(void)
-{
-}
+CGUIControlGroupList::~CGUIControlGroupList(void) = default;
 
 void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
