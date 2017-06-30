@@ -106,6 +106,7 @@ CDVDVideoCodec* CDVDVideoCodecAmlogic::Create(CProcessInfo &processInfo)
 bool CDVDVideoCodecAmlogic::Register()
 {
   CDVDFactoryCodec::RegisterHWVideoCodec("amlogic_dec", &CDVDVideoCodecAmlogic::Create);
+  return true;
 }
 
 std::atomic<bool> CDVDVideoCodecAmlogic::m_InstanceGuard(false);
@@ -304,6 +305,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 FAIL:
   m_InstanceGuard.exchange(false);
   Dispose();
+  return false;
 }
 
 void CDVDVideoCodecAmlogic::Dispose(void)
@@ -404,11 +406,17 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAmlogic::GetPicture(VideoPicture* pVideoP
 
   VCReturn retVal = m_Codec->GetPicture(&m_videobuffer);
 
-  *pVideoPicture = m_videobuffer;
+  if (retVal == VC_PICTURE)
+  {
+    if (pVideoPicture->videoBuffer)
+      pVideoPicture->videoBuffer->Release();
 
-  pVideoPicture->videoBuffer = m_videoBufferPool->Get();
-  static_cast<CAMLVideoBuffer*>(pVideoPicture->videoBuffer)->Set(this, m_Codec,
-   m_Codec->GetOMXPts(), m_Codec->GetAmlDuration(), m_Codec->GetBufferIndex());;
+    *pVideoPicture = m_videobuffer;
+
+    pVideoPicture->videoBuffer = m_videoBufferPool->Get();
+    static_cast<CAMLVideoBuffer*>(pVideoPicture->videoBuffer)->Set(this, m_Codec,
+     m_Codec->GetOMXPts(), m_Codec->GetAmlDuration(), m_Codec->GetBufferIndex());;
+  }
 
   // check for mpeg2 aspect ratio changes
   if (m_mpeg2_sequence && pVideoPicture->pts >= m_mpeg2_sequence_pts)
