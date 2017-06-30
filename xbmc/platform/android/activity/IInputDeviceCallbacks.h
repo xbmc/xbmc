@@ -22,12 +22,12 @@
 class IInputDeviceCallbacks
 {
 public:
-  virtual ~IInputDeviceCallbacks() { }
+  virtual ~IInputDeviceCallbacks() = default;
 
   virtual void OnInputDeviceAdded(int deviceId) = 0;
   virtual void OnInputDeviceChanged(int deviceId) = 0;
   virtual void OnInputDeviceRemoved(int deviceId) = 0;
 
 protected:
-  IInputDeviceCallbacks() { }
+  IInputDeviceCallbacks() = default;
 };
