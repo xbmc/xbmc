@@ -162,7 +162,7 @@ const long BLANKARTIST_ID = 1;
 class CMusicRole
 {
 public:
-  CMusicRole() { }
+  CMusicRole() = default;
   CMusicRole(std::string strRole, std::string strArtist) : idRole(-1), m_strRole(strRole), m_strArtist(strArtist), idArtist(-1) { }
   CMusicRole(int role, std::string strRole, std::string strArtist, long ArtistId) : idRole(role), m_strRole(strRole), m_strArtist(strArtist), idArtist(ArtistId) { }
   std::string GetArtist() const { return m_strArtist; }

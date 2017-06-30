@@ -95,8 +95,7 @@ CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
   *this = tag;
 }
 
-CMusicInfoTag::~CMusicInfoTag()
-{}
+CMusicInfoTag::~CMusicInfoTag() = default;
 
 const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
 {

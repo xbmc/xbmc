@@ -42,9 +42,7 @@ CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
-{
-}
+CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void) = default;
 
 bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
 {

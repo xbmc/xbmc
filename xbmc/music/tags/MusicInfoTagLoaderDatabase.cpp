@@ -26,13 +26,9 @@
 
 using namespace MUSIC_INFO;
 
-CMusicInfoTagLoaderDatabase::CMusicInfoTagLoaderDatabase(void)
-{
-}
+CMusicInfoTagLoaderDatabase::CMusicInfoTagLoaderDatabase(void) = default;
 
-CMusicInfoTagLoaderDatabase::~CMusicInfoTagLoaderDatabase()
-{
-}
+CMusicInfoTagLoaderDatabase::~CMusicInfoTagLoaderDatabase() = default;
 
 bool CMusicInfoTagLoaderDatabase::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {

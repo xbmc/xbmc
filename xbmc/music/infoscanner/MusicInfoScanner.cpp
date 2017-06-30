@@ -83,9 +83,7 @@ CMusicInfoScanner::CMusicInfoScanner()
   m_bClean = false;
 }
 
-CMusicInfoScanner::~CMusicInfoScanner()
-{
-}
+CMusicInfoScanner::~CMusicInfoScanner() = default;
 
 void CMusicInfoScanner::Process()
 {

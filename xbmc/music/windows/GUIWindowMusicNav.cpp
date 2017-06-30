@@ -84,9 +84,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_searchWithEdit = false;
 }
 
-CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
-{
-}
+CGUIWindowMusicNav::~CGUIWindowMusicNav(void) = default;
 
 bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
