@@ -63,6 +63,7 @@ private:
 
   struct BUFFER
   {
+    BUFFER() : videoBuffer(nullptr) {};
     CVideoBuffer *videoBuffer;
     int duration;
   } m_buffers[m_numRenderBuffers];
