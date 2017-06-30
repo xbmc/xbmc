@@ -39,8 +39,7 @@ CGUIViewControl::CGUIViewControl(void)
   Reset();
 }
 
-CGUIViewControl::~CGUIViewControl(void)
-{ }
+CGUIViewControl::~CGUIViewControl(void) = default;
 
 void CGUIViewControl::Reset()
 {

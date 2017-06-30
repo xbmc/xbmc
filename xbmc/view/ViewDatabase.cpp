@@ -35,11 +35,9 @@
 #ifdef TARGET_POSIX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
-CViewDatabase::CViewDatabase(void)
-{ }
+CViewDatabase::CViewDatabase(void) = default;
 
-CViewDatabase::~CViewDatabase(void)
-{ }
+CViewDatabase::~CViewDatabase(void) = default;
 
 bool CViewDatabase::Open()
 {
