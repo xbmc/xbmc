@@ -37,7 +37,7 @@
 class CTempFile : public XFILE::CFile
 {
 public:
-  CTempFile(){};
+  CTempFile() = default;
   ~CTempFile()
   {
     Delete();
