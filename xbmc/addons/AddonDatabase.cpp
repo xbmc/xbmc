@@ -124,13 +124,9 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
   builder.SetExtrainfo(std::move(extraInfo));
 }
 
-CAddonDatabase::CAddonDatabase()
-{
-}
+CAddonDatabase::CAddonDatabase() = default;
 
-CAddonDatabase::~CAddonDatabase()
-{
-}
+CAddonDatabase::~CAddonDatabase() = default;
 
 bool CAddonDatabase::Open()
 {

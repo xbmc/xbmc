@@ -68,8 +68,7 @@ struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_typ
 CAddonInstaller::CAddonInstaller() : m_idle(true)
 { }
 
-CAddonInstaller::~CAddonInstaller()
-{ }
+CAddonInstaller::~CAddonInstaller() = default;
 
 CAddonInstaller &CAddonInstaller::GetInstance()
 {

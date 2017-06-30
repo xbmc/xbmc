@@ -72,9 +72,7 @@ CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogAddonInfo::~CGUIDialogAddonInfo(void)
-{
-}
+CGUIDialogAddonInfo::~CGUIDialogAddonInfo(void) = default;
 
 bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
 {

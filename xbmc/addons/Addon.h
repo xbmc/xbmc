@@ -54,7 +54,7 @@ class CAddon : public IAddon
 {
 public:
   explicit CAddon(CAddonInfo addonInfo);
-  ~CAddon() override {}
+  ~CAddon() override = default;
 
   TYPE Type() const override { return m_addonInfo.MainType(); }
   TYPE FullType() const override { return Type(); }

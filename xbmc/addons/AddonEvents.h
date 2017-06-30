@@ -25,7 +25,7 @@ namespace ADDON
 {
   struct AddonEvent
   {
-    virtual ~AddonEvent() {};
+    virtual ~AddonEvent() = default;
   };
 
   namespace AddonEvents

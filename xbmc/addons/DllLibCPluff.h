@@ -28,7 +28,7 @@ extern "C" {
 class DllLibCPluffInterface
 {
 public:
-  virtual ~DllLibCPluffInterface() {}
+  virtual ~DllLibCPluffInterface() = default;
   virtual const char *get_version(void) =0;
   virtual void set_fatal_error_handler(cp_fatal_error_func_t error_handler) =0;
   virtual cp_status_t init(void) =0;
