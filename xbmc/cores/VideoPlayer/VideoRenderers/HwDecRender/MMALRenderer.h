@@ -169,6 +169,10 @@ public:
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
 protected:
   int m_iYV12RenderBuffer;
 
