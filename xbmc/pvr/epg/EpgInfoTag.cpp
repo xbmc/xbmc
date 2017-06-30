@@ -132,9 +132,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
   UpdatePath();
 }
 
-CPVREpgInfoTag::~CPVREpgInfoTag()
-{
-}
+CPVREpgInfoTag::~CPVREpgInfoTag() = default;
 
 bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
 {

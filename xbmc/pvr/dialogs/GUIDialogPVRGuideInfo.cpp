@@ -56,9 +56,7 @@ CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
 {
 }
 
-CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
-{
-}
+CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void) = default;
 
 bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
 {
