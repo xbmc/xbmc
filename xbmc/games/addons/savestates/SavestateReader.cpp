@@ -32,9 +32,7 @@ CSavestateReader::CSavestateReader() :
 {
 }
 
-CSavestateReader::~CSavestateReader()
-{
-}
+CSavestateReader::~CSavestateReader() = default;
 
 bool CSavestateReader::Initialize(const std::string& path, const CGameClient* gameClient)
 {
