@@ -48,7 +48,7 @@ class CGUIControlBaseSetting : protected ILocalizer
 {
 public:
   CGUIControlBaseSetting(int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
-  ~CGUIControlBaseSetting() override {}
+  ~CGUIControlBaseSetting() override = default;
   
   int GetID() const { return m_id; }
   std::shared_ptr<CSetting> GetSetting() { return m_pSetting; }

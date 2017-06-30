@@ -30,7 +30,7 @@ class CAudioSettings
 {
 public:
   CAudioSettings();
-  ~CAudioSettings() {};
+  ~CAudioSettings() = default;
 
   bool operator!=(const CAudioSettings &right) const;
 

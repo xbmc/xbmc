@@ -28,8 +28,7 @@ CGUIDialogSettingsManagerBase::CGUIDialogSettingsManagerBase(int windowId, const
     : CGUIDialogSettingsBase(windowId, xmlFile)
 { }
 
-CGUIDialogSettingsManagerBase::~CGUIDialogSettingsManagerBase()
-{ }
+CGUIDialogSettingsManagerBase::~CGUIDialogSettingsManagerBase() = default;
 
 std::shared_ptr<CSetting> CGUIDialogSettingsManagerBase::GetSetting(const std::string &settingId)
 {

@@ -68,8 +68,7 @@ CMediaSettings::CMediaSettings()
   m_videoNeedsUpdate = 0;
 }
 
-CMediaSettings::~CMediaSettings()
-{ }
+CMediaSettings::~CMediaSettings() = default;
 
 CMediaSettings& CMediaSettings::GetInstance()
 {

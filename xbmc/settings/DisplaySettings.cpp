@@ -95,8 +95,7 @@ CDisplaySettings::CDisplaySettings()
   m_resolutionChangeAborted = false;
 }
 
-CDisplaySettings::~CDisplaySettings()
-{ }
+CDisplaySettings::~CDisplaySettings() = default;
 
 CDisplaySettings& CDisplaySettings::GetInstance()
 {
