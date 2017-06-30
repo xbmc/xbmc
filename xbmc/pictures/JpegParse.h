@@ -43,20 +43,20 @@ namespace XFILE
 class CJpegParse
 {
   public:
-    CJpegParse   ();
-   ~CJpegParse   (void)  {}
-    bool         Process (const char *picFileName);
+    CJpegParse();
+   ~CJpegParse(void) = default;
+    bool Process(const char *picFileName);
     const ExifInfo_t * GetExifInfo() const { return &m_ExifInfo; };
     const IPTCInfo_t * GetIptcInfo() const { return &m_IPTCInfo; };
 
   private:
-    bool ExtractInfo    (XFILE::CFile& infile);
-    bool GetSection     (XFILE::CFile& infile, const unsigned short sectionLength);
-    void ReleaseSection (void);
-    void ProcessSOFn    (void);
+    bool ExtractInfo(XFILE::CFile& infile);
+    bool GetSection(XFILE::CFile& infile, const unsigned short sectionLength);
+    void ReleaseSection(void);
+    void ProcessSOFn(void);
 
-    unsigned char*  m_SectionBuffer;
-    ExifInfo_t      m_ExifInfo;
-    IPTCInfo_t      m_IPTCInfo;
+    unsigned char* m_SectionBuffer;
+    ExifInfo_t m_ExifInfo;
+    IPTCInfo_t m_IPTCInfo;
 };
 

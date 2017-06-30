@@ -64,7 +64,7 @@ class CGUIWindowSlideShow : public CGUIDialog
 {
 public:
   CGUIWindowSlideShow(void);
-  ~CGUIWindowSlideShow() override {};
+  ~CGUIWindowSlideShow() override = default;
 
   bool OnMessage(CGUIMessage& message) override;
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
