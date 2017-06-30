@@ -98,6 +98,7 @@ bool CServiceManager::Init2()
 
   m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
+  m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
   init_level = 2;
   return true;
@@ -145,6 +146,7 @@ bool CServiceManager::Init3()
 
 void CServiceManager::Deinit()
 {
+  m_serviceAddons.reset();
   m_gameServices->Deinit();
   m_peripherals.reset();
   m_contextMenuManager.reset();
@@ -182,6 +184,11 @@ ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
 ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
 {
   return *m_vfsAddonCache.get();
+}
+
+ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()
+{
+  return *m_serviceAddons;
 }
 
 ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()

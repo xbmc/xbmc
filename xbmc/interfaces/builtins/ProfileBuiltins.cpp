@@ -75,8 +75,6 @@ static int LogOff(const std::vector<std::string>& params)
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-  ADDON::CAddonMgr::GetInstance().StopServices(true);
-
   g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
   CProfilesManager::GetInstance().LoadMasterProfileForLogin();
   g_passwordManager.bMasterUser = false;

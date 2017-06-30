@@ -1167,7 +1167,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
       CJSONRPC::Initialize();
 #endif
-      ADDON::CAddonMgr::GetInstance().StartServices(false);
+      CServiceBroker::GetServiceAddons().StartBeforeLogin();
 
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
@@ -1195,7 +1195,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
 #endif
-    ADDON::CAddonMgr::GetInstance().StartServices(false);
+    CServiceBroker::GetServiceAddons().StartBeforeLogin();
   }
 
   g_sysinfo.Refresh();
@@ -1211,8 +1211,6 @@ bool CApplication::Initialize()
 
   m_slowTimer.StartZero();
 
-  CAddonMgr::GetInstance().StartServices(true);
-
   // configure seek handler
   CSeekHandler::GetInstance().Configure();
 
@@ -1221,6 +1219,7 @@ bool CApplication::Initialize()
   RegisterActionListener(&CPlayerController::GetInstance());
 
   CRepositoryUpdater::GetInstance().Start();
+  CServiceBroker::GetServiceAddons().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2895,7 +2894,7 @@ void CApplication::Stop(int exitCode)
     g_mediaManager.Stop();
 
     // Stop services before unloading Python
-    CAddonMgr::GetInstance().StopServices(false);
+    CServiceBroker::GetServiceAddons().Stop();
 
     // unregister action listeners
     UnregisterActionListener(&CSeekHandler::GetInstance());
