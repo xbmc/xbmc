@@ -66,7 +66,7 @@ private:
 class IOSScreenSaver
 {
 public:
-  virtual ~IOSScreenSaver() {}
+  virtual ~IOSScreenSaver() = default;
   /**
    * Do not allow the OS screen saver to become active
    *

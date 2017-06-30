@@ -30,7 +30,7 @@ public:
   {
     m_dpy = dpy;
   }
-  virtual ~CGLContext() {};
+  virtual ~CGLContext() = default;
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
