@@ -28,6 +28,7 @@
 #include "CompileInfo.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
+#include "cores/VideoPlayer/Process/osx/ProcessInfoOSX.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGL.h"
@@ -785,6 +786,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();
   CRendererVTB::Register();
+  VIDEOPLAYER::CProcessInfoOSX::Register();
 
   return true;
 }

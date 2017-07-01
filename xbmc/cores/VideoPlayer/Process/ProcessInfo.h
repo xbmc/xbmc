@@ -25,15 +25,20 @@
 #include "threads/CriticalSection.h"
 #include <atomic>
 #include <list>
+#include <map>
 #include <string>
 
+class CProcessInfo;
 class CDataCacheCore;
+
+using CreateProcessControl = CProcessInfo* (*)();
 
 class CProcessInfo
 {
 public:
   static CProcessInfo* CreateInstance();
-  virtual ~CProcessInfo();
+  static void RegisterProcessControl(std::string id, CreateProcessControl createFunc);
+  virtual ~CProcessInfo() = default;
   void SetDataCache(CDataCacheCore *cache);
 
   // player video
@@ -91,7 +96,8 @@ public:
   bool GetVideoRender();
 
 protected:
-  CProcessInfo();
+  CProcessInfo() = default;
+  static std::map<std::string, CreateProcessControl> m_processControls;
   CDataCacheCore *m_dataCache = nullptr;
 
   // player video info

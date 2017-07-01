@@ -19,33 +19,26 @@
  */
 
 #include "ProcessInfoOSX.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_DARWIN_OSX)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoOSX::Create()
 {
   return new CProcessInfoOSX();
 }
 
-
-// base class definitions
-CProcessInfoOSX::CProcessInfoOSX()
+void CProcessInfoOSX::Register()
 {
-  
-}
-
-CProcessInfoOSX::~CProcessInfoOSX()
-{
-  
+  CProcessInfo::RegisterProcessControl("osx", CProcessInfoOSX::Create);
 }
 
 void CProcessInfoOSX::SetSwDeinterlacingMethods()
 {
   // first populate with the defaults from base implementation
   CProcessInfo::SetSwDeinterlacingMethods();
-  
+
   std::list<EINTERLACEMETHOD> methods;
   {
     // get the current methods
@@ -55,7 +48,7 @@ void CProcessInfoOSX::SetSwDeinterlacingMethods()
   // add bob and blend deinterlacer for osx
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB);
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BLEND);
-  
+
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
@@ -72,6 +65,4 @@ std::vector<AVPixelFormat> CProcessInfoOSX::GetRenderFormats()
 
   return formats;
 }
-
-#endif
 
