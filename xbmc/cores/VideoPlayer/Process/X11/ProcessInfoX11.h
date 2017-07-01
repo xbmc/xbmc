@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2016 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,14 +19,19 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "../ProcessInfo.h"
 
-class CProcessInfoLinux : public CProcessInfo
+namespace VIDEOPLAYER
+{
+
+class CProcessInfoX11 : public CProcessInfo
 {
 public:
-  CProcessInfoLinux();
-  virtual ~CProcessInfoLinux();
+  static CProcessInfo* Create();
+  static void Register();
+
   void SetSwDeinterlacingMethods() override;
   std::vector<AVPixelFormat> GetRenderFormats() override;
 };
+
+}

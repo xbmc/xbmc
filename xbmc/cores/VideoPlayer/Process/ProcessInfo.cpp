@@ -22,24 +22,30 @@
 #include "cores/DataCacheCore.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if !defined(PLATFORM_OVERRIDE_VP_PROCESSINFO)
+CCriticalSection createSection;
+std::map<std::string, CreateProcessControl> CProcessInfo::m_processControls;
+
+void CProcessInfo::RegisterProcessControl(std::string id, CreateProcessControl createFunc)
+{
+  CSingleLock lock(createSection);
+
+  m_processControls.clear();
+  m_processControls[id] = createFunc;
+}
 
 CProcessInfo* CProcessInfo::CreateInstance()
 {
-  return new CProcessInfo();
-}
-
-#endif
-
-
-// base class definitions
-CProcessInfo::CProcessInfo()
-{
-}
-
-CProcessInfo::~CProcessInfo()
-{
+  CSingleLock lock(createSection);
+  
+  CProcessInfo *ret = nullptr;
+  for (auto &info : m_processControls)
+  {
+    ret = info.second();
+    if (ret)
+      return ret;
+  }
+  if (!ret)
+    return new CProcessInfo();
 }
 
 void CProcessInfo::SetDataCache(CDataCacheCore *cache)
