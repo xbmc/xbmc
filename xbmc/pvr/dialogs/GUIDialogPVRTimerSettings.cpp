@@ -880,8 +880,8 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     // Data range: "today" until "yesterday next year"
     const CDateTime now(CDateTime::GetCurrentDateTime());
     CDateTime time(now.GetYear(), now.GetMonth(), now.GetDay(), 0, 0, 0);
-    const CDateTime yesterdayPlusOneYear(
-      time.GetYear() + 1, time.GetMonth(), time.GetDay() - 1, time.GetHour(), time.GetMinute(), time.GetSecond());
+    const CDateTime yesterdayPlusOneYear(CDateTime(time.GetYear() + 1, time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond())
+		- CDateTimeSpan(1, 0, 0, 0));
 
     CDateTime oldCDateTime;
     if (setting->GetId() == SETTING_TMR_FIRST_DAY)
