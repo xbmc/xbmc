@@ -309,6 +309,7 @@ const std::string CSettings::SETTING_WEATHER_CURRENTLOCATION = "weather.currentl
 const std::string CSettings::SETTING_WEATHER_ADDON = "weather.addon";
 const std::string CSettings::SETTING_WEATHER_ADDONSETTINGS = "weather.addonsettings";
 const std::string CSettings::SETTING_SERVICES_DEVICENAME = "services.devicename";
+const std::string CSettings::SETTING_SERVICES_UPNP = "services.upnp";
 const std::string CSettings::SETTING_SERVICES_UPNPSERVER = "services.upnpserver";
 const std::string CSettings::SETTING_SERVICES_UPNPANNOUNCE = "services.upnpannounce";
 const std::string CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES = "services.upnplookforexternalsubtitles";
@@ -993,6 +994,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT);
   settingSet.insert(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD);
+  settingSet.insert(CSettings::SETTING_SERVICES_UPNP);
   settingSet.insert(CSettings::SETTING_SERVICES_UPNPSERVER);
   settingSet.insert(CSettings::SETTING_SERVICES_UPNPRENDERER);
   settingSet.insert(CSettings::SETTING_SERVICES_UPNPCONTROLLER);

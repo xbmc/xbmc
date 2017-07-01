@@ -294,7 +294,24 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #endif //HAS_AIRPLAY
 
 #ifdef HAS_UPNP
-  if (settingId == CSettings::SETTING_SERVICES_UPNPSERVER)
+  if (settingId == CSettings::SETTING_SERVICES_UPNP)
+  {
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
+    {
+      StartUPnPClient();
+      StartUPnPController();
+      StartUPnPServer();
+      StartUPnPRenderer();
+    }
+    else
+    {
+      StopUPnPRenderer();
+      StopUPnPServer();
+      StopUPnPController();
+      StopUPnPClient();
+    }
+  }
+  else if (settingId == CSettings::SETTING_SERVICES_UPNPSERVER)
   {
     if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
@@ -482,7 +499,8 @@ void CNetworkServices::Start()
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVER) && !StartWebserver())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
 #endif // HAS_WEB_SERVER
-  StartUPnP();
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
+    StartUPnP();
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartEventServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
@@ -863,6 +881,9 @@ bool CNetworkServices::StopUPnP(bool bWait)
 bool CNetworkServices::StartUPnPClient()
 {
 #ifdef HAS_UPNP
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
+    return false;
+
   CLog::Log(LOGNOTICE, "starting upnp client");
   CUPnP::GetInstance()->StartClient();
   return IsUPnPClientRunning();
@@ -896,7 +917,8 @@ bool CNetworkServices::StartUPnPController()
 {
 #ifdef HAS_UPNP
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPCONTROLLER) ||
-      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER))
+      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER) ||
+      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
   CLog::Log(LOGNOTICE, "starting upnp controller");
@@ -931,7 +953,8 @@ bool CNetworkServices::StopUPnPController()
 bool CNetworkServices::StartUPnPRenderer()
 {
 #ifdef HAS_UPNP
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPRENDERER))
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPRENDERER) ||
+      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
   CLog::Log(LOGNOTICE, "starting upnp renderer");
@@ -965,7 +988,8 @@ bool CNetworkServices::StopUPnPRenderer()
 bool CNetworkServices::StartUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER))
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPSERVER) ||
+      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
   CLog::Log(LOGNOTICE, "starting upnp server");
