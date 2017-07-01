@@ -264,7 +264,6 @@ namespace PVR
     bool                  m_bIsRadio;            /*!< @brief is radio channel if set */
     unsigned int          m_iTimerId;            /*!< @brief id that won't change as long as XBMC is running */
 
-    CPVRChannelPtr        m_channel;
     unsigned int          m_iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int          m_iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
 
@@ -288,5 +287,6 @@ namespace PVR
 
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
+    mutable CPVRChannelPtr m_channel;
   };
 }

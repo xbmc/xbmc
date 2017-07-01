@@ -312,7 +312,7 @@ namespace PVR
 
   bool CPVRGUIActions::AddTimer(const CPVRTimerInfoTagPtr &item) const
   {
-    if (!item->m_channel && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
+    if (!item->ChannelTag() && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no channel given", __FUNCTION__);
       CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); // "Information", "Couldn't save timer. Check the log for more information about this message."
@@ -325,7 +325,7 @@ namespace PVR
       return false;
     }
 
-    if (!CheckParentalLock(item->m_channel))
+    if (!CheckParentalLock(item->ChannelTag()))
       return false;
 
     return CServiceBroker::GetPVRManager().Timers()->AddTimer(item);
