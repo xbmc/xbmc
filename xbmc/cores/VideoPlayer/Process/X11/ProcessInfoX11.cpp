@@ -18,30 +18,22 @@
  *
  */
 
-#include "ProcessInfoLinux.h"
+#include "ProcessInfoX11.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_LINUX)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoX11::Create()
 {
-  return new CProcessInfoLinux();
+  return new CProcessInfoX11();
 }
 
-
-// base class definitions
-CProcessInfoLinux::CProcessInfoLinux()
+void CProcessInfoX11::Register()
 {
-
+  CProcessInfo::RegisterProcessControl("X11", CProcessInfoX11::Create);
 }
 
-CProcessInfoLinux::~CProcessInfoLinux()
-{
-
-}
-
-void CProcessInfoLinux::SetSwDeinterlacingMethods()
+void CProcessInfoX11::SetSwDeinterlacingMethods()
 {
   // first populate with the defaults from base implementation
   CProcessInfo::SetSwDeinterlacingMethods();
@@ -60,7 +52,7 @@ void CProcessInfoLinux::SetSwDeinterlacingMethods()
   UpdateDeinterlacingMethods(methods);
 }
 
-std::vector<AVPixelFormat> CProcessInfoLinux::GetRenderFormats()
+std::vector<AVPixelFormat> CProcessInfoX11::GetRenderFormats()
 {
   std::vector<AVPixelFormat> formats;
   formats.push_back(AV_PIX_FMT_YUV420P);
@@ -72,5 +64,3 @@ std::vector<AVPixelFormat> CProcessInfoLinux::GetRenderFormats()
 
   return formats;
 }
-#endif
-

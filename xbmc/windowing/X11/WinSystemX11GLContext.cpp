@@ -35,6 +35,7 @@
 #include "VideoSyncDRM.h"
 #include "VideoSyncGLX.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/Process/X11/ProcessInfoX11.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 CWinSystemX11GLContext::CWinSystemX11GLContext()
@@ -210,6 +211,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
     return success;
   }
 
+  VIDEOPLAYER::CProcessInfoX11::Register();
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();
