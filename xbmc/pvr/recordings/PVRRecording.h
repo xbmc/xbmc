@@ -138,6 +138,13 @@ namespace PVR
      */
     bool IncrementPlayCount() override;
 
+    /*!
+     * @brief Set this recording's play count without transferring the value to the backend, even if it supports server-side play counts.
+     * @param count play count.
+     * @return True if play count was set successfully, false otherwise.
+     */
+    bool SetLocalPlayCount(int count) { return CVideoInfoTag::SetPlayCount(count); }
+
    /*!
      * @brief Get this recording's local play count. The value will not be obtained from the backend, even if it supports server-side play counts.
      * @return the play count.

@@ -2579,8 +2579,10 @@ msgctxt "#566"
 msgid "Album artist"
 msgstr ""
 
+#. generic "play count" label used in different places
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
 msgctxt "#567"
 msgid "Play count"
 msgstr ""
@@ -9344,7 +9346,11 @@ msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
 
-#empty string with id 19068
+#. Label for recording settings dialog header
+#: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
+msgctxt "#19068"
+msgid "Recording settings"
+msgstr ""
 
 #. Electronic program guide
 #: addons/skin.estuary/xml/Variables.xml
@@ -9381,7 +9387,8 @@ msgctxt "#19074"
 msgid "Active"
 msgstr ""
 
-#. Label of name edit in PVR timer settings dialog
+#. Label of name edit in PVR timer and recording settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19075"
 msgid "Name"
@@ -9512,7 +9519,8 @@ msgctxt "#19096"
 msgid "\"Smart select\""
 msgstr ""
 
-#. label of the help text for the timer name edit field in PVR timer settings dialog
+#. label of the help text for the name edit field in PVR timer and recording settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19097"
 msgid "Enter the name for the timer"
