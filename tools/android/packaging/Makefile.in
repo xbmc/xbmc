@@ -152,7 +152,8 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 xbmc/classes.dex: res
 	mkdir -p xbmc/java/$(APP_PACKAGE_DIR) xbmc/java/$(APP_PACKAGE_DIR)/interfaces xbmc/obj
 	@cp xbmc/src/org/xbmc/kodi/*.java xbmc/java/$(APP_PACKAGE_DIR)/
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/gen/$(APP_PACKAGE_DIR)/*.java xbmc/java/$(APP_PACKAGE_DIR)/*.java $(JAVAC_EXTRA_ARGS)
+	@cp xbmc/src/org/xbmc/kodi/interfaces/*.java xbmc/java/$(APP_PACKAGE_DIR)/interfaces/
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/gen/$(APP_PACKAGE_DIR)/*.java xbmc/java/$(APP_PACKAGE_DIR)/*.java xbmc/java/$(APP_PACKAGE_DIR)/interfaces/*.java $(JAVAC_EXTRA_ARGS)
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj xbmc/lib
 
 package: libs python xbmc/classes.dex

@@ -76,14 +76,6 @@ void CJNIMainActivity::_onVolumeChanged(JNIEnv *env, jobject context, jint volum
     m_appInstance->onVolumeChanged(volume);
 }
 
-void CJNIMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange)
-{
-  (void)env;
-  (void)context;
-  if(m_appInstance)
-    m_appInstance->onAudioFocusChange(focusChange);
-}
-
 void CJNIMainActivity::_onInputDeviceAdded(JNIEnv *env, jobject context, jint deviceId)
 {
   static_cast<void>(env);

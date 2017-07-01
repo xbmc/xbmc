@@ -50,6 +50,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "settings/Settings.h"
 
 #include <GLES2/gl2.h>
@@ -138,20 +139,12 @@ static bool IsSupportedColorFormat(int color_format)
 
 /*****************************************************************************/
 /*****************************************************************************/
-class CNULL_Listener : public CJNISurfaceTextureOnFrameAvailableListener
-{
-public:
-  CNULL_Listener() : CJNISurfaceTextureOnFrameAvailableListener(jni::jhobject(NULL)) {};
-
-protected:
-  virtual void OnFrameAvailable() {};
-};
-
-class CDVDMediaCodecOnFrameAvailable : public CEvent, CJNISurfaceTextureOnFrameAvailableListener
+class CDVDMediaCodecOnFrameAvailable : public CEvent, public CJNIXBMCSurfaceTextureOnFrameAvailableListener
 {
 public:
   CDVDMediaCodecOnFrameAvailable(std::shared_ptr<CJNISurfaceTexture> &surfaceTexture)
-  : m_surfaceTexture(surfaceTexture)
+    : CJNIXBMCSurfaceTextureOnFrameAvailableListener()
+    , m_surfaceTexture(surfaceTexture)
   {
     m_surfaceTexture->setOnFrameAvailableListener(*this);
   }
@@ -159,19 +152,18 @@ public:
   virtual ~CDVDMediaCodecOnFrameAvailable()
   {
     // unhook the callback
-    CNULL_Listener null_listener;
-    m_surfaceTexture->setOnFrameAvailableListener(null_listener);
+    CJNIXBMCSurfaceTextureOnFrameAvailableListener nullListener(jni::jhobject(NULL));
+    m_surfaceTexture->setOnFrameAvailableListener(nullListener);
   }
 
 protected:
-  virtual void OnFrameAvailable()
+  void onFrameAvailable(CJNISurfaceTexture)
   {
     Set();
   }
 
 private:
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
-
 };
 
 /*****************************************************************************/
