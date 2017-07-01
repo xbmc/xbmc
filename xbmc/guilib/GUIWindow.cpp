@@ -267,7 +267,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
     }
     else if (strValue == "depth" && pChild->FirstChild())
     { 
-      float stereo = static_cast<float>(atof(pChild->FirstChild()->Value()));;
+      float stereo = static_cast<float>(atof(pChild->FirstChild()->Value()));
       m_stereo = std::max(-1.f, std::min(1.f, stereo));
     }
     else if (strValue == "controls")

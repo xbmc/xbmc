@@ -99,7 +99,7 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
     if (m_orientation == HORIZONTAL)
       fScale = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
     else
-      fScale = m_width == 0 ? 1.0f : m_width / nibUpper.GetTextureWidth();;
+      fScale = m_width == 0 ? 1.0f : m_width / nibUpper.GetTextureWidth();
     dirty |= ProcessSelector(nibUpper, currentTime, fScale, RangeSelectorUpper);
   }
 
