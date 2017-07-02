@@ -398,9 +398,6 @@ void OnEnabled(const std::string& id)
   AddonPtr addon;
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL))
     return addon->OnEnabled();
-
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_REPOSITORY))
-    CRepositoryUpdater::GetInstance().ScheduleUpdate(); //notify updater there is a new addon
 }
 
 void OnDisabled(const std::string& id)
@@ -420,11 +417,6 @@ void OnPreInstall(const AddonPtr& addon)
 
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 {
-  AddonPtr localAddon;
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_REPOSITORY))
-    CRepositoryUpdater::GetInstance().ScheduleUpdate(); //notify updater there is a new addon or version
-
   addon->OnPostInstall(update, modal);
 }
 

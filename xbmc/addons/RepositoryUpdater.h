@@ -19,6 +19,7 @@
  *
  */
 
+#include "addons/AddonEvents.h"
 #include "addons/Repository.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "threads/CriticalSection.h"
@@ -35,7 +36,7 @@ class CRepositoryUpdater : private ITimerCallback, private IJobCallback, public 
 public:
   static CRepositoryUpdater& GetInstance();
 
-  ~CRepositoryUpdater() override {}
+  ~CRepositoryUpdater() override;
 
   void Start();
 
@@ -83,6 +84,8 @@ private:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   void OnTimeout() override;
+
+  void OnEvent(const ADDON::AddonEvent& event);
 
   CCriticalSection m_criticalSection;
   CTimer m_timer;
