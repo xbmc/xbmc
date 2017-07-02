@@ -19,7 +19,6 @@
  */
 
 #include "addons/AddonBuilder.h"
-#include "addons/AudioDecoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
 #include "addons/ImageDecoder.h"
@@ -121,6 +120,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_ADSPDLL:
+    case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
@@ -131,8 +131,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
     case ADDON_PVRDLL:
       return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
-    case ADDON_AUDIODECODER:
-      return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_SKIN:
@@ -188,6 +186,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
     case ADDON_ADSPDLL:
+    case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
@@ -198,8 +197,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonInfo)));
-    case ADDON_AUDIODECODER:
-      return AddonPtr(new CAudioDecoder(std::move(addonInfo)));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(std::move(addonInfo)));
     case ADDON_RESOURCE_GAMES:

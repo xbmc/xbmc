@@ -16,7 +16,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "AudioDecoder.h"
+
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -24,43 +26,28 @@
 namespace ADDON
 {
 
-std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CAudioDecoder::CAudioDecoder(const BinaryAddonBasePtr& addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_AUDIODECODER, addonInfo)
 {
-  std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
-  std::string mimetype = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype");
-  bool tags = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tags") == "true";
-  bool tracks = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tracks") == "true";
-  std::string codecName = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name");
-  std::string strExt = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name") + "stream";
-
-  return std::unique_ptr<CAudioDecoder>(new CAudioDecoder(std::move(addonInfo), std::move(extension),
-      std::move(mimetype), tags, tracks, std::move(codecName), std::move(strExt)));
-}
-
-CAudioDecoder::CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype,
-    bool tags, bool tracks, std::string codecName, std::string strExt)
-    : CAddonDll(std::move(addonInfo)), m_extension(extension), m_mimetype(mimetype),
-      m_context(nullptr), m_tags(tags), m_tracks(tracks), m_channel(nullptr)
-{
-  m_CodecName = std::move(codecName);
-  m_strExt = std::move(strExt);
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_CodecName = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@name").asString();
+  m_strExt = m_CodecName + "stream";
+  m_struct = {{ 0 }};
 }
 
 CAudioDecoder::~CAudioDecoder()
 {
-  DeInit();
+  DestroyInstance();
 }
 
-bool CAudioDecoder::Create()
+bool CAudioDecoder::CreateDecoder()
 {
   m_struct.toKodi.kodiInstance = this;
-  return CAddonDll::Create(ADDON_INSTANCE_AUDIODECODER, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
+  return CreateInstance(&m_struct);
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.init)
     return false;
 
   // for replaygain
@@ -70,10 +57,10 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   int channels;
   int sampleRate;
 
-  m_context = m_struct.toAddon.Init(file.GetPath().c_str(), filecache,
-                              &channels, &sampleRate,
-                              &m_bitsPerSample, &m_TotalTime,
-                              &m_bitRate, &m_format.m_dataFormat, &m_channel);
+ bool ret = m_struct.toAddon.init(&m_struct, file.GetPath().c_str(), filecache,
+                                  &channels, &sampleRate,
+                                  &m_bitsPerSample, &m_TotalTime,
+                                  &m_bitRate, &m_format.m_dataFormat, &m_channel);
 
   m_format.m_sampleRate = sampleRate;
   if (m_channel)
@@ -81,45 +68,37 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   else
     m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
 
-  return (m_context != NULL);
+  return ret;
 }
 
 int CAudioDecoder::ReadPCM(uint8_t* buffer, int size, int* actualsize)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.read_pcm)
     return 0;
 
-  return m_struct.toAddon.ReadPCM(m_context, buffer, size, actualsize);
+  return m_struct.toAddon.read_pcm(&m_struct, buffer, size, actualsize);
 }
 
 bool CAudioDecoder::Seek(int64_t time)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.seek)
     return false;
 
-  m_struct.toAddon.Seek(m_context, time);
+  m_struct.toAddon.seek(&m_struct, time);
   return true;
-}
-
-void CAudioDecoder::DeInit()
-{
-  if (!Initialized())
-    return;
-
-  m_struct.toAddon.DeInit(m_context);
 }
 
 bool CAudioDecoder::Load(const std::string& fileName,
                          MUSIC_INFO::CMusicInfoTag& tag,
                          MUSIC_INFO::EmbeddedArt* art)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.read_tag)
     return false;
 
-  char title[256];
-  char artist[256];
+  char title[256] = { 0 };
+  char artist[256] = { 0 };
   int length;
-  if (m_struct.toAddon.ReadTag(fileName.c_str(), title, artist, &length))
+  if (m_struct.toAddon.read_tag(&m_struct, fileName.c_str(), title, artist, &length))
   {
     tag.SetTitle(title);
     tag.SetArtist(artist);
@@ -132,22 +111,17 @@ bool CAudioDecoder::Load(const std::string& fileName,
 
 int CAudioDecoder::GetTrackCount(const std::string& strPath)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.track_count)
     return 0;
 
-  int result = m_struct.toAddon.TrackCount(strPath.c_str());
+  int result = m_struct.toAddon.track_count(&m_struct, strPath.c_str());
 
-  if (result > 1 && !Load(strPath, XFILE::CMusicFileDirectory::m_tag, NULL))
+  if (result > 1 && !Load(strPath, XFILE::CMusicFileDirectory::m_tag, nullptr))
     return 0;
 
   XFILE::CMusicFileDirectory::m_tag.SetLoaded(true);
   return result;
 }
 
-void CAudioDecoder::Destroy()
-{
-  CAddonDll::Destroy();
-}
 
 } /*namespace ADDON*/
-

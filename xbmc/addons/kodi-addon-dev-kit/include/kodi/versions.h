@@ -80,11 +80,10 @@
 #define ADDON_INSTANCE_VERSION_ADSP_XML_ID            "kodi.binary.instance.adsp"
 #define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "addon-instance/AudioDSP.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "2.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "2.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "kodi_audiodec_dll.h" \
-                                                      "kodi_audiodec_types.h"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "addon-instance/AudioDecoder.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "2.0.0"
