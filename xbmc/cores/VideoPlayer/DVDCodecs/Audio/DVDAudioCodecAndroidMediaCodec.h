@@ -42,6 +42,10 @@ public:
   CDVDAudioCodecAndroidMediaCodec(CProcessInfo &processInfo);
   virtual ~CDVDAudioCodecAndroidMediaCodec();
 
+  // registration
+  static CDVDAudioCodec* Create(CProcessInfo &processInfo);
+  static bool Register();
+
   // required overrides
 public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
