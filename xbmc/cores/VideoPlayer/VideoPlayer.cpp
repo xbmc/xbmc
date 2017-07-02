@@ -3590,14 +3590,14 @@ void CVideoPlayer::SetSpeed(float speed)
   if (speed < 0 && IsInMenu())
     return;
  
-  if(!CanSeek() && !CanPause())
+  if (!CanSeek() && !CanPause())
     return;
   
   int iSpeed = static_cast<int>(speed * DVD_PLAYSPEED_NORMAL);
 
-  if(!CanSeek())
+  if (!CanSeek())
   {
-    if((iSpeed != DVD_PLAYSPEED_NORMAL) && (iSpeed != DVD_PLAYSPEED_PAUSE))
+    if ((iSpeed != DVD_PLAYSPEED_NORMAL) && (iSpeed != DVD_PLAYSPEED_PAUSE))
       return;
   }
 
