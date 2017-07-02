@@ -43,6 +43,7 @@ class CDVDCodecOptions;
 
 typedef CDVDVideoCodec* (*CreateHWVideoCodec)(CProcessInfo &processInfo);
 typedef IHardwareDecoder* (*CreateHWAccel)(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+typedef CDVDAudioCodec* (*CreateHWAudioCodec)(CProcessInfo &processInfo);
 
 class CDVDFactoryCodec
 {
@@ -66,12 +67,17 @@ public:
   static std::vector<std::string> GetHWAccels();
   static void ClearHWAccels();
 
+  static void RegisterHWAudioCodec(std::string id, CreateHWAudioCodec createFunc);
+  static void ClearHWAudioCodecs();
+
+
 protected:
 
   static CDVDVideoCodec* CreateVideoCodecHW(std::string id, CProcessInfo &processInfo);
-  static CDVDAudioCodec* CreateAudioCodecHW(CProcessInfo &processInfo);
+  static CDVDAudioCodec* CreateAudioCodecHW(std::string id, CProcessInfo &processInfo);
 
   static std::map<std::string, CreateHWVideoCodec> m_hwVideoCodecs;
   static std::map<std::string, CreateHWAccel> m_hwAccels;
+  static std::map<std::string, CreateHWAudioCodec> m_hwAudioCodecs;
 };
 
