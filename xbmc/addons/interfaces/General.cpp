@@ -23,7 +23,9 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
@@ -252,7 +254,7 @@ char* Interface_General::get_temp_path(void* kodiBase)
     return nullptr;
   }
 
-  const std::string tempPath = URIUtils::AddFileToFolder("special://temp/addons", addon->ID());
+  const std::string tempPath = URIUtils::AddFileToFolder(CServiceBroker::GetBinaryAddonManager().GetTempAddonBasePath(), addon->ID());
   if (!XFILE::CDirectory::Exists(tempPath))
     XFILE::CDirectory::Create(tempPath);
 

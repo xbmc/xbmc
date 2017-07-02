@@ -39,10 +39,11 @@ namespace ADDON
   class CBinaryAddonManager
   {
   public:
-    CBinaryAddonManager() = default;
+    CBinaryAddonManager();
     ~CBinaryAddonManager();
 
     bool Init();
+    void DeInit();
 
     /*!
      * @brief Checks system about given type to know related add-on's are
@@ -128,6 +129,16 @@ namespace ADDON
      */
     AddonPtr GetRunningAddon(const std::string& addonId) const;
 
+    /*!
+     * @brief To get the path where temporary addon parts can be becomes stored
+     *
+     * @return the base path used for temporary addon paths
+     *
+     * @warning the folder and his contents becomes deleted during stop and
+     * close of Kodi
+     */
+    const std::string& GetTempAddonBasePath() { return m_tempAddonBasePath; }
+
   private:
     bool AddAddonBaseEntry(BINARY_ADDON_LIST_ENTRY& entry);
 
@@ -141,6 +152,8 @@ namespace ADDON
     typedef std::map<std::string, BinaryAddonBasePtr> BinaryAddonMgrBaseList;
     BinaryAddonMgrBaseList m_installedAddons;
     BinaryAddonMgrBaseList m_enabledAddons;
+
+    const std::string m_tempAddonBasePath;
   };
 
 } /* namespace ADDON */

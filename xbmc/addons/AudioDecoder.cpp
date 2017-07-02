@@ -42,7 +42,7 @@ CAudioDecoder::~CAudioDecoder()
 bool CAudioDecoder::CreateDecoder()
 {
   m_struct.toKodi.kodiInstance = this;
-  return CreateInstance(&m_struct);
+  return CreateInstance(&m_struct) == ADDON_STATUS_OK;
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
