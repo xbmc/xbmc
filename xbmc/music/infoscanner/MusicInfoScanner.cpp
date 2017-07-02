@@ -1157,6 +1157,13 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
       }
       Sleep(1);
     }
+    /*
+    Finding album may request data from Musicbrainz.
+    MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter
+    the server returns 503 errors for all calls from that IP address.
+    To stay below the rate-limit threshold wait 1s before proceeding
+    */
+    Sleep(1000);
   }
 
   CGUIDialogSelect *pDlg = NULL;
@@ -1277,6 +1284,15 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
   if (!scraper.Succeeded())
     return INFO_ERROR;
+
+  /*
+  Fetching album details may make requests for data from Musicbrainz.
+  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter
+  the server returns 503 errors for all calls from that IP address.
+  To stay below the rate-limit threshold wait 1s before proceeding incase 
+  next action is to scrape another album or artist
+  */
+  Sleep(1000);
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
   
@@ -1438,6 +1454,15 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
       return INFO_NOT_FOUND;
   }
 
+  /*
+  Fetching artist details makes requests for data from Musicbrainz.
+  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter 
+  the server returns 503 errors for all calls from that IP address.
+  To stay below the rate-limit threshold wait 1s before proceeding incase next
+  action is to scrape another album or artist
+  */
+  Sleep(1000);
+
   scraper.LoadArtistInfo(iSelectedArtist, artist.strArtist);
   while (!scraper.Completed())
   {
@@ -1478,10 +1503,6 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
 
   if (!musicBrainzURL.m_url.empty())
   {
-    Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
-                 // they start serving up the 'you hit the rate-limiter' page fast - meaning
-                 // we will never get below the rate-limit threshold again in a specific run.
-                 // This helps us to avoidthe rate-limiter as far as possible.
     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",preferredScraper->Name().c_str());
     CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
     bMusicBrainz = true;
