@@ -151,11 +151,11 @@ void CServiceManager::Deinit()
   m_peripherals.reset();
   m_contextMenuManager.reset();
   m_favouritesService.reset();
-  m_vfsAddonCache.reset();
-  m_binaryAddonCache.reset();
   if (m_PVRManager)
     m_PVRManager->Deinit();
   m_PVRManager.reset();
+  m_vfsAddonCache.reset();
+  m_binaryAddonCache.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
 #ifdef HAS_PYTHON
