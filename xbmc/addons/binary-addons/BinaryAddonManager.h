@@ -43,6 +43,7 @@ namespace ADDON
     ~CBinaryAddonManager();
 
     bool Init();
+    void DeInit();
 
     /*!
      * @brief Checks system about given type to know related add-on's are

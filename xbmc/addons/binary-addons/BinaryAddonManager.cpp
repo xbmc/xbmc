@@ -22,6 +22,8 @@
 #include "BinaryAddonBase.h"
 
 #include "addons/AddonManager.h"
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -29,7 +31,7 @@ using namespace ADDON;
 
 CBinaryAddonManager::~CBinaryAddonManager()
 {
-  CAddonMgr::GetInstance().Events().Unsubscribe(this);
+  DeInit();
 }
 
 bool CBinaryAddonManager::Init()
@@ -49,6 +51,15 @@ bool CBinaryAddonManager::Init()
     AddAddonBaseEntry(addon);
 
   return true;
+}
+
+void CBinaryAddonManager::DeInit()
+{
+  /* If temporary directory was used from addon delete them */
+  if (XFILE::CDirectory::Exists("special://temp/binary-addons"))
+    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath("special://temp/binary-addons"));
+
+  CAddonMgr::GetInstance().Events().Unsubscribe(this);
 }
 
 bool CBinaryAddonManager::HasInstalledAddons(const TYPE &type) const

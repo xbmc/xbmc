@@ -252,7 +252,7 @@ char* Interface_General::get_temp_path(void* kodiBase)
     return nullptr;
   }
 
-  const std::string tempPath = URIUtils::AddFileToFolder("special://temp/addons", addon->ID());
+  const std::string tempPath = URIUtils::AddFileToFolder("special://temp/binary-addons", addon->ID());
   if (!XFILE::CDirectory::Exists(tempPath))
     XFILE::CDirectory::Create(tempPath);
 

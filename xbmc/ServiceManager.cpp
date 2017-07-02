@@ -87,14 +87,14 @@ bool CServiceManager::Init2()
     return false;
   }
 
+  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
+  m_vfsAddonCache->Init();
+
   m_PVRManager.reset(new PVR::CPVRManager());
   m_dataCacheCore.reset(new CDataCacheCore());
 
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
-
-  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
-  m_vfsAddonCache->Init();
 
   m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
@@ -151,11 +151,11 @@ void CServiceManager::Deinit()
   m_peripherals.reset();
   m_contextMenuManager.reset();
   m_favouritesService.reset();
-  m_vfsAddonCache.reset();
   m_binaryAddonCache.reset();
   if (m_PVRManager)
     m_PVRManager->Deinit();
   m_PVRManager.reset();
+  m_vfsAddonCache.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
 #ifdef HAS_PYTHON

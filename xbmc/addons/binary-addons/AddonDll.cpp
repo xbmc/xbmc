@@ -323,11 +323,6 @@ void CAddonDll::Destroy()
   /* Unload library file */
   if (m_pDll)
   {
-    /* If temporary directory was used from addon delete them */
-    const std::string tempPath = URIUtils::AddFileToFolder("special://temp/addons", ID());
-    if (XFILE::CDirectory::Exists(tempPath))
-      XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(tempPath));
-
     /* Inform dll to stop all activities */
     if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
     {
