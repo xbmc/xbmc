@@ -92,6 +92,7 @@ public:
   void Acquire();
   void Acquire(std::shared_ptr<IVideoBufferPool> pool);
   void Release();
+  int GetId() const { return m_id; };
 
   virtual AVPixelFormat GetFormat();
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};

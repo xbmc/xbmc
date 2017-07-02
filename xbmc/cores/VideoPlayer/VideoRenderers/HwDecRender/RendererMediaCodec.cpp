@@ -21,12 +21,12 @@
 #include "RendererMediaCodec.h"
 
 #if defined(TARGET_ANDROID)
-#include "cores/IPlayer.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
+#include "../RenderFactory.h"
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
@@ -37,6 +37,7 @@ static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
 
 CRendererMediaCodec::CRendererMediaCodec()
 {
+  CLog::Log(LOGNOTICE, "Instancing CRendererMediaCodec");
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
   if (!eglCreateSyncKHR) {
     eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC) eglGetProcAddress("eglCreateSyncKHR");
@@ -52,70 +53,61 @@ CRendererMediaCodec::CRendererMediaCodec()
 
 CRendererMediaCodec::~CRendererMediaCodec()
 {
-
+  for (int i(0); i < NUM_BUFFERS; ++i)
+    ReleaseBuffer(i);
 }
 
-void CRendererMediaCodec::AddVideoPictureHW(VideoPicture &picture, int index)
+CBaseRenderer* CRendererMediaCodec::Create(CVideoBuffer *buffer)
 {
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-  int mindex = -1;
-#endif
+  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) && dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
+    return new CRendererMediaCodec();
+  return nullptr;
+}
 
+bool CRendererMediaCodec::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("mediacodec_egl", CRendererMediaCodec::Create);
+  return true;
+}
+
+void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index)
+{
   YUVBUFFER &buf = m_buffers[index];
-  if (picture.hwPic)
+  CMediaCodecVideoBuffer *videoBuffer;
+  if (picture.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)))
   {
-    buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic)->Retain();
-#ifdef DEBUG_VERBOSE
-    mindex = ((CDVDMediaCodecInfo *)buf.hwDec)->GetIndex();
-#endif
+    YUVBUFFER &buf = m_buffers[index];
+    buf.videoBuffer = picture.videoBuffer;
+    videoBuffer->Acquire();
+
     // releaseOutputBuffer must be in same thread as
     // dequeueOutputBuffer. We are in VideoPlayerVideo
     // thread here, so we are safe.
-    ((CDVDMediaCodecInfo *)buf.hwDec)->ReleaseOutputBuffer(true);
-  }
+    videoBuffer->ReleaseOutputBuffer(true);
 
 #ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
+    CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d", index, videoBuffer->GetTextureId());
 #endif
-}
-
-bool CRendererMediaCodec::RenderUpdateCheckForEmptyField()
-{
-  return false;
+  }
 }
 
 void CRendererMediaCodec::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
+  CMediaCodecVideoBuffer* videoBuffer;
+  if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
   {
     // The media buffer has been queued to the SurfaceView but we didn't render it
     // We have to do to the updateTexImage or it will get stuck
-    CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwDec);
-    mci->UpdateTexImage();
-    SAFE_RELEASE(mci);
-    buf.hwDec = NULL;
+    videoBuffer->UpdateTexImage();
+    videoBuffer->Release();
+    buf.videoBuffer = NULL;
   }
-}
-
-bool CRendererMediaCodec::Supports(EINTERLACEMETHOD method)
-{
-  if (method == VS_INTERLACEMETHOD_RENDER_BOB)
-    return true;
-  else
-    return false;
-}
-
-EINTERLACEMETHOD CRendererMediaCodec::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_RENDER_BOB;
 }
 
 CRenderInfo CRendererMediaCodec::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats = m_formats;
   info.max_buffer_size = 4;
   info.optimal_buffer_size = 3;
   return info;
@@ -236,25 +228,19 @@ bool CRendererMediaCodec::RenderHook(int index)
   return true;
 }
 
-int CRendererMediaCodec::GetImageHook(YuvImage *image, int source, bool readonly)
-{
-  return source;
-}
-
 bool CRendererMediaCodec::CreateTexture(int index)
 {
   YuvImage &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
 
   memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&m_buffers[index].fields, 0, sizeof(m_buffers[index].fields));
 
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
 
   for (int f=0; f<3; ++f)
   {
-    YUVPLANE  &plane  = fields[f][0];
+    YUVPLANE  &plane  = m_buffers[index].fields[f][0];
 
     plane.texwidth  = im.width;
     plane.texheight = im.height;
@@ -274,38 +260,20 @@ bool CRendererMediaCodec::CreateTexture(int index)
 
 void CRendererMediaCodec::DeleteTexture(int index)
 {
-  CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
-  SAFE_RELEASE(mci);
-  m_buffers[index].hwDec = NULL;
+  ReleaseBuffer(index);
 }
 
 bool CRendererMediaCodec::UploadTexture(int index)
 {
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-  int mindex = -1;
-#endif
-
-  YUVBUFFER &buf = m_buffers[index];
-
-  if (buf.hwDec)
+  YUVBUFFER &buf(m_buffers[index]);
+  CMediaCodecVideoBuffer* videoBuffer;
+  if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
   {
-    CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwDec);
-#ifdef DEBUG_VERBOSE
-    mindex = mci->GetIndex();
-#endif
-    buf.fields[0][0].id = mci->GetTextureID();
-    mci->UpdateTexImage();
-    mci->GetTransformMatrix(m_textureMatrix);
-    SAFE_RELEASE(mci);
-    buf.hwDec = NULL;
+    buf.fields[0][0].id = videoBuffer->GetTextureId();
+    videoBuffer->UpdateTexImage();
+    videoBuffer->GetTransformMatrix(m_textureMatrix);
   }
-
   CalculateTextureSourceRects(index, 1);
-
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "UploadSurfaceTexture %d: img: %d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
-#endif
   return true;
 }
 
