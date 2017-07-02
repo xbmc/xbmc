@@ -29,6 +29,7 @@
 #include "DVDAudioCodecAndroidMediaCodec.h"
 
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
@@ -69,6 +70,17 @@ CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &p
 CDVDAudioCodecAndroidMediaCodec::~CDVDAudioCodecAndroidMediaCodec()
 {
   Dispose();
+}
+
+CDVDAudioCodec* CDVDAudioCodecAndroidMediaCodec::Create(CProcessInfo &processInfo)
+{
+  return new CDVDAudioCodecAndroidMediaCodec(processInfo);
+}
+
+bool CDVDAudioCodecAndroidMediaCodec::Register()
+{
+  CDVDFactoryCodec::RegisterHWAudioCodec("mediacodec_dec", &CDVDAudioCodecAndroidMediaCodec::Create);
+  return true;
 }
 
 bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
