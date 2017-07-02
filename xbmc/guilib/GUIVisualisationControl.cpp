@@ -442,7 +442,7 @@ void CGUIVisualisationControl::CreateBuffers()
   ClearBuffers();
 
   // Get the number of buffers from the current vis
-  VIS_INFO info;
+  VIS_INFO info { false, 0 };
 
   if (m_instance && m_alreadyStarted)
     m_instance->GetInfo(&info);
