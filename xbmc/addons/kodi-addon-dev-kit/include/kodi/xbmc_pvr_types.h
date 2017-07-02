@@ -70,6 +70,8 @@ struct DemuxPacket;
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
 #define PVR_ADDON_TIMERTYPE_STRING_LENGTH     64
+#define PVR_ADDON_ATTRIBUTE_DESC_LENGTH 64
+#define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
 
 #define XBMC_INVALID_CODEC_ID   0
@@ -273,7 +275,16 @@ extern "C" {
   } PVR_PROPERTIES;
 
   /*!
-   * @brief PVR add-on capabilities. All capabilities are set to "false" as default.
+   * @brief Representation of a general attribute integer value.
+   */
+  typedef struct PVR_ATTRIBUTE_INT_VALUE
+  {
+    int iValue;                                           /*!< @brief (required) an integer value for a certain attribute */
+    char strDescription[PVR_ADDON_ATTRIBUTE_DESC_LENGTH]; /*!< @brief (optional) a localized string describing the value. If left blank, Kodi will generate a suitable representation (like the integer value as string) */
+  } ATTRIBUTE_PACKED PVR_ATTRIBUTE_INT_VALUE;
+
+  /*!
+   * @brief PVR add-on capabilities. All capabilities are set to "false" or 0 as default
    * If a capability is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
    */
   typedef struct PVR_ADDON_CAPABILITIES
@@ -293,7 +304,11 @@ extern "C" {
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
     bool bSupportsRecordingEdl;         /*!< @brief true if the backend supports retrieving an edit decision list for recordings. */
     bool bSupportsRecordingsRename;     /*!< @brief true if the backend supports renaming recordings. */
+    bool bSupportsRecordingsLifetimeChange; /*!< @brief true if the backend supports changing lifetime for recordings. */
     bool bSupportsDescrambleInfo;       /*!< @brief true if the backend supports descramble information for playing channels. */
+
+    unsigned int iRecordingsLifetimesSize; /*!< @brief (required) Count of possible values for PVR_RECORDING.iLifetime. 0 means lifetime is not supported for recordings or no own value definition wanted, but to use Kodi defaults of 1..365. */
+    PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE]; /*!< @brief (optional) Array containing the possible values for PVR_RECORDING.iLifetime. Must be filled if iLifetimesSize > 0 */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -400,14 +415,9 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!
-   * @brief Representation of a timer's attribute integer value.
+   * @brief Representation of a timer type's attribute integer value.
    */
-  typedef struct PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE
-  {
-    int iValue;                                              /*!< @brief (required) an integer value for a certain timer attribute */
-    char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];  /*!< @brief (optional) a localized string describing the value. If left blank, Kodi will
-                                                               generate a suitable representation (like the integer value as string) */
-  } ATTRIBUTE_PACKED PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE;
+  typedef PVR_ATTRIBUTE_INT_VALUE PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE;
 
   /*!
    * @brief Representation of a timer type.
@@ -625,6 +635,7 @@ extern "C" {
     PVR_ERROR (__cdecl* UndeleteRecording)(const PVR_RECORDING&);
     PVR_ERROR (__cdecl* DeleteAllRecordingsFromTrash)(void);
     PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDING&);
+    PVR_ERROR (__cdecl* SetRecordingLifetime)(const PVR_RECORDING*);
     PVR_ERROR (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
     PVR_ERROR (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
     int (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);

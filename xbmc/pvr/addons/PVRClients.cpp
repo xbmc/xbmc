@@ -366,6 +366,16 @@ const std::string CPVRClients::GetPlayingClientName(void) const
   return m_strPlayingClientName;
 }
 
+CPVRClientCapabilities CPVRClients::GetClientCapabilities(int iClientId) const
+{
+  PVR_CLIENT client;
+  if (GetCreatedClient(iClientId, client))
+    return client->GetClientCapabilities();
+
+  CLog::Log(LOGERROR, "PVR - %s - cannot find client %d", __FUNCTION__, iClientId);
+  return CPVRClientCapabilities();
+}
+
 std::string CPVRClients::GetStreamURL(const CPVRChannelPtr &channel)
 {
   assert(channel.get());
@@ -375,7 +385,7 @@ std::string CPVRClients::GetStreamURL(const CPVRChannelPtr &channel)
   if (GetCreatedClient(channel->ClientID(), client))
     strReturn = client->GetLiveStreamURL(channel);
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d", __FUNCTION__, channel->ClientID());
 
   return strReturn;
 }
@@ -450,15 +460,6 @@ CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
 {
   PVR_CLIENT client;
   return GetPlayingClient(client) ? client->GetPlayingRecording() : CPVRRecordingPtr();
-}
-
-bool CPVRClients::HasTimerSupport(int iClientId)
-{
-  PVR_CLIENT client;
-  if (GetCreatedClient(iClientId, client))
-    return client->SupportsTimers();
-
-  return false;
 }
 
 bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients)
@@ -650,7 +651,7 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
 
   for (const auto &client : clients)
   {
-    if (client.second->SupportsRecordingsUndelete() && client.second->GetRecordingsAmount(true) > 0)
+    if (client.second->GetClientCapabilities().SupportsRecordingsUndelete() && client.second->GetRecordingsAmount(true) > 0)
     {
       PVR_ERROR currentError = client.second->DeleteAllRecordingsFromTrash();
       if (currentError != PVR_ERROR_NO_ERROR)
@@ -668,7 +669,7 @@ bool CPVRClients::SetRecordingLastPlayedPosition(const CPVRRecording &recording,
 {
   *error = PVR_ERROR_UNKNOWN;
   PVR_CLIENT client;
-  if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordings())
+  if (GetCreatedClient(recording.m_iClientId, client) && client->GetClientCapabilities().SupportsRecordings())
     *error = client->SetRecordingLastPlayedPosition(recording, lastplayedposition);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
@@ -681,19 +682,31 @@ int CPVRClients::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
   int rc = 0;
 
   PVR_CLIENT client;
-  if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordings())
+  if (GetCreatedClient(recording.m_iClientId, client) && client->GetClientCapabilities().SupportsRecordings())
     rc = client->GetRecordingLastPlayedPosition(recording);
   else
-    CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
+    CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings", __FUNCTION__, recording.m_iClientId);
 
   return rc;
+}
+
+bool CPVRClients::SetRecordingLifetime(const CPVRRecording &recording, PVR_ERROR *error)
+{
+  *error = PVR_ERROR_UNKNOWN;
+  PVR_CLIENT client;
+  if (GetCreatedClient(recording.m_iClientId, client) && client->GetClientCapabilities().SupportsRecordingsLifetimeChange())
+    *error = client->SetRecordingLifetime(recording);
+    else
+      CLog::Log(LOGERROR, "PVR - %s - client %d does not support changing recording's lifetime",__FUNCTION__, recording.m_iClientId);
+
+  return *error == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKNOWN;
   PVR_CLIENT client;
-  if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordingPlayCount())
+  if (GetCreatedClient(recording.m_iClientId, client) && client->GetClientCapabilities().SupportsRecordingsPlayCount())
     *error = client->SetRecordingPlayCount(recording, count);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support setting recording's play count",__FUNCTION__, recording.m_iClientId);
@@ -704,7 +717,7 @@ bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int coun
 std::vector<PVR_EDL_ENTRY> CPVRClients::GetRecordingEdl(const CPVRRecording &recording)
 {
   PVR_CLIENT client;
-  if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordingEdl())
+  if (GetCreatedClient(recording.m_iClientId, client) && client->GetClientCapabilities().SupportsRecordingsEdl())
     return client->GetRecordingEdl(recording);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support getting Edl", __FUNCTION__, recording.m_iClientId);
@@ -861,7 +874,7 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const
   /* get clients that support channel scanning */
   for (const auto &client : m_clientMap)
   {
-    if (client.second->ReadyToUse() && client.second->SupportsChannelScan())
+    if (client.second->ReadyToUse() && client.second->GetClientCapabilities().SupportsChannelScan())
       possibleScanClients.push_back(client.second);
   }
 
@@ -876,8 +889,8 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bR
   /* get clients that support channel settings */
   for (const auto &client : m_clientMap)
   {
-    if (client.second->ReadyToUse() && client.second->SupportsChannelSettings() &&
-         ((bRadio && client.second->SupportsRadio()) || (!bRadio && client.second->SupportsTV())))
+    if (client.second->ReadyToUse() && client.second->GetClientCapabilities().SupportsChannelSettings() &&
+         ((bRadio && client.second->GetClientCapabilities().SupportsRadio()) || (!bRadio && client.second->GetClientCapabilities().SupportsTV())))
       possibleSettingsClients.push_back(client.second);
   }
 
@@ -1026,100 +1039,10 @@ bool CPVRClients::SupportsTimers() const
 
   for (const auto &entry : clients)
   {
-    if (entry.second->SupportsTimers())
+    if (entry.second->GetClientCapabilities().SupportsTimers())
       return true;
   }
   return false;
-}
-
-bool CPVRClients::SupportsChannelGroups(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsChannelGroups();
-}
-
-bool CPVRClients::SupportsChannelScan(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsChannelScan();
-}
-
-bool CPVRClients::SupportsChannelSettings(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsChannelSettings();
-}
-
-bool CPVRClients::SupportsEPG(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsEPG();
-}
-
-bool CPVRClients::SupportsLastPlayedPosition(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsLastPlayedPosition();
-}
-
-bool CPVRClients::SupportsRadio(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRadio();
-}
-
-bool CPVRClients::SupportsRecordings(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRecordings();
-}
-
-bool CPVRClients::SupportsRecordingsUndelete(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRecordingsUndelete();
-}
-
-bool CPVRClients::SupportsRecordingPlayCount(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRecordingPlayCount();
-}
-
-bool CPVRClients::SupportsRecordingEdl(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRecordingEdl();
-}
-
-bool CPVRClients::SupportsRecordingsRename(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsRecordingsRename();
-}
-
-bool CPVRClients::SupportsTimers(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsTimers();
-}
-
-bool CPVRClients::SupportsTV(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->SupportsTV();
-}
-
-bool CPVRClients::HandlesDemuxing(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->HandlesDemuxing();
-}
-
-bool CPVRClients::HandlesInputStream(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetCreatedClient(iClientId, client) && client->HandlesInputStream();
 }
 
 bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const

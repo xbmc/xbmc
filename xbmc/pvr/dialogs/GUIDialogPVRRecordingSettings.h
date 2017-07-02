@@ -41,6 +41,7 @@ namespace PVR
 
   protected:
     // implementation of ISettingCallback
+    bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
     void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     // specialization of CGUIDialogSettingsBase
@@ -52,12 +53,13 @@ namespace PVR
     void InitializeSettings() override;
 
   private:
-    void AddCondition(std::shared_ptr<CSetting> setting, const std::string &identifier,
-                      SettingConditionCheck condition,
-                      SettingDependencyType depType, const std::string &settingId);
+    static void LifetimesFiller(std::shared_ptr<const CSetting> setting,
+                                std::vector<std::pair<std::string, int>> &list,
+                                int &current, void *data);
 
     CPVRRecordingPtr m_recording;
     std::string m_strTitle;
     int m_iPlayCount;
+    int m_iLifetime;
   };
 } // namespace PVR

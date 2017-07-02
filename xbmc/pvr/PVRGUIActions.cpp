@@ -138,6 +138,17 @@ namespace PVR
     }
   };
 
+  class AsyncSetRecordingLifetime : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override
+    {
+      PVR_ERROR error;
+      CServiceBroker::GetPVRManager().Clients()->SetRecordingLifetime(*item->GetPVRRecordingInfoTag(), &error);
+      return error == PVR_ERROR_NO_ERROR;
+    }
+  };
+
   CPVRGUIActions::CPVRGUIActions()
   : m_bChannelScanRunning(false),
     m_settings({
@@ -331,7 +342,7 @@ namespace PVR
       return false;
     }
 
-    if (!CServiceBroker::GetPVRManager().Clients()->SupportsTimers(item->m_iClientId))
+    if (!CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(item->m_iClientId).SupportsTimers())
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
       return false;
@@ -463,7 +474,7 @@ namespace PVR
     if (!CheckParentalLock(channel))
       return bReturn;
 
-    if (CServiceBroker::GetPVRManager().Clients()->HasTimerSupport(channel->ClientID()))
+    if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers())
     {
       /* timers are supported on this channel */
       if (bOnOff && !channel->IsRecording())
@@ -808,6 +819,12 @@ namespace PVR
     {
       if (!AsyncSetRecordingPlayCount().Execute(item))
         CLog::Log(LOGERROR, "CPVRGUIActions - %s - setting recording playcount failed!", __FUNCTION__);
+    }
+
+    if (origRecording->m_iLifetime != recording->m_iLifetime)
+    {
+      if (!AsyncSetRecordingLifetime().Execute(item))
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - setting recording lifetime failed!", __FUNCTION__);
     }
 
     return true;

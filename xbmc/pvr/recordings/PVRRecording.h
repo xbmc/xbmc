@@ -234,6 +234,13 @@ namespace PVR
     CDateTime ExpirationTimeAsLocalTime() const;
 
     /*!
+     * @brief Check whether this recording will immediately expire if the given lifetime value would be set
+     * @param iLifetime The lifetime value to check
+     * @return True if the recording would immediately expire, false otherwiese
+     */
+    bool WillBeExpiredWithNewLifetime(int iLifetime) const;
+
+    /*!
      * @brief Retrieve the recording title from the URL path
      * @param url the URL for the recording
      * @return Title of the recording

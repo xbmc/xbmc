@@ -28,7 +28,6 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRTypes.h"
 
 namespace PVR
@@ -43,14 +42,169 @@ namespace PVR
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
 
   class CPVRTimerType;
-  typedef std::vector<CPVRTimerTypePtr>  CPVRTimerTypes;
+  typedef std::vector<CPVRTimerTypePtr> CPVRTimerTypes;
 
   #define PVR_INVALID_CLIENT_ID (-2)
 
+  class CPVRClientCapabilities
+  {
+  public:
+    CPVRClientCapabilities();
+    virtual ~CPVRClientCapabilities() = default;
+
+    const CPVRClientCapabilities& operator =(const PVR_ADDON_CAPABILITIES& addonCapabilities);
+
+    void clear();
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    // Channels
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * @brief Check whether this add-on supports TV channels.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsTV() const { return m_addonCapabilities.bSupportsTV; }
+
+    /*!
+     * @brief Check whether this add-on supports radio channels.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsRadio() const { return m_addonCapabilities.bSupportsRadio; }
+
+    /*!
+     * @brief Check whether this add-on supports channel groups.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsChannelGroups() const { return m_addonCapabilities.bSupportsChannelGroups; }
+
+    /*!
+     * @brief Check whether this add-on supports scanning for new channels on the backend.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsChannelScan() const { return m_addonCapabilities.bSupportsChannelScan; }
+
+    /*!
+     * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsChannelSettings() const { return m_addonCapabilities.bSupportsChannelSettings; }
+
+    /*!
+     * @brief Check whether this add-on supports descramble information for playing channels.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsDescrambleInfo() const { return m_addonCapabilities.bSupportsDescrambleInfo; }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    // EPG
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * @brief Check whether this add-on provides EPG information.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsEPG() const { return m_addonCapabilities.bSupportsEPG; }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    // Timers
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * @brief Check whether this add-on supports the creation and editing of timers.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsTimers() const { return m_addonCapabilities.bSupportsTimers; }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    // Recordings
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * @brief Check whether this add-on supports recordings.
+     * @return True if recordings are supported, false otherwise.
+     */
+    bool SupportsRecordings() const { return m_addonCapabilities.bSupportsRecordings; }
+
+    /*!
+     * @brief Check whether this add-on supports undelete of deleted recordings.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsUndelete() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsRecordingsUndelete; }
+
+    /*!
+     * @brief Check whether this add-on supports play count for recordings.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsPlayCount() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsRecordingPlayCount; }
+
+    /*!
+     * @brief Check whether this add-on supports store/retrieve of last played position for recordings..
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsLastPlayedPosition() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsLastPlayedPosition; }
+
+    /*!
+     * @brief Check whether this add-on supports retrieving an edit decision list for recordings.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsEdl() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsRecordingEdl; }
+
+    /*!
+     * @brief Check whether this add-on supports renaming recordings..
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsRename() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsRecordingsRename; }
+
+    /*!
+     * @brief Check whether this add-on supports changing lifetime of recording.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsLifetimeChange() const { return m_addonCapabilities.bSupportsRecordings && m_addonCapabilities.bSupportsRecordingsLifetimeChange; }
+
+    /*!
+     * @brief Obtain a list with all possible values for recordings lifetime.
+     * @param list out, the list with the values or an empty list, if lifetime is not supported.
+     */
+    void GetRecordingsLifetimeValues(std::vector<std::pair<std::string, int>> &list) const;
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    // Streams
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * @brief Check whether this add-on provides an input stream. false if Kodi handles the stream.
+     * @return True if supported, false otherwise.
+     */
+    bool HandlesInputStream() const { return m_addonCapabilities.bHandlesInputStream; }
+
+    /*!
+     * @brief Check whether this add-on demultiplexes packets.
+     * @return True if supported, false otherwise.
+     */
+    bool HandlesDemuxing() const { return m_addonCapabilities.bHandlesDemuxing; }
+
+  private:
+    void InitRecordingsLifetimeValues();
+
+    PVR_ADDON_CAPABILITIES m_addonCapabilities;
+    std::vector<std::pair<std::string, int>> m_recordingsLifetimeValues;
+  };
+
   /*!
-   * Interface from XBMC to a PVR add-on.
+   * Interface from Kodi to a PVR add-on.
    *
-   * Also translates XBMC's C++ structures to the addon's C structures.
+   * Also translates Kodi's C++ structures to the add-on's C structures.
    */
   class CPVRClient : public ADDON::CAddonDll
   {
@@ -130,9 +284,9 @@ namespace PVR
 
     /*!
      * @brief Query this add-on's capabilities.
-     * @return pCapabilities The add-on's capabilities.
+     * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void) const;
+    const CPVRClientCapabilities& GetClientCapabilities(void) const { return m_clientCapabilities; }
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.
@@ -333,6 +487,13 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the recording has been renamed successfully.
      */
     PVR_ERROR RenameRecording(const CPVRRecording &recording);
+
+    /*!
+     * @brief Set the lifetime of a recording on the backend.
+     * @param recording The recording to set the lifetime for. recording.m_iLifetime contains the new lifetime value.
+     * @return PVR_ERROR_NO_ERROR if the recording's lifetime has been set successfully.
+     */
+    PVR_ERROR SetRecordingLifetime(const CPVRRecording &recording);
 
     /*!
      * @brief Set the play count of a recording on the backend.
@@ -555,28 +716,6 @@ namespace PVR
      * @return The packet.
      */
     DemuxPacket *DemuxRead(void);
-
-    //@}
-
-    bool SupportsChannelGroups(void) const;
-    bool SupportsChannelScan(void) const;
-    bool SupportsChannelSettings(void) const;
-    bool SupportsEPG(void) const;
-    bool SupportsLastPlayedPosition(void) const;
-    bool SupportsRadio(void) const;
-    bool SupportsRecordings(void) const;
-    bool SupportsRecordingsUndelete(void) const;
-    bool SupportsRecordingPlayCount(void) const;
-    bool SupportsRecordingEdl(void) const;
-    bool SupportsTimers(void) const;
-    bool SupportsTV(void) const;
-    bool HandlesDemuxing(void) const;
-    bool HandlesInputStream(void) const;
-
-    /*!
-     * @brief Check whether the backend supports renaming recordings
-     */
-    bool SupportsRecordingsRename(void) const;
 
     bool IsPlayingLiveStream(void) const;
     bool IsPlayingLiveTV(void) const;
@@ -839,8 +978,8 @@ namespace PVR
     std::string            m_strBackendVersion;    /*!< the cached backend version */
     std::string            m_strConnectionString;  /*!< the cached connection string */
     std::string            m_strFriendlyName;      /*!< the cached friendly name */
-    PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
-    std::string            m_strBackendHostname;    /*!< the cached backend hostname */
+    std::string            m_strBackendHostname;   /*!< the cached backend hostname */
+    CPVRClientCapabilities m_clientCapabilities;   /*!< the cached add-on's capabilities */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
     std::string            m_strUserPath;         /*!< @brief translated path to the user profile */

@@ -182,7 +182,7 @@ bool CDVDInputStreamPVRManager::Open()
     {
       std::shared_ptr<CPVRClient> client;
       if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client) &&
-          client->HandlesDemuxing())
+          client->GetClientCapabilities().HandlesDemuxing())
         m_demuxActive = true;
     }
   }

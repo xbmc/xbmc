@@ -178,11 +178,14 @@ namespace PVR
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers(channel->ClientID()) && !channel->IsRecording();
+        return CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers() && !channel->IsRecording();
 
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer() && epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+        return !epg->Timer() &&
+               epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime() &&
+               epg->ChannelTag() &&
+               CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->ChannelTag()->ClientID()).SupportsTimers();
 
       return false;
     }
@@ -238,7 +241,7 @@ namespace PVR
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording &&
           !recording->IsDeleted() &&
-          CServiceBroker::GetPVRManager().Clients()->SupportsRecordingsRename(recording->ClientID()))
+          CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(recording->ClientID()).SupportsRecordingsRename())
         return true;
 
       return false;
