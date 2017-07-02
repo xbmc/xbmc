@@ -34,6 +34,7 @@
 #include "platform/android/activity/XBMCApp.h"
 
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodecSurface.h"
 
@@ -71,6 +72,8 @@ bool CWinSystemAndroid::InitWindowSystem()
   m_android = new CAndroidUtils();
 
   CDVDVideoCodecAndroidMediaCodec::Register();
+  CDVDAudioCodecAndroidMediaCodec::Register();
+
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
 
