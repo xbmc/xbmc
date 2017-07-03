@@ -10688,7 +10688,14 @@ msgctxt "#19298"
 msgid "Horizontal"
 msgstr ""
 
-#empty strings from id 19299 to 19498
+#. generic "expiration" label used in different places
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/MyPVRRecordings.xml
+msgctxt "#19299"
+msgid "Expires"
+msgstr ""
+
+#empty strings from id 19300 to 19498
 
 #. label for epg genre value
 #: xbmc/epg/Epg.cpp
