@@ -73,6 +73,26 @@ void CMMALBuffer::Unref()
   }
 }
 
+void CMMALBuffer::Update()
+{
+  if (mmal_buffer)
+  {
+    CMMALYUVBuffer *yuv = dynamic_cast<CMMALYUVBuffer *>(this);
+    if (yuv)
+    {
+      int size = 0;
+      std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+      if (pool)
+        size = pool->Size();
+      mmal_buffer->alloc_size = size;
+      mmal_buffer->length = size;
+      CGPUMEM *gmem = yuv->GetMem();
+      if (gmem)
+        mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
+    }
+  }
+}
+
 void CMMALBuffer::SetVideoDeintMethod(std::string method)
 {
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
@@ -312,12 +332,7 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
         {
           assert(m_size > 0);
           gmem = yuv->Allocate(m_size, (void *)yuv);
-          if (gmem)
-          {
-            buffer->data = (uint8_t *)gmem->m_vc_handle;
-            buffer->alloc_size = gmem->m_numbytes;
-          }
-          else
+          if (!gmem)
           {
             delete yuv;
             yuv = nullptr;
@@ -338,6 +353,7 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
       omvb->m_state = m_state;
       buffer->user_data = omvb;
       omvb->mmal_buffer = buffer;
+      omvb->Update();
       assert(omvb->Pool() == GetPtr());
     }
   }
