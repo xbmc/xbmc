@@ -1,4 +1,4 @@
-# Doxyfile 1.8.9.1
+# Doxyfile 1.8.13
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
@@ -44,7 +44,7 @@ PROJECT_NUMBER         = 17.0
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "for Binary (API Level 2) and Script based Add-Ons"
+PROJECT_BRIEF          = "for Binary and Script based Add-Ons"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -245,9 +245,11 @@ ALIASES                = "table_start=<table width= 100% style= border bgcolor= 
                          "table_h3{3}=<tr bgcolor= 576f9f><th width= 30% align=left>\1</th><th width= 10% align=left>\2</th><th width= 60% align=left>\3</th></tr>" \
                          "table_row3{3}=<tr bgcolor=white><td width= 30% align=left>\1</td><td width= 10% align=left>\2</td><td width= 60% align=left>\3</td></tr>" \
                          "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
-                         "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
+                         "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style= float:right;><small>\2</small></span></h4> \endhtmlonly" \
                          "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
-                         "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
+                         "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style= float:right;><small>\2</small></span></h4> \endhtmlonly" \
+                         "cpp_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "cpp_namespace{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Namespace: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
                          "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly" \
                          "python_v12=\xrefitem python_v12 \"v12 Python API changes\" \"\"" \
                          "python_v13=\xrefitem python_v13 \"v13 Python API changes\" \"\"" \
@@ -320,6 +322,15 @@ EXTENSION_MAPPING      =
 
 MARKDOWN_SUPPORT       = YES
 
+# When the TOC_INCLUDE_HEADINGS tag is set to a non-zero value, all headings up
+# to that level are automatically included in the table of contents, even if
+# they do not have an id attribute.
+# Note: This feature currently applies only to Markdown headings.
+# Minimum value: 0, maximum value: 99, default value: 0.
+# This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
+
+TOC_INCLUDE_HEADINGS   = 0
+
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
 # be prevented in individual cases by putting a % sign in front of the word or
@@ -370,6 +381,13 @@ IDL_PROPERTY_SUPPORT   = YES
 
 DISTRIBUTE_GROUP_DOC   = YES
 
+# If one adds a struct or class to a group and this option is enabled, then also
+# any nested class or struct is added to the same group. By default this option
+# is disabled and one has to add nested compounds explicitly via \ingroup.
+# The default value is: NO.
+
+GROUP_NESTED_COMPOUNDS = NO
+
 # Set the SUBGROUPING tag to YES to allow class member groups of the same type
 # (for instance a group of public functions) to be put as a subgroup of that
 # type (e.g. under the Public Functions section). Set it to NO to prevent
@@ -398,7 +416,7 @@ INLINE_GROUPED_CLASSES = NO
 # Man pages) or section (for LaTeX and RTF).
 # The default value is: NO.
 
-INLINE_SIMPLE_STRUCTS  = NO
+INLINE_SIMPLE_STRUCTS  = YES
 
 # When TYPEDEF_HIDES_STRUCT tag is enabled, a typedef of a struct, union, or
 # enum is documented as struct, union, or enum with the name of the typedef. So
@@ -759,6 +777,12 @@ WARN_IF_DOC_ERROR      = YES
 
 WARN_NO_PARAMDOC       = NO
 
+# If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
+# a warning is encountered.
+# The default value is: NO.
+
+WARN_AS_ERROR          = NO
+
 # The WARN_FORMAT tag determines the format of the warning messages that doxygen
 # can produce. The string should contain the $file, $line, and $text tags, which
 # will be replaced by the file and line number from which the warning originated
@@ -782,7 +806,7 @@ WARN_LOGFILE           =
 # The INPUT tag is used to specify the files and/or directories that contain
 # documented source files. You may enter file names like myfile.cpp or
 # directories like /usr/src/myproject. Separate the files or directories with
-# spaces.
+# spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = main.txt \
@@ -791,6 +815,7 @@ INPUT                  = main.txt \
                          ../../../../CODING_GUIDELINES.dox \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
+                         Modules/modules_cpp.dox \
                          Modules/modules_python.dox \
                          Skin/skin.dox \
                          ../../../guilib/GUIRenderingControl.dox \
@@ -863,7 +888,8 @@ INPUT                  = main.txt \
                          ../../../interfaces/legacy/wsgi/WsgiInputStream.h \
                          ../../../interfaces/legacy/wsgi/WsgiResponseBody.h \
                          ../../../interfaces/legacy/wsgi/WsgiResponse.h \
-                         ../../../pictures/PictureInfoTag.cpp
+                         ../../../pictures/PictureInfoTag.cpp \
+                         ../include
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -876,12 +902,17 @@ INPUT_ENCODING         = UTF-8
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and
-# *.h) to filter out the source-files in the directories. If left blank the
-# following patterns are tested:*.c, *.cc, *.cxx, *.cpp, *.c++, *.java, *.ii,
-# *.ixx, *.ipp, *.i++, *.inl, *.idl, *.ddl, *.odl, *.h, *.hh, *.hxx, *.hpp,
-# *.h++, *.cs, *.d, *.php, *.php4, *.php5, *.phtml, *.inc, *.m, *.markdown,
-# *.md, *.mm, *.dox, *.py, *.f90, *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf,
-# *.qsf, *.as and *.js.
+# *.h) to filter out the source-files in the directories.
+#
+# Note that for custom extensions or not directly supported extensions you also
+# need to set EXTENSION_MAPPING for the extension otherwise the files are not
+# read by doxygen.
+#
+# If left blank the following patterns are tested:*.c, *.cc, *.cxx, *.cpp,
+# *.c++, *.java, *.ii, *.ixx, *.ipp, *.i++, *.inl, *.idl, *.ddl, *.odl, *.h,
+# *.hh, *.hxx, *.hpp, *.h++, *.cs, *.d, *.php, *.php4, *.php5, *.phtml, *.inc,
+# *.m, *.markdown, *.md, *.mm, *.dox, *.py, *.pyw, *.f90, *.f95, *.f03, *.f08,
+# *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf and *.qsf.
 
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -1009,6 +1040,10 @@ IMAGE_PATH             = .
 # Note that the filter must not add or remove lines; it is applied before the
 # code is scanned, but not when the output code is generated. If lines are added
 # or removed, the anchors will not be placed correctly.
+#
+# Note that for custom extensions or not directly supported extensions you also
+# need to set EXTENSION_MAPPING for the extension otherwise the files are not
+# properly processed by doxygen.
 
 INPUT_FILTER           = 
 
@@ -1018,6 +1053,10 @@ INPUT_FILTER           =
 # (like *.cpp=my_cpp_filter). See INPUT_FILTER for further information on how
 # filters are used. If the FILTER_PATTERNS tag is empty or if none of the
 # patterns match the file name, INPUT_FILTER is applied.
+#
+# Note that for custom extensions or not directly supported extensions you also
+# need to set EXTENSION_MAPPING for the extension otherwise the files are not
+# properly processed by doxygen.
 
 FILTER_PATTERNS        = 
 
@@ -1135,7 +1174,7 @@ VERBATIM_HEADERS       = YES
 # rich C++ code for which doxygen's built-in parser lacks the necessary type
 # information.
 # Note: The availability of this option depends on whether or not doxygen was
-# compiled with the --with-libclang option.
+# generated with the -Duse-libclang=ON option for CMake.
 # The default value is: NO.
 
 CLANG_ASSISTED_PARSING = NO
@@ -1321,7 +1360,7 @@ HTML_DYNAMIC_SECTIONS  = NO
 # Minimum value: 0, maximum value: 9999, default value: 100.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_INDEX_NUM_ENTRIES = 100
+HTML_INDEX_NUM_ENTRIES = 30
 
 # If the GENERATE_DOCSET tag is set to YES, additional index files will be
 # generated that can be used as input for Apple's Xcode 3 integrated development
@@ -1572,7 +1611,7 @@ EXT_LINKS_IN_WINDOW    = NO
 
 FORMULA_FONTSIZE       = 10
 
-# Use the FORMULA_TRANSPARENT tag to determine whether or not the images
+# Use the FORMULA_TRANPARENT tag to determine whether or not the images
 # generated for formulas are transparent PNGs. Transparent PNGs are not
 # supported properly for IE 6.0, but are supported on all modern browsers.
 #
@@ -1771,9 +1810,12 @@ COMPACT_LATEX          = NO
 PAPER_TYPE             = a4
 
 # The EXTRA_PACKAGES tag can be used to specify one or more LaTeX package names
-# that should be included in the LaTeX output. To get the times font for
-# instance you can specify
-# EXTRA_PACKAGES=times
+# that should be included in the LaTeX output. The package can be specified just
+# by its name or with the correct syntax as to be used with the LaTeX
+# \usepackage command. To get the times font for instance you can specify :
+# EXTRA_PACKAGES=times or EXTRA_PACKAGES={times}
+# To use the option intlimits with the amsmath package you can specify:
+# EXTRA_PACKAGES=[intlimits]{amsmath}
 # If left blank no extra packages will be included.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
@@ -1875,6 +1917,14 @@ LATEX_SOURCE_CODE      = NO
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
 LATEX_BIB_STYLE        = plain
+
+# If the LATEX_TIMESTAMP tag is set to YES then the footer of each generated
+# page will contain the date and time when the page was generated. Setting this
+# to NO can help when comparing the output of multiple runs.
+# The default value is: NO.
+# This tag requires that the tag GENERATE_LATEX is set to YES.
+
+LATEX_TIMESTAMP        = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to the RTF output
@@ -2375,7 +2425,8 @@ INCLUDED_BY_GRAPH      = YES
 #
 # Note that enabling this option will significantly increase the time of a run.
 # So in most cases it will be better to enable call graphs for selected
-# functions only using the \callgraph command.
+# functions only using the \callgraph command. Disabling a call graph can be
+# accomplished by means of the command \hidecallgraph.
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
@@ -2386,7 +2437,8 @@ CALL_GRAPH             = NO
 #
 # Note that enabling this option will significantly increase the time of a run.
 # So in most cases it will be better to enable caller graphs for selected
-# functions only using the \callergraph command.
+# functions only using the \callergraph command. Disabling a caller graph can be
+# accomplished by means of the command \hidecallergraph.
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
@@ -2409,13 +2461,17 @@ GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 
 # The DOT_IMAGE_FORMAT tag can be used to set the image format of the images
-# generated by dot.
+# generated by dot. For an explanation of the image formats see the section
+# output formats in the documentation of the dot tool (Graphviz (see:
+# http://www.graphviz.org/)).
 # Note: If you choose svg you need to set HTML_FILE_EXTENSION to xhtml in order
 # to make the SVG files visible in IE 9+ (other browsers do not have this
 # requirement).
 # Possible values are: png, png:cairo, png:cairo:cairo, png:cairo:gd, png:gd,
 # png:gd:gd, jpg, jpg:cairo, jpg:cairo:gd, jpg:gd, jpg:gd:gd, gif, gif:cairo,
-# gif:cairo:gd, gif:gd, gif:gd:gd and svg.
+# gif:cairo:gd, gif:gd, gif:gd:gd, svg, png:gd, png:gd:gd, png:cairo,
+# png:cairo:gd, png:cairo:cairo, png:cairo:gdiplus, png:gdiplus and
+# png:gdiplus:gdiplus.
 # The default value is: png.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
@@ -2465,6 +2521,11 @@ DIAFILE_DIRS           =
 # will not generate output for the diagram.
 
 PLANTUML_JAR_PATH      = 
+
+# When using plantuml, the PLANTUML_CFG_FILE tag can be used to specify a
+# configuration file for plantuml.
+
+PLANTUML_CFG_FILE      = 
 
 # When using plantuml, the specified paths are searched for files specified by
 # the !include statement in a plantuml block.
