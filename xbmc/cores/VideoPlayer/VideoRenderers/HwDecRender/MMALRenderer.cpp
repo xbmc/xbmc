@@ -219,9 +219,15 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
     if (m_mmal_format != MMAL_ENCODING_YUVUV128)
     {
       if (aligned_width)
+      {
         m_geo.stride_y = aligned_width;
+        m_geo.stride_c = aligned_width>>1;
+      }
       if (aligned_height)
+      {
         m_geo.height_y = aligned_height;
+        m_geo.height_c = aligned_height>>1;
+      }
     }
   }
   if (m_size == 0)
