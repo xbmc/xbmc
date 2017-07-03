@@ -119,14 +119,26 @@ extern "C"
 } /* extern "C" */
 
 //==============================================================================
-/// \defgroup cpp_kodi_vfs_CFile_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_vfs_CFile
+///
+/// \defgroup cpp_kodi_vfs  Interface - kodi::vfs
+/// \ingroup cpp
+/// @brief **Virtual filesystem functions**
+///
+///
+/// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be
+/// included to enjoy it.
+///
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
+/// \ingroup cpp_kodi_vfs
 /// @brief **Virtual file Server definition values**
 //------------------------------------------------------------------------------
 
 //==============================================================================
 ///
-/// @ingroup cpp_kodi_vfs_CFile_Defs
+/// @ingroup cpp_kodi_vfs_Defs
 /// Flags to define way how file becomes opened with kodi::vfs::CFile::OpenFile()
 ///
 /// The values can be used together, e.g. <b>`file.Open("myfile", READ_TRUNCATED | READ_CHUNKED);`</b>
@@ -166,7 +178,7 @@ typedef enum OpenFileFlags
 //------------------------------------------------------------------------------
 
 //==============================================================================
-/// \ingroup cpp_kodi_vfs_CFile_Defs
+/// \ingroup cpp_kodi_vfs_Defs
 /// @brief Used CURL message types
 ///
 typedef enum CURLOptiontype
@@ -184,8 +196,11 @@ typedef enum CURLOptiontype
 
 //============================================================================
 ///
-/// \ingroup cpp_kodi_vfs_CFile_Defs
-/// @brief Information about a file
+/// \ingroup cpp_kodi_vfs_Defs
+/// @brief File information status
+///
+/// Used on kodi::vfs::StatFile(), all of these calls return a this stat
+/// structure, which contains the following fields:
 ///
 struct STAT_STRUCTURE
 {
@@ -785,7 +800,7 @@ namespace vfs
 
   //============================================================================
   ///
-  /// \ingroup cpp_kodi
+  /// @ingroup cpp_kodi_vfs
   /// @brief Returns the translated path
   ///
   /// @param[in] source  string or unicode - Path to format
@@ -929,7 +944,7 @@ namespace vfs
   /// fprintf(stderr, "Log file should be always present, is it present? %s\n", exists ? "yes" : "no");
   /// ~~~~~~~~~~~~~
   ///
-  static inline bool FileExists(const std::string& filename, bool usecache = false)
+  inline bool FileExists(const std::string& filename, bool usecache = false)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->file_exists(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), usecache);
   }
@@ -980,7 +995,7 @@ namespace vfs
   ///                      ret);
   /// ~~~~~~~~~~~~~
   ///
-  static inline bool StatFile(const std::string& filename, STAT_STRUCTURE& buffer)
+  inline bool StatFile(const std::string& filename, STAT_STRUCTURE& buffer)
   {
     struct __stat64 frontendBuffer = { };
     if (::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), &frontendBuffer))
@@ -1045,7 +1060,7 @@ namespace vfs
   /// }
   /// ~~~~~~~~~~~~~
   ///
-  static inline bool DeleteFile(const std::string& filename)
+  inline bool DeleteFile(const std::string& filename)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->delete_file(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
   }
@@ -1061,7 +1076,7 @@ namespace vfs
   /// @return                   true if successfully renamed
   ///
   ///
-  static inline bool RenameFile(const std::string& filename, const std::string& newFileName)
+  inline bool RenameFile(const std::string& filename, const std::string& newFileName)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->rename_file(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), newFileName.c_str());
   }
@@ -1077,7 +1092,7 @@ namespace vfs
   /// @return                   true if successfully copied
   ///
   ///
-  static inline bool CopyFile(const std::string& filename, const std::string& destination)
+  inline bool CopyFile(const std::string& filename, const std::string& destination)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->copy_file(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), destination.c_str());
   }

@@ -1,0 +1,85 @@
+/*!
+
+\defgroup cpp C++
+\image html logo-cpp.png
+\brief \htmlonly
+      <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
+               style="color: rgb(102, 102, 102);">C++ Binary Add-On Development</span></span></span></h3>
+       \endhtmlonly
+*/
+/*!
+\defgroup cpp_kodi Interface - kodi
+\ingroup cpp
+\brief **General addon interface functions**
+*/
+  /*!
+  \defgroup cpp_kodi_Defs Definitions, structures and enumerators
+  \ingroup cpp_kodi
+  @brief **General definition values**
+  */
+/*!
+\defgroup cpp_kodi_addon Interface - kodi::addon
+\ingroup cpp
+\brief **Addon type interface functions and classes**
+*/
+  /*!
+  \defgroup cpp_kodi_addon_addonbase class CAddonBase
+  \ingroup cpp_kodi_addon
+  */
+  /*!
+  \defgroup cpp_kodi_addon_instances Addon type instances
+  \ingroup cpp_kodi_addon
+  */
+    /*!
+    \defgroup cpp_kodi_addon_audiodsp Audio DSP
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_audiodecoder Audio Decoder
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_audioencoder Audio Encoder
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_game Game
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_imagedecoder Image Decoder
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_inputstream Inputstream
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_peripheral Peripheral
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_pvr PVR
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_screensaver Screensaver
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_vfs VFS
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_videocodec Video Codec
+    \ingroup cpp_kodi_addon_instances
+    */
+    /*!
+    \defgroup cpp_kodi_addon_visualization Visualization
+    \ingroup cpp_kodi_addon_instances
+    */
+/*!
+\defgroup cpp_kodi_gui Interface - kodi::gui
+\ingroup cpp
+\brief **Graphical functions for Windows and Dialogs to show**
+*/

@@ -64,6 +64,8 @@ typedef enum QueueMsg
 /// \ingroup cpp_kodi_Defs
 /// @brief Format codes to get string from them.
 ///
+/// Used on kodi::GetLanguage().
+///
 typedef enum LangFormats
 {
   /// two letter code as defined in ISO 639-1
