@@ -78,6 +78,7 @@ void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index
   {
     YUVBUFFER &buf = m_buffers[index];
     buf.videoBuffer = picture.videoBuffer;
+    buf.fields[0][0].id = videoBuffer->GetTextureId();
     videoBuffer->Acquire();
 
     // releaseOutputBuffer must be in same thread as
@@ -89,6 +90,8 @@ void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index
     CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d", index, videoBuffer->GetTextureId());
 #endif
   }
+  else
+   buf.fields[0][0].id = 0;
 }
 
 void CRendererMediaCodec::ReleaseBuffer(int idx)
@@ -118,7 +121,7 @@ bool CRendererMediaCodec::LoadShadersHook()
   CLog::Log(LOGNOTICE, "GL: Using MediaCodec render method");
   m_textureTarget = GL_TEXTURE_2D;
   m_renderMethod = RENDER_MEDIACODEC;
-  return false;
+  return true;
 }
 
 bool CRendererMediaCodec::RenderHook(int index)
@@ -128,7 +131,7 @@ bool CRendererMediaCodec::RenderHook(int index)
   #endif
 
   YUVPLANE &plane = m_buffers[index].fields[0][0];
-  YUVPLANE &planef = m_buffers[index].fields[index][0];
+  YUVPLANE &planef = m_buffers[index].fields[m_currentField][0];
 
   glDisable(GL_DEPTH_TEST);
 
@@ -230,23 +233,19 @@ bool CRendererMediaCodec::RenderHook(int index)
 
 bool CRendererMediaCodec::CreateTexture(int index)
 {
-  YuvImage &im     = m_buffers[index].image;
+  YUVBUFFER &buf(m_buffers[index]);
 
-  memset(&im    , 0, sizeof(im));
-  memset(&m_buffers[index].fields, 0, sizeof(m_buffers[index].fields));
-
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  buf.image.height = m_sourceHeight;
+  buf.image.width  = m_sourceWidth;
 
   for (int f=0; f<3; ++f)
   {
-    YUVPLANE  &plane  = m_buffers[index].fields[f][0];
+    YUVPLANE  &plane  = buf.fields[f][0];
 
-    plane.texwidth  = im.width;
-    plane.texheight = im.height;
+    plane.texwidth  = m_sourceWidth;
+    plane.texheight = m_sourceHeight;
     plane.pixpertex_x = 1;
     plane.pixpertex_y = 1;
-
 
     if(m_renderMethod & RENDER_POT)
     {
@@ -260,7 +259,13 @@ bool CRendererMediaCodec::CreateTexture(int index)
 
 void CRendererMediaCodec::DeleteTexture(int index)
 {
-  ReleaseBuffer(index);
+  YUVBUFFER &buf(m_buffers[index]);
+  CMediaCodecVideoBuffer* videoBuffer;
+  if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
+  {
+    videoBuffer->Release();
+    buf.videoBuffer = NULL;
+  }
 }
 
 bool CRendererMediaCodec::UploadTexture(int index)
@@ -269,7 +274,6 @@ bool CRendererMediaCodec::UploadTexture(int index)
   CMediaCodecVideoBuffer* videoBuffer;
   if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
   {
-    buf.fields[0][0].id = videoBuffer->GetTextureId();
     videoBuffer->UpdateTexImage();
     videoBuffer->GetTransformMatrix(m_textureMatrix);
   }
