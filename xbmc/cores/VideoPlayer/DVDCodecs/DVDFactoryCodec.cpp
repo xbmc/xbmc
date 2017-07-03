@@ -187,18 +187,13 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   CDVDCodecOptions options;
 
   // platform specifig audio decoders
-  if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
+  for (auto &codec : m_hwAudioCodecs)
   {
-    for (auto &codec : m_hwAudioCodecs)
+    pCodec.reset(CreateAudioCodecHW(codec.first, processInfo));
+    if (pCodec && pCodec->Open(hint, options))
     {
-      pCodec.reset(CreateAudioCodecHW(codec.first, processInfo));
-      if (pCodec && pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      return pCodec.release();
     }
-    if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))
-      return nullptr;
   }
 
   if (!allowdtshddecode)
