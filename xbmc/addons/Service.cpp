@@ -105,12 +105,10 @@ void CServiceAddonManager::Start()
 void CServiceAddonManager::Start(const std::string& addonId)
 {
   AddonPtr addon;
-  if (!m_addonMgr.GetAddon(addonId, addon, ADDON_SERVICE))
+  if (m_addonMgr.GetAddon(addonId, addon, ADDON_SERVICE))
   {
-    CLog::Log(LOGWARNING, "CServiceAddonManager: no service add-on with id %s exist.", addonId.c_str());
-    return;
+    Start(addon);
   }
-  Start(addon);
 }
 
 void CServiceAddonManager::Start(const AddonPtr& addon)
