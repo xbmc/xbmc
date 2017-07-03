@@ -58,7 +58,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
-  [g_pIosKeyboard setDefault:[NSString stringWithUTF8String:initialString.c_str()]];
+  SetTextToKeyboard(initialString);
   [g_pIosKeyboard setHidden:bHiddenInput];
   [g_pIosKeyboard setHeading:[NSString stringWithUTF8String:heading.c_str()]];
   [g_pIosKeyboard registerKeyboard:this]; // for calling back
