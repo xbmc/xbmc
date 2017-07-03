@@ -121,6 +121,8 @@ public:
   virtual int AlignedWidth() { return Pool()->AlignedWidth(); }
   virtual int AlignedHeight() { return Pool()->AlignedHeight(); }
   virtual uint32_t &Encoding() { return Pool()->Encoding(); }
+  virtual void Update();
+
   void SetVideoDeintMethod(std::string method);
   const char *GetStateName() {
     static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
