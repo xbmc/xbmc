@@ -188,7 +188,7 @@ ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
   return m_struct.toAddon.read(&m_struct, ctx, lpBuf, uiBufSize);
 }
 
-ssize_t CVFSEntry::Write(void* ctx, void* lpBuf, size_t uiBufSize)
+ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
 {
   if (!m_struct.toAddon.write)
     return 0;
@@ -431,7 +431,7 @@ ssize_t CVFSEntryIFileWrapper::Read(void* lpBuf, size_t uiBufSize)
   return m_addon->Read(m_context, lpBuf, uiBufSize);
 }
 
-ssize_t CVFSEntryIFileWrapper::Write(void* lpBuf, size_t uiBufSize)
+ssize_t CVFSEntryIFileWrapper::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_context)
     return 0;
@@ -439,12 +439,12 @@ ssize_t CVFSEntryIFileWrapper::Write(void* lpBuf, size_t uiBufSize)
   return m_addon->Write(m_context, lpBuf, uiBufSize);
 }
 
-int64_t CVFSEntryIFileWrapper::Seek(int64_t iFilePosition, int iWhence)
+int64_t CVFSEntryIFileWrapper::Seek(int64_t iFilePosition, int whence)
 {
   if (!m_context)
     return 0;
 
-  return m_addon->Seek(m_context, iFilePosition, iWhence);
+  return m_addon->Seek(m_context, iFilePosition, whence);
 }
 
 void CVFSEntryIFileWrapper::Close()
