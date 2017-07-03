@@ -3660,7 +3660,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.EpgEventTitle`</b>,
 ///                  \anchor ListItem_EpgEventTitle
 ///                  _string_,
-///     Returns the title of the epg event associated with the item, if any
+///     Returns the title of the epg event associated with the item\, if any
 ///   }
 ///   \table_row3{   <b>`ListItem.InProgress`</b>,
 ///                  \anchor ListItem_InProgress
@@ -3731,6 +3731,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_AddonOrigin
 ///                  _string_,
 ///     Name of the repository the add-on originates from.
+///   }
+///   \table_row3{   <b>`ListItem.ExpirationDate`</b>,
+///                  \anchor ListItem_ExpirationDate
+///                  _string_,
+///     Expiration date of the selected item in a container\, empty string if not supported
+///   }
+///   \table_row3{   <b>`ListItem.ExpirationTime`</b>,
+///                  \anchor ListItem_ExpirationTime
+///                  _string_,
+///     Expiration time of the selected item in a container\, empty string if not supported
 ///   }
 /// \table_end
 ///
@@ -3914,6 +3924,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addonlastused",    LISTITEM_ADDON_LAST_USED },
                                   { "addonorigin",      LISTITEM_ADDON_ORIGIN },
                                   { "addonsize",        LISTITEM_ADDON_SIZE },
+                                  { "expirationdate",   LISTITEM_EXPIRATION_DATE },
+                                  { "expirationtime",   LISTITEM_EXPIRATION_TIME },
 };
 
 /// \page modules__General__List_of_gui_access
@@ -10294,6 +10306,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetEPGInfoTag()->EndAsLocalTime().GetAsLocalizedDate(true);
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsLocalizedDate(true);
+    break;
+  case LISTITEM_EXPIRATION_DATE:
+    if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->HasExpirationTime())
+      return item->GetPVRRecordingInfoTag()->ExpirationTimeAsLocalTime().GetAsLocalizedDate(false);
+    break;
+  case LISTITEM_EXPIRATION_TIME:
+    if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->HasExpirationTime())
+      return item->GetPVRRecordingInfoTag()->ExpirationTimeAsLocalTime().GetAsLocalizedTime("", false);;
     break;
   case LISTITEM_CHANNEL_NUMBER:
     {

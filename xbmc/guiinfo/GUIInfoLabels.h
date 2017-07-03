@@ -807,6 +807,8 @@
 #define LISTITEM_ADDON_ORIGIN       (LISTITEM_START + 177)
 #define LISTITEM_ADDON_NEWS         (LISTITEM_START + 178)
 #define LISTITEM_ADDON_SIZE         (LISTITEM_START + 179)
+#define LISTITEM_EXPIRATION_DATE    (LISTITEM_START + 180)
+#define LISTITEM_EXPIRATION_TIME    (LISTITEM_START + 181)
 
 //! @todo There are issues with the LISTITEM_PROPERTY range, breakage occurs when more than 200 properties are used in skins.
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)

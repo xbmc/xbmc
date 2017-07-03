@@ -437,6 +437,15 @@ CDateTime CPVRRecording::EndTimeAsLocalTime() const
   return ret;
 }
 
+CDateTime CPVRRecording::ExpirationTimeAsLocalTime() const
+{
+  CDateTime ret;
+  if (m_iLifetime > 0)
+    ret = EndTimeAsLocalTime() + CDateTimeSpan(m_iLifetime, 0, 0, 0);
+
+  return ret;
+}
+
 std::string CPVRRecording::GetTitleFromURL(const std::string &url)
 {
   return CPVRRecordingsPath(url).GetTitle();
