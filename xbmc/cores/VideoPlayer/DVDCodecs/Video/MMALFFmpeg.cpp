@@ -277,8 +277,6 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     assert(m_renderBuffer && m_renderBuffer->mmal_buffer);
     if (m_renderBuffer)
     {
-      m_renderBuffer->mmal_buffer->data = (uint8_t *)m_gmem->m_vc_handle;
-      m_renderBuffer->mmal_buffer->alloc_size = m_renderBuffer->mmal_buffer->length = m_gmem->m_numbytes;
       m_renderBuffer->m_stills = m_hints.stills;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         CLog::Log(LOGDEBUG, "%s::%s - mmal:%p buf:%p old:%p gpu:%p %dx%d (%dx%d)", CLASSNAME, __FUNCTION__, m_renderBuffer->mmal_buffer, m_renderBuffer, old, m_renderBuffer->GetMem(),  m_renderBuffer->Width(), m_renderBuffer->Height(), m_renderBuffer->AlignedWidth(), m_renderBuffer->AlignedHeight());
