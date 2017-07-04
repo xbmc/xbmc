@@ -19,13 +19,18 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "../ProcessInfo.h"
+
+namespace VIDEOPLAYER
+{
 
 class CProcessInfoIOS : public CProcessInfo
 {
 public:
-  CProcessInfoIOS();
-  virtual ~CProcessInfoIOS();
+  static CProcessInfo* Create();
+  static void Register();
+
   void SetSwDeinterlacingMethods() override;
 };
+
+}
