@@ -13,3 +13,4 @@ xbmc/platform/darwin/ios-common  platform_ios-common
 xbmc/filesystem/posix            filesystem/posix
 xbmc/utils/posix                 utils_posix
 xbmc/windowing/osx               windowing/osx
+xbmc/cores/VideoPlayer/Process/ios cores/VideoPlayer/Process/ios
