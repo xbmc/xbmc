@@ -18,15 +18,17 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
-#include "system.h"
-#undef BOOL
 
-#define BOOL XBMC_BOOL
+#include "system.h"
+
 #include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
+#include "cores/VideoPlayer/Process/ios/ProcessInfoIOS.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
@@ -38,7 +40,6 @@
 #include "threads/SingleLock.h"
 #include "VideoSyncIos.h"
 #include <vector>
-#undef BOOL
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
@@ -116,6 +117,15 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_eglext += " ";
 
   CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:%s", m_eglext.c_str());
+
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  VTB::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CLinuxRendererGLES::Register();
+  CRendererVTB::Register();
+  VIDEOPLAYER::CProcessInfoIOS::Register();
+
   return true;
 }
 
