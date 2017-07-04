@@ -97,6 +97,7 @@ XBMCController *g_xbmcController;
 @synthesize screensize;
 @synthesize m_networkAutoSuspendTimer;
 @synthesize nowPlayingInfo;
+@synthesize nativeKeyboardActive;
 //--------------------------------------------------------------
 - (void) sendKeypressEvent: (XBMC_Event) event
 {
@@ -115,6 +116,15 @@ XBMCController *g_xbmcController;
 
 - (void)insertText:(NSString *)text
 {
+  // in case the native touch keyboard is active
+  // don't do anything here
+  // we are only supposed to be called when
+  // using an external bt keyboard...
+  if (nativeKeyboardActive)
+  {
+    return;
+  }
+
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
   unichar currentKey = [text characterAtIndex:0];
@@ -356,6 +366,11 @@ XBMCController *g_xbmcController;
   [view removeFromSuperview];
   m_glView.userInteractionEnabled = YES; 
   [self becomeFirstResponder];
+}
+//--------------------------------------------------------------
+- (void) nativeKeyboardActive: (bool)active;
+{
+  nativeKeyboardActive = active;
 }
 //--------------------------------------------------------------
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
