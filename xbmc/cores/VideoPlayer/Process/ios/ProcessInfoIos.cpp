@@ -21,24 +21,16 @@
 #include "ProcessInfoIOS.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_DARWIN_IOS)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoIOS::Create()
 {
   return new CProcessInfoIOS();
 }
 
-
-// base class definitions
-CProcessInfoIOS::CProcessInfoIOS()
+void CProcessInfoIOS::Register()
 {
-
-}
-
-CProcessInfoIOS::~CProcessInfoIOS()
-{
-
+  CProcessInfo::RegisterProcessControl("ios", CProcessInfoIOS::Create);
 }
 
 void CProcessInfoIOS::SetSwDeinterlacingMethods()
@@ -58,6 +50,4 @@ void CProcessInfoIOS::SetSwDeinterlacingMethods()
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
-
-#endif
 

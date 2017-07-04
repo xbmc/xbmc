@@ -22,8 +22,6 @@
 
 #include "system.h"
 
-#if defined(TARGET_DARWIN_IOS)
-
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include <CoreVideo/CVOpenGLESTextureCache.h>
 
@@ -33,22 +31,23 @@ public:
   CRendererVTB();
   virtual ~CRendererVTB();
 
-  // Feature support
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
-  virtual void ReleaseBuffer(int idx) override;
-  virtual bool NeedBuffer(int idx) override;
-  virtual CRenderInfo GetRenderInfo() override;
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
+  // Player functions
+  void ReleaseBuffer(int idx) override;
+  bool NeedBuffer(int idx) override;
 
 protected:
   // hooks for hw dec renderer
-  virtual bool LoadShadersHook() override;
-  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false) override;
-  virtual void AfterRenderHook(int idx) override;
+  bool LoadShadersHook() override;
+  void AfterRenderHook(int idx) override;
+  EShaderFormat GetShaderFormat() override;
 
   // textures
-  virtual bool UploadTexture(int index) override;
-  virtual void DeleteTexture(int index) override;
-  virtual bool CreateTexture(int index) override;
+  bool UploadTexture(int index) override;
+  void DeleteTexture(int index) override;
+  bool CreateTexture(int index) override;
 
   CVOpenGLESTextureCacheRef m_textureCache;
   struct CRenderBuffer
@@ -61,4 +60,3 @@ protected:
   CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
 };
 
-#endif
