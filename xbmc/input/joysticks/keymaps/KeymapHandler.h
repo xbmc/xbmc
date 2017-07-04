@@ -49,14 +49,14 @@ namespace JOYSTICK
     virtual ~CKeymapHandler() = default;
 
     // implementation of IKeymapHandler
-    virtual bool IsPressed(const std::string& keyName) const override;
+    virtual bool HotkeysPressed(const std::set<std::string>& keyNames) const override;
     virtual std::string GetLastPressed() const override { return m_lastPressed; }
     virtual void OnPress(const std::string& keyName) override { m_lastPressed = keyName; }
 
     // implementation of IInputHandler
     virtual std::string ControllerID() const override;
     virtual bool HasFeature(const FeatureName& feature) const override { return true; }
-    virtual bool AcceptsInput(const FeatureName& feature) const override { return true; }
+    virtual bool AcceptsInput(const FeatureName& feature) const override;
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
     virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override;
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
@@ -68,8 +68,9 @@ namespace JOYSTICK
     bool ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs);
     void DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir);
 
-    // Helper function
+    // Helper functions
     IKeyHandler *GetKeyHandler(const std::string &keyName);
+    bool HasAction(const std::string &keyName) const;
 
     // Construction parameters
     IActionListener *const m_actionHandler;

@@ -70,7 +70,7 @@ bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
   bool bHandled = false;
 
   // Calculate press state
-  const bool bPressed = (magnitude >= DIGITAL_ANALOG_THRESHOLD);
+  const bool bPressed = IsPressed(magnitude);
   const bool bJustPressed = bPressed && !m_bHeld;
 
   if (bJustPressed)
@@ -124,7 +124,7 @@ bool CKeyHandler::HandleActions(std::vector<const KeymapAction*> actions, float 
   actions.erase(std::remove_if(actions.begin(), actions.end(),
     [this](const KeymapAction *action)
     {
-      return !HotkeysPressed(action->hotkeys);
+      return !m_keymapHandler->HotkeysPressed(action->hotkeys);
     }), actions.end());
 
   if (actions.empty())
@@ -161,7 +161,7 @@ bool CKeyHandler::HandleActions(std::vector<const KeymapAction*> actions, float 
   }
   else if (actions.size() > 1)
   {
-    // If button was help before being released, send a relesae action
+    // If button was help before being released, send a release action
     if (m_bHeld)
     {
       // Holdtime is zero, so use previous holdtime from before button release
@@ -200,7 +200,7 @@ bool CKeyHandler::HandleAction(const KeymapAction& action, float magnitude, unsi
   {
     bSendAction = true;
   }
-  else
+  else if (IsPressed(magnitude))
   {
     // Dispatch action if button was pressed this frame
     if (holdTimeMs == 0)
@@ -221,23 +221,6 @@ bool CKeyHandler::HandleAction(const KeymapAction& action, float magnitude, unsi
   return m_bActionSent;
 }
 
-bool CKeyHandler::HotkeysPressed(const std::set<std::string> &hotkeys) const
-{
-  // No hotkeys to press
-  if (hotkeys.empty())
-    return true;
-
-  // Look for unpressed hotkey
-  auto it = std::find_if(hotkeys.begin(), hotkeys.end(),
-    [this](const std::string &hotkey)
-    {
-      return !m_keymapHandler->IsPressed(CJoystickUtils::MakeKeyName(hotkey));
-    });
-
-  // Return true if all hotkeys are pressed
-  return it == hotkeys.end();
-}
-
 bool CKeyHandler::SendRepeatAction(unsigned int holdTimeMs)
 {
   bool bSendRepeat = true;
@@ -255,4 +238,9 @@ bool CKeyHandler::SendRepeatAction(unsigned int holdTimeMs)
     bSendRepeat = false;
 
   return bSendRepeat;
+}
+
+bool CKeyHandler::IsPressed(float magnitude)
+{
+  return magnitude >= DIGITAL_ANALOG_THRESHOLD;
 }

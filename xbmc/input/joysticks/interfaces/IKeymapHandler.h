@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include <set>
 #include <string>
 
 namespace KODI
@@ -35,13 +36,13 @@ namespace JOYSTICK
     virtual ~IKeymapHandler() = default;
     
     /*!
-     * \brief Get the pressed state of the key
+     * \brief Get the pressed state of the given keys
      *
-     * \param keyName The key name
+     * \param keyNames The key names
      *
-     * \return True if the key is pressed, false otherwise
+     * \return True if all keys are pressed or no keys are given, false otherwise
      */
-    virtual bool IsPressed(const std::string& keyName) const = 0;
+    virtual bool HotkeysPressed(const std::set<std::string> &keyNames) const = 0;
 
     /*!
      * \brief Get the key name of the last button pressed

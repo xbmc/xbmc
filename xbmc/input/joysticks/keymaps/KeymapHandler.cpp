@@ -44,18 +44,40 @@ CKeymapHandler::CKeymapHandler(IActionListener *actionHandler, const IKeymap *ke
   assert(m_keymap != nullptr);
 }
 
-bool CKeymapHandler::IsPressed(const std::string& keyName) const
+bool CKeymapHandler::HotkeysPressed(const std::set<std::string> &keyNames) const
 {
-  auto it = m_keyHandlers.find(keyName);
-  if (it != m_keyHandlers.end())
-    return it->second->IsPressed();
+  bool bHotkeysPressed = true;
 
-  return false;
+  for (const auto &hotkey : keyNames)
+  {
+    auto it = m_keyHandlers.find(hotkey);
+    if (it == m_keyHandlers.end() || !it->second->IsPressed())
+    {
+      bHotkeysPressed = false;
+      break;
+    }
+  }
+
+  return bHotkeysPressed;
 }
 
 std::string CKeymapHandler::ControllerID() const
 {
   return m_keymap->ControllerID();
+}
+
+bool CKeymapHandler::AcceptsInput(const FeatureName& feature) const
+{
+  if (HasAction(CJoystickUtils::MakeKeyName(feature)))
+    return true;
+  
+  for (auto dir : CJoystickUtils::GetDirections())
+  {
+    if (HasAction(CJoystickUtils::MakeKeyName(feature, dir)))
+      return true;
+  }
+
+  return false;
 }
 
 bool CKeymapHandler::OnButtonPress(const FeatureName& feature, bool bPressed)
@@ -138,4 +160,21 @@ IKeyHandler *CKeymapHandler::GetKeyHandler(const std::string &keyName)
   }
 
   return it->second.get();
+}
+
+bool CKeymapHandler::HasAction(const std::string &keyName) const
+{
+  bool bHasAction = false;
+
+  const auto &actions = m_keymap->GetActions(keyName);
+  for (const auto &action : actions)
+  {
+    if (HotkeysPressed(action.hotkeys))
+    {
+      bHasAction = true;
+      break;
+    }
+  }
+
+  return bHasAction;
 }

@@ -63,6 +63,9 @@ namespace JOYSTICK
      * \param feature A feature belonging to the controller specified by ControllerID()
      *
      * \return True if the feature is currently accepting input, false otherwise
+     *
+     * This does not prevent the input events from being called, but can return
+     * false to indicate that input wasn't handled for the specified feature.
      */
     virtual bool AcceptsInput(const FeatureName &feature) const = 0;
 

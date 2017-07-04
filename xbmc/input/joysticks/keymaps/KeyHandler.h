@@ -61,7 +61,8 @@ namespace JOYSTICK
     // Check criteria for sending a repeat action
     bool SendRepeatAction(unsigned int holdTimeMs);
 
-    bool HotkeysPressed(const std::set<std::string> &hotkeys) const;
+    // Helper function
+    static bool IsPressed(float magnitude);
 
     // Construction parameters
     const std::string m_keyName;

@@ -77,9 +77,6 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
 
 bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
 {
-  if (!AcceptsInput(bPressed))
-    return false;
-
   bool bHandled = false;
 
   if (m_inputType == INPUT_TYPE::DIGITAL)
@@ -87,7 +84,7 @@ bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
   else if (m_inputType == INPUT_TYPE::ANALOG)
     bHandled = OnAnalogMotion(bPressed ? 1.0f : 0.0f);
 
-  return bHandled;
+  return bHandled && AcceptsInput(bPressed);
 }
 
 bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
@@ -96,9 +93,6 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   if (magnitude != 0.0f && magnitude != 1.0f)
     m_bDiscrete = false;
 
-  if (!AcceptsInput(magnitude > 0.0f))
-    return false;
-
   bool bHandled = false;
 
   if (m_inputType == INPUT_TYPE::DIGITAL)
@@ -106,7 +100,7 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   else if (m_inputType == INPUT_TYPE::ANALOG)
     bHandled = OnAnalogMotion(magnitude);
 
-  return bHandled;
+  return bHandled && AcceptsInput(magnitude > 0.0f);
 }
 
 void CScalarFeature::ProcessMotions(void)
@@ -211,9 +205,6 @@ bool CAnalogStick::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed
 
 bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 {
-  if (!AcceptsInput(magnitude != 0.0f))
-    return false;
-
   ANALOG_STICK_DIRECTION direction = ANALOG_STICK_DIRECTION::UNKNOWN;
 
   std::vector<ANALOG_STICK_DIRECTION> dirs = {
@@ -233,19 +224,25 @@ bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitud
     }
   }
 
+  bool bHandled = false;
+
   switch (direction)
   {
   case ANALOG_STICK_DIRECTION::UP:
     m_vertAxis.SetPositiveDistance(magnitude);
+    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::DOWN:
     m_vertAxis.SetNegativeDistance(magnitude);
+    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::RIGHT:
     m_horizAxis.SetPositiveDistance(magnitude);
+    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::LEFT:
     m_horizAxis.SetNegativeDistance(magnitude);
+    bHandled = true;
     break;
   default:
     // Just in case, avoid sticking
@@ -254,7 +251,7 @@ bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitud
     break;
   }
 
-  return true;
+  return bHandled && AcceptsInput(magnitude != 0.0f);
 }
 
 void CAnalogStick::ProcessMotions(void)
@@ -315,9 +312,6 @@ bool CAccelerometer::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
 
 bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 {
-  if (!AcceptsInput(true))
-    return false;
-
   bool bHandled = false;
 
   CDriverPrimitive positiveX;
@@ -349,7 +343,7 @@ bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnit
     m_yAxis.Reset();
   }
 
-  return bHandled;
+  return bHandled && AcceptsInput(true);
 }
 
 void CAccelerometer::ProcessMotions(void)
