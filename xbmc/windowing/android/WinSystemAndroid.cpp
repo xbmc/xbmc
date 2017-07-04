@@ -74,6 +74,7 @@ bool CWinSystemAndroid::InitWindowSystem()
   CDVDVideoCodecAndroidMediaCodec::Register();
   CDVDAudioCodecAndroidMediaCodec::Register();
 
+  CLinuxRendererGLES::Register();
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
 
