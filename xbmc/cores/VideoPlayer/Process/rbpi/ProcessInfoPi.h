@@ -17,42 +17,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#include "ProcessInfoPi.h"
-#include "linux/RBP.h"
+#include "cores/IPlayer.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
-// Override for platform ports
-#if defined(TARGET_RASPBERRY_PI)
-
-CProcessInfo* CProcessInfo::CreateInstance()
+class CProcessInfoPi : public CProcessInfo
 {
-  return new CProcessInfoPi();
-}
+public:
+  static CProcessInfo* Create();
+  static void Register();
+  EINTERLACEMETHOD GetFallbackDeintMethod() override;
+  bool AllowDTSHDDecode() override;
 
-
-// base class definitions
-CProcessInfoPi::CProcessInfoPi()
-{
-
-}
-
-CProcessInfoPi::~CProcessInfoPi()
-{
-
-}
-
-EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
-{
-  return EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF;
-}
-
-bool CProcessInfoPi::AllowDTSHDDecode()
-{
-  if (g_RBP.RaspberryPiVersion() == 1)
-    return false;
-  return true;
-}
-
-
-#endif
-
+//protected:
+};
