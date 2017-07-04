@@ -34,7 +34,6 @@ static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
 static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
 #endif
 
-
 CRendererMediaCodec::CRendererMediaCodec()
 {
   CLog::Log(LOGNOTICE, "Instancing CRendererMediaCodec");
@@ -85,10 +84,6 @@ void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index
     // dequeueOutputBuffer. We are in VideoPlayerVideo
     // thread here, so we are safe.
     videoBuffer->ReleaseOutputBuffer(true);
-
-#ifdef DEBUG_VERBOSE
-    CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d", index, videoBuffer->GetTextureId());
-#endif
   }
   else
    buf.fields[0][0].id = 0;
@@ -103,6 +98,7 @@ void CRendererMediaCodec::ReleaseBuffer(int idx)
     // The media buffer has been queued to the SurfaceView but we didn't render it
     // We have to do to the updateTexImage or it will get stuck
     videoBuffer->UpdateTexImage();
+    videoBuffer->GetTransformMatrix(m_textureMatrix);
     videoBuffer->Release();
     buf.videoBuffer = NULL;
   }
@@ -126,10 +122,6 @@ bool CRendererMediaCodec::LoadShadersHook()
 
 bool CRendererMediaCodec::RenderHook(int index)
 {
-  #ifdef DEBUG_VERBOSE
-    unsigned int time = XbmcThreads::SystemClockMillis();
-  #endif
-
   YUVPLANE &plane = m_buffers[index].fields[0][0];
   YUVPLANE &planef = m_buffers[index].fields[m_currentField][0];
 
@@ -225,9 +217,6 @@ bool CRendererMediaCodec::RenderHook(int index)
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
   VerifyGLState();
 
-  #ifdef DEBUG_VERBOSE
-    CLog::Log(LOGDEBUG, "RenderMediaCodecImage %d: tm:%d", index, XbmcThreads::SystemClockMillis() - time);
-  #endif
   return true;
 }
 
@@ -259,24 +248,12 @@ bool CRendererMediaCodec::CreateTexture(int index)
 
 void CRendererMediaCodec::DeleteTexture(int index)
 {
-  YUVBUFFER &buf(m_buffers[index]);
-  CMediaCodecVideoBuffer* videoBuffer;
-  if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
-  {
-    videoBuffer->Release();
-    buf.videoBuffer = NULL;
-  }
+  ReleaseBuffer(index);
 }
 
 bool CRendererMediaCodec::UploadTexture(int index)
 {
-  YUVBUFFER &buf(m_buffers[index]);
-  CMediaCodecVideoBuffer* videoBuffer;
-  if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
-  {
-    videoBuffer->UpdateTexImage();
-    videoBuffer->GetTransformMatrix(m_textureMatrix);
-  }
+  ReleaseBuffer(index);
   CalculateTextureSourceRects(index, 1);
   return true;
 }
