@@ -53,9 +53,11 @@
 //------------------------------------------------------------------------------
 
 std::map<std::string, CreateHWVideoCodec> CDVDFactoryCodec::m_hwVideoCodecs;
+std::map<std::string, CreateHWAudioCodec> CDVDFactoryCodec::m_hwAudioCodecs;
+
 std::map<std::string, CreateHWAccel> CDVDFactoryCodec::m_hwAccels;
 
-CCriticalSection videoCodecSection;
+CCriticalSection videoCodecSection, audioCodecSection;
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
 {
@@ -185,10 +187,13 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   CDVDCodecOptions options;
 
   // platform specifig audio decoders
-  pCodec.reset(CreateAudioCodecHW(processInfo));
-  if (pCodec && pCodec->Open(hint, options))
+  for (auto &codec : m_hwAudioCodecs)
   {
-    return pCodec.release();
+    pCodec.reset(CreateAudioCodecHW(codec.first, processInfo));
+    if (pCodec && pCodec->Open(hint, options))
+    {
+      return pCodec.release();
+    }
   }
 
   if (!allowdtshddecode)
@@ -208,6 +213,33 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   if (pCodec->Open(hint, options))
   {
     return pCodec.release();
+  }
+
+  return nullptr;
+}
+
+void CDVDFactoryCodec::RegisterHWAudioCodec(std::string id, CreateHWAudioCodec createFunc)
+{
+  CSingleLock lock(audioCodecSection);
+
+  m_hwAudioCodecs[id] = createFunc;
+}
+
+void CDVDFactoryCodec::ClearHWAudioCodecs()
+{
+  CSingleLock lock(audioCodecSection);
+
+  m_hwAudioCodecs.clear();
+}
+
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(std::string id, CProcessInfo &processInfo)
+{
+  CSingleLock lock(audioCodecSection);
+
+  auto it = m_hwAudioCodecs.find(id);
+  if (it != m_hwAudioCodecs.end())
+  {
+    return it->second(processInfo);
   }
 
   return nullptr;
@@ -268,12 +300,3 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
   return nullptr;
 }
 
-//------------------------------------------------------------------------------
-// Stubs for platform specific overrides
-//------------------------------------------------------------------------------
-
-
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(CProcessInfo &processInfo)
-{
-  return nullptr;
-}
