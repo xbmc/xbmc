@@ -49,6 +49,8 @@ public:
 
   void UpdateResolutions() override;
 
+  void* GetVaDisplay();
+
   bool Hide() override;
   bool Show(bool raise = true) override;
   virtual void Register(IDispResource *resource);
