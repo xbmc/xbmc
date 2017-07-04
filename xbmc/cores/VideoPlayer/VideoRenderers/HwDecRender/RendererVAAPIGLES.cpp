@@ -40,62 +40,33 @@ CRendererVAAPI::~CRendererVAAPI()
   }
 }
 
-bool CRendererVAAPI::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
-                               float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CRendererVAAPI::HandlesVideoBuffer(CVideoBuffer *buffer)
 {
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
-  if (vaapi->textureY)
-    m_isVAAPIBuffer = true;
-  else
-    m_isVAAPIBuffer = false;
-
-  return CLinuxRendererGLES::Configure(width, height, d_width, d_height,
-                                     fps, flags, format, hwPic, orientation);
-}
-
-bool CRendererVAAPI::ConfigChanged(void *hwPic)
-{
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
-  if (vaapi->textureY && !m_isVAAPIBuffer)
+  VAAPI::CVaapiRenderPicture *pic = dynamic_cast<VAAPI::CVaapiRenderPicture*>(buffer);
+  if (pic)
     return true;
 
   return false;
 }
 
-void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index, double currentClock)
+bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(picture.hwPic);
-  YUVBUFFER &buf = m_buffers[index];
-  VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
-  if (buf.hwDec)
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = pic;
-
-  if (!m_isVAAPIBuffer)
-  {
-    YuvImage &im = m_buffers[index].image;
-    CDVDCodecUtils::CopyNV12Picture(&im, &vaapi->DVDPic);
-  }
-}
-
-void CRendererVAAPI::ReleaseBuffer(int idx)
-{
-  YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = NULL;
-}
-
-CRenderInfo CRendererVAAPI::GetRenderInfo()
-{
-  CRenderInfo info;
-  info.formats = m_formats;
-  info.max_buffer_size = NUM_BUFFERS;
-  if (!m_isVAAPIBuffer)
-    info.optimal_buffer_size = 4;
+  VAAPI::CVaapiRenderPicture *pic = dynamic_cast<VAAPI::CVaapiRenderPicture*>(picture.videoBuffer);
+  if (pic->textureY)
+    m_isVAAPIBuffer = true;
   else
-    info.optimal_buffer_size = 5;
-  return info;
+    m_isVAAPIBuffer = false;
+
+  return CLinuxRendererGLES::Configure(picture, fps, flags, orientation);
+}
+
+bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
+{
+  VAAPI::CVaapiRenderPicture *pic = dynamic_cast<VAAPI::CVaapiRenderPicture*>(picture.videoBuffer);
+  if (pic->textureY && !m_isVAAPIBuffer)
+    return true;
+
+  return false;
 }
 
 bool CRendererVAAPI::Supports(ERENDERFEATURE feature)
@@ -108,7 +79,7 @@ bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
   return CLinuxRendererGLES::Supports(method);
 }
 
-EShaderFormat CRendererVAAPI::GetShaderFormat(ERenderFormat renderFormat)
+EShaderFormat CRendererVAAPI::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
@@ -137,43 +108,38 @@ bool CRendererVAAPI::CreateTexture(int index)
     return CreateNV12Texture(index);
   }
 
-  YuvImage &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
+  YUVBUFFER &buf = m_buffers[index];
+  YuvImage &im = buf.image;
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   DeleteTexture(index);
 
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&im, 0, sizeof(im));
+  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  plane.id = 1;
+  planes[0].id = 1;
 
   return true;
 }
 
 void CRendererVAAPI::DeleteTexture(int index)
 {
+  ReleaseBuffer(index);
+
   if (!m_isVAAPIBuffer)
   {
     DeleteNV12Texture(index);
     return;
   }
 
-  if (m_buffers[index].hwDec)
-    ((VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec)->Release();
-  m_buffers[index].hwDec = NULL;
-
-  YUVFIELDS &fields = m_buffers[index].fields;
-  fields[FIELD_FULL][0].id = 0;
-  fields[FIELD_FULL][1].id = 0;
-  fields[FIELD_FULL][2].id = 0;
+  YUVBUFFER &buf = m_buffers[index];
+  buf.fields[FIELD_FULL][0].id = 0;
+  buf.fields[FIELD_FULL][1].id = 0;
+  buf.fields[FIELD_FULL][2].id = 0;
 }
 
 bool CRendererVAAPI::UploadTexture(int index)
@@ -183,21 +149,20 @@ bool CRendererVAAPI::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  VAAPI::CVaapiRenderPicture *vaapi = (VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec;
+  YUVBUFFER &buf = m_buffers[index];
 
-  YuvImage &im = m_buffers[index].image;
+  VAAPI::CVaapiRenderPicture *pic = dynamic_cast<VAAPI::CVaapiRenderPicture*>(buf.videoBuffer);
 
-  YUVFIELDS &fields = m_buffers[index].fields;
-
-  if (!vaapi || !vaapi->valid)
+  if (!pic || !pic->valid)
   {
     return false;
   }
 
-  YUVPLANES &planes = fields[0];
+  YuvImage &im = buf.image;
+  YUVPLANE (&planes)[3] = buf.fields[0];
 
-  planes[0].texwidth  = vaapi->texWidth;
-  planes[0].texheight = vaapi->texHeight;
+  planes[0].texwidth  = pic->texWidth;
+  planes[0].texheight = pic->texHeight;
 
   planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
@@ -211,15 +176,15 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   // set textures
-  fields[0][0].id = vaapi->textureY;
-  fields[0][1].id = vaapi->textureVU;
-  fields[0][2].id = vaapi->textureVU;
+  planes[0].id = pic->textureY;
+  planes[1].id = pic->textureVU;
+  planes[2].id = pic->textureVU;
 
   glEnable(m_textureTarget);
 
   for (int p=0; p<2; p++)
   {
-    glBindTexture(m_textureTarget,fields[0][p].id);
+    glBindTexture(m_textureTarget, planes[p].id);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -237,9 +202,10 @@ bool CRendererVAAPI::UploadTexture(int index)
 void CRendererVAAPI::AfterRenderHook(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
+  VAAPI::CVaapiRenderPicture *pic = dynamic_cast<VAAPI::CVaapiRenderPicture*>(buf.videoBuffer);
+  if (pic)
   {
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Sync();
+    pic->Sync();
   }
 }
 
