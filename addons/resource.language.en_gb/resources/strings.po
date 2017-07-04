@@ -20493,4 +20493,3 @@ msgstr ""
 msgctxt "#39017"
 msgid "Enables UPnP. This allows you to stream media in your libraries to a UPnP client and to detect remote UPnP servers."
 msgstr ""
-
