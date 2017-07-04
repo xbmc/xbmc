@@ -27,6 +27,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/Process/rbpi/ProcessInfoPi.h"
 
 bool CWinSystemRpiGLESContext::InitWindowSystem()
 {
@@ -41,6 +42,7 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   {
     return false;
   }
+  CProcessInfoPi::Register();
   CDVDFactoryCodec::ClearHWAccels();
   MMAL::CDecoder::Register();
   CDVDFactoryCodec::ClearHWVideoCodecs();
