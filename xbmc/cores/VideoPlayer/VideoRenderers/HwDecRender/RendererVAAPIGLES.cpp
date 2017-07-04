@@ -233,7 +233,7 @@ void CRendererVAAPI::AfterRenderHook(int idx)
   if (glIsSync(m_fences[idx]))
   {
     glDeleteSync(m_fences[idx]);
-    m_fences[idx] = None;
+    m_fences[idx] = GL_NONE;
   }
   m_fences[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
