@@ -54,6 +54,7 @@ CKeyHandler::CKeyHandler(const std::string &keyName, IActionListener *actionHand
 void CKeyHandler::Reset()
 {
   m_bHeld = false;
+  m_magnitude = 0.0f;
   m_holdStartTimeMs = 0;
   m_lastHoldTimeMs = 0;
   m_bActionSent = false;
@@ -67,7 +68,9 @@ bool CKeyHandler::OnDigitalMotion(bool bPressed, unsigned int holdTimeMs)
 
 bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
 {
-  bool bHandled = false;
+  // Don't send deactivation event more than once
+  if (m_magnitude == 0.0f && magnitude == 0.0f)
+    return false;
 
   // Calculate press state
   const bool bPressed = IsPressed(magnitude);
@@ -99,7 +102,7 @@ bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
       actionsWithHotkeys.emplace_back(&action);
   }
 
-  bHandled = HandleActions(std::move(actionsWithHotkeys), magnitude, holdTimeMs);
+  bool bHandled = HandleActions(std::move(actionsWithHotkeys), magnitude, holdTimeMs);
 
   // If that failed, try again with all actions
   if (!bHandled)
@@ -113,6 +116,7 @@ bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
   }
 
   m_bHeld = bPressed;
+  m_magnitude = magnitude;
   m_lastHoldTimeMs = holdTimeMs;
 
   return bHandled;
@@ -132,60 +136,68 @@ bool CKeyHandler::HandleActions(std::vector<const KeymapAction*> actions, float 
 
   bool bHandled = false;
 
-  if (magnitude > 0.0f)
-  {
-    // Actions are sorted by holdtime, so the final action is the one with the
-    // greatest holdtime
-    const KeymapAction& finalAction = **actions.rbegin();
-    const unsigned int maxHoldTimeMs = finalAction.holdTimeMs;
+  // Actions are sorted by holdtime, so the final action is the one with the
+  // greatest holdtime
+  const KeymapAction& finalAction = **actions.rbegin();
+  const unsigned int maxHoldTimeMs = finalAction.holdTimeMs;
 
-    const bool bHasDelay = (maxHoldTimeMs != 0);
-    if (!bHasDelay)
+  const bool bHasDelay = (maxHoldTimeMs > 0);
+  if (!bHasDelay)
+  {
+    bHandled = HandleAction(finalAction, magnitude, holdTimeMs);
+  }
+  else
+  {
+    // If holdtime has exceeded the last action, execute it now
+    if (holdTimeMs >= finalAction.holdTimeMs)
     {
+      // Force holdtime to zero for the initial press
+      if (!m_bActionSent)
+        holdTimeMs = 0;
+      else
+        holdTimeMs -= finalAction.holdTimeMs;
+
       bHandled = HandleAction(finalAction, magnitude, holdTimeMs);
     }
     else
     {
-      // If holdtime has exceeded the last action, execute it now
-      if (holdTimeMs >= finalAction.holdTimeMs)
-      {
-        // Force holdtime to zero for the initial press
-        if (!m_bActionSent)
-          holdTimeMs = 0;
-        else
-          holdTimeMs -= finalAction.holdTimeMs;
+      // Calculate press state
+      const bool bPressed = IsPressed(magnitude);
+      const bool bJustReleased = m_bHeld && !bPressed;
 
-        bHandled = HandleAction(finalAction, magnitude, holdTimeMs);
-      }
+      // If button was just released, send a release action
+      if (bJustReleased)
+        bHandled = HandleRelease(actions);
     }
   }
-  else if (actions.size() > 1)
+
+  return bHandled;
+}
+
+bool CKeyHandler::HandleRelease(std::vector<const KeymapAction*> actions)
+{
+  bool bHandled = false;
+
+  // Use previous holdtime from before button release
+  const unsigned int holdTimeMs = m_lastHoldTimeMs;
+
+  // Send an action on release if one occurs before the holdtime
+  for (auto it = actions.begin(); it != actions.end(); )
   {
-    // If button was help before being released, send a release action
-    if (m_bHeld)
+    const KeymapAction &action = **it;
+
+    unsigned int thisHoldTime = (*it)->holdTimeMs;
+
+    ++it;
+    if (it == actions.end())
+      break;
+
+    unsigned int nextHoldTime = (*it)->holdTimeMs;
+
+    if (thisHoldTime <= holdTimeMs && holdTimeMs < nextHoldTime)
     {
-      // Holdtime is zero, so use previous holdtime from before button release
-      holdTimeMs = m_lastHoldTimeMs;
-
-      // Send an action on release if one occurs before the holdtime
-      for (auto it = actions.begin(); it != actions.end(); )
-      {
-        const KeymapAction &action = **it;
-
-        unsigned int thisHoldTime = (*it)->holdTimeMs;
-
-        ++it;
-        if (it == actions.end())
-          break;
-
-        unsigned int nextHoldTime = (*it)->holdTimeMs;
-
-        if (thisHoldTime <= holdTimeMs && holdTimeMs < nextHoldTime)
-        {
-          bHandled = HandleAction(action, 1.0f, 0);
-          break;
-        }
-      }
+      bHandled = HandleAction(action, 1.0f, 0);
+      break;
     }
   }
 

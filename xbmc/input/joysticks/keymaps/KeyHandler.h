@@ -56,6 +56,8 @@ namespace JOYSTICK
     void Reset();
 
     bool HandleActions(std::vector<const KeymapAction*> actions, float magnitude, unsigned int holdTimeMs);
+    bool HandleRelease(std::vector<const KeymapAction*> actions);
+
     bool HandleAction(const KeymapAction& action, float magnitude, unsigned int holdTimeMs);
 
     // Check criteria for sending a repeat action
@@ -72,6 +74,7 @@ namespace JOYSTICK
 
     // State variables
     bool m_bHeld;
+    float m_magnitude;
     unsigned int m_holdStartTimeMs;
     unsigned int m_lastHoldTimeMs;
     bool m_bActionSent;
