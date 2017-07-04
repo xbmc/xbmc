@@ -53,12 +53,16 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
     g_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
     if (!g_pIosKeyboard)
       return false;
-  }
 
+    // inform the controller that the native keyboard is active
+    // basically as long as g_pIosKeyboard exists...
+    [g_xbmcController nativeKeyboardActive:true];
+  }
+  
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
-  [g_pIosKeyboard setDefault:[NSString stringWithUTF8String:initialString.c_str()]];
+  SetTextToKeyboard(initialString);
   [g_pIosKeyboard setHidden:bHiddenInput];
   [g_pIosKeyboard setHeading:[NSString stringWithUTF8String:heading.c_str()]];
   [g_pIosKeyboard registerKeyboard:this]; // for calling back
@@ -76,6 +80,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   @synchronized([KeyboardView class])
   {
     g_pIosKeyboard = nil;
+    [g_xbmcController nativeKeyboardActive:false];
   }
   return confirmed;
 }
