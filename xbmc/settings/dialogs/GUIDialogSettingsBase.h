@@ -183,4 +183,5 @@ protected:
   CTimer m_delayedTimer;                  ///< Delayed setting timer
 
   bool m_confirmed;
+  int m_focusedControl, m_fadedControl;
 };
