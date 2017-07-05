@@ -484,7 +484,7 @@ void CInputStreamAddon::UpdateStreams()
         CRYPTO_SESSION_SYSTEM_PLAYREADY
       };
       demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-        map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId));
+        map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
 
       if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
       {
