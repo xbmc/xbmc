@@ -53,7 +53,23 @@ CRepositoryUpdater &CRepositoryUpdater::GetInstance()
 
 void CRepositoryUpdater::Start()
 {
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CRepositoryUpdater::OnEvent);
   ScheduleUpdate();
+}
+
+CRepositoryUpdater::~CRepositoryUpdater()
+{
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+}
+
+void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
+{
+  if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
+  {
+    AddonPtr addon;
+    if (CAddonMgr::GetInstance().GetAddon(enableEvent->id, addon, ADDON_REPOSITORY))
+      ScheduleUpdate();
+  }
 }
 
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)
