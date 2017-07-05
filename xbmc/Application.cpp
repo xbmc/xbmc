@@ -252,6 +252,7 @@ CApplication::CApplication(void)
   , m_iScreenSaveLock(0)
   , m_bPlaybackStarting(false)
   , m_ePlayState(PLAY_STATE_NONE)
+  , m_ServiceManager(new CServiceManager)
   , m_confirmSkinChange(true)
   , m_ignoreSkinSettingChanges(false)
   , m_saveSkinOnUnloading(true)
@@ -417,7 +418,6 @@ bool CApplication::Create()
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
-  m_ServiceManager.reset(new CServiceManager());
   if (!m_ServiceManager->Init1())
   {
     return false;
