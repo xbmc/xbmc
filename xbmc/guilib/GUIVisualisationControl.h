@@ -33,6 +33,7 @@ public:
   CAudioBuffer(int iSize);
   virtual ~CAudioBuffer();
   const float* Get() const;
+  int Size() const;
   void Set(const float* psBuffer, int iSize);
 private:
   CAudioBuffer();

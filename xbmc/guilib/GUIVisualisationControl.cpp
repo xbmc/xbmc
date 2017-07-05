@@ -57,6 +57,11 @@ const float* CAudioBuffer::Get() const
   return m_pBuffer;
 }
 
+int CAudioBuffer::Size() const
+{
+  return m_iLen;
+}
+
 void CAudioBuffer::Set(const float* psBuffer, int iSize)
 {
   if (iSize < 0)
@@ -276,11 +281,11 @@ void CGUIVisualisationControl::OnAudioData(const float* audioData, unsigned int 
     m_transform->calc(psAudioData, m_freq);
 
     // Transfer data to our visualisation
-    m_instance->AudioData(psAudioData, audioDataLength, m_freq, AUDIO_BUFFER_SIZE/2); // half due to complex-conjugate
+    m_instance->AudioData(psAudioData, ptrAudioBuffer->Size(), m_freq, AUDIO_BUFFER_SIZE/2); // half due to complex-conjugate
   }
   else
   { // Transfer data to our visualisation
-    m_instance->AudioData(ptrAudioBuffer->Get(), audioDataLength, nullptr, 0);
+    m_instance->AudioData(ptrAudioBuffer->Get(), ptrAudioBuffer->Size(), nullptr, 0);
   }
   return;
 }
