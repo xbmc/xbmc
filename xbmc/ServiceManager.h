@@ -29,6 +29,7 @@ class CBinaryAddonManager;
 class CBinaryAddonCache;
 class CVFSAddonCache;
 class CServiceAddonManager;
+class CRepositoryUpdater;
 }
 
 namespace ActiveAE {
@@ -92,6 +93,7 @@ public:
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   ADDON::CVFSAddonCache& GetVFSAddonCache();
   ADDON::CServiceAddonManager& GetServiceAddons();
+  ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
 #ifdef HAS_PYTHON
   XBPython& GetXBPython();
@@ -139,6 +141,7 @@ protected:
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
   std::unique_ptr<ADDON::CVFSAddonCache> m_vfsAddonCache;
   std::unique_ptr<ADDON::CServiceAddonManager> m_serviceAddons;
+  std::unique_ptr<ADDON::CRepositoryUpdater> m_repositoryUpdater;
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
 #ifdef HAS_PYTHON
   std::unique_ptr<XBPython> m_XBPython;

@@ -144,8 +144,8 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(
   {
     onMigrate();
 
-    if (CRepositoryUpdater::GetInstance().CheckForUpdates())
-      CRepositoryUpdater::GetInstance().Await();
+    if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
+      CServiceBroker::GetRepositoryUpdater().Await();
 
     CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
     CAddonInstaller::GetInstance().InstallUpdatesAndWait();

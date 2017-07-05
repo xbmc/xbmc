@@ -34,8 +34,7 @@ namespace ADDON
 class CRepositoryUpdater : private ITimerCallback, private IJobCallback, public ISettingCallback
 {
 public:
-  static CRepositoryUpdater& GetInstance();
-
+  explicit CRepositoryUpdater(CAddonMgr& addonMgr);
   ~CRepositoryUpdater() override;
 
   void Start();
@@ -75,7 +74,6 @@ public:
   CEventStream<RepositoryUpdated>& Events() { return m_events; }
 
 private:
-  CRepositoryUpdater();
   CRepositoryUpdater(const CRepositoryUpdater&) = delete;
   CRepositoryUpdater(CRepositoryUpdater&&) = delete;
   CRepositoryUpdater& operator=(const CRepositoryUpdater&) = delete;
@@ -91,6 +89,7 @@ private:
   CTimer m_timer;
   CEvent m_doneEvent;
   std::vector<CRepositoryUpdateJob*> m_jobs;
+  CAddonMgr& m_addonMgr;
 
   CEventSource<RepositoryUpdated> m_events;
 };

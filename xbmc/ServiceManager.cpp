@@ -89,6 +89,7 @@ bool CServiceManager::Init2()
     return false;
   }
 
+  m_repositoryUpdater.reset(new ADDON::CRepositoryUpdater(*m_addonMgr));
   m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
   m_vfsAddonCache->Init();
 
@@ -160,6 +161,7 @@ void CServiceManager::Deinit()
   if (m_PVRManager)
     m_PVRManager->Deinit();
   m_PVRManager.reset();
+  m_repositoryUpdater.reset();
   m_vfsAddonCache.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
@@ -194,6 +196,11 @@ ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
 ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()
 {
   return *m_serviceAddons;
+}
+
+ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
+{
+  return *m_repositoryUpdater;
 }
 
 ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()

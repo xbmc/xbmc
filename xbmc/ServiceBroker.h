@@ -26,6 +26,7 @@ class CBinaryAddonManager;
 class CBinaryAddonCache;
 class CVFSAddonCache;
 class CServiceAddonManager;
+class CRepositoryUpdater;
 }
 
 namespace ActiveAE {
@@ -87,6 +88,7 @@ public:
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
   static ADDON::CServiceAddonManager& GetServiceAddons();
+  static ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   static CInputManager& GetInputManager();
   static bool IsBinaryAddonCacheUp();
 };

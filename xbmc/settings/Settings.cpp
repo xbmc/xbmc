@@ -826,7 +826,7 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetRepositoryUpdater());
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
@@ -1044,7 +1044,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_ADDONS_AUTOUPDATES);
-  GetSettingsManager()->RegisterCallback(&ADDON::CRepositoryUpdater::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetRepositoryUpdater(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
@@ -1094,7 +1094,7 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetRepositoryUpdater());
   GetSettingsManager()->UnregisterCallback(&GAME::CGameSettings::GetInstance());
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
