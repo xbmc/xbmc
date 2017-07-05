@@ -20,46 +20,18 @@
 
 #include "AddonManager.h"
 
-#include <algorithm>
-#include <array>
-#include <iterator>
-#include <memory>
-#include <utility>
-
-#include "Addon.h"
-#include "addons/AddonBuilder.h"
-#include "addons/ImageResource.h"
-#include "addons/LanguageResource.h"
-#include "addons/UISoundsResource.h"
-#include "addons/Webinterface.h"
-#include "AudioDecoder.h"
-#include "AudioEncoder.h"
-#include "ContextMenuAddon.h"
-#include "ContextMenuManager.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
-#include "DllLibCPluff.h"
+#include "ServiceBroker.h"
+#include "addons/DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
-#include "events/NotificationEvent.h"
 #include "events/EventLog.h"
+#include "events/NotificationEvent.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "VFSEntry.h"
-#include "LangInfo.h"
-#include "PluginSource.h"
-#include "Repository.h"
-#include "Scraper.h"
-#include "Service.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "Skin.h"
-#include "system.h"
-#include "threads/SingleLock.h"
-#include "Util.h"
-#include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
-#include "ServiceBroker.h"
 
 using namespace XFILE;
 

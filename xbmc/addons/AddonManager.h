@@ -18,16 +18,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "Addon.h"
 #include "AddonDatabase.h"
-#include "AddonEvents.h"
 #include "Repository.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
-#include <string>
-#include <vector>
-#include <map>
-#include <deque>
 
 class DllLibCPluff;
 extern "C"
