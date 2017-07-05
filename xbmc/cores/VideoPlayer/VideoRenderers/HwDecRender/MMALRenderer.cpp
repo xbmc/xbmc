@@ -227,7 +227,7 @@ uint32_t CMMALPool::TranslateFormat(AVPixelFormat pixfmt)
 void CMMALPool::Configure(AVPixelFormat format, int width, int height, int alignedWidth, int alignedHeight, int size)
 {
   CSingleLock lock(m_critSection);
-  if (m_mmal_format == MMAL_ENCODING_UNKNOWN)
+  if (format != AV_PIX_FMT_NONE)
     m_mmal_format = TranslateFormat(format);
   m_width = width;
   m_height = height;
@@ -242,13 +242,13 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
     {
       if (alignedWidth)
       {
-        m_geo.stride_y = alignedWidth;
-        m_geo.stride_c = alignedWidth>>1;
+        m_geo.stride_y = alignedWidth * m_geo.bytes_per_pixel;
+        m_geo.stride_c = alignedWidth * m_geo.bytes_per_pixel >> 1;
       }
       if (alignedHeight)
       {
         m_geo.height_y = alignedHeight;
-        m_geo.height_c = alignedHeight>>1;
+        m_geo.height_c = alignedHeight >> 1;
       }
     }
   }
