@@ -705,8 +705,8 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
       if (addondb.Open())
       {
         // update the addon repositories to check if there's a matching language addon available for download
-        if (ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates())
-          ADDON::CRepositoryUpdater::GetInstance().Await();
+        if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
+          CServiceBroker::GetRepositoryUpdater().Await();
 
         ADDON::VECADDONS languageAddons;
         if (addondb.GetRepositoryContent(languageAddons) && !languageAddons.empty())

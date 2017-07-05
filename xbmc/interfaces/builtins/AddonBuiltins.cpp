@@ -316,7 +316,7 @@ static int StopScript(const std::vector<std::string>& params)
  */
 static int UpdateRepos(const std::vector<std::string>& params)
 {
-  CRepositoryUpdater::GetInstance().CheckForUpdates();
+  CServiceBroker::GetRepositoryUpdater().CheckForUpdates();
 
   return 0;
 }

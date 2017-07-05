@@ -105,6 +105,11 @@ ADDON::CServiceAddonManager& CServiceBroker::GetServiceAddons()
   return g_application.m_ServiceManager->GetServiceAddons();
 }
 
+ADDON::CRepositoryUpdater& CServiceBroker::GetRepositoryUpdater()
+{
+  return g_application.m_ServiceManager->GetRepositoryUpdater();
+}
+
 CInputManager& CServiceBroker::GetInputManager()
 {
   return g_application.m_ServiceManager->GetInputManager();

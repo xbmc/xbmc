@@ -40,16 +40,11 @@
 namespace ADDON
 {
 
-CRepositoryUpdater::CRepositoryUpdater() :
+CRepositoryUpdater::CRepositoryUpdater(CAddonMgr& addonMgr) :
   m_timer(this),
-  m_doneEvent(true)
+  m_doneEvent(true),
+  m_addonMgr(addonMgr)
 {}
-
-CRepositoryUpdater &CRepositoryUpdater::GetInstance()
-{
-  static CRepositoryUpdater instance;
-  return instance;
-}
 
 void CRepositoryUpdater::Start()
 {

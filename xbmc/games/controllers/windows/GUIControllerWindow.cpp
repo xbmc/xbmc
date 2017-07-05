@@ -234,16 +234,11 @@ void CGUIControllerWindow::OnInitWindow(void)
   // Enable button mapping support
   CServiceBroker::GetPeripherals().EnableButtonMapping();
 
-  // FIXME: not thread safe
-//  ADDON::CRepositoryUpdater::GetInstance().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
-
   UpdateButtons();
 }
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
-  ADDON::CRepositoryUpdater::GetInstance().Events().Unsubscribe(this);
-
   if (m_controllerList)
   {
     m_controllerList->Deinitialize();
