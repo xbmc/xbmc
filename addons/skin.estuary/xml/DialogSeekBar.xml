@@ -9,6 +9,7 @@
 	<controls>
 		<include>PVRChannelNumberInput</include>
 		<control type="group">
+			<visible>!Player.HasGame</visible>
 			<bottom>0</bottom>
 			<height>190</height>
 			<control type="image">

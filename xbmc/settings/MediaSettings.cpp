@@ -153,6 +153,19 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     }
   }
 
+  m_defaultGameSettings.Reset();
+  pElement = settings->FirstChildElement("defaultgamesettings");
+  if (pElement != nullptr)
+  {
+    int scalingMethod;
+    if (XMLUtils::GetInt(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_MAX))
+      m_defaultGameSettings.SetScalingMethod(static_cast<ESCALINGMETHOD>(scalingMethod));
+
+    int viewMode;
+    if (XMLUtils::GetInt(pElement, "viewmode", viewMode, ViewModeNormal, ViewModeZoom110Width))
+      m_defaultGameSettings.SetViewMode(viewMode);
+  }
+
   // mymusic settings
   pElement = settings->FirstChildElement("mymusic");
   if (pElement != NULL)
@@ -253,6 +266,15 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
       XMLUtils::SetInt(pNode, strTag.c_str(), m_defaultAudioSettings.m_MasterModes[type][base]);
     }
   }
+
+  // Default game settings
+  TiXmlElement gameSettingsNode("defaultgamesettings");
+  pNode = settings->InsertEndChild(gameSettingsNode);
+  if (pNode == nullptr)
+    return false;
+
+  XMLUtils::SetInt(pNode, "scalingmethod", m_defaultGameSettings.ScalingMethod());
+  XMLUtils::SetInt(pNode, "viewmode", m_defaultGameSettings.ViewMode());
 
   // mymusic
   pNode = settings->FirstChild("mymusic");

@@ -353,6 +353,10 @@ static int PlayerControl(const std::vector<std::string>& params)
       }
     }
   }
+  else if (paramlow == "reset")
+  {
+    g_application.OnAction(CAction(ACTION_PLAYER_RESET));
+  }
 
   return 0;
 }

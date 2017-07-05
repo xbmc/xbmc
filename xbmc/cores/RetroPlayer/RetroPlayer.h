@@ -114,13 +114,14 @@ namespace RETRO
     //virtual bool HasMenu() const override { return false; }
     //virtual void DoAudioWork() override { }
     //virtual bool OnAction(const CAction &action) override { return false; }
+    bool OnAction(const CAction &action) override;
     std::string GetPlayerState() override;
     bool SetPlayerState(const std::string& state) override;
     //virtual std::string GetPlayingTitle() override { return ""; }
     //virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override { return false; }
     //virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override { audioCaps.assign(1,IPC_AUD_ALL); }
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
-    void FrameMove() override { m_renderManager.FrameMove(); }
+    void FrameMove() override;
     void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
     void FlushRenderer() override { m_renderManager.Flush(); }
     void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
@@ -146,11 +147,25 @@ namespace RETRO
     void UpdateRenderBuffers(int queued, int discard, int free) override {}
 
   private:
+    /*!
+     * \brief Closes the OSD and shows the FullscreenGame window
+     */
+    void CloseOSD();
+
     /**
      * \brief Dump game information (if any) to the debug log.
      */
     void PrintGameInfo(const CFileItem &file) const;
 
+    enum class State
+    {
+      STARTING,
+      FULLSCREEN,
+      BACKGROUND,
+    };
+
+    State                              m_state = State::STARTING;
+    double                             m_priorSpeed = 0.0f; // Speed of gameplay before entering OSD
     CDVDClock                          m_clock;
     CRenderManager                     m_renderManager;
     std::unique_ptr<CProcessInfo>      m_processInfo;

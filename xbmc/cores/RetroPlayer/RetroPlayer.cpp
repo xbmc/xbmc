@@ -24,13 +24,22 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "games/addons/playback/IGameClientPlayback.h"
 #include "games/addons/GameClient.h"
+#include "games/ports/PortManager.h"
 #include "games/tags/GameInfoTag.h"
+#include "games/GameServices.h"
 #include "games/GameUtils.h"
+#include "guilib/GUIDialog.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
+#include "input/Action.h"
+#include "input/ActionIDs.h"
+#include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 
 using namespace KODI;
@@ -53,6 +62,14 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 {
   std::string redactedPath = CURL::GetRedacted(file.GetPath());
   CLog::Log(LOGINFO, "RetroPlayer: Opening: %s", redactedPath.c_str());
+
+  // Reset game settings
+  CMediaSettings::GetInstance().GetCurrentGameSettings() = CMediaSettings::GetInstance().GetDefaultGameSettings();
+
+  //! @todo - Remove this when RetroPlayer has a renderer
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  videoSettings.m_ScalingMethod = CMediaSettings::GetInstance().GetCurrentGameSettings().ScalingMethod();
+  videoSettings.m_ViewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
 
   CSingleLock lock(m_mutex);
 
@@ -155,6 +172,9 @@ void CRetroPlayer::Pause()
   {
     m_gameClient->GetPlayback()->PauseUnpause();
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -251,6 +271,9 @@ void CRetroPlayer::SeekTime(int64_t iTime /* = 0 */)
   {
     m_gameClient->GetPlayback()->SeekTimeMs(static_cast<unsigned int>(iTime));
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -298,6 +321,9 @@ void CRetroPlayer::SetSpeed(float speed)
 
     m_gameClient->GetPlayback()->SetSpeed(speed);
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -306,6 +332,33 @@ float CRetroPlayer::GetSpeed()
   if (m_gameClient)
     return static_cast<float>(m_gameClient->GetPlayback()->GetSpeed());
   return 0;
+}
+
+bool CRetroPlayer::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_PLAYER_RESET:
+  {
+    if (m_gameClient)
+    {
+      double previousPlaySpeed = m_gameClient->GetPlayback()->GetSpeed();
+      m_gameClient->GetPlayback()->SetSpeed(0.0);
+      CServiceBroker::GetGameServices().PortManager().HardwareReset();
+      if (previousPlaySpeed > 0.0)
+        m_gameClient->GetPlayback()->SetSpeed(previousPlaySpeed);
+      else
+        m_gameClient->GetPlayback()->SetSpeed(1.0f);
+
+      CloseOSD();
+    }
+    return true;
+  }
+  default:
+    break;
+  }
+
+  return false;
 }
 
 std::string CRetroPlayer::GetPlayerState()
@@ -320,6 +373,46 @@ bool CRetroPlayer::SetPlayerState(const std::string& state)
   if (m_gameClient)
     return m_gameClient->GetPlayback()->LoadSavestate(state);
   return false;
+}
+
+void CRetroPlayer::FrameMove()
+{
+  m_renderManager.FrameMove();
+
+  if (m_gameClient)
+  {
+    const bool bFullscreen = (g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME);
+
+    switch (m_state)
+    {
+    case State::STARTING:
+    {
+      if (bFullscreen)
+        m_state = State::FULLSCREEN;
+      break;
+    }
+    case State::FULLSCREEN:
+    {
+      if (!bFullscreen)
+      {
+        m_priorSpeed = m_gameClient->GetPlayback()->GetSpeed();
+        m_gameClient->GetPlayback()->SetSpeed(0.0);
+        m_state = State::BACKGROUND;
+      }
+      break;
+    }
+    case State::BACKGROUND:
+    {
+      if (bFullscreen)
+      {
+        if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+          m_gameClient->GetPlayback()->SetSpeed(m_priorSpeed);
+        m_state = State::FULLSCREEN;
+      }
+      break;
+    }
+    }
+  }
 }
 
 bool CRetroPlayer::Supports(EINTERLACEMETHOD method)
@@ -340,6 +433,13 @@ void CRetroPlayer::UpdateClockSync(bool enabled)
 void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
 {
   m_processInfo->UpdateRenderInfo(info);
+}
+
+void CRetroPlayer::CloseOSD()
+{
+  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
+  if (pDialog)
+    pDialog->Close(true, WINDOW_FULLSCREEN_GAME);
 }
 
 void CRetroPlayer::PrintGameInfo(const CFileItem &file) const

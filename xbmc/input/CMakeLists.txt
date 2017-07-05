@@ -26,7 +26,8 @@ set(SOURCES Action.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
-set(HEADERS Action.h
+set(HEADERS hardware/IHardwareInput.h
+            Action.h
             ActionIDs.h
             ActionTranslator.h
             AppTranslator.h

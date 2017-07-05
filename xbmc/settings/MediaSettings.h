@@ -26,6 +26,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/AudioDSPSettings.h"
+#include "settings/GameSettings.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 
@@ -60,6 +61,11 @@ public:
   CAudioSettings& GetDefaultAudioSettings() { return m_defaultAudioSettings; }
   const CAudioSettings& GetCurrentAudioSettings() const { return m_currentAudioSettings; }
   CAudioSettings& GetCurrentAudioSettings() { return m_currentAudioSettings; }
+
+  const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
+  CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
+  const CGameSettings& GetCurrentGameSettings() const { return m_currentGameSettings; }
+  CGameSettings& GetCurrentGameSettings() { return m_currentGameSettings; }
 
   /*! \brief Retrieve the watched mode for the given content type
    \param content Current content type
@@ -111,6 +117,9 @@ private:
 
   CAudioSettings m_defaultAudioSettings;
   CAudioSettings m_currentAudioSettings;
+
+  CGameSettings m_defaultGameSettings;
+  CGameSettings m_currentGameSettings;
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;

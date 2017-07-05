@@ -20,11 +20,13 @@
 
 #include "PortManager.h"
 #include "PortMapper.h"
+#include "input/hardware/IHardwareInput.h"
+#include "input/joysticks/IInputHandler.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/devices/PeripheralJoystickEmulation.h"
 #include "peripherals/Peripherals.h"
-#include "threads/SingleLock.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -68,14 +70,16 @@ void CPortManager::Deinitialize()
 }
 
 void CPortManager::OpenPort(IInputHandler* handler,
+                            HARDWARE::IHardwareInput *hardwareInput,
                             CGameClient* gameClient,
                             unsigned int port,
                             PERIPHERALS::PeripheralType requiredType /* = PERIPHERALS::PERIPHERAL_UNKNOWN) */)
 {
-  CSingleLock lock(m_mutex);
+  CExclusiveLock lock(m_mutex);
 
   SPort newPort = { };
   newPort.handler = handler;
+  newPort.hardwareInput = hardwareInput;
   newPort.port = port;
   newPort.requiredType = requiredType;
   newPort.gameClient = gameClient;
@@ -87,7 +91,7 @@ void CPortManager::OpenPort(IInputHandler* handler,
 
 void CPortManager::ClosePort(IInputHandler* handler)
 {
-  CSingleLock lock(m_mutex);
+  CExclusiveLock lock(m_mutex);
 
   m_ports.erase(std::remove_if(m_ports.begin(), m_ports.end(),
     [handler](const SPort& port)
@@ -102,7 +106,7 @@ void CPortManager::ClosePort(IInputHandler* handler)
 void CPortManager::MapDevices(const PeripheralVector& devices,
                               std::map<CPeripheral*, IInputHandler*>& deviceToPortMap)
 {
-  CSingleLock lock(m_mutex);
+  CSharedLock lock(m_mutex);
 
   if (m_ports.empty())
     return; // Nothing to do
@@ -160,6 +164,8 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
 
 CGameClient* CPortManager::GameClient(JOYSTICK::IInputHandler* handler)
 {
+  CSharedLock lock(m_mutex);
+
   for (const SPort& port : m_ports)
   {
     if (port.handler == handler)
@@ -167,6 +173,43 @@ CGameClient* CPortManager::GameClient(JOYSTICK::IInputHandler* handler)
   }
 
   return nullptr;
+}
+
+void CPortManager::HardwareReset(JOYSTICK::IInputHandler *handler /* = nullptr */)
+{
+  CSharedLock lock(m_mutex);
+
+  // Find the port to reset
+  auto itPort = m_ports.end();
+
+  if (handler != nullptr)
+  {
+    auto FindByHandler = [handler](const SPort& portStruct)
+      {
+        return portStruct.handler == handler;
+      };
+
+    itPort = std::find_if(m_ports.begin(), m_ports.end(), FindByHandler);
+  }
+  else
+  {
+    auto FindDefaultPort = [](const SPort& portStruct)
+    {
+      return portStruct.port == 0;
+    };
+
+    itPort = std::find_if(m_ports.begin(), m_ports.end(), FindDefaultPort);
+  }
+
+  if (itPort != m_ports.end())
+    itPort->hardwareInput->OnResetButton(itPort->port);
+  else
+  {
+    if (handler != nullptr)
+      CLog::Log(LOGERROR, "Can't find hardware to reset for controller %s (total ports = %u)", handler->ControllerID().c_str(), m_ports.size());
+    else
+      CLog::Log(LOGERROR, "Can't find hardware to reset for default port (total ports = %u)", m_ports.size());
+  }
 }
 
 IInputHandler* CPortManager::AssignToPort(const PeripheralPtr& device, bool checkPortNumber /* = true */)
