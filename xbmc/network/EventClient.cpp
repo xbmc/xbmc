@@ -26,8 +26,8 @@
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "threads/SingleLock.h"
-#include "input/ButtonTranslator.h"
 #include "input/GamepadTranslator.h"
+#include "input/InputManager.h"
 #include "input/IRTranslator.h"
 #include "input/KeyboardTranslator.h"
 #include <map>
@@ -40,6 +40,7 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -94,7 +95,7 @@ void CEventButtonState::Load()
       {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
         std::string lircDevice = m_mapName.substr(3);
-        m_iKeyCode = CButtonTranslator::GetInstance().TranslateLircRemoteString( lircDevice.c_str(),
+        m_iKeyCode = CServiceBroker::GetInputManager().TranslateLircRemoteString( lircDevice.c_str(),
                                                                    m_buttonName.c_str() );
 #else
         CLog::Log(LOGERROR, "ES: LIRC support not enabled");

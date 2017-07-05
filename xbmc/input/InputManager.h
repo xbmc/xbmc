@@ -31,14 +31,25 @@
 #include "input/windows/IRServerSuite.h"
 #endif
 
+#include "Action.h"
 #include "windowing/XBMC_events.h"
+#include "input/keyboard/IKeyboardInputProvider.h"
+#include "input/mouse/IMouseInputProvider.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
+class CButtonTranslator;
+class CCustomControllerTranslator;
+class CIRTranslator;
+class CJoystickMapper;
 class CKey;
+class CTouchTranslator;
+class IKeymapEnvironment;
+class IWindowKeymap;
 
 namespace KODI
 {
@@ -69,18 +80,16 @@ namespace MOUSE
  * \copydoc mouse
  */
 class CInputManager : public ISettingCallback,
-                      public IActionListener
+                      public IActionListener,
+                      public KODI::KEYBOARD::IKeyboardInputProvider,
+                      public KODI::MOUSE::IMouseInputProvider,
+                      public Observable
 {
-private:
-  CInputManager();
-  CInputManager(const CInputManager&);
-  CInputManager const& operator=(CInputManager const&);
-  ~CInputManager() override;
-
 public:
-  /*! \brief static method to get the current instance of the class. Creates a new instance the first time it's called.
-  */
-  static CInputManager& GetInstance();
+  CInputManager();
+  CInputManager(const CInputManager&) = delete;
+  CInputManager const& operator=(CInputManager const&) = delete;
+  ~CInputManager() override;
 
   /*! \brief decode an input event from remote controls.
 
@@ -123,6 +132,11 @@ public:
    * \brief Call once during application startup to initialize peripherals that need it
    */
   void InitializeInputs();
+
+  /*!
+   * \brief Deinitialize input and keymaps
+   */
+  void Deinitialize();
 
   /*! \brief Enable or disable the joystick
    *
@@ -235,37 +249,54 @@ public:
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
+  // Button translation
+  bool LoadKeymaps();
+  bool ReloadKeymaps();
+  void ClearKeymaps();
+  void AddKeymap(const std::string &keymap);
+  void RemoveKeymap(const std::string &keymap);
+
+  const IKeymapEnvironment *KeymapEnvironment() const { return m_keymapEnvironment.get(); }
+
+  /*! \brief Obtain the action configured for a given window and key
+   *
+   * \param window the window id
+   * \param key the key to query the action for
+   * \param fallback if no action is directly configured for the given window, obtain the action from fallback window, if exists or from global config as last resort
+   *
+   * \return the action matching the key
+   */
+  CAction GetAction(int window, const CKey &key, bool fallback = true);
+
+  /*! \brief Obtain the global action configured for a given key
+   *
+   * \param key the key to query the action for
+   *
+   * \return the global action
+   */
+  CAction GetGlobalAction(const CKey &key);
+
+  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
+
+  bool TranslateTouchAction(int windowId, int touchAction, int touchPointers, int &action, std::string &actionString);
+
+  std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
+
+  int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
+
   // implementation of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // implementation of IActionListener
-  bool OnAction(const CAction& action) override;
+  virtual bool OnAction(const CAction& action) override;
 
-  /*! \brief Registers a handler to be called on keyboard input (e.g a game client).
-   *
-   * \param handler The handler to call on keyboard input.
-   */
-  void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler);
+  // implementation of IKeyboardInputProvider
+  virtual void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler) override;
+  virtual void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler) override;
 
-  /*! \brief Unregisters handler from keyboard input.
-   *
-   * \param[in] handler The handler to unregister from keyboard input.
-   */
-  void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler);
-
-  /*! \brief Registers a handler to be called on mouse input (e.g a game client).
-   *
-   * \param handler The handler to call on mouse input.
-   * \return[in] The controller ID that serves as a context for incoming events.
-   * \sa IMouseButtonMap
-   */
-  std::string RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler);
-
-  /*! \brief Unregisters handler from mouse input.
-   *
-   * \param[in] handler The handler to unregister from mouse input.
-   */
-  void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler);
+  // implementation of IMouseInputProvider
+  virtual std::string RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
+  virtual void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
 
 private:
 
@@ -324,6 +355,14 @@ private:
 
   std::vector<CAction> m_queuedActions;
   CCriticalSection     m_actionMutex;
+
+  // Button translation
+  std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
+  std::unique_ptr<CButtonTranslator> m_buttonTranslator;
+  std::unique_ptr<CIRTranslator> m_irTranslator;
+  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
+  std::unique_ptr<CTouchTranslator> m_touchTranslator;
+  std::unique_ptr<CJoystickMapper> m_joystickTranslator;
 
   std::vector<KODI::KEYBOARD::IKeyboardHandler*> m_keyboardHandlers;
 

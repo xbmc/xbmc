@@ -11,15 +11,18 @@ set(SOURCES Action.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
             IRTranslator.cpp
-            JoystickTranslator.cpp
+            JoystickMapper.cpp
             Key.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
             KeyboardTranslator.cpp
+            Keymap.cpp
+            KeymapEnvironment.cpp
             MouseStat.cpp
             MouseTranslator.cpp
             TouchTranslator.cpp
+            WindowKeymap.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
@@ -30,6 +33,9 @@ set(HEADERS Action.h
             ButtonTranslator.h
             CustomControllerTranslator.h
             GamepadTranslator.h
+            IButtonMapper.h
+            IKeymap.h
+            IKeymapEnvironment.h
             InertialScrollingHandler.h
             InputCodingTable.h
             InputCodingTableBaiduPY.h
@@ -38,16 +44,19 @@ set(HEADERS Action.h
             InputCodingTableKorean.h
             InputManager.h
             IRTranslator.h
-            JoystickTranslator.h
+            JoystickMapper.h
             Key.h
             KeyboardLayout.h
             KeyboardLayoutManager.h
             KeyboardStat.h
             KeyboardTranslator.h
+            Keymap.h
+            KeymapEnvironment.h
             MouseStat.h
             MouseTranslator.h
             TouchTranslator.h
             WindowTranslator.h
+            WindowKeymap.h
             XBIRRemote.h
             XBMC_keyboard.h
             XBMC_keysym.h

@@ -56,13 +56,13 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
         {
           if ((argv[next][0] != '-') && (argv[next][0] == '/'))
           {
-            CInputManager::GetInstance().SetRemoteControlName(argv[next]);
+            CServiceBroker::GetInputManager().SetRemoteControlName(argv[next]);
             i++;
           }
         }
       }
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
-        CInputManager::GetInstance().DisableRemoteControl();
+        CServiceBroker::GetInputManager().DisableRemoteControl();
 
       if (stricmp(argv[i], "-d") == 0)
       {

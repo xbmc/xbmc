@@ -40,7 +40,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
@@ -266,9 +265,9 @@ bool CProfilesManager::LoadProfile(size_t index)
   CreateProfileFolders();
 
   CDatabaseManager::GetInstance().Initialize();
-  CButtonTranslator::GetInstance().Load(true);
+  CServiceBroker::GetInputManager().LoadKeymaps();
 
-  CInputManager::GetInstance().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();

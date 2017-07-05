@@ -41,7 +41,7 @@ namespace GAME
     virtual std::string GetDialogText() override;
     virtual std::string GetDialogHeader() override;
     virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                      JOYSTICK::IActionMap* actionMap,
+                                      IKeymap* keymap,
                                       const JOYSTICK::CDriverPrimitive& primitive) override;
     void OnClose(bool bAccepted) override;
 

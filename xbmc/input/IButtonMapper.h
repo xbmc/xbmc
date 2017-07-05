@@ -19,23 +19,17 @@
  */
 #pragma once
 
-#include "DefaultJoystick.h"
+class TiXmlNode;
 
-namespace KODI
+/*!
+  * \brief Interface for classes that can map buttons to Kodi actions
+  */
+class IButtonMapper
 {
-namespace JOYSTICK
-{
-  class CDefaultRemote : public CDefaultJoystick
-  {
-  public:
-    CDefaultRemote(void);
+public:
+  virtual ~IButtonMapper() = default;
 
-    virtual ~CDefaultRemote(void) = default;
+  virtual void MapActions(int windowId, const TiXmlNode *pDevice) = 0;
 
-  protected:
-    // implementation of CDefaultJoystick
-    virtual std::string GetControllerID() const override;
-    virtual unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN) const override;
-  };
-}
-}
+  virtual void Clear() = 0;
+};

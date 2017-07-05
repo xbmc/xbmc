@@ -19,24 +19,27 @@
  */
 #pragma once
 
+#include "IButtonMapper.h"
+
 #include <map>
 #include <string>
 
 class TiXmlElement;
-class TiXmlNode;
 
-class CTouchTranslator
+class CTouchTranslator : public IButtonMapper
 {
 public:
   CTouchTranslator() = default;
 
-  void MapActions(int windowID, const TiXmlNode *pTouch);
+  // implementation of IButtonMapper
+  virtual void MapActions(int windowID, const TiXmlNode *bDevice) override;
+  virtual void Clear() override;
 
-  void Clear();
-
-  bool TranslateAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString);
+  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
 private:
+  bool TranslateAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString);
+
   struct CTouchAction
   {
     unsigned int actionId;

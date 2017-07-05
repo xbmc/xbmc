@@ -21,14 +21,15 @@
 #include "KeymapActionMap.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Action.h"
-#include "input/ButtonTranslator.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
+#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace KEYBOARD;
 
 unsigned int CKeymapActionMap::GetActionID(const CKey& key)
 {
-  CAction action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), key);
+  CAction action = CServiceBroker::GetInputManager().GetAction(g_windowManager.GetActiveWindowID(), key);
   return action.GetID();
 }

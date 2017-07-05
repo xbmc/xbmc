@@ -25,6 +25,11 @@ struct KodiToAddonFuncTable_Game;
 
 namespace KODI
 {
+namespace MOUSE
+{
+  class IMouseInputProvider;
+}
+
 namespace GAME
 {
   class CGameClient;
@@ -42,8 +47,9 @@ namespace GAME
      * \brief Constructor registers for mouse events at CInputManager.
      * \param gameClient The game client implementation.
      * \param dllStruct The emulator or game to which the events are sent.
+     * \param inputProvider The interface providing us with mouse input.
      */
-    CGameClientMouse(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct);
+    CGameClientMouse(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct, MOUSE::IMouseInputProvider *inputProvider);
 
     /*!
      * \brief Destructor unregisters from mouse events from CInputManager.
@@ -60,6 +66,7 @@ namespace GAME
     // Construction parameters
     const CGameClient* const m_gameClient;
     const KodiToAddonFuncTable_Game* const m_dllStruct;
+    MOUSE::IMouseInputProvider *const m_inputProvider;
     const std::string m_controllerId;
   };
 }

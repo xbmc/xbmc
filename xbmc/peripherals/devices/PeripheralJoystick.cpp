@@ -19,9 +19,12 @@
  */
 
 #include "PeripheralJoystick.h"
+#include "input/joysticks/keymaps/KeymapHandling.h"
 #include "input/joysticks/DeadzoneFilter.h"
 #include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickTranslator.h"
+#include "input/joysticks/RumbleGenerator.h"
+#include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/android/PeripheralBusAndroid.h"
@@ -29,6 +32,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 
@@ -43,7 +47,8 @@ CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const Peripheral
   m_hatCount(0),
   m_axisCount(0),
   m_motorCount(0),
-  m_supportsPowerOff(false)
+  m_supportsPowerOff(false),
+  m_rumbleGenerator(new CRumbleGenerator)
 {
   m_features.push_back(FEATURE_JOYSTICK);
   // FEATURE_RUMBLE conditionally added via SetMotorCount()
@@ -51,11 +56,12 @@ CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const Peripheral
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  m_rumbleGenerator->AbortRumble();
+  UnregisterJoystickDriverHandler(&m_joystickMonitor);
+  m_rumbleGenerator->AbortRumble();
+  m_appInput.reset();
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
-  m_defaultController.AbortRumble();
-  UnregisterInputHandler(&m_defaultController);
-  UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
 
 bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
@@ -76,7 +82,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        RegisterInputHandler(&m_defaultController, false);
+        m_appInput.reset(new CKeymapHandling(this, false, CServiceBroker::GetInputManager().KeymapEnvironment()));
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }
@@ -118,7 +124,8 @@ void CPeripheralJoystick::InitializeDeadzoneFiltering()
 
 void CPeripheralJoystick::OnUserNotification()
 {
-  m_defaultController.NotifyUser();
+  IInputReceiver *inputReceiver = m_appInput->GetInputReceiver(m_rumbleGenerator->ControllerID());
+  m_rumbleGenerator->NotifyUser(inputReceiver);
 }
 
 bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
@@ -128,8 +135,11 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   switch (feature)
   {
   case FEATURE_RUMBLE:
-    bSuccess = m_defaultController.TestRumble();
+  {
+    IInputReceiver *inputReceiver = m_appInput->GetInputReceiver(m_rumbleGenerator->ControllerID());
+    bSuccess = m_rumbleGenerator->DoTest(inputReceiver);
     break;
+  }
   case FEATURE_POWER_OFF:
     if (m_supportsPowerOff)
     {
@@ -166,6 +176,11 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
     {
       return driverHandler.handler == handler;
     }), m_driverHandlers.end());
+}
+
+IKeymap *CPeripheralJoystick::GetKeymap(const std::string &controllerId)
+{
+  return m_appInput->GetKeymap(controllerId);
 }
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)

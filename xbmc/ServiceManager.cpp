@@ -31,6 +31,7 @@
 #include "PlayListPlayer.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
+#include "input/InputManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
@@ -41,7 +42,8 @@ using namespace KODI;
 
 CServiceManager::CServiceManager() :
   m_gameServices(new GAME::CGameServices),
-  m_peripherals(new PERIPHERALS::CPeripherals)
+  m_peripherals(new PERIPHERALS::CPeripherals),
+  m_inputManager(new CInputManager)
 {
 }
 
@@ -100,6 +102,8 @@ bool CServiceManager::Init2()
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
+  m_inputManager->InitializeInputs();
+
   init_level = 2;
   return true;
 }
@@ -149,6 +153,7 @@ void CServiceManager::Deinit()
   m_serviceAddons.reset();
   m_gameServices->Deinit();
   m_peripherals.reset();
+  //m_inputManager->Deinitialize(); //! @todo
   m_contextMenuManager.reset();
   m_favouritesService.reset();
   m_binaryAddonCache.reset();
@@ -252,6 +257,11 @@ PERIPHERALS::CPeripherals& CServiceManager::GetPeripherals()
 CFavouritesService& CServiceManager::GetFavouritesService()
 {
   return *m_favouritesService;
+}
+
+CInputManager& CServiceManager::GetInputManager()
+{
+  return *m_inputManager;
 }
 
 // deleters for unique_ptr

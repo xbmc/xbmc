@@ -57,22 +57,17 @@ namespace JOYSTICK
     virtual bool HasFeature(const FeatureName& feature) const = 0;
 
     /*!
-     * \brief Return true if the input handler is currently accepting input
+     * \brief Return true if the input handler is currently accepting input for the
+     *        given feature
      *
      * \param feature A feature belonging to the controller specified by ControllerID()
      *
      * \return True if the feature is currently accepting input, false otherwise
+     *
+     * This does not prevent the input events from being called, but can return
+     * false to indicate that input wasn't handled for the specified feature.
      */
     virtual bool AcceptsInput(const FeatureName &feature) const = 0;
-
-    /*!
-     * \brief Get the delay before this feature should be processed
-     *
-     * \param feature The feature
-     *
-     * \return The duration this feature must be held before sending events
-     */
-    virtual unsigned int GetDelayMs(const FeatureName& feature) const = 0;
 
     /*!
      * \brief A digital button has been pressed or released

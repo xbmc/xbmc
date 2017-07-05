@@ -94,7 +94,7 @@ bool CBuiltins::HasCommand(const std::string& execString)
   CUtil::SplitExecFunction(execString, function, parameters);
   StringUtils::ToLower(function);
 
-  if (CInputManager::GetInstance().HasBuiltin(function))
+  if (CServiceBroker::GetInputManager().HasBuiltin(function))
     return true;
 
   const auto& it = m_command.find(function);
@@ -174,5 +174,5 @@ int CBuiltins::Execute(const std::string& execString)
     }
   } 
   else
-    return CInputManager::GetInstance().ExecuteBuiltin(execute, params);
+    return CServiceBroker::GetInputManager().ExecuteBuiltin(execute, params);
 }

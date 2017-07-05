@@ -22,6 +22,7 @@
 #include "input/keyboard/generic/JoystickEmulation.h"
 #include "input/InputManager.h"
 #include "threads/SingleLock.h"
+#include "ServiceBroker.h"
 
 #include <sstream>
 
@@ -36,7 +37,7 @@ CPeripheralJoystickEmulation::CPeripheralJoystickEmulation(CPeripherals& manager
 
 CPeripheralJoystickEmulation::~CPeripheralJoystickEmulation(void)
 {
-  CInputManager::GetInstance().UnregisterKeyboardHandler(this);
+  CServiceBroker::GetInputManager().UnregisterKeyboardHandler(this);
 }
 
 bool CPeripheralJoystickEmulation::InitialiseFeature(const PeripheralFeature feature)
@@ -47,7 +48,7 @@ bool CPeripheralJoystickEmulation::InitialiseFeature(const PeripheralFeature fea
   {
     if (feature == FEATURE_JOYSTICK)
     {
-      CInputManager::GetInstance().RegisterKeyboardHandler(this);
+      CServiceBroker::GetInputManager().RegisterKeyboardHandler(this);
     }
     bSuccess = true;
   }

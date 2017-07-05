@@ -29,12 +29,12 @@
 
 class TiXmlDocument;
 class CSetting;
+class IKeymap;
 
 namespace KODI
 {
 namespace JOYSTICK
 {
-  class IActionMap;
   class IButtonMapper;
   class IDriverHandler;
   class IDriverReceiver;
@@ -210,7 +210,7 @@ namespace PERIPHERALS
 
     virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
 
-    virtual KODI::JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
+    virtual IKeymap *GetKeymap(const std::string &controllerId) { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);

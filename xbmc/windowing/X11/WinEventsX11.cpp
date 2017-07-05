@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 
@@ -517,7 +518,7 @@ bool CWinEventsX11Imp::MessagePump()
       // lose mouse coverage
       case LeaveNotify:
       {
-        CInputManager::GetInstance().SetMouseActive(false);
+        CServiceBroker::GetInputManager().SetMouseActive(false);
         break;
       }
 

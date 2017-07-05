@@ -19,23 +19,27 @@
  */
 #pragma once
 
+#include "IButtonMapper.h"
+
 #include <map>
 #include <string>
 
 class TiXmlNode;
 
-class CCustomControllerTranslator
+class CCustomControllerTranslator : public IButtonMapper
 {
 public:
   CCustomControllerTranslator() = default;
 
-  void MapActions(int windowID, const TiXmlNode *pCustomController);
+  // implementation of IButtonMapper
+  virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;
+  virtual void Clear() override;
 
-  void Clear();
-
-  bool TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
+  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
 private:
+  bool TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
+
   // Maps button id to action
   using CustomControllerButtonMap = std::map<int, std::string>;
 

@@ -39,3 +39,23 @@ bool CInputSink::AcceptsInput(const std::string& feature) const
 {
   return m_gameClient.AcceptsInput();
 }
+
+bool CInputSink::OnButtonPress(const std::string& feature, bool bPressed)
+{
+  return true;
+}
+
+bool CInputSink::OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs)
+{
+  return true;
+}
+
+bool CInputSink::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
+{
+  return true;
+}
+
+bool CInputSink::OnAccelerometerMotion(const std::string& feature, float x, float y, float z)
+{
+  return true;
+}

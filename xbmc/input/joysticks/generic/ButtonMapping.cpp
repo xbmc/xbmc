@@ -23,10 +23,11 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapper.h"
 #include "input/joysticks/JoystickTranslator.h"
+#include "input/joysticks/JoystickUtils.h"
+#include "input/IKeymap.h"
 #include "input/Key.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
@@ -244,10 +245,10 @@ void CAxisDetector::DetectType(float position)
 
 // --- CButtonMapping ----------------------------------------------------------
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap) :
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap) :
   m_buttonMapper(buttonMapper),
   m_buttonMap(buttonMap),
-  m_actionMap(actionMap),
+  m_keymap(keymap),
   m_lastAction(0),
   m_frameCount(0)
 {
@@ -256,17 +257,23 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
 
   // Make sure axes mapped to Select are centered before they can be mapped.
   // This ensures that they are not immediately mapped to the first button.
-  if (m_actionMap && m_actionMap->ControllerID() == m_buttonMap->ControllerID())
+  if (m_keymap)
   {
     using namespace GAME;
 
     CGameServices& gameServices = CServiceBroker::GetGameServices();
-    ControllerPtr controller = gameServices.GetController(m_actionMap->ControllerID());
+    ControllerPtr controller = gameServices.GetController(m_keymap->ControllerID());
 
     const auto& features = controller->Layout().Features();
     for (const auto& feature : features)
     {
-      if (m_actionMap->GetActionID(feature.Name()) != ACTION_SELECT_ITEM)
+      bool bIsSelectAction = false;
+
+      const auto &actions = m_keymap->GetActions(CJoystickUtils::MakeKeyName(feature.Name()));
+      if (!actions.empty() && actions.begin()->actionId == ACTION_SELECT_ITEM)
+        bIsSelectAction = true;
+
+      if (!bIsSelectAction)
         continue;
 
       CDriverPrimitive primitive;
@@ -341,7 +348,7 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
 
   if (bTimeoutElapsed)
   {
-    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_actionMap, primitive);
+    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_keymap, primitive);
 
     if (bHandled)
       m_lastAction = SystemClockMillis();

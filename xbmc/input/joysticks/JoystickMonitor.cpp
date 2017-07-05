@@ -21,6 +21,7 @@
 #include "JoystickMonitor.h"
 #include "Application.h"
 #include "input/InputManager.h"
+#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -29,7 +30,7 @@ bool CJoystickMonitor::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   if (bPressed)
   {
-    CInputManager::GetInstance().SetMouseActive(false);
+    CServiceBroker::GetInputManager().SetMouseActive(false);
     return ResetTimers();
   }
 
@@ -40,7 +41,7 @@ bool CJoystickMonitor::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
   if (state != HAT_STATE::UNPRESSED)
   {
-    CInputManager::GetInstance().SetMouseActive(false);
+    CServiceBroker::GetInputManager().SetMouseActive(false);
     return ResetTimers();
   }
 
@@ -51,7 +52,7 @@ bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position, int 
 {
   if (position)
   {
-    CInputManager::GetInstance().SetMouseActive(false);
+    CServiceBroker::GetInputManager().SetMouseActive(false);
     return ResetTimers();
   }
 

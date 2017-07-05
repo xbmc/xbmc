@@ -21,6 +21,7 @@
 #include "CustomControllerTranslator.h"
 #include "ActionIDs.h"
 #include "ActionTranslator.h"
+#include "WindowTranslator.h" //! @todo
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -71,6 +72,32 @@ void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode *pCus
 void CCustomControllerTranslator::Clear()
 {
   m_customControllersMap.clear();
+}
+
+bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
+{
+  unsigned int actionId = ACTION_NONE;
+
+  // Try to get the action from the current window
+  if (!TranslateString(windowId, controllerName, buttonId, actionId, strAction))
+  {
+    // If it's invalid, try to get it from a fallback window or the global map
+    int fallbackWindow = CWindowTranslator::GetFallbackWindow(windowId);
+    if (fallbackWindow > -1)
+      TranslateString(fallbackWindow, controllerName, buttonId, actionId, strAction);
+
+    // Still no valid action? Use global map
+    if (action == ACTION_NONE)
+      TranslateString(-1, controllerName, buttonId, actionId, strAction);
+  }
+
+  if (actionId != ACTION_NONE)
+  {
+    action = actionId;
+    return true;
+  }
+
+  return false;
 }
 
 bool CCustomControllerTranslator::TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction)

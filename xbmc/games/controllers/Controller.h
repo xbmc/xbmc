@@ -47,6 +47,7 @@ public:
   std::string Label(void);
   std::string ImagePath(void) const;
   void GetFeatures(std::vector<std::string>& features, FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN) const;
+  JOYSTICK::FEATURE_TYPE GetFeatureType(const std::string &feature) const;
   JOYSTICK::INPUT_TYPE GetInputType(const std::string& feature) const;
 
   bool LoadLayout(void);

@@ -53,6 +53,7 @@ class CDataCacheCore;
 class CSettings;
 class IAE;
 class CFavouritesService;
+class CInputManager;
 
 namespace KODI
 {
@@ -86,5 +87,6 @@ public:
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
   static ADDON::CServiceAddonManager& GetServiceAddons();
+  static CInputManager& GetInputManager();
   static bool IsBinaryAddonCacheUp();
 };

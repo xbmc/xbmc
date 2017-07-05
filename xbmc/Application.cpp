@@ -94,6 +94,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "utils/SeekHandler.h"
+#include "ServiceBroker.h"
 
 #include "input/KeyboardLayoutManager.h"
 
@@ -350,7 +351,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
       break;
     default:
-      return CInputManager::GetInstance().OnEvent(newEvent);
+      return CServiceBroker::GetInputManager().OnEvent(newEvent);
   }
   return true;
 }
@@ -644,9 +645,6 @@ bool CApplication::Create()
   m_replayGainSettings.iNoGainPreAmp = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
   m_replayGainSettings.bAvoidClipping = m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 
-  // Create the Mouse, Keyboard and Remote
-  CInputManager::GetInstance().InitializeInputs();
-
   // load the keyboard layouts
   if (!CKeyboardLayoutManager::GetInstance().Load())
   {
@@ -736,7 +734,7 @@ bool CApplication::CreateGUI()
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
-  if (!CButtonTranslator::GetInstance().Load())
+  if (!CServiceBroker::GetInputManager().LoadKeymaps())
     return false;
 
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
@@ -1923,7 +1921,7 @@ bool CApplication::OnAppCommand(const CAction &action)
   uint32_t appcmd = action.GetID();
   CKey key(appcmd | KEY_APPCOMMAND, (unsigned int) 0);
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-  CAction appcmdaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+  CAction appcmdaction = CServiceBroker::GetInputManager().GetAction(iWin, key);
 
   // If we couldn't find an action return false to indicate we have not
   // handled this appcommand
@@ -1962,8 +1960,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   if (action.IsMouse())
-    CInputManager::GetInstance().SetMouseActive(true);
-
+    CServiceBroker::GetInputManager().SetMouseActive(true);
 
   if (action.GetID() == ACTION_CREATE_EPISODE_BOOKMARK)
   {
@@ -2023,10 +2020,7 @@ bool CApplication::OnAction(const CAction &action)
 
   // reload keymaps
   if (action.GetID() == ACTION_RELOAD_KEYMAPS)
-  {
-    CButtonTranslator::GetInstance().Clear();
-    CButtonTranslator::GetInstance().Load();
-  }
+    CServiceBroker::GetInputManager().ReloadKeymaps();
 
   // show info : Shows the current video or song information
   if (action.GetID() == ACTION_SHOW_INFO)
@@ -2671,7 +2665,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
     CWinEvents::MessagePump();
 
-    CInputManager::GetInstance().Process(g_windowManager.GetActiveWindowID(), frameTime);
+    CServiceBroker::GetInputManager().Process(g_windowManager.GetActiveWindowID(), frameTime);
 
     if (processGUI && m_renderGUI)
     {
@@ -2765,7 +2759,7 @@ bool CApplication::Cleanup()
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
-    CButtonTranslator::GetInstance().Clear();
+    //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -2905,7 +2899,7 @@ void CApplication::Stop(int exitCode)
     m_ServiceManager->DestroyAudioEngine();
 
     CLog::Log(LOGNOTICE, "closing down remote control service");
-    CInputManager::GetInstance().DisableRemoteControl();
+    CServiceBroker::GetInputManager().DisableRemoteControl();
 
     // unregister ffmpeg lock manager call back
     av_lockmgr_register(NULL);

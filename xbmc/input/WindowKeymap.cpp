@@ -18,24 +18,31 @@
  *
  */
 
-#include "PortInput.h"
-#include "games/addons/GameClient.h"
-#include "guilib/WindowIDs.h"
+#include "WindowKeymap.h"
 
 using namespace KODI;
-using namespace GAME;
 
-CPortInput::CPortInput(CGameClient &gameClient) :
-  m_gameClient(gameClient)
+CWindowKeymap::CWindowKeymap(const std::string &controllerId) :
+  m_controllerId(controllerId)
 {
 }
 
-bool CPortInput::AcceptsInput(const std::string &feature) const
+void CWindowKeymap::MapAction(int windowId, const std::string &keyName, JOYSTICK::KeymapAction action)
 {
-  return m_gameClient.AcceptsInput();
+  m_windowKeymap[windowId][keyName].insert(std::move(action));
 }
 
-int CPortInput::GetWindowID() const
+const JOYSTICK::KeymapActions &CWindowKeymap::GetActions(int windowId, const std::string& keyName) const
 {
-  return WINDOW_FULLSCREEN_GAME;
+  auto it = m_windowKeymap.find(windowId);
+  if (it != m_windowKeymap.end())
+  {
+    auto& keymap = it->second;
+    auto it2 = keymap.find(keyName);
+    if (it2 != keymap.end())
+      return it2->second;
+  }
+
+  static const JOYSTICK::KeymapActions empty;
+  return empty;
 }

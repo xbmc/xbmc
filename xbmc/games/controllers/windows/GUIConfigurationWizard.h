@@ -66,7 +66,7 @@ namespace GAME
     virtual bool Emulation(void) const override { return m_bEmulation; }
     virtual unsigned int ControllerNumber(void) const override { return m_controllerNumber; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                              JOYSTICK::IActionMap* actionMap,
+                              IKeymap* keymap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
     virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
     virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;

@@ -19,13 +19,24 @@
  */
 #pragma once
 
-#include <stdint.h>
+#include "IKeymap.h"
 
-class TiXmlElement;
-class TiXmlNode;
+#include <memory>
 
-class CJoystickTranslator
+class IKeymapEnvironment;
+
+class CKeymap : public IKeymap
 {
 public:
-  static uint32_t TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton, unsigned int& holdtimeMs);
+  CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment *environment);
+
+  // implementation of IKeymap
+  virtual std::string ControllerID() const override ;
+  virtual const IKeymapEnvironment *Environment() const override { return m_environment; }
+  const KODI::JOYSTICK::KeymapActions &GetActions(const std::string& keyName) const override;
+
+private:
+  // Construction parameters
+  const std::shared_ptr<const IWindowKeymap> m_keymap;
+  const IKeymapEnvironment *const m_environment;
 };

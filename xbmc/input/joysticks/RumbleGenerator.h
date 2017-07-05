@@ -21,6 +21,9 @@
 
 #include "threads/Thread.h"
 
+#include <string>
+#include <vector>
+
 namespace KODI
 {
 namespace JOYSTICK
@@ -30,9 +33,11 @@ namespace JOYSTICK
   class CRumbleGenerator : public CThread
   {
   public:
-    CRumbleGenerator(const std::string& controllerId);
+    CRumbleGenerator();
 
     virtual ~CRumbleGenerator(void) { AbortRumble(); }
+
+    std::string ControllerID() const;
 
     void NotifyUser(IInputReceiver* receiver);
     bool DoTest(IInputReceiver* receiver);

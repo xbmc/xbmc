@@ -108,17 +108,21 @@ namespace JOYSTICK
     virtual void ProcessMotions(void) override;
 
   private:
-    void OnDigitalMotion(bool bPressed);
-    void OnAnalogMotion(float magnitude);
+    bool OnDigitalMotion(bool bPressed);
+    bool OnAnalogMotion(float magnitude);
 
+    void ProcessDigitalMotion();
+    void ProcessAnalogMotion();
+
+    // State variables
     INPUT_TYPE       m_inputType = INPUT_TYPE::UNKNOWN;
     bool             m_bDigitalState;
-    bool             m_bDigitalHandled;
-    bool             m_bDigitalPressSent;
     unsigned int     m_motionStartTimeMs;
-    float            m_analogState;
-    bool             m_analogEvent;
-    bool             m_bDiscrete;
+
+    // Analog state variables
+    float            m_analogState; // The current magnitude
+    float            m_bActivated; // Set to true when first activated (magnitude > 0.0)
+    bool             m_bDiscrete; // Set to false when a non-discrete axis is detected
   };
 
   /*!

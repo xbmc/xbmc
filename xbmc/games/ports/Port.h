@@ -19,18 +19,16 @@
  */
 #pragma once
 
-#include <memory>
+#include "input/joysticks/IInputHandler.h"
+#include "input/KeymapEnvironment.h"
 
-namespace PERIPHERALS
-{
-  class CPeripheral;
-}
+#include <memory>
 
 namespace KODI
 {
 namespace JOYSTICK
 {
-  class IInputHandler;
+  class CKeymapHandling;
   class IInputProvider;
 }
 
@@ -38,7 +36,8 @@ namespace GAME
 {
   class CGameClient;
 
-  class CPort
+  class CPort : public JOYSTICK::IInputHandler,
+                public IKeymapEnvironment
   {
   public:
     CPort(JOYSTICK::IInputHandler* gameInput, CGameClient& gameClient);
@@ -49,9 +48,30 @@ namespace GAME
 
     JOYSTICK::IInputHandler *InputHandler() { return m_gameInput; }
 
+    // Implementation of IInputHandler
+    virtual std::string ControllerID() const override;
+    virtual bool HasFeature(const std::string& feature) const override { return true; }
+    virtual bool AcceptsInput(const std::string& feature) const override;
+    virtual bool OnButtonPress(const std::string& feature, bool bPressed) override;
+    virtual void OnButtonHold(const std::string& feature, unsigned int holdTimeMs) override;
+    virtual bool OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs) override;
+    virtual bool OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs) override;
+    virtual bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
+
+    // Implementation of IKeymapEnvironment
+    virtual int GetWindowID() const override;
+    virtual int GetFallthrough(int windowId) const override { return -1; }
+    virtual bool UseGlobalFallthrough() const override { return false; }
+
   private:
+    // Construction parameters
     JOYSTICK::IInputHandler* const m_gameInput;
-    std::unique_ptr<JOYSTICK::IInputHandler> m_appInput;
+    CGameClient& m_gameClient;
+
+    // Handles input to Kodi
+    std::unique_ptr<JOYSTICK::CKeymapHandling> m_appInput;
+
+    // Prevents input falling through to Kodi when not handled by the game
     std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;
   };
 }

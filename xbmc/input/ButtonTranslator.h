@@ -33,8 +33,9 @@
 class CKey;
 class TiXmlNode;
 class CCustomControllerTranslator;
-class CIRTranslator;
 class CTouchTranslator;
+class IButtonMapper;
+class IWindowKeymap;
 
 /// singleton class to map from buttons to actions
 /// Warning: _not_ threadsafe!
@@ -44,23 +45,18 @@ class CButtonTranslator
   friend class EVENTCLIENT::CEventButtonState;
 #endif
 
-private:
-  //private construction, and no assignments; use the provided singleton methods
+public:
   CButtonTranslator();
   CButtonTranslator(const CButtonTranslator&) = delete;
   CButtonTranslator const& operator=(CButtonTranslator const&) = delete;
-  virtual ~CButtonTranslator() = default;
-
-public:
-  ///access to singleton
-  static CButtonTranslator& GetInstance();
+  virtual ~CButtonTranslator();
 
   // Add/remove a HID device with custom mappings
-  void AddDevice(std::string& strDevice);
-  void RemoveDevice(std::string& strDevice);
+  bool AddDevice(const std::string& strDevice);
+  bool RemoveDevice(const std::string& strDevice);
 
   /// loads Keymap.xml
-  bool Load(bool AlwaysLoad = false);
+  bool Load();
 
   /// clears the maps
   void Clear();
@@ -71,13 +67,6 @@ public:
    \return true if a longpress mapping exists
    */
   bool HasLongpressMapping(int window, const CKey &key);
-
-  /*! \brief Get the "holdtime" parameter if specified for this key
-   \param window id of the current window
-   \param key to search a mapping for
-   \return the holdtime in ms, or 0 if no holdtime was specified
-   */
-  unsigned int GetHoldTimeMs(int window, const CKey &key, bool fallback = true);
 
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id
@@ -93,18 +82,14 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
-
-  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
-
-  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
+  void RegisterMapper(const std::string &device, IButtonMapper *mapper);
+  void UnregisterMapper(IButtonMapper *mapper);
 
 private:
   struct CButtonAction
   {
     unsigned int id;
     std::string strID; // needed for "ActivateWindow()" type actions
-    unsigned int holdtimeMs;
   };
 
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
@@ -118,11 +103,9 @@ private:
   unsigned int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 
   void MapWindowActions(const TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const std::string &szAction, unsigned int holdtimeMs, buttonMap &map);
+  void MapAction(uint32_t buttonCode, const std::string &szAction, buttonMap &map);
 
   bool LoadKeymap(const std::string &keymapPath);
 
-  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
-  std::unique_ptr<CIRTranslator> m_irTranslator;
-  std::unique_ptr<CTouchTranslator> m_touchTranslator;
+  std::map<std::string, IButtonMapper*> m_buttonMappers;
 };

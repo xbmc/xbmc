@@ -76,46 +76,6 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
 
-/*
- * joystick.xml keys for remote control emulation
- */
-#define KEY_REMOTE_BUTTON_OK                         310
-#define KEY_REMOTE_BUTTON_BACK                       311
-#define KEY_REMOTE_BUTTON_UP                         312
-#define KEY_REMOTE_BUTTON_DOWN                       313
-#define KEY_REMOTE_BUTTON_RIGHT                      314
-#define KEY_REMOTE_BUTTON_LEFT                       315
-#define KEY_REMOTE_BUTTON_HOME                       316
-
-/*
- * joystick.xml keys based on Xbox 360 controller
- */
-#define KEY_JOYSTICK_BUTTON_A                        284
-#define KEY_JOYSTICK_BUTTON_B                        285
-#define KEY_JOYSTICK_BUTTON_X                        286
-#define KEY_JOYSTICK_BUTTON_Y                        287
-#define KEY_JOYSTICK_BUTTON_LEFT_SHOULDER            288
-#define KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER           289
-#define KEY_JOYSTICK_BUTTON_LEFT_TRIGGER             290
-#define KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER            291
-#define KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON        292
-#define KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON       293
-#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP     294
-#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN   295
-#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT   296
-#define KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT  297
-#define KEY_JOYSTICK_BUTTON_DPAD_UP                  298
-#define KEY_JOYSTICK_BUTTON_DPAD_DOWN                299
-#define KEY_JOYSTICK_BUTTON_DPAD_LEFT                300
-#define KEY_JOYSTICK_BUTTON_DPAD_RIGHT               301
-#define KEY_JOYSTICK_BUTTON_START                    302
-#define KEY_JOYSTICK_BUTTON_BACK                     303
-#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP      304
-#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN    305
-#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT    306
-#define KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT   307
-#define KEY_JOYSTICK_BUTTON_GUIDE                    308
-
 // 0xF000 -> 0xF200 is reserved for the keyboard; a keyboard press is either
 #define KEY_VKEY            0xF000 // a virtual key/functional key e.g. cursor left
 #define KEY_ASCII           0xF100 // a printable character in the range of TRUE ASCII (from 0 to 127) // FIXME make it clean and pure unicode! remove the need for KEY_ASCII
