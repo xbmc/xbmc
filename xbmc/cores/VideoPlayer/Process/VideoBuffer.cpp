@@ -347,18 +347,21 @@ bool CVideoBufferPoolSysMem::IsCompatible(AVPixelFormat format, int width, int h
 
 CVideoBufferManager::CVideoBufferManager()
 {
+  CSingleLock lock(m_critSection);
   std::shared_ptr<IVideoBufferPool> pool = std::make_shared<CVideoBufferPoolSysMem>();
   RegisterPool(pool);
 }
 
 void CVideoBufferManager::RegisterPool(std::shared_ptr<IVideoBufferPool> pool)
 {
+  CSingleLock lock(m_critSection);
   // preferred pools are to the front
   m_pools.push_front(pool);
 }
 
 void CVideoBufferManager::ReleasePools()
 {
+  CSingleLock lock(m_critSection);
   std::list<std::shared_ptr<IVideoBufferPool>> pools = m_pools;
   m_pools.clear();
   std::shared_ptr<IVideoBufferPool> pool = std::make_shared<CVideoBufferPoolSysMem>();
@@ -372,6 +375,7 @@ void CVideoBufferManager::ReleasePools()
 
 CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int width, int height)
 {
+  CSingleLock lock(m_critSection);
   for (auto pool: m_pools)
   {
     if (!pool->IsConfigured())
