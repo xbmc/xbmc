@@ -163,5 +163,6 @@ public:
   CVideoBuffer* Get(AVPixelFormat format, int width, int height);
 
 protected:
+  CCriticalSection m_critSection;
   std::list<std::shared_ptr<IVideoBufferPool>> m_pools;
 };
