@@ -41,6 +41,7 @@ public:
   float GetWidth() const override;
   float GetHeight() const override;
   virtual float Size() const;
+  virtual void SetInvalid() override;
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;

@@ -35,7 +35,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
-  m_lastScrollerValue = 0;
+  m_lastScrollerValue = -1;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
   m_minSize = 0;
@@ -356,6 +356,13 @@ float CGUIControlGroupList::Size(const CGUIControl *control) const
 inline float CGUIControlGroupList::Size() const
 {
   return (m_orientation == VERTICAL) ? m_height : m_width;
+}
+
+void CGUIControlGroupList::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  // Force a message to the scrollbar
+  m_lastScrollerValue = -1;
 }
 
 void CGUIControlGroupList::ScrollTo(float offset)
