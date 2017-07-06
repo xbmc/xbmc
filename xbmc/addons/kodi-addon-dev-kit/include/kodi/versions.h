@@ -131,7 +131,7 @@
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "addon-instance/VFS.h"
 
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "2.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "2.0.1"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "2.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h"
