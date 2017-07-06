@@ -20,12 +20,13 @@
 #pragma once
 
 #include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "../ProcessInfo.h"
 
 class CProcessInfoWin10 : public CProcessInfo
 {
 public:
-  CProcessInfoWin10();
-  virtual ~CProcessInfoWin10();
+  static CProcessInfo* Create();
+  static void Register();
+
   EINTERLACEMETHOD GetFallbackDeintMethod() override;
 };
