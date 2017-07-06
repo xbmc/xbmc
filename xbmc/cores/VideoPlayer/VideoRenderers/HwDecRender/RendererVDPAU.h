@@ -31,12 +31,14 @@ public:
   CRendererVDPAU();
   virtual ~CRendererVDPAU();
 
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
   virtual void ReleaseBuffer(int idx) override;
   virtual bool ConfigChanged(const VideoPicture &picture) override;
-  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
   bool NeedBuffer(int idx) override;
 
   // Feature support
