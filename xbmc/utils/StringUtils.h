@@ -44,6 +44,7 @@
 
 #include "LangInfo.h"
 #include "XBDateTime.h"
+#include "utils/log.h"
 #include "utils/params_check_macros.h"
 
 class StringUtils
@@ -63,18 +64,35 @@ public:
   template<typename... Args>
   static std::string Format(const std::string& fmt, Args&&... args)
   {
-    auto result = fmt::format(fmt, std::forward<Args>(args)...);
-    if (result == fmt)
-      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+    std::string result;
+    try
+    {
+      result = fmt::format(fmt, std::forward<Args>(args)...);
+      if (result == fmt)
+        result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+    }
+    catch (const std::exception& e)
+    {
+      CLog::Log(LOGERROR, "Failed to format: %s", e.what());
+    }
 
     return result;
   }
+
   template<typename... Args>
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
-    auto result = fmt::format(fmt, std::forward<Args>(args)...);
-    if (result == fmt)
-      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+    std::wstring result;
+    try
+    {
+      result = fmt::format(fmt, std::forward<Args>(args)...);
+      if (result == fmt)
+        result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+    }
+    catch (const std::exception& e)
+    {
+      CLog::Log(LOGERROR, "Failed to format: %s", e.what());
+    }
 
     return result;
   }
