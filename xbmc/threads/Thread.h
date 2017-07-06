@@ -103,7 +103,7 @@ protected:
    */
   inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis = -1 /* indicates wait forever*/)
   {
-    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
+    XbmcThreads::CEventGroup group{&event, &m_StopEvent};
     CEvent* result = timeoutMillis < 0 ? group.wait() : group.wait(timeoutMillis);
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
