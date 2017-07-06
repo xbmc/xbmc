@@ -40,10 +40,7 @@
 
 using namespace KODI;
 
-CServiceManager::CServiceManager() :
-  m_gameServices(new GAME::CGameServices),
-  m_peripherals(new PERIPHERALS::CPeripherals),
-  m_inputManager(new CInputManager)
+CServiceManager::CServiceManager()
 {
 }
 
@@ -55,6 +52,10 @@ bool CServiceManager::Init1()
 {
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
+
+  m_gameServices.reset(new GAME::CGameServices);
+  m_peripherals.reset(new PERIPHERALS::CPeripherals);
+  m_inputManager.reset(new CInputManager);
 
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
@@ -152,9 +153,10 @@ bool CServiceManager::Init3()
 void CServiceManager::Deinit()
 {
   m_serviceAddons.reset();
-  m_gameServices->Deinit();
-  m_peripherals.reset();
+
   //m_inputManager->Deinitialize(); //! @todo
+  m_gameServices->Deinit();
+
   m_contextMenuManager.reset();
   m_favouritesService.reset();
   m_binaryAddonCache.reset();
@@ -169,6 +171,11 @@ void CServiceManager::Deinit()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
 #endif
+
+  m_inputManager.reset();
+  m_peripherals.reset();
+  m_gameServices.reset();
+
   m_announcementManager.reset();
   init_level = 0;
 }
