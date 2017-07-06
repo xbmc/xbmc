@@ -19,25 +19,20 @@
  */
 
 #include "ProcessInfoWin.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
-// Override for platform ports
 #if defined(TARGET_WINDOWS) && defined(TARGET_WIN10)
 
-CProcessInfo* CProcessInfo::CreateInstance()
+using namespace VIDEOPLAYER;
+
+CProcessInfo* CProcessInfoWin10::Create()
 {
   return new CProcessInfoWin10();
 }
 
-
-// base class definitions
-CProcessInfoWin10::CProcessInfoWin10()
+void CProcessInfoWin10::Register()
 {
-
-}
-
-CProcessInfoWin10::~CProcessInfoWin10()
-{
-
+  CProcessInfo::RegisterProcessControl("win10", CProcessInfoWin10::Create);
 }
 
 EINTERLACEMETHOD CProcessInfoWin10::GetFallbackDeintMethod()
@@ -46,4 +41,3 @@ EINTERLACEMETHOD CProcessInfoWin10::GetFallbackDeintMethod()
 }
 
 #endif
-

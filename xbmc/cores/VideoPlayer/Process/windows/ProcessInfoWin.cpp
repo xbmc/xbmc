@@ -19,25 +19,23 @@
  */
 
 #include "ProcessInfoWin.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "windowing/WindowingFactory.h"
 #include <set>
 
 // Override for platform ports
 #if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 
-CProcessInfo* CProcessInfo::CreateInstance()
+using namespace VIDEOPLAYER;
+
+CProcessInfo* CProcessInfoWin::Create()
 {
   return new CProcessInfoWin();
 }
 
-
-// base class definitions
-CProcessInfoWin::CProcessInfoWin()
+void CProcessInfoWin::Register()
 {
-}
-
-CProcessInfoWin::~CProcessInfoWin()
-{
+  CProcessInfo::RegisterProcessControl("win", CProcessInfoWin::Create);
 }
 
 EINTERLACEMETHOD CProcessInfoWin::GetFallbackDeintMethod()
@@ -58,4 +56,3 @@ std::vector<AVPixelFormat> CProcessInfoWin::GetRenderFormats()
 }
 
 #endif
-
