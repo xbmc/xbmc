@@ -91,16 +91,16 @@ CRenderSystemDX::~CRenderSystemDX()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  
+
   CLog::Log(LOGDEBUG, __FUNCTION__" - Initializing D3D11 Factory...");
 
   HRESULT hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&m_dxgiFactory));
-  if (FAILED(hr)) 
+  if (FAILED(hr))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - D3D11 initialization failed.");
     return false;
   }
-  
+
   UpdateMonitor();
   return CreateDevice();
 }
@@ -142,7 +142,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
         m_pOutput = pOutput;
 
         // check if adapter is changed
-        if ( m_adapterDesc.AdapterLuid.HighPart != adapterDesc.AdapterLuid.HighPart 
+        if ( m_adapterDesc.AdapterLuid.HighPart != adapterDesc.AdapterLuid.HighPart
           || m_adapterDesc.AdapterLuid.LowPart != adapterDesc.AdapterLuid.LowPart)
         {
           CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", adapterDesc.Description);
@@ -187,7 +187,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
     SetFullScreenInternal();
     CreateWindowSizeDependentResources();
   }
-  else 
+  else
   {
     OnDeviceLost();
     OnDeviceReset();
@@ -426,7 +426,7 @@ void CRenderSystemDX::DeleteDevice()
   // tell any shared resources
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
   {
-    // the most of resources like textures and buffers try to 
+    // the most of resources like textures and buffers try to
     // receive and save their status from current device.
     // m_nDeviceStatus contains the last device status and
     // DXGI_ERROR_DEVICE_REMOVED means that we have no possibility
@@ -499,7 +499,7 @@ void CRenderSystemDX::OnDeviceReset()
 
   if (m_needNewDevice)
     CreateDevice();
-  
+
   if (m_bRenderCreated)
   {
     // we're back
@@ -531,7 +531,7 @@ bool CRenderSystemDX::CreateDevice()
   };
 
   // the VIDEO_SUPPORT flag force lowering feature level if current env not support video on 11_1
-  UINT createDeviceFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT; 
+  UINT createDeviceFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 #ifdef _DEBUG
   createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -607,7 +607,7 @@ bool CRenderSystemDX::CreateDevice()
     SetMonitor(hMonitor);
   }
 
-  if ( g_advancedSettings.m_bAllowDeferredRendering 
+  if ( g_advancedSettings.m_bAllowDeferredRendering
     && FAILED(m_pD3DDev->CreateDeferredContext(0, &m_pContext)))
   {
     CLog::Log(LOGERROR, "%s - Failed to create deferred context, deferred rendering is not possible, fallback to immediate rendering.", __FUNCTION__);
@@ -623,7 +623,7 @@ bool CRenderSystemDX::CreateDevice()
     m_maxTextureSize = D3D_FL9_3_REQ_TEXTURE2D_U_OR_V_DIMENSION;
   else if (m_featureLevel < D3D_FEATURE_LEVEL_11_0)
     m_maxTextureSize = D3D10_REQ_TEXTURE2D_U_OR_V_DIMENSION;
-  else 
+  else
     // 11_x and greater feature level. Limit this size to avoid memory overheads
     m_maxTextureSize = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION >> 1;
 
@@ -664,15 +664,15 @@ bool CRenderSystemDX::CreateDevice()
   m_adapterDesc = {};
   if (SUCCEEDED(m_adapter->GetDesc(&m_adapterDesc)))
   {
-    CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__, 
+    CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__,
                         m_adapterDesc.Description, m_adapterDesc.VendorId, m_adapterDesc.DeviceId, m_featureLevel);
 
     m_RenderRenderer = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%s", m_adapterDesc.Description));
     IDXGIFactory2* dxgiFactory2 = nullptr;
     m_dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
-    m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)", 
-                                          dxgiFactory2 != nullptr ? "11.1" : "11.0", 
-                                          (m_featureLevel >> 12) & 0xF, 
+    m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)",
+                                          dxgiFactory2 != nullptr ? "11.1" : "11.0",
+                                          (m_featureLevel >> 12) & 0xF,
                                           (m_featureLevel >> 8) & 0xF);
     SAFE_RELEASE(dxgiFactory2);
   }
@@ -685,7 +685,7 @@ bool CRenderSystemDX::CreateDevice()
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
-	
+
   // register platform dependent objects
   CDVDFactoryCodec::ClearHWAccels();
   DXVA::CDecoder::Register();
@@ -716,8 +716,8 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequired || 
-                  m_nBackBufferWidth != scDesc.BufferDesc.Width || 
+    bNeedResize = m_bResizeRequired ||
+                  m_nBackBufferWidth != scDesc.BufferDesc.Width ||
                   m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
   else
@@ -989,7 +989,7 @@ void CRenderSystemDX::CheckInterlacedStereoView(void)
 {
   RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
 
-  if ( m_pRenderTargetViewRight 
+  if ( m_pRenderTargetViewRight
     && RENDER_STEREO_MODE_INTERLACED    != stereoMode
     && RENDER_STEREO_MODE_CHECKERBOARD  != stereoMode
     && RENDER_STEREO_MODE_HARDWAREBASED != stereoMode)
@@ -1001,7 +1001,7 @@ void CRenderSystemDX::CheckInterlacedStereoView(void)
   }
 
   if ( !m_pRenderTargetViewRight
-    && ( RENDER_STEREO_MODE_INTERLACED   == stereoMode 
+    && ( RENDER_STEREO_MODE_INTERLACED   == stereoMode
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     // Create a second Render Target for the right eye buffer
@@ -1080,7 +1080,7 @@ bool CRenderSystemDX::CreateStates()
 	m_pContext->OMSetDepthStencilState(m_depthStencilState, 0);
 
   D3D11_RASTERIZER_DESC rasterizerState;
-  rasterizerState.CullMode = D3D11_CULL_NONE; 
+  rasterizerState.CullMode = D3D11_CULL_NONE;
   rasterizerState.FillMode = D3D11_FILL_SOLID;// DEBUG - D3D11_FILL_WIREFRAME
   rasterizerState.FrontCounterClockwise = false;
   rasterizerState.DepthBias = 0;
@@ -1129,7 +1129,7 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
 
   if (!rendered)
     return;
-  
+
   if (!m_bRenderCreated || m_resizeInProgress)
     return;
 
@@ -1216,10 +1216,10 @@ bool CRenderSystemDX::BeginRender()
   HRESULT oldStatus = m_nDeviceStatus;
   m_nDeviceStatus = m_pSwapChain->Present(0, DXGI_PRESENT_TEST);
 
-  // handling of return values. 
+  // handling of return values.
   switch (m_nDeviceStatus)
   {
-  case DXGI_ERROR_DEVICE_REMOVED: // GPU has been physically removed from the system, or a driver upgrade occurred. 
+  case DXGI_ERROR_DEVICE_REMOVED: // GPU has been physically removed from the system, or a driver upgrade occurred.
     CLog::Log(LOGERROR, "DXGI_ERROR_DEVICE_REMOVED");
     m_needNewDevice = true;
     break;
@@ -1240,7 +1240,7 @@ bool CRenderSystemDX::BeginRender()
     // do not spam to log file
     if (m_nDeviceStatus != oldStatus)
       CLog::Log(LOGDEBUG, "DXGI_STATUS_OCCLUDED");
-    // Status OCCLUDED is not an error and not handled by FAILED macro, 
+    // Status OCCLUDED is not an error and not handled by FAILED macro,
     // but if it occurs we should not render anything, this status will be accounted on present stage
   }
 
@@ -1268,7 +1268,7 @@ bool CRenderSystemDX::EndRender()
 
   if (!m_bRenderCreated)
     return false;
-  
+
   if(m_nDeviceStatus != S_OK)
     return false;
 
@@ -1305,7 +1305,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
         pRTView = m_pRenderTargetViewRight;
     }
   }
- 
+
   if (pRTView == nullptr)
     return true;
 
@@ -1313,7 +1313,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     static_cast<float>(m_nBackBufferWidth),
     static_cast<float>(m_nBackBufferHeight));
 
-  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view. 
+  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view.
   // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
   if (m_ScissorsEnabled && m_scissor != clRect)
   {
@@ -1556,7 +1556,7 @@ void CRenderSystemDX::ResetScissors()
   if (!m_bRenderCreated)
     return;
 
-  m_scissor.SetRect(0.0f, 0.0f, 
+  m_scissor.SetRect(0.0f, 0.0f,
     static_cast<float>(m_nBackBufferWidth),
     static_cast<float>(m_nBackBufferHeight));
 
@@ -1773,7 +1773,7 @@ void CRenderSystemDX::SetMaximumFrameLatency(uint8_t latency) const
   IDXGIDevice1* pDXGIDevice = nullptr;
   if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
   {
-    // in windowed mode DWM uses triple buffering in any case. 
+    // in windowed mode DWM uses triple buffering in any case.
     // for FSEM we use same buffering to avoid possible shuttering/tearing
     if (latency == -1)
       latency = m_useWindowedDX ? 1 : 3;
@@ -2031,7 +2031,7 @@ void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE
       uint32_t refreshNum, refreshDen;
       GetRefreshRatio(static_cast<uint32_t>(m_refreshRate), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - ((float)refreshNum / (float)refreshDen)) / refreshRate;
-      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s", 
+      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s",
                 refreshRate, m_refreshRate, diff, (diff > 0.0005) ? "true" : "false");
       if (diff > 0.0005)
       {
