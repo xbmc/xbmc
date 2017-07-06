@@ -95,8 +95,9 @@ public:
 
 protected:
 
-  virtual void OnExit() override;
-  virtual void Process() override;
+  void OnExit() override;
+  void Process() override;
+
   bool ProcessDecoderOutput(double &frametime, double &pts);
   void SendMessageBack(CDVDMsg* pMsg, int priority = 0);
   MsgQueueReturnCode GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
