@@ -42,42 +42,38 @@ public:
   CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent, CProcessInfo &processInfo);
   virtual ~CVideoPlayerAudio();
 
-  bool OpenStream(CDVDStreamInfo hints);
-  void CloseStream(bool bWaitForBuffers);
+  bool OpenStream(CDVDStreamInfo hints) override;
+  void CloseStream(bool bWaitForBuffers) override;
 
-  void SetSpeed(int speed);
-  void Flush(bool sync);
+  void SetSpeed(int speed) override;
+  void Flush(bool sync) override;
 
   // waits until all available data has been rendered
-  bool AcceptsData() const;
-  bool HasData() const                                  { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel() const                                 { return m_messageQueue.GetLevel(); }
-  bool IsInited() const                                 { return m_messageQueue.IsInited(); }
-  void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
-  void FlushMessages()                                  { m_messageQueue.Flush(); }
+  bool AcceptsData() const override;
+  bool HasData() const override { return m_messageQueue.GetDataSize() > 0; }
+  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
+  bool IsInited() const override { return m_messageQueue.IsInited(); }
+  void SendMessage(CDVDMsg* pMsg, int priority = 0) override { m_messageQueue.Put(pMsg, priority); }
+  void FlushMessages() override { m_messageQueue.Flush(); }
 
-  void SetDynamicRangeCompression(long drc)             { m_audioSink.SetDynamicRangeCompression(drc); }
-  float GetDynamicRangeAmplification() const            { return 0.0f; }
+  void SetDynamicRangeCompression(long drc) override { m_audioSink.SetDynamicRangeCompression(drc); }
+  float GetDynamicRangeAmplification() const override { return 0.0f; }
 
+  std::string GetPlayerInfo() override;
+  int GetAudioChannels() override;
 
-  std::string GetPlayerInfo();
-  int GetAudioChannels();
+  double GetCurrentPts() override { CSingleLock lock(m_info_section); return m_info.pts; }
 
-  // holds stream information for current playing stream
-  CDVDStreamInfo m_streaminfo;
-
-  double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
-
-  bool IsStalled() const                            { return m_stalled;  }
-  bool IsPassthrough() const;
+  bool IsStalled() const override { return m_stalled;  }
+  bool IsPassthrough() const override;
 
 protected:
 
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
-  bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
+  void OnStartup() override;
+  void OnExit() override;
+  void Process() override;
 
+  bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
   void UpdatePlayerInfo();
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   //! Switch codec if needed. Called when the sample rate gotten from the
@@ -86,6 +82,9 @@ protected:
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
+
+  // holds stream information for current playing stream
+  CDVDStreamInfo m_streaminfo;
 
   double m_audioClock;
 
