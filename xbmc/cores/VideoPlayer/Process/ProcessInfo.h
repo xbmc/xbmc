@@ -62,7 +62,7 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault();
-  virtual CVideoBufferManager& GetVideoBufferManager();
+  CVideoBufferManager& GetVideoBufferManager();
 
   // player audio info
   void ResetAudioCodecInfo();
