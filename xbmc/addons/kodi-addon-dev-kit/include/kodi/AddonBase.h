@@ -82,11 +82,6 @@ typedef enum ADDON_STATUS
   ///
   ADDON_STATUS_UNKNOWN,
 
-  /// @warning obsolete and no more used from Kodi!
-  ///
-  /// Use kodi::SetSetting... during end to store changed settings
-  ADDON_STATUS_NEED_SAVEDSETTINGS,
-
   /// permanent failure, like failing to resolve methods
   ADDON_STATUS_PERMANENT_FAILURE,
 

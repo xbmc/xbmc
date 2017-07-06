@@ -41,8 +41,8 @@
  * overview.
  */
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.9"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.2"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.10"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.10"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "xbmc_addon_dll.h" \
@@ -50,8 +50,8 @@
                                                       "libXBMC_addon.h" \
                                                       "addon-instance/"
 
-#define ADDON_GLOBAL_VERSION_GENERAL                  "1.0.1"
-#define ADDON_GLOBAL_VERSION_GENERAL_MIN              "1.0.0"
+#define ADDON_GLOBAL_VERSION_GENERAL                  "1.0.2"
+#define ADDON_GLOBAL_VERSION_GENERAL_MIN              "1.0.2"
 #define ADDON_GLOBAL_VERSION_GENERAL_XML_ID           "kodi.binary.global.general"
 #define ADDON_GLOBAL_VERSION_GENERAL_DEPENDS          "General.h"
 
