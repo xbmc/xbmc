@@ -126,7 +126,7 @@ public:
   virtual bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  virtual void Render(DWORD flags, int renderBuffer);
+  bool Render(DWORD flags, int renderBuffer);
   void ClearBackBuffer();
   void DrawBlackBars();
 
