@@ -759,46 +759,22 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
     if (setting.second.setting->GetType() == SettingType::Action)
       continue;
 
-    std::string categoryTag, settingTag;
-    if (!ParseSettingIdentifier(setting.second.setting->GetId(), categoryTag, settingTag))
-    {
-      CLog::Log(LOGWARNING, "CSettingsManager: unable to save setting \"%s\"", setting.first.c_str());
-      continue;
-    }
+    TiXmlElement settingElement(SETTING_XML_ELM_SETTING);
+    settingElement.SetAttribute(SETTING_XML_ATTR_ID, setting.second.setting->GetId());
 
-    auto categoryNode = parent;
-    if (!categoryTag.empty())
-    {
-      categoryNode = parent->FirstChild(categoryTag);
-      if (categoryNode == nullptr)
-      {
-        TiXmlElement categoryElement(categoryTag);
-        categoryNode = parent->InsertEndChild(categoryElement);
-
-        if (categoryNode == nullptr)
-        {
-          CLog::Log(LOGWARNING, "CSettingsManager: unable to write <%s> tag", categoryTag.c_str());
-          continue;
-        }
-      }
-    }
-
-    TiXmlElement settingElement(settingTag);
-    auto settingNode = categoryNode->InsertEndChild(settingElement);
-    if (settingNode == nullptr)
-    {
-      CLog::Log(LOGWARNING, "CSetting: unable to write <%s> tag in <%s>", settingTag.c_str(), categoryTag.c_str());
-      continue;
-    }
+    // add the default attribute
     if (setting.second.setting->IsDefault())
-    {
-      TiXmlElement *settingElem = settingNode->ToElement();
-      if (settingElem != nullptr)
-        settingElem->SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
-    }
+      settingElement.SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
 
+    // add the value
     TiXmlText value(setting.second.setting->ToString());
-    settingNode->InsertEndChild(value);
+    settingElement.InsertEndChild(value);
+
+    if (parent->InsertEndChild(settingElement) == nullptr)
+    {
+      CLog::Log(LOGWARNING, "CSetting: unable to write <" SETTING_XML_ELM_SETTING " id=\"%s\"> tag", setting.second.setting->GetId().c_str());
+      continue;
+    }
   }
 
   return true;
@@ -813,6 +789,8 @@ bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::ma
 
   CSharedLock lock(m_settingsCritical);
 
+  // TODO: ideally this would be done by going through all <setting> elements
+  // in node but as long as we have to support the v1- format that's not possible
   for (auto& setting : m_settings)
   {
     bool settingUpdated = false;
@@ -1069,22 +1047,33 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
 
   auto settingId = setting->GetId();
 
+  const TiXmlElement* settingElement = nullptr;
+  // try to split the setting identifier into category and subsetting identifer (v1-)
   std::string categoryTag, settingTag;
-  if (!ParseSettingIdentifier(settingId, categoryTag, settingTag))
+  if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
   {
-    CLog::Log(LOGWARNING, "CSettingsManager: unable to load setting \"%s\"", settingId.c_str());
-    return false;
+    auto categoryNode = node;
+    if (!categoryTag.empty())
+      categoryNode = node->FirstChild(categoryTag);
+
+    if (categoryNode != nullptr)
+      settingElement = categoryNode->FirstChildElement(settingTag);
   }
 
-  auto categoryNode = node;
-  if (!categoryTag.empty())
+  if (settingElement == nullptr)
   {
-    categoryNode = node->FirstChild(categoryTag);
-    if (categoryNode == nullptr)
-      return false;
-  }
+    // check if the setting is stored using its full setting identifier (v2+)
+    settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
+    while (settingElement != nullptr)
+    {
+      const auto id = settingElement->Attribute(SETTING_XML_ATTR_ID);
+      if (id != nullptr && settingId.compare(id) == 0)
+        break;
 
-  auto settingElement = categoryNode->FirstChildElement(settingTag);
+      settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
+    }
+  } 
+
   if (settingElement == nullptr)
     return false;
 
