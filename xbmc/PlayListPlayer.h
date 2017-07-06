@@ -169,12 +169,12 @@ public:
   REPEAT_STATE GetRepeat(int iPlaylist) const;
 
   // add items via the playlist player
-  void Add(int iPlaylist, CPlayList& playlist);
+  void Add(int iPlaylist, const CPlayList& playlist);
   void Add(int iPlaylist, const CFileItemPtr &pItem);
-  void Add(int iPlaylist, CFileItemList& items);
-  void Insert(int iPlaylist, CPlayList& playlist, int iIndex);
+  void Add(int iPlaylist, const CFileItemList& items);
+  void Insert(int iPlaylist, const CPlayList& playlist, int iIndex);
   void Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex);
-  void Insert(int iPlaylist, CFileItemList& items, int iIndex);
+  void Insert(int iPlaylist, const CFileItemList& items, int iIndex);
   void Remove(int iPlaylist, int iPosition);
   void Swap(int iPlaylist, int indexItem1, int indexItem2);
 

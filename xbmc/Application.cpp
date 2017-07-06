@@ -412,7 +412,7 @@ bool CApplication::SetupNetwork()
   return m_network != NULL;
 }
 
-bool CApplication::Create()
+bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
@@ -622,7 +622,7 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
 
-  if (!m_ServiceManager->InitStageTwo())
+  if (!m_ServiceManager->InitStageTwo(params))
   {
     return false;
   }

@@ -62,6 +62,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
+#include "AppParamParser.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -78,7 +79,7 @@ using EVENTSERVER::CEventServer;
 using namespace KODI;
 using namespace MESSAGING;
 
-CInputManager::CInputManager() :
+CInputManager::CInputManager(const CAppParamParser &params) :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
   m_irTranslator(new CIRTranslator),
@@ -93,6 +94,12 @@ CInputManager::CInputManager() :
   m_buttonTranslator->RegisterMapper("joystick", m_joystickTranslator.get());
 
   RegisterKeyboardHandler(m_keyboardEasterEgg.get());
+
+  if (!params.RemoteControlName().empty())
+    SetRemoteControlName(params.RemoteControlName());
+
+  if (!params.RemoteControlEnabled())
+    DisableRemoteControl();
 }
 
 CInputManager::~CInputManager()

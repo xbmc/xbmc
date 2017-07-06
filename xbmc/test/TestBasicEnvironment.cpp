@@ -37,6 +37,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+#include "AppParamParser.h"
 
 #if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/WIN32Util.h"
@@ -122,7 +123,7 @@ void TestBasicEnvironment::SetUp()
   g_application.m_ServiceManager->CreateAudioEngine();
   CServiceBroker::GetSettings().Initialize();
 
-  if (!g_application.m_ServiceManager->InitStageTwo()
+  if (!g_application.m_ServiceManager->InitStageTwo(CAppParamParser()))
     exit(1);
 
   g_application.m_ServiceManager->StartAudioEngine();

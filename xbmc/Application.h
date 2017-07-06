@@ -135,7 +135,7 @@ public:
   void FrameMove(bool processEvents, bool processGUI = true) override;
   void Render() override;
   virtual void Preflight();
-  bool Create();
+  bool Create(const CAppParamParser &params);
   bool Cleanup() override;
 
   bool CreateGUI();

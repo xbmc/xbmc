@@ -23,6 +23,8 @@
 #include <memory>
 #include "platform/Platform.h"
 
+class CAppParamParser;
+
 namespace ADDON {
 class CAddonMgr;
 class CBinaryAddonManager;
@@ -83,7 +85,7 @@ public:
   ~CServiceManager();
 
   bool InitStageOne();
-  bool InitStageTwo();
+  bool InitStageTwo(const CAppParamParser &params);
   bool CreateAudioEngine();
   bool DestroyAudioEngine();
   bool StartAudioEngine();

@@ -24,7 +24,6 @@
 
 #include "system.h"
 #include "settings/AdvancedSettings.h"
-#include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
@@ -32,6 +31,7 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "platform/XbmcContext.h"
+#include "AppParamParser.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -395,7 +395,7 @@ using namespace KODI::MESSAGING;
   setlocale(LC_NUMERIC, "C");
 
   g_application.Preflight();
-  if (!g_application.Create())
+  if (!g_application.Create(CAppParamParser()))
   {
     readyToRun = false;
     ELOG(@"%sUnable to create application", __PRETTY_FUNCTION__);
@@ -423,8 +423,7 @@ using namespace KODI::MESSAGING;
     try
     {
       CCocoaAutoPool innerpool;
-      CFileItemList playlist;
-      g_application.Run(playlist);
+      g_application.Run(CAppParamParser());
     }
     catch(...)
     {

@@ -112,5 +112,5 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
   
-  return XBMC_Run(true, appParamParser.m_playlist);
+  return XBMC_Run(true, appParamParser);
 }

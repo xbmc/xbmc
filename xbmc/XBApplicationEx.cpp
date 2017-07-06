@@ -34,6 +34,7 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
+#include "AppParamParser.h"
 
 // Put this here for easy enable and disable
 #ifndef _DEBUG
@@ -62,7 +63,7 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run(CFileItemList &playlist)
+INT CXBApplicationEx::Run(const CAppParamParser &params)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
@@ -70,9 +71,9 @@ INT CXBApplicationEx::Run(CFileItemList &playlist)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  if (playlist.Size() > 0)
+  if (params.Playlist().Size() > 0)
   {
-    CServiceBroker::GetPlaylistPlayer().Add(0, playlist);
+    CServiceBroker::GetPlaylistPlayer().Add(0, params.Playlist());
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }

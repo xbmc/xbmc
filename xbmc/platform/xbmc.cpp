@@ -37,7 +37,7 @@
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
 
-extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
+extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
   int status = -1;
 
@@ -46,7 +46,7 @@ extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
     g_advancedSettings.Initialize();
   }
 
-  if (!g_application.Create())
+  if (!g_application.Create(params))
   {
     CMessagePrinter::DisplayError("ERROR: Unable to create application. Exiting");
     return status;
@@ -85,7 +85,7 @@ extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
 
   try
   {
-    status = g_application.Run(playlist);
+    status = g_application.Run(params);
   }
 #ifdef TARGET_WINDOWS
   catch (const XbmcCommons::UncheckedException &e)

@@ -67,7 +67,7 @@ bool CServiceManager::InitStageOne()
   return true;
 }
 
-bool CServiceManager::InitStageTwo()
+bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 {
   m_Platform.reset(CPlatform::CreateInstance());
   m_Platform->Init();
@@ -105,7 +105,7 @@ bool CServiceManager::InitStageTwo()
 
   m_controllerManager.reset(new GAME::CControllerManager);
 
-  m_inputManager.reset(new CInputManager);
+  m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
   init_level = 2;
