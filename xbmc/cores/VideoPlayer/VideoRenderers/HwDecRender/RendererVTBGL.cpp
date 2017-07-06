@@ -19,7 +19,7 @@
  */
 
 #include "RendererVTBGL.h"
-
+#include "../RenderFactory.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -29,6 +29,21 @@
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
 #include "windowing/WindowingFactory.h"
+
+CBaseRenderer* CRendererVTB::Create(CVideoBuffer *buffer)
+{
+  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
+  if (vb)
+    return new CRendererVTB();
+
+  return nullptr;
+}
+
+bool CRendererVTB::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("vtbgl", CRendererVTB::Create);
+  return true;
+}
 
 CRendererVTB::CRendererVTB()
 {
@@ -40,15 +55,6 @@ CRendererVTB::~CRendererVTB()
   {
     DeleteTexture(i);
   }
-}
-
-bool CRendererVTB::HandlesVideoBuffer(CVideoBuffer *buffer)
-{
-  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
-  if (vb)
-    return true;
-
-  return false;
 }
 
 void CRendererVTB::ReleaseBuffer(int idx)
