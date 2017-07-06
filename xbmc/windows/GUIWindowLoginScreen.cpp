@@ -299,9 +299,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   if (CProfilesManager::GetInstance().GetLastUsedProfileIndex() != profile)
   {
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
   }
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status

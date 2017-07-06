@@ -180,7 +180,7 @@ JSONRPC_STATUS CPlaylistOperations::Remove(const std::string &method, ITransport
     return FailedToExecute;
   
   int position = (int)parameterObject["position"].asInteger();
-  if (g_playlistPlayer.GetCurrentPlaylist() == playlist && g_playlistPlayer.GetCurrentSong() == position)
+  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == playlist && CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == position)
     return InvalidParams;
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_REMOVE, playlist, position);

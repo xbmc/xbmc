@@ -72,8 +72,8 @@ INT CXBApplicationEx::Run(CFileItemList &playlist)
 
   if (playlist.Size() > 0)
   {
-    g_playlistPlayer.Add(0, playlist);
-    g_playlistPlayer.SetCurrentPlaylist(0);
+    CServiceBroker::GetPlaylistPlayer().Add(0, playlist);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 

@@ -95,7 +95,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if ( !bypassSettings && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_PLAY && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTORUN))
     return false;
 
-  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+  int nSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
 
   std::string mediaPath;
@@ -124,9 +124,9 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
     g_windowManager.SendMessage( msg );
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
-    return g_playlistPlayer.Play(nSize, "");
+    return CServiceBroker::GetPlaylistPlayer().Play(nSize, "");
   }
 
   return bPlaying;
@@ -191,11 +191,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           if (!startFromBeginning && !item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item->m_lStartOffset = STARTOFFSET_RESUME;
 
-          g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
-          g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
-          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0, "");
+          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().SetShuffle (PLAYLIST_VIDEO, false);
+          CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, item);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().Play(0, "");
           return true;
         }
 
@@ -212,11 +212,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           if (!startFromBeginning && !item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item->m_lStartOffset = STARTOFFSET_RESUME;
 
-          g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
-          g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
-          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0, "");
+          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().SetShuffle (PLAYLIST_VIDEO, false);
+          CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, item);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().Play(0, "");
           return true;
         }
 
@@ -320,11 +320,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
           //  internal *.evo playback.
           CLog::Log(LOGINFO,"HD DVD: Internal multifile playback initiated.");
-          g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
-          g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
-          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0, "");
+          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().SetShuffle (PLAYLIST_VIDEO, false);
+          CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, items);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+          CServiceBroker::GetPlaylistPlayer().Play(0, "");
           return true;
         }
 				
@@ -344,10 +344,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           if (items.Size())
           {
             items.Sort(SortByLabel, SortOrderAscending);
-            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-            g_playlistPlayer.Play(0, "");
+            CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+            CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, items);
+            CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+            CServiceBroker::GetPlaylistPlayer().Play(0, "");
             return true;
           }
         }
@@ -403,10 +403,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
       }
-      g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-      g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-      g_playlistPlayer.Play(0, "");
+      CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+      CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, itemlist);
+      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+      CServiceBroker::GetPlaylistPlayer().Play(0, "");
     }
   }
   // then music
@@ -418,7 +418,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
-        g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
+        CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_MUSIC, pItem);
       }
     }
   }

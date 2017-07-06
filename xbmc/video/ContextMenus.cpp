@@ -123,7 +123,7 @@ static void SetPathAndPlay(CFileItem& item)
   if (item.IsLiveTV()) // pvr tv or pvr radio?
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
   else
-    g_playlistPlayer.Play(std::make_shared<CFileItem>(item), "");
+    CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
 }
 
 bool CResume::Execute(const CFileItemPtr& itemIn) const

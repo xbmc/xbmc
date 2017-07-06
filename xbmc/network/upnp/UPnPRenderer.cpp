@@ -578,11 +578,11 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
           playlist = PLAYLIST_VIDEO;
 
         {   CSingleLock lock(g_graphicsContext);
-            g_playlistPlayer.ClearPlaylist(playlist);
-            g_playlistPlayer.Add(playlist, item);
+            CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
+            CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
 
-            g_playlistPlayer.SetCurrentSong(-1);
-            g_playlistPlayer.SetCurrentPlaylist(playlist);
+            CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
+            CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
         }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

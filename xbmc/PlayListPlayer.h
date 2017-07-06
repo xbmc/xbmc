@@ -29,8 +29,6 @@
 #define PLAYLIST_VIDEO   1
 #define PLAYLIST_PICTURE 2
 
-#define g_playlistPlayer CServiceBroker::GetPlaylistPlayer()
-
 class CAction;
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
