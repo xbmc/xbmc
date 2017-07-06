@@ -26,6 +26,8 @@
 #include "RenderSystemDX.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
+#include "cores/VideoPlayer/Process/windows/ProcessInfoWin.h"
+#include "cores/VideoPlayer/Process/windows/ProcessInfoWin10.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -687,6 +689,11 @@ bool CRenderSystemDX::CreateDevice()
   m_needNewDevice = false;
 
   // register platform dependent objects
+#if defined(TARGET_WIN10)
+  VIDEOPLAYER::CProcessInfoWin10::Register();
+#else
+  VIDEOPLAYER::CProcessInfoWin::Register();
+#endif
   CDVDFactoryCodec::ClearHWAccels();
   DXVA::CDecoder::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
