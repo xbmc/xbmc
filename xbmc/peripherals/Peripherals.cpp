@@ -78,7 +78,8 @@ using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
 
-CPeripherals::CPeripherals() :
+CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements) :
+  m_announcements(announcements),
   m_eventScanner(this)
 {
 }
@@ -122,13 +123,13 @@ void CPeripherals::Initialise()
   m_eventScanner.Start();
 
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  m_announcements.AddAnnouncer(this);
 #endif
 }
 
 void CPeripherals::Clear()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  m_announcements.RemoveAnnouncer(this);
 
   m_eventScanner.Stop();
 

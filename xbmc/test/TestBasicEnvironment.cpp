@@ -52,7 +52,7 @@ void TestBasicEnvironment::SetUp()
   XFILE::CFile *f;
 
   g_application.m_ServiceManager.reset(new CServiceManager());
-  if (!g_application.m_ServiceManager->Init1())
+  if (!g_application.m_ServiceManager->InitStageOne())
     exit(1);
 
   /* NOTE: The below is done to fix memleak warning about uninitialized variable
@@ -105,9 +105,6 @@ void TestBasicEnvironment::SetUp()
   CSpecialProtocol::SetTempPath(tmp);
 #endif
 
-  if (!g_application.m_ServiceManager->Init2())
-	  exit(1);
-
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not
    * affect the performance results of the test cases.
@@ -123,17 +120,22 @@ void TestBasicEnvironment::SetUp()
   }
   g_powerManager.Initialize();
   g_application.m_ServiceManager->CreateAudioEngine();
-  g_application.m_ServiceManager->StartAudioEngine();
   CServiceBroker::GetSettings().Initialize();
+
+  if (!g_application.m_ServiceManager->InitStageTwo()
+    exit(1);
+
+  g_application.m_ServiceManager->StartAudioEngine();
 }
 
 void TestBasicEnvironment::TearDown()
 {
+  g_application.m_ServiceManager->DeinitStageTwo();
   g_application.m_ServiceManager->DestroyAudioEngine();
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
   CServiceBroker::GetSettings().Uninitialize();
-  g_application.m_ServiceManager->Deinit();
+  g_application.m_ServiceManager->DeinitStageOne();
 }
 
 void TestBasicEnvironment::SetUpError()

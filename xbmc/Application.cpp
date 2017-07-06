@@ -418,7 +418,7 @@ bool CApplication::Create()
   m_threadID = CThread::GetCurrentThreadId();
 
   m_ServiceManager.reset(new CServiceManager());
-  if (!m_ServiceManager->Init1())
+  if (!m_ServiceManager->InitStageOne())
   {
     return false;
   }
@@ -622,7 +622,7 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
 
-  if (!m_ServiceManager->Init2())
+  if (!m_ServiceManager->InitStageTwo())
   {
     return false;
   }
@@ -1181,7 +1181,7 @@ bool CApplication::Initialize()
 
       CStereoscopicsManager::GetInstance().Initialize();
 
-      if (!m_ServiceManager->Init3())
+      if (!m_ServiceManager->InitStageThree())
       {
         CLog::Log(LOGERROR, "Application - Init3 failed");
       }
@@ -2725,6 +2725,9 @@ bool CApplication::Cleanup()
 {
   try
   {
+    if (m_ServiceManager)
+      m_ServiceManager->DeinitStageThree();
+
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
@@ -2765,6 +2768,10 @@ bool CApplication::Cleanup()
 #endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
+
+    if (m_ServiceManager)
+      m_ServiceManager->DeinitStageTwo();
+
     m_ServiceManager->GetSettings().Uninitialize();
     g_advancedSettings.Clear();
 
@@ -2786,7 +2793,7 @@ bool CApplication::Cleanup()
     // Cleanup was called more than once on exit during my tests
     if (m_ServiceManager)
     {
-      m_ServiceManager->Deinit();
+      m_ServiceManager->DeinitStageOne();
       m_ServiceManager.reset();
     }
 

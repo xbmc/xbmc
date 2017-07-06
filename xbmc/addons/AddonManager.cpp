@@ -399,8 +399,11 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  m_cpluff->destroy_context(m_cp_context);
-  m_cpluff.reset();
+  if (m_cpluff)
+  {
+    m_cpluff->destroy_context(m_cp_context);
+    m_cpluff.reset();
+  }
   m_database.Close();
 }
 

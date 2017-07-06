@@ -19,9 +19,9 @@
  */
 
 #include "ButtonMapping.h"
-#include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapper.h"
@@ -261,8 +261,8 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
   {
     using namespace GAME;
 
-    CGameServices& gameServices = CServiceBroker::GetGameServices();
-    ControllerPtr controller = gameServices.GetController(m_keymap->ControllerID());
+    CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
+    ControllerPtr controller = controllerManager.GetController(m_keymap->ControllerID());
 
     const auto& features = controller->Layout().Features();
     for (const auto& feature : features)

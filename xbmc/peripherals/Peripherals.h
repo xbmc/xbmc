@@ -47,6 +47,11 @@ namespace JOYSTICK
 }
 }
 
+namespace ANNOUNCEMENT
+{
+  class CAnnouncementManager;
+}
+
 namespace PERIPHERALS
 {
   class CPeripherals :  public ISettingCallback,
@@ -56,7 +61,7 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    CPeripherals();
+    CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
 
     ~CPeripherals() override;
 
@@ -315,6 +320,9 @@ namespace PERIPHERALS
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
 
     void OnDeviceChanged();
+
+    // Construction parameters
+    ANNOUNCEMENT::CAnnouncementManager &m_announcements;
 
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed = false;

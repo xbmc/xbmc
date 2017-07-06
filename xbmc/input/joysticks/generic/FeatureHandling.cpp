@@ -20,7 +20,7 @@
 
 #include "FeatureHandling.h"
 #include "games/controllers/Controller.h"
-#include "games/GameServices.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IInputHandler.h"
@@ -71,7 +71,7 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   m_bActivated(false),
   m_bDiscrete(true)
 {
-  GAME::ControllerPtr controller = CServiceBroker::GetGameServices().GetController(handler->ControllerID());
+  GAME::ControllerPtr controller = CServiceBroker::GetGameControllerManager().GetController(handler->ControllerID());
   if (controller)
     m_inputType = controller->GetInputType(name);
 }

@@ -60,6 +60,7 @@ namespace KODI
 {
 namespace GAME
 {
+  class CControllerManager;
   class CGameServices;
 }
 }
@@ -84,6 +85,7 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
+  static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();

@@ -25,9 +25,9 @@
 #include "addons/AddonManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IDriverHandler.h"
@@ -871,8 +871,8 @@ unsigned int CPeripheralAddon::cb_feature_count(void* kodiInstance, const char* 
 
   unsigned int count = 0;
 
-  CGameServices& gameServices = CServiceBroker::GetGameServices();
-  ControllerPtr controller = gameServices.GetController(controllerId);
+  CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
+  ControllerPtr controller = controllerManager.GetController(controllerId);
   if (controller)
     count = controller->Layout().FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
 

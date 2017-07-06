@@ -29,39 +29,18 @@ using namespace GAME;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CPortMapper::CPortMapper() :
-  m_peripheralManager(nullptr),
-  m_portManager(nullptr)
+CPortMapper::CPortMapper(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager) :
+  m_peripheralManager(peripheralManager),
+  m_portManager(portManager)
 {
+  m_peripheralManager.RegisterObserver(this);
+  m_portManager.RegisterObserver(this);
 }
 
 CPortMapper::~CPortMapper()
 {
-  Deinitialize();
-}
-
-void CPortMapper::Initialize(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager)
-{
-  m_peripheralManager = &peripheralManager;
-  m_portManager = &portManager;
-
-  m_peripheralManager->RegisterObserver(this);
-  m_portManager->RegisterObserver(this);
-}
-
-void CPortMapper::Deinitialize()
-{
-  if (m_portManager)
-  {
-    m_portManager->UnregisterObserver(this);
-    m_portManager = nullptr;
-  }
-
-  if (m_peripheralManager)
-  {
-    m_peripheralManager->UnregisterObserver(this);
-    m_peripheralManager = nullptr;
-  }
+  m_portManager.UnregisterObserver(this);
+  m_peripheralManager.UnregisterObserver(this);
 }
 
 void CPortMapper::Notify(const Observable &obs, const ObservableMessage msg)
@@ -79,15 +58,12 @@ void CPortMapper::Notify(const Observable &obs, const ObservableMessage msg)
 
 void CPortMapper::ProcessPeripherals()
 {
-  if (m_peripheralManager == nullptr || m_portManager == nullptr)
-    return;
-
   PeripheralVector joysticks;
-  m_peripheralManager->GetPeripheralsWithFeature(joysticks, FEATURE_JOYSTICK);
+  m_peripheralManager.GetPeripheralsWithFeature(joysticks, FEATURE_JOYSTICK);
 
   // Perform the port mapping
   std::map<CPeripheral*, IInputHandler*> newPortMap;
-  m_portManager->MapDevices(joysticks, newPortMap);
+  m_portManager.MapDevices(joysticks, newPortMap);
 
   // Update each joystick
   for (auto& joystick : joysticks)
@@ -113,7 +89,7 @@ void CPortMapper::ProcessPeripherals()
       // Register new handler
       if (newHandler != nullptr)
       {
-        CGameClient *gameClient = m_portManager->GameClient(newHandler);
+        CGameClient *gameClient = m_portManager.GameClient(newHandler);
         if (gameClient)
         {
           PortPtr newPort(new CPort(newHandler, *gameClient));
