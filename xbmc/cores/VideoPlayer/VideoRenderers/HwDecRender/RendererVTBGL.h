@@ -31,10 +31,12 @@ public:
   CRendererVTB();
   virtual ~CRendererVTB();
 
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+  
   // Player functions
   virtual void ReleaseBuffer(int idx) override;
   virtual bool NeedBuffer(int idx) override;
-  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
 protected:
   virtual bool LoadShadersHook() override;
