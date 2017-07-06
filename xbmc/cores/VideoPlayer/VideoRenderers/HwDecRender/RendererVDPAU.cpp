@@ -19,7 +19,7 @@
  */
 
 #include "RendererVDPAU.h"
-
+#include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
 #include "settings/Settings.h"
@@ -29,6 +29,21 @@
 #include "windowing/WindowingFactory.h"
 
 using namespace VDPAU;
+
+CBaseRenderer* CRendererVDPAU::Create(CVideoBuffer *buffer)
+{
+  CVdpauRenderPicture *vb = dynamic_cast<CVdpauRenderPicture*>(buffer);
+  if (vb)
+    return new CRendererVDPAU();
+
+  return nullptr;
+}
+
+bool CRendererVDPAU::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("vdpau", CRendererVDPAU::Create);
+  return true;
+}
 
 CRendererVDPAU::CRendererVDPAU()
 {
@@ -42,15 +57,6 @@ CRendererVDPAU::~CRendererVDPAU()
     DeleteTexture(i);
   }
   m_interopState.Finish();
-}
-
-bool CRendererVDPAU::HandlesVideoBuffer(CVideoBuffer *buffer)
-{
-  CVdpauRenderPicture *pic = dynamic_cast<CVdpauRenderPicture*>(buffer);
-  if (pic)
-    return true;
-
-  return false;
 }
 
 bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
