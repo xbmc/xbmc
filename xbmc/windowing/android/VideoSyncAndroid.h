@@ -25,11 +25,11 @@
 class CVideoSyncAndroid : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
 
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Run(CEvent& stop) override;
   virtual void Cleanup() override;
   virtual float GetFps() override;
 
@@ -41,5 +41,5 @@ public:
 
 private:
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
-  volatile bool m_abort;
+  CEvent m_abortEvent;
 };

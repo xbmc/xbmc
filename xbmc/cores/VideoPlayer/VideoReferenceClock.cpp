@@ -48,6 +48,7 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
 
 CVideoReferenceClock::~CVideoReferenceClock()
 {
+  m_vsyncStopEvent.Set();
   StopThread();
 }
 
@@ -98,8 +99,9 @@ void CVideoReferenceClock::Process()
       m_VblankTime = Now;          //initialize the timestamp of the last vblank
       SingleLock.Leave();
 
+      m_vsyncStopEvent.Reset();
       //run the clock
-      m_pVideoSync->Run(m_bStop);
+      m_pVideoSync->Run(m_vsyncStopEvent);
     }
     else
     {

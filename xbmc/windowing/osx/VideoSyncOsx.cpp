@@ -47,19 +47,19 @@ bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncOsx::Run(std::atomic<bool>& stop)
+void CVideoSyncOsx::Run(CEvent& stopEvent)
 {
   InitDisplayLink();
 
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
-  while(!stop && !m_displayLost && !m_displayReset)
+  while(!stopEvent.Signaled() && !m_displayLost && !m_displayReset)
   {
     usleep(100000);
   }
 
   m_lostEvent.Set();
 
-  while(!stop && m_displayLost && !m_displayReset)
+  while(!stopEvent.Signaled() && m_displayLost && !m_displayReset)
   {
     usleep(10000);
   }

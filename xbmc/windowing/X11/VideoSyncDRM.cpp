@@ -76,7 +76,7 @@ bool CVideoSyncDRM::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncDRM::Run(std::atomic<bool>& stop)
+void CVideoSyncDRM::Run(CEvent& stopEvent)
 {
   drmVBlank vbl;
   VblInfo info;
@@ -116,7 +116,7 @@ void CVideoSyncDRM::Run(std::atomic<bool>& stop)
   FD_ZERO(&fds);
   FD_SET(m_fd, &fds);
 
-  while (!stop && !m_abort)
+  while (!stopEvent.Signaled() && !m_abort)
   {
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;

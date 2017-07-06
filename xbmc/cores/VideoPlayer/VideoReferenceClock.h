@@ -19,13 +19,14 @@
  *
  */
 
-#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
 #include <memory>
 
 class CVideoSync;
 
-class CVideoReferenceClock : public CThread
+class CVideoReferenceClock : CThread
 {
   public:
     CVideoReferenceClock();
@@ -58,6 +59,8 @@ class CVideoReferenceClock : public CThread
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
+
+    CEvent m_vsyncStopEvent;
 
     CCriticalSection m_CritSection;
 

@@ -55,14 +55,14 @@ bool CVideoSyncAML::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncAML::Run(std::atomic<bool>& stop)
+void CVideoSyncAML::Run(CEvent& stopEvent)
 {
   // We use the wall clock for timout handling (no AML h/w, startup)
   std::chrono::time_point<std::chrono::system_clock> now(std::chrono::system_clock::now());
   unsigned int waittime (3000 / m_fps);
   uint64_t numVBlanks (0);
 
-  while (!stop && !m_abort)
+  while (!stopEvent.Signaled() && !m_abort)
   {
     int countVSyncs(1);
     if( !g_aml_sync_event.WaitMSec(waittime))

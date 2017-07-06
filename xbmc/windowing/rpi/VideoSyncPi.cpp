@@ -37,12 +37,12 @@ bool CVideoSyncPi::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncPi::Run(std::atomic<bool>& stop)
+void CVideoSyncPi::Run(CEvent& stopEvent)
 {
   /* This shouldn't be very busy and timing is important so increase priority */
   CThread::GetCurrentThread()->SetPriority(CThread::GetCurrentThread()->GetPriority()+1);
 
-  while (!stop && !m_abort)
+  while (!stopEvent.Signaled() && !m_abort)
   {
     g_RBP.WaitVsync();
     uint64_t now = CurrentHostCounter();

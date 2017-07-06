@@ -30,7 +30,7 @@ public:
   CVideoSyncIMX(CVideoReferenceClock *clock);
   virtual ~CVideoSyncIMX();
   virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
+  virtual void Run(CEvent& stop);
   virtual void Cleanup();
   virtual float GetFps();
   virtual void OnResetDisplay();

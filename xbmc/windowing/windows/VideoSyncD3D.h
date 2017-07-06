@@ -28,7 +28,7 @@ class CVideoSyncD3D : public CVideoSync, IDispResource
 public:
   CVideoSyncD3D(void *clock) : CVideoSync(clock) {};
   bool Setup(PUPDATECLOCK func) override;
-  void Run(std::atomic<bool>& stop) override;
+  void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;
   void RefreshChanged() override;
