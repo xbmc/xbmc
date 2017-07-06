@@ -128,8 +128,8 @@ namespace RETRO
     float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
     bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-    bool IsRenderingGuiLayer() override { return m_renderManager.IsGuiLayer(); }
-    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
+//    bool IsRenderingGuiLayer() { return m_renderManager.IsGuiLayer(); }
+//    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
     bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
