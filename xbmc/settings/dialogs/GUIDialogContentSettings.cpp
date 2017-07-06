@@ -34,6 +34,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "interfaces/builtins/Builtins.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"

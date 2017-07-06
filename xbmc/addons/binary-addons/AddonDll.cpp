@@ -23,6 +23,7 @@
 #include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/settings/AddonSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -44,6 +45,7 @@
 #include "addons/interfaces/General.h"
 #include "addons/interfaces/Network.h"
 #include "addons/interfaces/GUI/General.h"
+
 
 namespace ADDON
 {

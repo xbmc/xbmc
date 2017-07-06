@@ -18,9 +18,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "Addon.h"
 #include "AddonEvents.h"
-
+#include "threads/CriticalSection.h"
 
 namespace ADDON
 {

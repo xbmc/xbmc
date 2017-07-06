@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/Directory.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"

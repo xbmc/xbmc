@@ -28,6 +28,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"

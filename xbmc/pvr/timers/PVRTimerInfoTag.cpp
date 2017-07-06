@@ -22,6 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"

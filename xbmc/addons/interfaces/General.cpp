@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"

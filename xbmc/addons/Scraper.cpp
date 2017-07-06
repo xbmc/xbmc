@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "AddonManager.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"

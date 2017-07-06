@@ -34,6 +34,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"

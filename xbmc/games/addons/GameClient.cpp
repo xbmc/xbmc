@@ -38,6 +38,7 @@
 #include "games/ports/PortManager.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "input/InputManager.h"

@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

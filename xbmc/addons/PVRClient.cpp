@@ -31,6 +31,7 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"

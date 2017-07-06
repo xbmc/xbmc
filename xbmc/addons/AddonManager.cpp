@@ -33,6 +33,8 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 
+#include <array>
+
 using namespace XFILE;
 
 namespace ADDON

@@ -25,6 +25,7 @@
 
 #include "dialogs/GUIDialogOK.h"
 #include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"

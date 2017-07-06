@@ -26,6 +26,7 @@
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"

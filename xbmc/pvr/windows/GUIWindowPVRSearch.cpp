@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"

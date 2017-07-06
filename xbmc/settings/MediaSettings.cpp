@@ -27,6 +27,7 @@
 #include "PlayListPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "guilib/LocalizeStrings.h"
 #include "interfaces/builtins/Builtins.h"
 #include "music/MusicDatabase.h"
 #include "messaging/ApplicationMessenger.h"

@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"

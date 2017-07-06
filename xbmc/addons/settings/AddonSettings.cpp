@@ -29,6 +29,7 @@
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"

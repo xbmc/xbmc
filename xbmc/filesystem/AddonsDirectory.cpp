@@ -26,6 +26,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonSystemSettings.h"
+#include "guilib/LocalizeStrings.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "FileItem.h"
 #include "addons/AddonInstaller.h"
