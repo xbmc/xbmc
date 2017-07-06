@@ -138,6 +138,18 @@ namespace ADDON
      */
     bool GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList);
 
+    /*!
+     * @brief To get requested installed binary addon on Kodi
+     *
+     * This function is used by ADDON::CBinaryAddonManager to obtain the add-on
+     * with the given id, regardless the add-on is disabled or enabled.
+     *
+     * @param[in] addonId          Id to get
+     * @param[out] binaryAddon     Addon info returned
+     * @return                     True, if the requested add-on was found, false otherwise
+     */
+    bool GetInstalledBinaryAddon(const std::string& addonId, BINARY_ADDON_LIST_ENTRY& binaryAddon);
+
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
