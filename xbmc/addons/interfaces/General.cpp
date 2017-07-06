@@ -23,6 +23,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
 #include "Application.h"
+#include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
@@ -31,12 +32,17 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+#include <string.h>
 
 using namespace kodi; // addon-dev-kit namespace
 
@@ -47,6 +53,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi = static_cast<AddonToKodiFuncTable_kodi*>(malloc(sizeof(AddonToKodiFuncTable_kodi)));
 
+  addonInterface->toKodi->kodi->get_addon_info = get_addon_info;
   addonInterface->toKodi->kodi->open_settings_dialog = open_settings_dialog;
   addonInterface->toKodi->kodi->get_localized_string = get_localized_string;
   addonInterface->toKodi->kodi->unknown_to_utf8 = unknown_to_utf8;
@@ -54,6 +61,10 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->queue_notification = queue_notification;
   addonInterface->toKodi->kodi->get_md5 = get_md5;
   addonInterface->toKodi->kodi->get_temp_path = get_temp_path;
+  addonInterface->toKodi->kodi->get_region = get_region;
+  addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
+  addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
+  addonInterface->toKodi->kodi->kodi_version = kodi_version;
 }
 
 void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
@@ -64,6 +75,53 @@ void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
     free(addonInterface->toKodi->kodi);
     addonInterface->toKodi->kodi = nullptr;
   }
+}
+
+char* Interface_General::get_addon_info(void* kodiBase, const char* id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || id == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p', id='%p')", __FUNCTION__, addon, id);
+    return nullptr;
+  }
+
+  std::string str;
+  if (strcmpi(id, "author") == 0)
+    str = addon->Author();
+  else if (strcmpi(id, "changelog") == 0)
+    str = addon->ChangeLog();
+  else if (strcmpi(id, "description") == 0)
+    str = addon->Description();
+  else if (strcmpi(id, "disclaimer") == 0)
+    str = addon->Disclaimer();
+  else if (strcmpi(id, "fanart") == 0)
+    str = addon->FanArt();
+  else if (strcmpi(id, "icon") == 0)
+    str = addon->Icon();
+  else if (strcmpi(id, "id") == 0)
+    str = addon->ID();
+  else if (strcmpi(id, "name") == 0)
+    str = addon->Name();
+  else if (strcmpi(id, "path") == 0)
+    str = addon->Path();
+  else if (strcmpi(id, "profile") == 0)
+    str = addon->Profile();
+  else if (strcmpi(id, "summary") == 0)
+    str = addon->Summary();
+  else if (strcmpi(id, "type") == 0)
+    str = ADDON::CAddonInfo::TranslateType(addon->Type());
+  else if (strcmpi(id, "version") == 0)
+    str = addon->Version().asString();
+  else
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s -  add-on '%s' requests invalid id '%s'",
+                          __FUNCTION__, addon->Name().c_str(), id);
+    return nullptr;
+  }
+
+  char* buffer = strdup(str.c_str());
+  return buffer;
 }
 
 bool Interface_General::open_settings_dialog(void* kodiBase)
@@ -260,6 +318,136 @@ char* Interface_General::get_temp_path(void* kodiBase)
     XFILE::CDirectory::Create(tempPath);
 
   return strdup(CSpecialProtocol::TranslatePath(tempPath).c_str());
+}
+
+char* Interface_General::get_region(void* kodiBase, const char* id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || id == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p', id='%p')", __FUNCTION__, addon, id);
+    return nullptr;
+  }
+
+  std::string result;
+  if (strcmpi(id, "datelong") == 0)
+  {
+    result = g_langInfo.GetDateFormat(true);
+    StringUtils::Replace(result, "DDDD", "%A");
+    StringUtils::Replace(result, "MMMM", "%B");
+    StringUtils::Replace(result, "D", "%d");
+    StringUtils::Replace(result, "YYYY", "%Y");
+  }
+  else if (strcmpi(id, "dateshort") == 0)
+  {
+    result = g_langInfo.GetDateFormat(false);
+    StringUtils::Replace(result, "MM", "%m");
+    StringUtils::Replace(result, "DD", "%d");
+#ifdef TARGET_WINDOWS
+    StringUtils::Replace(result, "M", "%#m");
+    StringUtils::Replace(result, "D", "%#d");
+#else
+    StringUtils::Replace(result, "M", "%-m");
+    StringUtils::Replace(result, "D", "%-d");
+#endif
+    StringUtils::Replace(result, "YYYY", "%Y");
+  }
+  else if (strcmpi(id, "tempunit") == 0)
+    result = g_langInfo.GetTemperatureUnitString();
+  else if (strcmpi(id, "speedunit") == 0)
+    result = g_langInfo.GetSpeedUnitString();
+  else if (strcmpi(id, "time") == 0)
+  {
+    result = g_langInfo.GetTimeFormat();
+    StringUtils::Replace(result, "H", "%H");
+    StringUtils::Replace(result, "h", "%I");
+    StringUtils::Replace(result, "mm", "%M");
+    StringUtils::Replace(result, "ss", "%S");
+    StringUtils::Replace(result, "xx", "%p");
+  }
+  else if (strcmpi(id, "meridiem") == 0)
+    result = StringUtils::Format("%s/%s",
+                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
+  else
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s -  add-on '%s' requests invalid id '%s'",
+                          __FUNCTION__, addon->Name().c_str(), id);
+    return nullptr;
+  }
+
+  char* buffer = strdup(result.c_str());
+  return buffer;
+}
+
+void Interface_General::get_free_mem(void* kodiBase, long* free, long* total, bool as_bytes)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || free == nullptr || total == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p', free='%p', total='%p')", __FUNCTION__, addon, free, total);
+    return;
+  }
+
+  MEMORYSTATUSEX stat;
+  stat.dwLength = sizeof(MEMORYSTATUSEX);
+  GlobalMemoryStatusEx(&stat);
+  *free = static_cast<long>(stat.ullAvailPhys);
+  *total = static_cast<long>(stat.ullTotalPhys);
+  if (!as_bytes)
+  {
+    *free = *free / ( 1024 * 1024 );
+    *total = *total / ( 1024 * 1024 );
+  }
+}
+
+int Interface_General::get_global_idle_time(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p')", __FUNCTION__, addon);
+    return -1;
+  }
+
+  return g_application.GlobalIdleTime();
+}
+
+void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || compile_name == nullptr || major == nullptr || minor == nullptr ||
+     revision == nullptr || tag == nullptr || tagversion == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p', compile_name='%p', major='%p', minor='%p', revision='%p', tag='%p', tagversion='%p')",
+                __FUNCTION__, addon, compile_name, major, minor, revision, tag, tagversion);
+    return;
+  }
+
+  *compile_name = strdup(CCompileInfo::GetAppName());
+  *major = CCompileInfo::GetMajor();
+  *minor = CCompileInfo::GetMinor();
+  *revision = strdup(CCompileInfo::GetSCMID());
+  std::string tagStr = CCompileInfo::GetSuffix();
+  if (StringUtils::StartsWithNoCase(tagStr, "alpha"))
+  {
+    *tag = strdup("alpha");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 5).c_str());
+  }
+  else if (StringUtils::StartsWithNoCase(tagStr, "beta"))
+  {
+    *tag = strdup("beta");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 4).c_str());
+  }
+  else if (StringUtils::StartsWithNoCase(tagStr, "rc"))
+  {
+    *tag = strdup("releasecandidate");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 2).c_str());
+  }
+  else if (tagStr.empty())
+    *tag = strdup("stable");
+  else
+    *tag = strdup("prealpha");
 }
 
 } /* namespace ADDON */
