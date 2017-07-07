@@ -66,9 +66,7 @@ CApplicationMessenger& CApplicationMessenger::GetInstance()
   return appMessenger;
 }
 
-CApplicationMessenger::CApplicationMessenger()
-{
-}
+CApplicationMessenger::CApplicationMessenger() = default;
 
 CApplicationMessenger::~CApplicationMessenger()
 {

@@ -76,8 +76,8 @@ namespace ANNOUNCEMENT
   class IAnnouncer
   {
   public:
-    IAnnouncer() { };
-    virtual ~IAnnouncer() { };
+    IAnnouncer() = default;
+    virtual ~IAnnouncer() = default;
     virtual void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
   };
 }

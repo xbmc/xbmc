@@ -24,8 +24,8 @@ class ILanguageInvoker;
 class ILanguageInvocationHandler
 {
 public:
-  ILanguageInvocationHandler() { }
-  virtual ~ILanguageInvocationHandler() { }
+  ILanguageInvocationHandler() = default;
+  virtual ~ILanguageInvocationHandler() = default;
 
   virtual bool Initialize() { return true; }
   virtual void Process() { }

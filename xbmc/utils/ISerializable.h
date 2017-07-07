@@ -25,5 +25,5 @@ class ISerializable
 {
 public:
   virtual void Serialize(CVariant& value) const = 0;
-  virtual ~ISerializable() {}
+  virtual ~ISerializable() = default;
 };

@@ -26,8 +26,7 @@ CKey::CKey(void)
   Reset();
 }
 
-CKey::~CKey(void)
-{}
+CKey::~CKey(void) = default;
 
 CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
 {

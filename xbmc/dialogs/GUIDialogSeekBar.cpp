@@ -34,9 +34,7 @@ CGUIDialogSeekBar::CGUIDialogSeekBar(void)
   m_loadType = LOAD_ON_GUI_INIT;    // the application class handles our resources
 }
 
-CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
-{
-}
+CGUIDialogSeekBar::~CGUIDialogSeekBar(void) = default;
 
 bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
 {

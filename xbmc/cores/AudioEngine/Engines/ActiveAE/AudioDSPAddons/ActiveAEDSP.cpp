@@ -105,8 +105,8 @@ void CActiveAEDSP::Init(void)
 class CActiveAEDSPModeUpdateJob : public CJob
 {
 public:
-  CActiveAEDSPModeUpdateJob() {}
-  ~CActiveAEDSPModeUpdateJob(void) override {}
+  CActiveAEDSPModeUpdateJob() = default;
+  ~CActiveAEDSPModeUpdateJob(void) override = default;
 
   bool DoWork(void) override
   {

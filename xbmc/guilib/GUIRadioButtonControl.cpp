@@ -49,8 +49,7 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, floa
   m_useLabel2 = false;
 }
 
-CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
-{}
+CGUIRadioButtonControl::~CGUIRadioButtonControl(void) = default;
 
 void CGUIRadioButtonControl::Render()
 {

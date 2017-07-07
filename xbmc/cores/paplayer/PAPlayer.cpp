@@ -45,7 +45,7 @@ class CQueueNextFileJob : public CJob
 
 public: CQueueNextFileJob(const CFileItem& item, PAPlayer &player)
     : m_item(item), m_player(player) {}
-  ~CQueueNextFileJob() override {}
+  ~CQueueNextFileJob() override = default;
   bool  DoWork() override
   {
     return m_player.QueueNextFileEx(m_item, true, true);

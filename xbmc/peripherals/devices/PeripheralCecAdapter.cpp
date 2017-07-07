@@ -69,7 +69,7 @@ using namespace CEC;
 class DllLibCECInterface
 {
 public:
-  virtual ~DllLibCECInterface() {}
+  virtual ~DllLibCECInterface() = default;
   virtual ICECAdapter* CECInitialise(libcec_configuration *configuration)=0;
   virtual void*        CECDestroy(ICECAdapter *adapter)=0;
 };
@@ -1689,7 +1689,7 @@ class CPeripheralCecAdapterReopenJob : public CJob
 public:
   CPeripheralCecAdapterReopenJob(CPeripheralCecAdapter *adapter)
     : m_adapter(adapter) {}
-  ~CPeripheralCecAdapterReopenJob() override {}
+  ~CPeripheralCecAdapterReopenJob() override = default;
 
   bool DoWork(void) override
   {

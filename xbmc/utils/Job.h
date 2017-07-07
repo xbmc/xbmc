@@ -46,7 +46,7 @@ public:
    
    \sa CJobManager and CJob
    */
-  virtual ~IJobCallback() {};
+  virtual ~IJobCallback() = default;
 
   /*!
    \brief The callback used when a job completes.
@@ -123,7 +123,7 @@ public:
    
    \sa CJobManager
    */
-  virtual ~CJob() {};
+  virtual ~CJob() = default;
 
   /*!
    \brief Main workhorse function of CJob instances

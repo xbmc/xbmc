@@ -60,9 +60,7 @@ CGUIDialogSongInfo::CGUIDialogSongInfo(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogSongInfo::~CGUIDialogSongInfo(void)
-{
-}
+CGUIDialogSongInfo::~CGUIDialogSongInfo(void) = default;
 
 bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
 {

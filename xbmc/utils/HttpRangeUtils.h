@@ -31,7 +31,7 @@ class CHttpRange
 public:
   CHttpRange();
   CHttpRange(uint64_t firstPosition, uint64_t lastPosition);
-  virtual ~CHttpRange() { }
+  virtual ~CHttpRange() = default;
 
   bool operator<(const CHttpRange &other) const;
   bool operator==(const CHttpRange &other) const;
@@ -61,7 +61,7 @@ public:
   CHttpResponseRange(uint64_t firstPosition, uint64_t lastPosition);
   CHttpResponseRange(const void* data, uint64_t firstPosition, uint64_t lastPosition);
   CHttpResponseRange(const void* data, uint64_t length);
-  ~CHttpResponseRange() override { }
+  ~CHttpResponseRange() override = default;
 
   bool operator==(const CHttpResponseRange &other) const;
   bool operator!=(const CHttpResponseRange &other) const;
@@ -84,7 +84,7 @@ class CHttpRanges
 public:
   CHttpRanges();
   CHttpRanges(const HttpRanges& httpRanges);
-  virtual ~CHttpRanges() { }
+  virtual ~CHttpRanges() = default;
 
   const HttpRanges& Get() const { return m_ranges; }
   bool Get(size_t index, CHttpRange& range) const;

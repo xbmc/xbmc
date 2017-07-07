@@ -80,9 +80,7 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::stri
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
-CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
-{
-}
+CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void) = default;
 
 std::string& CNetworkInterfaceLinux::GetName(void)
 {

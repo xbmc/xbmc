@@ -27,9 +27,7 @@
 #include "Util.h"
 
 
-CDemuxMultiSource::CDemuxMultiSource()
-{
-}
+CDemuxMultiSource::CDemuxMultiSource() = default;
 
 CDemuxMultiSource::~CDemuxMultiSource()
 {

@@ -26,8 +26,8 @@
 class CHTTPImageHandler : public CHTTPFileHandler
 {
 public:
-  CHTTPImageHandler() { }
-  ~CHTTPImageHandler() override { }
+  CHTTPImageHandler() = default;
+  ~CHTTPImageHandler() override = default;
 
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPImageHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

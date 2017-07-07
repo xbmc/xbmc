@@ -37,7 +37,7 @@ public:
   ITouchInputHandling()
     : m_handler(NULL)
   { }
-  ~ITouchInputHandling() override { }
+  ~ITouchInputHandling() override = default;
 
   /*!
    * \brief Register a touch input handler

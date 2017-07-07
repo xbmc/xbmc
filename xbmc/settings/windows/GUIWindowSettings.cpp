@@ -28,6 +28,4 @@ CGUIWindowSettings::CGUIWindowSettings(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIWindowSettings::~CGUIWindowSettings(void)
-{
-}
+CGUIWindowSettings::~CGUIWindowSettings(void) = default;

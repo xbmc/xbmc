@@ -67,7 +67,7 @@ namespace XBMCAddon
   public:
     inline Tuple(T1 p1, T2 p2) : Tuple<T1>(p1), v2(p2) { TupleBase::nvs(2); }
     inline Tuple(T1 p1) : Tuple<T1>(p1) {}
-    inline Tuple() {}
+    inline Tuple() = default;
     inline Tuple(const Tuple<T1,T2>& o) : Tuple<T1>(o), v2(o.v2) {}
 
     inline T2& second() { TupleBase::nvs(2); return v2; }
@@ -83,7 +83,7 @@ namespace XBMCAddon
     inline Tuple(T1 p1, T2 p2, T3 p3) : Tuple<T1,T2>(p1,p2), v3(p3) { TupleBase::nvs(3); }
     inline Tuple(T1 p1, T2 p2) : Tuple<T1,T2>(p1,p2) {}
     inline Tuple(T1 p1) : Tuple<T1,T2>(p1) {}
-    inline Tuple() {}
+    inline Tuple() = default;
     inline Tuple(const Tuple<T1,T2,T3>& o) : Tuple<T1,T2>(o), v3(o.v3) {}
 
     inline T3& third() { TupleBase::nvs(3); return v3; }
@@ -100,7 +100,7 @@ namespace XBMCAddon
     inline Tuple(T1 p1, T2 p2, T3 p3) : Tuple<T1,T2,T3>(p1,p2,p3) {}
     inline Tuple(T1 p1, T2 p2) : Tuple<T1,T2,T3>(p1,p2) {}
     inline Tuple(T1 p1) : Tuple<T1,T2,T3>(p1) {}
-    inline Tuple() {}
+    inline Tuple() = default;
     inline Tuple(const Tuple<T1,T2,T3,T4>& o) : Tuple<T1,T2,T3>(o), v4(o.v4) {}
 
     inline T4& fourth() { TupleBase::nvs(4); return v4; }

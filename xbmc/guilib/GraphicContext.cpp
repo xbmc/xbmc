@@ -64,9 +64,7 @@ CGraphicContext::CGraphicContext(void) :
 {
 }
 
-CGraphicContext::~CGraphicContext(void)
-{
-}
+CGraphicContext::~CGraphicContext(void) = default;
 
 void CGraphicContext::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {

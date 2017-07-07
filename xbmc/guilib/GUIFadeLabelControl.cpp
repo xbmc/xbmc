@@ -55,9 +55,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
   m_randomized = from.m_randomized;
 }
 
-CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
-{
-}
+CGUIFadeLabelControl::~CGUIFadeLabelControl(void) = default;
 
 void CGUIFadeLabelControl::SetInfo(const std::vector<CGUIInfoLabel> &infoLabels)
 {

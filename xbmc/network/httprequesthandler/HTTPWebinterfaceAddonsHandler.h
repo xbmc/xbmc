@@ -26,8 +26,8 @@
 class CHTTPWebinterfaceAddonsHandler : public IHTTPRequestHandler
 {
 public:
-  CHTTPWebinterfaceAddonsHandler() { }
-  ~CHTTPWebinterfaceAddonsHandler() override { }
+  CHTTPWebinterfaceAddonsHandler() = default;
+  ~CHTTPWebinterfaceAddonsHandler() override = default;
   
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPWebinterfaceAddonsHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

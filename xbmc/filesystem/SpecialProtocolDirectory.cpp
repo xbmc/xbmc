@@ -28,13 +28,9 @@
 
 using namespace XFILE;
 
-CSpecialProtocolDirectory::CSpecialProtocolDirectory(void)
-{
-}
+CSpecialProtocolDirectory::CSpecialProtocolDirectory(void) = default;
 
-CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void)
-{
-}
+CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void) = default;
 
 bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

@@ -56,8 +56,7 @@ CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
   m_needsScaling = false;         // we handle all the scaling
 }
 
-CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void)
-{}
+CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void) = default;
 
 
 bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)

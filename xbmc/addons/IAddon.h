@@ -44,7 +44,7 @@ namespace ADDON
   class IAddon : public std::enable_shared_from_this<IAddon>
   {
   public:
-    virtual ~IAddon() {};
+    virtual ~IAddon() = default;
     virtual TYPE Type() const =0;
     virtual TYPE FullType() const =0;
     virtual bool IsType(TYPE type) const =0;

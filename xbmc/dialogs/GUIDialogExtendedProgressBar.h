@@ -31,7 +31,7 @@ public:
     m_fPercentage(0),
     m_strTitle(strTitle),
     m_bFinished(false) {}
-  virtual ~CGUIDialogProgressBarHandle(void) {}
+  virtual ~CGUIDialogProgressBarHandle(void) = default;
 
   const std::string &Title(void) { return m_strTitle; }
   void SetTitle(const std::string &strTitle);
@@ -58,7 +58,7 @@ class CGUIDialogExtendedProgressBar : public CGUIDialog
 {
 public:
   CGUIDialogExtendedProgressBar(void);
-  ~CGUIDialogExtendedProgressBar(void) override {};
+  ~CGUIDialogExtendedProgressBar(void) override = default;
   bool OnMessage(CGUIMessage& message) override;
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 

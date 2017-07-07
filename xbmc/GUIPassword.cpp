@@ -48,8 +48,7 @@ CGUIPassword::CGUIPassword(void)
   iMasterLockRetriesLeft = -1;
   bMasterUser = false;
 }
-CGUIPassword::~CGUIPassword(void)
-{}
+CGUIPassword::~CGUIPassword(void) = default;
 
 bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
 {

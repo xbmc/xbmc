@@ -59,9 +59,7 @@ CCDDARipJob::CCDDARipJob(const std::string& input,
 {
 }
 
-CCDDARipJob::~CCDDARipJob()
-{
-}
+CCDDARipJob::~CCDDARipJob() = default;
 
 bool CCDDARipJob::DoWork()
 {

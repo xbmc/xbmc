@@ -30,8 +30,7 @@ CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
-CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
-{}
+CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void) = default;
 
 bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {

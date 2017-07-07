@@ -139,9 +139,7 @@ public:
   }
 
 
-  ~CUPnPPlayerController() override
-  {
-  }
+  ~CUPnPPlayerController() override = default;
 
   PLT_MediaController*     m_control;
   PLT_Service *            m_transport;

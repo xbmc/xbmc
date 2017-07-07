@@ -43,10 +43,7 @@ CWinSystemBase::CWinSystemBase()
   m_fRefreshRate = 0.0f;
 }
 
-CWinSystemBase::~CWinSystemBase()
-{
-
-}
+CWinSystemBase::~CWinSystemBase() = default;
 
 bool CWinSystemBase::InitWindowSystem()
 {

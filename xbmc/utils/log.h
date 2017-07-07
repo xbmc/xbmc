@@ -58,7 +58,7 @@ protected:
   {
   public:
     CLogGlobals(void) : m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
-    ~CLogGlobals() {}
+    ~CLogGlobals() = default;
     PlatformInterfaceForCLog m_platform;
     int         m_repeatCount;
     int         m_repeatLogLevel;
@@ -78,7 +78,7 @@ namespace XbmcUtils
   class LogImplementation : public XbmcCommons::ILogger
   {
   public:
-    ~LogImplementation() override {}
+    ~LogImplementation() override = default;
     inline void log(int logLevel, IN_STRING const char* message) override { CLog::Log(logLevel, "%s", message); }
   };
 }

@@ -43,13 +43,9 @@ static int64_t vfs_file_seek(void *h, int64_t pos, int whence)
     return pFile->Seek(pos, whence & ~AVSEEK_FORCE);
 }
 
-CMusicInfoTagLoaderFFmpeg::CMusicInfoTagLoaderFFmpeg(void)
-{
-}
+CMusicInfoTagLoaderFFmpeg::CMusicInfoTagLoaderFFmpeg(void) = default;
 
-CMusicInfoTagLoaderFFmpeg::~CMusicInfoTagLoaderFFmpeg()
-{
-}
+CMusicInfoTagLoaderFFmpeg::~CMusicInfoTagLoaderFFmpeg() = default;
 
 bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {

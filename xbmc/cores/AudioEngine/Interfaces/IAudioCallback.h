@@ -27,8 +27,8 @@
 class IAudioCallback
 {
 public:
-  IAudioCallback() {};
-  virtual ~IAudioCallback() {};
+  IAudioCallback() = default;
+  virtual ~IAudioCallback() = default;
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample) = 0;
   virtual void OnAudioData(const float* pAudioData, unsigned int iAudioDataLength) = 0;
 };

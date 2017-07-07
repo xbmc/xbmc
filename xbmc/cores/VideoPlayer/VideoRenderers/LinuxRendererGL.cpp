@@ -112,10 +112,7 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
   hwDec = NULL;
 }
 
-CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
-{
-
-}
+CLinuxRendererGL::YUVBUFFER::~YUVBUFFER() = default;
 
 CLinuxRendererGL::CLinuxRendererGL()
 {

@@ -39,11 +39,9 @@ static CFileItemPtr XBTFFileToFileItem(const CXBTFFile& entry, const std::string
   return item;
 }
 
-CXbtDirectory::CXbtDirectory()
-{ }
+CXbtDirectory::CXbtDirectory() = default;
 
-CXbtDirectory::~CXbtDirectory()
-{ }
+CXbtDirectory::~CXbtDirectory() = default;
 
 bool CXbtDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
 {

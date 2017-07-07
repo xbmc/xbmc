@@ -92,9 +92,7 @@ CGUIIncludes::CGUIIncludes()
   m_expressionNodes.insert("selected");
 }
 
-CGUIIncludes::~CGUIIncludes()
-{
-}
+CGUIIncludes::~CGUIIncludes() = default;
 
 void CGUIIncludes::Clear()
 {

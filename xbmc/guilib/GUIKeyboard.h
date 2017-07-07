@@ -36,7 +36,7 @@ class CGUIKeyboard : public ITimerCallback
 {
   public:
     CGUIKeyboard():m_idleTimer(this){};
-    ~CGUIKeyboard() override{ };
+    ~CGUIKeyboard() override = default;
 
     // entrypoint
     /*!

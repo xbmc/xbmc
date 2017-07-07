@@ -79,13 +79,9 @@
 using namespace ADDON;
 using namespace XFILE;
 
-CFileFactory::CFileFactory()
-{
-}
+CFileFactory::CFileFactory() = default;
 
-CFileFactory::~CFileFactory()
-{
-}
+CFileFactory::~CFileFactory() = default;
 
 IFile* CFileFactory::CreateLoader(const std::string& strFileName)
 {

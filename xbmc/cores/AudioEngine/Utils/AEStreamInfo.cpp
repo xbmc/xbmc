@@ -133,9 +133,7 @@ bool CAEStreamInfo::operator==(const CAEStreamInfo& info) const
   return true;
 }
 
-CAEStreamParser::~CAEStreamParser()
-{
-}
+CAEStreamParser::~CAEStreamParser() = default;
 
 void CAEStreamParser::Reset()
 {

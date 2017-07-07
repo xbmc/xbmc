@@ -22,9 +22,7 @@
 #include "InputCodingTableKorean.h"
 #include "utils/CharsetConverter.h"
 
-CInputCodingTableKorean::CInputCodingTableKorean()
-{ 
-}
+CInputCodingTableKorean::CInputCodingTableKorean() = default;
 
 std::vector<std::wstring> CInputCodingTableKorean::GetResponse(int)
 {

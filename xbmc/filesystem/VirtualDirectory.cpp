@@ -41,8 +41,7 @@ CVirtualDirectory::CVirtualDirectory(void)
   m_allowThreads = true;
 }
 
-CVirtualDirectory::~CVirtualDirectory(void)
-{}
+CVirtualDirectory::~CVirtualDirectory(void) = default;
 
 /*!
  \brief Add shares to the virtual directory

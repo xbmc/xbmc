@@ -45,14 +45,14 @@ class IVideoPlayer
 public:
   virtual int OnDiscNavResult(void* pData, int iMessage) = 0;
   virtual void GetVideoResolution(unsigned int &width, unsigned int &height) = 0;
-  virtual ~IVideoPlayer() { }
+  virtual ~IVideoPlayer() = default;
 };
 
 class IDVDStreamPlayer
 {
 public:
   IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
-  virtual ~IDVDStreamPlayer() {}
+  virtual ~IDVDStreamPlayer() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
@@ -91,7 +91,7 @@ class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 {
 public:
   IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
-  ~IDVDStreamPlayerVideo() {}
+  ~IDVDStreamPlayerVideo() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void Flush(bool sync) = 0;
@@ -121,7 +121,7 @@ class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 {
 public:
   IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
-  ~IDVDStreamPlayerAudio() {}
+  ~IDVDStreamPlayerAudio() = default;
   virtual bool OpenStream(CDVDStreamInfo hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;

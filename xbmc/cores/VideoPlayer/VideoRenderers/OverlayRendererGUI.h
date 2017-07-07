@@ -40,7 +40,7 @@ namespace OVERLAY {
 class COverlayText : public COverlay
 {
 public:
-  COverlayText() {}
+  COverlayText() = default;
   COverlayText(CDVDOverlayText* src);
   virtual ~COverlayText();
   virtual void Render(SRenderState& state);

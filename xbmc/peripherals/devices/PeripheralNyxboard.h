@@ -27,7 +27,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralNyxboard(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralNyxboard(void) override {};
+    ~CPeripheralNyxboard(void) override = default;
     bool LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode) override;
   };
 }

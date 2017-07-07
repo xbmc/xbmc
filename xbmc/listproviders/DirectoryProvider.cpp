@@ -63,7 +63,7 @@ public:
       m_limit(limit),
       m_parentID(parentID)
   { }
-  ~CDirectoryJob() override { }
+  ~CDirectoryJob() override = default;
 
   const char* GetType() const override { return "directory"; }
   bool operator==(const CJob *job) const override

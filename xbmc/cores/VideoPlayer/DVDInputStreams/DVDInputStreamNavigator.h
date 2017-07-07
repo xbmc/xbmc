@@ -51,7 +51,7 @@ struct DVDNavStreamInfo
   std::string name;
   std::string language;
 
-  DVDNavStreamInfo() {}
+  DVDNavStreamInfo() = default;
 };
 
 struct DVDNavAudioStreamInfo : DVDNavStreamInfo

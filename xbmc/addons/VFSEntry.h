@@ -192,7 +192,7 @@ namespace ADDON
     CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr);
 
     //! \brief Empty destructor.
-    ~CVFSEntryIDirectoryWrapper() override {}
+    ~CVFSEntryIDirectoryWrapper() override = default;
 
     //! \brief Return directory listing.
     //! \param[in] url URL to file to list.
@@ -249,7 +249,7 @@ namespace ADDON
     CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr) : CVFSEntryIDirectoryWrapper(ptr) {}
 
     //! \brief Empty destructor.
-    ~CVFSEntryIFileDirectoryWrapper() override {}
+    ~CVFSEntryIFileDirectoryWrapper() override = default;
 
     //! \brief Check if the given file should be treated as a directory.
     //! \param[in] URL URL for file to probe.

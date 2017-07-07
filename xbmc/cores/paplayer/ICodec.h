@@ -43,7 +43,7 @@ public:
     m_bitsPerSample = 0;
     m_bitsPerCodedSample = 0;
   };
-  virtual ~ICodec() {};
+  virtual ~ICodec() = default;
 
   // Virtual functions that all codecs should implement.  Note that these may need
   // enhancing and or refactoring at a later date.  It works currently well for MP3 and

@@ -25,7 +25,7 @@
 class DllAddonInterface
 {
 public:
-  virtual ~DllAddonInterface() {}
+  virtual ~DllAddonInterface() = default;
   virtual void GetAddon(void* pAddon) =0;
   virtual ADDON_STATUS Create(void *cb, void *info) =0;
   virtual void Destroy() =0;

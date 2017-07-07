@@ -249,9 +249,7 @@ static std::string getValueFromLsb_release(enum lsb_rel_info_type infoType)
 
 CSysInfo g_sysinfo;
 
-CSysInfoJob::CSysInfoJob()
-{
-}
+CSysInfoJob::CSysInfoJob() = default;
 
 bool CSysInfoJob::DoWork()
 {
@@ -409,9 +407,7 @@ CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
   m_iSystemTimeTotalUp = 0;
 }
 
-CSysInfo::~CSysInfo()
-{
-}
+CSysInfo::~CSysInfo() = default;
 
 bool CSysInfo::Load(const TiXmlNode *settings)
 {

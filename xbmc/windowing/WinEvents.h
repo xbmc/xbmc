@@ -28,7 +28,7 @@
 class IWinEvents
 {
   public:
-    virtual       ~IWinEvents() {};
+    virtual       ~IWinEvents() = default;
     virtual bool  MessagePump()   = 0;
     virtual void  MessagePush(XBMC_Event* ev) {};
 };

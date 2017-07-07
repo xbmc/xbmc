@@ -26,15 +26,9 @@
 using namespace PLAYLIST;
 using namespace XFILE;
 
-CPlaylistDirectory::CPlaylistDirectory()
-{
+CPlaylistDirectory::CPlaylistDirectory() = default;
 
-}
-
-CPlaylistDirectory::~CPlaylistDirectory()
-{
-
-}
+CPlaylistDirectory::~CPlaylistDirectory() = default;
 
 bool CPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

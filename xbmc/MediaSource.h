@@ -42,7 +42,7 @@ public:
     SOURCE_TYPE_REMOVABLE    = 6
   };
   CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; m_allowSharing=true; };
-  virtual ~CMediaSource() {};
+  virtual ~CMediaSource() = default;
 
   bool operator==(const CMediaSource &right) const;
 

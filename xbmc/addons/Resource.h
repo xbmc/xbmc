@@ -30,7 +30,7 @@ namespace ADDON
 class CResource : public CAddon
 {
 public:
-  ~CResource() override { }
+  ~CResource() override = default;
 
   virtual bool IsAllowed(const std::string &file) const = 0;
 

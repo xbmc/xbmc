@@ -59,7 +59,7 @@ namespace XBMCAddon
     {
     public:
 
-      inline Dialog() {}
+      inline Dialog() = default;
       ~Dialog() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

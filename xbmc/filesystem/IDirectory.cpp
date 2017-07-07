@@ -33,8 +33,7 @@ IDirectory::IDirectory(void)
   m_flags = DIR_FLAG_DEFAULTS;
 }
 
-IDirectory::~IDirectory(void)
-{}
+IDirectory::~IDirectory(void) = default;
 
 /*!
  \brief Test if file have an allowed extension, as specified with SetMask()

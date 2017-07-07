@@ -74,7 +74,7 @@ class CueReader
 public:
   virtual bool ready() const = 0;
   virtual bool ReadLine(std::string &line) = 0;
-  virtual ~CueReader() {}
+  virtual ~CueReader() = default;
 private:
   std::string m_sourcePath;
 };
@@ -163,8 +163,7 @@ CCueDocument::CCueDocument()
 {
 }
 
-CCueDocument::~CCueDocument()
-{}
+CCueDocument::~CCueDocument() = default;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Function: ParseFile()

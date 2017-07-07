@@ -31,8 +31,8 @@ public:
   /* return the name of this sync for logging */
   virtual const char *GetName() = 0;
 
-  IAESink() {};
-  virtual ~IAESink() {};
+  IAESink() = default;
+  virtual ~IAESink() = default;
 
   /*
     The sink does NOT have to honour anything in the format struct or the device

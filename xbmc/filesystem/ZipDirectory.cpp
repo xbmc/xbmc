@@ -45,13 +45,9 @@ namespace XFILE
     return item;
   }
 
-  CZipDirectory::CZipDirectory()
-  {
-  }
+  CZipDirectory::CZipDirectory() = default;
 
-  CZipDirectory::~CZipDirectory()
-  {
-  }
+  CZipDirectory::~CZipDirectory() = default;
 
   bool CZipDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
   {

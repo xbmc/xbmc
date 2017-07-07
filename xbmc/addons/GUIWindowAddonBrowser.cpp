@@ -62,9 +62,7 @@ CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 {
 }
 
-CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
-{
-}
+CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser() = default;
 
 bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 {

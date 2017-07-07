@@ -35,7 +35,7 @@ class IListProvider
 {
 public:
   IListProvider(int parentID) : m_parentID(parentID) {}
-  virtual ~IListProvider() {}
+  virtual ~IListProvider() = default;
 
   /*! \brief Factory to create list providers.
    \param parent a parent TiXmlNode for the container.

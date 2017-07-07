@@ -42,7 +42,7 @@ namespace EVENTSERVER
   public:
     static void RemoveInstance();
     static CEventServer* GetInstance();
-    ~CEventServer() override {}
+    ~CEventServer() override = default;
 
     // IRunnable entry point for thread
     void  Process() override;

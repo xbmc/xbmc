@@ -42,13 +42,9 @@
 
 namespace XFILE
 {
-  CSmartPlaylistDirectory::CSmartPlaylistDirectory()
-  {
-  }
+  CSmartPlaylistDirectory::CSmartPlaylistDirectory() = default;
 
-  CSmartPlaylistDirectory::~CSmartPlaylistDirectory()
-  {
-  }
+  CSmartPlaylistDirectory::~CSmartPlaylistDirectory() = default;
 
   bool CSmartPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {

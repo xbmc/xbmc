@@ -30,7 +30,7 @@ public:
   enum { TYPE_WORD_LIST, TYPE_CONVERT_STRING };
   virtual int GetType() { return TYPE_WORD_LIST; }
 
-  virtual ~IInputCodingTable() {}
+  virtual ~IInputCodingTable() = default;
   /*! \brief Called for the active keyboard layout when it's loaded, stick any initialization here
 
       This won't be needed for most implementations so we don't set it =0 but provide a default

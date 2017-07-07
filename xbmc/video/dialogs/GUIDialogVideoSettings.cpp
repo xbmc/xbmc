@@ -70,8 +70,7 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
       m_viewModeChanged(false)
 { }
 
-CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
-{ }
+CGUIDialogVideoSettings::~CGUIDialogVideoSettings() = default;
 
 void CGUIDialogVideoSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {

@@ -124,11 +124,9 @@ std::string CGUIControlFactory::TranslateControlType(CGUIControl::GUICONTROLTYPE
   return "";
 }
 
-CGUIControlFactory::CGUIControlFactory(void)
-{}
+CGUIControlFactory::CGUIControlFactory(void) = default;
 
-CGUIControlFactory::~CGUIControlFactory(void)
-{}
+CGUIControlFactory::~CGUIControlFactory(void) = default;
 
 bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue)
 {

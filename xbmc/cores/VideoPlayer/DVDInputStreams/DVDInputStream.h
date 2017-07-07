@@ -65,7 +65,7 @@ public:
   class IDisplayTime
   {
     public:
-    virtual ~IDisplayTime() {};
+    virtual ~IDisplayTime() = default;
     virtual int GetTotalTime() = 0;
     virtual int GetTime() = 0;
   };
@@ -73,14 +73,14 @@ public:
   class IPosTime
   {
     public:
-    virtual ~IPosTime() {};
+    virtual ~IPosTime() = default;
     virtual bool PosTime(int ms) = 0;
   };
 
   class IChapter
   {
     public:
-    virtual ~IChapter() {};
+    virtual ~IChapter() = default;
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
     virtual void GetChapterName(std::string& name, int ch=-1) = 0;
@@ -91,7 +91,7 @@ public:
   class IMenus
   {
     public:
-    virtual ~IMenus() {};
+    virtual ~IMenus() = default;
     virtual void ActivateButton() = 0;
     virtual void SelectButton(int iButton) = 0;
     virtual int  GetCurrentButton() = 0;
@@ -117,7 +117,7 @@ public:
   class IDemux
   {
     public:
-    virtual ~IDemux() {}
+    virtual ~IDemux() = default;
     virtual bool OpenDemux() = 0;
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;

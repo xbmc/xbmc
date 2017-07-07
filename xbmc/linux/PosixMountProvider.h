@@ -27,7 +27,7 @@ class CPosixMountProvider : public IStorageProvider
 {
 public:
   CPosixMountProvider();
-  ~CPosixMountProvider() override { }
+  ~CPosixMountProvider() override = default;
 
   void Initialize() override;
   void Stop() override { }

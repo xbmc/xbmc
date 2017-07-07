@@ -40,8 +40,7 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
   m_cHideInputChar = '*';
 }
 
-CGUIDialogGamepad::~CGUIDialogGamepad(void)
-{}
+CGUIDialogGamepad::~CGUIDialogGamepad(void) = default;
 
 void CGUIDialogGamepad::OnInitWindow()
 {

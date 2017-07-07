@@ -39,9 +39,7 @@ CSavestateWriter::CSavestateWriter() :
 {
 }
 
-CSavestateWriter::~CSavestateWriter()
-{
-}
+CSavestateWriter::~CSavestateWriter() = default;
 
 bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount)
 {

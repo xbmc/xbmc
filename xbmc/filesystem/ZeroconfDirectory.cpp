@@ -36,9 +36,7 @@ CZeroconfDirectory::CZeroconfDirectory()
   CZeroconfBrowser::GetInstance()->Start();
 }
 
-CZeroconfDirectory::~CZeroconfDirectory()
-{
-}
+CZeroconfDirectory::~CZeroconfDirectory() = default;
 
 namespace
 {

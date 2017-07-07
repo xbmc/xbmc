@@ -33,7 +33,7 @@ class CMusicArtistInfo
 public:
   CMusicArtistInfo() : m_bLoaded(false) {}
   CMusicArtistInfo(const std::string& strArtist, const CScraperUrl& strArtistURL);
-  virtual ~CMusicArtistInfo() {}
+  virtual ~CMusicArtistInfo() = default;
   bool Loaded() const { return m_bLoaded; }
   void SetLoaded() { m_bLoaded = true; }
   void SetArtist(const CArtist& artist);

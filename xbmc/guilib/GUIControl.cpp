@@ -88,10 +88,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
 }
 
 
-CGUIControl::~CGUIControl(void)
-{
-
-}
+CGUIControl::~CGUIControl(void) = default;
 
 void CGUIControl::AllocResources()
 {

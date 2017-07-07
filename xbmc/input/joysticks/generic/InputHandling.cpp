@@ -39,9 +39,7 @@ CInputHandling::CInputHandling(IInputHandler* handler, IButtonMap* buttonMap)
 {
 }
 
-CInputHandling::~CInputHandling(void)
-{
-}
+CInputHandling::~CInputHandling(void) = default;
 
 bool CInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {

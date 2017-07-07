@@ -34,10 +34,7 @@ CGUIDialogProgress::CGUIDialogProgress(void)
   Reset();
 }
 
-CGUIDialogProgress::~CGUIDialogProgress(void)
-{
-
-}
+CGUIDialogProgress::~CGUIDialogProgress(void) = default;
 
 void CGUIDialogProgress::Reset()
 {

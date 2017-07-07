@@ -38,8 +38,7 @@ CSkinSettings::CSkinSettings()
   Clear();
 }
 
-CSkinSettings::~CSkinSettings()
-{ }
+CSkinSettings::~CSkinSettings() = default;
 
 CSkinSettings& CSkinSettings::GetInstance()
 {

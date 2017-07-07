@@ -1740,7 +1740,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() override;
 
-      ControlFadeLabel() {}
+      ControlFadeLabel() = default;
 #endif
     };
     /// @}
@@ -1924,7 +1924,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() override;
 
-      ControlTextBox() {}
+      ControlTextBox() = default;
 #endif
     };
     /// @}
@@ -2470,7 +2470,7 @@ namespace XBMCAddon
 #ifndef SWIG
       SWIGHIDDENVIRTUAL CGUIControl* Create() override;
 
-      inline ControlGroup() {}
+      inline ControlGroup() = default;
 #endif
     };
     /// @}
@@ -2947,7 +2947,7 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL CGUIControl* Create() override;
 
-      inline ControlSlider() {}
+      inline ControlSlider() = default;
 #endif
     };
     /// @}

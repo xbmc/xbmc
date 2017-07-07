@@ -35,9 +35,7 @@ CPort::CPort(JOYSTICK::IInputHandler *gameInput, CGameClient &gameClient) :
 {
 }
 
-CPort::~CPort()
-{
-}
+CPort::~CPort() = default;
 
 void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
 {

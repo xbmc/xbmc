@@ -43,8 +43,7 @@ CGUIDialog::CGUIDialog(int id, const std::string &xmlFile, DialogModalityType mo
   m_bAutoClosed = false;
 }
 
-CGUIDialog::~CGUIDialog(void)
-{}
+CGUIDialog::~CGUIDialog(void) = default;
 
 bool CGUIDialog::Load(TiXmlElement* pRootElement)
 {

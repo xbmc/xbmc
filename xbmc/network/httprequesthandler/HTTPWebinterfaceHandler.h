@@ -27,8 +27,8 @@
 class CHTTPWebinterfaceHandler : public CHTTPFileHandler
 {
 public:
-  CHTTPWebinterfaceHandler() { }
-  ~CHTTPWebinterfaceHandler() override { }
+  CHTTPWebinterfaceHandler() = default;
+  ~CHTTPWebinterfaceHandler() override = default;
   
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPWebinterfaceHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

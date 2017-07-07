@@ -46,7 +46,7 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBShader() : m_convertFullRange(false) {};
-    virtual ~BaseYUV2RGBShader() {};
+    virtual ~BaseYUV2RGBShader() = default;
     virtual void SetField(int field) {};
     virtual void SetWidth(int width) {};
     virtual void SetHeight(int width) {};
@@ -143,7 +143,7 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format);
-   ~BaseYUV2RGBARBShader() {}
+   ~BaseYUV2RGBARBShader() = default;
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }

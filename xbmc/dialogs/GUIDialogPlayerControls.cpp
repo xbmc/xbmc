@@ -27,7 +27,5 @@ CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogPlayerControls::~CGUIDialogPlayerControls(void)
-{
-}
+CGUIDialogPlayerControls::~CGUIDialogPlayerControls(void) = default;
 

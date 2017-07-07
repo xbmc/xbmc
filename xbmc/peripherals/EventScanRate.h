@@ -32,7 +32,7 @@ namespace PERIPHERALS
   class IEventRateCallback
   {
   public:
-    virtual ~IEventRateCallback(void) { }
+    virtual ~IEventRateCallback(void) = default;
 
     /*!
      * \brief Release the specified handle
@@ -48,7 +48,7 @@ namespace PERIPHERALS
   public:
     CEventRateHandle(double rateHz, IEventRateCallback* callback);
 
-    ~CEventRateHandle(void) { }
+    ~CEventRateHandle(void) = default;
 
     /*!
      * \brief Get the rate this handle represents

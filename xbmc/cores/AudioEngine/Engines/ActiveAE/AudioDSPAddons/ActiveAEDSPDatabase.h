@@ -39,8 +39,8 @@ namespace ActiveAE
     /*!
      * @brief Create a new instance of the audio DSP database.
      */
-    CActiveAEDSPDatabase(void) {};
-    ~CActiveAEDSPDatabase(void) override {};
+    CActiveAEDSPDatabase(void) = default;
+    ~CActiveAEDSPDatabase(void) override = default;
 
     /*!
      * @brief Open the database.

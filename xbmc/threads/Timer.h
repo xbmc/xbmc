@@ -27,7 +27,7 @@
 class ITimerCallback
 {
 public:
-  virtual ~ITimerCallback() { }
+  virtual ~ITimerCallback() = default;
   
   virtual void OnTimeout() = 0;
 };

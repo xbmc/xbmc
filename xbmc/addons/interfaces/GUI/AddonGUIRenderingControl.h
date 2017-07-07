@@ -34,7 +34,7 @@ class CGUIAddonRenderingControl : public IRenderingCallback
 friend class CAddonCallbacksGUI;
 public:
   CGUIAddonRenderingControl(CGUIRenderingControl *pControl);
-  virtual ~CGUIAddonRenderingControl() {}
+  virtual ~CGUIAddonRenderingControl() = default;
   bool Create(int x, int y, int w, int h, void *device) override;
   void Render() override;
   void Stop() override;

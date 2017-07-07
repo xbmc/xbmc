@@ -77,7 +77,7 @@ namespace ADDON
   {
   public:
     CRepositoryUpdateJob(const RepositoryPtr& repo);
-    ~CRepositoryUpdateJob() override {}
+    ~CRepositoryUpdateJob() override = default;
     bool DoWork() override;
     const RepositoryPtr& GetAddon() const { return m_repo; };
 

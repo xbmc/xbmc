@@ -37,9 +37,7 @@ CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const std::string &xmlFile)
   m_hasTextbox = false;
 }
 
-CGUIDialogBoxBase::~CGUIDialogBoxBase(void)
-{
-}
+CGUIDialogBoxBase::~CGUIDialogBoxBase(void) = default;
 
 bool CGUIDialogBoxBase::OnMessage(CGUIMessage& message)
 {

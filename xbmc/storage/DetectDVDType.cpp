@@ -71,9 +71,7 @@ CDetectDVDMedia::CDetectDVDMedia() : CThread("DetectDVDMedia"),
   m_pInstance = this;
 }
 
-CDetectDVDMedia::~CDetectDVDMedia()
-{
-}
+CDetectDVDMedia::~CDetectDVDMedia() = default;
 
 void CDetectDVDMedia::OnStartup()
 {

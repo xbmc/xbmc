@@ -29,11 +29,9 @@
 namespace XFILE
 {
 
-CXbtManager::CXbtManager()
-{ }
+CXbtManager::CXbtManager() = default;
 
-CXbtManager::~CXbtManager()
-{ }
+CXbtManager::~CXbtManager() = default;
 
 CXbtManager& CXbtManager::GetInstance()
 {

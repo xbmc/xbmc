@@ -94,9 +94,7 @@ public:
     m_message = msg;
   }
 
-  virtual ~CDVDMsg()
-  {
-  }
+  virtual ~CDVDMsg() = default;
 
   /**
    * checks for message type

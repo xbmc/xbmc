@@ -217,9 +217,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_bHasChildErrors     == right.m_bHasChildErrors);
 }
 
-CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
-{
-}
+CPVRTimerInfoTag::~CPVRTimerInfoTag(void) = default;
 
 /**
  * Compare not equal for two CPVRTimerInfoTag

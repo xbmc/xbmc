@@ -51,10 +51,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_bDynamicResourceAlloc=false;
 }
 
-CGUIImage::~CGUIImage(void)
-{
-
-}
+CGUIImage::~CGUIImage(void) = default;
 
 void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 {

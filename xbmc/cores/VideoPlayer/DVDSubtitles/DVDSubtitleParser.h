@@ -33,7 +33,7 @@ class CDVDStreamInfo;
 class CDVDSubtitleParser
 {
 public:
-  virtual ~CDVDSubtitleParser() {}
+  virtual ~CDVDSubtitleParser() = default;
   virtual bool Open(CDVDStreamInfo &hints) = 0;
   virtual void Dispose() = 0;
   virtual void Reset() = 0;
@@ -45,7 +45,7 @@ class CDVDSubtitleParserCollection
 {
 public:
   CDVDSubtitleParserCollection(const std::string& strFile) : m_filename(strFile) {}
-  virtual ~CDVDSubtitleParserCollection() { }
+  virtual ~CDVDSubtitleParserCollection() = default;
   virtual CDVDOverlay* Parse(double iPts)
   {
     CDVDOverlay* o = m_collection.Get(iPts);

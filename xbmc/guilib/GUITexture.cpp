@@ -117,9 +117,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_invalid = true;
 }
 
-CGUITextureBase::~CGUITextureBase(void)
-{
-}
+CGUITextureBase::~CGUITextureBase(void) = default;
 
 bool CGUITextureBase::AllocateOnDemand()
 {

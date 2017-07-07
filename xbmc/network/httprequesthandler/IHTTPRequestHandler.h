@@ -90,7 +90,7 @@ typedef struct HTTPResponseDetails {
 class IHTTPRequestHandler
 {
 public:
-  virtual ~IHTTPRequestHandler() { }
+  virtual ~IHTTPRequestHandler() = default;
 
   /*!
    * \brief Creates a new HTTP request handler for the given request.

@@ -34,11 +34,9 @@
 
 using namespace XFILE;
 
-CPosixDirectory::CPosixDirectory(void)
-{}
+CPosixDirectory::CPosixDirectory(void) = default;
 
-CPosixDirectory::~CPosixDirectory(void)
-{}
+CPosixDirectory::~CPosixDirectory(void) = default;
 
 bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

@@ -35,7 +35,7 @@ class InfoBool
 {
 public:
   InfoBool(const std::string &expression, int context, unsigned int &refreshCounter);
-  virtual ~InfoBool() {};
+  virtual ~InfoBool() = default;
 
   virtual void Initialize() {};
 

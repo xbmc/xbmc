@@ -32,7 +32,7 @@ class CGenericTouchRotateDetector : public IGenericTouchGestureDetector
 {
 public:
   CGenericTouchRotateDetector(ITouchActionHandler *handler, float dpi);
-  ~CGenericTouchRotateDetector() override { }
+  ~CGenericTouchRotateDetector() override = default;
 
   bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
   bool OnTouchUp(unsigned int index, const Pointer &pointer) override;

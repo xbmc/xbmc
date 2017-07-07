@@ -31,8 +31,7 @@ CMusicDbUrl::CMusicDbUrl()
   : CDbUrl()
 { }
 
-CMusicDbUrl::~CMusicDbUrl()
-{ }
+CMusicDbUrl::~CMusicDbUrl() = default;
 
 bool CMusicDbUrl::parse()
 {

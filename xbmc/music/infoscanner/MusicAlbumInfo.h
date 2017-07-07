@@ -37,7 +37,7 @@ public:
   CMusicAlbumInfo() : m_bLoaded(false), m_relevance(-1) {}
   CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL);
   CMusicAlbumInfo(const std::string& strAlbum, const std::string& strArtist, const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL);
-  virtual ~CMusicAlbumInfo() {}
+  virtual ~CMusicAlbumInfo() = default;
 
   bool Loaded() const { return m_bLoaded; }
   void SetLoaded(bool bLoaded) { m_bLoaded = bLoaded; }

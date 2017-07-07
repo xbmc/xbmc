@@ -41,8 +41,7 @@ CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, fl
   m_nDirection = DIRECTION_NONE;
 }
 
-CGUIResizeControl::~CGUIResizeControl(void)
-{}
+CGUIResizeControl::~CGUIResizeControl(void) = default;
 
 void CGUIResizeControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {

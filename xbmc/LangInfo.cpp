@@ -226,10 +226,7 @@ CLangInfo::CRegion::CRegion()
   SetDefaults();
 }
 
-CLangInfo::CRegion::~CRegion()
-{
-
-}
+CLangInfo::CRegion::~CRegion() = default;
 
 void CLangInfo::CRegion::SetDefaults()
 {
@@ -334,9 +331,7 @@ CLangInfo::CLangInfo()
   m_speedUnit = m_defaultRegion.m_speedUnit;
 }
 
-CLangInfo::~CLangInfo()
-{
-}
+CLangInfo::~CLangInfo() = default;
 
 void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {

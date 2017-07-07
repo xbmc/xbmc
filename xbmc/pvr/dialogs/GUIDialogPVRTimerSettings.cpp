@@ -94,9 +94,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
   m_loadType = LOAD_EVERY_TIME;
 }
 
-CGUIDialogPVRTimerSettings::~CGUIDialogPVRTimerSettings()
-{
-}
+CGUIDialogPVRTimerSettings::~CGUIDialogPVRTimerSettings() = default;
 
 bool CGUIDialogPVRTimerSettings::CanBeActivated() const
 {

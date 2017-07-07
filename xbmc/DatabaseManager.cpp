@@ -44,9 +44,7 @@ CDatabaseManager::CDatabaseManager(): m_bIsUpgrading(false)
 {
 }
 
-CDatabaseManager::~CDatabaseManager()
-{
-}
+CDatabaseManager::~CDatabaseManager() = default;
 
 void CDatabaseManager::Initialize(bool addonsOnly)
 {

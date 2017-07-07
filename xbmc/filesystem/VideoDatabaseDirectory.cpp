@@ -35,13 +35,9 @@
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 
-CVideoDatabaseDirectory::CVideoDatabaseDirectory(void)
-{
-}
+CVideoDatabaseDirectory::CVideoDatabaseDirectory(void) = default;
 
-CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void)
-{
-}
+CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void) = default;
 
 bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

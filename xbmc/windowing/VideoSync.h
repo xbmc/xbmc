@@ -27,7 +27,7 @@ class CVideoSync
 {
 public:
   CVideoSync(void *clock) { m_refClock = clock; };
-  virtual ~CVideoSync() {};
+  virtual ~CVideoSync() = default;
   virtual bool Setup(PUPDATECLOCK func) = 0;
   virtual void Run(std::atomic<bool>& stop) = 0;
   virtual void Cleanup() = 0;

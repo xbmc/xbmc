@@ -67,9 +67,7 @@ CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
   m_movingFrom = -1;
 }
 
-CGUIWindowMusicPlayList::~CGUIWindowMusicPlayList(void)
-{
-}
+CGUIWindowMusicPlayList::~CGUIWindowMusicPlayList(void) = default;
 
 bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 {

@@ -38,8 +38,7 @@ CGUIWindowTestPattern::CGUIWindowTestPattern(void)
   m_needsScaling = false;
 }
 
-CGUIWindowTestPattern::~CGUIWindowTestPattern(void)
-{}
+CGUIWindowTestPattern::~CGUIWindowTestPattern(void) = default;
 
 
 bool CGUIWindowTestPattern::OnAction(const CAction &action)

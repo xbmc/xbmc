@@ -45,9 +45,7 @@ CServiceManager::CServiceManager()
 {
 }
 
-CServiceManager::~CServiceManager()
-{
-}
+CServiceManager::~CServiceManager() = default;
 
 bool CServiceManager::InitStageOne()
 {

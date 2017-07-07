@@ -61,9 +61,7 @@ CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddon* addo
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
-CGUIAddonWindow::~CGUIAddonWindow(void)
-{
-}
+CGUIAddonWindow::~CGUIAddonWindow(void) = default;
 
 bool CGUIAddonWindow::OnAction(const CAction &action)
 {
@@ -302,9 +300,7 @@ CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, const std::string& strXML, 
   m_bIsDialog = true;
 }
 
-CGUIAddonWindowDialog::~CGUIAddonWindowDialog(void)
-{
-}
+CGUIAddonWindowDialog::~CGUIAddonWindowDialog(void) = default;
 
 bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 {

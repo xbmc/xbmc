@@ -113,7 +113,7 @@ namespace addon
     {
     }
 
-    virtual ~Peripheral(void) { }
+    virtual ~Peripheral(void) = default;
 
     PERIPHERAL_TYPE    Type(void) const      { return m_type; }
     const std::string& Name(void) const      { return m_strName; }
@@ -271,7 +271,7 @@ namespace addon
     {
     }
 
-    ~Joystick(void) override { }
+    ~Joystick(void) override = default;
 
     Joystick& operator=(const Joystick& rhs)
     {

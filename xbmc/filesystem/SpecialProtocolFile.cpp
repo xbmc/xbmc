@@ -28,8 +28,7 @@ CSpecialProtocolFile::CSpecialProtocolFile(void)
   : COverrideFile(true)
 { }
 
-CSpecialProtocolFile::~CSpecialProtocolFile(void)
-{ }
+CSpecialProtocolFile::~CSpecialProtocolFile(void) = default;
 
 std::string CSpecialProtocolFile::TranslatePath(const CURL& url)
 {

@@ -38,9 +38,7 @@ CDAVFile::CDAVFile(void)
 {
 }
 
-CDAVFile::~CDAVFile(void)
-{
-}
+CDAVFile::~CDAVFile(void) = default;
 
 bool CDAVFile::Execute(const CURL& url)
 {

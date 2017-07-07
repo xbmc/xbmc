@@ -227,7 +227,7 @@ class IPlayer
 {
 public:
   IPlayer(IPlayerCallback& callback): m_callback(callback){};
-  virtual ~IPlayer(){};
+  virtual ~IPlayer() = default;
   virtual bool Initialize(TiXmlElement* pConfig) { return true; };
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }

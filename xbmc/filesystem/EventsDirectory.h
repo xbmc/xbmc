@@ -32,8 +32,8 @@ namespace XFILE
   class CEventsDirectory : public IDirectory
   {
   public:
-    CEventsDirectory() { }
-    ~CEventsDirectory() override { }
+    CEventsDirectory() = default;
+    ~CEventsDirectory() override = default;
 
     // implementations of IDirectory
     bool GetDirectory(const CURL& url, CFileItemList& items) override;

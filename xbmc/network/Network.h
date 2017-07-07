@@ -72,7 +72,7 @@ private:
 class CNetworkInterface
 {
 public:
-   virtual ~CNetworkInterface() {};
+   virtual ~CNetworkInterface() = default;
 
    virtual std::string& GetName(void) = 0;
 

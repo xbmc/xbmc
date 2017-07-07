@@ -28,13 +28,9 @@
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
-CMusicFileDirectory::CMusicFileDirectory(void)
-{
-}
+CMusicFileDirectory::CMusicFileDirectory(void) = default;
 
-CMusicFileDirectory::~CMusicFileDirectory(void)
-{
-}
+CMusicFileDirectory::~CMusicFileDirectory(void) = default;
 
 bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

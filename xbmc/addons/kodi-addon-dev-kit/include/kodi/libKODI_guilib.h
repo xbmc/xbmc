@@ -506,7 +506,7 @@ public:
   {
     m_controlHandle = m_cb->Window_GetControl_Spin(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
-  ~CAddonGUISpinControl(void) override {}
+  ~CAddonGUISpinControl(void) override = default;
 
   void SetVisible(bool yesNo)
   {
@@ -555,7 +555,7 @@ public:
   {
     m_controlHandle = m_cb->Window_GetControl_RadioButton(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
-  ~CAddonGUIRadioButton() override {}
+  ~CAddonGUIRadioButton() override = default;
 
   void SetVisible(bool yesNo)
   {
@@ -593,7 +593,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_Progress(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
-  ~CAddonGUIProgressControl(void) override {}
+  ~CAddonGUIProgressControl(void) override = default;
 
   void SetPercentage(float fPercent)
   {
@@ -641,7 +641,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_Slider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
-  ~CAddonGUISliderControl(void) override {}
+  ~CAddonGUISliderControl(void) override = default;
 
   void SetVisible(bool yesNo)
   {
@@ -731,7 +731,7 @@ public:
     m_controlHandle = m_cb->Window_GetControl_SettingsSlider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
   
-  ~CAddonGUISettingsSliderControl(void) override {}
+  ~CAddonGUISettingsSliderControl(void) override = default;
 
   void SetVisible(bool yesNo)
   {

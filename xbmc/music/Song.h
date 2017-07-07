@@ -59,7 +59,7 @@ class CSong: public ISerializable
 public:
   CSong() ;
   CSong(CFileItem& item);
-  ~CSong() override{};
+  ~CSong() override = default;
   void Clear() ;
   void MergeScrapedSong(const CSong& source, bool override);
   void Serialize(CVariant& value) const override;

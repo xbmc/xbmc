@@ -59,7 +59,7 @@ class DecodedFrames
 class IDecoder
 {
   public:
-    virtual ~IDecoder(){}
+    virtual ~IDecoder() = default;
     virtual bool CanDecode(const std::string &filename) = 0;
     virtual bool LoadFile(const std::string &filename, DecodedFrames &frames) = 0;
     virtual void FreeDecodedFrames(DecodedFrames &frames) = 0;

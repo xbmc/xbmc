@@ -52,9 +52,7 @@ CScraperUrl::CScraperUrl()
   relevance = 0;
 }
 
-CScraperUrl::~CScraperUrl()
-{
-}
+CScraperUrl::~CScraperUrl() = default;
 
 void CScraperUrl::Clear()
 {

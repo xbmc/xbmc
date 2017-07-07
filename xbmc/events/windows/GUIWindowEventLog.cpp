@@ -42,8 +42,7 @@ CGUIWindowEventLog::CGUIWindowEventLog()
   : CGUIMediaWindow(WINDOW_EVENT_LOG, "EventLog.xml")
 { }
 
-CGUIWindowEventLog::~CGUIWindowEventLog()
-{ }
+CGUIWindowEventLog::~CGUIWindowEventLog() = default;
 
 bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
 {

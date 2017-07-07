@@ -92,9 +92,7 @@ void CGUIWindowPictures::OnInitWindow()
   }
 }
 
-CGUIWindowPictures::~CGUIWindowPictures(void)
-{
-}
+CGUIWindowPictures::~CGUIWindowPictures(void) = default;
 
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 {

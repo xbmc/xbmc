@@ -33,7 +33,7 @@ class CFileItemList;
 class IBackgroundLoaderObserver
 {
 public:
-  virtual ~IBackgroundLoaderObserver() {}
+  virtual ~IBackgroundLoaderObserver() = default;
   virtual void OnItemLoaded(CFileItem* pItem) = 0;
 };
 

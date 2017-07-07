@@ -33,7 +33,7 @@ namespace XBMCAddon
   class CallbackHandler : public AddonClass
   {
   protected:
-    inline CallbackHandler() {}
+    inline CallbackHandler() = default;
 
   public:
     virtual void invokeCallback(Callback* cb) = 0;
@@ -54,7 +54,7 @@ namespace XBMCAddon
   class RetardedAsyncCallbackHandler : public CallbackHandler
   {
   protected:
-    inline RetardedAsyncCallbackHandler() {}
+    inline RetardedAsyncCallbackHandler() = default;
   public:
 
     ~RetardedAsyncCallbackHandler() override;

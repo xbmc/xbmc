@@ -52,9 +52,7 @@ CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
-{
-}
+CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule() = default;
 
 bool CGUIDialogSmartPlaylistRule::OnBack(int actionID)
 {

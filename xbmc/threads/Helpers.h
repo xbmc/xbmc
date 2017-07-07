@@ -27,10 +27,10 @@ namespace XbmcThreads
    */
   class NonCopyable
   {
-    inline NonCopyable(const NonCopyable& ) {}
-    inline NonCopyable& operator=(const NonCopyable& ) { return *this; }
+    inline NonCopyable(const NonCopyable&) = default;
+    inline NonCopyable& operator=(const NonCopyable&) { return *this; }
   public:
-    inline NonCopyable() {}
+    inline NonCopyable() = default;
   };
 
   /**

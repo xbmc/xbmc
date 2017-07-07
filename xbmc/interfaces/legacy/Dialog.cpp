@@ -51,7 +51,7 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    Dialog::~Dialog() {}
+    Dialog::~Dialog() = default;
 
     bool Dialog::yesno(const String& heading, const String& line1, 
                        const String& line2,

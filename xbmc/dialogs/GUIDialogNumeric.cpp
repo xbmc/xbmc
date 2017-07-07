@@ -56,9 +56,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogNumeric::~CGUIDialogNumeric(void)
-{
-}
+CGUIDialogNumeric::~CGUIDialogNumeric(void) = default;
 
 void CGUIDialogNumeric::OnInitWindow()
 {

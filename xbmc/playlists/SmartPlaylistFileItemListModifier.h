@@ -26,8 +26,8 @@
 class CSmartPlaylistFileItemListModifier : public IFileItemListModifier
 {
 public:
-  CSmartPlaylistFileItemListModifier() { }
-  ~CSmartPlaylistFileItemListModifier() override { }
+  CSmartPlaylistFileItemListModifier() = default;
+  ~CSmartPlaylistFileItemListModifier() override = default;
 
   bool CanModify(const CFileItemList &items) const override;
   bool Modify(CFileItemList &items) const override;

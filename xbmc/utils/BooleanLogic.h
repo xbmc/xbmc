@@ -37,7 +37,7 @@ public:
   CBooleanLogicValue(const std::string &value = "", bool negated = false)
     : m_value(value), m_negated(negated)
   { }
-  ~CBooleanLogicValue() override { }
+  ~CBooleanLogicValue() override = default;
 
   bool Deserialize(const TiXmlNode *node) override;
 
@@ -88,8 +88,8 @@ protected:
 class CBooleanLogic : public IXmlDeserializable
 {
 public:
-  CBooleanLogic() { }
-  ~CBooleanLogic() override { }
+  CBooleanLogic() = default;
+  ~CBooleanLogic() override = default;
 
   bool Deserialize(const TiXmlNode *node) override;
 

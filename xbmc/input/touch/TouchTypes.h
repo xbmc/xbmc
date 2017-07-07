@@ -30,7 +30,7 @@ class Touch : public CVector
 {
 public:
   Touch() { reset(); }
-  ~Touch() override { }
+  ~Touch() override = default;
 
   /*!
    * \brief Resets the x/y coordinates and the time

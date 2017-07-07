@@ -35,9 +35,7 @@
 #include "VideoSyncDRM.h"
 #include "VideoSyncGLX.h"
 
-CWinSystemX11GLContext::CWinSystemX11GLContext()
-{
-}
+CWinSystemX11GLContext::CWinSystemX11GLContext() = default;
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()
 {

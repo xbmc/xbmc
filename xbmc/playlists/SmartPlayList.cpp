@@ -152,9 +152,7 @@ static const size_t NUM_GROUPS = sizeof(groups) / sizeof(group);
 
 #define RULE_VALUE_SEPARATOR  " / "
 
-CSmartPlaylistRule::CSmartPlaylistRule()
-{
-}
+CSmartPlaylistRule::CSmartPlaylistRule() = default;
 
 int CSmartPlaylistRule::TranslateField(const char *field) const
 {

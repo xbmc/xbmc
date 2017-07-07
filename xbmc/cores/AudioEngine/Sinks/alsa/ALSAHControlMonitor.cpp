@@ -27,9 +27,7 @@
 #include "utils/log.h"
 #include "ServiceBroker.h"
 
-CALSAHControlMonitor::CALSAHControlMonitor()
-{
-}
+CALSAHControlMonitor::CALSAHControlMonitor() = default;
 
 CALSAHControlMonitor::~CALSAHControlMonitor()
 {

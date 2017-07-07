@@ -36,7 +36,7 @@ public:
   CNotificationEvent(const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevel::Information)
     : CUniqueEvent(label, description, icon, details, executionLabel, level)
   { }
-  ~CNotificationEvent() override { }
+  ~CNotificationEvent() override = default;
 
   const char* GetType() const override { return "NotificationEvent"; }
 

@@ -28,7 +28,7 @@ class CHTTPPythonHandler : public IHTTPRequestHandler
 {
 public:
   CHTTPPythonHandler();
-  ~CHTTPPythonHandler() override { }
+  ~CHTTPPythonHandler() override = default;
   
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPPythonHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;

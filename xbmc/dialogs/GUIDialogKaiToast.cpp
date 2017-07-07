@@ -40,9 +40,7 @@ CGUIDialogKaiToast::CGUIDialogKaiToast(void)
   m_toastMessageTime = 0;
 }
 
-CGUIDialogKaiToast::~CGUIDialogKaiToast(void)
-{
-}
+CGUIDialogKaiToast::~CGUIDialogKaiToast(void) = default;
 
 bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 {

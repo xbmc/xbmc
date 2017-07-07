@@ -40,11 +40,9 @@ using namespace XFILE;
 // multipath:// style url.
 //
 
-CMultiPathDirectory::CMultiPathDirectory()
-{}
+CMultiPathDirectory::CMultiPathDirectory() = default;
 
-CMultiPathDirectory::~CMultiPathDirectory()
-{}
+CMultiPathDirectory::~CMultiPathDirectory() = default;
 
 bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {

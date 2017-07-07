@@ -44,8 +44,7 @@ CMediaSourceSettings::CMediaSourceSettings()
   Clear();
 }
 
-CMediaSourceSettings::~CMediaSourceSettings()
-{ }
+CMediaSourceSettings::~CMediaSourceSettings() = default;
 
 CMediaSourceSettings& CMediaSourceSettings::GetInstance()
 {

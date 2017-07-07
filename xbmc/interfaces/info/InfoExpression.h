@@ -50,7 +50,7 @@ class InfoExpression : public InfoBool
 public:
   InfoExpression(const std::string &expression, int context, unsigned int &refreshCounter)
     : InfoBool(expression, context, refreshCounter) {};
-  ~InfoExpression() override {};
+  ~InfoExpression() override = default;
 
   void Initialize() override;
 
@@ -77,7 +77,7 @@ private:
   class InfoSubexpression
   {
   public:
-    virtual ~InfoSubexpression(void) {}; // so we can destruct derived classes using a pointer to their base class
+    virtual ~InfoSubexpression(void) = default; // so we can destruct derived classes using a pointer to their base class
     virtual bool Evaluate(const CGUIListItem *item) = 0;
     virtual node_type_t Type() const=0;
   };

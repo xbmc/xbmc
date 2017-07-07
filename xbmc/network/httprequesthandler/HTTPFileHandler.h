@@ -28,7 +28,7 @@
 class CHTTPFileHandler : public IHTTPRequestHandler
 {
 public:
-  ~CHTTPFileHandler() override { }
+  ~CHTTPFileHandler() override = default;
 
   int HandleRequest() override;
 

@@ -52,9 +52,7 @@ CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int c
   InitializeState();
 }
 
-CGUIConfigurationWizard::~CGUIConfigurationWizard(void)
-{
-}
+CGUIConfigurationWizard::~CGUIConfigurationWizard(void) = default;
 
 void CGUIConfigurationWizard::InitializeState(void)
 {

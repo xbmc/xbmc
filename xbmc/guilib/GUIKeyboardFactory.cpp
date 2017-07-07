@@ -41,12 +41,9 @@ using namespace KODI::MESSAGING;
 CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = NULL;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 
-CGUIKeyboardFactory::CGUIKeyboardFactory(void)
-{
-}
+CGUIKeyboardFactory::CGUIKeyboardFactory(void) = default;
 
-CGUIKeyboardFactory::~CGUIKeyboardFactory(void)
-{}
+CGUIKeyboardFactory::~CGUIKeyboardFactory(void) = default;
 
 void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typedString)
 {

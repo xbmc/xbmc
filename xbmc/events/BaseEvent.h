@@ -26,7 +26,7 @@
 class CBaseEvent : public IEvent
 {
 public:
-  ~CBaseEvent() override { }
+  ~CBaseEvent() override = default;
 
   std::string GetIdentifier() const override { return m_identifier; }
   EventLevel GetLevel() const override { return m_level; }

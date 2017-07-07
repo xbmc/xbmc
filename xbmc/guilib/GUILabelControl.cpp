@@ -37,9 +37,7 @@ CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, floa
   m_label.SetScrollLoopCount(2);
 }
 
-CGUILabelControl::~CGUILabelControl(void)
-{
-}
+CGUILabelControl::~CGUILabelControl(void) = default;
 
 void CGUILabelControl::ShowCursor(bool bShow)
 {

@@ -61,7 +61,7 @@ class Tweener
 {
 public:
   Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; }
-  virtual ~Tweener() {};
+  virtual ~Tweener() = default;
 
   void SetEasing(TweenerType type) { m_tweenerType = type; }
   virtual float Tween(float time, float start, float change, float duration)=0;

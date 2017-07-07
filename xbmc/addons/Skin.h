@@ -39,7 +39,7 @@ namespace ADDON
 class CSkinSetting
 {
 public:
-  virtual ~CSkinSetting() { }
+  virtual ~CSkinSetting() = default;
 
   bool Serialize(TiXmlElement* parent) const;
 
@@ -58,7 +58,7 @@ typedef std::shared_ptr<CSkinSetting> CSkinSettingPtr;
 class CSkinSettingString : public CSkinSetting
 {
 public:
-  ~CSkinSettingString() override { }
+  ~CSkinSettingString() override = default;
 
   std::string GetType() const override { return "string"; }
 
@@ -78,7 +78,7 @@ public:
   CSkinSettingBool()
     : value(false)
   { }
-  ~CSkinSettingBool() override { }
+  ~CSkinSettingBool() override = default;
 
   std::string GetType() const override { return "bool"; }
 

@@ -103,9 +103,7 @@ CStereoscopicsManager::CStereoscopicsManager(void)
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
 }
 
-CStereoscopicsManager::~CStereoscopicsManager(void)
-{
-}
+CStereoscopicsManager::~CStereoscopicsManager(void) = default;
 
 CStereoscopicsManager& CStereoscopicsManager::GetInstance()
 {

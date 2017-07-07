@@ -190,8 +190,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
   m_playlist = PLAYLIST_NONE;
 }
 
-CGUIViewState::~CGUIViewState()
-{ }
+CGUIViewState::~CGUIViewState() = default;
 
 SortOrder CGUIViewState::SetNextSortOrder()
 {

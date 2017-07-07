@@ -27,7 +27,7 @@ class CConsoleDeviceKitPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CConsoleDeviceKitPowerSyscall();
-  ~CConsoleDeviceKitPowerSyscall() override { }
+  ~CConsoleDeviceKitPowerSyscall() override = default;
 
   bool Powerdown() override;
   bool Suspend() override;

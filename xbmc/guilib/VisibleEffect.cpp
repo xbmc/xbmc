@@ -51,9 +51,7 @@ CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE ef
   m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
 }
 
-CAnimEffect::~CAnimEffect()
-{
-}
+CAnimEffect::~CAnimEffect() = default;
 
 CAnimEffect::CAnimEffect(const CAnimEffect &src)
 {
@@ -730,9 +728,7 @@ CScroller& CScroller::operator=(const CScroller &right)
   return *this;
 }
 
-CScroller::~CScroller()
-{
-}
+CScroller::~CScroller() = default;
 
 void CScroller::ScrollTo(float endPos)
 {

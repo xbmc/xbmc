@@ -30,7 +30,7 @@ public:
   CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description);
   CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details);
   CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
-  ~CAddonManagementEvent() override { }
+  ~CAddonManagementEvent() override = default;
 
   const char* GetType() const override { return "AddonManagementEvent"; }
   std::string GetExecutionLabel() const override;

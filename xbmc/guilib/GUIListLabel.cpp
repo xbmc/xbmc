@@ -34,9 +34,7 @@ CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY
   ControlType = GUICONTROL_LISTLABEL;
 }
 
-CGUIListLabel::~CGUIListLabel(void)
-{
-}
+CGUIListLabel::~CGUIListLabel(void) = default;
 
 void CGUIListLabel::SetScrolling(bool scrolling)
 {

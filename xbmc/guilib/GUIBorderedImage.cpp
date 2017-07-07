@@ -34,9 +34,7 @@ CGUIBorderedImage::CGUIBorderedImage(const CGUIBorderedImage &right)
   ControlType = GUICONTROL_BORDEREDIMAGE;
 }
 
-CGUIBorderedImage::~CGUIBorderedImage(void)
-{
-}
+CGUIBorderedImage::~CGUIBorderedImage(void) = default;
 
 void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {

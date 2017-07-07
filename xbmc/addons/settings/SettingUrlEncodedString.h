@@ -29,7 +29,7 @@ namespace ADDON
     CSettingUrlEncodedString(const std::string &id, CSettingsManager *settingsManager = NULL);
     CSettingUrlEncodedString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
     CSettingUrlEncodedString(const std::string &id, const CSettingUrlEncodedString &setting);
-    ~CSettingUrlEncodedString() override { }
+    ~CSettingUrlEncodedString() override = default;
 
     SettingPtr Clone(const std::string &id) const override { return std::make_shared<CSettingUrlEncodedString>(id, *this); }
 

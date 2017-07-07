@@ -32,11 +32,9 @@
 #define METHOD_BYFILECOUNT 3
 #define METHOD_BYFOLDERTHUMBS 4
 
-CAutoSwitch::CAutoSwitch(void)
-{}
+CAutoSwitch::CAutoSwitch(void) = default;
 
-CAutoSwitch::~CAutoSwitch(void)
-{}
+CAutoSwitch::~CAutoSwitch(void) = default;
 
 /// \brief Generic function to add a layer of transparency to the calling window
 /// \param vecItems Vector of FileItems passed from the calling window

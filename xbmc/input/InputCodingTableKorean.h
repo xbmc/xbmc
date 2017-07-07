@@ -29,7 +29,7 @@ class CInputCodingTableKorean : public IInputCodingTable
 {
 public:
   CInputCodingTableKorean();
-  ~CInputCodingTableKorean() override {}
+  ~CInputCodingTableKorean() override = default;
 
   bool GetWordListPage(const std::string& strCode, bool isFirstPage) override;
   std::vector<std::wstring> GetResponse(int) override;

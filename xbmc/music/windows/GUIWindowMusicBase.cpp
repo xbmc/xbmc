@@ -94,9 +94,7 @@ CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
   m_thumbLoader.SetObserver(this);
 }
 
-CGUIWindowMusicBase::~CGUIWindowMusicBase ()
-{
-}
+CGUIWindowMusicBase::~CGUIWindowMusicBase () = default;
 
 bool CGUIWindowMusicBase::OnBack(int actionID)
 {

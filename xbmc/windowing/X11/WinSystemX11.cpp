@@ -66,9 +66,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   XSetErrorHandler(XErrorHandler);
 }
 
-CWinSystemX11::~CWinSystemX11()
-{
-}
+CWinSystemX11::~CWinSystemX11() = default;
 
 bool CWinSystemX11::InitWindowSystem()
 {

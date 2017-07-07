@@ -27,7 +27,7 @@
 class DllLibPlistInterface
 {
 public:
-  virtual ~DllLibPlistInterface() {}
+  virtual ~DllLibPlistInterface() = default;
 
   virtual void        plist_from_bin        (const char *plist_bin,   uint32_t length, plist_t * plist  )=0;
   virtual plist_t     plist_new_dict        (void                                                       )=0;

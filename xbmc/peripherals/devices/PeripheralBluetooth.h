@@ -27,6 +27,6 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBluetooth(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralBluetooth(void) override {};
+    ~CPeripheralBluetooth(void) override = default;
   };
 }

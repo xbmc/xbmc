@@ -40,9 +40,7 @@ CGUIDialogPVRChannelGuide::CGUIDialogPVRChannelGuide()
   m_vecItems.reset(new CFileItemList);
 }
 
-CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide()
-{
-}
+CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide() = default;
 
 bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)
 {

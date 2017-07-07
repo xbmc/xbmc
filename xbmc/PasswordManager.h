@@ -89,7 +89,7 @@ private:
   CPasswordManager();
   CPasswordManager(const CPasswordManager&);
   CPasswordManager const & operator=(CPasswordManager const&);
-  ~CPasswordManager() {};
+  ~CPasswordManager() = default;
 
   void Load();
   void Save() const;

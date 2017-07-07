@@ -35,9 +35,7 @@ CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogVideoOSD::~CGUIDialogVideoOSD(void)
-{
-}
+CGUIDialogVideoOSD::~CGUIDialogVideoOSD(void) = default;
 
 void CGUIDialogVideoOSD::FrameMove()
 {
