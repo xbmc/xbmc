@@ -19,16 +19,10 @@
 *
 */
 
-#include <stdint.h>
+#include "AddonInfo.h"
 
-#include <map>
 #include <memory>
 #include <set>
-#include <string>
-#include <utility>
-#include <vector>
-#include "XBDateTime.h"
-#include "AddonInfo.h"
 
 class TiXmlElement;
 

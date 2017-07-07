@@ -34,6 +34,7 @@
  */
 typedef struct AddonToKodiFuncTable_kodi
 {
+  char* (*get_addon_info)(void* kodiBase, const char* id);
   bool (*open_settings_dialog)(void* kodiBase);
   char* (*unknown_to_utf8)(void* kodiBase, const char* source, bool* ret, bool failOnBadChar);
   char* (*get_localized_string)(void* kodiBase, long dwCode);
@@ -41,6 +42,10 @@ typedef struct AddonToKodiFuncTable_kodi
   bool (*queue_notification)(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
   void (*get_md5)(void* kodiBase, const char* text, char* md5);
   char* (*get_temp_path)(void* kodiBase);
+  char* (*get_region)(void* kodiBase, const char* id);
+  void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
+  int  (*get_global_idle_time)(void* kodiBase);
+  void (*kodi_version)(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
 } AddonToKodiFuncTable_kodi;
 
 //==============================================================================
@@ -77,6 +82,71 @@ typedef enum LangFormats
 } LangFormats;
 //------------------------------------------------------------------------------
 
+//==============================================================================
+/// \ingroup cpp_kodi_Defs
+/// @brief For kodi::Version used structure
+///
+typedef struct kodi_version_t
+{
+  /// Application name, normally 'Kodi'
+  std::string compile_name;
+  /// Major code version of Kodi
+  int major;
+  /// Minor code version of Kodi
+  int minor;
+  /// The Revision contains a id and the build date, e.g. 20170706-c6b22fe217-dirty
+  std::string revision;
+  /// The version canditate e.g. alpha, beta or release
+  std::string tag;
+  /// The revision of tag before
+  std::string tag_revision;
+} kodi_version_t;
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Returns the value of an addon property as a string
+///
+/// @param[in] id id of the property that the module needs to access
+/// |              | Choices are  |              |
+/// |:------------:|:------------:|:------------:|
+/// |  author      | icon         | stars        |
+/// |  changelog   | id           | summary      |
+/// |  description | name         | type         |
+/// |  disclaimer  | path         | version      |
+/// |  fanart      | profile      |              |
+///
+/// @return AddOn property as a string
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// std::string addonName = kodi::GetAddonInfo("name");
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline std::string GetAddonInfo(const std::string& id)
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+
+  std::string strReturn;
+  char* strMsg = toKodi->kodi->get_addon_info(toKodi->kodiBase, id.c_str());
+  if (strMsg != nullptr)
+  {
+    if (std::strlen(strMsg))
+      strReturn = strMsg;
+    toKodi->free_string(toKodi->kodiBase, strMsg);
+  }
+  return strReturn;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
 
 //==============================================================================
 namespace kodi {
@@ -441,6 +511,188 @@ inline std::string GetTempAddonPath(const std::string& append = "")
     ret.append(append);
   }
   return ret;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Returns your regions setting as a string for the specified id
+///
+/// @param[in] id id of setting to return
+/// |              | Choices are  |              |
+/// |:------------:|:------------:|:------------:|
+/// |  dateshort   | time         | tempunit     |
+/// |  datelong    | meridiem     | speedunit    |
+///
+/// @return settings string
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// std::string timeFormat = kodi::GetRegion("time");
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline std::string GetRegion(const std::string& id)
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+
+  std::string strReturn;
+  char* strMsg = toKodi->kodi->get_region(toKodi->kodiBase, id.c_str());
+  if (strMsg != nullptr)
+  {
+    if (std::strlen(strMsg))
+      strReturn = strMsg;
+    toKodi->free_string(toKodi->kodiBase, strMsg);
+  }
+  return strReturn;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Returns the amount of free memory in MByte (or as bytes) as an long
+/// integer
+///
+/// @param[out] free free memory
+/// @param[out] total total memory
+/// @param[in] asBytes [opt] if set to true becomes returned as bytes, otherwise
+///                    as mega bytes
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// long freeMem;
+/// long totalMem;
+/// kodi::GetFreeMem(freeMem, totalMem);
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline void GetFreeMem(long& free, long& total, bool asBytes = false)
+{
+  free = -1;
+  total = -1;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+  toKodi->kodi->get_free_mem(toKodi->kodiBase, &free, &total, asBytes);
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Returns the elapsed idle time in seconds as an integer
+///
+/// @return idle time
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// int time = kodi::GetGlobalIdleTime();
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline int GetGlobalIdleTime()
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+  return toKodi->kodi->get_global_idle_time(toKodi->kodiBase);
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Get current Kodi informations and versions, returned data from the following
+/// <b><tt>kodi_version_t version; kodi::KodiVersion(version);</tt></b>
+/// is e.g.:
+/// ~~~~~~~~~~~~~{.cpp}
+/// version.compile_name = Kodi
+/// version.major        = 18
+/// version.minor        = 0
+/// version.revision     = 20170706-c6b22fe217-di
+/// version.tag          = alpha
+/// version.tag_revision = 1
+/// ~~~~~~~~~~~~~
+///
+/// @param[out] version structure to store data from kodi
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// kodi_version_t version;
+/// kodi::KodiVersion(version);
+/// fprintf(stderr,
+///     "kodi_version_t version;\n"
+///     "kodi::KodiVersion(version);\n"
+///     " - version.compile_name = %s\n"
+///     " - version.major        = %i\n"
+///     " - version.minor        = %i\n"
+///     " - version.revision     = %s\n"
+///     " - version.tag          = %s\n"
+///     " - version.tag_revision = %s\n",
+///             version.compile_name.c_str(), version.major, version.minor,
+///             version.revision.c_str(), version.tag.c_str(), version.tag_revision.c_str());
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline void KodiVersion(kodi_version_t& version)
+{
+  char* compile_name = nullptr;
+  char* revision = nullptr;
+  char* tag = nullptr;
+  char* tag_revision = nullptr;
+
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+  toKodi->kodi->kodi_version(toKodi->kodiBase, &compile_name, &version.major, &version.minor, &revision, &tag, &tag_revision);
+  if (compile_name != nullptr)
+  {
+    version.compile_name  = compile_name;
+    toKodi->free_string
+    (
+      toKodi->kodiBase,
+      compile_name
+    );
+  }
+  if (revision != nullptr)
+  {
+    version.revision = revision;
+    toKodi->free_string(toKodi->kodiBase, revision);
+  }
+  if (tag != nullptr)
+  {
+    version.tag = tag;
+    toKodi->free_string(toKodi->kodiBase, tag);
+  }
+  if (tag_revision != nullptr)
+  {
+    version.tag_revision = tag_revision;
+    toKodi->free_string(toKodi->kodiBase, tag_revision);
+  }
 }
 } /* namespace kodi */
 //------------------------------------------------------------------------------

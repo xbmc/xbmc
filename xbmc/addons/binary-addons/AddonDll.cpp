@@ -23,6 +23,7 @@
 #include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/settings/AddonSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -45,17 +46,16 @@
 #include "addons/interfaces/Network.h"
 #include "addons/interfaces/GUI/General.h"
 
+
 namespace ADDON
 {
 
 CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
   : CAddon(std::move(addonInfo)),
     m_pHelpers(nullptr),
-    m_bIsChild(false),
     m_binaryAddonBase(addonBase),
     m_pDll(nullptr),
     m_initialized(false),
-    m_needsavedsettings(false),
     m_interface{0}
 {
 }
@@ -63,25 +63,11 @@ CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
 CAddonDll::CAddonDll(CAddonInfo addonInfo)
   : CAddon(std::move(addonInfo)),
     m_pHelpers(nullptr),
-    m_bIsChild(false),
     m_binaryAddonBase(nullptr),
     m_pDll(nullptr),
     m_initialized(false),
-    m_needsavedsettings(false),
     m_interface{0}
 {
-}
-
-CAddonDll::CAddonDll(const CAddonDll &rhs)
-  : CAddon(rhs),
-    m_bIsChild(true)
-{
-  m_initialized       = rhs.m_initialized;
-  m_pDll              = rhs.m_pDll;
-  m_pHelpers          = rhs.m_pHelpers;
-  m_needsavedsettings = rhs.m_needsavedsettings;
-  m_parentLib = rhs.m_parentLib;
-  m_interface = rhs.m_interface;
 }
 
 CAddonDll::~CAddonDll()
@@ -95,38 +81,8 @@ bool CAddonDll::LoadDll()
   if (m_pDll)
     return true;
 
-  std::string strFileName;
+  std::string strFileName = LibPath();
   std::string strAltFileName;
-  if (!m_bIsChild)
-  {
-    strFileName = LibPath();
-  }
-  else
-  {
-    std::string libPath = LibPath();
-    if (!XFILE::CFile::Exists(libPath))
-    {
-      std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/");
-      std::string tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
-      libPath.erase(0, temp.size());
-      libPath = tempbin + libPath;
-      if (!XFILE::CFile::Exists(libPath))
-      {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_addonInfo.LibName().c_str());
-        return false;
-      }
-    }
-
-    std::stringstream childcount;
-    childcount << GetChildCount();
-    std::string extension = URIUtils::GetExtension(libPath);
-    strFileName = "special://temp/" + ID() + "-" + childcount.str() + extension;
-
-    XFILE::CFile::Copy(libPath, strFileName);
-
-    m_parentLib = libPath;
-    CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
-  }
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
 #if defined(TARGET_ANDROID)
@@ -235,9 +191,8 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
   {
     m_initialized = true;
   }
-  else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+  else if (status == ADDON_STATUS_NEED_SETTINGS)
   {
-    m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS) ? true : false;
     status = TransferSettings();
     if (status == ADDON_STATUS_OK)
       m_initialized = true;
@@ -291,9 +246,8 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
   {
     m_initialized = true;
   }
-  else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+  else if (status == ADDON_STATUS_NEED_SETTINGS)
   {
-    m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
     if ((status = TransferSettings()) == ADDON_STATUS_OK)
       m_initialized = true;
     else
@@ -323,26 +277,6 @@ void CAddonDll::Destroy()
   /* Unload library file */
   if (m_pDll)
   {
-    /* Inform dll to stop all activities */
-    if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
-    {
-      char   str_id[64] = "";
-      char   str_value[1024];
-      CAddon::LoadUserSettings();
-      for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
-      {
-        strcpy(str_id, "###GetSavedSettings");
-        sprintf (str_value, "%i", i);
-        ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
-
-        if (status == ADDON_STATUS_UNKNOWN)
-          break;
-
-        if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
-      }
-      CAddon::SaveSettings();
-    }
-
     m_pDll->Destroy();
     m_pDll->Unload();
   }
@@ -353,8 +287,6 @@ void CAddonDll::Destroy()
   m_pHelpers = NULL;
   if (m_pDll)
   {
-    if (m_bIsChild)
-      XFILE::CFile::Delete(m_pDll->GetFile());
     delete m_pDll;
     m_pDll = NULL;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());

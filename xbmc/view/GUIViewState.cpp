@@ -37,6 +37,7 @@
 #include "AutoSwitch.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"

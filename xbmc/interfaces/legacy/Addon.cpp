@@ -24,6 +24,7 @@
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 

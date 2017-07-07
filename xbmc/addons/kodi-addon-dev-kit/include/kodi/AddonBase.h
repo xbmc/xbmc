@@ -82,9 +82,6 @@ typedef enum ADDON_STATUS
   ///
   ADDON_STATUS_UNKNOWN,
 
-  ///
-  ADDON_STATUS_NEED_SAVEDSETTINGS,
-
   /// permanent failure, like failing to resolve methods
   ADDON_STATUS_PERMANENT_FAILURE,
 
@@ -588,8 +585,6 @@ inline std::string TranslateAddonStatus(ADDON_STATUS status)
       return "Need Settings";
     case ADDON_STATUS_UNKNOWN:
       return "Unknown error";
-    case ADDON_STATUS_NEED_SAVEDSETTINGS:
-      return "Need saved settings";
     case ADDON_STATUS_PERMANENT_FAILURE:
       return "Permanent failure";
     case ADDON_STATUS_NOT_IMPLEMENTED:

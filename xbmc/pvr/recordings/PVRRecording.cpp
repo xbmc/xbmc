@@ -21,6 +21,7 @@
 #include "PVRRecording.h"
 
 #include "dialogs/GUIDialogOK.h"
+#include "guilib/LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"

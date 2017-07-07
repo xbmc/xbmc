@@ -33,10 +33,8 @@ namespace ADDON
   public:
     CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase);
     CAddonDll(CAddonInfo addonInfo);
-
-    //FIXME: does shallow pointer copy. no copy assignment op
-    CAddonDll(const CAddonDll &rhs);
     ~CAddonDll() override;
+
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
@@ -74,9 +72,8 @@ namespace ADDON
 
   protected:
     bool Initialized() { return m_initialized; }
-    static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
+
     CAddonInterfaces* m_pHelpers;
-    bool m_bIsChild;
     std::string m_parentLib;
 
   private:
@@ -102,15 +99,10 @@ namespace ADDON
     DllAddon* m_pDll;
     bool m_initialized;
     bool LoadDll();
-    bool m_needsavedsettings;
     std::map<std::string, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
 
     virtual ADDON_STATUS TransferSettings();
 
-    static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
-    static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
-    static void AddOnOpenSettings(const char *url, bool bReload);
-    static void AddOnOpenOwnSettings(void *userData, bool bReload);
     bool UpdateSettingInActiveDialog(const char* id, const std::string& value);
 
     /// addon to kodi basic callbacks below

@@ -19,15 +19,8 @@
  *
  */
 
-#include <memory>
-#include <vector>
-
-#include "IAddon.h"
-#include "addons/settings/AddonSettings.h"
-#include "addons/AddonVersion.h"
+#include "addons/IAddon.h"
 #include "utils/XBMCTinyXML.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/ISerializable.h"
 
 class TiXmlElement;
 class CAddonCallbacksAddon;

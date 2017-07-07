@@ -21,6 +21,7 @@
 #include "GUIDialogMusicOSD.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "input/InputManager.h"
 #include "GUIUserMessages.h"

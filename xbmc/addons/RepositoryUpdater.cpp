@@ -29,6 +29,7 @@
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"

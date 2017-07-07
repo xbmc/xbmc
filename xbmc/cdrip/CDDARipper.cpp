@@ -32,6 +32,7 @@
 #include "utils/LabelFormatter.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingPath.h"

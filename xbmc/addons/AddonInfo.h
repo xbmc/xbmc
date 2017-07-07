@@ -19,8 +19,9 @@
  *
  */
 
-#include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+
+#include "XBDateTime.h"
 
 #include <map>
 #include <string>

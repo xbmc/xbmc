@@ -28,6 +28,7 @@
 
 #include "AddonManager.h"
 #include "addons/Service.h"
+#include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
