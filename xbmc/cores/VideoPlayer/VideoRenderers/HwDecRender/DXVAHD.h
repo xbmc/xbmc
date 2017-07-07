@@ -55,7 +55,7 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height, unsigned int flags, AVPixelFormat format, DXGI_FORMAT dxva_format);
   void Close();
-  CRenderPicture *Convert(const VideoPicture &picture) const;
+  CRenderPicture *Convert(CVideoBuffer *videoBuffer) const;
   bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
   uint8_t Size() const { if (m_pVideoProcessor) return m_size; return 0; }
   uint8_t PastRefs() const { return m_max_back_refs; }

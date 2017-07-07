@@ -393,12 +393,12 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(const VideoPicture &picture) const
+CRenderPicture *CProcessorHD::Convert(CVideoBuffer *videoBuffer) const
 {
-  if (!picture.videoBuffer)
+  if (!videoBuffer)
     return nullptr;
 
-  AVPixelFormat format = picture.videoBuffer->GetFormat();
+  AVPixelFormat format = videoBuffer->GetFormat();
   if ( format != AV_PIX_FMT_YUV420P
     && format != AV_PIX_FMT_YUV420P10
     && format != AV_PIX_FMT_YUV420P16
@@ -410,7 +410,7 @@ CRenderPicture *CProcessorHD::Convert(const VideoPicture &picture) const
 
   if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    CDXVAVideoBuffer* pic = dynamic_cast<CDXVAVideoBuffer*>(picture.videoBuffer);
+    CDXVAVideoBuffer* pic = dynamic_cast<CDXVAVideoBuffer*>(videoBuffer);
     return pic->picture->Acquire();
   }
 
@@ -434,8 +434,8 @@ CRenderPicture *CProcessorHD::Convert(const VideoPicture &picture) const
     return nullptr;
   }
 
-  uint8_t* planes[3]; picture.videoBuffer->GetPlanes(planes);
-  int strides[3]; picture.videoBuffer->GetStrides(strides);
+  uint8_t* planes[3]; videoBuffer->GetPlanes(planes);
+  int strides[3]; videoBuffer->GetStrides(strides);
 
   uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
   uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
@@ -443,12 +443,12 @@ CRenderPicture *CProcessorHD::Convert(const VideoPicture &picture) const
 
   if (format == AV_PIX_FMT_YUV420P)
   {
-    convert_yuv420_nv12(planes, strides, picture.iHeight, picture.iWidth, dst, dstStride);
+    convert_yuv420_nv12(planes, strides, m_height, m_width, dst, dstStride);
   }
   else if(format == AV_PIX_FMT_YUV420P10
        || format == AV_PIX_FMT_YUV420P16)
   {
-    convert_yuv420_p01x(planes, strides, picture.iHeight, picture.iWidth, dst, dstStride
+    convert_yuv420_p01x(planes, strides, m_height, m_width, dst, dstStride
                       , format == AV_PIX_FMT_YUV420P10 ? 10 : 16);
   }
   pContext->Unmap(pResource, 0);

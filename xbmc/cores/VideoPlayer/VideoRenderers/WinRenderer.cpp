@@ -238,25 +238,9 @@ int CWinRenderer::NextYV12Texture()
 
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
 {
-  if (m_renderMethod == RENDER_DXVA)
-  {
-    DXVABuffer *buf = reinterpret_cast<DXVABuffer*>(m_VideoBuffers[index]);
-    SAFE_RELEASE(buf->pic);
-    buf->pic = m_processor->Convert(picture);
-    buf->frameIdx = m_frameIdx;
-    buf->pictureFlags = picture.iFlags;
-    m_frameIdx += 2;
-  }
-  else
-  {
-    YUVBuffer *buf = reinterpret_cast<YUVBuffer*>(m_VideoBuffers[index]);
-    if (buf->IsReadyToRender())
-      return;
-
-    buf->CopyFromPicture(picture);
-  }
   m_VideoBuffers[index]->videoBuffer = picture.videoBuffer;
   m_VideoBuffers[index]->videoBuffer->Acquire();
+  m_VideoBuffers[index]->pictureFlags = picture.iFlags;
 }
 
 void CWinRenderer::Reset()
@@ -279,6 +263,26 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
   if (!m_bConfigured)
     return;
 
+  m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
+  if (m_renderMethod == RENDER_DXVA)
+  {
+    DXVABuffer *buf = reinterpret_cast<DXVABuffer*>(m_VideoBuffers[m_iYV12RenderBuffer]);
+    SAFE_RELEASE(buf->pic);
+    buf->pic = m_processor->Convert(buf->videoBuffer);
+    buf->frameIdx = m_frameIdx;
+    buf->pictureFlags = buf->pictureFlags;
+    m_frameIdx += 2;
+  }
+  else
+  {
+    YUVBuffer *buf = reinterpret_cast<YUVBuffer*>(m_VideoBuffers[m_iYV12RenderBuffer]);
+    if (buf->IsReadyToRender())
+      return;
+
+    buf->CopyFromPicture(m_VideoBuffers[m_iYV12RenderBuffer]->videoBuffer);
+  }
+  m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
+
   g_Windowing.SetAlphaBlendEnable(alpha < 255);
   ManageTextures();
   ManageRenderArea();
@@ -287,16 +291,10 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
 
 void CWinRenderer::FlipPage(int source)
 {
-  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
-    m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
-
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();
-
-  if (m_iYV12RenderBuffer >= 0 && m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
-    m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
 
   return;
 }
@@ -1265,12 +1263,12 @@ bool YUVBuffer::IsReadyToRender()
   return !m_locked;
 }
 
-bool YUVBuffer::CopyFromPicture(const VideoPicture &picture)
+bool YUVBuffer::CopyFromPicture(CVideoBuffer *videoBuffer)
 {
-  AVPixelFormat format = picture.videoBuffer->GetFormat();
+  AVPixelFormat format = videoBuffer->GetFormat();
   if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CDXVAVideoBuffer *hwpic = static_cast<DXVA::CDXVAVideoBuffer*>(picture.videoBuffer);
+    DXVA::CDXVAVideoBuffer *hwpic = static_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
     return CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(hwpic->picture->view));
   }
 
@@ -1281,8 +1279,8 @@ bool YUVBuffer::CopyFromPicture(const VideoPicture &picture)
   {
     uint8_t* bufData[3];
     int srcLines[3];
-    picture.videoBuffer->GetPlanes(bufData);
-    picture.videoBuffer->GetStrides(srcLines);
+    videoBuffer->GetPlanes(bufData);
+    videoBuffer->GetStrides(srcLines);
     std::vector<Concurrency::task<void>> tasks;
 
     for(unsigned plane = 0; plane < m_activeplanes; ++plane)
@@ -1291,7 +1289,7 @@ bool YUVBuffer::CopyFromPicture(const VideoPicture &picture)
       uint8_t* src = bufData[plane];
       int srcLine = srcLines[plane];
       int dstLine = planes[plane].rect.RowPitch;
-      int height = plane == 0 ? picture.iHeight : picture.iHeight >> 1;
+      int height = plane == 0 ? m_height: m_height >> 1;
 
       auto task = Concurrency::create_task([src, dst, srcLine, dstLine, height]()
       {

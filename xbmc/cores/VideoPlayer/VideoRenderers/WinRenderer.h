@@ -92,6 +92,7 @@ struct SVideoBuffer
   virtual bool IsReadyToRender() { return true; };
 
   CVideoBuffer* videoBuffer;
+  unsigned int pictureFlags;
 };
 
 // YV12 decoder textures
@@ -115,7 +116,7 @@ struct YUVBuffer : SVideoBuffer
   ~YUVBuffer();
   bool Create(AVPixelFormat format, unsigned int width, unsigned int height, bool dynamic);
   unsigned int GetActivePlanes() { return m_activeplanes; }
-  bool CopyFromPicture(const VideoPicture &picture);
+  bool CopyFromPicture(CVideoBuffer *videoBuffer);
 
   // SVideoBuffer overrides
   void Release() override;
