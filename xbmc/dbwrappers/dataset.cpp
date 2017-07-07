@@ -432,8 +432,8 @@ int Dataset::str_compare(const char * s1, const char * s2) {
  	std::string::const_iterator p = ts1.begin();
  	std::string::const_iterator p2 = ts2.begin();
  	while (p!=ts1.end() && p2 != ts2.end()) {
- 	if (toupper(*p)!=toupper(*p2))
- 		return (toupper(*p)<toupper(*p2)) ? -1 : 1;
+ 		if (toupper(*p)!=toupper(*p2))
+ 			return (toupper(*p)<toupper(*p2)) ? -1 : 1;
  		++p;
  		++p2;		
  	}	
