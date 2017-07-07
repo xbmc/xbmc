@@ -97,6 +97,7 @@ void TestBasicEnvironment::SetUp()
   if (!CreateDirectory(lpTempPathBuffer, NULL))
     SetUpError();
   CSpecialProtocol::SetTempPath(FromW(lpTempPathBuffer));
+  CSpecialProtocol::SetProfilePath(FromW(lpTempPathBuffer));
 #else
   char buf[MAX_PATH];
   char *tmp;
@@ -104,6 +105,7 @@ void TestBasicEnvironment::SetUp()
   if ((tmp = mkdtemp(buf)) == NULL)
     SetUpError();
   CSpecialProtocol::SetTempPath(tmp);
+  CSpecialProtocol::SetProfilePath(tmp);
 #endif
 
   /* Create and delete a tempfile to initialize the VFS (really to initialize
