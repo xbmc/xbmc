@@ -430,6 +430,8 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
 {
   HRESULT hr = S_OK;
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11DeviceContext1* pContext = g_Windowing.GetImmediateContext();
+
   unsigned bindFlags = D3D11_BIND_DECODER;
 
   if (g_Windowing.IsFormatSupport(format.OutputFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
@@ -451,6 +453,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   vdovDesc.DecodeProfile = format.Guid;
   vdovDesc.Texture2D.ArraySlice = 0;
   vdovDesc.ViewDimension = D3D11_VDOV_DIMENSION_TEXTURE2D;
+  float clearColor[] = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color in YUV
 
   size_t i;
   for (i = 0; i < count; ++i)
@@ -462,6 +465,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
       CLog::LogFunction(LOGERROR, __FUNCTION__, "failed creating surfaces.");
       break;
     }
+    pContext->ClearView(surfaces[i], clearColor, nullptr, 0);
   }
   SAFE_RELEASE(texture);
 
