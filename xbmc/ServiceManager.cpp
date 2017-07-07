@@ -90,7 +90,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_vfsAddonCache->Init();
 
   m_PVRManager.reset(new PVR::CPVRManager());
-  m_PVRManager->Init();
 
   m_dataCacheCore.reset(new CDataCacheCore());
 
@@ -101,10 +100,16 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
-  m_controllerManager.reset(new GAME::CControllerManager);
+  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
+  m_gameControllerManager.reset(new GAME::CControllerManager);
   m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
+
+  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
+  m_peripherals->Initialise();
+
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_peripherals));
 
   init_level = 2;
   return true;
@@ -139,15 +144,11 @@ bool CServiceManager::StartAudioEngine()
   return m_ActiveAE->Initialize();
 }
 
+// stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree()
 {
-  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
-  m_peripherals->Initialise();
-
-  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
   m_contextMenuManager->Init();
-
-  m_gameServices.reset(new GAME::CGameServices(*m_controllerManager, *m_peripherals));
+  m_PVRManager->Init();
 
   init_level = 3;
   return true;
@@ -155,17 +156,19 @@ bool CServiceManager::InitStageThree()
 
 void CServiceManager::DeinitStageThree()
 {
-  m_gameServices.reset();
-  m_contextMenuManager.reset();
-  m_peripherals.reset();
+  m_PVRManager->Deinit();
+  m_contextMenuManager->Deinit();
 
   init_level = 2;
 }
 
 void CServiceManager::DeinitStageTwo()
 {
+  m_gameServices.reset();
   m_peripherals.reset();
   m_inputManager.reset();
+  m_gameControllerManager.reset();
+  m_contextMenuManager.reset();
   m_serviceAddons.reset();
   m_favouritesService.reset();
   m_binaryAddonCache.reset();
@@ -273,7 +276,7 @@ CSettings& CServiceManager::GetSettings()
 
 GAME::CControllerManager& CServiceManager::GetGameControllerManager()
 {
-  return *m_controllerManager;
+  return *m_gameControllerManager;
 }
 
 GAME::CGameServices& CServiceManager::GetGameServices()
