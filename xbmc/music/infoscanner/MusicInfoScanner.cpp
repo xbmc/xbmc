@@ -840,45 +840,42 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
       if (!m_musicDatabase.HasAlbumBeenScraped(album->idAlbum))
         albumScrapeStatus = UpdateDatabaseAlbumInfo(*album, albumScraper, false);
 
-      if (albumScrapeStatus == INFO_ADDED)
+      for (VECARTISTCREDITS::const_iterator artistCredit  = album->artistCredits.begin();
+                                            artistCredit != album->artistCredits.end();
+                                          ++artistCredit)
       {
-        for (VECARTISTCREDITS::const_iterator artistCredit  = album->artistCredits.begin();
-                                              artistCredit != album->artistCredits.end();
-                                            ++artistCredit)
+        if (m_bStop)
+          break;
+
+        if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
+        {
+          CArtist artist;
+          m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
+          UpdateDatabaseArtistInfo(artist, artistScraper, false);
+        }
+      }
+      if (!albumartistsonly)
+      {
+        for (VECSONGS::iterator song = album->songs.begin();
+          song != album->songs.end();
+          ++song)
         {
           if (m_bStop)
             break;
 
-          if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
-          {
-            CArtist artist;
-            m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
-            UpdateDatabaseArtistInfo(artist, artistScraper, false);
-          }
-        }
-        if (!albumartistsonly)
-        {
-          for (VECSONGS::iterator song = album->songs.begin();
-            song != album->songs.end();
-            ++song)
+          for (VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin();
+            artistCredit != song->artistCredits.end();
+            ++artistCredit)
           {
             if (m_bStop)
               break;
 
-            for (VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin();
-              artistCredit != song->artistCredits.end();
-              ++artistCredit)
+            CMusicArtistInfo musicArtistInfo;
+            if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
             {
-              if (m_bStop)
-                break;
-
-              CMusicArtistInfo musicArtistInfo;
-              if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
-              {
-                CArtist artist;
-                m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
-                UpdateDatabaseArtistInfo(artist, artistScraper, false);
-              }
+              CArtist artist;
+              m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
+              UpdateDatabaseArtistInfo(artist, artistScraper, false);
             }
           }
         }
