@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
@@ -215,7 +216,10 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->videoBuffer = m_map[picture.decodedData];
     assert(pVideoPicture->videoBuffer);
     pVideoPicture->videoBuffer->Acquire();
-    pVideoPicture->videoBuffer->SetDimensions(picture.width, picture.height, picture.stride[0], picture.height);
+    int strides[YuvImage::MAX_PLANES];
+    for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
+      strides[i] = picture.stride[i];
+    pVideoPicture->videoBuffer->SetDimensions(picture.width, picture.height, strides);
 
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
     pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;

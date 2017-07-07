@@ -38,7 +38,7 @@ public:
   void ReleasePools();
   CVideoBuffer* Get(AVPixelFormat format, int width, int height);
   CVideoBuffer* Get(AVPixelFormat format, int size);
-  void SetDimensions(int width, int height, int alignedWidth, int alignedHeight);
+  void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]);
 
 protected:
 };
