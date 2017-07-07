@@ -148,7 +148,6 @@ public:
 
   bool IsCurrentThread() const;
   void Stop(int exitCode);
-  void RestartApp();
   void UnloadSkin(bool forReload = false);
   bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
@@ -173,7 +172,6 @@ public:
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist);
-  bool PlayMediaSync(const CFileItem& item, int iPlaylist);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
   PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
@@ -275,7 +273,6 @@ public:
   void StartMusicArtistScan(const std::string& strDirectory, bool refresh = false);
 
   void UpdateLibraries();
-  void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
@@ -495,7 +492,6 @@ protected:
   void VolumeChanged() const;
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
-  int  GetActiveWindowID(void);
 
   float NavigationIdleTime();
 

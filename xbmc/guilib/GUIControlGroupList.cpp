@@ -67,7 +67,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     SendWindowMessage(message);
     CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_scroller.GetValue());
     SendWindowMessage(message2);
-    m_lastScrollerValue = m_scroller.GetValue();
+    m_lastScrollerValue = static_cast<int>(m_scroller.GetValue());
   }
   // we run through the controls, rendering as we go
   int index = 0;

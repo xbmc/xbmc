@@ -95,7 +95,7 @@ bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer 
     float centerX = (primaryPointer.current.x + secondaryPointer.current.x) / 2;
     float centerY = (primaryPointer.current.y + secondaryPointer.current.y) / 2;
     float scalar = last.scalar(current);
-    float angle = acos(scalar / length) * 180.0f / M_PI;
+    float angle = acos(scalar / length) * 180.0f / static_cast<float>(M_PI);
 
     // make sure the result of acos is a valid number
     if (angle == angle)

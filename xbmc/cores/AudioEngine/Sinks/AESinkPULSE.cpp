@@ -935,11 +935,11 @@ void CAESinkPULSE::SetVolume(float volume)
     else
       pa_cvolume_set(&m_Volume, m_Channels, pavolume);
 
-      pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
-      if (op == NULL)
-        CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
-      else
-        pa_operation_unref(op);
+    pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
+    if (op == NULL)
+      CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
+    else
+      pa_operation_unref(op);
 
     pa_threaded_mainloop_unlock(m_MainLoop);
   }

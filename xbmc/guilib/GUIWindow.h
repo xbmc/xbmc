@@ -257,8 +257,6 @@ protected:
   bool Animate(unsigned int currentTime) override;
   bool CheckAnimation(ANIMATION_TYPE animType) override;
 
-  CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);
-
   // control state saving on window close
   virtual void SaveControlStates();
   virtual void RestoreControlStates();

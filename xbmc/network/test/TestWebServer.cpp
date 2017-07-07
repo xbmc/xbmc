@@ -253,7 +253,7 @@ protected:
       // check the content
       CHttpRange firstRange;
       ASSERT_TRUE(ranges.GetFirst(firstRange));
-      expectedContent = expectedContent.substr(firstRange.GetFirstPosition(), firstRange.GetLength());
+      expectedContent = expectedContent.substr(static_cast<size_t>(firstRange.GetFirstPosition()), static_cast<size_t>(firstRange.GetLength()));
       EXPECT_STREQ(expectedContent.c_str(), result.c_str());
 
       // and Content-Length
@@ -337,7 +337,7 @@ protected:
 
       // make sure the length of the content matches the one of the expected range
       EXPECT_EQ(range.GetLength(), data.size());
-      EXPECT_STREQ(expectedContent.substr(range.GetFirstPosition(), range.GetLength()).c_str(), data.c_str());
+      EXPECT_STREQ(expectedContent.substr(static_cast<size_t>(range.GetFirstPosition()), static_cast<size_t>(range.GetLength())).c_str(), data.c_str());
     }
   }
 

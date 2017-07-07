@@ -64,7 +64,7 @@ bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameH
   //! @todo Get CRC from game data instead of filename
   Crc32 crc;
   crc.Compute(gameClient->GetGamePath());
-  m_savestate.SetGameCRC(StringUtils::Format("%08x", (unsigned __int32)crc));
+  m_savestate.SetGameCRC(StringUtils::Format("%08x", static_cast<uint32_t>(crc)));
 
   m_savestate.SetPath(CSavestateUtils::MakePath(m_savestate));
   if (m_savestate.Path().empty())
