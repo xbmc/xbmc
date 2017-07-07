@@ -1,6 +1,12 @@
 #ifndef _RAR_UNPACK_
 #define _RAR_UNPACK_
 
+// Limit maximum number of channels in RAR3 delta filter to some reasonable
+// value to prevent too slow processing of corrupt archives with invalid
+// channels number. Must be equal or larger than v3_MAX_FILTER_CHANNELS.
+// No need to provide it for RAR5, which uses only 5 bits to store channels.
+#define MAX3_UNPACK_CHANNELS      1024
+
 enum BLOCK_TYPES {BLOCK_LZ,BLOCK_PPM};
 
 struct Decode
