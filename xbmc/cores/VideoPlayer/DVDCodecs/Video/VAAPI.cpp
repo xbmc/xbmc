@@ -558,6 +558,11 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
+      // for distributions using far newer ffmpeg
+      // not available when Krypton was released
+      if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+        return false;
+
       profile = VAProfileHEVCMain;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
         return false;
