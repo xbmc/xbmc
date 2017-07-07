@@ -49,7 +49,6 @@
 #include "linux/FallbackPowerSyscall.h"
 #if defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
-#include "linux/ConsoleDeviceKitPowerSyscall.h"
 #include "linux/LogindUPowerSyscall.h"
 #include "linux/UPowerSyscall.h"
 #endif // HAS_DBUS
@@ -92,8 +91,6 @@ void CPowerManager::Initialize()
   {
     std::make_pair(CConsoleUPowerSyscall::HasConsoleKitAndUPower,
                    [] { return new CConsoleUPowerSyscall(); }),
-    std::make_pair(CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit,
-                   [] { return new CConsoleDeviceKitPowerSyscall(); }),
     std::make_pair(CLogindUPowerSyscall::HasLogind,
                    [] { return new CLogindUPowerSyscall(); }),
     std::make_pair(CUPowerSyscall::HasUPower,
