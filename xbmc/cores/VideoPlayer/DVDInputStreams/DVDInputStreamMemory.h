@@ -26,13 +26,13 @@ class CDVDInputStreamMemory : public CDVDInputStream
 {
 public:
   CDVDInputStreamMemory(CFileItem &fileitem);
-  virtual ~CDVDInputStreamMemory();
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool IsEOF();
-  virtual int64_t GetLength();
+  ~CDVDInputStreamMemory() override;
+  bool Open() override;
+  void Close() override;
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  bool IsEOF() override;
+  int64_t GetLength() override;
 
 protected:
   uint8_t* m_pData;

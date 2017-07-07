@@ -33,22 +33,22 @@ class CDVDDemuxVobsub : public CDVDDemux
 {
 public:
   CDVDDemuxVobsub();
-  virtual ~CDVDDemuxVobsub();
+  ~CDVDDemuxVobsub() override;
 
-  virtual void          Reset();
-  virtual void          Abort() {};
-  virtual void          Flush();
-  virtual DemuxPacket*  Read();
-  virtual bool SeekTime(double time, bool backwards, double* startpts = NULL) override;
-  virtual void          SetSpeed(int speed) {}
-  virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  virtual int           GetNrOfStreams() const override { return m_Streams.size(); }
-  virtual int           GetStreamLength()    { return 0; }
-  virtual std::string   GetFileName()        { return m_Filename; }
+  void Reset() override;
+  void Abort() override {};
+  void Flush() override;
+  DemuxPacket* Read() override;
+  bool SeekTime(double time, bool backwards, double* startpts = NULL) override;
+  void SetSpeed(int speed) override {}
+  CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override { return m_Streams.size(); }
+  int  GetStreamLength() override { return 0; }
+  std::string GetFileName() override { return m_Filename; }
 
-  bool                  Open(const std::string& filename, int source, const std::string& subfilename);
-  virtual void EnableStream(int id, bool enable) override;
+  bool Open(const std::string& filename, int source, const std::string& subfilename);
+  void EnableStream(int id, bool enable) override;
 
 private:
   class CStream
@@ -70,18 +70,18 @@ private:
     int     id;
   } STimestamp;
 
-  std::string                        m_Filename;
-  std::unique_ptr<CDVDInputStream>     m_Input;
-  std::unique_ptr<CDVDDemuxFFmpeg>     m_Demuxer;
-  std::vector<STimestamp>            m_Timestamps;
-  std::vector<STimestamp>::iterator  m_Timestamp;
+  std::string m_Filename;
+  std::unique_ptr<CDVDInputStream> m_Input;
+  std::unique_ptr<CDVDDemuxFFmpeg> m_Demuxer;
+  std::vector<STimestamp> m_Timestamps;
+  std::vector<STimestamp>::iterator m_Timestamp;
   std::vector<CStream*> m_Streams;
   int m_source = -1;
 
   typedef struct SState
   {
-    int         id;
-    double      delay;
+    int id;
+    double delay;
     std::string extra;
   } SState;
 

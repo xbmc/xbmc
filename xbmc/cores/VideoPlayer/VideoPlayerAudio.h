@@ -40,7 +40,7 @@ class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
   CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent, CProcessInfo &processInfo);
-  virtual ~CVideoPlayerAudio();
+  ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
   void CloseStream(bool bWaitForBuffers) override;

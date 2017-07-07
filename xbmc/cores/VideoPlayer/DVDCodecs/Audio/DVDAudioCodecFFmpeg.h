@@ -36,19 +36,19 @@ class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
   CDVDAudioCodecFFmpeg(CProcessInfo &processInfo);
-  virtual ~CDVDAudioCodecFFmpeg();
-  virtual bool Open(CDVDStreamInfo &hints,
+  ~CDVDAudioCodecFFmpeg() override;
+  bool Open(CDVDStreamInfo &hints,
                     CDVDCodecOptions &options) override;
-  virtual void Dispose() override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void GetData(DVDAudioFrame &frame) override;
-  virtual int GetData(uint8_t** dst) override;
-  virtual void Reset() override;
-  virtual AEAudioFormat GetFormat() override{ return m_format; }
-  virtual const char* GetName() override { return "FFmpeg"; }
-  virtual enum AVMatrixEncoding GetMatrixEncoding() override;
-  virtual enum AVAudioServiceType GetAudioServiceType() override;
-  virtual int GetProfile() override;
+  void Dispose() override;
+  bool AddData(const DemuxPacket &packet) override;
+  void GetData(DVDAudioFrame &frame) override;
+  int GetData(uint8_t** dst) override;
+  void Reset() override;
+  AEAudioFormat GetFormat() override { return m_format; }
+  const char* GetName() override { return "FFmpeg"; }
+  enum AVMatrixEncoding GetMatrixEncoding() override;
+  enum AVAudioServiceType GetAudioServiceType() override;
+  int GetProfile() override;
 
 protected:
   enum AEDataFormat GetDataFormat();

@@ -1285,9 +1285,9 @@ class VDPAU::CVdpauBufferPool : public IVideoBufferPool
 {
 public:
   CVdpauBufferPool(CDecoder &decoder);
-  virtual ~CVdpauBufferPool();
-  virtual CVideoBuffer* Get();
-  virtual void Return(int id);
+  ~CVdpauBufferPool() override;
+  CVideoBuffer* Get() override;
+  void Return(int id) override;
   CVdpauRenderPicture* GetVdpau();
   bool HasFree();
   void QueueReturnPicture(CVdpauRenderPicture *pic);

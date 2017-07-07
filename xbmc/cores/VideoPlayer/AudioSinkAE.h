@@ -67,8 +67,8 @@ public:
   void Drain();
   void AbortAddPackets();
 
-  double GetClock();
-  double GetClockSpeed();
+  double GetClock() override;
+  double GetClockSpeed() override;
 
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate);
 

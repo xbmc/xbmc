@@ -99,31 +99,31 @@ class CLinuxRendererGL : public CBaseRenderer
 {
 public:
   CLinuxRendererGL();
-  virtual ~CLinuxRendererGL();
+  ~CLinuxRendererGL() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
-  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
-  virtual bool IsConfigured() override { return m_bConfigured; }
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
-  virtual void FlipPage(int source) override;
-  virtual void UnInit() override;
-  virtual void Reset() override;
-  virtual void Flush() override;
-  virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
-  virtual void ReleaseBuffer(int idx) override;
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
-  virtual void Update() override;
-  virtual bool RenderCapture(CRenderCapture* capture) override;
-  virtual CRenderInfo GetRenderInfo() override;
-  virtual bool ConfigChanged(const VideoPicture &picture) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  bool IsConfigured() override { return m_bConfigured; }
+  void AddVideoPicture(const VideoPicture &picture, int index) override;
+  void FlipPage(int source) override;
+  void UnInit() override;
+  void Reset() override;
+  void Flush() override;
+  void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  void ReleaseBuffer(int idx) override;
+  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  void Update() override;
+  bool RenderCapture(CRenderCapture* capture) override;
+  CRenderInfo GetRenderInfo() override;
+  bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering() override;
-  virtual bool Supports(ERENDERFEATURE feature) override;
-  virtual bool Supports(ESCALINGMETHOD method) override;
+  bool SupportsMultiPassRendering() override;
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
 
 protected:
   bool Render(DWORD flags, int renderBuffer);
