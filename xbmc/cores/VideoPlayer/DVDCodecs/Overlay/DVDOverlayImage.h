@@ -107,13 +107,13 @@ public:
     m_textureid = 0;
   }
 
-  ~CDVDOverlayImage()
+  ~CDVDOverlayImage() override
   {
     if(data) free(data);
     if(palette) free(palette);
   }
 
-  virtual CDVDOverlayImage* Clone()
+  CDVDOverlayImage* Clone() override
   {
     return new CDVDOverlayImage(*this);
   }

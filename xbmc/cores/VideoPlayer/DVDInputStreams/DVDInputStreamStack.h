@@ -28,15 +28,15 @@ class CDVDInputStreamStack : public CDVDInputStream
 {
 public:
   CDVDInputStreamStack(const CFileItem& fileitem);
-  virtual ~CDVDInputStreamStack();
+  ~CDVDInputStreamStack() override;
 
-  virtual bool    Open();
-  virtual void    Close();
-  virtual int     Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; };
-  virtual bool    IsEOF();
-  virtual int64_t GetLength();
+  bool Open() override;
+  void Close() override;
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  bool Pause(double dTime) override { return false; };
+  bool IsEOF() override;
+  int64_t GetLength() override;
 
 protected:
 
@@ -44,15 +44,15 @@ protected:
 
   struct TSeg
   {
-    TFile   file;
+    TFile file;
     int64_t length;
   };
 
   typedef std::vector<TSeg> TSegVec;
 
   TSegVec m_files;  ///< collection of open ptr's to all files in stack
-  TFile   m_file;   ///< currently active file
-  bool    m_eof;
+  TFile m_file;   ///< currently active file
+  bool m_eof;
   int64_t m_pos;
   int64_t m_length;
 };

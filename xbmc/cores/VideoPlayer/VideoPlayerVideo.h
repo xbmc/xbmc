@@ -64,7 +64,7 @@ public:
                  ,CDVDMessageQueue& parent
                  ,CRenderManager& renderManager,
                  CProcessInfo &processInfo);
-  virtual ~CVideoPlayerVideo();
+  ~CVideoPlayerVideo() override;
 
   bool OpenStream(CDVDStreamInfo hint) override;
   void CloseStream(bool bWaitForBuffers) override;

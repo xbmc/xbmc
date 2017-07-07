@@ -28,13 +28,13 @@ class CDVDOverlayCodecText : public CDVDOverlayCodec
 {
 public:
   CDVDOverlayCodecText();
-  virtual ~CDVDOverlayCodecText();
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose();
-  virtual int Decode(DemuxPacket *pPacket);
-  virtual void Reset();
-  virtual void Flush();
-  virtual CDVDOverlay* GetOverlay();
+  ~CDVDOverlayCodecText() override;
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  void Dispose() override;
+  int Decode(DemuxPacket *pPacket) override;
+  void Reset() override;
+  void Flush() override;
+  CDVDOverlay* GetOverlay() override;
 
 private:
   bool             m_bIsSSA;
