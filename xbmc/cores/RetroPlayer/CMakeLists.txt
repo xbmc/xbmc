@@ -1,12 +1,14 @@
 set(SOURCES PixelConverter.cpp
             RetroPlayer.cpp
             RetroPlayerAudio.cpp
+            RetroPlayerAutoSave.cpp
             RetroPlayerVideo.cpp)
 
 set(HEADERS IPixelConverter.h
             PixelConverter.h
             RetroPlayer.h
             RetroPlayerAudio.h
+            RetroPlayerAutoSave.h
             RetroPlayerDefines.h
             RetroPlayerVideo.h)
 

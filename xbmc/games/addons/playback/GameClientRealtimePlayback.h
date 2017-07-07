@@ -40,7 +40,7 @@ namespace GAME
     virtual void SeekTimeMs(unsigned int timeMs) override { }
     virtual double GetSpeed() const override { return 1.0; }
     virtual void SetSpeed(double speedFactor) override { }
-    virtual std::string CreateManualSavestate() override { return ""; }
+    virtual std::string CreateSavestate() override { return ""; }
     virtual bool LoadSavestate(const std::string& path) override { return false; }
   };
 }

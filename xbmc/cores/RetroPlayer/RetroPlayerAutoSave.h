@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,23 +17,30 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#include "SavestateUtils.h"
-#include "Savestate.h"
-#include "utils/URIUtils.h"
+#include "threads/Thread.h"
 
-#define SAVESTATE_EXTENSION      ".sav"
-#define METADATA_EXTENSION       ".xml"
+class IPlayer;
 
-using namespace KODI;
-using namespace GAME;
-
-std::string CSavestateUtils::MakePath(const CSavestate& save)
+namespace KODI
 {
-  return URIUtils::ReplaceExtension(save.GamePath(), SAVESTATE_EXTENSION);
+namespace RETRO
+{
+  class CRetroPlayerAutoSave : protected CThread
+  {
+  public:
+    CRetroPlayerAutoSave(IPlayer *player);
+
+    ~CRetroPlayerAutoSave() override;
+
+  protected:
+    // implementation of CThread
+    virtual void Process() override;
+
+  private:
+    // Construction parameter
+    IPlayer *const m_player;
+  };
 }
-
-std::string CSavestateUtils::MakeMetadataPath(const std::string &gamePath)
-{
-  return URIUtils::ReplaceExtension(gamePath, METADATA_EXTENSION);
 }
