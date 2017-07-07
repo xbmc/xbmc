@@ -119,12 +119,15 @@ bool CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
     m_pTarget.videoBuffer = nullptr;
   }
 
-  m_pTarget.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight * 3 / 2);
+  m_pTarget.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight);
   if (!m_pTarget.videoBuffer)
   {
     return false;
   }
 
+  int strides[YuvImage::MAX_PLANES] = { };
+  strides[0] = pPicture->iWidth;
+  m_pTarget.videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, strides);
   int pict_type = (m_pSource->qscale_type != DVP_QSCALE_MPEG1) ?
                    PP_PICT_TYPE_QP2 : 0;
 

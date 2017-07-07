@@ -181,20 +181,17 @@ bool CVideoBuffer::CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc)
   return true;
 }
 
-CVideoBufferSysMem::CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int width, int height)
+CVideoBufferSysMem::CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int size)
 : CVideoBuffer(id)
 {
   m_pixFormat = format;
-  m_width = width;
-  m_height = height;
+  m_size = size;
   memset(&m_image, 0, sizeof(YuvImage));
 }
 
 CVideoBufferSysMem::~CVideoBufferSysMem()
 {
-  delete[] m_image.plane[0];
-  delete[] m_image.plane[1];
-  delete[] m_image.plane[2];
+  delete[] m_data;
 }
 
 void CVideoBufferSysMem::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
@@ -211,8 +208,14 @@ void CVideoBufferSysMem::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   strides[2] = m_image.stride[2];
 }
 
-bool CVideoBufferSysMem::Alloc()
+void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
 {
+  m_width = width;
+  m_height = height;
+  m_strides[0] = strides[0];
+  m_strides[1] = strides[1];
+  m_strides[2] = strides[2];
+
   m_image.width  = m_width;
   m_image.height = m_height;
   m_image.cshift_x = 1;
@@ -263,9 +266,14 @@ bool CVideoBufferSysMem::Alloc()
     m_image.planesize[2] = 0;
   }
 
-  for (int i = 0; i < 3; ++i)
-    m_image.plane[i] = new uint8_t[m_image.planesize[i]];
+  m_image.plane[0] = m_data;
+  m_image.plane[1] = m_data + m_image.planesize[0];
+  m_image.plane[2] = m_image.plane[1] + m_image.planesize[1];
+}
 
+bool CVideoBufferSysMem::Alloc()
+{
+  m_data = new uint8_t[m_size];
   return true;
 }
 
@@ -289,7 +297,7 @@ CVideoBuffer* CVideoBufferPoolSysMem::Get()
   else
   {
     int id = m_all.size();
-    buf = new CVideoBufferSysMem(*this, id, m_pixFormat, m_width, m_height);
+    buf = new CVideoBufferSysMem(*this, id, m_pixFormat, m_size);
     buf->Alloc();
     m_all.push_back(buf);
     m_used.push_back(id);
@@ -315,15 +323,6 @@ void CVideoBufferPoolSysMem::Return(int id)
       ++it;
   }
   m_free.push_back(id);
-}
-
-void CVideoBufferPoolSysMem::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
-{
-  m_width = width;
-  m_height = height;
-  m_alignedWidth = alignedWidth;
-  m_alignedHeight = alignedHeight;
-  m_configured = true;
 }
 
 void CVideoBufferPoolSysMem::Configure(AVPixelFormat format, int size)
