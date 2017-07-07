@@ -38,9 +38,9 @@ namespace OVERLAY {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
      COverlayTextureGL(CDVDOverlaySpu* o);
-    virtual ~COverlayTextureGL();
+    ~COverlayTextureGL() override;
 
-    void Render(SRenderState& state);
+    void Render(SRenderState& state) override;
 
     GLuint m_texture;
     float  m_u;
@@ -53,9 +53,9 @@ namespace OVERLAY {
   public:
    COverlayGlyphGL(ASS_Image* images, int width, int height);
 
-   virtual ~COverlayGlyphGL();
+   ~COverlayGlyphGL() override;
 
-   void Render(SRenderState& state);
+   void Render(SRenderState& state) override;
 
     struct VERTEX
     {

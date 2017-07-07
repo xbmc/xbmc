@@ -164,7 +164,7 @@ public:
     iBitRate = 0;
   }
 
-  virtual ~CDemuxStreamVideo() = default;
+  ~CDemuxStreamVideo() override = default;
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
@@ -193,7 +193,7 @@ public:
     type = STREAM_AUDIO;
   }
 
-  virtual ~CDemuxStreamAudio() = default;
+  ~CDemuxStreamAudio() override = default;
 
   std::string GetStreamType();
 

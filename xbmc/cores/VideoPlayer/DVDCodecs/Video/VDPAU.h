@@ -71,31 +71,31 @@ namespace VDPAU
 
 struct VDPAU_procs
 {
-  VdpGetProcAddress *                   vdp_get_proc_address;
-  VdpDeviceDestroy *                    vdp_device_destroy;
+  VdpGetProcAddress*vdp_get_proc_address;
+  VdpDeviceDestroy*                    vdp_device_destroy;
 
-  VdpVideoSurfaceCreate *               vdp_video_surface_create;
-  VdpVideoSurfaceDestroy *              vdp_video_surface_destroy;
-  VdpVideoSurfacePutBitsYCbCr *         vdp_video_surface_put_bits_y_cb_cr;
-  VdpVideoSurfaceGetBitsYCbCr *         vdp_video_surface_get_bits_y_cb_cr;
+  VdpVideoSurfaceCreate* vdp_video_surface_create;
+  VdpVideoSurfaceDestroy* vdp_video_surface_destroy;
+  VdpVideoSurfacePutBitsYCbCr* vdp_video_surface_put_bits_y_cb_cr;
+  VdpVideoSurfaceGetBitsYCbCr* vdp_video_surface_get_bits_y_cb_cr;
 
-  VdpOutputSurfacePutBitsYCbCr *        vdp_output_surface_put_bits_y_cb_cr;
-  VdpOutputSurfacePutBitsNative *       vdp_output_surface_put_bits_native;
-  VdpOutputSurfaceCreate *              vdp_output_surface_create;
-  VdpOutputSurfaceDestroy *             vdp_output_surface_destroy;
-  VdpOutputSurfaceGetBitsNative *       vdp_output_surface_get_bits_native;
-  VdpOutputSurfaceRenderOutputSurface * vdp_output_surface_render_output_surface;
-  VdpOutputSurfacePutBitsIndexed *      vdp_output_surface_put_bits_indexed;
+  VdpOutputSurfacePutBitsYCbCr* vdp_output_surface_put_bits_y_cb_cr;
+  VdpOutputSurfacePutBitsNative* vdp_output_surface_put_bits_native;
+  VdpOutputSurfaceCreate* vdp_output_surface_create;
+  VdpOutputSurfaceDestroy* vdp_output_surface_destroy;
+  VdpOutputSurfaceGetBitsNative* vdp_output_surface_get_bits_native;
+  VdpOutputSurfaceRenderOutputSurface* vdp_output_surface_render_output_surface;
+  VdpOutputSurfacePutBitsIndexed* vdp_output_surface_put_bits_indexed;
 
-  VdpVideoMixerCreate *                 vdp_video_mixer_create;
-  VdpVideoMixerSetFeatureEnables *      vdp_video_mixer_set_feature_enables;
-  VdpVideoMixerQueryParameterSupport *  vdp_video_mixer_query_parameter_support;
-  VdpVideoMixerQueryFeatureSupport *    vdp_video_mixer_query_feature_support;
-  VdpVideoMixerDestroy *                vdp_video_mixer_destroy;
-  VdpVideoMixerRender *                 vdp_video_mixer_render;
-  VdpVideoMixerSetAttributeValues *     vdp_video_mixer_set_attribute_values;
+  VdpVideoMixerCreate* vdp_video_mixer_create;
+  VdpVideoMixerSetFeatureEnables* vdp_video_mixer_set_feature_enables;
+  VdpVideoMixerQueryParameterSupport* vdp_video_mixer_query_parameter_support;
+  VdpVideoMixerQueryFeatureSupport* vdp_video_mixer_query_feature_support;
+  VdpVideoMixerDestroy* vdp_video_mixer_destroy;
+  VdpVideoMixerRender* vdp_video_mixer_render;
+  VdpVideoMixerSetAttributeValues* vdp_video_mixer_set_attribute_values;
 
-  VdpGenerateCSCMatrix *                vdp_generate_csc_matrix;
+  VdpGenerateCSCMatrix*  vdp_generate_csc_matrix;
 
   VdpGetErrorString* vdp_get_error_string;
 
@@ -123,7 +123,7 @@ public:
   uint16_t decodedPics;
   uint16_t processedPics;
   uint16_t renderPics;
-  uint64_t latency;         // time decoder has waited for a frame, ideally there is no latency
+  uint64_t latency; // time decoder has waited for a frame, ideally there is no latency
   int codecFlags;
   bool canSkipDeint;
   bool draining;
@@ -258,16 +258,16 @@ class CMixer : private CThread
 {
 public:
   CMixer(CEvent *inMsgEvent);
-  virtual ~CMixer();
+  ~CMixer() override;
   void Start();
   void Dispose();
   bool IsActive();
   CMixerControlProtocol m_controlPort;
   CMixerDataProtocol m_dataPort;
 protected:
-  void OnStartup();
-  void OnExit();
-  void Process();
+  void OnStartup() override;
+  void OnExit() override;
+  void Process() override;
   void StateMachine(int signal, Actor::Protocol *port, Actor::Message *msg);
   void Init();
   void Uninit();
@@ -370,15 +370,15 @@ class COutput : private CThread
 {
 public:
   COutput(CDecoder &decoder, CEvent *inMsgEvent);
-  virtual ~COutput();
+  ~COutput() override;
   void Start();
   void Dispose();
   COutputControlProtocol m_controlPort;
   COutputDataProtocol m_dataPort;
 protected:
-  void OnStartup();
-  void OnExit();
-  void Process();
+  void OnStartup() override;
+  void OnExit() override;
+  void Process() override;
   void StateMachine(int signal, Actor::Protocol *port, Actor::Message *msg);
   bool HasWork();
   CVdpauRenderPicture *ProcessMixerPicture();
@@ -482,20 +482,20 @@ public:
   };
 
   CDecoder(CProcessInfo& processInfo);
-  virtual ~CDecoder();
+  ~CDecoder() override;
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat);
-  virtual CDVDVideoCodec::VCReturn Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture);
-  virtual void Reset();
+  bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
+  CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame) override;
+  bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
+  void Reset() override;
   virtual void Close();
-  virtual long Release();
-  virtual bool CanSkipDeint();
-  virtual unsigned GetAllowedReferences() { return 5; }
+  long Release() override;
+  bool CanSkipDeint() override;
+  unsigned GetAllowedReferences() override { return 5; }
 
-  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx);
-  virtual const std::string Name() { return "vdpau"; }
-  virtual void SetCodecControl(int flags);
+  CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
+  const std::string Name() override { return "vdpau"; }
+  void SetCodecControl(int flags) override;
 
   bool Supports(VdpVideoMixerFeature feature);
   static bool IsVDPAUFormat(AVPixelFormat fmt);
@@ -506,8 +506,8 @@ public:
                     const VdpPictureInfo *info, uint32_t buffers_used,
                     const VdpBitstreamBuffer *buffers);
 
-  virtual void OnLostDisplay();
-  virtual void OnResetDisplay();
+  void OnLostDisplay() override;
+  void OnResetDisplay() override;
 
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
   static void Register();
@@ -522,7 +522,7 @@ protected:
 
   static void ReadFormatOf( AVCodecID codec
                           , VdpDecoderProfile &decoder_profile
-                          , VdpChromaType     &chroma_type);
+                          , VdpChromaType &chroma_type);
 
   // OnLostDevice triggers transition from all states to LOST
   // internal errors trigger transition from OPEN to RESET

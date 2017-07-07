@@ -36,7 +36,7 @@ public:
   InputStreamMultiStreams(DVDStreamType type, const CFileItem& fileitem)
     : CDVDInputStream(type, fileitem) {}
 
-  virtual ~InputStreamMultiStreams() = default;
+  ~InputStreamMultiStreams() override = default;
 
 protected:
   std::vector<InputStreamPtr> m_InputStreams;    // input streams for current playing file

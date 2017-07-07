@@ -221,15 +221,15 @@ class COutput : private CThread
 {
 public:
   COutput(CDecoder &decoder, CEvent *inMsgEvent);
-  virtual ~COutput();
+  ~COutput() override;
   void Start();
   void Dispose();
   COutputControlProtocol m_controlPort;
   COutputDataProtocol m_dataPort;
 protected:
-  void OnStartup();
-  void OnExit();
-  void Process();
+  void OnStartup() override;
+  void OnExit() override;
+  void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool HasWork();
   bool PreferPP();
@@ -337,20 +337,20 @@ class CDecoder
 public:
 
   CDecoder(CProcessInfo& processInfo);
-  virtual ~CDecoder();
+  ~CDecoder() override;
 
-  virtual bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
-  virtual CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
-  virtual void Reset() override;
+  bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
+  CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame) override;
+  bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
+  void Reset() override;
   virtual void Close();
-  virtual long Release() override;
-  virtual bool CanSkipDeint() override;
-  virtual unsigned GetAllowedReferences() override { return 4; }
+  long Release() override;
+  bool CanSkipDeint() override;
+  unsigned GetAllowedReferences() override { return 4; }
 
-  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
-  virtual const std::string Name() override { return "vaapi"; }
-  virtual void SetCodecControl(int flags) override;
+  CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
+  const std::string Name() override { return "vaapi"; }
+  void SetCodecControl(int flags) override;
 
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
@@ -427,14 +427,14 @@ protected:
 class CSkipPostproc : public CPostproc
 {
 public:
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
 protected:
   CVaapiDecodedPicture m_pic;
 };
@@ -446,16 +446,16 @@ class CVppPostproc : public CPostproc
 {
 public:
   CVppPostproc();
-  virtual ~CVppPostproc();
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
-  bool WantsPic();
+  ~CVppPostproc() override;
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
+  bool WantsPic() override;
 protected:
   bool CheckSuccess(VAStatus status);
   void Dispose();
@@ -478,15 +478,15 @@ class CFFmpegPostproc : public CPostproc
 {
 public:
   CFFmpegPostproc();
-  virtual ~CFFmpegPostproc();
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
+  ~CFFmpegPostproc() override;
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
 protected:
   bool CheckSuccess(VAStatus status);
   void Close();
