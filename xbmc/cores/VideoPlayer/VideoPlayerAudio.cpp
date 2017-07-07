@@ -48,7 +48,7 @@ public:
     , m_codec(codec)
     , m_hints(hints)
   {}
- ~CDVDMsgAudioCodecChange()
+ ~CDVDMsgAudioCodecChange() override
   {
     delete m_codec;
   }

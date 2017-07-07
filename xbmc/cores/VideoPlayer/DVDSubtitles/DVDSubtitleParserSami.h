@@ -31,6 +31,6 @@ class CDVDSubtitleParserSami : public CDVDSubtitleParserText
 {
 public:
   CDVDSubtitleParserSami(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile);
-  virtual ~CDVDSubtitleParserSami();
-  virtual bool Open(CDVDStreamInfo &hints);
+  ~CDVDSubtitleParserSami() override;
+  bool Open(CDVDStreamInfo &hints) override;
 };

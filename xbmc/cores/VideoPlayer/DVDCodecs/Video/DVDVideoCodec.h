@@ -255,7 +255,7 @@ class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
 {
 public:
   IHardwareDecoder() = default;
-  virtual ~IHardwareDecoder() = default;
+  ~IHardwareDecoder() override = default;
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) = 0;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) = 0;

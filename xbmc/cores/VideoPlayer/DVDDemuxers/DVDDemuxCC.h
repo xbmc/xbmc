@@ -29,19 +29,19 @@ class CDVDDemuxCC : public CDVDDemux
 {
 public:
   CDVDDemuxCC(AVCodecID codec);
-  virtual ~CDVDDemuxCC();
+  ~CDVDDemuxCC() override;
 
-  virtual void Reset() override {};
-  virtual void Abort() override {};
-  virtual void Flush() override {};
-  virtual DemuxPacket* Read() override { return NULL; };
-  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
-  virtual void SetSpeed(int iSpeed) override {};
-  virtual int GetStreamLength() override {return 0;};
-  virtual CDemuxStream* GetStream(int iStreamId) const override;
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  virtual int GetNrOfStreams() const override;
-  virtual std::string GetFileName() override {return "";};
+  void Reset() override {};
+  void Abort() override {};
+  void Flush() override {};
+  DemuxPacket* Read() override { return NULL; };
+  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
+  void SetSpeed(int iSpeed) override {};
+  int GetStreamLength() override {return 0;};
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
+  std::string GetFileName() override {return "";};
 
   DemuxPacket* Read(DemuxPacket *packet);
   static void Handler(int service, void *userdata);

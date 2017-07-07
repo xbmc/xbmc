@@ -35,18 +35,18 @@ class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
 public:
   CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType);
-  virtual ~CDVDAudioCodecPassthrough();
+  ~CDVDAudioCodecPassthrough() override;
 
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual void Dispose() override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void GetData(DVDAudioFrame &frame) override;
-  virtual int GetData(uint8_t** dst) override;
-  virtual void Reset() override;
-  virtual AEAudioFormat GetFormat() override{ return m_format; }
-  virtual bool NeedPassthrough() override { return true; }
-  virtual const char* GetName() override { return "passthrough"; }
-  virtual int GetBufferSize() override;
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  void Dispose() override;
+  bool AddData(const DemuxPacket &packet) override;
+  void GetData(DVDAudioFrame &frame) override;
+  int GetData(uint8_t** dst) override;
+  void Reset() override;
+  AEAudioFormat GetFormat() override { return m_format; }
+  bool NeedPassthrough() override { return true; }
+  const char* GetName() override { return "passthrough"; }
+  int GetBufferSize() override;
 
 private:
   CAEStreamParser m_parser;
