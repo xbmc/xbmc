@@ -132,9 +132,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
     CAppParamParser appParamParser;
     appParamParser.Parse(argv, argc);
     // Create and run the app
-    status = XBMC_Run(true, appParamParser.m_playlist);
+    status = XBMC_Run(true, appParamParser);
   }
-  
 
   for (int i = 0; i < argc; ++i)
     delete[] argv[i];

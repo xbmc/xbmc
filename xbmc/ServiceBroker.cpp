@@ -85,6 +85,11 @@ CSettings& CServiceBroker::GetSettings()
   return g_application.m_ServiceManager->GetSettings();
 }
 
+GAME::CControllerManager& CServiceBroker::GetGameControllerManager()
+{
+  return g_application.m_ServiceManager->GetGameControllerManager();
+}
+
 GAME::CGameServices& CServiceBroker::GetGameServices()
 {
   return g_application.m_ServiceManager->GetGameServices();

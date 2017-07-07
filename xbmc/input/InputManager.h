@@ -42,6 +42,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
+class CAppParamParser;
 class CButtonTranslator;
 class CCustomControllerTranslator;
 class CIRTranslator;
@@ -86,7 +87,7 @@ class CInputManager : public ISettingCallback,
                       public Observable
 {
 public:
-  CInputManager();
+  CInputManager(const CAppParamParser &params);
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;

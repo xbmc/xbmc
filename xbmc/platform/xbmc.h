@@ -20,7 +20,7 @@
 
 #pragma once
 
-class CFileItemList;
+class CAppParamParser;
 
-extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist);
+extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params);
 

@@ -607,18 +607,18 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
       (g_application.m_pPlayer->IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
       )
     {
-      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
     }
   }
   // otherwise, shuffle from the passed position
   // which is the position of the first new item added
   else
   {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(iPosition);
+    CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Shuffle(iPosition);
   }
 }
 
-void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
+void CPlayListPlayer::Add(int iPlaylist, const CPlayList& playlist)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -640,7 +640,7 @@ void CPlayListPlayer::Add(int iPlaylist, const CFileItemPtr &pItem)
     ReShuffle(iPlaylist, iSize);
 }
 
-void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
+void CPlayListPlayer::Add(int iPlaylist, const CFileItemList& items)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -651,7 +651,7 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
     ReShuffle(iPlaylist, iSize);
 }
 
-void CPlayListPlayer::Insert(int iPlaylist, CPlayList& playlist, int iIndex)
+void CPlayListPlayer::Insert(int iPlaylist, const CPlayList& playlist, int iIndex)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -677,7 +677,7 @@ void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iInde
     m_iCurrentSong++;
 }
 
-void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
+void CPlayListPlayer::Insert(int iPlaylist, const CFileItemList& items, int iIndex)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;

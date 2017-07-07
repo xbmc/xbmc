@@ -26,6 +26,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
 #include "favourites/FavouritesService.h"
+#include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
@@ -40,10 +41,7 @@
 
 using namespace KODI;
 
-CServiceManager::CServiceManager() :
-  m_gameServices(new GAME::CGameServices),
-  m_peripherals(new PERIPHERALS::CPeripherals),
-  m_inputManager(new CInputManager)
+CServiceManager::CServiceManager()
 {
 }
 
@@ -51,7 +49,7 @@ CServiceManager::~CServiceManager()
 {
 }
 
-bool CServiceManager::Init1()
+bool CServiceManager::InitStageOne()
 {
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
@@ -61,8 +59,6 @@ bool CServiceManager::Init1()
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
 #endif
 
-  m_Platform.reset(CPlatform::CreateInstance());
-
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
   m_settings.reset(new CSettings());
@@ -71,8 +67,9 @@ bool CServiceManager::Init1()
   return true;
 }
 
-bool CServiceManager::Init2()
+bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 {
+  m_Platform.reset(CPlatform::CreateInstance());
   m_Platform->Init();
 
   m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
@@ -90,19 +87,25 @@ bool CServiceManager::Init2()
   }
 
   m_repositoryUpdater.reset(new ADDON::CRepositoryUpdater(*m_addonMgr));
+
   m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
   m_vfsAddonCache->Init();
 
   m_PVRManager.reset(new PVR::CPVRManager());
+  m_PVRManager->Init();
+
   m_dataCacheCore.reset(new CDataCacheCore());
 
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
   m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
-  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
+
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
+  m_controllerManager.reset(new GAME::CControllerManager);
+
+  m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
   init_level = 2;
@@ -138,38 +141,57 @@ bool CServiceManager::StartAudioEngine()
   return m_ActiveAE->Initialize();
 }
 
-bool CServiceManager::Init3()
+bool CServiceManager::InitStageThree()
 {
+  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
   m_peripherals->Initialise();
-  m_PVRManager->Init();
+
+  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
   m_contextMenuManager->Init();
-  m_gameServices->Init(*m_peripherals);
+
+  m_gameServices.reset(new GAME::CGameServices(*m_controllerManager, *m_peripherals));
 
   init_level = 3;
   return true;
 }
 
-void CServiceManager::Deinit()
+void CServiceManager::DeinitStageThree()
 {
-  m_serviceAddons.reset();
-  m_gameServices->Deinit();
-  m_peripherals.reset();
-  //m_inputManager->Deinitialize(); //! @todo
+  m_gameServices.reset();
   m_contextMenuManager.reset();
+  m_peripherals.reset();
+
+  init_level = 2;
+}
+
+void CServiceManager::DeinitStageTwo()
+{
+  m_peripherals.reset();
+  m_inputManager.reset();
+  m_serviceAddons.reset();
   m_favouritesService.reset();
   m_binaryAddonCache.reset();
-  if (m_PVRManager)
-    m_PVRManager->Deinit();
+  m_dataCacheCore.reset();
   m_PVRManager.reset();
-  m_repositoryUpdater.reset();
   m_vfsAddonCache.reset();
+  m_repositoryUpdater.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
+  m_Platform.reset();
+
+  init_level = 1;
+}
+
+void CServiceManager::DeinitStageOne()
+{
+  m_settings.reset();
+  m_playlistPlayer.reset();
 #ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
 #endif
   m_announcementManager.reset();
+
   init_level = 0;
 }
 
@@ -249,6 +271,11 @@ PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
 CSettings& CServiceManager::GetSettings()
 {
   return *m_settings;
+}
+
+GAME::CControllerManager& CServiceManager::GetGameControllerManager()
+{
+  return *m_controllerManager;
 }
 
 GAME::CGameServices& CServiceManager::GetGameServices()

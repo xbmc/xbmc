@@ -49,25 +49,12 @@ namespace
 
 // --- CPortManager -----------------------------------------------------------
 
-CPortManager::CPortManager() :
-  m_portMapper(new CPortMapper)
+CPortManager::CPortManager(PERIPHERALS::CPeripherals& peripheralManager) :
+  m_portMapper(new CPortMapper(peripheralManager, *this))
 {
 }
 
-CPortManager::~CPortManager()
-{
-  Deinitialize();
-}
-
-void CPortManager::Initialize(CPeripherals& peripheralManager)
-{
-  m_portMapper->Initialize(peripheralManager, *this);
-}
-
-void CPortManager::Deinitialize()
-{
-  m_portMapper->Deinitialize();
-}
+CPortManager::~CPortManager() = default;
 
 void CPortManager::OpenPort(IInputHandler* handler,
                             HARDWARE::IHardwareInput *hardwareInput,

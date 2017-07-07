@@ -38,6 +38,7 @@
 #import "platform/darwin/ios/XBMCController.h"
 #endif
 #import "utils/Variant.h"
+#include "ServiceBroker.h"
 
 id objectFromVariant(const CVariant &data);
 
@@ -156,11 +157,11 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     if (duration > 0)
       [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
     [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
-    int current = g_playlistPlayer.GetCurrentSong();
+    int current = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     if (current >= 0)
     {
       [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
-      [item setValue:[NSNumber numberWithInt:g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size()] forKey:@"total"];
+      [item setValue:[NSNumber numberWithInt:CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()] forKey:@"total"];
     }
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {

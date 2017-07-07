@@ -23,7 +23,7 @@
 
 #include "guilib/IWindowManagerCallback.h"
 
-class CFileItemList;
+class CAppParamParser;
 
 // Do not change the numbering, external scripts depend on them
 enum {
@@ -51,7 +51,7 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
-  INT Run(CFileItemList &playlist);
+  INT Run(const CAppParamParser &params);
   VOID Destroy();
 
 private:

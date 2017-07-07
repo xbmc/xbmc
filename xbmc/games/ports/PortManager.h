@@ -55,11 +55,8 @@ namespace GAME
   class CPortManager : public Observable
   {
   public:
-    CPortManager();
+    CPortManager(PERIPHERALS::CPeripherals& peripheralManager);
     virtual ~CPortManager();
-
-    void Initialize(PERIPHERALS::CPeripherals& peripheralManager);
-    void Deinitialize();
 
     /*!
      * \brief Request a new port be opened with input on that port sent to the
