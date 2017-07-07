@@ -31,6 +31,7 @@ extern "C"
 #include <libbluray/keys.h>
 #include <libbluray/overlay.h>
 #include <libbluray/player_settings.h>
+#include "DVDInputStreamFile.h"
 }
 
 #define MAX_PLAYLIST_ID 99999
@@ -172,5 +173,8 @@ protected:
 #endif
 
   private:
+    bool OpenStream(CFileItem &item);
     void SetupPlayerSettings();
+    std::unique_ptr<CDVDInputStreamFile> m_pstream;
+    std::string m_rootPath;
 };

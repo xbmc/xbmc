@@ -31,6 +31,10 @@ extern "C"
 #include <libbluray/overlay.h>
 }
 
+typedef int(*read_blocks_f)(void *handle, void *buf, int lba, int num_blocks);
+typedef struct bd_dir_s *(*open_dir_f)(void *handle, const char *rel_path);
+typedef struct bd_file_s *(*open_file_f)(void *handle, const char *rel_path);
+
 class DllLibblurayInterface
 {
 public:
@@ -41,6 +45,8 @@ public:
   virtual void bd_free_title_info(BLURAY_TITLE_INFO *title_info)=0;
   virtual BLURAY *bd_open(const char* device_path, const char* keyfile_path)=0;
   virtual int bd_open_disc(BLURAY *bd, const char *device_path, const char *keyfile_path)=0;
+  virtual int bd_open_stream(BLURAY *bd, void *read_blocks_handle, read_blocks_f func) = 0;
+  virtual int bd_open_files(BLURAY *bd, void *handle, open_dir_f dir_func, open_file_f file_func) = 0;
   virtual BLURAY *bd_init(void)= 0;
   virtual void bd_close(BLURAY *bd)=0;
   virtual int64_t bd_seek(BLURAY *bd, uint64_t pos)=0;
@@ -92,6 +98,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD1(void,                bd_free_title_info,     (BLURAY_TITLE_INFO *p1))
   DEFINE_METHOD2(BLURAY*,             bd_open,                (const char* p1, const char* p2))
   DEFINE_METHOD3(int,                 bd_open_disc,           (BLURAY *p1, const char *p2, const char *p3))
+  DEFINE_METHOD3(int,                 bd_open_stream,         (BLURAY *p1, void *p2, read_blocks_f p3))
+  DEFINE_METHOD4(int,                 bd_open_files,          (BLURAY *p1, void *p2, open_dir_f p3, open_file_f p4))
   DEFINE_METHOD0(BLURAY*,             bd_init)
   DEFINE_METHOD1(void,                bd_close,               (BLURAY *p1))
   DEFINE_METHOD2(int64_t,             bd_seek,                (BLURAY *p1, uint64_t p2))
@@ -140,6 +148,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD_RENAME(bd_free_title_info,   bd_free_title_info)
     RESOLVE_METHOD_RENAME(bd_open,              bd_open)
     RESOLVE_METHOD(bd_open_disc)
+    RESOLVE_METHOD(bd_open_stream)
+    RESOLVE_METHOD(bd_open_files)
     RESOLVE_METHOD(bd_init)
     RESOLVE_METHOD_RENAME(bd_close,             bd_close)
     RESOLVE_METHOD_RENAME(bd_seek,              bd_seek)
@@ -188,9 +198,9 @@ public:
   static int        file_eof(BD_FILE_H *file);
   static int64_t    file_read(BD_FILE_H *file, uint8_t *buf, int64_t size);
   static int64_t    file_write(BD_FILE_H *file, const uint8_t *buf, int64_t size);
-  static BD_FILE_H *file_open(const char* filename, const char *mode);
   static void      dir_close(BD_DIR_H *dir);
   static int       dir_read(BD_DIR_H *dir, BD_DIRENT *entry);
-  static BD_DIR_H *dir_open(const char* dirname);
+  static BD_FILE_H *file_open(void * handle, const char * rel_path);
+  static BD_DIR_H *dir_open(void * handle, const char * rel_path);
   static void      bluray_logger(const char* msg);
 };
