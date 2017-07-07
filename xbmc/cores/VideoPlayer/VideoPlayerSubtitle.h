@@ -37,7 +37,7 @@ class CVideoPlayerSubtitle : public IDVDStreamPlayer
 {
 public:
   CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo);
-  ~CVideoPlayerSubtitle();
+  ~CVideoPlayerSubtitle() override;
 
   void Process(double pts, double offset);
   void Flush();
@@ -46,15 +46,15 @@ public:
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }
 
-  bool AcceptsData() const;
-  void SendMessage(CDVDMsg* pMsg, int priority = 0);
-  void FlushMessages() {}
-  bool OpenStream(CDVDStreamInfo hints) { return OpenStream(hints, hints.filename); }
+  bool AcceptsData() const override;
+  void SendMessage(CDVDMsg* pMsg, int priority = 0) override;
+  void FlushMessages() override {}
+  bool OpenStream(CDVDStreamInfo hints) override { return OpenStream(hints, hints.filename); }
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
-  void CloseStream(bool bWaitForBuffers);
+  void CloseStream(bool bWaitForBuffers) override;
 
-  bool IsInited() const { return true; }
-  bool IsStalled() const { return m_pOverlayContainer->GetSize() == 0; }
+  bool IsInited() const override { return true; }
+  bool IsStalled() const override { return m_pOverlayContainer->GetSize() == 0; }
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 

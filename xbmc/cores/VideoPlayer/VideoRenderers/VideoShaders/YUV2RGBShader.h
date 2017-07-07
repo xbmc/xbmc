@@ -46,7 +46,7 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBShader() : m_convertFullRange(false) {};
-    virtual ~BaseYUV2RGBShader() = default;
+    ~BaseYUV2RGBShader() override = default;
     virtual void SetField(int field) {};
     virtual void SetWidth(int width) {};
     virtual void SetHeight(int width) {};
@@ -76,14 +76,14 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=NULL);
-   ~BaseYUV2RGBGLSLShader();
-    virtual void SetField(int field) { m_field  = field; }
-    virtual void SetWidth(int w)     { m_width  = w; }
-    virtual void SetHeight(int h)    { m_height = h; }
+   ~BaseYUV2RGBGLSLShader() override;
+    void SetField(int field) override { m_field  = field; }
+    void SetWidth(int w) override { m_width  = w; }
+    void SetHeight(int h) override { m_height = h; }
 
-    virtual void SetBlack(float black)           { m_black    = black; }
-    virtual void SetContrast(float contrast)     { m_contrast = contrast; }
-    virtual void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+    void SetBlack(float black) override { m_black    = black; }
+    void SetContrast(float contrast) override { m_contrast = contrast; }
+    void SetNonLinStretch(float stretch) override { m_stretch = stretch; }
 #if HAS_GLES == 2
     virtual GLint GetVertexLoc() { return m_hVertex; }
     virtual GLint GetYcoordLoc() { return m_hYcoord; }
@@ -91,20 +91,20 @@ namespace Shaders {
     virtual GLint GetVcoordLoc() { return m_hVcoord; }
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
-    virtual void SetAlpha(GLfloat alpha)             { m_alpha = alpha; }
+    virtual void SetAlpha(GLfloat alpha) { m_alpha = alpha; }
 #endif
 
   protected:
-    void OnCompiledAndLinked();
-    bool OnEnabled();
-    void OnDisabled();
-    void Free();
+    void OnCompiledAndLinked() override;
+    bool OnEnabled() override;
+    void OnDisabled() override;
+    void Free() override;
 
     unsigned m_flags;
     EShaderFormat m_format;
-    int   m_width;
-    int   m_height;
-    int   m_field;
+    int m_width;
+    int m_height;
+    int m_field;
 
     float m_black;
     float m_contrast;
@@ -143,20 +143,20 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format);
-   ~BaseYUV2RGBARBShader() = default;
-    virtual void SetField(int field) { m_field  = field; }
-    virtual void SetWidth(int w)     { m_width  = w; }
-    virtual void SetHeight(int h)    { m_height = h; }
+   ~BaseYUV2RGBARBShader() override = default;
+    void SetField(int field) override { m_field = field; }
+    void SetWidth(int w) override { m_width = w; }
+    void SetHeight(int h) override { m_height = h; }
 
-    virtual void SetBlack(float black)       { m_black    = black; }
-    virtual void SetContrast(float contrast) { m_contrast = contrast; }
+    void SetBlack(float black) override { m_black = black; }
+    void SetContrast(float contrast) override { m_contrast = contrast; }
 
   protected:
     unsigned m_flags;
     EShaderFormat m_format;
-    int   m_width;
-    int   m_height;
-    int   m_field;
+    int m_width;
+    int m_height;
+    int m_field;
 
     float m_black;
     float m_contrast;
@@ -171,8 +171,8 @@ namespace Shaders {
   {
   public:
     YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0, EShaderFormat format=SHADER_NONE);
-    void OnCompiledAndLinked();
-    bool OnEnabled();
+    void OnCompiledAndLinked() override;
+    bool OnEnabled() override;
   };
 #endif
 
@@ -190,8 +190,8 @@ namespace Shaders {
   {
   public:
     YUV2RGBBobShader(bool rect=false, unsigned flags=0, EShaderFormat format=SHADER_NONE);
-    void OnCompiledAndLinked();
-    bool OnEnabled();
+    void OnCompiledAndLinked() override;
+    bool OnEnabled() override;
 
     GLint m_hStepX;
     GLint m_hStepY;

@@ -80,9 +80,9 @@ class CVideoBufferFFmpeg : public CVideoBuffer
 {
 public:
   CVideoBufferFFmpeg(IVideoBufferPool &pool, int id);
-  virtual ~CVideoBufferFFmpeg();
-  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
-  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
+  ~CVideoBufferFFmpeg() override;
+  void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
+  void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
 
   void SetRef(AVFrame *frame);
   void Unref();
@@ -133,9 +133,9 @@ void CVideoBufferFFmpeg::Unref()
 class CVideoBufferPoolFFmpeg : public IVideoBufferPool
 {
 public:
-  virtual ~CVideoBufferPoolFFmpeg();
-  virtual void Return(int id) override;
-  virtual CVideoBuffer* Get() override;
+  ~CVideoBufferPoolFFmpeg() override;
+  void Return(int id) override;
+  CVideoBuffer* Get() override;
 
 protected:
   CCriticalSection m_critSection;

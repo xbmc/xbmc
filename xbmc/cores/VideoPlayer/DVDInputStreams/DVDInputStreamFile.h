@@ -26,18 +26,18 @@ class CDVDInputStreamFile : public CDVDInputStream
 {
 public:
   CDVDInputStreamFile(const CFileItem& fileitem);
-  virtual ~CDVDInputStreamFile();
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; };
-  virtual bool IsEOF();
-  virtual int64_t GetLength();
-  virtual BitstreamStats GetBitstreamStats() const ;
-  virtual int GetBlockSize();
-  virtual void SetReadRate(unsigned rate);
-  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
+  ~CDVDInputStreamFile() override;
+  bool Open() override;
+  void Close() override;
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  bool Pause(double dTime) override { return false; };
+  bool IsEOF() override;
+  int64_t GetLength() override;
+  BitstreamStats GetBitstreamStats() const override ;
+  int GetBlockSize() override;
+  void SetReadRate(unsigned rate) override;
+  bool GetCacheStatus(XFILE::SCacheStatus *status) override;
 
 protected:
   XFILE::CFile* m_pFile;

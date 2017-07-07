@@ -1213,9 +1213,9 @@ class VAAPI::CVaapiBufferPool : public IVideoBufferPool
 {
 public:
   CVaapiBufferPool(CDecoder &decoder);
-  virtual ~CVaapiBufferPool();
-  virtual CVideoBuffer* Get();
-  virtual void Return(int id);
+  ~CVaapiBufferPool() override;
+  CVideoBuffer* Get() override;
+  void Return(int id) override;
   CVaapiRenderPicture* GetVaapi();
   bool HasFree();
   void QueueReturnPicture(CVaapiRenderPicture *pic);

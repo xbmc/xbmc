@@ -38,7 +38,7 @@ class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
 {
 public:
   CDemuxStreamVideoFFmpeg(AVStream* stream) : m_stream(stream) {}
-  virtual std::string GetStreamName() override;
+  std::string GetStreamName() override;
 
   std::string m_description;
 protected:
@@ -49,7 +49,7 @@ class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
 {
 public:
   CDemuxStreamAudioFFmpeg(AVStream* stream) : m_stream(stream) {}
-  virtual std::string GetStreamName() override;
+  std::string GetStreamName() override;
 
   std::string m_description;
 protected:
@@ -62,7 +62,7 @@ class CDemuxStreamSubtitleFFmpeg
 {
 public:
   CDemuxStreamSubtitleFFmpeg(AVStream* stream) : m_stream(stream) {}
-  virtual std::string GetStreamName() override;
+  std::string GetStreamName() override;
 
   std::string m_description;
 protected:
@@ -86,7 +86,7 @@ class CDVDDemuxFFmpeg : public CDVDDemux
 {
 public:
   CDVDDemuxFFmpeg();
-  virtual ~CDVDDemuxFFmpeg();
+  ~CDVDDemuxFFmpeg() override;
 
   bool Open(CDVDInputStream* pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
@@ -94,7 +94,7 @@ public:
   void Flush() override;
   void Abort() override;
   void SetSpeed(int iSpeed) override;
-  virtual std::string GetFileName() override;
+  std::string GetFileName() override;
 
   DemuxPacket* Read() override;
 
@@ -110,7 +110,7 @@ public:
   int GetChapter() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
   int64_t GetChapterPos(int chapterIdx=-1) override;
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();
 

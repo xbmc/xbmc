@@ -42,8 +42,8 @@ class COverlayText : public COverlay
 public:
   COverlayText() = default;
   COverlayText(CDVDOverlayText* src);
-  virtual ~COverlayText();
-  virtual void Render(SRenderState& state);
+  ~COverlayText() override;
+  void Render(SRenderState& state) override;
   using COverlay::PrepareRender;
   void PrepareRender(const std::string &font, int color, int height, int style,
                      const std::string &fontcache, const std::string &fontbordercache);
