@@ -770,19 +770,19 @@ int CEdl::RemoveCutTime(int iSeek) const
   return iSeek - iCutTime;
 }
 
-int CEdl::RestoreCutTime(int iClock) const
+double CEdl::RestoreCutTime(double dClock) const
 {
   if (!HasCut())
-    return iClock;
+    return dClock;
 
-  int iSeek = iClock;
+  double dSeek = dClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
-      iSeek += m_vecCuts[i].end - m_vecCuts[i].start;
+    if (m_vecCuts[i].action == CUT && dSeek >= m_vecCuts[i].start)
+      dSeek += static_cast<double>(m_vecCuts[i].end - m_vecCuts[i].start);
   }
 
-  return iSeek;
+  return dSeek;
 }
 
 bool CEdl::HasSceneMarker() const
