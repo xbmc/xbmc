@@ -56,17 +56,17 @@ public:
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();
-  void Reset();
-  void Abort();
-  void Flush();
-  DemuxPacket* Read();
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override { return false; }
-  void SetSpeed(int iSpeed) {};
-  int GetStreamLength() { return (int)m_header.durationMs; }
+
+  // implementation of CDVDDemux
+  virtual void Reset() override;
+  virtual void Abort() override;
+  virtual void Flush() override;
+  virtual DemuxPacket* Read() override;
+  virtual int GetStreamLength() override { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
-  std::string GetFileName();
+  virtual std::string GetFileName() override;
   virtual std::string GetStreamCodecName(int iStreamId) override;
 
 protected:

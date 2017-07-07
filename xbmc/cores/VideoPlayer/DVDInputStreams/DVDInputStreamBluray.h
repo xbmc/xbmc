@@ -53,64 +53,64 @@ class CDVDInputStreamBluray
 public:
   CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem);
   virtual ~CDVDInputStreamBluray();
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; };
-  void Abort();
-  virtual bool IsEOF();
-  virtual int64_t GetLength();
-  virtual int GetBlockSize() { return 6144; }
-  virtual ENextStream NextStream();
+  virtual bool Open() override;
+  virtual void Close() override;
+  virtual int Read(uint8_t* buf, int buf_size) override;
+  virtual int64_t Seek(int64_t offset, int whence) override;
+  virtual bool Pause(double dTime) override { return false; }
+  void Abort() override;
+  virtual bool IsEOF() override;
+  virtual int64_t GetLength() override;
+  virtual int GetBlockSize() override { return 6144; }
+  virtual ENextStream NextStream() override;
 
 
   /* IMenus */
-  virtual void ActivateButton()          { UserInput(BD_VK_ENTER); }
-  virtual void SelectButton(int iButton)
+  virtual void ActivateButton() override { UserInput(BD_VK_ENTER); }
+  virtual void SelectButton(int iButton) override
   {
     if(iButton < 10)
       UserInput((bd_vk_key_e)(BD_VK_0 + iButton));
   }
-  virtual int  GetCurrentButton()        { return 0; }
-  virtual int  GetTotalButtons()         { return 0; }
-  virtual void OnUp()                    { UserInput(BD_VK_UP); }
-  virtual void OnDown()                  { UserInput(BD_VK_DOWN); }
-  virtual void OnLeft()                  { UserInput(BD_VK_LEFT); }
-  virtual void OnRight()                 { UserInput(BD_VK_RIGHT); }
-  virtual void OnMenu();
-  virtual void OnBack()
+  virtual int  GetCurrentButton() override        { return 0; }
+  virtual int  GetTotalButtons() override         { return 0; }
+  virtual void OnUp() override                    { UserInput(BD_VK_UP); }
+  virtual void OnDown() override                  { UserInput(BD_VK_DOWN); }
+  virtual void OnLeft() override                  { UserInput(BD_VK_LEFT); }
+  virtual void OnRight() override                 { UserInput(BD_VK_RIGHT); }
+  virtual void OnMenu() override;
+  virtual void OnBack() override
   {
     if(IsInMenu())
       OnMenu();
   }
-  virtual void OnNext()                  {}
-  virtual void OnPrevious()              {}
-  virtual bool HasMenu();
-  virtual bool IsInMenu();
-  virtual bool OnMouseMove(const CPoint &point)  { return MouseMove(point); }
-  virtual bool OnMouseClick(const CPoint &point) { return MouseClick(point); }
-  virtual void SkipStill();
-  virtual bool GetState(std::string &xmlstate)         { return false; }
-  virtual bool SetState(const std::string &xmlstate)   { return false; }
+  virtual void OnNext() override                  {}
+  virtual void OnPrevious() override              {}
+  virtual bool HasMenu() override;
+  virtual bool IsInMenu() override;
+  virtual bool OnMouseMove(const CPoint &point) override  { return MouseMove(point); }
+  virtual bool OnMouseClick(const CPoint &point) override { return MouseClick(point); }
+  virtual void SkipStill() override;
+  virtual bool GetState(std::string &xmlstate) override         { return false; }
+  virtual bool SetState(const std::string &xmlstate) override   { return false; }
 
 
   void UserInput(bd_vk_key_e vk);
   bool MouseMove(const CPoint &point);
   bool MouseClick(const CPoint &point);
 
-  int GetChapter();
-  int GetChapterCount();
-  void GetChapterName(std::string& name, int ch=-1) {};
-  int64_t GetChapterPos(int ch);
-  bool SeekChapter(int ch);
+  virtual int GetChapter() override;
+  virtual int GetChapterCount() override;
+  virtual void GetChapterName(std::string& name, int ch=-1) override {}
+  virtual int64_t GetChapterPos(int ch) override;
+  virtual bool SeekChapter(int ch) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override;
   int GetTime() override;
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
-  bool PosTime(int ms);
+  virtual bool PosTime(int ms) override;
 
   void GetStreamInfo(int pid, char* language);
 

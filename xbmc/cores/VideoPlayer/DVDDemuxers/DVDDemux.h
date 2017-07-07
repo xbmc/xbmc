@@ -243,29 +243,29 @@ public:
   /*
    * Reset the entire demuxer (same result as closing and opening it)
    */
-  virtual void Reset() = 0;
+  virtual void Reset() { }
 
   /*
    * Aborts any internal reading that might be stalling main thread
    * NOTICE - this can be called from another thread
    */
-  virtual void Abort() = 0;
+  virtual void Abort() { }
 
   /*
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
    */
-  virtual void Flush() = 0;
+  virtual void Flush() { }
 
   /*
    * Read a packet, returns NULL on error
    *
    */
-  virtual DemuxPacket* Read() = 0;
+  virtual DemuxPacket* Read() { return nullptr; }
 
   /*
    * Seek, time in msec calculated from stream start
    */
-  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) = 0;
+  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) { return false; }
 
   /*
    * Seek to a specified chapter.
@@ -300,29 +300,29 @@ public:
    * Set the playspeed, if demuxer can handle different
    * speeds of playback
    */
-  virtual void SetSpeed(int iSpeed) = 0;
+  virtual void SetSpeed(int iSpeed) { }
 
   /*
    * returns the total time in msec
    */
-  virtual int GetStreamLength() = 0;
+  virtual int GetStreamLength() { return 0; }
 
   /*
    * returns the stream or NULL on error
    */
   virtual CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const { return GetStream(iStreamId); };
 
-  virtual std::vector<CDemuxStream*> GetStreams() const = 0;
+  virtual std::vector<CDemuxStream*> GetStreams() const { return std::vector<CDemuxStream*>(); }
 
   /*
    * return nr of streams, 0 if none
    */
-  virtual int GetNrOfStreams() const = 0;
+  virtual int GetNrOfStreams() const { return 0; }
 
   /*
    * returns opened filename
    */
-  virtual std::string GetFileName() = 0;
+  virtual std::string GetFileName() { return ""; }
 
   /*
    * return nr of subtitle streams, 0 if none
@@ -352,7 +352,7 @@ public:
 
 protected:
   virtual void EnableStream(int id, bool enable) {};
-  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
+  virtual CDemuxStream* GetStream(int iStreamId) const { return nullptr; }
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
 
   int GetNrOfStreams(StreamType streamType);
