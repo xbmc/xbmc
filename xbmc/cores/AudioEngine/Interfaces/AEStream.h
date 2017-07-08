@@ -34,6 +34,7 @@ extern "C" {
 class IAEClockCallback
 {
 public:
+  virtual ~IAEClockCallback() = default;
   virtual double GetClock() = 0;
   virtual double GetClockSpeed() { return 1.0; };
 };

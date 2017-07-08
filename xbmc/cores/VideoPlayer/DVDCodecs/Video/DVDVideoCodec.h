@@ -271,6 +271,7 @@ public:
 class ICallbackHWAccel
 {
 public:
+  virtual ~ICallbackHWAccel() = default;
   virtual IHardwareDecoder* GetHWAccel() = 0;
   virtual bool GetPictureCommon(VideoPicture* pVideoPicture) = 0;
 };

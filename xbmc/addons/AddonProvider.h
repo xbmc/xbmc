@@ -36,6 +36,7 @@ namespace ADDON
   class IAddonProvider
   {
   public:
+    virtual ~IAddonProvider() = default;
     enum INSTANCE_TYPE
     {
       INSTANCE_VIDEOCODEC
