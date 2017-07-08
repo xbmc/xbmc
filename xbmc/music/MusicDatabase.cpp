@@ -126,7 +126,8 @@ void CMusicDatabase::CreateTables()
               " strStyles text, strInstruments text, strBiography text, "
               " strDied text, strDisbanded text, strYearsActive text, "
               " strImage text, strFanart text, "
-              " lastScraped varchar(20) default NULL)");
+              " lastScraped varchar(20) default NULL, "
+              " bScrapedMBID INTEGER NOT NULL DEFAULT 0)");
   // Create missing artist tag artist [Missing].
   std::string strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strSortName, strMusicBrainzArtistID) "
      "VALUES( %i, '%s', '%s', '%s' )",
@@ -137,6 +138,7 @@ void CMusicDatabase::CreateTables()
   CLog::Log(LOGINFO, "create album table");
   m_pDS->exec("CREATE TABLE album (idAlbum integer primary key, "
               " strAlbum varchar(256), strMusicBrainzAlbumID text, "
+              " strReleaseGroupMBID text, "
               " strArtistDisp text, strArtistSort text, strGenres text, "
               " iYear integer, "
               " bCompilation integer not null default '0', "
@@ -146,6 +148,7 @@ void CMusicDatabase::CreateTables()
               " fRating FLOAT NOT NULL DEFAULT 0, "
               " iUserrating INTEGER NOT NULL DEFAULT 0, "
               " lastScraped varchar(20) default NULL, "
+              " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
               " strReleaseType text, "
               " iVotes INTEGER NOT NULL DEFAULT 0)");
   CLog::Log(LOGINFO, "create audiobook table");
@@ -397,6 +400,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
 
   album.idAlbum = AddAlbum(album.strAlbum,
                            album.strMusicBrainzAlbumID,
+                           album.strReleaseGroupMBID,
                            album.GetAlbumArtistString(),
                            album.GetAlbumArtistSort(),
                            album.GetGenreString(),
@@ -465,12 +469,13 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
   return true;
 }
 
-bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/)
+bool CMusicDatabase::UpdateAlbum(CAlbum& album)
 {
   BeginTransaction();
 
   UpdateAlbum(album.idAlbum,
               album.strAlbum, album.strMusicBrainzAlbumID,
+              album.strReleaseGroupMBID,
               album.GetAlbumArtistString(), album.GetAlbumArtistSort(),
               album.GetGenreString(),
               StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
@@ -479,25 +484,32 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/
               album.strReview,
               album.thumbURL.m_xml.c_str(),
               album.strLabel, album.strType,
-              album.fRating, album.iUserrating, album.iVotes, album.iYear, album.bCompilation, album.releaseType);
+              album.fRating, album.iUserrating, album.iVotes, album.iYear, album.bCompilation, album.releaseType,
+              album.bScrapedMBID);
 
-  if (OverrideTagData)
+  if (!album.bArtistSongMerge)
   {
-    // Replace the album artists 
+    // Album artist(s) already exist and names are not changing, but may have scraped Musicbrainz ids to add
+    for (const auto &artistCredit : album.artistCredits)
+      UpdateArtistScrapedMBID(artistCredit.GetArtistId(), artistCredit.GetMusicBrainzArtistID());
+  }
+  else
+  {
+    // Replace the album artists with those scraped
     DeleteAlbumArtistsByAlbum(album.idAlbum);
     if (album.artistCredits.empty())
       AddAlbumArtist(BLANKARTIST_ID, album.idAlbum, BLANKARTIST_NAME, 0); // Album must have at least one artist so set artist to [Missing]
     for (auto artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
     {
       artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
-        artistCredit->GetMusicBrainzArtistID(), artistCredit->GetSortName());
+        artistCredit->GetMusicBrainzArtistID(), artistCredit->GetSortName(), true);
       AddAlbumArtist(artistCredit->idArtist,
         album.idAlbum,
         artistCredit->GetArtist(),
         std::distance(album.artistCredits.begin(), artistCredit));
     }
-
-  for (auto &song : album.songs)
+    // Replace the songs with those scraped
+    for (auto &song : album.songs)
     {
       UpdateSong(song.idSong,
         song.strTitle,
@@ -789,6 +801,7 @@ int CMusicDatabase::UpdateSong(int idSong,
 }
 
 int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
+                             const std::string& strReleaseGroupMBID,
                              const std::string& strArtist, const std::string& strArtistSort, 
                              const std::string& strGenre, int year,
                              const std::string& strRecordLabel, const std::string& strType,
@@ -814,7 +827,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
       m_pDS->close();
       // doesnt exists, add it
       strSQL = PrepareSQL("INSERT INTO album (idAlbum, strAlbum, strArtistDisp, strGenres, iYear, "
-        "strLabel, strType, bCompilation, strReleaseType, strMusicBrainzAlbumID, strArtistSort) "
+        "strLabel, strType, bCompilation, strReleaseType, strMusicBrainzAlbumID, strReleaseGroupMBID, strArtistSort) "
         "values( NULL, '%s', '%s', '%s', %i, '%s', '%s', %i, '%s'",
         strAlbum.c_str(),
         strArtist.c_str(),
@@ -829,6 +842,10 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
         strSQL += PrepareSQL(", NULL");
       else
         strSQL += PrepareSQL(",'%s'", strMusicBrainzAlbumID.c_str());
+      if (strReleaseGroupMBID.empty())
+        strSQL += PrepareSQL(", NULL");
+      else
+        strSQL += PrepareSQL(",'%s'", strReleaseGroupMBID.c_str());
       if (strArtistSort.empty())
         strSQL += PrepareSQL(", NULL");
       else
@@ -855,6 +872,10 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
       strSQL = "UPDATE album SET ";
       if (!strMusicBrainzAlbumID.empty())   
         strSQL += PrepareSQL("strAlbum = '%s', strArtistDisp = '%s', ", strAlbum.c_str(), strArtist.c_str());
+      if (strReleaseGroupMBID.empty())
+        strSQL += PrepareSQL(" strReleaseGroupMBID = NULL,");
+      else
+        strSQL += PrepareSQL(" strReleaseGroupMBID ='%s', ", strReleaseGroupMBID.c_str());
       if (strArtistSort.empty())
         strSQL += PrepareSQL(" strArtistSort = NULL");
       else
@@ -885,6 +906,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
 
 int  CMusicDatabase::UpdateAlbum(int idAlbum,
                                  const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
+                                 const std::string& strReleaseGroupMBID,
                                  const std::string& strArtist, const std::string& strArtistSort,
                                  const std::string& strGenre,
                                  const std::string& strMoods, const std::string& strStyles,
@@ -892,7 +914,8 @@ int  CMusicDatabase::UpdateAlbum(int idAlbum,
                                  const std::string& strImage, const std::string& strLabel,
                                  const std::string& strType,
                                  float fRating, int iUserrating, int iVotes, int iYear, bool bCompilation,
-                                 CAlbum::ReleaseType releaseType)
+                                 CAlbum::ReleaseType releaseType,
+                                 bool bScrapedMBID)
 {
   if (idAlbum < 0)
     return -1;
@@ -904,18 +927,23 @@ int  CMusicDatabase::UpdateAlbum(int idAlbum,
                       " strReview = '%s', strImage = '%s', strLabel = '%s', "
                       " strType = '%s', fRating = %f, iUserrating = %i, iVotes = %i,"
                       " iYear = %i, bCompilation = %i, strReleaseType = '%s', "
-                      " lastScraped = '%s'",
+                      " lastScraped = '%s', bScrapedMBID = %i",
                       strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strThemes.c_str(),
                       strReview.c_str(), strImage.c_str(), strLabel.c_str(),
                       strType.c_str(), fRating, iUserrating, iVotes,
                       iYear, bCompilation,
                       CAlbum::ReleaseTypeToString(releaseType).c_str(),
-                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(),
+                      bScrapedMBID);
   if (strMusicBrainzAlbumID.empty())
     strSQL += PrepareSQL(", strMusicBrainzAlbumID = NULL");
   else
     strSQL += PrepareSQL(", strMusicBrainzAlbumID = '%s'", strMusicBrainzAlbumID.c_str());
+  if (strReleaseGroupMBID.empty())
+    strSQL += PrepareSQL(", strReleaseGroupMBID = NULL");
+  else
+    strSQL += PrepareSQL(", strReleaseGroupMBID = '%s'", strReleaseGroupMBID.c_str());
   if (strArtistSort.empty())
     strSQL += PrepareSQL(", strArtistSort = NULL");
   else
@@ -1052,6 +1080,12 @@ bool CMusicDatabase::HasAlbumBeenScraped(int idAlbum)
   return GetSingleValue(strSQL).empty();
 }
 
+bool CMusicDatabase::HasScrapedAlbumMBID(int idAlbum)
+{
+  std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE idAlbum = %i AND strMusicbrainzAlbumID IS NOT NULL AND bScrapedMBID = 1", idAlbum);
+  return !GetSingleValue(strSQL).empty();
+}
+
 int CMusicDatabase::AddGenre(const std::string& strGenre1)
 {
   std::string strSQL;
@@ -1104,7 +1138,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
 {
   UpdateArtist(artist.idArtist,
                artist.strArtist, artist.strSortName,
-               artist.strMusicBrainzArtistID,
+               artist.strMusicBrainzArtistID, artist.bScrapedMBID,
                artist.strBorn, artist.strFormed,
                StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator),
                StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator),
@@ -1125,10 +1159,10 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
   return true;
 }
 
-int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName)
+int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName, bool bScrapedMBID /* = false*/)
 {
   std::string strSQL;
-  int idArtist = AddArtist(strArtist, strMusicBrainzArtistID);
+  int idArtist = AddArtist(strArtist, strMusicBrainzArtistID, bScrapedMBID);
   if (idArtist < 0 || strSortName.empty())
     return idArtist;
   
@@ -1173,7 +1207,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
   return -1;
 }
 
-int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID)
+int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, bool bScrapedMBID /* = false*/)
 {
   std::string strSQL;
   try
@@ -1212,10 +1246,11 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       {
         int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
         m_pDS->close();
-        // 1.b.a) We found an artist by name but with no MusicBrainz ID set, update it and assume it is our artist
-        strSQL = PrepareSQL("UPDATE artist SET strArtist = '%s', strMusicBrainzArtistID = '%s' WHERE idArtist = %i",
+        // 1.b.a) We found an artist by name but with no MusicBrainz ID set, update it and assume it is our artist, flag when mbid scraped
+        strSQL = PrepareSQL("UPDATE artist SET strArtist = '%s', strMusicBrainzArtistID = '%s', bScrapedMBID = %i WHERE idArtist = %i",
           strArtist.c_str(),
           strMusicBrainzArtistID.c_str(),
+          bScrapedMBID,
           idArtist);
         m_pDS->exec(strSQL);
         return idArtist;
@@ -1240,14 +1275,15 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       m_pDS->close();
     }
 
-    // 3) No artist exists at all - add it
+    // 3) No artist exists at all - add it, flagging when has scraped mbid
     if (strMusicBrainzArtistID.empty())
       strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID) VALUES( NULL, '%s', NULL )",
         strArtist.c_str());
     else
-      strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID) VALUES( NULL, '%s', '%s' )",
+      strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID, bScrapedMBID) VALUES( NULL, '%s', '%s', %i )",
         strArtist.c_str(),
-        strMusicBrainzArtistID.c_str());
+        strMusicBrainzArtistID.c_str(),
+        bScrapedMBID);
 
     m_pDS->exec(strSQL);
     int idArtist = (int)m_pDS->lastinsertid();
@@ -1263,7 +1299,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
 
 int  CMusicDatabase::UpdateArtist(int idArtist,
                                   const std::string& strArtist, const std::string& strSortName,
-                                  const std::string& strMusicBrainzArtistID,
+                                  const std::string& strMusicBrainzArtistID, const bool bScrapedMBID,
                                   const std::string& strBorn, const std::string& strFormed,
                                   const std::string& strGenres, const std::string& strMoods,
                                   const std::string& strStyles, const std::string& strInstruments,
@@ -1283,7 +1319,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       " strMoods = '%s', strStyles = '%s', strInstruments = '%s', "
                       " strBiography = '%s', strDied = '%s', strDisbanded = '%s', "
                       " strYearsActive = '%s', strImage = '%s', strFanart = '%s', "
-                      " lastScraped = '%s'",
+                      " lastScraped = '%s', bScrapedMBID = %i",
                       strArtist.c_str(), 
                       /* strSortName.c_str(),*/
                       /* strMusicBrainzArtistID.c_str(), */
@@ -1291,7 +1327,8 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
                       strYearsActive.c_str(), strImage.c_str(), strFanart.c_str(),
-                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(),
+                      bScrapedMBID);
   if (strMusicBrainzArtistID.empty())
     strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
   else
@@ -1307,6 +1344,26 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
   if (status)
     AnnounceUpdate(MediaTypeArtist, idArtist);
   return idArtist;
+}
+
+bool CMusicDatabase::UpdateArtistScrapedMBID(int idArtist, const std::string& strMusicBrainzArtistID)
+{
+  if (strMusicBrainzArtistID.empty() || idArtist < 0)
+    return false;
+
+  // Set scraped artist Musicbrainz ID for a previously added artist with no MusicBrainz ID
+  std::string strSQL;
+  strSQL = PrepareSQL("UPDATE artist SET strMusicBrainzArtistID = '%s', bScrapedMBID = 1 "
+    "WHERE idArtist = %i AND strMusicBrainzArtistID IS NULL", 
+    strMusicBrainzArtistID.c_str(), idArtist);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+  {
+    AnnounceUpdate(MediaTypeArtist, idArtist);
+    return true;
+  }
+  return false;
 }
 
 bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* = false */)
@@ -1394,6 +1451,13 @@ bool CMusicDatabase::ClearArtistLastScrapedTime(int idArtist)
   std::string strSQL = PrepareSQL("UPDATE artist SET lastScraped = NULL WHERE idArtist = %i", idArtist);
   return ExecuteQuery(strSQL);
 }
+
+bool CMusicDatabase::HasScrapedArtistMBID(int idArtist)
+{
+  std::string strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE idArtist = %i AND strMusicbrainzArtistID IS NOT NULL AND bScrapedMBID = 1", idArtist);
+  return !GetSingleValue(strSQL).empty();
+}
+
 
 int CMusicDatabase::AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear)
 {
@@ -5065,13 +5129,20 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("DROP TABLE song");
     m_pDS->exec("ALTER TABLE song_new RENAME TO song");
   }
-
   if (version < 65)
   {
     // Remove cue table
     m_pDS->exec("DROP TABLE cue");
     // Add strReplayGain to song table
     m_pDS->exec("ALTER TABLE song ADD strReplayGain TEXT\n");
+  }
+  if (version < 66)
+  {
+    // Add a new columns strReleaseGroupMBID, bScrapedMBID for albums
+    m_pDS->exec("ALTER TABLE album ADD bScrapedMBID INTEGER NOT NULL DEFAULT 0\n");
+    m_pDS->exec("ALTER TABLE album ADD strReleaseGroupMBID TEXT \n");
+    // Add a new column bScrapedMBID for artists
+    m_pDS->exec("ALTER TABLE artist ADD bScrapedMBID INTEGER NOT NULL DEFAULT 0\n");
   }
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
@@ -5094,7 +5165,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 65;
+  return 66;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

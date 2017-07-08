@@ -116,6 +116,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_musicBrainzArtistID = tag.m_musicBrainzArtistID;
   m_musicBrainzArtistHints = tag.m_musicBrainzArtistHints;
   m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
+  m_strMusicBrainzReleaseGroupID = tag.m_strMusicBrainzReleaseGroupID;
   m_musicBrainzAlbumArtistID = tag.m_musicBrainzAlbumArtistID;
   m_musicBrainzAlbumArtistHints = tag.m_musicBrainzAlbumArtistHints;
   m_musicRoles = tag.m_musicRoles;
@@ -608,6 +609,11 @@ const std::string& CMusicInfoTag::GetMusicBrainzAlbumID() const
   return m_strMusicBrainzAlbumID;
 }
 
+const std::string & MUSIC_INFO::CMusicInfoTag::GetMusicBrainzReleaseGroupID() const
+{
+  return m_strMusicBrainzReleaseGroupID;
+}
+
 const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistID() const
 {
   return m_musicBrainzAlbumArtistID;
@@ -651,6 +657,11 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& 
 void CMusicInfoTag::SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints)
 {
     m_musicBrainzAlbumArtistHints = musicBrainzAlbumArtistHints;
+}
+
+void MUSIC_INFO::CMusicInfoTag::SetMusicBrainzReleaseGroupID(const std::string & strReleaseGroupID)
+{
+  m_strMusicBrainzReleaseGroupID = strReleaseGroupID;
 }
 
 void CMusicInfoTag::SetMusicBrainzReleaseType(const std::string& ReleaseType)
@@ -710,6 +721,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbum(album.strAlbum);
   SetTitle(album.strAlbum);
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
+  SetMusicBrainzReleaseGroupID(album.strReleaseGroupMBID);
   SetMusicBrainzReleaseType(album.strType);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
@@ -814,6 +826,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
   value["musicbrainzartistid"] = m_musicBrainzArtistID;
   value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
+  value["musicbrainzreleasegroupid"] = m_strMusicBrainzReleaseGroupID;
   value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
   value["comment"] = m_strComment;
   value["contributors"] = CVariant(CVariant::VariantTypeArray);
@@ -902,6 +915,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strMusicBrainzTrackID;
     ar << m_musicBrainzArtistID;
     ar << m_strMusicBrainzAlbumID;
+    ar << m_strMusicBrainzReleaseGroupID;
     ar << m_musicBrainzAlbumArtistID;
     ar << m_strMusicBrainzReleaseType;
     ar << m_lastPlayed;
@@ -949,6 +963,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strMusicBrainzTrackID;
     ar >> m_musicBrainzArtistID;
     ar >> m_strMusicBrainzAlbumID;
+    ar >> m_strMusicBrainzReleaseGroupID;
     ar >> m_musicBrainzAlbumArtistID;
     ar >> m_strMusicBrainzReleaseType;
     ar >> m_lastPlayed;
@@ -1003,6 +1018,7 @@ void CMusicInfoTag::Clear()
   m_strMusicBrainzTrackID.clear();
   m_musicBrainzArtistID.clear();
   m_strMusicBrainzAlbumID.clear();
+  m_strMusicBrainzReleaseGroupID.clear();
   m_musicBrainzAlbumArtistID.clear();
   m_strMusicBrainzReleaseType.clear();
   m_musicRoles.clear();

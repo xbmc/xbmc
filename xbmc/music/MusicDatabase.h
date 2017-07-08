@@ -215,10 +215,9 @@ public:
 
   /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
    \param album the album to update
-   \param OverrideTagData whether or not to replace the artist and song data, defaults to true.
    \return true or false
    */
-  bool UpdateAlbum(CAlbum& album, bool OverrideTagData = true);
+  bool UpdateAlbum(CAlbum& album);
 
   /*! \brief Add an album to the database
    \param strAlbum the album title
@@ -234,6 +233,7 @@ public:
    \return the id of the album
    */
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
+                const std::string& strReleaseGroupMBID,
                 const std::string& strArtist, const std::string& strArtistSort, 
                 const std::string& strGenre, int year,
                 const std::string& strRecordLabel, const std::string& strType,
@@ -249,6 +249,7 @@ public:
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   int  UpdateAlbum(int idAlbum,
                    const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
+                   const std::string& strReleaseGroupMBID,
                    const std::string& strArtist, const std::string& strArtistSort,
                    const std::string& strGenre,
                    const std::string& strMoods, const std::string& strStyles,
@@ -256,9 +257,11 @@ public:
                    const std::string& strImage, const std::string& strLabel,
                    const std::string& strType,
                    float fRating, int iUserrating, int iVotes, int iYear, bool bCompilation,
-                   CAlbum::ReleaseType releaseType);
+                   CAlbum::ReleaseType releaseType,
+                   bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
+  bool HasScrapedAlbumMBID(int idArtist);
   int  AddAlbumInfoSong(int idAlbum, const CSong& song);
 
   /////////////////////////////////////////////////
@@ -286,23 +289,25 @@ public:
   /////////////////////////////////////////////////
   bool UpdateArtist(const CArtist& artist);
 
-  int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName);
-  int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID);
+  int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName, bool bScrapedMBID = false);
+  int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, bool bScrapedMBID = false);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
   bool GetArtistExists(int idArtist);
   int  UpdateArtist(int idArtist,
                     const std::string& strArtist, const std::string& strSortName,
-                    const std::string& strMusicBrainzArtistID,
+                    const std::string& strMusicBrainzArtistID, bool bScrapedMBID,
                     const std::string& strBorn, const std::string& strFormed,
                     const std::string& strGenres, const std::string& strMoods,
                     const std::string& strStyles, const std::string& strInstruments,
                     const std::string& strBiography, const std::string& strDied,
                     const std::string& strDisbanded, const std::string& strYearsActive,
                     const std::string& strImage, const std::string& strFanart);
+  bool UpdateArtistScrapedMBID(int idArtist, const std::string& strMusicBrainzArtistID);
   bool GetTranslateBlankArtist() { return m_translateBlankArtist; }
   void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
+  bool HasScrapedArtistMBID(int idArtist);
   int  AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear);
   bool DeleteArtistDiscography(int idArtist);
 
