@@ -393,20 +393,14 @@ AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
   return AddonVersion("0.0.0");
 }
 
-void OnEnabled(const std::string& id)
+void OnEnabled(const AddonPtr& addon)
 {
-  // If the addon is a special, call enabled handler
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL))
-    return addon->OnEnabled();
+  addon->OnEnabled();
 }
 
-void OnDisabled(const std::string& id)
+void OnDisabled(const AddonPtr& addon)
 {
-
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL, false))
-    return addon->OnDisabled();
+  addon->OnDisabled();
 }
 
 void OnPreInstall(const AddonPtr& addon)

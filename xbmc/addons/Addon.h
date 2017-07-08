@@ -36,8 +36,8 @@ namespace ADDON
 
   const char* const ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
-void OnEnabled(const std::string& id);
-void OnDisabled(const std::string& id);
+void OnEnabled(const AddonPtr& addon);
+void OnDisabled(const AddonPtr& addon);
 void OnPreInstall(const AddonPtr& addon);
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
 void OnPreUnInstall(const AddonPtr& addon);
