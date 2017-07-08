@@ -47,13 +47,11 @@ class CSetting;
 // should be entirely filled by all codecs
 struct VideoPicture
 {
-  ~VideoPicture()
-  {
-    if (videoBuffer)
-    {
-      videoBuffer->Release();
-    }
-  }
+public:
+  VideoPicture();
+  ~VideoPicture();
+  VideoPicture& CopyRef(const VideoPicture &pic);
+  VideoPicture& SetParams(const VideoPicture &pic);
 
   CVideoBuffer *videoBuffer = nullptr;
 
@@ -78,6 +76,10 @@ struct VideoPicture
   unsigned int iHeight;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
+
+private:
+  VideoPicture(VideoPicture const&);
+  VideoPicture& operator=(VideoPicture const&);
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001

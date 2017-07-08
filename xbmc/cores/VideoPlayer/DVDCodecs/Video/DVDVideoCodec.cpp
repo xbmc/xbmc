@@ -27,6 +27,45 @@
 #include <string>
 #include <vector>
 
+//******************************************************************************
+// VideoPicture
+//******************************************************************************
+
+VideoPicture::VideoPicture() = default;
+
+VideoPicture::~VideoPicture()
+{
+  if (videoBuffer)
+  {
+    videoBuffer->Release();
+  }
+}
+
+VideoPicture& VideoPicture::CopyRef(const VideoPicture &pic)
+{
+  if (videoBuffer)
+    videoBuffer->Release();
+  *this = pic;
+  if (videoBuffer)
+    videoBuffer->Acquire();
+  return *this;
+}
+
+VideoPicture& VideoPicture::SetParams(const VideoPicture &pic)
+{
+  if (videoBuffer)
+    videoBuffer->Release();
+  *this = pic;
+  videoBuffer = nullptr;
+  return *this;
+}
+
+VideoPicture::VideoPicture(VideoPicture const&) = default;
+VideoPicture& VideoPicture::operator=(VideoPicture const&) = default;
+
+//******************************************************************************
+// VideoCodec
+//******************************************************************************
 bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data)
 {
   if (setting == NULL || value.empty())
