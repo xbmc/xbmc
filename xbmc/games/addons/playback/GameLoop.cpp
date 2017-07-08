@@ -19,7 +19,6 @@
  */
 
 #include "GameLoop.h"
-#include "games/addons/GameClient.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 
