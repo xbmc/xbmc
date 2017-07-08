@@ -115,7 +115,7 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
 
 void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 {
-  VideoPicture picture = { };
+  VideoPicture picture;
 
   if (GetPicture(data, size, picture))
   {

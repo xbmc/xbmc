@@ -1179,7 +1179,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   if (m_DisplayState != VDPAU_OPEN)
     return false;
 
-  *picture = m_presentPicture->DVDPic;
+  picture->SetParams(m_presentPicture->DVDPic);
   picture->videoBuffer = m_presentPicture;
   m_presentPicture = nullptr;
 
@@ -1607,7 +1607,7 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
                    m_mixerInput.size() >= 1)
           {
             CVdpauDecodedPicture pic;
-            pic.DVDPic = m_mixerInput[0].DVDPic;
+            pic.DVDPic.SetParams(m_mixerInput[0].DVDPic);
             pic.videoSurface = VDP_INVALID_HANDLE;
             m_decodedPics.push(pic);
             m_state = M_TOP_CONFIGURED_STEP1;
@@ -2530,7 +2530,7 @@ void CMixer::InitCycle()
   }
 
   m_processPicture.isYuv = m_mixerInput[1].isYuv;
-  m_processPicture.DVDPic = m_mixerInput[1].DVDPic;
+  m_processPicture.DVDPic.SetParams(m_mixerInput[1].DVDPic);
   m_processPicture.videoSurface = m_mixerInput[1].videoSurface;
 }
 
@@ -3141,7 +3141,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
     retPic->device = reinterpret_cast<void*>(m_config.context->GetDevice());
     retPic->procFunc = reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address);
 
-    retPic->DVDPic = procPic.DVDPic;
+    retPic->DVDPic.SetParams(procPic.DVDPic);
     if (!procPic.isYuv)
     {
       m_config.useInteropYuv = false;
