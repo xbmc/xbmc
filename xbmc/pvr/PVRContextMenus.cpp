@@ -65,6 +65,7 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
+    DECL_STATICCONTEXTMENUITEM(EditRecording);
     DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
@@ -177,11 +178,14 @@ namespace PVR
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers(channel->ClientID()) && !channel->IsRecording();
+        return CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers() && !channel->IsRecording();
 
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer() && epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+        return !epg->Timer() &&
+               epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime() &&
+               epg->ChannelTag() &&
+               CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->ChannelTag()->ClientID()).SupportsTimers();
 
       return false;
     }
@@ -213,12 +217,31 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
+    // Edit recording
+
+    bool EditRecording::IsVisible(const CFileItem &item) const
+    {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording && !recording->IsDeleted())
+        return true;
+
+      return false;
+    }
+
+    bool EditRecording::Execute(const CFileItemPtr &item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->EditRecording(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
     // Rename recording
 
     bool RenameRecording::IsVisible(const CFileItem &item) const
     {
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (recording && !recording->IsDeleted())
+      if (recording &&
+          !recording->IsDeleted() &&
+          CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(recording->ClientID()).SupportsRecordingsRename())
         return true;
 
       return false;
@@ -513,6 +536,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
       std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
       std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
+      std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
       std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
       std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
       std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */

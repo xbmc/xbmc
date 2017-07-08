@@ -476,6 +476,9 @@ namespace PVR
     void SetCachedSubChannelNumber(unsigned int iSubChannelNumber);
 
     bool CanRecord(void) const;
+
+    static std::string GetEncryptionName(int iCaid);
+
     //@}
   private:
     /*!

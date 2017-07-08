@@ -188,6 +188,13 @@ namespace PVR
     bool StopRecording(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Open the recording settings dialog to edit a recording.
+     * @param item containing the recording to edit.
+     * @return true on success, false otherwise.
+     */
+    bool EditRecording(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Rename a recording, showing a text input dialog.
      * @param item containing a recording to rename.
      * @return true, if the recording was renamed successfully, false otherwise.
@@ -375,6 +382,13 @@ namespace PVR
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmDeleteAllRecordingsFromTrash() const;
+
+    /*!
+     * @brief Open the recording settings dialog.
+     * @param recording containing the recording the settings shall be displayed for.
+     * @return true, if the dialog was ended successfully, false otherwise.
+     */
+    bool ShowRecordingSettings(const CPVRRecordingPtr &recording) const;
 
     /*!
      * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play from start" context menu in case.

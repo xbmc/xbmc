@@ -467,7 +467,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 
     CPVRChannelPtr channel(new CPVRChannel(m_bIsRadio));
     channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
-    channel->SetEPGEnabled(CServiceBroker::GetPVRManager().Clients()->SupportsEPG(iClientID));
+    channel->SetEPGEnabled(CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(iClientID).SupportsEPG());
     channel->SetClientID(iClientID);
 
     PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->OpenDialogChannelAdd(channel);
@@ -697,7 +697,7 @@ void CGUIDialogPVRChannelManager::Update()
     std::string clientName;
     CServiceBroker::GetPVRManager().Clients()->GetClientFriendlyName(channel->ClientID(), clientName);
     channelFile->SetProperty("ClientName", clientName);
-    channelFile->SetProperty("SupportsSettings", CServiceBroker::GetPVRManager().Clients()->SupportsChannelSettings(channel->ClientID()));
+    channelFile->SetProperty("SupportsSettings", CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsChannelSettings());
 
     m_channelItems->Add(channelFile);
   }

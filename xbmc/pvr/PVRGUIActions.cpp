@@ -41,6 +41,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
@@ -124,6 +125,28 @@ namespace PVR
   {
   private:
     bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Undelete(*item); }
+  };
+
+  class AsyncSetRecordingPlayCount : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override
+    {
+      PVR_ERROR error;
+      CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*item->GetPVRRecordingInfoTag(), item->GetPVRRecordingInfoTag()->GetLocalPlayCount(), &error);
+      return error == PVR_ERROR_NO_ERROR;
+    }
+  };
+
+  class AsyncSetRecordingLifetime : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override
+    {
+      PVR_ERROR error;
+      CServiceBroker::GetPVRManager().Clients()->SetRecordingLifetime(*item->GetPVRRecordingInfoTag(), &error);
+      return error == PVR_ERROR_NO_ERROR;
+    }
   };
 
   CPVRGUIActions::CPVRGUIActions()
@@ -319,7 +342,7 @@ namespace PVR
       return false;
     }
 
-    if (!CServiceBroker::GetPVRManager().Clients()->SupportsTimers(item->m_iClientId))
+    if (!CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(item->m_iClientId).SupportsTimers())
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
       return false;
@@ -451,7 +474,7 @@ namespace PVR
     if (!CheckParentalLock(channel))
       return bReturn;
 
-    if (CServiceBroker::GetPVRManager().Clients()->HasTimerSupport(channel->ClientID()))
+    if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers())
     {
       /* timers are supported on this channel */
       if (bOnOff && !channel->IsRecording())
@@ -771,6 +794,42 @@ namespace PVR
                                             CVariant{timer->Title()});
   }
 
+  bool CPVRGUIActions::EditRecording(const CFileItemPtr &item) const
+  {
+    const CPVRRecordingPtr recording = CPVRItem(item).GetRecording();
+    if (!recording)
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - no recording!", __FUNCTION__);
+      return false;
+    }
+
+    CPVRRecordingPtr origRecording(new CPVRRecording);
+    origRecording->Update(*recording);
+
+    if (!ShowRecordingSettings(recording))
+      return false;
+
+    if (origRecording->m_strTitle != recording->m_strTitle)
+    {
+      if (!AsyncRenameRecording(recording->m_strTitle).Execute(item))
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - renaming recording failed!", __FUNCTION__);
+    }
+
+    if (origRecording->GetLocalPlayCount() != recording->GetLocalPlayCount())
+    {
+      if (!AsyncSetRecordingPlayCount().Execute(item))
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - setting recording playcount failed!", __FUNCTION__);
+    }
+
+    if (origRecording->m_iLifetime != recording->m_iLifetime)
+    {
+      if (!AsyncSetRecordingLifetime().Execute(item))
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - setting recording lifetime failed!", __FUNCTION__);
+    }
+
+    return true;
+  }
+
   bool CPVRGUIActions::RenameRecording(const CFileItemPtr &item) const
   {
     const CPVRRecordingPtr recording(item->GetPVRRecordingInfoTag());
@@ -848,6 +907,21 @@ namespace PVR
     }
 
     return true;
+  }
+
+  bool CPVRGUIActions::ShowRecordingSettings(const CPVRRecordingPtr &recording) const
+  {
+    CGUIDialogPVRRecordingSettings* pDlgInfo = g_windowManager.GetWindow<CGUIDialogPVRRecordingSettings>(WINDOW_DIALOG_PVR_RECORDING_SETTING);
+    if (!pDlgInfo)
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_PVR_RECORDING_SETTING!", __FUNCTION__);
+      return false;
+    }
+
+    pDlgInfo->SetRecording(recording);
+    pDlgInfo->Open();
+
+    return pDlgInfo->IsConfirmed();
   }
 
   std::string CPVRGUIActions::GetResumeLabel(const CFileItem &item) const

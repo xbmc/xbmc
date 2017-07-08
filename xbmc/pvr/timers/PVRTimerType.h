@@ -277,6 +277,12 @@ namespace PVR
     bool SupportsRecordingGroup() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP) > 0; }
 
     /*!
+     * @brief Check whether this type supports 'any channel', for example for defining a timer rule that should match any channel instead of a particular channel.
+     * @return True if any channel is supported, false otherwise.
+     */
+    bool SupportsAnyChannel() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL) > 0; }
+
+    /*!
      * @brief Obtain a list with all possible values for the priority attribute.
      * @param list out, the list with the values or an empty list, if priority is not supported by this type.
      */
@@ -335,7 +341,6 @@ namespace PVR
      * @return the default value.
      */
     int GetRecordingGroupDefault() const { return m_iRecordingGroupDefault; }
-
 
   private:
     void InitAttributeValues(const PVR_TIMER_TYPE &type);

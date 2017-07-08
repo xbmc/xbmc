@@ -339,13 +339,6 @@ namespace PVR
     bool SupportsTimers() const;
 
     /*!
-     * @brief Check whether a client supports timers.
-     * @param iClientId The id of the client to check.
-     * @return True if the supports timers, false otherwise.
-     */
-    bool HasTimerSupport(int iClientId);
-
-    /*!
      * @brief Get all timers from clients
      * @param timers Store the timers in this container.
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
@@ -408,20 +401,6 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether a client supports recordings.
-     * @param iClientId The id of the client to check.
-     * @return True if the supports recordings, false otherwise.
-     */
-    bool SupportsRecordings(int iClientId) const;
-
-    /*!
-     * @brief Check whether a client supports undelete of recordings.
-     * @param iClientId The id of the client to check.
-     * @return True if the supports undeleted of recordings, false otherwise.
-     */
-    bool SupportsRecordingsUndelete(int iClientId) const;
-
-    /*!
      * @brief Get all recordings from clients
      * @param recordings Store the recordings in this container.
      * @param deleted Return deleted recordings
@@ -458,6 +437,14 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
      */
     PVR_ERROR DeleteAllRecordingsFromTrash();
+
+    /*!
+     * @brief Set the lifetime of a recording on the backend.
+     * @param recording The recording to set the lifetime for. recording.m_iLifetime contains the new lifetime value.
+     * @param error An error if it occured.
+     * @return True if the recording's lifetime was set successfully, false otherwise.
+     */
+    bool SetRecordingLifetime(const CPVRRecording &recording, PVR_ERROR *error);
 
     /*!
      * @brief Set play count of a recording on the backend.
@@ -509,13 +496,6 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether a client supports EPG transfer.
-     * @param iClientId The id of the client to check.
-     * @return True if the supports EPG transfer, false otherwise.
-     */
-    bool SupportsEPG(int iClientId) const;
-
-    /*!
      * @brief Get the EPG table for a channel.
      * @param channel The channel to get the EPG table for.
      * @param epg Store the EPG in this container.
@@ -547,13 +527,6 @@ namespace PVR
      * @return The amount of channels that were added.
      */
     PVR_ERROR GetChannels(CPVRChannelGroupInternal *group);
-
-    /*!
-     * @brief Check whether a client supports channel groups.
-     * @param iClientId The id of the client to check.
-     * @return True if the supports channel groups, false otherwise.
-     */
-    bool SupportsChannelGroups(int iClientId) const;
 
     /*!
      * @brief Get all channel groups from backends.
@@ -635,16 +608,12 @@ namespace PVR
 
     bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
 
-    bool SupportsChannelScan(int iClientId) const;
-    bool SupportsChannelSettings(int iClientId) const;
-    bool SupportsLastPlayedPosition(int iClientId) const;
-    bool SupportsRadio(int iClientId) const;
-    bool SupportsRecordingPlayCount(int iClientId) const;
-    bool SupportsRecordingEdl(int iClientId) const;
-    bool SupportsTimers(int iClientId) const;
-    bool SupportsTV(int iClientId) const;
-    bool HandlesDemuxing(int iClientId) const;
-    bool HandlesInputStream(int iClientId) const;
+    /*!
+     * @brief Query the the given client's capabilities.
+     * @param iClientId The client id
+     * @return The capabilities.
+     */
+    CPVRClientCapabilities GetClientCapabilities(int iClientId) const;
 
     bool GetPlayingClient(PVR_CLIENT &client) const;
 
@@ -654,7 +623,6 @@ namespace PVR
     time_t GetPlayingTime() const;
     time_t GetBufferTimeStart() const;
     time_t GetBufferTimeEnd() const;
-
 
     int GetClientId(const std::string& strId) const;
 
