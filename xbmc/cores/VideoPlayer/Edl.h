@@ -51,7 +51,7 @@ public:
   std::string GetInfo() const;
   int GetTotalCutTime() const;
   int RemoveCutTime(int iSeek) const;
-  int RestoreCutTime(int iClock) const;
+  double RestoreCutTime(double dClock) const;
 
   bool InCut(int iSeek, Cut *pCut = NULL);
   bool GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const;
