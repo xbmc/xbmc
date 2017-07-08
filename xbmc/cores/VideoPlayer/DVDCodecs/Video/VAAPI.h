@@ -126,6 +126,18 @@ struct CVaapiConfig
  */
 struct CVaapiDecodedPicture
 {
+  CVaapiDecodedPicture() = default;
+  CVaapiDecodedPicture(const CVaapiDecodedPicture &rhs)
+  {
+    *this = rhs;
+  }
+  CVaapiDecodedPicture& operator=(const CVaapiDecodedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    index = rhs.index;
+    return *this;
+  };
   VideoPicture DVDPic;
   VASurfaceID videoSurface;
   int index;
@@ -136,6 +148,22 @@ struct CVaapiDecodedPicture
  */
 struct CVaapiProcessedPicture
 {
+  CVaapiProcessedPicture() = default;
+  CVaapiProcessedPicture(const CVaapiProcessedPicture &rhs)
+  {
+    *this = rhs;
+  }
+  CVaapiProcessedPicture& operator=(const CVaapiProcessedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    frame = rhs.frame;
+    id = rhs.id;
+    source = rhs.source;
+    crop = rhs.crop;
+    return *this;
+  };
+
   VideoPicture DVDPic;
   VASurfaceID videoSurface;
   AVFrame *frame;

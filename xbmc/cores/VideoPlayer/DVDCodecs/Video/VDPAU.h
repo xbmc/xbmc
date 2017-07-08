@@ -182,6 +182,18 @@ struct CVdpauConfig
  */
 struct CVdpauDecodedPicture
 {
+  CVdpauDecodedPicture() = default;
+  CVdpauDecodedPicture(const CVdpauDecodedPicture &rhs)
+  {
+    *this = rhs;
+  }
+  CVdpauDecodedPicture& operator=(const CVdpauDecodedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    isYuv = rhs.isYuv;
+    return *this;
+  };
   VideoPicture DVDPic;
   VdpVideoSurface videoSurface;
   bool isYuv;
@@ -192,6 +204,22 @@ struct CVdpauDecodedPicture
  */
 struct CVdpauProcessedPicture
 {
+  CVdpauProcessedPicture() = default;
+  CVdpauProcessedPicture(const CVdpauProcessedPicture& rhs)
+  {
+    *this = rhs;
+  }
+  CVdpauProcessedPicture& operator=(const CVdpauProcessedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    outputSurface = rhs.outputSurface;
+    crop = rhs.crop;
+    isYuv = rhs.isYuv;
+    id = rhs.id;
+    return *this;
+  };
+
   VideoPicture DVDPic;
   VdpVideoSurface videoSurface = VDP_INVALID_HANDLE;
   VdpOutputSurface outputSurface = VDP_INVALID_HANDLE;

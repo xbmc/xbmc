@@ -1004,7 +1004,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   if (m_DisplayState != VAAPI_OPEN)
     return false;
 
-  *picture = m_presentPicture->DVDPic;
+  picture->SetParams(m_presentPicture->DVDPic);
   picture->videoBuffer = m_presentPicture;
   m_presentPicture = nullptr;
 
@@ -2021,7 +2021,7 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
 {
   CVaapiRenderPicture *retPic;
   retPic = m_bufferPool->GetVaapi();
-  retPic->DVDPic = pic.DVDPic;
+  retPic->DVDPic.SetParams(pic.DVDPic);
 
   if (pic.source == CVaapiProcessedPicture::SKIP_SRC ||
       pic.source == CVaapiProcessedPicture::VPP_SRC)
@@ -2204,7 +2204,7 @@ bool CSkipPostproc::Filter(CVaapiProcessedPicture &outPic)
 {
   if (m_step>0)
     return false;
-  outPic.DVDPic = m_pic.DVDPic;
+  outPic.DVDPic.SetParams(m_pic.DVDPic);
   outPic.videoSurface = m_pic.videoSurface;
   outPic.source = CVaapiProcessedPicture::SKIP_SRC;
   outPic.DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
@@ -2505,7 +2505,7 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   {
     return false;
   }
-  outPic.DVDPic = it->DVDPic;
+  outPic.DVDPic.SetParams(it->DVDPic);
 
   // skip deinterlacing cycle if requested
   if ((m_step == 1) &&
@@ -2915,7 +2915,7 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   {
     m_frametime = inPic.DVDPic.pts - m_DVDPic.pts;
   }
-  m_DVDPic = inPic.DVDPic;
+  m_DVDPic.SetParams(inPic.DVDPic);
   bool result = false;
 
   if (!CheckSuccess(vaSyncSurface(m_config.dpy, surf)))
@@ -2985,7 +2985,7 @@ error:
 
 bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
 {
-  outPic.DVDPic = m_DVDPic;
+  outPic.DVDPic.SetParams(m_DVDPic);
   if (m_diMethod == VS_INTERLACEMETHOD_DEINTERLACE)
   {
     int result;
