@@ -236,7 +236,7 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
+void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   if (m_renderMethod == RENDER_DXVA)
   {

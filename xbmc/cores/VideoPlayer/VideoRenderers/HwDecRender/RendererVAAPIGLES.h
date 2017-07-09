@@ -61,4 +61,3 @@ protected:
   VAAPI::CVaapiTexture m_vaapiTextures[NUM_BUFFERS];
   GLsync m_fences[NUM_BUFFERS];
 };
-

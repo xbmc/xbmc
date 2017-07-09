@@ -94,7 +94,7 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index)
+void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   ReleaseBuffer(index);
 
