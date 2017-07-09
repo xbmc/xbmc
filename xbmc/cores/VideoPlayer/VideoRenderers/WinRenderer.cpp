@@ -238,6 +238,10 @@ int CWinRenderer::NextYV12Texture()
 
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
 {
+  //@todo create a member that can hold videobuffer and renderbuffer
+  if (!m_VideoBuffers[index])
+    return;
+
   if (m_renderMethod == RENDER_DXVA)
   {
     DXVABuffer *buf = reinterpret_cast<DXVABuffer*>(m_VideoBuffers[index]);
@@ -363,6 +367,8 @@ void CWinRenderer::Flush()
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
   m_bFilterInitialized = false;
+
+  Update();
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)
@@ -908,6 +914,7 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 void CWinRenderer::DeleteYV12Texture(int index)
 {
   CSingleLock lock(g_graphicsContext);
+  ReleaseBuffer(index);
   SAFE_DELETE(m_VideoBuffers[index]);
 }
 
@@ -1058,10 +1065,11 @@ CRenderInfo CWinRenderer::GetRenderInfo()
 
 void CWinRenderer::ReleaseBuffer(int idx)
 {
+  if (m_VideoBuffers[idx])
+    SAFE_RELEASE(m_VideoBuffers[idx]->videoBuffer);
+
   if (m_renderMethod == RENDER_DXVA && m_VideoBuffers[idx])
     SAFE_RELEASE(reinterpret_cast<DXVABuffer*>(m_VideoBuffers[idx])->pic);
-
-  SAFE_RELEASE(m_VideoBuffers[idx]->videoBuffer);
 }
 
 bool CWinRenderer::NeedBuffer(int idx)

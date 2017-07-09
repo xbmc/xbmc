@@ -157,6 +157,7 @@ public:
   CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
   const std::string Name() override { return "d3d11va"; }
   unsigned GetAllowedReferences() override;
+  void Reset() override;
 
   // IDVDResourceCounted overrides
   long Release() override;
