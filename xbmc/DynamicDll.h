@@ -134,7 +134,7 @@ public: \
       void*         m_##name##_ptr; \
     }; \
   public: \
-    virtual result name args \
+    virtual result name args override \
     { \
       return m_##name args2; \
     }
@@ -354,7 +354,7 @@ public: \
 //
 #define BEGIN_METHOD_RESOLVE() \
   protected: \
-  virtual bool ResolveExports() \
+  virtual bool ResolveExports() override \
   {
 
 #define END_METHOD_RESOLVE() \

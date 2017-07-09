@@ -99,6 +99,7 @@ public:
   virtual dvdnav_status_t dvdnav_get_audio_attr(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes)=0;
   virtual dvdnav_status_t dvdnav_get_spu_attr(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes)=0;
   virtual dvdnav_status_t dvdnav_time_search(dvdnav_t * self, uint64_t timepos)=0;
+  virtual dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t * slef, uint64_t offset, int32_t origin)=0;
   virtual int64_t dvdnav_convert_time(dvd_time_t *time)=0;
   virtual dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state)=0;
   virtual dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state)=0;
@@ -223,6 +224,8 @@ public:
         { return ::dvdnav_get_spu_attr(self, streamid, stitle_attributes); }
     virtual dvdnav_status_t dvdnav_time_search(dvdnav_t * self, uint64_t timepos)
         { return ::dvdnav_time_search(self, timepos); }
+    virtual dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t * self, uint64_t offset, int32_t origin)
+        { return ::dvdnav_jump_to_sector_by_time(self, offset, origin); }
     virtual int64_t dvdnav_convert_time(dvd_time_t *time)
         { return ::dvdnav_convert_time(time); }
     virtual dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state)

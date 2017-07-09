@@ -36,16 +36,16 @@ namespace GAME
 
   protected:
     // implementation of ISettingCallback via CGUIDialogSettingsManualBase
-    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
-    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
     // specialization of CGUIDialogSettingsBase via CGUIDialogSettingsManualBase
-    virtual bool AllowResettingSettings() const { return false; }
-    virtual void Save();
-    virtual void SetupView();
+    virtual bool AllowResettingSettings() const override { return false; }
+    virtual void Save() override;
+    virtual void SetupView() override;
 
     // specialization of CGUIDialogSettingsManualBase
-    virtual void InitializeSettings();
+    virtual void InitializeSettings() override;
   };
 }
 }

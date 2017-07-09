@@ -1171,7 +1171,7 @@ int CGUIAddonWindow::GetCurrentContainerControlId()
 
 void CGUIAddonWindow::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
-  gui_context_menu_pair c_buttons[ADDON_MAX_CONTEXT_ENTRIES] = {0};
+  gui_context_menu_pair c_buttons[ADDON_MAX_CONTEXT_ENTRIES] = {{0}};
   unsigned int size = ADDON_MAX_CONTEXT_ENTRIES;
   if (CBGetContextButtons)
   {

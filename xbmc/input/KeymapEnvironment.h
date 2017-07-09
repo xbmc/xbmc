@@ -29,5 +29,5 @@ public:
   // implementation of IKeymapEnvironment
   virtual int GetWindowID() const override;
   virtual int GetFallthrough(int windowId) const override;
-  virtual bool UseGlobalFallthrough() const { return true; }
+  virtual bool UseGlobalFallthrough() const override { return true; }
 };
