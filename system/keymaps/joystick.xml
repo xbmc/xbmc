@@ -296,7 +296,8 @@
   </VideoPlaylist>
   <VirtualKeyboard>
     <joystick profile="game.controller.default">
-      <a>Shift</a>
+      <a>Select</a>
+      <a holdtime="500">Shift</a>
       <b>BackSpace</b>
       <y>Symbols</y>
       <leftbumper>Shift</leftbumper>
