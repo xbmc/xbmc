@@ -36,7 +36,7 @@
                                  [ 'sequence' : sequence ])}
         ${api}${accessor}${altAccess[0]}() = entry0_${seq};
       }
-      catch (XBMCAddon::WrongTypeException)
+      catch (const XBMCAddon::WrongTypeException&)
       {
         try
         {
@@ -45,7 +45,7 @@
                                    [ 'sequence' : sequence ])}
           ${api}${accessor}${altAccess[1]}() = entry1_${seq};
         }
-        catch (XBMCAddon::WrongTypeException)
+        catch (const XBMCAddon::WrongTypeException&)
         {
           throw XBMCAddon::WrongTypeException("Failed to convert to input type to either a " 
                                               "${swigTypeParser.SwigType_ltype(types[0])} or a "

@@ -162,6 +162,7 @@ void CVAAPIContext::SetValidDRMVaDisplayFromRenderNode()
       m_display = display;
       return;
     }
+    close(fd);
   }
 
   CLog::Log(LOGERROR, "Failed to find any open render nodes in /dev/dri/renderD<num>");

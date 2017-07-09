@@ -67,7 +67,7 @@ void CSampleBuffer::Return()
     pool->ReturnBuffer(this);
 }
 
-CActiveAEBufferPool::CActiveAEBufferPool(AEAudioFormat format)
+CActiveAEBufferPool::CActiveAEBufferPool(const AEAudioFormat& format)
 {
   m_format = format;
   if (m_format.m_dataFormat == AE_FMT_RAW)
@@ -147,7 +147,7 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
 // Resample
 // ----------------------------------------------------------------------------------
 
-CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality)
+CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality)
   : CActiveAEBufferPool(outputFormat)
 {
   m_inputFormat = inputFormat;
@@ -500,7 +500,7 @@ void CActiveAEBufferPoolResample::ForceResampler(bool force)
 // Atempo
 // ----------------------------------------------------------------------------------
 
-CActiveAEBufferPoolAtempo::CActiveAEBufferPoolAtempo(AEAudioFormat format) : CActiveAEBufferPool(format)
+CActiveAEBufferPoolAtempo::CActiveAEBufferPoolAtempo(const AEAudioFormat& format) : CActiveAEBufferPool(format)
 {
   m_drain = false;
   m_empty = true;
