@@ -61,6 +61,9 @@ public:
   void Reset() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
 
+protected:
+  CDemuxStream* GetStream(int iStreamId) const override { return nullptr; }
+
 private:
   void Dispose();
   void SetMissingStreamDetails(DemuxPtr demuxer);
