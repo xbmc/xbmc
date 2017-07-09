@@ -700,10 +700,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     goto FAIL;
   }
 
-  // setup a YUV420P VideoPicture buffer.
-  // first make sure all properties are reset.
-  memset(&m_videobuffer, 0x00, sizeof(VideoPicture));
-
   m_videobuffer.dts = DVD_NOPTS_VALUE;
   m_videobuffer.pts = DVD_NOPTS_VALUE;
   m_videobuffer.color_range  = 0;
@@ -759,6 +755,12 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 {
   if (!m_opened)
     return;
+
+  if (m_videoBuffer.videoBuffer)
+  {
+    m_videoBuffer.videoBuffer->Release();
+    m_videoBuffer.videoBuffer = nullptr;
+  }
 
   if (m_videoBufferPool)
   {
@@ -968,25 +970,25 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
 
   if (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)!=0)
   {
-    m_videobuffer.videoBuffer = pVideoPicture->videoBuffer;
     int retgp = GetOutputPicture();
 
     if (retgp > 0)
     {
       m_noPictureLoop = 0;
 
-      *pVideoPicture = m_videobuffer;
+      // we keep a reference for the case we need to
+      // submit it again
+      pVideoPicture.CopyRef(m_videobuffer);
 
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture index: %d, pts:%0.4lf",
           static_cast<CMediaCodecVideoBuffer*>(m_videobuffer.videoBuffer)->GetBufferId(), pVideoPicture->pts);
 
-      m_videobuffer.videoBuffer = nullptr;
-
       return VC_PICTURE;
     }
     else
     {
+      m_videobuffer.videoBuffer->Release();
       m_videobuffer.videoBuffer = nullptr;
       if (retgp == -1 || ((m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)!=0 && ++m_noPictureLoop == 10))  // EOS
       {
