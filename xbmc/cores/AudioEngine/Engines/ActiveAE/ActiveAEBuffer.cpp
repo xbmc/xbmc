@@ -500,7 +500,7 @@ void CActiveAEBufferPoolResample::ForceResampler(bool force)
 // Atempo
 // ----------------------------------------------------------------------------------
 
-CActiveAEBufferPoolAtempo::CActiveAEBufferPoolAtempo(AEAudioFormat format) : CActiveAEBufferPool(format)
+CActiveAEBufferPoolAtempo::CActiveAEBufferPoolAtempo(const AEAudioFormat& format) : CActiveAEBufferPool(format)
 {
   m_drain = false;
   m_empty = true;

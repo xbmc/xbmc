@@ -137,7 +137,7 @@ class CActiveAEFilter;
 class CActiveAEBufferPoolAtempo : public CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPoolAtempo(AEAudioFormat format);
+  CActiveAEBufferPoolAtempo(const AEAudioFormat& format);
   ~CActiveAEBufferPoolAtempo() override;
   bool Create(unsigned int totaltime) override;
   bool ProcessBuffers();
