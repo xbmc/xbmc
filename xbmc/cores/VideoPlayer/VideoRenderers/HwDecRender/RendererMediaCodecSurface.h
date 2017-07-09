@@ -24,7 +24,6 @@
 
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
-#include <chrono>
 
 class CMediaCodecVideoBuffer;
 
@@ -62,20 +61,7 @@ protected:
   virtual void ReorderDrawPoints() override;
 
 private:
-
-  int m_iRenderBuffer;
-  static const int m_numRenderBuffers = 4;
-
-  struct BUFFER
-  {
-    BUFFER() : videoBuffer(nullptr) {};
-    CMediaCodecVideoBuffer *videoBuffer;
-    int duration;
-  } m_buffers[m_numRenderBuffers];
-
-  std::chrono::time_point<std::chrono::system_clock> m_prevTime;
   bool m_bConfigured;
-  unsigned int m_updateCount;
   CRect m_surfDestRect;
 };
 

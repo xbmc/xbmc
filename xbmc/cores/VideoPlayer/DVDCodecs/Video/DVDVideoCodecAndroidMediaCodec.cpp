@@ -200,7 +200,7 @@ bool CMediaCodecVideoBuffer::WaitForFrame(int millis)
   return m_frameready->WaitMSec(millis);
 }
 
-void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render)
+void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTime)
 {
   std::shared_ptr<CMediaCodec> codec(static_cast<CMediaCodecVideoBufferPool*>(m_pool.get())->GetMediaCodec());
 
@@ -217,7 +217,11 @@ void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render)
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
      CLog::Log(LOGDEBUG, "CMediaCodecVideoBuffer::ReleaseOutputBuffer index(%d), render(%d)", m_bufferId, render);
 
-  media_status_t mstat = AMediaCodec_releaseOutputBuffer(codec->codec(), m_bufferId, render);
+  media_status_t mstat;
+  if (!render || displayTime == 0)
+    mstat = AMediaCodec_releaseOutputBuffer(codec->codec(), m_bufferId, render);
+  else
+    mstat = AMediaCodec_releaseOutputBufferAtTime(codec->codec(), m_bufferId, displayTime);
   m_bufferId = -1; //mark released
 
   if (mstat != AMEDIA_OK)
@@ -274,7 +278,7 @@ void CMediaCodecVideoBuffer::UpdateTexImage()
   }
 }
 
-void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect)
+void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t displayTime)
 {
   CRect surfRect = m_videoview->getSurfaceRect();
   if (DestRect != surfRect)
@@ -290,13 +294,13 @@ void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect)
       }
 
       // setVideoViewSurfaceRect is async, so skip rendering this frame
-      ReleaseOutputBuffer(false);
+      ReleaseOutputBuffer(false, 0);
     }
     else
-      ReleaseOutputBuffer(true);
+      ReleaseOutputBuffer(true, displayTime);
   }
   else
-    ReleaseOutputBuffer(true);
+    ReleaseOutputBuffer(true, displayTime);
 }
 
 /*****************************************************************************/
