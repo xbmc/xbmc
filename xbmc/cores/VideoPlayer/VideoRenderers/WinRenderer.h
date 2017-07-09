@@ -91,7 +91,7 @@ struct SVideoBuffer
   virtual void Clear() {};              // clear the buffer with solid black
   virtual bool IsReadyToRender() { return true; };
 
-  CVideoBuffer* videoBuffer;
+  CVideoBuffer* videoBuffer = nullptr;
 };
 
 // YV12 decoder textures

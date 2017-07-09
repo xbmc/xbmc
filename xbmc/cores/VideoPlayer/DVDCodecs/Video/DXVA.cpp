@@ -674,7 +674,7 @@ bool CSurfaceContext::HasRefs()
 
 CDXVABufferPool::CDXVABufferPool()
 {
-  for (unsigned int i = 0; i < 7; i++)
+  for (unsigned int i = 0; i < 9; i++)
   {
     auto pic = new CDXVAVideoBuffer(i);
     m_all.push_back(pic);
@@ -694,6 +694,8 @@ CDXVABufferPool::~CDXVABufferPool()
 
 CVideoBuffer* CDXVABufferPool::Get()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_free.empty())
     return nullptr;
 
@@ -808,6 +810,7 @@ void CDecoder::Close()
   SAFE_RELEASE(m_decoder);
   SAFE_RELEASE(m_vcontext);
   SAFE_RELEASE(m_surface_context);
+  SAFE_RELEASE(m_presentPicture);
   memset(&m_format, 0, sizeof(m_format));
 
   if (m_dxva_context)
@@ -1035,7 +1038,14 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
       picture->format = m_format.OutputFormat;
       m_surface_context->MarkRender(picture->view);
 
+      if (m_presentPicture)
+        m_presentPicture->Release();
       m_presentPicture = m_bufferPool->GetDX();
+      if (!m_presentPicture)
+      {
+        CLog::Log(ERROR, "DXVA - ran out of buffers");
+        return CDVDVideoCodec::VC_ERROR;
+      }
       m_presentPicture->picture = picture;
       return CDVDVideoCodec::VC_PICTURE;
     }
@@ -1055,6 +1065,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   CSingleLock lock(m_section);
 
   picture->videoBuffer = m_presentPicture;
+  m_presentPicture = nullptr;
 
   int queued, discard, free;
   m_processInfo.GetRenderBuffers(queued, discard, free);
@@ -1068,6 +1079,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   }
 
   return true;
+}
+
+void CDecoder::Reset()
+{
+  SAFE_RELEASE(m_presentPicture);
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
