@@ -316,7 +316,7 @@ int CLinuxRendererGL::NextYV12Texture()
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
-void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
+void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   YUVBUFFER &buf = m_buffers[index];
   buf.videoBuffer = picture.videoBuffer;
