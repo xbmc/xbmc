@@ -38,6 +38,7 @@
 
 CAMLVideoBufferPool::~CAMLVideoBufferPool()
 {
+  CLog::Log(LOGDEBUG, "CAMLVideoBufferPool::~CAMLVideoBufferPool: Deleting %u buffers", static_cast<unsigned int>(m_videoBuffers.size()) );
   for (auto buffer : m_videoBuffers)
     delete buffer;
 }
@@ -408,10 +409,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAmlogic::GetPicture(VideoPicture* pVideoP
 
   if (retVal == VC_PICTURE)
   {
-    if (pVideoPicture->videoBuffer)
-      pVideoPicture->videoBuffer->Release();
-
-    *pVideoPicture = m_videobuffer;
+    pVideoPicture->SetParams(m_videobuffer);
 
     pVideoPicture->videoBuffer = m_videoBufferPool->Get();
     static_cast<CAMLVideoBuffer*>(pVideoPicture->videoBuffer)->Set(this, m_Codec,
