@@ -29,8 +29,6 @@
 
 using namespace kodi::addon;
 
-#define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
-
 class BufferPool
 {
 public:
