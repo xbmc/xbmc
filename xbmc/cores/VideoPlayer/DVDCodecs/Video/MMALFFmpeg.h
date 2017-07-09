@@ -41,7 +41,7 @@ public:
   virtual ~CMMALYUVBuffer();
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]);
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]);
-  virtual void SetDimensions(int width, int height, int alignedWidth, int alignedHeight);
+  virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]);
   CGPUMEM *Allocate(int size, void *opaque) { m_gmem = new CGPUMEM(size, true); if (m_gmem) m_gmem->m_opaque = opaque; return m_gmem; }
   CGPUMEM *GetMem() { return m_gmem; }
 protected:
