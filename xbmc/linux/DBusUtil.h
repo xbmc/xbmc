@@ -62,7 +62,7 @@ private:
 
   struct DBusConnectionDeleter
   {
-    DBusConnectionDeleter() = default;
+    DBusConnectionDeleter() {};
     bool closeBeforeUnref = false;
     void operator()(DBusConnection* connection) const;
   };
