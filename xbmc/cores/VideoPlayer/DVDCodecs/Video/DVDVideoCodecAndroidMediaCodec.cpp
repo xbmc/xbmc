@@ -307,6 +307,7 @@ void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t display
 /*****************************************************************************/
 CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool()
 {
+  CLog::Log(LOGDEBUG, "CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool Releasing %u buffers", static_cast<unsigned int>(m_videoBuffers.size()));
   for (auto buffer : m_videoBuffers)
     delete buffer;
 }
@@ -353,6 +354,8 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 : CDVDVideoCodec(processInfo)
 , m_formatname("mediacodec")
 , m_opened(false)
+, m_jnivideoview(nullptr)
+, m_jnisurface(nullptr)
 , m_crypto(nullptr)
 , m_textureId(0)
 , m_surface(nullptr)
@@ -360,8 +363,6 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_fpsDuration(0)
 , m_lastPTS(-1)
 , m_bitstream(nullptr)
-, m_jnivideoview(nullptr)
-, m_jnisurface(nullptr)
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
 {
@@ -969,13 +970,16 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)!=0)
   {
     m_videobuffer.videoBuffer = pVideoPicture->videoBuffer;
+
     int retgp = GetOutputPicture();
 
     if (retgp > 0)
     {
       m_noPictureLoop = 0;
 
-      *pVideoPicture = m_videobuffer;
+      pVideoPicture->videoBuffer = nullptr;
+      pVideoPicture->SetParams(m_videobuffer);
+      pVideoPicture->videoBuffer = m_videobuffer.videoBuffer;
 
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture index: %d, pts:%0.4lf",
@@ -1141,10 +1145,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     }
 
     if (m_videobuffer.videoBuffer)
-    {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture");
       m_videobuffer.videoBuffer->Release();
-    }
 
     m_videobuffer.videoBuffer = m_videoBufferPool->Get();
     static_cast<CMediaCodecVideoBuffer*>(m_videobuffer.videoBuffer)->Set(index, m_textureId,  m_surfaceTexture, m_frameAvailable, m_jnivideoview);
