@@ -756,10 +756,10 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (!m_opened)
     return;
 
-  if (m_videoBuffer.videoBuffer)
+  if (m_videobuffer.videoBuffer)
   {
-    m_videoBuffer.videoBuffer->Release();
-    m_videoBuffer.videoBuffer = nullptr;
+    m_videobuffer.videoBuffer->Release();
+    m_videobuffer.videoBuffer = nullptr;
   }
 
   if (m_videoBufferPool)
