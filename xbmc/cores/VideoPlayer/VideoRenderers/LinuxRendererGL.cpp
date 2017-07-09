@@ -460,14 +460,6 @@ void CLinuxRendererGL::LoadPlane(YUVPLANE& plane, int type,
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
-void CLinuxRendererGL::Reset()
-{
-  for(int i=0; i<m_NumYV12Buffers; i++)
-  {
-    ReleaseBuffer(i);
-  }
-}
-
 void CLinuxRendererGL::Flush()
 {
   if (!m_bValidated)

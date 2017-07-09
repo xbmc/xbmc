@@ -108,7 +108,6 @@ public:
   bool IsConfigured() override { return m_bConfigured; }
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void UnInit() override;
-  void Reset() override;
   void Flush() override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;

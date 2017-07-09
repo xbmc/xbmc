@@ -59,7 +59,6 @@ public:
   bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void UnInit() override;
-  void Reset() override; /* resets renderer after seek for example */
   bool IsConfigured() override { return m_bConfigured; }
   void Flush() override;
   CRenderInfo GetRenderInfo() override;

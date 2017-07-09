@@ -329,14 +329,6 @@ void CLinuxRendererGLES::LoadPlane(YUVPLANE& plane, int type,
   glBindTexture(m_textureTarget, 0);
 }
 
-void CLinuxRendererGLES::Reset()
-{
-  for(int i=0; i<m_NumYV12Buffers; i++)
-  {
-    ReleaseBuffer(i);
-  }
-}
-
 void CLinuxRendererGLES::Flush()
 {
   if (!m_bValidated)

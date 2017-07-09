@@ -284,10 +284,6 @@ void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, doubl
   m_renderBuffers[index].loaded = false;
 }
 
-void CWinRenderer::Reset()
-{
-}
-
 void CWinRenderer::Update()
 {
   if (!m_bConfigured)

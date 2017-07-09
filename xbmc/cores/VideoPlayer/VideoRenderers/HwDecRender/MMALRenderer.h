@@ -152,7 +152,6 @@ public:
   virtual bool         Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual void         ReleaseBuffer(int idx) override;
   virtual void         UnInit();
-  virtual void         Reset() override; /* resets renderer after seek for example */
   virtual void         Flush() override;
   virtual bool         IsConfigured() override { return m_bConfigured; }
   virtual void         AddVideoPicture(const VideoPicture& pic, int index, double currentClock) override;
