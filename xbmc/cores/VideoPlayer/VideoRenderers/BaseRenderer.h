@@ -66,7 +66,7 @@ public:
   // Player functions
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) = 0;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) = 0;
   virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
   virtual void UnInit() = 0;
