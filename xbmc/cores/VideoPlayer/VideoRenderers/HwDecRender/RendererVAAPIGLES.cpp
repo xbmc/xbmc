@@ -62,7 +62,7 @@ bool CRendererVAAPI::ConfigChanged(void *hwPic)
   return false;
 }
 
-void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index)
+void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index, double currentClock)
 {
   VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(picture.hwPic);
   YUVBUFFER &buf = m_buffers[index];

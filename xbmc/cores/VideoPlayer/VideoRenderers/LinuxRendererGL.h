@@ -107,7 +107,7 @@ public:
   // Player functions
   bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   bool IsConfigured() override { return m_bConfigured; }
-  void AddVideoPicture(const VideoPicture &picture, int index) override;
+  void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void FlipPage(int source) override;
   void UnInit() override;
   void Reset() override;

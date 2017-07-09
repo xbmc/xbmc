@@ -113,7 +113,7 @@ public:
   // Player functions
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   virtual void FlipPage(int source) override;
   virtual void UnInit() override;
   virtual void Reset() override;
