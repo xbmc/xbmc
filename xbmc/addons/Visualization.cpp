@@ -38,7 +38,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_presetsPath = CSpecialProtocol::TranslatePath(Path());
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
-  m_struct = {0};
+  m_struct = {{0}};
 #ifdef HAS_DX
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else

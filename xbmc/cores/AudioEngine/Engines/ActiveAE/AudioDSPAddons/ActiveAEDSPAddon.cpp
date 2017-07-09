@@ -58,7 +58,7 @@ void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_
   m_strAudioDSPName       = DEFAULT_INFO_STRING_VALUE;
   m_addonCapabilities = {0};
 
-  m_struct = {0};
+  m_struct = {{0}};
   m_struct.props.strUserPath = m_strUserPath.c_str();
   m_struct.props.strAddonPath = m_strAddonPath.c_str();
 
