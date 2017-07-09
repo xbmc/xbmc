@@ -988,7 +988,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     }
     else
     {
-      m_videobuffer.videoBuffer->Release();
+      if (m_videobuffer.videoBuffer)
+        m_videobuffer.videoBuffer->Release();
       m_videobuffer.videoBuffer = nullptr;
       if (retgp == -1 || ((m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)!=0 && ++m_noPictureLoop == 10))  // EOS
       {
