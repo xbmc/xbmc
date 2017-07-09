@@ -387,7 +387,8 @@ void CVideoPlayerVideo::Process()
       // Waiting timed out, output last picture
       if (m_picture.videoBuffer)
       {
-        OutputPicture(&m_picture, pts);
+        m_picture.pts = pts;
+        OutputPicture(&m_picture);
         pts += frametime;
       }
 
@@ -672,7 +673,8 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       m_picture.iDuration += extraDelay;
     }
 
-    int iResult = OutputPicture(&m_picture, pts + extraDelay);
+    m_picture.pts = pts + extraDelay;
+    int iResult = OutputPicture(&m_picture);
 
     frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
@@ -793,7 +795,7 @@ std::string CVideoPlayerVideo::GetStereoMode()
   return stereo_mode;
 }
 
-int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
+int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
 {
   m_bAbortOutput = false;
 
@@ -841,7 +843,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
   int result = 0;
 
   //try to calculate the framerate
-  m_ptsTracker.Add(pts);
+  m_ptsTracker.Add(pPicture->pts);
   if (!m_stalled)
     CalcFrameRate();
 
@@ -861,7 +863,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
     int lateframes;
     double inputPts = m_droppingStats.m_lastPts;
     m_renderManager.GetStats(lateframes, renderPts, queued, discard);
-    if (pts > renderPts || queued > 0)
+    if (pPicture->pts > renderPts || queued > 0)
     {
       if (inputPts >= renderPts)
       {
@@ -870,7 +872,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
       }
       return result | EOS_DROPPED;
     }
-    else if (pts < iPlayingClock)
+    else if (pPicture->pts < iPlayingClock)
     {
       return result | EOS_DROPPED;
     }
@@ -885,18 +887,18 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
 
     // estimate the time it will take for the next frame to get rendered
     // drop the frame if it's late in regard to this estimation
-    double diff = pts - renderPts;
+    double diff = pPicture->pts - renderPts;
     double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate) * (bufferLevel + 1);
     if (diff < mindiff)
     {
-      m_droppingStats.AddOutputDropGain(pts, 1);
+      m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
       return result | EOS_DROPPED;
     }
   }
 
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
   {
-    m_droppingStats.AddOutputDropGain(pts, 1);
+    m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
     CLog::Log(LOGDEBUG,"%s - dropped in output", __FUNCTION__);
     return result | EOS_DROPPED;
   }
@@ -918,7 +920,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
     }
   }
 
-  int timeToDisplay = DVD_TIME_TO_MSEC(pts - iPlayingClock);
+  int timeToDisplay = DVD_TIME_TO_MSEC(pPicture->pts - iPlayingClock);
   // make sure waiting time is not negative
   int maxWaitTime = std::min(std::max(timeToDisplay + 500, 50), 500);
   // don't wait when going ff
@@ -927,11 +929,11 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
   int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
   if (buffer < 0)
   {
-    m_droppingStats.AddOutputDropGain(pts, 1);
+    m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
     return EOS_DROPPED;
   }
 
-  ProcessOverlays(pPicture, pts);
+  ProcessOverlays(pPicture, pPicture->pts);
 
   int index = m_renderManager.AddVideoPicture(*pPicture);
 
@@ -945,11 +947,11 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
 
   if (index < 0)
   {
-    m_droppingStats.AddOutputDropGain(pts, 1);
+    m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
     return EOS_DROPPED;
   }
 
-  m_renderManager.FlipPage(m_bAbortOutput, pts, deintMethod, mDisplayField, (m_syncState == ESyncState::SYNC_STARTING));
+  m_renderManager.FlipPage(m_bAbortOutput, pPicture->pts, deintMethod, mDisplayField, (m_syncState == ESyncState::SYNC_STARTING));
 
   return result;
 }
