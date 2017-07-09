@@ -978,7 +978,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
 
       // we keep a reference for the case we need to
       // submit it again
-      pVideoPicture.CopyRef(m_videobuffer);
+      pVideoPicture->CopyRef(m_videobuffer);
 
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture index: %d, pts:%0.4lf",
