@@ -245,7 +245,7 @@ void CEngineStats::SetDSP(bool state)
   m_hasDSP = state;
 }
 
-void CEngineStats::SetCurrentSinkFormat(AEAudioFormat SinkFormat)
+void CEngineStats::SetCurrentSinkFormat(const AEAudioFormat& SinkFormat)
 {
   CSingleLock lock(m_lock);
   m_sinkFormat = SinkFormat;

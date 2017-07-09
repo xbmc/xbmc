@@ -194,7 +194,7 @@ public:
   float GetWaterLevel();
   void SetSuspended(bool state);
   void SetDSP(bool state);
-  void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
+  void SetCurrentSinkFormat(const AEAudioFormat& SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
