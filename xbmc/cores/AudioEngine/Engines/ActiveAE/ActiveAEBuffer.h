@@ -95,7 +95,7 @@ class IAEResample;
 class CActiveAEBufferPoolResample : public CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality);
+  CActiveAEBufferPoolResample(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality);
   ~CActiveAEBufferPoolResample() override;
   using CActiveAEBufferPool::Create;
   bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
