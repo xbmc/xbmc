@@ -2546,7 +2546,7 @@ void CVideoPlayer::HandleMessages()
       if (msg.GetRelative())
         time = (m_clock.GetClock() + m_State.time_offset) / 1000l + time;
 
-      time = msg.GetRestore() ? static_cast<double>(m_Edl.RestoreCutTime(static_cast<int>(time))) : time;
+      time = msg.GetRestore() ? m_Edl.RestoreCutTime(time) : time;
 
       // if input stream doesn't support ISeekTime, convert back to pts
       //! @todo
