@@ -80,7 +80,7 @@ public:
 class CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPool(AEAudioFormat format);
+  CActiveAEBufferPool(const AEAudioFormat& format);
   virtual ~CActiveAEBufferPool();
   virtual bool Create(unsigned int totaltime);
   CSampleBuffer *GetFreeBuffer();

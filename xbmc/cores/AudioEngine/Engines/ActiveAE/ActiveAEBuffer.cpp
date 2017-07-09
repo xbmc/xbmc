@@ -67,7 +67,7 @@ void CSampleBuffer::Return()
     pool->ReturnBuffer(this);
 }
 
-CActiveAEBufferPool::CActiveAEBufferPool(AEAudioFormat format)
+CActiveAEBufferPool::CActiveAEBufferPool(const AEAudioFormat& format)
 {
   m_format = format;
   if (m_format.m_dataFormat == AE_FMT_RAW)
