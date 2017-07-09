@@ -85,13 +85,13 @@ public:
   // meat and potatoes
   bool                WaitForFrame(int millis);
   // MediaCodec related
-  void                ReleaseOutputBuffer(bool render);
+  void                ReleaseOutputBuffer(bool render, int64_t displayTime);
   // SurfaceTexture released
   int                 GetBufferId() const;
   int                 GetTextureId() const;
   void                GetTransformMatrix(float *textureMatrix);
   void                UpdateTexImage();
-  void                RenderUpdate(const CRect &DestRect);
+  void                RenderUpdate(const CRect &DestRect, int64_t displayTime);
   bool                HasSurfaceTexture() const { return m_surfacetexture.operator bool(); };
 
 private:
