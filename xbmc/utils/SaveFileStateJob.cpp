@@ -19,7 +19,6 @@
  */
 
 #include "SaveFileStateJob.h"
-#include "pvr/PVRManager.h"
 #include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
 #include "StringUtils.h"
@@ -77,21 +76,25 @@ bool CSaveFileStateJob::DoWork()
         {
           if (m_updatePlayCount)
           {
-            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, redactPath.c_str());
-
-            // consider this item as played
-            videodatabase.IncrementPlayCount(m_item);
-            m_item.GetVideoInfoTag()->IncrementPlayCount();
-
-            m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
-            updateListing = true;
-
-            if (m_item.HasVideoInfoTag())
+            // no watched for not yet finished pvr recordings
+            if (!m_item.IsInProgressPVRRecording())
             {
-              CVariant data;
-              data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
-              data["type"] = m_item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, redactPath.c_str());
+
+              // consider this item as played
+              videodatabase.IncrementPlayCount(m_item);
+              m_item.GetVideoInfoTag()->IncrementPlayCount();
+
+              m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+              updateListing = true;
+
+              if (m_item.HasVideoInfoTag())
+              {
+                CVariant data;
+                data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
+                data["type"] = m_item.GetVideoInfoTag()->m_type;
+                ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              }
             }
           }
           else

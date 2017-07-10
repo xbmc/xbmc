@@ -847,6 +847,11 @@ bool CFileItem::IsDeletedPVRRecording() const
   return (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsDeleted());
 }
 
+bool CFileItem::IsInProgressPVRRecording() const
+{
+  return (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsInProgress());
+}
+
 bool CFileItem::IsPVRTimer() const
 {
   return HasPVRTimerInfoTag();

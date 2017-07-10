@@ -231,6 +231,7 @@ public:
   bool IsPVRRecording() const;
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
+  bool IsInProgressPVRRecording() const;
   bool IsPVRTimer() const;
   bool IsPVRRadioRDS() const;
   bool IsType(const char *ext) const;
