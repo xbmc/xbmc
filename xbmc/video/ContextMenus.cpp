@@ -56,6 +56,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
 
   if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
   {
+    return true;
     if (item.HasVideoInfoTag())
       return item.IsVideoDb();
     else
@@ -80,6 +81,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
 
   if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
   {
+    return true;
     if (item.HasVideoInfoTag())
       return item.IsVideoDb();
     else
