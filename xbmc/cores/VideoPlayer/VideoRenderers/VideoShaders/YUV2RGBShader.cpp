@@ -137,7 +137,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
   }
 }
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 using namespace Shaders;
 
@@ -227,7 +227,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   m_hVertex = -1;
   m_hYcoord = -1;
   m_hUcoord = -1;
@@ -259,7 +259,7 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
   m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
@@ -293,7 +293,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
@@ -343,7 +343,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("output.glsl");
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
 #endif
 }
@@ -361,7 +361,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, EShaderFormat form
   m_hField = -1;
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
 #endif
 }

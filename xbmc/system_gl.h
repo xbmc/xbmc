@@ -41,12 +41,15 @@
     #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
   #endif
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   #if defined(TARGET_DARWIN)
     #include <OpenGLES/ES2/gl.h>
     #include <OpenGLES/ES2/glext.h>
   #else
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
+  #endif
+  #if HAS_GLES == 3
+    #include <GLES3/gl3.h>
   #endif
 #endif

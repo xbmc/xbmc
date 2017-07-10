@@ -150,7 +150,7 @@ bool CScreenshotSurface::capture()
   unsigned char* surface = new unsigned char[m_stride * m_height];
 
   //read pixels from the backbuffer
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)surface);
 #else
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)surface);
