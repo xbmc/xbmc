@@ -20,15 +20,37 @@
 #pragma once
 
 #include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
+
+namespace MMAL {
+  class CMMALYUVBuffer;
+}
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+
+class CVideoBufferManagerPi : public CVideoBufferManager
+{
+public:
+  CVideoBufferManagerPi();
+  void RegisterPool(std::shared_ptr<IVideoBufferPool> pool);
+  void ReleasePools();
+  CVideoBuffer* Get(AVPixelFormat format, int width, int height);
+  CVideoBuffer* Get(AVPixelFormat format, int size);
+  void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]);
+
+protected:
+};
 
 class CProcessInfoPi : public CProcessInfo
 {
 public:
-  virtual ~CProcessInfoPi();
+  CProcessInfoPi();
+  static CProcessInfo* Create();
+  static void Register();
   EINTERLACEMETHOD GetFallbackDeintMethod() override;
   bool AllowDTSHDDecode() override;
 
 //protected:
-  CProcessInfoPi();
 };

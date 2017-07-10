@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2016 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,15 +18,29 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "BaseRenderer.h"
+#include <map>
+#include <string>
+#include <vector>
 
-class CProcessInfoLinux : public CProcessInfo
+namespace VIDEOPLAYER
+{
+
+typedef CBaseRenderer* (*CreateRenderer)(CVideoBuffer *buffer);
+
+class CRendererFactory
 {
 public:
-  CProcessInfoLinux();
-  virtual ~CProcessInfoLinux();
-  void SetSwDeinterlacingMethods() override;
+  static CBaseRenderer* CreateRenderer(std::string id, CVideoBuffer *buffer);
+
+  static void RegisterRenderer(std::string id, VIDEOPLAYER::CreateRenderer createFunc);
+  static std::vector<std::string> GetRenderers();
+  static void ClearRenderer();
+
+protected:
+
+  static std::map<std::string, VIDEOPLAYER::CreateRenderer> m_renderers;
 };
+
+}

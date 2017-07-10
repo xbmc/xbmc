@@ -48,7 +48,7 @@ public:
     , m_codec(codec)
     , m_hints(hints)
   {}
- ~CDVDMsgAudioCodecChange()
+ ~CDVDMsgAudioCodecChange() override
   {
     delete m_codec;
   }
@@ -314,7 +314,8 @@ void CVideoPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       double pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-      CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f)", pts);
+      CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f), level: %d, cache: %f",
+                pts, m_messageQueue.GetLevel(), m_audioSink.GetDelay());
 
       m_audioClock = pts + m_audioSink.GetDelay();
       if (m_speed != DVD_PLAYSPEED_PAUSE)

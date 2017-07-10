@@ -26,6 +26,8 @@
 #include "libavcodec/avcodec.h"
 #include "libavcodec/d3d11va.h"
 #include "threads/Event.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 class CProcessInfo;
 
@@ -41,12 +43,11 @@ do { \
   } \
 } while(0);
 
-class CSurfaceContext
-  : public IDVDResourceCounted<CSurfaceContext>
+class CSurfaceContext : public IDVDResourceCounted<CSurfaceContext>
 {
 public:
   CSurfaceContext();
-  ~CSurfaceContext();
+  virtual ~CSurfaceContext();
 
   void AddSurface(ID3D11View* view);
   void ClearReference(ID3D11View* view);
@@ -55,12 +56,12 @@ public:
   bool IsValid(ID3D11View* view);
   ID3D11View* GetFree(ID3D11View* view);
   ID3D11View* GetAtIndex(unsigned int idx);
-  void Reset();
   int Size();
   bool HasFree();
   bool HasRefs();
 
 protected:
+  void Reset();
   std::map<ID3D11View*, int> m_state;
   std::list<ID3D11View*> m_freeViews;
   CCriticalSection m_section;
@@ -79,6 +80,33 @@ protected:
   CSurfaceContext *surface_context;
 };
 
+class CDXVAVideoBuffer : public CVideoBuffer
+{
+public:
+  CDXVAVideoBuffer(int id) : CVideoBuffer(id), picture(nullptr)
+  {
+    m_pixFormat = AV_PIX_FMT_D3D11VA_VLD;
+  }
+  CRenderPicture* picture;
+};
+
+class CDXVABufferPool : public IVideoBufferPool
+{
+public:
+  CDXVABufferPool();
+  virtual ~CDXVABufferPool();
+
+  CVideoBuffer* Get() override;
+  void Return(int id) override;
+  CDXVAVideoBuffer* GetDX() { return reinterpret_cast<CDXVAVideoBuffer*>(Get()); }
+
+private:
+  CCriticalSection m_critSection;
+  std::vector<CDXVAVideoBuffer*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+};
+
 class CDecoder;
 class CDXVAContext
 {
@@ -89,7 +117,7 @@ public:
   bool CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11VideoDecoderOutputView **surfaces);
   bool CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, ID3D11VideoDecoder **decoder, ID3D11VideoContext **context);
   void Release(CDecoder *decoder);
-  ID3D11VideoContext* GetVideoContext() { return m_vcontext; }
+  ID3D11VideoContext* GetVideoContext() const { return m_vcontext; }
 
 private:
   CDXVAContext();
@@ -119,24 +147,31 @@ public:
   CDecoder(CProcessInfo& processInfo);
  ~CDecoder();
 
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static bool Register();
+
   // IHardwareDecoder overrides
-  bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) override;
+  bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
   CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
   bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
   CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
   const std::string Name() override { return "d3d11va"; }
   unsigned GetAllowedReferences() override;
+  void Reset() override;
 
   // IDVDResourceCounted overrides
   long Release() override;
 
   bool OpenDecoder();
-  int GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
-  void RelBuffer(uint8_t *data);
+  int GetBuffer(AVCodecContext *avctx, AVFrame *pic);
+  void ReleaseBuffer(uint8_t *data);
   void Close();
   void CloseDXVADecoder();
 
+  //static members
   static bool Supports(enum AVPixelFormat fmt);
+  static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  static void FFReleaseBuffer(void *opaque, uint8_t *data);
 
 protected:
   enum EDeviceState
@@ -156,7 +191,7 @@ protected:
   ID3D11VideoDecoder *m_decoder;
   ID3D11VideoContext *m_vcontext;
   D3D11_VIDEO_DECODER_DESC m_format;
-  CRenderPicture *m_presentPicture;
+  CDXVAVideoBuffer *m_presentPicture;
   struct AVD3D11VAContext *m_context;
   CSurfaceContext *m_surface_context;
   CDXVAContext *m_dxva_context;
@@ -166,6 +201,7 @@ protected:
   CCriticalSection m_section;
   CEvent m_event;
   CProcessInfo& m_processInfo;
+  std::shared_ptr<CDXVABufferPool> m_bufferPool;
 };
 
 };

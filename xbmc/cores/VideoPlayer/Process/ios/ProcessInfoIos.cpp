@@ -18,24 +18,22 @@
  *
  */
 
-#include "ProcessInfoLinux.h"
+#include "ProcessInfoIOS.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_LINUX)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoIOS::Create()
 {
-  return new CProcessInfoLinux();
+  return new CProcessInfoIOS();
 }
 
+void CProcessInfoIOS::Register()
+{
+  CProcessInfo::RegisterProcessControl("ios", CProcessInfoIOS::Create);
+}
 
-// base class definitions
-CProcessInfoLinux::CProcessInfoLinux() = default;
-
-CProcessInfoLinux::~CProcessInfoLinux() = default;
-
-void CProcessInfoLinux::SetSwDeinterlacingMethods()
+void CProcessInfoIOS::SetSwDeinterlacingMethods()
 {
   // first populate with the defaults from base implementation
   CProcessInfo::SetSwDeinterlacingMethods();
@@ -46,12 +44,10 @@ void CProcessInfoLinux::SetSwDeinterlacingMethods()
     CSingleLock lock(m_videoCodecSection);
     methods = m_deintMethods;
   }
-  // add bob and blend deinterlacer for osx
+  // add bob deinterlacer for ios
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB);
-  methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BLEND);
 
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
-#endif
 

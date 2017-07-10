@@ -24,7 +24,8 @@
 
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
-#include <chrono>
+
+class CMediaCodecVideoBuffer;
 
 class CRendererMediaCodecSurface : public CBaseRenderer
 {
@@ -32,49 +33,35 @@ public:
   CRendererMediaCodecSurface();
   virtual ~CRendererMediaCodecSurface();
 
-  virtual bool RenderCapture(CRenderCapture* capture);
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index);
-  virtual void ReleaseBuffer(int idx);
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
-  virtual bool IsConfigured() { return m_bConfigured; };
-  virtual CRenderInfo GetRenderInfo();
-  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false);
-  virtual void ReleaseImage(int source, bool preserve = false) {};
-  virtual void FlipPage(int source);
-  virtual void PreInit() {};
-  virtual void UnInit() {};
-  virtual void Reset();
-  virtual void Update() {};
-  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
-  virtual bool SupportsMultiPassRendering() { return false; };
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
+  virtual bool RenderCapture(CRenderCapture* capture) override;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  virtual void ReleaseBuffer(int idx) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool IsConfigured() override { return m_bConfigured; };
+  virtual bool ConfigChanged(const VideoPicture &picture) { return false; };
+  virtual CRenderInfo GetRenderInfo() override;
+  virtual void FlipPage(int source) override;
+  virtual void UnInit() override {};
+  virtual void Reset() override;
+  virtual void Update() override {};
+  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) override;
+  virtual bool SupportsMultiPassRendering() override { return false; };
 
   // Player functions
   virtual bool IsGuiLayer() { return false; };
 
   // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method) { return false; };
   virtual bool Supports(ESCALINGMETHOD method) { return false; };
-
   virtual bool Supports(ERENDERFEATURE feature);
 
-  virtual EINTERLACEMETHOD AutoInterlaceMethod() { return VS_INTERLACEMETHOD_NONE; };
 protected:
   virtual void ReorderDrawPoints() override;
 
 private:
-
-  int m_iRenderBuffer;
-  static const int m_numRenderBuffers = 4;
-
-  struct BUFFER
-  {
-    void *hwPic;
-    int duration;
-  } m_buffers[m_numRenderBuffers];
-
-  std::chrono::time_point<std::chrono::system_clock> m_prevTime;
   bool m_bConfigured;
-  unsigned int m_updateCount;
   CRect m_surfDestRect;
 };
 

@@ -176,17 +176,18 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 
 bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
 {
-  uint8_t* fbuffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+  int bufferSize = 4096;
+  uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
   if (!fbuffer)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate FFMPEG_FILE_BUFFER_SIZE");
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate buffer");
     return false;
   }
   m_buf.data = buffer;
   m_buf.size = bufSize;
   m_buf.pos = 0;
 
-  m_ioctx = avio_alloc_context(fbuffer, FFMPEG_FILE_BUFFER_SIZE, 0, &m_buf,
+  m_ioctx = avio_alloc_context(fbuffer, bufferSize, 0, &m_buf,
     mem_file_read, NULL, mem_file_seek);
 
   if (!m_ioctx)
@@ -205,7 +206,6 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
   }
 
   m_fctx->pb = m_ioctx;
-  m_ioctx->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
   // Some clients have pngs saved as jpeg or ask us for png but are jpeg
   // mythv throws all mimetypes away and asks us with application/octet-stream

@@ -29,43 +29,50 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
+#include "../RenderFactory.h"
+
 #include <thread>
+#include <chrono>
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
-  : m_iRenderBuffer(0)
-  , m_prevTime(std::chrono::system_clock::now())
-  , m_bConfigured(false)
-  , m_updateCount(10)
+ : m_bConfigured(false)
 {
+  CLog::Log(LOGNOTICE, "Instancing CRendererMediaCodecSurface");
 }
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
 {
-  for (int i(0); i < m_numRenderBuffers; ++i)
-    ReleaseBuffer(i);
 }
 
-bool CRendererMediaCodecSurface::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+CBaseRenderer* CRendererMediaCodecSurface::Create(CVideoBuffer *buffer)
+{
+  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) && !dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
+    return new CRendererMediaCodecSurface();
+  return nullptr;
+}
+
+bool CRendererMediaCodecSurface::Register()
+{
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("mediacodec_surface", CRendererMediaCodecSurface::Create);
+  return true;
+}
+
+bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
   CLog::Log(LOGNOTICE, "CRendererMediaCodecSurface::Configure");
 
-  m_sourceWidth = width;
-  m_sourceHeight = height;
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
   // Save the flags.
   m_iFlags = flags;
-  m_format = format;
 
   // Calculate the input frame aspect ratio.
-  CalculateFrameAspectRatio(d_width, d_height);
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 
   m_bConfigured = true;
-
-  // Free the buffers RenderManager has not drained out.
-  for (int i = 0; i < m_numRenderBuffers; ++i)
-    m_buffers[i].hwPic = 0;
 
   return true;
 }
@@ -73,9 +80,7 @@ bool CRendererMediaCodecSurface::Configure(unsigned int width, unsigned int heig
 CRenderInfo CRendererMediaCodecSurface::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats.push_back(RENDER_FMT_MEDIACODECSURFACE);
-  info.max_buffer_size = m_numRenderBuffers;
-  info.optimal_buffer_size = m_numRenderBuffers;
+  info.max_buffer_size = info.optimal_buffer_size = 4;
   return info;
 }
 
@@ -86,50 +91,21 @@ bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-int CRendererMediaCodecSurface::GetImage(YV12Image *image, int source, bool readonly)
+void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  if (image == nullptr)
-    return -1;
+  int64_t nanodiff(static_cast<int64_t>((picture.pts - currentClock) * 1000));
 
-  /* take next available buffer */
-  if (source == -1)
-    source = (m_iRenderBuffer + 1) % m_numRenderBuffers;
-
-  return source;
-}
-
-void CRendererMediaCodecSurface::AddVideoPictureHW(VideoPicture &picture, int index)
-{
-  ReleaseBuffer(index);
-  BUFFER &buf = m_buffers[index];
-  buf.hwPic = picture.hwPic ? static_cast<CDVDMediaCodecInfo*>(picture.hwPic)->Retain() : nullptr;
+  if (dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer))
+    dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)->RenderUpdate(m_surfDestRect,
+      std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() + nanodiff);
 }
 
 void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
 {
-  BUFFER &buf = m_buffers[idx];
-  if (buf.hwPic)
-  {
-    CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwPic);
-    SAFE_RELEASE(mci);
-    buf.hwPic = NULL;
-  }
 }
 
 void CRendererMediaCodecSurface::FlipPage(int source)
 {
-  if (source >= 0 && source < m_numRenderBuffers)
-    m_iRenderBuffer = source;
-  else
-    m_iRenderBuffer = (m_iRenderBuffer + 1) % m_numRenderBuffers;
-
-  CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[m_iRenderBuffer].hwPic);
-
-  // Android SurfaceFlinger has its own clock, so we can release frames early.
-  // Benefit of this place is that it is called from render-thread and not
-  // affected by gui stalls when opening overlay dialogs
-  if (mci)
-    mci->RenderUpdate(m_surfDestRect);
 }
 
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
@@ -145,25 +121,12 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 
 void CRendererMediaCodecSurface::Reset()
 {
-  m_updateCount = 10;
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  {
-    std::chrono::milliseconds elapsed(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_prevTime).count());
-    if (elapsed < std::chrono::milliseconds(10))
-      std::this_thread::sleep_for(std::chrono::milliseconds(10) - elapsed);
-
-    // ManageRenderArea every 100ms.
-    m_updateCount += (elapsed.count() / 10) + 1;
-    if (m_updateCount > 10)
-    {
-      ManageRenderArea();
-      m_updateCount = 0;
-    }
-    m_prevTime = std::chrono::system_clock::now();
-  }
+  CXBMCApp::get()->WaitVSync(100);
+  ManageRenderArea();
 }
 
 void CRendererMediaCodecSurface::ReorderDrawPoints()

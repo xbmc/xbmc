@@ -18,30 +18,23 @@
  *
  */
 
-#include "ProcessInfoIOS.h"
+#include "ProcessInfoOSX.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_DARWIN_IOS)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoOSX::Create()
 {
-  return new CProcessInfoIOS();
+  return new CProcessInfoOSX();
 }
 
-
-// base class definitions
-CProcessInfoIOS::CProcessInfoIOS()
+void CProcessInfoOSX::Register()
 {
-
+  CProcessInfo::RegisterProcessControl("osx", CProcessInfoOSX::Create);
 }
 
-CProcessInfoIOS::~CProcessInfoIOS()
-{
-
-}
-
-void CProcessInfoIOS::SetSwDeinterlacingMethods()
+void CProcessInfoOSX::SetSwDeinterlacingMethods()
 {
   // first populate with the defaults from base implementation
   CProcessInfo::SetSwDeinterlacingMethods();
@@ -52,12 +45,24 @@ void CProcessInfoIOS::SetSwDeinterlacingMethods()
     CSingleLock lock(m_videoCodecSection);
     methods = m_deintMethods;
   }
-  // add bob deinterlacer for ios
+  // add bob and blend deinterlacer for osx
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB);
+  methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BLEND);
 
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
 
-#endif
+std::vector<AVPixelFormat> CProcessInfoOSX::GetRenderFormats()
+{
+  std::vector<AVPixelFormat> formats;
+  formats.push_back(AV_PIX_FMT_YUV420P);
+  formats.push_back(AV_PIX_FMT_YUV420P10);
+  formats.push_back(AV_PIX_FMT_YUV420P16);
+  formats.push_back(AV_PIX_FMT_NV12);
+  formats.push_back(AV_PIX_FMT_YUYV422);
+  formats.push_back(AV_PIX_FMT_UYVY422);
+
+  return formats;
+}
 

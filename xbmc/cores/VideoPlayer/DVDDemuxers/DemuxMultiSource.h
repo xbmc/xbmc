@@ -44,23 +44,25 @@ class CDemuxMultiSource : public CDVDDemux
 
 public:
   CDemuxMultiSource();
-  virtual ~CDemuxMultiSource();
-  
-  void Abort();
-  virtual void EnableStream(int64_t demuxerId, int id, bool enable) override;
-  void Flush();
-  virtual std::string GetFileName() { return ""; };
-  int GetNrOfStreams() const override;
-  virtual CDemuxStream* GetStream(int iStreamId)const override { return nullptr; } ;
-  virtual CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const override;
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) override;
-  int GetStreamLength();
+  ~CDemuxMultiSource() override;
+
   bool Open(CDVDInputStream* pInput);
-  DemuxPacket* Read();
-  void Reset();
+
+  // implementation of CDVDDemux
+  void Abort() override;
+  void EnableStream(int64_t demuxerId, int id, bool enable) override;
+  void Flush() override;
+  int GetNrOfStreams() const override;
+  CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) override;
+  int GetStreamLength() override;
+  DemuxPacket* Read() override;
+  void Reset() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
-  virtual void SetSpeed(int iSpeed) {};
+
+protected:
+  CDemuxStream* GetStream(int iStreamId) const override { return nullptr; }
 
 private:
   void Dispose();

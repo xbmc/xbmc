@@ -37,24 +37,26 @@ extern "C" {
 #include "libpostproc/postprocess.h"
 }
 
+class CVideoBufferPoolFFmpeg;
+
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec, public ICallbackHWAccel
 {
 public:
   CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
-  virtual ~CDVDVideoCodecFFmpeg();
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void Reset() override;
-  virtual void Reopen() override;
-  virtual CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  virtual const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
-  virtual unsigned GetConvergeCount() override;
-  virtual unsigned GetAllowedReferences() override;
-  virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
-  virtual void SetCodecControl(int flags) override;
+  ~CDVDVideoCodecFFmpeg() override;
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  bool AddData(const DemuxPacket &packet) override;
+  void Reset() override;
+  void Reopen() override;
+  CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
+  unsigned GetConvergeCount() override;
+  unsigned GetAllowedReferences() override;
+  bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
+  void SetCodecControl(int flags) override;
 
-  virtual IHardwareDecoder* GetHWAccel() override;
-  virtual bool GetPictureCommon(VideoPicture* pVideoPicture) override;
+  IHardwareDecoder* GetHWAccel() override;
+  bool GetPictureCommon(VideoPicture* pVideoPicture) override;
 
 protected:
   void Dispose();
@@ -71,10 +73,10 @@ protected:
   bool HasHardware() { return m_pHardware != nullptr; };
   void SetHardware(IHardwareDecoder *hardware);
 
-
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;
   AVCodecContext* m_pCodecContext;
+  std::shared_ptr<CVideoBufferPoolFFmpeg> m_videoBufferPool;
 
   std::string m_filters;
   std::string m_filters_next;
@@ -93,8 +95,6 @@ protected:
   int m_iScreenWidth;
   int m_iScreenHeight;
   int m_iOrientation;// orientation of the video in degrees counter clockwise
-
-  unsigned int m_uSurfacesCount;
 
   std::string m_name;
   int m_decoderState;

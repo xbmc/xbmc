@@ -51,7 +51,7 @@ bool CRendererIMX::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index, double currentClock)
 {
   YUVBUFFER &buf = m_buffers[index];
 
@@ -68,7 +68,7 @@ void CRendererIMX::ReleaseBuffer(int idx)
   m_buffers[idx].hwDec = NULL;
 }
 
-int CRendererIMX::GetImageHook(YV12Image *image, int source, bool readonly)
+int CRendererIMX::GetImageHook(YuvImage *image, int source, bool readonly)
 {
   return source;
 }

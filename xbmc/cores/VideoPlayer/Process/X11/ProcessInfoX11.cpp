@@ -18,34 +18,26 @@
  *
  */
 
-#include "ProcessInfoOSX.h"
+#include "ProcessInfoX11.h"
 #include "threads/SingleLock.h"
 
-// Override for platform ports
-#if defined(TARGET_DARWIN_OSX)
+using namespace VIDEOPLAYER;
 
-CProcessInfo* CProcessInfo::CreateInstance()
+CProcessInfo* CProcessInfoX11::Create()
 {
-  return new CProcessInfoOSX();
+  return new CProcessInfoX11();
 }
 
-
-// base class definitions
-CProcessInfoOSX::CProcessInfoOSX()
+void CProcessInfoX11::Register()
 {
-  
+  CProcessInfo::RegisterProcessControl("X11", CProcessInfoX11::Create);
 }
 
-CProcessInfoOSX::~CProcessInfoOSX()
-{
-  
-}
-
-void CProcessInfoOSX::SetSwDeinterlacingMethods()
+void CProcessInfoX11::SetSwDeinterlacingMethods()
 {
   // first populate with the defaults from base implementation
   CProcessInfo::SetSwDeinterlacingMethods();
-  
+
   std::list<EINTERLACEMETHOD> methods;
   {
     // get the current methods
@@ -55,9 +47,20 @@ void CProcessInfoOSX::SetSwDeinterlacingMethods()
   // add bob and blend deinterlacer for osx
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB);
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BLEND);
-  
+
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
-#endif
 
+std::vector<AVPixelFormat> CProcessInfoX11::GetRenderFormats()
+{
+  std::vector<AVPixelFormat> formats;
+  formats.push_back(AV_PIX_FMT_YUV420P);
+  formats.push_back(AV_PIX_FMT_YUV420P10);
+  formats.push_back(AV_PIX_FMT_YUV420P16);
+  formats.push_back(AV_PIX_FMT_NV12);
+  formats.push_back(AV_PIX_FMT_YUYV422);
+  formats.push_back(AV_PIX_FMT_UYVY422);
+
+  return formats;
+}

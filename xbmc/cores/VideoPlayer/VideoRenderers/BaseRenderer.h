@@ -23,31 +23,17 @@
 #include <utility>
 #include <vector>
 
+#include "RenderInfo.h"
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
-#include "RenderFormats.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 
-#define MAX_PLANES 3
 #define MAX_FIELDS 3
 #define NUM_BUFFERS 6
 
 class CSetting;
-
-typedef struct YV12Image
-{
-  uint8_t* plane[MAX_PLANES];
-  int      planesize[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
-
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-  unsigned bpp; /* bytes per pixel */
-} YV12Image;
 
 enum EFIELDSYNC
 {
@@ -78,14 +64,11 @@ public:
   virtual ~CBaseRenderer();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) = 0;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
-  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
-  virtual void ReleaseImage(int source, bool preserve = false) = 0;
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index) {};
-  virtual bool IsPictureHW(VideoPicture &picture) { return false; };
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) = 0;
+  virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
-  virtual void PreInit() = 0;
   virtual void UnInit() = 0;
   virtual void Reset() = 0;
   virtual void Flush() {};
@@ -98,8 +81,7 @@ public:
   virtual void Update() = 0;
   virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
-  virtual bool HandlesRenderFormat(ERenderFormat format) { return format == m_format; };
-  virtual bool ConfigChanged(void *hwPic) { return false; };
+  virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
@@ -124,9 +106,9 @@ protected:
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
                             float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void ManageRenderArea();
+  virtual void ManageRenderArea();
   virtual void ReorderDrawPoints();//might be overwritten (by egl e.x.)
-  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat);
+  virtual EShaderFormat GetShaderFormat();
   void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
   void syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
   void restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords
@@ -152,5 +134,5 @@ protected:
 
   // rendering flags
   unsigned m_iFlags;
-  ERenderFormat m_format = RENDER_FMT_NONE;
+  AVPixelFormat m_format = AV_PIX_FMT_NONE;
 };

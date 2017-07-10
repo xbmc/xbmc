@@ -19,19 +19,29 @@
  */
 #pragma once
 
+#include "VideoBuffer.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "threads/CriticalSection.h"
+#include <atomic>
 #include <list>
+#include <map>
 #include <string>
+
+class CProcessInfo;
+class CDataCacheCore;
+
+using CreateProcessControl = CProcessInfo* (*)();
 
 class CProcessInfo
 {
 public:
   static CProcessInfo* CreateInstance();
-  virtual ~CProcessInfo();
+  static void RegisterProcessControl(std::string id, CreateProcessControl createFunc);
+  virtual ~CProcessInfo() = default;
+  void SetDataCache(CDataCacheCore *cache);
 
-  // player video info
+  // player video
   void ResetVideoCodecInfo();
   void SetVideoDecoderName(const std::string &name, bool isHw);
   std::string GetVideoDecoderName();
@@ -52,6 +62,7 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault();
+  CVideoBufferManager& GetVideoBufferManager();
 
   // player audio info
   void ResetAudioCodecInfo();
@@ -71,13 +82,23 @@ public:
   void UpdateRenderInfo(CRenderInfo &info);
   void UpdateRenderBuffers(int queued, int discard, int free);
   void GetRenderBuffers(int &queued, int &discard, int &free);
+  virtual std::vector<AVPixelFormat> GetRenderFormats();
 
   // player states
   void SetStateSeeking(bool active);
   bool IsSeeking();
 
+  void SetLevelVQ(int level);
+  int GetLevelVQ();
+  void SetGuiRender(bool gui);
+  bool GetGuiRender();
+  void SetVideoRender(bool video);
+  bool GetVideoRender();
+
 protected:
-  CProcessInfo();
+  CProcessInfo() = default;
+  static std::map<std::string, CreateProcessControl> m_processControls;
+  CDataCacheCore *m_dataCache = nullptr;
 
   // player video info
   bool m_videoIsHWDecoder;
@@ -91,6 +112,7 @@ protected:
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   CCriticalSection m_videoCodecSection;
+  CVideoBufferManager m_videoBufferManager;
 
   // player audio info
   std::string m_audioDecoderName;
@@ -110,4 +132,7 @@ protected:
   // player states
   CCriticalSection m_stateSection;
   bool m_stateSeeking;
+  std::atomic_int m_levelVQ;
+  std::atomic_bool m_renderGuiLayer;
+  std::atomic_bool m_renderVideoLayer;
 };

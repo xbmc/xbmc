@@ -128,8 +128,8 @@ namespace RETRO
     float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
     bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-    bool IsRenderingGuiLayer() override { return m_renderManager.IsGuiLayer(); }
-    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
+//    bool IsRenderingGuiLayer() { return m_renderManager.IsGuiLayer(); }
+//    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
     bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
@@ -140,11 +140,13 @@ namespace RETRO
     bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
 
     // implementation of IRenderMsg
-    void VideoParamsChange() override { }
-    void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
-    void UpdateClockSync(bool enabled) override;
-    void UpdateRenderInfo(CRenderInfo &info) override;
-    void UpdateRenderBuffers(int queued, int discard, int free) override {}
+    virtual void VideoParamsChange() override { }
+    virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
+    virtual void UpdateClockSync(bool enabled) override;
+    virtual void UpdateRenderInfo(CRenderInfo &info) override;
+    virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
+    virtual void UpdateGuiRender(bool gui) override;
+    virtual void UpdateVideoRender(bool video) override;
 
   private:
     /*!

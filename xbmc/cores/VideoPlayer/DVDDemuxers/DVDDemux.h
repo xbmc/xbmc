@@ -164,7 +164,7 @@ public:
     iBitRate = 0;
   }
 
-  virtual ~CDemuxStreamVideo() = default;
+  ~CDemuxStreamVideo() override = default;
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
@@ -193,7 +193,7 @@ public:
     type = STREAM_AUDIO;
   }
 
-  virtual ~CDemuxStreamAudio() = default;
+  ~CDemuxStreamAudio() override = default;
 
   std::string GetStreamType();
 
@@ -249,7 +249,7 @@ public:
    * Aborts any internal reading that might be stalling main thread
    * NOTICE - this can be called from another thread
    */
-  virtual void Abort() = 0;
+  virtual void Abort() { }
 
   /*
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
@@ -300,12 +300,12 @@ public:
    * Set the playspeed, if demuxer can handle different
    * speeds of playback
    */
-  virtual void SetSpeed(int iSpeed) = 0;
+  virtual void SetSpeed(int iSpeed) { }
 
   /*
    * returns the total time in msec
    */
-  virtual int GetStreamLength() = 0;
+  virtual int GetStreamLength() { return 0; }
 
   /*
    * returns the stream or NULL on error
@@ -322,7 +322,7 @@ public:
   /*
    * returns opened filename
    */
-  virtual std::string GetFileName() = 0;
+  virtual std::string GetFileName() { return ""; }
 
   /*
    * return nr of subtitle streams, 0 if none

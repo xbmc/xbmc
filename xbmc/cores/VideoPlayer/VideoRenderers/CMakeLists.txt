@@ -4,6 +4,7 @@ set(SOURCES BaseRenderer.cpp
             OverlayRendererGUI.cpp
             OverlayRendererUtil.cpp
             RenderCapture.cpp
+            RenderFactory.cpp
             RenderFlags.cpp
             RenderManager.cpp
             DebugRenderer.cpp)
@@ -14,8 +15,9 @@ set(HEADERS BaseRenderer.h
             OverlayRendererGUI.h
             OverlayRendererUtil.h
             RenderCapture.h
+            RenderFactory.h
             RenderFlags.h
-            RenderFormats.h
+            RenderInfo.h
             RenderManager.h
             DebugRenderer.h)
 

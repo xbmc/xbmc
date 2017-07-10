@@ -269,10 +269,14 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
             if (context)
             {
-              uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2], 0 };
-              int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2], 0 };
+              uint8_t *planes[YuvImage::MAX_PLANES];
+              int stride[YuvImage::MAX_PLANES];
+              picture.videoBuffer->GetPlanes(planes);
+              picture.videoBuffer->GetStrides(stride);
+              uint8_t *src[4]= { planes[0], planes[1], planes[2], 0 };
+              int srcStride[] = { stride[0], stride[1], stride[2], 0 };
               uint8_t *dst[] = { pOutBuf, 0, 0, 0 };
-              int     dstStride[] = { (int)nWidth*4, 0, 0, 0 };
+              int dstStride[] = { (int)nWidth*4, 0, 0, 0 };
               int orientation = DegreeToOrientation(hint.orientation);
               sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
               sws_freeContext(context);

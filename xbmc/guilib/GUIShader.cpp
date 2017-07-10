@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 
 #include "GUIShader.h"
 #include "MatrixGLES.h"

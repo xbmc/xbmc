@@ -32,15 +32,15 @@ class CAddonVideoCodec
 {
 public:
   CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
-  ~CAddonVideoCodec();
+  ~CAddonVideoCodec() override;
 
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void Reset() override;
-  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  virtual const char* GetName() override;
-  virtual void SetCodecControl(int flags) override { m_codecFlags = flags; }
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  bool Reconfigure(CDVDStreamInfo &hints) override;
+  bool AddData(const DemuxPacket &packet) override;
+  void Reset() override;
+  VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  const char* GetName() override;
+  void SetCodecControl(int flags) override { m_codecFlags = flags; }
 
 private:
   bool CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints);
@@ -62,5 +62,5 @@ private:
 
   void * m_lastPictureBuffer;
 
-  BufferPool *m_bufferPool;
+  std::map<void *,CVideoBuffer *> m_map;
 };

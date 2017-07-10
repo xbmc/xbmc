@@ -22,66 +22,120 @@
 
 #include <vector>
 
+#include <interface/mmal/mmal.h>
+
 #include "guilib/GraphicContext.h"
 #include "../RenderFlags.h"
-#include "../RenderFormats.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
-
-#include <interface/mmal/mmal.h>
-#include <interface/mmal/util/mmal_util.h>
-#include <interface/mmal/util/mmal_default_components.h>
-#include <interface/mmal/util/mmal_util_params.h>
-
-#define NOSOURCE   -2
-#define AUTOSOURCE -1
 
 // worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
 // Note, generally these won't necessarily result in allocated pictures
 #define MMAL_NUM_OUTPUT_BUFFERS (12 + 8 + NUM_BUFFERS)
 
-class CBaseTexture;
+struct VideoPicture;
+class CProcessInfo;
+
+namespace MMAL {
+
 class CMMALBuffer;
 
-struct VideoPicture;
+enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
 
-class CMMALPool : public std::enable_shared_from_this<CMMALPool>
+class CMMALPool : public IVideoBufferPool
 {
 public:
   CMMALPool(const char *component_name, bool input, uint32_t num_buffers, uint32_t buffer_size, uint32_t encoding, MMALState state);
   ~CMMALPool();
+
+  virtual CVideoBuffer* Get() override;
+  virtual void Return(int id) override;
+  virtual void Configure(AVPixelFormat format, int size) override;
+  virtual bool IsConfigured() override;
+  virtual bool IsCompatible(AVPixelFormat format, int size) override;
+
+  void SetDimensions(int width, int height, int alignedWidth, int alignedHeight);
   MMAL_COMPONENT_T *GetComponent() { return m_component; }
-  static void AlignedSize(AVCodecContext *avctx, uint32_t &w, uint32_t &h);
   CMMALBuffer *GetBuffer(uint32_t timeout);
-  CGPUMEM *AllocateBuffer(uint32_t numbytes);
-  void ReleaseBuffer(CGPUMEM *gmem);
-  void Close();
   void Prime();
-  void SetDecoder(void *dec) { m_dec = dec; }
   void SetProcessInfo(CProcessInfo *processInfo) { m_processInfo = processInfo; }
-  void SetFormat(uint32_t mmal_format, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size, AVCodecContext *avctx)
-    { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; m_software = true; }
+  void Configure(AVPixelFormat format, int width, int height, int alignedWidth, int alignedHeight, int size);
   bool IsSoftware() { return m_software; }
-  void SetVideoDeintMethod(std::string method) { if (m_processInfo) m_processInfo->SetVideoDeintMethod(method); }
+  void SetVideoDeintMethod(std::string method);
+  static uint32_t TranslateFormat(AVPixelFormat pixfmt);
+  virtual int Width() { return m_width; }
+  virtual int Height() { return m_height; }
+  virtual int AlignedWidth() { return m_geo.stride_y / m_geo.bytes_per_pixel; }
+  virtual int AlignedHeight() { return m_geo.height_y; }
+  virtual uint32_t &Encoding() { return m_mmal_format; }
+  virtual int Size() { return m_size; }
+  AVRpiZcFrameGeometry &GetGeometry() { return m_geo; }
+  virtual void Released(CVideoBufferManager &videoBufferManager);
+
 protected:
-  uint32_t m_mmal_format, m_width, m_height, m_aligned_width, m_aligned_height, m_size;
-  AVCodecContext *m_avctx;
-  void *m_dec;
+  int m_width = 0;
+  int m_height = 0;
+  bool m_configured = false;
+  CCriticalSection m_critSection;
+
+  std::vector<CMMALBuffer*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+
+  int m_size = 0;
+  uint32_t m_mmal_format = 0;
+  bool m_software = false;
+  CProcessInfo *m_processInfo = nullptr;
   MMALState m_state;
   bool m_input;
   MMAL_POOL_T *m_mmal_pool;
   MMAL_COMPONENT_T *m_component;
-  CCriticalSection m_section;
-  std::deque<CGPUMEM *> m_freeBuffers;
-  bool m_closing;
-  bool m_software;
-  CProcessInfo *m_processInfo;
+  AVRpiZcFrameGeometry m_geo;
+  struct MMALEncodingTable
+  {
+    AVPixelFormat pixfmt;
+    uint32_t      encoding;
+  };
+  static std::vector<MMALEncodingTable> mmal_encoding_table;
 };
+
+// a generic mmal video frame. May be overridden as either software or hardware decoded buffer
+class CMMALBuffer : public CVideoBuffer
+{
+public:
+  CMMALBuffer(int id);
+  virtual ~CMMALBuffer();
+  MMAL_BUFFER_HEADER_T *mmal_buffer = nullptr;
+  uint32_t m_encoding = MMAL_ENCODING_UNKNOWN;
+  float m_aspect_ratio = 0.0f;
+  MMALState m_state = MMALStateNone;
+  bool m_rendered = false;
+  bool m_stills = false;
+
+  virtual void Unref();
+  virtual std::shared_ptr<CMMALPool> Pool() { return std::dynamic_pointer_cast<CMMALPool>(m_pool); };
+  virtual int Width() { return Pool()->Width(); }
+  virtual int Height() { return Pool()->Height(); }
+  virtual int AlignedWidth() { return Pool()->AlignedWidth(); }
+  virtual int AlignedHeight() { return Pool()->AlignedHeight(); }
+  virtual uint32_t &Encoding() { return Pool()->Encoding(); }
+  virtual void Update();
+
+  void SetVideoDeintMethod(std::string method);
+  const char *GetStateName() {
+    static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
+    if ((size_t)m_state < vcos_countof(names))
+      return names[(size_t)m_state];
+    else
+      return "invalid";
+  }
+protected:
+};
+
 
 class CMMALRenderer : public CBaseRenderer, public CThread, public IRunnable
 {
@@ -94,38 +148,37 @@ public:
 
   bool RenderCapture(CRenderCapture* capture);
 
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation);
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual void         ReleaseBuffer(int idx);
-  virtual void         FlipPage(int source);
-  virtual void         PreInit();
+  // Player functions
+  virtual bool         Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual void         ReleaseBuffer(int idx) override;
+  virtual void         FlipPage(int source) override;
   virtual void         UnInit();
-  virtual void         Reset(); /* resets renderer after seek for example */
-  virtual void         Flush();
-  virtual bool         IsConfigured() { return m_bConfigured; }
-  virtual void         AddVideoPictureHW(VideoPicture& pic, int index);
-  virtual CRenderInfo GetRenderInfo();
+  virtual void         Reset() override; /* resets renderer after seek for example */
+  virtual void         Flush() override;
+  virtual bool         IsConfigured() override { return m_bConfigured; }
+  virtual void         AddVideoPicture(const VideoPicture& pic, int index, double currentClock) override;
+  virtual bool         IsPictureHW(const VideoPicture &picture) override { return false; };
+  virtual CRenderInfo GetRenderInfo() override;
 
-  virtual bool         SupportsMultiPassRendering() { return false; };
-  virtual bool         Supports(ERENDERFEATURE feature);
-  virtual bool         Supports(EINTERLACEMETHOD method);
-  virtual bool         Supports(ESCALINGMETHOD method);
+  virtual bool         SupportsMultiPassRendering() override { return false; };
+  virtual bool         Supports(ERENDERFEATURE feature) override;
+  virtual bool         Supports(ESCALINGMETHOD method) override;
 
-  void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void         RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
 
-  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
-  virtual bool         IsGuiLayer() { return false; }
+  virtual bool         IsGuiLayer() override { return false; }
+  virtual bool         ConfigChanged(const VideoPicture &picture) override { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
 protected:
   int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
-
-  std::vector<ERenderFormat> m_formats;
 
   CMMALBuffer         *m_buffers[NUM_BUFFERS];
   bool                 m_bConfigured;
@@ -170,4 +223,6 @@ protected:
   void UnInitMMAL();
   void UpdateFramerateStats(double pts);
   virtual void Run() override;
+};
+
 };

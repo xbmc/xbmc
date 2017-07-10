@@ -21,14 +21,11 @@
  */
 
 #if !defined(TARGET_POSIX) && !defined(HAS_GL)
-#include <vector>
 
 #include "BaseRenderer.h"
 #include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
-#include "RenderFormats.h"
 #include "RenderCapture.h"
-#include "settings/VideoSettings.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -86,12 +83,15 @@ enum RenderMethod
 
 struct SVideoBuffer
 {
+  SVideoBuffer() : videoBuffer(nullptr) {}
   virtual ~SVideoBuffer() {}
   virtual void Release() {};            // Release any allocated resource
   virtual void StartDecode() {};        // Prepare the buffer to receive data from VideoPlayer
   virtual void StartRender() {};        // VideoPlayer finished filling the buffer with data
   virtual void Clear() {};              // clear the buffer with solid black
   virtual bool IsReadyToRender() { return true; };
+
+  CVideoBuffer* videoBuffer = nullptr;
 };
 
 // YV12 decoder textures
@@ -104,7 +104,7 @@ struct SVideoPlane
 struct YUVBuffer : SVideoBuffer
 {
   YUVBuffer() : m_width(0), m_height(0)
-              , m_format(RENDER_FMT_NONE)
+              , m_format(AV_PIX_FMT_NONE)
               , m_activeplanes(0)
               , m_locked(false)
               , m_staging(nullptr)
@@ -113,9 +113,9 @@ struct YUVBuffer : SVideoBuffer
     memset(&m_sDesc, 0, sizeof(CD3D11_TEXTURE2D_DESC));
   }
   ~YUVBuffer();
-  bool Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic);
+  bool Create(AVPixelFormat format, unsigned int width, unsigned int height, bool dynamic);
   unsigned int GetActivePlanes() { return m_activeplanes; }
-  bool CopyFromPicture(VideoPicture &picture);
+  bool CopyFromPicture(const VideoPicture &picture);
 
   // SVideoBuffer overrides
   void Release() override;
@@ -124,7 +124,7 @@ struct YUVBuffer : SVideoBuffer
   void Clear() override;
   bool IsReadyToRender() override;
 
-  SVideoPlane planes[MAX_PLANES];
+  SVideoPlane planes[3];
 
 private:
   bool CopyFromDXVA(ID3D11VideoDecoderOutputView* pView);
@@ -132,7 +132,7 @@ private:
 
   unsigned int     m_width;
   unsigned int     m_height;
-  ERenderFormat    m_format;
+  AVPixelFormat    m_format;
   unsigned int     m_activeplanes;
   bool             m_locked;
   D3D11_MAP        m_mapType;
@@ -156,44 +156,44 @@ public:
   CWinRenderer();
   ~CWinRenderer();
 
-  virtual void Update();
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
 
-  bool RenderCapture(CRenderCapture* capture);
+  void Update() override;
+  bool RenderCapture(CRenderCapture* capture) override;
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
-  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void ReleaseImage(int source, bool preserve = false);
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
-  virtual bool IsPictureHW(VideoPicture &picture) override;
-  virtual void FlipPage(int source);
-  virtual void PreInit();
-  virtual void UnInit();
-  virtual void Reset(); /* resets renderer after seek for example */
-  virtual bool IsConfigured() { return m_bConfigured; }
-  virtual void Flush();
-  virtual CRenderInfo GetRenderInfo();
-  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
-  virtual void SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
-  virtual void ReleaseBuffer(int idx);
-  virtual bool NeedBuffer(int idx);
-  virtual bool HandlesRenderFormat(ERenderFormat format) override;
-  virtual bool ConfigChanged(void *hwPic) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  void FlipPage(int source) override;
+  void UnInit() override;
+  void Reset() override; /* resets renderer after seek for example */
+  bool IsConfigured() override { return m_bConfigured; }
+  void Flush() override;
+  CRenderInfo GetRenderInfo() override;
+  void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) override;
+  void SetBufferSize(int numBuffers) override { m_neededBuffers = numBuffers; }
+  void ReleaseBuffer(int idx) override;
+  bool NeedBuffer(int idx) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering() { return false; }
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  bool SupportsMultiPassRendering() override { return false; }
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
 
-  virtual bool WantsDoublePass() override;
+  bool WantsDoublePass() override;
+  bool ConfigChanged(const VideoPicture& picture) override;
+
+  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
 protected:
-  virtual void Render(DWORD flags);
+  void PreInit();
+  void Render(DWORD flags);
   void RenderSW();
   void RenderHW(DWORD flags);
   void RenderPS();
   void RenderHQ();
-  virtual void ManageTextures();
+  void ManageTextures();
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
   int NextYV12Texture();
@@ -203,7 +203,6 @@ protected:
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
-  bool CopyDXVA2YUVBuffer(ID3D11VideoDecoderOutputView* pView, YUVBuffer *pBuf);
 
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
@@ -212,7 +211,6 @@ protected:
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
   DXVA::CProcessorHD  *m_processor;
-  std::vector<ERenderFormat> m_formats;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   struct SwsContext   *m_sw_scale_ctx;

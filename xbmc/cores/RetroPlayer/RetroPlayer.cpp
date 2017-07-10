@@ -435,6 +435,16 @@ void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
   m_processInfo->UpdateRenderInfo(info);
 }
 
+void CRetroPlayer::UpdateGuiRender(bool gui)
+{
+  m_processInfo->SetGuiRender(gui);
+}
+
+void CRetroPlayer::UpdateVideoRender(bool video)
+{
+  m_processInfo->SetVideoRender(video);
+}
+
 void CRetroPlayer::CloseOSD()
 {
   CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);

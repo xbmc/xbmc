@@ -122,7 +122,7 @@ class CDVDOverlayGroup : public CDVDOverlay
 {
 
 public:
-  virtual ~CDVDOverlayGroup()
+  ~CDVDOverlayGroup() override
   {
     for(VecOverlaysIter it = m_overlays.begin(); it != m_overlays.end(); ++it)
       (*it)->Release();

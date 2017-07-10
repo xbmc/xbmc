@@ -18,6 +18,10 @@
  *
  */
 
+#if defined (HAVE_LIBVA)
+#include <va/va_drm.h>
+#endif
+
 #include "WinSystemGbm.h"
 
 #include <string.h>
@@ -148,6 +152,36 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 
   return true;
+}
+
+void* CWinSystemGbm::GetVaDisplay()
+{
+#if defined(HAVE_LIBVA)
+  int const buf_size{128};
+  char name[buf_size];
+  int fd{-1};
+
+  // 128 is the start of the NUM in renderD<NUM>
+  for (int i = 128; i < (128 + 16); i++)
+  {
+    snprintf(name, buf_size, "/dev/dri/renderD%u", i);
+
+    fd = open(name, O_RDWR);
+
+    if (fd < 0)
+    {
+      continue;
+    }
+
+    auto display = vaGetDisplayDRM(fd);
+
+    if (display != nullptr)
+    {
+      return display;
+    }
+  }
+#endif
+  return nullptr;
 }
 
 bool CWinSystemGbm::Hide()

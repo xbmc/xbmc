@@ -29,22 +29,19 @@
 #include <d3d11.h>
 #include <Initguid.h>
 #include <windows.h>
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "../DVDCodecUtils.h"
 #include "DXVA.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace DXVA;
-
-static void RelBufferS(void *opaque, uint8_t *data)
-{ ((CDecoder*)opaque)->RelBuffer(data); }
-
-static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
-{  return ((CDecoder*)((ICallbackHWAccel*)avctx->opaque)->GetHWAccel())->GetBuffer(avctx, pic, flags); }
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -672,6 +669,67 @@ bool CSurfaceContext::HasRefs()
 }
 
 //-----------------------------------------------------------------------------
+// DXVA CDXVABufferPool
+//-----------------------------------------------------------------------------
+
+CDXVABufferPool::CDXVABufferPool()
+{
+  for (unsigned int i = 0; i < 9; i++)
+  {
+    auto pic = new CDXVAVideoBuffer(i);
+    m_all.push_back(pic);
+    m_free.push_back(i);
+  }
+}
+
+CDXVABufferPool::~CDXVABufferPool()
+{
+  for (unsigned int i = 0; i < 7; i++)
+  {
+    auto pic = m_all[i];
+    delete pic;
+  }
+  m_all.clear();
+}
+
+CVideoBuffer* CDXVABufferPool::Get()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_free.empty())
+    return nullptr;
+
+  int idx = m_free.front();
+  m_free.pop_front();
+  m_used.push_back(idx);
+
+  auto retPic = m_all[idx];
+  retPic->Acquire(GetPtr());
+
+  return retPic;
+}
+
+void CDXVABufferPool::Return(int id)
+{
+  CSingleLock lock(m_critSection);
+
+  auto buf = m_all[id];
+  SAFE_RELEASE(buf->picture);
+
+  auto it = m_used.begin();
+  while (it != m_used.end())
+  {
+    if (*it == id)
+    {
+      m_used.erase(it);
+      break;
+    }
+    ++it;
+  }
+  m_free.push_back(id);
+}
+
+//-----------------------------------------------------------------------------
 // DXVA RenderPictures
 //-----------------------------------------------------------------------------
 
@@ -689,6 +747,20 @@ CRenderPicture::~CRenderPicture()
 //-----------------------------------------------------------------------------
 // DXVA Decoder
 //-----------------------------------------------------------------------------
+
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+{
+  if (DXVA::CDecoder::Supports(fmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+    return new CDecoder(processInfo);
+
+  return nullptr;
+}
+
+bool CDecoder::Register()
+{
+  CDVDFactoryCodec::RegisterHWAccel("dxva", CDecoder::Create);
+  return true;
+}
 
 CDecoder::CDecoder(CProcessInfo& processInfo)
  : m_event(true),
@@ -840,7 +912,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   return true;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
   if (!CheckCompatibility(avctx))
     return false;
@@ -877,8 +949,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   m_format.SampleWidth = avctx->coded_width;
   m_format.SampleHeight = avctx->coded_height;
 
-  if (surfaces > m_shared)
-    m_shared = surfaces;
+  if (7 > m_shared)
+    m_shared = 7;
 
   if(avctx->refs > m_refs)
     m_refs = avctx->refs+2;
@@ -908,15 +980,16 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     return false;
 
   m_surface_context = new CSurfaceContext();
+  m_bufferPool = std::make_shared<CDXVABufferPool>();
 
   if(!OpenDecoder())
     return false;
 
-  avctx->get_buffer2 = GetBufferS;
+  avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->hwaccel_context = m_context;
   avctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
-  mainctx->get_buffer2 = GetBufferS;
+  mainctx->get_buffer2 = CDecoder::FFGetBuffer;
   mainctx->hwaccel_context = m_context;
   mainctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
@@ -940,10 +1013,10 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   }
 
   std::list<EINTERLACEMETHOD> deintMethods;
-  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
-  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_DXVA_AUTO);
+  deintMethods.push_back(VS_INTERLACEMETHOD_NONE);
+  deintMethods.push_back(VS_INTERLACEMETHOD_DXVA_AUTO);
   m_processInfo.UpdateDeinterlacingMethods(deintMethods);
-  m_processInfo.SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_DXVA_AUTO);
+  m_processInfo.SetDeinterlacingMethodDefault(VS_INTERLACEMETHOD_DXVA_AUTO);
 
   m_state = DXVA_OPEN;
   return true;
@@ -960,27 +1033,39 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
   {
     if (m_surface_context->IsValid(reinterpret_cast<ID3D11View*>(frame->data[3])))
     {
-      SAFE_RELEASE(m_presentPicture);
-      m_presentPicture = new CRenderPicture(m_surface_context);
-      m_presentPicture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
-      m_presentPicture->format = m_format.OutputFormat;
-      m_surface_context->MarkRender(m_presentPicture->view);
+      auto picture = new CRenderPicture(m_surface_context);
+      picture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
+      picture->format = m_format.OutputFormat;
+      m_surface_context->MarkRender(picture->view);
+
+      if (m_presentPicture)
+        m_presentPicture->Release();
+      m_presentPicture = m_bufferPool->GetDX();
+      if (!m_presentPicture)
+      {
+        CLog::Log(ERROR, "DXVA - ran out of buffers");
+        return CDVDVideoCodec::VC_ERROR;
+      }
+      m_presentPicture->picture = picture;
       return CDVDVideoCodec::VC_PICTURE;
     }
     CLog::Log(LOGWARNING, "DXVA - ignoring invalid surface");
     return CDVDVideoCodec::VC_BUFFER;
   }
-  else
-    return CDVDVideoCodec::VC_BUFFER;
+
+  return CDVDVideoCodec::VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
+  if (picture->videoBuffer)
+    picture->videoBuffer->Release();
+
   static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
 
-  picture->hwPic = m_presentPicture;
-  picture->format = RENDER_FMT_DXVA;
+  picture->videoBuffer = m_presentPicture;
+  m_presentPicture = nullptr;
 
   int queued, discard, free;
   m_processInfo.GetRenderBuffers(queued, discard, free);
@@ -994,6 +1079,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   }
 
   return true;
+}
+
+void CDecoder::Reset()
+{
+  SAFE_RELEASE(m_presentPicture);
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
@@ -1025,7 +1115,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   if(m_format.SampleWidth  == 0
   || m_format.SampleHeight == 0)
   {
-    if(!Open(avctx, avctx, avctx->pix_fmt, m_shared))
+    if(!Open(avctx, avctx, avctx->pix_fmt))
     {
       CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
       Close();
@@ -1114,11 +1204,17 @@ bool CDecoder::Supports(enum AVPixelFormat fmt)
   return false;
 }
 
-void CDecoder::RelBuffer(uint8_t *data)
+void CDecoder::FFReleaseBuffer(void* opaque, uint8_t* data)
+{
+  CDecoder* decoder = static_cast<CDecoder*>(opaque);
+  decoder->ReleaseBuffer(data);
+}
+
+void CDecoder::ReleaseBuffer(uint8_t *data)
 {
   {
     CSingleLock lock(m_section);
-    ID3D11VideoDecoderOutputView* view = (ID3D11VideoDecoderOutputView*)(uintptr_t)data;
+    ID3D11VideoDecoderOutputView* view = reinterpret_cast<ID3D11VideoDecoderOutputView*>(data);
 
     if (!m_surface_context->IsValid(view))
     {
@@ -1130,7 +1226,15 @@ void CDecoder::RelBuffer(uint8_t *data)
   IHardwareDecoder::Release();
 }
 
-int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
+int CDecoder::FFGetBuffer(AVCodecContext* avctx, AVFrame* pic, int flags)
+{
+  ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* decoder = static_cast<CDecoder*>(cb->GetHWAccel());
+
+  return decoder->GetBuffer(avctx, pic);
+}
+
+int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
 
@@ -1154,9 +1258,9 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     pic->linesize[i] = 0;
   }
 
-  pic->data[0] = (uint8_t*)view;
-  pic->data[3] = (uint8_t*)view;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, this, 0);
+  pic->data[0] = reinterpret_cast<uint8_t*>(view);
+  pic->data[3] = reinterpret_cast<uint8_t*>(view);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CDecoder::FFReleaseBuffer, this, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "DXVA - error creating buffer");

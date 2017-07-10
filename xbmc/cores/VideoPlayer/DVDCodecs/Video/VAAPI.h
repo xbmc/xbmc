@@ -19,11 +19,8 @@
  */
 #pragma once
 
-#include "system_gl.h"
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-
 #include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
@@ -40,7 +37,6 @@
 
 extern "C" {
 #include "libavutil/avutil.h"
-#include "libavcodec/vaapi.h"
 #include "libavfilter/avfilter.h"
 }
 
@@ -113,9 +109,7 @@ struct CVaapiConfig
   int outHeight;
   AVRational aspect;
   VAConfigID configId;
-  VAContextID contextId;
   CVaapiBufferStats *stats;
-  CDecoder *vaapi;
   int upscale;
   CVideoSurfaces *videoSurfaces;
   uint32_t maxReferences;
@@ -132,6 +126,18 @@ struct CVaapiConfig
  */
 struct CVaapiDecodedPicture
 {
+  CVaapiDecodedPicture() = default;
+  CVaapiDecodedPicture(const CVaapiDecodedPicture &rhs)
+  {
+    *this = rhs;
+  }
+  CVaapiDecodedPicture& operator=(const CVaapiDecodedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    index = rhs.index;
+    return *this;
+  };
   VideoPicture DVDPic;
   VASurfaceID videoSurface;
   int index;
@@ -142,6 +148,22 @@ struct CVaapiDecodedPicture
  */
 struct CVaapiProcessedPicture
 {
+  CVaapiProcessedPicture() = default;
+  CVaapiProcessedPicture(const CVaapiProcessedPicture &rhs)
+  {
+    *this = rhs;
+  }
+  CVaapiProcessedPicture& operator=(const CVaapiProcessedPicture& rhs)
+  {
+    DVDPic.SetParams(rhs.DVDPic);
+    videoSurface = rhs.videoSurface;
+    frame = rhs.frame;
+    id = rhs.id;
+    source = rhs.source;
+    crop = rhs.crop;
+    return *this;
+  };
+
   VideoPicture DVDPic;
   VASurfaceID videoSurface;
   AVFrame *frame;
@@ -155,83 +177,21 @@ struct CVaapiProcessedPicture
   bool crop;
 };
 
-/**
- *
- */
-struct CVaapiGLSurface
+class CVaapiRenderPicture : public CVideoBuffer
 {
-  CVaapiProcessedPicture procPic;
-  VADisplay vadsp;
-  VAImage vaImage;
-  VABufferInfo vBufInfo;
-  EGLImageKHR eglImage;
-  EGLImageKHR eglImageY, eglImageVU;
-  GLenum textureTarget;
-  EGLDisplay eglDisplay;
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
-  bool mapped;
-};
-
-/**
- * Ready to render textures
- * Sent from COutput back to CDecoder
- * Objects are referenced by VideoPicture and are sent
- * to renderer
- */
-class CVaapiRenderPicture
-{
-  friend class CDecoder;
-  friend class COutput;
 public:
-  CVaapiRenderPicture(CCriticalSection &section)
-    : texWidth(0), texHeight(0), texture(0), textureY(0), textureVU(0), valid(false), vaapi(NULL), avFrame(NULL),
-      usefence(false), refCount(0), renderPicSection(section) { fence = 0; }
-  void Sync();
+  CVaapiRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
-  int texWidth, texHeight;
-  CRect crop;
-  GLuint texture;
-  GLuint textureY, textureVU;
-  bool valid;
-  CDecoder *vaapi;
-  AVFrame *avFrame;
-  CVaapiRenderPicture* Acquire();
-  long Release();
-private:
-  void ReturnUnused();
-  bool GLMapSurface();
-  void GLUnMapSurface();
-  bool usefence;
-  GLsync fence;
-  int refCount;
-  CVaapiGLSurface glInterop;
-  CCriticalSection &renderPicSection;
+  CVaapiProcessedPicture procPic;
+  AVFrame *avFrame = nullptr;
+
+  bool valid = false;
+  VADisplay vadsp;
 };
 
 //-----------------------------------------------------------------------------
 // Output
 //-----------------------------------------------------------------------------
-
-/**
- * Buffer pool holds allocated vaapi and gl resources
- * Embedded in COutput
- */
-struct VaapiBufferPool
-{
-  VaapiBufferPool();
-  virtual ~VaapiBufferPool();
-  std::vector<CVaapiRenderPicture*> allRenderPics;
-  std::deque<int> usedRenderPics;
-  std::deque<int> freeRenderPics;
-  std::deque<int> syncRenderPics;
-  std::deque<CVaapiProcessedPicture> processedPics;
-  std::deque<CVaapiProcessedPicture> processedPicsAway;
-  std::deque<CVaapiDecodedPicture> decodedPics;
-  CCriticalSection renderPicSec;
-  int procPicId;
-};
 
 class COutputControlProtocol : public Protocol
 {
@@ -280,21 +240,24 @@ struct SDiMethods
  * COutput generated ready to render textures and passes them back to
  * CDecoder
  */
+
+class CDecoder;
 class CPostproc;
+class CVaapiBufferPool;
 
 class COutput : private CThread
 {
 public:
-  COutput(CEvent *inMsgEvent);
-  virtual ~COutput();
+  COutput(CDecoder &decoder, CEvent *inMsgEvent);
+  ~COutput() override;
   void Start();
   void Dispose();
   COutputControlProtocol m_controlPort;
   COutputDataProtocol m_dataPort;
 protected:
-  void OnStartup();
-  void OnExit();
-  void Process();
+  void OnStartup() override;
+  void OnExit() override;
+  void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool HasWork();
   bool PreferPP();
@@ -303,39 +266,27 @@ protected:
   void QueueReturnPicture(CVaapiRenderPicture *pic);
   void ProcessReturnPicture(CVaapiRenderPicture *pic);
   void ProcessReturnProcPicture(int id);
-  bool ProcessSyncPicture();
+  void ProcessSyncPicture();
   void ReleaseProcessedPicture(CVaapiProcessedPicture &pic);
   void DropVppProcessedPictures();
   bool Init();
   bool Uninit();
   void Flush();
-  bool CreateEGLContext();
-  bool DestroyEGLContext();
-  bool EnsureBufferPool();
+  void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
-  bool GLInit();
   bool CheckSuccess(VAStatus status);
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
   int m_state;
   bool m_bStateMachineSelfTrigger;
+  CDecoder &m_vaapi;
 
   // extended state variables for state machine
   int m_extTimeout;
   bool m_vaError;
   CVaapiConfig m_config;
-  VaapiBufferPool m_bufferPool;
-  EGLDisplay m_eglDisplay;
-  EGLSurface m_eglSurface;
-  EGLContext m_eglContext;
-#ifdef HAVE_X11
-  Display *m_Display;
-#endif
+  std::shared_ptr<CVaapiBufferPool> m_bufferPool;
   CVaapiDecodedPicture m_currentPicture;
-  GLenum m_textureTarget;
   CPostproc *m_pp;
   SDiMethods m_diMethods;
   EINTERLACEMETHOD m_currentDiMethod;
@@ -401,9 +352,6 @@ private:
   VAProfile *m_profiles;
   std::vector<CDecoder*> m_decoders;
   int m_renderNodeFD{-1};
-#ifdef HAVE_X11
-  static Display *m_X11dpy;
-#endif
 };
 
 /**
@@ -412,31 +360,31 @@ private:
 class CDecoder
  : public IHardwareDecoder
 {
-   friend class CVaapiRenderPicture;
+   friend class CVaapiBufferPool;
 
 public:
 
   CDecoder(CProcessInfo& processInfo);
-  virtual ~CDecoder();
+  ~CDecoder() override;
 
-  virtual bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0) override;
-  virtual CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
-  virtual void Reset() override;
+  bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
+  CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame) override;
+  bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
+  void Reset() override;
   virtual void Close();
-  virtual long Release() override;
-  virtual bool CanSkipDeint() override;
-  virtual unsigned GetAllowedReferences() override { return 4; }
+  long Release() override;
+  bool CanSkipDeint() override;
+  unsigned GetAllowedReferences() override { return 4; }
 
-  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
-  virtual const std::string Name() override { return "vaapi"; }
-  virtual void SetCodecControl(int flags) override;
+  CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
+  const std::string Name() override { return "vaapi"; }
+  void SetCodecControl(int flags) override;
 
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
-  static void CheckCaps(EGLDisplay eglDisplay);
-  static bool IsCapGeneral() { return m_capGeneral; }
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static void Register(bool hevc);
 
 protected:
   void SetWidthHeight(int width, int height);
@@ -444,7 +392,6 @@ protected:
   bool CheckStatus(VAStatus vdp_st, int line);
   void FiniVAAPIOutput();
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
-  void ReturnProcPicture(int id);
   long ReleasePicReference();
   bool CheckSuccess(VAStatus status);
 
@@ -462,14 +409,13 @@ protected:
   bool m_vaapiConfigured;
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
-  vaapi_context m_hwContext;
   AVCodecContext* m_avctx;
   int m_getBufferError;
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;
   CEvent m_inMsgEvent;
-  CVaapiRenderPicture *m_presentPicture;
+  CVaapiRenderPicture *m_presentPicture = nullptr;
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
@@ -509,14 +455,14 @@ protected:
 class CSkipPostproc : public CPostproc
 {
 public:
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
 protected:
   CVaapiDecodedPicture m_pic;
 };
@@ -528,16 +474,16 @@ class CVppPostproc : public CPostproc
 {
 public:
   CVppPostproc();
-  virtual ~CVppPostproc();
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
-  bool WantsPic();
+  ~CVppPostproc() override;
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
+  bool WantsPic() override;
 protected:
   bool CheckSuccess(VAStatus status);
   void Dispose();
@@ -560,15 +506,15 @@ class CFFmpegPostproc : public CPostproc
 {
 public:
   CFFmpegPostproc();
-  virtual ~CFFmpegPostproc();
-  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL);
-  bool Init(EINTERLACEMETHOD method);
-  bool AddPicture(CVaapiDecodedPicture &inPic);
-  bool Filter(CVaapiProcessedPicture &outPic);
-  void ClearRef(VASurfaceID surf);
-  void Flush();
-  bool Compatible(EINTERLACEMETHOD method);
-  bool DoesSync();
+  ~CFFmpegPostproc() override;
+  bool PreInit(CVaapiConfig &config, SDiMethods *methods = NULL) override;
+  bool Init(EINTERLACEMETHOD method) override;
+  bool AddPicture(CVaapiDecodedPicture &inPic) override;
+  bool Filter(CVaapiProcessedPicture &outPic) override;
+  void ClearRef(VASurfaceID surf) override;
+  void Flush() override;
+  bool Compatible(EINTERLACEMETHOD method) override;
+  bool DoesSync() override;
 protected:
   bool CheckSuccess(VAStatus status);
   void Close();

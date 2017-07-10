@@ -21,6 +21,7 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
+#include "RenderFactory.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "guilib/GraphicContext.h"
 #include "utils/MathUtils.h"
@@ -36,38 +37,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 
-#if defined(HAS_GL)
-#include "LinuxRendererGL.h"
-#include "HwDecRender/RendererVAAPIGL.h"
-#include "HwDecRender/RendererVDPAU.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "HwDecRender/RendererVTBGL.h"
-#endif
-#elif HAS_GLES == 2
-  #include "LinuxRendererGLES.h"
-  #include "HwDecRender/RendererVAAPIGLES.h"
-#if defined(HAS_MMAL)
-#include "HwDecRender/MMALRenderer.h"
-#endif
-#if defined(TARGET_DARWIN_IOS)
-#include "HwDecRender/RendererVTBGLES.h"
-#endif
-#if defined(HAS_IMXVPU)
-#include "HwDecRender/RendererIMX.h"
-#endif
-#if defined(HAS_LIBAMCODEC)
-#include "HwDecRender/RendererAML.h"
-#endif
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#elif defined(HAS_SDL)
-  #include "LinuxRenderer.h"
-#endif
-
-#if defined(TARGET_ANDROID)
-#include "HwDecRender/RendererMediaCodec.h"
-#include "HwDecRender/RendererMediaCodecSurface.h"
-#endif
 
 #if defined(TARGET_POSIX)
 #include "linux/XTimeUtils.h"
@@ -86,31 +55,6 @@ static void requeue(std::deque<int> &trg, std::deque<int> &src)
 {
   trg.push_back(src.front());
   src.pop_front();
-}
-
-static std::string GetRenderFormatName(ERenderFormat format)
-{
-  switch(format)
-  {
-    case RENDER_FMT_YUV420P:   return "YV12";
-    case RENDER_FMT_YUV420P16: return "YV12P16";
-    case RENDER_FMT_YUV420P10: return "YV12P10";
-    case RENDER_FMT_NV12:      return "NV12";
-    case RENDER_FMT_UYVY422:   return "UYVY";
-    case RENDER_FMT_YUYV422:   return "YUY2";
-    case RENDER_FMT_VDPAU:     return "VDPAU";
-    case RENDER_FMT_DXVA:      return "DXVA";
-    case RENDER_FMT_VAAPI:     return "VAAPI";
-    case RENDER_FMT_CVBREF:    return "BGRA";
-    case RENDER_FMT_BYPASS:    return "BYPASS";
-    case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
-    case RENDER_FMT_MEDIACODECSURFACE:return "MEDIACODECSURFACE";
-    case RENDER_FMT_IMXMAP:    return "IMXMAP";
-    case RENDER_FMT_MMAL:      return "MMAL";
-    case RENDER_FMT_AML:       return "AMLCODEC";
-    case RENDER_FMT_NONE:      return "NONE";
-  }
-  return "UNKNOWN";
 }
 
 void CRenderManager::CClockSync::Reset()
@@ -136,7 +80,6 @@ CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_videoDelay(0),
   m_QueueSize(2),
   m_QueueSkip(0),
-  m_format(RENDER_FMT_NONE),
   m_width(0),
   m_height(0),
   m_dwidth(0),
@@ -177,7 +120,7 @@ float CRenderManager::GetAspectRatio()
     return 1.0f;
 }
 
-bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -190,18 +133,16 @@ bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags,
         m_dheight == picture.iDisplayHeight &&
         m_fps == fps &&
         (m_flags & ~CONF_FLAGS_FULLSCREEN) == (flags & ~CONF_FLAGS_FULLSCREEN) &&
-        m_format == picture.format &&
         m_orientation == orientation &&
         m_NumberBuffers == buffers &&
         m_pRenderer != nullptr &&
-        !m_pRenderer->ConfigChanged(picture.hwPic))
+        !m_pRenderer->ConfigChanged(picture))
     {
       return true;
     }
   }
 
-  std::string formatstr = GetRenderFormatName(picture.format);
-  CLog::Log(LOGDEBUG, "CRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f. format: %s", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, formatstr.c_str());
+  CLog::Log(LOGDEBUG, "CRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f.", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps);
 
   // make sure any queued frame was fully presented
   {
@@ -229,14 +170,14 @@ bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags,
     m_dheight = picture.iDisplayHeight;
     m_fps = fps;
     m_flags = flags;
-    m_format = picture.format;
-    m_hwPic = picture.hwPic;
     m_orientation = orientation;
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
+    m_pConfigPicture.reset(new VideoPicture());
+    m_pConfigPicture->CopyRef(picture);
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -247,7 +188,6 @@ bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags,
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
     CSingleLock lock(m_statelock);
-    m_hwPic = nullptr;
     return false;
   }
 
@@ -255,11 +195,9 @@ bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags,
   if (m_renderState != STATE_CONFIGURED)
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
-    m_hwPic = nullptr;
     return false;
   }
 
-  m_hwPic = nullptr;
   return true;
 }
 
@@ -270,29 +208,27 @@ bool CRenderManager::Configure()
   CSingleLock lock2(m_presentlock);
   CSingleLock lock3(m_datalock);
 
-  if (m_pRenderer && !m_pRenderer->HandlesRenderFormat(m_format))
+  if (m_pRenderer)
   {
     DeleteRenderer();
   }
 
-  if(!m_pRenderer)
+  if (!m_pRenderer)
   {
     CreateRenderer();
     if (!m_pRenderer)
       return false;
   }
 
-  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_hwPic, m_orientation);
+  bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_flags, m_orientation);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
-    int renderbuffers = info.optimal_buffer_size;
+    int renderbuffers = info.max_buffer_size;
     m_QueueSize = renderbuffers;
     if (m_NumberBuffers > 0)
       m_QueueSize = std::min(m_NumberBuffers, renderbuffers);
 
-    m_QueueSize = std::min(m_QueueSize, (int)info.max_buffer_size);
-    m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
@@ -303,6 +239,8 @@ bool CRenderManager::Configure()
     m_pRenderer->Update();
 
     m_playerPort->UpdateRenderInfo(info);
+    m_playerPort->UpdateGuiRender(true);
+    m_playerPort->UpdateVideoRender(!m_pRenderer->IsGuiLayer());
 
     m_queued.clear();
     m_discard.clear();
@@ -329,6 +267,8 @@ bool CRenderManager::Configure()
   }
   else
     m_renderState = STATE_UNCONFIGURED;
+
+  m_pConfigPicture.reset();
 
   m_stateEvent.Set();
   m_playerPort->VideoParamsChange();
@@ -396,6 +336,10 @@ void CRenderManager::FrameMove()
     {
       m_presentstep = PRESENT_IDLE;
     }
+    else
+    {
+      m_presentTimer.Set(1000);
+    }
 
     if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
@@ -405,7 +349,6 @@ void CRenderManager::FrameMove()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
-      m_presentTimer.Set(1000);
     }
 
     // release all previous
@@ -427,6 +370,8 @@ void CRenderManager::FrameMove()
     m_bRenderGUI = true;
   }
 
+  m_playerPort->UpdateGuiRender(IsGuiLayer());
+
   ManageCaptures();
 }
 
@@ -442,7 +387,6 @@ void CRenderManager::PreInit()
 
   if (!m_pRenderer)
   {
-    m_format = RENDER_FMT_YUV420P;
     CreateRenderer();
   }
 
@@ -451,7 +395,6 @@ void CRenderManager::PreInit()
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
   m_presentstep = PRESENT_IDLE;
-  m_format = RENDER_FMT_NONE;
 }
 
 void CRenderManager::UnInit()
@@ -524,80 +467,23 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-    if (m_format == RENDER_FMT_VAAPI)
+    CVideoBuffer *buffer = nullptr;
+    if (m_pConfigPicture)
+      buffer = m_pConfigPicture->videoBuffer;
+
+    auto renderers = VIDEOPLAYER::CRendererFactory::GetRenderers();
+    for (auto &id : renderers)
     {
-#if defined(HAVE_LIBVA)
-      m_pRenderer = new CRendererVAAPI;
-#endif
+      if (id == "default")
+        continue;
+
+      m_pRenderer = VIDEOPLAYER::CRendererFactory::CreateRenderer(id, buffer);
+      if (m_pRenderer)
+      {
+        return;
+      }
     }
-    else if (m_format == RENDER_FMT_VDPAU)
-    {
-#if defined(HAVE_LIBVDPAU)
-      m_pRenderer = new CRendererVDPAU;
-#endif
-    }
-    else if (m_format == RENDER_FMT_CVBREF)
-    {
-#if defined(TARGET_DARWIN)
-      m_pRenderer = new CRendererVTB;
-#endif
-    }
-    else if (m_format == RENDER_FMT_MEDIACODEC)
-    {
-#if defined(TARGET_ANDROID)
-      m_pRenderer = new CRendererMediaCodec;
-#endif
-    }
-    else if (m_format == RENDER_FMT_MEDIACODECSURFACE)
-    {
-#if defined(TARGET_ANDROID)
-      m_pRenderer = new CRendererMediaCodecSurface;
-#endif
-    }
-    else if (m_format == RENDER_FMT_MMAL)
-    {
-#if defined(HAS_MMAL)
-      m_pRenderer = new CMMALRenderer;
-#endif
-    }
-    else if (m_format == RENDER_FMT_IMXMAP)
-    {
-#if defined(HAS_IMXVPU)
-      m_pRenderer = new CRendererIMX;
-#endif
-    }
-    else if (m_format == RENDER_FMT_DXVA)
-    {
-#if defined(HAS_DX)
-      m_pRenderer = new CWinRenderer();
-#endif
-    }
-    else if (m_format == RENDER_FMT_AML)
-    {
-#if defined(HAS_LIBAMCODEC)
-      m_pRenderer = new CRendererAML;
-#endif
-    }
-    else if (m_format != RENDER_FMT_NONE)
-    {
-#if defined(HAS_MMAL)
-      m_pRenderer = new CMMALRenderer;
-#elif defined(HAS_GL)
-      m_pRenderer = new CLinuxRendererGL;
-#elif HAS_GLES == 2
-      m_pRenderer = new CLinuxRendererGLES;
-#elif defined(HAS_DX)
-      m_pRenderer = new CWinRenderer();
-#endif
-    }
-#if defined(HAS_MMAL)
-    if (!m_pRenderer)
-      m_pRenderer = new CMMALRenderer;
-#endif
-    if (m_pRenderer)
-      m_pRenderer->PreInit();
-    else
-      CLog::Log(LOGERROR, "RenderManager::CreateRenderer: failed to create renderer");
+    m_pRenderer = VIDEOPLAYER::CRendererFactory::CreateRenderer("default", buffer);
   }
 }
 
@@ -680,7 +566,7 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
   {
     if (!millis)
       millis = 1000;
-    
+
     CSingleExit exitlock(m_captCritSect);
     if (!it->second->GetEvent().WaitMSec(millis))
     {
@@ -1103,20 +989,7 @@ void CRenderManager::ToggleDebug()
   m_debugTimer.SetExpired();
 }
 
-// Get renderer info, can be called before configure
-CRenderInfo CRenderManager::GetRenderInfo()
-{
-  CSingleLock lock(m_statelock);
-  CRenderInfo info;
-  if (!m_pRenderer)
-  {
-    info.max_buffer_size = NUM_BUFFERS;
-    return info;;
-  }
-  return m_pRenderer->GetRenderInfo();
-}
-
-int CRenderManager::AddVideoPicture(VideoPicture& pic)
+int CRenderManager::AddVideoPicture(const VideoPicture& pic)
 {
   int index;
   {
@@ -1130,39 +1003,7 @@ int CRenderManager::AddVideoPicture(VideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  YV12Image image;
-  if (m_pRenderer->GetImage(&image, index) < 0)
-    return -1;
-
-  if(pic.format == RENDER_FMT_VDPAU
-  || pic.format == RENDER_FMT_CVBREF
-  || pic.format == RENDER_FMT_VAAPI
-  || pic.format == RENDER_FMT_MEDIACODEC
-  || pic.format == RENDER_FMT_MEDIACODECSURFACE
-  || pic.format == RENDER_FMT_AML
-  || pic.format == RENDER_FMT_IMXMAP
-  || pic.format == RENDER_FMT_MMAL
-  || m_pRenderer->IsPictureHW(pic))
-  {
-    m_pRenderer->AddVideoPictureHW(pic, index);
-  }
-  else if(pic.format == RENDER_FMT_YUV420P
-       || pic.format == RENDER_FMT_YUV420P10
-       || pic.format == RENDER_FMT_YUV420P16)
-  {
-    CDVDCodecUtils::CopyPicture(&image, &pic);
-  }
-  else if(pic.format == RENDER_FMT_NV12)
-  {
-    CDVDCodecUtils::CopyNV12Picture(&image, &pic);
-  }
-  else if(pic.format == RENDER_FMT_YUYV422
-       || pic.format == RENDER_FMT_UYVY422)
-  {
-    CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
-  }
-
-  m_pRenderer->ReleaseImage(index, false);
+  m_pRenderer->AddVideoPicture(pic, index, m_dvdClock.GetClock());
 
   return index;
 }
@@ -1328,7 +1169,7 @@ void CRenderManager::PrepareNextRender()
       m_lateframes += lateframes;
     else
       m_lateframes = 0;
-    
+
     m_presentstep = PRESENT_FLIP;
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
