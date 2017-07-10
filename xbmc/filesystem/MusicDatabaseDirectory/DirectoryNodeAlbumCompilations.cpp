@@ -44,9 +44,14 @@ std::string CDirectoryNodeAlbumCompilations::GetLocalizedName() const
   if (GetID() == -1)
     return g_localizeStrings.Get(15102); // All Albums
   CMusicDatabase db;
-  if (db.Open())
-    return db.GetAlbumById(GetID());
-  return "";
+  if (!db.Open())
+    return "";
+  
+  std::string name = db.GetAlbumById(GetID());
+  db.Close();
+  
+  return name;
+  
 }
 
 bool CDirectoryNodeAlbumCompilations::GetContent(CFileItemList& items) const

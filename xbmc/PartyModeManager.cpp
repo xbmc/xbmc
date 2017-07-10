@@ -442,6 +442,7 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
     CMusicDatabase database;
     database.Open();
     database.SetPropertiesForFileItem(*pItem);
+    database.Close();
   }
 
   CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist);
@@ -628,6 +629,7 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
       CMusicDatabase database;
       database.Open();
       database.GetSongsFullByWhere("musicdb://songs/", sqlWhereMusic, items, SortDescription(), true);
+      database.Close();
     }
     if (sqlWhereVideo.size() > 19)
     {
@@ -635,6 +637,7 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
       CVideoDatabase database;
       database.Open();
       database.GetMusicVideosByWhere("videodb://musicvideos/titles/", sqlWhereVideo, items);
+      database.Close();
     }
 
     m_history = chosenSongIDs;

@@ -38,6 +38,8 @@ CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader()
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
+  if (m_musicDatabase->IsOpen())
+    m_musicDatabase->Close();
   delete m_musicDatabase;
 }
 

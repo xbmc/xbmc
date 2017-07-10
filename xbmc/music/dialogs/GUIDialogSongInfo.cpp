@@ -194,6 +194,7 @@ void CGUIDialogSongInfo::OnInitWindow()
       db.GetAlbumFromSong(m_song->GetMusicInfoTag()->GetDatabaseId(), album);
       m_albumId = album.idAlbum;
     }
+    db.Close();
   }
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > -1);
 
@@ -271,6 +272,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
     if (!thumb.empty())
       m_song->SetProperty("artistthumb", thumb);
   }
+  db.Close();
   m_needsUpdate = false;
 }
 

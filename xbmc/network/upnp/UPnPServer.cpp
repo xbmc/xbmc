@@ -323,6 +323,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                         if (db.GetArtist(params.GetArtistId(), artist, false))
                             item->GetMusicInfoTag()->SetArtist(artist);
                     }
+                    db.Close();
                 }
 
 
@@ -355,6 +356,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                         db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
                     else if (params.GetTvShowId() >= 0 )
                         db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
+                  
+                    db.Close();
                 }
 
                 if (item->GetVideoInfoTag()->m_type == MediaTypeTvShow || item->GetVideoInfoTag()->m_type == MediaTypeSeason) {
@@ -451,6 +454,7 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
                 if (!db.Open()) return;
                 int show_id = db.GetTvShowForEpisode(item_id);
                 int season_id = db.GetSeasonForEpisode(item_id);
+                db.Close();
                 UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/", show_id));
                 UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/%d/?tvshowid=%d", show_id, season_id, show_id));
                 UpdateContainer("videodb://recentlyaddedepisodes/");
@@ -479,6 +483,7 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
                 UpdateContainer("musicdb://songs/");
                 UpdateContainer("musicdb://recentlyaddedalbums/");
             }
+            db.Close();
         }
     }
 }
@@ -706,6 +711,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
           mvideos->SetLabel(g_localizeStrings.Get(20389));
           items.Add(mvideos);
       }
+      database.Close();
     }
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
@@ -904,6 +910,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                           database.GetArtistByName((const char*)artist), // will return -1 if no artist
                                           database.GetAlbumByName((const char*)album));  // will return -1 if no album
 
+            database.Close();
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             // all tracks by artist name filtered by album if passed
@@ -911,14 +918,17 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                           database.GetArtistByName((const char*)artist),
                                           database.GetAlbumByName((const char*)album)); // will return -1 if no album
 
+            database.Close();
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (album.GetLength() > 0) {
             // all tracks by album name
             std::string strPath = StringUtils::Format("musicdb://albums/%i/",
                                                      database.GetAlbumByName((const char*)album));
 
+            database.Close();
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
+        database.Close();
 
         // browse all songs
         return OnBrowseDirectChildren(action, "musicdb://songs/", filter, starting_index, requested_count, sort_criteria, context);
@@ -974,6 +984,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       if (!database.GetMoviesNav("videodb://movies/titles/", items)) {
         action->SetError(800, "Internal Error");
+        database.Close();
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
@@ -981,6 +992,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", "", items)) {
         action->SetError(800, "Internal Error");
+        database.Close();
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
@@ -988,10 +1000,12 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       if (!database.GetMusicVideosByWhere("videodb://musicvideos/titles/", "", items)) {
         action->SetError(800, "Internal Error");
+        database.Close();
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
       items.Clear();
+      database.Close();
 
       return BuildResponse(action, itemsall, filter, starting_index, requested_count, sort_criteria, context, NULL);
   } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
@@ -1098,6 +1112,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
             db.LoadVideoInfo(file_path, tag);
             updated.SetFromVideoInfoTag(tag);
         }
+      
+        db.Close();
 
     } else if (updated.IsMusicDb()) {
       //! @todo implement this

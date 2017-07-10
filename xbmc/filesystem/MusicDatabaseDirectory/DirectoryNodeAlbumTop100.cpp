@@ -42,9 +42,13 @@ NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType() const
 std::string CDirectoryNodeAlbumTop100::GetLocalizedName() const
 {
   CMusicDatabase db;
-  if (db.Open())
-    return db.GetAlbumById(GetID());
-  return "";
+  if (!db.Open())
+    return "";
+  
+  std::string name = db.GetAlbumById(GetID());
+  db.Close();
+  return name;
+  
 }
 
 bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const

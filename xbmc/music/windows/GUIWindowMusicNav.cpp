@@ -553,6 +553,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         database.Open();
         if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()) > -1)
           buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
+        database.Close();
       }
       if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetArtistString().empty() &&
          !item->GetMusicInfoTag()->GetAlbum().empty() &&
@@ -663,6 +664,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       strPath = StringUtils::Format("videodb://musicvideos/artists/%i/",
         database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()));
+      database.Close();
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }

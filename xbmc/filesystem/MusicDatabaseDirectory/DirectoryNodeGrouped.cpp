@@ -38,9 +38,13 @@ NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
 std::string CDirectoryNodeGrouped::GetLocalizedName() const
 {
   CMusicDatabase db;
-  if (db.Open())
-    return db.GetItemById(GetContentType(), GetID());
-  return "";
+  if (!db.Open())
+    return "";
+  
+  std::string name = db.GetItemById(GetContentType(), GetID());
+  db.Close();
+  return name;
+  
 }
 
 bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
@@ -49,7 +53,11 @@ bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
   if (!musicdatabase.Open())
     return false;
 
-  return musicdatabase.GetItems(BuildPath(), GetContentType(), items);
+  bool bSuccess = musicdatabase.GetItems(BuildPath(), GetContentType(), items);
+  
+  musicdatabase.Close();
+  
+  return bSuccess;
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const

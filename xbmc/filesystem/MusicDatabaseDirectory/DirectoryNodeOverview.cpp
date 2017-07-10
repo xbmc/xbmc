@@ -75,6 +75,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 
   bool hasSingles = (musicDatabase.GetSinglesCount() > 0);
   bool hasCompilations = (musicDatabase.GetCompilationAlbumsCount() > 0);
+  
+  musicDatabase.Close();
 
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
   {

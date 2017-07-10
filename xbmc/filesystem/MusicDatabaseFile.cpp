@@ -44,13 +44,20 @@ std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
   URIUtils::RemoveExtension(strFileName);
 
   if (!StringUtils::IsNaturalNumber(strFileName))
+  {
+    musicDatabase.Close();
     return "";
+  }
 
   long idSong=atol(strFileName.c_str());
 
   CSong song;
   if (!musicDatabase.GetSong(idSong, song))
+  {
+    musicDatabase.Close();
     return "";
+  }
+  musicDatabase.Close();
 
   StringUtils::ToLower(strExtension);
   if (!URIUtils::HasExtension(song.strFileName, strExtension))

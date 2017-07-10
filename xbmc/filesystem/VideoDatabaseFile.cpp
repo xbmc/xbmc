@@ -54,6 +54,8 @@ CVideoInfoTag CVideoDatabaseFile::GetVideoTag(const CURL& url)
   
   tag = videoDatabase.GetDetailsByTypeAndId(type, idDb);
   
+  videoDatabase.Close();
+  
   return tag;
 }
 
@@ -103,6 +105,7 @@ std::string CVideoDatabaseFile::TranslatePath(const CURL& url)
 
   std::string realFilename;
   videoDatabase.GetFilePathById(idDb, realFilename, type);
+  videoDatabase.Close();
 
   return realFilename;
 }

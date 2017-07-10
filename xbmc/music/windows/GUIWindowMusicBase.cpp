@@ -1395,6 +1395,7 @@ void CGUIWindowMusicBase::OnRemoveSource(int iItem)
     database.Open();
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
     database.CleanupOrphanedItems();
+    database.Close();
     g_infoManager.ResetLibraryBools();
     m_vecItems->RemoveDiscCache(GetID());
   }

@@ -319,6 +319,8 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       m_rule.m_parameter.emplace_back(std::move(path));
 
     UpdateButtons();
+    videodatabase.Close();
+    database.Close();
     return;
   }
   else if (m_rule.m_field == FieldSet)
@@ -335,7 +337,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     else if (m_type == "musicvideos")
       type = VIDEODB_CONTENT_MUSICVIDEOS;
     else if (m_type != "movies")
+    {
+      videodatabase.Close();
+      database.Close();
       return;
+    }
 
     videodatabase.GetTagsNav(basePath + "tags/", items, type);
     iLabel = 20459;
@@ -344,6 +350,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   { //! @todo Add browseability in here.
     assert(false);
   }
+  
+  videodatabase.Close();
+  database.Close();
 
   // sort the items
   items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);

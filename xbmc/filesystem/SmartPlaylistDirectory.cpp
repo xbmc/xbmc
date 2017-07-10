@@ -109,7 +109,10 @@ namespace XFILE
           else if (mediaType == MediaTypeMovie)
             baseDir = "videodb://movies/";
           else
+          {
+            db.Close();
             return false;
+          }
 
           if (!isGrouped)
             baseDir += "titles";
@@ -123,14 +126,20 @@ namespace XFILE
 
         CVideoDbUrl videoUrl;
         if (!videoUrl.FromString(baseDir))
+        {
+          db.Close();
           return false;
+        }
 
         // store the smartplaylist as JSON in the URL as well
         std::string xsp;
         if (!playlist.IsEmpty(filter))
         {
           if (!playlist.SaveAsJson(xsp, !filter))
+          {
+            db.Close();
             return false;
+          }
         }
 
         if (!xsp.empty())
@@ -173,7 +182,10 @@ namespace XFILE
             else if (mediaType == MediaTypeSong)
               baseDir += "songs";
             else
+            {
+              db.Close();
               return false;
+            }
           }
           else
             baseDir += group;
@@ -183,14 +195,20 @@ namespace XFILE
 
         CMusicDbUrl musicUrl;
         if (!musicUrl.FromString(baseDir))
+        {
+          db.Close();
           return false;
+        }
 
         // store the smartplaylist as JSON in the URL as well
         std::string xsp;
         if (!plist.IsEmpty(filter))
         {
           if (!plist.SaveAsJson(xsp, !filter))
+          {
+            db.Close();
             return false;
+          }
         }
 
         if (!xsp.empty())
