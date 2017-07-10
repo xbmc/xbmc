@@ -46,10 +46,7 @@ void CRendererVAAPI::Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &gene
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
 }
 
-CRendererVAAPI::CRendererVAAPI()
-{
-
-}
+CRendererVAAPI::CRendererVAAPI() = default;
 
 CRendererVAAPI::~CRendererVAAPI()
 {
