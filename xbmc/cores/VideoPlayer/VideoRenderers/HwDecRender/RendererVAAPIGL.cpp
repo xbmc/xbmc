@@ -41,8 +41,7 @@ CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
 
 void CRendererVAAPI::Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
 {
-  general = CVaapiTexture::TestInterop(vaDpy, eglDisplay);
-  hevc = CVaapiTexture::TestInteropHevc(vaDpy, eglDisplay);
+  CVaapiTexture::TestInterop(vaDpy, eglDisplay, general, hevc);
   if (general)
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
 }

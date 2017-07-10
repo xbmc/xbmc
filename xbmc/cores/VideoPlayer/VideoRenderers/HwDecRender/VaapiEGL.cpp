@@ -297,9 +297,10 @@ void CVaapiTexture::Unmap()
   m_vaapiPic = nullptr;
 }
 
-bool CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay)
+void CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
 {
-  bool ret = false;
+  general = false;
+  hevc = false;
 
   int major_version, minor_version;
   vaInitialize(vaDpy, &major_version, &minor_version);
@@ -318,7 +319,7 @@ bool CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay)
                        &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
   {
     vaTerminate(vaDpy);
-    return false;
+    return;
   }
 
   // check interop
@@ -327,7 +328,7 @@ bool CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay)
   if (!eglCreateImageKHR || !eglDestroyImageKHR)
   {
     vaTerminate(vaDpy);
-    return false;
+    return;
   }
 
   status = vaDeriveImage(vaDpy, surface, &image);
@@ -361,24 +362,25 @@ bool CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay)
       if (eglImage)
       {
         eglDestroyImageKHR(eglDisplay, eglImage);
-        ret = true;
+        general = true;
       }
 
     }
     vaDestroyImage(vaDpy, image.image_id);
   }
   vaDestroySurfaces(vaDpy, &surface, 1);
-  vaTerminate(vaDpy);
 
-  return ret;
+  if (general)
+  {
+    hevc = TestInteropHevc(vaDpy, eglDisplay);
+  }
+
+  vaTerminate(vaDpy);
 }
 
 bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
 {
   bool ret = false;
-
-  int major_version, minor_version;
-  vaInitialize(vaDpy, &major_version, &minor_version);
 
   int width = 1920;
   int height = 1080;
@@ -393,7 +395,6 @@ bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
                        width, height,
                        &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
   {
-    vaTerminate(vaDpy);
     return ret;
   }
 
@@ -401,7 +402,6 @@ bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
   PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   if (!eglCreateImageKHR || !eglDestroyImageKHR)
   {
-    vaTerminate(vaDpy);
     return false;
   }
 
@@ -444,7 +444,6 @@ bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
     vaDestroyImage(vaDpy, image.image_id);
   }
   vaDestroySurfaces(vaDpy, &surface, 1);
-  vaTerminate(vaDpy);
 
   return ret;
 }

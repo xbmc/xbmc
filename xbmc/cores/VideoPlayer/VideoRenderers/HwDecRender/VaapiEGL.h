@@ -45,8 +45,7 @@ public:
   bool Map(CVaapiRenderPicture *pic);
   void Unmap();
   void Init(InteropInfo &interop);
-  static bool TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay);
-  static bool TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay);
+  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
 
   GLuint m_texture = 0;
   GLuint m_textureY = 0;
@@ -55,6 +54,8 @@ public:
   int m_texHeight = 0;
 
 protected:
+  static bool TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay);
+
   InteropInfo m_interop;
   CVaapiRenderPicture *m_vaapiPic = nullptr;
   struct GLSurface
