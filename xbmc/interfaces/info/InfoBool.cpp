@@ -28,7 +28,7 @@ namespace INFO
       m_context(context),
       m_listItemDependent(false),
       m_expression(expression),
-      m_refeshCounter(0),
+      m_refreshCounter(0),
       m_parentRefreshCounter(refreshCounter)
   {
     StringUtils::ToLower(m_expression);
