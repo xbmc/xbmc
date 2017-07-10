@@ -29,7 +29,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                         , float         contrast
                         , bool          limited);
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 #include "GLSLOutput.h"
 
@@ -54,7 +54,7 @@ namespace Shaders {
     virtual void SetBlack(float black) {};
     virtual void SetContrast(float contrast) {};
     virtual void SetNonLinStretch(float stretch) {};
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     virtual GLint GetVertexLoc() { return 0; };
     virtual GLint GetYcoordLoc() { return 0; };
     virtual GLint GetUcoordLoc() { return 0; };
@@ -84,7 +84,7 @@ namespace Shaders {
     void SetBlack(float black) override { m_black    = black; }
     void SetContrast(float contrast) override { m_contrast = contrast; }
     void SetNonLinStretch(float stretch) override { m_stretch = stretch; }
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     virtual GLint GetVertexLoc() { return m_hVertex; }
     virtual GLint GetYcoordLoc() { return m_hYcoord; }
     virtual GLint GetUcoordLoc() { return m_hUcoord; }
@@ -121,7 +121,7 @@ namespace Shaders {
     GLint m_hMatrix;
     GLint m_hStretch;
     GLint m_hStep;
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
     GLint m_hVertex;
     GLint m_hYcoord;
     GLint m_hUcoord;

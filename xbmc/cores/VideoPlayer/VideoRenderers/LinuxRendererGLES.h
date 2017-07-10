@@ -21,7 +21,7 @@
  *
  */
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 #include <vector>
 
 #include "system_gl.h"

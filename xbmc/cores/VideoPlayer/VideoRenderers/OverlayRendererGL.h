@@ -29,7 +29,7 @@ class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 typedef struct ass_image ASS_Image;
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 namespace OVERLAY {
 
