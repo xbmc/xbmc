@@ -315,7 +315,7 @@ void BaseYUV2RGBGLSLShader::Free()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
+#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format)
 {
   m_width         = 1;
@@ -390,7 +390,7 @@ bool YUV2RGBBobShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
-#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
+#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags, EShaderFormat format)
   : BaseYUV2RGBARBShader(flags, format)
 {
