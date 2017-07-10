@@ -20,7 +20,14 @@
 
 #pragma once
 
+#if defined(HAVE_LIBGL)
 #include <GL/gl.h>
+#elif defined(HAVE_LIBGLESV2)
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <GLES3/gl3.h>
+#endif
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <va/va.h>
