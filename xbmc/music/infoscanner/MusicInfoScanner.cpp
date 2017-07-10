@@ -891,7 +891,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
     return;
 
   std::set<int> artists;
-  for (auto i = 0; i < m_albumsAdded.size(); ++i)
+  for (auto i = 0u; i < m_albumsAdded.size(); ++i)
   {
     if (m_bStop)
       break;

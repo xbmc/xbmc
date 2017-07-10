@@ -47,10 +47,10 @@ public:
   {
     if (item && m_listItemDependent)
       Update(item);
-    else if (m_refeshCounter != m_parentRefreshCounter)
+    else if (m_refreshCounter != m_parentRefreshCounter)
     {
       Update(NULL);
-      m_refeshCounter = m_parentRefreshCounter;
+      m_refreshCounter = m_parentRefreshCounter;
     }
     return m_value;
   }
@@ -86,7 +86,7 @@ protected:
   std::string  m_expression;   ///< original expression
 
 private:
-  unsigned int m_refeshCounter;
+  unsigned int m_refreshCounter;
   unsigned int &m_parentRefreshCounter;
 };
 
