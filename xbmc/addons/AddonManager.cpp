@@ -1234,6 +1234,48 @@ bool CAddonMgr::IsCompatible(const IAddon& addon)
   return true;
 }
 
+ADDONDEPS CAddonMgr::GetDepsRecursive(const std::string& id)
+{
+  ADDONDEPS added;
+  AddonPtr root_addon;
+  if (!FindInstallableById(id, root_addon) && !GetAddon(id, root_addon))
+    return added;
+
+  ADDONDEPS toProcess = root_addon->GetDeps();
+  while (!toProcess.empty())
+  {
+    auto current_dep = *toProcess.begin();
+    toProcess.erase(toProcess.begin());
+    if (StringUtils::StartsWith(current_dep.first, "xbmc.") ||
+        StringUtils::StartsWith(current_dep.first, "kodi."))
+      continue;
+
+    auto added_it = added.find(current_dep.first);
+    if (added_it != added.end())
+    {
+      if (current_dep.second.first < added_it->second.first)
+        continue;
+
+      bool aopt = added_it->second.second;
+      added.erase(added_it);
+      added.insert(current_dep);
+      if (!current_dep.second.second && aopt)
+        continue;
+    }
+    else
+      added.insert(current_dep);
+
+    AddonPtr current_addon;
+    if (FindInstallableById(current_dep.first, current_addon))
+    {
+      toProcess.insert(current_addon->GetDeps().begin(),
+                       current_addon->GetDeps().end());
+    }
+  }
+
+  return added;
+}
+
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)

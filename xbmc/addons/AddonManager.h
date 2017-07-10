@@ -283,12 +283,15 @@ namespace ADDON
 
     bool IsCompatible(const IAddon& addon);
 
+    /*! \brief Recursively get dependencies for an add-on
+     */
+    ADDONDEPS GetDepsRecursive(const std::string& id);
+
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions = false);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:
-
     /* libcpluff */
     cp_context_t *m_cp_context;
     std::unique_ptr<DllLibCPluff> m_cpluff;
