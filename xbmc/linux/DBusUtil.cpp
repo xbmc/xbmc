@@ -222,6 +222,8 @@ CDBusConnection::operator DBusConnection*()
   return m_connection.get();
 }
 
+CDBusConnection::DBusConnectionDeleter::DBusConnectionDeleter() = default;
+
 void CDBusConnection::DBusConnectionDeleter::operator()(DBusConnection* connection) const
 {
   if (closeBeforeUnref)
