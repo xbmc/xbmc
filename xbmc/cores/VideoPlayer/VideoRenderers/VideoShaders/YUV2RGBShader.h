@@ -136,7 +136,7 @@ namespace Shaders {
 #endif
   };
 
-#if HAS_GLES != 2       // No ARB Shader when using GLES2.0
+#if defined(HAS_GL)       // No ARB Shader when using GLES2.0
   class BaseYUV2RGBARBShader 
     : public BaseYUV2RGBShader
     , public CARBShaderProgram
