@@ -125,6 +125,7 @@ bool CMACDiscoveryJob::DoWork()
 class WaitCondition
 {
 public:
+  virtual ~WaitCondition() = default;
   virtual bool SuccessWaiting () const { return false; }
 };
 

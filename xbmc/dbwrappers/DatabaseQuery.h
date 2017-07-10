@@ -108,6 +108,7 @@ typedef std::vector< std::shared_ptr<CDatabaseQueryRuleCombination> > CDatabaseQ
 class IDatabaseQueryRuleFactory
 {
 public:
+  virtual ~IDatabaseQueryRuleFactory() = default;
   virtual CDatabaseQueryRule *CreateRule() const=0;
   virtual CDatabaseQueryRuleCombination *CreateCombination() const=0;
 };
