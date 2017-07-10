@@ -234,6 +234,7 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
+  virtual bool IsPlayingTempo() {return IsPlaying(); }
   virtual bool CanPause() { return true; };
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
@@ -328,6 +329,8 @@ public:
   virtual void SetSpeed(float speed) = 0;
   virtual float GetSpeed() = 0;
   virtual bool SupportsTempo() { return false; }
+  virtual float const MinTempo() { return 1.0f; };
+  virtual float const MaxTempo() { return 1.0f; };
 
   //Returns true if not playback (paused or stopped being filled)
   virtual bool IsCaching() const {return false;};

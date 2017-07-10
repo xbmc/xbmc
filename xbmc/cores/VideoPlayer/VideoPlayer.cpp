@@ -763,6 +763,11 @@ bool CVideoPlayer::IsPlaying() const
   return !m_bStop;
 }
 
+bool CVideoPlayer::IsPlayingTempo()
+{
+  return IsPlaying() && GetSpeed() >= MinTempo() - 0.05 && GetSpeed() <= MaxTempo() + 0.05;
+}
+
 void CVideoPlayer::OnStartup()
 {
   m_CurrentVideo.Clear();
@@ -3623,6 +3628,16 @@ float CVideoPlayer::GetSpeed()
 bool CVideoPlayer::SupportsTempo()
 {
   return m_canTempo;
+}
+
+const float CVideoPlayer::MinTempo() const
+{
+  return 0.8;
+}
+
+const float CVideoPlayer::MaxTempo() const
+{
+  return 1.5;
 }
 
 bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset /*= true*/)
