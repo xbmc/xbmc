@@ -96,6 +96,7 @@ public:
   int GetId() const { return m_id; };
 
   virtual AVPixelFormat GetFormat();
+  virtual uint8_t* GetMemPtr() { return nullptr; };
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) {};
   virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) {};
@@ -117,6 +118,7 @@ class CVideoBufferSysMem : public CVideoBuffer
 public:
   CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int size);
   ~CVideoBufferSysMem() override;
+  uint8_t* GetMemPtr() override;
   void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
   void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
   void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) override;
@@ -125,7 +127,6 @@ public:
 protected:
   int m_width = 0;
   int m_height = 0;
-  int m_strides[YuvImage::MAX_PLANES] = { };
   int m_size = 0;
   uint8_t *m_data = nullptr;
   YuvImage m_image;

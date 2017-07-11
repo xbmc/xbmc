@@ -39,6 +39,7 @@ class CMMALYUVBuffer : public CMMALBuffer
 public:
   CMMALYUVBuffer(int id);
   virtual ~CMMALYUVBuffer();
+  uint8_t* GetMemPtr() override;
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]);
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]);
   virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]);

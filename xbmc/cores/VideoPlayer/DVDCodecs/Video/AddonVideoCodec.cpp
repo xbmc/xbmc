@@ -308,10 +308,7 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
     return false;
   }
 
-  uint8_t *planes[YuvImage::MAX_PLANES];
-  videoBuffer->GetPlanes(planes);
-
-  picture.decodedData = planes[0];
+  picture.decodedData = videoBuffer->GetMemPtr();
   m_map[picture.decodedData] = videoBuffer;
 
   return true;
