@@ -340,7 +340,7 @@ public:
   virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
 
   /*
-  * opens a demux stream for playback
+  * implicitly enable and open a demux stream for playback
   */
   virtual void OpenStream(int64_t demuxerId, int id) { OpenStream(id); };
 
