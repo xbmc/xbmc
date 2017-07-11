@@ -97,7 +97,7 @@ list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 if(CORE_SYSTEM_NAME STREQUAL linux)
   # Set default CORE_PLATFORM_NAME to X11
   # This is overridden by user setting -DCORE_PLATFORM_NAME=<platform>
-  set(_DEFAULT_PLATFORM X11)
+  set(_DEFAULT_PLATFORM x11)
 else()
   string(TOLOWER ${CORE_SYSTEM_NAME} _DEFAULT_PLATFORM)
 endif()
