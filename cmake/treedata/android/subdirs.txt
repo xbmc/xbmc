@@ -2,6 +2,7 @@ xbmc/linux                              linuxsupport
 xbmc/input/touch                        input/touch
 xbmc/input/touch/generic                input/touch/generic
 xbmc/network/linux                      network/linux
+xbmc/network/android                    network/android
 xbmc/peripherals/bus/linux              peripherals/bus/linux
 xbmc/peripherals/bus/android            peripherals/bus/android
 xbmc/powermanagement/android            powermanagement/android

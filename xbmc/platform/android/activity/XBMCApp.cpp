@@ -76,6 +76,7 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "input/MouseStat.h"
+#include "network/android/NetworkAndroid.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
@@ -180,6 +181,7 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.HEADSET_PLUG");
   intentFilter.addAction("android.intent.action.HDMI_AUDIO_PLUG");
   intentFilter.addAction("android.intent.action.SCREEN_OFF");
+  intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
@@ -862,6 +864,15 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_REWIND, 0, 0, up);
     else if (keycode == CJNIKeyEvent::KEYCODE_MEDIA_STOP)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_STOP, 0, 0, up);
+  }
+  else if (action == "android.net.conn.CONNECTIVITY_CHANGE")
+  {
+    if (g_application.IsInitialized())
+    {
+      CNetwork& net = g_application.getNetwork();
+      CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
+      netdroid->RetrieveInterfaces();
+    }
   }
 }
 
