@@ -20,7 +20,7 @@
  *
  */
 
-#include <stdarg.h>
+#include <algorithm>
 #include <limits>
 
 #include "Event.h"
@@ -28,8 +28,8 @@
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
   CSingleLock lock(groupListMutex);
-  if (groups == NULL)
-    groups = new std::vector<XbmcThreads::CEventGroup*>();
+  if (!groups)
+    groups.reset(new std::vector<XbmcThreads::CEventGroup*>);
 
   groups->push_back(group);
 }
@@ -39,19 +39,10 @@ void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
   CSingleLock lock(groupListMutex);
   if (groups)
   {
-    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); ++iter)
+    groups->erase(std::remove(groups->begin(), groups->end(), group), groups->end());
+    if (groups->empty())
     {
-      if ((*iter) == group)
-      {
-        groups->erase(iter);
-        break;
-      }
-    }
-
-    if (groups->size() <= 0)
-    {
-      delete groups;
-      groups = NULL;
+      groups.reset();
     }
   }
 }
@@ -75,9 +66,8 @@ void CEvent::Set()
   CSingleLock l(groupListMutex);
   if (groups)
   {
-    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); 
-         iter != groups->end(); ++iter)
-      (*iter)->Set(this);
+    for (auto* group : *groups)
+      group->Set(this);
   }
 }
 
@@ -115,11 +105,9 @@ namespace XbmcThreads
     // signaled and sets 'signaled' to the first one it
     // finds.
     // ==================================================
-    signaled = NULL;
-    for (std::vector<CEvent*>::iterator iter = events.begin();
-         signaled == NULL && iter != events.end(); ++iter)
+    signaled = nullptr;
+    for (auto* cur : events)
     {
-      CEvent* cur = *iter;
       CSingleLock lock2(cur->mutex);
       if (cur->signaled) 
         signaled = cur;
@@ -144,63 +132,27 @@ namespace XbmcThreads
         // This acquires and releases the CEvent::mutex. This is fine since the
         //  CEventGroup::mutex is already being held
         signaled->WaitMSec(0); // reset the event if needed
-      signaled = NULL;  // clear the signaled if all the waiters are gone
+      signaled = nullptr;  // clear the signaled if all the waiters are gone
     }
     return ret;
   }
 
-  CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(actualCv,signaled), numWaits(0)
+  CEventGroup::CEventGroup(std::initializer_list<CEvent*> eventsList)
+  : events{eventsList}
   {
-    va_list ap;
-
-    va_start(ap, v1);
-    if (v1)
-      events.push_back(v1);
-    num--; // account for v1
-    for (; num > 0; num--)
-    {
-      CEvent* const cur = va_arg(ap, CEvent*);
-      if (cur)
-        events.push_back(cur);
-    }
-    va_end(ap);
-
     // we preping for a wait, so we need to set the group value on
-    // all of the CEvents. 
-    for (std::vector<CEvent*>::iterator iter = events.begin();
-         iter != events.end(); ++iter)
-      (*iter)->addGroup(this);
-  }
-
-  CEventGroup::CEventGroup(CEvent* v1, ...) : signaled(NULL), condVar(actualCv,signaled), numWaits(0)
-  {
-    va_list ap;
-
-    va_start(ap, v1);
-    if (v1)
-      events.push_back(v1);
-    bool done = false;
-    while(!done)
+    // all of the CEvents.
+    for (auto* event : events)
     {
-      CEvent* cur = va_arg(ap,CEvent*);
-      if (cur)
-        events.push_back(cur);
-      else
-        done = true;
+      event->addGroup(this);
     }
-    va_end(ap);
-
-    // we preping for a wait, so we need to set the group value on
-    // all of the CEvents. 
-    for (std::vector<CEvent*>::iterator iter = events.begin();
-         iter != events.end(); ++iter)
-      (*iter)->addGroup(this);
   }
 
   CEventGroup::~CEventGroup()
   {
-    for (std::vector<CEvent*>::iterator iter = events.begin();
-         iter != events.end(); ++iter)
-      (*iter)->removeGroup(this);
+    for (auto* event : events)
+    {
+      event->removeGroup(this);
+    }
   }
 }
