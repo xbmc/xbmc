@@ -827,11 +827,12 @@ bool CAddonMgr::DisableAddon(const std::string& id)
     return false;
 
   //success
-  ADDON::OnDisabled(id);
-
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+  {
+    ADDON::OnDisabled(addon);
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
+  }
 
   m_events.Publish(AddonEvents::Disabled(id));
   return true;
@@ -858,7 +859,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!m_database.DisableAddon(id, false))
     return false;
   m_disabled.erase(id);
-  ADDON::OnEnabled(id);
+  ADDON::OnEnabled(addon);
 
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
