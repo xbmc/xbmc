@@ -24,6 +24,8 @@
 #include "lcms2.h"
 #endif
 
+#include <string>
+
 enum CMS_DATA_FORMAT
 {
   CMS_DATA_FMT_RGB,
@@ -76,7 +78,13 @@ public:
    \brief Check if user has requested color management
    \return true on enabled, false otherwise
    */
-  bool IsEnabled();
+  bool IsEnabled() const;
+
+  /*!
+   \brief Check if configuration of color management is valid
+   \return true on valid, false otherwise
+   */
+  bool IsValid() const;
 
   /*!
    \brief Get a 3D LUT for video color correction

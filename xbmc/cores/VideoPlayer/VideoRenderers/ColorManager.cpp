@@ -56,11 +56,40 @@ CColorManager::~CColorManager()
 #endif  //defined(HAVE_LCMS2)
 }
 
-bool CColorManager::IsEnabled()
+bool CColorManager::IsEnabled() const
 {
-  //TODO: check that the configuration is valid here (files exist etc)
+  return CServiceBroker::GetSettings().GetBool("videoscreen.cmsenabled") && IsValid();
+}
 
-  return CServiceBroker::GetSettings().GetBool("videoscreen.cmsenabled");
+bool CColorManager::IsValid() const
+{
+  if (!CServiceBroker::GetSettings().GetBool("videoscreen.cmsenabled"))
+    return true;
+
+  int cmsmode = CServiceBroker::GetSettings().GetInt("videoscreen.cmsmode");
+  switch (cmsmode)
+  {
+  case CMS_MODE_3DLUT:
+  {
+    std::string fileName = CServiceBroker::GetSettings().GetString("videoscreen.cms3dlut");
+    if (fileName.empty())
+      return false;
+    if (!CFile::Exists(fileName))
+      return false;
+    return true;
+  }
+#if defined(HAVE_LCMS2)
+  case CMS_MODE_PROFILE:
+  {
+    int cmslutsize = CServiceBroker::GetSettings().GetInt("videoscreen.cmslutsize");
+    if (cmslutsize <= 0)
+      return false;
+    return true;
+  }
+#endif
+  default:
+    return false;
+  }
 }
 
 CMS_PRIMARIES videoFlagsToPrimaries(int flags)
