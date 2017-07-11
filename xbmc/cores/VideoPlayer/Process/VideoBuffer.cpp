@@ -194,6 +194,11 @@ CVideoBufferSysMem::~CVideoBufferSysMem()
   delete[] m_data;
 }
 
+uint8_t* CVideoBufferSysMem::GetMemPtr()
+{
+  return m_data;
+}
+
 void CVideoBufferSysMem::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
 {
   planes[0] = m_image.plane[0];
@@ -212,12 +217,12 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
 {
   m_width = width;
   m_height = height;
-  m_strides[0] = strides[0];
-  m_strides[1] = strides[1];
-  m_strides[2] = strides[2];
 
   m_image.width  = m_width;
   m_image.height = m_height;
+  m_image.stride[0] = strides[0];
+  m_image.stride[1] = strides[1];
+  m_image.stride[2] = strides[2];
   m_image.cshift_x = 1;
   m_image.cshift_y = 1;
   m_image.bpp = 1;
@@ -230,20 +235,12 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
         m_pixFormat == AV_PIX_FMT_YUV420P10)
       m_image.bpp = 2;
 
-    m_image.stride[0] = m_image.bpp * m_image.width;
-    m_image.stride[1] = m_image.bpp * (m_image.width >> m_image.cshift_x);
-    m_image.stride[2] = m_image.bpp * (m_image.width >> m_image.cshift_x);
-
     m_image.planesize[0] = m_image.stride[0] * m_image.height;
     m_image.planesize[1] = m_image.stride[1] * (m_image.height >> m_image.cshift_y);
     m_image.planesize[2] = m_image.stride[2] * (m_image.height >> m_image.cshift_y);
   }
   else if (m_pixFormat == AV_PIX_FMT_NV12)
   {
-    m_image.stride[0] = m_image.width;
-    m_image.stride[1] = m_image.width;
-    m_image.stride[2] = 0;
-
     // Y plane
     m_image.planesize[0] = m_image.stride[0] * m_image.height;
     // packed UV plane
@@ -254,10 +251,6 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
   else if (m_pixFormat == AV_PIX_FMT_YUYV422 ||
            m_pixFormat == AV_PIX_FMT_UYVY422)
   {
-    m_image.stride[0] = m_image.width * 2;
-    m_image.stride[1] = 0;
-    m_image.stride[2] = 0;
-
     // packed YUYV plane
     m_image.planesize[0] = m_image.stride[0] * m_image.height;
     // second plane is not used

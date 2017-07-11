@@ -56,6 +56,13 @@ CMMALYUVBuffer::~CMMALYUVBuffer()
   delete m_gmem;
 }
 
+uint8_t* CMMALYUVBuffer::GetMemPtr()
+{
+  if (!m_gmem)
+    return nullptr;
+  return static_cast<uint8_t *>(m_gmem->m_arm);
+}
+
 void CMMALYUVBuffer::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
 {
   for (int i = 0; i < YuvImage::MAX_PLANES; i++)
