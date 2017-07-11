@@ -49,8 +49,8 @@ public:
   bool FirstBegin() override;
   void LastEnd() override;
 #if HAS_GLES
-  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const;
-  virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const;
+  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const override;
+  void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const override;
   static void CreateStaticVertexBuffers(void);
   static void DestroyStaticVertexBuffers(void);
 #endif
