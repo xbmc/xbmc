@@ -25,7 +25,7 @@ find_path(VAAPI_libva-drm_INCLUDE_DIR va/va_drm.h
 find_library(VAAPI_libva-drm_LIBRARY NAMES va-drm
                                      PATHS ${PC_VAAPI_libva-drm_LIBDIR})
 
-if(CORE_PLATFORM_NAME STREQUAL "x11")
+if(CORE_PLATFORM_NAME_LC STREQUAL "x11")
   find_path(VAAPI_libva-x11_INCLUDE_DIR va/va_x11.h
                                   PATHS ${PC_VAAPI_libva-x11_INCLUDEDIR})
   find_library(VAAPI_libva-x11_LIBRARY NAMES va-x11
