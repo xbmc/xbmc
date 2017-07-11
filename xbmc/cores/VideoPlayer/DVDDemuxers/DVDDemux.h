@@ -340,6 +340,11 @@ public:
   virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
 
   /*
+  * opens a demux stream for playback
+  */
+  virtual void OpenStream(int64_t demuxerId, int id) { OpenStream(id); };
+
+  /*
    * sets desired width / height for video stream
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
@@ -352,6 +357,7 @@ public:
 
 protected:
   virtual void EnableStream(int id, bool enable) {};
+  virtual void OpenStream(int id) {};
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
 

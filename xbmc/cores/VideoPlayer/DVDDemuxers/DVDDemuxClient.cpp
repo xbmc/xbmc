@@ -636,6 +636,14 @@ void CDVDDemuxClient::EnableStream(int id, bool enable)
   }
 }
 
+void CDVDDemuxClient::OpenStream(int id)
+{
+  if (m_IDemux)
+  {
+    m_IDemux->OpenStream(id);
+  }
+}
+
 void CDVDDemuxClient::SetVideoResolution(int width, int height)
 {
   if (m_IDemux)

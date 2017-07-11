@@ -173,6 +173,7 @@ extern "C" {
     struct INPUTSTREAM_IDS (__cdecl* get_stream_ids)(const AddonInstance_InputStream* instance);
     struct INPUTSTREAM_INFO (__cdecl* get_stream)(const AddonInstance_InputStream* instance, int streamid);
     void (__cdecl* enable_stream)(const AddonInstance_InputStream* instance, int streamid, bool enable);
+    void(__cdecl* open_stream)(const AddonInstance_InputStream* instance, int streamid);
     void (__cdecl* demux_reset)(const AddonInstance_InputStream* instance);
     void (__cdecl* demux_abort)(const AddonInstance_InputStream* instance);
     void (__cdecl* demux_flush)(const AddonInstance_InputStream* instance);
@@ -271,6 +272,13 @@ namespace addon
      * @remarks
      */
     virtual void EnableStream(int streamid, bool enable) = 0;
+
+    /*!
+    * Opens a stream for playback.
+    * @param streamid unique id of stream
+    * @remarks
+    */
+    virtual void OpenStream(int streamid) = 0;
 
     /*!
      * Reset the demultiplexer in the add-on.
@@ -448,6 +456,7 @@ namespace addon
       m_instanceData->toAddon.get_stream_ids = ADDON_GetStreamIds;
       m_instanceData->toAddon.get_stream = ADDON_GetStream;
       m_instanceData->toAddon.enable_stream = ADDON_EnableStream;
+      m_instanceData->toAddon.open_stream = ADDON_OpenStream;
       m_instanceData->toAddon.demux_reset = ADDON_DemuxReset;
       m_instanceData->toAddon.demux_abort = ADDON_DemuxAbort;
       m_instanceData->toAddon.demux_flush = ADDON_DemuxFlush;
@@ -502,6 +511,11 @@ namespace addon
     inline static void ADDON_EnableStream(const AddonInstance_InputStream* instance, int streamid, bool enable)
     {
       instance->toAddon.addonInstance->EnableStream(streamid, enable);
+    }
+
+    inline static void ADDON_OpenStream(const AddonInstance_InputStream* instance, int streamid)
+    {
+      instance->toAddon.addonInstance->OpenStream(streamid);
     }
 
     inline static void ADDON_DemuxReset(const AddonInstance_InputStream* instance)

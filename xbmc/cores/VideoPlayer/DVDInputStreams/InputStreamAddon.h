@@ -83,6 +83,8 @@ public:
   CDemuxStream* GetStream(int streamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   void EnableStream(int streamId, bool enable) override;
+  void OpenStream(int streamid) override;
+
   int GetNrOfStreams() const override;
   void SetSpeed(int speed) override;
   bool SeekTime(double time, bool backward = false, double* startpts = nullptr) override;

@@ -3689,7 +3689,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     if(!stream || stream->disabled)
       return false;
 
-    m_pDemuxer->EnableStream(demuxerId, iStream, true);
+    m_pDemuxer->OpenStream(demuxerId, iStream);
 
     hint.Assign(*stream, true);
 

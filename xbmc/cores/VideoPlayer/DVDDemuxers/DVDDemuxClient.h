@@ -49,6 +49,7 @@ public:
   std::string GetFileName() override;
   std::string GetStreamCodecName(int iStreamId) override;
   void EnableStream(int id, bool enable) override;
+  void OpenStream(int id) override;
   void SetVideoResolution(int width, int height) override;
 
 protected:

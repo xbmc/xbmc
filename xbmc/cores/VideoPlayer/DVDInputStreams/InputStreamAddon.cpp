@@ -342,6 +342,18 @@ void CInputStreamAddon::EnableStream(int streamId, bool enable)
   m_struct.toAddon.enable_stream(&m_struct, stream->second->uniqueId, enable);
 }
 
+void CInputStreamAddon::OpenStream(int streamId)
+{
+  if (!m_struct.toAddon.open_stream)
+    return;
+
+  auto stream = m_streams.find(streamId);
+  if (stream == m_streams.end())
+    return;
+
+  m_struct.toAddon.open_stream(&m_struct, stream->second->uniqueId);
+}
+
 int CInputStreamAddon::GetNrOfStreams() const
 {
   return m_streams.size();
