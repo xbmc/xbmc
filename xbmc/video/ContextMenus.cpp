@@ -54,10 +54,12 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
+  if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
       return item.IsVideoDb();
+    else if (item.GetProperty("IsVideoFolder").asBoolean())
+      return true;
     else
       return CUtil::IsTVRecording(item.GetPath());
   }
@@ -78,10 +80,12 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
+  if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
       return item.IsVideoDb();
+    else if (item.GetProperty("IsVideoFolder").asBoolean())
+      return true;
     else
       return CUtil::IsTVRecording(item.GetPath());
   }
