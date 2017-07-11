@@ -75,8 +75,8 @@ TEST(IsXDigitTest, WorksForNarrowAscii) {
 }
 
 TEST(IsXDigitTest, ReturnsFalseForNarrowNonAscii) {
-  EXPECT_FALSE(IsXDigit(static_cast<char>(0x80)));
-  EXPECT_FALSE(IsXDigit(static_cast<char>('0' | 0x80)));
+  EXPECT_FALSE(IsXDigit('\x80'));
+  EXPECT_FALSE(IsXDigit(static_cast<char>('0' | '\x80')));
 }
 
 TEST(IsXDigitTest, WorksForWideAscii) {
@@ -304,58 +304,51 @@ TEST(FormatCompilerIndependentFileLocationTest, FormatsUknownFileAndLine) {
   EXPECT_EQ("unknown file", FormatCompilerIndependentFileLocation(NULL, -1));
 }
 
-#if GTEST_OS_MAC || GTEST_OS_QNX
+#if GTEST_OS_LINUX || GTEST_OS_MAC || GTEST_OS_QNX
 void* ThreadFunc(void* data) {
-  pthread_mutex_t* mutex = static_cast<pthread_mutex_t*>(data);
-  pthread_mutex_lock(mutex);
-  pthread_mutex_unlock(mutex);
+  internal::Mutex* mutex = static_cast<internal::Mutex*>(data);
+  mutex->Lock();
+  mutex->Unlock();
   return NULL;
 }
 
 TEST(GetThreadCountTest, ReturnsCorrectValue) {
-  EXPECT_EQ(1U, GetThreadCount());
-  pthread_mutex_t mutex;
-  pthread_attr_t  attr;
+  const size_t starting_count = GetThreadCount();
   pthread_t       thread_id;
 
-  // TODO(vladl@google.com): turn mutex into internal::Mutex for automatic
-  // destruction.
-  pthread_mutex_init(&mutex, NULL);
-  pthread_mutex_lock(&mutex);
-  ASSERT_EQ(0, pthread_attr_init(&attr));
-  ASSERT_EQ(0, pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE));
+  internal::Mutex mutex;
+  {
+    internal::MutexLock lock(&mutex);
+    pthread_attr_t  attr;
+    ASSERT_EQ(0, pthread_attr_init(&attr));
+    ASSERT_EQ(0, pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE));
 
-  const int status = pthread_create(&thread_id, &attr, &ThreadFunc, &mutex);
-  ASSERT_EQ(0, pthread_attr_destroy(&attr));
-  ASSERT_EQ(0, status);
-  EXPECT_EQ(2U, GetThreadCount());
-  pthread_mutex_unlock(&mutex);
+    const int status = pthread_create(&thread_id, &attr, &ThreadFunc, &mutex);
+    ASSERT_EQ(0, pthread_attr_destroy(&attr));
+    ASSERT_EQ(0, status);
+    EXPECT_EQ(starting_count + 1, GetThreadCount());
+  }
 
   void* dummy;
   ASSERT_EQ(0, pthread_join(thread_id, &dummy));
 
-# if GTEST_OS_MAC
-
-  // MacOS X may not immediately report the updated thread count after
+  // The OS may not immediately report the updated thread count after
   // joining a thread, causing flakiness in this test. To counter that, we
   // wait for up to .5 seconds for the OS to report the correct value.
   for (int i = 0; i < 5; ++i) {
-    if (GetThreadCount() == 1)
+    if (GetThreadCount() == starting_count)
       break;
 
     SleepMilliseconds(100);
   }
 
-# endif  // GTEST_OS_MAC
-
-  EXPECT_EQ(1U, GetThreadCount());
-  pthread_mutex_destroy(&mutex);
+  EXPECT_EQ(starting_count, GetThreadCount());
 }
 #else
 TEST(GetThreadCountTest, ReturnsZeroWhenUnableToCountThreads) {
   EXPECT_EQ(0U, GetThreadCount());
 }
-#endif  // GTEST_OS_MAC || GTEST_OS_QNX
+#endif  // GTEST_OS_LINUX || GTEST_OS_MAC || GTEST_OS_QNX
 
 TEST(GtestCheckDeathTest, DiesWithCorrectOutputOnFailure) {
   const bool a_false_condition = false;
@@ -389,15 +382,17 @@ TEST(GtestCheckDeathTest, LivesSilentlyOnSuccess) {
 // the platform. The test will produce compiler errors in case of failure.
 // For simplicity, we only cover the most important platforms here.
 TEST(RegexEngineSelectionTest, SelectsCorrectRegexEngine) {
-#if GTEST_HAS_POSIX_RE
+#if !GTEST_USES_PCRE
+# if GTEST_HAS_POSIX_RE
 
   EXPECT_TRUE(GTEST_USES_POSIX_RE);
 
-#else
+# else
 
   EXPECT_TRUE(GTEST_USES_SIMPLE_RE);
 
-#endif
+# endif
+#endif  // !GTEST_USES_PCRE
 }
 
 #if GTEST_USES_POSIX_RE
@@ -1062,11 +1057,13 @@ class AtomicCounterWithMutex {
     MutexLock lock(mutex_);
     int temp = value_;
     {
-      // Locking a mutex puts up a memory barrier, preventing reads and
-      // writes to value_ rearranged when observed from other threads.
-      //
-      // We cannot use Mutex and MutexLock here or rely on their memory
-      // barrier functionality as we are testing them here.
+      // We need to put up a memory barrier to prevent reads and writes to
+      // value_ rearranged with the call to SleepMilliseconds when observed
+      // from other threads.
+#if GTEST_HAS_PTHREAD
+      // On POSIX, locking a mutex puts up a memory barrier.  We cannot use
+      // Mutex and MutexLock here or rely on their memory barrier
+      // functionality as we are testing them here.
       pthread_mutex_t memory_barrier_mutex;
       GTEST_CHECK_POSIX_SUCCESS_(
           pthread_mutex_init(&memory_barrier_mutex, NULL));
@@ -1076,6 +1073,15 @@ class AtomicCounterWithMutex {
 
       GTEST_CHECK_POSIX_SUCCESS_(pthread_mutex_unlock(&memory_barrier_mutex));
       GTEST_CHECK_POSIX_SUCCESS_(pthread_mutex_destroy(&memory_barrier_mutex));
+#elif GTEST_OS_WINDOWS
+      // On Windows, performing an interlocked access puts up a memory barrier.
+      volatile LONG dummy = 0;
+      ::InterlockedIncrement(&dummy);
+      SleepMilliseconds(random_.Generate(30));
+      ::InterlockedIncrement(&dummy);
+#else
+# error "Memory barrier not implemented on this platform."
+#endif  // GTEST_HAS_PTHREAD
     }
     value_ = temp + 1;
   }
@@ -1145,27 +1151,76 @@ TEST(ThreadLocalTest, ParameterizedConstructorSetsDefault) {
   EXPECT_STREQ("foo", result.c_str());
 }
 
+// Keeps track of whether of destructors being called on instances of
+// DestructorTracker.  On Windows, waits for the destructor call reports.
+class DestructorCall {
+ public:
+  DestructorCall() {
+    invoked_ = false;
+#if GTEST_OS_WINDOWS
+    wait_event_.Reset(::CreateEvent(NULL, TRUE, FALSE, NULL));
+    GTEST_CHECK_(wait_event_.Get() != NULL);
+#endif
+  }
+
+  bool CheckDestroyed() const {
+#if GTEST_OS_WINDOWS
+    if (::WaitForSingleObject(wait_event_.Get(), 1000) != WAIT_OBJECT_0)
+      return false;
+#endif
+    return invoked_;
+  }
+
+  void ReportDestroyed() {
+    invoked_ = true;
+#if GTEST_OS_WINDOWS
+    ::SetEvent(wait_event_.Get());
+#endif
+  }
+
+  static std::vector<DestructorCall*>& List() { return *list_; }
+
+  static void ResetList() {
+    for (size_t i = 0; i < list_->size(); ++i) {
+      delete list_->at(i);
+    }
+    list_->clear();
+  }
+
+ private:
+  bool invoked_;
+#if GTEST_OS_WINDOWS
+  AutoHandle wait_event_;
+#endif
+  static std::vector<DestructorCall*>* const list_;
+
+  GTEST_DISALLOW_COPY_AND_ASSIGN_(DestructorCall);
+};
+
+std::vector<DestructorCall*>* const DestructorCall::list_ =
+    new std::vector<DestructorCall*>;
+
 // DestructorTracker keeps track of whether its instances have been
 // destroyed.
-static std::vector<bool> g_destroyed;
-
 class DestructorTracker {
  public:
   DestructorTracker() : index_(GetNewIndex()) {}
   DestructorTracker(const DestructorTracker& /* rhs */)
       : index_(GetNewIndex()) {}
   ~DestructorTracker() {
-    // We never access g_destroyed concurrently, so we don't need to
-    // protect the write operation under a mutex.
-    g_destroyed[index_] = true;
+    // We never access DestructorCall::List() concurrently, so we don't need
+    // to protect this acccess with a mutex.
+    DestructorCall::List()[index_]->ReportDestroyed();
   }
 
  private:
-  static int GetNewIndex() {
-    g_destroyed.push_back(false);
-    return g_destroyed.size() - 1;
+  static size_t GetNewIndex() {
+    DestructorCall::List().push_back(new DestructorCall);
+    return DestructorCall::List().size() - 1;
   }
-  const int index_;
+  const size_t index_;
+
+  GTEST_DISALLOW_ASSIGN_(DestructorTracker);
 };
 
 typedef ThreadLocal<DestructorTracker>* ThreadParam;
@@ -1177,63 +1232,49 @@ void CallThreadLocalGet(ThreadParam thread_local_param) {
 // Tests that when a ThreadLocal object dies in a thread, it destroys
 // the managed object for that thread.
 TEST(ThreadLocalTest, DestroysManagedObjectForOwnThreadWhenDying) {
-  g_destroyed.clear();
+  DestructorCall::ResetList();
 
   {
-    // The next line default constructs a DestructorTracker object as
-    // the default value of objects managed by thread_local_tracker.
     ThreadLocal<DestructorTracker> thread_local_tracker;
-    ASSERT_EQ(1U, g_destroyed.size());
-    ASSERT_FALSE(g_destroyed[0]);
+    ASSERT_EQ(0U, DestructorCall::List().size());
 
     // This creates another DestructorTracker object for the main thread.
     thread_local_tracker.get();
-    ASSERT_EQ(2U, g_destroyed.size());
-    ASSERT_FALSE(g_destroyed[0]);
-    ASSERT_FALSE(g_destroyed[1]);
+    ASSERT_EQ(1U, DestructorCall::List().size());
+    ASSERT_FALSE(DestructorCall::List()[0]->CheckDestroyed());
   }
 
-  // Now thread_local_tracker has died.  It should have destroyed both the
-  // default value shared by all threads and the value for the main
-  // thread.
-  ASSERT_EQ(2U, g_destroyed.size());
-  EXPECT_TRUE(g_destroyed[0]);
-  EXPECT_TRUE(g_destroyed[1]);
+  // Now thread_local_tracker has died.
+  ASSERT_EQ(1U, DestructorCall::List().size());
+  EXPECT_TRUE(DestructorCall::List()[0]->CheckDestroyed());
 
-  g_destroyed.clear();
+  DestructorCall::ResetList();
 }
 
 // Tests that when a thread exits, the thread-local object for that
 // thread is destroyed.
 TEST(ThreadLocalTest, DestroysManagedObjectAtThreadExit) {
-  g_destroyed.clear();
+  DestructorCall::ResetList();
 
   {
-    // The next line default constructs a DestructorTracker object as
-    // the default value of objects managed by thread_local_tracker.
     ThreadLocal<DestructorTracker> thread_local_tracker;
-    ASSERT_EQ(1U, g_destroyed.size());
-    ASSERT_FALSE(g_destroyed[0]);
+    ASSERT_EQ(0U, DestructorCall::List().size());
 
     // This creates another DestructorTracker object in the new thread.
     ThreadWithParam<ThreadParam> thread(
         &CallThreadLocalGet, &thread_local_tracker, NULL);
     thread.Join();
 
-    // Now the new thread has exited.  The per-thread object for it
-    // should have been destroyed.
-    ASSERT_EQ(2U, g_destroyed.size());
-    ASSERT_FALSE(g_destroyed[0]);
-    ASSERT_TRUE(g_destroyed[1]);
+    // The thread has exited, and we should have a DestroyedTracker
+    // instance created for it. But it may not have been destroyed yet.
+    ASSERT_EQ(1U, DestructorCall::List().size());
   }
 
-  // Now thread_local_tracker has died.  The default value should have been
-  // destroyed too.
-  ASSERT_EQ(2U, g_destroyed.size());
-  EXPECT_TRUE(g_destroyed[0]);
-  EXPECT_TRUE(g_destroyed[1]);
+  // The thread has exited and thread_local_tracker has died.
+  ASSERT_EQ(1U, DestructorCall::List().size());
+  EXPECT_TRUE(DestructorCall::List()[0]->CheckDestroyed());
 
-  g_destroyed.clear();
+  DestructorCall::ResetList();
 }
 
 TEST(ThreadLocalTest, ThreadLocalMutationsAffectOnlyCurrentThread) {
@@ -1248,6 +1289,16 @@ TEST(ThreadLocalTest, ThreadLocalMutationsAffectOnlyCurrentThread) {
 }
 
 #endif  // GTEST_IS_THREADSAFE
+
+#if GTEST_OS_WINDOWS
+TEST(WindowsTypesTest, HANDLEIsVoidStar) {
+  StaticAssertTypeEq<HANDLE, void*>();
+}
+
+TEST(WindowsTypesTest, CRITICAL_SECTIONIs_RTL_CRITICAL_SECTION) {
+  StaticAssertTypeEq<CRITICAL_SECTION, _RTL_CRITICAL_SECTION>();
+}
+#endif  // GTEST_OS_WINDOWS
 
 }  // namespace internal
 }  // namespace testing
