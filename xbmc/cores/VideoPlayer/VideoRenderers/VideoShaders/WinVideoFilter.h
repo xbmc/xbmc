@@ -24,9 +24,11 @@
 
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
-#include "ShaderFormats.h"
 #include <DirectXMath.h>
 #include <wrl.h>
+
+enum EBufferFormat;
+class CRenderBuffer;
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -128,12 +130,12 @@ public:
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
   virtual bool Create(EBufferFormat fmt, COutputShader *pOutShader = nullptr);
-  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer, CD3DTexture *target);
+  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, CRenderBuffer* videoBuffer, CD3DTexture *target);
 
 protected:
-  void PrepareParameters(SWinVideoBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
+  void PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
                          float contrast, float brightness);
-  void SetShaderParameters(SWinVideoBuffer* videoBuffer);
+  void SetShaderParameters(CRenderBuffer* videoBuffer);
 
 private:
   CYUV2RGBMatrix      m_matrix;

@@ -18,31 +18,35 @@
  *
  */
 
+#include <ppltasks.h>
+
 #include "WinRenderer.h"
-#include "RenderFactory.h"
-#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/FFmpeg.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "platform/win32/WIN32Util.h"
+#include "RenderFactory.h"
+#include "RenderFlags.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
-#include "platform/win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
-#include <ppltasks.h>
 
-typedef struct {
+typedef struct 
+{
   RenderMethod  method;
   const char   *name;
 } RenderMethodDetail;
 
-static RenderMethodDetail RenderMethodDetails[] = {
+static RenderMethodDetail RenderMethodDetails[] = 
+{
     { RENDER_SW     , "Software" },
     { RENDER_PS     , "Pixel Shaders" },
     { RENDER_DXVA   , "DXVA" },
@@ -69,37 +73,36 @@ bool CWinRenderer::Register()
   return true;
 }
 
-CWinRenderer::CWinRenderer()
-  : m_frameIdx(0)
+CWinRenderer::CWinRenderer() : CBaseRenderer()
+  , m_bConfigured(false)
+  , m_bUseHQScaler(false)
+  , m_bFilterInitialized(false)
+  , m_cmsOn(false)
+  , m_clutLoaded(true)
+  , m_destWidth(0)
+  , m_destHeight(0)
+  , m_frameIdx(0)
+  , m_iYV12RenderBuffer(0)
+  , m_NumYV12Buffers(0)
+  , m_neededBuffers(0)
+  , m_iRequestedMethod(RENDER_METHOD_AUTO)
+  , m_dxva_format(DXGI_FORMAT_UNKNOWN)
+  , m_renderMethod(RENDER_PS)
   , m_bufferFormat(BUFFER_FMT_NONE)
+  , m_scalingMethod(VS_SCALINGMETHOD_LINEAR)
+  , m_scalingMethodGui(static_cast<ESCALINGMETHOD>(-1))
+  , m_processor(nullptr)
+  , m_sw_scale_ctx(nullptr)
+  , m_colorShader(nullptr)
+  , m_scalerShader(nullptr)
+  , m_capture(nullptr)
+  , m_pCLUTView(nullptr)
 {
-  m_iYV12RenderBuffer = 0;
-  m_NumYV12Buffers = 0;
-
-  m_colorShader = nullptr;
-  m_scalerShader = nullptr;
-  m_dxva_format = DXGI_FORMAT_UNKNOWN;
-
-  m_iRequestedMethod = RENDER_METHOD_AUTO;
-
-  m_renderMethod = RENDER_PS;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  m_scalingMethodGui = static_cast<ESCALINGMETHOD>(-1);
-
-  m_bUseHQScaler = false;
-  m_bFilterInitialized = false;
-
-  for (int i = 0; i < NUM_BUFFERS; i++)
-    m_VideoBuffers[i] = nullptr;
-
-  m_sw_scale_ctx = nullptr;
-  m_destWidth = 0;
-  m_destHeight = 0;
-  m_bConfigured = false;
   m_format = AV_PIX_FMT_NONE;
-  m_processor = nullptr;
-  m_neededBuffers = 0;
-  m_colorManager.reset(new CColorManager());
+  for (unsigned i = 0; i < NUM_BUFFERS; i++)
+    m_renderBuffers[i].Release();
+
+  m_colorManager = std::make_unique<CColorManager>();
   m_outputShader.reset();
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
@@ -117,14 +120,14 @@ void CWinRenderer::ManageTextures()
   if( m_NumYV12Buffers < m_neededBuffers )
   {
     for(int i = m_NumYV12Buffers; i<m_neededBuffers;i++)
-      CreateYV12Texture(i);
+      CreateRenderBuffer(i);
 
     m_NumYV12Buffers = m_neededBuffers;
   }
   else if( m_NumYV12Buffers > m_neededBuffers )
   {
     for (int i = m_NumYV12Buffers - 1; i >= m_neededBuffers; i--)
-      DeleteYV12Texture(i);
+      DeleteRenderBuffer(i);
 
     m_NumYV12Buffers = m_neededBuffers;
     m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;
@@ -136,7 +139,7 @@ void CWinRenderer::SelectRenderMethod()
   EBufferFormat dxFormat = SelectBufferFormat(m_format, RENDER_DXVA);
   EBufferFormat psFormat = SelectBufferFormat(m_format, RENDER_PS);
   // modern drivers allow using HW pic in shaders
-  bool allowChangeMethod = dxFormat == psFormat;
+  bool allowChangeMethod = dxFormat == psFormat && m_iRequestedMethod != RENDER_SW;
 
   // old drivers + HW decoded picture -> we must force DXVA render method
   if (!allowChangeMethod && m_format == AV_PIX_FMT_D3D11VA_VLD)
@@ -159,7 +162,7 @@ void CWinRenderer::SelectRenderMethod()
     case RENDER_METHOD_DXVA:
     {
       // skip if format isn't DXVA compatible.
-      if (dxFormat >= BUFFER_FMT_DXVA_BYPASS)
+      if (dxFormat >= BUFFER_FMT_D3D11_BYPASS)
       {
         if (m_processor && m_processor->Open(m_sourceWidth, m_sourceHeight))
         {
@@ -178,7 +181,7 @@ void CWinRenderer::SelectRenderMethod()
       {
         // for modern drivers select method depends on input
         // for HW decoded or interlaced picture prefer DXVA method.
-        if (m_format == RENDER_FMT_DXVA || m_iFlags & DVP_FLAG_INTERLACED)
+        if (m_format == AV_PIX_FMT_D3D11VA_VLD || m_iFlags & DVP_FLAG_INTERLACED)
         {
           if (m_processor && m_processor->Open(m_sourceWidth, m_sourceHeight))
           {
@@ -254,7 +257,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned fl
   return true;
 }
 
-int CWinRenderer::NextYV12Texture() const
+int CWinRenderer::NextBuffer() const
 {
   if(m_NumYV12Buffers)
     return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
@@ -263,16 +266,22 @@ int CWinRenderer::NextYV12Texture() const
 
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  //@todo create a member that can hold videobuffer and renderbuffer
-  if (!m_VideoBuffers[index])
-    return;
+  unsigned flags = RenderManager::GetFlagsChromaPosition(picture.chroma_position)
+    | RenderManager::GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight)
+    | RenderManager::GetFlagsColorPrimaries(picture.color_primaries)
+    | RenderManager::GetFlagsColorTransfer(picture.color_transfer);
+  if (picture.color_range == 1)
+    flags |= CONF_FLAGS_YUV_FULLRANGE;
 
-  m_VideoBuffers[index]->ReleaseHWPicture();
-  m_VideoBuffers[index]->ApplyPicture(picture);
-  m_VideoBuffers[index]->frameIdx = m_frameIdx;
+  m_renderBuffers[index].videoBuffer = picture.videoBuffer;
+  m_renderBuffers[index].videoBuffer->Acquire();
+  m_renderBuffers[index].frameIdx = m_frameIdx;
+  m_renderBuffers[index].flags = flags;
   m_frameIdx += 2;
-  m_VideoBuffers[index]->videoBuffer = picture.videoBuffer;
-  m_VideoBuffers[index]->videoBuffer->Acquire();
+
+  if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    m_renderBuffers[index].QueueCopyBuffer();
+  m_renderBuffers[index].loaded = false;
 }
 
 void CWinRenderer::Reset()
@@ -303,16 +312,10 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
 
 void CWinRenderer::FlipPage(int source)
 {
-  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
-    m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
-
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
-    m_iYV12RenderBuffer = NextYV12Texture();
-
-  if (m_iYV12RenderBuffer >= 0 && m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
-    m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
+    m_iYV12RenderBuffer = NextBuffer();
 }
 
 void CWinRenderer::PreInit()
@@ -345,7 +348,7 @@ void CWinRenderer::UnInit()
   m_bFilterInitialized = false;
 
   for(int i = 0; i < NUM_BUFFERS; i++)
-    DeleteYV12Texture(i);
+    DeleteRenderBuffer(i);
 
   m_NumYV12Buffers = 0;
 
@@ -370,13 +373,11 @@ void CWinRenderer::Flush()
     return;
 
   for (int i = 0; i < NUM_BUFFERS; i++)
-    DeleteYV12Texture(i);
+    DeleteRenderBuffer(i);
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
   m_bFilterInitialized = false;
-
-  Update();
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)
@@ -406,65 +407,109 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
   return true;
 }
 
-EBufferFormat CWinRenderer::SelectBufferFormat(const ERenderFormat format, const RenderMethod method) const
+template<typename T>
+bool Contains(std::vector<T> vector, T item)
 {
-  EBufferFormat buffer_format = BUFFER_FMT_NONE;
-  if (m_format == RENDER_FMT_DXVA)      buffer_format = BUFFER_FMT_YUV420P;
-  if (m_format == RENDER_FMT_NV12)      buffer_format = BUFFER_FMT_YUV420P;
-  if (m_format == RENDER_FMT_YUV420P)   buffer_format = BUFFER_FMT_YUV420P;
-  if (m_format == RENDER_FMT_YUV420P10) buffer_format = BUFFER_FMT_YUV420P10;
-  if (m_format == RENDER_FMT_YUV420P16) buffer_format = BUFFER_FMT_YUV420P16;
-  // is they still used?
-  if (m_format == RENDER_FMT_YUYV422)   buffer_format = BUFFER_FMT_YUYV422;
-  if (m_format == RENDER_FMT_UYVY422)   buffer_format = BUFFER_FMT_UYVY422;
+  return find(vector.begin(), vector.end(), item) != vector.end();
+}
 
-  if (method == RENDER_SW)
-    return buffer_format;
-
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
-  CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_UNKNOWN, 
-                                m_sourceWidth, m_sourceHeight, 1, 1, 
-                                D3D11_BIND_SHADER_RESOURCE,
-                                D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-  if (method == RENDER_DXVA)
-    texDesc.BindFlags |= D3D11_BIND_DECODER;
-
-  switch (format)
+EBufferFormat CWinRenderer::SelectBufferFormat(AVPixelFormat format, const RenderMethod method) const
+{
+  AVPixelFormat decoderFormat = format;
+  if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
-  case RENDER_FMT_NV12:
-  case RENDER_FMT_YUV420P:
-  case RENDER_FMT_YUV420P10:
-  case RENDER_FMT_YUV420P16:
-  {
-    texDesc.Format = DXGI_FORMAT_NV12;
-    if (m_format == RENDER_FMT_YUV420P10) texDesc.Format = DXGI_FORMAT_P010;
-    if (m_format == RENDER_FMT_YUV420P16) texDesc.Format = DXGI_FORMAT_P016;
-
-    if (SUCCEEDED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    switch(m_dxva_format)
     {
-      buffer_format = BUFFER_FMT_DXVA_NV12;
-      if (m_format == RENDER_FMT_YUV420P10) buffer_format = BUFFER_FMT_DXVA_P010;
-      if (m_format == RENDER_FMT_YUV420P16) buffer_format = BUFFER_FMT_DXVA_P016;
+    case DXGI_FORMAT_NV12:
+      decoderFormat = AV_PIX_FMT_NV12;
+      break;
+    case DXGI_FORMAT_P010:
+      decoderFormat = AV_PIX_FMT_P010;
+      break;
+    case DXGI_FORMAT_P016:
+      decoderFormat = AV_PIX_FMT_P016;
+      break;
+    default:
+      break;
     }
-    return buffer_format;
   }
-  case RENDER_FMT_DXVA:
+
+  // check shared formats and processor formats
+  if ( method != RENDER_SW && Contains(g_Windowing.m_sharedFormats, decoderFormat)
+    || (method == RENDER_DXVA && Contains(g_Windowing.m_processorFormats, decoderFormat)) )
   {
-    texDesc.Format = m_dxva_format;
-    texDesc.Usage = D3D11_USAGE_DEFAULT;
-    texDesc.CPUAccessFlags = 0;
+    switch (format)
+    {
+    case AV_PIX_FMT_D3D11VA_VLD:
+      return BUFFER_FMT_D3D11_BYPASS;
+    case AV_PIX_FMT_NV12:
+    case AV_PIX_FMT_YUV420P:
+      return BUFFER_FMT_D3D11_NV12;
+    case AV_PIX_FMT_YUV420P10:
+    case AV_PIX_FMT_P010:
+      return BUFFER_FMT_D3D11_P010;
+    case AV_PIX_FMT_YUV420P16:
+    case AV_PIX_FMT_P016:
+      return BUFFER_FMT_D3D11_P016;
+    default:
+      return BUFFER_FMT_NONE;
+    }
+  }
 
-    if (method == RENDER_DXVA || SUCCEEDED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr)))
-      return BUFFER_FMT_DXVA_BYPASS;
+  // fit decoder format for shaders
+  if (format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    switch (m_dxva_format)
+    {
+    case DXGI_FORMAT_P010:
+      decoderFormat = AV_PIX_FMT_YUV420P10;
+      break;
+    case DXGI_FORMAT_P016:
+      decoderFormat = AV_PIX_FMT_YUV420P16;
+      break;
+    default: 
+      break;
+    }
+  }
 
-    if (m_dxva_format == DXGI_FORMAT_P010)
+  // check common formats (SW rendering or win7)
+  if ( method == RENDER_SW || (method == RENDER_PS && Contains(g_Windowing.m_shaderFormats, decoderFormat)))
+  {
+    switch (format)
+    {
+    case AV_PIX_FMT_D3D11VA_VLD:
+    {
+      switch(m_dxva_format)
+      {
+        // @todo implement support of these formats
+        //case DXGI_FORMAT_P010:
+        //  return BUFFER_FMT_YUV420P10;
+        //case DXGI_FORMAT_P016:
+        //  return BUFFER_FMT_YUV420P16;
+        case DXGI_FORMAT_NV12:
+        default:
+          return BUFFER_FMT_NV12;
+      }
+    }
+    case AV_PIX_FMT_NV12:
+      return BUFFER_FMT_NV12;
+    case AV_PIX_FMT_YUV420P:
+      return BUFFER_FMT_YUV420P;
+    case AV_PIX_FMT_YUV420P10:
       return BUFFER_FMT_YUV420P10;
-    if (m_dxva_format == DXGI_FORMAT_P016)
-        return BUFFER_FMT_YUV420P16;
+    case AV_PIX_FMT_YUV420P16:
+      return BUFFER_FMT_YUV420P16;
+    // is they still used?
+    case AV_PIX_FMT_YUYV422:
+      return BUFFER_FMT_YUV420P16;
+    case AV_PIX_FMT_UYVY422:
+      return BUFFER_FMT_UYVY422;
+    default:
+      return BUFFER_FMT_NONE;
+    }
   }
-  default:
-    return buffer_format;
-  }
+
+  return BUFFER_FMT_NONE;
 }
 
 void CWinRenderer::SelectSWVideoFilter()
@@ -624,7 +669,7 @@ void CWinRenderer::UpdateVideoFilter()
 
   if (cmsChanged || !m_outputShader)
   {
-    m_outputShader.reset(new COutputShader());
+    m_outputShader = std::make_unique<COutputShader>();
     if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth))
     {
       CLog::Log(LOGDEBUG, "%s: Unable to create output shader.", __FUNCTION__);
@@ -660,8 +705,11 @@ void CWinRenderer::UpdateVideoFilter()
 
 void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
 {
-  if (!m_VideoBuffers[m_iYV12RenderBuffer]->IsReadyToRender())
-    return;
+  if (!m_renderBuffers[m_iYV12RenderBuffer].loaded)
+  {
+    if (!m_renderBuffers[m_iYV12RenderBuffer].UploadBuffer())
+      return;
+  }
 
   UpdateVideoFilter();
 
@@ -679,6 +727,7 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   default:
     return;
   }
+
   if (m_bUseHQScaler)
     RenderHQ(target);
 
@@ -696,18 +745,36 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
    || m_destRect.y1 < 0 && m_destRect.y2 < 0)
     return;
 
-  // 1. convert yuv to rgb
+  // fit format in case of hw decoder
+  AVPixelFormat decoderFormat = m_format;
+  if (m_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    switch (m_dxva_format)
+    {
+    case DXGI_FORMAT_NV12:
+      decoderFormat = AV_PIX_FMT_NV12;
+      break;
+    case DXGI_FORMAT_P010:
+      decoderFormat = AV_PIX_FMT_YUV420P10;
+      break;
+    case DXGI_FORMAT_P016:
+      decoderFormat = AV_PIX_FMT_YUV420P16;
+      break;
+    default:
+      break;
+    }
+  }
 
-  enum AVPixelFormat format = PixelFormatFromFormat(m_format);
+  // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
-                                        m_sourceWidth, m_sourceHeight, m_format,
+                                        m_sourceWidth, m_sourceHeight, decoderFormat,
                                         m_sourceWidth, m_sourceHeight, AV_PIX_FMT_BGRA,
                                         SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
-  SWinVideoBuffer* buf = m_VideoBuffers[m_iYV12RenderBuffer];
+  CRenderBuffer* buf = &m_renderBuffers[m_iYV12RenderBuffer];
 
-  uint8_t* src[MAX_PLANES];
-  int srcStride[MAX_PLANES];
+  uint8_t* src[YuvImage::MAX_PLANES];
+  int srcStride[YuvImage::MAX_PLANES];
 
   for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
     buf->MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
@@ -767,7 +834,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   m_colorShader->Render(m_sourceRect, destPoints,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
-                        m_VideoBuffers[m_iYV12RenderBuffer], target);
+                        &m_renderBuffers[m_iYV12RenderBuffer], target);
   // Restore our view port.
   g_Windowing.RestoreViewPort();
 }
@@ -781,11 +848,11 @@ void CWinRenderer::RenderHQ(CD3DTexture* target)
 
 void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 {
-  SWinVideoBuffer *image = m_VideoBuffers[m_iYV12RenderBuffer];
-  if (image->format != BUFFER_FMT_DXVA_BYPASS
-    && image->format != BUFFER_FMT_DXVA_NV12
-    && image->format != BUFFER_FMT_DXVA_P010
-    && image->format != BUFFER_FMT_DXVA_P016)
+  CRenderBuffer *image = &m_renderBuffers[m_iYV12RenderBuffer];
+  if ( image->format != BUFFER_FMT_D3D11_BYPASS
+    && image->format != BUFFER_FMT_D3D11_NV12
+    && image->format != BUFFER_FMT_D3D11_P010
+    && image->format != BUFFER_FMT_D3D11_P016)
     return;
   
   if (!image->HasPic())
@@ -794,8 +861,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
   int past = 0;
   int future = 0;
 
-  SWinVideoBuffer* views[8];
-  memset(views, 0, 8 * sizeof(SWinVideoBuffer*));
+  CRenderBuffer* views[8];
+  memset(views, 0, 8 * sizeof(CRenderBuffer*));
   views[2] = image;
 
   // set future frames
@@ -804,10 +871,10 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_VideoBuffers[i] && m_VideoBuffers[i]->HasPic()
-        && m_VideoBuffers[i]->frameIdx == image->frameIdx + (future*2 + 2))
+      if (m_renderBuffers[i].HasPic()
+        && m_renderBuffers[i].frameIdx == image->frameIdx + (future*2 + 2))
       {
-        views[1 - future++] = m_VideoBuffers[i];
+        views[1 - future++] = &m_renderBuffers[i];
         found = true;
         break;
       }
@@ -822,10 +889,10 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_VideoBuffers[i] && m_VideoBuffers[i]->HasPic()
-        && m_VideoBuffers[i]->frameIdx == image->frameIdx - (past*2 + 2))
+      if (m_renderBuffers[i].HasPic()
+        && m_renderBuffers[i].frameIdx == image->frameIdx - (past*2 + 2))
       {
-        views[3 + past++] = m_VideoBuffers[i];
+        views[3 + past++] = &m_renderBuffers[i];
         found = true;
         break;
       }
@@ -912,27 +979,26 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************
-void CWinRenderer::DeleteYV12Texture(int index)
+void CWinRenderer::DeleteRenderBuffer(int index)
 {
   CSingleLock lock(g_graphicsContext);
   ReleaseBuffer(index);
-  SAFE_DELETE(m_VideoBuffers[index]);
+  m_renderBuffers[index].Release();
 }
 
-bool CWinRenderer::CreateYV12Texture(int index)
+bool CWinRenderer::CreateRenderBuffer(int index)
 {
   CSingleLock lock(g_graphicsContext);
-  DeleteYV12Texture(index);
+  DeleteRenderBuffer(index);
 
-  m_VideoBuffers[index] = new SWinVideoBuffer();
-  if (!m_VideoBuffers[index]->CreateBuffer(m_bufferFormat, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_SW))
+  if (!m_renderBuffers[index].CreateBuffer(m_bufferFormat, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_SW))
   {
     CLog::Log(LOGERROR, "%s: unable to create video buffer %i", __FUNCTION__, index);
-    SAFE_DELETE(m_VideoBuffers[index]);
+    m_renderBuffers[index].Release();
     return false;
   }
-  m_VideoBuffers[index]->StartDecode();
-  m_VideoBuffers[index]->Clear();
+  m_renderBuffers[index].Lock();
+  m_renderBuffers[index].Clear();
 
   CLog::Log(LOGDEBUG, "%s: created video buffer %i", __FUNCTION__, index);
   return true;
@@ -964,25 +1030,25 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   {
     if (m_renderMethod == RENDER_DXVA)
     {
-      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
-          method == VS_SCALINGMETHOD_AUTO)
+      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE 
+       || method == VS_SCALINGMETHOD_AUTO)
         return true;
       if (!g_advancedSettings.m_DXVAAllowHqScaling || m_renderOrientation)
         return false;
     }
 
-    if (  method == VS_SCALINGMETHOD_AUTO
-      || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
+    if ( method == VS_SCALINGMETHOD_AUTO
+     || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
         return true;
 
     if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
     {
-      if(method == VS_SCALINGMETHOD_CUBIC
-      || method == VS_SCALINGMETHOD_LANCZOS2
-      || method == VS_SCALINGMETHOD_SPLINE36_FAST
-      || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-      || method == VS_SCALINGMETHOD_SPLINE36
-      || method == VS_SCALINGMETHOD_LANCZOS3)
+      if (method == VS_SCALINGMETHOD_CUBIC
+       || method == VS_SCALINGMETHOD_LANCZOS2
+       || method == VS_SCALINGMETHOD_SPLINE36_FAST
+       || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+       || method == VS_SCALINGMETHOD_SPLINE36
+       || method == VS_SCALINGMETHOD_LANCZOS3)
       {
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width())/m_sourceWidth)*100;
@@ -996,8 +1062,8 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   }
   else if(m_renderMethod == RENDER_SW)
   {
-    if(method == VS_SCALINGMETHOD_AUTO
-    || method == VS_SCALINGMETHOD_LINEAR)
+    if (method == VS_SCALINGMETHOD_AUTO
+     || method == VS_SCALINGMETHOD_LINEAR)
       return true;
   }
   return false;
@@ -1023,6 +1089,9 @@ bool CWinRenderer::HandlesVideoBuffer(CVideoBuffer* buffer)
 {
   AVPixelFormat format = buffer->GetFormat();
   if ( format == AV_PIX_FMT_D3D11VA_VLD
+    || format == AV_PIX_FMT_NV12
+    || format == AV_PIX_FMT_P010
+    || format == AV_PIX_FMT_P016
     || format == AV_PIX_FMT_YUV420P
     || format == AV_PIX_FMT_YUV420P10
     || format == AV_PIX_FMT_YUV420P16)
@@ -1037,6 +1106,9 @@ CRenderInfo CWinRenderer::GetRenderInfo()
   info.formats = 
   { 
     AV_PIX_FMT_D3D11VA_VLD, 
+    AV_PIX_FMT_NV12, 
+    AV_PIX_FMT_P010, 
+    AV_PIX_FMT_P016, 
     AV_PIX_FMT_YUV420P, 
     AV_PIX_FMT_YUV420P10, 
     AV_PIX_FMT_YUV420P16 
@@ -1056,11 +1128,7 @@ CRenderInfo CWinRenderer::GetRenderInfo()
 
 void CWinRenderer::ReleaseBuffer(int idx)
 {
-  if (m_VideoBuffers[idx])
-    SAFE_RELEASE(m_VideoBuffers[idx]->videoBuffer);
-
-  if (m_renderMethod == RENDER_DXVA && m_VideoBuffers[idx])
-    m_VideoBuffers[idx]->ReleaseHWPicture();
+  SAFE_RELEASE(m_renderBuffers[idx].videoBuffer);
 }
 
 bool CWinRenderer::NeedBuffer(int idx)
@@ -1069,9 +1137,9 @@ bool CWinRenderer::NeedBuffer(int idx)
   if (m_renderMethod == RENDER_DXVA && m_processor)
   {
     int numPast = m_processor->PastRefs();
-    if (m_VideoBuffers[idx] && m_VideoBuffers[idx]->HasPic())
+    if (m_renderBuffers[idx].HasPic())
     {
-      if (m_VideoBuffers[idx]->frameIdx + numPast*2 >= m_VideoBuffers[m_iYV12RenderBuffer]->frameIdx)
+      if (m_renderBuffers[idx].frameIdx + numPast*2 >= m_renderBuffers[m_iYV12RenderBuffer].frameIdx)
         return true;
     }
   }
@@ -1099,10 +1167,7 @@ void CWinRenderer::ColorManagmentUpdate()
 
 bool CWinRenderer::LoadCLUT()
 {
-  if (m_outputShader)
-    m_outputShader->SetCLUT(0, nullptr);
   m_CLUTSize = 0;
-  SAFE_RELEASE(m_pCLUTView);
   m_clutLoaded = false;
 
   auto loadLutTask = Concurrency::create_task([this]{
@@ -1114,7 +1179,10 @@ bool CWinRenderer::LoadCLUT()
     uint16_t* clutData = static_cast<uint16_t*>(_aligned_malloc(dataSize, 16));
     bool success = m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGBA, clutSize, clutData);
     if (success)
+    {
+      SAFE_RELEASE(m_pCLUTView);
       success = COutputShader::CreateCLUTView(clutSize, clutData, false, &m_pCLUTView);
+    }
     else
       CLog::Log(LOGERROR, "%s: unable to loading the 3dlut data.", __FUNCTION__);
 
@@ -1125,7 +1193,7 @@ bool CWinRenderer::LoadCLUT()
     return clutSize;
   });
 
-  loadLutTask.then([this](int clutSize){
+  loadLutTask.then([&](int clutSize){
     m_CLUTSize = clutSize;
     if (m_outputShader)
         m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView);

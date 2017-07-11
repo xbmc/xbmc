@@ -30,7 +30,7 @@
 #include "DXVAHD.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "cores/VideoPlayer/VideoRenderers/WinVideoBuffer.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
 #include "settings/MediaSettings.h"
 #include "utils/Log.h"
 #include "utils/win32/memcpy_sse2.h"
@@ -322,12 +322,12 @@ bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   return true;
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(SWinVideoBuffer* view) const
+ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
   ID3D11VideoProcessorInputView* inputView = nullptr;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D,{ 0, 0 } };
 
-  if (view->format == BUFFER_FMT_DXVA_BYPASS)
+  if (view->format == BUFFER_FMT_D3D11_BYPASS)
   {
     // the view cames from decoder
     ID3D11VideoDecoderOutputView* decoderView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view->GetHWView());
@@ -348,9 +348,9 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(SWinVideoBuffer* view)
 
     resource->Release();
   }
-  else if (view->format == BUFFER_FMT_DXVA_NV12
-        || view->format == BUFFER_FMT_DXVA_P010
-        || view->format == BUFFER_FMT_DXVA_P016)
+  else if (view->format == BUFFER_FMT_D3D11_NV12
+        || view->format == BUFFER_FMT_D3D11_P010
+        || view->format == BUFFER_FMT_D3D11_P016)
   {
     if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(view->GetResource(), m_pEnumerator, &vpivd, &inputView)))
       CLog::Log(LOGERROR, "%s: cannot create processor input view.", __FUNCTION__);
@@ -373,7 +373,7 @@ static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
   delete[] stream_data.ppFutureSurfaces;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, SWinVideoBuffer** views, DWORD flags, UINT frameIdx, UINT rotation)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation)
 {
   HRESULT hr;
   CSingleLock lock(m_section);
@@ -449,10 +449,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, SWinVide
     ReleaseStream(stream_data);
     return false;
   }
-
-  // fix locked textures
-  for (int i = start; i <= end; i++)
-    if (i != 2 && views[i]) views[i]->StartRender();
 
   if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_TOP)
     dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;

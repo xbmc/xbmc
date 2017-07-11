@@ -29,6 +29,7 @@
 #include "guilib/GraphicContext.h"
 #include "Util.h"
 #include "platform/win32/WIN32Util.h"
+#include "VideoRenderers/WinRenderBuffer.h"
 #include "YUV2RGBShader.h"
 #include <map>
 #include "dither.h"
@@ -80,7 +81,7 @@ XMFLOAT4X4* CYUV2RGBMatrix::Matrix()
   {
     TransformMatrix matrix;
     EShaderFormat fmt = SHADER_NONE;
-    if (m_format == BUFFER_FMT_YUV420P10 || m_format == BUFFER_FMT_DXVA_P010)
+    if (m_format == BUFFER_FMT_YUV420P10 || m_format == BUFFER_FMT_D3D11_P010)
       fmt = SHADER_YV12_10;
     CalculateYUVMatrix(matrix, m_flags, fmt, m_blacklevel, m_contrast, m_limitedRange);
 
@@ -362,7 +363,7 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
     unsigned lutsamples = clutSize * clutSize * clutSize;
     cData = reinterpret_cast<uint16_t*>(_aligned_malloc(lutsamples * sizeof(uint16_t) * 4, 16));
     uint16_t* rgba = static_cast<uint16_t*>(cData);
-    for (int i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
+    for (unsigned i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
     {
       *(uint64_t*)rgba = *(uint64_t*)clutData;
     }
@@ -462,7 +463,7 @@ void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned ran
   g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 
-  float params[3] = { range, contrast, brightness };
+  float params[3] = { static_cast<float>(range), contrast, brightness };
   m_effect.SetFloatArray("m_params", params, 3);
 
   ApplyEffectParameters(m_effect, sourceTexture.GetWidth(), sourceTexture.GetHeight());
@@ -515,10 +516,10 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
   case BUFFER_FMT_YUV420P16:
     defines["XBMC_YV12"] = "";
     break;
-  case BUFFER_FMT_DXVA_BYPASS:
-  case BUFFER_FMT_DXVA_NV12:
-  case BUFFER_FMT_DXVA_P010:
-  case BUFFER_FMT_DXVA_P016:
+  case BUFFER_FMT_D3D11_BYPASS:
+  case BUFFER_FMT_D3D11_NV12:
+  case BUFFER_FMT_D3D11_P010:
+  case BUFFER_FMT_D3D11_P016:
   case BUFFER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
@@ -563,7 +564,7 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer, CD3DTexture *target)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, CRenderBuffer* videoBuffer, CD3DTexture *target)
 {
   PrepareParameters(videoBuffer, sourceRect, dest, contrast, brightness);
   SetShaderParameters(videoBuffer);
@@ -583,7 +584,7 @@ CYUV2RGBShader::~CYUV2RGBShader()
 {
 }
 
-void CYUV2RGBShader::PrepareParameters(SWinVideoBuffer* videoBuffer, CRect sourceRect, CPoint dest[], 
+void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
                                        float contrast, float brightness)
 {
   if (m_sourceRect != sourceRect
@@ -650,7 +651,7 @@ void CYUV2RGBShader::PrepareParameters(SWinVideoBuffer* videoBuffer, CRect sourc
                          m_format);
 }
 
-void CYUV2RGBShader::SetShaderParameters(SWinVideoBuffer* videoBuffer)
+void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 {
   m_effect.SetTechnique("YUV2RGB_T");
   ID3D11ShaderResourceView* ppSRView[3] =
@@ -1127,10 +1128,11 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
 {
-  CD3D11_VIEWPORT viewPort(.0f, .0f, .0f, .0f);
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
-  viewPort = CD3D11_VIEWPORT(0.0f, 0.0f,
+  CD3D11_VIEWPORT viewPort = CD3D11_VIEWPORT(
+    0.0f, 
+    0.0f,
     static_cast<float>(m_target->GetWidth()),
     static_cast<float>(m_target->GetHeight()));
 

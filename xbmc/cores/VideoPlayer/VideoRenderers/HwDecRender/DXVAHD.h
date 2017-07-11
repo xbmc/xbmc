@@ -25,7 +25,7 @@
 #include "guilib/D3DResource.h"
 #include "guilib/Geometry.h"
 
-class SWinVideoBuffer;
+class CRenderBuffer;
 
 namespace DXVA {
 
@@ -50,7 +50,7 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, SWinVideoBuffer **views, DWORD flags, UINT frameIdx, UINT rotation);
+  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation);
   uint8_t Size() const { return m_pVideoProcessor ? m_size : 0; }
   uint8_t PastRefs() const { return m_max_back_refs; }
 
@@ -66,7 +66,7 @@ protected:
   bool CheckFormats() const;
   bool OpenProcessor();
   bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ID3D11VideoProcessorInputView* GetInputView(SWinVideoBuffer* view) const;
+  ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
 
   CCriticalSection m_section;

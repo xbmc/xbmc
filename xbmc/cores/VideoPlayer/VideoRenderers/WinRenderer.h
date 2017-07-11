@@ -22,49 +22,18 @@
 
 #include "BaseRenderer.h"
 #include "ColorManager.h"
-#include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
+#include "HwDecRender/DXVAHD.h"
 #include "RenderCapture.h"
-#include "WinVideoBuffer.h"
-#include "settings/Settings.h"
-
-#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
-#define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
+#include "WinRenderBuffer.h"
 
 #define AUTOSOURCE -1
 
-#define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
-#define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
-#define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
-#define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
-
-#define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
-
-class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
 class COutputShader;
-
-class DllAvUtil;
-class DllAvCodec;
-class DllSwScale;
-
 struct VideoPicture;
-
-struct DRAWRECT
-{
-  float left;
-  float top;
-  float right;
-  float bottom;
-};
-
-struct YUVRANGE
-{
-  int y_min, y_max;
-  int u_min, u_max;
-  int v_min, v_max;
-};
+enum EBufferFormat;
 
 enum RenderMethod
 {
@@ -73,16 +42,6 @@ enum RenderMethod
   RENDER_SW      = 0x02,
   RENDER_DXVA    = 0x03,
 };
-
-#define PLANE_Y 0
-#define PLANE_U 1
-#define PLANE_V 2
-#define PLANE_UV 1
-#define PLANE_DXVA 0
-
-#define FIELD_FULL 0
-#define FIELD_TOP 1
-#define FIELD_BOT 2
 
 class CWinRenderer : public CBaseRenderer
 {
@@ -121,15 +80,16 @@ public:
   static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
 protected:
+  void PreInit();
   virtual void Render(DWORD flags, CD3DTexture* target);
   void RenderSW(CD3DTexture* target);
   void RenderHW(DWORD flags, CD3DTexture* target);
   void RenderPS(CD3DTexture* target);
   void RenderHQ(CD3DTexture* target);
   void ManageTextures();
-  void DeleteYV12Texture(int index);
-  bool CreateYV12Texture(int index);
-  int NextYV12Texture() const;
+  void DeleteRenderBuffer(int index);
+  bool CreateRenderBuffer(int index);
+  int NextBuffer() const;
   void SelectRenderMethod();
   void UpdateVideoFilter();
   void SelectSWVideoFilter();
@@ -137,15 +97,15 @@ protected:
   void UpdatePSVideoFilter();
   void ColorManagmentUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
-  EBufferFormat SelectBufferFormat(const ERenderFormat format, const RenderMethod method) const;
+  EBufferFormat SelectBufferFormat(AVPixelFormat format, const RenderMethod method) const;
 
   bool LoadCLUT();
 
   bool m_bConfigured;
   bool m_bUseHQScaler;
   bool m_bFilterInitialized;
-  bool m_cmsOn{ false };
-  bool m_clutLoaded{ true };
+  bool m_cmsOn;
+  bool m_clutLoaded;
   bool m_useDithering;
 
   unsigned int m_destWidth;
@@ -165,18 +125,16 @@ protected:
   EBufferFormat m_bufferFormat;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
+  CRenderBuffer m_renderBuffers[NUM_BUFFERS];
 
-  std::vector<ERenderFormat> m_formats;
-
-  SWinVideoBuffer *m_VideoBuffers[NUM_BUFFERS];
   DXVA::CProcessorHD *m_processor;
   struct SwsContext *m_sw_scale_ctx;
   CYUV2RGBShader* m_colorShader;
   CConvolutionShader* m_scalerShader;
   std::unique_ptr<COutputShader> m_outputShader;
-  CRenderCapture* m_capture = nullptr;
+  CRenderCapture* m_capture;
   std::unique_ptr<CColorManager> m_colorManager;
-  ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+  ID3D11ShaderResourceView *m_pCLUTView;
 
   CD3DTexture m_IntermediateTarget;
 };
