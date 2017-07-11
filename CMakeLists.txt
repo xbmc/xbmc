@@ -103,6 +103,10 @@ else()
 endif()
 
 set(CORE_PLATFORM_NAME ${_DEFAULT_PLATFORM} CACHE STRING "Platform port to build")
+#
+# Note: please do not use CORE_PLATFORM_NAME in any checks,
+# use the normalized to lower case CORE_PLATFORM_NAME_LC (see below) instead
+#
 unset(_DEFAULT_PLATFORM)
 string(TOLOWER ${CORE_PLATFORM_NAME} CORE_PLATFORM_NAME_LC)
 
