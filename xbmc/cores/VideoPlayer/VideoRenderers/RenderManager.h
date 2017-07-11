@@ -150,7 +150,7 @@ protected:
   void DeleteRenderer();
   void ManageCaptures();
 
-  void UpdateDisplayLatency();
+  void UpdateLatencyTweak();
   void CheckEnableClockSync();
 
   void FlipPage(volatile std::atomic_bool& bStop, double pts, EINTERLACEMETHOD deintMethod, EFIELDSYNC sync, bool wait);
@@ -196,6 +196,10 @@ protected:
   ERENDERSTATE m_renderState;
   CEvent m_stateEvent;
 
+  /// Display latency tweak value from AdvancedSettings for the current refresh rate
+  /// in milliseconds
+  double m_latencyTweak = 0.0;
+  /// Display latency updated in PrepareNextRender in DVD clock units, includes m_latencyTweak
   double m_displayLatency = 0.0;
   std::atomic_int m_videoDelay = {0};
 

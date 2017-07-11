@@ -80,6 +80,15 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
+  /**
+   * Get average display latency
+   *
+   * If windowing has no reliable information, the fallback implementation returns
+   * a guess based on the number of buffers in the driver and the current refresh rate.
+   *
+   * \return average display latency in milliseconds
+   */
+  float GetDisplayLatency() const;
   const std::string& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const std::string& strMediaDir);
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);

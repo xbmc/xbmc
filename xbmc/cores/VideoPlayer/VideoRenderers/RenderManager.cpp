@@ -364,7 +364,7 @@ void CRenderManager::PreInit()
     CreateRenderer();
   }
 
-  UpdateDisplayLatency();
+  UpdateLatencyTweak();
 
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
@@ -796,7 +796,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
       double refreshrate, clockspeed;
       int missedvblanks;
-      vsync = StringUtils::Format("VSyncOff: %.1f  ", m_clockSync.m_syncOffset / 1000);
+      vsync = StringUtils::Format("VSyncOff: %.1f latency: %.3f  ", m_clockSync.m_syncOffset / 1000, DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
       if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
         vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%.3f%%",
@@ -920,17 +920,13 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CRenderManager::UpdateDisplayLatency()
+void CRenderManager::UpdateLatencyTweak()
 {
   float fps = g_graphicsContext.GetFPS();
   float refresh = fps;
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_displayLatency = (double) g_advancedSettings.GetDisplayLatency(refresh);
-
-  int buffers = g_Windowing.NoOfBuffers();
-  m_displayLatency += (buffers - 1) / fps;
-
+  m_latencyTweak = g_advancedSettings.GetDisplayLatency(refresh);
 }
 
 void CRenderManager::UpdateResolution()
@@ -943,7 +939,7 @@ void CRenderManager::UpdateResolution()
       {
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags) != 0);
         g_graphicsContext.SetVideoResolution(res);
-        UpdateDisplayLatency();
+        UpdateLatencyTweak();
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
@@ -1100,11 +1096,9 @@ void CRenderManager::PrepareNextRender()
   double frameOnScreen = m_dvdClock.GetClock();
   double frametime = 1.0 / g_graphicsContext.GetFPS() * DVD_TIME_BASE;
 
-  // correct display latency
-  // internal buffers of driver, assume that driver lets us go one frame in advance
-  double totalLatency = DVD_SEC_TO_TIME(m_displayLatency) - DVD_MSEC_TO_TIME(m_videoDelay) + 2* frametime;
+  m_displayLatency = DVD_SEC_TO_TIME(m_latencyTweak + g_graphicsContext.GetDisplayLatency() / 1000.0f - m_videoDelay / 1000.0f);
 
-  double renderPts = frameOnScreen + totalLatency;
+  double renderPts = frameOnScreen + m_displayLatency;
 
   double nextFramePts = m_Queue[m_queued.front()].pts;
   if (m_dvdClock.GetClockSpeed() < 0)
@@ -1169,7 +1163,7 @@ void CRenderManager::PrepareNextRender()
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
-    m_presentpts = m_Queue[idx].pts - totalLatency;
+    m_presentpts = m_Queue[idx].pts - m_displayLatency;
     m_presentevent.notifyAll();
 
     m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());

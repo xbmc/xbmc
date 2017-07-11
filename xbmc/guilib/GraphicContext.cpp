@@ -946,6 +946,18 @@ float CGraphicContext::GetFPS() const
   return 60.0f;
 }
 
+float CGraphicContext::GetDisplayLatency() const
+{
+  float latency = g_Windowing.GetDisplayLatency();
+  if (latency < 0.0f)
+  {
+    // fallback
+    latency = (g_Windowing.NoOfBuffers() + 1) / GetFPS() * 1000.0f;
+  }
+
+  return latency;
+}
+
 bool CGraphicContext::IsFullScreenRoot () const
 {
   return m_bFullScreenRoot;
