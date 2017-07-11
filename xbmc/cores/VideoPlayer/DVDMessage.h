@@ -248,6 +248,29 @@ class CDVDMsgPlayerSeekChapter : public CDVDMsg
     int m_iChapter;
 };
 
+class CDVDMsgPlayerSetSpeed : public CDVDMsg
+{
+public:
+  struct SpeedParams
+  {
+    int m_speed;
+    bool m_isTempo;
+  };
+
+  CDVDMsgPlayerSetSpeed(SpeedParams params)
+  : CDVDMsg(PLAYER_SETSPEED)
+  , m_params(params)
+  {}
+
+  float GetSpeed() const { return m_params.m_speed; }
+  float IsTempo() const { return m_params.m_isTempo; }
+
+private:
+
+  SpeedParams m_params;
+
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //////
 ////// DEMUXER_ Messages

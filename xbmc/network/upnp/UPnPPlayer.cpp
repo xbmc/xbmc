@@ -37,6 +37,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "Application.h"
+#include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -449,14 +450,20 @@ failed:
 void CUPnPPlayer::Pause()
 {
   if(IsPaused())
+  {
     NPT_CHECK_LABEL(m_control->Play(m_delegate->m_device
                                   , m_delegate->m_instance
                                   , "1"
                                   , m_delegate), failed);
+    CDataCacheCore::GetInstance().SetSpeed(1.0, 1.0);
+  }
   else
+  {
     NPT_CHECK_LABEL(m_control->Pause(m_delegate->m_device
                                    , m_delegate->m_instance
                                    , m_delegate), failed);
+    CDataCacheCore::GetInstance().SetSpeed(1.0, 0.0);
+  }
 
   return;
 failed:
@@ -605,12 +612,5 @@ void CUPnPPlayer::SetSpeed(float speed)
 
 }
 
-float CUPnPPlayer::GetSpeed()
-{
-  if (IsPaused())
-    return 0;
-  else
-    return 1;
-}
 
 } /* namespace UPNP */

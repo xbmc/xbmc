@@ -356,7 +356,7 @@ public:
   int64_t GetTime() override;
   int64_t GetTotalTime() override;
   void SetSpeed(float speed) override;
-  float GetSpeed() override;
+  void SetTempo(float tempo) override;
   bool SupportsTempo() override;
   bool OnAction(const CAction &action) override;
 
@@ -513,8 +513,7 @@ protected:
 
   CSelectionStreams m_SelectionStreams;
 
-  std::atomic_int m_playSpeed;
-  std::atomic_int m_newPlaySpeed;
+  int m_playSpeed;
   int m_streamPlayerSpeed;
   struct SSpeedState
   {

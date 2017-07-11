@@ -37,9 +37,6 @@
 #include <iomanip>
 #include <math.h>
 
-// allow audio for slow and fast speeds (but not rewind/fastforward)
-#define ALLOW_AUDIO(speed) ((speed) > 5*DVD_PLAYSPEED_NORMAL/10 && (speed) <= 15*DVD_PLAYSPEED_NORMAL/10)
-
 class CDVDMsgAudioCodecChange : public CDVDMsg
 {
 public:
@@ -249,7 +246,7 @@ void CVideoPlayerAudio::Process()
     int priority = 1;
     //Do we want a new audio frame?
     if (m_syncState == IDVDStreamPlayer::SYNC_STARTING ||              /* when not started */
-        ALLOW_AUDIO(m_speed) || /* when playing normally */
+        m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) ||
         m_speed <  DVD_PLAYSPEED_PAUSE  || /* when rewinding */
         (m_speed >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
       priority = 0;
@@ -288,7 +285,8 @@ void CVideoPlayerAudio::Process()
         continue;
 
       // Flush as the audio output may keep looping if we don't
-      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+      if (m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
+          !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
         // while AE sync is active, we still have time to fill buffers
         if (m_syncTimer.IsTimePast())
@@ -358,7 +356,7 @@ void CVideoPlayerAudio::Process()
     {
       double speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-      if (ALLOW_AUDIO(speed))
+      if (m_processInfo.IsTempoAllowed(static_cast<float>(speed)/DVD_PLAYSPEED_NORMAL))
       {
         if (speed != m_speed)
         {
@@ -396,7 +394,8 @@ void CVideoPlayerAudio::Process()
       bool bPacketDrop  = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
       if (bPacketDrop ||
-          (!ALLOW_AUDIO(m_speed) && m_syncState == IDVDStreamPlayer::SYNC_INSYNC))
+          (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
+           m_syncState == IDVDStreamPlayer::SYNC_INSYNC))
       {
         pMsg->Release();
         continue;

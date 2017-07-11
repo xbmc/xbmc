@@ -941,6 +941,7 @@ void PAPlayer::SetDynamicRangeCompression(long drc)
 void PAPlayer::SetSpeed(float speed)
 {
   m_playbackSpeed = static_cast<int>(speed);
+  CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
   if (m_playbackSpeed != 0 && m_isPaused)
   {
     m_isPaused = false;
@@ -954,18 +955,6 @@ void PAPlayer::SetSpeed(float speed)
     m_callback.OnPlayBackPaused();
   }
   m_signalSpeedChange = true;
-}
-
-float PAPlayer::GetSpeed()
-{
-  //! @todo: remove extra member for pause state
-  //! there was inconsistency throughout the entire application on how speed
-  //! and pause were used. Now speed is defined as current playback speed.
-  //! as a result speed must be 0 if player is paused.
-  if (m_isPaused)
-    return 0;
-
-  return m_playbackSpeed;
 }
 
 int64_t PAPlayer::GetTimeInternal()

@@ -20,6 +20,7 @@
 
 #include "RetroPlayerAutoSave.h"
 #include "cores/IPlayer.h"
+#include "cores/DataCacheCore.h"
 #include "utils/log.h"
 #include "URL.h"
 
@@ -47,7 +48,7 @@ void CRetroPlayerAutoSave::Process()
     if (m_bStop)
       break;
 
-    if (m_player->GetSpeed() > 0.0f)
+    if (CDataCacheCore::GetInstance().GetSpeed() > 0.0f)
     {
       std::string savePath = m_player->GetPlayerState();
       if (!savePath.empty())

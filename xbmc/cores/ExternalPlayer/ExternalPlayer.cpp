@@ -38,6 +38,7 @@
 #include "utils/Variant.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/DataCacheCore.h"
 #include "input/InputManager.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
@@ -575,11 +576,7 @@ int64_t CExternalPlayer::GetTotalTime() // in milliseconds
 void CExternalPlayer::SetSpeed(float speed)
 {
   m_speed = speed;
-}
-
-float CExternalPlayer::GetSpeed()
-{
-  return m_speed;
+  CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
 }
 
 std::string CExternalPlayer::GetPlayerState()
