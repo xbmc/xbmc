@@ -29,6 +29,8 @@ extern "C"
 #include <libbluray/log_control.h>
 #include <libbluray/keys.h>
 #include <libbluray/overlay.h>
+#include <libbluray/meta_data.h>
+#include <libbluray/bluray-version.h>
 }
 
 typedef int(*read_blocks_f)(void *handle, void *buf, int lba, int num_blocks);
@@ -87,6 +89,8 @@ public:
   virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
   virtual int      bd_mouse_select              (BLURAY *bd, int64_t pts, uint16_t x, uint16_t y)=0;
   virtual int      bd_get_sound_effect          (BLURAY *bd, unsigned sound_id, struct bd_sound_effect *effect)=0;
+  virtual const struct meta_dl* bd_get_meta     (BLURAY *bd)=0;
+  virtual int      bd_get_meta_file             (BLURAY *bd, char * path, uint8_t** picture, int64_t* size)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -140,6 +144,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
   DEFINE_METHOD4(int,                 bd_mouse_select,           (BLURAY *p1, int64_t p2, uint16_t p3, uint16_t p4))
   DEFINE_METHOD3(int,                 bd_get_sound_effect,       (BLURAY *p1, unsigned p2, struct bd_sound_effect* p3))
+  DEFINE_METHOD1(const struct meta_dl*, bd_get_meta,             (BLURAY *p1))
+  DEFINE_METHOD4(int,                 bd_get_meta_file,          (BLURAY *p1, char* p2, uint8_t** p3, int64_t* p4))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
@@ -189,6 +195,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_menu_call)
     RESOLVE_METHOD(bd_mouse_select)
     RESOLVE_METHOD(bd_get_sound_effect)
+    RESOLVE_METHOD(bd_get_meta)
+    RESOLVE_METHOD(bd_get_meta_file)
   END_METHOD_RESOLVE()
 
 public:
@@ -203,4 +211,5 @@ public:
   static BD_FILE_H *file_open(void * handle, const char * rel_path);
   static BD_DIR_H *dir_open(void * handle, const char * rel_path);
   static void      bluray_logger(const char* msg);
+
 };

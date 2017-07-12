@@ -28,6 +28,8 @@
 #include "guilib/LocalizeStrings.h"
 
 #include <cassert>
+#include <array>
+#include "utils/LangCodeExpander.h"
 
 namespace XFILE
 {
@@ -154,12 +156,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(file);
   URIUtils::RemoveSlashAtEnd(root);
 
-  m_dll = new DllLibbluray();
-  if (!m_dll->Load())
-  {
-    CLog::Log(LOGERROR, "CBlurayDirectory::GetDirectory - failed to load dll");
+  if (!InitializeBluray(root))
     return false;
-  }
+
+  uint8_t* pic = GetThumbnail();
 
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
@@ -199,6 +199,104 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
   std::string host = url.GetHostName();
   std::string filename = url.GetFileName();
   return CURL(host.append(filename));
+}
+
+bool CBlurayDirectory::InitializeBluray(std::string &root)
+{
+  m_dll = new DllLibbluray();
+  if (!m_dll->Load())
+  {
+    CLog::Log(LOGERROR, "CBlurayDirectory::GetDirectory - failed to load dll");
+    return false;
+  }
+
+  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
+  m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
+
+  m_bd = m_dll->bd_init();
+
+  if (!m_bd)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to initialize libbluray");
+    return false;
+  }
+
+  std::string langCode;
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+  
+  if (!m_dll->bd_open_files(m_bd, &root, DllLibbluray::dir_open, DllLibbluray::file_open))
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", CURL::GetRedacted(root).c_str());
+    return false;
+  }
+  m_blurayInitialized = true;
+
+  return true;
+}
+
+uint8_t* CBlurayDirectory::GetThumbnail()
+{
+  if (!m_blurayInitialized)
+    return nullptr;
+
+  const struct meta_dl* meta = m_dll->bd_get_meta(m_bd);
+  uint8_t* picture = nullptr;
+  int64_t size = 0;
+  int suc = m_dll->bd_get_meta_file(m_bd, meta->thumbnails->path, &picture, &size);
+}
+
+std::string CBlurayDirectory::GetBlurayTitle()
+{
+  if (!m_blurayInitialized)
+    return "";
+  const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+  if (!disc_info || !disc_info->bluray_detected)
+    return "";
+
+  std::string title = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+    title = disc_info->disc_name ? disc_info->disc_name : "";
+#endif
+
+    return title;
+}
+
+std::string CBlurayDirectory::GetBlurayID()
+{
+  if (!m_blurayInitialized)
+    return "";
+
+  const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+  if (!disc_info || !disc_info->bluray_detected)
+    return "";
+
+  std::string id = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+  id = disc_info->udf_volume_id ? disc_info->udf_volume_id : "";
+
+  if (id.empty())
+  {
+
+    id = HexToString(disc_info->disc_id, 20);
+  }
+#endif
+
+  return id;
+}
+
+std::string CBlurayDirectory::HexToString(const uint8_t *buf, int count)
+{
+  std::array<char, 42> tmp;
+
+  for (int i = 0; i < count; i++) {
+    sprintf(tmp.data() + (i * 2), "%02x", buf[i]);
+  }
+
+  std::string id(std::begin(tmp), std::end(tmp));
+  return id;
 }
 
 } /* namespace XFILE */

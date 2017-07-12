@@ -38,6 +38,11 @@ public:
   ~CBlurayDirectory() override;
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
+  bool InitializeBluray(std::string &root);
+  uint8_t* GetThumbnail();
+  std::string GetBlurayTitle();
+  std::string GetBlurayID();
+
 private:
 
   void         Dispose();
@@ -45,9 +50,11 @@ private:
   void         GetTitles(bool main, CFileItemList &items);
   CFileItemPtr GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
   CURL         GetUnderlyingCURL(const CURL& url);
+  std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;
   DllLibbluray* m_dll;
   BLURAY*       m_bd;
+  bool          m_blurayInitialized = false;
 };
 
 }
