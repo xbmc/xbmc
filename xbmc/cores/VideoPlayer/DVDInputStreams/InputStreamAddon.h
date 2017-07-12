@@ -95,16 +95,15 @@ public:
   bool IsRealTimeStream();
 
 protected:
-  void UpdateStreams();
-  void DisposeStreams();
-  int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
+  static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
 
   IVideoPlayer* m_player;
 
 private:
   std::vector<std::string> m_fileItemProps;
   INPUTSTREAM_CAPABILITIES m_caps;
-  std::map<int, CDemuxStream*> m_streams;
+
+  int m_streamCount = 0;
 
   AddonInstance_InputStream m_struct;
   std::shared_ptr<CInputStreamProvider> m_subAddonProvider;

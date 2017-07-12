@@ -54,6 +54,7 @@ public:
 
 protected:
   void RequestStreams();
+  void RequestStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map);
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStream(int iStreamId);
   void DisposeStreams();

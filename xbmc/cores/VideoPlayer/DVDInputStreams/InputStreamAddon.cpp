@@ -161,9 +161,9 @@ bool CInputStreamAddon::Open()
   {
     memset(&m_caps, 0, sizeof(m_caps));
     m_struct.toAddon.get_capabilities(&m_struct, &m_caps);
-  }
 
-  UpdateStreams();
+    m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
+  }
   return ret;
 }
 
@@ -294,40 +294,103 @@ DemuxPacket* CInputStreamAddon::ReadDemux()
   if (!m_struct.toAddon.demux_read)
     return nullptr;
 
-  DemuxPacket* pPacket = m_struct.toAddon.demux_read(&m_struct);
-
-  if (!pPacket)
-  {
-    return nullptr;
-  }
-  else if (pPacket->iStreamId == DMX_SPECIALID_STREAMINFO)
-  {
-    UpdateStreams();
-  }
-  else if (pPacket->iStreamId == DMX_SPECIALID_STREAMCHANGE)
-  {
-    UpdateStreams();
-  }
-
-  return pPacket;
+  return m_struct.toAddon.demux_read(&m_struct);
 }
 
 std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
-  for (auto stream : m_streams)
-    streams.push_back(stream.second);
+  INPUTSTREAM_IDS streamIDs = m_struct.toAddon.get_stream_ids(&m_struct);
+  if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
+    return streams;
+
+  for (unsigned int i = 0; i < streamIDs.m_streamCount; ++i)
+    if (CDemuxStream* stream = GetStream(streamIDs.m_streamIds[i]))
+      streams.push_back(stream);
 
   return streams;
 }
 
 CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
-  auto stream = m_streams.find(streamId);
-  if (stream != m_streams.end())
-    return stream->second;
-  return nullptr;
+  INPUTSTREAM_INFO stream = m_struct.toAddon.get_stream(&m_struct, streamId);
+  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
+    return nullptr;
+
+  std::string codecName(stream.m_codecName);
+  StringUtils::ToLower(codecName);
+  AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
+  if (!codec)
+    return nullptr;
+
+  CDemuxStream *demuxStream;
+
+  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_AUDIO)
+  {
+    CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
+
+    audioStream->iChannels = stream.m_Channels;
+    audioStream->iSampleRate = stream.m_SampleRate;
+    audioStream->iBlockAlign = stream.m_BlockAlign;
+    audioStream->iBitRate = stream.m_BitRate;
+    audioStream->iBitsPerSample = stream.m_BitsPerSample;
+    demuxStream = audioStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_VIDEO)
+  {
+    CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
+
+    videoStream->iFpsScale = stream.m_FpsScale;
+    videoStream->iFpsRate = stream.m_FpsRate;
+    videoStream->iWidth = stream.m_Width;
+    videoStream->iHeight = stream.m_Height;
+    videoStream->fAspect = stream.m_Aspect;
+    videoStream->stereo_mode = "mono";
+    videoStream->iBitRate = stream.m_BitRate;
+    videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
+    demuxStream = videoStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
+  {
+    CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
+    demuxStream = subtitleStream;
+  }
+  else
+    return nullptr;
+
+  demuxStream->codec = codec->id;
+  demuxStream->codecName = stream.m_codecInternalName;
+  demuxStream->uniqueId = streamId;
+  demuxStream->language[0] = stream.m_language[0];
+  demuxStream->language[1] = stream.m_language[1];
+  demuxStream->language[2] = stream.m_language[2];
+  demuxStream->language[3] = stream.m_language[3];
+
+  if (stream.m_ExtraData && stream.m_ExtraSize)
+  {
+    demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
+    demuxStream->ExtraSize = stream.m_ExtraSize;
+    for (unsigned int j = 0; j < stream.m_ExtraSize; ++j)
+      demuxStream->ExtraData[j] = stream.m_ExtraData[j];
+  }
+
+  if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
+    stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
+  {
+    static const CryptoSessionSystem map[] =
+    {
+      CRYPTO_SESSION_SYSTEM_NONE,
+      CRYPTO_SESSION_SYSTEM_WIDEVINE,
+      CRYPTO_SESSION_SYSTEM_PLAYREADY
+    };
+    demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
+      map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
+
+    if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
+      demuxStream->externalInterfaces = m_subAddonProvider;
+  }
+  return demuxStream;
 }
 
 void CInputStreamAddon::EnableStream(int streamId, bool enable)
@@ -335,11 +398,7 @@ void CInputStreamAddon::EnableStream(int streamId, bool enable)
   if (!m_struct.toAddon.enable_stream)
     return;
 
-  auto stream = m_streams.find(streamId);
-  if (stream == m_streams.end())
-    return;
-
-  m_struct.toAddon.enable_stream(&m_struct, stream->second->uniqueId, enable);
+  m_struct.toAddon.enable_stream(&m_struct, streamId, enable);
 }
 
 void CInputStreamAddon::OpenStream(int streamId)
@@ -347,16 +406,12 @@ void CInputStreamAddon::OpenStream(int streamId)
   if (!m_struct.toAddon.open_stream)
     return;
 
-  auto stream = m_streams.find(streamId);
-  if (stream == m_streams.end())
-    return;
-
-  m_struct.toAddon.open_stream(&m_struct, stream->second->uniqueId);
+  m_struct.toAddon.open_stream(&m_struct, streamId);
 }
 
 int CInputStreamAddon::GetNrOfStreams() const
 {
-  return m_streams.size();
+  return m_streamCount;
 }
 
 void CInputStreamAddon::SetSpeed(int speed)
@@ -410,111 +465,6 @@ bool CInputStreamAddon::IsRealTimeStream()
   if (m_struct.toAddon.is_real_time_stream)
     return m_struct.toAddon.is_real_time_stream(&m_struct);
   return false;
-}
-
-void CInputStreamAddon::UpdateStreams()
-{
-  DisposeStreams();
-
-  INPUTSTREAM_IDS streamIDs = m_struct.toAddon.get_stream_ids(&m_struct);
-  if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
-  {
-    DisposeStreams();
-    return;
-  }
-
-  for (unsigned int i = 0; i < streamIDs.m_streamCount; ++i)
-  {
-    INPUTSTREAM_INFO stream = m_struct.toAddon.get_stream(&m_struct, streamIDs.m_streamIds[i]);
-    if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
-      continue;
-
-    std::string codecName(stream.m_codecName);
-    StringUtils::ToLower(codecName);
-    AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
-    if (!codec)
-      continue;
-
-    CDemuxStream *demuxStream;
-
-    if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_AUDIO)
-    {
-      CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
-
-      audioStream->iChannels = stream.m_Channels;
-      audioStream->iSampleRate = stream.m_SampleRate;
-      audioStream->iBlockAlign = stream.m_BlockAlign;
-      audioStream->iBitRate = stream.m_BitRate;
-      audioStream->iBitsPerSample = stream.m_BitsPerSample;
-      demuxStream = audioStream;
-    }
-    else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_VIDEO)
-    {
-      CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
-
-      videoStream->iFpsScale = stream.m_FpsScale;
-      videoStream->iFpsRate = stream.m_FpsRate;
-      videoStream->iWidth = stream.m_Width;
-      videoStream->iHeight = stream.m_Height;
-      videoStream->fAspect = stream.m_Aspect;
-      videoStream->stereo_mode = "mono";
-      videoStream->iBitRate = stream.m_BitRate;
-      videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
-      demuxStream = videoStream;
-    }
-    else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
-    {
-      CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
-      demuxStream = subtitleStream;
-    }
-    else
-      continue;
-
-    demuxStream->codec = codec->id;
-    demuxStream->codecName = stream.m_codecInternalName;
-    demuxStream->uniqueId = streamIDs.m_streamIds[i];
-    demuxStream->language[0] = stream.m_language[0];
-    demuxStream->language[1] = stream.m_language[1];
-    demuxStream->language[2] = stream.m_language[2];
-    demuxStream->language[3] = stream.m_language[3];
-
-    if (stream.m_ExtraData && stream.m_ExtraSize)
-    {
-      demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
-      demuxStream->ExtraSize = stream.m_ExtraSize;
-      for (unsigned int j = 0; j < stream.m_ExtraSize; ++j)
-        demuxStream->ExtraData[j] = stream.m_ExtraData[j];
-    }
-
-    if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
-      stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
-    {
-      static const CryptoSessionSystem map[] =
-      {
-        CRYPTO_SESSION_SYSTEM_NONE,
-        CRYPTO_SESSION_SYSTEM_WIDEVINE,
-        CRYPTO_SESSION_SYSTEM_PLAYREADY
-      };
-      demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-        map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
-
-      if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
-      {
-        if (!m_subAddonProvider)
-          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
-
-        demuxStream->externalInterfaces = m_subAddonProvider;
-      }
-    }
-    m_streams[demuxStream->uniqueId] = demuxStream;
-  }
-}
-
-void CInputStreamAddon::DisposeStreams()
-{
-  for (auto &stream : m_streams)
-    delete stream.second;
-  m_streams.clear();
 }
 
 int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
