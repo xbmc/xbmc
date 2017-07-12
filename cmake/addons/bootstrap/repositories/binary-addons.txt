@@ -1,1 +1,1 @@
-binary-addons https://github.com/Onkel206/repo-binary-addons.git master
+binary-addons https://github.com/Onkel1206/repo-binary-addons.git master
