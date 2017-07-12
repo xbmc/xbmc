@@ -998,9 +998,26 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
             if (startTime > 0 && endTime > 0)
             {
               // if no epg uid present, try to find a tag according to timer's start/end time
-              m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
-              if (m_epgTag)
-                m_iEpgUid = m_epgTag->UniqueBroadcastID();
+              CPVREpgInfoTagPtr epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
+              if (epgTag)
+              {
+                bool bTagMatches = !IsTimerRule();
+                if (!bTagMatches)
+                {
+                  // Check whether the tag actually is an event that belongs to a child of this timer rule
+                  const CPVRTimerInfoTagPtr timer = epgTag->Timer();
+                  if (timer && (timer->GetTimerRuleId() == m_iClientIndex))
+                  {
+                    bTagMatches = true;
+                  }
+                }
+
+                if (bTagMatches)
+                {
+                  m_epgTag = epgTag;
+                  m_iEpgUid = m_epgTag->UniqueBroadcastID();
+                }
+              }
             }
           }
         }
