@@ -1258,7 +1258,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
  {
-   if (CDecoder::IsVDPAUFormat(fmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+   if (CDecoder::IsVDPAUFormat(fmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
      return new VDPAU::CDecoder(processInfo);
 
    return nullptr;
