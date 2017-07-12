@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || defined(HAS_DX)
-
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "FileItem.h"
 #include "GUIDialogCMSSettings.h"
@@ -242,5 +240,3 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
     list.push_back(make_pair(items[i]->GetLabel(), items[i]->GetPath()));
   }
 }
-
-#endif //HAS_GL
