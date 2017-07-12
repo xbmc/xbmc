@@ -170,18 +170,18 @@ protected:
   void UpdateDisplayLatency();
   void CheckEnableClockSync();
 
-  CBaseRenderer *m_pRenderer;
+  CBaseRenderer *m_pRenderer = nullptr;
   OVERLAY::CRenderer m_overlays;
   CDebugRenderer m_debugRenderer;
   CCriticalSection m_statelock;
   CCriticalSection m_presentlock;
   CCriticalSection m_datalock;
-  bool m_bTriggerUpdateResolution;
-  bool m_bRenderGUI;
-  int m_waitForBufferCount;
-  int m_rendermethod;
-  bool m_renderedOverlay;
-  bool m_renderDebug;
+  bool m_bTriggerUpdateResolution = false;
+  bool m_bRenderGUI = true;
+  int m_waitForBufferCount = 0;
+  int m_rendermethod = 0;
+  bool m_renderedOverlay = false;
+  bool m_renderDebug = false;
   XbmcThreads::EndTime m_debugTimer;
 
 
@@ -211,11 +211,11 @@ protected:
   ERENDERSTATE m_renderState;
   CEvent m_stateEvent;
 
-  double m_displayLatency;
-  std::atomic_int m_videoDelay;
+  double m_displayLatency = 0.0;
+  std::atomic_int m_videoDelay = {0};
 
-  int m_QueueSize;
-  int m_QueueSkip;
+  int m_QueueSize = 2;
+  int m_QueueSkip = 0;
 
   struct SPresent
   {
@@ -229,19 +229,22 @@ protected:
   std::deque<int> m_discard;
 
   std::unique_ptr<VideoPicture> m_pConfigPicture;
-  unsigned int m_width, m_height, m_dwidth, m_dheight;
+  unsigned int m_width = 0;
+  unsigned int m_height = 0;
+  unsigned int m_dwidth = 0;
+  unsigned int m_dheight = 0;
   unsigned int m_flags = 0;
-  float m_fps;
-  unsigned int m_orientation;
-  int m_NumberBuffers;
+  float m_fps = 0.0;
+  unsigned int m_orientation = 0;
+  int m_NumberBuffers = 0;
 
-  int m_lateframes;
-  double m_presentpts;
-  EPRESENTSTEP m_presentstep;
+  int m_lateframes = -1;
+  double m_presentpts = 0.0;
+  EPRESENTSTEP m_presentstep = PRESENT_IDLE;
   XbmcThreads::EndTime m_presentTimer;
-  bool m_forceNext;
-  int m_presentsource;
-  XbmcThreads::ConditionVariable  m_presentevent;
+  bool m_forceNext = false;
+  int m_presentsource = 0;
+  XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
@@ -261,8 +264,8 @@ protected:
   CCriticalSection m_captCritSect;
   std::map<unsigned int, CRenderCapture*> m_captures;
   static unsigned int m_nextCaptureId;
-  unsigned int m_captureWaitCounter;
+  unsigned int m_captureWaitCounter = 0;
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
-  bool m_hasCaptures;
+  bool m_hasCaptures = false;
 };
