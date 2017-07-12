@@ -85,13 +85,13 @@ namespace Shaders {
     void SetContrast(float contrast) override { m_contrast = contrast; }
     void SetNonLinStretch(float stretch) override { m_stretch = stretch; }
 #if HAS_GLES >= 2
-    virtual GLint GetVertexLoc() { return m_hVertex; }
-    virtual GLint GetYcoordLoc() { return m_hYcoord; }
-    virtual GLint GetUcoordLoc() { return m_hUcoord; }
-    virtual GLint GetVcoordLoc() { return m_hVcoord; }
+    GLint GetVertexLoc() override { return m_hVertex; }
+    GLint GetYcoordLoc() override { return m_hYcoord; }
+    GLint GetUcoordLoc() override { return m_hUcoord; }
+    GLint GetVcoordLoc() override { return m_hVcoord; }
 
-    virtual void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
-    virtual void SetAlpha(GLfloat alpha) { m_alpha = alpha; }
+    void SetMatrices(GLfloat *p, GLfloat *m) override { m_proj = p; m_model = m; }
+    void SetAlpha(GLfloat alpha) override { m_alpha = alpha; }
 #endif
 
   protected:
