@@ -49,13 +49,13 @@ CRepositoryUpdater::CRepositoryUpdater(CAddonMgr& addonMgr) :
 
 void CRepositoryUpdater::Start()
 {
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CRepositoryUpdater::OnEvent);
+  m_addonMgr.Events().Subscribe(this, &CRepositoryUpdater::OnEvent);
   ScheduleUpdate();
 }
 
 CRepositoryUpdater::~CRepositoryUpdater()
 {
-  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  m_addonMgr.Events().Unsubscribe(this);
 }
 
 void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
@@ -63,7 +63,7 @@ void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
   if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(enableEvent->id, addon, ADDON_REPOSITORY))
+    if (m_addonMgr.GetAddon(enableEvent->id, addon, ADDON_REPOSITORY))
       ScheduleUpdate();
   }
 }
@@ -77,7 +77,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");
     m_doneEvent.Set();
 
-    VECADDONS updates = CAddonMgr::GetInstance().GetAvailableUpdates();
+    VECADDONS updates = m_addonMgr.GetAvailableUpdates();
 
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
     {
@@ -111,7 +111,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 {
   VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
+  if (m_addonMgr.GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
   {
     CSingleLock lock(m_criticalSection);
     for (const auto& addon : addons)
@@ -181,7 +181,7 @@ void CRepositoryUpdater::OnSettingChanged(std::shared_ptr<const CSetting> settin
 CDateTime CRepositoryUpdater::LastUpdated() const
 {
   VECADDONS repos;
-  if (!CAddonMgr::GetInstance().GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
+  if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
     return CDateTime();
 
   CAddonDatabase db;
@@ -209,7 +209,7 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NEVER)
     return;
 
-  if (!CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
+  if (!m_addonMgr.HasAddons(ADDON_REPOSITORY))
     return;
 
   auto prev = LastUpdated();
