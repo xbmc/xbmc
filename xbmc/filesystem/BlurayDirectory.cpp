@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include <cassert>
+#include <array>
 #include "utils/LangCodeExpander.h"
 
 namespace XFILE
@@ -217,6 +218,59 @@ bool CBlurayDirectory::InitializeBluray(std::string &root)
   m_blurayInitialized = true;
 
   return true;
+}
+
+std::string CBlurayDirectory::GetBlurayTitle()
+{
+  if (!m_blurayInitialized)
+    return "";
+  const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+  if (!disc_info || !disc_info->bluray_detected)
+    return "";
+
+  std::string title = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+    title = disc_info->disc_name ? disc_info->disc_name : "";
+#endif
+
+    return title;
+}
+
+std::string CBlurayDirectory::GetBlurayID()
+{
+  if (!m_blurayInitialized)
+    return "";
+
+  const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+  if (!disc_info || !disc_info->bluray_detected)
+    return "";
+
+  std::string id = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+  id = disc_info->udf_volume_id ? disc_info->udf_volume_id : "";
+
+  if (id.empty())
+  {
+
+    id = HexToString(disc_info->disc_id, 20);
+  }
+#endif
+
+  return id;
+}
+
+std::string CBlurayDirectory::HexToString(const uint8_t *buf, int count)
+{
+  std::array<char, 42> tmp;
+
+  for (int i = 0; i < count; i++) {
+    sprintf(tmp.data() + (i * 2), "%02x", buf[i]);
+  }
+
+  std::string id(std::begin(tmp), std::end(tmp));
+  return id;
 }
 
 } /* namespace XFILE */

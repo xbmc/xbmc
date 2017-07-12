@@ -39,6 +39,8 @@ public:
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
   bool InitializeBluray(std::string &root);
+  std::string GetBlurayTitle();
+  std::string GetBlurayID();
 
 private:
 
@@ -47,6 +49,7 @@ private:
   void         GetTitles(bool main, CFileItemList &items);
   CFileItemPtr GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
   CURL         GetUnderlyingCURL(const CURL& url);
+  std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;
   DllLibbluray* m_dll;
   BLURAY*       m_bd;
