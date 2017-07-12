@@ -91,6 +91,8 @@ extern "C"
     uint32_t stride[VideoPlane::MaxPlanes];
 
     int64_t pts;
+
+    void *buffer; //< will be passed in release_frame_buffer
   };
 
   enum VIDEOCODEC_RETVAL
@@ -137,6 +139,7 @@ extern "C"
   {
     KODI_HANDLE kodiInstance;
     bool(*get_frame_buffer)(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
+    void(*release_frame_buffer)(void* kodiInstance, void *buffer);
   } AddonToKodiFuncTable_VideoCodec;
 
   typedef struct AddonInstance_VideoCodec
@@ -192,6 +195,12 @@ namespace kodi
       bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
       {
         return m_instanceData->toKodi.get_frame_buffer(m_instanceData->toKodi.kodiInstance, &picture);
+      }
+
+      //! \copydoc CInstanceVideoCodec::ReleaseFrameBuffer
+      void ReleaseFrameBuffer(void *buffer)
+      {
+        return m_instanceData->toKodi.release_frame_buffer(m_instanceData->toKodi.kodiInstance, buffer);
       }
 
     private:

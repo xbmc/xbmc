@@ -51,16 +51,14 @@ private:
    * In case buffer allocation fails, return false.
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
+  void ReleaseFrameBuffer(void *buffer);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
+  static void release_frame_buffer(void* kodiInstance, void *buffer);
 
   AddonInstance_VideoCodec m_struct;
   int m_codecFlags;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT::MaxVideoFormats + 1];
   float m_displayAspect;
   unsigned int m_width, m_height;
-
-  void * m_lastPictureBuffer;
-
-  std::map<void *,CVideoBuffer *> m_map;
 };

@@ -49,10 +49,12 @@ public:
   std::string GetFileName() override;
   std::string GetStreamCodecName(int iStreamId) override;
   void EnableStream(int id, bool enable) override;
+  void OpenStream(int id) override;
   void SetVideoResolution(int width, int height) override;
 
 protected:
   void RequestStreams();
+  void RequestStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map);
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStream(int iStreamId);
   void DisposeStreams();

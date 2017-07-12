@@ -105,6 +105,7 @@ public:
   void AbortDemux() override;
   void FlushDemux() override;
   void EnableStream(int iStreamId, bool enable) override {};
+  void OpenStream(int iStreamId) override {};
 
 protected:
   bool CloseAndOpen(const std::string& strFile);
