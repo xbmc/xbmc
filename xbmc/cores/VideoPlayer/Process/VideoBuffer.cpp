@@ -229,10 +229,12 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
 
   if (m_pixFormat == AV_PIX_FMT_YUV420P ||
       m_pixFormat == AV_PIX_FMT_YUV420P16 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P10)
+      m_pixFormat == AV_PIX_FMT_YUV420P14 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P12 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P10 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P9)
   {
-    if (m_pixFormat == AV_PIX_FMT_YUV420P16 ||
-        m_pixFormat == AV_PIX_FMT_YUV420P10)
+    if (m_pixFormat != AV_PIX_FMT_YUV420P)
       m_image.bpp = 2;
 
     m_image.planesize[0] = m_image.stride[0] * m_image.height;

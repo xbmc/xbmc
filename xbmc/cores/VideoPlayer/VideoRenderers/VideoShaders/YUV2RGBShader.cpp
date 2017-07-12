@@ -129,11 +129,30 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                                                , - 16.0f / 255);
   }
 
-  if (format == SHADER_YV12_10)
+  int effectiveBpp;
+  switch (format)
   {
-    matrix *= TransformMatrix::CreateScaler(65535.0f / 1023.0f
-                                          , 65535.0f / 1023.0f
-                                          , 65535.0f / 1023.0f);
+    case SHADER_YV12_9:
+      effectiveBpp = 9;
+      break;
+    case SHADER_YV12_10:
+      effectiveBpp = 10;
+      break;
+    case SHADER_YV12_12:
+      effectiveBpp = 12;
+      break;
+    case SHADER_YV12_14:
+      effectiveBpp = 14;
+      break;
+    default:
+      effectiveBpp = 0;
+  }
+
+  if (effectiveBpp > 8 && effectiveBpp < 16)
+  {
+    // Convert range to 2 bytes
+    float scale = 65535.0f / ((1 << effectiveBpp) - 1);
+    matrix *= TransformMatrix::CreateScaler(scale, scale, scale);
   }
 }
 
@@ -210,7 +229,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += "#define XBMC_STRETCH 0\n";
 
   if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_9 ||
       m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_12 ||
+      m_format == SHADER_YV12_14 ||
       m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)

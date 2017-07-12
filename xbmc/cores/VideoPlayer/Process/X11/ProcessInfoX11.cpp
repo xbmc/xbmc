@@ -54,13 +54,16 @@ void CProcessInfoX11::SetSwDeinterlacingMethods()
 
 std::vector<AVPixelFormat> CProcessInfoX11::GetRenderFormats()
 {
-  std::vector<AVPixelFormat> formats;
-  formats.push_back(AV_PIX_FMT_YUV420P);
-  formats.push_back(AV_PIX_FMT_YUV420P10);
-  formats.push_back(AV_PIX_FMT_YUV420P16);
-  formats.push_back(AV_PIX_FMT_NV12);
-  formats.push_back(AV_PIX_FMT_YUYV422);
-  formats.push_back(AV_PIX_FMT_UYVY422);
-
-  return formats;
+  return
+  {
+    AV_PIX_FMT_YUV420P,
+    AV_PIX_FMT_YUV420P9,
+    AV_PIX_FMT_YUV420P10,
+    AV_PIX_FMT_YUV420P12,
+    AV_PIX_FMT_YUV420P14,
+    AV_PIX_FMT_YUV420P16,
+    AV_PIX_FMT_NV12,
+    AV_PIX_FMT_YUYV422,
+    AV_PIX_FMT_UYVY422
+  };
 }

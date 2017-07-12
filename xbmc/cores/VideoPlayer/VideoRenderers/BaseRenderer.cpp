@@ -417,8 +417,14 @@ EShaderFormat CBaseRenderer::GetShaderFormat()
 
   if (m_format == AV_PIX_FMT_YUV420P)
     ret = SHADER_YV12;
+  else if (m_format == AV_PIX_FMT_YUV420P9)
+    ret = SHADER_YV12_9;
   else if (m_format == AV_PIX_FMT_YUV420P10)
     ret = SHADER_YV12_10;
+  else if (m_format == AV_PIX_FMT_YUV420P12)
+    ret = SHADER_YV12_12;
+  else if (m_format == AV_PIX_FMT_YUV420P14)
+    ret = SHADER_YV12_14;
   else if (m_format == AV_PIX_FMT_YUV420P16)
     ret = SHADER_YV12_16;
   else if (m_format == AV_PIX_FMT_NV12)

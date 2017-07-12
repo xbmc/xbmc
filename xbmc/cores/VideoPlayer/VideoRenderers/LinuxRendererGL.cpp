@@ -1599,7 +1599,10 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.cshift_y = 1;
 
   if(m_format == AV_PIX_FMT_YUV420P16 ||
-     m_format == AV_PIX_FMT_YUV420P10)
+     m_format == AV_PIX_FMT_YUV420P14 ||
+     m_format == AV_PIX_FMT_YUV420P12 ||
+     m_format == AV_PIX_FMT_YUV420P10 ||
+     m_format == AV_PIX_FMT_YUV420P9)
     im.bpp = 2;
   else
     im.bpp = 1;
