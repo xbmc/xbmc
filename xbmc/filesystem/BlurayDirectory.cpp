@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include <cassert>
+#include "utils/LangCodeExpander.h"
 
 namespace XFILE
 {
@@ -154,25 +155,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(file);
   URIUtils::RemoveSlashAtEnd(root);
 
-  m_dll = new DllLibbluray();
-  if (!m_dll->Load())
-  {
-    CLog::Log(LOGERROR, "CBlurayDirectory::GetDirectory - failed to load dll");
+  if (!InitializeBluray(root))
     return false;
-  }
-
-  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
-  m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
-
-  m_bd = m_dll->bd_init();
-  std::unique_ptr<std::string> rootPath(new std::string(root));
-  m_dll->bd_open_files(m_bd, rootPath.get(), DllLibbluray::dir_open, DllLibbluray::file_open);
-
-  if(!m_bd)
-  {
-    CLog::Log(LOGERROR, "CBlurayDirectory::GetDirectory - failed to open %s", root.c_str());
-    return false;
-  }
 
   if(file == "root")
     GetRoot(items);
@@ -199,6 +183,40 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
   std::string host = url.GetHostName();
   std::string filename = url.GetFileName();
   return CURL(host.append(filename));
+}
+
+bool CBlurayDirectory::InitializeBluray(std::string &root)
+{
+  m_dll = new DllLibbluray();
+  if (!m_dll->Load())
+  {
+    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to load dll");
+    return false;
+  }
+
+  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
+  m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
+
+  m_bd = m_dll->bd_init();
+
+  if (!m_bd)
+  {
+    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to initialize libbluray");
+    return false;
+  }
+
+  std::string langCode;
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+  
+  if (!m_dll->bd_open_files(m_bd, &root, DllLibbluray::dir_open, DllLibbluray::file_open))
+  {
+    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open %s", CURL::GetRedacted(root).c_str());
+    return false;
+  }
+  m_blurayInitialized = true;
+
+  return true;
 }
 
 } /* namespace XFILE */
