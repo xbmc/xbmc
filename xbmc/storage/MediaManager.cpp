@@ -70,6 +70,7 @@
 
 #include <string>
 #include <vector>
+#include "filesystem/BlurayDirectory.h"
 
 using namespace XFILE;
 
@@ -536,27 +537,44 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 
   // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted 
   std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS"); 
-  if(!CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO"))) 
-    return ""; // return empty
+  if (CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO")))
+  {
 
-  // correct the filename if needed 
-  if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
+    // correct the filename if needed 
+    if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
       StringUtils::StartsWith(pathVideoTS, "iso9660://"))
-    pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
+      pathVideoTS = g_mediaManager.TranslateDevicePath("");
 
-  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
+    CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
 
 
-  CFileItem item(pathVideoTS, false);
-  CDVDInputStreamNavigator dvdNavigator(NULL, item);
-  dvdNavigator.Open();
-  std::string labelString = dvdNavigator.GetDVDTitleString();
-  std::string serialString = dvdNavigator.GetDVDSerialString();
+    CFileItem item(pathVideoTS, false);
+    CDVDInputStreamNavigator dvdNavigator(nullptr, item);
+    dvdNavigator.Open();
+    std::string labelString = dvdNavigator.GetDVDTitleString();
+    std::string serialString = dvdNavigator.GetDVDSerialString();
 
-  std::string strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
-  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
+    std::string strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
+    CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
 
-  return strID;
+    return strID;
+  }
+  // check for Blu-ray discs
+  else if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
+  {
+    CBlurayDirectory bdDir;
+    if (!bdDir.InitializeBluray(mediaPath))
+      return "";
+
+    std::string labelString = bdDir.GetBlurayTitle();
+    std::string serialString = bdDir.GetBlurayID();
+    std::string strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
+    CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for Blu-ray disk", strID.c_str());
+
+    return strID;
+  }
+  else
+    return ""; // return empty
 }
 
 std::string CMediaManager::GetDiscPath()

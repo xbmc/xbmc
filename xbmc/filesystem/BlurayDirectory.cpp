@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include <cassert>
+#include <array>
 #include "utils/LangCodeExpander.h"
 
 namespace XFILE
@@ -55,6 +56,65 @@ void CBlurayDirectory::Dispose()
   }
   delete m_dll;
   m_dll = NULL;
+}
+
+std::string CBlurayDirectory::GetBlurayTitle()
+{
+  return GetDiscInfoString(DiscInfo::TITLE);
+}
+
+std::string CBlurayDirectory::GetBlurayID()
+{
+  return GetDiscInfoString(DiscInfo::ID);
+}
+
+std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
+{
+  switch (info)
+  {
+  case XFILE::CBlurayDirectory::DiscInfo::TITLE:
+  {
+    if (!m_blurayInitialized)
+      return "";
+    const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+    if (!disc_info || !disc_info->bluray_detected)
+      return "";
+
+    std::string title = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+    title = disc_info->disc_name ? disc_info->disc_name : "";
+#endif
+
+    return title;
+  }
+  case XFILE::CBlurayDirectory::DiscInfo::ID:
+  {
+    if (!m_blurayInitialized)
+      return "";
+
+    const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+    if (!disc_info || !disc_info->bluray_detected)
+      return "";
+
+    std::string id = "";
+
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+    id = disc_info->udf_volume_id ? disc_info->udf_volume_id : "";
+
+    if (id.empty())
+    {
+      id = HexToString(disc_info->disc_id, 20);
+    }
+#endif
+
+    return id;
+  }
+  default:
+    break;
+  }
+
+  return "";
 }
 
 CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label)
@@ -217,6 +277,18 @@ bool CBlurayDirectory::InitializeBluray(std::string &root)
   m_blurayInitialized = true;
 
   return true;
+}
+
+std::string CBlurayDirectory::HexToString(const uint8_t *buf, int count)
+{
+  std::array<char, 42> tmp;
+
+  for (int i = 0; i < count; i++)
+  {
+    sprintf(tmp.data() + (i * 2), "%02x", buf[i]);
+  }
+
+  return std::string(std::begin(tmp), std::end(tmp));
 }
 
 } /* namespace XFILE */
