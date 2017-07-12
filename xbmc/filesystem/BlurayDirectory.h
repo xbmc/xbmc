@@ -38,6 +38,8 @@ public:
   ~CBlurayDirectory() override;
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
+  bool InitializeBluray(std::string &root);
+
 private:
 
   void         Dispose();
@@ -48,6 +50,7 @@ private:
   CURL          m_url;
   DllLibbluray* m_dll;
   BLURAY*       m_bd;
+  bool          m_blurayInitialized = false;
 };
 
 }
