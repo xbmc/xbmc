@@ -495,6 +495,13 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if(!m_bhasoptical)
     return "";
 
+  std::string mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
+  URIUtils::AddSlashAtEnd(mediaPath);
+
+  DiscInfo info = GetDiscInfo(mediaPath);
+  if (!info.name.empty())
+    return info.name;
+
   std::string strDevice = TranslateDevicePath(devicePath);
   WCHAR cVolumenName[128];
   WCHAR cFSName[128];
