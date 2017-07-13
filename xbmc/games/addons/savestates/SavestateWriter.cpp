@@ -25,7 +25,6 @@
 #include "games/addons/savestates/SavestateUtils.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/Crc32.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "Application.h"
@@ -51,18 +50,13 @@ bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameH
   CDateTime now = CDateTime::GetCurrentDateTime();
   std::string label = now.GetAsLocalizedDateTime();
 
-  m_savestate.SetType(SAVETYPE::MANUAL);
+  m_savestate.SetType(SAVETYPE::AUTO);
   m_savestate.SetLabel(label);
   m_savestate.SetGameClient(gameClient->ID());
   m_savestate.SetGamePath(gameClient->GetGamePath());
   m_savestate.SetTimestamp(now);
   m_savestate.SetPlaytimeFrames(frameHistoryCount);
   m_savestate.SetPlaytimeWallClock(frameHistoryCount / m_fps); //! @todo Accumulate playtime instead of deriving it
-
-  //! @todo Get CRC from game data instead of filename
-  Crc32 crc;
-  crc.Compute(gameClient->GetGamePath());
-  m_savestate.SetGameCRC(StringUtils::Format("%08x", static_cast<uint32_t>(crc)));
 
   m_savestate.SetPath(CSavestateUtils::MakePath(m_savestate));
   if (m_savestate.Path().empty())
@@ -102,53 +96,7 @@ bool CSavestateWriter::WriteSave(IMemoryStream* memoryStream)
 
 void CSavestateWriter::WriteThumb()
 {
-  if (g_advancedSettings.m_imageRes == 0)
-    return; // Sanity check
-
-  std::string thumbPath = CSavestateUtils::MakeThumbPath(m_savestate.Path());
-  CLog::Log(LOGDEBUG, "Saving savestate thumbnail to %s", thumbPath.c_str());
-
-  // Calculate width and height
-  float aspectRatio = g_application.m_pPlayer->GetRenderAspectRatio();
-  if (aspectRatio <= 0.0f)
-    aspectRatio = 1.0f;
-
-  unsigned int width;
-  unsigned int height;
-  if (aspectRatio >= 1.0f)
-  {
-    width = g_advancedSettings.m_imageRes;
-    height = static_cast<unsigned int>(g_advancedSettings.m_imageRes / aspectRatio);
-  }
-  else
-  {
-    width = static_cast<unsigned int>(g_advancedSettings.m_imageRes * aspectRatio);
-    height = g_advancedSettings.m_imageRes;
-  }
-
-  // Allocate pixels
-  uint8_t* pixels = new uint8_t[height * width * 4];
-
-  // Capture picture
-  unsigned int captureId = g_application.m_pPlayer->RenderCaptureAlloc();
-  g_application.m_pPlayer->RenderCapture(captureId, width, height, CAPTUREFLAG_IMMEDIATELY);
-  bool hasImage = g_application.m_pPlayer->RenderCaptureGetPixels(captureId, 1000, pixels, height * width * 4);
-
-  // Save picture
-  if (hasImage)
-  {
-    if (CPicture::CreateThumbnailFromSurface(pixels, width, height, width * 4, thumbPath))
-      m_savestate.SetThumbnail(thumbPath);
-    else
-      CLog::Log(LOGERROR, "Failed to save thumbnail to %s", thumbPath.c_str());
-
-    g_application.m_pPlayer->RenderCaptureRelease(captureId);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to capture thumbnail");
-
-  // Free pixels
-  delete[] pixels;
+  //! @todo
 }
 
 bool CSavestateWriter::CommitToDatabase()

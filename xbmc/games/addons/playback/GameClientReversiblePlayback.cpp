@@ -112,7 +112,7 @@ void CGameClientReversiblePlayback::SetSpeed(double speedFactor)
     m_gameLoop.SetSpeed(speedFactor * REWIND_FACTOR);
 }
 
-std::string CGameClientReversiblePlayback::CreateManualSavestate()
+std::string CGameClientReversiblePlayback::CreateSavestate()
 {
   std::string empty;
 

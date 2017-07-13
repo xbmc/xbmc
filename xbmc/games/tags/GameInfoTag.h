@@ -94,10 +94,6 @@ namespace GAME
     const std::string& GetCartridgeType() const { return m_strCartridgeType; }
     void SetCartridgeType(const std::string& strCartridgeType) { m_strCartridgeType = strCartridgeType; }
 
-    // Savestate path
-    const std::string& GetSavestate() const { return m_strSavestate; }
-    void SetSavestate(const std::string& strSavestate) { m_strSavestate = strSavestate; }
-
     // Game client add-on ID
     const std::string& GetGameClient() const { return m_strGameClient; }
     void SetGameClient(const std::string& strGameClient) { m_strGameClient = strGameClient; }
@@ -120,7 +116,6 @@ namespace GAME
     std::string m_strPublisher;
     std::string m_strFormat;
     std::string m_strCartridgeType;
-    std::string m_strSavestate;
     std::string m_strGameClient;
   };
 }

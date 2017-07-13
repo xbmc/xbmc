@@ -33,26 +33,17 @@ namespace GAME
     /*!
      * \brief Calculate a path for the specified savestate
      *
-     * Path to savestate is derived from game client and game CRC. Returns empty
-     * if either of these is unknown. Format is
-     *
-     * Autosave (hex is game CRC):
-     *     special://savegames/gameclient.id/feba62c2.sav
-     *
-     * Save type slot (digit after the underscore is slot 1-9):
-     *     special://savegames/gameclient.id/feba62c2_1.sav
-     *
-     * Save type label (hex after the underscore is CRC of the label):
-     *     special://savegames/gameclient.id/feba62c2_8dc22669.sav
+     * The savestate path is the game path with the extension replaced by ".sav".
      */
     static std::string MakePath(const CSavestate& save);
 
     /*!
-     * \brief Calculate the thumbnail path for the specified savestate
+     * \brief Calculate a metadata path for the specified savestate
      *
-     * This is the savestate path with a different extension
+     * The savestate metadata path is the game path with the extension replaced
+     * by ".xml".
      */
-    static std::string MakeThumbPath(const std::string& savePath);
+    static std::string MakeMetadataPath(const std::string &gamePath);
   };
 }
 }

@@ -23,34 +23,25 @@
 #include "SavestateDefines.h"
 #include "SavestateUtils.h"
 #include "addons/AddonManager.h"
-#include "dbwrappers/dataset.h"
-#include "filesystem/File.h"
 #include "games/GameTypes.h"
 #include "games/tags/GameInfoTag.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "FileItem.h"
 
-#include "utils/log.h"
-
 using namespace KODI;
 using namespace GAME;
-
-#define SAVESTATE_OBJECT  "savestate"
 
 CSavestateDatabase::CSavestateDatabase() = default;
 
 bool CSavestateDatabase::AddSavestate(const CSavestate& save)
 {
-  //! @todo
-  return false;
+  return save.Serialize(CSavestateUtils::MakeMetadataPath(save.GamePath()));
 }
 
 bool CSavestateDatabase::GetSavestate(const std::string& path, CSavestate& save)
 {
-  //! @todo
-  return false;
+  return save.Deserialize(path);
 }
 
 bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items, const std::string& gamePath, const std::string& gameClient /* = "" */)
