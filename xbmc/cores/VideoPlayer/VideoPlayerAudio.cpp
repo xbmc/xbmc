@@ -87,8 +87,6 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
 
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 {
-  m_processInfo.ResetAudioCodecInfo();
-
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
   bool allowpassthrough = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (hints.realtime)
@@ -120,6 +118,8 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 {
   SAFE_DELETE(m_pAudioCodec);
   m_pAudioCodec = codec;
+
+  m_processInfo.ResetAudioCodecInfo();
 
   /* store our stream hints */
   m_streaminfo = hints;
@@ -475,14 +475,6 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
       if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
         m_audioSink.Resume();
-
-      m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
-
-      m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
-      m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
-      m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
-
-      m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
     }
 
     SetSyncType(audioframe.passthrough);
@@ -523,6 +515,12 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       msg.cachetime = cachetime;
       msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
       m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+
+      m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
+      m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
+      m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
+      m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
+      m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
     }
   }
 
