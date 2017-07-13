@@ -310,7 +310,6 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   }
 
   ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-  ctx->m_processInfo.SetSwDeinterlacingMethods();
   ctx->m_decoderState = STATE_HW_FAILED;
   return avcodec_default_get_format(avctx, fmt);
 }
@@ -364,6 +363,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_formats.clear();
   m_formats = m_processInfo.GetRenderFormats();
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
+  m_processInfo.SetSwDeinterlacingMethods();
 
   pCodec = avcodec_find_decoder(hints.codec);
 
@@ -477,6 +477,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   UpdateName();
+  const char* pixFmtName = av_get_pix_fmt_name(m_pCodecContext->pix_fmt);
+  m_processInfo.SetVideoDimensions(m_pCodecContext->coded_width, m_pCodecContext->coded_height);
+  m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
 
   m_dropCtrl.Reset(true);
   m_eof = false;
