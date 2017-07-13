@@ -38,7 +38,7 @@ public:
   ~CBlurayDirectory() override;
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
-  bool InitializeBluray(std::string &root);
+  bool InitializeBluray(const std::string &root);
   std::string GetBlurayTitle();
   std::string GetBlurayID();
 

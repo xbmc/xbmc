@@ -108,6 +108,20 @@ protected:
 
 private:
   IStorageProvider *m_platformStorage;
+  
+  struct DiscInfo
+  {
+    std::string name;
+    std::string serial;
+    std::string type;
+
+    bool empty()
+    {
+      return (name.empty() && serial.empty());
+    }
+  };
+
+  DiscInfo GetDiscInfo(const std::string& mediaPath);
 };
 
 extern class CMediaManager g_mediaManager;

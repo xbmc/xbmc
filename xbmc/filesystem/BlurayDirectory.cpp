@@ -245,7 +245,7 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
   return CURL(host.append(filename));
 }
 
-bool CBlurayDirectory::InitializeBluray(std::string &root)
+bool CBlurayDirectory::InitializeBluray(const std::string &root)
 {
   m_dll = new DllLibbluray();
   if (!m_dll->Load())
@@ -269,7 +269,7 @@ bool CBlurayDirectory::InitializeBluray(std::string &root)
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
   
-  if (!m_dll->bd_open_files(m_bd, &root, DllLibbluray::dir_open, DllLibbluray::file_open))
+  if (!m_dll->bd_open_files(m_bd, const_cast<std::string*>(&root), DllLibbluray::dir_open, DllLibbluray::file_open))
   {
     CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open %s", CURL::GetRedacted(root).c_str());
     return false;
