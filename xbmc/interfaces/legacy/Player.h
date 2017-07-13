@@ -90,7 +90,8 @@ namespace XBMCAddon
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
       Player(int playerCore = 0);
-      ~Player(void) override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~Player(void);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

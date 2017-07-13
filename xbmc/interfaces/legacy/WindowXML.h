@@ -119,7 +119,8 @@ namespace XBMCAddon
                 const String& defaultSkin = "Default",
                 const String& defaultRes = "720p",
                 bool isMedia = false);
-      ~WindowXML() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~WindowXML();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -538,7 +539,8 @@ namespace XBMCAddon
                       const String& defaultSkin = "Default",
                       const String& defaultRes = "720p");
 
-      ~WindowXMLDialog() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~WindowXMLDialog();
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage &message) override;

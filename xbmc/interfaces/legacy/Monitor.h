@@ -317,7 +317,8 @@ namespace XBMCAddon
 #else
       bool abortRequested();
 #endif
-      ~Monitor() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~Monitor();
     };
     /** @} */
   }
