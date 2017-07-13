@@ -201,6 +201,9 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   {
     CDVDVideoCodec *pVideoCodec;
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
+    std::vector<AVPixelFormat> pixFmts;
+    pixFmts.push_back(AV_PIX_FMT_YUV420P);
+    pProcessInfo->SetPixFormats(pixFmts);
 
     CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
     hint.codecOptions = CODEC_FORCE_SOFTWARE;
