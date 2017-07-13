@@ -53,3 +53,4 @@ See [docs/README.xxx](https://github.com/xbmc/xbmc/tree/master/docs) for specifi
 * [Kodi website](http://kodi.tv)
 
 **Enjoy Kodi and help us improve it today. :)**
+forked from Armin Weigl
