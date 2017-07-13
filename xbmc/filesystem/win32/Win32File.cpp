@@ -406,7 +406,7 @@ bool CWin32File::Rename(const CURL& urlCurrentName, const CURL& urlNewName)
   if (!result)
   {
     CLog::LogW(LOGERROR, L"Failed to rename file/directory %s to %s, Error: %s",
-      curNameW.c_str(), newNameW.c_str(), CLog::Win32ErrorToString(GetLastError()));
+      curNameW.c_str(), newNameW.c_str(), CLog::Win32ErrorToString(GetLastError()).c_str());
   }
   if (m_smbFile)
     m_lastSMBFileErr = GetLastError(); // set real error state
