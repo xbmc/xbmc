@@ -194,6 +194,19 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons &buttons
       if (item->IsGame())
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+
+        bool bHasSavestates = false;
+
+        CSavestateDatabase db;
+        if (db.Open())
+        {
+          CFileItemList items;
+          if (db.GetSavestatesNav(items, item->GetPath()))
+            bHasSavestates = items.Size() > 0;
+        }
+
+        if (bHasSavestates)
+          buttons.Add(CONTEXT_BUTTON_MANAGE_SAVESTATES, 35273); // Manage saves
       }
 
       if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) && !item->IsReadOnly())
@@ -233,6 +246,9 @@ bool CGUIWindowGames::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     case CONTEXT_BUTTON_RENAME:
       OnRenameItem(itemNumber);
+      return true;
+    case CONTEXT_BUTTON_MANAGE_SAVESTATES:
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_SAVESTATES, item->GetPath());
       return true;
     default:
       break;

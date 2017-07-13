@@ -692,6 +692,7 @@ msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr ""
 
+#: /xml/DialogBookmarks.xml
 #: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -735,4 +736,9 @@ msgstr ""
 #: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
+msgstr ""
+
+#: /xml/Variables.xml
+msgctxt "#31164"
+msgid "No game states saved yet."
 msgstr ""

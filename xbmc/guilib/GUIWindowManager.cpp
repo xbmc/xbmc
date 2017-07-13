@@ -148,6 +148,7 @@
 
 /* Game related include files */
 #include "games/controllers/windows/GUIControllerWindow.h"
+#include "games/dialogs/GUIDialogSavestates.h"
 #include "games/windows/GUIWindowGames.h"
 #include "games/dialogs/osd/DialogGameOSD.h"
 #include "games/dialogs/osd/DialogGameVideoSettings.h"
@@ -300,6 +301,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowEventLog);
 
   Add(new GAME::CGUIControllerWindow);
+  Add(new GAME::CGUIDialogSavestates);
   Add(new GAME::CGUIWindowGames);
   Add(new GAME::CDialogGameOSD);
   Add(new GAME::CDialogGameVideoSettings);
@@ -404,6 +406,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_PICTURES);
     DestroyWindow(WINDOW_WEATHER);
     DestroyWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
+    DestroyWindow(WINDOW_DIALOG_SAVESTATES);
     DestroyWindow(WINDOW_GAMES);
     DestroyWindow(WINDOW_DIALOG_GAME_OSD);
     DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_SETTINGS);

@@ -19,12 +19,12 @@
  */
 #pragma once
 
+#include "utils/IDeserializable.h"
+#include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
 #include <stdint.h>
 #include <string>
-
-class CVariant;
 
 namespace KODI
 {
@@ -38,7 +38,7 @@ namespace GAME
     MANUAL = 3,
   };
 
-  class CSavestate
+  class CSavestate : public ISerializable, public IDeserializable
   {
   public:
     CSavestate() { Reset(); }
@@ -76,8 +76,8 @@ namespace GAME
     void SetTimestamp(const CDateTime& timestamp)     { m_timestamp = timestamp; }
     void SetThumbnail(const std::string& thumbnail)   { m_thumbnail = thumbnail; }
 
-    void Serialize(CVariant& value) const;
-    void Deserialize(const CVariant& value);
+    virtual void Serialize(CVariant& value) const override;
+    virtual void Deserialize(const CVariant& value) override;
 
     bool Serialize(const std::string& path) const;
     bool Deserialize(const std::string& path);

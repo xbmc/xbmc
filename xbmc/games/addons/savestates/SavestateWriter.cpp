@@ -37,14 +37,24 @@ using namespace GAME;
 CSavestateWriter::CSavestateWriter() :
   m_fps(0.0)
 {
+  m_db.Open();
 }
 
-CSavestateWriter::~CSavestateWriter() = default;
+CSavestateWriter::~CSavestateWriter()
+{
+  m_db.Close();
+}
 
 bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount)
 {
   m_savestate.Reset();
   m_fps = 0.0;
+
+  if (!m_db.IsOpen())
+  {
+    CLog::Log(LOGDEBUG, "Failed to open savestates database");
+    return false;
+  }
 
   m_fps = gameClient->Timing().GetFrameRate();
 

@@ -52,6 +52,7 @@ static const std::map<WindowName, WindowID> WindowMapping =
     { "radiotimers"              , WINDOW_RADIO_TIMERS },
     { "radiosearch"              , WINDOW_RADIO_SEARCH },
     { "gamecontrollers"          , WINDOW_DIALOG_GAME_CONTROLLERS },
+    { "gamesavestates"           , WINDOW_DIALOG_SAVESTATES },
     { "games"                    , WINDOW_GAMES },
     { "pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO },
     { "pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO },

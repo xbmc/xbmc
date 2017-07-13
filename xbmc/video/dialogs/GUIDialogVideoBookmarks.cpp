@@ -52,6 +52,7 @@ using namespace KODI::MESSAGING;
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_imageRes
 
+#define CONTROL_HEADING                1
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3
 #define CONTROL_ADD_EPISODE_BOOKMARK   4
@@ -59,7 +60,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_THUMBS                11
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml"),
+    : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "DialogBookmarks.xml"),
     CJobQueue(false, 1, CJob::PRIORITY_NORMAL)
 {
   m_vecItems = new CFileItemList;
@@ -170,6 +171,15 @@ bool CGUIDialogVideoBookmarks::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
+void CGUIDialogVideoBookmarks::OnInitWindow()
+{
+  SET_CONTROL_LABEL(CONTROL_HEADING, 298);
+  SET_CONTROL_LABEL(CONTROL_ADD_BOOKMARK, 294);
+  SET_CONTROL_LABEL(CONTROL_CLEAR_BOOKMARKS, 296);
+  SET_CONTROL_LABEL(CONTROL_ADD_EPISODE_BOOKMARK, 20406);
+
+  CGUIDialog::OnInitWindow();
+}
 
 void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
 {

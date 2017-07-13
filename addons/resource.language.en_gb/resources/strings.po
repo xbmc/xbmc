@@ -454,12 +454,14 @@ msgctxt "#116"
 msgid "Move"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#118"
 msgid "Rename"
@@ -480,6 +482,7 @@ msgctxt "#121"
 msgid "Confirm move"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#122"
 msgid "Confirm delete"
@@ -495,6 +498,7 @@ msgctxt "#124"
 msgid "Would you like to move the selected file(s)?"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#125"
 msgid "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
@@ -2379,6 +2383,7 @@ msgctxt "#527"
 msgid "Manually add to library"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 msgctxt "#528"
 msgid "Enter title"
 msgstr ""
@@ -8654,11 +8659,13 @@ msgctxt "#16202"
 msgid "Failed to copy at least one file. Check the log for more information about this message."
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16203"
 msgid "Move failed"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16204"
 msgid "Failed to move at least one file. Check the log for more information about this message."
@@ -8669,6 +8676,7 @@ msgctxt "#16205"
 msgid "Delete failed"
 msgstr ""
 
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16206"
 msgid "Failed to delete at least one file. Check the log for more information about this message."
@@ -17041,7 +17049,31 @@ msgctxt "#35255"
 msgid "Browse all emulators"
 msgstr ""
 
-#empty strings from id 35256 to 35504
+#empty strings from id 35256 to 35268
+
+#. Title of the save states dialog
+#: addons/skin.estuary/1080i/DialogSavestates.xml
+msgctxt "#35269"
+msgid "Saved game states"
+msgstr ""
+
+#: addons/skin.estuary/1080i/DialogSavestates.xml
+msgctxt "#35270"
+msgid "Save state"
+msgstr ""
+
+#: addons/skin.estuary/1080i/DialogSavestates.xml
+msgctxt "#35271"
+msgid "Clear saves"
+msgstr ""
+
+#. Presented as an option in the context menu for savestates in the savestate dialog
+#: xbmc/games/dialogs/GUIDialogSavestates.cpp
+msgctxt "#35272"
+msgid "Load save"
+msgstr ""
+
+#empty strings from id 35273 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

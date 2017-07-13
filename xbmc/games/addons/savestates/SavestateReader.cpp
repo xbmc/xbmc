@@ -30,9 +30,13 @@ using namespace GAME;
 CSavestateReader::CSavestateReader() :
   m_frameCount(0)
 {
+  m_db.Open();
 }
 
-CSavestateReader::~CSavestateReader() = default;
+CSavestateReader::~CSavestateReader()
+{
+  m_db.Close();
+}
 
 bool CSavestateReader::Initialize(const std::string& path, const CGameClient* gameClient)
 {
@@ -40,16 +44,21 @@ bool CSavestateReader::Initialize(const std::string& path, const CGameClient* ga
 
   CLog::Log(LOGDEBUG, "Loading savestate from %s", path.c_str());
 
-  if (m_db.GetSavestate(path, m_savestate))
+  if (m_db.IsOpen())
   {
-    // Sanity checks
-    if (m_savestate.GameClient() == gameClient->ID())
-      bSuccess = true;
+    if (m_db.GetSavestate(path, m_savestate))
+    {
+      // Sanity checks
+      if (m_savestate.GameClient() == gameClient->ID())
+        bSuccess = true;
+      else
+        CLog::Log(LOGDEBUG, "Savestate game client %s doesn't match active %s", m_savestate.GameClient().c_str(), gameClient->ID().c_str());
+    }
     else
-      CLog::Log(LOGDEBUG, "Savestate game client %s doesn't match active %s", m_savestate.GameClient().c_str(), gameClient->ID().c_str());
+      CLog::Log(LOGERROR, "Failed to query savestate %s", path.c_str());
   }
   else
-    CLog::Log(LOGERROR, "Failed to query savestate %s", path.c_str());
+    CLog::Log(LOGERROR, "Failed to open savestate database");
 
   return bSuccess;
 }
