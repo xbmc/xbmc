@@ -424,6 +424,70 @@ bool CProcessInfo::IsSeeking()
   return m_stateSeeking;
 }
 
+void CProcessInfo::SetSpeed(float speed)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_speed = speed;
+  m_newSpeed = speed;
+
+  if (m_dataCache)
+    m_dataCache->SetSpeed(m_newTempo, speed);
+}
+
+void CProcessInfo::SetNewSpeed(float speed)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_newSpeed = speed;
+
+  if (m_dataCache)
+    m_dataCache->SetSpeed(m_tempo, speed);
+}
+
+float CProcessInfo::GetNewSpeed()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_newSpeed;
+}
+
+void CProcessInfo::SetTempo(float tempo)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_tempo = tempo;
+  m_newTempo = tempo;
+
+  if (m_dataCache)
+    m_dataCache->SetSpeed(tempo, m_newSpeed);
+}
+
+void CProcessInfo::SetNewTempo(float tempo)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_newTempo = tempo;
+
+  if (m_dataCache)
+    m_dataCache->SetSpeed(tempo, m_speed);
+}
+
+float CProcessInfo::GetNewTempo()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_newTempo;
+}
+
+bool CProcessInfo::IsTempoAllowed(float tempo)
+{
+  if (tempo > 0.75 && tempo < 1.55)
+    return true;
+
+  return false;
+}
+
 void CProcessInfo::SetLevelVQ(int level)
 {
   m_levelVQ = level;

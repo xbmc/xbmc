@@ -6089,7 +6089,12 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case PLAYER_PLAYSPEED:
       if(g_application.m_pPlayer->IsPlaying())
-        strLabel = StringUtils::Format("%.2f", g_application.m_pPlayer->GetPlaySpeed());
+      {
+        float speed = g_application.m_pPlayer->GetPlaySpeed();
+        if (speed == 1.0)
+          speed = g_application.m_pPlayer->GetPlayTempo();
+        strLabel = StringUtils::Format("%.2f", speed);
+      }
       break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
@@ -7182,7 +7187,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_PLAYING:
       {
         float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= 0.75 && speed <= 1.55);
+        bReturn = (speed == 1.0);
       }
       break;
     case PLAYER_PAUSED:
@@ -7238,8 +7243,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PLAYER_IS_TEMPO:
       {
+        float tempo = g_application.m_pPlayer->GetPlayTempo();
         float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= 0.75 && speed <= 1.55 && speed != 1);
+        bReturn = (speed == 1.0 && tempo != 1.0);
       }
       break;
     case PLAYER_RECORDING:
@@ -7956,8 +7962,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     CDateTime time(CDateTime::GetCurrentDateTime());
     int playTimeRemaining = GetPlayTimeRemaining();
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed >= 0.75 && speed <= 1.55)
-      playTimeRemaining /= speed;
+    float tempo = g_application.m_pPlayer->GetPlayTempo();
+    if (speed == 1.0)
+      playTimeRemaining /= tempo;
     time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
@@ -7971,7 +7978,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   {
     std::string strTime;
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed < 0.8 || speed > 1.5)
+    if (speed != 1.0)
       strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), (int)speed);
     else
       strTime = GetCurrentPlayTime();

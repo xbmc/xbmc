@@ -142,8 +142,6 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
       float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
-      if (playSpeed >= 0.75 && playSpeed <= 1.55)
-        playSpeed = 1;
 
       if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
         playSpeed *= -2;
@@ -169,17 +167,13 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (g_application.m_pPlayer->SupportsTempo() &&
         g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
-      float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
-      if (playSpeed >= 0.75 && playSpeed <= 1.55)
-      {
-        if (paramlow == "tempodown" && playSpeed > 0.85)
-          playSpeed -= 0.1;
-        else if (paramlow == "tempoup" && playSpeed < 1.45)
-          playSpeed += 0.1;
+      float playTempo = g_application.m_pPlayer->GetPlayTempo();
+      if (paramlow == "tempodown")
+          playTempo -= 0.1;
+      else if (paramlow == "tempoup")
+          playTempo += 0.1;
 
-        playSpeed = floor(playSpeed * 100 + 0.5) / 100;
-        g_application.m_pPlayer->SetPlaySpeed(playSpeed);
-      }
+      g_application.m_pPlayer->SetTempo(playTempo);
     }
   }
   else if (paramlow == "next")

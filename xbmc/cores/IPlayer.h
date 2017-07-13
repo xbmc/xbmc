@@ -326,7 +326,7 @@ public:
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void SetSpeed(float speed) = 0;
-  virtual float GetSpeed() = 0;
+  virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }
 
   //Returns true if not playback (paused or stopped being filled)

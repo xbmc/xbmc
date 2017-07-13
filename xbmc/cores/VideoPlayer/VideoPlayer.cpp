@@ -643,7 +643,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
-  m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
   m_streamPlayerSpeed = DVD_PLAYSPEED_NORMAL;
   m_canTempo = false;
   m_caching = CACHESTATE_DONE;
@@ -671,6 +670,8 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_processInfo.reset(CProcessInfo::CreateInstance());
   // if we have a gui, register the cache
   m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
+  m_processInfo->SetSpeed(1.0);
+  m_processInfo->SetTempo(1.0);
 
   CreatePlayers();
 
@@ -692,11 +693,13 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 
   // if playing a file close it first
   // this has to be changed so we won't have to close it.
-  if(IsRunning())
+  if (IsRunning())
     CloseFile();
 
   m_bAbortRequest = false;
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+  m_processInfo->SetSpeed(1.0);
+  m_processInfo->SetTempo(1.0);
 
   m_State.Clear();
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
@@ -2774,7 +2777,7 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      int speed = static_cast<CDVDMsgPlayerSetSpeed*>(pMsg)->GetSpeed();
 
       // correct our current clock, as it would start going wrong otherwise
       if (m_State.timestamp > 0)
@@ -2850,8 +2853,13 @@ void CVideoPlayer::HandleMessages()
         CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CVideoPlayer", __FUNCTION__, speed, static_cast<int>(m_playSpeed));
       }
 
+      if (static_cast<CDVDMsgPlayerSetSpeed*>(pMsg)->IsTempo())
+        m_processInfo->SetTempo(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
+      else
+        m_processInfo->SetSpeed(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
+
       m_playSpeed = speed;
-      m_newPlaySpeed = speed;
+
       m_caching = CACHESTATE_DONE;
       m_clock.SetSpeed(speed);
       m_VideoPlayerAudio->SetSpeed(speed);
@@ -2875,7 +2883,8 @@ void CVideoPlayer::HandleMessages()
       {
         CloseDemuxer();
         m_playSpeed = DVD_PLAYSPEED_NORMAL;
-        m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
+        m_processInfo->SetSpeed(1.0);
+        m_processInfo->SetTempo(1.0);
 
         // when using fast channel switching some shortcuts are taken which
         // means we'll have to update the view mode manually
@@ -2901,7 +2910,8 @@ void CVideoPlayer::HandleMessages()
       {
         CloseDemuxer();
         m_playSpeed = DVD_PLAYSPEED_NORMAL;
-        m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
+        m_processInfo->SetSpeed(1.0);
+        m_processInfo->SetTempo(1.0);
       }
       else
       {
@@ -2953,7 +2963,8 @@ void CVideoPlayer::HandleMessages()
             m_ChannelEntryTimeOut.SetInfinite();
             CloseDemuxer();
             m_playSpeed = DVD_PLAYSPEED_NORMAL;
-            m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
+            m_processInfo->SetSpeed(1.0);
+            m_processInfo->SetTempo(1.0);
 
             g_infoManager.SetDisplayAfterSeek();
             CServiceBroker::GetPVRManager().SetChannelPreview(false);
@@ -3086,11 +3097,13 @@ void CVideoPlayer::SetCaching(ECacheState state)
 void CVideoPlayer::SetPlaySpeed(int speed)
 {
   if (IsPlaying())
-    m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  {
+    CDVDMsgPlayerSetSpeed::SpeedParams params = { speed, false };
+    m_messenger.Put(new CDVDMsgPlayerSetSpeed(params));
+  }
   else
   {
     m_playSpeed = speed;
-    m_newPlaySpeed = speed;
     m_streamPlayerSpeed = speed;
   }
 }
@@ -3104,7 +3117,7 @@ bool CVideoPlayer::CanPause()
 void CVideoPlayer::Pause()
 {
   // toggle between pause and normal speed
-  if (GetSpeed() == 0)
+  if (m_processInfo->GetNewSpeed() == 0)
   {
     SetSpeed(1);
   }
@@ -3605,23 +3618,39 @@ void CVideoPlayer::SetSpeed(float speed)
       return;
   }
 
-  m_newPlaySpeed = iSpeed;
-  if (m_newPlaySpeed != m_playSpeed)
+  float currentSpeed = m_processInfo->GetNewSpeed();
+  m_processInfo->SetNewSpeed(speed);
+  if (iSpeed != currentSpeed)
   {
-    if (m_newPlaySpeed == DVD_PLAYSPEED_NORMAL)
+    if (iSpeed == DVD_PLAYSPEED_NORMAL)
       m_callback.OnPlayBackResumed();
-    else if (m_newPlaySpeed == DVD_PLAYSPEED_PAUSE)
+    else if (iSpeed == DVD_PLAYSPEED_PAUSE)
       m_callback.OnPlayBackPaused();
+
+    if (iSpeed == DVD_PLAYSPEED_NORMAL)
+    {
+      float currentTempo = m_processInfo->GetNewTempo();
+      if (currentTempo != 1.0)
+      {
+        SetTempo(currentTempo);
+        return;
+      }
+    }
+    SetPlaySpeed(iSpeed);
   }
-  SetPlaySpeed(iSpeed);
 }
 
-float CVideoPlayer::GetSpeed()
+void CVideoPlayer::SetTempo(float tempo)
 {
-  if (m_playSpeed != m_newPlaySpeed)
-    return (float)m_newPlaySpeed / DVD_PLAYSPEED_NORMAL;
+  tempo = floor(tempo * 100 + 0.5) / 100;
+  if (m_processInfo->IsTempoAllowed(tempo))
+  {
+    int speed = tempo * DVD_PLAYSPEED_NORMAL;
+    CDVDMsgPlayerSetSpeed::SpeedParams params = { speed, true };
+    m_messenger.Put(new CDVDMsgPlayerSetSpeed(params));
 
-  return (float)m_playSpeed / DVD_PLAYSPEED_NORMAL;
+    m_processInfo->SetNewTempo(tempo);
+  }
 }
 
 bool CVideoPlayer::SupportsTempo()
@@ -4036,8 +4065,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   // clear subtitle and menu overlays
   m_overlayContainer.Clear();
 
-  if(m_playSpeed == DVD_PLAYSPEED_NORMAL ||
-     m_playSpeed == DVD_PLAYSPEED_PAUSE)
+  if (m_playSpeed == DVD_PLAYSPEED_NORMAL ||
+      m_playSpeed == DVD_PLAYSPEED_PAUSE)
   {
     // make sure players are properly flushed, should put them in stalled state
     CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO);

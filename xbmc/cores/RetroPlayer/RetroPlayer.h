@@ -108,7 +108,6 @@ namespace RETRO
     //virtual int GetSourceBitrate() override { return 0; }
     bool GetStreamDetails(CStreamDetails &details) override;
     void SetSpeed(float speed) override;
-    float GetSpeed() override;
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }
     //virtual bool IsInMenu() const override { return false; }

@@ -60,7 +60,6 @@ public:
   int64_t GetTime() override;
   int64_t GetTotalTime() override;
   void SetSpeed(float speed) override;
-  float GetSpeed() override;
   void DoAudioWork() override {}
 
   std::string GetPlayerState() override;

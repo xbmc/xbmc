@@ -23,6 +23,7 @@
 #include "RetroPlayerAutoSave.h"
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
+#include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
@@ -357,14 +358,9 @@ void CRetroPlayer::SetSpeed(float speed)
 
     if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
       CloseOSD();
-  }
-}
 
-float CRetroPlayer::GetSpeed()
-{
-  if (m_gameClient)
-    return static_cast<float>(m_gameClient->GetPlayback()->GetSpeed());
-  return 0;
+    CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
+  }
 }
 
 bool CRetroPlayer::OnAction(const CAction &action)

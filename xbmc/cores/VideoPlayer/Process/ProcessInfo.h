@@ -87,6 +87,13 @@ public:
   // player states
   void SetStateSeeking(bool active);
   bool IsSeeking();
+  void SetSpeed(float speed);
+  void SetNewSpeed(float speed);
+  float GetNewSpeed();
+  void SetTempo(float tempo);
+  void SetNewTempo(float tempo);
+  float GetNewTempo();
+  virtual bool IsTempoAllowed(float tempo);
 
   void SetLevelVQ(int level);
   int GetLevelVQ();
@@ -135,4 +142,8 @@ protected:
   std::atomic_int m_levelVQ;
   std::atomic_bool m_renderGuiLayer;
   std::atomic_bool m_renderVideoLayer;
+  float m_tempo;
+  float m_newTempo;
+  float m_speed;
+  float m_newSpeed;
 };
