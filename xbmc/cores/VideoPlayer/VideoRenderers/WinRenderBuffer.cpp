@@ -282,10 +282,10 @@ bool CRenderBuffer::UploadBuffer()
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    auto dxva_buffer = dynamic_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
+    auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
     // rewrite dimension to actual values for proper usage in shaders
-    m_width = dxva_buffer->picture->width;
-    m_height = dxva_buffer->picture->height;
+    m_width = buf->width;
+    m_height = buf->height;
     ret = true;
     break;
   }
@@ -322,8 +322,8 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    auto dxva_buffer = dynamic_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
-    return dxva_buffer && dxva_buffer->picture ? dxva_buffer->picture->GetSRV(idx) : nullptr;
+    auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    return buf ? buf->GetSRV(idx) : nullptr;
   }
   case BUFFER_FMT_D3D11_NV12:
   case BUFFER_FMT_D3D11_P010:
@@ -349,11 +349,8 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
 
 ID3D11View* CRenderBuffer::GetHWView() const
 {
-  auto dxva_buffer = dynamic_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
-  if (dxva_buffer && dxva_buffer->picture)
-    return dxva_buffer->picture->view;
-
-  return nullptr;
+  auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  return buf ? buf->view : nullptr;
 }
 
 ID3D11Resource* CRenderBuffer::GetResource(unsigned idx) const
@@ -397,8 +394,8 @@ bool CRenderBuffer::UnmapPlane(unsigned idx) const
 
 bool CRenderBuffer::HasPic() const
 {
-  auto dxva_buffer = dynamic_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
-  return dxva_buffer && dxva_buffer->picture || m_textures[0].Get();
+  auto dxva_buffer = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  return dxva_buffer || m_textures[0].Get();
 }
 
 void CRenderBuffer::QueueCopyBuffer()
@@ -408,8 +405,8 @@ void CRenderBuffer::QueueCopyBuffer()
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && format < BUFFER_FMT_D3D11_BYPASS)
   {
-    DXVA::CDXVAVideoBuffer *hwpic = static_cast<DXVA::CDXVAVideoBuffer*>(videoBuffer);
-    CopyToStaging(reinterpret_cast<ID3D11VideoDecoderOutputView*>(hwpic->picture->view));
+    DXVA::CDXVAOutputBuffer *buf = static_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    CopyToStaging(reinterpret_cast<ID3D11VideoDecoderOutputView*>(buf->view));
   }
 }
 
