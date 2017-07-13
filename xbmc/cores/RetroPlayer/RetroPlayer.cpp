@@ -148,7 +148,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     SetSpeed(1);
     m_callback.OnPlayBackStarted();
-    m_autoSave.reset(new CRetroPlayerAutoSave(this));
+    m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
   }
   else
   {

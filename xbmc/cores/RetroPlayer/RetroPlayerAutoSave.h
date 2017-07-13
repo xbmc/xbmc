@@ -19,9 +19,8 @@
  */
 #pragma once
 
+#include "games/GameTypes.h"
 #include "threads/Thread.h"
-
-class IPlayer;
 
 namespace KODI
 {
@@ -30,7 +29,7 @@ namespace RETRO
   class CRetroPlayerAutoSave : protected CThread
   {
   public:
-    CRetroPlayerAutoSave(IPlayer *player);
+    CRetroPlayerAutoSave(GAME::CGameClient &gameClient);
 
     ~CRetroPlayerAutoSave() override;
 
@@ -40,7 +39,7 @@ namespace RETRO
 
   private:
     // Construction parameter
-    IPlayer *const m_player;
+    GAME::CGameClient &m_gameClient;
   };
 }
 }
