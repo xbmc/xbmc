@@ -507,7 +507,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
 
   unsigned int filters = 0;
 
-  if (mInt != VS_INTERLACEMETHOD_NONE)
+  if (mInt != VS_INTERLACEMETHOD_NONE && m_interlaced)
   {
     if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
       filters = FILTER_DEINTERLACE_ANY;
@@ -1130,6 +1130,10 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     if (filters.compare(0,5,"yadif") == 0)
     {
       m_processInfo.SetVideoDeintMethod(filters);
+    }
+    else
+    {
+      m_processInfo.SetVideoDeintMethod("none");
     }
   }
   else
