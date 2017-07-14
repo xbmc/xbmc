@@ -1149,11 +1149,14 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return result;
   }
 
-  char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
-  if (graphDump)
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
   {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n%s", graphDump);
-    av_freep(&graphDump);
+    char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
+    if (graphDump)
+    {
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n%s", graphDump);
+      av_freep(&graphDump);
+    }
   }
 
   m_filterEof = false;
@@ -1164,7 +1167,10 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 {
   if (m_pFilterGraph)
   {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    {
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
+    }
     avfilter_graph_free(&m_pFilterGraph);
 
     // Disposed by above code
