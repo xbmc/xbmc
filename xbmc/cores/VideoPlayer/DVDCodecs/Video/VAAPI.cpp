@@ -1697,7 +1697,6 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
             CVaapiRenderPicture *outPic;
             CVaapiProcessedPicture procPic;
             procPic = m_bufferPool->processedPics.front();
-            m_config.stats->DecProcessed();
             m_bufferPool->processedPics.pop_front();
             outPic = ProcessPicture(procPic);
             if (outPic)
@@ -1705,6 +1704,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
               m_config.stats->IncRender();
               m_dataPort.SendInMessage(COutputDataProtocol::PICTURE, &outPic, sizeof(outPic));
             }
+            m_config.stats->DecProcessed();
             if (m_vaError)
             {
               m_state = O_TOP_ERROR;
