@@ -271,6 +271,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SortByYear, 562, LABEL_MASKS("%T", "%Y"));  // Title, Year | empty, empty
         AddSortMethod(SortByArtist, sortAttributes, 557, LABEL_MASKS("%A - %T", "%Y"));  // Artist - Title, Year | empty, empty
         AddSortMethod(SortByAlbum, sortAttributes, 558, LABEL_MASKS("%B - %T", "%Y"));  // Album - Title, Year | empty, empty
+        AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T", "%a", "%T", "%a"));  // Title, DateAdded | Title, DateAdded
 
         if (CMediaSettings::GetInstance().GetWatchedMode(items.GetContent()) == WatchedModeAll)
           AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
