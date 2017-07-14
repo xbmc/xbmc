@@ -38,7 +38,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
-  m_abort = false;
+  m_abortEvent.Reset();
 
   CXBMCApp::InitFrameCallback(this);
   g_Windowing.Register(this);
@@ -46,12 +46,10 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncAndroid::Run(std::atomic<bool>& stop)
+void CVideoSyncAndroid::Run(CEvent& stopEvent)
 {
-  while(!stop && !m_abort)
-  {
-    Sleep(100);
-  }
+  XbmcThreads::CEventGroup waitGroup{&stopEvent, &m_abortEvent};
+  waitGroup.wait();
 }
 
 void CVideoSyncAndroid::Cleanup()
@@ -70,7 +68,7 @@ float CVideoSyncAndroid::GetFps()
 
 void CVideoSyncAndroid::OnResetDisplay()
 {
-  m_abort = true;
+  m_abortEvent.Set();
 }
 
 void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)

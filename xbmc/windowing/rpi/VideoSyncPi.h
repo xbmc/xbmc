@@ -28,7 +28,7 @@ class CVideoSyncPi : public CVideoSync, IDispResource
 public:
   CVideoSyncPi(void *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
+  virtual void Run(CEvent& stopEvent);
   virtual void Cleanup();
   virtual float GetFps();
   virtual void OnResetDisplay();

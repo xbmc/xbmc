@@ -66,7 +66,7 @@ bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncD3D::Run(std::atomic<bool>& stop)
+void CVideoSyncD3D::Run(CEvent& stopEvent)
 {
   int64_t Now;
   int64_t LastVBlankTime;
@@ -78,7 +78,7 @@ void CVideoSyncD3D::Run(std::atomic<bool>& stop)
   Now = CurrentHostCounter();
   LastVBlankTime = Now;
   m_lastUpdateTime = Now - systemFrequency;
-  while (!stop && !m_displayLost && !m_displayReset)
+  while (!stopEvent.Signaled() && !m_displayLost && !m_displayReset)
   {
     // sleep until vblank
     HRESULT hr = g_Windowing.GetCurrentOutput()->WaitForVBlank();
@@ -111,7 +111,7 @@ void CVideoSyncD3D::Run(std::atomic<bool>& stop)
   }
 
   m_lostEvent.Set();
-  while (!stop && m_displayLost && !m_displayReset)
+  while (!stopEvent.Signaled() && m_displayLost && !m_displayReset)
   {
     Sleep(10);
   }

@@ -50,11 +50,11 @@ bool CVideoSyncIMX::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncIMX::Run(std::atomic<bool>& stop)
+void CVideoSyncIMX::Run(CEvent& stopEvent)
 {
   int counter;
 
-  while (!stop && !m_abort)
+  while (!stopEvent.Signaled() && !m_abort)
   {
     counter = g_IMX.WaitVsync();
     uint64_t now = CurrentHostCounter();

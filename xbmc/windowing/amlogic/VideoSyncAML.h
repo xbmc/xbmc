@@ -28,7 +28,7 @@ public:
   CVideoSyncAML(void *clock);
   virtual ~CVideoSyncAML();
   virtual bool Setup(PUPDATECLOCK func)override;
-  virtual void Run(std::atomic<bool>& stop)override;
+  virtual void Run(CEvent& stopEvent)override;
   virtual void Cleanup()override;
   virtual float GetFps()override;
   virtual void OnResetDisplay()override;

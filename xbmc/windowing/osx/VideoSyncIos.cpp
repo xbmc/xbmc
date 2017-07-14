@@ -36,7 +36,7 @@ bool CVideoSyncIos::Setup(PUPDATECLOCK func)
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
-  m_abort = false;
+  m_abortEvent.Reset();
   
   bool setupOk = InitDisplayLink();
   if (setupOk)
@@ -47,13 +47,11 @@ bool CVideoSyncIos::Setup(PUPDATECLOCK func)
   return setupOk;
 }
 
-void CVideoSyncIos::Run(std::atomic<bool>& stop)
+void CVideoSyncIos::Run(CEvent& stopEvent)
 {
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
-  while(!stop && !m_abort)
-  {
-    usleep(100000);
-  }
+  XbmcThreads::CEventGroup waitGroup{&stopEvent, &m_abortEvent};
+  waitGroup.wait();
 }
 
 void CVideoSyncIos::Cleanup()
@@ -72,7 +70,7 @@ float CVideoSyncIos::GetFps()
 
 void CVideoSyncIos::OnResetDisplay()
 {
-  m_abort = true;
+  m_abortEvent.Set();
 }
 
 void CVideoSyncIos::IosVblankHandler()

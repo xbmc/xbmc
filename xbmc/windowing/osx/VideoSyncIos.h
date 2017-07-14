@@ -26,11 +26,11 @@
 class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncIos(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncIos(void *clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Run(CEvent& stopEvent) override;
   virtual void Cleanup() override;
   virtual float GetFps() override;
   
@@ -46,7 +46,7 @@ private:
   virtual void DeinitDisplayLink();
 
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
-  volatile bool m_abort;
+  CEvent m_abortEvent;
 };
 
 #endif// TARGET_DARWIN_IOS
