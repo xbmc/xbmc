@@ -361,7 +361,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iOrientation = hints.orientation;
 
   m_formats.clear();
-  m_formats = m_processInfo.GetRenderFormats();
+  m_formats = m_processInfo.GetPixFormats();
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
   m_processInfo.SetSwDeinterlacingMethods();
 

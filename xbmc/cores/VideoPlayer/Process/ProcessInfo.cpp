@@ -58,6 +58,9 @@ void CProcessInfo::SetDataCache(CDataCacheCore *cache)
   m_dataCache->SetVideoRender(m_renderVideoLayer);
 }
 
+//******************************************************************************
+// video codec
+//******************************************************************************
 void CProcessInfo::ResetVideoCodecInfo()
 {
   CSingleLock lock(m_videoCodecSection);
@@ -261,7 +264,27 @@ CVideoBufferManager& CProcessInfo::GetVideoBufferManager()
   return m_videoBufferManager;
 }
 
+std::vector<AVPixelFormat> CProcessInfo::GetPixFormats()
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  if (m_pixFormats.empty())
+  {
+    return GetRenderFormats();
+  }
+  return m_pixFormats;
+}
+
+void CProcessInfo::SetPixFormats(std::vector<AVPixelFormat> &formats)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_pixFormats = formats;
+}
+
+//******************************************************************************
 // player audio info
+//******************************************************************************
 void CProcessInfo::ResetAudioCodecInfo()
 {
   CSingleLock lock(m_audioCodecSection);
@@ -406,7 +429,9 @@ std::vector<AVPixelFormat> CProcessInfo::GetRenderFormats()
   return formats;
 }
 
+//******************************************************************************
 // player states
+//******************************************************************************
 void CProcessInfo::SetStateSeeking(bool active)
 {
   CSingleLock lock(m_renderSection);

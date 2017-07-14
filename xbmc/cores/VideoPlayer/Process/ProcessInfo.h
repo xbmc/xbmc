@@ -63,6 +63,8 @@ public:
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault();
   CVideoBufferManager& GetVideoBufferManager();
+  std::vector<AVPixelFormat> GetPixFormats();
+  void SetPixFormats(std::vector<AVPixelFormat> &formats);
 
   // player audio info
   void ResetAudioCodecInfo();
@@ -120,6 +122,7 @@ protected:
   EINTERLACEMETHOD m_deintMethodDefault;
   CCriticalSection m_videoCodecSection;
   CVideoBufferManager m_videoBufferManager;
+  std::vector<AVPixelFormat> m_pixFormats;
 
   // player audio info
   std::string m_audioDecoderName;
