@@ -268,8 +268,11 @@ void CMMALPool::Configure(AVPixelFormat format, int size)
   Configure(format, 0, 0, 0, 0, size);
 }
 
-void CMMALPool::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
+void CMMALPool::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
+  assert(m_geo.bytes_per_pixel);
+  int alignedWidth = strides[0] ? strides[0] / m_geo.bytes_per_pixel : width;
+  int alignedHeight = planeOffsets[1] ? planeOffsets[1] / strides[0] : height;
   Configure(AV_PIX_FMT_NONE, width, height, alignedWidth, alignedHeight, 0);
 }
 

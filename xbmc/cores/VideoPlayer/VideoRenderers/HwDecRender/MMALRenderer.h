@@ -58,7 +58,7 @@ public:
   virtual bool IsConfigured() override;
   virtual bool IsCompatible(AVPixelFormat format, int size) override;
 
-  void SetDimensions(int width, int height, int alignedWidth, int alignedHeight);
+  void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES]);
   MMAL_COMPONENT_T *GetComponent() { return m_component; }
   CMMALBuffer *GetBuffer(uint32_t timeout);
   void Prime();

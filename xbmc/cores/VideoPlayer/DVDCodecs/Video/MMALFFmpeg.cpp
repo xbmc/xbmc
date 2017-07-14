@@ -94,11 +94,17 @@ void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   strides[2] = geo.stride_c;
 }
 
-void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
+void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
   assert(pool);
-  pool->SetDimensions(width, height, strides[0], height);
+  pool->SetDimensions(width, height, strides, planeOffsets);
+}
+
+void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
+{
+  const int (&planeOffsets)[YuvImage::MAX_PLANES] = {};
+  SetDimensions(width, height, strides, planeOffsets);
 }
 
 //-----------------------------------------------------------------------------
