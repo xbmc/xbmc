@@ -266,6 +266,15 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
   m_image.plane[2] = m_image.plane[1] + m_image.planesize[1];
 }
 
+void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
+{
+  SetDimensions(width, height, strides);
+
+  m_image.plane[0] = m_data + planeOffsets[0];
+  m_image.plane[1] = m_data + planeOffsets[1];
+  m_image.plane[2] = m_data + planeOffsets[2];
+}
+
 bool CVideoBufferSysMem::Alloc()
 {
   m_data = new uint8_t[m_size];
