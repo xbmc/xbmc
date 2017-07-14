@@ -903,24 +903,8 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
     return result | EOS_DROPPED;
   }
 
-  // set fieldsync if picture is interlaced
-  EINTERLACEMETHOD deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
-  EFIELDSYNC mDisplayField = FS_NONE;
-  if (pPicture->iFlags & DVP_FLAG_INTERLACED)
-  {
-    deintMethod = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
-    if (!m_processInfo.Supports(deintMethod))
-      deintMethod = m_processInfo.GetDeinterlacingMethodDefault();
-    if (deintMethod != EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE)
-    {
-      if (pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-        mDisplayField = FS_TOP;
-      else
-        mDisplayField = FS_BOT;
-    }
-  }
-
   int timeToDisplay = DVD_TIME_TO_MSEC(pPicture->pts - iPlayingClock);
+
   // make sure waiting time is not negative
   int maxWaitTime = std::min(std::max(timeToDisplay + 500, 50), 500);
   // don't wait when going ff
@@ -935,23 +919,16 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
 
   ProcessOverlays(pPicture, pPicture->pts);
 
-  int index = m_renderManager.AddVideoPicture(*pPicture);
+  EINTERLACEMETHOD deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+  deintMethod = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  if (!m_processInfo.Supports(deintMethod))
+    deintMethod = m_processInfo.GetDeinterlacingMethodDefault();
 
-  // video device might not be done yet
-  while (index < 0 && !m_bAbortOutput &&
-         m_pClock->GetAbsoluteClock(false) < iCurrentClock + DVD_MSEC_TO_TIME(500))
-  {
-    Sleep(1);
-    index = m_renderManager.AddVideoPicture(*pPicture);
-  }
-
-  if (index < 0)
+  if (!m_renderManager.AddVideoPicture(*pPicture, m_bAbortOutput, deintMethod, (m_syncState == ESyncState::SYNC_STARTING)))
   {
     m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
     return EOS_DROPPED;
   }
-
-  m_renderManager.FlipPage(m_bAbortOutput, pPicture->pts, deintMethod, mDisplayField, (m_syncState == ESyncState::SYNC_STARTING));
 
   return result;
 }

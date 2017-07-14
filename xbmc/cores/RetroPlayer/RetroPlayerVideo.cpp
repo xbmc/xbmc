@@ -210,14 +210,9 @@ void CRetroPlayerVideo::SendPicture(VideoPicture& picture)
 {
   std::atomic_bool bAbortOutput(false); //! @todo
 
-  int index = m_renderManager.AddVideoPicture(picture);
-  if (index < 0)
+  if (!m_renderManager.AddVideoPicture(picture, bAbortOutput, VS_INTERLACEMETHOD_NONE, false))
   {
     // Video device might not be done yet, drop the frame
     m_droppedFrames++;
-  }
-  else
-  {
-    m_renderManager.FlipPage(bAbortOutput, 0.0, VS_INTERLACEMETHOD_NONE, FS_NONE, false);
   }
 }
