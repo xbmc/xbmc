@@ -20,131 +20,20 @@
 
 #include "SavestateUtils.h"
 #include "Savestate.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
-#include "profiles/ProfilesManager.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#include <algorithm>
-#include <cctype>
-#include <cstring>
-#include <sstream>
-
 #define SAVESTATE_EXTENSION      ".sav"
-#define SAVESTATE_AUTO_PREFIX    "auto_"
-#define SAVESTATE_SLOT_PREFIX    "slot%d_"
-#define SAVESTATE_MANUAL_PREFIX  "save_"
+#define METADATA_EXTENSION       ".xml"
 
 using namespace KODI;
 using namespace GAME;
 
-namespace
-{
-  void make_safe_path(std::string& path)
-  {
-    // Replace unsafe characters with "_"
-    std::transform(path.begin(), path.end(), path.begin(),
-      [](char c)
-      {
-        if (std::isalnum(c))
-          return c;
-
-        switch (c)
-        {
-        case '-':
-        case '.':
-        case '_':
-        case '[':
-        case ']':
-        case '(':
-        case ')':
-        case '!':
-          return c;
-        default:
-          break;
-        }
-
-        return '_';
-      });
-
-    // Combine successive runs of underscores
-    path.erase(std::unique(path.begin(), path.end(),
-      [](char a, char b)
-      {
-        return a == '_' && b == '_';
-      }), path.end());
-
-    // Limit folderName to a sane number of characters
-    if (path.length() > 40)
-      path.erase(path.begin() + 40, path.end());
-
-    // Trim trailing underscores
-    StringUtils::TrimRight(path, "_");
-  }
-}
-
 std::string CSavestateUtils::MakePath(const CSavestate& save)
 {
-  using namespace XFILE;
-
-  if (save.GameClient().empty())
-    return "";
-
-  // Build path
-  std::string savePath = CProfilesManager::GetInstance().GetSavestatesFolder();
-
-  // Append game client
-  savePath = URIUtils::AddFileToFolder(savePath, save.GameClient());
-
-  // Generate a folder name based on game path and CRC
-  std::string folderName = URIUtils::GetFileName(save.GamePath()) + "_" + save.GameCRC();
-
-  make_safe_path(folderName);
-
-  savePath = URIUtils::AddFileToFolder(savePath, folderName);
-
-  if (!CDirectory::Exists(savePath))
-    CDirectory::Create(savePath);
-
-  // Generate a filename based on type
-  std::string filename;
-  switch (save.Type())
-  {
-  case SAVETYPE::AUTO:
-    filename = SAVESTATE_AUTO_PREFIX + save.Timestamp().GetAsDBDateTime();
-    break;
-  case SAVETYPE::SLOT:
-    filename = StringUtils::Format(SAVESTATE_SLOT_PREFIX, save.Slot()) + save.Timestamp().GetAsDBDateTime();
-    break;
-  case SAVETYPE::MANUAL:
-    filename = SAVESTATE_MANUAL_PREFIX + save.Timestamp().GetAsDBDateTime();
-    break;
-  default:
-    return ""; // Invalid savestate, bail out
-  }
-
-  make_safe_path(filename);
-
-  filename += SAVESTATE_EXTENSION;
-
-  savePath = URIUtils::AddFileToFolder(savePath, filename);
-
-  for (unsigned int i = 1; i <= 9; i++)
-  {
-    if (!CFile::Exists(savePath))
-      break;
-
-    if (i != 1)
-      savePath.erase(savePath.end() - 1, savePath.end());
-
-    savePath += StringUtils::Format("%u", i);
-  }
-
-  return savePath;
+  return URIUtils::ReplaceExtension(save.GamePath(), SAVESTATE_EXTENSION);
 }
 
-std::string CSavestateUtils::MakeThumbPath(const std::string& savePath)
+std::string CSavestateUtils::MakeMetadataPath(const std::string &gamePath)
 {
-  return URIUtils::ReplaceExtension(savePath, ".jpg");
+  return URIUtils::ReplaceExtension(gamePath, METADATA_EXTENSION);
 }

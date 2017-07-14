@@ -23,80 +23,23 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace kodi::addon;
 
-class BufferPool
-{
-public:
-  ~BufferPool()
-  {
-    for (BUFFER &buf : freeBuffer)
-      free(buf.mem);
-    for (BUFFER &buf : usedBuffer)
-      free(buf.mem);
-  }
-
-  bool GetBuffer(VIDEOCODEC_PICTURE &picture)
-  {
-    if (freeBuffer.empty())
-      freeBuffer.resize(1);
-
-    BUFFER &buf(freeBuffer.back());
-    if (buf.memSize < picture.decodedDataSize)
-    {
-      buf.memSize = picture.decodedDataSize;
-      buf.mem = malloc(buf.memSize);
-      if (buf.mem == nullptr)
-      {
-        buf.memSize = 0;
-        picture.decodedData = nullptr;
-        return false;
-      }
-    }
-    picture.decodedData = (uint8_t*)buf.mem;
-
-    usedBuffer.push_back(buf);
-    freeBuffer.pop_back();
-    return true;
-  }
-
-  void ReleaseBuffer(void *bufferPtr)
-  {
-    std::vector<BUFFER>::iterator res(std::find(usedBuffer.begin(), usedBuffer.end(), bufferPtr));
-    if (res == usedBuffer.end())
-      return;
-    freeBuffer.push_back(*res);
-    usedBuffer.erase(res);
-  }
-
-private:
-  struct BUFFER
-  {
-    BUFFER():mem(nullptr), memSize(0) {};
-    BUFFER(void* m, size_t s) :mem(m), memSize(s) {};
-    bool operator == (const void* data) const { return mem == data; };
-
-    void *mem;
-    size_t memSize;
-  };
-  std::vector<BUFFER> freeBuffer, usedBuffer;
-};
-
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
   : CDVDVideoCodec(processInfo),
     IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance)
   , m_codecFlags(0)
   , m_displayAspect(0.0f)
-  , m_lastPictureBuffer(nullptr)
-  , m_bufferPool(new BufferPool())
 {
   m_struct = { { 0 } };
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.get_frame_buffer = get_frame_buffer;
+  m_struct.toKodi.release_frame_buffer = release_frame_buffer;
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
@@ -107,11 +50,10 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddon
 
 CAddonVideoCodec::~CAddonVideoCodec()
 {
+  //free remaining buffers
+  Reset();
+
   DestroyInstance();
-
-  m_bufferPool->ReleaseBuffer(m_lastPictureBuffer);
-
-  delete m_bufferPool;
 }
 
 bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints)
@@ -203,12 +145,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   unsigned int nformats(0);
-  for (auto fmt : options.m_formats)
-    if (fmt == RENDER_FMT_YUV420P)
-    {
-      m_formats[nformats++] = VideoFormatYV12;
-      break;
-    }
+  m_formats[nformats++] = VideoFormatYV12;
   m_formats[nformats] = UnknownVideoFormat;
 
   if (nformats == 0)
@@ -217,8 +154,6 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   VIDEOCODEC_INITDATA initData;
   if (!CopyToInitData(initData, hints))
     return false;
-
-  m_lastPictureBuffer = nullptr;
 
   return m_struct.toAddon.open(&m_struct, &initData);
 }
@@ -260,22 +195,25 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
   case VIDEOCODEC_RETVAL::VC_BUFFER:
     return CDVDVideoCodec::VC_BUFFER;
   case VIDEOCODEC_RETVAL::VC_PICTURE:
-    pVideoPicture->data[0] = picture.decodedData + picture.planeOffsets[0];
-    pVideoPicture->data[1] = picture.decodedData + picture.planeOffsets[1];
-    pVideoPicture->data[2] = picture.decodedData + picture.planeOffsets[2];
-    pVideoPicture->iLineSize[0] = picture.stride[0];
-    pVideoPicture->iLineSize[1] = picture.stride[1];
-    pVideoPicture->iLineSize[2] = picture.stride[2];
     pVideoPicture->iWidth = picture.width;
     pVideoPicture->iHeight = picture.height;
-    pVideoPicture->pts = DVD_NOPTS_VALUE;
+    pVideoPicture->pts = static_cast<double>(picture.pts);
     pVideoPicture->dts = DVD_NOPTS_VALUE;
     pVideoPicture->color_range = 0;
     pVideoPicture->color_matrix = 4;
-    pVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+    pVideoPicture->iFlags = 0;
     if (m_codecFlags & DVD_CODEC_CTRL_DROP)
       pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
-    pVideoPicture->format = RENDER_FMT_YUV420P;
+
+    if (pVideoPicture->videoBuffer)
+      pVideoPicture->videoBuffer->Release();
+
+    pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.buffer);
+
+    int strides[YuvImage::MAX_PLANES];
+    for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
+      strides[i] = picture.stride[i];
+    pVideoPicture->videoBuffer->SetDimensions(picture.width, picture.height, strides);
 
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
     pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
@@ -290,10 +228,8 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     }
 
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CAddonVideoCodec: GetPicture::VC_PICTURE with pts %llu", picture.pts);
-
-    m_bufferPool->ReleaseBuffer(m_lastPictureBuffer);
-    m_lastPictureBuffer = picture.decodedData;
+      CLog::Log(LOGDEBUG, "CAddonVideoCodec: GetPicture::VC_PICTURE with pts %llu %dx%d (%dx%d) %f %p:%d offset:%d,%d,%d, stride:%d,%d,%d", picture.pts, pVideoPicture->iWidth, pVideoPicture->iHeight, pVideoPicture->iDisplayWidth, pVideoPicture->iDisplayHeight, m_displayAspect,
+          picture.decodedData, picture.decodedDataSize, picture.planeOffsets[0], picture.planeOffsets[1], picture.planeOffsets[2], picture.stride[0], picture.stride[1], picture.stride[2]);
 
     if (picture.width != m_width || picture.height != m_height)
     {
@@ -319,8 +255,7 @@ const char* CAddonVideoCodec::GetName()
 
 void CAddonVideoCodec::Reset()
 {
-  if (!m_struct.toAddon.reset)
-    return;
+  CVideoBuffer *videoBuffer;
 
   CLog::Log(LOGDEBUG, "CAddonVideoCodec: Reset");
 
@@ -333,19 +268,33 @@ void CAddonVideoCodec::Reset()
   {
     if (ret == VIDEOCODEC_RETVAL::VC_PICTURE)
     {
-      m_bufferPool->ReleaseBuffer(m_lastPictureBuffer);
-      m_lastPictureBuffer = picture.decodedData;
+      videoBuffer = static_cast<CVideoBuffer*>(picture.buffer);
+      if (videoBuffer)
+        videoBuffer->Release();
     }
   }
-  m_bufferPool->ReleaseBuffer(m_lastPictureBuffer);
-  m_lastPictureBuffer = nullptr;
-
-  m_struct.toAddon.reset(&m_struct);
+  if (m_struct.toAddon.reset)
+    m_struct.toAddon.reset(&m_struct);
 }
 
 bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
 {
-  return m_bufferPool->GetBuffer(picture);
+  CVideoBuffer *videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, picture.decodedDataSize);
+  if (!videoBuffer)
+  {
+    CLog::Log(LOGERROR,"CAddonVideoCodec::GetFrameBuffer Failed to allocate buffer");
+    return false;
+  }
+  picture.decodedData = videoBuffer->GetMemPtr();
+  picture.buffer = videoBuffer;
+
+  return true;
+}
+
+void CAddonVideoCodec::ReleaseFrameBuffer(void *buffer)
+{
+  if (buffer)
+    static_cast<CVideoBuffer*>(buffer)->Release();
 }
 
 /*********************     ADDON-TO-KODI    **********************/
@@ -356,4 +305,12 @@ bool CAddonVideoCodec::get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *
     return false;
 
   return static_cast<CAddonVideoCodec*>(kodiInstance)->GetFrameBuffer(*picture);
+}
+
+void CAddonVideoCodec::release_frame_buffer(void* kodiInstance, void *buffer)
+{
+  if (!kodiInstance)
+    return;
+
+  static_cast<CAddonVideoCodec*>(kodiInstance)->ReleaseFrameBuffer(buffer);
 }

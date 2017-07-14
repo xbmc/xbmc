@@ -19,13 +19,32 @@
  */
 
 #include "RendererVAAPIGL.h"
-
+#include "../RenderFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "windowing/WindowingFactory.h"
+
+using namespace VAAPI;
+
+CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
+{
+  CVaapiRenderPicture *vb = dynamic_cast<CVaapiRenderPicture*>(buffer);
+  if (vb)
+    return new CRendererVAAPI();
+
+  return nullptr;
+}
+
+void CRendererVAAPI::Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
+{
+  CVaapiTexture::TestInterop(vaDpy, eglDisplay, general, hevc);
+  if (general)
+    VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
+}
 
 CRendererVAAPI::CRendererVAAPI() = default;
 
@@ -37,62 +56,40 @@ CRendererVAAPI::~CRendererVAAPI()
   }
 }
 
-bool CRendererVAAPI::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
-                               float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
-  if (vaapi->textureY)
+  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  if (pic->procPic.videoSurface != VA_INVALID_ID)
     m_isVAAPIBuffer = true;
   else
     m_isVAAPIBuffer = false;
 
-  return CLinuxRendererGL::Configure(width, height, d_width, d_height,
-                                     fps, flags, format, hwPic, orientation);
+  InteropInfo interop;
+  interop.textureTarget = GL_TEXTURE_2D;
+  interop.eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  interop.eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+  interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
+  interop.eglDisplay = g_Windowing.GetEGLDisplay();
+
+  for (auto &tex : m_vaapiTextures)
+  {
+    tex.Init(interop);
+  }
+  for (auto &fence : m_fences)
+  {
+    fence = GL_NONE;
+  }
+
+  return CLinuxRendererGL::Configure(picture, fps, flags, orientation);
 }
 
-bool CRendererVAAPI::ConfigChanged(void *hwPic)
+bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
 {
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
-  if (vaapi->textureY && !m_isVAAPIBuffer)
+  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer)
     return true;
 
   return false;
-}
-
-void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index)
-{
-  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(picture.hwPic);
-  YUVBUFFER &buf = m_buffers[index];
-  VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
-  if (buf.hwDec)
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = pic;
-
-  if (!m_isVAAPIBuffer)
-  {
-    YV12Image &im = m_buffers[index].image;
-    CDVDCodecUtils::CopyNV12Picture(&im, &vaapi->DVDPic);
-  }
-}
-
-void CRendererVAAPI::ReleaseBuffer(int idx)
-{
-  YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = NULL;
-}
-
-CRenderInfo CRendererVAAPI::GetRenderInfo()
-{
-  CRenderInfo info;
-  info.formats = m_formats;
-  info.max_buffer_size = NUM_BUFFERS;
-  if (!m_isVAAPIBuffer)
-    info.optimal_buffer_size = 4;
-  else
-    info.optimal_buffer_size = 5;
-  return info;
 }
 
 bool CRendererVAAPI::Supports(ERENDERFEATURE feature)
@@ -105,7 +102,7 @@ bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
   return CLinuxRendererGL::Supports(method);
 }
 
-EShaderFormat CRendererVAAPI::GetShaderFormat(ERenderFormat renderFormat)
+EShaderFormat CRendererVAAPI::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
@@ -134,43 +131,38 @@ bool CRendererVAAPI::CreateTexture(int index)
     return CreateNV12Texture(index);
   }
 
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
+  YUVBUFFER &buf = m_buffers[index];
+  YuvImage &im = buf.image;
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   DeleteTexture(index);
 
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&im, 0, sizeof(im));
+  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  plane.id = 1;
+  planes[0].id = 1;
 
   return true;
 }
 
 void CRendererVAAPI::DeleteTexture(int index)
 {
+  ReleaseBuffer(index);
+
   if (!m_isVAAPIBuffer)
   {
     DeleteNV12Texture(index);
     return;
   }
 
-  if (m_buffers[index].hwDec)
-    ((VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec)->Release();
-  m_buffers[index].hwDec = NULL;
-
-  YUVFIELDS &fields = m_buffers[index].fields;
-  fields[FIELD_FULL][0].id = 0;
-  fields[FIELD_FULL][1].id = 0;
-  fields[FIELD_FULL][2].id = 0;
+  YUVBUFFER &buf = m_buffers[index];
+  buf.fields[FIELD_FULL][0].id = 0;
+  buf.fields[FIELD_FULL][1].id = 0;
+  buf.fields[FIELD_FULL][2].id = 0;
 }
 
 bool CRendererVAAPI::UploadTexture(int index)
@@ -180,21 +172,22 @@ bool CRendererVAAPI::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  VAAPI::CVaapiRenderPicture *vaapi = (VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec;
+  YUVBUFFER &buf = m_buffers[index];
 
-  YV12Image &im = m_buffers[index].image;
+  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(buf.videoBuffer);
 
-  YUVFIELDS &fields = m_buffers[index].fields;
-
-  if (!vaapi || !vaapi->valid)
+  if (!pic || !pic->valid)
   {
     return false;
   }
 
-  YUVPLANES &planes = fields[0];
+  m_vaapiTextures[index].Map(pic);
 
-  planes[0].texwidth  = vaapi->texWidth;
-  planes[0].texheight = vaapi->texHeight;
+  YuvImage &im = buf.image;
+  YUVPLANE (&planes)[3] = buf.fields[0];
+
+  planes[0].texwidth  = m_vaapiTextures[index].m_texWidth;
+  planes[0].texheight = m_vaapiTextures[index].m_texHeight;
 
   planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
@@ -208,15 +201,15 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   // set textures
-  fields[0][0].id = vaapi->textureY;
-  fields[0][1].id = vaapi->textureVU;
-  fields[0][2].id = vaapi->textureVU;
+  planes[0].id = m_vaapiTextures[index].m_textureY;
+  planes[1].id = m_vaapiTextures[index].m_textureVU;
+  planes[2].id = m_vaapiTextures[index].m_textureVU;
 
   glEnable(m_textureTarget);
 
   for (int p=0; p<2; p++)
   {
-    glBindTexture(m_textureTarget,fields[0][p].id);
+    glBindTexture(m_textureTarget, planes[p].id);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -233,10 +226,42 @@ bool CRendererVAAPI::UploadTexture(int index)
 
 void CRendererVAAPI::AfterRenderHook(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
+  if (glIsSync(m_fences[idx]))
   {
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Sync();
+    glDeleteSync(m_fences[idx]);
+    m_fences[idx] = GL_NONE;
   }
+  m_fences[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
 
+bool CRendererVAAPI::NeedBuffer(int idx)
+{
+  if (glIsSync(m_fences[idx]))
+  {
+    GLint state;
+    GLsizei length;
+    glGetSynciv(m_fences[idx], GL_SYNC_STATUS, 1, &length, &state);
+    if (state == GL_SIGNALED)
+    {
+      glDeleteSync(m_fences[idx]);
+      m_fences[idx] = GL_NONE;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void CRendererVAAPI::ReleaseBuffer(int idx)
+{
+  if (glIsSync(m_fences[idx]))
+  {
+    glDeleteSync(m_fences[idx]);
+    m_fences[idx] = GL_NONE;
+  }
+  m_vaapiTextures[idx].Unmap();
+  CLinuxRendererGL::ReleaseBuffer(idx);
+}

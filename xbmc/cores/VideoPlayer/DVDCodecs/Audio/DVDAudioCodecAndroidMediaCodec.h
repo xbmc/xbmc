@@ -42,6 +42,10 @@ public:
   CDVDAudioCodecAndroidMediaCodec(CProcessInfo &processInfo);
   virtual ~CDVDAudioCodecAndroidMediaCodec();
 
+  // registration
+  static CDVDAudioCodec* Create(CProcessInfo &processInfo);
+  static bool Register();
+
   // required overrides
 public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
@@ -50,7 +54,7 @@ public:
   virtual void GetData(DVDAudioFrame &frame) override;
   virtual int GetData(uint8_t** dst) override;
   virtual void Reset() override;
-  virtual AEAudioFormat GetFormat() override{ return m_format; }
+  virtual AEAudioFormat GetFormat() override { return m_format; }
   virtual const char* GetName() override { return "mediacodec"; }
   
 protected:

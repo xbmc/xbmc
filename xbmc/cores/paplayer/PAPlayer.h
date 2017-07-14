@@ -59,7 +59,6 @@ public:
   void SetVolume(float volume) override;
   void SetDynamicRangeCompression(long drc) override;
   void SetSpeed(float speed = 0) override;
-  float GetSpeed() override;
   int GetCacheLevel() const override;
   int64_t GetTotalTime() override;
   void SetTotalTime(int64_t time) override;

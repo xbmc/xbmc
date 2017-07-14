@@ -33,7 +33,7 @@ class CDVDDemuxClient : public CDVDDemux
 public:
 
   CDVDDemuxClient();
-  ~CDVDDemuxClient();
+  ~CDVDDemuxClient() override;
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();
@@ -43,17 +43,18 @@ public:
   DemuxPacket* Read() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
   void SetSpeed(int iSpeed) override;
-  int GetStreamLength() override { return 0; }
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
   std::string GetFileName() override;
-  virtual std::string GetStreamCodecName(int iStreamId) override;
-  virtual void EnableStream(int id, bool enable) override;
-  virtual void SetVideoResolution(int width, int height) override;
+  std::string GetStreamCodecName(int iStreamId) override;
+  void EnableStream(int id, bool enable) override;
+  void OpenStream(int id) override;
+  void SetVideoResolution(int width, int height) override;
 
 protected:
   void RequestStreams();
+  void RequestStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map);
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStream(int iStreamId);
   void DisposeStreams();

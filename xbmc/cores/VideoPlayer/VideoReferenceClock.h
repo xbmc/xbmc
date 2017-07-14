@@ -29,7 +29,7 @@ class CVideoReferenceClock : public CThread
 {
   public:
     CVideoReferenceClock();
-    virtual ~CVideoReferenceClock();
+    ~CVideoReferenceClock() override;
 
     int64_t GetTime(bool interpolated = true);
     void    SetSpeed(double Speed);

@@ -20,12 +20,19 @@
 #pragma once
 
 #include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "../ProcessInfo.h"
 
-class CProcessInfoLinux : public CProcessInfo
+namespace VIDEOPLAYER
+{
+
+class CProcessInfoWin : public CProcessInfo
 {
 public:
-  CProcessInfoLinux();
-  virtual ~CProcessInfoLinux();
-  void SetSwDeinterlacingMethods() override;
+  static CProcessInfo* Create();
+  static void Register();
+
+  EINTERLACEMETHOD GetFallbackDeintMethod() override;
+  std::vector<AVPixelFormat> GetRenderFormats() override;
 };
+
+}

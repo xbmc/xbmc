@@ -18,11 +18,23 @@
  *
  */
 
+#if defined (HAVE_LIBVA)
+#include <va/va_drm.h>
+#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
+#endif
+
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+
 #include "WinSystemGbmGLESContext.h"
 #include "utils/log.h"
 
 bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
+  CLinuxRendererGLES::Register();
+
   if (!CWinSystemGbm::InitWindowSystem())
   {
     return false;
@@ -31,6 +43,29 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   if (!m_pGLContext.CreateDisplay(m_nativeDisplay,
                                   EGL_OPENGL_ES2_BIT,
                                   EGL_OPENGL_ES_API))
+  {
+    return false;
+  }
+
+#if defined (HAVE_LIBVA)
+  VADisplay vaDpy = static_cast<VADisplay>(CWinSystemGbm::GetVaDisplay());
+  bool general, hevc;
+  CRendererVAAPI::Register(vaDpy, m_pGLContext.m_eglDisplay, general, hevc);
+  if (general)
+  {
+    VAAPI::CDecoder::Register(hevc);
+  }
+#endif
+
+  return true;
+}
+
+bool CWinSystemGbmGLESContext::DestroyWindowSystem()
+{
+  CDVDFactoryCodec::ClearHWAccels();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+
+  if (!CWinSystemGbm::DestroyWindowSystem())
   {
     return false;
   }

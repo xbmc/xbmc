@@ -35,7 +35,7 @@ class CInputStreamProvider
 public:
   CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance);
 
-  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) override;
+  void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) override;
 
 private:
   ADDON::BinaryAddonBasePtr m_addonBase;
@@ -52,57 +52,58 @@ class CInputStreamAddon
 {
 public:
   CInputStreamAddon(ADDON::BinaryAddonBasePtr& addonBase, IVideoPlayer* player, const CFileItem& fileitem);
-  virtual ~CInputStreamAddon();
+  ~CInputStreamAddon() override;
 
   static bool Supports(ADDON::BinaryAddonBasePtr& addonBase, const CFileItem& fileitem);
 
   // CDVDInputStream
-  virtual bool Open() override;
-  virtual void Close() override;
-  virtual int Read(uint8_t* buf, int buf_size) override;
-  virtual int64_t Seek(int64_t offset, int whence) override;
-  virtual bool Pause(double dTime) override;
-  virtual int64_t GetLength() override;
-  virtual bool IsEOF() override;
-  virtual bool CanSeek() override;
-  virtual bool CanPause() override;
+  bool Open() override;
+  void Close() override;
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  bool Pause(double dTime) override;
+  int64_t GetLength() override;
+  bool IsEOF() override;
+  bool CanSeek() override;
+  bool CanPause() override;
 
   // IDisplayTime
-  virtual CDVDInputStream::IDisplayTime* GetIDisplayTime() override;
-  virtual int GetTotalTime() override;
-  virtual int GetTime() override;
+  CDVDInputStream::IDisplayTime* GetIDisplayTime() override;
+  int GetTotalTime() override;
+  int GetTime() override;
 
   // IPosTime
-  virtual CDVDInputStream::IPosTime* GetIPosTime() override;
-  virtual bool PosTime(int ms) override;
+  CDVDInputStream::IPosTime* GetIPosTime() override;
+  bool PosTime(int ms) override;
 
   // IDemux
   CDVDInputStream::IDemux* GetIDemux() override;
-  virtual bool OpenDemux() override;
-  virtual DemuxPacket* ReadDemux() override;
-  virtual CDemuxStream* GetStream(int streamId) const override;
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  virtual void EnableStream(int streamId, bool enable) override;
-  virtual int GetNrOfStreams() const override;
-  virtual void SetSpeed(int speed) override;
-  virtual bool SeekTime(double time, bool backward = false, double* startpts = nullptr) override;
-  virtual void AbortDemux() override;
-  virtual void FlushDemux() override;
-  virtual void SetVideoResolution(int width, int height) override;
+  bool OpenDemux() override;
+  DemuxPacket* ReadDemux() override;
+  CDemuxStream* GetStream(int streamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  void EnableStream(int streamId, bool enable) override;
+  void OpenStream(int streamid) override;
+
+  int GetNrOfStreams() const override;
+  void SetSpeed(int speed) override;
+  bool SeekTime(double time, bool backward = false, double* startpts = nullptr) override;
+  void AbortDemux() override;
+  void FlushDemux() override;
+  void SetVideoResolution(int width, int height) override;
   int64_t PositionStream();
   bool IsRealTimeStream();
 
 protected:
-  void UpdateStreams();
-  void DisposeStreams();
-  int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
+  static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
 
   IVideoPlayer* m_player;
 
 private:
   std::vector<std::string> m_fileItemProps;
   INPUTSTREAM_CAPABILITIES m_caps;
-  std::map<int, CDemuxStream*> m_streams;
+
+  int m_streamCount = 0;
 
   AddonInstance_InputStream m_struct;
   std::shared_ptr<CInputStreamProvider> m_subAddonProvider;

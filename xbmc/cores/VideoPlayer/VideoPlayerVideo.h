@@ -64,17 +64,16 @@ public:
                  ,CDVDMessageQueue& parent
                  ,CRenderManager& renderManager,
                  CProcessInfo &processInfo);
-  virtual ~CVideoPlayerVideo();
+  ~CVideoPlayerVideo() override;
 
   bool OpenStream(CDVDStreamInfo hint) override;
   void CloseStream(bool bWaitForBuffers) override;
   void Flush(bool sync) override;
   bool AcceptsData() const override;
-  bool HasData() const override { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
-  bool IsInited() const override { return m_messageQueue.IsInited(); }
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override{ m_messageQueue.Put(pMsg, priority); }
-  void FlushMessages() override { m_messageQueue.Flush(); }
+  bool HasData() const override;
+  bool IsInited() const override;
+  void SendMessage(CDVDMsg* pMsg, int priority = 0) override;
+  void FlushMessages() override;
 
   void EnableSubtitle(bool bEnable) override { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled() override { return m_bRenderSubs; }
@@ -96,12 +95,15 @@ public:
 
 protected:
 
-  virtual void OnExit() override;
-  virtual void Process() override;
+  void OnExit() override;
+  void Process() override;
+
   bool ProcessDecoderOutput(double &frametime, double &pts);
+  void SendMessageBack(CDVDMsg* pMsg, int priority = 0);
+  MsgQueueReturnCode GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
 
   int OutputPicture(const VideoPicture* src, double pts);
-  void ProcessOverlays(VideoPicture* pSource, double pts);
+  void ProcessOverlays(const VideoPicture* pSource, double pts);
   void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
 
   void ResetFrameRateCalc();
@@ -139,7 +141,6 @@ protected:
   CDVDMessageQueue& m_messageParent;
   CDVDStreamInfo m_hints;
   CDVDVideoCodec* m_pVideoCodec;
-  VideoPicture* m_pTempOverlayPicture;
   CPtsTracker m_ptsTracker;
   std::list<DVDMessageListItem> m_packets;
   CDroppingStats m_droppingStats;

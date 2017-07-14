@@ -72,7 +72,6 @@ void CProcessorHD::UnInit()
   CSingleLock lock(m_section);
   Close();
   SAFE_RELEASE(m_pVideoDevice);
-  m_formats.clear();
 }
 
 void CProcessorHD::Close()
@@ -113,19 +112,8 @@ bool CProcessorHD::PreInit()
 
   memset(&m_texDesc, 0, sizeof(D3D11_TEXTURE2D_DESC));
 
-  if (IsFormatSupported(DXGI_FORMAT_P010, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    m_formats.push_back(RENDER_FMT_YUV420P10);
-
-  if (IsFormatSupported(DXGI_FORMAT_P016, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    m_formats.push_back(RENDER_FMT_YUV420P16);
-
   SAFE_RELEASE(m_pEnumerator);
   return true;
-}
-
-void CProcessorHD::ApplySupportedFormats(std::vector<ERenderFormat> *formats)
-{
-  formats->insert(formats->end(), m_formats.begin(), m_formats.end());
 }
 
 bool CProcessorHD::InitProcessor()
@@ -206,7 +194,7 @@ bool CProcessorHD::InitProcessor()
 
   CLog::Log(LOGDEBUG, "%s: Selected video processor allows %d future frames and %d past frames.", __FUNCTION__, m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
 
-  m_size = m_max_back_refs + 1 + m_max_fwd_refs + 2;  // refs + 1 display + 2 safety frames
+  m_size = m_max_back_refs + 1 + m_max_fwd_refs + 3;  // refs + 1 display + 3 safety frames
 
   // Get the image filtering capabilities.
   for (long i = 0; i < NUM_FILTERS; i++)
@@ -247,13 +235,13 @@ bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCE
   return false;
 }
 
-bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_format)
+bool CProcessorHD::ConfigureProcessor(AVPixelFormat format, DXGI_FORMAT dxva_format)
 {
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
   if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
 
-  if (format == RENDER_FMT_DXVA)
+  if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
     m_textureFormat = dxva_format;
     m_eViewType = PROCESSOR_VIEW_TYPE_DECODER;
@@ -262,11 +250,11 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_form
   {
     m_textureFormat = DXGI_FORMAT_NV12; // default
 
-    if (format == RENDER_FMT_YUV420P)
+    if (format == AV_PIX_FMT_YUV420P)
       m_textureFormat = DXGI_FORMAT_NV12;
-    if (format == RENDER_FMT_YUV420P10)
+    if (format == AV_PIX_FMT_YUV420P10)
       m_textureFormat = DXGI_FORMAT_P010;
-    if (format == RENDER_FMT_YUV420P16)
+    if (format == AV_PIX_FMT_YUV420P16)
       m_textureFormat = DXGI_FORMAT_P016;
 
     m_eViewType = PROCESSOR_VIEW_TYPE_PROCESSOR;
@@ -280,7 +268,7 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_form
   return true;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format)
+bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, AVPixelFormat format, DXGI_FORMAT dxva_format)
 {
   Close();
 
@@ -405,21 +393,25 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(VideoPicture &picture)
+CRenderPicture *CProcessorHD::Convert(const VideoPicture &picture) const
 {
-  if ( picture.format != RENDER_FMT_YUV420P
-    && picture.format != RENDER_FMT_YUV420P10
-    && picture.format != RENDER_FMT_YUV420P16
-    && picture.format != RENDER_FMT_DXVA)
+  if (!picture.videoBuffer)
+    return nullptr;
+
+  AVPixelFormat format = picture.videoBuffer->GetFormat();
+  if ( format != AV_PIX_FMT_YUV420P
+    && format != AV_PIX_FMT_YUV420P10
+    && format != AV_PIX_FMT_YUV420P16
+    && format != AV_PIX_FMT_D3D11VA_VLD)
   {
     CLog::Log(LOGERROR, "%s: colorspace not supported by processor, skipping frame.", __FUNCTION__);
     return nullptr;
   }
 
-  if (picture.format == RENDER_FMT_DXVA)
+  if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CRenderPicture *hwpic = static_cast<DXVA::CRenderPicture*>(picture.hwPic);
-    return hwpic->Acquire();
+    CDXVAVideoBuffer* pic = dynamic_cast<CDXVAVideoBuffer*>(picture.videoBuffer);
+    return pic->picture->Acquire();
   }
 
   ID3D11View *pView = m_context->GetFree(nullptr);
@@ -442,19 +434,22 @@ CRenderPicture *CProcessorHD::Convert(VideoPicture &picture)
     return nullptr;
   }
 
+  uint8_t* planes[3]; picture.videoBuffer->GetPlanes(planes);
+  int strides[3]; picture.videoBuffer->GetStrides(strides);
+
   uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
   uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
   int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
 
-  if (picture.format == RENDER_FMT_YUV420P)
+  if (format == AV_PIX_FMT_YUV420P)
   {
-    convert_yuv420_nv12(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride);
+    convert_yuv420_nv12(planes, strides, picture.iHeight, picture.iWidth, dst, dstStride);
   }
-  else if(picture.format == RENDER_FMT_YUV420P10
-       || picture.format == RENDER_FMT_YUV420P16)
+  else if(format == AV_PIX_FMT_YUV420P10
+       || format == AV_PIX_FMT_YUV420P16)
   {
-    convert_yuv420_p01x(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride
-                      , picture.format == RENDER_FMT_YUV420P10 ? 10 : 16);
+    convert_yuv420_p01x(planes, strides, picture.iHeight, picture.iWidth, dst, dstStride
+                      , format == AV_PIX_FMT_YUV420P10 ? 10 : 16);
   }
   pContext->Unmap(pResource, 0);
   SAFE_RELEASE(pResource);

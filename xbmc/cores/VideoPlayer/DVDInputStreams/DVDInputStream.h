@@ -123,6 +123,7 @@ public:
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
     virtual std::vector<CDemuxStream*> GetStreams() const = 0;
     virtual void EnableStream(int iStreamId, bool enable) = 0;
+    virtual void OpenStream(int iStreamId) = 0;
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;
     virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) = 0;

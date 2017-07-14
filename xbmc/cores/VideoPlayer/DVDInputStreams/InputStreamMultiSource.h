@@ -33,21 +33,21 @@ class CInputStreamMultiSource : public InputStreamMultiStreams
 
 public:
   CInputStreamMultiSource(IVideoPlayer* pPlayer, const CFileItem& fileitem, const std::vector<std::string>& filenames);
-  virtual ~CInputStreamMultiSource();
+  ~CInputStreamMultiSource() override;
 
-  virtual void Abort() override;
-  virtual void Close() override;
-  virtual BitstreamStats GetBitstreamStats() const ;
-  virtual int GetBlockSize();
-  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
+  void Abort() override;
+  void Close() override;
+  BitstreamStats GetBitstreamStats() const override ;
+  int GetBlockSize() override;
+  bool GetCacheStatus(XFILE::SCacheStatus *status) override;
   int64_t GetLength() override;
-  virtual bool IsEOF() override;
-  virtual CDVDInputStream::ENextStream NextStream() override;
-  virtual bool Open() override;
-  virtual bool Pause(double dTime)override { return false; };
-  virtual int Read(uint8_t* buf, int buf_size) override;
-  virtual int64_t Seek(int64_t offset, int whence) override;
-  virtual void SetReadRate(unsigned rate) override;
+  bool IsEOF() override;
+  CDVDInputStream::ENextStream NextStream() override;
+  bool Open() override;
+  bool Pause(double dTime)override { return false; };
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  void SetReadRate(unsigned rate) override;
 
 protected:
   IVideoPlayer* m_pPlayer;

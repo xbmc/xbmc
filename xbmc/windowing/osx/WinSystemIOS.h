@@ -42,35 +42,35 @@ public:
   CWinSystemIOS();
   virtual ~CWinSystemIOS();
 
-  virtual bool InitWindowSystem();
-  virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res);
-  virtual bool DestroyWindow();
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
-  virtual void UpdateResolutions();
-  virtual bool CanDoWindowed() { return false; }
+  bool InitWindowSystem() override;
+  bool DestroyWindowSystem() override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
+  bool DestroyWindow() override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  void UpdateResolutions() override;
+  bool CanDoWindowed() override { return false; }
 
-  virtual void ShowOSMouse(bool show);
-  virtual bool HasCursor();
+  void ShowOSMouse(bool show) override;
+  bool HasCursor() override;
 
-  virtual void NotifyAppActiveChange(bool bActivated);
+  void NotifyAppActiveChange(bool bActivated) override;
 
-  virtual bool Minimize();
-  virtual bool Restore() ;
-  virtual bool Hide();
-  virtual bool Show(bool raise = true);
+  bool Minimize() override;
+  bool Restore() override;
+  bool Hide() override;
+  bool Show(bool raise = true) override;
 
-  virtual bool IsExtSupported(const char* extension);
+  bool IsExtSupported(const char* extension) override;
 
-  virtual bool BeginRender();
-  virtual bool EndRender();
+  bool BeginRender() override;
+  bool EndRender() override;
   
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
   
-  virtual int GetNumScreens();    
-  virtual int GetCurrentScreen();
+  int GetNumScreens() override;
+  int GetCurrentScreen() override;
   
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
@@ -81,8 +81,8 @@ public:
   void* GetEAGLContextObj();
 
 protected:
-  virtual void PresentRenderImpl(bool rendered);
-  virtual void SetVSyncImpl(bool enable);
+  void PresentRenderImpl(bool rendered) override;
+  void SetVSyncImpl(bool enable) override;
 
   void        *m_glView; // EAGLView opaque
   void        *m_WorkingContext; // shared EAGLContext opaque

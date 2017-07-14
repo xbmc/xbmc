@@ -77,6 +77,13 @@ private:
    */
   bool PromptIfDependency(int heading, int line2);
 
+  /*! \brief Show a dialog with the addon's dependencies.
+   *  \param deps List of dependencies
+   *  \param reactivate If true, reactivate info dialog when done
+   *  \return True if okay was selected, false otherwise
+   */
+  bool ShowDependencyList(const ADDON::ADDONDEPS& deps, bool reactivate);
+
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled;

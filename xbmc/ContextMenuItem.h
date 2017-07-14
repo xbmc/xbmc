@@ -37,6 +37,7 @@ namespace ADDON
 class IContextMenuItem
 {
 public:
+  virtual ~IContextMenuItem() = default;
   virtual bool IsVisible(const CFileItem& item) const = 0;
   virtual bool Execute(const CFileItemPtr& item) const = 0;
   virtual std::string GetLabel(const CFileItem& item) const = 0;

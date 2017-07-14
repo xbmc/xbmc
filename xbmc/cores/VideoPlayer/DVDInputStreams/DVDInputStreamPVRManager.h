@@ -45,17 +45,17 @@ class CDVDInputStreamPVRManager
 {
 public:
   CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, const CFileItem& fileitem);
-  virtual ~CDVDInputStreamPVRManager();
-  virtual bool Open() override;
-  virtual void Close() override;
-  virtual int Read(uint8_t* buf, int buf_size) override;
-  virtual int64_t Seek(int64_t offset, int whence) override;
-  virtual bool Pause(double dTime) override { return false; }
-  virtual bool IsEOF() override;
-  virtual int64_t GetLength() override;
+  ~CDVDInputStreamPVRManager() override;
+  bool Open() override;
+  void Close() override;
+  int Read(uint8_t* buf, int buf_size) override;
+  int64_t Seek(int64_t offset, int whence) override;
+  bool Pause(double dTime) override { return false; }
+  bool IsEOF() override;
+  int64_t GetLength() override;
 
-  virtual ENextStream NextStream() override;
-  virtual bool IsRealtime() override;
+  ENextStream NextStream() override;
+  bool IsRealtime() override;
 
   bool IsOtherStreamHack(void);
   bool SelectChannelByNumber(unsigned int iChannel);
@@ -94,17 +94,18 @@ public:
   void ResetScanTimeout(unsigned int iTimeoutMs) override;
 
   // Demux interface
-  virtual CDVDInputStream::IDemux* GetIDemux() override;
-  virtual bool OpenDemux() override;
-  virtual DemuxPacket* ReadDemux() override;
-  virtual CDemuxStream* GetStream(int iStreamId) const override;
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  virtual int GetNrOfStreams() const override;
-  virtual void SetSpeed(int iSpeed) override;
-  virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
-  virtual void AbortDemux() override;
-  virtual void FlushDemux() override;
-  virtual void EnableStream(int iStreamId, bool enable) override {};
+  CDVDInputStream::IDemux* GetIDemux() override;
+  bool OpenDemux() override;
+  DemuxPacket* ReadDemux() override;
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
+  void SetSpeed(int iSpeed) override;
+  bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
+  void AbortDemux() override;
+  void FlushDemux() override;
+  void EnableStream(int iStreamId, bool enable) override {};
+  void OpenStream(int iStreamId) override {};
 
 protected:
   bool CloseAndOpen(const std::string& strFile);

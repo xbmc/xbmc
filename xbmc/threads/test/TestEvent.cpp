@@ -175,7 +175,7 @@ TEST(TestEvent, Group)
   CEvent event1;
   CEvent event2;
 
-  CEventGroup group(&event1,&event2,NULL);
+  CEventGroup group{&event1,&event2};
 
   bool result1 = false;
   bool result2 = false;
@@ -271,8 +271,8 @@ TEST(TestEvent, TwoGroups)
   CEvent event1;
   CEvent event2;
 
-  CEventGroup group1(2, &event1,&event2);
-  CEventGroup group2(&event1,&event2,NULL);
+  CEventGroup group1{&event1,&event2};
+  CEventGroup group2{&event1,&event2};
 
   bool result1 = false;
   bool result2 = false;
@@ -375,7 +375,7 @@ TEST(TestEvent, GroupChildSet)
   CEvent event2;
 
   event1.Set();
-  CEventGroup group(&event1,&event2,NULL);
+  CEventGroup group{&event1,&event2};
 
   bool result1 = false;
   bool result2 = false;
@@ -409,7 +409,7 @@ TEST(TestEvent, GroupChildSet2)
   CEvent event1(true,true);
   CEvent event2;
 
-  CEventGroup group(&event1,&event2,NULL);
+  CEventGroup group{&event1,&event2};
 
   bool result1 = false;
   bool result2 = false;
@@ -443,7 +443,7 @@ TEST(TestEvent, GroupWaitResetsChild)
   CEvent event1;
   CEvent event2;
 
-  CEventGroup group(&event1,&event2,NULL);
+  CEventGroup group{&event1,&event2};
 
   group_wait w3(group);
 
@@ -468,7 +468,7 @@ TEST(TestEvent, GroupTimedWait)
 {
   CEvent event1;
   CEvent event2;
-  CEventGroup group(&event1,&event2,NULL);
+  CEventGroup group{&event1,&event2};
 
   bool result1 = false;
   bool result2 = false;

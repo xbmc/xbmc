@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2016 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,19 +13,34 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with this Program; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
 
-#include "cores/IPlayer.h"
-#include "../../ProcessInfo.h"
+#include "threads/Thread.h"
 
-class CProcessInfoOSX : public CProcessInfo
+class IPlayer;
+
+namespace KODI
 {
-public:
-  CProcessInfoOSX();
-  virtual ~CProcessInfoOSX();
-  void SetSwDeinterlacingMethods() override;
-};
+namespace RETRO
+{
+  class CRetroPlayerAutoSave : protected CThread
+  {
+  public:
+    CRetroPlayerAutoSave(IPlayer *player);
+
+    ~CRetroPlayerAutoSave() override;
+
+  protected:
+    // implementation of CThread
+    virtual void Process() override;
+
+  private:
+    // Construction parameter
+    IPlayer *const m_player;
+  };
+}
+}

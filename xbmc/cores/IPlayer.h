@@ -326,7 +326,7 @@ public:
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void SetSpeed(float speed) = 0;
-  virtual float GetSpeed() = 0;
+  virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }
 
   //Returns true if not playback (paused or stopped being filled)
@@ -358,22 +358,12 @@ public:
    \brief hook into render loop of render thread
    */
   virtual void FrameMove() {};
-
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
-
   virtual void FlushRenderer() {};
-
   virtual void SetRenderViewMode(int mode) {};
-
   virtual float GetRenderAspectRatio() { return 1.0; };
-
   virtual void TriggerUpdateResolution() {};
-
   virtual bool IsRenderingVideo() { return false; };
-
-  virtual bool IsRenderingGuiLayer() { return false; };
-
-  virtual bool IsRenderingVideoLayer() { return false; };
 
   virtual bool Supports(EINTERLACEMETHOD method) { return false; };
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }

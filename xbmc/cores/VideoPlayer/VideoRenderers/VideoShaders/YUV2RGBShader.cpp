@@ -129,15 +129,34 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                                                , - 16.0f / 255);
   }
 
-  if (format == SHADER_YV12_10)
+  int effectiveBpp;
+  switch (format)
   {
-    matrix *= TransformMatrix::CreateScaler(65535.0f / 1023.0f
-                                          , 65535.0f / 1023.0f
-                                          , 65535.0f / 1023.0f);
+    case SHADER_YV12_9:
+      effectiveBpp = 9;
+      break;
+    case SHADER_YV12_10:
+      effectiveBpp = 10;
+      break;
+    case SHADER_YV12_12:
+      effectiveBpp = 12;
+      break;
+    case SHADER_YV12_14:
+      effectiveBpp = 14;
+      break;
+    default:
+      effectiveBpp = 0;
+  }
+
+  if (effectiveBpp > 8 && effectiveBpp < 16)
+  {
+    // Convert range to 2 bytes
+    float scale = 65535.0f / ((1 << effectiveBpp) - 1);
+    matrix *= TransformMatrix::CreateScaler(scale, scale, scale);
   }
 }
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 using namespace Shaders;
 
@@ -210,7 +229,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += "#define XBMC_STRETCH 0\n";
 
   if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_9 ||
       m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_12 ||
+      m_format == SHADER_YV12_14 ||
       m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
@@ -227,7 +249,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   m_hVertex = -1;
   m_hYcoord = -1;
   m_hUcoord = -1;
@@ -259,7 +281,7 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
   m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
@@ -293,7 +315,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
@@ -315,7 +337,7 @@ void BaseYUV2RGBGLSLShader::Free()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
+#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format)
 {
   m_width         = 1;
@@ -343,7 +365,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("output.glsl");
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
 #endif
 }
@@ -361,7 +383,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, EShaderFormat form
   m_hField = -1;
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
 #endif
 }
@@ -390,7 +412,7 @@ bool YUV2RGBBobShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
-#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
+#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags, EShaderFormat format)
   : BaseYUV2RGBARBShader(flags, format)
 {

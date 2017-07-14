@@ -20,13 +20,13 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 #include "FrameBufferObject.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
 // For OpenGL ES2.0, FBO are not extensions but part of the API.
 #define GL_FRAMEBUFFER_EXT GL_FRAMEBUFFER
 #define glBindFramebufferEXT glBindFramebuffer

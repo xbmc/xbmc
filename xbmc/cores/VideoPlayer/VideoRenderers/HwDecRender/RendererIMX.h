@@ -37,7 +37,7 @@ public:
   virtual bool RenderCapture(CRenderCapture* capture) override;
 
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index, double currentClock);
   virtual void ReleaseBuffer(int idx);
   virtual bool IsGuiLayer();
 
@@ -59,7 +59,7 @@ protected:
   // hooks for hw dec renderer
   virtual bool LoadShadersHook();
   virtual bool RenderHook(int index);  
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   std::deque<CDVDVideoCodecIMXBuffer*> m_bufHistory;

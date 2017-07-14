@@ -32,6 +32,7 @@ public:
   virtual ~CWinSystemGbmGLESContext() = default;
 
   bool InitWindowSystem() override;
+  bool DestroyWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
                        RESOLUTION_INFO& res) override;

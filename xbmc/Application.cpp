@@ -401,7 +401,9 @@ void CApplication::Preflight()
 
 bool CApplication::SetupNetwork()
 {
-#if defined(HAS_LINUX_NETWORK)
+#if defined(TARGET_ANDROID)
+  m_network = new CNetworkAndroid();
+#elif defined(HAS_LINUX_NETWORK)
   m_network = new CNetworkLinux();
 #elif defined(HAS_WIN32_NETWORK)
   m_network = new CNetworkWin32();
@@ -2178,8 +2180,6 @@ bool CApplication::OnAction(const CAction &action)
       if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
       {
         float playSpeed = m_pPlayer->GetPlaySpeed();
-        if (playSpeed >= 0.75 && playSpeed <= 1.55)
-          playSpeed = 1;
 
         if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed == 1)) // Enables Rewinding
           playSpeed *= -2;

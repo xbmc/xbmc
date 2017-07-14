@@ -34,6 +34,9 @@
 #include "Application.h"
 #include "VideoSyncDRM.h"
 #include "VideoSyncGLX.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/Process/X11/ProcessInfoX11.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 CWinSystemX11GLContext::CWinSystemX11GLContext() = default;
 
@@ -187,34 +190,65 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
   return glXChooseVisual(m_dpy, m_nScreen, att);
 }
 
+#if defined (HAVE_LIBVA)
+#include <va/va_x11.h>
+#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGL.h"
+#endif
+#if defined (HAVE_LIBVDPAU)
+#include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVDPAU.h"
+#endif
+
 bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 {
-  bool firstrun = false;
-  if (!m_pGLContext)
+  bool success = false;
+  if (m_pGLContext)
   {
-    m_pGLContext = new CGLContextEGL(m_dpy);
-    firstrun = true;
+    success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+    return success;
   }
-  bool ret = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
 
-  if (ret && !firstrun)
-    return ret;
+  VIDEOPLAYER::CProcessInfoX11::Register();
+  CDVDFactoryCodec::ClearHWAccels();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CLinuxRendererGL::Register();
 
-  std::string gpuvendor;
-  if (ret)
+  m_pGLContext = new CGLContextEGL(m_dpy);
+  success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+  if (success)
   {
+    std::string gpuvendor;
     const char* vend = (const char*) glGetString(GL_VENDOR);
     if (vend)
       gpuvendor = vend;
-  }
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if (firstrun && (!ret || gpuvendor.compare(0, 5, "intel") != 0))
-  {
+    std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+    if (gpuvendor.compare(0, 5, "intel") == 0)
+    {
+#if defined (HAVE_LIBVA)
+      EGLDisplay eglDpy = static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
+      VADisplay vaDpy = GetVaDisplay();
+      bool general, hevc;
+      CRendererVAAPI::Register(vaDpy, eglDpy, general, hevc);
+      if (general)
+        VAAPI::CDecoder::Register(hevc);
+#endif
+      return success;
+    }
     delete m_pGLContext;
-    m_pGLContext = new CGLContextGLX(m_dpy);
-    ret = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
   }
-  return ret;
+
+  // fallback for vdpau
+  m_pGLContext = new CGLContextGLX(m_dpy);
+  success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+  if (success)
+  {
+#if defined (HAVE_LIBVDPAU)
+    VDPAU::CDecoder::Register();
+    CRendererVDPAU::Register();
+#endif
+  }
+  return success;
 }
 
 std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
@@ -230,4 +264,12 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
     pVSync.reset(new CVideoSyncGLX(clock));
   }
   return pVSync;
+}
+
+void* CWinSystemX11GLContext::GetVaDisplay()
+{
+#if defined(HAVE_LIBVA)
+  return vaGetDisplay(m_dpy);
+#endif
+  return nullptr;
 }

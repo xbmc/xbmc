@@ -107,14 +107,15 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
   */
 
   CDVDStreamInfo hint(videoStream);
-  m_pVideoCodec.reset(CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, m_renderManager.GetRenderInfo()));
+  // FIXME
+  //m_pVideoCodec.reset(CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, m_renderManager.GetRenderInfo()));
 
   return m_pVideoCodec.get() != nullptr;
 }
 
 void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 {
-  VideoPicture picture = { };
+  VideoPicture picture;
 
   if (GetPicture(data, size, picture))
   {
@@ -152,12 +153,6 @@ bool CRetroPlayerVideo::Configure(VideoPicture& picture)
     if (m_bConfigured)
     {
       // Update process info
-      AVPixelFormat pixfmt = static_cast<AVPixelFormat>(CDVDCodecUtils::PixfmtFromEFormat(picture.format));
-      if (pixfmt != AV_PIX_FMT_NONE)
-      {
-        //! @todo
-        //m_processInfo.SetVideoPixelFormat(CDVDVideoCodecFFmpeg::GetPixelFormatName(pixfmt));
-      }
       m_processInfo.SetVideoDimensions(picture.iWidth, picture.iHeight);
       m_processInfo.SetVideoFps(static_cast<float>(m_framerate));
     }

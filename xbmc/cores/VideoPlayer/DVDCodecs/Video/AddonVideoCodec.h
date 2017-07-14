@@ -32,15 +32,15 @@ class CAddonVideoCodec
 {
 public:
   CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
-  ~CAddonVideoCodec();
+  ~CAddonVideoCodec() override;
 
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void Reset() override;
-  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  virtual const char* GetName() override;
-  virtual void SetCodecControl(int flags) override { m_codecFlags = flags; }
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  bool Reconfigure(CDVDStreamInfo &hints) override;
+  bool AddData(const DemuxPacket &packet) override;
+  void Reset() override;
+  VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  const char* GetName() override;
+  void SetCodecControl(int flags) override { m_codecFlags = flags; }
 
 private:
   bool CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints);
@@ -51,16 +51,14 @@ private:
    * In case buffer allocation fails, return false.
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
+  void ReleaseFrameBuffer(void *buffer);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
+  static void release_frame_buffer(void* kodiInstance, void *buffer);
 
   AddonInstance_VideoCodec m_struct;
   int m_codecFlags;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT::MaxVideoFormats + 1];
   float m_displayAspect;
   unsigned int m_width, m_height;
-
-  void * m_lastPictureBuffer;
-
-  BufferPool *m_bufferPool;
 };

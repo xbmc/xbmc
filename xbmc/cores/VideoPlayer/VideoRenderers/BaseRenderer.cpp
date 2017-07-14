@@ -388,61 +388,53 @@ void CBaseRenderer::ManageRenderArea()
     else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
   }
 
-  if (m_format != RENDER_FMT_BYPASS)
+  switch(stereo_mode)
   {
-    switch(stereo_mode)
-    {
-      case CONF_FLAGS_STEREO_MODE_TAB:
-        // Those are flipped in y
-        if (m_format == RENDER_FMT_CVBREF || m_format == RENDER_FMT_MEDIACODEC)
-        {
-          if (stereo_view == RENDER_STEREO_VIEW_LEFT)
-            m_sourceRect.y1 += m_sourceRect.y2*0.5f;
-          else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
-            m_sourceRect.y2 *= 0.5f;
-        }
-        else
-        {
-          if (stereo_view == RENDER_STEREO_VIEW_LEFT)
-            m_sourceRect.y2 *= 0.5f;
-          else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
-            m_sourceRect.y1 += m_sourceRect.y2*0.5f;
-        }
-        break;
+    case CONF_FLAGS_STEREO_MODE_TAB:
+      if (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.y2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      break;
 
-      case CONF_FLAGS_STEREO_MODE_SBS:
-        if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
-          m_sourceRect.x2 *= 0.5f;
-        else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
-          m_sourceRect.x1 += m_sourceRect.x2*0.5f;
-        break;
+    case CONF_FLAGS_STEREO_MODE_SBS:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.x2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
   }
 
   CalcNormalRenderRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(), CDisplaySettings::GetInstance().GetZoomAmount(), CDisplaySettings::GetInstance().GetVerticalShift());
 }
 
-EShaderFormat CBaseRenderer::GetShaderFormat(ERenderFormat renderFormat)
+EShaderFormat CBaseRenderer::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
-  if (m_format == RENDER_FMT_YUV420P)
+  if (m_format == AV_PIX_FMT_YUV420P)
     ret = SHADER_YV12;
-  else if (m_format == RENDER_FMT_YUV420P10)
+  else if (m_format == AV_PIX_FMT_YUV420P9)
+    ret = SHADER_YV12_9;
+  else if (m_format == AV_PIX_FMT_YUV420P10)
     ret = SHADER_YV12_10;
-  else if (m_format == RENDER_FMT_YUV420P16)
+  else if (m_format == AV_PIX_FMT_YUV420P12)
+    ret = SHADER_YV12_12;
+  else if (m_format == AV_PIX_FMT_YUV420P14)
+    ret = SHADER_YV12_14;
+  else if (m_format == AV_PIX_FMT_YUV420P16)
     ret = SHADER_YV12_16;
-  else if (m_format == RENDER_FMT_NV12)
+  else if (m_format == AV_PIX_FMT_NV12)
     ret = SHADER_NV12;
-  else if (m_format == RENDER_FMT_YUYV422)
+  else if (m_format == AV_PIX_FMT_YUYV422)
     ret = SHADER_YUY2;
-  else if (m_format == RENDER_FMT_UYVY422)
+  else if (m_format == AV_PIX_FMT_UYVY422)
     ret = SHADER_UYVY;
   else
-    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format %d", renderFormat);
+    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format %d", m_format);
 
   return ret;
 }

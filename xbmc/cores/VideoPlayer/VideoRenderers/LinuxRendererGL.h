@@ -22,7 +22,6 @@
 
 #include "system.h"
 
-#ifdef HAS_GL
 #include <vector>
 
 #include "system_gl.h"
@@ -31,7 +30,7 @@
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include "RenderFormats.h"
+#include "RenderInfo.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "ColorManager.h"
@@ -43,20 +42,6 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-
-#undef ALIGN
-#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
-#define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
-
-#define NOSOURCE   -2
-#define AUTOSOURCE -1
-
-#define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
-#define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
-#define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
-#define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
-#define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
-#define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
 
 struct DRAWRECT
 {
@@ -84,9 +69,8 @@ enum RenderMethod
 {
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
-  RENDER_VDPAU=0x08,
-  RENDER_POT=0x10,
-  RENDER_VAAPI=0x20,
+  RENDER_POT=0x04,
+  RENDER_CUSTOM=0x08
 };
 
 enum RenderQuality
@@ -115,31 +99,34 @@ class CLinuxRendererGL : public CBaseRenderer
 {
 public:
   CLinuxRendererGL();
-  virtual ~CLinuxRendererGL();
+  ~CLinuxRendererGL() override;
+
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
-  virtual bool IsConfigured() { return m_bConfigured; }
-  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void ReleaseImage(int source, bool preserve = false);
-  virtual void FlipPage(int source);
-  virtual void PreInit();
-  virtual void UnInit();
-  virtual void Reset(); /* resets renderer after seek for example */
-  virtual void Flush();
-  virtual void SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  virtual void Update();
-  virtual bool RenderCapture(CRenderCapture* capture);
-  virtual CRenderInfo GetRenderInfo();
+  bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  bool IsConfigured() override { return m_bConfigured; }
+  void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  void FlipPage(int source) override;
+  void UnInit() override;
+  void Reset() override;
+  void Flush() override;
+  void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  void ReleaseBuffer(int idx) override;
+  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  void Update() override;
+  bool RenderCapture(CRenderCapture* capture) override;
+  CRenderInfo GetRenderInfo() override;
+  bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering();
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  bool SupportsMultiPassRendering() override;
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  virtual void Render(DWORD flags, int renderBuffer);
+  bool Render(DWORD flags, int renderBuffer);
   void ClearBackBuffer();
   void DrawBlackBars();
 
@@ -194,12 +181,9 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
-  std::vector<ERenderFormat> m_formats;
-  bool m_bImageReady;
   GLenum m_textureTarget;
   int m_renderMethod;
   RenderQuality m_renderQuality;
-  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   
   // Raw data used by renderer
   int m_currentField;
@@ -221,35 +205,28 @@ protected:
     //pixels per texel
     unsigned pixpertex_x;
     unsigned pixpertex_y;
-
-    unsigned flipindex;
   };
-
-  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
-  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
 
   struct YUVBUFFER
   {
     YUVBUFFER();
    ~YUVBUFFER();
 
-    YUVFIELDS fields;
-    YV12Image image;
-    unsigned  flipindex; /* used to decide if this has been uploaded */
-    GLuint    pbo[MAX_PLANES];
+    YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
+    YuvImage image;
+    GLuint pbo[3]; // one pbo for 3 planes
 
-    void *hwDec;
+    CVideoBuffer *videoBuffer;
+    bool loaded;
   };
-
-  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_buffers;
+  YUVBUFFER m_buffers[NUM_BUFFERS];
 
-  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
-                , unsigned width,  unsigned height
-                , int stride, int bpp, void* data, GLuint* pbo = NULL );
+  void LoadPlane(YUVPLANE& plane, int type,
+                 unsigned width,  unsigned height,
+                 int stride, int bpp, void* data);
 
   void GetPlaneTextureSize(YUVPLANE& plane);
 
@@ -263,12 +240,6 @@ protected:
 
   // clear colour for "black" bars
   float m_clearColour;
-
-  // software scale library (fallback if required gl version is not available)
-  BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int       m_rgbBufferSize;
-  GLuint             m_rgbPbo;
-  struct SwsContext *m_context;
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
@@ -328,4 +299,4 @@ inline int NP2( unsigned x ) {
     return ++x;
 #endif
 }
-#endif
+

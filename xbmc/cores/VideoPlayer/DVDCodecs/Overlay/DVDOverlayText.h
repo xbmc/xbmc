@@ -88,7 +88,7 @@ public:
     const char* GetTextPtr()
     { return m_text.c_str(); }
 
-    virtual ~CElementText() = default;
+    ~CElementText() override = default;
   };
 
   class CElementProperty : public CElement
@@ -135,7 +135,7 @@ public:
     }
   }
 
-  virtual ~CDVDOverlayText()
+  ~CDVDOverlayText() override
   {
     while (m_pHead)
     {
@@ -145,7 +145,7 @@ public:
     }
   }
 
-  virtual CDVDOverlayText* Clone()
+  CDVDOverlayText* Clone() override
   {
     return new CDVDOverlayText(*this);
   }

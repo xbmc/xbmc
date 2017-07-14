@@ -31,28 +31,30 @@ class CRendererMediaCodec : public CLinuxRendererGLES
 public:
   CRendererMediaCodec();
   virtual ~CRendererMediaCodec();
-  
+
+  // Registration
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static bool Register();
+
   // Player functions
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index);
-  virtual bool RenderUpdateCheckForEmptyField();
-  virtual void ReleaseBuffer(int idx);
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  virtual void ReleaseBuffer(int idx) override;
 
   // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method); 
-
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-  virtual CRenderInfo GetRenderInfo();
+  virtual CRenderInfo GetRenderInfo() override;
 
 protected:
   // textures
-  virtual bool UploadTexture(int index);
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  virtual bool UploadTexture(int index) override;
+  virtual void DeleteTexture(int index) override;
+  virtual bool CreateTexture(int index) override;
 
   // hooks for hw dec renderer
-  virtual bool LoadShadersHook();
-  virtual bool RenderHook(int index);
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual bool LoadShadersHook() override;
+  virtual bool RenderHook(int index) override;
+
+private:
+  float m_textureMatrix[16];
 };
 
 #endif

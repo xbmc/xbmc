@@ -94,7 +94,7 @@ public:
     m_message = msg;
   }
 
-  virtual ~CDVDMsg() = default;
+  ~CDVDMsg() override = default;
 
   /**
    * checks for message type
@@ -134,8 +134,8 @@ class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
   CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
- ~CDVDMsgGeneralSynchronize();
-  virtual long Release();
+ ~CDVDMsgGeneralSynchronize() override;
+  long Release() override;
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
@@ -158,8 +158,8 @@ public:
   T m_value;
 };
 
-typedef CDVDMsgType<bool>   CDVDMsgBool;
-typedef CDVDMsgType<int>    CDVDMsgInt;
+typedef CDVDMsgType<bool> CDVDMsgBool;
+typedef CDVDMsgType<int> CDVDMsgInt;
 typedef CDVDMsgType<double> CDVDMsgDouble;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
-  int GetStreamId()                     { return m_streamId; }
+  int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -190,7 +190,7 @@ class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
-  int GetStreamId()                     { return m_streamId; }
+  int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -199,7 +199,7 @@ class CDVDMsgPlayerSetState : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
-  std::string GetState()                { return m_state; }
+  std::string GetState() { return m_state; }
 private:
   std::string m_state;
 };
@@ -248,6 +248,29 @@ class CDVDMsgPlayerSeekChapter : public CDVDMsg
     int m_iChapter;
 };
 
+class CDVDMsgPlayerSetSpeed : public CDVDMsg
+{
+public:
+  struct SpeedParams
+  {
+    int m_speed;
+    bool m_isTempo;
+  };
+
+  CDVDMsgPlayerSetSpeed(SpeedParams params)
+  : CDVDMsg(PLAYER_SETSPEED)
+  , m_params(params)
+  {}
+
+  float GetSpeed() const { return m_params.m_speed; }
+  float IsTempo() const { return m_params.m_isTempo; }
+
+private:
+
+  SpeedParams m_params;
+
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //////
 ////// DEMUXER_ Messages
@@ -258,12 +281,12 @@ class CDVDMsgDemuxerPacket : public CDVDMsg
 {
 public:
   CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop = false);
-  virtual ~CDVDMsgDemuxerPacket();
-  DemuxPacket* GetPacket()      { return m_packet; }
+  ~CDVDMsgDemuxerPacket() override;
+  DemuxPacket* GetPacket() { return m_packet; }
   unsigned int GetPacketSize();
-  bool         GetPacketDrop()  { return m_drop; }
+  bool GetPacketDrop() { return m_drop; }
   DemuxPacket* m_packet;
-  bool         m_drop;
+  bool m_drop;
 };
 
 class CDVDMsgDemuxerReset : public CDVDMsg

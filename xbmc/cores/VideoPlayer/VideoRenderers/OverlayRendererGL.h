@@ -29,7 +29,7 @@ class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 typedef struct ass_image ASS_Image;
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 
 namespace OVERLAY {
 
@@ -38,9 +38,9 @@ namespace OVERLAY {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
      COverlayTextureGL(CDVDOverlaySpu* o);
-    virtual ~COverlayTextureGL();
+    ~COverlayTextureGL() override;
 
-    void Render(SRenderState& state);
+    void Render(SRenderState& state) override;
 
     GLuint m_texture;
     float  m_u;
@@ -53,9 +53,9 @@ namespace OVERLAY {
   public:
    COverlayGlyphGL(ASS_Image* images, int width, int height);
 
-   virtual ~COverlayGlyphGL();
+   ~COverlayGlyphGL() override;
 
-   void Render(SRenderState& state);
+   void Render(SRenderState& state) override;
 
     struct VERTEX
     {

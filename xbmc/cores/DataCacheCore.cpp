@@ -237,6 +237,28 @@ bool CDataCacheCore::CDataCacheCore::IsSeeking()
   return m_stateInfo.m_stateSeeking;
 }
 
+void CDataCacheCore::SetSpeed(float tempo, float speed)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_tempo = tempo;
+  m_stateInfo.m_speed = speed;
+}
+
+float CDataCacheCore::GetSpeed()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_speed;
+}
+
+float CDataCacheCore::GetTempo()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_tempo;
+}
+
 bool CDataCacheCore::IsPlayerStateChanged()
 {
   CSingleLock lock(m_stateSection);
@@ -245,4 +267,34 @@ bool CDataCacheCore::IsPlayerStateChanged()
   m_playerStateChanged = false;
 
   return ret;
+}
+
+void CDataCacheCore::SetGuiRender(bool gui)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderGuiLayer = gui;
+  m_playerStateChanged = true;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetGuiRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderGuiLayer;
+}
+
+void CDataCacheCore::SetVideoRender(bool video)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderVideoLayer = video;
+  m_playerStateChanged = true;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetVideoRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderVideoLayer;
 }

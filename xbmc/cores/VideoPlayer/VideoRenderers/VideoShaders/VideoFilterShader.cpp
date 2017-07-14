@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES >= 2
 #include <string>
 #include <math.h>
 
@@ -87,7 +87,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
 #if defined(HAS_GL)
   m_floattex = g_Windowing.IsExtSupported("GL_ARB_texture_float");
-#elif HAS_GLES == 2
+#elif HAS_GLES >= 2
   m_floattex = false;
 #endif
 

@@ -21,11 +21,18 @@
 
 #include "PixelConverter.h"
 
+#include <memory>
 #include <stdint.h>
 #include <vector>
 
-class CMMALPool;
+namespace MMAL {
+  class CMMALPool;
+  class CMMALYUVBuffer;
+};
+
+struct AVFrame;
 struct VideoPicture;
+struct SwsContext;
 
 class CPixelConverterRBP : public CPixelConverter
 {
@@ -34,40 +41,23 @@ public:
   ~CPixelConverterRBP() override { Dispose(); }
 
   // implementation of IPixelConverter
-  bool Open(AVPixelFormat pixfmt, AVPixelFormat target, unsigned int width, unsigned int height) override;
-  void Dispose() override;
-  bool Decode(const uint8_t* pData, unsigned int size) override;
-  void GetPicture(VideoPicture& dvdVideoPicture) override;
+  virtual bool Open(AVPixelFormat pixfmt, AVPixelFormat target, unsigned int width, unsigned int height) override;
+  virtual void Dispose() override;
+  virtual bool Decode(const uint8_t* pData, unsigned int size) override;
+  virtual void GetPicture(VideoPicture& picture) override;
 
-private:
-  /*!
-   * \brief Allocate a new picture (AV_PIX_FMT_YUV420P)
-   */
-  VideoPicture* AllocatePicture(int iWidth, int iHeight);
-
-  /*!
-   * \brief Free an allocated picture
-   */
-  void FreePicture(VideoPicture* pPicture);
-
+protected:
   struct PixelFormatTargetTable
   {
     AVPixelFormat pixfmt;
     AVPixelFormat targetfmt;
   };
-
-  struct MMALEncodingTable
-  {
-    AVPixelFormat pixfmt;
-    uint32_t      encoding;
-  };
-
   static std::vector<PixelFormatTargetTable> pixfmt_target_table;
-  static std::vector<MMALEncodingTable> mmal_encoding_table;
 
   static AVPixelFormat TranslateTargetFormat(AVPixelFormat pixfmt);
-  static uint32_t TranslateFormat(AVPixelFormat pixfmt);
 
-  std::shared_ptr<CMMALPool> m_pool;
-  uint32_t m_mmal_format;
+  AVPixelFormat m_targetFormat = AV_PIX_FMT_NONE;
+  SwsContext* m_swsContext = nullptr;
+  MMAL::CMMALYUVBuffer *m_renderBuffer = nullptr;
+  std::shared_ptr<MMAL::CMMALPool> m_pixelBufferPool;
 };

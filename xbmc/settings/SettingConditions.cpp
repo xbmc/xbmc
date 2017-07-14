@@ -297,7 +297,7 @@ void CSettingConditions::Initialize()
 #ifdef HAS_GLES
   m_simpleConditions.insert("has_gles");
 #endif
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   m_simpleConditions.insert("has_glesv2");
 #endif
 #ifdef HAS_TIME_SERVER

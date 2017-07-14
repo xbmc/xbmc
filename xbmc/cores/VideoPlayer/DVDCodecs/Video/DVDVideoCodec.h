@@ -21,8 +21,8 @@
  */
 
 #include "system.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #include "DVDResource.h"
 
@@ -47,16 +47,17 @@ class CSetting;
 // should be entirely filled by all codecs
 struct VideoPicture
 {
+public:
+  VideoPicture();
+  ~VideoPicture();
+  VideoPicture& CopyRef(const VideoPicture &pic);
+  VideoPicture& SetParams(const VideoPicture &pic);
+
+  CVideoBuffer *videoBuffer = nullptr;
+
   double pts; // timestamp in seconds, used in the CVideoPlayer class to keep track of pts
   double dts;
-
-  uint8_t* data[4];   // [4] = alpha channel, currently not used
-  int iLineSize[4];   // [4] = alpha channel, currently not used
-
-  void *hwPic;
-
   unsigned int iFlags;
-
   double iRepeatPicture;
   double iDuration;
   unsigned int iFrameType         : 4;  //< see defines above // 1->I, 2->P, 3->B, 0->Undef
@@ -76,14 +77,14 @@ struct VideoPicture
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
 
-  ERenderFormat format;
+private:
+  VideoPicture(VideoPicture const&);
+  VideoPicture& operator=(VideoPicture const&);
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
 #define DVP_FLAG_REPEAT_TOP_FIELD   0x00000002  //< Set to indicate that the top field should be repeated
-#define DVP_FLAG_ALLOCATED          0x00000004  //< Set to indicate that this has allocated data
 #define DVP_FLAG_INTERLACED         0x00000008  //< Set to indicate that this frame is interlaced
-
 #define DVP_FLAG_DROPPED            0x00000010  //< indicate that this picture has been dropped in decoder stage, will have no data
 
 #define DVD_CODEC_CTRL_SKIPDEINT    0x01000000  //< request to skip a deinterlacing cycle, if possible
@@ -256,8 +257,8 @@ class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
 {
 public:
   IHardwareDecoder() = default;
-  virtual ~IHardwareDecoder() = default;
-  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
+  ~IHardwareDecoder() override = default;
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) = 0;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) = 0;
   virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) = 0;
@@ -271,6 +272,7 @@ public:
 class ICallbackHWAccel
 {
 public:
+  virtual ~ICallbackHWAccel() = default;
   virtual IHardwareDecoder* GetHWAccel() = 0;
   virtual bool GetPictureCommon(VideoPicture* pVideoPicture) = 0;
 };

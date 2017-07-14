@@ -64,7 +64,6 @@ public:
   int64_t GetTime() override;
   int64_t GetTotalTime() override;
   void SetSpeed(float speed = 0) override;
-  float GetSpeed() override;
 
   bool IsCaching() const override { return false; }
   int GetCacheLevel() const override { return -1; }

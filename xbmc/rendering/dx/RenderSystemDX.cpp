@@ -24,6 +24,12 @@
 #include <DirectXPackedVector.h>
 #include "Application.h"
 #include "RenderSystemDX.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
+#include "cores/VideoPlayer/Process/windows/ProcessInfoWin.h"
+#include "cores/VideoPlayer/Process/windows/ProcessInfoWin10.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
@@ -42,6 +48,7 @@
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
 #include <algorithm>
+#include <wrl.h>
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")
@@ -63,6 +70,7 @@ static PFND3D10DDI_CREATERESOURCE s_fnCreateResourceOrig{ nullptr };
 CRenderSystemDX* s_windowing{ nullptr };
 
 using namespace DirectX::PackedVector;
+using namespace Microsoft::WRL;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
@@ -85,16 +93,16 @@ CRenderSystemDX::~CRenderSystemDX()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  
+
   CLog::Log(LOGDEBUG, __FUNCTION__" - Initializing D3D11 Factory...");
 
   HRESULT hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&m_dxgiFactory));
-  if (FAILED(hr)) 
+  if (FAILED(hr))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - D3D11 initialization failed.");
     return false;
   }
-  
+
   UpdateMonitor();
   return CreateDevice();
 }
@@ -136,7 +144,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
         m_pOutput = pOutput;
 
         // check if adapter is changed
-        if ( m_adapterDesc.AdapterLuid.HighPart != adapterDesc.AdapterLuid.HighPart 
+        if ( m_adapterDesc.AdapterLuid.HighPart != adapterDesc.AdapterLuid.HighPart
           || m_adapterDesc.AdapterLuid.LowPart != adapterDesc.AdapterLuid.LowPart)
         {
           CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", adapterDesc.Description);
@@ -181,7 +189,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
     SetFullScreenInternal();
     CreateWindowSizeDependentResources();
   }
-  else 
+  else
   {
     OnDeviceLost();
     OnDeviceReset();
@@ -420,7 +428,7 @@ void CRenderSystemDX::DeleteDevice()
   // tell any shared resources
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
   {
-    // the most of resources like textures and buffers try to 
+    // the most of resources like textures and buffers try to
     // receive and save their status from current device.
     // m_nDeviceStatus contains the last device status and
     // DXGI_ERROR_DEVICE_REMOVED means that we have no possibility
@@ -493,7 +501,7 @@ void CRenderSystemDX::OnDeviceReset()
 
   if (m_needNewDevice)
     CreateDevice();
-  
+
   if (m_bRenderCreated)
   {
     // we're back
@@ -525,7 +533,7 @@ bool CRenderSystemDX::CreateDevice()
   };
 
   // the VIDEO_SUPPORT flag force lowering feature level if current env not support video on 11_1
-  UINT createDeviceFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT; 
+  UINT createDeviceFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 #ifdef _DEBUG
   createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -601,7 +609,7 @@ bool CRenderSystemDX::CreateDevice()
     SetMonitor(hMonitor);
   }
 
-  if ( g_advancedSettings.m_bAllowDeferredRendering 
+  if ( g_advancedSettings.m_bAllowDeferredRendering
     && FAILED(m_pD3DDev->CreateDeferredContext(0, &m_pContext)))
   {
     CLog::Log(LOGERROR, "%s - Failed to create deferred context, deferred rendering is not possible, fallback to immediate rendering.", __FUNCTION__);
@@ -617,7 +625,7 @@ bool CRenderSystemDX::CreateDevice()
     m_maxTextureSize = D3D_FL9_3_REQ_TEXTURE2D_U_OR_V_DIMENSION;
   else if (m_featureLevel < D3D_FEATURE_LEVEL_11_0)
     m_maxTextureSize = D3D10_REQ_TEXTURE2D_U_OR_V_DIMENSION;
-  else 
+  else
     // 11_x and greater feature level. Limit this size to avoid memory overheads
     m_maxTextureSize = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION >> 1;
 
@@ -658,81 +666,38 @@ bool CRenderSystemDX::CreateDevice()
   m_adapterDesc = {};
   if (SUCCEEDED(m_adapter->GetDesc(&m_adapterDesc)))
   {
-    CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__, 
+    CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__,
                         m_adapterDesc.Description, m_adapterDesc.VendorId, m_adapterDesc.DeviceId, m_featureLevel);
 
     m_RenderRenderer = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%s", m_adapterDesc.Description));
     IDXGIFactory2* dxgiFactory2 = nullptr;
     m_dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
-    m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)", 
-                                          dxgiFactory2 != nullptr ? "11.1" : "11.0", 
-                                          (m_featureLevel >> 12) & 0xF, 
+    m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)",
+                                          dxgiFactory2 != nullptr ? "11.1" : "11.0",
+                                          (m_featureLevel >> 12) & 0xF,
                                           (m_featureLevel >> 8) & 0xF);
     SAFE_RELEASE(dxgiFactory2);
   }
 
-  m_renderCaps = 0;
-  unsigned int usage = D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
-  if ( IsFormatSupport(DXGI_FORMAT_BC1_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC2_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC3_UNORM, usage))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  // MSDN: At feature levels 9_1, 9_2 and 9_3, the display device supports the use of 2D textures with dimensions that are not powers of two under two conditions.
-  // First, only one MIP-map level for each texture can be created - we are using only 1 mip level)
-  // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
-  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
-  // so, setup caps NPOT
-  m_renderCaps |= m_featureLevel > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
-  if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
-  {
-    if (m_featureLevel > D3D_FEATURE_LEVEL_9_3 ||
-      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-      && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-      && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
-      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-
-  // Temporary - allow limiting the caps to debug a texture problem
-  if (g_advancedSettings.m_RestrictCapsMask != 0)
-    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
-
-  if (m_renderCaps & RENDER_CAPS_DXT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
-
-  /* All the following quirks need to be tested
-  // nVidia quirk: some NPOT DXT textures of the GUI display with corruption
-  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex for example)
-  // most likely xbmc bug, but no hw to repro & fix properly.
-  // affects lots of hw generations - 6xxx, 7xxx, GT220, ION1
-  // see ticket #9269
-  if (m_adapterDesc.VendorId == PCIV_nVidia)
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
-    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
-  }
-
-  // Intel quirk: DXT texture pitch must be > 64
-  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex)
-  // DXT1:   32 pixels wide is the largest non-working texture width
-  // DXT3/5: 16 pixels wide ----------------------------------------
-  // Both equal to a pitch of 64. So far no Intel has DXT NPOT (including i3/i5/i7, so just go with the next higher POT.
-  // See ticket #9578
-  if (m_adapterDesc.VendorId == PCIV_Intel)
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
-    m_minDXTPitch = 128;
-  }*/
+  // check various device capabilities
+  CheckDeviceCaps();
 
   if (!CreateStates() || !InitGUIShader() || !CreateWindowSizeDependentResources())
     return false;
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
+
+  // register platform dependent objects
+#if defined(TARGET_WIN10)
+  VIDEOPLAYER::CProcessInfoWin10::Register();
+#else
+  VIDEOPLAYER::CProcessInfoWin::Register();
+#endif
+  CDVDFactoryCodec::ClearHWAccels();
+  DXVA::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CWinRenderer::Register();
 
   // tell any shared objects about our resurrection
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
@@ -758,8 +723,8 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequired || 
-                  m_nBackBufferWidth != scDesc.BufferDesc.Width || 
+    bNeedResize = m_bResizeRequired ||
+                  m_nBackBufferWidth != scDesc.BufferDesc.Width ||
                   m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
   else
@@ -1031,7 +996,7 @@ void CRenderSystemDX::CheckInterlacedStereoView(void)
 {
   RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
 
-  if ( m_pRenderTargetViewRight 
+  if ( m_pRenderTargetViewRight
     && RENDER_STEREO_MODE_INTERLACED    != stereoMode
     && RENDER_STEREO_MODE_CHECKERBOARD  != stereoMode
     && RENDER_STEREO_MODE_HARDWAREBASED != stereoMode)
@@ -1043,7 +1008,7 @@ void CRenderSystemDX::CheckInterlacedStereoView(void)
   }
 
   if ( !m_pRenderTargetViewRight
-    && ( RENDER_STEREO_MODE_INTERLACED   == stereoMode 
+    && ( RENDER_STEREO_MODE_INTERLACED   == stereoMode
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     // Create a second Render Target for the right eye buffer
@@ -1122,7 +1087,7 @@ bool CRenderSystemDX::CreateStates()
 	m_pContext->OMSetDepthStencilState(m_depthStencilState, 0);
 
   D3D11_RASTERIZER_DESC rasterizerState;
-  rasterizerState.CullMode = D3D11_CULL_NONE; 
+  rasterizerState.CullMode = D3D11_CULL_NONE;
   rasterizerState.FillMode = D3D11_FILL_SOLID;// DEBUG - D3D11_FILL_WIREFRAME
   rasterizerState.FrontCounterClockwise = false;
   rasterizerState.DepthBias = 0;
@@ -1171,7 +1136,7 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
 
   if (!rendered)
     return;
-  
+
   if (!m_bRenderCreated || m_resizeInProgress)
     return;
 
@@ -1258,10 +1223,10 @@ bool CRenderSystemDX::BeginRender()
   HRESULT oldStatus = m_nDeviceStatus;
   m_nDeviceStatus = m_pSwapChain->Present(0, DXGI_PRESENT_TEST);
 
-  // handling of return values. 
+  // handling of return values.
   switch (m_nDeviceStatus)
   {
-  case DXGI_ERROR_DEVICE_REMOVED: // GPU has been physically removed from the system, or a driver upgrade occurred. 
+  case DXGI_ERROR_DEVICE_REMOVED: // GPU has been physically removed from the system, or a driver upgrade occurred.
     CLog::Log(LOGERROR, "DXGI_ERROR_DEVICE_REMOVED");
     m_needNewDevice = true;
     break;
@@ -1282,7 +1247,7 @@ bool CRenderSystemDX::BeginRender()
     // do not spam to log file
     if (m_nDeviceStatus != oldStatus)
       CLog::Log(LOGDEBUG, "DXGI_STATUS_OCCLUDED");
-    // Status OCCLUDED is not an error and not handled by FAILED macro, 
+    // Status OCCLUDED is not an error and not handled by FAILED macro,
     // but if it occurs we should not render anything, this status will be accounted on present stage
   }
 
@@ -1310,7 +1275,7 @@ bool CRenderSystemDX::EndRender()
 
   if (!m_bRenderCreated)
     return false;
-  
+
   if(m_nDeviceStatus != S_OK)
     return false;
 
@@ -1347,7 +1312,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
         pRTView = m_pRenderTargetViewRight;
     }
   }
- 
+
   if (pRTView == nullptr)
     return true;
 
@@ -1355,7 +1320,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     static_cast<float>(m_nBackBufferWidth),
     static_cast<float>(m_nBackBufferHeight));
 
-  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view. 
+  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view.
   // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
   if (m_ScissorsEnabled && m_scissor != clRect)
   {
@@ -1598,7 +1563,7 @@ void CRenderSystemDX::ResetScissors()
   if (!m_bRenderCreated)
     return;
 
-  m_scissor.SetRect(0.0f, 0.0f, 
+  m_scissor.SetRect(0.0f, 0.0f,
     static_cast<float>(m_nBackBufferWidth),
     static_cast<float>(m_nBackBufferHeight));
 
@@ -1815,7 +1780,7 @@ void CRenderSystemDX::SetMaximumFrameLatency(uint8_t latency) const
   IDXGIDevice1* pDXGIDevice = nullptr;
   if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
   {
-    // in windowed mode DWM uses triple buffering in any case. 
+    // in windowed mode DWM uses triple buffering in any case.
     // for FSEM we use same buffering to avoid possible shuttering/tearing
     if (latency == -1)
       latency = m_useWindowedDX ? 1 : 3;
@@ -1835,6 +1800,134 @@ void CRenderSystemDX::UninitHooks()
   {
     FreeLibrary(m_hDriverModule);
     m_hDriverModule = nullptr;
+  }
+}
+
+void CRenderSystemDX::CheckDeviceCaps()
+{
+  HRESULT hr = S_OK;
+
+  m_renderCaps = 0;
+  unsigned int usage = D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
+  if (IsFormatSupport(DXGI_FORMAT_BC1_UNORM, usage)
+    && IsFormatSupport(DXGI_FORMAT_BC2_UNORM, usage)
+    && IsFormatSupport(DXGI_FORMAT_BC3_UNORM, usage))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  // MSDN: At feature levels 9_1, 9_2 and 9_3, the display device supports the use of 2D textures with dimensions that are not powers of two under two conditions.
+  // First, only one MIP-map level for each texture can be created - we are using only 1 mip level)
+  // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
+  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
+  // so, setup caps NPOT
+  m_renderCaps |= m_featureLevel > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
+  if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
+  {
+    if (m_featureLevel > D3D_FEATURE_LEVEL_9_3 ||
+      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+        && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+        && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+
+  // Temporary - allow limiting the caps to debug a texture problem
+  if (g_advancedSettings.m_RestrictCapsMask != 0)
+    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
+
+  if (m_renderCaps & RENDER_CAPS_DXT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
+
+  m_processorFormats.clear();
+  m_sharedFormats.clear();
+  m_shaderFormats.clear();
+
+  // check video buffer caps
+  ComPtr<ID3D11Device> d3d11Dev(m_pD3DDev);
+  ComPtr<ID3D11DeviceContext> ctx(m_pImdContext);
+  ComPtr<ID3D11VideoDevice> videoDev;
+  ComPtr<ID3D11VideoContext> videoCtx;
+  CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_NV12, 1920, 1080, 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DEFAULT, 0);
+
+  if (SUCCEEDED(d3d11Dev.As(&videoDev)) && SUCCEEDED(ctx.As(&videoCtx)))
+  {
+    // VA decoding/rendering exists, let's check caps
+#ifdef _M_ARM
+    bool isNotArm = false;
+#else
+    // possible fast converting on x86/x64
+    bool isNotArm = true;
+#endif
+    // check renderer formats
+    texDesc.Usage = D3D11_USAGE_DYNAMIC;
+    texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_NV12);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P);
+    }
+    texDesc.Format = DXGI_FORMAT_P010;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_P010);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P10);
+    }
+    texDesc.Format = DXGI_FORMAT_P016;
+    if (SUCCEEDED(hr = d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_P016);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P16);
+    }
+
+    // check shared formats between d3d11va and shaders
+    texDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
+    texDesc.Format = DXGI_FORMAT_NV12;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_NV12);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P);
+    }
+    texDesc.Format = DXGI_FORMAT_P010;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_P010);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P10);
+    }
+    texDesc.Format = DXGI_FORMAT_P016;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_P016);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P16);
+    }
+  }
+
+  // common shader formats
+  texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+  texDesc.Format = DXGI_FORMAT_R8_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P);
+    m_shaderFormats.push_back(AV_PIX_FMT_NV12);
+  }
+  texDesc.Format = DXGI_FORMAT_R16_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P10);
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P16);
+  }
+  texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
+    m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
   }
 }
 
@@ -1945,7 +2038,7 @@ void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE
       uint32_t refreshNum, refreshDen;
       GetRefreshRatio(static_cast<uint32_t>(m_refreshRate), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - ((float)refreshNum / (float)refreshDen)) / refreshRate;
-      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s", 
+      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s",
                 refreshRate, m_refreshRate, diff, (diff > 0.0005) ? "true" : "false");
       if (diff > 0.0005)
       {
