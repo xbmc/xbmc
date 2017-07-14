@@ -282,17 +282,9 @@ void CLangInfo::CRegion::SetGlobalLocale()
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
   // others similar functions.
-#if defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_OSX) || defined(__UCLIBC__)
+#if !(defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_OSX) || defined(__UCLIBC__))
   // on FreeBSD, darwin and uClibc-based systems libstdc++ is compiled with
   // "generic" locale support
-  if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL
-  || setlocale(LC_CTYPE, strLocale.c_str()) == NULL)
-  {
-    strLocale = "C";
-    setlocale(LC_COLLATE, strLocale.c_str());
-    setlocale(LC_CTYPE, strLocale.c_str());
-  }
-#else
   std::locale current_locale = std::locale::classic(); // C-Locale
   try
   {
@@ -300,6 +292,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
     strLocale = lcl.name();
     current_locale = current_locale.combine< std::collate<wchar_t> >(lcl);
     current_locale = current_locale.combine< std::ctype<wchar_t> >(lcl);
+    current_locale = current_locale.combine< std::time_get<wchar_t> >(lcl);
+    current_locale = current_locale.combine< std::time_put<wchar_t> >(lcl);
 
     assert(std::use_facet< std::numpunct<char> >(current_locale).decimal_point() == '.');
 
@@ -311,6 +305,32 @@ void CLangInfo::CRegion::SetGlobalLocale()
   g_langInfo.m_systemLocale = current_locale; //! @todo move to CLangInfo class
   std::locale::global(current_locale);
 #endif
+
+#ifndef TARGET_WINDOWS
+  if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL ||
+      setlocale(LC_CTYPE, strLocale.c_str()) == NULL ||
+      setlocale(LC_TIME, strLocale.c_str()) == NULL)
+  {
+    strLocale = "C";
+    setlocale(LC_COLLATE, strLocale.c_str());
+    setlocale(LC_CTYPE, strLocale.c_str());
+    setlocale(LC_TIME, strLocale.c_str());
+  }
+#else
+  std::wstring strLocaleW;
+  g_charsetConverter.utf8ToW(strLocale, strLocaleW);
+  if (_wsetlocale(LC_COLLATE, strLocaleW.c_str()) == NULL ||
+      _wsetlocale(LC_CTYPE, strLocaleW.c_str()) == NULL ||
+      _wsetlocale(LC_TIME, strLocaleW.c_str()) == NULL)
+  {
+    strLocale = "C";
+    strLocaleW = L"C";
+    _wsetlocale(LC_COLLATE, strLocaleW.c_str());
+    _wsetlocale(LC_CTYPE, strLocaleW.c_str());
+    _wsetlocale(LC_TIME, strLocaleW.c_str());
+  }
+#endif
+
   g_charsetConverter.resetSystemCharset();
   CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 
