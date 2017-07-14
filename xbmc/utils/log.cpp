@@ -70,9 +70,9 @@ void CLog::Initialize(const std::string& path)
   m_defaultLogger->flush_on(spdlog::level::debug);
 
   // set the default formatting
-  spdlog::set_pattern("%T.%f T:%t %l %n: %v");
+  spdlog::set_pattern("%T.%f T:%5t %8l %n: %v");
   // set special pattern for the default logger (which doesn't have a proper logger name)
-  m_defaultLogger->set_pattern("%T.%f T:%t %l: %v");
+  m_defaultLogger->set_pattern("%T.%f T:%5t %8l: %v");
 }
 
 void CLog::Uninitialize()
