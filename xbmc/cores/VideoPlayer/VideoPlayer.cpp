@@ -2874,6 +2874,7 @@ void CVideoPlayer::HandleMessages()
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
     {
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
+      m_renderManager.Flush();
       CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
       //! @todo find a better solution for the "otherStreamHack"
       //! a stream is not supposed to be terminated before demuxer
@@ -2903,6 +2904,7 @@ void CVideoPlayer::HandleMessages()
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
     {
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
+      m_renderManager.Flush();
       CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
       if (input && input->IsOtherStreamHack())
       {
@@ -2938,6 +2940,7 @@ void CVideoPlayer::HandleMessages()
         {
           g_infoManager.SetDisplayAfterSeek(100000);
           FlushBuffers(DVD_NOPTS_VALUE, true, true);
+          m_renderManager.Flush();
           if (input->IsOtherStreamHack())
           {
             CloseDemuxer();
