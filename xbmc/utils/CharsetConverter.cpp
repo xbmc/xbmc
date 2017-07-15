@@ -87,6 +87,7 @@ enum SpecialCharset
   SystemCharset,
   UserCharset /* locale.charset */, 
   SubtitleCharset /* subtitles.charset */,
+  AsciiCharset
 };
 
 class CConverterType : public CCriticalSection
@@ -244,6 +245,8 @@ std::string CConverterType::ResolveSpecialCharset(enum SpecialCharset charset)
     return g_langInfo.GetGuiCharSet();
   case SubtitleCharset:
     return g_langInfo.GetSubtitleCharSet();
+  case AsciiCharset:
+    return "ASCII//TRANSLIT";
   case NotSpecialCharset:
   default:
     return "UTF-8"; /* dummy value */
@@ -269,6 +272,8 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
   Utf8ToSystem,
   SystemToUtf8,
   Ucs2CharsetToUtf8,
+  WtoAscii,
+  Utf8toAscii,
   NumberOfStdConversionTypes /* Dummy sentinel entry */
 };
 
@@ -312,7 +317,9 @@ CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdCo
   /* Utf8toW */             CConverterType(UTF8_SOURCE,     WCHAR_CHARSET),
   /* Utf8ToSystem */        CConverterType(UTF8_SOURCE,     SystemCharset),
   /* SystemToUtf8 */        CConverterType(SystemCharset,   UTF8_SOURCE),
-  /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
+  /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
+  /* WtoAscii */            CConverterType(WCHAR_CHARSET,   AsciiCharset),
+  /* Utf8toAscii */         CConverterType(UTF8_SOURCE,     AsciiCharset),
 };
 
 CCriticalSection CCharsetConverter::CInnerConverter::m_critSectionFriBiDi;
@@ -723,6 +730,11 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
   return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);
 }
 
+bool CCharsetConverter::utf8ToASCII(const std::string& utf8StringSrc, std::string& asciiStringDst, bool failOnBadChar)
+{
+  return CInnerConverter::stdConvert(Utf8toAscii, utf8StringSrc, asciiStringDst, failOnBadChar);
+}
+
 bool CCharsetConverter::subtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst)
 {
   return CInnerConverter::stdConvert(SubtitleCharsetToUtf8, stringSrc, utf8StringDst, false);
@@ -803,6 +815,11 @@ bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string&
 bool CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   return CInnerConverter::stdConvert(WtoUtf8, wStringSrc, utf8StringDst, failOnBadChar);
+}
+
+bool CCharsetConverter::wToASCII(const std::wstring& wStringSrc, std::string& asciiStringDst, bool failOnBadChar)
+{
+  return CInnerConverter::stdConvert(WtoAscii, wStringSrc, asciiStringDst, failOnBadChar);
 }
 
 bool CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
