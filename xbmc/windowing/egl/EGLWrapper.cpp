@@ -19,6 +19,8 @@
  */
 #include "system.h"
 
+#include <stdlib.h>
+
 #ifdef HAS_EGL
 #include "utils/log.h"
 #include <assert.h>

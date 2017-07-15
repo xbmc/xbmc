@@ -1,0 +1,24 @@
+diff -ru a/configure.ac b/configure.ac
+--- a/configure.ac	2017-07-16 11:28:36.072970000 +0200
++++ b/configure.ac	2017-07-16 11:42:42.072970000 +0200
+@@ -3029,7 +3029,7 @@
+  getentropy \
+  getpriority getresuid getresgid getpwent getspnam getspent getsid getwd \
+  initgroups kill killpg lchmod lchown lstat mkfifo mknod mktime mmap \
+- mremap nice pathconf pause plock poll pthread_init \
++ mremap nice nl_langinfo pathconf pause plock poll pthread_init \
+  putenv readlink realpath \
+  select sem_open sem_timedwait sem_getvalue sem_unlink setegid seteuid \
+  setgid \
+diff -ru a/Python/pythonrun.c b/Python/pythonrun.c
+--- a/Python/pythonrun.c	2017-07-16 11:28:36.136970000 +0200
++++ b/Python/pythonrun.c	2017-07-16 11:44:26.464970000 +0200
+@@ -294,7 +294,7 @@
+         overridden = 1;
+     }
+ 
+-#if defined(Py_USING_UNICODE) && defined(HAVE_LANGINFO_H) && defined(CODESET)
++#if defined(Py_USING_UNICODE) && defined(HAVE_LANGINFO_H) && defined(HAVE_NL_LANGINFO) && defined(CODESET)
+     /* On Unix, set the file system encoding according to the
+        user's preference, if the CODESET names a well-known
+        Python codec, and Py_FileSystemDefaultEncoding isn't

@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "DVDDemuxSPU.h"
 #include "TimingConstants.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
