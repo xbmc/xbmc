@@ -70,7 +70,6 @@ namespace internal {
 // of them.
 const char kPathSeparator = '\\';
 const char kAlternatePathSeparator = '/';
-const char kPathSeparatorString[] = "\\";
 const char kAlternatePathSeparatorString[] = "/";
 # if GTEST_OS_WINDOWS_MOBILE
 // Windows CE doesn't have a current directory. You should not use
@@ -84,7 +83,6 @@ const char kCurrentDirectoryString[] = ".\\";
 # endif  // GTEST_OS_WINDOWS_MOBILE
 #else
 const char kPathSeparator = '/';
-const char kPathSeparatorString[] = "/";
 const char kCurrentDirectoryString[] = "./";
 #endif  // GTEST_OS_WINDOWS
 
@@ -99,7 +97,7 @@ static bool IsPathSeparator(char c) {
 
 // Returns the current working directory, or "" if unsuccessful.
 FilePath FilePath::GetCurrentDir() {
-#if GTEST_OS_WINDOWS_MOBILE
+#if GTEST_OS_WINDOWS_MOBILE || GTEST_OS_WINDOWS_PHONE || GTEST_OS_WINDOWS_RT
   // Windows CE doesn't have a current directory, so we just return
   // something reasonable.
   return FilePath(kCurrentDirectoryString);
@@ -108,7 +106,14 @@ FilePath FilePath::GetCurrentDir() {
   return FilePath(_getcwd(cwd, sizeof(cwd)) == NULL ? "" : cwd);
 #else
   char cwd[GTEST_PATH_MAX_ + 1] = { '\0' };
-  return FilePath(getcwd(cwd, sizeof(cwd)) == NULL ? "" : cwd);
+  char* result = getcwd(cwd, sizeof(cwd));
+# if GTEST_OS_NACL
+  // getcwd will likely fail in NaCl due to the sandbox, so return something
+  // reasonable. The user may have provided a shim implementation for getcwd,
+  // however, so fallback only when failure is detected.
+  return FilePath(result == NULL ? kCurrentDirectoryString : cwd);
+# endif  // GTEST_OS_NACL
+  return FilePath(result == NULL ? "" : cwd);
 #endif  // GTEST_OS_WINDOWS_MOBILE
 }
 

@@ -37,7 +37,7 @@ macro(fix_default_compiler_settings_)
 
       # We prefer more strict warning checking for building Google Test.
       # Replaces /W3 with /W4 in defaults.
-      string(REPLACE "/W3" "-W4" ${flag_var} "${${flag_var}}")
+      string(REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
     endforeach()
   endif()
 endmacro()
@@ -55,8 +55,8 @@ macro(config_compiler_and_linker)
   if (MSVC)
     # Newlines inside flags variables break CMake's NMake generator.
     # TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.
-    set(cxx_base_flags "-GS -W4 -WX -wd4127 -wd4251 -wd4275 -nologo -J -Zi")
-    if (MSVC_VERSION LESS 1400)
+    set(cxx_base_flags "-GS -W4 -WX -wd4251 -wd4275 -nologo -J -Zi")
+    if (MSVC_VERSION LESS 1400)  # 1400 is Visual Studio 2005
       # Suppress spurious warnings MSVC 7.1 sometimes issues.
       # Forcing value to bool.
       set(cxx_base_flags "${cxx_base_flags} -wd4800")
@@ -66,6 +66,25 @@ macro(config_compiler_and_linker)
       # Resolved overload was found by argument-dependent lookup.
       set(cxx_base_flags "${cxx_base_flags} -wd4675")
     endif()
+    if (MSVC_VERSION LESS 1500)  # 1500 is Visual Studio 2008
+      # Conditional expression is constant.
+      # When compiling with /W4, we get several instances of C4127
+      # (Conditional expression is constant). In our code, we disable that
+      # warning on a case-by-case basis. However, on Visual Studio 2005,
+      # the warning fires on std::list. Therefore on that compiler and earlier,
+      # we disable the warning project-wide.
+      set(cxx_base_flags "${cxx_base_flags} -wd4127")
+    endif()
+    if (NOT (MSVC_VERSION LESS 1700))  # 1700 is Visual Studio 2012.
+      # Suppress "unreachable code" warning on VS 2012 and later.
+      # http://stackoverflow.com/questions/3232669 explains the issue.
+      set(cxx_base_flags "${cxx_base_flags} -wd4702")
+    endif()
+    if (NOT (MSVC_VERSION GREATER 1900))  # 1900 is Visual Studio 2015
+      # BigObj required for tests.
+      set(cxx_base_flags "${cxx_base_flags} -bigobj")
+    endif()
+
     set(cxx_base_flags "${cxx_base_flags} -D_UNICODE -DUNICODE -DWIN32 -D_WIN32")
     set(cxx_base_flags "${cxx_base_flags} -DSTRICT -DWIN32_LEAN_AND_MEAN")
     set(cxx_exception_flags "-EHsc -D_HAS_EXCEPTIONS=1")
@@ -220,8 +239,16 @@ function(py_test name)
     # directly bind it from cmake. ${CTEST_CONFIGURATION_TYPE} is known
     # only at ctest runtime (by calling ctest -c <Configuration>), so
     # we have to escape $ to delay variable substitution here.
-    add_test(${name}
-      ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/${name}.py
+    if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.1)
+      add_test(
+        NAME ${name}
+        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/${name}.py
+            --build_dir=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>)
+    else (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.1)
+      add_test(
+        ${name}
+        ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/${name}.py
           --build_dir=${CMAKE_CURRENT_BINARY_DIR}/\${CTEST_CONFIGURATION_TYPE})
+    endif (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.1)
   endif()
 endfunction()

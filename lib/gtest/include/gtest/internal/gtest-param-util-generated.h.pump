@@ -39,7 +39,7 @@ $var maxtuple = 10  $$ Maximum number of Combine arguments we want to support.
 // and at most $maxtuple arguments in Combine. Please contact
 // googletestframework@googlegroups.com if you need more.
 // Please note that the number of arguments to Combine is limited
-// by the maximum arity of the implementation of tr1::tuple which is
+// by the maximum arity of the implementation of tuple which is
 // currently set at $maxtuple.
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
@@ -72,29 +72,14 @@ internal::ParamGenerator<typename Container::value_type> ValuesIn(
 namespace internal {
 
 // Used in the Values() function to provide polymorphic capabilities.
-template <typename T1>
-class ValueArray1 {
- public:
-  explicit ValueArray1(T1 v1) : v1_(v1) {}
-
-  template <typename T>
-  operator ParamGenerator<T>() const { return ValuesIn(&v1_, &v1_ + 1); }
-
- private:
-  // No implementation - assignment is unsupported.
-  void operator=(const ValueArray1& other);
-
-  const T1 v1_;
-};
-
-$range i 2..n
+$range i 1..n
 $for i [[
 $range j 1..i
 
 template <$for j, [[typename T$j]]>
 class ValueArray$i {
  public:
-  ValueArray$i($for j, [[T$j v$j]]) : $for j, [[v$(j)_(v$j)]] {}
+  $if i==1 [[explicit ]]ValueArray$i($for j, [[T$j v$j]]) : $for j, [[v$(j)_(v$j)]] {}
 
   template <typename T>
   operator ParamGenerator<T>() const {
@@ -128,9 +113,9 @@ $range k 2..i
 
 template <$for j, [[typename T$j]]>
 class CartesianProductGenerator$i
-    : public ParamGeneratorInterface< ::std::tr1::tuple<$for j, [[T$j]]> > {
+    : public ParamGeneratorInterface< ::testing::tuple<$for j, [[T$j]]> > {
  public:
-  typedef ::std::tr1::tuple<$for j, [[T$j]]> ParamType;
+  typedef ::testing::tuple<$for j, [[T$j]]> ParamType;
 
   CartesianProductGenerator$i($for j, [[const ParamGenerator<T$j>& g$j]])
       : $for j, [[g$(j)_(g$j)]] {}
@@ -269,8 +254,8 @@ class CartesianProductHolder$i {
 CartesianProductHolder$i($for j, [[const Generator$j& g$j]])
       : $for j, [[g$(j)_(g$j)]] {}
   template <$for j, [[typename T$j]]>
-  operator ParamGenerator< ::std::tr1::tuple<$for j, [[T$j]]> >() const {
-    return ParamGenerator< ::std::tr1::tuple<$for j, [[T$j]]> >(
+  operator ParamGenerator< ::testing::tuple<$for j, [[T$j]]> >() const {
+    return ParamGenerator< ::testing::tuple<$for j, [[T$j]]> >(
         new CartesianProductGenerator$i<$for j, [[T$j]]>(
 $for j,[[
 
