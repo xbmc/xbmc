@@ -29,6 +29,7 @@ extern "C"
 #include <libbluray/log_control.h>
 #include <libbluray/keys.h>
 #include <libbluray/overlay.h>
+#include <libbluray/bluray-version.h>
 }
 
 typedef int(*read_blocks_f)(void *handle, void *buf, int lba, int num_blocks);
