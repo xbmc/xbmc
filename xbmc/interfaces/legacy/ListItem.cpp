@@ -72,7 +72,7 @@ namespace XBMCAddon
 
       String ret;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         ret = item->GetLabel();
       }
 
@@ -85,7 +85,7 @@ namespace XBMCAddon
 
       String ret;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         ret = item->GetLabel2();
       }
 
@@ -97,7 +97,7 @@ namespace XBMCAddon
       if (!item) return;
       // set label
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->SetLabel(label);
       }
     }
@@ -107,7 +107,7 @@ namespace XBMCAddon
       if (!item) return;
       // set label
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->SetLabel2(label);
       }
     }
@@ -116,7 +116,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->SetIconImage(iconImage);
       }
     }
@@ -125,7 +125,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->SetArt("thumb", thumbFilename);
       }
     }
@@ -134,7 +134,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
           std::string artName = it->first;
@@ -151,7 +151,7 @@ namespace XBMCAddon
     {
       if (!item) return;
 
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       CVideoInfoTag& vtag = *item->GetVideoInfoTag();
       for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         vtag.SetUniqueID(it->second, it->first);
@@ -161,7 +161,7 @@ namespace XBMCAddon
     {
       if (!item) return;
 
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       item->GetVideoInfoTag()->SetRating(rating, votes, type, defaultt);
     }
 
@@ -169,7 +169,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->Select(selected);
       }
     }
@@ -181,7 +181,7 @@ namespace XBMCAddon
 
       bool ret;
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         ret = item->IsSelected();
       }
 
@@ -190,7 +190,7 @@ namespace XBMCAddon
 
     void ListItem::setProperty(const char * key, const String& value)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
       if (lowerKey == "startoffset")
@@ -221,7 +221,7 @@ namespace XBMCAddon
 
     String ListItem::getProperty(const char* key)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
       std::string value;
@@ -244,43 +244,43 @@ namespace XBMCAddon
 
     String ListItem::getArt(const char* key)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       return item->GetArt(key);
     }
 
     String ListItem::getUniqueID(const char* key)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       return item->GetVideoInfoTag()->GetUniqueID(key);
     }
 
     float ListItem::getRating(const char* key)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       return item->GetVideoInfoTag()->GetRating(key).rating;
     }
 
     int ListItem::getVotes(const char* key)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       return item->GetVideoInfoTag()->GetRating(key).votes;
     }
 
     void ListItem::setPath(const String& path)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       item->SetPath(path);
     }
 
     void ListItem::setMimeType(const String& mimetype)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       item->SetMimeType(mimetype);
     }
 
     void ListItem::setContentLookup(bool enable)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       item->SetContentLookup(enable);
     }
 
@@ -314,13 +314,13 @@ namespace XBMCAddon
 
     String ListItem::getPath()
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       return item->GetPath();
     }
 
     void ListItem::setInfo(const char* type, const InfoLabelDict& infoLabels)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
 
       if (strcmpi(type, "video") == 0)
       {
@@ -598,7 +598,7 @@ namespace XBMCAddon
 
     void ListItem::setCast(const std::vector<Properties>& actors)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       item->GetVideoInfoTag()->m_cast.clear();
       for (const auto& dictionary: actors)
       {
@@ -622,7 +622,7 @@ namespace XBMCAddon
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
 
       if (strcmpi(cType, "video") == 0)
       {
@@ -690,7 +690,7 @@ namespace XBMCAddon
         if (tuple.GetNumValuesSet() != 2)
           throw ListItemException("Must pass in a list of tuples of pairs of strings. One entry in the list only has %d elements.",tuple.GetNumValuesSet());
 
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock lock(languageHook);
         item->SetProperty(StringUtils::Format("contextmenulabel(%zu)", i), tuple.first());
         item->SetProperty(StringUtils::Format("contextmenuaction(%zu)", i), tuple.second());
       }
@@ -698,7 +698,7 @@ namespace XBMCAddon
 
     void ListItem::setSubtitles(const std::vector<String>& paths)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       unsigned int i = 1;
       for (std::vector<String>::const_iterator it = paths.begin(); it != paths.end(); ++it, i++)
       {
@@ -709,7 +709,7 @@ namespace XBMCAddon
 
     xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       if (item->HasVideoInfoTag())
         return new xbmc::InfoTagVideo(*item->GetVideoInfoTag());
       return new xbmc::InfoTagVideo();
@@ -717,7 +717,7 @@ namespace XBMCAddon
 
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock lock(languageHook);
       if (item->HasMusicInfoTag())
         return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
       return new xbmc::InfoTagMusic();
