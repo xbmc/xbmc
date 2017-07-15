@@ -119,6 +119,8 @@ void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 
   if (GetPicture(data, size, picture))
   {
+    picture.iDuration = 1.0 / m_framerate;
+
     if (!Configure(picture))
     {
       CLog::Log(LOGERROR, "RetroPlayerVideo: Failed to configure renderer");
