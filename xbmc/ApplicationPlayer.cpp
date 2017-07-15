@@ -90,6 +90,7 @@ void CApplicationPlayer::CreatePlayer(const std::string &player, IPlayerCallback
   CSingleLock lock(m_player_lock);
   if (!m_pPlayer)
   {
+    CDataCacheCore::GetInstance().Reset();
     m_pPlayer.reset(CPlayerCoreFactory::GetInstance().CreatePlayer(player, callback));
   }
 }
