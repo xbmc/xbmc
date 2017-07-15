@@ -90,7 +90,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision 12b. For the SDK just use the latest available.
+         Revision 14b. For the SDK just use the latest available.
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
