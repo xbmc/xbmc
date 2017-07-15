@@ -473,6 +473,11 @@ void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
   m_processInfo->UpdateRenderInfo(info);
 }
 
+void CRetroPlayer::UpdateRenderBuffers(int queued, int discard, int free)
+{
+  m_processInfo->UpdateRenderBuffers(queued, discard, free);
+}
+
 void CRetroPlayer::UpdateGuiRender(bool gui)
 {
   m_processInfo->SetGuiRender(gui);
