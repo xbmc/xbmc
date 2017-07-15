@@ -60,7 +60,8 @@ namespace XBMCAddon
     public:
 
       inline Dialog() = default;
-      ~Dialog() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~Dialog();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -600,12 +601,14 @@ namespace XBMCAddon
       bool                open;
 
     protected:
-      void deallocating() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual void deallocating();
 
     public:
 
       DialogProgress() : dlg(NULL), open(false) {}
-      ~DialogProgress() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~DialogProgress();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -739,12 +742,14 @@ namespace XBMCAddon
       bool open;
 
     protected:
-      void deallocating() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual void deallocating();
 
     public:
 
       DialogBusy() : dlg(NULL), open(false) {}
-      ~DialogBusy() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~DialogBusy();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -847,12 +852,14 @@ namespace XBMCAddon
       bool open;
 
     protected:
-      void deallocating() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual void deallocating();
 
     public:
 
       DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
-      ~DialogProgressBG() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~DialogProgressBG();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

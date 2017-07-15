@@ -75,7 +75,8 @@ namespace XBMCAddon
 #endif
 
       Keyboard(const String& line = emptyString, const String& heading = emptyString, bool hidden = false);
-      ~Keyboard() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~Keyboard();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

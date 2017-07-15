@@ -59,7 +59,8 @@ namespace XBMCAddon
         m_width = 0;
         m_height = 0;
       }
-      inline ~RenderCapture() override
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      inline virtual ~RenderCapture()
       {
         g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
         delete [] m_buffer;

@@ -71,7 +71,8 @@ namespace XBMCAddon
           file->Open(filepath, XFILE::READ_NO_CACHE);
       }
 
-      inline ~File() override { delete file; }
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      inline virtual ~File() { delete file; }
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

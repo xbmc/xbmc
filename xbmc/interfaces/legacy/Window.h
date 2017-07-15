@@ -267,7 +267,8 @@ namespace XBMCAddon
     public:
       Window(int existingWindowId = -1);
 
-      ~Window() override;
+      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
+      virtual ~Window();
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage& message);
