@@ -1352,7 +1352,7 @@ void CVideoPlayer::Process()
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  if(m_PlayerOptions.identify == false)
+  if (m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
 
   // we are done initializing now, set the readyevent
@@ -2455,42 +2455,42 @@ void CVideoPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CVideoPlayer::OnExit()
 {
-    CLog::Log(LOGNOTICE, "CVideoPlayer::OnExit()");
+  CLog::Log(LOGNOTICE, "CVideoPlayer::OnExit()");
 
-    // set event to inform openfile something went wrong in case openfile is still waiting for this event
-    SetCaching(CACHESTATE_DONE);
+  // set event to inform openfile something went wrong in case openfile is still waiting for this event
+  SetCaching(CACHESTATE_DONE);
 
-    // close each stream
-    if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "VideoPlayer: eof, waiting for queues to empty");
-    CloseStream(m_CurrentAudio,    !m_bAbortRequest);
-    CloseStream(m_CurrentVideo,    !m_bAbortRequest);
+  // close each stream
+  if (!m_bAbortRequest)
+    CLog::Log(LOGNOTICE, "VideoPlayer: eof, waiting for queues to empty");
 
-    // the generalization principle was abused for subtitle player. actually it is not a stream player like
-    // video and audio. subtitle player does not run on its own thread, hence waitForBuffers makes
-    // no sense here. waitForBuffers is abused to clear overlay container (false clears container)
-    // subtitles are added from video player. after video player has finished, overlays have to be cleared.
-    CloseStream(m_CurrentSubtitle, false);  // clear overlay container
+  CloseStream(m_CurrentAudio, !m_bAbortRequest);
+  CloseStream(m_CurrentVideo, !m_bAbortRequest);
+  CloseStream(m_CurrentTeletext,!m_bAbortRequest);
+  CloseStream(m_CurrentRadioRDS, !m_bAbortRequest);
+  // the generalization principle was abused for subtitle player. actually it is not a stream player like
+  // video and audio. subtitle player does not run on its own thread, hence waitForBuffers makes
+  // no sense here. waitForBuffers is abused to clear overlay container (false clears container)
+  // subtitles are added from video player. after video player has finished, overlays have to be cleared.
+  CloseStream(m_CurrentSubtitle, false);  // clear overlay container
 
-    CloseStream(m_CurrentTeletext, !m_bAbortRequest);
-    CloseStream(m_CurrentRadioRDS, !m_bAbortRequest);
+  // destroy objects
+  SAFE_DELETE(m_pDemuxer);
+  SAFE_DELETE(m_pSubtitleDemuxer);
+  SAFE_DELETE(m_pCCDemuxer);
+  SAFE_DELETE(m_pInputStream);
 
-    // destroy objects
-    SAFE_DELETE(m_pDemuxer);
-    SAFE_DELETE(m_pSubtitleDemuxer);
-    SAFE_DELETE(m_pCCDemuxer);
-    SAFE_DELETE(m_pInputStream);
+  // clean up all selection streams
+  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    // clean up all selection streams
-    m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
+  m_messenger.End();
 
-    m_messenger.End();
-
-    if (m_omxplayer_mode)
-    {
-      m_OmxPlayerState.av_clock.OMXStop();
-      m_OmxPlayerState.av_clock.OMXStateIdle();
-      m_OmxPlayerState.av_clock.OMXDeinitialize();
-    }
+  if (m_omxplayer_mode)
+  {
+    m_OmxPlayerState.av_clock.OMXStop();
+    m_OmxPlayerState.av_clock.OMXStateIdle();
+    m_OmxPlayerState.av_clock.OMXDeinitialize();
+  }
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist

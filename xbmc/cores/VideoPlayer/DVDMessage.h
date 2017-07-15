@@ -21,13 +21,6 @@
 
 #pragma once
 
-#ifdef __GNUC__
-// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even with optimizations.
-#define XBMC_FORCE_INLINE __attribute__((always_inline))
-#else
-#define XBMC_FORCE_INLINE
-#endif
-
 // include as less is possible to prevent dependencies
 #include "DVDResource.h"
 #include <atomic>
@@ -99,12 +92,12 @@ public:
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg) XBMC_FORCE_INLINE
+  inline bool IsType(Message msg)
   {
     return (m_message == msg);
   }
 
-  inline Message GetMessageType() XBMC_FORCE_INLINE
+  inline Message GetMessageType()
   {
     return m_message;
   }
