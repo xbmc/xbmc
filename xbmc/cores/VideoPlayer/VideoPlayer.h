@@ -435,8 +435,6 @@ protected:
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  bool ShowPVRChannelInfo();
-
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
   void SetSubtitleVisibleInternal(bool bVisible);
 

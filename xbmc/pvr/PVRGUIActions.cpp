@@ -1116,6 +1116,10 @@ namespace PVR
       }
 
       StartPlayback(new CFileItem(channel), bFullscreen);
+      if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
+      {
+        CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+      }
       return true;
     }
 

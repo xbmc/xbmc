@@ -2919,7 +2919,7 @@ void CVideoPlayer::HandleMessages()
       {
         CloseDemuxer();
       }
-      if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
+      if (input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
       {
         CloseDemuxer();
         m_playSpeed = DVD_PLAYSPEED_NORMAL;
@@ -2935,7 +2935,8 @@ void CVideoPlayer::HandleMessages()
         CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
       }
-      ShowPVRChannelInfo();
+      CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+      CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) &&
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
@@ -2960,7 +2961,8 @@ void CVideoPlayer::HandleMessages()
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
       }
       CServiceBroker::GetPVRManager().SetChannelPreview(false);
-      ShowPVRChannelInfo();
+      CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+      CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
              pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
@@ -3014,8 +3016,9 @@ void CVideoPlayer::HandleMessages()
             // when using fast channel switching some shortcuts are taken which
             // means we'll have to update the view mode manually
             m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+            CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+            CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
           }
-          ShowPVRChannelInfo();
         }
         else
         {
@@ -4382,22 +4385,6 @@ void CVideoPlayer::GetVideoResolution(unsigned int &width, unsigned int &height)
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
   width = res.iWidth;
   height = res.iHeight;
-}
-
-bool CVideoPlayer::ShowPVRChannelInfo(void)
-{
-  bool bReturn(false);
-
-  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
-  {
-    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
-
-    bReturn = true;
-  }
-
-  CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
-  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
-  return bReturn;
 }
 
 bool CVideoPlayer::OnAction(const CAction &action)
