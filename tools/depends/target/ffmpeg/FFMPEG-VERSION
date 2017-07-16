@@ -1,5 +1,5 @@
 LIBNAME=ffmpeg
-BASE_URL=https://github.com/xbmc/FFmpeg/archive
+BASE_URL=https://github.com/xbmc/FFmpeg
 VERSION=3.3.2-Leia-Alpha-1
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 GNUTLS_VER=3.4.14

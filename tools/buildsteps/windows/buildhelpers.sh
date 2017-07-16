@@ -140,8 +140,8 @@ do_loaddeps() {
     ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
   else
     ARCHIVE=$LIBNAME-$GITREV.tar.gz
-    BASE_URL=$BASE_URL/archive
   fi
+  BASE_URL=$BASE_URL/archive
 }
 
 do_clean_get() {
