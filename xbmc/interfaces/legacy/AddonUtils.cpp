@@ -30,21 +30,25 @@
 
 namespace XBMCAddonUtils
 {
-  GuiLock::GuiLock()
+  GuiLock::GuiLock(XBMCAddon::LanguageHook* languageHook, bool offScreen)
+    : m_languageHook(languageHook), m_offScreen(offScreen)
   {
-    languageHook = XBMCAddon::LanguageHook::GetLanguageHook();
-    if (languageHook)
-      languageHook->DelayedCallOpen();
+    if (!m_languageHook)
+      m_languageHook = XBMCAddon::LanguageHook::GetLanguageHook();
+    if (m_languageHook)
+      m_languageHook->DelayedCallOpen();
 
-    g_application.LockFrameMoveGuard();
+    if (!m_offScreen)
+      g_application.LockFrameMoveGuard();
   }
 
   GuiLock::~GuiLock()
   {
-    g_application.UnlockFrameMoveGuard();
+    if (!m_offScreen)
+      g_application.UnlockFrameMoveGuard();
 
-    if (languageHook)
-      languageHook->DelayedCallClose();
+    if (m_languageHook)
+      m_languageHook->DelayedCallClose();
   }
 
   static char defaultImage[1024];

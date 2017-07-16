@@ -166,7 +166,7 @@ namespace XBMCAddon
 
       // Tells the window to add the item to FileItem vector
       {
-        LOCKGUI;
+        XBMCAddonUtils::GuiLock(languageHook, false);
 
         //----------------------------------------------------
         // Former AddItem call
@@ -194,7 +194,7 @@ namespace XBMCAddon
     void WindowXML::addItems(const std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > > & items)
     {
     XBMC_TRACE;
-    LOCKGUI;
+    XBMCAddonUtils::GuiLock(languageHook, false);
     for (auto item : items)
       {
         AddonClass::Ref<ListItem> ritem = item.which() == XBMCAddon::first ? ListItem::fromString(item.former()) : AddonClass::Ref<ListItem>(item.later());
@@ -209,7 +209,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       // Tells the window to remove the item at the specified position from the FileItem vector
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       A(m_vecItems)->Remove(position);
       A(m_viewControl).SetItems(*(A(m_vecItems)));
     }
@@ -217,7 +217,7 @@ namespace XBMCAddon
     int WindowXML::getCurrentListPosition()
     {
       XBMC_TRACE;
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       int listPos = A(m_viewControl).GetSelectedItem();
       return listPos;
     }
@@ -225,13 +225,13 @@ namespace XBMCAddon
     void WindowXML::setCurrentListPosition(int position)
     {
       XBMC_TRACE;
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       A(m_viewControl).SetSelectedItem(position);
     }
 
     ListItem* WindowXML::getListItem(int position)
     {
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       //CFileItemPtr fi = pwx->GetListItem(listPos);
       CFileItemPtr fi;
       {
@@ -261,7 +261,7 @@ namespace XBMCAddon
     void WindowXML::clearList()
     {
       XBMC_TRACE;
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       A(ClearFileItems());
 
       A(m_viewControl).SetItems(*(A(m_vecItems)));
@@ -276,14 +276,14 @@ namespace XBMCAddon
     void WindowXML::setContent(const String& value)
     {
       XBMC_TRACE;
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       A(m_vecItems)->SetContent(value);
     }
 
     int WindowXML::getCurrentContainerId()
     {
       XBMC_TRACE;
-      LOCKGUI;
+      XBMCAddonUtils::GuiLock(languageHook, false);
       return A(m_viewControl.GetCurrentControl());
     }
 
