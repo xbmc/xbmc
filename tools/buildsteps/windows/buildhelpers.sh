@@ -117,11 +117,11 @@ do_clean() {
 do_download() {
   if [ ! -d $LIBNAME ]; then
     if [ ! -f /downloads/$ARCHIVE ]; then
-      do_print_status "$ARCHIVE" "$orange_color" "Downloading"
+      do_print_status "$LIBNAME-$VERSION" "$orange_color" "Downloading"
       do_wget $BASE_URL/$VERSION.tar.gz $ARCHIVE
     fi
 
-    do_print_status "$ARCHIVE" "$blue_color" "Extracting"
+    do_print_status "$LIBNAME-$VERSION" "$blue_color" "Extracting"
     mkdir $LIBNAME && cd $LIBNAME
     tar -xaf /downloads/$ARCHIVE --strip 1
   else
