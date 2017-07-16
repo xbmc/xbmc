@@ -1654,22 +1654,31 @@ void CVideoPlayer::Process()
 
 bool CVideoPlayer::CheckDelayedChannelEntry(void)
 {
-  bool bReturn(false);
-
   if (m_ChannelEntryTimeOut.IsTimePast())
   {
+    m_ChannelEntryTimeOut.SetInfinite();
     CFileItem currentFile(g_application.CurrentFileItem());
     CPVRChannelPtr currentChannel(currentFile.GetPVRChannelInfoTag());
     if (currentChannel)
     {
-      SwitchChannel(currentChannel);
+      if (CServiceBroker::GetPVRManager().IsPlayingChannel(currentChannel))
+        return false; // desired channel already active, nothing to do.
 
-      bReturn = true;
+      /* set GUI info */
+      if (!CServiceBroker::GetPVRManager().PerformChannelSwitch(currentChannel, true))
+        return false;
+
+      UpdateApplication(0);
+      UpdatePlayState(0);
+
+      /* select the new channel */
+      m_messenger.Put(new CDVDMsgType<CPVRChannelPtr>(CDVDMsg::PLAYER_CHANNEL_SELECT, currentChannel));
+      return true;
+
     }
-    m_ChannelEntryTimeOut.SetInfinite();
   }
 
-  return bReturn;
+  return false;
 }
 
 bool CVideoPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg)
@@ -5231,24 +5240,6 @@ std::string CVideoPlayer::GetPlayingTitle()
     return ttcache->line30;
 
   return "";
-}
-
-bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
-{
-  if (CServiceBroker::GetPVRManager().IsPlayingChannel(channel))
-    return false; // desired channel already active, nothing to do.
-
-  /* set GUI info */
-  if (!CServiceBroker::GetPVRManager().PerformChannelSwitch(channel, true))
-    return false;
-
-  UpdateApplication(0);
-  UpdatePlayState(0);
-
-  /* select the new channel */
-  m_messenger.Put(new CDVDMsgType<CPVRChannelPtr>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
-
-  return true;
 }
 
 void CVideoPlayer::FrameMove()

@@ -369,8 +369,6 @@ public:
 
   std::string GetPlayingTitle() override;
 
-  bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override;
-
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;

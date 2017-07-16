@@ -116,7 +116,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     // If confirm channel switch is active, channel preview is currently shown
     // and the button that caused this action matches (global) action "Select" (OK)
     // switch to the channel currently displayed within the preview.
-    g_application.m_pPlayer->SwitchChannel(g_application.CurrentFileItem().GetPVRChannelInfoTag());
+    CFileItem *item = new CFileItem(g_application.CurrentFileItem());
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     return true;
   }
 

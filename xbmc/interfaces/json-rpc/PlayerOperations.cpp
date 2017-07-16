@@ -577,15 +577,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (channel == NULL)
       return InvalidParams;
 
-    if ((CServiceBroker::GetPVRManager().IsPlayingRadio() && channel->IsRadio()) ||
-        (CServiceBroker::GetPVRManager().IsPlayingTV() && !channel->IsRadio()))
-      g_application.m_pPlayer->SwitchChannel(channel);
-    else
-    {
-      CFileItemList *l = new CFileItemList; //don't delete,
-      l->Add(std::make_shared<CFileItem>(channel));
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
-    }
+    CFileItemList *l = new CFileItemList; //don't delete,
+    l->Add(std::make_shared<CFileItem>(channel));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
     return ACK;
   }
