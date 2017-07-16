@@ -380,8 +380,8 @@ if(CORE_HOST_IS_TARGET)
 
   # code coverage
   if(CMAKE_BUILD_TYPE STREQUAL Coverage)
-    if(EXISTS ${CMAKE_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
-      include(${CMAKE_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+      include(${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
     else()
       message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
     endif()
