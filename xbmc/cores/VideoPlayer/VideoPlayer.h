@@ -415,6 +415,7 @@ protected:
   void CreatePlayers();
   void DestroyPlayers();
 
+  void Prepare();
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
@@ -497,11 +498,15 @@ protected:
   double m_UpdateApplication;
 
   bool m_players_created;
+
+  CFileItem m_item;
+  CEvent m_openEvent;
+  CPlayerOptions m_playerOptions;
   bool m_bAbortRequest;
 
   ECacheState  m_caching;
   XbmcThreads::EndTime m_cachingTimer;
-  CFileItem    m_item;
+
   XbmcThreads::EndTime m_ChannelEntryTimeOut;
   std::unique_ptr<CProcessInfo> m_processInfo;
 
@@ -578,12 +583,8 @@ protected:
   CCriticalSection m_StateSection;
   XbmcThreads::EndTime m_syncTimer;
 
-  CEvent m_ready;
-
   CEdl m_Edl;
   bool m_SkipCommercials;
-
-  CPlayerOptions m_PlayerOptions;
 
   bool m_HasVideo;
   bool m_HasAudio;

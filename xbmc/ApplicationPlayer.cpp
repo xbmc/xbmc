@@ -76,12 +76,15 @@ void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
   }
   else
   {
-    // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
-    // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
-    // but if we do not stop it, we can not distinguish callbacks from previous
-    // item and current item, it will confused us then we can not make correct delay
-    // callback after the starting state.
-    CloseFile(true);
+    if (player->m_type != "video")
+    {
+      // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
+      // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
+      // but if we do not stop it, we can not distinguish callbacks from previous
+      // item and current item, it will confused us then we can not make correct delay
+      // callback after the starting state.
+      CloseFile(true);
+    }
   }
 }
 

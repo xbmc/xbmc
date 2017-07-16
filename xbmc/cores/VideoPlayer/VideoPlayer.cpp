@@ -626,8 +626,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT, VideoPlayer_TELETEXT),
       m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
-      m_renderManager(m_clock, this),
-      m_ready(true)
+      m_renderManager(m_clock, this)
 {
   m_players_created = false;
   m_pDemuxer = NULL;
@@ -694,33 +693,33 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   // if playing a file close it first
   // this has to be changed so we won't have to close it.
   if (IsRunning())
+  {
+    m_openEvent.Reset();
+    CDVDMsgOpenFile::FileParams params;
+    params.m_item = file;
+    params.m_options = options;
+    params.m_item.SetMimeTypeForInternetFile();
+    m_messenger.Put(new CDVDMsgOpenFile(params), 1);
+
+    if (m_openEvent.WaitMSec(2000))
+    {
+      if (!m_bStop && !m_bAbortRequest)
+        return true;
+    }
     CloseFile();
+  }
 
-  m_bAbortRequest = false;
-  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
-  m_processInfo->SetSpeed(1.0);
-  m_processInfo->SetTempo(1.0);
-
-  m_State.Clear();
-  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-  m_UpdateApplication = 0;
-  m_offset_pts = 0;
-  m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
-  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
-
-  m_PlayerOptions = options;
+  m_playerOptions = options;
   m_item = file;
   // Try to resolve the correct mime type
   m_item.SetMimeTypeForInternetFile();
 
-  m_ready.Reset();
-
+  m_bAbortRequest = false;
   m_renderManager.PreInit();
 
+  m_openEvent.Reset();
   Create();
-
-  // wait for the ready event
-  CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+  CGUIDialogBusy::WaitOnEvent(m_openEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
 
   // Playback might have been stopped due to some error
   if (m_bStop || m_bAbortRequest)
@@ -945,7 +944,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   // open audio stream
   valid   = false;
-  if(!m_PlayerOptions.video_only)
+  if (!m_playerOptions.video_only)
   {
     for (const auto &stream : m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority))
     {
@@ -986,7 +985,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
 
-  if (!dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream) || m_PlayerOptions.state.empty())
+  if (!dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream) || m_playerOptions.state.empty())
     SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
 
   // open teletext stream
@@ -1171,7 +1170,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
 bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 {
   // Do not reopen non-video streams if we're in video-only mode
-  if(m_PlayerOptions.video_only && current.type != STREAM_VIDEO)
+  if (m_playerOptions.video_only && current.type != STREAM_VIDEO)
     return false;
 
   if(stream->disabled)
@@ -1229,9 +1228,18 @@ void CVideoPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stre
     OpenStream(current, stream->demuxerId, stream->uniqueId, stream->source);
 }
 
-void CVideoPlayer::Process()
+void CVideoPlayer::Prepare()
 {
   CFFmpegLog::SetLogLevel(1);
+  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+  m_processInfo->SetSpeed(1.0);
+  m_processInfo->SetTempo(1.0);
+  m_State.Clear();
+  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+  m_UpdateApplication = 0;
+  m_offset_pts = 0;
+  m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
+  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   if (!OpenInputStream())
   {
@@ -1243,10 +1251,10 @@ void CVideoPlayer::Process()
   {
     CLog::Log(LOGNOTICE, "VideoPlayer: playing a file with menu's");
     if(dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
-      m_PlayerOptions.starttime = 0;
+      m_playerOptions.starttime = 0;
 
-    if(!m_PlayerOptions.state.empty())
-      ptr->SetState(m_PlayerOptions.state);
+    if (!m_playerOptions.state.empty())
+      ptr->SetState(m_playerOptions.state);
     else if(CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
       nav->EnableSubtitleStream(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
 
@@ -1262,7 +1270,7 @@ void CVideoPlayer::Process()
   CreatePlayers();
 
   // allow renderer to switch to fullscreen if requested
-  m_VideoPlayerVideo->EnableFullscreen(m_PlayerOptions.fullscreen);
+  m_VideoPlayerVideo->EnableFullscreen(m_playerOptions.fullscreen);
 
   if (m_omxplayer_mode)
   {
@@ -1293,16 +1301,16 @@ void CVideoPlayer::Process()
    */
   CEdl::Cut cut;
   int starttime = 0;
-  if (m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
+  if (m_playerOptions.starttime > 0 || m_playerOptions.startpercent > 0)
   {
-    if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
+    if (m_playerOptions.startpercent > 0 && m_pDemuxer)
     {
-      int playerStartTime = (int)( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_PlayerOptions.startpercent/(float)100 ) );
+      int playerStartTime = (int)( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_playerOptions.startpercent/(float)100 ) );
       starttime = m_Edl.RestoreCutTime(playerStartTime);
     }
     else
     {
-      starttime = m_Edl.RestoreCutTime(static_cast<int>(m_PlayerOptions.starttime * 1000)); // s to ms
+      starttime = m_Edl.RestoreCutTime(static_cast<int>(m_playerOptions.starttime * 1000)); // s to ms
     }
     CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
@@ -1352,13 +1360,18 @@ void CVideoPlayer::Process()
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  if (m_PlayerOptions.identify == false)
+  if (m_playerOptions.identify == false)
     m_callback.OnPlayBackStarted();
 
   // we are done initializing now, set the readyevent
-  m_ready.Set();
+  m_openEvent.Set();
 
   SetCaching(CACHESTATE_FLUSH);
+}
+
+void CVideoPlayer::Process()
+{
+  Prepare();
 
   while (!m_bAbortRequest)
   {
@@ -1392,11 +1405,11 @@ void CVideoPlayer::Process()
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
 
-    if(m_bAbortRequest)
+    if (m_bAbortRequest)
       break;
 
     // should we open a new input stream?
-    if(!m_pInputStream)
+    if (!m_pInputStream)
     {
       if (OpenInputStream() == false)
       {
@@ -1406,7 +1419,7 @@ void CVideoPlayer::Process()
     }
 
     // should we open a new demuxer?
-    if(!m_pDemuxer)
+    if (!m_pDemuxer)
     {
       if (m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_NONE)
         break;
@@ -2494,7 +2507,7 @@ void CVideoPlayer::OnExit()
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
-  if(m_PlayerOptions.identify == false)
+  if (m_playerOptions.identify == false)
   {
     if (m_bAbortRequest)
       m_callback.OnPlayBackStopped();
@@ -2503,7 +2516,7 @@ void CVideoPlayer::OnExit()
   }
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  m_ready.Set();
+  m_openEvent.Set();
 
   CFFmpegLog::ClearLogLevel();
 }
@@ -2514,8 +2527,23 @@ void CVideoPlayer::HandleMessages()
 
   while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
+    if (pMsg->IsType(CDVDMsg::PLAYER_OPENFILE) &&
+        m_messenger.GetPacketCount(CDVDMsg::PLAYER_OPENFILE) == 0)
+    {
+      CDVDMsgOpenFile &msg(*((CDVDMsgOpenFile*)pMsg));
 
-    if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) &&
+      FlushBuffers(DVD_NOPTS_VALUE, true, true);
+      m_renderManager.Flush();
+      CloseDemuxer();
+      SAFE_DELETE(m_pSubtitleDemuxer);
+      SAFE_DELETE(m_pCCDemuxer);
+      SAFE_DELETE(m_pInputStream);
+
+      m_item = msg.GetItem();
+      m_playerOptions = msg.GetOptions();
+      Prepare();
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) &&
         m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK) == 0 &&
         m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
     {
@@ -3862,11 +3890,11 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
 
-  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+  if (hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
   // set desired refresh rate
-  if (m_PlayerOptions.fullscreen && g_graphicsContext.IsFullScreenRoot() &&
+  if (m_playerOptions.fullscreen && g_graphicsContext.IsFullScreenRoot() &&
       hint.fpsrate != 0 && hint.fpsscale != 0)
   {
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)

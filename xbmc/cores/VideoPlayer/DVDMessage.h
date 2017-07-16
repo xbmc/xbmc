@@ -21,8 +21,9 @@
 
 #pragma once
 
-// include as less is possible to prevent dependencies
 #include "DVDResource.h"
+#include "FileItem.h"
+#include "cores/IPlayer.h"
 #include <atomic>
 #include <string>
 #include <string.h>
@@ -57,6 +58,7 @@ public:
     PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
     PLAYER_REQUEST_STATE,
+    PLAYER_OPENFILE,
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
@@ -262,6 +264,28 @@ private:
 
   SpeedParams m_params;
 
+};
+
+class CDVDMsgOpenFile : public CDVDMsg
+{
+public:
+  struct FileParams
+  {
+    CFileItem m_item;
+    CPlayerOptions m_options;
+  };
+
+  CDVDMsgOpenFile(const FileParams &params)
+  : CDVDMsg(PLAYER_OPENFILE)
+  , m_params(params)
+  {}
+
+  CFileItem& GetItem() { return m_params.m_item; }
+  CPlayerOptions& GetOptions() { return m_params.m_options; }
+
+private:
+
+  FileParams m_params;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
