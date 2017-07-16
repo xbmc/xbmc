@@ -29,6 +29,7 @@ class CDataCacheCore
 public:
   CDataCacheCore();
   static CDataCacheCore& GetInstance();
+  void Reset();
   bool HasAVInfoChanges();
   void SignalVideoInfoChange();
   void SignalAudioInfoChange();

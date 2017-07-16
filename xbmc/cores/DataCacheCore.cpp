@@ -32,6 +32,18 @@ CDataCacheCore& CDataCacheCore::GetInstance()
   return CServiceBroker::GetDataCacheCore();
 }
 
+void CDataCacheCore::Reset()
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_speed = 1.0;
+  m_stateInfo.m_tempo = 1.0;
+  m_stateInfo.m_stateSeeking = false;
+  m_stateInfo.m_renderGuiLayer = false;
+  m_stateInfo.m_renderVideoLayer = false;
+  m_playerStateChanged = false;
+}
+
 bool CDataCacheCore::HasAVInfoChanges()
 {
   bool ret = m_hasAVInfoChanges;
