@@ -45,7 +45,12 @@ CRepositoryUpdater::CRepositoryUpdater(CAddonMgr& addonMgr) :
   m_timer(this),
   m_doneEvent(true),
   m_addonMgr(addonMgr)
-{}
+{
+  // Register settings
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_ADDONS_AUTOUPDATES);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+}
 
 void CRepositoryUpdater::Start()
 {
@@ -55,6 +60,9 @@ void CRepositoryUpdater::Start()
 
 CRepositoryUpdater::~CRepositoryUpdater()
 {
+  // Unregister settings
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+
   m_addonMgr.Events().Unsubscribe(this);
 }
 
