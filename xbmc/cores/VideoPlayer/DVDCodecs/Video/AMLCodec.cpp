@@ -2052,10 +2052,20 @@ void CAMLCodec::SetVideoSaturation(const int saturation)
   SysfsUtils::SetInt("/sys/class/video/saturation", saturation);
 }
 
-void CAMLCodec::SetVideo3dMode(const int mode3d)
+bool CAMLCodec::SetVideo3dMode(const int mode3d)
 {
-  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
-  SysfsUtils::SetInt("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
+  bool result = true;
+  if (SysfsUtils::Has("/sys/class/ppmgr/ppmgr_3d_mode"))
+  {
+    CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
+    SysfsUtils::SetInt("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "CAMLCodec::SetVideo3dMode: ppmgr_3d support not found in kernel.");
+    result = false;
+  }
+  return result;
 }
 
 std::string CAMLCodec::GetStereoMode()
@@ -2189,13 +2199,41 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   {
     std::string mode = GetStereoMode();
     if (mode == "left_right")
-      SetVideo3dMode(MODE_3D_TO_2D_L);
+    {
+      if (!SetVideo3dMode(MODE_3D_TO_2D_L))
+      {
+        // fall back to software scaling if no hw support
+        // was found
+        dst_rect.x2 *= 2.0;
+      }
+    }
     else if (mode == "right_left")
-      SetVideo3dMode(MODE_3D_TO_2D_R);
+    {
+      if (!SetVideo3dMode(MODE_3D_TO_2D_R))
+      {
+        // fall back to software scaling if no hw support
+        // was found
+        dst_rect.x2 *= 2.0;
+      }
+    }
     else if (mode == "top_bottom")
-      SetVideo3dMode(MODE_3D_TO_2D_T);
+    {
+      if (!SetVideo3dMode(MODE_3D_TO_2D_T))
+      {
+        // fall back to software scaling if no hw support
+        // was found
+        dst_rect.y2 *= 2.0;
+      }
+    }
     else if (mode == "bottom_top")
-      SetVideo3dMode(MODE_3D_TO_2D_B);
+    {
+      if (!SetVideo3dMode(MODE_3D_TO_2D_B))
+      {
+        // fall back to software scaling if no hw support
+        // was found
+        dst_rect.y2 *= 2.0;
+      }
+    }
     else
       SetVideo3dMode(MODE_3D_DISABLE);
   }

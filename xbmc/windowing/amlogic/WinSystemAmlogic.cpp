@@ -141,7 +141,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   nativeWindow->height = res.iHeight;
   m_nativeWindow = static_cast<EGLNativeWindowType>(nativeWindow);
 
-  aml_set_native_resolution(res, m_framebuffer_name);
+  aml_set_native_resolution(res, m_framebuffer_name, stereo_mode);
 
   if (!m_delayDispReset)
   {
