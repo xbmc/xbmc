@@ -183,7 +183,7 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   return rgba;
 }
 
-bool convert_quad(ASS_Image* images, SQuads& quads)
+bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 {
   ASS_Image* img;
 
@@ -205,8 +205,8 @@ bool convert_quad(ASS_Image* images, SQuads& quads)
   if (quads.count == 0)
     return false;
 
-  if (quads.size_x > (int)g_Windowing.GetMaxTextureSize())
-    quads.size_x = g_Windowing.GetMaxTextureSize();
+  if (quads.size_x > max_x)
+    quads.size_x = max_x;
 
   int curr_x = 0;
   int curr_y = 0;
