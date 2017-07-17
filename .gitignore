@@ -133,6 +133,7 @@ cmake_install.cmake
 /lib/cpluff/config.h.in
 /lib/cpluff/config.h.in~
 /lib/cpluff/configure
+/lib/cpluff/config.cache
 /lib/cpluff/config.log
 /lib/cpluff/config.status
 /lib/cpluff/Makefile.in
@@ -169,8 +170,9 @@ lib/cpluff/stamp-h1
 /lib/gtest/build-aux/ltmain.sh
 /lib/gtest/build-aux/missing
 /lib/gtest/configure
-/lib/gtest/config.status
+/lib/gtest/config.cache
 /lib/gtest/config.log
+/lib/gtest/config.status
 /lib/gtest/m4/libtool.m4
 /lib/gtest/m4/ltoptions.m4
 /lib/gtest/m4/ltsugar.m4
@@ -285,6 +287,9 @@ lib/cpluff/stamp-h1
 /tools/android/packaging/xbmc/strings.xml
 
 #/tools/depends
+/tools/depends/**/config.cache
+/tools/depends/**/config.log
+/tools/depends/**/config.status
 /tools/depends/native/*/*native/
 /tools/depends/target/*/aarch64-linux-gnu/
 /tools/depends/native/JsonSchemaBuilder/bin/
