@@ -81,7 +81,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   m_count  = 0;
 
   SQuads quads;
-  if(!convert_quad(images, quads))
+  if(!convert_quad(images, quads, width))
     return;
   
   float u, v;
