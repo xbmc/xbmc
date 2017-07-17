@@ -1,2 +1,1 @@
-system/python/*
 project/BuildDependencies/${ARCH}/bin/Python KEEP_DIR_STRUCTURE system
