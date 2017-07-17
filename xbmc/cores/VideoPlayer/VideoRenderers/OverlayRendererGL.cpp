@@ -301,7 +301,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   m_texture = 0;
 
   SQuads quads;
-  if(!convert_quad(images, quads))
+  if(!convert_quad(images, quads, width))
     return;
 
   glGenTextures(1, &m_texture);

@@ -63,7 +63,7 @@ namespace OVERLAY {
   uint32_t* convert_rgba(CDVDOverlaySpu*   o, bool mergealpha
                        , int& min_x, int& max_x
                        , int& min_y, int& max_y);
-  bool      convert_quad(ASS_Image* images, SQuads& quads);
+  bool      convert_quad(ASS_Image* images, SQuads& quads, int max_x);
   int       GetStereoscopicDepth();
 
 }
