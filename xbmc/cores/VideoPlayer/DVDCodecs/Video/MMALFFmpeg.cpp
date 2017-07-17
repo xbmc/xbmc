@@ -189,6 +189,9 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
     int aligned_height = frame->height;
     // ffmpeg requirements
     AlignedSize(dec->m_avctx, aligned_width, aligned_height);
+    // GPU requirements
+    aligned_width = ALIGN_UP(aligned_width, 32);
+    aligned_height = ALIGN_UP(aligned_height, 16);
     pool->Configure(dec->m_fmt, frame->width, frame->height, aligned_width, aligned_height, 0);
   }
   CMMALYUVBuffer *YUVBuffer = dynamic_cast<CMMALYUVBuffer *>(pool->Get());
