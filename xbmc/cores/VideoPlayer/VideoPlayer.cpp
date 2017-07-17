@@ -636,7 +636,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 
   m_dvd.Clear();
   m_State.Clear();
-  m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
   m_errorCount = 0;
@@ -1236,7 +1235,6 @@ void CVideoPlayer::Prepare()
   m_processInfo->SetTempo(1.0);
   m_State.Clear();
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-  m_UpdateApplication = 0;
   m_offset_pts = 0;
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
@@ -1356,8 +1354,6 @@ void CVideoPlayer::Prepare()
     m_clock.Discontinuity(DVD_MSEC_TO_TIME(starttime));
   }
 
-  // make sure application know our info
-  UpdateApplication(0);
   UpdatePlayState(0);
 
   if (m_playerOptions.identify == false)
@@ -1439,7 +1435,6 @@ void CVideoPlayer::Process()
           !m_SelectionStreams.m_Streams.empty())
         OpenDefaultStreams();
 
-      UpdateApplication(0);
       UpdatePlayState(0);
     }
 
@@ -1448,9 +1443,6 @@ void CVideoPlayer::Process()
 
     // update player state
     UpdatePlayState(200);
-
-    // update application with our state
-    UpdateApplication(1000);
 
     // make sure we run subtitle process here
     m_VideoPlayerSubtitle->Process(m_clock.GetClock() + m_State.time_offset - m_VideoPlayerVideo->GetSubtitleDelay(), m_State.time_offset);
@@ -1668,7 +1660,6 @@ bool CVideoPlayer::CheckDelayedChannelEntry(void)
       if (!CServiceBroker::GetPVRManager().PerformChannelSwitch(currentChannel, true))
         return false;
 
-      UpdateApplication(0);
       UpdatePlayState(0);
 
       /* select the new channel */
@@ -2995,8 +2986,6 @@ void CVideoPlayer::HandleMessages()
         {
           if (bShowPreview)
           {
-            UpdateApplication(0);
-
             if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
               m_ChannelEntryTimeOut.SetInfinite();
             else
@@ -5120,25 +5109,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   CSingleLock lock(m_StateSection);
   m_State = state;
-}
-
-void CVideoPlayer::UpdateApplication(double timeout)
-{
-  if(m_UpdateApplication != 0
-  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
-    return;
-
-  CDVDInputStreamPVRManager* pStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-  if(pStream)
-  {
-    CFileItem item(g_application.CurrentFileItem());
-    if(pStream->UpdateItem(item))
-    {
-      g_application.CurrentFileItem() = item;
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
-    }
-  }
-  m_UpdateApplication = m_clock.GetAbsoluteClock();
 }
 
 void CVideoPlayer::SetVolume(float nVolume)

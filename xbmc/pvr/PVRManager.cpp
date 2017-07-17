@@ -915,7 +915,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
-  g_application.SetCurrentFileItem(*m_currentFile);
+  if (!m_isChannelPreview)
+    g_application.SetCurrentFileItem(*m_currentFile);
+  
   g_infoManager.SetCurrentItem(m_currentFile);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
@@ -963,6 +965,51 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   return false;
+}
+
+void CPVRManager::ChannelPreviewUpDown(bool up)
+{
+  CSingleLock lock(m_critSection);
+  CPVRChannelPtr currentChannel(m_currentFile->GetPVRChannelInfoTag());
+  if (currentChannel)
+  {
+    CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
+    if (group)
+    {
+      CFileItemPtr newChannel = up ?
+      group->GetByChannelUp(currentChannel) :
+      group->GetByChannelDown(currentChannel);
+
+      ChannelPreview(newChannel);
+    }
+  }
+}
+
+void CPVRManager::ChannelPreview(const CFileItemPtr item)
+{
+  CSingleLock lock(m_critSection);
+
+  m_currentFile.reset(new CFileItem(*item));
+
+  CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+  if (!channel)
+    return;
+
+  if (IsPlayingChannel(channel))
+    m_isChannelPreview = false;
+  else
+  {
+    m_isChannelPreview = true;
+    g_infoManager.SetCurrentItem(m_currentFile);
+    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+  }
+}
+
+void CPVRManager::ChannelPreviewSelect()
+{
+  CSingleLock lock(m_critSection);
+
+  m_guiActions->SwitchToChannel(m_currentFile, false);
 }
 
 bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview)

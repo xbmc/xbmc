@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 
@@ -55,8 +56,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     // If confirm channel switch is active, channel preview is currently shown
     // and the button that caused this action matches (global) action "Select" (OK)
     // switch to the channel currently displayed within the preview.
-    CFileItem *item = new CFileItem(g_application.CurrentFileItem());
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+    CServiceBroker::GetPVRManager().ChannelPreviewSelect();
     return true;
   }
 

@@ -142,6 +142,9 @@ void CPVRGUIInfo::ToggleShowInfo(void)
 
   if (m_ToggleShowInfo.IsTimePast())
   {
+    // if preview was active an user did not sekect a channel
+    // set current item back to playing channel
+    
     m_ToggleShowInfo.SetInfinite();
 
     /* release our lock while calling into global objects (which have
@@ -151,8 +154,10 @@ void CPVRGUIInfo::ToggleShowInfo(void)
     g_infoManager.SetShowInfo(false);
     CServiceBroker::GetPVRManager().UpdateCurrentChannel();
   }
-  else if (!g_infoManager.GetShowInfo()) // channel infos (no longer) displayed?
+  else if (!CServiceBroker::GetPVRManager().IsChannelPreview())
   {
+    // update current item to playing channel, if preview is not active
+    
     /* release our lock while calling into global objects (which have
        their own locks) to avoid deadlocks */
     lock.Leave();

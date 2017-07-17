@@ -299,6 +299,10 @@ namespace PVR
      */
     bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
 
+    void ChannelPreviewUpDown(bool up);
+
+    void ChannelPreviewSelect();
+
     /*!
      * @brief Close an open PVR stream.
      */
@@ -586,6 +590,8 @@ namespace PVR
      * @return True if the switch was successful, false otherwise.
      */
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
+
+    void ChannelPreview(const CFileItemPtr item);
 
     /*!
      * @brief Continue playback on the last played channel.

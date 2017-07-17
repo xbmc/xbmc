@@ -486,12 +486,9 @@ protected:
   void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
 
-  void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
   void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
-
-  double m_UpdateApplication;
 
   bool m_players_created;
 
