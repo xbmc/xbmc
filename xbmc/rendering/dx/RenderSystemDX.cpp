@@ -47,7 +47,6 @@
 #pragma warning(disable: 4091)
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
-#include <algorithm>
 #include <wrl.h>
 
 #ifndef _M_X64
@@ -297,7 +296,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   if (!m_bRenderCreated)
     return;
 
-  HRESULT hr = S_OK;
+  HRESULT hr;
   BOOL bFullScreen;
   m_pSwapChain->GetFullscreenState(&bFullScreen, nullptr);
 
@@ -440,16 +439,15 @@ void CRenderSystemDX::DeleteDevice()
     m_pSwapChain->SetFullscreenState(false, nullptr);
 
   SAFE_DELETE(m_pGUIShader);
-  SAFE_RELEASE(m_pTextureRight);
-  SAFE_RELEASE(m_pRenderTargetViewRight);
-  SAFE_RELEASE(m_pShaderResourceViewRight);
   SAFE_RELEASE(m_BlendEnableState);
   SAFE_RELEASE(m_BlendDisableState);
   SAFE_RELEASE(m_RSScissorDisable);
   SAFE_RELEASE(m_RSScissorEnable);
   SAFE_RELEASE(m_depthStencilState);
   SAFE_RELEASE(m_depthStencilView);
-  SAFE_RELEASE(m_pRenderTargetView);
+  m_backBufferTex.Release();
+  m_rightEyeTex.Release();
+
   if (m_pContext && m_pContext != m_pImdContext)
   {
     m_pContext->ClearState();
@@ -648,8 +646,8 @@ bool CRenderSystemDX::CreateDevice()
     {
       D3D11_MESSAGE_ID hide[] =
       {
-        D3D11_MESSAGE_ID_GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED,        // avoid GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED (dx bug)
-        D3D11_MESSAGE_ID_DEVICE_RSSETSCISSORRECTS_NEGATIVESCISSOR         // avoid warning for some labels out of screen
+        D3D11_MESSAGE_ID_GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED, // avoid GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED (dx bug)
+        D3D11_MESSAGE_ID_DEVICE_RSSETSCISSORRECTS_NEGATIVESCISSOR  // avoid warning for some labels out of screen
         // Add more message IDs here as needed
       };
 
@@ -716,8 +714,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   HRESULT hr;
   DXGI_SWAP_CHAIN_DESC scDesc = { 0 };
 
-  bool bNeedRecreate = false;
-  bool bNeedResize   = false;
+  bool bNeedResize, bNeedRecreate = false;
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == g_graphicsContext.GetStereoMode();
 
   if (m_pSwapChain)
@@ -732,9 +729,9 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (m_pSwapChain1)
   {
-    DXGI_SWAP_CHAIN_DESC1 scDesc;
-    m_pSwapChain1->GetDesc1(&scDesc);
-    bNeedRecreate = (scDesc.Stereo == TRUE) != bHWStereoEnabled;
+    DXGI_SWAP_CHAIN_DESC1 scDescOld;
+    m_pSwapChain1->GetDesc1(&scDescOld);
+    bNeedRecreate = (scDescOld.Stereo == TRUE) != bHWStereoEnabled;
   }
 
   if (!bNeedRecreate && !bNeedResize)
@@ -746,25 +743,22 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   m_resizeInProgress = true;
   CLog::Log(LOGDEBUG, "%s - (Re)Create window size (%dx%d) dependent resources.", __FUNCTION__, m_nBackBufferWidth, m_nBackBufferHeight);
 
-  bool bRestoreRTView = false;
+  bool bRestoreRTView;
   {
-    ID3D11RenderTargetView* pRTView; ID3D11DepthStencilView* pDSView;
-    m_pContext->OMGetRenderTargets(1, &pRTView, &pDSView);
-
-    bRestoreRTView = (nullptr != pRTView || nullptr != pDSView);
-
+    ID3D11RenderTargetView* pRTView;
+    m_pContext->OMGetRenderTargets(1, &pRTView, nullptr);
+    bRestoreRTView = nullptr != pRTView;
     SAFE_RELEASE(pRTView);
-    SAFE_RELEASE(pDSView);
   }
 
-  m_pContext->OMSetRenderTargets(0, nullptr, nullptr);
+  ID3D11RenderTargetView* views[1] = { nullptr };
+  m_pContext->OMSetRenderTargets(1, views, nullptr);
   FinishCommandList(false);
 
-  SAFE_RELEASE(m_pRenderTargetView);
+  m_backBufferTex.Release();
+  m_rightEyeTex.Release();
+
   SAFE_RELEASE(m_depthStencilView);
-  SAFE_RELEASE(m_pRenderTargetViewRight);
-  SAFE_RELEASE(m_pShaderResourceViewRight);
-  SAFE_RELEASE(m_pTextureRight);
 
   if (bNeedRecreate)
   {
@@ -902,7 +896,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
       }
       // wait a bit and try again
       Sleep(50);
-      hr = m_pSwapChain->ResizeBuffers(scDesc.BufferCount, m_nBackBufferWidth, m_nBackBufferHeight, scDesc.BufferDesc.Format, scFlags);
+      m_pSwapChain->ResizeBuffers(scDesc.BufferCount, m_nBackBufferWidth, m_nBackBufferHeight, scDesc.BufferDesc.Format, scFlags);
     }
   }
 
@@ -914,29 +908,13 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     CLog::Log(LOGERROR, "%s - Failed to get back buffer (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
   }
-
-  // Create a view interface on the rendertarget to use on bind for mono or left eye view.
-  CD3D11_RENDER_TARGET_VIEW_DESC rtDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_UNKNOWN, 0, 0, 1);
-  hr = m_pD3DDev->CreateRenderTargetView(pBackBuffer, &rtDesc, &m_pRenderTargetView);
-  if (FAILED(hr))
+  if (!m_backBufferTex.CreateFromExternal(m_nBackBufferWidth, m_nBackBufferHeight, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM, pBackBuffer))
   {
-    CLog::Log(LOGERROR, "%s - Failed to create render target view (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
-    pBackBuffer->Release();
+    CLog::Log(LOGERROR, "%s - Failed to create render target.", __FUNCTION__);
+    SAFE_RELEASE(pBackBuffer);
     return false;
   }
-
-  if (m_bHWStereoEnabled)
-  {
-    // Stereo swapchains have an arrayed resource, so create a second Render Target for the right eye buffer.
-    CD3D11_RENDER_TARGET_VIEW_DESC rtDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_UNKNOWN, 0, 1, 1);
-    hr = m_pD3DDev->CreateRenderTargetView(pBackBuffer, &rtDesc, &m_pRenderTargetViewRight);
-    if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR, "%s - Failed to create right eye buffer (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
-      g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_OFF); // try fallback to mono
-    }
-  }
-  pBackBuffer->Release();
+  SAFE_RELEASE(pBackBuffer);
 
   DXGI_FORMAT zFormat = DXGI_FORMAT_D16_UNORM;
   if      (IsFormatSupport(DXGI_FORMAT_D32_FLOAT, D3D11_FORMAT_SUPPORT_DEPTH_STENCIL))          zFormat = DXGI_FORMAT_D32_FLOAT;
@@ -980,7 +958,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   CheckInterlacedStereoView();
 
   if (bRestoreRTView)
-    m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+    m_pContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_depthStencilView);
 
   // notify about resurrection of display
   if (m_bResizeRequired)
@@ -992,56 +970,30 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   return true;
 }
 
-void CRenderSystemDX::CheckInterlacedStereoView(void)
+void CRenderSystemDX::CheckInterlacedStereoView()
 {
   RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
 
-  if ( m_pRenderTargetViewRight
+  if ( m_rightEyeTex.Get()
     && RENDER_STEREO_MODE_INTERLACED    != stereoMode
     && RENDER_STEREO_MODE_CHECKERBOARD  != stereoMode
     && RENDER_STEREO_MODE_HARDWAREBASED != stereoMode)
   {
-    // release resources
-    SAFE_RELEASE(m_pRenderTargetViewRight);
-    SAFE_RELEASE(m_pShaderResourceViewRight);
-    SAFE_RELEASE(m_pTextureRight);
+    m_rightEyeTex.Release();
   }
 
-  if ( !m_pRenderTargetViewRight
+  if ( !m_rightEyeTex.Get()
     && ( RENDER_STEREO_MODE_INTERLACED   == stereoMode
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
-    // Create a second Render Target for the right eye buffer
-    HRESULT hr;
-    CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_B8G8R8A8_UNORM, m_nBackBufferWidth, m_nBackBufferHeight, 1, 1,
-                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
-    hr = m_pD3DDev->CreateTexture2D(&texDesc, nullptr, &m_pTextureRight);
-    if (SUCCEEDED(hr))
+    bool created = m_rightEyeTex.Create(m_nBackBufferWidth, m_nBackBufferHeight, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM);
+    if (!created)
     {
-      CD3D11_RENDER_TARGET_VIEW_DESC rtDesc(D3D11_RTV_DIMENSION_TEXTURE2D);
-      hr = m_pD3DDev->CreateRenderTargetView(m_pTextureRight, &rtDesc, &m_pRenderTargetViewRight);
-
-      if (SUCCEEDED(hr))
-      {
-        CD3D11_SHADER_RESOURCE_VIEW_DESC srDesc(D3D11_SRV_DIMENSION_TEXTURE2D);
-        hr = m_pD3DDev->CreateShaderResourceView(m_pTextureRight, &srDesc, &m_pShaderResourceViewRight);
-
-        if (FAILED(hr))
-          CLog::Log(LOGERROR, "%s - Failed to create right view shader resource.", __FUNCTION__);
-      }
-      else
-        CLog::Log(LOGERROR, "%s - Failed to create right view render target.", __FUNCTION__);
-    }
-
-    if (FAILED(hr))
-    {
-      SAFE_RELEASE(m_pShaderResourceViewRight);
-      SAFE_RELEASE(m_pRenderTargetViewRight);
-      SAFE_RELEASE(m_pTextureRight);
-
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
       g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_OFF); // try fallback to mono
     }
+    else
+      Unregister(&m_rightEyeTex); // we will handle its health
   }
 }
 
@@ -1152,13 +1104,13 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
     || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
   {
     // all views prepared, let's merge them before present
-    m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+    m_pContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_depthStencilView);
     CRect destRect = { 0.0f, 0.0f, float(m_nBackBufferWidth), float(m_nBackBufferHeight) };
     SHADER_METHOD method = RENDER_STEREO_MODE_INTERLACED == m_stereoMode
                            ? SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
                            : SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT;
     SetAlphaBlendEnable(true);
-    CD3DTexture::DrawQuad(destRect, 0, 1, &m_pShaderResourceViewRight, nullptr, method);
+    CD3DTexture::DrawQuad(destRect, 0, &m_rightEyeTex, nullptr, method);
     CD3DHelper::PSClearShaderResources(m_pContext);
   }
 
@@ -1199,7 +1151,7 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
 
   // after present swapchain unbinds RT view from immediate context, need to restore it because it can be used by something else
   if (m_pContext == m_pImdContext)
-    m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+    m_pContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_depthStencilView);
 }
 
 void CRenderSystemDX::RequestDecodingTime()
@@ -1249,6 +1201,7 @@ bool CRenderSystemDX::BeginRender()
       CLog::Log(LOGDEBUG, "DXGI_STATUS_OCCLUDED");
     // Status OCCLUDED is not an error and not handled by FAILED macro,
     // but if it occurs we should not render anything, this status will be accounted on present stage
+  default:;
   }
 
   if (FAILED(m_nDeviceStatus))
@@ -1263,7 +1216,7 @@ bool CRenderSystemDX::BeginRender()
     return false;
   }
 
-  m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+  m_pContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_depthStencilView);
   m_inScene = true;
 
   return true;
@@ -1289,7 +1242,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
 
   float fColor[4];
   CD3DHelper::XMStoreColor(fColor, color);
-  ID3D11RenderTargetView* pRTView = m_pRenderTargetView;
+  ID3D11RenderTargetView* pRTView = m_backBufferTex.GetRenderTarget();
 
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
@@ -1307,9 +1260,15 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
       {
         pRTView = nullptr;
       }
-      // for interlaced/checkerboard/hw clear right view
-      else if (m_pRenderTargetViewRight)
-        pRTView = m_pRenderTargetViewRight;
+      // for interlaced/checkerboard clear view for right texture
+      else if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED
+            || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
+      {
+        pRTView = m_rightEyeTex.GetRenderTarget();
+      }
+      // for hw clear right view
+      else if (m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
+        pRTView = m_backBufferTex.GetRenderTarget();
     }
   }
 
@@ -1383,12 +1342,10 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity here.
   m_pGUIShader->SetWorld(XMMatrixIdentity());
 
-  // Initialize the view matrix
-  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
-  // position.
-  XMMATRIX flipY, translate;
-  flipY = XMMatrixScaling(1.0, -1.0f, 1.0f);
-  translate = XMMatrixTranslation(-(w + offset.x - stereoFactor), -(h + offset.y), 2 * h);
+  // Initialize the view matrix camera view.  
+  // Multiply the Y coord by -1 then translate so that everything is relative to the camera position.
+  XMMATRIX flipY = XMMatrixScaling(1.0, -1.0f, 1.0f);
+  XMMATRIX translate = XMMatrixTranslation(-(w + offset.x - stereoFactor), -(h + offset.y), 2 * h);
   m_pGUIShader->SetView(XMMatrixMultiply(translate, flipY));
 
   // projection onto screen space
@@ -1405,81 +1362,15 @@ void CRenderSystemDX::Project(float &x, float &y, float &z)
 
 bool CRenderSystemDX::TestRender()
 {
-  /*
-  static unsigned int lastTime = 0;
-  static float delta = 0;
-
-  unsigned int thisTime = XbmcThreads::SystemClockMillis();
-
-  if(thisTime - lastTime > 10)
-  {
-    lastTime = thisTime;
-    delta++;
-  }
-
-  CLog::Log(LOGINFO, "Delta =  %d", delta);
-
-  if(delta > m_nBackBufferWidth)
-    delta = 0;
-
-  LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
-
-  // A structure for our custom vertex type
-  struct CUSTOMVERTEX
-  {
-    FLOAT x, y, z, rhw; // The transformed position for the vertex
-    DWORD color;        // The vertex color
-  };
-
-  // Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
-
-  // Initialize three vertices for rendering a triangle
-  CUSTOMVERTEX vertices[] =
-  {
-    { delta + 100.0f,  50.0f, 0.5f, 1.0f, 0xffff0000, }, // x, y, z, rhw, color
-    { delta+200.0f, 250.0f, 0.5f, 1.0f, 0xff00ff00, },
-    {  delta, 250.0f, 0.5f, 1.0f, 0xff00ffff, },
-  };
-
-  // Create the vertex buffer. Here we are allocating enough memory
-  // (from the default pool) to hold all our 3 custom vertices. We also
-  // specify the FVF, so the vertex buffer knows what data it contains.
-  if( FAILED( m_pD3DDevice->CreateVertexBuffer( 3 * sizeof( CUSTOMVERTEX ),
-    0, D3DFVF_CUSTOMVERTEX,
-    D3DPOOL_DEFAULT, &pVB, NULL ) ) )
-  {
-    return false;
-  }
-
-  // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required because vertex
-  // buffers may be in device memory.
-  VOID* pVertices;
-  if( FAILED( pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )
-    return false;
-  memcpy( pVertices, vertices, sizeof( vertices ) );
-  pVB->Unlock();
-
-  m_pD3DDevice->SetStreamSource( 0, pVB, 0, sizeof( CUSTOMVERTEX ) );
-  m_pD3DDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-  m_pD3DDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-
-  pVB->Release();
-  */
   return true;
 }
 
 void CRenderSystemDX::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
 {
-  if (!m_bRenderCreated)
-    return;
 }
 
 void CRenderSystemDX::RestoreHardwareTransform()
 {
-  if (!m_bRenderCreated)
-    return;
 }
 
 void CRenderSystemDX::GetViewPort(CRect& viewPort)
@@ -1626,16 +1517,22 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
     else if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       writeMask = D3D11_COLOR_WRITE_ENABLE_BLUE;
   }
-  if ( RENDER_STEREO_MODE_INTERLACED    == m_stereoMode
-    || RENDER_STEREO_MODE_CHECKERBOARD  == m_stereoMode
-    || RENDER_STEREO_MODE_HARDWAREBASED == m_stereoMode)
+
+  if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
   {
-    if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    if ( RENDER_STEREO_MODE_INTERLACED   == m_stereoMode
+      || RENDER_STEREO_MODE_CHECKERBOARD == m_stereoMode)
     {
-      // render right eye view to right render target
-      m_pContext->OMSetRenderTargets(1, &m_pRenderTargetViewRight, m_depthStencilView);
+        m_pContext->OMSetRenderTargets(1, m_rightEyeTex.GetAddressOfRTV(), m_depthStencilView);
+    }
+    else if (RENDER_STEREO_MODE_HARDWAREBASED == m_stereoMode)
+    {
+      m_backBufferTex.SetViewIdx(1);
+      m_pContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_depthStencilView);
     }
   }
+  else
+    m_backBufferTex.SetViewIdx(0);
 
   D3D11_BLEND_DESC desc;
   m_BlendEnableState->GetDesc(&desc);
@@ -1749,7 +1646,6 @@ void CRenderSystemDX::SetAlphaBlendEnable(bool enable)
   if (!m_bRenderCreated)
     return;
 
-  float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
   m_pContext->OMSetBlendState(enable ? m_BlendEnableState : m_BlendDisableState, nullptr, 0xFFFFFFFF);
   m_BlendEnabled = enable;
 }
@@ -1946,7 +1842,7 @@ void CRenderSystemDX::InitHooks()
   UninitHooks();
 
   // enum devices to find matched
-  while (EnumDisplayDevicesW(NULL, adapter, &displayDevice, 0))
+  while (EnumDisplayDevicesW(nullptr, adapter, &displayDevice, 0))
   {
     if (wcscmp(displayDevice.DeviceName, outputDesc.DeviceName) == 0)
     {
@@ -1967,14 +1863,14 @@ void CRenderSystemDX::InitHooks()
     L"UserModeDriverName";
 
   DWORD dwType = REG_MULTI_SZ;
-  HKEY hKey = 0;
+  HKEY hKey = nullptr;
   wchar_t value[1024];
   DWORD valueLength = sizeof(value);
   LSTATUS lstat;
 
   // to void \Registry\Machine at the beginning, we use shifted pointer at 18
   if (ERROR_SUCCESS == (lstat = RegOpenKeyExW(HKEY_LOCAL_MACHINE, displayDevice.DeviceKey + 18, 0, KEY_READ, &hKey))
-   && ERROR_SUCCESS == (lstat = RegQueryValueExW(hKey, keyName, nullptr, &dwType, (LPBYTE)&value, &valueLength)))
+   && ERROR_SUCCESS == (lstat = RegQueryValueExW(hKey, keyName, nullptr, &dwType, reinterpret_cast<LPBYTE>(&value), &valueLength)))
   {
     // 1. registry value has a list of drivers for each API with the following format: dx9\0dx10\0dx11\0dx12\0\0
     // 2. we split the value by \0
@@ -1997,7 +1893,7 @@ void CRenderSystemDX::InitHooks()
       m_hDriverModule = LoadLibraryW(it->c_str());
       if (m_hDriverModule != nullptr)
       {
-        s_fnOpenAdapter10_2 = (PFND3D10DDI_OPENADAPTER)GetProcAddress(m_hDriverModule, "OpenAdapter10_2");
+        s_fnOpenAdapter10_2 = reinterpret_cast<PFND3D10DDI_OPENADAPTER>(GetProcAddress(m_hDriverModule, "OpenAdapter10_2"));
         if (s_fnOpenAdapter10_2 != nullptr)
         {
           ULONG ACLEntries[1] = { 0 };
@@ -2024,11 +1920,11 @@ void CRenderSystemDX::InitHooks()
   if (lstat != ERROR_SUCCESS)
     CLog::Log(LOGDEBUG, __FUNCTION__": error open registry key with error %ld.", lstat);
 
-  if (hKey != 0)
+  if (hKey != nullptr)
     RegCloseKey(hKey);
 }
 
-void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource)
+void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const
 {
   if (pResource && pResource->pPrimaryDesc)
   {
@@ -2037,7 +1933,7 @@ void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE
     {
       uint32_t refreshNum, refreshDen;
       GetRefreshRatio(static_cast<uint32_t>(m_refreshRate), &refreshNum, &refreshDen);
-      float diff = fabs(refreshRate - ((float)refreshNum / (float)refreshDen)) / refreshRate;
+      float diff = fabs(refreshRate - (static_cast<float>(refreshNum) / static_cast<float>(refreshDen))) / refreshRate;
       CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s",
                 refreshRate, m_refreshRate, diff, (diff > 0.0005) ? "true" : "false");
       if (diff > 0.0005)
@@ -2048,6 +1944,14 @@ void CRenderSystemDX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE
       }
     }
   }
+}
+
+CD3DTexture* CRenderSystemDX::GetBackBuffer()
+{
+  if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())
+    return &m_rightEyeTex;
+
+  return &m_backBufferTex;
 }
 
 void CRenderSystemDX::GetRefreshRatio(uint32_t refresh, uint32_t * num, uint32_t * den)

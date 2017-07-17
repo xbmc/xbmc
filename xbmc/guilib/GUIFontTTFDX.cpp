@@ -91,8 +91,7 @@ void CGUIFontTTFDX::LastEnd()
 
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
   // Set font texture as shader resource
-  ID3D11ShaderResourceView* resources[] = { m_speedupTexture->GetShaderResource() };
-  pGUIShader->SetShaderViews(1, resources);
+  pGUIShader->SetShaderViews(1, m_speedupTexture->GetAddressOfSRV());
   // Enable alpha blend
   g_Windowing.SetAlphaBlendEnable(true);
   // Set our static index buffer

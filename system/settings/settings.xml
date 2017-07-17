@@ -2206,13 +2206,23 @@
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>8</default>
           <constraints>
@@ -2226,13 +2236,23 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="videoscreen.cmsenabled" type="boolean" label="36560" help="36561">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.cmsmode" type="integer" label="36562" help="36563">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>0</default>
           <constraints>
@@ -2245,9 +2265,10 @@
         </setting>
         <setting id="videoscreen.cms3dlut" type="string" label="36564" help="36565">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
-            </and>
+              <condition>HAS_DX</condition>
+            </or>
           </requirement>
           <level>3</level>
           <default></default>
@@ -2262,8 +2283,11 @@
         </setting>
         <setting id="videoscreen.displayprofile" type="string" label="36566" help="36567">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2280,8 +2304,11 @@
         </setting>
         <setting id="videoscreen.cmswhitepoint" type="integer" label="36568" help="36569">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2298,8 +2325,11 @@
         </setting>
         <setting id="videoscreen.cmsprimaries" type="integer" label="36570" help="36571">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2316,8 +2346,11 @@
         </setting>
         <setting id="videoscreen.cmsgammamode" type="integer" label="36572" help="36573">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2334,8 +2367,11 @@
         </setting>
         <setting id="videoscreen.cmsgamma" type="integer" label="36574" help="36575">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2354,7 +2390,12 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="videoscreen.cmslutsize" type="integer" label="36576" help="36577">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>6</default>
           <constraints>

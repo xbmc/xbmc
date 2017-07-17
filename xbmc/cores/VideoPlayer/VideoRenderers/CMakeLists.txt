@@ -23,8 +23,10 @@ set(HEADERS BaseRenderer.h
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES WinRenderer.cpp
+                      WinRenderBuffer.cpp
                       OverlayRendererDX.cpp)
   list(APPEND HEADERS WinRenderer.h
+                      WinRenderBuffer.h
                       OverlayRendererDX.h)
 endif()
 

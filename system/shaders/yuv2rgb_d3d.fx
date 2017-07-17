@@ -18,6 +18,8 @@
  *
  */
 
+#include "output_d3d.fx"
+
 texture2D  g_Texture[3];
 float4x4   g_ColorMatrix;
 float2     g_StepXY;
@@ -123,7 +125,7 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
     float4 YUV    = float4(outY, outUV, 1.0);
 #endif
 
-  return mul(YUV, g_ColorMatrix);
+  return output4(mul(YUV, g_ColorMatrix), In.TextureY);
 }
 
 technique11 YUV2RGB_T

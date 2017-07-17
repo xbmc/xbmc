@@ -42,7 +42,7 @@ class CRenderCaptureBase
 {
   public:
     CRenderCaptureBase();
-    ~CRenderCaptureBase();
+    virtual ~CRenderCaptureBase();
 
     /* \brief Called by the rendermanager to set the state, should not be called by anything else */
     void SetState(ECAPTURESTATE state) { m_state = state; }
@@ -204,26 +204,26 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
     CRenderCaptureDX();
     ~CRenderCaptureDX();
 
-    int  GetCaptureFormat();
+    int GetCaptureFormat();
 
     void BeginRender();
     void EndRender();
     void ReadOut();
-    
-    virtual void OnDestroyDevice(bool fatal);
-    virtual void OnLostDevice();
-    virtual void OnCreateDevice() {};
+
+    void OnDestroyDevice(bool fatal) override;
+    void OnLostDevice() override;
+    void OnCreateDevice() override {};
+    CD3DTexture* GetTarget() { return &m_renderTex; }
 
   private:
     void SurfaceToBuffer();
     void CleanupDX();
 
-    ID3D11Texture2D*        m_renderTexture;
-    ID3D11RenderTargetView* m_renderSurface;
-    ID3D11Texture2D*        m_copySurface;
-    ID3D11Query*            m_query;
-    unsigned int            m_surfaceWidth;
-    unsigned int            m_surfaceHeight;
+    unsigned int m_surfaceWidth;
+    unsigned int m_surfaceHeight;
+    ID3D11Query* m_query;
+    CD3DTexture m_renderTex;
+    CD3DTexture m_copyTex;
 };
 
 class CRenderCapture : public CRenderCaptureDX

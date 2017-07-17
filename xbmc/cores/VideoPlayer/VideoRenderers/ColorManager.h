@@ -26,6 +26,13 @@
 
 #include <string>
 
+enum CMS_DATA_FORMAT
+{
+  CMS_DATA_FMT_RGB,
+  CMS_DATA_FMT_RGBA,
+  CMS_DATA_FMT_COUNT
+};
+
 enum CMS_MODE
 {
   CMS_MODE_3DLUT,
@@ -48,6 +55,7 @@ enum CMS_PRIMARIES
   CMS_PRIMARIES_BT470M,   // old NTSC (1953)
   CMS_PRIMARIES_BT470BG,  // old PAL/SECAM (1975)
   CMS_PRIMARIES_240M,     // old HDTV (1988)
+  CMS_PRIMARIES_BT2020,   // UHDTV
   CMS_PRIMARIES_COUNT
 };
 
@@ -70,17 +78,24 @@ public:
    \brief Check if user has requested color management
    \return true on enabled, false otherwise
    */
-  bool IsEnabled();
+  bool IsEnabled() const;
+
+  /*!
+   \brief Check if configuration of color management is valid
+   \return true on valid, false otherwise
+   */
+  bool IsValid() const;
 
   /*!
    \brief Get a 3D LUT for video color correction
    \param primaries video primaries (see CONF_FLAGS_COLPRI)
    \param cmsToken pointer to a color manager configuration token
-   \param clutSize pointer to CLUT resolution
-   \param clutData pointer to CLUT data (caller to free memory afterwards)
+   \param format of CLUT data
+   \param clutSize CLUT resolution
+   \param clutData pointer to CLUT data
    \return true on success, false otherwise
    */
-  bool GetVideo3dLut(int primaries, int *cmsToken, int *clutSize, uint16_t **clutData);
+  bool GetVideo3dLut(int primaries, int *cmsToken, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
 
   /*!
    \brief Check if a 3D LUT is still valid
@@ -90,20 +105,31 @@ public:
    */
   bool CheckConfiguration(int cmsToken, int flags);
 
+  /*!
+  \brief Get a 3D LUT dimention and data size for video color correction
+  \param format required format of CLUT data
+  \param clutSize pointer to CLUT resolution
+  \param dataSize pointer to CLUT data size
+  \return true on success, false otherwise
+  */
+  static bool Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dataSize);
+
 private:
   /*! \brief Check .3dlut file validity
    \param filename full path and filename
+   \param clutSize pointer to CLUT resolution
    \return true if the file can be loaded, false otherwise
    */
-  bool Probe3dLut(const std::string filename);
+  static bool Probe3dLut(const std::string filename, int *clutSize);
 
   /*! \brief Load a .3dlut file
    \param filename full path and filename
-   \param clutSize pointer to CLUT resolution
+   \param format of CLUT data
+   \param clutSize CLUT resolution
    \param clutData pointer to CLUT data
    \return true on success, false otherwise
    */
-  bool Load3dLut(const std::string filename, uint16_t **clutData, int *clutSize);
+  static bool Load3dLut(const std::string filename, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
 
 
 #if defined(HAVE_LCMS2)
@@ -135,10 +161,11 @@ private:
   /* \brief Create 3D LUT
    Samples a cmsHTRANSFORM object to create a 3D LUT of specified resolution
    \param transform cmsHTRANSFORM object to sample
+   \param format of CLUT data
    \param resolution size of the 3D LUT to create
    \param clut pointer to LUT data
    */
-  void Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize);
+  void Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
 
   // keep current display profile loaded here
   cmsHPROFILE m_hProfile;

@@ -29,16 +29,19 @@ namespace RenderManager {
   {
     switch(color_matrix)
     {
-      case 7: // SMPTE 240M (1987)
+      case 10: // BT2020_CL
+      case  9: // BT2020_NCL
+        return CONF_FLAGS_YUVCOEF_BT2020;
+      case  7: // SMPTE 240M (1987)
         return CONF_FLAGS_YUVCOEF_240M;
-      case 6: // SMPTE 170M
-      case 5: // ITU-R BT.470-2
-      case 4: // FCC
+      case  6: // SMPTE 170M
+      case  5: // ITU-R BT.470-2
+      case  4: // FCC
         return CONF_FLAGS_YUVCOEF_BT601;
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
+      case  1: // ITU-R Rec.709 (1990) -- BT.709
         return CONF_FLAGS_YUVCOEF_BT709;
-      case 3: // RESERVED
-      case 2: // UNSPECIFIED
+      case  3: // RESERVED
+      case  2: // UNSPECIFIED
       default:
         if(width > 1024 || height >= 600)
           return CONF_FLAGS_YUVCOEF_BT709;
@@ -68,6 +71,7 @@ namespace RenderManager {
       case 5: return CONF_FLAGS_COLPRI_BT470BG;
       case 6: return CONF_FLAGS_COLPRI_170M;
       case 7: return CONF_FLAGS_COLPRI_240M;
+      case 9: return CONF_FLAGS_COLPRI_BT2020;
     }
     return 0;
   }

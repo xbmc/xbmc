@@ -817,6 +817,7 @@ void CDisplaySettings::SettingOptionsCmsPrimariesFiller(SettingConstPtr setting,
 {
   list.push_back(std::make_pair(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO));
   list.push_back(std::make_pair(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36579), CMS_PRIMARIES_BT2020));
   list.push_back(std::make_pair(g_localizeStrings.Get(36590), CMS_PRIMARIES_170M));
   list.push_back(std::make_pair(g_localizeStrings.Get(36591), CMS_PRIMARIES_BT470M));
   list.push_back(std::make_pair(g_localizeStrings.Get(36592), CMS_PRIMARIES_BT470BG));

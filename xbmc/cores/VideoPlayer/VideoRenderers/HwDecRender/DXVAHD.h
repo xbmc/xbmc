@@ -25,6 +25,8 @@
 #include "guilib/D3DResource.h"
 #include "guilib/Geometry.h"
 
+class CRenderBuffer;
+
 namespace DXVA {
 
 // ProcAmp filters d3d11 filters
@@ -34,13 +36,6 @@ const D3D11_VIDEO_PROCESSOR_FILTER PROCAMP_FILTERS[] =
   D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
   D3D11_VIDEO_PROCESSOR_FILTER_HUE,
   D3D11_VIDEO_PROCESSOR_FILTER_SATURATION
-};
-
-enum PROCESSOR_VIEW_TYPE
-{
-  PROCESSOR_VIEW_TYPE_UNKNOWN = 0,
-  PROCESSOR_VIEW_TYPE_DECODER = 1,
-  PROCESSOR_VIEW_TYPE_PROCESSOR = 2
 };
 
 const DWORD NUM_FILTERS = ARRAYSIZE(PROCAMP_FILTERS);
@@ -53,11 +48,10 @@ public:
 
   bool PreInit();
   void UnInit();
-  bool Open(UINT width, UINT height, unsigned int flags, AVPixelFormat format, DXGI_FORMAT dxva_format);
+  bool Open(UINT width, UINT height);
   void Close();
-  CRenderPicture *Convert(const VideoPicture &picture) const;
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
-  uint8_t Size() const { if (m_pVideoProcessor) return m_size; return 0; }
+  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation);
+  uint8_t Size() const { return m_pVideoProcessor ? m_size : 0; }
   uint8_t PastRefs() const { return m_max_back_refs; }
 
   // ID3DResource overrides
@@ -69,41 +63,33 @@ public:
 protected:
   bool ReInit();
   bool InitProcessor();
-  bool ConfigureProcessor(AVPixelFormat format, DXGI_FORMAT dxva_format);
+  bool CheckFormats() const;
   bool OpenProcessor();
-  bool CreateSurfaces();
   bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view) const;
+  ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+
+  CCriticalSection m_section;
 
   uint32_t m_width;
   uint32_t m_height;
-  uint32_t m_flags = 0;
-  AVPixelFormat m_renderFormat = AV_PIX_FMT_NONE;
-  uint8_t  m_size = 0;
-  uint8_t  m_max_back_refs = 0;
-  uint8_t  m_max_fwd_refs = 0;
+  uint8_t  m_size;
+  uint8_t  m_max_back_refs;
+  uint8_t  m_max_fwd_refs;
+  uint32_t m_procIndex;
+  D3D11_VIDEO_PROCESSOR_CAPS m_vcaps;
+  D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
 
   struct ProcAmpInfo
   {
     bool bSupported;
-    D3D11_VIDEO_PROCESSOR_FILTER_RANGE  Range;
+    D3D11_VIDEO_PROCESSOR_FILTER_RANGE Range;
   };
   ProcAmpInfo m_Filters[NUM_FILTERS];
-
-  DXGI_FORMAT m_textureFormat;
   ID3D11VideoDevice *m_pVideoDevice;
   ID3D11VideoContext *m_pVideoContext;
   ID3D11VideoProcessorEnumerator *m_pEnumerator;
-  D3D11_VIDEO_PROCESSOR_CAPS m_vcaps;
   ID3D11VideoProcessor *m_pVideoProcessor;
-  CSurfaceContext *m_context;
-  CCriticalSection m_section;
-
-  uint32_t m_procIndex = 0;
-  D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
-  D3D11_TEXTURE2D_DESC m_texDesc;
-  PROCESSOR_VIEW_TYPE m_eViewType;
 };
 
 };
