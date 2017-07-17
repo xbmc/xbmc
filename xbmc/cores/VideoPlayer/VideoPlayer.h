@@ -479,7 +479,6 @@ protected:
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream);
-  bool CheckDelayedChannelEntry(void);
 
   bool OpenInputStream();
   bool OpenDemuxStream();
@@ -500,7 +499,6 @@ protected:
   ECacheState  m_caching;
   XbmcThreads::EndTime m_cachingTimer;
 
-  XbmcThreads::EndTime m_ChannelEntryTimeOut;
   std::unique_ptr<CProcessInfo> m_processInfo;
 
   CCurrentStream m_CurrentAudio;

@@ -59,13 +59,6 @@ public:
     PLAYER_SETSPEED,                // set the playback speed
     PLAYER_REQUEST_STATE,
     PLAYER_OPENFILE,
-
-    PLAYER_CHANNEL_NEXT,            // switches to next playback channel
-    PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    PLAYER_CHANNEL_PREVIEW_NEXT,    // switches to next channel preview (does not switch the channel)
-    PLAYER_CHANNEL_PREVIEW_PREV,    // switches to previous channel preview (does not switch the channel)
-    PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
-    PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
     PLAYER_AVCHANGE,                // signal a change in audio or video parameters
     PLAYER_ABORT,

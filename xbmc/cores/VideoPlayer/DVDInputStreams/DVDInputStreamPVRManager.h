@@ -58,10 +58,6 @@ public:
   bool IsRealtime() override;
 
   bool IsOtherStreamHack(void);
-  bool SelectChannelByNumber(unsigned int iChannel);
-  bool SelectChannel(const PVR::CPVRChannelPtr &channel);
-  bool NextChannel(bool preview = false);
-  bool PrevChannel(bool preview = false);
   PVR::CPVRChannelPtr GetSelectedChannel();
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
