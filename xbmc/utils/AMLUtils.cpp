@@ -327,6 +327,51 @@ bool aml_IsHdmiConnected()
   return 0;
 }
 
+void aml_handle_display_stereo_mode(RENDER_STEREO_MODE stereo_mode)
+{
+  static std::string lastHdmiTxConfig = "3doff";
+  
+  std::string command = "3doff";
+  CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode switching 3d modes");
+  switch (stereo_mode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      command = "3dlr";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      command = "3dtb";
+      break;
+    default:
+      // nothing - command is already initialised to "3doff"
+      break;
+  }
+  
+  CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode old mode %s new mode %s", lastHdmiTxConfig.c_str(), command.c_str());
+  // there is no way to read back current mode from sysfs
+  // so we track state internal. Because even
+  // when setting the same mode again - kernel driver
+  // will initiate a new hdmi handshake which is not
+  // what we want of course.
+  // for 3d mode we are called 2 times and need to allow both calls
+  // to succeed. Because the first call doesn't switch mode (i guessi its
+  // timing issue between switching the refreshrate and switching to 3d mode
+  // which needs to occure in the correct order, else switching refresh rate
+  // might reset 3dmode).
+  // So we set the 3d mode - if the last command is different from the current
+  // command - or in case they are the same - we ensure that its not the 3doff
+  // command that gets repeated here.
+  if (lastHdmiTxConfig != command || command != "3doff")
+  {
+    CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode setting new mode");
+    lastHdmiTxConfig = command;
+    SysfsUtils::SetString("/sys/class/amhdmitx/amhdmitx0/config", command);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode - no change needed");
+  }
+}
+
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 {
   if (!res)
