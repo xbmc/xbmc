@@ -84,7 +84,6 @@
 #include "utils/SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
-#include "input/InputManager.h"
 #include "ServiceBroker.h"
 #include "DiscSettings.h"
 
@@ -821,7 +820,6 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetInputManager());
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
@@ -978,10 +976,6 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetInputManager(), settingSet);
-
-  settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVER);
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPORT);
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME);
@@ -1080,7 +1074,6 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetInputManager());
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
