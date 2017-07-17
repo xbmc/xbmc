@@ -61,7 +61,6 @@
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
-#include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRSettings.h"
@@ -831,7 +830,6 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_weatherManager);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
@@ -1027,14 +1025,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_WEATHER_ADDONSETTINGS);
   GetSettingsManager()->RegisterCallback(&g_weatherManager, settingSet);
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALLIBRARIES);
-  settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
-  settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
-  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetPeripherals(), settingSet);
-
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
@@ -1100,7 +1090,6 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_weatherManager);
-GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
