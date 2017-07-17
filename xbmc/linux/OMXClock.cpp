@@ -18,12 +18,6 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
-#include "system.h"
-#endif
-
-#if defined(HAVE_OMXLIB)
-
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "settings/Settings.h"
@@ -587,5 +581,3 @@ int64_t OMXClock::CurrentHostFrequency(void)
 {
   return( (int64_t)1000000000L );
 }
-
-#endif

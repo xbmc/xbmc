@@ -19,7 +19,6 @@
  */
 
 #include "RBP.h"
-#if defined(TARGET_RASPBERRY_PI)
 
 #include <assert.h>
 #include "ServiceBroker.h"
@@ -473,4 +472,3 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
   }
   return geo;
 }
-#endif

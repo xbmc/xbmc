@@ -10,7 +10,10 @@ if(OS STREQUAL linux)
   set(CMAKE_SYSTEM_NAME Linux)
   set(CORE_SYSTEM_NAME linux)
   if(PLATFORM STREQUAL raspberry-pi)
-    set(CORE_SYSTEM_NAME rbpi)
+    set(CORE_PLATFORM_NAME rbpi)
+    # wrapping libdvd fails with gold on rbpi
+    # todo: revisit after toolchain bump
+    set(ENABLE_LDGOLD OFF CACHE BOOL "Disabling Gnu Gold Linker" FORCE)
   endif()
 elseif(OS STREQUAL android)
   set(CMAKE_SYSTEM_NAME Android)
@@ -68,7 +71,7 @@ if(NOT "@use_sdk_path@" STREQUAL "")
 endif()
 
 # add RBPI's firmware directories
-if(CORE_SYSTEM_NAME STREQUAL rbpi)
+if(CORE_PLATFORM_NAME STREQUAL rbpi)
   list(APPEND CMAKE_FIND_ROOT_PATH @use_firmware@/opt/vc)
   list(APPEND CMAKE_LIBRARY_PATH @use_firmware@/opt/vc/lib)
   list(APPEND CMAKE_INCLUDE_PATH @use_firmware@/opt/vc/include)
@@ -107,3 +110,4 @@ if(NOT CORE_SYSTEM_NAME STREQUAL linux)
 endif()
 
 set(KODI_DEPENDSBUILD 1)
+

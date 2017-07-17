@@ -1,5 +1,4 @@
 xbmc/linux                 linuxsupport
-xbmc/linux/sse4            sse4
 xbmc/input/linux           input/linux
 xbmc/input/touch           input/touch
 xbmc/input/touch/generic   input/touch/generic
@@ -11,3 +10,4 @@ xbmc/filesystem/posix      filesystem/posix
 xbmc/utils/posix           utils_posix
 xbmc/windowing/egl         windowing/egl
 xbmc/platform/posix        posix
+xbmc/cores/VideoPlayer/Process/rbpi cores/VideoPlayer/Process/rbpi

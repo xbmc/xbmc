@@ -22,8 +22,6 @@
 
 #include "TextureGL.h"
 
-#if defined(HAS_OMXPLAYER)
-
 #include "system_gl.h"
 
 /************************************************************************/
@@ -45,5 +43,3 @@ protected:
 private:
   void *m_egl_image;
 };
-
-#endif

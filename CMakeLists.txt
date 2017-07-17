@@ -24,6 +24,7 @@ endif()
 include(cmake/modules/extra/ECMEnableSanitizers.cmake)
 include(cmake/scripts/common/GeneratorSetup.cmake)
 include(cmake/scripts/common/AddOptions.cmake)
+include(cmake/scripts/common/Platform.cmake)
 include(cmake/scripts/common/ArchSetup.cmake)
 include(cmake/scripts/common/Macros.cmake)
 include(cmake/scripts/common/ProjectMacros.cmake)
@@ -56,7 +57,7 @@ if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
   option(WITH_CPU               "build with given cpu" OFF)
 endif()
-if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL rbpi)
+if(CORE_SYSTEM_NAME STREQUAL linux)
   option(ENABLE_LIRC            "Enable LIRC support?" ON)
   option(ENABLE_EVENTCLIENTS    "Enable event clients support?" OFF)
 endif()
@@ -93,32 +94,6 @@ endif()
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
-# Platform
-if(CORE_SYSTEM_NAME STREQUAL linux)
-  # Set default CORE_PLATFORM_NAME to X11
-  # This is overridden by user setting -DCORE_PLATFORM_NAME=<platform>
-  set(_DEFAULT_PLATFORM X11)
-else()
-  string(TOLOWER ${CORE_SYSTEM_NAME} _DEFAULT_PLATFORM)
-endif()
-
-set(CORE_PLATFORM_NAME ${_DEFAULT_PLATFORM} CACHE STRING "Platform port to build")
-#
-# Note: please do not use CORE_PLATFORM_NAME in any checks,
-# use the normalized to lower case CORE_PLATFORM_NAME_LC (see below) instead
-#
-unset(_DEFAULT_PLATFORM)
-string(TOLOWER ${CORE_PLATFORM_NAME} CORE_PLATFORM_NAME_LC)
-
-list(APPEND final_message "Platform: ${CORE_PLATFORM_NAME}")
-if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
-  include(${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
-else()
-  file(GLOB _platformnames RELATIVE ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/
-                                    ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/*.cmake)
-  string(REPLACE ".cmake" " " _platformnames ${_platformnames})
-  message(FATAL_ERROR "invalid CORE_PLATFORM_NAME: ${CORE_PLATFORM_NAME_LC}\nValid platforms: ${_platformnames}")
-endif()
 
 foreach(dep ${PLATFORM_REQUIRED_DEPS})
   # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the

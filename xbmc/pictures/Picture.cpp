@@ -33,7 +33,7 @@
 #include "guilib/Texture.h"
 #include "guilib/imagefactory.h"
 #include "cores/FFmpeg.h"
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
@@ -73,7 +73,7 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", CURL::GetRedacted(thumbFile).c_str(), width, height);
   if (URIUtils::HasExtension(thumbFile, ".jpg"))
   {
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
     if (COMXImage::CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
       return true;
 #endif

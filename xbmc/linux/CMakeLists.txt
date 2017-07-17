@@ -2,20 +2,17 @@ set(SOURCES ConvUtils.cpp
             LinuxResourceCounter.cpp
             LinuxTimezone.cpp
             PosixMountProvider.cpp
-            RBP.cpp
             XFileUtils.cpp
             XHandle.cpp
             XMemUtils.cpp
             XTimeUtils.cpp)
 
 set(HEADERS ConvUtils.h
-            DllBCM.h
             LinuxResourceCounter.h
             LinuxTimezone.h
             PlatformDefs.h
             PlatformInclude.h
             PosixMountProvider.h
-            RBP.h
             stat_utf8.h
             stdio_utf8.h
             XFileUtils.h
@@ -38,12 +35,19 @@ if(DBUS_FOUND)
                       DBusUtil.h)
 endif()
 
-if(OMXLIB_FOUND)
-  list(APPEND SOURCES OMXClock.cpp
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+  list(APPEND SOURCES RBP.cpp
+                      OMXClock.cpp
                       OMXCore.cpp)
-  list(APPEND HEADERS DllOMX.h
+  list(APPEND HEADERS RBP.h
+                      DllBCM.h
+                      DllOMX.h
                       OMXClock.h
                       OMXCore.h)
+endif()
+
+if(HAVE_SSE4_1)
+  add_subdirectory(sse4)
 endif()
 
 if(IMX_FOUND)

@@ -1,1 +1,0 @@
-xbmc/cores/omxplayer              cores/omxplayer

@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAVE_OMXLIB)
-
 #ifndef __GNUC__
 #pragma warning(push)
 #pragma warning(disable:4244)
@@ -113,6 +111,4 @@ public:
     return DllDynamic::Load();
   }
 };
-#endif
-
 #endif

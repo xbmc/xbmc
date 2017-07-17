@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAVE_OMXLIB)
-
 #include "OMXCore.h"
 #include "DVDStreamInfo.h"
 
@@ -116,5 +114,3 @@ protected:
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);
   CCriticalSection m_critSection;
 };
-
-#endif

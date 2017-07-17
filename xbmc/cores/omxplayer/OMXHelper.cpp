@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_OMXPLAYER
-
 #include "VideoPlayer.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
@@ -201,5 +199,3 @@ bool OMXStillPlaying(bool waitVideo, bool waitAudio, bool eosVideo, bool eosAudi
     return true;
   return false;
 }
-
-#endif

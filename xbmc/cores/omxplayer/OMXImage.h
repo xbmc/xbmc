@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAVE_OMXLIB)
-
 #include "OMXCore.h"
 
 #include <IL/OMX_Video.h>
@@ -204,4 +202,3 @@ protected:
 };
 
 extern COMXImage g_OMXImage;
-#endif

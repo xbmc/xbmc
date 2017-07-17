@@ -18,10 +18,6 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
-#include "system.h"
-#endif
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>

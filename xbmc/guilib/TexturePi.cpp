@@ -26,7 +26,6 @@
 #include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
 
-#if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 
 /************************************************************************/
@@ -151,5 +150,3 @@ bool CPiTexture::LoadFromFileInternal(const std::string& texturePath, unsigned i
   }
   return CGLTexture::LoadFromFileInternal(texturePath, maxWidth, maxHeight, requirePixels);
 }
-
-#endif

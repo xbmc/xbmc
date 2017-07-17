@@ -54,9 +54,6 @@ endmacro()
 
 # -------- Main script --------- 
 message(STATUS "System type: ${CMAKE_SYSTEM_NAME}")
-if(NOT CORE_SYSTEM_NAME)
-  string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
-endif()
 
 if(WITH_CPU)
   set(CPU ${WITH_CPU})

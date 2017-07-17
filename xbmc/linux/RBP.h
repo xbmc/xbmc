@@ -33,7 +33,6 @@
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
-#if defined(TARGET_RASPBERRY_PI)
 #include "DllBCM.h"
 #include "OMXCore.h"
 #include "xbmc/utils/CPUInfo.h"
@@ -117,4 +116,3 @@ private:
 };
 
 extern CRBP g_RBP;
-#endif

@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(TARGET_RASPBERRY_PI)
-
 #ifndef __GNUC__
 #pragma warning(push)
 #pragma warning(disable:4244)
@@ -267,6 +265,4 @@ public:
     return DllDynamic::Load();
   }
 };
-#endif
-
 #endif
