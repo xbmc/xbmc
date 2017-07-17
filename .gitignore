@@ -18,9 +18,6 @@ testMain
 .vscode/
 
 # generated files etc
-config.cache
-config.status
-config.log
 .last_success_revision
 *.d
 *.depend
@@ -89,32 +86,11 @@ cmake_install.cmake
 /nbproject
 
 # /
-/.dummy
-/.dummy.in
-/Makefile
-/Makefile.include
-/aclocal.m4
-/autom4te.cache/
-/build-aux/compile
-/build-aux/config.guess
-/build-aux/config.sub
-/build-aux/install-sh
-/build-aux/ltmain.sh
-/build-aux/missing
-/build-aux/ltmain.sh
-/autotools
-/BUILD/
-
 /kodi.log
 /kodi.old.log
-/Makefile.depend
-/config.status
-/configure
 /kodi.bin
 /kodi-test
 /kodi-xrandr
-/git_revision.h
-/libtool
 /*.patch
 /kodi-build/
 /gtestresults.xml
@@ -157,6 +133,8 @@ cmake_install.cmake
 /lib/cpluff/config.h.in
 /lib/cpluff/config.h.in~
 /lib/cpluff/configure
+/lib/cpluff/config.log
+/lib/cpluff/config.status
 /lib/cpluff/Makefile.in
 /lib/cpluff/*/Makefile.in
 /lib/cpluff/*/*/Makefile.in
@@ -191,6 +169,8 @@ lib/cpluff/stamp-h1
 /lib/gtest/build-aux/ltmain.sh
 /lib/gtest/build-aux/missing
 /lib/gtest/configure
+/lib/gtest/config.status
+/lib/gtest/config.log
 /lib/gtest/m4/libtool.m4
 /lib/gtest/m4/ltoptions.m4
 /lib/gtest/m4/ltsugar.m4
@@ -366,59 +346,15 @@ lib/cpluff/stamp-h1
 /userdata/guisettings.xml
 
 # /xbmc/
-/xbmc/.GitRevision
-/xbmc/config.h
-/xbmc/config.h.in
-/xbmc/config.h.in~
 /xbmc/CompileInfo.cpp
 /xbmc/DllPaths_generated.h
 /xbmc/DllPaths_generated_android.h
-/xbmc/Makefile
-/xbmc/stamp-h1
-
-# /xbmc/addons/
-/xbmc/addons/Makefile
-/xbmc/addons/interfaces/Makefile
-
-# /xbmc/platform/android
-/xbmc/platform/android/Makefile
-/xbmc/platform/android/activity/Makefile
-/xbmc/platform/android/loader/Makefile
-/xbmc/platform/android/jni/Makefile
-
-# /xbmc/cdrip/
-/xbmc/cdrip/Makefile
 
 # /xbmc/cores/
-/xbmc/cores/AudioEngine/Makefile
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
-/xbmc/cores/DllLoader/Makefile
-/xbmc/cores/DllLoader/exports/Makefile
-/xbmc/cores/VideoPlayer/Makefile
-/xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile
-/xbmc/cores/VideoPlayer/DVDCodecs/Makefile
-/xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile
-/xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
-/xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
-/xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
-/xbmc/cores/VideoPlayer/Process/Makefile
-/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile
-/xbmc/cores/omxplayer/Makefile
-/xbmc/cores/paplayer/Makefile
-/xbmc/cores/playercorefactory/Makefile
-/xbmc/cores/Makefile
-/xbmc/cores/VideoPlayer/VideoRenderers/Makefile
-/xbmc/cores/RetroPlayer/Makefile
-
-# /xbmc/filesystem/
-/xbmc/filesystem/Makefile
-
-# /xbmc/freebsd/
-/xbmc/freebsd/Makefile
 
 # /xbmc/guilib/
-/xbmc/guilib/Makefile
 /xbmc/guilib/*.obj
 /xbmc/guilib/*.idb
 /xbmc/guilib/*.pdb
@@ -431,59 +367,20 @@ lib/cpluff/stamp-h1
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
-# /xbmc/input
-/xbmc/input/linux/Makefile
-
 # /xbmc/interfaces/
-/xbmc/interfaces/Makefile
-/xbmc/interfaces/builtins/Makefile
 /xbmc/interfaces/json-rpc/ServiceDescription.h
-/xbmc/interfaces/python/Makefile
 /xbmc/interfaces/python/generated/
-/xbmc/interfaces/python/test/Makefile
-
-# /xbmc/linux/
-/xbmc/linux/Makefile
-/xbmc/linux/sse4/Makefile
-
-# /xbmc/platform/posix
-/xbmc/platform/posix/Makefile
-
-# /xbmc/platform
-/xbmc/platform/Makefile
-
-# /xbmc/messaging/
-/xbmc/messaging/Makefile
-/xbmc/messaging/helpers/Makefile
-
-# /xbmc/network/
-/xbmc/network/Makefile
-/xbmc/network/httprequesthandler/python/Makefile
-/xbmc/network/upnp/Makefile
 
 # /xbmc/platform/darwin/osx/
 /xbmc/platform/darwin/osx/Info.plist
-/xbmc/platform/darwin/osx/Makefile
 
 # /xbmc/platform/darwin/ios/
 /xbmc/platform/darwin/osx/ios/IOS-Info.plist
-
-# /xbmc/peripherals/
-/xbmc/peripherals/addons/Makefile
-/xbmc/peripherals/bus/Makefile
-/xbmc/peripherals/devices/Makefile
-
-#/xbmc/utils
-/xbmc/utils/Makefile
 
 #/xbmc/platform/win32/
 /xbmc/platform/win32/XBMC_PC.rc
 # no longer used
 /xbmc/platform/win32/git_rev.h
-
-# /xbmc/windowing/
-/xbmc/windowing/Makefile
-/xbmc/windowing/egl/Makefile
 
 #/lib/win32
 /lib/win32/*.tar*
