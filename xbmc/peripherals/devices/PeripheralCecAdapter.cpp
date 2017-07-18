@@ -630,21 +630,21 @@ void CPeripheralCecAdapter::OnTvStandby(void)
   {
   case LOCALISED_ID_POWEROFF:
     m_bStarted = false;
-    g_application.ExecuteXBMCAction("Shutdown");
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
     break;
   case LOCALISED_ID_SUSPEND:
     m_bStarted = false;
-    g_application.ExecuteXBMCAction("Suspend");
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
     break;
   case LOCALISED_ID_QUIT:
     m_bStarted = false;
-    g_application.ExecuteXBMCAction("Quit");
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
     break;
   case LOCALISED_ID_PAUSE:
-    g_application.OnAction(CAction(ACTION_PAUSE));
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PAUSE);
     break;
   case LOCALISED_ID_STOP:
-    g_application.StopPlaying();
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
     break;
   default:
     CLog::Log(LOGERROR, "%s - Unexpected [standby_pc_on_tv_standby] setting value", __FUNCTION__);
