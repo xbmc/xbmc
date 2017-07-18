@@ -2148,8 +2148,6 @@ void COutput::EnsureBufferPool()
 
 void COutput::ReleaseBufferPool(bool precleanup)
 {
-  CVaapiRenderPicture *pic;
-
   ProcessSyncPicture();
 
   m_bufferPool->DeleteTextures(precleanup);
