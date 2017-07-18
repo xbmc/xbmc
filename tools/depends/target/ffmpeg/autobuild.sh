@@ -116,8 +116,8 @@ then
 fi
 
 [ -f ${ARCHIVE} ] ||
-  curl -Ls --create-dirs -f -o ${ARCHIVE} ${BASE_URL}/${VERSION}.tar.gz ||
-  { echo "error fetching ${BASE_URL}/${VERSION}.tar.gz" ; exit 3; }
+  curl -Ls --create-dirs -f -o ${ARCHIVE} ${BASE_URL}/archive/${VERSION}.tar.gz ||
+  { echo "error fetching ${BASE_URL}/archive/${VERSION}.tar.gz" ; exit 3; }
 [ $downloadonly ] && exit 0
 
 [ -d ffmpeg-${VERSION} ] && rm -rf ffmpeg-${VERSION} && rm .ffmpeg-installed >/dev/null 2>&1
