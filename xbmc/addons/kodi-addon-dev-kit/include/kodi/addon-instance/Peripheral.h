@@ -210,6 +210,8 @@ extern "C"
     JOYSTICK_FEATURE_TYPE_ANALOG_STICK,
     JOYSTICK_FEATURE_TYPE_ACCELEROMETER,
     JOYSTICK_FEATURE_TYPE_MOTOR,
+    JOYSTICK_FEATURE_TYPE_RELPOINTER,
+    JOYSTICK_FEATURE_TYPE_ABSPOINTER,
   } JOYSTICK_FEATURE_TYPE;
 
   typedef enum JOYSTICK_FEATURE_PRIMITIVE
@@ -257,6 +259,7 @@ extern "C"
     void (*trigger_scan)(void* kodiInstance);
     void (*refresh_button_maps)(void* kodiInstance, const char* device_name, const char* controller_id);
     unsigned int (*feature_count)(void* kodiInstance, const char* controller_id, JOYSTICK_FEATURE_TYPE type);
+    JOYSTICK_FEATURE_TYPE (*feature_type)(void* kodiInstance, const char* controller_id, const char* feature_name);
   } AddonToKodiFuncTable_Peripheral;
 
   //! @todo Mouse, light gun, multitouch
@@ -543,6 +546,20 @@ namespace addon
     unsigned int FeatureCount(const std::string& strControllerId, JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
     {
       return m_instanceData->toKodi.feature_count(m_instanceData->toKodi.kodiInstance, strControllerId.c_str(), type);
+    }
+
+    /*!
+     * @brief Return the type of the feature
+     *
+     * @param controllerId    The controller ID to check
+     * @param featureName     The feature to check
+     *
+     * @return The type of the specified feature, or JOYSTICK_FEATURE_TYPE_UNKNOWN
+     * if unknown
+     */
+    JOYSTICK_FEATURE_TYPE FeatureType(const std::string& strControllerId, const std::string &featureName)
+    {
+      return m_instanceData->toKodi.feature_type(m_instanceData->toKodi.kodiInstance, strControllerId.c_str(), featureName.c_str());
     }
 
   private:

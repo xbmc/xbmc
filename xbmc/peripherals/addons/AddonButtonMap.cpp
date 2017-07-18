@@ -215,6 +215,60 @@ void CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
     Load();
 }
 
+bool CAddonButtonMap::GetRelativePointer(const FeatureName& feature,
+                                         JOYSTICK::ANALOG_STICK_DIRECTION direction,
+                                         JOYSTICK::CDriverPrimitive& primitive)
+{
+  bool retVal(false);
+
+  CSingleLock lock(m_mutex);
+
+  FeatureMap::const_iterator it = m_features.find(feature);
+  if (it != m_features.end())
+  {
+    const kodi::addon::JoystickFeature& addonFeature = it->second;
+
+    if (addonFeature.Type() == JOYSTICK_FEATURE_TYPE_RELPOINTER)
+    {
+      primitive = CPeripheralAddonTranslator::TranslatePrimitive(addonFeature.Primitive(GetPrimitiveIndex(direction)));
+      retVal = primitive.IsValid();
+    }
+  }
+
+  return retVal;
+}
+
+void CAddonButtonMap::AddRelativePointer(const FeatureName& feature,
+                                         JOYSTICK::ANALOG_STICK_DIRECTION direction,
+                                         const JOYSTICK::CDriverPrimitive& primitive)
+{
+  using namespace JOYSTICK;
+
+  JOYSTICK_FEATURE_PRIMITIVE primitiveIndex = GetPrimitiveIndex(direction);
+  kodi::addon::DriverPrimitive addonPrimitive = CPeripheralAddonTranslator::TranslatePrimitive(primitive);
+
+  kodi::addon::JoystickFeature relPointer(feature, JOYSTICK_FEATURE_TYPE_RELPOINTER);
+
+  {
+    CSingleLock lock(m_mutex);
+    auto it = m_features.find(feature);
+    if (it != m_features.end())
+      relPointer = it->second;
+  }
+
+  const bool bModified = (primitive != CPeripheralAddonTranslator::TranslatePrimitive(relPointer.Primitive(primitiveIndex)));
+  if (bModified)
+    relPointer.SetPrimitive(primitiveIndex, addonPrimitive);
+
+  if (auto addon = m_addon.lock())
+    addon->MapFeature(m_device, m_strControllerId, relPointer);
+
+  // Because each direction is mapped individually, we need to refresh the
+  // feature each time a new direction is mapped.
+  if (bModified)
+    Load();
+}
+
 bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
                                        CDriverPrimitive& positiveX,
                                        CDriverPrimitive& positiveY,
@@ -322,6 +376,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
       }
 
       case JOYSTICK_FEATURE_TYPE_ANALOG_STICK:
+      case JOYSTICK_FEATURE_TYPE_RELPOINTER:
       {
         std::vector<JOYSTICK_FEATURE_PRIMITIVE> primitives = {
           JOYSTICK_ANALOG_STICK_UP,
