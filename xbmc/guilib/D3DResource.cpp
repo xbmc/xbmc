@@ -169,6 +169,7 @@ CD3DTexture::CD3DTexture()
   m_pitch = 0;
   m_bindFlags = 0;
   m_cpuFlags = 0;
+  m_viewIdx = 0;
   m_views.clear();
 }
 
@@ -229,17 +230,6 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   }
 
   g_Windowing.Register(this);
-  return true;
-}
-
-bool CD3DTexture::CreateFromExternal(UINT width, UINT height, D3D11_USAGE usage, DXGI_FORMAT format, ID3D11Texture2D* pTexture)
-{
-  m_width = width;
-  m_height = height;
-  m_format = format;
-  m_usage = usage;
-  m_texture = pTexture;
-  m_texture->AddRef();
   return true;
 }
 
