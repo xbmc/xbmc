@@ -20,6 +20,7 @@
 
 #include "Controller.h"
 #include "ControllerDefinitions.h"
+#include "ControllerLayout.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -37,28 +38,30 @@ std::unique_ptr<CController> CController::FromExtension(ADDON::CAddonInfo addonI
 
 CController::CController(ADDON::CAddonInfo addonInfo) :
   CAddon(std::move(addonInfo)),
-  m_bLoaded(false)
+  m_layout(new CControllerLayout)
 {
 }
 
+CController::~CController() = default;
+
 std::string CController::Label(void)
 {
-  if (m_layout.Label() > 0)
-    return g_localizeStrings.GetAddonString(ID(), m_layout.Label());
+  if (m_layout->Label() > 0)
+    return g_localizeStrings.GetAddonString(ID(), m_layout->Label());
   return "";
 }
 
 std::string CController::ImagePath(void) const
 {
-  if (!m_layout.Image().empty())
-    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Image());
+  if (!m_layout->Image().empty())
+    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout->Image());
   return "";
 }
 
 void CController::GetFeatures(std::vector<std::string>& features,
                               FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */) const
 {
-  for (const CControllerFeature& feature : m_layout.Features())
+  for (const CControllerFeature& feature : m_layout->Features())
   {
     if (type == FEATURE_TYPE::UNKNOWN || type == feature.Type())
       features.push_back(feature.Name());
@@ -67,7 +70,7 @@ void CController::GetFeatures(std::vector<std::string>& features,
 
 JOYSTICK::FEATURE_TYPE CController::GetFeatureType(const std::string &feature) const
 {
-  for (auto it = m_layout.Features().begin(); it != m_layout.Features().end(); ++it)
+  for (auto it = m_layout->Features().begin(); it != m_layout->Features().end(); ++it)
   {
     if (feature == it->Name())
       return it->Type();
@@ -77,7 +80,7 @@ JOYSTICK::FEATURE_TYPE CController::GetFeatureType(const std::string &feature) c
 
 JOYSTICK::INPUT_TYPE CController::GetInputType(const std::string& feature) const
 {
-  for (auto it = m_layout.Features().begin(); it != m_layout.Features().end(); ++it)
+  for (auto it = m_layout->Features().begin(); it != m_layout->Features().end(); ++it)
   {
     if (feature == it->Name())
       return it->InputType();
@@ -107,7 +110,7 @@ bool CController::LoadLayout(void)
 
     CLog::Log(LOGINFO, "Loading controller layout %s", strLayoutXmlPath.c_str());
 
-    if (m_layout.Deserialize(pRootElement, this))
+    if (m_layout->Deserialize(pRootElement, this))
       m_bLoaded = true;
   }
 

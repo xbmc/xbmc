@@ -26,6 +26,7 @@
 #include "games/controllers/guicontrols/GUIFeatureControls.h"
 #include "games/controllers/guicontrols/GUIScalarFeatureButton.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"

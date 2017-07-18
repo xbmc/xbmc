@@ -19,11 +19,11 @@
  */
 #pragma once
 
-#include "ControllerLayout.h"
 #include "ControllerTypes.h"
 #include "addons/Addon.h"
 #include "input/joysticks/JoystickTypes.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,6 +31,8 @@ namespace KODI
 {
 namespace GAME
 {
+class CControllerLayout;
+
 using JOYSTICK::FEATURE_TYPE;
 
 class CController : public ADDON::CAddon
@@ -40,7 +42,7 @@ public:
 
   CController(ADDON::CAddonInfo addonInfo);
 
-  virtual ~CController() = default;
+  virtual ~CController();
 
   static const ControllerPtr EmptyPtr;
 
@@ -52,11 +54,11 @@ public:
 
   bool LoadLayout(void);
 
-  const CControllerLayout& Layout(void) const { return m_layout; }
+  const CControllerLayout& Layout(void) const { return *m_layout; }
 
 private:
-  CControllerLayout m_layout;
-  bool              m_bLoaded;
+  std::unique_ptr<CControllerLayout> m_layout;
+  bool m_bLoaded = false;
 };
 
 }
