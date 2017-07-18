@@ -47,7 +47,7 @@ public:
   {
     if (item && m_listItemDependent)
       Update(item);
-    else if (m_refreshCounter != m_parentRefreshCounter)
+    else if (m_refreshCounter != m_parentRefreshCounter || m_refreshCounter == 0)
     {
       Update(NULL);
       m_refreshCounter = m_parentRefreshCounter;
