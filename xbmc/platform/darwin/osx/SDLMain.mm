@@ -276,7 +276,7 @@ static void setupWindowMenu(void)
 // To use Cocoa on secondary POSIX threads, your application must first detach
 // at least one NSThread object, which can immediately exit. Some info says this
 // is not required anymore, who knows ?
-- (void) kickstartMultiThreaded:(id)arg;
+- (void) kickstartMultiThreaded:(id)arg
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   // empty

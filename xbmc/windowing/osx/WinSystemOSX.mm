@@ -75,13 +75,13 @@ using namespace KODI::WINDOWING;
 @end
 
 @implementation windowDidMoveNoteClass
-+ initWith: (void*) userdata;
++ initWith: (void*) userdata
 {
     windowDidMoveNoteClass *windowDidMove = [windowDidMoveNoteClass new];
     windowDidMove->m_userdata = userdata;
     return [windowDidMove autorelease];
 }
--  (void) windowDidMoveNotification:(NSNotification*) note;
+-  (void) windowDidMoveNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -113,13 +113,13 @@ using namespace KODI::WINDOWING;
 - (void) windowDidReSizeNotification:(NSNotification*) note;
 @end
 @implementation windowDidReSizeNoteClass
-+ initWith: (void*) userdata;
++ initWith: (void*) userdata
 {
     windowDidReSizeNoteClass *windowDidReSize = [windowDidReSizeNoteClass new];
     windowDidReSize->m_userdata = userdata;
     return [windowDidReSize autorelease];
 }
-- (void) windowDidReSizeNotification:(NSNotification*) note;
+- (void) windowDidReSizeNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -157,13 +157,13 @@ using namespace KODI::WINDOWING;
 - (void) windowDidChangeScreenNotification:(NSNotification*) note;
 @end
 @implementation windowDidChangeScreenNoteClass
-+ initWith: (void*) userdata;
++ initWith: (void*) userdata
 {
     windowDidChangeScreenNoteClass *windowDidChangeScreen = [windowDidChangeScreenNoteClass new];
     windowDidChangeScreen->m_userdata = userdata;
     return [windowDidChangeScreen autorelease];
 }
-- (void) windowDidChangeScreenNotification:(NSNotification*) note;
+- (void) windowDidChangeScreenNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
