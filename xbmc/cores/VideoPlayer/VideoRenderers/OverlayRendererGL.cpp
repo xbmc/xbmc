@@ -91,7 +91,7 @@ static void LoadTexture(GLenum target
       src = (const char*)pixels + y * stride;
       dst = pixelVector + y * bytesPerLine;
 
-      for (unsigned int i = 0; i < width; i++, src+=4, dst+=4)
+      for (GLsizei i = 0; i < width; i++, src+=4, dst+=4)
       {
         dst[0] = src[2];
         dst[1] = src[1];
