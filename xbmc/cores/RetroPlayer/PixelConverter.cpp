@@ -45,7 +45,7 @@ class CPixelBufferFFmpeg : public CVideoBuffer
 {
 public:
   CPixelBufferFFmpeg(IVideoBufferPool &pool, int id);
-  virtual ~CPixelBufferFFmpeg();
+  ~CPixelBufferFFmpeg() override;
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
 
@@ -98,7 +98,7 @@ void CPixelBufferFFmpeg::Unref()
 class CPixelBufferPoolFFmpeg : public IVideoBufferPool
 {
 public:
-  virtual ~CPixelBufferPoolFFmpeg();
+  ~CPixelBufferPoolFFmpeg() override;
   virtual void Return(int id) override;
   virtual CVideoBuffer* Get() override;
 
@@ -162,18 +162,13 @@ void CPixelBufferPoolFFmpeg::Return(int id)
 // main class
 //------------------------------------------------------------------------------
 
-void CPixelConverter::delete_buffer_pool::operator()(CPixelBufferPoolFFmpeg *p) const
-{
-  delete p;
-}
-
 CPixelConverter::CPixelConverter() :
   m_targetFormat(AV_PIX_FMT_NONE),
   m_width(0),
   m_height(0),
   m_swsContext(nullptr),
   m_pFrame(nullptr),
-  m_pixelBufferPool(new CPixelBufferPoolFFmpeg)
+  m_pixelBufferPool(std::make_shared<CPixelBufferPoolFFmpeg>())
 {
 }
 
@@ -250,7 +245,7 @@ void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
   }
 
   dvdVideoPicture.dts            = DVD_NOPTS_VALUE;
-  dvdVideoPicture.pts            = DVD_NOPTS_VALUE;
+  dvdVideoPicture.pts            = 0.0; // Show immediately
   dvdVideoPicture.iFlags         = 0;
   dvdVideoPicture.color_matrix   = 4; // CONF_FLAGS_YUVCOEF_BT601
   dvdVideoPicture.color_range    = 0; // *not* CONF_FLAGS_YUV_FULLRANGE

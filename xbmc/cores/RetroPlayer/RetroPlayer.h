@@ -128,8 +128,6 @@ namespace RETRO
     float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
     bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-//    bool IsRenderingGuiLayer() { return m_renderManager.IsGuiLayer(); }
-//    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
     bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
@@ -144,7 +142,7 @@ namespace RETRO
     virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
     virtual void UpdateClockSync(bool enabled) override;
     virtual void UpdateRenderInfo(CRenderInfo &info) override;
-    virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
+    virtual void UpdateRenderBuffers(int queued, int discard, int free) override;
     virtual void UpdateGuiRender(bool gui) override;
     virtual void UpdateVideoRender(bool video) override;
 
