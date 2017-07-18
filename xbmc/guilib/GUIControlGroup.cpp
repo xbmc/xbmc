@@ -268,14 +268,16 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
 
 bool CGUIControlGroup::SendControlMessage(CGUIMessage &message)
 {
-  CGUIControl *ctrl(GetControl(message.GetControlId(), &m_idCollector));
+  IDCollector collector(m_idCollector);
+
+  CGUIControl *ctrl(GetControl(message.GetControlId(), collector.m_collector));
   // see if a child matches, and send to the child control if so
   if (ctrl && ctrl->OnMessage(message))
     return true;
 
   // Unhandled - send to all matching invisible controls as well
   bool handled(false);
-  for (auto *control : m_idCollector)
+  for (auto *control : *collector.m_collector)
     if (control->OnMessage(message))
       handled = true;
 
