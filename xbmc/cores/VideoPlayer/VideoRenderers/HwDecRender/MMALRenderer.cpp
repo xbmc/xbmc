@@ -951,7 +951,13 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     goto exit;
   }
 
-  if (omvb && omvb->mmal_buffer)
+  if (omvb && omvb->m_state == MMALStateBypass)
+  {
+    // dummy buffer from omxplayer
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - OMX: clear:%d flags:%x alpha:%d source:%d omvb:%p", CLASSNAME, __func__, clear, flags, alpha, source, omvb);
+  }
+  else if (omvb && omvb->mmal_buffer)
   {
     if (flags & RENDER_FLAG_TOP)
       omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED | MMAL_BUFFER_HEADER_VIDEO_FLAG_TOP_FIELD_FIRST;
