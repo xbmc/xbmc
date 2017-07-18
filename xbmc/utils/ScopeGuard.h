@@ -99,6 +99,20 @@ public:
   CScopeGuard() = delete;
   CScopeGuard(const CScopeGuard& rhs) = delete;
   CScopeGuard& operator= (const CScopeGuard& rhs) = delete;
+
+  //Allow moving
+  CScopeGuard(CScopeGuard&& rhs)
+    : m_handle{std::move(rhs.m_handle)}, m_deleter{std::move(rhs.m_deleter)}
+  {
+    // Bring moved-from object into released state so destructor will not do anything
+    rhs.release();
+  }
+  CScopeGuard& operator=(CScopeGuard&& rhs)
+  {
+    attach(rhs.release());
+    m_deleter = std::move(rhs.m_deleter);
+    return *this;
+  }
   
 private:
   Handle m_handle;
