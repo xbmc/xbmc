@@ -27,28 +27,11 @@ CEmuFileWrapper g_emuFileWrapper;
 namespace
 {
 
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
-constexpr kodi_iobuf* FileDescriptor(FILE& f)
-{
-  return static_cast<kodi_iobuf*>(f._Placeholder);
-}
-
-constexpr bool isValidFilePtr(FILE* f)
-{
-  return (f != nullptr && f->_Placeholder != nullptr);
-}
-
-#else
-constexpr FILE* FileDescriptor(FILE& f)
-{
-  return &f;
-}
-
 constexpr bool isValidFilePtr(FILE* f)
 {
   return (f != nullptr);
 }
-#endif
+
 }
 CEmuFileWrapper::CEmuFileWrapper()
 {
@@ -57,10 +40,7 @@ CEmuFileWrapper::CEmuFileWrapper()
   {
     memset(&m_files[i], 0, sizeof(EmuFileObject));
     m_files[i].used = false;
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
-    m_files[i].file_emu._Placeholder = new kodi_iobuf();
-#endif
-    FileDescriptor(m_files[i].file_emu)->_file = -1;
+    m_files[i].fd = -1;
   }
 }
 
@@ -84,17 +64,9 @@ void CEmuFileWrapper::CleanUp()
         delete m_files[i].file_lock;
         m_files[i].file_lock = nullptr;
       }
-#if !defined(TARGET_WINDOWS)
-      //Don't memset on Windows as it overwrites our pointer
-      memset(&m_files[i], 0, sizeof(EmuFileObject));
-#endif
       m_files[i].used = false;
-      FileDescriptor(m_files[i].file_emu)->_file = -1;
+      m_files[i].fd = -1;
     }
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
-    delete static_cast<kodi_iobuf*>(m_files[i].file_emu._Placeholder);
-    m_files[i].file_emu._Placeholder = nullptr;
-#endif
   }
 }
 
@@ -112,7 +84,7 @@ EmuFileObject* CEmuFileWrapper::RegisterFileObject(XFILE::CFile* pFile)
       object = &m_files[i];
       object->used = true;
       object->file_xbmc = pFile;
-      FileDescriptor(object->file_emu)->_file = (i + FILE_WRAPPER_OFFSET);
+      object->fd = (i + FILE_WRAPPER_OFFSET);
       object->file_lock = new CCriticalSection();
       break;
     }
@@ -138,19 +110,16 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
     delete m_files[i].file_lock;
     m_files[i].file_lock = nullptr;
   }
-#if !defined(TARGET_WINDOWS)
-  //Don't memset on Windows as it overwrites our pointer
-  memset(&m_files[i], 0, sizeof(EmuFileObject));
-#endif
   m_files[i].used = false;
-  FileDescriptor(m_files[i].file_emu)->_file = -1;
+  m_files[i].fd = -1;
 }
 
 void CEmuFileWrapper::UnRegisterFileObjectByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    return UnRegisterFileObjectByDescriptor(FileDescriptor(*stream)->_file);
+    EmuFileObject* o = reinterpret_cast<EmuFileObject*>(stream);
+    return UnRegisterFileObjectByDescriptor(o->fd);
   }
 }
 
@@ -208,7 +177,8 @@ EmuFileObject* CEmuFileWrapper::GetFileObjectByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    return GetFileObjectByDescriptor(FileDescriptor(*stream)->_file);
+    EmuFileObject* o = reinterpret_cast<EmuFileObject*>(stream);
+    return GetFileObjectByDescriptor(o->fd);
   }
 
   return nullptr;
@@ -228,7 +198,7 @@ XFILE::CFile* CEmuFileWrapper::GetFileXbmcByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    auto object = GetFileObjectByDescriptor(FileDescriptor(*stream)->_file);
+    EmuFileObject* object = reinterpret_cast<EmuFileObject*>(stream);
     if (object != nullptr && object->used)
     {
       return object->file_xbmc;
@@ -241,7 +211,8 @@ int CEmuFileWrapper::GetDescriptorByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    int i = FileDescriptor(*stream)->_file - FILE_WRAPPER_OFFSET;
+    EmuFileObject* obj = reinterpret_cast<EmuFileObject*>(stream);
+    int i = obj->fd - FILE_WRAPPER_OFFSET;
     if (i >= 0 && i < MAX_EMULATED_FILES)
     {
       return i + FILE_WRAPPER_OFFSET;
@@ -255,7 +226,7 @@ FILE* CEmuFileWrapper::GetStreamByDescriptor(int fd)
   auto object = GetFileObjectByDescriptor(fd);
   if (object != nullptr && object->used)
   {
-    return &object->file_emu;
+    return reinterpret_cast<FILE*>(object);
   }
   return nullptr;
 }
@@ -264,7 +235,8 @@ bool CEmuFileWrapper::StreamIsEmulatedFile(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    return DescriptorIsEmulatedFile(FileDescriptor(*stream)->_file);
+    EmuFileObject* obj = reinterpret_cast<EmuFileObject*>(stream);
+    return DescriptorIsEmulatedFile(obj->fd);
   }
   return false;
 }
