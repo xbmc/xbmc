@@ -959,6 +959,15 @@ void CPVRManager::ChannelPreview(const CFileItemPtr item)
     m_isChannelPreview = true;
     g_infoManager.SetCurrentItem(m_currentFile);
     CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+
+    int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
+    if (timeout > 0)
+    {
+      if (m_channelEntryJobId >= 0)
+        CJobManager::GetInstance().CancelJob(m_channelEntryJobId);
+      CPVRChannelEntryTimeoutJob *job = new CPVRChannelEntryTimeoutJob(timeout);
+      m_channelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
+    }
   }
 }
 
@@ -966,7 +975,10 @@ void CPVRManager::ChannelPreviewSelect()
 {
   CSingleLock lock(m_critSection);
 
-  m_guiActions->SwitchToChannel(m_currentFile, false);
+  m_channelEntryJobId = -1;
+
+  if (m_isChannelPreview)
+    m_guiActions->SwitchToChannel(m_currentFile, false);
 }
 
 void CPVRManager::SetChannelPreview(bool preview)

@@ -612,6 +612,7 @@ namespace PVR
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
     std::atomic_bool m_isChannelPreview;
+    int m_channelEntryJobId = -1;
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;
