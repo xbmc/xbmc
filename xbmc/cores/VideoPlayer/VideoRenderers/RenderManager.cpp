@@ -392,7 +392,7 @@ void CRenderManager::UnInit()
   RemoveCaptures();
 }
 
-bool CRenderManager::Flush()
+bool CRenderManager::Flush(bool wait)
 {
   if (!m_pRenderer)
     return true;
@@ -428,13 +428,16 @@ bool CRenderManager::Flush()
   {
     m_flushEvent.Reset();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_FLUSH);
-    if (!m_flushEvent.WaitMSec(1000))
+    if (wait)
     {
-      CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
-      return false;
+      if (!m_flushEvent.WaitMSec(1000))
+      {
+        CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
+        return false;
+      }
+      else
+        return true;
     }
-    else
-      return true;
   }
   return true;
 }

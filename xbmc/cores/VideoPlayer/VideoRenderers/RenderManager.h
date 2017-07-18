@@ -81,7 +81,7 @@ public:
   void SetViewMode(int iViewMode);
   void PreInit();
   void UnInit();
-  bool Flush();
+  bool Flush(bool wait);
   bool IsConfigured() const;
   void ToggleDebug();
 

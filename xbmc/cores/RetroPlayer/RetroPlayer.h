@@ -123,7 +123,7 @@ namespace RETRO
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
     void FrameMove() override;
     void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
-    void FlushRenderer() override { m_renderManager.Flush(); }
+    void FlushRenderer() override { m_renderManager.Flush(true); }
     void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
     float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
