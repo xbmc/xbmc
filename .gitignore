@@ -358,7 +358,6 @@ lib/cpluff/stamp-h1
 # /tools/TexturePacker
 /tools/TexturePacker/TexturePacker*
 /tools/TexturePacker/Makefile
-/tools/TexturePacker/*.dll
 
 # /userdata/
 /userdata/Database
@@ -366,43 +365,6 @@ lib/cpluff/stamp-h1
 /userdata/Thumbnails
 /userdata/cache
 /userdata/guisettings.xml
-
-# /xbmc/
-/xbmc/CompileInfo.cpp
-/xbmc/DllPaths_generated.h
-/xbmc/DllPaths_generated_android.h
-
-# /xbmc/cores/
-/xbmc/cores/DllLoader/exports/build_wrapper.sh
-/xbmc/cores/DllLoader/exports/wrapper.def
-
-# /xbmc/guilib/
-/xbmc/guilib/*.obj
-/xbmc/guilib/*.idb
-/xbmc/guilib/*.pdb
-/xbmc/guilib/*.bak
-/xbmc/guilib/Debug (Win32)
-/xbmc/guilib/Release (Win32)
-/xbmc/guilib/Release
-/xbmc/guilib/Release_LTCG
-/xbmc/guilib/Debug
-/xbmc/guilib/Profile
-/xbmc/guilib/Profile_FastCap
-
-# /xbmc/interfaces/
-/xbmc/interfaces/json-rpc/ServiceDescription.h
-/xbmc/interfaces/python/generated/
-
-# /xbmc/platform/darwin/osx/
-/xbmc/platform/darwin/osx/Info.plist
-
-# /xbmc/platform/darwin/ios/
-/xbmc/platform/darwin/osx/ios/IOS-Info.plist
-
-#/xbmc/platform/win32/
-/xbmc/platform/win32/XBMC_PC.rc
-# no longer used
-/xbmc/platform/win32/git_rev.h
 
 #/lib/win32
 /lib/win32/*.tar*
@@ -418,9 +380,6 @@ lib/cpluff/stamp-h1
 
 # Doxygen generated files
 /docs/html
-tools/depends/native/TexturePacker/src/Win32/Debug/
-tools/depends/native/TexturePacker/src/Win32/Release/
-tools/depends/native/TexturePacker/src/Win32/TexturePacker.VC.db
 exclude_dll.txt
 
 #certificates
