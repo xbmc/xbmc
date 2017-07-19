@@ -168,7 +168,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
   // get the global lock
-  PyEval_AcquireLock();
+  extern PyThreadState* savestate;
+  PyEval_RestoreThread(savestate);
   PyThreadState* state = Py_NewInterpreter();
   if (state == NULL)
   {
@@ -264,8 +265,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     stopping = m_stop;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   bool failed = false;
   std::string exceptionType, exceptionValue, exceptionTraceback;
@@ -404,8 +404,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     m_threadState = NULL;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   onDeinitialization();
 
