@@ -535,12 +535,6 @@ void CPythonInvoker::onExecutionFailed()
   ILanguageInvoker::onExecutionFailed();
 }
 
-std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker::getModules() const
-{
-  static std::map<std::string, PythonModuleInitialization> modules;
-  return modules;
-}
-
 void CPythonInvoker::onInitialization()
 {
   XBMC_TRACE;
@@ -602,11 +596,6 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
        message = g_localizeStrings.Get(2103);
     pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, message, g_localizeStrings.Get(2104));
   }
-}
-
-const char* CPythonInvoker::getInitializationScript() const
-{
-  return NULL;
 }
 
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
