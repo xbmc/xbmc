@@ -362,7 +362,7 @@ XBMCController *g_xbmcController;
   [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
-- (void) nativeKeyboardActive: (bool)active;
+- (void) nativeKeyboardActive: (bool)active
 {
   nativeKeyboardActive = active;
 }
@@ -745,7 +745,7 @@ XBMCController *g_xbmcController;
   return screensize;
 }
 //--------------------------------------------------------------
-- (CGFloat) getScreenScale:(UIScreen *)screen;
+- (CGFloat) getScreenScale:(UIScreen *)screen
 {
   return [m_glView getScreenScale:screen];
 }

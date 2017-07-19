@@ -367,7 +367,8 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) textChanged:(NSNotification*)aNotification; {
+- (void) textChanged:(NSNotification*)aNotification
+{
   if (![self.text isEqualToString:_textField.text])
   {
     [self.text setString:_textField.text];

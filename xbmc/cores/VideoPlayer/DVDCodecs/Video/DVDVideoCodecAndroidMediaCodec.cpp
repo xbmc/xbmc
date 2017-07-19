@@ -80,22 +80,6 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_ERROR
 };
 
-static bool CanSurfaceRenderBlackList(const std::string &name)
-{
-  // All devices 'should' be capable of surface rendering
-  // but that seems to be hit or miss as most odd name devices
-  // cannot surface render.
-  static const char *cannotsurfacerender_decoders[] = {
-    NULL
-  };
-  for (const char **ptr = cannotsurfacerender_decoders; *ptr; ptr++)
-  {
-    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
-      return true;
-  }
-  return false;
-}
-
 static bool IsBlacklisted(const std::string &name)
 {
   static const char *blacklisted_decoders[] = {

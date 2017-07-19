@@ -131,7 +131,7 @@ using namespace KODI::MESSAGING;
   return ret;
 }
 
-- (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
+- (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize
 {
   CGFloat scaleFactor = 1.0;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];

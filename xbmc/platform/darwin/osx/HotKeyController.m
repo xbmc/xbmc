@@ -93,20 +93,20 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
   return m_eventPort;
 }
 
-- (void)sysPower: (BOOL)enable;
+- (void)sysPower: (BOOL)enable
 {
   m_controlSysPower = enable;
 }
-- (BOOL)controlPower;
+- (BOOL)controlPower
 {
   return m_controlSysPower;
 }
 
-- (void)sysVolume: (BOOL)enable;
+- (void)sysVolume: (BOOL)enable
 {
   m_controlSysVolume = enable;
 }
-- (BOOL)controlVolume;
+- (BOOL)controlVolume
 {
   return m_controlSysVolume;
 }

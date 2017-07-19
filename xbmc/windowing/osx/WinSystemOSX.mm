@@ -70,18 +70,18 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidMoveNoteClass*) initWith: (void*) userdata;
 -  (void) windowDidMoveNotification:(NSNotification*) note;
 @end
 
 @implementation windowDidMoveNoteClass
-+ initWith: (void*) userdata;
++ (windowDidMoveNoteClass*) initWith: (void*) userdata
 {
     windowDidMoveNoteClass *windowDidMove = [windowDidMoveNoteClass new];
     windowDidMove->m_userdata = userdata;
     return [windowDidMove autorelease];
 }
--  (void) windowDidMoveNotification:(NSNotification*) note;
+-  (void) windowDidMoveNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -109,17 +109,17 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidReSizeNoteClass*) initWith: (void*) userdata;
 - (void) windowDidReSizeNotification:(NSNotification*) note;
 @end
 @implementation windowDidReSizeNoteClass
-+ initWith: (void*) userdata;
++ (windowDidReSizeNoteClass*) initWith: (void*) userdata
 {
     windowDidReSizeNoteClass *windowDidReSize = [windowDidReSizeNoteClass new];
     windowDidReSize->m_userdata = userdata;
     return [windowDidReSize autorelease];
 }
-- (void) windowDidReSizeNotification:(NSNotification*) note;
+- (void) windowDidReSizeNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -153,17 +153,17 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidChangeScreenNoteClass*) initWith: (void*) userdata;
 - (void) windowDidChangeScreenNotification:(NSNotification*) note;
 @end
 @implementation windowDidChangeScreenNoteClass
-+ initWith: (void*) userdata;
++ (windowDidChangeScreenNoteClass*) initWith: (void*) userdata
 {
     windowDidChangeScreenNoteClass *windowDidChangeScreen = [windowDidChangeScreenNoteClass new];
     windowDidChangeScreen->m_userdata = userdata;
     return [windowDidChangeScreen autorelease];
 }
-- (void) windowDidChangeScreenNotification:(NSNotification*) note;
+- (void) windowDidChangeScreenNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)

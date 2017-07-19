@@ -382,7 +382,7 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
 @implementation IOSDisplayLinkCallback
 @synthesize _videoSyncImpl;
 //--------------------------------------------------------------
-- (void) runDisplayLink;
+- (void) runDisplayLink
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   if (_videoSyncImpl != nil)
