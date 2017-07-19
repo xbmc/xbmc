@@ -85,7 +85,8 @@ public:
 #endif
 protected:
   // sub controls
-  std::vector<CGUIControl *> m_children, m_idCollector;
+  std::vector<CGUIControl *> m_children;
+
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
   typedef std::vector<CGUIControl *>::reverse_iterator rControls;
@@ -95,5 +96,35 @@ protected:
   bool m_defaultAlways;
   int m_focusedControl;
   bool m_renderFocusedLast;
+private:
+  typedef std::vector< std::vector<CGUIControl *> * > COLLECTORTYPE;
+
+  struct IDCollectorList
+  {
+    ~IDCollectorList() { for (auto item : m_items) delete item; };
+
+    std::vector<CGUIControl *> *Get() {
+      if (++m_stackDepth > m_items.size())
+        m_items.push_back(new std::vector<CGUIControl *>());
+      return m_items[m_stackDepth - 1];
+    }
+
+    void Release() { --m_stackDepth; };
+
+    COLLECTORTYPE m_items;
+    size_t m_stackDepth = 0;
+  }m_idCollector;
+
+  struct IDCollector
+  {
+    IDCollector(IDCollectorList &list)
+      : m_list(list)
+      , m_collector(list.Get()) {};
+
+    ~IDCollector() { m_list.Release(); };
+
+    IDCollectorList &m_list;
+    std::vector<CGUIControl *> *m_collector;
+  };
 };
 
