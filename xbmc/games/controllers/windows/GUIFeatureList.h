@@ -22,6 +22,7 @@
 #include "IConfigurationWindow.h"
 #include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerTypes.h"
+#include "input/joysticks/JoystickTypes.h"
 
 class CGUIButtonControl;
 class CGUIControlGroupList;
@@ -56,6 +57,7 @@ namespace GAME
     struct FeatureGroup
     {
       std::string groupName;
+      JOYSTICK::FEATURE_CATEGORY category = JOYSTICK::FEATURE_CATEGORY::UNKNOWN;
       std::vector<CControllerFeature> features;
     };
     static std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CControllerFeature>& features);

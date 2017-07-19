@@ -182,26 +182,34 @@ void CGUIFeatureList::CleanupButtons(void)
 
 std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features)
 {
-  std::vector<CGUIFeatureList::FeatureGroup> groups;
+  std::vector<FeatureGroup> groups;
 
   // Get group names
   std::vector<std::string> groupNames;
   for (const CControllerFeature& feature : features)
   {
-    if (std::find(groupNames.begin(), groupNames.end(), feature.CategoryLabel()) == groupNames.end())
-      groupNames.push_back(feature.CategoryLabel());
-  }
+    bool bAdded = false;
 
-  // Divide features into groups
-  for (std::string& groupName : groupNames)
-  {
-    FeatureGroup group = { groupName };
-    for (const CControllerFeature& feature : features)
+    if (!groups.empty())
     {
-      if (feature.CategoryLabel() == groupName)
-        group.features.push_back(feature);
+      FeatureGroup &previousGroup = *groups.rbegin();
+      if (feature.CategoryLabel() == previousGroup.groupName)
+      {
+        // Add feature to previous group
+        previousGroup.features.emplace_back(feature);
+        bAdded = true;
+      }
     }
-    groups.emplace_back(std::move(group));
+
+    if (!bAdded)
+    {
+      // Create new group and add feature
+      FeatureGroup group;
+      group.groupName = feature.CategoryLabel();
+      group.category = feature.Category();
+      group.features.emplace_back(feature);
+      groups.emplace_back(std::move(group));
+    }
   }
 
   return groups;
