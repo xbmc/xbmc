@@ -69,8 +69,9 @@ public:
   static uint32_t TranslateFormat(AVPixelFormat pixfmt);
   virtual int Width() { return m_width; }
   virtual int Height() { return m_height; }
-  virtual int AlignedWidth() { return m_geo.stride_y / m_geo.bytes_per_pixel; }
-  virtual int AlignedHeight() { return m_geo.height_y; }
+  virtual int AlignedWidth() { return m_mmal_format == MMAL_ENCODING_YUVUV128 || m_mmal_format == MMAL_ENCODING_YUVUV64_16 ? 0 : m_geo.getStrideY() / m_geo.getBytesPerPixel(); }
+  virtual int AlignedHeight() { return m_mmal_format == MMAL_ENCODING_YUVUV128 || m_mmal_format == MMAL_ENCODING_YUVUV64_16 ? 0 : m_geo.getHeightY(); }
+  virtual int BitsPerPixel() { return m_geo.getBitsPerPixel(); }
   virtual uint32_t &Encoding() { return m_mmal_format; }
   virtual int Size() { return m_size; }
   AVRpiZcFrameGeometry &GetGeometry() { return m_geo; }

@@ -130,8 +130,6 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
   CSingleLock lock(m_critSection);
   MMAL_STATUS_T status;
 
-  memset(&m_geo, 0, sizeof m_geo);
-
   status = mmal_component_create(component_name, &m_component);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to create component %s", CLASSNAME, __func__, component_name);
@@ -242,22 +240,18 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
     {
       if (alignedWidth)
       {
-        m_geo.stride_y = alignedWidth * m_geo.bytes_per_pixel;
-        m_geo.stride_c = alignedWidth * m_geo.bytes_per_pixel >> 1;
+        m_geo.setStrideY(alignedWidth * m_geo.getBytesPerPixel());
+        m_geo.setStrideC(alignedWidth * m_geo.getBytesPerPixel() >> 1);
       }
       if (alignedHeight)
       {
-        m_geo.height_y = alignedHeight;
-        m_geo.height_c = alignedHeight >> 1;
+        m_geo.setHeightY(alignedHeight);
+        m_geo.setHeightC(alignedHeight >> 1);
       }
     }
   }
   if (m_size == 0)
-  {
-    const unsigned int size_y = m_geo.stride_y * m_geo.height_y;
-    const unsigned int size_c = m_geo.stride_c * m_geo.height_c;
-    m_size = (size_y + size_c * m_geo.planes_c) * m_geo.stripes;
-  }
+    m_size = m_geo.getSize();
   CLog::Log(LOGDEBUG, "%s::%s pool:%p %dx%d (%dx%d) pix:%d size:%d fmt:%.4s", CLASSNAME, __func__,
             static_cast<void*>(m_mmal_pool), width, height, alignedWidth, alignedHeight, format, size,
             (char*)&m_mmal_format);
@@ -270,8 +264,8 @@ void CMMALPool::Configure(AVPixelFormat format, int size)
 
 void CMMALPool::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
-  assert(m_geo.bytes_per_pixel);
-  int alignedWidth = strides[0] ? strides[0] / m_geo.bytes_per_pixel : width;
+  assert(m_geo.getBytesPerPixel());
+  int alignedWidth = strides[0] ? strides[0] / m_geo.getBytesPerPixel() : width;
   int alignedHeight = planeOffsets[1] ? planeOffsets[1] / strides[0] : height;
   Configure(AV_PIX_FMT_NONE, width, height, alignedWidth, alignedHeight, 0);
 }

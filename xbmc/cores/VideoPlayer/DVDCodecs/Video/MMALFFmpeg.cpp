@@ -64,22 +64,19 @@ void CMMALYUVBuffer::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
 {
   for (int i = 0; i < YuvImage::MAX_PLANES; i++)
     planes[i] = nullptr;
-  if (!m_gmem)
-    return;
 
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
   assert(pool);
   AVRpiZcFrameGeometry geo = pool->GetGeometry();
-  const int size_y = geo.stride_y * geo.height_y;
-  const int size_c = geo.stride_c * geo.height_c;
 
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %dx%d %dx%d (%dx%d %dx%d)", CLASSNAME, __FUNCTION__, geo.stride_y, geo.height_y, geo.stride_c, geo.height_c, Width(), Height(), AlignedWidth(), AlignedHeight());
+  if (VERBOSE)
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %dx%d %dx%d (%dx%d %dx%d)", CLASSNAME, __FUNCTION__, geo.getStrideY(), geo.getHeightY(), geo.getStrideC(), geo.getHeightC(), Width(), Height(), AlignedWidth(), AlignedHeight());
 
-  planes[0] = static_cast<uint8_t *>(m_gmem->m_arm);
-  if (geo.planes_c >= 1)
-    planes[1] = planes[0] + size_y;
-  if (geo.planes_c >= 2)
-    planes[2] = planes[1] + size_c;
+  planes[0] = GetMemPtr();
+  if (planes[0] && geo.getPlanesC() >= 1)
+    planes[1] = planes[0] + geo.getSizeY();
+  if (planes[1] && geo.getPlanesC() >= 2)
+    planes[2] = planes[1] + geo.getSizeC();
 }
 
 void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
@@ -89,9 +86,9 @@ void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
   assert(pool);
   AVRpiZcFrameGeometry geo = pool->GetGeometry();
-  strides[0] = geo.stride_y;
-  strides[1] = geo.stride_c;
-  strides[2] = geo.stride_c;
+  strides[0] = geo.getStrideY();
+  strides[1] = geo.getStrideC();
+  strides[2] = geo.getStrideC();
 }
 
 void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
@@ -187,11 +184,14 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
   {
     int aligned_width = frame->width;
     int aligned_height = frame->height;
-    // ffmpeg requirements
-    AlignedSize(dec->m_avctx, aligned_width, aligned_height);
-    // GPU requirements
-    aligned_width = ALIGN_UP(aligned_width, 32);
-    aligned_height = ALIGN_UP(aligned_height, 16);
+    if (pool->Encoding() != MMAL_ENCODING_YUVUV128 && pool->Encoding() != MMAL_ENCODING_YUVUV64_16)
+    {
+      // ffmpeg requirements
+      AlignedSize(dec->m_avctx, aligned_width, aligned_height);
+      // GPU requirements
+      aligned_width = ALIGN_UP(aligned_width, 32);
+      aligned_height = ALIGN_UP(aligned_height, 16);
+    }
     pool->Configure(dec->m_fmt, frame->width, frame->height, aligned_width, aligned_height, 0);
   }
   CMMALYUVBuffer *YUVBuffer = dynamic_cast<CMMALYUVBuffer *>(pool->Get());
