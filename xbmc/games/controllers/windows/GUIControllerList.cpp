@@ -30,6 +30,7 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
@@ -161,6 +162,21 @@ bool CGUIControllerList::RefreshControllers(void)
   // Get current controllers
   CGameServices& gameServices = CServiceBroker::GetGameServices();
   ControllerVector newControllers = gameServices.GetControllers();
+
+  // Don't show an empty list in the GUI
+  auto HasButtonForFeature = [this](const CControllerFeature &feature)
+    {
+      return m_featureList->HasButton(feature.Type());
+    };
+
+  auto HasButtonForController = [&](const ControllerPtr &controller)
+    {
+      const auto &features = controller->Layout().Features();
+      auto it = std::find_if(features.begin(), features.end(), HasButtonForFeature);
+      return it == features.end();
+    };
+
+  newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(), HasButtonForController), newControllers.end());
 
   // Check for changes
   std::set<std::string> oldControllerIds;

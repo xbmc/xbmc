@@ -42,6 +42,7 @@ namespace GAME
     // implementation of IFeatureList
     virtual bool Initialize(void) override;
     virtual void Deinitialize(void) override;
+    virtual bool HasButton(JOYSTICK::FEATURE_TYPE type) const override;
     virtual void Load(const ControllerPtr& controller) override;
     virtual void OnFocus(unsigned int index) override { }
     virtual void OnSelect(unsigned int index) override;

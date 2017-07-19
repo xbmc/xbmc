@@ -19,12 +19,12 @@
  */
 
 #include "GUIFeatureList.h"
-
 #include "GUIConfigurationWizard.h"
 #include "GUIControllerDefines.h"
-#include "games/controllers/guicontrols/GUIAnalogStickButton.h"
 #include "games/controllers/guicontrols/GUIFeatureControls.h"
-#include "games/controllers/guicontrols/GUIScalarFeatureButton.h"
+#include "games/controllers/guicontrols/GUIFeatureButton.h"
+#include "games/controllers/guicontrols/GUIFeatureFactory.h"
+#include "games/controllers/guicontrols/GUIFeatureTranslator.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIButtonControl.h"
@@ -169,7 +169,7 @@ IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int featureIndex)
 {
   CGUIControl* control = m_guiList->GetControl(CONTROL_FEATURE_BUTTONS_START + featureIndex);
 
-  return dynamic_cast<CGUIFeatureButton*>(control);
+  return static_cast<IFeatureButton*>(dynamic_cast<CGUIFeatureButton*>(control));
 }
 
 void CGUIFeatureList::CleanupButtons(void)
@@ -207,6 +207,11 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
   return groups;
 }
 
+bool CGUIFeatureList::HasButton(JOYSTICK::FEATURE_TYPE type) const
+{
+  return CGUIFeatureTranslator::GetButtonType(type) != BUTTON_TYPE::UNKNOWN;
+}
+
 std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex)
 {
   std::vector<CGUIButtonControl*> buttons;
@@ -215,27 +220,12 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CC
   unsigned int featureIndex = startIndex;
   for (const CControllerFeature& feature : features)
   {
-    CGUIButtonControl* pButton = nullptr;
+    BUTTON_TYPE buttonType = CGUIFeatureTranslator::GetButtonType(feature.Type());
 
-    // Create button
-    switch (feature.Type())
-    {
-      case JOYSTICK::FEATURE_TYPE::SCALAR:
-      {
-        pButton = new CGUIScalarFeatureButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
-        break;
-      }
-      case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:
-      {
-        pButton = new CGUIAnalogStickButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
-        break;
-      }
-      default:
-        break;
-    }
+    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(buttonType, *m_guiButtonTemplate, m_wizard, feature, featureIndex);
 
     // If successful, add button to result
-    if (pButton)
+    if (pButton != nullptr)
       buttons.push_back(pButton);
 
     featureIndex++;

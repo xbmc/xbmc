@@ -46,6 +46,8 @@ class CEvent;
  *      and the prompt for input ends.
  */
 
+#include "input/joysticks/JoystickTypes.h"
+
 namespace KODI
 {
 namespace GAME
@@ -122,6 +124,13 @@ namespace GAME
      * \remark This must be called if Initialize() returned true
      */
     virtual void Deinitialize(void) = 0;
+
+    /*!
+     * \brief Check if the feature type has any buttons in the GUI
+     * \param The type of the feature being added to the GUI
+     * \return True if the type is support, false otherwise
+     */
+    virtual bool HasButton(JOYSTICK::FEATURE_TYPE type) const = 0;
 
     /*!
      * \brief Load the features for the specified controller
