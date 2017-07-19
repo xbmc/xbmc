@@ -27,6 +27,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+typedef struct _object PyObject;
+
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
