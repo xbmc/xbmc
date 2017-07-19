@@ -255,13 +255,13 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
   // set current directory and python's path.
   PySys_SetArgv(argc, &argv[0]);
 
-#ifdef TARGET_WINDOWS
+  #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
   g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), pyPathUtf8.c_str());
-#else // ! TARGET_WINDOWS
+  #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
-#endif // ! TARGET_WINDOWS
+  #endif // ! TARGET_WINDOWS
 
   std::wstring pypath;
   g_charsetConverter.utf8ToW(m_pythonPath, pypath);
@@ -295,14 +295,13 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
       //  is linked against may not be the DLL that xbmc is linked against so
       //  passing a FILE* to python from an fopen has the potential to crash.
       std::string nativeFilename(realFilename); // filename in system encoding
-#ifdef TARGET_WINDOWS
-      if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
-      {
-        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
-        return false;
-      }
-#endif
-
+      #ifdef TARGET_WINDOWS
+        if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
+        {
+          CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
+          return false;
+        }
+      #endif
     PyObject *ioMod, *openedFile;
     ioMod = PyImport_ImportModule("io");
     openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
@@ -434,7 +433,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
   // to run the GC if that's the case.
   if (!m_stop && languageHook->HasRegisteredAddonClasses() && !systemExitThrown &&
       PyRun_SimpleString(GC_SCRIPT) == -1)
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to shutting down the Interpreter", GetId(), m_sourceFile.c_str());
+  CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to shutting down the Interpreter", GetId(), m_sourceFile.c_str());
 
   Py_EndInterpreter(state);
 
@@ -442,7 +441,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
   if (languageHook->HasRegisteredAddonClasses())
     CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): the python script \"%s\" has left several "
       "classes in memory that we couldn't clean up. The classes include: %s",
-      GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), getListOfAddonClassesAsString(languageHook).c_str());
+    GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), getListOfAddonClassesAsString(languageHook).c_str());
 
   // unregister the language hook
   languageHook->UnregisterMe();
