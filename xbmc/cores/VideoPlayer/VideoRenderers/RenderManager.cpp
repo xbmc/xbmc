@@ -1207,13 +1207,15 @@ void CRenderManager::CheckEnableClockSync()
       fps *= clockspeed;
     }
 
-    if (g_graphicsContext.GetFPS() >= fps)
-      diff = fmod(g_graphicsContext.GetFPS(), fps);
-    else
-      diff = fps - g_graphicsContext.GetFPS();
+    diff = g_graphicsContext.GetFPS() / fps;
+    if (diff < 1.0)
+      diff = 1.0 / diff;
+
+    // Calculate distance from nearest integer proportion
+    diff = std::abs(std::round(diff) - diff);
   }
 
-  if (diff < 0.01)
+  if (diff < 0.0005)
   {
     m_clockSync.m_enabled = true;
   }
