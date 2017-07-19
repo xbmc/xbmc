@@ -36,8 +36,8 @@ protected:
   void onExecutionFailed() override;
 
   // custom virtual methods
-  virtual std::map<std::string, PythonModuleInitialization> getModules() const;
-  virtual const char* getInitializationScript() const;
+  virtual std::map<std::string, PythonModuleInitialization> getModules() const = 0;
+  virtual const char* getInitializationScript() const = 0;
   virtual void onInitialization();
   // actually a PyObject* but don't wanna draw Python.h include into the header
   virtual void onPythonModuleInitialization(void* moduleDict);
