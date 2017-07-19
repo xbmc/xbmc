@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "guilib/GraphicContext.h"
 #include "TimingConstants.h"
 
@@ -310,7 +311,15 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   ProcessOverlays(media_pts + preroll);
 
   time += m_av_clock->GetAbsoluteClock();
-  m_renderManager.FlipPage(m_bAbortOutput, time/DVD_TIME_BASE, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, FS_NONE, false);
+
+  VideoPicture picture = {};
+  memset(&picture, 0, sizeof(VideoPicture));
+  picture.pts = time/DVD_TIME_BASE;
+  MMAL::CMMALBuffer *omvb = new MMAL::CMMALBuffer(0);
+  omvb->m_state = MMAL::MMALStateBypass;
+  picture.videoBuffer = omvb;
+
+  m_renderManager.AddVideoPicture(picture, m_bAbortOutput, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, (m_syncState == ESyncState::SYNC_STARTING));
 }
 
 bool OMXPlayerVideo::AcceptsData() const
@@ -772,9 +781,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
 
-  VideoPicture picture;
-  memset(&picture, 0, sizeof(VideoPicture));
-
+  VideoPicture picture = {};
   picture.iWidth = width;
   picture.iHeight = height;
   picture.iDisplayWidth = iDisplayWidth;

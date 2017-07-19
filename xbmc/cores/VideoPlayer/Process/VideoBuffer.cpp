@@ -45,7 +45,7 @@ void CVideoBuffer::Acquire(std::shared_ptr<IVideoBufferPool> pool)
 
 void CVideoBuffer::Release()
 {
-  if (--m_refCount <= 0)
+  if (--m_refCount <= 0 && m_pool)
   {
     std::shared_ptr<IVideoBufferPool> pool = m_pool->GetPtr();
     m_pool = nullptr;

@@ -44,7 +44,7 @@ namespace MMAL {
 
 class CMMALBuffer;
 
-enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
+enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, MMALStateBypass, };
 
 class CMMALPool : public IVideoBufferPool
 {
@@ -127,7 +127,7 @@ public:
 
   void SetVideoDeintMethod(std::string method);
   const char *GetStateName() {
-    static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
+    static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", "MMALStateBypass", };
     if ((size_t)m_state < vcos_countof(names))
       return names[(size_t)m_state];
     else

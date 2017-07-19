@@ -965,23 +965,37 @@ void CRenderManager::ToggleDebug()
   m_debugTimer.SetExpired();
 }
 
-int CRenderManager::AddVideoPicture(const VideoPicture& pic)
+bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait)
 {
   int index;
   {
     CSingleLock lock(m_presentlock);
     if (m_free.empty())
-      return -1;
+      return false;
     index = m_free.front();
   }
 
   CSingleLock lock(m_datalock);
   if (!m_pRenderer)
-    return -1;
+    return false;
 
-  m_pRenderer->AddVideoPicture(pic, index, m_dvdClock.GetClock());
+  m_pRenderer->AddVideoPicture(picture, index, m_dvdClock.GetClock());
 
-  return index;
+  // set fieldsync if picture is interlaced
+  EFIELDSYNC displayField = FS_NONE;
+  if (picture.iFlags & DVP_FLAG_INTERLACED)
+  {
+    if (deintMethod != EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE)
+    {
+      if (picture.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+        displayField = FS_TOP;
+      else
+        displayField = FS_BOT;
+    }
+  }
+
+  FlipPage(bStop, picture.pts, deintMethod, displayField, wait);
+  return true;
 }
 
 void CRenderManager::AddOverlay(CDVDOverlay* o, double pts)
