@@ -60,6 +60,7 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
   m_lateAxisDetected = false;
+  m_deviceName.clear();
 }
 
 void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
@@ -196,8 +197,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   bool bHandled = false;
 
   // Handle esc key separately
-  if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
-      primitive.Index() == ESC_KEY_CODE)
+  if (!m_deviceName.empty() && m_deviceName != buttonMap->DeviceName())
   {
     bool bIsCancelAction = false;
 
@@ -293,6 +293,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
         OnMotion(buttonMap);
         m_inputEvent.Set();
+        m_deviceName = buttonMap->DeviceName();
       }
     }
   }
