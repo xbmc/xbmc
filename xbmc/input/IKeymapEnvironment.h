@@ -42,6 +42,13 @@ public:
   virtual int GetWindowID() const = 0;
 
   /*!
+   * \brief Set the window ID
+   *
+   * \param The window ID, used for translating actions
+   */
+  virtual void SetWindowID(int windowId) = 0;
+
+  /*!
    * \brief Get the fallthrough window to when a key definition is missing
    *
    * \param windowId The window ID

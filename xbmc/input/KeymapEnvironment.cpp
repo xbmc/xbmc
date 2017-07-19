@@ -23,11 +23,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 
-int CKeymapEnvironment::GetWindowID() const
-{
-  return g_windowManager.GetActiveWindowID();
-}
-
 int CKeymapEnvironment::GetFallthrough(int windowId) const
 {
   return CWindowTranslator::GetFallbackWindow(windowId);
