@@ -307,7 +307,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
     ioMod = PyImport_ImportModule("io");
     openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
     Py_DECREF(ioMod);
-    FILE *fp = py3c_PyFile_AsFileWithMode(openedFile, (char *)"r");
+    FILE *fp = PyFile_AsFileWithMode(openedFile, (char *)"r");
 
       if (fp != NULL)
       {
@@ -461,6 +461,30 @@ void CPythonInvoker::executeScript(void *fp, const std::string &script, void *mo
 
   int m_Py_file_input = Py_file_input;
   PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, NULL);
+}
+
+FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject *py_file, const char *mode)
+{
+    FILE *f;
+    PyObject *ret;
+    int fd;
+
+    ret = PyObject_CallMethod(py_file, "flush", "");
+    if (ret == NULL)
+        return NULL;
+    Py_DECREF(ret);
+
+    fd = PyObject_AsFileDescriptor(py_file);
+    if (fd == -1)
+        return NULL;
+
+    f = fdopen(fd, mode);
+    if (f == NULL) {
+        PyErr_SetFromErrno(PyExc_OSError);
+        return NULL;
+    }
+
+    return f;
 }
 
 bool CPythonInvoker::stop(bool abort)
