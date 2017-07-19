@@ -49,6 +49,7 @@ namespace JOYSTICK
    *   6) absolute pointer
    *   7) wheel
    *   8) throttle
+   *   9) keyboard key
    *
    * [*] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,
@@ -65,6 +66,7 @@ namespace JOYSTICK
     ABSPOINTER,
     WHEEL,
     THROTTLE,
+    KEY,
   };
 
   /*!
@@ -174,6 +176,7 @@ namespace JOYSTICK
     HAT,         // one of the four direction arrows on a D-pad
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
+    KEY          // a keyboard key
   };
   
   /*!

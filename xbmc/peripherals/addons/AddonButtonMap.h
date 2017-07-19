@@ -130,6 +130,16 @@ namespace PERIPHERALS
       const KODI::JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
+    bool GetKey(
+      const KODI::JOYSTICK::FeatureName& feature,
+      KODI::JOYSTICK::CDriverPrimitive& primitive
+    ) override;
+
+    void AddKey(
+      const KODI::JOYSTICK::FeatureName& feature,
+      const KODI::JOYSTICK::CDriverPrimitive& primitive
+    ) override;
+
     void SetIgnoredPrimitives(const std::vector<KODI::JOYSTICK::CDriverPrimitive>& primitives) override;
 
     bool IsIgnored(const KODI::JOYSTICK::CDriverPrimitive& primitive) override;

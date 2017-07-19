@@ -39,6 +39,7 @@
 #include "devices/PeripheralHID.h"
 #include "devices/PeripheralImon.h"
 #include "devices/PeripheralJoystick.h"
+#include "devices/PeripheralKeyboard.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
@@ -351,6 +352,10 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
 
   case PERIPHERAL_JOYSTICK:
     peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
+    break;
+
+  case PERIPHERAL_KEYBOARD:
+    peripheral = PeripheralPtr(new CPeripheralKeyboard(*this, mappedResult, &bus));
     break;
 
   default:
@@ -864,6 +869,7 @@ void CPeripherals::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 {
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
+  GetPeripheralsWithFeature(peripherals, FEATURE_KEYBOARD);
 
   for (auto& peripheral : peripherals)
     peripheral->RegisterJoystickButtonMapper(mapper);
@@ -875,6 +881,7 @@ void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
+  GetPeripheralsWithFeature(peripherals, FEATURE_KEYBOARD);
 
   for (auto& peripheral : peripherals)
     peripheral->UnregisterJoystickButtonMapper(mapper);

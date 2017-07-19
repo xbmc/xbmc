@@ -33,6 +33,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 
 using namespace KODI;
@@ -104,9 +105,22 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
   for (auto itGroup = featureGroups.begin(); itGroup != featureGroups.end(); ++itGroup)
   {
     const std::string& groupName = itGroup->groupName;
+    const bool bIsVirtualKey = itGroup->bIsVirtualKey;
+
+    std::vector<CGUIButtonControl*> buttons;
 
     // Create buttons
-    std::vector<CGUIButtonControl*> buttons = GetButtons(itGroup->features, m_buttonCount);
+    if (bIsVirtualKey)
+    {
+      CGUIButtonControl* button = GetSelectKeyButton(itGroup->features, m_buttonCount);
+      if (button != nullptr)
+        buttons.push_back(button);
+    }
+    else
+    {
+      buttons = GetButtons(itGroup->features, m_buttonCount);
+    }
+
     if (!buttons.empty())
     {
       // Just in case
@@ -143,8 +157,18 @@ void CGUIFeatureList::OnSelect(unsigned int buttonIndex)
   for ( ; buttonIndex < m_buttonCount; buttonIndex++)
   {
     IFeatureButton* control = GetButtonControl(buttonIndex);
-    if (control)
+    if (control == nullptr)
+      continue;
+
+    if (control->AllowWizard())
       buttons.push_back(control);
+    else
+    {
+      // Only map this button if it's the only one
+      if (buttons.empty())
+        buttons.push_back(control);
+      break;
+    }
   }
 
   m_wizard->Run(m_controller->ID(), buttons);
@@ -162,6 +186,7 @@ void CGUIFeatureList::CleanupButtons(void)
   m_buttonCount = 0;
 
   m_wizard->Abort(true);
+  m_wizard->UnregisterKeys();
 
   if (m_guiList)
     m_guiList->ClearAll();
@@ -185,15 +210,33 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
         // Add feature to previous group
         previousGroup.features.emplace_back(feature);
         bAdded = true;
+
+        // If feature is a key, add it to the preceding virtual group as well
+        if (feature.Category() == JOYSTICK::FEATURE_CATEGORY::KEY && groups.size() >= 2)
+        {
+          FeatureGroup &virtualGroup = *(groups.rbegin() + 1);
+          if (virtualGroup.bIsVirtualKey)
+            virtualGroup.features.emplace_back(feature);
+        }
       }
     }
 
     if (!bAdded)
     {
+      // If feature is a key, create a virtual group that allows the user to
+      // select which key to map
+      if (feature.Category() == JOYSTICK::FEATURE_CATEGORY::KEY)
+      {
+        FeatureGroup virtualGroup;
+        virtualGroup.groupName = g_localizeStrings.Get(35166); // "All keys"
+        virtualGroup.bIsVirtualKey = true;
+        virtualGroup.features.emplace_back(feature);
+        groups.emplace_back(std::move(virtualGroup));
+      }
+
       // Create new group and add feature
       FeatureGroup group;
       group.groupName = feature.CategoryLabel();
-      group.category = feature.Category();
       group.features.emplace_back(feature);
       groups.emplace_back(std::move(group));
     }
@@ -228,4 +271,16 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CC
   }
 
   return buttons;
+}
+
+CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(const std::vector<CControllerFeature>& features, unsigned int buttonIndex)
+{
+  // Expose keycodes to the wizard
+  for (const CControllerFeature& feature : features)
+  {
+    if (feature.Type() == JOYSTICK::FEATURE_TYPE::KEY)
+      m_wizard->RegisterKey(feature);
+  }
+
+  return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate, m_wizard, CControllerFeature(), buttonIndex);
 }

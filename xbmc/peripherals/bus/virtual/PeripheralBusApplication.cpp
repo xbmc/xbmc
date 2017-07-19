@@ -41,12 +41,27 @@ void CPeripheralBusApplication::Initialise(void)
 
 bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results)
 {
+  {
+    PeripheralScanResult result(Type());
+    result.m_type          = PERIPHERAL_KEYBOARD;
+    result.m_strDeviceName = g_localizeStrings.Get(35150); // "Keyboard"
+    result.m_strLocation   = PeripheralTypeTranslator::TypeToString(PERIPHERAL_KEYBOARD);
+    result.m_iVendorId     = 0;
+    result.m_iProductId    = 0;
+    result.m_mappedType    = PERIPHERAL_KEYBOARD;
+    result.m_mappedBusType = Type();
+    result.m_iSequence     = 0;
+
+    if (!results.ContainsResult(result))
+      results.m_results.push_back(result);
+  }
+
   return true;
 }
 
 void CPeripheralBusApplication::GetDirectory(const std::string &strPath, CFileItemList &items) const
 {
-  // Don't list emulated joysticks in the GUI
+  // Don't list virtual devices in the GUI
 }
 
 std::string CPeripheralBusApplication::MakeLocation(unsigned int controllerIndex) const

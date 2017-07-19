@@ -245,6 +245,22 @@ void CAxisDetector::DetectType(float position)
   }
 }
 
+// --- CKeyDetector ---------------------------------------------------------
+
+CKeyDetector::CKeyDetector(CButtonMapping* buttonMapping, XBMCKey keycode) :
+  CPrimitiveDetector(buttonMapping),
+  m_keycode(keycode)
+{
+}
+
+bool CKeyDetector::OnMotion(bool bPressed)
+{
+  if (bPressed)
+    return MapPrimitive(CDriverPrimitive(m_keycode));
+
+  return false;
+}
+
 // --- CButtonMapping ----------------------------------------------------------
 
 CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap) :
@@ -319,6 +335,11 @@ void CButtonMapping::ProcessAxisMotions(void)
   m_buttonMapper->OnEventFrame(m_buttonMap, IsMapping());
 
   m_frameCount++;
+}
+
+bool CButtonMapping::OnKeyPress(const CKey& key)
+{
+  return GetKey(static_cast<XBMCKey>(key.GetKeycode())).OnMotion(true);
 }
 
 void CButtonMapping::SaveButtonMap()
@@ -432,6 +453,19 @@ CAxisDetector& CButtonMapping::GetAxis(unsigned int axisIndex,
   }
 
   return itAxis->second;
+}
+
+CKeyDetector& CButtonMapping::GetKey(XBMCKey keycode)
+{
+  auto itKey = m_keys.find(keycode);
+
+  if (itKey == m_keys.end())
+  {
+    m_keys.insert(std::make_pair(keycode, CKeyDetector(this, keycode)));
+    itKey = m_keys.find(keycode);
+  }
+
+  return itKey->second;
 }
 
 void CButtonMapping::OnLateDiscovery(unsigned int axisIndex)

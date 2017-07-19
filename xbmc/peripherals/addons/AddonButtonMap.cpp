@@ -420,6 +420,36 @@ void CAddonButtonMap::AddThrottle(const KODI::JOYSTICK::FeatureName& feature,
     Load();
 }
 
+bool CAddonButtonMap::GetKey(const FeatureName& feature, CDriverPrimitive& primitive)
+{
+  bool retVal(false);
+
+  CSingleLock lock(m_mutex);
+
+  FeatureMap::const_iterator it = m_features.find(feature);
+  if (it != m_features.end())
+  {
+    const kodi::addon::JoystickFeature& addonFeature = it->second;
+
+    if (addonFeature.Type() == JOYSTICK_FEATURE_TYPE_KEY)
+    {
+      primitive = CPeripheralAddonTranslator::TranslatePrimitive(addonFeature.Primitive(JOYSTICK_SCALAR_PRIMITIVE));
+      retVal = true;
+    }
+  }
+
+  return retVal;
+}
+
+void CAddonButtonMap::AddKey(const FeatureName& feature, const CDriverPrimitive& primitive)
+{
+  kodi::addon::JoystickFeature scalar(feature, JOYSTICK_FEATURE_TYPE_KEY);
+  scalar.SetPrimitive(JOYSTICK_SCALAR_PRIMITIVE, CPeripheralAddonTranslator::TranslatePrimitive(primitive));
+
+  if (auto addon = m_addon.lock())
+    addon->MapFeature(m_device, m_strControllerId, scalar);
+}
+
 void CAddonButtonMap::SetIgnoredPrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
 {
   if (auto addon = m_addon.lock())
@@ -478,6 +508,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
     switch (feature.Type())
     {
       case JOYSTICK_FEATURE_TYPE_SCALAR:
+      case JOYSTICK_FEATURE_TYPE_KEY:
       {
         driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(JOYSTICK_SCALAR_PRIMITIVE))] = it->first;
         break;

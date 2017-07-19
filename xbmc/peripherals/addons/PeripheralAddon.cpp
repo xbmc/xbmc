@@ -49,6 +49,9 @@ using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
 
+#define KEYBOARD_BUTTON_MAP_NAME  "Keyboard"
+#define KEYBOARD_PROVIDER         "application"
+
 #ifndef SAFE_DELETE
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
@@ -825,6 +828,11 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device, kodi::addon::J
     joystickInfo.SetMotorCount(joystick->MotorCount());
     joystickInfo.SetSupportsPowerOff(joystick->SupportsPowerOff());
   }
+  else if (device->Type() == PERIPHERAL_KEYBOARD)
+  {
+    joystickInfo.SetName(GetDeviceName(PERIPHERAL_KEYBOARD)); // Override name with non-localized version
+    joystickInfo.SetProvider(GetProvider(PERIPHERAL_KEYBOARD));
+  }
 }
 
 void CPeripheralAddon::SetJoystickInfo(CPeripheralJoystick& joystick, const kodi::addon::Joystick& joystickInfo)
@@ -853,6 +861,8 @@ std::string CPeripheralAddon::GetDeviceName(PeripheralType type)
 {
   switch (type)
   {
+  case PERIPHERAL_KEYBOARD:
+    return KEYBOARD_BUTTON_MAP_NAME;
   default:
     break;
   }
@@ -864,6 +874,8 @@ std::string CPeripheralAddon::GetProvider(PeripheralType type)
 {
   switch (type)
   {
+  case PERIPHERAL_KEYBOARD:
+    return KEYBOARD_PROVIDER;
   default:
     break;
   }

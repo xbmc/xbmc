@@ -33,6 +33,7 @@ namespace GAME
     ANALOG_STICK,
     WHEEL,
     THROTTLE,
+    SELECT_KEY,
   };
 }
 }

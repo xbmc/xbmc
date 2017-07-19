@@ -20,6 +20,7 @@
 #pragma once
 
 #include "input/joysticks/JoystickTypes.h"
+#include "input/XBMC_keysym.h"
 
 #include <string>
 
@@ -39,6 +40,24 @@ public:
 
   static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
   static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
+
+  /*!
+   * \brief Translate a keyboard symbol to a Kodi key code
+   *
+   * \param symbol The key's symbol, defined in the kodi-game-controllers project
+   *
+   * \return The layout-independent keycode associated with the key
+   */
+  static XBMCKey TranslateKeysym(const std::string &symbol);
+
+  /*!
+   * \brief Translate a Kodi key code to a keyboard symbol
+   *
+   * \param keycode The Kodi key code
+   *
+   * \return The key's symbol, or an empty string if no symbol is defined for the keycode
+   */
+  static const char *TranslateKeycode(XBMCKey keycode);
 };
 
 }

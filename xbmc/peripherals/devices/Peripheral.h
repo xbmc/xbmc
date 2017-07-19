@@ -40,6 +40,11 @@ namespace JOYSTICK
   class IDriverReceiver;
   class IInputHandler;
 }
+
+namespace KEYBOARD
+{
+  class IKeyboardHandler;
+}
 }
 
 namespace PERIPHERALS
@@ -201,6 +206,9 @@ namespace PERIPHERALS
 
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
+
+    virtual void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler) { }
 
     // implementation of IInputProvider
     void RegisterInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous) override;
