@@ -82,10 +82,21 @@ CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements) :
   m_announcements(announcements),
   m_eventScanner(this)
 {
+  // Register settings
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
+  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALLIBRARIES);
+  settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
+  settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
+  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
 }
 
 CPeripherals::~CPeripherals()
 {
+  // Unregister settings
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+
   Clear();
 }
 

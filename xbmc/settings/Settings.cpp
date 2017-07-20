@@ -27,7 +27,6 @@
 #include "Util.h"
 #include "events/EventLog.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
@@ -61,7 +60,6 @@
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
-#include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRSettings.h"
@@ -85,7 +83,6 @@
 #include "utils/SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
-#include "input/InputManager.h"
 #include "ServiceBroker.h"
 #include "DiscSettings.h"
 
@@ -822,16 +819,13 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetInputManager());
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetRepositoryUpdater());
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_weatherManager);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
@@ -980,10 +974,6 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetInputManager(), settingSet);
-
-  settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVER);
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPORT);
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME);
@@ -1027,24 +1017,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_WEATHER_ADDONSETTINGS);
   GetSettingsManager()->RegisterCallback(&g_weatherManager, settingSet);
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALLIBRARIES);
-  settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
-  settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
-  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetPeripherals(), settingSet);
-
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
   GetSettingsManager()->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
 #endif
-
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_ADDONS_AUTOUPDATES);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetRepositoryUpdater(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
@@ -1090,17 +1068,14 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetInputManager());
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetRepositoryUpdater());
   GetSettingsManager()->UnregisterCallback(&GAME::CGameSettings::GetInstance());
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_weatherManager);
-GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
