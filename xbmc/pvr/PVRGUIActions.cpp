@@ -1238,7 +1238,7 @@ namespace PVR
     {
       CLog::Log(LOGNOTICE, "PVRGUIActions - %s - continue playback on channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
       CServiceBroker::GetPVRManager().SetPlayingGroup(CServiceBroker::GetPVRManager().ChannelGroups()->GetLastPlayedGroup(channel->ChannelID()));
-      return SwitchToChannel(item, true, true);
+      return SwitchToChannel(item, true, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
     }
 
     return false;
