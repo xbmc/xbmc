@@ -21,14 +21,13 @@
 #include <ppl.h>
 #include <ppltasks.h>
 
-#include "WinRenderBuffer.h"
-#include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "utils/CPUInfo.h"
 #include "utils/win32/memcpy_sse2.h"
 #include "windowing/windows/WinSystemWin32DX.h"
 #include "WinRenderer.h"
+#include "WinRenderBuffer.h"
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -47,6 +46,8 @@ CRenderBuffer::CRenderBuffer()
   , m_soft(false)
   , m_width(0)
   , m_height(0)
+  , m_widthTex(0)
+  , m_heightTex(0)
   , m_activePlanes(0)
   , m_mapType(D3D11_MAP_WRITE_DISCARD)
   , m_staging(nullptr)
@@ -119,52 +120,52 @@ void CRenderBuffer::Clear() const
   switch (format)
   {
   case BUFFER_FMT_YUV420P:
-    memset(m_rects[PLANE_Y].pData,    0, m_rects[PLANE_Y].RowPitch * m_height);
-    memset(m_rects[PLANE_U].pData, 0x80, m_rects[PLANE_U].RowPitch * (m_height >> 1));
-    memset(m_rects[PLANE_V].pData, 0x80, m_rects[PLANE_V].RowPitch * (m_height >> 1));
+    memset(m_rects[PLANE_Y].pData,    0, m_rects[PLANE_Y].RowPitch * m_heightTex);
+    memset(m_rects[PLANE_U].pData, 0x80, m_rects[PLANE_U].RowPitch * (m_heightTex >> 1));
+    memset(m_rects[PLANE_V].pData, 0x80, m_rects[PLANE_V].RowPitch * (m_heightTex >> 1));
     break;
   case BUFFER_FMT_YUV420P10:
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData),     0, m_rects[PLANE_Y].RowPitch * m_height >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x200, m_rects[PLANE_U].RowPitch * (m_height >> 1) >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x200, m_rects[PLANE_V].RowPitch * (m_height >> 1) >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData),     0, m_rects[PLANE_Y].RowPitch * m_heightTex >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x200, m_rects[PLANE_U].RowPitch * (m_heightTex >> 1) >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x200, m_rects[PLANE_V].RowPitch * (m_heightTex >> 1) >> 1);
     break;
   case BUFFER_FMT_YUV420P16: 
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData),      0, m_rects[PLANE_Y].RowPitch * m_height >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x8000, m_rects[PLANE_U].RowPitch * (m_height >> 1) >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x8000, m_rects[PLANE_V].RowPitch * (m_height >> 1) >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData),      0, m_rects[PLANE_Y].RowPitch * m_heightTex >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x8000, m_rects[PLANE_U].RowPitch * (m_heightTex >> 1) >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x8000, m_rects[PLANE_V].RowPitch * (m_heightTex >> 1) >> 1);
     break;
   case BUFFER_FMT_NV12:
-    memset(m_rects[PLANE_Y].pData,     0, m_rects[PLANE_Y].RowPitch * m_height);
-    memset(m_rects[PLANE_UV].pData, 0x80, m_rects[PLANE_UV].RowPitch * (m_height >> 1));
+    memset(m_rects[PLANE_Y].pData,     0, m_rects[PLANE_Y].RowPitch * m_heightTex);
+    memset(m_rects[PLANE_UV].pData, 0x80, m_rects[PLANE_UV].RowPitch * (m_heightTex >> 1));
     break;
   case BUFFER_FMT_D3D11_BYPASS:
     break;
   case BUFFER_FMT_D3D11_NV12:
   {
-    uint8_t* uvData = static_cast<uint8_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * m_height;
-    memset(m_rects[PLANE_D3D11].pData, 0, m_rects[PLANE_D3D11].RowPitch * m_height);
-    memset(uvData, 0x80, m_rects[PLANE_D3D11].RowPitch * (m_height >> 1));
+    uint8_t* uvData = static_cast<uint8_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * m_heightTex;
+    memset(m_rects[PLANE_D3D11].pData, 0, m_rects[PLANE_D3D11].RowPitch * m_heightTex);
+    memset(uvData, 0x80, m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1));
     break;
   }
   case BUFFER_FMT_D3D11_P010:
   {
-    wchar_t* uvData = static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * (m_height >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData), 0, m_rects[PLANE_D3D11].RowPitch * m_height >> 1);
-    wmemset(uvData, 0x200, m_rects[PLANE_D3D11].RowPitch * (m_height >> 1) >> 1);
+    wchar_t* uvData = static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData), 0, m_rects[PLANE_D3D11].RowPitch * m_heightTex >> 1);
+    wmemset(uvData, 0x200, m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1) >> 1);
     break;
   }
   case BUFFER_FMT_D3D11_P016: 
   {
-    wchar_t* uvData = static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * (m_height >> 1);
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData), 0, m_rects[PLANE_D3D11].RowPitch * m_height >> 1);
-    wmemset(uvData, 0x8000, m_rects[PLANE_D3D11].RowPitch * (m_height >> 1) >> 1);
+    wchar_t* uvData = static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1);
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData), 0, m_rects[PLANE_D3D11].RowPitch * m_heightTex >> 1);
+    wmemset(uvData, 0x8000, m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1) >> 1);
     break;
   }
   case BUFFER_FMT_UYVY422:
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData), 0x0080, m_rects[PLANE_Y].RowPitch * (m_height >> 1));
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData), 0x0080, m_rects[PLANE_Y].RowPitch * (m_heightTex >> 1));
     break;
   case BUFFER_FMT_YUYV422:
-    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData), 0x8000, m_rects[PLANE_Y].RowPitch * (m_height >> 1));
+    wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData), 0x8000, m_rects[PLANE_Y].RowPitch * (m_heightTex >> 1));
     break;
   default:
     break;
@@ -174,9 +175,11 @@ void CRenderBuffer::Clear() const
 bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned height, bool software)
 {
   format = fmt;
+  m_soft = software;
   m_width = width;
   m_height = height;
-  m_soft = software;
+  m_widthTex = width;
+  m_heightTex = height;
 
   m_mapType = D3D11_MAP_WRITE_DISCARD;
   D3D11_USAGE usage = D3D11_USAGE_DYNAMIC;
@@ -194,18 +197,18 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
   case BUFFER_FMT_YUV420P10:
   case BUFFER_FMT_YUV420P16:
   {
-    if ( !m_textures[PLANE_Y].Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R16_UNORM)
-      || !m_textures[PLANE_U].Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM)
-      || !m_textures[PLANE_V].Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
+    if ( !m_textures[PLANE_Y].Create(m_widthTex,      m_heightTex,      1, usage, DXGI_FORMAT_R16_UNORM)
+      || !m_textures[PLANE_U].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R16_UNORM)
+      || !m_textures[PLANE_V].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
       return false;
     m_activePlanes = 3;
     break;
   }
   case BUFFER_FMT_YUV420P:
   {
-    if ( !m_textures[PLANE_Y].Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
-      || !m_textures[PLANE_U].Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM)
-      || !m_textures[PLANE_V].Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM))
+    if ( !m_textures[PLANE_Y].Create(m_widthTex,      m_heightTex,      1, usage, DXGI_FORMAT_R8_UNORM)
+      || !m_textures[PLANE_U].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R8_UNORM)
+      || !m_textures[PLANE_V].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R8_UNORM))
       return false;
     m_activePlanes = 3;
     break;
@@ -216,8 +219,8 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
     if (!g_Windowing.IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       uvFormat = DXGI_FORMAT_R8G8_SNORM;
-    if ( !m_textures[PLANE_Y].Create(m_width,       m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
-      || !m_textures[PLANE_UV].Create(m_width >> 1, m_height >> 1, 1, usage, uvFormat))
+    if ( !m_textures[PLANE_Y].Create(m_widthTex,       m_heightTex,      1, usage, DXGI_FORMAT_R8_UNORM)
+      || !m_textures[PLANE_UV].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, uvFormat))
       return false;
 
     m_activePlanes = 2;
@@ -233,8 +236,8 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
   case BUFFER_FMT_D3D11_P016:
   {
     // some drivers don't allow not aligned decoder textures.
-    m_width = FFALIGN(width, 32);
-    m_height = FFALIGN(height, 32);
+    m_widthTex = FFALIGN(width, 32);
+    m_heightTex = FFALIGN(height, 32);
     if (format == BUFFER_FMT_D3D11_NV12)
       dxgi_format = DXGI_FORMAT_NV12;
     else if (format == BUFFER_FMT_D3D11_P010)
@@ -242,7 +245,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
     else if (format == BUFFER_FMT_D3D11_P016)
       dxgi_format = DXGI_FORMAT_P016;
 
-    if (!m_textures[PLANE_D3D11].Create(m_width, m_height, 1, usage, dxgi_format))
+    if (!m_textures[PLANE_D3D11].Create(m_widthTex, m_heightTex, 1, usage, dxgi_format))
       return false;
 
     m_activePlanes = 2;
@@ -250,7 +253,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
   }
   case BUFFER_FMT_UYVY422:
   {
-    if (!m_textures[PLANE_Y].Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
+    if (!m_textures[PLANE_Y].Create(m_widthTex >> 1, m_heightTex, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
       return false;
 
     m_activePlanes = 1;
@@ -258,7 +261,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
   }
   case BUFFER_FMT_YUYV422:
   {
-    if (!m_textures[PLANE_Y].Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
+    if (!m_textures[PLANE_Y].Create(m_widthTex >> 1, m_heightTex, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
       return false;
 
     m_activePlanes = 1;
@@ -282,10 +285,10 @@ bool CRenderBuffer::UploadBuffer()
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    auto const buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
     // rewrite dimension to actual values for proper usage in shaders
-    m_width = buf->width;
-    m_height = buf->height;
+    m_widthTex = buf->width;
+    m_heightTex = buf->height;
     ret = true;
     break;
   }
@@ -418,18 +421,18 @@ bool CRenderBuffer::CopyToD3D11()
   // destination
   D3D11_MAPPED_SUBRESOURCE rect = m_rects[PLANE_D3D11];
   uint8_t* pData = static_cast<uint8_t*>(rect.pData);
-  uint8_t* dst[] = {pData, pData + m_textures[PLANE_D3D11].GetHeight() * rect.RowPitch};
+  uint8_t* dst[] = {pData, pData + m_heightTex * rect.RowPitch};
   int dstStride[] = {rect.RowPitch, rect.RowPitch};
   // source
   uint8_t* src[3]; 
   videoBuffer->GetPlanes(src);
   int srcStrides[3];
   videoBuffer->GetStrides(srcStrides);
-  
-  unsigned width = m_width;
-  unsigned height = m_height;
 
-  auto buffer_format = videoBuffer->GetFormat();
+  const unsigned width = m_width;
+  const unsigned height = m_height;
+
+  const AVPixelFormat buffer_format = videoBuffer->GetFormat();
   // copy to texture
   if ( buffer_format == AV_PIX_FMT_NV12
     || buffer_format == AV_PIX_FMT_P010
@@ -437,27 +440,27 @@ bool CRenderBuffer::CopyToD3D11()
   {
     Concurrency::parallel_invoke([&]() {
         // copy Y
-        copy_plane(src, srcStrides, height, width, dst, dstStride);
+        copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
       }, [&]() {
         // copy UV
-        copy_plane(&src[1], &srcStrides[1], height >> 1, width, &dst[1], &dstStride[1]);
+        copy_plane(src[1], srcStrides[1], height >> 1, width, dst[1], dstStride[1]);
       });
     // copy cache size of UV line again to fix Intel cache issue 
-    copy_plane(&src[1], &srcStrides[1], 1, 32, &dst[1], &dstStride[1]);
+    copy_plane(src[1], srcStrides[1], 1, 32, dst[1], dstStride[1]);
   }
   // convert 8bit
   else if ( buffer_format == AV_PIX_FMT_YUV420P )
   {
     Concurrency::parallel_invoke([&]() {
         // copy Y
-        copy_plane(src, srcStrides, height, width, dst, dstStride);
+        copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
       }, [&]() {
         // convert U+V -> UV
-        convert_yuv420_nv12_chrome(src, srcStrides, height, width, dst, dstStride);
+        convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, &dst[1], &dstStride[1]);
       });
     // copy cache size of UV line again to fix Intel cache issue 
     // height and width multiplied by two because they will be divided by func
-    convert_yuv420_nv12_chrome(src, srcStrides, 2, 64, dst, dstStride);
+    convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, &dst[1], &dstStride[1]);
   }
   // convert 10/16bit
   else if ( buffer_format == AV_PIX_FMT_YUV420P10
@@ -466,14 +469,14 @@ bool CRenderBuffer::CopyToD3D11()
     uint8_t bpp = buffer_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
     Concurrency::parallel_invoke([&]() {
         // copy Y
-        copy_plane(src, srcStrides, height, width, dst, dstStride, bpp);
+        copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0], bpp);
       }, [&]() {
         // convert U+V -> UV
-        convert_yuv420_p01x_chrome(src, srcStrides, height, width, dst, dstStride, bpp);
+        convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, &dst[1], &dstStride[1], bpp);
       });
     // copy cache size of UV line again to fix Intel cache issue 
     // height multiplied by two because it will be divided by func
-    convert_yuv420_p01x_chrome(src, srcStrides, 2, 32, dst, dstStride, bpp);
+    convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, &dst[1], &dstStride[1], bpp);
   }
   return true;
 }
@@ -586,8 +589,8 @@ void CRenderBuffer::CopyFromStaging() const
 
 bool CRenderBuffer::CopyBuffer()
 {
-  AVPixelFormat format = videoBuffer->GetFormat();
-  if (format == AV_PIX_FMT_D3D11VA_VLD)
+  const AVPixelFormat buffer_format = videoBuffer->GetFormat();
+  if (buffer_format == AV_PIX_FMT_D3D11VA_VLD)
   {
     if (m_bPending)
     {
@@ -597,10 +600,10 @@ bool CRenderBuffer::CopyBuffer()
     return true;
   }
 
-  if ( format == AV_PIX_FMT_YUV420P
-    || format == AV_PIX_FMT_YUV420P10
-    || format == AV_PIX_FMT_YUV420P16
-    || format == AV_PIX_FMT_NV12 )
+  if ( buffer_format == AV_PIX_FMT_YUV420P
+    || buffer_format == AV_PIX_FMT_YUV420P10
+    || buffer_format == AV_PIX_FMT_YUV420P16
+    || buffer_format == AV_PIX_FMT_NV12 )
   {
     uint8_t* bufData[3];
     int srcLines[3];

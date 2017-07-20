@@ -60,8 +60,8 @@ public:
   bool MapPlane(unsigned idx, void **pData, int *pStride) const;
   bool UnmapPlane(unsigned idx) const;
 
-  unsigned GetWidth() const { return m_width; }
-  unsigned GetHeight() const { return m_height; }
+  unsigned GetWidth() const { return m_widthTex; }
+  unsigned GetHeight() const { return m_heightTex; }
   bool HasPic() const;
   bool IsValid() const { return m_activePlanes > 0; }
   void QueueCopyBuffer();
@@ -81,8 +81,12 @@ private:
   bool m_locked;
   bool m_bPending;
   bool m_soft;
+  // video buffer size
   unsigned int m_width;
   unsigned int m_height;
+  // real render bufer size
+  unsigned int m_widthTex;
+  unsigned int m_heightTex;
   unsigned int m_activePlanes;
   D3D11_MAP m_mapType;
   CD3D11_TEXTURE2D_DESC m_sDesc;

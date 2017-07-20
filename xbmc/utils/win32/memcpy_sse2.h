@@ -23,7 +23,7 @@
 
 inline void* memcpy_aligned(void* dst, const void* src, size_t size, uint8_t bpp = 0)
 {
-  uint8_t shift = 16 - bpp;
+  const uint8_t shift = 16 - bpp;
   __m128i xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 #ifdef _M_X64
   __m128i xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, xmm16;
@@ -149,40 +149,42 @@ inline void* memcpy_aligned(void* dst, const void* src, size_t size, uint8_t bpp
   return dst;
 }
 
-inline void copy_plane(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[], uint8_t bpp = 0)
+inline void copy_plane(uint8_t *const src, const int srcStride, int height, int width, uint8_t *const dst, const int dstStride, uint8_t bpp = 0)
 {
   _mm_sfence();
 
-  if (srcStride[0] == dstStride[0])
-    memcpy_aligned(dst[0], src[0], srcStride[0] * height, bpp);
+  if (srcStride == dstStride)
+    memcpy_aligned(dst, src, srcStride * height, bpp);
   else
   {
     for (size_t line = 0; line < height; ++line)
     {
-      uint8_t * s = src[0] + srcStride[0] * line;
-      uint8_t * d = dst[0] + dstStride[0] * line;
-      memcpy_aligned(d, s, srcStride[0], bpp);
+      uint8_t * s = src + srcStride * line;
+      uint8_t * d = dst + dstStride * line;
+      memcpy_aligned(d, s, srcStride, bpp);
     }
   }
 }
 
-inline void convert_yuv420_nv12_chrome(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[])
+inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const *dst, const int *dstStride)
 {
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
   _mm_sfence();
 
-  size_t chromaWidth = (width + 1) >> 1;
-  size_t chromaHeight = height >> 1;
-  for (size_t line = 0; line < chromaHeight; ++line)
+  const size_t chroma_width = (width + 1) >> 1;
+  const size_t chromaHeight = height >> 1;
+  size_t line, i;
+
+  for (line = 0; line < chromaHeight; ++line)
   {
-    size_t i;
-    uint8_t * u = src[1] + line * srcStride[1];
-    uint8_t * v = src[2] + line * srcStride[2];
-    uint8_t * d = dst[1] + line * dstStride[1];
+    uint8_t * u = src[0] + line * srcStride[0];
+    uint8_t * v = src[1] + line * srcStride[1];
+    uint8_t * d = dst[0] + line * dstStride[0];
+
     // if memory is not aligned use memcpy
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
     {
-      for (i = 0; i < chromaWidth; ++i)
+      for (i = 0; i < chroma_width; ++i)
       {
         *d++ = *u++;
         *d++ = *v++;
@@ -190,7 +192,7 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const src[], const int srcStride
     }
     else
     {
-      for (i = 0; i < (chromaWidth - 31); i += 32)
+      for (i = 0; i < (chroma_width - 31); i += 32)
       {
         xmm0 = _mm_load_si128((__m128i*)(v + i));
         xmm1 = _mm_load_si128((__m128i*)(u + i));
@@ -210,17 +212,17 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const src[], const int srcStride
         _mm_stream_si128((__m128i *)(d + (i << 1) + 32), xmm2);
         _mm_stream_si128((__m128i *)(d + (i << 1) + 48), xmm1);
       }
-      if (((size_t)chromaWidth) & 0xF)
+      if (((size_t)chroma_width) & 0xF)
       {
         d += (i << 1);
         u += i; v += i;
-        for (; i < chromaWidth; ++i)
+        for (; i < chroma_width; ++i)
         {
           *d++ = *u++;
           *d++ = *v++;
         }
       }
-      else if (i < chromaWidth)
+      else if (i < chroma_width)
       {
         xmm0 = _mm_load_si128((__m128i*)(v + i));
         xmm1 = _mm_load_si128((__m128i*)(u + i));
@@ -236,21 +238,22 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const src[], const int srcStride
   }
 }
 
-inline void convert_yuv420_p01x_chrome(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[], uint8_t bpp)
+inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const *dst, const int *dstStride, uint8_t bpp)
 {
-  uint8_t shift = 16 - bpp;
+  const uint8_t shift = 16 - bpp;
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
   _mm_sfence();
 
   // Convert to P01x - Chroma
-  size_t chromaWidth = (width + 1) >> 1;
-  size_t chromaHeight = height >> 1;
-  for (size_t line = 0; line < chromaHeight; ++line)
+  const size_t chromaWidth = (width + 1) >> 1;
+  const size_t chromaHeight = height >> 1;
+  size_t line, i;
+
+  for (line = 0; line < chromaHeight; ++line)
   {
-    size_t i;
-    uint16_t * u = (uint16_t*)(src[1] + line * srcStride[1]);
-    uint16_t * v = (uint16_t*)(src[2] + line * srcStride[2]);
-    uint16_t * d = (uint16_t*)(dst[1] + line * dstStride[1]);
+    uint16_t * u = (uint16_t*)(src[0] + line * srcStride[0]);
+    uint16_t * v = (uint16_t*)(src[1] + line * srcStride[1]);
+    uint16_t * d = (uint16_t*)(dst[0] + line * dstStride[0]);
 
     // if memory is not aligned use memcpy
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
@@ -296,15 +299,15 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const src[], const int srcStride
 inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[])
 {
   // Convert to NV12 - Luma
-  copy_plane(src, srcStride, height, width, dst, dstStride);
+  copy_plane(src[0], srcStride[0], height, width, dst[0], dstStride[0]);
   // Convert to NV12 - Chroma
-  convert_yuv420_nv12_chrome(src, srcStride, height, width, dst, dstStride);
+  convert_yuv420_nv12_chrome(&src[1], &srcStride[1], height, width, &dst[1], &dstStride[1]);
 }
 
 inline void convert_yuv420_p01x(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[], uint8_t bpp)
 {
   // Convert to P01x - Luma
-  copy_plane(src, srcStride, height, width, dst, dstStride, bpp);
+  copy_plane(src[0], srcStride[0], height, width, dst[0], dstStride[0], bpp);
   // Convert to P01x - Chroma
-  convert_yuv420_p01x_chrome(src, srcStride, height, width, dst, dstStride, bpp);
+  convert_yuv420_p01x_chrome(&src[1], &srcStride[1], height, width, &dst[1], &dstStride[1], bpp);
 }
