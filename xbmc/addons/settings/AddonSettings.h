@@ -29,6 +29,7 @@
 #include "settings/SettingsBase.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingDependency.h"
+#include "settings/lib/SettingSection.h"
 
 class CXBMCTinyXML;
 
@@ -83,6 +84,10 @@ namespace ADDON
     bool InitializeDefinitions(const CXBMCTinyXML& doc);
 
     bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
+
+    std::shared_ptr<CSettingGroup> ParseOldSettingElement(const TiXmlElement *categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& actionSettings);
+
+    std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string> &actionSettings);
 
     bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
     std::shared_ptr<CSetting> InitializeFromOldSettingAction(std::string settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
