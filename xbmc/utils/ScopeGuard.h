@@ -51,12 +51,12 @@ public:
     reset();
   }
 
-  operator Handle()
+  operator Handle() const
   {
     return m_handle;
   }
 
-  operator bool()
+  operator bool() const
   {
     return m_handle != invalid;
   }
