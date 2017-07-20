@@ -173,7 +173,7 @@ namespace addon
   /// of composited effects. The changes in the music's loudness and frequency
   /// spectrum are among the properties used as input to the visualization.
   ///
-  /// Include the header \ref Visualization.h "#include <kodi/visualization/Visualization.h>"
+  /// Include the header \ref Visualization.h "#include <kodi/addon-instance/Visualization.h>"
   /// to use this class.
   ///
   /// This interface allows the creation of visualizations for Kodi, based upon
@@ -188,7 +188,7 @@ namespace addon
   ///
   /// **Here is an example of the minimum required code to start a visualization:**
   /// ~~~~~~~~~~~~~{.cpp}
-  /// #include <kodi/visualization/Visualization.h>
+  /// #include <kodi/addon-instance/Visualization.h>
   ///
   /// class CMyVisualization : public kodi::addon::CAddonBase,
   ///                          public kodi::addon::CInstanceVisualization
@@ -233,19 +233,19 @@ namespace addon
   /// other instance types:**
   ///
   /// ~~~~~~~~~~~~~{.cpp}
-  /// #include <kodi/visualization/Visualization.h>
+  /// #include <kodi/addon-instance/Visualization.h>
   ///
   /// class CMyVisualization : public ::kodi::addon::CInstanceVisualization
   /// {
   /// public:
-  ///   CMyVisualization(void* instance);
+  ///   CMyVisualization(KODI_HANDLE instance);
   ///
   ///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
   ///   void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) override;
   ///   void Render() override;
   /// };
   ///
-  /// CMyVisualization::CMyVisualization(void* instance)
+  /// CMyVisualization::CMyVisualization(KODI_HANDLE instance)
   ///   : CInstanceVisualization(instance)
   /// {
   ///   ...
@@ -368,6 +368,7 @@ namespace addon
     /// @param[in] samplesPerSec        Samples per second of stream
     /// @param[in] bitsPerSample        Number of bits in one sample
     /// @param[in] songName             The name of the currently-playing song
+    /// @return                         true if start successful done
     ///
     virtual bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) { return true; }
     //--------------------------------------------------------------------------
