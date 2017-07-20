@@ -103,7 +103,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   {
     if (pCategory->ValueStr() != LAYOUT_XML_ELM_CATEGORY)
     {
-      CLog::Log(LOGERROR, "<%s> tag is misnamed: <%s>", LAYOUT_XML_ELM_CATEGORY, pCategory->Value() ? pCategory->Value() : "");
+      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pCategory->ValueStr().c_str());
       continue;
     }
 
@@ -128,10 +128,8 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     {
       CControllerFeature feature;
 
-      if (!feature.Deserialize(pFeature, controller, category, strCategoryLabel))
-        return false;
-
-      m_features.push_back(feature);
+      if (feature.Deserialize(pFeature, controller, category, strCategoryLabel))
+        m_features.push_back(feature);
     }
   }
 

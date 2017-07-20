@@ -39,7 +39,7 @@ void CControllerFeature::Reset(void)
   m_strCategory.clear();
   m_strName.clear();
   m_strLabel.clear();
-  m_labelId = 0;
+  m_labelId = -1;
   m_inputType = INPUT_TYPE::UNKNOWN;
 }
 
@@ -74,7 +74,7 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
   m_type = CControllerTranslator::TranslateFeatureType(strType);
   if (m_type == FEATURE_TYPE::UNKNOWN)
   {
-    CLog::Log(LOGERROR, "Invalid feature: <%s> ", pElement->Value());
+    CLog::Log(LOGDEBUG, "Invalid feature: <%s> ", pElement->Value());
     return false;
   }
 
@@ -90,21 +90,16 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
     return false;
   }
 
-  // Label (not used for motors)
-  if (m_type != FEATURE_TYPE::MOTOR)
-  {
-    // Label ID
-    std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_LABEL);
-    if (strLabel.empty())
-    {
-      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_FEATURE_LABEL);
-      return false;
-    }
+  // Label ID
+  std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_LABEL);
+  if (strLabel.empty())
+    CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_FEATURE_LABEL);
+  else
     std::istringstream(strLabel) >> m_labelId;
 
-    // Label (string)
+  // Label (string)
+  if (m_labelId >= 0)
     m_strLabel = g_localizeStrings.GetAddonString(controller->ID(), m_labelId);
-  }
 
   // Input type
   if (m_type == FEATURE_TYPE::SCALAR)
