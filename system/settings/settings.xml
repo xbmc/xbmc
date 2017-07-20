@@ -1386,9 +1386,9 @@
           <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
           <constraints>
             <options>
-              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
-              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
-              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
+              <option label="106">0</option> <!-- CONTINUE_LAST_CHANNEL_OFF -->
+              <option label="107">1</option> <!-- CONTINUE_LAST_CHANNEL_ON -->
+              <option label="34122">2</option> <!-- CONTINUE_LAST_CHANNEL_ALWAYS -->
             </options>
           </constraints>
           <control type="list" format="string" />

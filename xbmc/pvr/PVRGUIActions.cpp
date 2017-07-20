@@ -1232,12 +1232,13 @@ namespace PVR
     if (iPlayMode == CONTINUE_LAST_CHANNEL_OFF)
       return false;
 
-    // Only switch to the channel if it was playing on last app quit.
-    if (bWasPlaying)
+    // switch to the channel if it was playing on last app quit or
+    // setting is always that means no matter if the channel was playing on last app quit
+    if (bWasPlaying || iPlayMode == CONTINUE_LAST_CHANNEL_ALWAYS)
     {
       CLog::Log(LOGNOTICE, "PVRGUIActions - %s - continue playback on channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
       CServiceBroker::GetPVRManager().SetPlayingGroup(CServiceBroker::GetPVRManager().ChannelGroups()->GetLastPlayedGroup(channel->ChannelID()));
-      return SwitchToChannel(item, true, iPlayMode == CONTINUE_LAST_CHANNEL_IN_FOREGROUND);
+      return SwitchToChannel(item, true, true);
     }
 
     return false;
