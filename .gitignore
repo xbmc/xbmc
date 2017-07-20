@@ -235,14 +235,14 @@ lib/cpluff/stamp-h1
 /project/Win32BuildSetup/dependencies/
 
 # /project/BuildDependencies
+/project/BuildDependencies/arm-uwp
 /project/BuildDependencies/downloads
 /project/BuildDependencies/downloads2
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
 /project/BuildDependencies/msys32
 /project/BuildDependencies/msys64
-/project/BuildDependencies/local32
-/project/BuildDependencies/local64
+/project/BuildDependencies/locals
 /project/BuildDependencies/build
 /project/BuildDependencies/scripts/tmp
 /project/BuildDependencies/src
@@ -251,7 +251,9 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/mingwlibs
 /project/BuildDependencies/x64
+/project/BuildDependencies/x64-uwp
 /project/BuildDependencies/win32
+/project/BuildDependencies/win32-uwp
 
 # /system
 /system/cpluff.dll
