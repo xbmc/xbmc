@@ -285,7 +285,7 @@ bool CRenderBuffer::UploadBuffer()
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    auto const buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    const auto buf = static_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
     // rewrite dimension to actual values for proper usage in shaders
     m_widthTex = buf->width;
     m_heightTex = buf->height;
