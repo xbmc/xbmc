@@ -56,6 +56,7 @@ namespace PVR
     };
 
     DECL_CONTEXTMENUITEM(ShowInformation);
+    DECL_STATICCONTEXTMENUITEM(ReplayProgram)
     DECL_STATICCONTEXTMENUITEM(FindSimilar);
     DECL_STATICCONTEXTMENUITEM(PlayRecording);
     DECL_STATICCONTEXTMENUITEM(StartRecording);
@@ -126,6 +127,23 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
+    // Replay program
+
+    bool ReplayProgram::IsVisible(const CFileItem &item) const
+    {
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        return epg->IsPlayable();
+
+      return false;
+    }
+
+    bool ReplayProgram::Execute(const CFileItemPtr &item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item, false /* bPlayMinimized */, true /* bCheckResume */);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
     // Find similar
 
     bool FindSimilar::IsVisible(const CFileItem &item) const
@@ -183,7 +201,7 @@ namespace PVR
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         return !epg->Timer() &&
-               epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime() &&
+               epg->IsRecordable() &&
                epg->ChannelTag() &&
                CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->ChannelTag()->ClientID()).SupportsTimers();
 
@@ -525,6 +543,7 @@ namespace PVR
     m_items =
     {
       std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
+      std::make_shared<CONTEXTMENUITEM::ReplayProgram>(19263), /* Replay program */
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),

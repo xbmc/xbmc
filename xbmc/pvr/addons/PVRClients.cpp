@@ -28,6 +28,7 @@
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -1213,6 +1214,45 @@ time_t CPVRClients::GetPlayingTime() const
   }
 
   return time;
+}
+
+bool CPVRClients::IsRecordable(const CConstPVREpgInfoTagPtr &tag) const
+{
+  PVR_CLIENT client;
+  bool isRecordable = false;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+     if(client->IsRecordable(tag, &isRecordable) != PVR_ERROR_NO_ERROR) {
+       isRecordable = tag->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+     }
+  }
+
+  return isRecordable;
+}
+
+bool CPVRClients::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
+{
+  PVR_CLIENT client;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+    return client->IsPlayable(tag);
+  }
+
+  return NULL;
+}
+
+const std::string CPVRClients::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties)
+{
+  PVR_CLIENT client;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+    return client->GetEpgTagUrl(tag, properties);
+  }
+
+  return "";
 }
 
 bool CPVRClients::IsTimeshifting(void) const

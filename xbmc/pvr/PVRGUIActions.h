@@ -245,6 +245,15 @@ namespace PVR
     bool PlayRecording(const CFileItemPtr &item, bool bCheckResume) const;
 
     /*!
+     * @brief Play epg tag.
+     * @param item containing a an epg tag.
+     * @param bPlayMinimized controls whether the recording should be played fullscreen or in a window.
+     * @param bCheckResume controls resume check.
+     * @return true on success, false otherwise.
+     */
+    bool PlayEpgTag(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
+
+    /*!
      * @brief Switch channel.
      * @param item containing a channel or an epg tag.
      * @param bCheckResume controls resume check in case a recording for the current epg event is present.

@@ -767,9 +767,15 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
       continue;
 
-    // Drop TimerTypes that aren't rules if end time is in the past
-    if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
-      continue;
+    // Drop TimerTypes that aren't rules and cannot be recorded
+    if (!type->IsTimerRule())
+    {
+      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag(false));
+      // If we have an epg tag, ask the pvr addon if recording is possible, else, use the current time
+      bool canRecord = epgTag ? epgTag->IsRecordable() : m_timerInfoTag->EndAsLocalTime() >= CDateTime::GetCurrentDateTime();
+      if (!canRecord)
+        continue;
+    }
 
     if (!bFoundThisType && *type == *m_timerType)
       bFoundThisType = true;

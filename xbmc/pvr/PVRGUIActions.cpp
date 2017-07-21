@@ -1086,6 +1086,30 @@ namespace PVR
     return true;
   }
 
+  bool CPVRGUIActions::PlayEpgTag(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const
+  {
+      const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+      if (!epgTag)
+        return false;
+
+      CStringPropertyMapPtr properties(new CStringPropertyMap());
+      std::string stream = epgTag->GetStreamUrl(properties);
+      if (stream.empty())
+      {
+        return false;
+      }
+
+      item->SetPath(stream);
+      for (auto const &entry : *properties.get()) {
+        item->SetProperty(entry.first, entry.second);
+      }
+
+      if (!bCheckResume || CheckResumeRecording(item))
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
+
+      return true;
+    }
+
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
     return SwitchToChannel(item, bCheckResume, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));

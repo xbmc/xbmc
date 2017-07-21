@@ -31,6 +31,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <map>
+#include <memory>
 
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
@@ -102,6 +104,10 @@ extern "C" {
     xbmc_codec_type_t codec_type;
     xbmc_codec_id_t   codec_id;
   } xbmc_codec_t;
+
+  typedef std::map<std::string, std::string> CStringPropertyMap;
+  typedef std::shared_ptr<CStringPropertyMap> CStringPropertyMapPtr;
+
 
   /*!
    * @brief numeric PVR timer type definitions (PVR_TIMER.iTimerType values)
@@ -662,6 +668,9 @@ extern "C" {
     long long (__cdecl* SeekRecordedStream)(long long, int);
     long long (__cdecl* PositionRecordedStream)(void);
     long long (__cdecl* LengthRecordedStream)(void);
+    PVR_ERROR (__cdecl* IsRecordable)(const EPG_TAG&, bool*);
+    bool (__cdecl* IsPlayable)(const EPG_TAG&);
+    int (__cdecl* GetEpgTagUrl)(const EPG_TAG&, char*, int, const CStringPropertyMapPtr&);
     void (__cdecl* DemuxReset)(void);
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);

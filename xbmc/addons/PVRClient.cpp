@@ -30,6 +30,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -369,6 +371,37 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
   strncpy(addonChannel.strStreamURL, xbmcChannel->StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
 }
 
+void CPVRClient::WriteEpgTag(const CConstPVREpgInfoTagPtr &tag, EPG_TAG &pvrTag)
+{
+  time_t t;
+  tag->StartAsUTC().GetAsTime(t);
+  pvrTag.startTime = t;
+  tag->EndAsUTC().GetAsTime(t);
+  pvrTag.endTime = t;
+  pvrTag.iParentalRating = tag->ParentalRating();
+  pvrTag.iUniqueBroadcastId = tag->UniqueBroadcastID();
+  pvrTag.bNotify = tag->Notify();
+  tag->FirstAiredAsUTC().GetAsTime(t);
+  pvrTag.firstAired = t;
+  pvrTag.iSeriesNumber = tag->SeriesNumber();
+  pvrTag.iEpisodeNumber = tag->EpisodeNumber();
+  pvrTag.iEpisodePartNumber = tag->EpisodePart();
+  pvrTag.iStarRating = tag->StarRating();
+  pvrTag.iYear = tag->Year();
+  pvrTag.iFlags = tag->Flags();
+  pvrTag.strTitle = tag->Title(true).c_str();
+  pvrTag.strPlotOutline = tag->PlotOutline().c_str();
+  pvrTag.strPlot = tag->Plot().c_str();
+  pvrTag.strOriginalTitle = tag->OriginalTitle(true).c_str();
+  pvrTag.strCast = tag->Cast().c_str();
+  pvrTag.strDirector = tag->Director().c_str();
+  pvrTag.strWriter = tag->Writer().c_str();
+  pvrTag.strIMDBNumber = tag->IMDBNumber().c_str();
+  pvrTag.strEpisodeName = tag->EpisodeName().c_str();
+  pvrTag.strIconPath = tag->Icon().c_str();
+  pvrTag.iChannelNumber = tag->ChannelTag()->ClientChannelNumber();
+}
+
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
@@ -629,6 +662,46 @@ PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
   PVR_ERROR retVal = m_struct.toAddon.RenameChannel(addonChannel);
   LogError(retVal, __FUNCTION__);
   return retVal;
+}
+
+PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool *isRecordable)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (!m_clientCapabilities.SupportsRecordings())
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+
+  EPG_TAG pvrTag;
+  WriteEpgTag(tag, pvrTag);
+  retVal = m_struct.toAddon.IsRecordable(pvrTag, isRecordable);
+  LogError(retVal, __FUNCTION__);
+
+  return retVal;
+}
+
+bool CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
+{
+  if (!m_bReadyToUse)
+    return false;
+
+  EPG_TAG pvrTag;
+  WriteEpgTag(tag, pvrTag);
+  return m_struct.toAddon.IsPlayable(pvrTag);
+}
+
+const std::string CPVRClient::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties)
+{
+  if (!m_bReadyToUse)
+    return nullptr;
+
+  EPG_TAG pvrTag;
+  WriteEpgTag(tag, pvrTag);
+  char url[4096];
+  m_struct.toAddon.GetEpgTagUrl(pvrTag, url, sizeof(url), properties);
+  return url;
 }
 
 void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)

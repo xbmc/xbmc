@@ -558,6 +558,37 @@ extern "C"
    */
   bool CanSeekStream();
 
+  /*
+   * Check if the given EPG tag can be recorded.
+   * @param tag the epg tag
+   * @param isRecordable Set to true if the tag can be recorded
+   * @return PVR_ERROR_NO_ERROR if isRecordable was set by the addon
+   * @remarks Optional, return PVR_ERROR_NOT_IMPLEMENTED to let kodi decide
+   *
+   */
+  PVR_ERROR IsRecordable(const EPG_TAG &tag, bool *isRecordable);
+
+  /*
+   * Check if the given EPG tag can be played.
+   * @param tag The EPG tag
+   * @return True if the EPG tag can be played
+   * @remarks Required, always return false if not supported by the addon
+   *
+   */
+  bool IsPlayable(const EPG_TAG &tag);
+
+  /*
+   * Get the URL to play a given EPG tag
+   * @param tag The EPG tag
+   * @param url The url to be returnd
+   * @param urlLen The length of the url buffer
+   * @param properties The properties to be provided to the file item
+   * @return The length of the url. -1 if the tag is not playable
+   * @remarks Required, always return -1 if not supported by the addon
+   *
+   */
+  int GetEpgTagUrl(const EPG_TAG &tag, char *url, int urlLen, const CStringPropertyMapPtr&);
+
   /*!
    * @brief Notify the pvr addon that XBMC (un)paused the currently playing stream
    */
@@ -712,6 +743,10 @@ extern "C"
     pClient->toAddon.SeekRecordedStream             = SeekRecordedStream;
     pClient->toAddon.PositionRecordedStream         = PositionRecordedStream;
     pClient->toAddon.LengthRecordedStream           = LengthRecordedStream;
+    pClient->toAddon.IsRecordable                   = IsRecordable;
+    pClient->toAddon.IsPlayable                     = IsPlayable;
+    pClient->toAddon.GetEpgTagUrl                   = GetEpgTagUrl;
+
 
     pClient->toAddon.DemuxReset                     = DemuxReset;
     pClient->toAddon.DemuxAbort                     = DemuxAbort;

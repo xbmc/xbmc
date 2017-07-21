@@ -38,7 +38,7 @@ namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag : public ISerializable
+  class CPVREpgInfoTag : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -82,6 +82,22 @@ namespace PVR
      * @return True if it's active, false otherwise.
      */
     bool IsActive(void) const;
+
+    /* @brief Check if this event can be recorded
+     * @return True if it can be recorded.
+     */
+    bool IsRecordable(void) const;
+
+    /* @brief Check if this event can be played
+     * @return True if it can be played.
+     */
+    bool IsPlayable(void) const;
+
+    /* @brief Get the stream url for this event
+     * @param properties The properties to be provided to the file item
+     * @return The stream url, empty string if playing is not possible
+     */
+    const std::string GetStreamUrl(CStringPropertyMapPtr &properties) const;
 
     /*!
      * @return True when this event has already passed, false otherwise.
@@ -310,6 +326,12 @@ namespace PVR
     std::string Path(void) const;
 
     /*!
+     * @brief Set the path to this event.
+     * @param path The path
+     */
+    void SetPath(const std::string &path);
+
+    /*!
      * @brief Set a timer for this event.
      * @param timer The timer.
      */
@@ -402,6 +424,11 @@ namespace PVR
      */
     bool IsSeries() const;
 
+    /*!
+     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
   private:
 
     /*!
@@ -420,11 +447,6 @@ namespace PVR
      * @brief Get current time, taking timeshifting into account.
      */
     CDateTime GetCurrentPlayingTime(void) const;
-
-    /*!
-     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
-     */
-    unsigned int Flags() const { return m_iFlags; }
 
     bool                     m_bNotify;            /*!< notify on start */
 
