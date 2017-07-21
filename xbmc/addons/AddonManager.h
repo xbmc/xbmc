@@ -79,7 +79,6 @@ namespace ADDON
 
     CAddonMgr();
     CAddonMgr(const CAddonMgr&);
-    CAddonMgr const& operator=(CAddonMgr const&);
     virtual ~CAddonMgr();
 
     CEventStream<AddonEvent>& Events() { return m_events; }
@@ -292,6 +291,7 @@ namespace ADDON
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:
+    CAddonMgr& operator=(CAddonMgr const&) = delete;
     /* libcpluff */
     cp_context_t *m_cp_context;
     std::unique_ptr<DllLibCPluff> m_cpluff;

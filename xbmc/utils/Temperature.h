@@ -57,7 +57,7 @@ public:
   bool operator ==(const CTemperature& right) const;
   bool operator !=(const CTemperature& right) const;
 
-  const CTemperature& operator =(const CTemperature& right);
+  CTemperature& operator =(const CTemperature& right);
   const CTemperature& operator +=(const CTemperature& right);
   const CTemperature& operator -=(const CTemperature& right);
   const CTemperature& operator *=(const CTemperature& right);

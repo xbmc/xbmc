@@ -65,7 +65,7 @@ public:
   bool operator ==(const CSpeed& right) const;
   bool operator !=(const CSpeed& right) const;
 
-  const CSpeed& operator =(const CSpeed& right);
+  CSpeed& operator =(const CSpeed& right);
   const CSpeed& operator +=(const CSpeed& right);
   const CSpeed& operator -=(const CSpeed& right);
   const CSpeed& operator *=(const CSpeed& right);

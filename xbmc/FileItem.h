@@ -137,7 +137,7 @@ public:
    \sa Initialize
    */
   void Reset();
-  const CFileItem& operator=(const CFileItem& item);
+  CFileItem& operator=(const CFileItem& item);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem &sortable, Field field) const override;
