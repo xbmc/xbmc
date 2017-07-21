@@ -56,6 +56,7 @@ namespace PVR
     };
 
     DECL_CONTEXTMENUITEM(ShowInformation);
+    DECL_STATICCONTEXTMENUITEM(ShowChannelGuide);
     DECL_STATICCONTEXTMENUITEM(FindSimilar);
     DECL_STATICCONTEXTMENUITEM(PlayRecording);
     DECL_STATICCONTEXTMENUITEM(StartRecording);
@@ -123,6 +124,23 @@ namespace PVR
         return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
 
       return CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Show channel guide
+
+    bool ShowChannelGuide::IsVisible(const CFileItem &item) const
+    {
+      const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
+      if (channel)
+        return channel->GetEPGNow().get() != nullptr;
+
+      return false;
+    }
+
+    bool ShowChannelGuide::Execute(const CFileItemPtr &item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->ShowChannelEPG(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -525,6 +543,7 @@ namespace PVR
     m_items =
     {
       std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
+      std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),

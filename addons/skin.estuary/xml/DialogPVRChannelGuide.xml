@@ -3,6 +3,13 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<controls>
 		<control type="group">
+			<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+			<animation effect="fade" start="100" end="75" time="0" condition="true">Conditional</animation>
+			<visible>!Window.IsActive(fullscreenvideo)</visible>
+			<include>ColoredBackgroundImages</include>
+		</control>
+		<control type="group">
 			<depth>DepthOSD</depth>
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
