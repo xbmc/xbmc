@@ -119,7 +119,7 @@ void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 
   if (GetPicture(data, size, picture))
   {
-    picture.iDuration = 1.0 / m_framerate;
+    picture.iDuration = DVD_SEC_TO_TIME(1.0 / m_framerate);
 
     if (!Configure(picture))
     {
