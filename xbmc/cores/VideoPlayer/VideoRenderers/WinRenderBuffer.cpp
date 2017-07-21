@@ -352,7 +352,7 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
 
 ID3D11View* CRenderBuffer::GetHWView() const
 {
-  auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  const auto buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
   return buf ? buf->view : nullptr;
 }
 
@@ -397,7 +397,7 @@ bool CRenderBuffer::UnmapPlane(unsigned idx) const
 
 bool CRenderBuffer::HasPic() const
 {
-  auto dxva_buffer = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  const auto dxva_buffer = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
   return dxva_buffer || m_textures[0].Get();
 }
 
@@ -456,27 +456,27 @@ bool CRenderBuffer::CopyToD3D11()
         copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
       }, [&]() {
         // convert U+V -> UV
-        convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, &dst[1], &dstStride[1]);
+        convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1]);
       });
     // copy cache size of UV line again to fix Intel cache issue 
     // height and width multiplied by two because they will be divided by func
-    convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, &dst[1], &dstStride[1]);
+    convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, dst[1], dstStride[1]);
   }
   // convert 10/16bit
   else if ( buffer_format == AV_PIX_FMT_YUV420P10
          || buffer_format == AV_PIX_FMT_YUV420P16 )
   {
-    uint8_t bpp = buffer_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
+    const uint8_t bpp = buffer_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
     Concurrency::parallel_invoke([&]() {
         // copy Y
         copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0], bpp);
       }, [&]() {
         // convert U+V -> UV
-        convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, &dst[1], &dstStride[1], bpp);
+        convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1], bpp);
       });
     // copy cache size of UV line again to fix Intel cache issue 
     // height multiplied by two because it will be divided by func
-    convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, &dst[1], &dstStride[1], bpp);
+    convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, dst[1], dstStride[1], bpp);
   }
   return true;
 }

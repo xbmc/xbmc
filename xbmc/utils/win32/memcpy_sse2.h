@@ -166,7 +166,7 @@ inline void copy_plane(uint8_t *const src, const int srcStride, int height, int 
   }
 }
 
-inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const *dst, const int *dstStride)
+inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const dst, const int dstStride)
 {
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
   _mm_sfence();
@@ -179,7 +179,7 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride
   {
     uint8_t * u = src[0] + line * srcStride[0];
     uint8_t * v = src[1] + line * srcStride[1];
-    uint8_t * d = dst[0] + line * dstStride[0];
+    uint8_t * d = dst + line * dstStride;
 
     // if memory is not aligned use memcpy
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
@@ -238,7 +238,7 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride
   }
 }
 
-inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const *dst, const int *dstStride, uint8_t bpp)
+inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const dst, const int dstStride, uint8_t bpp)
 {
   const uint8_t shift = 16 - bpp;
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
@@ -253,7 +253,7 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride
   {
     uint16_t * u = (uint16_t*)(src[0] + line * srcStride[0]);
     uint16_t * v = (uint16_t*)(src[1] + line * srcStride[1]);
-    uint16_t * d = (uint16_t*)(dst[0] + line * dstStride[0]);
+    uint16_t * d = (uint16_t*)(dst + line * dstStride);
 
     // if memory is not aligned use memcpy
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
@@ -301,7 +301,7 @@ inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int
   // Convert to NV12 - Luma
   copy_plane(src[0], srcStride[0], height, width, dst[0], dstStride[0]);
   // Convert to NV12 - Chroma
-  convert_yuv420_nv12_chrome(&src[1], &srcStride[1], height, width, &dst[1], &dstStride[1]);
+  convert_yuv420_nv12_chrome(&src[1], &srcStride[1], height, width, dst[1], dstStride[1]);
 }
 
 inline void convert_yuv420_p01x(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[], uint8_t bpp)
@@ -309,5 +309,5 @@ inline void convert_yuv420_p01x(uint8_t *const src[], const int srcStride[], int
   // Convert to P01x - Luma
   copy_plane(src[0], srcStride[0], height, width, dst[0], dstStride[0], bpp);
   // Convert to P01x - Chroma
-  convert_yuv420_p01x_chrome(&src[1], &srcStride[1], height, width, &dst[1], &dstStride[1], bpp);
+  convert_yuv420_p01x_chrome(&src[1], &srcStride[1], height, width, dst[1], dstStride[1], bpp);
 }
