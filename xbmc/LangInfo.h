@@ -220,7 +220,7 @@ protected:
     class custom_numpunct : public std::numpunct<char>
     {
     public:
-      custom_numpunct(const char decimal_point, const char thousands_sep, const std::string grouping)
+      custom_numpunct(const char decimal_point, const char thousands_sep, const std::string& grouping)
         : cDecimalPoint(decimal_point), cThousandsSep(thousands_sep), sGroup(grouping) {}
     protected:
       char do_decimal_point() const override { return cDecimalPoint; }
