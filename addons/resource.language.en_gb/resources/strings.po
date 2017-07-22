@@ -10076,12 +10076,6 @@ msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr ""
 
-#. pvr settings "automatically start last played channel after Kodi startup" setting value
-#: system/settings/settings.xml
-msgctxt "#19190"
-msgid "Background"
-msgstr ""
-
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"
 msgid "PVR service"
@@ -10635,12 +10629,6 @@ msgstr ""
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19287"
 msgid "All channels"
-msgstr ""
-
-#. pvr settings 'continue last channel on startup' setting value label.
-#: system/settings/settings.xml
-msgctxt "#19288"
-msgid "Foreground"
 msgstr ""
 
 #. Label for button to hide a group in the group manager
@@ -16315,6 +16303,7 @@ msgid "Only when playback stopped"
 msgstr ""
 
 #. play GUI sounds
+#. pvr settings "automatically start last played channel after Kodi startup" setting value
 #: system/settings/settings.xml
 msgctxt "#34122"
 msgid "Always"
@@ -18057,7 +18046,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36228"
-msgid "Continue with the last viewed channel on startup."
+msgid "Continue with the last viewed channel on startup. \"Yes\" will only continue with the last viewed channel if it was playing on app quit. \"Always\" will continue with the last viewed channel no matter if it was playing on app quit."
 msgstr ""
 
 #: system/settings/settings.xml

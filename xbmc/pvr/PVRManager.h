@@ -53,9 +53,9 @@ namespace PVR
 
   enum ContinueLastChannelOnStartup
   {
-    CONTINUE_LAST_CHANNEL_OFF  = 0,
-    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
-    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
+    CONTINUE_LAST_CHANNEL_OFF = 0,
+    CONTINUE_LAST_CHANNEL_ON,       // continue with the last viewed channel if it was playing on app quit
+    CONTINUE_LAST_CHANNEL_ALWAYS    // continue with the last viewed channel no matter if it was playing on app quit.
   };
 
   class CPVRManagerJobQueue
