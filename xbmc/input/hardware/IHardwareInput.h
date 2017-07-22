@@ -19,6 +19,8 @@
  */
 #pragma once
 
+#include <string>
+
 namespace KODI
 {
 namespace HARDWARE
@@ -34,11 +36,8 @@ namespace HARDWARE
     
     /*!
      * \brief A hardware reset button has been pressed
-     *
-     * \param port  The port belonging to the user who pressed the reset button,
-     *              or 0 (the default port) if unknown
      */
-    virtual void OnResetButton(unsigned int port) = 0;
+    virtual void OnResetButton() = 0;
   };
 }
 }

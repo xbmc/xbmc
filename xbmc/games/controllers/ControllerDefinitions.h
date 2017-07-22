@@ -31,6 +31,9 @@
 #define LAYOUT_XML_ELM_WHEEL               "wheel"
 #define LAYOUT_XML_ELM_THROTTLE            "throttle"
 #define LAYOUT_XML_ELM_KEY                 "key"
+#define LAYOUT_XML_ELM_TOPOLOGY            "physicaltopology"
+#define LAYOUT_XML_ELM_PORT                "port"
+#define LAYOUT_XML_ELM_ACCEPTS             "accepts"
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_ICON        "icon"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"
@@ -40,6 +43,9 @@
 #define LAYOUT_XML_ATTR_FEATURE_LABEL      "label"
 #define LAYOUT_XML_ATTR_INPUT_TYPE         "type"
 #define LAYOUT_XML_ATTR_KEY_SYMBOL         "symbol"
+#define LAYOUT_XML_ATTR_PROVIDES_INPUT     "providesinput"
+#define LAYOUT_XML_ATTR_PORT_ID            "id"
+#define LAYOUT_XML_ATTR_CONTROLLER         "controller"
 
 // Controller definitions
 #define FEATURE_CATEGORY_FACE              "face"

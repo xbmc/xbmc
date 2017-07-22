@@ -21,6 +21,7 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "cores/AudioEngine/Utils/AEChannelData.h"
+#include "games/controllers/ControllerTypes.h"
 #include "input/keyboard/KeyboardTypes.h"
 
 #include "libavcodec/avcodec.h"
@@ -103,6 +104,13 @@ namespace GAME
      * \return Translated region.
      */
     static const char* TranslateRegion(GAME_REGION region);
+
+    /*!
+     * \brief Translate port type (Game API to Kodi)
+     * \param portType  The port type to translate
+     * \return Translated port type
+     */
+    static PORT_TYPE TranslatePortType(GAME_PORT_TYPE portType);
   };
 }
 }

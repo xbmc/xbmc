@@ -34,6 +34,7 @@ namespace KODI
 namespace GAME
 {
 class CControllerLayout;
+class CControllerTopology;
 
 using JOYSTICK::FEATURE_TYPE;
 
@@ -54,6 +55,15 @@ public:
    * \return The features
    */
   const std::vector<CControllerFeature>& Features(void) const { return m_features; }
+
+  /*!
+   * \brief Get a feature by its name
+   *
+   * \param name The feature name
+   *
+   * \return The feature, or a feature of type FEATURE_TYPE::UNKNOWN if the name is invalid
+   */
+  const CControllerFeature& GetFeature(const std::string &name) const;
 
   /*!
    * \brief Get the count of controller features matching the specified types
@@ -102,6 +112,15 @@ public:
    * \brief Get the controller layout
    */
   const CControllerLayout& Layout(void) const { return *m_layout; }
+
+  /*!
+   * \brief Get the controller's physical topology
+   *
+   * This defines how controllers physically connect to each other.
+   *
+   * \return The physical topology of the controller
+   */
+  const CControllerTopology& Topology() const;
 
 private:
   std::unique_ptr<CControllerLayout> m_layout;

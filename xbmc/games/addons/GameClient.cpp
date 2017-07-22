@@ -32,7 +32,6 @@
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/playback/GameClientRealtimePlayback.h"
 #include "games/addons/playback/GameClientReversiblePlayback.h"
-#include "games/controllers/Controller.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -65,8 +64,6 @@ using namespace KODI::MESSAGING;
 #define GAME_PROPERTY_EXTENSIONS           "extensions"
 #define GAME_PROPERTY_SUPPORTS_VFS         "supports_vfs"
 #define GAME_PROPERTY_SUPPORTS_STANDALONE  "supports_standalone"
-#define GAME_PROPERTY_SUPPORTS_KEYBOARD    "supports_keyboard"
-#define GAME_PROPERTY_SUPPORTS_MOUSE       "supports_mouse"
 
 // --- NormalizeExtension ------------------------------------------------------
 
@@ -101,8 +98,6 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonI
       GAME_PROPERTY_EXTENSIONS,
       GAME_PROPERTY_SUPPORTS_VFS,
       GAME_PROPERTY_SUPPORTS_STANDALONE,
-      GAME_PROPERTY_SUPPORTS_KEYBOARD,
-      GAME_PROPERTY_SUPPORTS_MOUSE,
   };
 
   for (const auto& property : properties)
@@ -120,8 +115,6 @@ CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
   m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, m_struct, m_critSection)),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),
-  m_bSupportsKeyboard(false),
-  m_bSupportsMouse(false),
   m_bSupportsAllExtensions(false),
   m_bIsPlaying(false),
   m_serializeSize(0),
@@ -154,14 +147,6 @@ CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
   it = extraInfo.find(GAME_PROPERTY_SUPPORTS_STANDALONE);
   if (it != extraInfo.end())
     m_bSupportsStandalone = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_KEYBOARD);
-  if (it != extraInfo.end())
-    m_bSupportsKeyboard = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_MOUSE);
-  if (it != extraInfo.end())
-    m_bSupportsMouse = (it->second == "true");
 
   ResetPlayback();
 }
@@ -233,12 +218,11 @@ bool CGameClient::Initialize(void)
   m_struct.toKodi.HwGetCurrentFramebuffer = cb_hw_get_current_framebuffer;
   m_struct.toKodi.HwGetProcAddress = cb_hw_get_proc_address;
   m_struct.toKodi.RenderFrame = cb_render_frame;
-  m_struct.toKodi.OpenPort = cb_open_port;
-  m_struct.toKodi.ClosePort = cb_close_port;
   m_struct.toKodi.InputEvent = cb_input_event;
 
   if (Create(ADDON_INSTANCE_GAME, &m_struct, &m_struct.props) == ADDON_STATUS_OK)
   {
+    Input().Initialize();
     LogAddonProperties();
     return true;
   }
@@ -248,6 +232,8 @@ bool CGameClient::Initialize(void)
 
 void CGameClient::Unload()
 {
+  Input().Deinitialize();
+
   Destroy();
 }
 
@@ -345,8 +331,6 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
     m_audio           = audio;
     m_video           = video;
     m_input           = input;
-
-    Input().Initialize();
 
     m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct.toAddon));
     m_inGameSaves->Load();
@@ -490,7 +474,7 @@ void CGameClient::ResetPlayback()
   m_playback.reset(new CGameClientRealtimePlayback);
 }
 
-void CGameClient::Reset(unsigned int port)
+void CGameClient::Reset()
 {
   ResetPlayback();
 
@@ -519,8 +503,6 @@ void CGameClient::CloseFile()
     try { LogError(m_struct.toAddon.UnloadGame(), "UnloadGame()"); }
     catch (...) { LogException("UnloadGame()"); }
   }
-
-  Input().Deinitialize();
 
   m_bIsPlaying = false;
   m_gamePath.clear();
@@ -751,8 +733,6 @@ void CGameClient::LogAddonProperties(void) const
   CLog::Log(LOGINFO, "GAME: Valid extensions: %s", StringUtils::Join(m_extensions, " ").c_str());
   CLog::Log(LOGINFO, "GAME: Supports VFS:                  %s", m_bSupportsVFS ? "yes" : "no");
   CLog::Log(LOGINFO, "GAME: Supports standalone execution: %s", m_bSupportsStandalone ? "yes" : "no");
-  CLog::Log(LOGINFO, "GAME: Supports keyboard:             %s", m_bSupportsKeyboard ? "yes" : "no");
-  CLog::Log(LOGINFO, "GAME: Supports mouse:                %s", m_bSupportsMouse ? "yes" : "no");
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
 }
 
@@ -872,24 +852,6 @@ void CGameClient::cb_render_frame(void* kodiInstance)
     return;
 
   //! @todo
-}
-
-bool CGameClient::cb_open_port(void* kodiInstance, unsigned int port)
-{
-  CGameClient *gameClient = static_cast<CGameClient*>(kodiInstance);
-  if (!gameClient)
-    return false;
-
-  return gameClient->Input().OpenPort(port);
-}
-
-void CGameClient::cb_close_port(void* kodiInstance, unsigned int port)
-{
-  CGameClient *gameClient = static_cast<CGameClient*>(kodiInstance);
-  if (!gameClient)
-    return;
-
-  gameClient->Input().ClosePort(port);
 }
 
 bool CGameClient::cb_input_event(void* kodiInstance, const game_input_event* event)

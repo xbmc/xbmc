@@ -57,6 +57,9 @@
 #include "input/XBMC_vkeys.h"
 #endif
 
+/*! Port ID used when topology is unknown */
+#define DEFAULT_PORT_ID  "1"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -158,11 +161,6 @@ typedef enum GAME_HW_CONTEXT_TYPE
   GAME_HW_CONTEXT_OPENGL_CORE, // Modern desktop core GL context. Use major/minor fields to set GL version
   GAME_HW_CONTEXT_OPENGLES3,   // GLES 3.0
 } GAME_HW_CONTEXT_TYPE;
-
-typedef enum GAME_INPUT_PORT
-{
-  GAME_INPUT_PORT_JOYSTICK_START = 0, // Non-negative values are for joystick ports
-} GAME_INPUT_PORT;
 
 typedef enum GAME_INPUT_EVENT_SOURCE
 {
@@ -275,9 +273,21 @@ typedef enum GAME_ROTATION
   GAME_ROTATION_270_CW,
 } GAME_ROTATION;
 
+/*!
+ * \brief Type of port on the virtual game console
+ */
+typedef enum GAME_PORT_TYPE
+{
+  GAME_PORT_UNKNOWN,
+  GAME_PORT_KEYBOARD,
+  GAME_PORT_MOUSE,
+  GAME_PORT_CONTROLLER,
+} GAME_PORT_TYPE;
+
 typedef struct game_controller
 {
   const char*  controller_id;
+  bool         provides_input; // False for multitaps
   unsigned int digital_button_count;
   unsigned int analog_button_count;
   unsigned int analog_stick_count;
@@ -287,6 +297,48 @@ typedef struct game_controller
   unsigned int abs_pointer_count;
   unsigned int motor_count;
 } ATTRIBUTE_PACKED game_controller;
+
+struct game_input_port;
+
+/*!
+ * \brief Device that can provide input
+ */
+typedef struct game_input_device
+{
+  const char*      controller_id; // ID used in the Kodi controller API
+  const char*      port_address;
+  game_input_port* available_ports;
+  unsigned int     port_count;
+} ATTRIBUTE_PACKED game_input_device;
+
+/*!
+ * \brief Port that can provide input
+ *
+ * Ports can accept multiple devices and devices can have multiple ports, so
+ * the topology of possible configurations is a tree structure of alternating
+ * port and device nodes.
+ */
+typedef struct game_input_port
+{
+  GAME_PORT_TYPE     type;
+  const char*        port_id; // Required for GAME_PORT_CONTROLLER type
+  game_input_device* accepted_devices;
+  unsigned int       device_count;
+} ATTRIBUTE_PACKED game_input_port;
+
+/*!
+ * \brief The input topology is the possible ways to connect input devices
+ *
+ * This represents the logical topology, which is the possible connections that
+ * the game client's logic can handle. It is strictly a subset of the physical
+ * topology. Loops are not allowed.
+ */
+typedef struct game_input_topology
+{
+  game_input_port *ports; //! The list of ports on the virtual game console
+  unsigned int port_count; //! The number of ports
+  int player_limit; //! A limit on the number of input-providing devices, or -1 for no limit
+} ATTRIBUTE_PACKED game_input_topology;
 
 typedef struct game_digital_button_event
 {
@@ -351,8 +403,9 @@ typedef struct game_motor_event
 typedef struct game_input_event
 {
   GAME_INPUT_EVENT_SOURCE type;
-  int                     port;
   const char*             controller_id;
+  GAME_PORT_TYPE          port_type;
+  const char*             port_address;
   const char*             feature_name;
   union
   {
@@ -479,8 +532,6 @@ typedef struct AddonToKodiFuncTable_Game
   uintptr_t (*HwGetCurrentFramebuffer)(void* kodiInstance);
   game_proc_address_t (*HwGetProcAddress)(void* kodiInstance, const char* symbol);
   void (*RenderFrame)(void* kodiInstance);
-  bool (*OpenPort)(void* kodiInstance, unsigned int port);
-  void (*ClosePort)(void* kodiInstance, unsigned int port);
   bool (*InputEvent)(void* kodiInstance, const game_input_event* event);
 
 } AddonToKodiFuncTable_Game;
@@ -498,10 +549,12 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* Reset)(void);
   GAME_ERROR  (__cdecl* HwContextReset)(void);
   GAME_ERROR  (__cdecl* HwContextDestroy)(void);
-  void        (__cdecl* UpdatePort)(int, bool, const game_controller*);
-  bool        (__cdecl* HasFeature)(const char* controller_id, const char* feature_name);
+  bool        (__cdecl* HasFeature)(const char*, const char*);
+  game_input_topology* (__cdecl* GetTopology)();
+  void        (__cdecl* FreeTopology)(game_input_topology*);
   bool        (__cdecl* EnableKeyboard)(bool, const game_controller*);
   bool        (__cdecl* EnableMouse)(bool, const game_controller*);
+  bool        (__cdecl* ConnectController)(bool, const char*, const game_controller*);
   bool        (__cdecl* InputEvent)(const game_input_event*);
   size_t      (__cdecl* SerializeSize)(void);
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,25 +19,31 @@
  */
 #pragma once
 
+#include "games/controllers/types/ControllerTree.h"
+#include "games/GameTypes.h"
+
 #include <memory>
-#include <vector>
 
 namespace KODI
 {
 namespace GAME
 {
+  class CGameClientTopology
+  {
+  public:
+    CGameClientTopology(GameClientPortVec ports);
 
-  class CGameClient;
-  using GameClientPtr = std::shared_ptr<CGameClient>;
-  using GameClientVector = std::vector<GameClientPtr>;
+    CControllerTree GetControllerTree() const;
 
-  class CGameClientPort;
-  using GameClientPortPtr = std::unique_ptr<CGameClientPort>;
-  using GameClientPortVec = std::vector<GameClientPortPtr>;
+  private:
+    static CControllerTree GetControllerTree(const GameClientPortVec &ports);
+    static CControllerPortNode GetPortNode(const GameClientPortPtr &port, const std::string &address);
+    static CControllerNode GetControllerNode(const GameClientDevicePtr &device, const std::string &portAddress);
 
-  class CGameClientDevice;
-  using GameClientDevicePtr = std::unique_ptr<CGameClientDevice>;
-  using GameClientDeviceVec = std::vector<GameClientDevicePtr>;
+    // Utility function
+    static std::string MakeAddress(const std::string &baseAddress, const std::string &nodeId);
 
+    GameClientPortVec m_ports;
+  };
 }
 }

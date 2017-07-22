@@ -30,6 +30,7 @@
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
+#include "games/addons/input/GameClientInput.h"
 #include "games/addons/playback/IGameClientPlayback.h"
 #include "games/addons/savestates/Savestate.h"
 #include "games/addons/savestates/SavestateUtils.h"
@@ -403,7 +404,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
       m_gameClient->GetPlayback()->SetSpeed(0.0);
 
       CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command via ACTION_PLAYER_RESET");
-      //m_gameServices.PortManager().HardwareReset();
+      m_gameClient->Input().HardwareReset();
 
       // If rewinding or paused, begin playback
       if (speed <= 0.0f)
