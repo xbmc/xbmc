@@ -160,4 +160,7 @@ private:
 
   VariantType m_type;
   VariantUnion m_data;
+
+  static VariantArray EMPTY_ARRAY;
+  static VariantMap EMPTY_MAP;
 };
