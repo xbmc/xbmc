@@ -53,6 +53,7 @@ private:
   std::string  GetDiscInfoString(DiscInfo info);
   void         GetRoot  (CFileItemList &items);
   void         GetTitles(bool main, CFileItemList &items);
+  std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists();
   CFileItemPtr GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
   CURL         GetUnderlyingCURL(const CURL& url);
   std::string  HexToString(const uint8_t * buf, int count);

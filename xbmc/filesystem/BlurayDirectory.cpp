@@ -29,7 +29,12 @@
 
 #include <cassert>
 #include <array>
+#include <climits>
+#include <stdlib.h>
+#include <string>
 #include "utils/LangCodeExpander.h"
+#include "File.h"
+#include "utils/RegExp.h"
 
 namespace XFILE
 {
@@ -144,42 +149,44 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
 
 void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
 {
-  unsigned titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
-  std::string buf;
+  std::vector<BLURAY_TITLE_INFO*> titleList;
+  uint64_t minDuration = 0;
 
-  std::vector<BLURAY_TITLE_INFO*> buffer;
+  // Searching for a user provided list of playlists. 
+  if (main)
+    titleList = GetUserPlaylists();
 
-  uint64_t duration = 0;
-
-  for(unsigned i=0; i < titles; i++)
+  if (!main || titleList.empty())
   {
-    BLURAY_TITLE_INFO *t = m_dll->bd_get_title_info(m_bd, i, 0);
-    if(!t)
+    uint32_t numTitles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
+
+    for (uint32_t i = 0; i < numTitles; i++)
     {
-      CLog::Log(LOGDEBUG, "CBlurayDirectory - unable to get title %d", i);
-      continue;
+      BLURAY_TITLE_INFO* t = m_dll->bd_get_title_info(m_bd, i, 0);
+
+      if (!t)
+      {
+        CLog::Log(LOGDEBUG, "CBlurayDirectory - unable to get title %d", i);
+        continue;
+      }
+
+      if (main && t->duration > minDuration)
+          minDuration = t->duration;
+
+      titleList.emplace_back(t);
     }
-    if(t->duration > duration)
-      duration = t->duration;
-
-    buffer.push_back(t);
   }
 
-  if(main)
-    duration = duration * MAIN_TITLE_LENGTH_PERCENT / 100;
-  else
-    duration = 0;
+  minDuration = minDuration * MAIN_TITLE_LENGTH_PERCENT / 100;
 
-  for(std::vector<BLURAY_TITLE_INFO*>::iterator it = buffer.begin(); it != buffer.end(); ++it)
+  for (auto& title : titleList)
   {
-    if((*it)->duration < duration)
+    if (title->duration < minDuration)
       continue;
-    items.Add(GetTitle(*it, main ? g_localizeStrings.Get(25004) /* Main Title */ : g_localizeStrings.Get(25005) /* Title */));
+
+    items.Add(GetTitle(title, main ? g_localizeStrings.Get(25004) /* Main Title */ : g_localizeStrings.Get(25005) /* Title */));
+    m_dll->bd_free_title_info(title);
   }
-
-
-  for(std::vector<BLURAY_TITLE_INFO*>::iterator it = buffer.begin(); it != buffer.end(); ++it)
-    m_dll->bd_free_title_info(*it);
 }
 
 void CBlurayDirectory::GetRoot(CFileItemList &items)
@@ -289,6 +296,58 @@ std::string CBlurayDirectory::HexToString(const uint8_t *buf, int count)
   }
 
   return std::string(std::begin(tmp), std::end(tmp));
+}
+
+std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
+{
+  std::string root = m_url.GetHostName();
+  std::string discInfPath = URIUtils::AddFileToFolder(root, "disc.inf");
+  std::vector<BLURAY_TITLE_INFO*> userTitles;
+  CFile file;
+  char buffer[1025];
+
+  if (file.Open(discInfPath))
+  {
+    CLog::Log(LOGDEBUG, "CBlurayDirectory::GetTitles - disc.inf found");
+
+    CRegExp pl(true);
+    if (!pl.RegComp("(\\d+)"))
+    {
+      file.Close();
+      return userTitles;
+    }
+
+    uint8_t maxLines = 100;
+    while ((maxLines > 0) && file.ReadString(buffer, 1024))
+    {
+      maxLines--;
+      if (StringUtils::StartsWithNoCase(buffer, "playlists"))
+      {
+        int pos = 0;
+        while ((pos = pl.RegFind(buffer, static_cast<unsigned int>(pos))) >= 0)
+        {
+          std::string playlist = pl.GetMatch(0);
+          uint32_t len = static_cast<uint32_t>(playlist.length());
+
+          if (len <= 5)
+          {
+            unsigned long int plNum = strtoul(playlist.c_str(), nullptr, 10);
+
+            BLURAY_TITLE_INFO* t = m_dll->bd_get_playlist_info(m_bd, static_cast<uint32_t>(plNum), 0);
+            if (t)
+              userTitles.emplace_back(t);
+          }
+
+          if (static_cast<int64_t>(pos) + static_cast<int64_t>(len) > INT_MAX)
+            break;
+          else
+            pos += len;
+        }
+      }
+    }
+    file.Close();
+  }
+  return userTitles;
 }
 
 } /* namespace XFILE */
