@@ -1168,15 +1168,12 @@ void CDecoder::FFReleaseBuffer(void* opaque, uint8_t* data)
 
 void CDecoder::ReleaseBuffer(uint8_t *data)
 {
+  ID3D11VideoDecoderOutputView* view = reinterpret_cast<ID3D11VideoDecoderOutputView*>(data);
+  if (!m_bufferPool->IsValid(view))
   {
-    CSingleLock lock(m_section);
-    ID3D11VideoDecoderOutputView* view = reinterpret_cast<ID3D11VideoDecoderOutputView*>(data);
-    if (!m_bufferPool->IsValid(view))
-    {
-      CLog::LogFunction(LOGWARNING, __FUNCTION__, "return of invalid surface.");
-    }
-    m_bufferPool->ReturnView(view);
+    CLog::LogFunction(LOGWARNING, __FUNCTION__, "return of invalid surface.");
   }
+  m_bufferPool->ReturnView(view);
 
   IHardwareDecoder::Release();
 }
@@ -1191,8 +1188,6 @@ int CDecoder::FFGetBuffer(AVCodecContext* avctx, AVFrame* pic, int flags)
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  CSingleLock lock(m_section);
-
   if (!m_decoder)
     return -1;
 
