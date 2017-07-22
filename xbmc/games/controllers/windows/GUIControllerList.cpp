@@ -30,6 +30,7 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "games/GameServices.h"

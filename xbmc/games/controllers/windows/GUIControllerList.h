@@ -55,9 +55,6 @@ namespace GAME
   private:
     bool RefreshControllers(void);
 
-    void RegisterController(const std::string& controllerId, const ADDON::VECADDONS& addonCache);
-    void UnregisterController(const std::string& controllerId);
-
     void CleanupButtons(void);
     void OnEvent(const ADDON::AddonEvent& event);
 

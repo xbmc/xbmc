@@ -31,7 +31,6 @@ namespace GAME
 {
   class CGUIFeatureButton : public CGUIButtonControl,
                             public IFeatureButton
-
   {
   public:
     CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,

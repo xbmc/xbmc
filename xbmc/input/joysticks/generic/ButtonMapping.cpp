@@ -21,6 +21,7 @@
 #include "ButtonMapping.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
+#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"

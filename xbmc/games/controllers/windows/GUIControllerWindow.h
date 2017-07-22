@@ -21,7 +21,6 @@
 
 #include "addons/RepositoryUpdater.h"
 #include "guilib/GUIDialog.h"
-#include "utils/Observer.h"
 
 namespace KODI
 {
