@@ -107,9 +107,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_inputManager->InitializeInputs();
 
   m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
-  m_peripherals->Initialise();
-
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_peripherals));
 
   init_level = 2;
   return true;
@@ -147,6 +144,11 @@ bool CServiceManager::StartAudioEngine()
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree()
 {
+  // Peripherals depends on strings being loaded before stage 3
+  m_peripherals->Initialise();
+
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_peripherals));
+
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
@@ -158,13 +160,14 @@ void CServiceManager::DeinitStageThree()
 {
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
+  m_gameServices.reset();
+  m_peripherals->Clear();
 
   init_level = 2;
 }
 
 void CServiceManager::DeinitStageTwo()
 {
-  m_gameServices.reset();
   m_peripherals.reset();
   m_inputManager.reset();
   m_gameControllerManager.reset();
