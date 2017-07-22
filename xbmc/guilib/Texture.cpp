@@ -267,7 +267,7 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
       return false;
 
     return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, xbtFile.GetImageFormat(),
-                          xbtFile.HasImageAlpha(), reinterpret_cast<unsigned char*>(buf.get()));
+                          xbtFile.HasImageAlpha(), reinterpret_cast<const unsigned char*>(buf.get()));
   }
 
   IImage* pImage;
@@ -330,7 +330,7 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
   return false;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, const unsigned char* pixels)
 {
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
