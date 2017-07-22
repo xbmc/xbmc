@@ -635,49 +635,6 @@ CGUIDialogProgressBarHandle* CPVRManager::ShowProgressDialog(const std::string &
   return nullptr;
 }
 
-bool CPVRManager::ChannelSwitchById(unsigned int iChannelId)
-{
-  CSingleLock lock(m_critSection);
-
-  CPVRChannelPtr channel = m_channelGroups->GetChannelById(iChannelId);
-  if (channel)
-  {
-    SetPlayingGroup(channel);
-    return PerformChannelSwitch(channel, false);
-  }
-
-  CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel with id %d", __FUNCTION__, iChannelId);
-  return false;
-}
-
-bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
-{
-  bool bReturn = false;
-  if (IsPlayingTV() || IsPlayingRadio())
-  {
-    CFileItem currentFile(g_application.CurrentFileItem());
-    CPVRChannelPtr currentChannel(currentFile.GetPVRChannelInfoTag());
-    if (currentChannel)
-    {
-      CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
-      if (group)
-      {
-        CFileItemPtr newChannel = bUp ?
-            group->GetByChannelUp(currentChannel) :
-            group->GetByChannelDown(currentChannel);
-
-        if (newChannel && newChannel->HasPVRChannelInfoTag() &&
-            PerformChannelSwitch(newChannel->GetPVRChannelInfoTag(), bPreview))
-        {
-          *iNewChannelNumber = newChannel->GetPVRChannelInfoTag()->ChannelNumber();
-          bReturn = true;
-        }
-      }
-    }
-  }
-
-  return bReturn;
-}
 
 void CPVRManager::TriggerContinueLastChannel(void)
 {
@@ -915,7 +872,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
-  g_application.SetCurrentFileItem(*m_currentFile);
+  if (!m_isChannelPreview)
+    g_application.SetCurrentFileItem(*m_currentFile);
+  
   g_infoManager.SetCurrentItem(m_currentFile);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
@@ -965,110 +924,61 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview)
+void CPVRManager::ChannelPreviewUpDown(bool up)
 {
-  assert(channel.get());
-
-  // check parental lock state
-  if (IsParentalLocked(channel))
-    return false;
-
-  // invalid channel
-  if (channel->ClientID() < 0)
-    return false;
-
-  // check whether we're waiting for a previous switch to complete
-  CFileItemPtr previousFile;
+  CSingleLock lock(m_critSection);
+  CPVRChannelPtr currentChannel(m_currentFile->GetPVRChannelInfoTag());
+  if (currentChannel)
   {
-    CSingleLock lock(m_critSection);
-    if (m_bIsSwitchingChannels)
+    CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
+    if (group)
     {
-      CLog::Log(LOGDEBUG, "PVRManager - %s - can't switch to channel '%s'. waiting for the previous switch to complete",
-          __FUNCTION__, channel->ChannelName().c_str());
-      return false;
+      CFileItemPtr newChannel = up ?
+      group->GetByChannelUp(currentChannel) :
+      group->GetByChannelDown(currentChannel);
+
+      ChannelPreview(newChannel);
     }
-
-    if (bPreview)
-    {
-      if (!g_infoManager.GetShowInfo() && m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
-      {
-        // no need to do anything
-        return true;
-      }
-
-      m_currentFile.reset(new CFileItem(channel));
-
-      if (IsPlayingChannel(channel))
-        m_isChannelPreview = false;
-      else
-        m_isChannelPreview = true;
-
-      return true;
-    }
-
-    m_bIsSwitchingChannels = true;
-
-    CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-
-    previousFile = std::move(m_currentFile);
   }
+}
 
-  bool bSwitched(false);
+void CPVRManager::ChannelPreview(const CFileItemPtr item)
+{
+  CSingleLock lock(m_critSection);
 
-  // switch channel
-  if (!m_addons->SwitchChannel(channel))
-  {
-    // switch failed
-    CSingleLock lock(m_critSection);
-    m_bIsSwitchingChannels = false;
+  m_currentFile.reset(new CFileItem(*item));
 
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+  CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+  if (!channel)
+    return;
 
-    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-        g_localizeStrings.Get(19166), // PVR information
-        msg);
-  }
+  if (IsPlayingChannel(channel))
+    m_isChannelPreview = false;
   else
   {
-    // switch successful
-    bSwitched = true;
+    m_isChannelPreview = true;
+    g_infoManager.SetCurrentItem(m_currentFile);
+    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
-    // save previous and load new channel's settings (view mode is updated in
-    // the player)
-    g_application.SaveFileState();
-    g_application.LoadVideoSettings(channel);
-
-    // set channel as selected item
-    CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
-
-    UpdateLastWatched(channel);
-
-    CSingleLock lock(m_critSection);
-    m_currentFile.reset(new CFileItem(channel));
-    m_bIsSwitchingChannels = false;
-
-    CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+    int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
+    if (timeout > 0)
+    {
+      if (m_channelEntryJobId >= 0)
+        CJobManager::GetInstance().CancelJob(m_channelEntryJobId);
+      CPVRChannelEntryTimeoutJob *job = new CPVRChannelEntryTimeoutJob(timeout);
+      m_channelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
+    }
   }
+}
 
-  // announce OnStop
-  if (previousFile)
-  {
-    CVariant data(CVariant::VariantTypeObject);
-    data["end"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", previousFile, data);
-  }
+void CPVRManager::ChannelPreviewSelect()
+{
+  CSingleLock lock(m_critSection);
 
-  // announce OnPlay
-  if (m_currentFile)
-  {
-    CVariant param;
-    param["player"]["speed"] = 1;
-    param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", m_currentFile, param);
-  }
+  m_channelEntryJobId = -1;
 
-  return bSwitched;
+  if (m_isChannelPreview)
+    m_guiActions->SwitchToChannel(m_currentFile, false);
 }
 
 void CPVRManager::SetChannelPreview(bool preview)

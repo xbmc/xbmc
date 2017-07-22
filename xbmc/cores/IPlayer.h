@@ -27,7 +27,6 @@
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include "pvr/PVRTypes.h"
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
@@ -345,8 +344,6 @@ public:
   virtual bool SetPlayerState(const std::string& state) { return false;};
   
   virtual std::string GetPlayingTitle() { return ""; };
-
-  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) { return false; }
 
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
   /*!

@@ -369,8 +369,6 @@ public:
 
   std::string GetPlayingTitle() override;
 
-  bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override;
-
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;
@@ -415,6 +413,7 @@ protected:
   void CreatePlayers();
   void DestroyPlayers();
 
+  void Prepare();
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
@@ -435,8 +434,6 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
-
-  bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
   void SetSubtitleVisibleInternal(bool bVisible);
@@ -482,27 +479,26 @@ protected:
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream);
-  bool CheckDelayedChannelEntry(void);
 
   bool OpenInputStream();
   bool OpenDemuxStream();
   void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
 
-  void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
   void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
 
-  double m_UpdateApplication;
-
   bool m_players_created;
+
+  CFileItem m_item;
+  CEvent m_openEvent;
+  CPlayerOptions m_playerOptions;
   bool m_bAbortRequest;
 
   ECacheState  m_caching;
   XbmcThreads::EndTime m_cachingTimer;
-  CFileItem    m_item;
-  XbmcThreads::EndTime m_ChannelEntryTimeOut;
+
   std::unique_ptr<CProcessInfo> m_processInfo;
 
   CCurrentStream m_CurrentAudio;
@@ -578,12 +574,8 @@ protected:
   CCriticalSection m_StateSection;
   XbmcThreads::EndTime m_syncTimer;
 
-  CEvent m_ready;
-
   CEdl m_Edl;
   bool m_SkipCommercials;
-
-  CPlayerOptions m_PlayerOptions;
 
   bool m_HasVideo;
   bool m_HasAudio;

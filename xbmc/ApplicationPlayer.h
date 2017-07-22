@@ -28,7 +28,6 @@
 #include "threads/SystemClock.h"
 #include "guilib/Resolution.h"
 #include "cores/IPlayer.h"
-#include "pvr/PVRTypes.h"
 
 typedef enum
 {
@@ -169,7 +168,6 @@ public:
   void  SetTotalTime(int64_t time);
   void  SetVideoStream(int iStream);
   void  SetVolume(float volume);
-  bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  SetSpeed(float speed);
   bool SupportsTempo();
 

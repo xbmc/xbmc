@@ -33,6 +33,9 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 namespace PVR
 {
@@ -40,6 +43,25 @@ namespace PVR
 bool CPVRSetRecordingOnChannelJob::DoWork()
 {
   return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(m_channel, m_bOnOff);
+}
+
+CPVRChannelEntryTimeoutJob::CPVRChannelEntryTimeoutJob(int timeout)
+{
+  m_delayTimer.Set(timeout);
+}
+
+bool CPVRChannelEntryTimeoutJob::DoWork()
+{
+  while (!ShouldCancel(0, 0))
+  {
+    if (m_delayTimer.IsTimePast())
+    {
+      CServiceBroker::GetPVRManager().ChannelPreviewSelect();
+      return true;
+    }
+    Sleep(10);
+  }
+  return false;
 }
 
 bool CPVRContinueLastChannelJob::DoWork()

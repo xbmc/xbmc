@@ -291,13 +291,9 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
-    /*!
-     * @brief Switch to the given channel.
-     * @param channel The channel to switch to.
-     * @param bPreview True to show a preview, false otherwise.
-     * @return True if the switch was successful, false otherwise.
-     */
-    bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
+    void ChannelPreviewUpDown(bool up);
+
+    void ChannelPreviewSelect();
 
     /*!
      * @brief Close an open PVR stream.
@@ -391,31 +387,6 @@ namespace PVR
      * @return True if it was updated correctly, false otherwise.
      */
     bool UpdateItem(CFileItem& item);
-
-    /*!
-     * @brief Switch to a channel given it's channel id.
-     * @param iChannelId The channel id to switch to.
-     * @return True if the channel was switched, false otherwise.
-     */
-    bool ChannelSwitchById(unsigned int iChannelId);
-
-    /*!
-     * @brief Switch to the next channel in this group.
-     * @param iNewChannelNumber The new channel number after the switch.
-     * @param bPreview If true, don't do the actual switch but just update channel pointers.
-     *                Used to display event info while doing "fast channel switching"
-     * @return True if the channel was switched, false otherwise.
-     */
-    bool ChannelUp(unsigned int *iNewChannelNumber, bool bPreview = false) { return ChannelUpDown(iNewChannelNumber, bPreview, true); }
-
-    /*!
-     * @brief Switch to the previous channel in this group.
-     * @param iNewChannelNumber The new channel number after the switch.
-     * @param bPreview If true, don't do the actual switch but just update channel pointers.
-     *                Used to display event info while doing "fast channel switching"
-     * @return True if the channel was switched, false otherwise.
-     */
-    bool ChannelDown(unsigned int *iNewChannelNumber, bool bPreview = false) { return ChannelUpDown(iNewChannelNumber, bPreview, false); }
 
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.
@@ -587,6 +558,8 @@ namespace PVR
      */
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
+    void ChannelPreview(const CFileItemPtr item);
+
     /*!
      * @brief Continue playback on the last played channel.
      */
@@ -639,6 +612,7 @@ namespace PVR
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
     std::atomic_bool m_isChannelPreview;
+    int m_channelEntryJobId = -1;
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;

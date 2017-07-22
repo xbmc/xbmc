@@ -21,15 +21,9 @@
 
 #pragma once
 
-#ifdef __GNUC__
-// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even with optimizations.
-#define XBMC_FORCE_INLINE __attribute__((always_inline))
-#else
-#define XBMC_FORCE_INLINE
-#endif
-
-// include as less is possible to prevent dependencies
 #include "DVDResource.h"
+#include "FileItem.h"
+#include "cores/IPlayer.h"
 #include <atomic>
 #include <string>
 #include <string.h>
@@ -64,13 +58,7 @@ public:
     PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
     PLAYER_REQUEST_STATE,
-
-    PLAYER_CHANNEL_NEXT,            // switches to next playback channel
-    PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    PLAYER_CHANNEL_PREVIEW_NEXT,    // switches to next channel preview (does not switch the channel)
-    PLAYER_CHANNEL_PREVIEW_PREV,    // switches to previous channel preview (does not switch the channel)
-    PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
-    PLAYER_CHANNEL_SELECT,          // switches to the provided channel
+    PLAYER_OPENFILE,
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
     PLAYER_AVCHANGE,                // signal a change in audio or video parameters
     PLAYER_ABORT,
@@ -99,12 +87,12 @@ public:
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg) XBMC_FORCE_INLINE
+  inline bool IsType(Message msg)
   {
     return (m_message == msg);
   }
 
-  inline Message GetMessageType() XBMC_FORCE_INLINE
+  inline Message GetMessageType()
   {
     return m_message;
   }
@@ -269,6 +257,28 @@ private:
 
   SpeedParams m_params;
 
+};
+
+class CDVDMsgOpenFile : public CDVDMsg
+{
+public:
+  struct FileParams
+  {
+    CFileItem m_item;
+    CPlayerOptions m_options;
+  };
+
+  CDVDMsgOpenFile(const FileParams &params)
+  : CDVDMsg(PLAYER_OPENFILE)
+  , m_params(params)
+  {}
+
+  CFileItem& GetItem() { return m_params.m_item; }
+  CPlayerOptions& GetOptions() { return m_params.m_options; }
+
+private:
+
+  FileParams m_params;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -9180,6 +9180,7 @@ void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
     CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
     if (tag)
       m_currentFile->SetEPGInfoTag(tag);
+    m_isPvrChannelPreview = CServiceBroker::GetPVRManager().IsChannelPreview();
   }
 
   SetChanged();

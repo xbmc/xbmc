@@ -413,14 +413,6 @@ namespace PVR
     bool SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const;
 
     /*!
-     * @brief Try a fast Live TV/Radio channel switch. Calls directly into active player instead of using messaging
-     * @param channel the channel to switch to.
-     * @param bFullscreen start playback fullscreen or not.
-     * @return true if the switch was succesful, false otherwise.
-     */
-    bool TryFastChannelSwitch(const CPVRChannelPtr &channel, bool bFullscreen) const;
-
-    /*!
      * @brief Start playback of the given item.
      * @param bFullscreen start playback fullscreen or not.
      * @param item containing a channel or a recording.

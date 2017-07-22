@@ -986,23 +986,6 @@ namespace PVR
     }
   }
 
-  bool CPVRGUIActions::TryFastChannelSwitch(const CPVRChannelPtr &channel, bool bFullscreen) const
-  {
-    bool bSwitchSuccessful(false);
-
-    if (channel->StreamURL().empty() &&
-        (CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio()) &&
-        (channel->IsRadio() == CServiceBroker::GetPVRManager().IsPlayingRadio()))
-    {
-      bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
-
-      if (bSwitchSuccessful)
-        CheckAndSwitchToFullscreen(bFullscreen);
-    }
-
-    return bSwitchSuccessful;
-  }
-
   void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
@@ -1132,14 +1115,12 @@ namespace PVR
         }
       }
 
-      /* optimization: try a fast switch */
-      bSwitchSuccessful = TryFastChannelSwitch(channel, bFullscreen);
-
-      if (!bSwitchSuccessful)
+      StartPlayback(new CFileItem(channel), bFullscreen);
+      if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
       {
-        StartPlayback(new CFileItem(channel), bFullscreen);
-        return true;
+        CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
       }
+      return true;
     }
 
     if (!bSwitchSuccessful)
