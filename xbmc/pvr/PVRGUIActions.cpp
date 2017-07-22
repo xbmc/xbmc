@@ -1227,7 +1227,7 @@ namespace PVR
 
     CLog::Log(LOGNOTICE, "PVRGUIActions - %s - start playback of channel '%s'", __FUNCTION__, item->GetPVRChannelInfoTag()->ChannelName().c_str());
     CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-    return SwitchToChannel(item, true, true);
+    return SwitchToChannel(item, true, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
