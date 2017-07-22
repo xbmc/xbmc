@@ -104,6 +104,22 @@ void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[Y
   SetDimensions(width, height, strides, planeOffsets);
 }
 
+CGPUMEM *CMMALYUVBuffer::Allocate(int size, void *opaque)
+{
+  m_gmem = new CGPUMEM(size, true);
+  if (m_gmem && m_gmem->m_vc)
+  {
+    m_gmem->m_opaque = opaque;
+  }
+  else
+  {
+    delete m_gmem;
+    m_gmem = nullptr;
+  }
+  return m_gmem;
+}
+
+
 //-----------------------------------------------------------------------------
 // MMAL Decoder
 //-----------------------------------------------------------------------------
@@ -195,13 +211,16 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
     pool->Configure(dec->m_fmt, frame->width, frame->height, aligned_width, aligned_height, 0);
   }
   CMMALYUVBuffer *YUVBuffer = dynamic_cast<CMMALYUVBuffer *>(pool->Get());
-  if (!YUVBuffer || !YUVBuffer->mmal_buffer || !YUVBuffer->GetMem())
+  if (!YUVBuffer)
   {
     CLog::Log(LOGERROR,"%s::%s Failed to allocated buffer in time", CLASSNAME, __FUNCTION__);
     return -1;
   }
+  assert(YUVBuffer->mmal_buffer);
 
   CGPUMEM *gmem = YUVBuffer->GetMem();
+  assert(gmem);
+
   AVBufferRef *buf = av_buffer_create((uint8_t *)gmem->m_arm, gmem->m_numbytes, CDecoder::FFReleaseBuffer, gmem, AV_BUFFER_FLAG_READONLY);
   if (!buf)
   {

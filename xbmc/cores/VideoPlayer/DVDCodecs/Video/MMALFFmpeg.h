@@ -44,7 +44,7 @@ public:
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
   virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) override;
   virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES]) override;
-  CGPUMEM *Allocate(int size, void *opaque) { m_gmem = new CGPUMEM(size, true); if (m_gmem) m_gmem->m_opaque = opaque; return m_gmem; }
+  CGPUMEM *Allocate(int size, void *opaque);
   CGPUMEM *GetMem() { return m_gmem; }
 protected:
   CGPUMEM *m_gmem = nullptr;

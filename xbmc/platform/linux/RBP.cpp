@@ -401,9 +401,12 @@ CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
 
 CGPUMEM::~CGPUMEM()
 {
-  mem_unlock(g_RBP.GetMBox(), m_vc_handle);
-  vcsm_unlock_ptr(m_arm);
-  vcsm_free(m_vcsm_handle);
+  if (m_vc_handle)
+    mem_unlock(g_RBP.GetMBox(), m_vc_handle);
+  if (m_arm)
+    vcsm_unlock_ptr(m_arm);
+  if (m_vcsm_handle)
+    vcsm_free(m_vcsm_handle);
 }
 
 // Call this to clean and invalidate a region of memory
