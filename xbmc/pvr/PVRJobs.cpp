@@ -64,9 +64,9 @@ bool CPVRChannelEntryTimeoutJob::DoWork()
   return false;
 }
 
-bool CPVRContinueLastChannelJob::DoWork()
+bool CPVRPlayChannelOnStartupJob::DoWork()
 {
-  return CServiceBroker::GetPVRManager().GUIActions()->ContinueLastPlayedChannel();
+  return CServiceBroker::GetPVRManager().GUIActions()->PlayChannelOnStartup();
 }
 
 CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)

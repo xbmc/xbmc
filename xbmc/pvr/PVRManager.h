@@ -51,13 +51,6 @@ namespace PVR
   class CPVRClient;
   class CPVRGUIInfo;
 
-  enum ContinueLastChannelOnStartup
-  {
-    CONTINUE_LAST_CHANNEL_OFF  = 0,
-    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
-    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
-  };
-
   class CPVRManagerJobQueue
   {
   public:
@@ -563,7 +556,7 @@ namespace PVR
     /*!
      * @brief Continue playback on the last played channel.
      */
-    void TriggerContinueLastChannel(void);
+    void TriggerPlayChannelOnStartup(void);
 
     enum ManagerState
     {

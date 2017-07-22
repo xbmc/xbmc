@@ -1381,18 +1381,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
-          <level>1</level>
-          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
-          <constraints>
-            <options>
-              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
-              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
-              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>
           <default>true</default>
@@ -3533,6 +3521,18 @@
     </category>
     <category id="other" label="14224" help="36292">
       <group id="2" label="14227">
+        <setting id="lookandfeel.startupaction" type="integer" label="39100" help="36161">
+          <level>0</level>
+          <default>0</default> <!-- STARTUP_ACTION_NONE -->
+          <constraints>
+            <options>
+              <option label="231">0</option> <!-- STARTUP_ACTION_NONE -->
+              <option label="39101">1</option> <!-- STARTUP_ACTION_PLAY_TV -->
+              <option label="39102">2</option> <!-- STARTUP_ACTION_PLAY_RADIO -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="36109">
           <level>0</level>
           <default>10000</default> <!-- WINDOW_HOME -->

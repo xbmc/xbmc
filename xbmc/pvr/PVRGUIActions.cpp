@@ -152,10 +152,10 @@ namespace PVR
   CPVRGUIActions::CPVRGUIActions()
   : m_bChannelScanRunning(false),
     m_settings({
+      CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
-      CSettings::SETTING_PVRPLAYBACK_STARTLAST,
       CSettings::SETTING_PVRPARENTAL_PIN,
       CSettings::SETTING_PVRPARENTAL_ENABLED
     })
@@ -1198,30 +1198,36 @@ namespace PVR
     return false;
   }
 
-  bool CPVRGUIActions::ContinueLastPlayedChannel() const
+  bool CPVRGUIActions::PlayChannelOnStartup() const
   {
-    const CFileItemPtr item(CServiceBroker::GetPVRManager().ChannelGroups()->GetLastPlayedChannel());
-    const CPVRChannelPtr channel(item ? item->GetPVRChannelInfoTag() : CPVRChannelPtr());
-    bool bWasPlaying = false;
-    if (channel)
-    {
-      // Obtain previous 'was playing on last app quit' flag and reset it, then.
-      channel->SetWasPlayingOnLastQuit(false, bWasPlaying);
-    }
-
-    int iPlayMode = m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_STARTLAST);
-    if (iPlayMode == CONTINUE_LAST_CHANNEL_OFF)
+    int iAction = m_settings.GetIntValue(CSettings::SETTING_LOOKANDFEEL_STARTUPACTION);
+    if (iAction != STARTUP_ACTION_PLAY_TV &&
+        iAction != STARTUP_ACTION_PLAY_RADIO)
       return false;
 
-    // Only switch to the channel if it was playing on last app quit.
-    if (bWasPlaying)
+    bool playTV = iAction == STARTUP_ACTION_PLAY_TV;
+    const CPVRChannelGroupsContainerPtr groups(CServiceBroker::GetPVRManager().ChannelGroups());
+    CPVRChannelGroupPtr group = playTV ? groups->GetGroupAllTV() : groups->GetGroupAllRadio();
+
+    // get the last played channel or fallback to first channel
+    CFileItemPtr item(group->GetLastPlayedChannel());
+    if (item->HasPVRChannelInfoTag())
     {
-      CLog::Log(LOGNOTICE, "PVRGUIActions - %s - continue playback on channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-      CServiceBroker::GetPVRManager().SetPlayingGroup(CServiceBroker::GetPVRManager().ChannelGroups()->GetLastPlayedGroup(channel->ChannelID()));
-      return SwitchToChannel(item, true, iPlayMode == CONTINUE_LAST_CHANNEL_IN_FOREGROUND);
+      group = groups->GetLastPlayedGroup(item->GetPVRChannelInfoTag()->ChannelID());
+    }
+    else
+    {
+      // fallback to first channel
+      auto channels(group->GetMembers());
+      if (channels.empty())
+        return false;
+
+      item = std::make_shared<CFileItem>(channels.front().channel);
     }
 
-    return false;
+    CLog::Log(LOGNOTICE, "PVRGUIActions - %s - start playback of channel '%s'", __FUNCTION__, item->GetPVRChannelInfoTag()->ChannelName().c_str());
+    CServiceBroker::GetPVRManager().SetPlayingGroup(group);
+    return SwitchToChannel(item, true, true);
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const

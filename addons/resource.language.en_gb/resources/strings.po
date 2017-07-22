@@ -10075,17 +10075,7 @@ msgctxt "#19188"
 msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
 
-#. pvr settings "automatically start last played channel after Kodi startup" setting label
-#: system/settings/settings.xml
-msgctxt "#19189"
-msgid "Continue last channel on startup"
-msgstr ""
-
-#. pvr settings "automatically start last played channel after Kodi startup" setting value
-#: system/settings/settings.xml
-msgctxt "#19190"
-msgid "Background"
-msgstr ""
+# empty string from id 19189 to 19190
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"
@@ -10642,11 +10632,7 @@ msgctxt "#19287"
 msgid "All channels"
 msgstr ""
 
-#. pvr settings 'continue last channel on startup' setting value label.
-#: system/settings/settings.xml
-msgctxt "#19288"
-msgid "Foreground"
-msgstr ""
+# empty string with id 19288
 
 #. Label for button to hide a group in the group manager
 #: addons/skin.estuary/xml/DialogPVRGroupManager.xml
@@ -17703,7 +17689,11 @@ msgctxt "#36160"
 msgid "Enable VTB hardware decoding of video files."
 msgstr ""
 
-#empty string with id 36161
+#. Description of setting with label #508 "Startup action"
+#: system/settings/settings.xml
+msgctxt "#36161"
+msgid "Select an action Kodi will perform on startup."
+msgstr ""
 
 #. Description of setting with label #13432 "Allow hardware acceleration (VideoToolbox)"
 #: system/settings/settings.xml
@@ -18060,10 +18050,7 @@ msgctxt "#36227"
 msgid "Switch to full screen display when starting playback of channels and recordings."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36228"
-msgid "Continue with the last viewed channel on startup."
-msgstr ""
+# empty string with id 36228
 
 #: system/settings/settings.xml
 msgctxt "#36229"
@@ -20603,4 +20590,22 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#39024"
 msgid "Dependencies"
+msgstr ""
+
+#empty strings from id 39025 to 39099
+
+#: system/settings/settings.xml
+msgctxt "#39100"
+msgid "Perform on startup"
+msgstr ""
+
+#. Startup action option label
+#: system/settings/settings.xml
+msgctxt "#39101"
+msgid "Play TV"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39102"
+msgid "Play Radio"
 msgstr ""

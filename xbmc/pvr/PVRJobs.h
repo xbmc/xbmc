@@ -43,12 +43,12 @@ namespace PVR
     bool m_bOnOff;
   };
 
-  class CPVRContinueLastChannelJob : public CJob
+  class CPVRPlayChannelOnStartupJob : public CJob
   {
   public:
-    CPVRContinueLastChannelJob() = default;
-    ~CPVRContinueLastChannelJob() override = default;
-    const char *GetType() const override { return "pvr-continue-last-channel-job"; }
+    CPVRPlayChannelOnStartupJob() = default;
+    ~CPVRPlayChannelOnStartupJob() override = default;
+    const char *GetType() const override { return "pvr-play-channel-on-startup"; }
 
     bool DoWork() override;
   };
