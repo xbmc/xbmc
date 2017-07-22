@@ -509,7 +509,7 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
   VECADDONS addons = CAddonMgr::GetInstance().GetAvailableUpdates();
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
-  if (items.Size() > 1)
+  if (!items.IsEmpty())
   {
     CFileItemPtr item(new CFileItem("addons://update_all/", false));
     item->SetLabel(g_localizeStrings.Get(24122));
