@@ -19,19 +19,30 @@
  */
 #pragma once
 
-#include "IKeymapEnvironment.h"
+#include "GUIControlTypes.h"
 
-class CKeymapEnvironment : public IKeymapEnvironment
+class CGUIButtonControl;
+
+namespace KODI
 {
-public:
-  virtual ~CKeymapEnvironment() = default;
+namespace GAME
+{
+  class CControllerFeature;
+  class IConfigurationWizard;
 
-  // implementation of IKeymapEnvironment
-  virtual int GetWindowID() const override { return m_windowId; }
-  virtual void SetWindowID(int windowId) override { m_windowId = windowId; }
-  virtual int GetFallthrough(int windowId) const override;
-  virtual bool UseGlobalFallthrough() const override { return true; }
-
-private:
-  int m_windowId = -1;
-};
+  class CGUIFeatureFactory
+  {
+  public:
+    /*!
+     * \brief Create a button of the specified type
+     * \param type The type of button control being created
+     * \return A button control, or nullptr if type is invalid
+     */
+    static CGUIButtonControl* CreateButton(BUTTON_TYPE type,
+                                           const CGUIButtonControl& buttonTemplate,
+                                           IConfigurationWizard* wizard,
+                                           const CControllerFeature& feature,
+                                           unsigned int index);
+  };
+}
+}

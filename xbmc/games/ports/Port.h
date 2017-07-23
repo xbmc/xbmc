@@ -60,6 +60,7 @@ namespace GAME
 
     // Implementation of IKeymapEnvironment
     virtual int GetWindowID() const override;
+    virtual void SetWindowID(int windowId) override { }
     virtual int GetFallthrough(int windowId) const override { return -1; }
     virtual bool UseGlobalFallthrough() const override { return false; }
 

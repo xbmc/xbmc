@@ -19,12 +19,12 @@
  */
 
 #include "GUIFeatureList.h"
-
 #include "GUIConfigurationWizard.h"
 #include "GUIControllerDefines.h"
-#include "games/controllers/guicontrols/GUIAnalogStickButton.h"
 #include "games/controllers/guicontrols/GUIFeatureControls.h"
-#include "games/controllers/guicontrols/GUIScalarFeatureButton.h"
+#include "games/controllers/guicontrols/GUIFeatureButton.h"
+#include "games/controllers/guicontrols/GUIFeatureFactory.h"
+#include "games/controllers/guicontrols/GUIFeatureTranslator.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIButtonControl.h"
@@ -169,7 +169,7 @@ IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int featureIndex)
 {
   CGUIControl* control = m_guiList->GetControl(CONTROL_FEATURE_BUTTONS_START + featureIndex);
 
-  return dynamic_cast<CGUIFeatureButton*>(control);
+  return static_cast<IFeatureButton*>(dynamic_cast<CGUIFeatureButton*>(control));
 }
 
 void CGUIFeatureList::CleanupButtons(void)
@@ -182,29 +182,42 @@ void CGUIFeatureList::CleanupButtons(void)
 
 std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features)
 {
-  std::vector<CGUIFeatureList::FeatureGroup> groups;
+  std::vector<FeatureGroup> groups;
 
   // Get group names
   std::vector<std::string> groupNames;
   for (const CControllerFeature& feature : features)
   {
-    if (std::find(groupNames.begin(), groupNames.end(), feature.CategoryLabel()) == groupNames.end())
-      groupNames.push_back(feature.CategoryLabel());
-  }
+    bool bAdded = false;
 
-  // Divide features into groups
-  for (std::string& groupName : groupNames)
-  {
-    FeatureGroup group = { groupName };
-    for (const CControllerFeature& feature : features)
+    if (!groups.empty())
     {
-      if (feature.CategoryLabel() == groupName)
-        group.features.push_back(feature);
+      FeatureGroup &previousGroup = *groups.rbegin();
+      if (feature.CategoryLabel() == previousGroup.groupName)
+      {
+        // Add feature to previous group
+        previousGroup.features.emplace_back(feature);
+        bAdded = true;
+      }
     }
-    groups.emplace_back(std::move(group));
+
+    if (!bAdded)
+    {
+      // Create new group and add feature
+      FeatureGroup group;
+      group.groupName = feature.CategoryLabel();
+      group.category = feature.Category();
+      group.features.emplace_back(feature);
+      groups.emplace_back(std::move(group));
+    }
   }
 
   return groups;
+}
+
+bool CGUIFeatureList::HasButton(JOYSTICK::FEATURE_TYPE type) const
+{
+  return CGUIFeatureTranslator::GetButtonType(type) != BUTTON_TYPE::UNKNOWN;
 }
 
 std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex)
@@ -215,27 +228,12 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CC
   unsigned int featureIndex = startIndex;
   for (const CControllerFeature& feature : features)
   {
-    CGUIButtonControl* pButton = nullptr;
+    BUTTON_TYPE buttonType = CGUIFeatureTranslator::GetButtonType(feature.Type());
 
-    // Create button
-    switch (feature.Type())
-    {
-      case JOYSTICK::FEATURE_TYPE::SCALAR:
-      {
-        pButton = new CGUIScalarFeatureButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
-        break;
-      }
-      case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:
-      {
-        pButton = new CGUIAnalogStickButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
-        break;
-      }
-      default:
-        break;
-    }
+    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(buttonType, *m_guiButtonTemplate, m_wizard, feature, featureIndex);
 
     // If successful, add button to result
-    if (pButton)
+    if (pButton != nullptr)
       buttons.push_back(pButton);
 
     featureIndex++;

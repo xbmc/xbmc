@@ -379,7 +379,10 @@ bool CInputManager::Process(int windowId, float frameTime)
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
   ProcessQueuedActions();
-  
+
+  // Inform the environment of the new active window ID
+  m_keymapEnvironment->SetWindowID(windowId);
+
   return true;
 }
 

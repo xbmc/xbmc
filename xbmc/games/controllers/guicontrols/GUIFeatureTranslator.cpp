@@ -17,21 +17,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "IKeymapEnvironment.h"
+#include "GUIFeatureTranslator.h"
 
-class CKeymapEnvironment : public IKeymapEnvironment
+using namespace KODI;
+using namespace GAME;
+
+BUTTON_TYPE CGUIFeatureTranslator::GetButtonType(JOYSTICK::FEATURE_TYPE featureType)
 {
-public:
-  virtual ~CKeymapEnvironment() = default;
+  switch (featureType)
+  {
+  case JOYSTICK::FEATURE_TYPE::SCALAR:
+    return BUTTON_TYPE::BUTTON;
 
-  // implementation of IKeymapEnvironment
-  virtual int GetWindowID() const override { return m_windowId; }
-  virtual void SetWindowID(int windowId) override { m_windowId = windowId; }
-  virtual int GetFallthrough(int windowId) const override;
-  virtual bool UseGlobalFallthrough() const override { return true; }
+  case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:
+    return BUTTON_TYPE::ANALOG_STICK;
 
-private:
-  int m_windowId = -1;
-};
+  default:
+    break;
+  }
+
+  return BUTTON_TYPE::UNKNOWN;
+}

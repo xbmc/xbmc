@@ -19,19 +19,20 @@
  */
 #pragma once
 
-#include "IKeymapEnvironment.h"
+#include "GUIControlTypes.h"
+#include "input/joysticks/JoystickTypes.h"
 
-class CKeymapEnvironment : public IKeymapEnvironment
+namespace KODI
 {
-public:
-  virtual ~CKeymapEnvironment() = default;
-
-  // implementation of IKeymapEnvironment
-  virtual int GetWindowID() const override { return m_windowId; }
-  virtual void SetWindowID(int windowId) override { m_windowId = windowId; }
-  virtual int GetFallthrough(int windowId) const override;
-  virtual bool UseGlobalFallthrough() const override { return true; }
-
-private:
-  int m_windowId = -1;
-};
+namespace GAME
+{
+  class CGUIFeatureTranslator
+  {
+  public:
+    /*!
+     * \brief Get the type of button control used to map the feature
+     */
+    static BUTTON_TYPE GetButtonType(JOYSTICK::FEATURE_TYPE featureType);
+  };
+}
+}
