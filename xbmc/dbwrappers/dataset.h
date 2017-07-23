@@ -268,7 +268,7 @@ public:
  virtual int str_compare(const char * s1, const char * s2);
 /* constructor */
   Dataset();
-  Dataset(Database *newDb);
+  explicit Dataset(Database *newDb);
 
 /* destructor */
   virtual ~Dataset();
@@ -411,7 +411,7 @@ public:
 /* Struct to store an indexMapped field access entry */
   struct FieldIndexMapEntry
   {
-   FieldIndexMapEntry(const char *name):fieldIndex(~0), strName(name){};
+   explicit FieldIndexMapEntry(const char *name):fieldIndex(~0), strName(name){};
    bool operator < (const FieldIndexMapEntry &other) const {return strName < other.strName;};
    unsigned int fieldIndex;
    std::string strName;
@@ -420,7 +420,7 @@ public:
 /* Comparator to quickly find an indexMapped field access entry in the unsorted fieldIndexMap_Entries vector */
   struct FieldIndexMapComparator
   {
-   FieldIndexMapComparator(const std::vector<FieldIndexMapEntry> &c): c_(c) {};
+   explicit FieldIndexMapComparator(const std::vector<FieldIndexMapEntry> &c): c_(c) {};
    bool operator()(const unsigned int &v, const FieldIndexMapEntry &o) const
    {
      return c_[v] < o;

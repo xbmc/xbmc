@@ -748,10 +748,10 @@ namespace XBMCAddon
       pControl->iControlLeft = pControl->iControlId;
       pControl->iControlRight = pControl->iControlId;
 
-      pControl->pGUIControl->SetAction(ACTION_MOVE_UP,    pControl->iControlUp);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_DOWN,  pControl->iControlDown);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_LEFT,  pControl->iControlLeft);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_RIGHT, pControl->iControlRight);
+      pControl->pGUIControl->SetAction(ACTION_MOVE_UP,    CGUIAction(pControl->iControlUp));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_DOWN,  CGUIAction(pControl->iControlDown));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_LEFT,  CGUIAction(pControl->iControlLeft));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_RIGHT, CGUIAction(pControl->iControlRight));
 
       // add control to list and allocate resources for the control
       vecControls.push_back(AddonClass::Ref<Control>(pControl));

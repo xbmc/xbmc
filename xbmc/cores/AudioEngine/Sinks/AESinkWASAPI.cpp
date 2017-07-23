@@ -969,7 +969,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   /* Test for incomplete format and provide defaults */
   if (format.m_sampleRate == 0 ||
-      format.m_channelLayout == NULL ||
+      format.m_channelLayout == CAEChannelInfo(nullptr) ||
       format.m_dataFormat <= AE_FMT_INVALID ||
       format.m_dataFormat >= AE_FMT_MAX ||
       format.m_channelLayout.Count() == 0)

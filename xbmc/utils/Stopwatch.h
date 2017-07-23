@@ -25,7 +25,7 @@
 class CStopWatch
 {
 public:
-  CStopWatch(bool useFrameTime=false);
+  explicit CStopWatch(bool useFrameTime=false);
   ~CStopWatch();
 
   /*!

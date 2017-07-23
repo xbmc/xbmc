@@ -33,7 +33,7 @@ class CGUIAction
 {
 public:
   CGUIAction();
-  CGUIAction(int controlID);
+  explicit CGUIAction(int controlID);
 
   /**
    * Execute actions (no navigation paths), if action is paired with condition - evaluate condition first

@@ -63,7 +63,7 @@ typedef std::vector<CBooleanLogicOperationPtr> CBooleanLogicOperations;
 class CBooleanLogicOperation : public IXmlDeserializable
 {
 public:
-  CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
+  explicit CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
     : m_operation(op)
   { }
   ~CBooleanLogicOperation() override;

@@ -386,7 +386,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   // if we haven't processed yet, we should mark the whole screen
   if (!HasProcessed())
-    regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+    regions.push_back(CDirtyRegion(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight())));
 
   if (m_iCurrentSlide < 0 || m_iCurrentSlide >= static_cast<int>(m_slides.size()))
     m_iCurrentSlide = 0;
@@ -466,7 +466,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   if (m_bErrorMessage)
   { // hack, just mark it all
-    regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+    regions.push_back(CDirtyRegion(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight())));
     return;
   }
 

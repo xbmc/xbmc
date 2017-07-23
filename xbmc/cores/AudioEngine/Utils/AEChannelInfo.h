@@ -32,7 +32,7 @@ class CAEChannelInfo {
 
 public:
   CAEChannelInfo();
-  CAEChannelInfo(const enum AEChannel* rhs);
+  explicit CAEChannelInfo(const enum AEChannel* rhs);
   CAEChannelInfo(const enum AEStdChLayout rhs);
   ~CAEChannelInfo();
   CAEChannelInfo& operator=(const CAEChannelInfo& rhs);

@@ -979,14 +979,14 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       itemsall.Append(items);
       items.Clear();
 
-      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", "", items)) {
+      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", CDatabase::Filter(), items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
       items.Clear();
 
-      if (!database.GetMusicVideosByWhere("videodb://musicvideos/titles/", "", items)) {
+      if (!database.GetMusicVideosByWhere("videodb://musicvideos/titles/", CDatabase::Filter(), items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }

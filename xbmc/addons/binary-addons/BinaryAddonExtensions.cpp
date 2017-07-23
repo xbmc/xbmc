@@ -46,7 +46,7 @@ bool CBinaryAddonExtensions::ParseExtension(const TiXmlElement* element)
       {
         std::string value = cstring;
         name = "@" + name;
-        extension.push_back(std::pair<std::string, std::string>(name, value));
+        extension.push_back(std::make_pair(name, SExtValue(value)));
       }
     }
     attribute = attribute->Next();
@@ -74,7 +74,7 @@ bool CBinaryAddonExtensions::ParseExtension(const TiXmlElement* element)
           {
             std::string value = cstring;
             name = id + "@" + name;
-            extension.push_back(std::pair<std::string, std::string>(name, value));
+            extension.push_back(std::make_pair(name, SExtValue(value)));
           }
         }
         attribute = attribute->Next();
@@ -82,10 +82,10 @@ bool CBinaryAddonExtensions::ParseExtension(const TiXmlElement* element)
 
       cstring = childElement->GetText();
       if (cstring)
-        extension.push_back(std::pair<std::string, std::string>(id, cstring));
+        extension.push_back(std::make_pair(id, SExtValue(cstring)));
 
       if (!extension.empty())
-        m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
+        m_values.push_back(std::make_pair(id, extension));
 
       if (!cstring)
       {
@@ -94,7 +94,7 @@ bool CBinaryAddonExtensions::ParseExtension(const TiXmlElement* element)
         {
           CBinaryAddonExtensions subElement;
           if (subElement.ParseExtension(childElement))
-            m_children.push_back(std::pair<std::string, CBinaryAddonExtensions>(id, subElement));
+            m_children.push_back(std::make_pair(id, subElement));
         }
       }
     }
@@ -142,7 +142,7 @@ const EXT_ELEMENTS CBinaryAddonExtensions::GetElements(const std::string& id) co
   for (auto child : m_children)
   {
     if (child.first == id)
-      children.push_back(std::pair<std::string, CBinaryAddonExtensions>(child.first, child.second));
+      children.push_back(std::make_pair(child.first, child.second));
   }
   return children;
 }
@@ -150,6 +150,6 @@ const EXT_ELEMENTS CBinaryAddonExtensions::GetElements(const std::string& id) co
 void CBinaryAddonExtensions::Insert(const std::string& id, const std::string& value)
 {
   EXT_VALUE extension;
-  extension.push_back(std::pair<std::string, std::string>(id, value));
-  m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
+  extension.push_back(std::make_pair(id, SExtValue(value)));
+  m_values.push_back(std::make_pair(id, extension));
 }

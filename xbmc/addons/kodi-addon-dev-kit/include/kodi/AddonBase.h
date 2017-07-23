@@ -234,7 +234,7 @@ namespace addon {
 class IAddonInstance
 {
 public:
-  IAddonInstance(ADDON_TYPE type) : m_type(type) { }
+  explicit IAddonInstance(ADDON_TYPE type) : m_type(type) { }
   virtual ~IAddonInstance() = default;
 
   virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
@@ -254,7 +254,7 @@ namespace kodi {
 class CSettingValue
 {
 public:
-  CSettingValue(const void *settingValue) : m_settingValue(settingValue) {}
+  explicit CSettingValue(const void *settingValue) : m_settingValue(settingValue) {}
 
   bool empty() const { return (m_settingValue == nullptr) ? true : false; }
   std::string GetString() const { return (char*)m_settingValue; }

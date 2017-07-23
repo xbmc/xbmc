@@ -100,7 +100,7 @@ private:
 class CSlideEffect : public CAnimEffect
 {
 public:
-  CSlideEffect(const TiXmlElement *node);
+  explicit CSlideEffect(const TiXmlElement *node);
   ~CSlideEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;

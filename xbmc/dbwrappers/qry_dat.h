@@ -76,16 +76,16 @@ private:
 
 public:
   field_value();
-  field_value(const char *s);
-  field_value(const bool b);
-  field_value(const char c);
-  field_value(const short s);
-  field_value(const unsigned short us);
-  field_value(const int l);
-  field_value(const unsigned int ul);
-  field_value(const float f);
-  field_value(const double d);
-  field_value(const int64_t i);
+  explicit field_value(const char *s);
+  explicit field_value(const bool b);
+  explicit field_value(const char c);
+  explicit field_value(const short s);
+  explicit field_value(const unsigned short us);
+  explicit field_value(const int l);
+  explicit field_value(const unsigned int ul);
+  explicit field_value(const float f);
+  explicit field_value(const double d);
+  explicit field_value(const int64_t i);
   field_value(const field_value & fv);
   ~field_value();
 

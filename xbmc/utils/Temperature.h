@@ -106,7 +106,7 @@ public:
   std::string ToString(Unit temperatureUnit) const;
 
 protected:
-  CTemperature(double value);
+  explicit CTemperature(double value);
 
   double m_value; // we store as fahrenheit
   bool m_valid;

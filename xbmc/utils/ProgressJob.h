@@ -63,7 +63,7 @@ public:
 
 protected:
   CProgressJob();
-  CProgressJob(CGUIDialogProgressBarHandle* progressBar);
+  explicit CProgressJob(CGUIDialogProgressBarHandle* progressBar);
 
   /*!
    \brief Whether the job is being run modally or in the background.

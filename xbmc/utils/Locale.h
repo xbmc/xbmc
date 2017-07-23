@@ -29,7 +29,7 @@ class CLocale
 {
 public:
   CLocale();
-  CLocale(const std::string& language);
+  explicit CLocale(const std::string& language);
   CLocale(const std::string& language, const std::string& territory);
   CLocale(const std::string& language, const std::string& territory, const std::string& codeset);
   CLocale(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier);

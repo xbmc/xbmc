@@ -118,7 +118,7 @@ struct SPlayerVideoStreamInfo
   CRect DestRect;
   std::string stereoMode;
 
-  SPlayerVideoStreamInfo()
+  SPlayerVideoStreamInfo() : SrcRect {}, DestRect {}
   {
     valid = false;
     bitrate = 0;
@@ -225,7 +225,7 @@ enum ViewMode {
 class IPlayer
 {
 public:
-  IPlayer(IPlayerCallback& callback): m_callback(callback){};
+  explicit IPlayer(IPlayerCallback& callback): m_callback(callback){};
   virtual ~IPlayer() = default;
   virtual bool Initialize(TiXmlElement* pConfig) { return true; };
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}

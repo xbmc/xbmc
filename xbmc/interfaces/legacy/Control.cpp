@@ -343,7 +343,7 @@ namespace XBMCAddon
 
       XBMCAddonUtils::GuiLock(languageHook, false);
       if (pGUIControl)
-        ((CGUIImage *)pGUIControl)->SetColorDiffuse(colorDiffuse);
+        ((CGUIImage *)pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
     }
 
     CGUIControl* ControlImage::Create()
@@ -356,7 +356,7 @@ namespace XBMCAddon
         ((CGUIImage *)pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
 
       if (pGUIControl && colorDiffuse)
-        ((CGUIImage *)pGUIControl)->SetColorDiffuse(colorDiffuse);
+        ((CGUIImage *)pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }
@@ -411,7 +411,7 @@ namespace XBMCAddon
          CTextureInfo(strTextureOverlay));
 
       if (pGUIControl && colorDiffuse)
-        ((CGUIProgressControl *)pGUIControl)->SetColorDiffuse(colorDiffuse);
+        ((CGUIProgressControl *)pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }
@@ -802,10 +802,10 @@ namespace XBMCAddon
         XBMCAddonUtils::GuiLock(languageHook, false);
         if (pGUIControl)
         {
-          pGUIControl->SetAction(ACTION_MOVE_UP,    up->iControlId);
-          pGUIControl->SetAction(ACTION_MOVE_DOWN,  down->iControlId);
-          pGUIControl->SetAction(ACTION_MOVE_LEFT,  left->iControlId);
-          pGUIControl->SetAction(ACTION_MOVE_RIGHT, right->iControlId);
+          pGUIControl->SetAction(ACTION_MOVE_UP,    CGUIAction(up->iControlId));
+          pGUIControl->SetAction(ACTION_MOVE_DOWN,  CGUIAction(down->iControlId));
+          pGUIControl->SetAction(ACTION_MOVE_LEFT,  CGUIAction(left->iControlId));
+          pGUIControl->SetAction(ACTION_MOVE_RIGHT, CGUIAction(right->iControlId));
         }
       }
     }
@@ -818,7 +818,7 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock(languageHook, false);
         if (pGUIControl)
-          pGUIControl->SetAction(ACTION_MOVE_UP, control->iControlId);
+          pGUIControl->SetAction(ACTION_MOVE_UP, CGUIAction(control->iControlId));
       }
     }
 
@@ -830,7 +830,7 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock(languageHook, false);
         if (pGUIControl)
-          pGUIControl->SetAction(ACTION_MOVE_DOWN, control->iControlId);
+          pGUIControl->SetAction(ACTION_MOVE_DOWN, CGUIAction(control->iControlId));
       }
     }
 
@@ -842,7 +842,7 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock(languageHook, false);
         if (pGUIControl)
-          pGUIControl->SetAction(ACTION_MOVE_LEFT, control->iControlId);
+          pGUIControl->SetAction(ACTION_MOVE_LEFT, CGUIAction(control->iControlId));
       }
     }
 
@@ -854,7 +854,7 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock(languageHook, false);
         if (pGUIControl)
-          pGUIControl->SetAction(ACTION_MOVE_RIGHT, control->iControlId);
+          pGUIControl->SetAction(ACTION_MOVE_RIGHT, CGUIAction(control->iControlId));
       }
     }
 

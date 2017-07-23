@@ -40,7 +40,7 @@ class CCoreAudioDevice
 {
 public:
   CCoreAudioDevice();
-  CCoreAudioDevice(AudioDeviceID deviceId);
+  explicit CCoreAudioDevice(AudioDeviceID deviceId);
   virtual ~CCoreAudioDevice();
   
   bool          Open(AudioDeviceID deviceId);

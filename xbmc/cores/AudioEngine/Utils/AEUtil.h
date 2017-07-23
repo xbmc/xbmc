@@ -103,7 +103,7 @@ protected:
 class CAESpinLock
 {
 public:
-  CAESpinLock(CAESpinSection& section)
+  explicit CAESpinLock(CAESpinSection& section)
   : m_section(section)
   , m_begin(section.m_enter)
   {}

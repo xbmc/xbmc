@@ -8759,7 +8759,7 @@ void CVideoDatabase::DumpToDummyFiles(const std::string &path)
 {
   // get all tvshows
   CFileItemList items;
-  GetTvShowsByWhere("videodb://tvshows/titles/", "", items);
+  GetTvShowsByWhere("videodb://tvshows/titles/", CDatabase::Filter(), items);
   std::string showPath = URIUtils::AddFileToFolder(path, "shows");
   CDirectory::Create(showPath);
   for (int i = 0; i < items.Size(); i++)
@@ -8786,7 +8786,7 @@ void CVideoDatabase::DumpToDummyFiles(const std::string &path)
   }
   // get all movies
   items.Clear();
-  GetMoviesByWhere("videodb://movies/titles/", "", items);
+  GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter(), items);
   std::string moviePath = URIUtils::AddFileToFolder(path, "movies");
   CDirectory::Create(moviePath);
   for (int i = 0; i < items.Size(); i++)

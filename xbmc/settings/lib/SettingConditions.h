@@ -35,7 +35,7 @@ using SettingConditionCheck = bool (*)(const std::string &condition, const std::
 class ISettingCondition
 {
 public:
-  ISettingCondition(CSettingsManager *settingsManager)
+  explicit ISettingCondition(CSettingsManager *settingsManager)
     : m_settingsManager(settingsManager)
   { }
   virtual ~ISettingCondition() = default;
@@ -49,7 +49,7 @@ protected:
 class CSettingConditionItem : public CBooleanLogicValue, public ISettingCondition
 {
 public:
-  CSettingConditionItem(CSettingsManager *settingsManager = nullptr)
+  explicit CSettingConditionItem(CSettingsManager *settingsManager = nullptr)
     : ISettingCondition(settingsManager)
   { }
   ~CSettingConditionItem() override = default;
@@ -66,7 +66,7 @@ protected:
 class CSettingConditionCombination : public CBooleanLogicOperation, public ISettingCondition
 {
 public:
-  CSettingConditionCombination(CSettingsManager *settingsManager = nullptr)
+  explicit CSettingConditionCombination(CSettingsManager *settingsManager = nullptr)
     : ISettingCondition(settingsManager)
   { }
   ~CSettingConditionCombination() override = default;
@@ -81,7 +81,7 @@ private:
 class CSettingCondition : public CBooleanLogic, public ISettingCondition
 {
 public:
-  CSettingCondition(CSettingsManager *settingsManager = nullptr);
+  explicit CSettingCondition(CSettingsManager *settingsManager = nullptr);
   ~CSettingCondition() override = default;
 
   bool Check() const override;

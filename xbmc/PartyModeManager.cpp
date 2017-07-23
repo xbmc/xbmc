@@ -122,7 +122,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
-      m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
+      m_iMatchingSongs = (int)db.GetSongIDs(CDatabase::Filter(m_strCurrentFilterMusic), songIDs);
       if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
       {
         pDialog->Close();
@@ -357,7 +357,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
         std::pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
         int songID;
-        if (database.GetRandomSong(item.get(), songID, whereClause.first))
+        if (database.GetRandomSong(item.get(), songID, CDatabase::Filter(whereClause.first)))
         { // success
           Add(item);
           AddToHistory(1,songID);
@@ -627,14 +627,16 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
       sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
       CMusicDatabase database;
       database.Open();
-      database.GetSongsFullByWhere("musicdb://songs/", sqlWhereMusic, items, SortDescription(), true);
+      database.GetSongsFullByWhere("musicdb://songs/", CDatabase::Filter(sqlWhereMusic),
+                                   items, SortDescription(), true);
     }
     if (sqlWhereVideo.size() > 19)
     {
       sqlWhereVideo[sqlWhereVideo.size() - 1] = ')'; // replace the last comma with closing bracket
       CVideoDatabase database;
       database.Open();
-      database.GetMusicVideosByWhere("videodb://musicvideos/titles/", sqlWhereVideo, items);
+      database.GetMusicVideosByWhere("videodb://musicvideos/titles/",
+                                     CDatabase::Filter(sqlWhereVideo), items);
     }
 
     m_history = chosenSongIDs;
