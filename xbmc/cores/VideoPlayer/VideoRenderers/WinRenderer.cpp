@@ -239,7 +239,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned fl
   m_format = picture.videoBuffer->GetFormat();
   if (m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CDXVAOutputBuffer *dxvaBuf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(picture.videoBuffer);
+    DXVA::CDXVAOutputBuffer *dxvaBuf = static_cast<DXVA::CDXVAOutputBuffer*>(picture.videoBuffer);
     m_dxva_format = dxvaBuf->format;
   }
 

@@ -654,12 +654,9 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
 void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 {
   m_effect.SetTechnique("YUV2RGB_T");
-  ID3D11ShaderResourceView* ppSRView[3] =
-  {
-    reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(0)),
-    reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(1)),
-    reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(2)),
-  };
+  ID3D11ShaderResourceView* ppSRView[3] = {};
+  for (unsigned i = 0, max_i = videoBuffer->GetActivePlanes(); i < max_i; i++)
+    ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(i));
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetActivePlanes());
   m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
