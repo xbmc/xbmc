@@ -3531,8 +3531,8 @@
         </setting>
       </group>
     </category>
-    <category id="other" label="14224" help="36102">
-      <group id="2" label="513">
+    <category id="other" label="14224" help="36292">
+      <group id="2" label="14227">
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="36109">
           <level>0</level>
           <default>10000</default> <!-- WINDOW_HOME -->

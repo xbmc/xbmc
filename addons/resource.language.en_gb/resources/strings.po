@@ -7677,7 +7677,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14224"
-msgid "Other"
+msgid "Startup"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7690,7 +7690,12 @@ msgctxt "#14226"
 msgid "Manage Sources"
 msgstr ""
 
-#empty strings from id 14227 to 14229
+#: system/settings/settings.xml
+msgctxt "#14227"
+msgid "Startup Settings"
+msgstr ""
+
+#empty strings from id 14228 to 14229
 
 #: system/settings/settings.xml
 msgctxt "#14230"
@@ -18404,7 +18409,13 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr ""
 
-#empty strings from id 36292 to 36301
+#. Description of settings category "Interface -> Startup" with label #14224
+#: system/settings/settings.xml
+msgctxt "#36292"
+msgid "This category contains startup settings."
+msgstr ""
+
+#empty strings from id 36293 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"
