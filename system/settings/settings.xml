@@ -3268,6 +3268,24 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="regional" label="14222" help="36113">
@@ -3525,24 +3543,6 @@
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
           <control type="list" format="string" />
-        </setting>
-        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
-          </dependencies>
-          <control type="button" format="action">
-            <hidevalue>true</hidevalue>
-          </control>
         </setting>
       </group>
     </category>
