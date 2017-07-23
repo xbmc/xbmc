@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.3"
+        version="1.0.4"
         provider-name="Team Kodi">
     <requires>
     </requires>
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
-        <summary>Default Controller</summary>
-        <description>The default media center controller is based on the Xbox 360 controller.</description>
-        <disclaimer></disclaimer>
+        <summary lang="en_GB">Default Controller</summary>
+        <description lang="en_GB">The default media center controller is based on the Xbox 360 controller.</description>
+        <disclaimer>Image credit: Wikipedia (wikipedia.org)</disclaimer>
         <platform>all</platform>
-        <nofanart>true</nofanart>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
     </extension>
 </addon>
