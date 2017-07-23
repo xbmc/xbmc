@@ -177,7 +177,7 @@ void CJNIXBMCMediaSession::_onPlayRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnPlayRequested();
 }
@@ -186,7 +186,7 @@ void CJNIXBMCMediaSession::_onPauseRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnPauseRequested();
 }
@@ -195,7 +195,7 @@ void CJNIXBMCMediaSession::_onNextRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnNextRequested();
 }
@@ -204,7 +204,7 @@ void CJNIXBMCMediaSession::_onPreviousRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnPreviousRequested();
 }
@@ -213,7 +213,7 @@ void CJNIXBMCMediaSession::_onForwardRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnForwardRequested();
 }
@@ -222,7 +222,7 @@ void CJNIXBMCMediaSession::_onRewindRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnRewindRequested();
 }
@@ -231,7 +231,7 @@ void CJNIXBMCMediaSession::_onStopRequested(JNIEnv* env, jobject thiz)
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnStopRequested();
 }
@@ -240,7 +240,7 @@ void CJNIXBMCMediaSession::_onSeekRequested(JNIEnv* env, jobject thiz, jlong pos
 {
   (void)env;
 
-  CJNIXBMCMediaSession *inst = find_instance(jhobject(thiz));
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
   if (inst)
     inst->OnSeekRequested(pos);
 }

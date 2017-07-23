@@ -67,7 +67,7 @@ void CJNIXBMCAudioManagerOnAudioFocusChangeListener::_onAudioFocusChange(JNIEnv 
 {
   (void)env;
 
-  CJNIXBMCAudioManagerOnAudioFocusChangeListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCAudioManagerOnAudioFocusChangeListener *inst = find_instance(thiz);
   if (inst)
     inst->onAudioFocusChange(focusChange);
 }

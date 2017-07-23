@@ -97,27 +97,27 @@ void CJNIXBMCVideoView::_surfaceChanged(JNIEnv *env, jobject thiz, jobject holde
 {
   (void)env;
 
-  CJNIXBMCVideoView *inst = find_instance(jhobject(thiz));
+  CJNIXBMCVideoView *inst = find_instance(thiz);
   if (inst)
-    inst->surfaceChanged(CJNISurfaceHolder(jhobject(holder)), format, width, height);
+    inst->surfaceChanged(CJNISurfaceHolder(jhobject::fromJNI(holder)), format, width, height);
 }
 
 void CJNIXBMCVideoView::_surfaceCreated(JNIEnv* env, jobject thiz, jobject holder)
 {
   (void)env;
 
-  CJNIXBMCVideoView *inst = find_instance(jhobject(thiz));
+  CJNIXBMCVideoView *inst = find_instance(thiz);
   if (inst)
-    inst->surfaceCreated(CJNISurfaceHolder(jhobject(holder)));
+    inst->surfaceCreated(CJNISurfaceHolder(jhobject::fromJNI(holder)));
 }
 
 void CJNIXBMCVideoView::_surfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder)
 {
   (void)env;
 
-  CJNIXBMCVideoView *inst = find_instance(jhobject(thiz));
+  CJNIXBMCVideoView *inst = find_instance(thiz);
   if (inst)
-    inst->surfaceDestroyed(CJNISurfaceHolder(jhobject(holder)));
+    inst->surfaceDestroyed(CJNISurfaceHolder(jhobject::fromJNI(holder)));
 }
 
 void CJNIXBMCVideoView::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)

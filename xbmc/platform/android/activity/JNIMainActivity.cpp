@@ -44,7 +44,7 @@ void CJNIMainActivity::_onNewIntent(JNIEnv *env, jobject context, jobject intent
   (void)env;
   (void)context;
   if (m_appInstance)
-    m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
+    m_appInstance->onNewIntent(CJNIIntent(jhobject::fromJNI(intent)));
 }
 
 void CJNIMainActivity::_onActivityResult(JNIEnv *env, jobject context, jint requestCode, jint resultCode, jobject resultData)
@@ -52,7 +52,7 @@ void CJNIMainActivity::_onActivityResult(JNIEnv *env, jobject context, jint requ
   (void)env;
   (void)context;
   if (m_appInstance)
-    m_appInstance->onActivityResult(requestCode, resultCode, CJNIIntent(jhobject(resultData)));
+    m_appInstance->onActivityResult(requestCode, resultCode, CJNIIntent(jhobject::fromJNI(resultData)));
 }
 
 void CJNIMainActivity::_callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr)

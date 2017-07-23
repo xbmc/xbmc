@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libandroidjni
-VERSION=8b3d0f09c3bb32c38878813b3a122d7a510b7510
+VERSION=c2faa6fb006070b4965d949c5f7d94094f5cd98b
 SOURCE=archive
 ARCHIVE=$(VERSION).tar.gz
 GIT_BASE_URL=https://github.com/xbmc
