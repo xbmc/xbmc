@@ -91,7 +91,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iClientChannelNumber.subchannel = channel.iSubChannelNumber;
   m_strClientChannelName    = channel.strChannelName;
   m_strInputFormat          = channel.strInputFormat;
-  m_strStreamURL            = channel.strStreamURL;
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
   m_iCachedChannelNumber    = 0;
   m_iCachedSubChannelNumber = 0;
@@ -200,7 +199,6 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
   assert(channel.get());
 
   SetClientID(channel->ClientID());
-  SetStreamURL(channel->StreamURL());
 
   CSingleLock lock(m_critSection);
 
@@ -417,8 +415,7 @@ bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet, bool& bWasPlaying)
 bool CPVRChannel::IsEmpty() const
 {
   CSingleLock lock(m_critSection);
-  return (m_strFileNameAndPath.empty() ||
-          m_strStreamURL.empty());
+  return (m_strFileNameAndPath.empty());
 }
 
 /********** Client related channel methods **********/
@@ -431,23 +428,6 @@ bool CPVRChannel::SetClientID(int iClientId)
   {
     /* update the client ID */
     m_iClientId = iClientId;
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::SetStreamURL(const std::string &strStreamURL)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_strStreamURL != strStreamURL)
-  {
-    /* update the stream url */
-    m_strStreamURL = StringUtils::Format("%s", strStreamURL.c_str());
     SetChanged();
     m_bChanged = true;
 
@@ -817,13 +797,6 @@ std::string CPVRChannel::InputFormat(void) const
 {
   CSingleLock lock(m_critSection);
   std::string strReturn(m_strInputFormat);
-  return strReturn;
-}
-
-std::string CPVRChannel::StreamURL(void) const
-{
-  CSingleLock lock(m_critSection);
-  std::string strReturn(m_strStreamURL);
   return strReturn;
 }
 
