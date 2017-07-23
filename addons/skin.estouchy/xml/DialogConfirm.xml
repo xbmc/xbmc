@@ -64,7 +64,6 @@
 			<onright>9000</onright>
 			<onup>9000</onup>
 			<ondown>9000</ondown>
-			<visible>!Window.IsVisible(yesnodialog)</visible>
 			<control type="button" id="10">
 				<description>OK button</description>
 				<width>200</width>
@@ -77,27 +76,6 @@
 			</control>
 			<control type="button" id="12">
 				<description>Custom button</description>
-				<width>200</width>
-				<include>ButtonInfoDialogsCommonValues</include>
-			</control>
-		</control>
-		<control type="group">
-			<posx>145</posx>
-			<posy>240</posy>
-			<width>660</width>
-			<height>60</height>
-			<visible>Window.IsVisible(yesnodialog)</visible>
-			<control type="button" id="11">
-				<description>Yes button</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<include>ButtonInfoDialogsCommonValues</include>
-			</control>
-			<control type="button" id="10">
-				<description>No button</description>
-				<posx>210</posx>
-				<posy>0</posy>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 			</control>
