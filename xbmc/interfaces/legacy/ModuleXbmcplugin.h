@@ -339,9 +339,11 @@ namespace XBMCAddon
     /// |:--------:|:--------:|:--------:|:--------:|
     /// |  files   |  songs   | artists  | albums
     /// | movies   | tvshows  | episodes | musicvideos
+    /// | videos   | images   | 
     ///
-    ///
-    ///
+    /// @remark Use **videos** for all videos which do not apply to the 
+    /// more specific mentioned ones like "movies", "episodes" etc.
+    /// A good example is youtube.
     /// ------------------------------------------------------------------------
     ///
     /// **Example:**
