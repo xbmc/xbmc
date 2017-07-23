@@ -39,7 +39,7 @@ namespace RETRO
                             //protected CThread
   {
   public:
-    CRetroPlayerVideo(CRenderManager& m_renderManager, CProcessInfo& m_processInfo);
+    CRetroPlayerVideo(CRenderManager& m_renderManager, CProcessInfo& m_processInfo, CDVDClock &clock);
 
     ~CRetroPlayerVideo() override;
 
@@ -63,6 +63,7 @@ namespace RETRO
     // Construction parameters
     CRenderManager& m_renderManager;
     CProcessInfo&   m_processInfo;
+    CDVDClock       &m_clock;
 
     // Stream properties
     double       m_framerate;
