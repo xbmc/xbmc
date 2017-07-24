@@ -84,8 +84,8 @@ public:
     if(IsInMenu())
       OnMenu();
   }
-  void OnNext() override {}
-  void OnPrevious() override {}
+  void OnNext() override;
+  void OnPrevious() override;
   bool HasMenu() override;
   bool IsInMenu() override;
   bool OnMouseMove(const CPoint &point) override  { return MouseMove(point); }

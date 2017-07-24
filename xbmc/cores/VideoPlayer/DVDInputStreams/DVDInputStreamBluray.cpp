@@ -1324,3 +1324,15 @@ bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 
   return true;
 }
+
+void CDVDInputStreamBluray::OnNext()
+{
+  if (SeekChapter(GetChapter() + 1))
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_PLAYLIST_STOP);
+}
+
+void CDVDInputStreamBluray::OnPrevious()
+{
+  if (SeekChapter(GetChapter() - 1))
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_PLAYLIST_STOP);
+}
