@@ -570,8 +570,8 @@ float CCPUInfo::getCPUFrequency()
   {
     rewind(m_fCPUFreq);
     fflush(m_fCPUFreq);
-    fscanf(m_fCPUFreq, "%d", &value);
-    value /= 1000.0;
+    if (fscanf(m_fCPUFreq, "%d", &value))
+      value /= 1000.0;
   }
   if (m_fCPUFreq && m_cpuInfoForFreq)
   {
@@ -585,7 +585,8 @@ float CCPUInfo::getCPUFrequency()
         cpus++;
         avg += mhz;
       }
-      fscanf(m_fCPUFreq,"%*s");
+      if (!fscanf(m_fCPUFreq,"%*s"))
+        break;
     }
 
     if (cpus > 0)
