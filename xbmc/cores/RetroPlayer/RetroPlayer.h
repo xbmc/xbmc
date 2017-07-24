@@ -148,6 +148,12 @@ namespace RETRO
 
   private:
     /*!
+     * \brief Called when the speed changes
+     * \param newSpeed The new speed, possibly equal to the previous speed
+     */
+    void OnSpeedChange(double newSpeed);
+
+    /*!
      * \brief Closes the OSD and shows the FullscreenGame window
      */
     void CloseOSD();

@@ -37,10 +37,11 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRetroPlayerVideo::CRetroPlayerVideo(CRenderManager& renderManager, CProcessInfo& processInfo) :
+CRetroPlayerVideo::CRetroPlayerVideo(CRenderManager& renderManager, CProcessInfo& processInfo, CDVDClock &clock) :
   //CThread("RetroPlayerVideo"),
   m_renderManager(renderManager),
   m_processInfo(processInfo),
+  m_clock(clock),
   m_framerate(0.0),
   m_orientation(0),
   m_bConfigured(false),
@@ -119,7 +120,8 @@ void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 
   if (GetPicture(data, size, picture))
   {
-    picture.iDuration = 1.0 / m_framerate;
+    picture.pts = m_clock.GetClock(); // Show immediately
+    picture.iDuration = DVD_SEC_TO_TIME(1.0 / m_framerate);
 
     if (!Configure(picture))
     {

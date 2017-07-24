@@ -59,6 +59,8 @@ CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
   m_renderManager(m_clock, this),
   m_processInfo(CProcessInfo::CreateInstance())
 {
+  m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
+  m_processInfo->SetTempo(1.0);
 }
 
 CRetroPlayer::~CRetroPlayer()
@@ -94,7 +96,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     if (m_gameClient->Initialize())
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
-      m_video.reset(new CRetroPlayerVideo(m_renderManager, *m_processInfo));
+      m_video.reset(new CRetroPlayerVideo(m_renderManager, *m_processInfo, m_clock));
 
       if (!file.GetPath().empty())
         bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get());
@@ -304,10 +306,7 @@ void CRetroPlayer::SeekTime(int64_t iTime /* = 0 */)
   if (m_gameClient)
   {
     m_gameClient->GetPlayback()->SeekTimeMs(static_cast<unsigned int>(iTime));
-    m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
-
-    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
-      CloseOSD();
+    OnSpeedChange(m_gameClient->GetPlayback()->GetSpeed());
   }
 }
 
@@ -354,12 +353,7 @@ void CRetroPlayer::SetSpeed(float speed)
     }
 
     m_gameClient->GetPlayback()->SetSpeed(speed);
-    m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
-
-    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
-      CloseOSD();
-
-    CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
+    OnSpeedChange(speed);
   }
 }
 
@@ -371,15 +365,18 @@ bool CRetroPlayer::OnAction(const CAction &action)
   {
     if (m_gameClient)
     {
-      double previousPlaySpeed = m_gameClient->GetPlayback()->GetSpeed();
-      m_gameClient->GetPlayback()->SetSpeed(0.0);
-      CServiceBroker::GetGameServices().PortManager().HardwareReset();
-      if (previousPlaySpeed > 0.0)
-        m_gameClient->GetPlayback()->SetSpeed(previousPlaySpeed);
-      else
-        m_gameClient->GetPlayback()->SetSpeed(1.0f);
+      double speed = m_gameClient->GetPlayback()->GetSpeed();
 
-      CloseOSD();
+      m_gameClient->GetPlayback()->SetSpeed(0.0);
+
+      CServiceBroker::GetGameServices().PortManager().HardwareReset();
+
+      // If rewinding or paused, begin playback
+      if (speed <= 0.0)
+        speed = 1.0;
+
+      m_gameClient->GetPlayback()->SetSpeed(speed);
+      OnSpeedChange(speed);
     }
     return true;
   }
@@ -486,6 +483,14 @@ void CRetroPlayer::UpdateGuiRender(bool gui)
 void CRetroPlayer::UpdateVideoRender(bool video)
 {
   m_processInfo->SetVideoRender(video);
+}
+
+void CRetroPlayer::OnSpeedChange(double newSpeed)
+{
+  m_audio->Enable(newSpeed == 1.0);
+  m_processInfo->SetSpeed(newSpeed);
+  if (newSpeed != 0.0)
+    CloseOSD();
 }
 
 void CRetroPlayer::CloseOSD()
