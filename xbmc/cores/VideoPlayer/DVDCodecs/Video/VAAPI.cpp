@@ -1379,9 +1379,9 @@ void CVaapiBufferPool::DeleteTextures(bool precleanup)
 //-----------------------------------------------------------------------------
 COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
   CThread("Vaapi-Output"),
-  m_vaapi(decoder),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent)
+  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+  m_vaapi(decoder)
 {
   m_inMsgEvent = inMsgEvent;
   m_bufferPool = std::make_shared<CVaapiBufferPool>(decoder);
