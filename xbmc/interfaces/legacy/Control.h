@@ -279,6 +279,28 @@ namespace XBMCAddon
       virtual void setVisible(bool visible);
 #endif
 
+      // isVisible() Method
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      /// \ingroup python_xbmcgui_control
+      /// @brief \python_func{ isVisible() }
+      ///-----------------------------------------------------------------------
+      /// Get the control's visible/hidden state.
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// if self.button.isVisible():
+      ///     ...
+      /// ~~~~~~~~~~~~~
+      ///
+      isVisible(...);
+#else
+      virtual bool isVisible();
+#endif
+
       // setVisibleCondition() Method
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control

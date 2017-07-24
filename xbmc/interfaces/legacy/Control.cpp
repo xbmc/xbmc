@@ -704,6 +704,16 @@ namespace XBMCAddon
         pGUIControl->SetVisible(visible);
     }
 
+    bool Control::isVisible()
+    {
+      DelayedCallGuard dcguard(languageHook);
+      LOCKGUI;
+      if (pGUIControl)
+        return pGUIControl->IsVisible();
+      else
+        return false;
+    }
+
     void Control::setVisibleCondition(const char* visible, bool allowHiddenFocus)
     {
       DelayedCallGuard dcguard(languageHook);
