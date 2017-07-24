@@ -191,13 +191,6 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   }
 }
 
-void CPVRManager::SaveLastPlayedChannel() const
-{
-  const CPVRChannelPtr playingChannel(GetCurrentChannel());
-  if (playingChannel)
-    playingChannel->SetWasPlayingOnLastQuit(true);
-}
-
 CPVRDatabasePtr CPVRManager::GetTVDatabase(void) const
 {
   CSingleLock lock(m_critSection);
@@ -378,7 +371,6 @@ void CPVRManager::Unload()
 
 void CPVRManager::Deinit()
 {
-  SaveLastPlayedChannel();
   SetWakeupCommand();
   Unload();
 
@@ -534,7 +526,6 @@ bool CPVRManager::SetWakeupCommand(void)
 
 void CPVRManager::OnSleep()
 {
-  SaveLastPlayedChannel();
   SetWakeupCommand();
 
   CServiceBroker::GetPVRManager().Clients()->OnSystemSleep();

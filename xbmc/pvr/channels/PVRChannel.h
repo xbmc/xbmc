@@ -231,21 +231,6 @@ namespace PVR
     bool SetLastWatched(time_t iLastWatched);
 
     /*!
-     * @brief Sets the 'was playing on last app quit' flag for a channel.
-     * @param bSet True to set the flag, false to reset the flag
-     * @return True if the operation was successful, false otherwise
-     */
-    bool SetWasPlayingOnLastQuit(bool bSet);
-
-    /*!
-     * @brief Sets the 'was playing on last app quit' flag for a channel.
-     * @param bSet True to set the flag, false to reset the flag
-     * @param bWasPlaying on return contains the previous value of the flag
-     * @return True if the operation was successful, false otherwise
-     */
-    bool SetWasPlayingOnLastQuit(bool bSet, bool& bWasPlaying);
-
-    /*!
      * @brief True if this channel has no file or stream name
      * @return True if this channel has no file or stream name
      */
