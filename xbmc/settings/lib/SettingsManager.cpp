@@ -96,7 +96,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
   if (version == 0)
     CLog::Log(LOGWARNING, "CSettingsManager: missing %s attribute", SETTING_XML_ROOT_VERSION);
 
-  if (version < MinimumSupportedVersion)
+  if (MinimumSupportedVersion >= version+1)
   {
     CLog::Log(LOGERROR, "CSettingsManager: unable to read setting definitions from version %u (minimum version: %u)", version, MinimumSupportedVersion);
     return false;
@@ -150,7 +150,7 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   if (version == 0)
     CLog::Log(LOGWARNING, "CSettingsManager: missing %s attribute", SETTING_XML_ROOT_VERSION);
 
-  if (version < MinimumSupportedVersion)
+  if (MinimumSupportedVersion >= version+1)
   {
     CLog::Log(LOGERROR, "CSettingsManager: unable to read setting values from version %u (minimum version: %u)", version, MinimumSupportedVersion);
     return false;
