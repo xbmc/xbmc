@@ -54,7 +54,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 30; }
+    int GetSchemaVersion() const override { return 31; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -141,23 +141,6 @@ namespace PVR
 
     /*! @name Client methods */
     //@{
-
-    /*!
-     * @brief Sets the 'was playing on last app quit' flag for a channel.
-     * @param channel the channel
-     * @param bSet True to set the flag, false to reset the flag
-     * @return True if the operation was successful, false otherwise
-     */
-    bool SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet);
-
-    /*!
-     * @brief Sets the 'was playing on last app quit' flag for a channel.
-     * @param channel the channel
-     * @param bSet True to set the flag, false to reset the flag
-     * @param bWasPlaying on return contains the previous value of the flag
-     * @return True if the operation was successful, false otherwise
-     */
-    bool SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet, bool& bWasPlaying);
 
     /*!
     * @brief Updates the last watched timestamp for the channel

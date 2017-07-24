@@ -267,10 +267,10 @@ namespace PVR
     bool SwitchToChannel(PlaybackType type) const;
 
     /*!
-     * @brief Continue playback of the last played channel.
-     * @return True if playback was continued, false otherwise.
+     * @brief Plays the last played channel or the first channel of TV or Radio on startup.
+     * @return True if playback was started, false otherwise.
      */
-    bool ContinueLastPlayedChannel() const;
+    bool PlayChannelOnStartup() const;
 
     /*!
      * @brief Hide a channel, always showing a confirmation dialog.

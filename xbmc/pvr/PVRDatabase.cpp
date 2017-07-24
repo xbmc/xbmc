@@ -143,6 +143,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 30)
     m_pDS->exec("ALTER TABLE channels ADD bWasPlayingOnQuit bool");
+
+  if (iVersion < 31)
+    m_pDS->exec("ALTER TABLE channels DROP bWasPlayingOnQuit");
 }
 
 /********** Channel methods **********/
@@ -649,46 +652,6 @@ bool CPVRDatabase::Persist(CPVRChannel &channel)
   }
 
   return bReturn;
-}
-
-bool CPVRDatabase::SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet, bool& bWasPlaying)
-{
-  bool bRet = false;
-
-  // Obtain previous value.
-  try
-  {
-    const std::string strSQL(PrepareSQL("SELECT bWasPlayingOnQuit FROM channels WHERE iUniqueId = %u AND iClientId = %u",
-                                        channel.UniqueID(), channel.ClientID()));
-    m_pDS->query(strSQL);
-    if (m_pDS->num_rows() > 0)
-    {
-      bWasPlaying = m_pDS->fv(0).get_asBool();
-      bRet = true;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PVR - %s - couldn't obtain value from channels (no rows)", __FUNCTION__);
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - couldn't obtain value from channels (exception)", __FUNCTION__);
-  }
-
-  // Set new value.
-  if (bRet && bSet != bWasPlaying)
-    bRet = SetWasPlayingOnLastQuit(channel, bSet);
-
-  return bRet;
-}
-
-bool CPVRDatabase::SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet)
-{
-  const std::string strQuery(PrepareSQL("UPDATE channels SET bWasPlayingOnQuit = %i WHERE iUniqueId = %u AND iClientId = %u",
-                                        bSet, channel.UniqueID(), channel.ClientID()));
-  return ExecuteQuery(strQuery);
 }
 
 bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
