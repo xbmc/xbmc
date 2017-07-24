@@ -173,7 +173,7 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
     // Seek to the write position and write our buffer.  Increment the
     // writePosition.
     seek(writePosition);
-    if (m_file.Write(buffer.data(), buffer.size()) < buffer.size())
+    if (m_file.Write(buffer.data(), buffer.size()) < static_cast<ssize_t>(buffer.size()))
       return; // error
     writePosition += buffer.size();
 
