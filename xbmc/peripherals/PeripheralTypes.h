@@ -307,7 +307,7 @@ namespace PERIPHERALS
   class PeripheralScanResult
   {
   public:
-    PeripheralScanResult(const PeripheralBusType busType) :
+    explicit PeripheralScanResult(const PeripheralBusType busType) :
       m_type(PERIPHERAL_UNKNOWN),
       m_iVendorId(0),
       m_iProductId(0),
@@ -354,11 +354,11 @@ namespace PERIPHERALS
   {
     bool GetDeviceOnLocation(const std::string& strLocation, PeripheralScanResult* result) const
     {
-      for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); it++)
+      for (const auto& it : m_results)
       {
-        if ((*it).m_strLocation == strLocation)
+        if (it.m_strLocation == strLocation)
         {
-          *result = *it;
+          *result = it;
           return true;
         }
       }
