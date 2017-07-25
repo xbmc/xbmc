@@ -239,6 +239,7 @@ public:
   CRect crop;
   void *device;
   void *procFunc;
+  void *decoder;
 };
 
 //-----------------------------------------------------------------------------
