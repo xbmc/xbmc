@@ -943,7 +943,11 @@ void CPVRManager::ChannelPreview(const CFileItemPtr item)
   if (!channel)
     return;
 
-  m_isChannelPreview = true;
+  if (IsPlayingChannel(channel))
+    m_isChannelPreview = false;
+  else
+    m_isChannelPreview = true;
+
   g_infoManager.SetCurrentItem(m_currentFile);
   ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
