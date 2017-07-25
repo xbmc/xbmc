@@ -23,6 +23,7 @@
 #include "games/controllers/Controller.h"
 #include "games/GameServices.h"
 #include "input/joysticks/interfaces/IKeyHandler.h"
+#include "input/joysticks/JoystickEasterEgg.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
@@ -42,6 +43,8 @@ CKeymapHandler::CKeymapHandler(IActionListener *actionHandler, const IKeymap *ke
 {
   assert(m_actionHandler != nullptr);
   assert(m_keymap != nullptr);
+
+  m_easterEgg.reset(new CJoystickEasterEgg(ControllerID()));
 }
 
 bool CKeymapHandler::HotkeysPressed(const std::set<std::string> &keyNames) const
@@ -82,6 +85,9 @@ bool CKeymapHandler::AcceptsInput(const FeatureName& feature) const
 
 bool CKeymapHandler::OnButtonPress(const FeatureName& feature, bool bPressed)
 {
+  if (bPressed && m_easterEgg && m_easterEgg->OnButtonPress(feature))
+    return true;
+
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
   IKeyHandler *handler = GetKeyHandler(keyName);
