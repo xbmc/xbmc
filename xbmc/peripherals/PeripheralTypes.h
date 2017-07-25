@@ -270,7 +270,7 @@ namespace PERIPHERALS
         return FEATURE_DISK;
       else if (strTypeLowerCase == "nyxboard")
         return FEATURE_NYXBOARD;
-      else if (strTypeLowerCase == "bluethopoth")
+      else if (strTypeLowerCase == "bluetooth")
         return FEATURE_BLUETOOTH;
       else if (strTypeLowerCase == "tuner")
         return FEATURE_TUNER;
