@@ -103,7 +103,6 @@ public:
   virtual ~CD3DTexture();
 
   bool Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE usage, DXGI_FORMAT format, const void* pInitData = nullptr, unsigned int srcPitch = 0);
-  bool CreateFromExternal(UINT width, UINT height, D3D11_USAGE usage, DXGI_FORMAT format, ID3D11Texture2D* pTexture);
 
   void Release();
   bool GetDesc(D3D11_TEXTURE2D_DESC *desc) const;
@@ -141,7 +140,6 @@ protected:
   ID3D11RenderTargetView* GetRenderTargetInternal(unsigned idx = 0);
   unsigned int GetMemoryUsage(unsigned int pitch) const;
   bool CreateInternal(const void* pInitData = nullptr, unsigned int srcPitch = 0);
-  void SetViewIdxProtected(unsigned idx) { m_viewIdx = idx; }
 
   void SaveTexture();
   void RestoreTexture();
@@ -155,7 +153,7 @@ protected:
   UINT        m_pitch;
   UINT        m_bindFlags;
   UINT        m_cpuFlags;
-  UINT        m_viewIdx{ 0 };
+  UINT        m_viewIdx;
 
   // created texture
   ID3D11Texture2D* m_texture;

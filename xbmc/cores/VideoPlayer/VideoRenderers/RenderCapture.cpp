@@ -23,6 +23,10 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/IPlayer.h"
+#ifdef HAS_DX
+#include "rendering/dx/DirectXHelper.h"
+#endif
+
 extern "C" {
 #include "libavutil/mem.h"
 }
@@ -359,14 +363,14 @@ void CRenderCaptureDX::BeginRender()
 
     if (!m_renderTex.Create(m_width, m_height, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM))
     {
-      CLog::Log(LOGERROR, "%s: CD3DTexture::Create(RENDER_TARGET) failed.", __FUNCTION__);
+      CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateTexture2D (RENDER_TARGET) failed.");
       SetState(CAPTURESTATE_FAILED);
       return;
     }
 
     if (!m_copyTex.Create(m_width, m_height, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_B8G8R8A8_UNORM))
     {
-      CLog::Log(LOGERROR, "%s: CD3DTexture::Create(USAGE_STAGING) failed.", __FUNCTION__);
+      CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateRenderTargetView failed.");
       SetState(CAPTURESTATE_FAILED);
       return;
     }
@@ -390,8 +394,8 @@ void CRenderCaptureDX::BeginRender()
       result = pDevice->CreateQuery(&queryDesc, &m_query);
       if (FAILED(result))
       {
-        CLog::Log(LOGERROR, "%s: CreateQuery failed %s", __FUNCTION__,
-                  g_Windowing.GetErrorDescription(result).c_str());
+        CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateQuery failed %s",
+                            DX::GetErrorDescription(result).c_str());
         m_asyncSupported = false;
         SAFE_RELEASE(m_query);
       }
@@ -407,8 +411,9 @@ void CRenderCaptureDX::BeginRender()
 void CRenderCaptureDX::EndRender()
 {
   // send commands to the GPU queue
-  g_Windowing.FinishCommandList();
-  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+  auto deviceResources = DX::DeviceResources::Get();
+  deviceResources->FinishCommandList();
+  ID3D11DeviceContext* pContext = deviceResources->GetImmediateContext();
 
   pContext->CopyResource(m_copyTex.Get(), m_renderTex.Get());
 

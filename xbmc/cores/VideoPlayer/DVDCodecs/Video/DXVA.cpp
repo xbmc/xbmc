@@ -430,6 +430,8 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
 {
   HRESULT hr = S_OK;
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11DeviceContext1* pContext = g_Windowing.GetImmediateContext();
+
   unsigned bindFlags = D3D11_BIND_DECODER;
 
   if (g_Windowing.IsFormatSupport(format.OutputFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
@@ -451,6 +453,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   vdovDesc.DecodeProfile = format.Guid;
   vdovDesc.Texture2D.ArraySlice = 0;
   vdovDesc.ViewDimension = D3D11_VDOV_DIMENSION_TEXTURE2D;
+  float clearColor[] = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color in YUV
 
   size_t i;
   for (i = 0; i < count; ++i)
@@ -462,6 +465,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
       CLog::LogFunction(LOGERROR, __FUNCTION__, "failed creating surfaces.");
       break;
     }
+    pContext->ClearView(surfaces[i], clearColor, nullptr, 0);
   }
   SAFE_RELEASE(texture);
 
@@ -792,7 +796,8 @@ static bool CheckH264L41(AVCodecContext *avctx)
 
 static bool IsL41LimitedATI()
 {
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
   if(AIdentifier.VendorId == PCIV_ATI)
   {
@@ -808,8 +813,8 @@ static bool IsL41LimitedATI()
 static bool HasVP3WidthBug(AVCodecContext *avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
-
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
   if(AIdentifier.VendorId == PCIV_nVidia
   && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
@@ -824,7 +829,8 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
 
 static bool HasATIMP2Bug(AVCodecContext *avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
   if (AIdentifier.VendorId != PCIV_ATI)
     return false;
 
@@ -953,7 +959,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   mainctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
   m_avctx = mainctx;
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
   if (AIdentifier.VendorId == PCIV_Intel && m_format.Guid == DXVADDI_Intel_ModeH264_E)
   {
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO

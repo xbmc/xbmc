@@ -83,11 +83,13 @@ bool CScreenshotSurface::capture()
   CSingleLock lock(g_graphicsContext);
 
   g_windowManager.Render();
-  g_Windowing.FinishCommandList();
 
-  ID3D11DeviceContext* pImdContext = g_Windowing.GetImmediateContext();
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  auto deviceResources = DX::DeviceResources::Get();
+  deviceResources->FinishCommandList();
+
+  ID3D11DeviceContext* pImdContext = deviceResources->GetImmediateContext();
+  ID3D11DeviceContext* pContext = deviceResources->GetD3DContext();
+  ID3D11Device* pDevice = deviceResources->GetD3DDevice();
 
   ID3D11RenderTargetView* pRTView = nullptr;
   pContext->OMGetRenderTargets(1, &pRTView, nullptr);
