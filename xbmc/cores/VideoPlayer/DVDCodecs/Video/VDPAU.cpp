@@ -3140,6 +3140,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
     retPic->procPic = procPic;
     retPic->device = reinterpret_cast<void*>(m_config.context->GetDevice());
     retPic->procFunc = reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address);
+    retPic->decoder = m_config.vdpau;
 
     retPic->DVDPic.SetParams(procPic.DVDPic);
     if (!procPic.isYuv)

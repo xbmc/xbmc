@@ -64,7 +64,7 @@ bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned 
   else
     m_isYuv = false;
 
-  if (!m_interopState.Init(pic->device, pic->procFunc))
+  if (!m_interopState.Init(pic->device, pic->procFunc, pic->decoder))
     return false;
 
   for (auto &tex : m_vdpauTextures)
@@ -85,7 +85,7 @@ bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)
   if (pic->procPic.isYuv && !m_isYuv)
     return true;
 
-  if (m_interopState.NeedInit(pic->device, pic->procFunc))
+  if (m_interopState.NeedInit(pic->device, pic->procFunc, pic->decoder))
     return true;
 
   return false;
