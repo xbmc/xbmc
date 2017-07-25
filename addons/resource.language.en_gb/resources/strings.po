@@ -20374,7 +20374,7 @@ msgstr ""
 #. Description of section #14201 "Media"
 #: system/settings/settings.xml
 msgctxt "#38101"
-msgid "Section that contains the settings for sources and how media information is collected, stored, shown, and navigated"
+msgid "Section that contains the settings for sources and how media information is collected, stored, shown and navigated"
 msgstr ""
 
 #. Description of section #14203 "Customise"
@@ -20410,13 +20410,13 @@ msgstr ""
 #. Description of category #14210 "Videos"
 #: system/settings/settings.xml
 msgctxt "#38107"
-msgid "This category contains the settings for how information for videos is collected, stored, shown, and navigated"
+msgid "This category contains the settings for how information for videos is collected, stored, shown and navigated"
 msgstr ""
 
 #. Description of category #14211 "Music"
 #: system/settings/settings.xml
 msgctxt "#38108"
-msgid "This category contains the settings for how information for music is collected, stored, shown, and navigated"
+msgid "This category contains the settings for how information for music is collected, stored, shown and navigated"
 msgstr ""
 
 #. Description of category #14212 "Pictures"
@@ -20482,7 +20482,7 @@ msgstr ""
 #. Description of category "Library" with label #14202
 #: system/settings/settings.xml
 msgctxt "#39004"
-msgid "This category contains provides access to the windows for source management and the Library settings for the databases"
+msgid "This category provides access to the windows for source management and the Library settings for the databases"
 msgstr ""
 
 #. Description of setting "Videos... with label #14242
