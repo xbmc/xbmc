@@ -1443,6 +1443,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       {
         stream = new CDemuxStream();
         stream->type = STREAM_DATA;
+        // Video (mp4) from GoPro cameras can had a 'meta' track used for a file repair containing
+        //  'fdsc' data, this is also called the SOS track. Ignore it or we will glitch bad on startup.
+        if (pStream->codec->codec_tag == MKTAG('f','d','s','c'))
+          pStream->discard = AVDISCARD_ALL;
         break;
       }
     case AVMEDIA_TYPE_SUBTITLE:
