@@ -50,14 +50,18 @@ bool CVideoInfo::Execute(const CFileItemPtr& item) const
 
 bool CMarkWatched::IsVisible(const CFileItem& item) const
 {
-  if (!item.HasVideoInfoTag())
-    return false;
-
   if (item.IsPVRRecording())
     return false; // pvr recordings have its own implementation for this
 
-  if (item.m_bIsFolder) //Only allow db content to be updated recursively
-    return item.IsVideoDb();
+  if (item.m_bIsFolder) // Only allow video db content and video folders to be updated recursively
+  {
+    if (item.HasVideoInfoTag())
+      return item.IsVideoDb();
+    else
+      return item.GetProperty("IsVideoFolder").asBoolean();
+  }
+  else if (!item.HasVideoInfoTag())
+    return false;
 
   return item.GetVideoInfoTag()->m_playCount == 0;
 }
@@ -70,14 +74,18 @@ bool CMarkWatched::Execute(const CFileItemPtr& item) const
 
 bool CMarkUnWatched::IsVisible(const CFileItem& item) const
 {
-  if (!item.HasVideoInfoTag())
-    return false;
-
   if (item.IsPVRRecording())
     return false; // pvr recordings have its own implementation for this
 
-  if (item.m_bIsFolder) //Only allow db content to be updated recursively
-    return item.IsVideoDb();
+  if (item.m_bIsFolder) // Only allow video db content and video folders to be updated recursively
+  {
+    if (item.HasVideoInfoTag())
+      return item.IsVideoDb();
+    else
+      return item.GetProperty("IsVideoFolder").asBoolean();
+  }
+  else if (!item.HasVideoInfoTag())
+    return false;
 
   return item.GetVideoInfoTag()->m_playCount > 0;
 }
