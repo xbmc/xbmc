@@ -937,20 +937,25 @@ void CPVRManager::ChannelPreview(const CFileItemPtr item)
 {
   CSingleLock lock(m_critSection);
 
+  if (!g_infoManager.GetShowInfo() && m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
+  {
+    // if no info shown and no channel switch delay, just show info for current channel.
+    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+    return;
+  }
+
   m_currentFile.reset(new CFileItem(*item));
 
   CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
   if (!channel)
     return;
 
-  if (IsPlayingChannel(channel))
-    m_isChannelPreview = false;
-  else
-  {
-    m_isChannelPreview = true;
-    g_infoManager.SetCurrentItem(m_currentFile);
-    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+  m_isChannelPreview = !IsPlayingChannel(channel);
+  g_infoManager.SetCurrentItem(m_currentFile);
+  CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
+  if (m_isChannelPreview)
+  {
     int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
     if (timeout > 0)
     {
