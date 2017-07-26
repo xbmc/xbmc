@@ -81,7 +81,7 @@ XMFLOAT4X4* CYUV2RGBMatrix::Matrix()
   {
     TransformMatrix matrix;
     EShaderFormat fmt = SHADER_NONE;
-    if (m_format == BUFFER_FMT_YUV420P10 || m_format == BUFFER_FMT_D3D11_P010)
+    if (m_format == BUFFER_FMT_YUV420P10)
       fmt = SHADER_YV12_10;
     CalculateYUVMatrix(matrix, m_flags, fmt, m_blacklevel, m_contrast, m_limitedRange);
 
