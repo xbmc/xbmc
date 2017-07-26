@@ -284,10 +284,6 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
-    void ChannelPreviewUpDown(bool up);
-
-    void ChannelPreviewSelect();
-
     /*!
      * @brief Close an open PVR stream.
      */
@@ -456,9 +452,25 @@ namespace PVR
     void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
 
     /*!
-     * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
+     * @brief Activate channel preview for next channel in current channel group.
      */
-    void SetChannelPreview(bool preview);
+    void ChannelPreviewUp();
+
+    /*!
+     * @brief Activate channel preview for previous channel in current channel group.
+     */
+    void ChannelPreviewDown();
+
+    /*!
+     * @brief Switch to the channel currently previewed.
+     */
+    void ChannelPreviewSelect();
+
+    /*!
+     * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
+     * @param bPreview true to activate channel preview, false otherwise.
+     */
+    void SetChannelPreview(bool bPreview);
 
     /*!
      * @brief Query the state of channel preview
@@ -551,6 +563,10 @@ namespace PVR
      */
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
+    /*!
+     * @brief Activate preview for a given channel.
+     * @param item the channel the preview is to be activated for.
+     */
     void ChannelPreview(const CFileItemPtr item);
 
     /*!
@@ -604,8 +620,8 @@ namespace PVR
 
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
-    std::atomic_bool m_isChannelPreview;
-    int m_channelEntryJobId = -1;
+    std::atomic_bool m_bIsChannelPreview;
+    int m_iChannelEntryJobId = -1;
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;
