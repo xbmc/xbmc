@@ -36,6 +36,7 @@
 #include "VideoSyncGLX.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/X11/ProcessInfoX11.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 CWinSystemX11GLContext::CWinSystemX11GLContext() = default;
