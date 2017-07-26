@@ -142,7 +142,7 @@ void CPVRGUIInfo::ToggleShowInfo(void)
 
   if (m_ToggleShowInfo.IsTimePast())
   {
-    // if preview was active an user did not sekect a channel
+    // if preview was active an user did not select a channel
     // set current item back to playing channel
     
     m_ToggleShowInfo.SetInfinite();

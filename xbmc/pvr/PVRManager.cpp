@@ -835,8 +835,8 @@ void CPVRManager::UpdateCurrentChannel(void)
   {
     m_currentFile.reset(new CFileItem(playingChannel));
     UpdateItem(*m_currentFile);
-    m_isChannelPreview = false;
   }
+  m_isChannelPreview = false;
 }
 
 void CPVRManager::UpdateCurrentFile(void)
@@ -860,7 +860,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
   CSingleLock lock(m_critSection);
   if (!m_currentFile || !m_currentFile->GetPVRChannelInfoTag() || !item.GetPVRChannelInfoTag() ||
-      *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
+      (!m_isChannelPreview && *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag()))
     return false;
 
   if (!m_isChannelPreview)
@@ -946,19 +946,18 @@ void CPVRManager::ChannelPreview(const CFileItemPtr item)
   if (IsPlayingChannel(channel))
     m_isChannelPreview = false;
   else
-  {
     m_isChannelPreview = true;
-    g_infoManager.SetCurrentItem(m_currentFile);
-    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
-    int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
-    if (timeout > 0)
-    {
-      if (m_channelEntryJobId >= 0)
-        CJobManager::GetInstance().CancelJob(m_channelEntryJobId);
-      CPVRChannelEntryTimeoutJob *job = new CPVRChannelEntryTimeoutJob(timeout);
-      m_channelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
-    }
+  g_infoManager.SetCurrentItem(m_currentFile);
+  ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+
+  int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
+  if (timeout > 0)
+  {
+    if (m_channelEntryJobId >= 0)
+      CJobManager::GetInstance().CancelJob(m_channelEntryJobId);
+    CPVRChannelEntryTimeoutJob *job = new CPVRChannelEntryTimeoutJob(timeout);
+    m_channelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
   }
 }
 

@@ -144,7 +144,13 @@ bool CPVRActionListener::OnAction(const CAction &action)
 
       if (bPreview)
       {
-        CServiceBroker::GetPVRManager().ChannelPreviewUpDown(true);
+        if (CServiceBroker::GetPVRManager().IsChannelPreview())
+          CServiceBroker::GetPVRManager().ChannelPreviewUpDown(true);
+        else
+        {
+          CServiceBroker::GetPVRManager().SetChannelPreview(true);
+          CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+        }
       }
       else
       {
@@ -168,7 +174,13 @@ bool CPVRActionListener::OnAction(const CAction &action)
 
       if (bPreview)
       {
-        CServiceBroker::GetPVRManager().ChannelPreviewUpDown(false);
+        if (CServiceBroker::GetPVRManager().IsChannelPreview())
+          CServiceBroker::GetPVRManager().ChannelPreviewUpDown(false);
+        else
+        {
+          CServiceBroker::GetPVRManager().SetChannelPreview(true);
+          CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+        }
       }
       else
       {
