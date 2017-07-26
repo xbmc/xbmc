@@ -1096,7 +1096,7 @@ void CRenderManager::PrepareNextRender()
   double frameOnScreen = m_dvdClock.GetClock();
   double frametime = 1.0 / g_graphicsContext.GetFPS() * DVD_TIME_BASE;
 
-  m_displayLatency = DVD_SEC_TO_TIME(m_latencyTweak + g_graphicsContext.GetDisplayLatency() / 1000.0f - m_videoDelay / 1000.0f);
+  m_displayLatency = DVD_SEC_TO_TIME(m_latencyTweak + g_graphicsContext.GetDisplayLatency() / 1000.0f - m_videoDelay / 1000.0f - g_Windowing.GetFrameLatencyAdjustment() / 1000.0f);
 
   double renderPts = frameOnScreen + m_displayLatency;
 

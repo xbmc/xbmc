@@ -94,6 +94,15 @@ public:
    * \return average display latency in seconds, or negative value if unknown
    */
   virtual float GetDisplayLatency() { return -1.0f; }
+  /**
+   * Get time that should be subtracted from the display latency for this frame
+   * in milliseconds
+   *
+   * Contrary to \ref GetDisplayLatency, this value is calculated ad-hoc
+   * for the frame currently being rendered and not a value that is calculated/
+   * averaged from past frames and their presentation times
+   */
+  virtual float GetFrameLatencyAdjustment() { return 0.0; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
