@@ -226,7 +226,7 @@ inline bool CPtsTracker::MatchDiff(double diff1, double diff2)
 }
 
 //check if diffs1 is the same as diffs2
-inline bool CPtsTracker::MatchDifftype(int* diffs1, int* diffs2, int nrdiffs)
+inline bool CPtsTracker::MatchDifftype(int diffs1[], int diffs2[], int nrdiffs)
 {
   for (int i = 0; i < nrdiffs; i++)
   {
