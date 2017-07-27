@@ -151,9 +151,6 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_formats[nformats++] = VideoFormatYV12;
   m_formats[nformats] = UnknownVideoFormat;
 
-  if (nformats == 0)
-    return false;
-
   VIDEOCODEC_INITDATA initData;
   if (!CopyToInitData(initData, hints))
     return false;
