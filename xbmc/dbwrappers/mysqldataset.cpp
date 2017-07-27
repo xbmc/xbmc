@@ -566,7 +566,6 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
 {
   std::string strFormat = format;
   std::string strResult = "";
-  char *p;
   size_t pos;
 
   //  %q is the sqlite format string for %s.
@@ -575,19 +574,13 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
   while ( (pos = strFormat.find("%s", pos)) != std::string::npos )
     strFormat.replace(pos++, 2, "%q");
 
-  p = mysql_vmprintf(strFormat.c_str(), args);
-  if ( p )
+  strResult = mysql_vmprintf(strFormat.c_str(), args);
+  //  RAND() is the mysql form of RANDOM()
+  pos = 0;
+  while ( (pos = strResult.find("RANDOM()", pos)) != std::string::npos )
   {
-    strResult = p;
-    free(p);
-
-    //  RAND() is the mysql form of RANDOM()
-    pos = 0;
-    while ( (pos = strResult.find("RANDOM()", pos)) != std::string::npos )
-    {
-      strResult.replace(pos++, 8, "RAND()");
-      pos += 6;
-    }
+    strResult.replace(pos++, 8, "RAND()");
+    pos += 6;
   }
 
   return strResult;
@@ -1336,15 +1329,13 @@ void MysqlDatabase::mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx){
 ** Print into memory obtained from mysql_malloc().  Omit the internal
 ** %-conversion extensions.
 */
-char *MysqlDatabase::mysql_vmprintf(const char *zFormat, va_list ap) {
-  char *z;
+std::string MysqlDatabase::mysql_vmprintf(const char *zFormat, va_list ap) {
   char zBase[MYSQL_PRINT_BUF_SIZE];
   StrAccum acc;
 
   mysqlStrAccumInit(&acc, zBase, sizeof(zBase), MYSQL_MAX_LENGTH);
   mysqlVXPrintf(&acc, 0, zFormat, ap);
-  z = mysqlStrAccumFinish(&acc);
-  return z;
+  return mysqlStrAccumFinish(&acc);
 }
 
 //************* MysqlDataset implementation ***************

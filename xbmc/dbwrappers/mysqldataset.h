@@ -97,7 +97,7 @@ private:
   char * mysqlStrAccumFinish(StrAccum *p);
   void mysqlStrAccumReset(StrAccum *p);
   void mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx);
-  char *mysql_vmprintf(const char *zFormat, va_list ap);
+  std::string mysql_vmprintf(const char *zFormat, va_list ap);
 };
 
 
