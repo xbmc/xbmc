@@ -88,7 +88,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
     LOG(LOGERROR, "%s - fatal error creating thread %s - old thread id not null", __FUNCTION__, m_ThreadName.c_str());
     exit(1);
   }
-  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
+  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000ULL;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
