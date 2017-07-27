@@ -32,7 +32,7 @@ using namespace GAME;
 
 void CControllerLayout::Reset(void)
 {
-  m_label = 0;
+  m_labelId = -1;
   m_strImage.clear();
 }
 
@@ -50,7 +50,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
     return false;
   }
-  std::istringstream(strLabel) >> m_label;
+  std::istringstream(strLabel) >> m_labelId;
 
   // Image
   m_strImage = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);

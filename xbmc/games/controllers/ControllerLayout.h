@@ -38,13 +38,13 @@ public:
 
   void Reset(void);
 
-  unsigned int       Label(void) const   { return m_label; }
+  int LabelID(void) const { return m_labelId; }
   const std::string& Image(void) const   { return m_strImage; }
 
   bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
 
 private:
-  unsigned int m_label;
+  int m_labelId = -1;
   std::string  m_strImage;
 };
 

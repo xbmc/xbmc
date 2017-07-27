@@ -80,8 +80,8 @@ CController::~CController() = default;
 
 std::string CController::Label(void)
 {
-  if (m_layout->Label() > 0)
-    return g_localizeStrings.GetAddonString(ID(), m_layout->Label());
+  if (m_layout->LabelID() >= 0)
+    return g_localizeStrings.GetAddonString(ID(), m_layout->LabelID());
   return "";
 }
 
