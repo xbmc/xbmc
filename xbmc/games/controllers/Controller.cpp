@@ -26,8 +26,42 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <algorithm>
+
 using namespace KODI;
 using namespace GAME;
+
+// --- FeatureTypeEqual --------------------------------------------------------
+
+struct FeatureTypeEqual
+{
+  FeatureTypeEqual(FEATURE_TYPE type, JOYSTICK::INPUT_TYPE inputType) :
+    type(type),
+    inputType(inputType)
+  {
+  }
+
+  bool operator()(const CControllerFeature& feature) const
+  {
+    if (type == FEATURE_TYPE::UNKNOWN)
+      return true; // Match all feature types
+
+    if (type == FEATURE_TYPE::SCALAR && feature.Type() == FEATURE_TYPE::SCALAR)
+    {
+      if (inputType == JOYSTICK::INPUT_TYPE::UNKNOWN)
+        return true; // Match all input types
+
+      return inputType == feature.InputType();
+    }
+
+    return type == feature.Type();
+  }
+
+  const FEATURE_TYPE type;
+  const JOYSTICK::INPUT_TYPE inputType;
+};
+
+// --- CController -------------------------------------------------------------
 
 const ControllerPtr CController::EmptyPtr;
 
@@ -58,19 +92,25 @@ std::string CController::ImagePath(void) const
   return "";
 }
 
+unsigned int CController::FeatureCount(FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */,
+                                       JOYSTICK::INPUT_TYPE inputType /* = JOYSTICK::INPUT_TYPE::UNKNOWN */) const
+{
+  return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
+}
+
 void CController::GetFeatures(std::vector<std::string>& features,
                               FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */) const
 {
-  for (const CControllerFeature& feature : m_layout->Features())
+  for (const CControllerFeature& feature : m_features)
   {
     if (type == FEATURE_TYPE::UNKNOWN || type == feature.Type())
       features.push_back(feature.Name());
   }
 }
 
-JOYSTICK::FEATURE_TYPE CController::GetFeatureType(const std::string &feature) const
+JOYSTICK::FEATURE_TYPE CController::FeatureType(const std::string &feature) const
 {
-  for (auto it = m_layout->Features().begin(); it != m_layout->Features().end(); ++it)
+  for (auto it = m_features.begin(); it != m_features.end(); ++it)
   {
     if (feature == it->Name())
       return it->Type();
@@ -80,7 +120,7 @@ JOYSTICK::FEATURE_TYPE CController::GetFeatureType(const std::string &feature) c
 
 JOYSTICK::INPUT_TYPE CController::GetInputType(const std::string& feature) const
 {
-  for (auto it = m_layout->Features().begin(); it != m_layout->Features().end(); ++it)
+  for (auto it = m_features.begin(); it != m_features.end(); ++it)
   {
     if (feature == it->Name())
       return it->InputType();
@@ -110,7 +150,7 @@ bool CController::LoadLayout(void)
 
     CLog::Log(LOGINFO, "Loading controller layout %s", strLayoutXmlPath.c_str());
 
-    if (m_layout->Deserialize(pRootElement, this))
+    if (m_layout->Deserialize(pRootElement, this, m_features))
       m_bLoaded = true;
   }
 

@@ -25,40 +25,10 @@
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 
-#include <algorithm>
 #include <sstream>
 
 using namespace KODI;
 using namespace GAME;
-using namespace JOYSTICK;
-
-// --- FeatureTypeEqual --------------------------------------------------------
-
-struct FeatureTypeEqual
-{
-  FeatureTypeEqual(FEATURE_TYPE type, INPUT_TYPE inputType) : type(type), inputType(inputType) { }
-
-  bool operator()(const CControllerFeature& feature) const
-  {
-    if (type == FEATURE_TYPE::UNKNOWN)
-      return true; // Match all feature types
-
-    if (type == FEATURE_TYPE::SCALAR && feature.Type() == FEATURE_TYPE::SCALAR)
-    {
-      if (inputType == INPUT_TYPE::UNKNOWN)
-        return true; // Match all input types
-
-      return inputType == feature.InputType();
-    }
-
-    return type == feature.Type();
-  }
-
-  const FEATURE_TYPE type;
-  const INPUT_TYPE   inputType;
-};
-
-// --- CControllerLayout ---------------------------------------------------
 
 void CControllerLayout::Reset(void)
 {
@@ -67,32 +37,9 @@ void CControllerLayout::Reset(void)
   m_strOverlay.clear();
   m_width = 0;
   m_height = 0;
-  m_features.clear();
 }
 
-unsigned int CControllerLayout::FeatureCount(FEATURE_TYPE type      /* = FEATURE_TYPE::UNKNOWN */,
-                                             INPUT_TYPE   inputType /* = INPUT_TYPE::UNKNOWN */) const
-{
-  return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
-}
-
-FEATURE_TYPE CControllerLayout::FeatureType(const std::string &featureName) const
-{
-  FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
-
-  auto it = std::find_if(m_features.begin(), m_features.end(),
-    [&featureName](const CControllerFeature &feature)
-    {
-      return feature.Name() == featureName;
-    });
-
-  if (it != m_features.end())
-    type = it->Type();
-
-  return type;
-}
-
-bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller)
+bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
 {
   Reset();
 
@@ -134,7 +81,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
         CControllerFeature feature;
 
         if (feature.Deserialize(pFeature, controller, category, categoryLabelId))
-          m_features.push_back(feature);
+          features.push_back(feature);
       }
     }
     else
