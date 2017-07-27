@@ -29,7 +29,6 @@
 #define LAYOUT_XML_ELM_ABSPOINTER          "abspointer"
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"
-#define LAYOUT_XML_ATTR_LAYOUT_OVERLAY     "overlay"
 #define LAYOUT_XML_ATTR_CATEGORY_NAME      "name"
 #define LAYOUT_XML_ATTR_CATEGORY_LABEL     "label"
 #define LAYOUT_XML_ATTR_FEATURE_NAME       "name"

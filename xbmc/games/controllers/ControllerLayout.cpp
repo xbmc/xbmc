@@ -34,9 +34,6 @@ void CControllerLayout::Reset(void)
 {
   m_label = 0;
   m_strImage.clear();
-  m_strOverlay.clear();
-  m_width = 0;
-  m_height = 0;
 }
 
 bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)

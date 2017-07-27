@@ -40,17 +40,12 @@ public:
 
   unsigned int       Label(void) const   { return m_label; }
   const std::string& Image(void) const   { return m_strImage; }
-  unsigned int       Width(void) const   { return m_width; }
-  unsigned int       Height(void) const  { return m_height; }
 
   bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
 
 private:
   unsigned int m_label;
   std::string  m_strImage;
-  std::string  m_strOverlay;
-  unsigned int m_width;
-  unsigned int m_height;
 };
 
 }
