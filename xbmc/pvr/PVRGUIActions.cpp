@@ -1089,8 +1089,6 @@ namespace PVR
     }
 
     // switch to channel or if recording present, ask whether to switch or play recording...
-    bool bSwitchSuccessful(false);
-
     if (channel && CheckParentalLock(channel))
     {
       const CPVRRecordingPtr recording(channel->GetRecording());
@@ -1123,18 +1121,13 @@ namespace PVR
       return true;
     }
 
-    if (!bSwitchSuccessful)
-    {
-      std::string channelName = g_localizeStrings.Get(19029); // Channel
-      if (channel)
-        channelName = channel->ChannelName();
-      std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
+    std::string channelName = g_localizeStrings.Get(19029); // Channel
+    if (channel)
+      channelName = channel->ChannelName();
+    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
 
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
-      return false;
-    }
-
-    return true;
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
+    return false;
   }
 
   bool CPVRGUIActions::SwitchToChannel(PlaybackType type) const
