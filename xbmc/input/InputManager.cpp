@@ -135,11 +135,6 @@ void CInputManager::Deinitialize()
 {
 }
 
-void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
-{
-  //! @todo
-}
-
 bool CInputManager::ProcessRemote(int windowId)
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
