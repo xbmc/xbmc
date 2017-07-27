@@ -241,7 +241,7 @@ void CMusicInfoScanner::Process()
 
         if (m_handle)
         {
-          float percentage = static_cast<float>(std::distance(m_pathsToScan.begin(), it) * 100 / m_pathsToScan.size());
+          float percentage = static_cast<float>(std::distance(m_pathsToScan.begin(), it) * 100) / static_cast<float>(m_pathsToScan.size());
           m_handle->SetText(artist.strArtist);
           m_handle->SetPercentage(percentage);
         }

@@ -52,7 +52,7 @@ class CPtsTracker
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern
 
     static bool MatchDiff(double diff1, double diff2); //checks if two diffs match by MAXERR
-    static bool MatchDifftype(int* diffs1, int* diffs2, int nrdiffs); //checks if the difftypes match
+    static bool MatchDifftype(int diffs1[], int diffs2[], int nrdiffs); //checks if the difftypes match
 
     //checks if the current pattern matches with the saved m_pattern with offset m_patternpos
     bool CheckPattern(std::vector<double>& pattern);

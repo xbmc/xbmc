@@ -124,7 +124,7 @@ private:
   // -----------------------------------------------------------------------------------
 
   ThreadIdentifier m_ThreadId;
-  ThreadOpaque m_ThreadOpaque;
+  ThreadOpaque m_ThreadOpaque = {};
   bool m_bAutoDelete;
   CEvent m_StopEvent;
   CEvent m_TermEvent;

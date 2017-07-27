@@ -901,9 +901,6 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
             if(share.strName.empty())
               share.strName = StringUtils::Format( "%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
             break;
-          case DRIVE_UNKNOWN:
-            share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(13205).c_str());
-            break;
           default:
             if(share.strName.empty())
               share.strName = share.strPath;
