@@ -114,31 +114,32 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
 
   // Features
-  for (const TiXmlElement* pCategory = pElement->FirstChildElement(); pCategory != nullptr; pCategory = pCategory->NextSiblingElement())
+  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
   {
-    if (pCategory->ValueStr() != LAYOUT_XML_ELM_CATEGORY)
+    if (pChild->ValueStr() == LAYOUT_XML_ELM_CATEGORY)
     {
-      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pCategory->ValueStr().c_str());
-      continue;
+      // Category
+      std::string strCategory = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_NAME);
+      JOYSTICK::FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
+
+      // Category label
+      int categoryLabelId = -1;
+
+      std::string strCategoryLabelId = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_LABEL);
+      if (!strCategoryLabelId.empty())
+        std::istringstream(strCategoryLabelId) >> categoryLabelId;
+
+      for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
+      {
+        CControllerFeature feature;
+
+        if (feature.Deserialize(pFeature, controller, category, categoryLabelId))
+          m_features.push_back(feature);
+      }
     }
-
-    // Category
-    std::string strCategory = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_NAME);
-    FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
-
-    // Category label
-    int categoryLabelId = -1;
-
-    std::string strCategoryLabelId = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_LABEL);
-    if (!strCategoryLabelId.empty())
-      std::istringstream(strCategoryLabelId) >> categoryLabelId;
-
-    for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
+    else
     {
-      CControllerFeature feature;
-
-      if (feature.Deserialize(pFeature, controller, category, categoryLabelId))
-        m_features.push_back(feature);
+      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pChild->ValueStr().c_str());
     }
   }
 
