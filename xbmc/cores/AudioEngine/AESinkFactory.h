@@ -43,6 +43,6 @@ public:
   static void     EnumerateEx(AESinkInfoList &list, bool force = false); /* The force flag can be used to indicate the rescan devices */
 
 protected:
-  static IAESink *TrySink(std::string &driver, std::string &device, AEAudioFormat &format);
+  static IAESink *TrySink(const std::string &driver, std::string &device, AEAudioFormat &format);
 };
 

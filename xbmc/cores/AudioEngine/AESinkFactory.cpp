@@ -102,7 +102,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
     driver.clear();
 }
 
-IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAudioFormat &format)
+IAESink *CAESinkFactory::TrySink(const std::string &driver, std::string &device, AEAudioFormat &format)
 {
   IAESink *sink = NULL;
 
