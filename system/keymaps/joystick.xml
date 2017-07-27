@@ -145,14 +145,18 @@
       <x hotkey="back">OSD</x>
       <y hotkey="back">FullScreen</y>
       <start hotkey="back">Stop</start>
+      <!--
       <rightbumper hotkey="back">Save</rightbumper>
       <leftbumper hotkey="back">Load</leftbumper>
+      -->
       <righttrigger hotkey="back">AnalogFastForward</righttrigger>
       <lefttrigger hotkey="back">AnalogRewind</lefttrigger>
+      <!--
       <right hotkey="back">SaveSlotIncrease</right>
       <left hotkey="back">SaveSlotDecrease</left>
       <leftstick direction="left" hotkey="back">SaveSlotDecrease</leftstick>
       <leftstick direction="right" hotkey="back">SaveSlotIncrease</leftstick>
+      -->
     </joystick>
   </FullscreenGame>
   <FullscreenLiveTV>
