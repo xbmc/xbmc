@@ -71,7 +71,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   // check if Kodi is already running
   std::string appName = CCompileInfo::GetAppName();
-  CreateMutex(nullptr, FALSE, ToW(appName + " Media Center").c_str());
+  HANDLE appRunningMutex = CreateMutex(nullptr, FALSE, ToW(appName + " Media Center").c_str());
   if (GetLastError() == ERROR_ALREADY_EXISTS)
   {
     auto appNameW = ToW(appName);
@@ -144,6 +144,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   WSACleanup();
   CoUninitialize();
+  ReleaseMutex(appRunningMutex);
 
   return status;
 }
