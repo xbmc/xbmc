@@ -109,6 +109,8 @@ CInputManager::CInputManager(const CAppParamParser &params) :
 
 CInputManager::~CInputManager()
 {
+  Deinitialize();
+
   // Unregister settings
   CServiceBroker::GetSettings().UnregisterCallback(this);
 
@@ -133,11 +135,9 @@ void CInputManager::InitializeInputs()
 
 void CInputManager::Deinitialize()
 {
-}
-
-void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
-{
-  //! @todo
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.Disconnect();
+#endif
 }
 
 bool CInputManager::ProcessRemote(int windowId)

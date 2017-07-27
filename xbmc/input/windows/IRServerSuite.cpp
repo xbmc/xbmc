@@ -38,7 +38,7 @@ CRemoteControl::CRemoteControl()
 
 CRemoteControl::~CRemoteControl()
 {
-  Close();
+  Disconnect();
 }
 
 void CRemoteControl::Disconnect()

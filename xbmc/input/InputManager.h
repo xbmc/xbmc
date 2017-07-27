@@ -139,13 +139,6 @@ public:
    */
   void Deinitialize();
 
-  /*! \brief Enable or disable the joystick
-   *
-   * \param enabled true to enable joystick, false to disable
-   * \return void
-   */
-  void SetEnabledJoystick(bool enabled = true);
-
   /*! \brief Handle an input event
    * 
    * \param newEvent event details
