@@ -149,6 +149,7 @@ namespace PERIPHERALS
     static void cb_trigger_scan(void* kodiInstance);
     static void cb_refresh_button_maps(void* kodiInstance, const char* deviceName, const char* controllerId);
     static unsigned int cb_feature_count(void* kodiInstance, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
+    static JOYSTICK_FEATURE_TYPE cb_feature_type(void* kodiInstance, const char* controllerId, const char* featureName);
     //@}
 
     /* @brief Add-on properties */

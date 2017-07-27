@@ -810,7 +810,7 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
       controllerStruct.accelerometer_count  = controller->Layout().FeatureCount(FEATURE_TYPE::ACCELEROMETER);
       controllerStruct.key_count            = 0; //! @todo
       controllerStruct.rel_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::RELPOINTER);
-      controllerStruct.abs_pointer_count    = 0; //! @todo
+      controllerStruct.abs_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::ABSPOINTER);
       controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
       try { m_struct.toAddon.UpdatePort(port, true, &controllerStruct); }

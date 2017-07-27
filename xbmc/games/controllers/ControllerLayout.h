@@ -48,6 +48,8 @@ public:
   unsigned int FeatureCount(KODI::JOYSTICK::FEATURE_TYPE type = KODI::JOYSTICK::FEATURE_TYPE::UNKNOWN,
                             KODI::JOYSTICK::INPUT_TYPE buttonType = KODI::JOYSTICK::INPUT_TYPE::UNKNOWN) const;
 
+  KODI::JOYSTICK::FEATURE_TYPE FeatureType(const std::string &featureName) const;
+
   bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller);
 
 private:

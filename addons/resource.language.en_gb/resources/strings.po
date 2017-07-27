@@ -16781,7 +16781,32 @@ msgctxt "#35104"
 msgid "Pointers"
 msgstr ""
 
-#empty strings from id 35105 to 35149
+#. Heading for buttons mounted on a light gun. Used in the controller mapping dialog.
+msgctxt "#35105"
+msgid "Light gun"
+msgstr ""
+
+#. Heading for the button that shoots the lightgun offscreen when pressed. Used in the controller mapping dialog.
+msgctxt "#35106"
+msgid "Shoot offscreen"
+msgstr ""
+
+#. Heading for switches found on a game console, such as the Atari 2600. Used in the controller mapping dialog.
+msgctxt "#35107"
+msgid "Console switches"
+msgstr ""
+
+#. Heading for buttons that control the game console hardware, such as a microphone button. Used in the controller mapping dialog.
+msgctxt "#35108"
+msgid "Hardware buttons"
+msgstr ""
+
+#. Heading for buttons on a numeric keypad (containing 0-9, star and pound). Used in the controller mapping dialog.
+msgctxt "#35109"
+msgid "Keypad"
+msgstr ""
+
+#empty strings from id 35110 to 35149
 
 #. Name of keyboard category in the settings category window
 #: system/settings/settings.xml
@@ -16878,7 +16903,17 @@ msgctxt "#35165"
 msgid "Keyboard player"
 msgstr ""
 
-#empty strings from id 35166 to 35199
+#. Heading for the button that lets the user map any keyboard key. Used in the controller mapping dialog.
+msgctxt "#35166"
+msgid "All keys"
+msgstr ""
+
+#. Heading for the button that lets the user map individual keyboard keys. Used in the controller mapping dialog.
+msgctxt "#35167"
+msgid "Single keys"
+msgstr ""
+
+#empty strings from id 35168 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml

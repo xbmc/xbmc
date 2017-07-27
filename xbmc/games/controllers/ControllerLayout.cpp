@@ -77,6 +77,22 @@ unsigned int CControllerLayout::FeatureCount(FEATURE_TYPE type      /* = FEATURE
   return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
 }
 
+FEATURE_TYPE CControllerLayout::FeatureType(const std::string &featureName) const
+{
+  FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
+
+  auto it = std::find_if(m_features.begin(), m_features.end(),
+    [&featureName](const CControllerFeature &feature)
+    {
+      return feature.Name() == featureName;
+    });
+
+  if (it != m_features.end())
+    type = it->Type();
+
+  return type;
+}
+
 bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller)
 {
   Reset();

@@ -20,23 +20,32 @@
 #pragma once
 
 #define LAYOUT_XML_ROOT                    "layout"
-
 #define LAYOUT_XML_ELM_CATEGORY            "category"
-
 #define LAYOUT_XML_ELM_BUTTON              "button"
 #define LAYOUT_XML_ELM_ANALOG_STICK        "analogstick"
 #define LAYOUT_XML_ELM_ACCELEROMETER       "accelerometer"
 #define LAYOUT_XML_ELM_MOTOR               "motor"
 #define LAYOUT_XML_ELM_RELPOINTER          "relpointer"
-
+#define LAYOUT_XML_ELM_ABSPOINTER          "abspointer"
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"
 #define LAYOUT_XML_ATTR_LAYOUT_OVERLAY     "overlay"
-
 #define LAYOUT_XML_ATTR_CATEGORY_NAME      "name"
 #define LAYOUT_XML_ATTR_CATEGORY_LABEL     "label"
-
 #define LAYOUT_XML_ATTR_FEATURE_NAME       "name"
 #define LAYOUT_XML_ATTR_FEATURE_LABEL      "label"
-
 #define LAYOUT_XML_ATTR_INPUT_TYPE         "type"
+
+#define FEATURE_CATEGORY_FACE              "face"
+#define FEATURE_CATEGORY_SHOULDER          "shoulder"
+#define FEATURE_CATEGORY_TRIGGER           "triggers"
+#define FEATURE_CATEGORY_ANALOG_STICK      "analogsticks"
+#define FEATURE_CATEGORY_ACCELEROMETER     "accelerometer"
+#define FEATURE_CATEGORY_HAPTICS           "haptics"
+#define FEATURE_CATEGORY_MOUSE_BUTTON      "mouse"
+#define FEATURE_CATEGORY_POINTER           "pointer"
+#define FEATURE_CATEGORY_LIGHTGUN          "lightgun"
+#define FEATURE_CATEGORY_OFFSCREEN         "offscreen"
+#define FEATURE_CATEGORY_KEY               "keys"
+#define FEATURE_CATEGORY_KEYPAD            "keypad"
+#define FEATURE_CATEGORY_HARDWARE          "hardware"

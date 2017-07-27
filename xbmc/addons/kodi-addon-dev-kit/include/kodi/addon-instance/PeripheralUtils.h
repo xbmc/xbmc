@@ -580,10 +580,14 @@ namespace addon
    *   2) analog stick
    *   3) accelerometer
    *   4) motor
+   *   5) relative pointer[2]
    *
    * [1] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,
    *     features that map to a single primitive are called "scalar features".
+   *
+   * [2] Relative pointers are similar to analog sticks, but they use
+   *     relative distances instead of positions.
    */
   class JoystickFeature
   {
