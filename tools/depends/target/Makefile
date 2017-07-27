@@ -11,7 +11,7 @@ DEPENDS = \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mysql libffi \
 	python27 libshairplay libfmt \
-	libplist libcec libbluray tinyxml dummy-libxbmc \
+	libplist libcec libbluray tinyxml \
 	libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
@@ -42,7 +42,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += libuuid libandroidjni
+  DEPENDS += dummy-libxbmc libuuid libandroidjni
   CROSSGUID_DEPS = libuuid
 endif
 
