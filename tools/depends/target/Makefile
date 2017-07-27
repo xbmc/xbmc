@@ -43,6 +43,7 @@ endif
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
   DEPENDS += dummy-libxbmc libuuid libandroidjni
+  PYMODULE_DEPS = dummy-libxbmc
   CROSSGUID_DEPS = libuuid
 endif
 
@@ -94,9 +95,9 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pycryptodome: python27 pythonmodule-setuptools
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
-pythonmodule-setuptools: python27
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) python27 pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
+pythonmodule-setuptools: $(PYMODULE_DEPS) python27
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 platform: p8-platform
