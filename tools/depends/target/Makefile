@@ -84,6 +84,7 @@ libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
+libcdio-gplv3: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
