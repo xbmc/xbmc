@@ -366,7 +366,6 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
   addonChannel.bIsRadio          = xbmcChannel->IsRadio();
   addonChannel.bIsHidden         = xbmcChannel->IsHidden();
   strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
-  strncpy(addonChannel.strStreamURL, xbmcChannel->StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
 }
 
 bool CPVRClient::GetAddonProperties(void)
@@ -1134,27 +1133,6 @@ int64_t CPVRClient::GetStreamLength(void)
   return -EINVAL;
 }
 
-bool CPVRClient::SwitchChannel(const CPVRChannelPtr &channel)
-{
-  bool bSwitched(false);
-
-  if (IsPlayingLiveStream() && CanPlayChannel(channel))
-  {
-    PVR_CHANNEL tag;
-    WriteClientChannelInfo(channel, tag);
-    bSwitched = m_struct.toAddon.SwitchChannel(tag);
-  }
-
-  if (bSwitched)
-  {
-    CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
-    CSingleLock lock(m_critSection);
-    m_playingChannel = currentChannel;
-  }
-
-  return bSwitched;
-}
-
 bool CPVRClient::SignalQuality(PVR_SIGNAL_STATUS &qualityinfo)
 {
   if (IsPlayingLiveStream())
@@ -1359,15 +1337,6 @@ bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChan
   if(!CanPlayChannel(channel))
   {
     CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel->ChannelName().c_str());
-  }
-  else if (!channel->StreamURL().empty())
-  {
-    CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel->StreamURL().c_str());
-    bReturn = true;
-
-    unsigned int iWaitTimeMs = m_struct.toAddon.GetChannelSwitchDelay();
-    if (iWaitTimeMs > 0)
-      XbmcThreads::ThreadSleep(iWaitTimeMs);
   }
   else
   {

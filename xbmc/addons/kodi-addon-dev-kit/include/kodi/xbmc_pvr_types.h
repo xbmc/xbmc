@@ -392,9 +392,6 @@ extern "C" {
     char         strChannelName[PVR_ADDON_NAME_STRING_LENGTH];         /*!< @brief (optional) channel name given to this channel */
     char         strInputFormat[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH]; /*!< @brief (optional) input format type. types can be found in ffmpeg/libavformat/allformats.c
                                                                                    leave empty if unknown */
-    char         strStreamURL[PVR_ADDON_URL_STRING_LENGTH];            /*!< @brief (optional) the URL to use to access this channel.
-                                                                                   leave empty to use this add-on to access the stream.
-                                                                                   set to a path that's supported by XBMC otherwise. */
     unsigned int iEncryptionSystem;                                    /*!< @brief (optional) the encryption ID or CaID of this channel */
     char         strIconPath[PVR_ADDON_URL_STRING_LENGTH];             /*!< @brief (optional) path to the channel icon (if present) */
     bool         bIsHidden;                                            /*!< @brief (optional) true if this channel is marked as hidden */
@@ -596,7 +593,7 @@ extern "C" {
 
     void (*FreeDemuxPacket)(void* kodiInstance, DemuxPacket* pPacket);
     DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
-    
+
     void (*ConnectionStateChange)(void* kodiInstance, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
     void (*EpgEventStateChange)(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
 
@@ -652,7 +649,6 @@ extern "C" {
     long long (__cdecl* SeekLiveStream)(long long, int);
     long long (__cdecl* PositionLiveStream)(void);
     long long (__cdecl* LengthLiveStream)(void);
-    bool (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
     const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
@@ -695,4 +691,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-

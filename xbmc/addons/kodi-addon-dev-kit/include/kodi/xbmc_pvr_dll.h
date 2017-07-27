@@ -410,14 +410,6 @@ extern "C"
   long long LengthLiveStream(void);
 
   /*!
-   * Switch to another channel. Only to be called when a live stream has already been opened.
-   * @param channel The channel to switch to.
-   * @return True if the switch was successful, false otherwise.
-   * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true. Return false if this add-on won't provide this function.
-   */
-  bool SwitchChannel(const PVR_CHANNEL& channel);
-
-  /*!
    * Get the signal status of the stream that's currently open.
    * @param signalStatus The signal status.
    * @return True if the signal status has been read successfully, false otherwise.
@@ -695,7 +687,6 @@ extern "C"
     pClient->toAddon.SeekLiveStream                 = SeekLiveStream;
     pClient->toAddon.PositionLiveStream             = PositionLiveStream;
     pClient->toAddon.LengthLiveStream               = LengthLiveStream;
-    pClient->toAddon.SwitchChannel                  = SwitchChannel;
     pClient->toAddon.SignalStatus                   = SignalStatus;
     pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
     pClient->toAddon.GetLiveStreamURL               = GetLiveStreamURL;
@@ -735,4 +726,3 @@ extern "C"
     pClient->toAddon.OnPowerSavingDeactivated       = OnPowerSavingDeactivated;
   };
 };
-
