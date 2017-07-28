@@ -157,7 +157,8 @@ namespace PVR
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
       CSettings::SETTING_PVRPARENTAL_PIN,
-      CSettings::SETTING_PVRPARENTAL_ENABLED
+      CSettings::SETTING_PVRPARENTAL_ENABLED,
+      CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO
     })
   {
   }
@@ -1114,10 +1115,11 @@ namespace PVR
       }
 
       StartPlayback(new CFileItem(channel), bFullscreen);
-      if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
-      {
-        CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
-      }
+
+      int iChannelInfoDisplayTime = m_settings.GetIntValue(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
+      if ( iChannelInfoDisplayTime > 0)
+        CServiceBroker::GetPVRManager().ShowPlayerInfo(iChannelInfoDisplayTime);
+
       return true;
     }
 

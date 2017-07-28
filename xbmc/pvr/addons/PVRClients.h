@@ -641,11 +641,8 @@ namespace PVR
      */
     bool IsKnownClient(const ADDON::AddonPtr &client) const;
 
-
     int GetClientId(const ADDON::AddonPtr &client) const;
 
-
-    bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
