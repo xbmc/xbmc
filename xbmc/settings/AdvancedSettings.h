@@ -357,7 +357,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
-    float GetDisplayLatency(float refreshrate);
+    float GetLatencyTweak(float refreshrate);
     bool m_initialized;
 
     //! \brief Returns a list of picture extension for filtering in the GUI

@@ -1355,17 +1355,17 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetDisplayLatency(float refreshrate)
+float CAdvancedSettings::GetLatencyTweak(float refreshrate)
 {
-  float delay = m_videoDefaultLatency / 1000.0f;
+  float delay = m_videoDefaultLatency;
   for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
   {
     RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
     if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
-      delay = videolatency.delay / 1000.0f;
+      delay = videolatency.delay;
   }
 
-  return delay; // in seconds
+  return delay; // in milliseconds
 }
 
 void CAdvancedSettings::SetDebugMode(bool debug)
