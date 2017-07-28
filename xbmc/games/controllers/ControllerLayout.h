@@ -53,6 +53,20 @@ public:
   bool IsValid(bool bLog) const;
 
   /*!
+   * \brief Get the label of the primary layout used when mapping the controller
+   *
+   * \return The label, or empty if unknown
+   */
+  std::string Label(void) const;
+
+  /*!
+   * \brief Get the image path of the primary layout used when mapping the controller
+   *
+   * \return The image path, or empty if unknown
+   */
+  std::string ImagePath(void) const;
+
+  /*!
    * \brief Deserialize the specified XML element
    *
    * \param pLayoutElement The XML element
@@ -62,6 +76,7 @@ public:
   void Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
 
 private:
+  const CController *m_controller = nullptr;
   int m_labelId = -1;
   std::string m_icon;
   std::string  m_strImage;

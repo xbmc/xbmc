@@ -49,20 +49,6 @@ public:
   static const ControllerPtr EmptyPtr;
 
   /*!
-   * \brief Get the label of the primary layout used when mapping the controller
-   *
-   * \return The label, or empty if unknown
-   */
-  std::string Label(void);
-
-  /*!
-   * \brief Get the image path of the primary layout used when mapping the controller
-   *
-   * \return The image path, or empty if unknown
-   */
-  std::string ImagePath(void) const;
-
-  /*!
    * \brief Get all controller features
    *
    * \return The features

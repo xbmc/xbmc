@@ -22,7 +22,9 @@
 #include "Controller.h"
 #include "ControllerDefinitions.h"
 #include "ControllerTranslator.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 
 #include <sstream>
@@ -32,6 +34,7 @@ using namespace GAME;
 
 void CControllerLayout::Reset(void)
 {
+  m_controller = nullptr;
   m_labelId = -1;
   m_icon.clear();
   m_strImage.clear();
@@ -57,10 +60,33 @@ bool CControllerLayout::IsValid(bool bLog) const
   return true;
 }
 
+std::string CControllerLayout::Label(void) const
+{
+  std::string label;
+
+  if (m_labelId >= 0 && m_controller != nullptr)
+    label = g_localizeStrings.GetAddonString(m_controller->ID(), m_labelId);
+
+  return label;
+}
+
+std::string CControllerLayout::ImagePath(void) const
+{
+  std::string path;
+
+  if (!m_strImage.empty() && m_controller != nullptr)
+    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(m_controller->LibPath()), m_strImage);
+
+  return path;
+}
+
 void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
 {
   if (pElement == nullptr || controller == nullptr)
     return;
+
+  // Controller (used for string lookup and path translation)
+  m_controller = controller;
 
   // Label
   std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_LABEL);

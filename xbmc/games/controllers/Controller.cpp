@@ -21,7 +21,6 @@
 #include "Controller.h"
 #include "ControllerDefinitions.h"
 #include "ControllerLayout.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -79,20 +78,6 @@ CController::CController(ADDON::CAddonInfo addonInfo) :
 }
 
 CController::~CController() = default;
-
-std::string CController::Label(void)
-{
-  if (m_layout->LabelID() >= 0)
-    return g_localizeStrings.GetAddonString(ID(), m_layout->LabelID());
-  return "";
-}
-
-std::string CController::ImagePath(void) const
-{
-  if (!m_layout->Image().empty())
-    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout->Image());
-  return "";
-}
 
 unsigned int CController::FeatureCount(FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */,
                                        JOYSTICK::INPUT_TYPE inputType /* = JOYSTICK::INPUT_TYPE::UNKNOWN */) const
