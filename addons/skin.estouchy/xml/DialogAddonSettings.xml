@@ -16,7 +16,7 @@
 			<height>60</height>
 			<texture border="5">dialog_header.png</texture>
 		</control>
-		<control type="label" id="20">
+		<control type="label" id="2">
 			<description>header label</description>
 			<posx>20</posx>
 			<posy>0</posy>
@@ -47,9 +47,9 @@
 				<height>40</height>
 				<texturefocus>arrow_left.png</texturefocus>
 				<texturenofocus>arrow_left.png</texturenofocus>
-				<onclick>Control.Move(9,-1)</onclick>
+				<onclick>Control.Move(3,-1)</onclick>
 				<include>VisibleFadeEffect</include>
-				<visible>Container(9).HasPrevious</visible>
+				<visible>Container(3).HasPrevious</visible>
 			</control>
 			<control type="button" id="11001">
 				<description>right Arrow</description>
@@ -59,12 +59,12 @@
 				<height>40</height>
 				<texturefocus>arrow_right.png</texturefocus>
 				<texturenofocus>arrow_right.png</texturenofocus>
-				<onclick>Control.Move(9,1)</onclick>
+				<onclick>Control.Move(3,1)</onclick>
 				<include>VisibleFadeEffect</include>
-				<visible>Container(9).HasNext</visible>
+				<visible>Container(3).HasNext</visible>
 			</control>
 		</control>
-		<control type="grouplist" id="9">
+		<control type="grouplist" id="3">
 			<description>button area</description>
 			<posx>60</posx>
 			<posy>70</posy>
@@ -74,10 +74,10 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<orientation>horizontal</orientation>
-			<onleft>9</onleft>
-			<onright>9</onright>
-			<onup>2</onup>
-			<ondown>2</ondown>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
 		</control>
 		<control type="image">
 			<posx>0</posx>
@@ -86,7 +86,7 @@
 			<height>554</height>
 			<texture colordiffuse="40000000">panel.png</texture>
 		</control>
-		<control type="grouplist" id="2">
+		<control type="grouplist" id="5">
 			<description>control area</description>
 			<posx>0</posx>
 			<posy>140</posy>
@@ -94,31 +94,31 @@
 			<height>554</height>
 			<itemgap>-1</itemgap>
 			<pagecontrol>30</pagecontrol>
-			<onup>9</onup>
+			<onup>3</onup>
 			<ondown>9001</ondown>
-			<onleft>2</onleft>
+			<onleft>5</onleft>
 			<onright>30</onright>
 		</control>
-		<control type="button" id="13">
+		<control type="button" id="10">
 			<description>Default Category Button</description>
 			<width>200</width>
 			<include>ButtonInfoDialogsCommonValues</include>
 		</control>
-		<control type="button" id="3">
+		<control type="button" id="7">
 			<description>Default Button</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<height>70</height>
 			<font>font25</font>
 		</control>
-		<control type="radiobutton" id="4">
+		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<height>70</height>
 			<font>font25</font>
 		</control>
-		<control type="spincontrolex" id="5">
+		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
 			<posx>0</posx>
 			<posy>0</posy>
@@ -127,12 +127,12 @@
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
 		</control>
-		<control type="image" id="6">
+		<control type="image" id="11">
 			<description>separator image</description>
-			<height>2</height>
+			<height>5</height>
 			<texture border="2">separator.png</texture>
 		</control>
-		<control type="label" id="7">
+		<control type="label" id="14">
 			<posx>20</posx>
 			<height>50</height>
 			<font>font20_title</font>
@@ -140,8 +140,12 @@
 			<align>center</align>
 			<aligny>center</aligny>
 		</control>
-		<control type="sliderex" id="8">
+		<control type="sliderex" id="13">
 			<description>Default Slider</description>
+			<height>70</height>
+			<font>font25</font>
+		</control>
+		<control type="edit" id="12">
 			<height>70</height>
 			<font>font25</font>
 		</control>
@@ -155,21 +159,21 @@
 			<orientation>horizontal</orientation>
 			<onleft>9001</onleft>
 			<onright>9001</onright>
-			<onup>2</onup>
-			<ondown>9</ondown>
-			<control type="button" id="10">
+			<onup>5</onup>
+			<ondown>3</ondown>
+			<control type="button" id="28">
 				<description>OK Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>186</label>
 			</control>
-			<control type="button" id="11">
+			<control type="button" id="29">
 				<description>Cancel Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>222</label>
 			</control>
-			<control type="button" id="12">
+			<control type="button" id="30">
 				<description>Defaults Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
