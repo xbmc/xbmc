@@ -33,29 +33,58 @@ using namespace GAME;
 void CControllerLayout::Reset(void)
 {
   m_labelId = -1;
+  m_icon.clear();
   m_strImage.clear();
+  m_models.clear();
 }
 
-bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
+bool CControllerLayout::IsValid(bool bLog) const
 {
-  Reset();
-
-  if (!pElement)
+  if (m_labelId < 0)
+  {
+    if (bLog)
+      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
     return false;
+  }
+
+  if (m_strImage.empty())
+  {
+    if (bLog)
+      CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+    return false;
+  }
+
+  return true;
+}
+
+void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
+{
+  if (pElement == nullptr || controller == nullptr)
+    return;
 
   // Label
   std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_LABEL);
-  if (strLabel.empty())
-  {
-    CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
-    return false;
-  }
-  std::istringstream(strLabel) >> m_labelId;
+  if (!strLabel.empty())
+    std::istringstream(strLabel) >> m_labelId;
+
+  // Icon
+  std::string icon = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_ICON);
+  if (!icon.empty())
+    m_icon = icon;
+
+  // Fallback icon, use add-on icon
+  if (m_icon.empty())
+    m_icon = controller->Icon();
 
   // Image
-  m_strImage = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
-  if (m_strImage.empty())
-    CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+  std::string image = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+  if (!image.empty())
+    m_strImage = image;
+
+  // Models
+  std::string models = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_MODELS);
+  if (!models.empty())
+    m_models = models;
 
   // Features
   for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
@@ -86,6 +115,4 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
       CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pChild->ValueStr().c_str());
     }
   }
-
-  return true;
 }

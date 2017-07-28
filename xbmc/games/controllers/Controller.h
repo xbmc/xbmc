@@ -24,6 +24,7 @@
 #include "addons/Addon.h"
 #include "input/joysticks/JoystickTypes.h"
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -118,8 +119,27 @@ public:
    */
   const CControllerLayout& Layout(void) const { return *m_layout; }
 
+  /*!
+   * \brief Get the models defined by this controller
+   *
+   * \return The models, or empty if no models are defined
+   */
+  std::vector<std::string> Models() const;
+
+  /*!
+   * \brief Get the layout for the specified model
+   *
+   * \param model The model name
+   *
+   * \return The model layout, or the primary layout if the model name is invalid
+   */
+  const CControllerLayout& GetModel(const std::string& model) const;
+
 private:
+  void LoadModels(const std::string &modelXmlPath);
+
   std::unique_ptr<CControllerLayout> m_layout;
+  std::map<std::string, std::unique_ptr<CControllerLayout>> m_models;
   std::vector<CControllerFeature> m_features;
   bool m_bLoaded = false;
 };

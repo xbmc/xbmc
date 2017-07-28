@@ -34,18 +34,38 @@ class CControllerFeature;
 class CControllerLayout
 {
 public:
-  CControllerLayout(void) { Reset(); }
+  CControllerLayout() = default;
 
   void Reset(void);
 
   int LabelID(void) const { return m_labelId; }
+  const std::string& Icon(void) const { return m_icon; }
   const std::string& Image(void) const   { return m_strImage; }
+  const std::string Models() const { return m_models; }
 
-  bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
+  /*!
+   * \brief Ensures the layout was deserialized correctly, and optionally logs if not
+   *
+   * \param bLog If true, output the cause of invalidness to the log
+   *
+   * \return True if the layout is valid and can be used in the GUI, false otherwise
+   */
+  bool IsValid(bool bLog) const;
+
+  /*!
+   * \brief Deserialize the specified XML element
+   *
+   * \param pLayoutElement The XML element
+   * \param controller The controller, used to obtain read-only properties
+   * \param features The deserialized features, if any
+   */
+  void Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
 
 private:
   int m_labelId = -1;
+  std::string m_icon;
   std::string  m_strImage;
+  std::string m_models;
 };
 
 }

@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "URL.h"
 
 #include <algorithm>
@@ -151,9 +152,97 @@ bool CController::LoadLayout(void)
       return false;
     }
 
-    if (m_layout->Deserialize(pRootElement, this, m_features))
+    m_layout->Deserialize(pRootElement, this, m_features);
+    if (m_layout->IsValid(true))
+    {
       m_bLoaded = true;
+
+      // Load models
+      if (!m_layout->Models().empty())
+      {
+        std::string modelPath = URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout->Models());
+        LoadModels(modelPath);
+      }
+    }
+    else
+    {
+      m_layout->Reset();
+    }
   }
 
   return m_bLoaded;
+}
+
+void CController::LoadModels(const std::string &modelXmlPath)
+{
+  CLog::Log(LOGINFO, "Loading controller models: %s", CURL::GetRedacted(modelXmlPath).c_str());
+
+  CXBMCTinyXML modelsDoc;
+  if (!modelsDoc.LoadFile(modelXmlPath))
+  {
+    CLog::Log(LOGERROR, "Unable to load file: %s at line %d", modelsDoc.ErrorDesc(), modelsDoc.ErrorRow());
+    return;
+  }
+
+  TiXmlElement* pModelsElement = modelsDoc.RootElement();
+  if (pModelsElement == nullptr || pModelsElement->ValueStr() != MODELS_XML_ROOT)
+  {
+    CLog::Log(LOGERROR, "Can't find root <%s> tag", MODELS_XML_ROOT);
+    return;
+  }
+
+  for (const TiXmlElement* pChild = pModelsElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
+  {
+    if (pChild->ValueStr() == MODELS_XML_ELM_MODEL)
+    {
+      // Model name
+      std::string modelName = XMLUtils::GetAttribute(pChild, MODELS_XML_ATTR_MODEL_NAME);
+      if (modelName.empty())
+      {
+        CLog::Log(LOGERROR, "Invalid <%s> tag: missing attribute \"%s\"", pChild->ValueStr().c_str(), MODELS_XML_ATTR_MODEL_NAME);
+        continue;
+      }
+
+      if (m_models.find(modelName) != m_models.end())
+      {
+        CLog::Log(LOGERROR, "Duplicate model name: \"%s\"", modelName.c_str());
+        continue;
+      }
+
+      const TiXmlElement* pLayout = pChild->FirstChildElement();
+
+      // Duplicate primary layout
+      std::unique_ptr<CControllerLayout> layout(new CControllerLayout(*m_layout));
+
+      // Models can't override features
+      std::vector<CControllerFeature> dummy;
+
+      layout->Deserialize(pLayout, this, dummy);
+      m_models.insert(std::make_pair(std::move(modelName), std::move(layout)));
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Invalid tag: <%s>", pChild->ValueStr().c_str());
+    }
+  }
+}
+
+std::vector<std::string> CController::Models() const
+{
+  std::vector<std::string> models;
+
+  for (const auto &it : m_models)
+    models.emplace_back(it.first);
+
+  return models;
+}
+
+const CControllerLayout& CController::GetModel(const std::string& model) const
+{
+  auto it = m_models.find(model);
+
+  if (it != m_models.end())
+    return *it->second;
+
+  return *m_layout;
 }
