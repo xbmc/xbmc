@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "URL.h"
 
 #include <algorithm>
 
@@ -134,21 +135,21 @@ bool CController::LoadLayout(void)
   {
     std::string strLayoutXmlPath = LibPath();
 
+    CLog::Log(LOGINFO, "Loading controller layout: %s", CURL::GetRedacted(strLayoutXmlPath).c_str());
+
     CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(strLayoutXmlPath))
     {
-      CLog::Log(LOGDEBUG, "Unable to load %s: %s at line %d", strLayoutXmlPath.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+      CLog::Log(LOGDEBUG, "Unable to load file: %s at line %d", xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
       return false;
     }
 
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     if (!pRootElement || pRootElement->NoChildren() || pRootElement->ValueStr() != LAYOUT_XML_ROOT)
     {
-      CLog::Log(LOGERROR, "%s: Can't find root <%s> tag", strLayoutXmlPath.c_str(), LAYOUT_XML_ROOT);
+      CLog::Log(LOGERROR, "Can't find root <%s> tag", LAYOUT_XML_ROOT);
       return false;
     }
-
-    CLog::Log(LOGINFO, "Loading controller layout %s", strLayoutXmlPath.c_str());
 
     if (m_layout->Deserialize(pRootElement, this, m_features))
       m_bLoaded = true;
