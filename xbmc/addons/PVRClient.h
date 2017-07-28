@@ -648,9 +648,9 @@ namespace PVR
     bool GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const;
 
     /*!
-     * @brief Get the stream URL for a channel from the server. Used by the MediaPortal add-on.
+     * @brief Get the stream URL for a channel from the PVR backend.
      * @param channel The channel to get the stream URL for.
-     * @return The requested URL.
+     * @return The requested URL or empty string if not available.
      */
     std::string GetLiveStreamURL(const CPVRChannelPtr &channel);
 
