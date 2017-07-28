@@ -332,7 +332,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
   if (strFileNameAndPath.empty())
-    strFileNameAndPath = pItem->GetPath();
+    strFileNameAndPath = pItem->GetDynPath();
 
   std::string playablePath = strFileNameAndPath;
   if (URIUtils::IsStack(playablePath))
@@ -417,7 +417,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
         for (int i = 1; i < files.Size(); i++)
         {
            int duration = 0;
-           if (CDVDFileInfo::GetFileDuration(files[i]->GetPath(), duration))
+           if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration))
              p->m_iDuration = p->m_iDuration + duration;
         }
       }

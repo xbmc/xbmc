@@ -85,7 +85,7 @@ bool CDVDInputStreamPVRManager::Open()
   if (!CDVDInputStream::Open())
     return false;
 
-  CURL url(m_item.GetPath());
+  CURL url(m_item.GetDynPath());
 
   std::string strURL = url.Get();
 
@@ -146,7 +146,7 @@ bool CDVDInputStreamPVRManager::Open()
   }
 
   ResetScanTimeout((unsigned int) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
-  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(m_item.GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(m_item.GetDynPath()).c_str());
 
   m_StreamProps->iStreamCount = 0;
   return true;

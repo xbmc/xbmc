@@ -132,6 +132,11 @@ public:
   void SetPath(const std::string &path) { m_strPath = path; };
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
+  const CURL GetDynURL() const;
+  void SetDynURL(const CURL& url);
+  const std::string &GetDynPath() const;
+  void SetDynPath(const std::string &path);
+
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
    \sa Initialize
@@ -568,6 +573,7 @@ private:
   CBookmark GetResumePoint() const;
 
   std::string m_strPath;            ///< complete path to item
+  std::string m_strDynPath;
 
   SortSpecial m_specialSort;
   bool m_bIsParentFolder;
