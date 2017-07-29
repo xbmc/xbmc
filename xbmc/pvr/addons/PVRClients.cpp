@@ -978,6 +978,15 @@ bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
   return GetCreatedClient(GetPlayingClientID(), client);
 }
 
+std::string CPVRClients::GetLiveStreamURL(const CPVRChannelPtr &channel)
+{
+  PVR_CLIENT client;
+  if (GetCreatedClient(channel->ClientID(), client))
+    return client->GetLiveStreamURL(channel);
+
+  return std::string();
+}
+
 bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
 {
   assert(channel.get());
