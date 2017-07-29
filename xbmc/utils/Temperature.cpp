@@ -99,7 +99,7 @@ bool CTemperature::operator !=(const CTemperature& right) const
   return !operator ==(right.m_value);
 }
 
-const CTemperature& CTemperature::operator =(const CTemperature& right)
+CTemperature& CTemperature::operator =(const CTemperature& right)
 {
   m_valid=right.m_valid;
   m_value=right.m_value;

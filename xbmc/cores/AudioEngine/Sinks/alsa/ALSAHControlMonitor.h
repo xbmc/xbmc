@@ -56,7 +56,7 @@ private:
     snd_hctl_t *handle;
     int useCount;
 
-    CTLHandle(snd_hctl_t *handle_) : handle(handle_), useCount(0) {}
+    explicit CTLHandle(snd_hctl_t *handle_) : handle(handle_), useCount(0) {}
     CTLHandle() : handle(NULL), useCount(0) {}
   };
 

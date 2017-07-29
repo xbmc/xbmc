@@ -39,7 +39,7 @@ class CGUIListItem;
 class CGUIInfoBool
 {
 public:
-  CGUIInfoBool(bool value = false);
+  explicit CGUIInfoBool(bool value = false);
   virtual ~CGUIInfoBool();
 
   operator bool() const { return m_value; };
@@ -56,7 +56,7 @@ typedef uint32_t color_t;
 class CGUIInfoColor
 {
 public:
-  CGUIInfoColor(color_t color = 0);
+  explicit CGUIInfoColor(color_t color = 0);
 
   CGUIInfoColor& operator=(const CGUIInfoColor &color);
   CGUIInfoColor& operator=(color_t color);

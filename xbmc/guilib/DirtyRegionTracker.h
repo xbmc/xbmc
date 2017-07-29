@@ -30,7 +30,7 @@
 class CDirtyRegionTracker
 {
 public:
-  CDirtyRegionTracker(int buffering = DEFAULT_BUFFERING);
+  explicit CDirtyRegionTracker(int buffering = DEFAULT_BUFFERING);
   ~CDirtyRegionTracker();
   void SelectAlgorithm();
   void MarkDirtyRegion(const CDirtyRegion &region);

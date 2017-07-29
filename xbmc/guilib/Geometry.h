@@ -46,7 +46,7 @@ public:
     y = b;
   };
 
-  template <class U> CPointGen<T>(const CPointGen<U>& rhs)
+  template <class U> explicit CPointGen<T>(const CPointGen<U>& rhs)
   {
     x = rhs.x;
     y = rhs.y;
@@ -107,7 +107,7 @@ public:
     y2 = p2.y;
   }
 
-  template <class U> CRectGen<T>(const CRectGen<U>& rhs)
+  template <class U> explicit CRectGen<T>(const CRectGen<U>& rhs)
   {
     x1 = rhs.x1;
     y1 = rhs.y1;

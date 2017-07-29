@@ -580,7 +580,7 @@ namespace addon {
     ///                                 add-on CreateInstance call with instance
     ///                                 id ADDON_INSTANCE_ADSP.
     ///
-    CInstanceAudioDSP(KODI_HANDLE instance)
+    explicit CInstanceAudioDSP(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_ADSP)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)

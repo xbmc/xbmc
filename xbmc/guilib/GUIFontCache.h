@@ -113,7 +113,7 @@ struct CGUIFontCacheHash
       hash += key.m_text[i];
     if (key.m_colors.size())
       hash += key.m_colors[0];
-    hash += MatrixHashContribution(key);
+    hash += static_cast<size_t>(MatrixHashContribution(key)); // horrible
     return hash;
   }
 };

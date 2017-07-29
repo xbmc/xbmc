@@ -65,7 +65,7 @@ public:
   bool operator ==(const CSpeed& right) const;
   bool operator !=(const CSpeed& right) const;
 
-  const CSpeed& operator =(const CSpeed& right);
+  CSpeed& operator =(const CSpeed& right);
   const CSpeed& operator +=(const CSpeed& right);
   const CSpeed& operator -=(const CSpeed& right);
   const CSpeed& operator *=(const CSpeed& right);
@@ -117,7 +117,7 @@ public:
   std::string ToString(Unit speedUnit) const;
 
 protected:
-  CSpeed(double value);
+  explicit CSpeed(double value);
 
   void SetValid(bool valid) { m_valid = valid; }
 

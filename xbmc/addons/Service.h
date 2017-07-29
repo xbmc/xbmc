@@ -51,7 +51,7 @@ namespace ADDON
   class CServiceAddonManager
   {
   public:
-    CServiceAddonManager(CAddonMgr& addonMgr);
+    explicit CServiceAddonManager(CAddonMgr& addonMgr);
     ~CServiceAddonManager();
 
     /**

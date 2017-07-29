@@ -2705,9 +2705,9 @@ bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 //-----------------------------------------------------------------------------
 COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
   CThread("Vdpau Output"),
-  m_vdpau(decoder),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
   m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+  m_vdpau(decoder),
   m_mixer(&m_outMsgEvent)
 {
   m_inMsgEvent = inMsgEvent;

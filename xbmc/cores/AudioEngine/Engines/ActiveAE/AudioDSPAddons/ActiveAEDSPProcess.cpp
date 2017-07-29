@@ -1050,7 +1050,6 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     m_addon_OutputResample.iLastTime += 1000 * 10000 * (CurrentHostCounter() - startTime) / hostFrequency;
 
     lastOutArray = m_processArray[togglePtr];
-    togglePtr ^= 1;
   }
 
   /**

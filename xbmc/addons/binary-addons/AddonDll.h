@@ -32,7 +32,7 @@ namespace ADDON
   {
   public:
     CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase);
-    CAddonDll(CAddonInfo addonInfo);
+    explicit CAddonDll(CAddonInfo addonInfo);
     ~CAddonDll() override;
 
     virtual ADDON_STATUS GetStatus();

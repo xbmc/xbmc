@@ -22,7 +22,11 @@
 #include "threads/SingleLock.h"
 #include "ServiceBroker.h"
 
-CDataCacheCore::CDataCacheCore()
+CDataCacheCore::CDataCacheCore() :
+  m_playerVideoInfo {},
+  m_playerAudioInfo {},
+  m_renderInfo {},
+  m_stateInfo {}
 {
   m_hasAVInfoChanges = false;
 }

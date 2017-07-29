@@ -849,8 +849,9 @@ int CPVRGUIInfo::GetStartTime(void) const
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
-    CDateTime current = m_iTimeshiftPlayTime;
-    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : m_iTimeshiftStartTime;
+    CDateTime current(m_iTimeshiftPlayTime);
+    CDateTime start = m_playingEpgTag ? CDateTime(m_playingEpgTag->StartAsUTC())
+                                      : CDateTime(m_iTimeshiftStartTime);
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60

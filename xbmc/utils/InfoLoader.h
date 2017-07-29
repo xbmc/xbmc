@@ -26,7 +26,7 @@
 class CInfoLoader : public IJobCallback
 {
 public:
-  CInfoLoader(unsigned int timeToRefresh = 5 * 60 * 1000);
+  explicit CInfoLoader(unsigned int timeToRefresh = 5 * 60 * 1000);
   ~CInfoLoader() override;
 
   std::string GetInfo(int info);

@@ -176,7 +176,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     else if( dll->IsSystemDll() )
     {
       char ordinal[5];
-      sprintf(ordinal, "%d", LOW_WORD(function));
+      sprintf(ordinal, "%u", LOW_WORD(function));
       address = (void*)create_dummy_function(dll->GetName(), ordinal);
 
       /* add to tracklist if we are tracking this source dll */

@@ -57,7 +57,7 @@ public:
   bool operator ==(const CTemperature& right) const;
   bool operator !=(const CTemperature& right) const;
 
-  const CTemperature& operator =(const CTemperature& right);
+  CTemperature& operator =(const CTemperature& right);
   const CTemperature& operator +=(const CTemperature& right);
   const CTemperature& operator -=(const CTemperature& right);
   const CTemperature& operator *=(const CTemperature& right);
@@ -106,7 +106,7 @@ public:
   std::string ToString(Unit temperatureUnit) const;
 
 protected:
-  CTemperature(double value);
+  explicit CTemperature(double value);
 
   double m_value; // we store as fahrenheit
   bool m_valid;

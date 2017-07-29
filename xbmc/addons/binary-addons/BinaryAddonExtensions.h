@@ -32,7 +32,7 @@ namespace ADDON
 
   struct SExtValue
   {
-    SExtValue(const std::string& strValue) : str(strValue) { }
+    explicit SExtValue(const std::string& strValue) : str(strValue) { }
     const std::string& asString() const { return str; }
     bool asBoolean() const { return StringUtils::EqualsNoCase(str, "true"); }
     int asInteger() const { return atoi(str.c_str()); }

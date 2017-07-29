@@ -93,7 +93,7 @@ public:
 class CActiveAESink : private CThread
 {
 public:
-  CActiveAESink(CEvent *inMsgEvent);
+  explicit CActiveAESink(CEvent *inMsgEvent);
   void EnumerateSinkList(bool force);
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   std::string GetDefaultDevice(bool passthrough);

@@ -66,7 +66,7 @@ void CCoreAudioHardware::ResetAudioDevices()
   {
     for (CoreAudioDeviceList::iterator it = list.begin(); it != list.end(); ++it)
     {
-      CCoreAudioDevice device = *it;
+      CCoreAudioDevice device(*it);
 
       AudioStreamIdList streams;
       if (device.GetStreams(&streams))

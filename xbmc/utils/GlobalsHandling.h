@@ -188,7 +188,7 @@ namespace xbmcutil
    *  should be placed in the cpp file after the static/global it's meant to
    *  monitor. 
    */
-  class InitFlag {  public:  InitFlag(bool& flag) { flag = true; }  };
+  class InitFlag {  public:  explicit InitFlag(bool& flag) { flag = true; }  };
 }
 
 /**

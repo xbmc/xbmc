@@ -160,7 +160,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   if (changed)
   {
-    dirtyregions.push_back(dirtyRegion);
+    dirtyregions.push_back(CDirtyRegion(dirtyRegion));
   }
 }
 

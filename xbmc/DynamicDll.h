@@ -521,7 +521,7 @@ class DllDynamic
 {
 public:
   DllDynamic();
-  DllDynamic(const std::string& strDllName);
+  explicit DllDynamic(const std::string& strDllName);
   virtual ~DllDynamic();
   virtual bool Load();
   virtual void Unload();
