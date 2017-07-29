@@ -482,6 +482,8 @@ namespace XBMCAddon
             videotag.SetTrailer(value);
           else if (key == "path")
             videotag.SetPath(value);
+          else if (key == "filenameandpath")
+            videotag.SetFileNameAndPath(value);
           else if (key == "date")
           {
             if (value.length() == 10)
