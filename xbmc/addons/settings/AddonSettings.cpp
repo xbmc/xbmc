@@ -249,7 +249,9 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
       auto settingId = categoryId;
       if (!settingId.empty())
         settingId += ".";
-      settingId += setting->ValueStr();
+      auto id = setting->ToElement()->Attribute("id");
+      if (id)
+        settingId += id;
 
       // parse the setting value
       std::string settingValue;
@@ -435,39 +437,11 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
   return true;
 }
 
-bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc)
+std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXmlElement* categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& actionSettings)
 {
-  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addonId.c_str());
-
-  const TiXmlElement* root = doc.RootElement();
-  if (root == nullptr)
-    return false;
-
-  std::shared_ptr<CSettingSection> section = std::make_shared<CSettingSection>(m_addonId, GetSettingsManager());
-
-  std::shared_ptr<CSettingCategory> category;
-  const TiXmlElement *categoryElement = root->FirstChildElement("category");
-  // add a default category if necessary
-  if (categoryElement == nullptr)
-    categoryElement = root;
-
-  std::set<std::string> settingIds;
-  std::set<std::string> actionSettings;
-
-  uint32_t categoryId = 0;
-  while (categoryElement != nullptr)
-  {
-    // create the category
-    category = std::make_shared<CSettingCategory>(StringUtils::Format("category%u", categoryId), GetSettingsManager());
-    categoryId += 1;
-
-    // try to get the category's label and fall back to "General"
-    int categoryLabel = 128;
-    ParseOldLabel(categoryElement, g_localizeStrings.Get(categoryLabel), categoryLabel);
-    category->SetLabel(categoryLabel);
-
     // build a vector of settings from the same category
     std::vector<std::shared_ptr<const CSetting>> categorySettings;
+    std::set<std::string> settingIds;
 
     // prepare for settings with enable/visible conditions
     struct SettingWithConditions {
@@ -478,7 +452,6 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
     };
     std::vector<SettingWithConditions> settingsWithConditions;
 
-    // prepare a setting group
     auto group = std::make_shared<CSettingGroup>("0", GetSettingsManager());
     uint32_t groupId = 1;
 
@@ -677,11 +650,51 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
       setting.setting->SetDependencies(setting.deps);
     }
 
-    // add the group to the category
-    category->AddGroup(group);
+    return group;
+}
 
-    // add the category to the section
-    section->AddCategory(category);
+std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string> &actionSettings)
+{
+  // create the category
+  auto category = std::make_shared<CSettingCategory>(StringUtils::Format("category%u", categoryId), GetSettingsManager());
+  categoryId += 1;
+
+  // try to get the category's label and fall back to "General"
+  int categoryLabel = 128;
+  ParseOldLabel(categoryElement, g_localizeStrings.Get(categoryLabel), categoryLabel);
+  category->SetLabel(categoryLabel);
+
+  // prepare a setting group
+  auto group = ParseOldSettingElement(categoryElement, category, actionSettings);
+
+  // add the group to the category
+  category->AddGroup(group);
+
+  return category;
+}
+
+bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc)
+{
+  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addonId.c_str());
+
+  const TiXmlElement* root = doc.RootElement();
+  if (root == nullptr)
+    return false;
+
+  std::shared_ptr<CSettingSection> section = std::make_shared<CSettingSection>(m_addonId, GetSettingsManager());
+
+  std::shared_ptr<CSettingCategory> category;
+  uint32_t categoryId = 0;
+  std::set<std::string> actionSettings;
+
+
+  // Special case for no category settings
+  section->AddCategory(ParseOldCategoryElement(categoryId, root, actionSettings));
+
+  const TiXmlElement *categoryElement = root->FirstChildElement("category");
+  while (categoryElement != nullptr)
+  {
+    section->AddCategory(ParseOldCategoryElement(categoryId, categoryElement, actionSettings));
 
     // look for the next category
     categoryElement = categoryElement->NextSiblingElement("category");
