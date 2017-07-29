@@ -71,8 +71,6 @@ using namespace GAME;
 #define GAME_PROPERTY_SUPPORTS_KEYBOARD    "supports_keyboard"
 #define GAME_PROPERTY_SUPPORTS_MOUSE       "supports_mouse"
 
-#define INPUT_SCAN_RATE  125 // Hz
-
 // --- NormalizeExtension ------------------------------------------------------
 
 namespace
@@ -254,7 +252,7 @@ void CGameClient::Unload()
   Destroy();
 }
 
-bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   if (audio == nullptr || video == nullptr)
     return false;
@@ -294,13 +292,13 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
     return false;
   }
 
-  if (!InitializeGameplay(file.GetPath(), audio, video))
+  if (!InitializeGameplay(file.GetPath(), audio, video, input))
     return false;
 
   return true;
 }
 
-bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   CLog::Log(LOGDEBUG, "GameClient: Loading %s in standalone mode", ID().c_str());
 
@@ -322,13 +320,13 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
     return false;
   }
 
-  if (!InitializeGameplay(ID(), audio, video))
+  if (!InitializeGameplay(ID(), audio, video, input))
     return false;
 
   return true;
 }
 
-bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   if (LoadGameInfo() && NormalizeAudio(audio))
   {
@@ -337,7 +335,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
     m_serializeSize   = GetSerializeSize();
     m_audio           = audio;
     m_video           = video;
-    m_inputRateHandle = CServiceBroker::GetPeripherals().SetEventScanRate(INPUT_SCAN_RATE);
+    m_input           = input;
 
     if (m_bSupportsKeyboard)
       OpenKeyboard();
@@ -530,19 +528,25 @@ void CGameClient::CloseFile()
   m_bIsPlaying = false;
   m_gamePath.clear();
   m_serializeSize = 0;
-  if (m_inputRateHandle)
-  {
-    m_inputRateHandle->Release();
-    m_inputRateHandle.reset();
-  }
 
   m_audio = nullptr;
   m_video = nullptr;
+  m_input = nullptr;
   m_timing.Reset();
 }
 
 void CGameClient::RunFrame()
 {
+  IGameInputCallback *input;
+
+  {
+    CSingleLock lock(m_critSection);
+    input = m_input;
+  }
+
+  if (input)
+    input->PollInput();
+
   CSingleLock lock(m_critSection);
 
   if (m_bIsPlaying)

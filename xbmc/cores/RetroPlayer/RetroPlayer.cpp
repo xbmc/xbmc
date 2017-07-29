@@ -21,6 +21,7 @@
 #include "RetroPlayer.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerAutoSave.h"
+#include "RetroPlayerInput.h"
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
@@ -101,11 +102,12 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
       m_video.reset(new CRetroPlayerVideo(*m_renderManager, *m_processInfo, m_clock));
+      m_input.reset(new CRetroPlayerInput(CServiceBroker::GetPeripherals()));
 
       if (!file.GetPath().empty())
-        bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get());
+        bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get(), m_input.get());
       else
-        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get());
+        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get(), m_input.get());
 
       if (bSuccess)
         CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", m_gameClient->ID().c_str());
@@ -563,6 +565,7 @@ void CRetroPlayer::UpdateVideoRender(bool video)
 void CRetroPlayer::OnSpeedChange(double newSpeed)
 {
   m_audio->Enable(newSpeed == 1.0);
+  m_input->SetSpeed(newSpeed);
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
   if (newSpeed != 0.0)
     CloseOSD();

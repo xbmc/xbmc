@@ -88,6 +88,9 @@ namespace PERIPHERALS
   typedef std::shared_ptr<CPeripheralAddon> PeripheralAddonPtr;
   typedef std::vector<PeripheralAddonPtr>   PeripheralAddonVector;
 
+  class CEventPollHandle;
+  typedef std::unique_ptr<CEventPollHandle> EventPollHandlePtr;
+
   struct PeripheralID
   {
     int m_iVendorId;

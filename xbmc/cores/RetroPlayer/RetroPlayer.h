@@ -36,6 +36,7 @@ namespace RETRO
 {
   class CRetroPlayerAudio;
   class CRetroPlayerAutoSave;
+  class CRetroPlayerInput;
   class CRetroPlayerVideo;
   class CRPRenderManager;
 
@@ -179,6 +180,7 @@ namespace RETRO
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;
+    std::unique_ptr<CRetroPlayerInput> m_input;
     std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
     GAME::GameClientPtr                m_gameClient;
     CCriticalSection                   m_mutex;
