@@ -362,9 +362,9 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
 void CGUIDialogSubtitles::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  const CURL &url             = ((CSubtitlesJob *)job)->GetURL();
-  const CFileItemList *items  = ((CSubtitlesJob *)job)->GetItems();
-  const std::string &language = ((CSubtitlesJob *)job)->GetLanguage();
+  const CURL &url             = static_cast<CSubtitlesJob*>(job)->GetURL();
+  const CFileItemList *items  = static_cast<CSubtitlesJob*>(job)->GetItems();
+  const std::string &language = static_cast<CSubtitlesJob*>(job)->GetLanguage();
   if (url.GetOption("action") == "search" || url.GetOption("action") == "manualsearch")
     OnSearchComplete(items);
   else

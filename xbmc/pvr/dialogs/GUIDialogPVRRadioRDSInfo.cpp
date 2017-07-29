@@ -77,10 +77,10 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
     }
     else if (iControl == SPIN_CONTROL_INFO)
     {
-      CGUISpinControl *spin = (CGUISpinControl *)GetControl(SPIN_CONTROL_INFO);
+      CGUISpinControl *spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
       if (!spin) return true;
 
-      CGUITextBox *textbox = (CGUITextBox *)GetControl(TEXT_INFO);
+      CGUITextBox *textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
       if (!textbox) return true;
 
       PVR::CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
@@ -125,8 +125,8 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
         g_application.CurrentFileItem().HasPVRRadioRDSInfoTag())
     {
       PVR::CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
-      CGUISpinControl *spin = (CGUISpinControl *)GetControl(SPIN_CONTROL_INFO);
-      CGUITextBox *textbox = (CGUITextBox *)GetControl(TEXT_INFO);
+      CGUISpinControl *spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+      CGUITextBox *textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
 
       if (currentRDS->GetInfoNews().size())
       {
@@ -300,11 +300,11 @@ void CGUIDialogPVRRadioRDSInfo::OnInitWindow()
 
   PVR::CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
 
-  CGUISpinControl *spin = (CGUISpinControl *)GetControl(SPIN_CONTROL_INFO);
+  CGUISpinControl *spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
   if (!spin) return;
   spin->Clear();
 
-  CGUITextBox *textbox = (CGUITextBox *)GetControl(TEXT_INFO);
+  CGUITextBox *textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
   if (!textbox) return;
 
   if (currentRDS->GetInfoNews().size())

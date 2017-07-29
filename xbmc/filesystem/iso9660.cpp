@@ -577,7 +577,7 @@ void iso9660::Reset()
 
   for (intptr_t i = 0; i < MAX_ISO_FILES;++i)
   {
-    FreeFileContext( (HANDLE)i);
+    FreeFileContext( reinterpret_cast<HANDLE>(i));
   }
 
   if (m_hCDROM)
@@ -1033,7 +1033,7 @@ HANDLE iso9660::AllocFileContext()
     if (m_isoFiles[i] == NULL)
     {
       m_isoFiles[i] = new isofile;
-      return (HANDLE)i;
+      return reinterpret_cast<HANDLE>(i);
     }
   }
   return INVALID_HANDLE_VALUE;

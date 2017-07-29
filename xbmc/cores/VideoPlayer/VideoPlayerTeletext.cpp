@@ -258,7 +258,7 @@ void CDVDTeletextData::Process()
     {
       CSingleLock lock(m_critSection);
 
-      DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+      DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
       uint8_t *Datai       = pPacket->pData;
       int rows             = (pPacket->iSize - 1) / 46;
 

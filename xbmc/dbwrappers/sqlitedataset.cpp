@@ -43,7 +43,7 @@ namespace dbiplus {
 
 int callback(void* res_ptr,int ncol, char** result,char** cols)
 {
-  result_set* r = (result_set*)res_ptr;
+  result_set* r = static_cast<result_set*>(res_ptr);
 
   if (!r->record_header.size())
   {
@@ -104,7 +104,7 @@ SqliteDatabase::~SqliteDatabase() {
 
 
 Dataset* SqliteDatabase::CreateDataset() const {
-  return new SqliteDataset((SqliteDatabase*)this); 
+  return new SqliteDataset(const_cast<SqliteDatabase*>(this));
 }
 
 void SqliteDatabase::setHostName(const char *newHost) {

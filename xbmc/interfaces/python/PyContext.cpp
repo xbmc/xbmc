@@ -87,7 +87,7 @@ namespace XBMCAddon
       // we need to handle this.
       if (!cur)
       {
-        cur = (PyContextState*)PyContext::enterContext();
+        cur = static_cast<PyContextState*>(PyContext::enterContext());
         cur->createdByGilRelease = true;
       }
 

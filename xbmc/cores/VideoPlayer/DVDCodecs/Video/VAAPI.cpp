@@ -316,7 +316,7 @@ bool CVAAPIContext::IsValidDecoder(CDecoder *decoder)
 
 void CVAAPIContext::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CDecoder *va = (CDecoder*)opaque;
+  CDecoder *va = static_cast<CDecoder*>(opaque);
   if (m_context && m_context->IsValidDecoder(va))
   {
     va->FFReleaseBuffer(data);
@@ -850,7 +850,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
     // send frame to output for processing
     CVaapiDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
@@ -1497,7 +1497,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case COutputControlProtocol::INIT:
           CVaapiConfig *data;
-          data = (CVaapiConfig*)msg->data;
+          data = reinterpret_cast<CVaapiConfig*>(msg->data);
           if (data)
           {
             m_config = *data;
@@ -1549,7 +1549,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case COutputDataProtocol::NEWFRAME:
           CVaapiDecodedPicture *frame;
-          frame = (CVaapiDecodedPicture*)msg->data;
+          frame = reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
           if (frame)
           {
             m_bufferPool->decodedPics.push_back(*frame);
@@ -1840,7 +1840,7 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CVaapiDecodedPicture pic = *(CVaapiDecodedPicture*)msg->data;
+      CVaapiDecodedPicture pic = *reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
       m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)

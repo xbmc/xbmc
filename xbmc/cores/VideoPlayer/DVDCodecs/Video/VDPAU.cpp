@@ -993,7 +993,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CDecoder *vdp = (CDecoder*)opaque;
+  CDecoder *vdp = static_cast<CDecoder*>(opaque);
 
   VdpVideoSurface surf;
 
@@ -1008,8 +1008,8 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
                      const VdpPictureInfo *info, uint32_t buffers_used,
                      const VdpBitstreamBuffer *buffers)
 {
-  ICallbackHWAccel* ctx = (ICallbackHWAccel*)s->opaque;
-  CDecoder* vdp = (CDecoder*)ctx->GetHWAccel();
+  ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(s->opaque);
+  CDecoder* vdp = static_cast<CDecoder*>(ctx->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(vdp->m_DecoderSection);
@@ -1098,7 +1098,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
     // send frame to output for processing
     CVdpauDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
@@ -2411,7 +2411,7 @@ void CMixer::Flush()
   {
     if (msg->signal == CMixerDataProtocol::FRAME)
     {
-      CVdpauDecodedPicture pic = *(CVdpauDecodedPicture*)msg->data;
+      CVdpauDecodedPicture pic = *reinterpret_cast<CVdpauDecodedPicture*>(msg->data);
       m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == CMixerDataProtocol::BUFFER)
@@ -3080,7 +3080,7 @@ void COutput::Flush()
   {
     if (msg->signal == CMixerDataProtocol::PICTURE)
     {
-      CVdpauProcessedPicture pic = *(CVdpauProcessedPicture*)msg->data;
+      CVdpauProcessedPicture pic = *reinterpret_cast<CVdpauProcessedPicture*>(msg->data);
       m_bufferPool->processedPics.push(pic);
     }
     msg->Release();
@@ -3090,7 +3090,7 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CVdpauDecodedPicture pic = *(CVdpauDecodedPicture*)msg->data;
+      CVdpauDecodedPicture pic = *reinterpret_cast<CVdpauDecodedPicture*>(msg->data);
       m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)

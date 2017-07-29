@@ -114,10 +114,10 @@ void CGUIDialogBusy::DoProcess(unsigned int currentTime, CDirtyRegionList &dirty
   m_bLastVisible = visible;
 
   // update the progress control if available
-  const CGUIControl *control = GetControl(PROGRESS_CONTROL);
+  CGUIControl *control = GetControl(PROGRESS_CONTROL);
   if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
   {
-    CGUIProgressControl *progress = (CGUIProgressControl *)control;
+    CGUIProgressControl *progress = static_cast<CGUIProgressControl*>(control);
     progress->SetPercentage(m_progress);
     progress->SetVisible(m_progress > -1);
   }

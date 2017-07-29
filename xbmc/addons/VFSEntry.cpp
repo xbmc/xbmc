@@ -529,7 +529,7 @@ bool CVFSEntryIDirectoryWrapper::DoGetKeyboardInput(void* ctx,
                                                     char** input,
                                                     bool hidden_input)
 {
-  return ((CVFSEntryIDirectoryWrapper*)ctx)->GetKeyboardInput2(heading, input, hidden_input);
+  return static_cast<CVFSEntryIDirectoryWrapper*>(ctx)->GetKeyboardInput2(heading, input, hidden_input);
 }
 
 bool CVFSEntryIDirectoryWrapper::GetKeyboardInput2(const char* heading,
@@ -549,8 +549,8 @@ void CVFSEntryIDirectoryWrapper::DoSetErrorDialog(void* ctx, const char* heading
                                                   const char* line2,
                                                   const char* line3)
 {
-  ((CVFSEntryIDirectoryWrapper*)ctx)->SetErrorDialog2(heading, line1,
-                                                      line2, line3);
+  static_cast<CVFSEntryIDirectoryWrapper*>(ctx)->SetErrorDialog2(heading, line1,
+                                                                 line2, line3);
 }
 
 void CVFSEntryIDirectoryWrapper::SetErrorDialog2(const char* heading,
@@ -571,7 +571,7 @@ void CVFSEntryIDirectoryWrapper::SetErrorDialog2(const char* heading,
 void CVFSEntryIDirectoryWrapper::DoRequireAuthentication(void* ctx,
                                                          const char* url)
 {
-  ((CVFSEntryIDirectoryWrapper*)ctx)->RequireAuthentication2(CURL(url));
+  static_cast<CVFSEntryIDirectoryWrapper*>(ctx)->RequireAuthentication2(CURL(url));
 }
 
 void CVFSEntryIDirectoryWrapper::RequireAuthentication2(const CURL& url)

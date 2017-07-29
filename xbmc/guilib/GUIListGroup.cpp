@@ -106,7 +106,7 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
       for (unsigned int j = i + 1; j < m_children.size(); j++)
       {
         if (m_children[j]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[j]->IsVisible())
-          CGUIListLabel::CheckAndCorrectOverlap(*(CGUIListLabel *)m_children[i], *(CGUIListLabel *)m_children[j]);
+          CGUIListLabel::CheckAndCorrectOverlap(*static_cast<CGUIListLabel*>(m_children[i]), *static_cast<CGUIListLabel*>(m_children[j]));
       }
     }
   }
@@ -230,6 +230,6 @@ void CGUIListGroup::SelectItemFromPoint(const CPoint &point)
   {
     CGUIControl *child = *it;
     if (child->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)
-      ((CGUIListGroup *)child)->SelectItemFromPoint(point);
+      static_cast<CGUIListGroup*>(child)->SelectItemFromPoint(point);
   }
 }

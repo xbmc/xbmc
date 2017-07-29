@@ -107,7 +107,7 @@ bool CThread::IsRunning() const
 
 THREADFUNC CThread::staticThread(void* data)
 {
-  CThread* pThread = (CThread*)(data);
+  CThread* pThread = static_cast<CThread*>(data);
   std::string name;
   ThreadIdentifier id;
   bool autodelete;

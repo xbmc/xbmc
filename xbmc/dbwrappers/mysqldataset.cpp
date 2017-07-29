@@ -64,7 +64,7 @@ MysqlDatabase::~MysqlDatabase() {
 }
 
 Dataset* MysqlDatabase::CreateDataset() const {
-   return new MysqlDataset((MysqlDatabase*)this);
+   return new MysqlDataset(const_cast<MysqlDatabase*>(this));
 }
 
 int MysqlDatabase::status(void) {
@@ -1385,7 +1385,7 @@ void MysqlDataset::make_query(StringList &_sql) {
     {
       query = *i;
       Dataset::parse_sql(query);
-      if ((result = static_cast<MysqlDatabase *>(db)->query_with_reconnect(query.c_str())) != MYSQL_OK)
+      if ((static_cast<MysqlDatabase*>(db)->query_with_reconnect(query.c_str())) != MYSQL_OK)
       {
         throw DbErrors(db->getErrorMsg());
       }
@@ -1518,7 +1518,7 @@ int MysqlDataset::exec(const std::string &sql) {
 
   CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
 
-  if (db->setErr( static_cast<MysqlDatabase *>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK)
+  if (db->setErr( static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK)
   {
     throw DbErrors(db->getErrorMsg());
   }

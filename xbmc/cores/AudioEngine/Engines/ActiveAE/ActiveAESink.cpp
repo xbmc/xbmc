@@ -253,7 +253,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::CONFIGURE:
           SinkConfig *data;
-          data = (SinkConfig*)msg->data;
+          data = reinterpret_cast<SinkConfig*>(msg->data);
           if (data)
           {
             m_requestedFormat = data->format;
