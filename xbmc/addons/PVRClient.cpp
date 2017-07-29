@@ -345,6 +345,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.iMarginEnd                = xbmcTimer.m_iMarginEnd;
   addonTimer.iGenreType                = epgTag ? epgTag->GenreType() : 0;
   addonTimer.iGenreSubType             = epgTag ? epgTag->GenreSubType() : 0;
+  strncpy(addonTimer.strSeriesLink, xbmcTimer.SeriesLink().c_str(), sizeof(addonTimer.strSeriesLink) - 1);
 }
 
 /*!

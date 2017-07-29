@@ -763,6 +763,14 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
         continue;
     }
 
+    // Drop TimerTypes which need series link if none is set
+    if (type->RequiresEpgSeriesLinkOnCreate())
+    {
+      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      if (!epgTag || epgTag->SeriesLink().empty())
+        continue;
+    }
+
     // Drop TimerTypes that forbid EPGInfo, if it is populated
     if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
       continue;

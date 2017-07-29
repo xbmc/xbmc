@@ -116,6 +116,7 @@ extern "C" {
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
     unsigned int  iFlags;              /*!< @brief (optional) bit field of independent flags associated with the EPG entry */
+    const char *  strSeriesLink;       /*!< @brief (optional) series link for this event */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus
