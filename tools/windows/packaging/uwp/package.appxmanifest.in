@@ -5,7 +5,7 @@
 	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
 	IgnorableNamespaces="uap mp">
 
-  <Identity Name="@PACKAGE_GUID@" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.0.0" />
+  <Identity Name="@PACKAGE_GUID@" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="17.9.501.0" />
   <mp:PhoneIdentity PhoneProductId="@PACKAGE_GUID@" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 
   <Properties>
