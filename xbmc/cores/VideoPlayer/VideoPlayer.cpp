@@ -3075,14 +3075,14 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
       percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
     else
       percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
-    seekTarget = (int64_t)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+    seekTarget = (int64_t)(GetTotalTime()*(GetPercentage()+percent)/100);
   }
 
   bool restore = true;
 
   int64_t time = GetTime();
   if(g_application.CurrentFileItem().IsStack() &&
-     (seekTarget > GetTotalTimeInMsec() || seekTarget < 0))
+     (seekTarget > GetTotalTime() || seekTarget < 0))
   {
     g_application.SeekTime((seekTarget - time) * 0.001 + g_application.GetTime());
     // warning, don't access any VideoPlayer variables here as
@@ -3201,7 +3201,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
 
 void CVideoPlayer::SeekPercentage(float iPercent)
 {
-  int64_t iTotalTime = GetTotalTimeInMsec();
+  int64_t iTotalTime = GetTotalTime();
 
   if (!iTotalTime)
     return;
@@ -3211,7 +3211,7 @@ void CVideoPlayer::SeekPercentage(float iPercent)
 
 float CVideoPlayer::GetPercentage()
 {
-  int64_t iTotalTime = GetTotalTimeInMsec();
+  int64_t iTotalTime = GetTotalTime();
 
   if (!iTotalTime)
     return 0.0f;
@@ -3472,16 +3472,10 @@ int64_t CVideoPlayer::GetTime()
 }
 
 // return length in msec
-int64_t CVideoPlayer::GetTotalTimeInMsec()
+int64_t CVideoPlayer::GetTotalTime()
 {
   CSingleLock lock(m_StateSection);
   return llrint(m_State.time_total);
-}
-
-// return length in seconds.. this should be changed to return in milliseconds throughout xbmc
-int64_t CVideoPlayer::GetTotalTime()
-{
-  return GetTotalTimeInMsec();
 }
 
 void CVideoPlayer::SetSpeed(float speed)

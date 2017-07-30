@@ -454,8 +454,6 @@ protected:
 
   void SetCaching(ECacheState state);
 
-  int64_t GetTotalTimeInMsec();
-
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
