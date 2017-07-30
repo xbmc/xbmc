@@ -150,7 +150,7 @@ namespace XBMCAddon
     {
       if (!pGUIControl) return NULL;
 
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       return ((CGUITextBox*) pGUIControl)->GetDescription();
     }
 
@@ -241,7 +241,7 @@ namespace XBMCAddon
 
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         ((CGUIButtonControl*)pGUIControl)->PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
         ((CGUIButtonControl*)pGUIControl)->SetLabel2(strText2);
         ((CGUIButtonControl*)pGUIControl)->PythonSetDisabledColor(disabledColor);
@@ -254,7 +254,7 @@ namespace XBMCAddon
 
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         ((CGUIButtonControl*)pGUIControl)->PythonSetDisabledColor(disabledColor);
       }
     }
@@ -263,7 +263,7 @@ namespace XBMCAddon
     {
       if (!pGUIControl) return NULL;
 
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       return ((CGUIButtonControl*) pGUIControl)->GetLabel();
     }
 
@@ -271,7 +271,7 @@ namespace XBMCAddon
     {
       if (!pGUIControl) return NULL;
 
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       return ((CGUIButtonControl*) pGUIControl)->GetLabel2();
     }
 
@@ -331,7 +331,7 @@ namespace XBMCAddon
     {
       strFileName = imageFilename;
 
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
         ((CGUIImage*)pGUIControl)->SetFileName(strFileName, false, useCache);
     }
@@ -341,7 +341,7 @@ namespace XBMCAddon
       if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &colorDiffuse);
       else colorDiffuse = 0;
 
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
         ((CGUIImage *)pGUIControl)->SetColorDiffuse(colorDiffuse);
     }
@@ -579,7 +579,7 @@ namespace XBMCAddon
     {
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         ((CGUIRadioButtonControl*)pGUIControl)->SetSelected(selected);
       }
     }
@@ -590,7 +590,7 @@ namespace XBMCAddon
 
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         isSelected = ((CGUIRadioButtonControl*)pGUIControl)->IsSelected();
       }
       return isSelected;
@@ -613,7 +613,7 @@ namespace XBMCAddon
 
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         ((CGUIRadioButtonControl*)pGUIControl)->PythonSetLabel(strFont, strText, textColor, shadowColor, focusedColor);
         ((CGUIRadioButtonControl*)pGUIControl)->PythonSetDisabledColor(disabledColor);
       }
@@ -627,7 +627,7 @@ namespace XBMCAddon
       dwHeight = height;
       if (pGUIControl)
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         ((CGUIRadioButtonControl*)pGUIControl)->SetRadioDimensions((float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight);
       }
     }
@@ -691,7 +691,7 @@ namespace XBMCAddon
     void Control::setEnabled(bool enabled)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
         pGUIControl->SetEnabled(enabled);
     }
@@ -699,7 +699,7 @@ namespace XBMCAddon
     void Control::setVisible(bool visible)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
         pGUIControl->SetVisible(visible);
     }
@@ -707,7 +707,7 @@ namespace XBMCAddon
     void Control::setVisibleCondition(const char* visible, bool allowHiddenFocus)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
 
       if (pGUIControl)
         pGUIControl->SetVisibleCondition(visible, allowHiddenFocus ? "true" : "false");
@@ -716,7 +716,7 @@ namespace XBMCAddon
     void Control::setEnableCondition(const char* enable)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
 
       if (pGUIControl)
         pGUIControl->SetEnableCondition(enable);
@@ -756,7 +756,7 @@ namespace XBMCAddon
       }
 
       const CRect animRect((float)dwPosX, (float)dwPosY, (float)dwPosX + dwWidth, (float)dwPosY + dwHeight);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
       {
         CGUIControlFactory::GetAnimations(pRoot, animRect, iParentId, animations);
@@ -767,7 +767,7 @@ namespace XBMCAddon
     void Control::setPosition(long x, long y)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       dwPosX = x;
       dwPosY = y;
       if (pGUIControl)
@@ -777,7 +777,7 @@ namespace XBMCAddon
     void Control::setWidth(long width)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       dwWidth = width;
       if (pGUIControl)
         pGUIControl->SetWidth((float)dwWidth);
@@ -786,7 +786,7 @@ namespace XBMCAddon
     void Control::setHeight(long height)
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
       dwHeight = height;
       if (pGUIControl)
         pGUIControl->SetHeight((float)dwHeight);
@@ -799,7 +799,7 @@ namespace XBMCAddon
         throw WindowException("Control has to be added to a window first");
 
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         if (pGUIControl)
         {
           pGUIControl->SetAction(ACTION_MOVE_UP,    up->iControlId);
@@ -816,7 +816,7 @@ namespace XBMCAddon
         throw WindowException("Control has to be added to a window first");
 
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         if (pGUIControl)
           pGUIControl->SetAction(ACTION_MOVE_UP, control->iControlId);
       }
@@ -828,7 +828,7 @@ namespace XBMCAddon
         throw WindowException("Control has to be added to a window first");
 
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         if (pGUIControl)
           pGUIControl->SetAction(ACTION_MOVE_DOWN, control->iControlId);
       }
@@ -840,7 +840,7 @@ namespace XBMCAddon
         throw WindowException("Control has to be added to a window first");
 
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         if (pGUIControl)
           pGUIControl->SetAction(ACTION_MOVE_LEFT, control->iControlId);
       }
@@ -852,7 +852,7 @@ namespace XBMCAddon
         throw WindowException("Control has to be added to a window first");
 
       {
-        XBMCAddonUtils::GuiLock(languageHook, false);
+        XBMCAddonUtils::GuiLock lock(languageHook, false);
         if (pGUIControl)
           pGUIControl->SetAction(ACTION_MOVE_RIGHT, control->iControlId);
       }
@@ -1221,7 +1221,7 @@ namespace XBMCAddon
     long ControlList::getSelectedPosition()
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
 
       // create message
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, iParentId, iControlId);
@@ -1240,7 +1240,7 @@ namespace XBMCAddon
     XBMCAddon::xbmcgui::ListItem* ControlList::getSelectedItem()
     {
       DelayedCallGuard dcguard(languageHook);
-      XBMCAddonUtils::GuiLock(languageHook, false);
+      XBMCAddonUtils::GuiLock lock(languageHook, false);
 
       // create message
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, iParentId, iControlId);
