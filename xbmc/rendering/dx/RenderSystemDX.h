@@ -28,7 +28,6 @@
 #include <vector>
 #include <wrl.h>
 
-#include "guilib/GUIShaderDX.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "rendering/dx/DeviceResources.h"
@@ -42,6 +41,7 @@ enum PCI_Vendors
 };
 
 class ID3DResource;
+class CGUIShaderDX;
 enum AVPixelFormat;
 enum AVPixelFormat;
 

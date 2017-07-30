@@ -19,9 +19,8 @@
  */
 
 #include "filesystem/File.h"
-#ifdef HAS_DX
-
 #include "D3DResource.h"
+#include "GUIShaderDX.h"
 #include "system.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
@@ -1224,5 +1223,3 @@ void CD3DPixelShader::OnDestroyDevice(bool fatal)
 {
   ReleaseShader();
 }
-
-#endif

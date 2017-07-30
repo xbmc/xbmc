@@ -18,10 +18,9 @@
  *
  */
 
-#ifdef HAS_DX
-
 #include "GUIFontTTFDX.h"
 #include "GUIFontManager.h"
+#include "GUIShaderDX.h"
 #include "Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
@@ -358,5 +357,3 @@ void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 void CGUIFontTTFDX::OnCreateDevice(void)
 {
 }
-
-#endif
