@@ -127,7 +127,8 @@ void CMusicDatabase::CreateTables()
               " strDied text, strDisbanded text, strYearsActive text, "
               " strImage text, strFanart text, "
               " lastScraped varchar(20) default NULL, "
-              " bScrapedMBID INTEGER NOT NULL DEFAULT 0)");
+              " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
+              " idInfoSetting INTEGER NOT NULL DEFAULT 0)");
   // Create missing artist tag artist [Missing].
   std::string strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strSortName, strMusicBrainzArtistID) "
      "VALUES( %i, '%s', '%s', '%s' )",
@@ -146,16 +147,19 @@ void CMusicDatabase::CreateTables()
               " strReview text, strImage text, strLabel text, "
               " strType text, "
               " fRating FLOAT NOT NULL DEFAULT 0, "
+              " iVotes INTEGER NOT NULL DEFAULT 0, "
               " iUserrating INTEGER NOT NULL DEFAULT 0, "
               " lastScraped varchar(20) default NULL, "
               " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
               " strReleaseType text, "
-              " iVotes INTEGER NOT NULL DEFAULT 0)");
+              " idInfoSetting INTEGER NOT NULL DEFAULT 0)");
+
   CLog::Log(LOGINFO, "create audiobook table");
   m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
               " strBook varchar(256), strAuthor text,"
               " bookmark integer, file text,"
               " dateAdded varchar (20) default NULL)");
+
   CLog::Log(LOGINFO, "create album_artist table");
   m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, iOrder integer, strArtist text)");
   CLog::Log(LOGINFO, "create album_genre table");
@@ -185,11 +189,9 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE role (idRole integer primary key, strRole text)");
   m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (1, 'Artist')");   //Default role
 
-  CLog::Log(LOGINFO, "create albuminfosong table");
-  m_pDS->exec("CREATE TABLE albuminfosong (idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)");
+  CLog::Log(LOGINFO, "create infosetting table");
+  m_pDS->exec("CREATE TABLE infosetting (idSetting INTEGER PRIMARY KEY, strScraperPath TEXT, strSettings TEXT)");
 
-  CLog::Log(LOGINFO, "create content table");
-  m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)");
   CLog::Log(LOGINFO, "create discography table");
   m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)");
 
@@ -207,6 +209,7 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
   m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
   m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
+  m_pDS->exec("CREATE INDEX idxAlbum_3 ON album(idInfoSetting)");
 
   m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )");
   m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )");
@@ -218,6 +221,7 @@ void CMusicDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
   m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
+  m_pDS->exec("CREATE INDEX idxArtist_2 ON artist(idInfoSetting)");
 
   m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
 
@@ -239,8 +243,6 @@ void CMusicDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX idxRole on role(strRole(255))");
 
-  m_pDS->exec("CREATE INDEX idxAlbumInfoSong_1 ON albuminfosong ( idAlbumInfo )");
-
   m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )");
 
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
@@ -250,7 +252,6 @@ void CMusicDatabase::CreateAnalytics()
               "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
               "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
               "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
-              "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
               "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
               " END");
   m_pDS->exec("CREATE TRIGGER tgrDeleteArtist AFTER delete ON artist FOR EACH ROW BEGIN"
@@ -309,6 +310,7 @@ void CMusicDatabase::CreateViews()
               "        album.idAlbum AS idAlbum, "
               "        strAlbum, "
               "        strMusicBrainzAlbumID, "
+              "        strReleaseGroupMBID, "
               "        album.strArtistDisp AS strArtists, "
               "        album.strArtistSort AS strArtistSort, "
               "        album.strGenres AS strGenres, "
@@ -324,6 +326,8 @@ void CMusicDatabase::CreateViews()
               "        album.iUserrating, "
               "        album.iVotes, "
               "        bCompilation, "
+              "        bScrapedMBID,"
+              "        lastScraped,"
               "        (SELECT AVG(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
               "        strReleaseType, "
               "        (SELECT MAX(song.dateAdded) FROM song WHERE song.idAlbum = album.idAlbum) AS dateAdded, "
@@ -339,6 +343,7 @@ void CMusicDatabase::CreateViews()
               "  strMoods, strStyles, strInstruments, "
               "  strBiography, strDied, strDisbanded, "
               "  strYearsActive, strImage, strFanart, "
+              "  bScrapedMBID, lastScraped, "
               "  (SELECT MAX(song.dateAdded) FROM song_artist INNER JOIN song ON song.idSong = song_artist.idSong "
               "  WHERE song_artist.idArtist = artist.idArtist) AS dateAdded "
               "FROM artist");
@@ -372,26 +377,6 @@ void CMusicDatabase::CreateViews()
               "     song_artist.idArtist = artist.idArtist "
               "JOIN role ON "
               "     song_artist.idRole = role.idRole");
-}
-
-int CMusicDatabase::AddAlbumInfoSong(int idAlbum, const CSong& song)
-{
-  std::string strSQL = PrepareSQL("SELECT idAlbumInfoSong FROM albuminfosong WHERE idAlbumInfo = %i and iTrack = %i", idAlbum, song.iTrack);
-  int idAlbumInfoSong = (int)strtol(GetSingleValue(strSQL).c_str(), NULL, 10);
-  if (idAlbumInfoSong > 0)
-  {
-    strSQL = PrepareSQL("UPDATE albuminfosong SET strTitle = '%s', iDuration = %i WHERE idAlbumInfoSong = %i", song.strTitle.c_str(), song.iDuration, idAlbumInfoSong);
-    return ExecuteQuery(strSQL);
-  }
-  else
-  {
-    strSQL = PrepareSQL("INSERT INTO albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) VALUES (NULL,%i,%i,'%s',%i)",
-                        idAlbum,
-                        song.iTrack,
-                        song.strTitle.c_str(),
-                        song.iDuration);
-    return ExecuteQuery(strSQL);
-  }
 }
 
 bool CMusicDatabase::AddAlbum(CAlbum& album)
@@ -458,9 +443,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
     AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
   }
-
-  for (const auto &infoSong : album.infoSongs)
-    AddAlbumInfoSong(album.idAlbum, infoSong);
 
   for (const auto &albumArt : album.art)
     SetArtForItem(album.idAlbum, MediaTypeAlbum, albumArt.first, albumArt.second);
@@ -551,9 +533,6 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
       AddSongContributors(song.idSong, song.GetContributors(), song.GetComposerSort());
     }
   }
-
-  for (const auto &infoSong : album.infoSongs)
-    AddAlbumInfoSong(album.idAlbum, infoSong);
 
   if (!album.art.empty())
     SetArtForItem(album.idAlbum, MediaTypeAlbum, album.art);
@@ -1040,22 +1019,6 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         m_pDS->next();
       }
       m_pDS->close(); // cleanup recordset data
-
-      //Album Song Information 
-      sql = PrepareSQL("SELECT albuminfosong.* "
-        " FROM albuminfosong "
-        " WHERE idAlbumInfo = %ld "" ORDER BY iTrack", idAlbum);
-
-      CLog::Log(LOGDEBUG, "%s", sql.c_str());
-      if (!m_pDS->query(sql)) return false;
-      while (!m_pDS->eof())
-      {
-        const dbiplus::sql_record* const record = m_pDS->get_sql_record();
-
-        album.infoSongs.push_back(GetAlbumInfoSongFromDataset(record));
-        m_pDS->next();
-      }
-      m_pDS->close(); // cleanup recordset data
     }
 
     return true;
@@ -1078,12 +1041,6 @@ bool CMusicDatabase::HasAlbumBeenScraped(int idAlbum)
 {
   std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE idAlbum = %i AND lastScraped IS NULL", idAlbum);
   return GetSingleValue(strSQL).empty();
-}
-
-bool CMusicDatabase::HasScrapedAlbumMBID(int idAlbum)
-{
-  std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE idAlbum = %i AND strMusicbrainzAlbumID IS NOT NULL AND bScrapedMBID = 1", idAlbum);
-  return !GetSingleValue(strSQL).empty();
 }
 
 int CMusicDatabase::AddGenre(const std::string& strGenre1)
@@ -1451,13 +1408,6 @@ bool CMusicDatabase::ClearArtistLastScrapedTime(int idArtist)
   std::string strSQL = PrepareSQL("UPDATE artist SET lastScraped = NULL WHERE idArtist = %i", idArtist);
   return ExecuteQuery(strSQL);
 }
-
-bool CMusicDatabase::HasScrapedArtistMBID(int idArtist)
-{
-  std::string strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE idArtist = %i AND strMusicbrainzArtistID IS NOT NULL AND bScrapedMBID = 1", idArtist);
-  return !GetSingleValue(strSQL).empty();
-}
-
 
 int CMusicDatabase::AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear)
 {
@@ -2131,6 +2081,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   if (album.strAlbum.empty())
     album.strAlbum = g_localizeStrings.Get(1050);
   album.strMusicBrainzAlbumID = record->at(offset + album_strMusicBrainzAlbumID).get_asString();
+  album.strReleaseGroupMBID = record->at(offset + album_strReleaseGroupMBID).get_asString();
   album.strArtistDesc = record->at(offset + album_strArtists).get_asString();
   album.strArtistSort = record->at(offset + album_strArtistSort).get_asString();
   album.genre = StringUtils::Split(record->at(offset + album_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -2148,6 +2099,8 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.strLabel = record->at(offset + album_strLabel).get_asString();
   album.strType = record->at(offset + album_strType).get_asString();
   album.bCompilation = record->at(offset + album_bCompilation).get_asInt() == 1;
+  album.bScrapedMBID = record->at(offset + album_bScrapedMBID).get_asInt() == 1;
+  album.strLastScraped = record->at(offset + album_lastScraped).get_asString();
   album.iTimesPlayed = record->at(offset + album_iTimesPlayed).get_asInt();
   album.SetReleaseType(record->at(offset + album_strReleaseType).get_asString());
   album.SetDateAdded(record->at(offset + album_dtDateAdded).get_asString());
@@ -2203,6 +2156,8 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   artist.strDisbanded = record->at(offset + artist_strDisbanded).get_asString();
   artist.yearsActive = StringUtils::Split(record->at(offset + artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.instruments = StringUtils::Split(record->at(offset + artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.bScrapedMBID = record->at(offset + artist_bScrapedMBID).get_asInt() == 1;
+  artist.strLastScraped = record->at(offset + artist_lastScraped).get_asString();
   artist.SetDateAdded(record->at(offset + artist_dtDateAdded).get_asString());
 
   if (needThumb)
@@ -2213,15 +2168,6 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   }
 
   return artist;
-}
-
-CSong CMusicDatabase::GetAlbumInfoSongFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
-{
-  CSong song;
-  song.iTrack = record->at(offset + albumInfoSong_iTrack).get_asInt();
-  song.iDuration = record->at(offset + albumInfoSong_iDuration).get_asInt();
-  song.strTitle = record->at(offset + albumInfoSong_strTitle).get_asString();
-  return song;
 }
 
 bool CMusicDatabase::GetSongByFileName(const std::string& strFileNameAndPath, CSong& song, int startOffset)
@@ -3167,6 +3113,24 @@ bool CMusicDatabase::CleanupGenres()
   return false;
 }
 
+bool CMusicDatabase::CleanupInfoSettings()
+{
+  try
+  {
+    // Cleanup orphaned info settings (ie those that don't belong to an album or artist entry)
+    // Must be executed AFTER the album and artist tables have been cleaned.
+    std::string strSQL = "DELETE FROM infosetting WHERE idSetting NOT IN (SELECT idInfoSetting FROM artist) " 
+      "AND idSetting NOT IN (SELECT idInfoSetting FROM album)";
+    m_pDS->exec(strSQL);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupInfoSettings() or was aborted");
+  }
+  return false;
+}
+
 bool CMusicDatabase::CleanupRoles()
 {
   try
@@ -3194,6 +3158,7 @@ bool CMusicDatabase::CleanupOrphanedItems()
   if (!CleanupArtists()) return false;
   if (!CleanupGenres()) return false;
   if (!CleanupRoles()) return false;
+  if (!CleanupInfoSettings()) return false;
   return true;
 }
 
@@ -3264,6 +3229,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
     ret = ERROR_REORG_ARTIST;
     goto error;
   }
+  //Genres, roles and info settings progess in one step
   if (pDlgProgress)
   {
     pDlgProgress->SetLine(1, CVariant{322});
@@ -3272,12 +3238,17 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   }
   if (!CleanupGenres())
   {
-    ret = ERROR_REORG_GENRE;
+    ret = ERROR_REORG_OTHER;
     goto error;
   }
   if (!CleanupRoles())
   {
-    ret = ERROR_REORG_ROLE;
+    ret = ERROR_REORG_OTHER;
+    goto error;
+  }
+  if (!CleanupInfoSettings())
+  {
+    ret = ERROR_REORG_OTHER;
     goto error;
   }
   // commit transaction
@@ -5144,6 +5115,61 @@ void CMusicDatabase::UpdateTables(int version)
     // Add a new column bScrapedMBID for artists
     m_pDS->exec("ALTER TABLE artist ADD bScrapedMBID INTEGER NOT NULL DEFAULT 0\n");
   }
+  if (version < 67)
+  {
+    // Add infosetting table
+    m_pDS->exec("CREATE TABLE infosetting (idSetting INTEGER PRIMARY KEY, strScraperPath TEXT, strSettings TEXT)");
+    // Add a new column for setting to album and artist tables
+    m_pDS->exec("ALTER TABLE artist ADD idInfoSetting INTEGER NOT NULL DEFAULT 0\n");
+    m_pDS->exec("ALTER TABLE album ADD idInfoSetting INTEGER NOT NULL DEFAULT 0\n");
+
+    // Attempt to get album and artist specific scraper settings from the content table, extracting ids from path
+    m_pDS->exec("CREATE TABLE content_temp(id INTEGER PRIMARY KEY, idItem INTEGER, strContent text, "
+      "strScraperPath text, strSettings text)");
+    try
+    {
+      m_pDS->exec("INSERT INTO content_temp(idItem, strContent, strScraperPath, strSettings) "
+        "SELECT SUBSTR(strPath, 19, LENGTH(strPath) - 19) + 0 AS idItem, strContent, strScraperPath, strSettings "
+        "FROM content WHERE strContent = 'artists' AND strPath LIKE 'musicdb://artists/_%/' ORDER BY idItem"
+        );
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Migrating specific artist scraper settings has failed, settings not transfered");
+    }
+    try
+    {
+      m_pDS->exec("INSERT INTO content_temp (idItem, strContent, strScraperPath, strSettings ) "
+        "SELECT SUBSTR(strPath, 18, LENGTH(strPath) - 18) + 0 AS idItem, strContent, strScraperPath, strSettings "
+        "FROM content WHERE strContent = 'albums' AND strPath LIKE 'musicdb://albums/_%/' ORDER BY idItem"
+      );
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Migrating specific album scraper settings has failed, settings not transfered");
+    }
+    try
+    {
+      m_pDS->exec("INSERT INTO infosetting(idSetting, strScraperPath, strSettings) "
+        "SELECT id, strScraperPath, strSettings FROM content_temp");
+      m_pDS->exec("UPDATE artist SET idInfoSetting = " 
+        "(SELECT id FROM content_temp WHERE strContent = 'artists' AND idItem = idArtist) "
+        "WHERE EXISTS(SELECT 1 FROM content_temp WHERE strContent = 'artists' AND idItem = idArtist) ");
+      m_pDS->exec("UPDATE album SET idInfoSetting = "
+        "(SELECT id FROM content_temp WHERE strContent = 'albums' AND idItem = idAlbum) "
+        "WHERE EXISTS(SELECT 1 FROM content_temp WHERE strContent = 'albums' AND idItem = idAlbum) ");
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Migrating album and artist scraper settings has failed, settings not transfered");
+    }
+    m_pDS->exec("DROP TABLE content_temp");
+
+    // Remove content table
+    m_pDS->exec("DROP TABLE content");
+    // Remove albuminfosong table
+    m_pDS->exec("DROP TABLE albuminfosong");
+  }
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
   // that needs this. Forced rescanning (of music files that have not changed since they were 
@@ -5159,13 +5185,11 @@ void CMusicDatabase::UpdateTables(int version)
   // After all updates, store the original db version. 
   // This indicates the version of tag processing that was used to populate db
   SetMusicTagScanVersion(version);
-  //Store the original db version, it indicates the version of tag processing used to populate db
-  SetMusicTagScanVersion(version);  
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 66;
+  return 67;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -5325,6 +5349,7 @@ bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const std::string& strThumb)
 
 bool CMusicDatabase::GetArtistPath(int idArtist, std::string &basePath)
 {
+  basePath.clear();
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -5358,7 +5383,6 @@ bool CMusicDatabase::GetArtistPath(int idArtist, std::string &basePath)
     }
 
     // find the common path (if any) to these albums
-    basePath.clear();
     while (!m_pDS2->eof())
     {
       std::string path = m_pDS2->fv("strPath").get_asString();
@@ -5941,107 +5965,173 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperForPath(const std::string& strPath, const ADDON::ScraperPtr& scraper)
+bool CMusicDatabase::SetScraperAll(const std::string & strBaseDir, const ADDON::ScraperPtr scraper)
 {
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+  std::string strSQL;
+  int idSetting = -1;
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    CONTENT_TYPE content = CONTENT_NONE;
 
-    // wipe old settings
-    std::string strSQL = PrepareSQL("delete from content where strPath='%s'",strPath.c_str());
+    // Build where clause from virtual path
+    Filter extFilter;
+    CMusicDbUrl musicUrl;
+    SortDescription sorting;
+    if (!musicUrl.FromString(strBaseDir) || !GetFilter(musicUrl, extFilter, sorting))
+      return false;
+
+    std::string itemType = musicUrl.GetType();
+    if (StringUtils::EqualsNoCase(itemType, "artists"))
+    {
+      content = CONTENT_ARTISTS;
+    }
+    else if (StringUtils::EqualsNoCase(itemType, "albums"))
+    {
+      content = CONTENT_ALBUMS;
+    }
+    else
+      return false;  //Only artists and albums have info settings
+    
+    std::string strSQLWhere;
+    if (!BuildSQL(strSQLWhere, extFilter, strSQLWhere))
+      return false;
+
+    // Replace view names with table names
+    StringUtils::Replace(strSQLWhere, "artistview", "artist");
+    StringUtils::Replace(strSQLWhere, "albumview", "album");
+
+    BeginTransaction();
+    // Clear current scraper settings (0 => default scraper used)
+    if (content == CONTENT_ARTISTS)
+      strSQL = "UPDATE artist SET idInfoSetting = %i ";
+    else
+      strSQL = "UPDATE album SET idInfoSetting = %i ";
+    strSQL = PrepareSQL(strSQL, 0) + strSQLWhere;
     m_pDS->exec(strSQL);
 
-    // insert new settings
-    strSQL = PrepareSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
-      strPath.c_str(), scraper->ID().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetPathSettings().c_str());
-    m_pDS->exec(strSQL);
+    //Remove orphaned settings
+    CleanupInfoSettings();
 
+    if (scraper)
+    {
+      // Add new info setting
+      strSQL = "INSERT INTO infosetting (strScraperPath, strSettings) values ('%s','%s')";
+      strSQL = PrepareSQL(strSQL, scraper->ID().c_str(), scraper->GetPathSettings().c_str());
+      m_pDS->exec(strSQL);
+      idSetting = static_cast<int>(m_pDS->lastinsertid());
+
+      if (content == CONTENT_ARTISTS)
+        strSQL = "UPDATE artist SET idInfoSetting = %i ";
+      else
+        strSQL = "UPDATE album SET idInfoSetting = %i ";
+      strSQL = PrepareSQL(strSQL, idSetting) + strSQLWhere;
+      m_pDS->exec(strSQL);
+    }
+    CommitTransaction();
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - (%s) failed", __FUNCTION__, strPath.c_str());
+    RollbackTransaction();
+    CLog::Log(LOGERROR, "%s - (%s, %s) failed", __FUNCTION__, strBaseDir.c_str(), strSQL.c_str());
   }
   return false;
 }
 
-bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type)
+bool CMusicDatabase::SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper)
 {
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+  std::string strSQL;
+  int idSetting = -1;
+  try
+  { 
+    BeginTransaction();
+    // Fetch current info settings for item, 0 => default is used
+    if (content == CONTENT_ARTISTS)
+      strSQL = "SELECT idInfoSetting FROM artist WHERE idArtist = %i";
+    else 
+      strSQL = "SELECT idInfoSetting FROM album WHERE idAlbum = %i";
+    strSQL = PrepareSQL(strSQL, id);
+    m_pDS->query(strSQL);
+    if (m_pDS->num_rows() > 0)
+      idSetting = m_pDS->fv("idInfoSetting").get_asInt();
+    m_pDS->close();
+
+    if (idSetting < 1)
+    { // Add new info setting
+      strSQL = "INSERT INTO infosetting (strScraperPath, strSettings) values ('%s','%s')";
+      strSQL = PrepareSQL(strSQL, scraper->ID().c_str(), scraper->GetPathSettings().c_str());
+      m_pDS->exec(strSQL);
+      idSetting = static_cast<int>(m_pDS->lastinsertid());
+
+      if (content == CONTENT_ARTISTS)
+        strSQL = "UPDATE artist SET idInfoSetting = %i WHERE idArtist = %i";
+      else
+        strSQL = "UPDATE album SET idInfoSetting = %i WHERE idAlbum = %i";
+      strSQL = PrepareSQL(strSQL, idSetting, id);
+      m_pDS->exec(strSQL);
+    }
+    else
+    {  // Update info setting
+      strSQL = "UPDATE infosetting SET strScraperPath = '%s', strSettings = '%s' WHERE idSetting = %i";
+      strSQL = PrepareSQL(strSQL, scraper->ID().c_str(), scraper->GetPathSettings().c_str(), idSetting);
+      m_pDS->exec(strSQL);
+    }
+    CommitTransaction();
+    return true;
+  }
+  catch (...)
+  {
+    RollbackTransaction();
+    CLog::Log(LOGERROR, "%s - (%i, %s) failed", __FUNCTION__, id, strSQL.c_str());
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE &content, ADDON::ScraperPtr& scraper)
+{
+  std::string scraperUUID;
+  std::string strSettings;
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string strSQL = PrepareSQL("select * from content where strPath='%s'",strPath.c_str());
+    std::string strSQL;
+    strSQL = "SELECT strScraperPath, strSettings FROM infosetting JOIN ";
+    if (content == CONTENT_ARTISTS)
+      strSQL = strSQL + "artist ON artist.idInfoSetting = infosetting.idSetting WHERE artist.idArtist = %i";
+    else
+      strSQL = strSQL + "album ON album.idInfoSetting = infosetting.idSetting WHERE album.idAlbum = %i";
+    strSQL = PrepareSQL(strSQL, id);
     m_pDS->query(strSQL);
-    if (m_pDS->eof()) // no info set for path - fallback logic commencing
-    {
-      CQueryParams params;
-      CDirectoryNode::GetDatabaseInfo(strPath, params);
-      if (params.GetGenreId() != -1) // check genre
-      {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://genres/%i/'",params.GetGenreId());
-        m_pDS->query(strSQL);
-      }
-      if (m_pDS->eof() && params.GetAlbumId() != -1) // check album
-      {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/%i/'",params.GetAlbumId());
-        m_pDS->query(strSQL);
-        if (m_pDS->eof()) // general albums setting
-        {
-          strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/'");
-          m_pDS->query(strSQL);
-        }
-      }
-      if (m_pDS->eof() && params.GetArtistId() != -1) // check artist
-      {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/%i/'",params.GetArtistId());
-        m_pDS->query(strSQL);
-
-        if (m_pDS->eof()) // general artist setting
-        {
-          strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/'");
-          m_pDS->query(strSQL);
-        }
-      }
-    }
-
     if (!m_pDS->eof())
-    { // try and ascertain scraper for this path
-      CONTENT_TYPE content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
-      std::string scraperUUID = m_pDS->fv("content.strScraperPath").get_asString();
+    { // try and ascertain scraper
+      scraperUUID = m_pDS->fv("strScraperPath").get_asString();
+      strSettings = m_pDS->fv("strSettings").get_asString();
 
-      if (content != CONTENT_NONE)
-      { // content set, use pre configured or default scraper
-        ADDON::AddonPtr addon;
-        if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
-        {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
-          if (!info)
-            return false;
-          // store this path's settings
-          info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
-        }
-      }
-      else
-      { // use default scraper of the requested type
-        ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonSystemSettings::GetInstance().GetActive(type, defaultScraper))
-        {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
-        }
+      // Use pre configured or default scraper
+      ADDON::AddonPtr addon;
+      if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
+      {
+        scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
+        if (scraper)
+          // Set settings 
+          scraper->SetPathSettings(content, strSettings);
       }
     }
     m_pDS->close();
 
-    if (!info)
+    if (!scraper)
     { // use default music scraper instead
       ADDON::AddonPtr addon;
-      if(ADDON::CAddonSystemSettings::GetInstance().GetActive(type, addon))
+      if(ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(content), addon))
       {
-        info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
-        return info != NULL;
+        scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
+        return scraper != NULL;
       }
       else
         return false;
@@ -6051,7 +6141,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s -(%i, %s %s) failed", __FUNCTION__, id, scraperUUID.c_str(), strSettings.c_str());
   }
   return false;
 }
@@ -6063,9 +6153,12 @@ bool CMusicDatabase::ScraperInUse(const std::string &scraperID) const
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("select count(1) from content where strScraperPath='%s'",scraperID.c_str());
+    std::string sql = PrepareSQL("SELECT COUNT(1) FROM infosetting WHERE strScraperPath='%s'",scraperID.c_str());
     if (!m_pDS->query(sql) || m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
       return false;
+    }
     bool found = m_pDS->fv(0).get_asInt() > 0;
     m_pDS->close();
     return found;

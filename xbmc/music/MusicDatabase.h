@@ -50,8 +50,7 @@ namespace dbiplus
 #define ERROR_DATABASE    315
 #define ERROR_REORG_SONGS   319
 #define ERROR_REORG_ARTIST   321
-#define ERROR_REORG_GENRE   323
-#define ERROR_REORG_ROLE   324
+#define ERROR_REORG_OTHER   323
 #define ERROR_REORG_PATH   325
 #define ERROR_REORG_ALBUM   327
 #define ERROR_WRITING_CHANGES  329
@@ -213,7 +212,7 @@ public:
   */
   bool AddAlbum(CAlbum& album);
 
-  /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
+  /*! \brief Update an album and all its nested entities (artists, songs etc)
    \param album the album to update
    \return true or false
    */
@@ -261,8 +260,6 @@ public:
                    bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
-  bool HasScrapedAlbumMBID(int idArtist);
-  int  AddAlbumInfoSong(int idAlbum, const CSong& song);
 
   /////////////////////////////////////////////////
   // Audiobook
@@ -307,7 +304,6 @@ public:
   void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
-  bool HasScrapedArtistMBID(int idArtist);
   int  AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear);
   bool DeleteArtistDiscography(int idArtist);
 
@@ -429,8 +425,9 @@ public:
   /////////////////////////////////////////////////
   // Scraper
   /////////////////////////////////////////////////
-  bool SetScraperForPath(const std::string& strPath, const ADDON::ScraperPtr& info);
-  bool GetScraperForPath(const std::string& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type);
+  bool SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper);
+  bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr scraper);
+  bool GetScraper(int id, const CONTENT_TYPE &content, ADDON::ScraperPtr& scraper);
   
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.
@@ -574,13 +571,13 @@ private:
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item);
-  CSong GetAlbumInfoSongFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   bool CleanupSongs();
   bool CleanupSongsByIds(const std::string &strSongIds);
   bool CleanupPaths();
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
+  bool CleanupInfoSettings();
   bool CleanupRoles();
   void UpdateTables(int version) override;
   bool SearchArtists(const std::string& search, CFileItemList &artists);
@@ -632,6 +629,7 @@ private:
     album_idAlbum=0,
     album_strAlbum,
     album_strMusicBrainzAlbumID,
+    album_strReleaseGroupMBID,
     album_strArtists,
     album_strArtistSort,
     album_strGenres,
@@ -647,6 +645,8 @@ private:
     album_iUserrating,
     album_iVotes,
     album_bCompilation,
+    album_bScrapedMBID,
+    album_lastScraped,
     album_iTimesPlayed,
     album_strReleaseType,
     album_dtDateAdded,
@@ -690,17 +690,10 @@ private:
     artist_strYearsActive,
     artist_strImage,
     artist_strFanart,
+    artist_bScrapedMBID,
+    artist_lastScraped,
     artist_dtDateAdded,
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
 
-  static enum _AlbumInfoSongFields
-  {
-    albumInfoSong_idAlbumInfoSong=0,
-    albumInfoSong_idAlbumInfo,
-    albumInfoSong_iTrack,
-    albumInfoSong_strTitle,
-    albumInfoSong_iDuration,
-    albumInfoSong_enumCount // end of the enum, do not add past here
-  } AlbumInfoSongFields;
 };

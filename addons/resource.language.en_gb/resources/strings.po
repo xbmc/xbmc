@@ -792,6 +792,7 @@ msgctxt "#180"
 msgid "Duration"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#181"
 msgid "Select album"
 msgstr ""
@@ -1170,10 +1171,12 @@ msgctxt "#254"
 msgid "DTS capable receiver"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#255"
 msgid "CDDB"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#256"
 msgid "Fetching CD information"
 msgstr ""
@@ -1464,46 +1467,57 @@ msgctxt "#317"
 msgid "Cleaned database successfully"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#318"
 msgid "Cleaning songs..."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#319"
 msgid "Error cleaning songs"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#320"
 msgid "Cleaning artists..."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#321"
 msgid "Error cleaning artists"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#322"
-msgid "Cleaning genres..."
+msgid "Cleaning genres, roles etc...."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#323"
-msgid "Error cleaning genres"
+msgid "Error cleaning genres, roles etc."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#324"
 msgid "Cleaning paths..."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#325"
 msgid "Error cleaning paths"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#326"
 msgid "Cleaning albums..."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#327"
 msgid "Error cleaning albums"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#328"
 msgid "Writing changes..."
 msgstr ""
@@ -1512,10 +1526,12 @@ msgctxt "#329"
 msgid "Error writing changes"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#330"
 msgid "This may take some time..."
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#331"
 msgid "Compressing database..."
 msgstr ""
@@ -2942,10 +2958,12 @@ msgctxt "#648"
 msgid "Import video library"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#649"
 msgid "Importing"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#650"
 msgid "Exporting"
 msgstr ""
@@ -3099,10 +3117,12 @@ msgstr ""
 
 #empty strings from id 682 to 699
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#701"
 msgid "Removing old songs from the library"
 msgstr ""
@@ -12147,6 +12167,7 @@ msgctxt "#20194"
 msgid "Default provider for artist information"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#20195"
 msgid "Change information provider"
 msgstr ""
@@ -20379,6 +20400,7 @@ msgid "All roles"
 msgstr ""
 
 #empty strings from id 38047 to 38059
+#strings 38047 to 38059 reserved for music library roles
 
 #. Question when forced rescan of music tags needed after upgrade from previous version of Kodi
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
@@ -20398,7 +20420,74 @@ msgctxt "#38062"
 msgid "Do full tag scan even when music files are unchanged?"
 msgstr ""
 
-#empty strings from id 38063 to 38099
+#. Label for a context submenu entry to change the default addon used to fetch artist or album information, related to #20195, #20193 and #20194
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38063"
+msgid "Set default information provider"
+msgstr ""
+
+#. Label for a context submenu entry to change the information provider for a specific artist, related to #20195
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38064"
+msgid "Set for this artist"
+msgstr ""
+
+#. Label for a context submenu entry to change the information provider for all artists in node, related to #20195
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38065"
+msgid "Set for all artists shown"
+msgstr ""
+
+#. Label for a context submenu entry to change the information provider for a specific album, related to #20195
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38066"
+msgid "Set for this album"
+msgstr ""
+
+#. Label for a context submenu entry to change the information provider for all albums in node, related to #20195
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38067"
+msgid "Set for all albums shown"
+msgstr ""
+
+#. Dialog message asking for confirmation of change the information provider for all artists shown in node, after #38065
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38068"
+msgid "Use this information provider for all the artists shown here?"
+msgstr ""
+
+#. Dialog message asking for confirmation of change the information provider for all albums shown in node, after #38067
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38069"
+msgid "Use this information provider for all the albums shown here?"
+msgstr ""
+
+#. Dialog message asking for confirmation of change to the default artist information provider, after #38063
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38070"
+msgid "Use this information provider for all artists, clearing any previous settings for specific artists?"
+msgstr ""
+
+#. Dialog message asking for confirmation of change to the default album information provider, after #38063
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38071"
+msgid "Use this information provider for all albums, clearing any previous settings for specific albums?"
+msgstr ""
+
+#. Dialog message asking for confirmation to get additional info for all the artists or albums in the node immediately
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38072"
+msgid "Do you want to refresh information for all these items now?"
+msgstr ""
+
+#. Dialog message asking for confirmation to get additional info for the current artist or album immediately
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+msgctxt "#38073"
+msgid "Do you want to refresh information for this item now?"
+msgstr ""
+
+#empty strings from id 38074 to 38099
+#strings 38074 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml

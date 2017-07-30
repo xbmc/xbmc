@@ -204,17 +204,16 @@ void CMusicInfoScanner::Process()
 
         CAlbum album;
         m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
-        album.bScrapedMBID = m_musicDatabase.HasScrapedAlbumMBID(album.idAlbum);
         if (m_handle)
         {
-          float percentage = static_cast<float>(std::distance(m_pathsToScan.begin(), it) * 100 / m_pathsToScan.size());
+          float percentage = static_cast<float>(std::distance(m_pathsToScan.begin(), it) * 100) / static_cast<float>(m_pathsToScan.size());
           m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
           m_handle->SetPercentage(percentage);
         }
 
         // find album info
         ADDON::ScraperPtr scraper;
-        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+        if (!m_musicDatabase.GetScraper(album.idAlbum, CONTENT_ALBUMS, scraper))
           continue;
 
         UpdateDatabaseAlbumInfo(album, scraper, false);
@@ -236,7 +235,6 @@ void CMusicInfoScanner::Process()
 
         CArtist artist;
         m_musicDatabase.GetArtist(params.GetArtistId(), artist);
-        artist.bScrapedMBID = m_musicDatabase.HasScrapedArtistMBID(artist.idArtist);
         m_musicDatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
 
         if (m_handle)
@@ -248,7 +246,7 @@ void CMusicInfoScanner::Process()
 
         // find album info
         ADDON::ScraperPtr scraper;
-        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ARTISTS) || !scraper)
+        if (!m_musicDatabase.GetScraper(artist.idArtist, CONTENT_ARTISTS, scraper) || !scraper)
           continue;
 
         UpdateDatabaseArtistInfo(artist, scraper, false);
@@ -337,18 +335,30 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   }
   else
   {
-    if (URIUtils::IsMusicDb(strDirectory))
-      CDirectory::GetDirectory(strDirectory,items);
+    CURL pathToUrl(strDirectory);
+
+    if (pathToUrl.IsProtocol("musicdb"))
+    {
+      CQueryParams params;
+      CDirectoryNode::GetDatabaseInfo(strDirectory, params);
+      if (params.GetAlbumId() != -1)
+      {
+        //Add single album as item to scan
+        CFileItemPtr item(new CFileItem(strDirectory, false));
+        items.Add(item);
+      }
+      else
+      {
+        CMusicDatabaseDirectory dir;
+        NODE_TYPE childtype = dir.GetDirectoryChildType(strDirectory);
+        if (childtype == NODE_TYPE_ALBUM)
+          dir.GetDirectory(pathToUrl, items);
+      }
+    }
     else if (StringUtils::EndsWith(strDirectory, ".xsp"))
     {
-      CURL url(strDirectory);
       CSmartPlaylistDirectory dir;
-      dir.GetDirectory(url, items);
-    }
-    else
-    {
-      CFileItemPtr item(new CFileItem(strDirectory,false));
-      items.Add(item);
+      dir.GetDirectory(pathToUrl, items);
     }
   }
 
@@ -387,18 +397,30 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   }
   else
   {
-    if (URIUtils::IsMusicDb(strDirectory))
-      CDirectory::GetDirectory(strDirectory,items);
+    CURL pathToUrl(strDirectory);
+
+    if (pathToUrl.IsProtocol("musicdb"))
+    {
+      CQueryParams params;
+      CDirectoryNode::GetDatabaseInfo(strDirectory, params);
+      if (params.GetArtistId() != -1)
+      {
+        //Add single artist as item to scan
+        CFileItemPtr item(new CFileItem(strDirectory, false));
+        items.Add(item);
+      }
+      else
+      {
+        CMusicDatabaseDirectory dir;
+        NODE_TYPE childtype = dir.GetDirectoryChildType(strDirectory);
+        if (childtype == NODE_TYPE_ARTIST)
+          dir.GetDirectory(pathToUrl, items);
+      }
+    }
     else if (StringUtils::EndsWith(strDirectory, ".xsp"))
     {
-      CURL url(strDirectory);
       CSmartPlaylistDirectory dir;
-      dir.GetDirectory(url, items);
-    }
-    else
-    {
-      CFileItemPtr newItem(new CFileItem(strDirectory,false));
-      items.Add(newItem);
+      dir.GetDirectory(pathToUrl, items);
     }
   }
 
@@ -520,7 +542,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
     if (m_handle)
     {
       if (m_itemCount>0)
-        m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
+        m_handle->SetPercentage(static_cast<float>(m_currentItem * 100) / static_cast<float>(m_itemCount));
       OnDirectoryScanned(strDirectory);
     }
   }
@@ -573,7 +595,7 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
     }
 
     if (m_handle && m_itemCount>0)
-      m_handle->SetPercentage(m_currentItem / (float)m_itemCount * 100);
+      m_handle->SetPercentage(static_cast<float>(m_currentItem * 100) / static_cast<float>(m_itemCount));
 
     if (!tag.Loaded() && !pItem->HasCueDocument())
     {
@@ -902,14 +924,13 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
     {
       if (m_handle)
       {
-        float percentage = static_cast<float>(i) * 100 / m_albumsAdded.size();
+        float percentage = static_cast<float>(i * 100) / static_cast<float>(m_albumsAdded.size());
         m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
         m_handle->SetPercentage(percentage);
       }
 
       // Fetch any artist mbids for album artist(s) and song artists when scraping those too.
       m_musicDatabase.GetAlbum(albumId, album, !albumartistsonly);
-      album.bScrapedMBID = m_musicDatabase.HasScrapedAlbumMBID(albumId);
       UpdateDatabaseAlbumInfo(album, albumScraper, false);
 
       // Scrape information for artists that have not been scraped before, avoiding repeating
@@ -925,7 +946,6 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
           artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
           CArtist artist;
           m_musicDatabase.GetArtist(artistCredit.GetArtistId(), artist);
-          artist.bScrapedMBID = m_musicDatabase.HasScrapedArtistMBID(artist.idArtist);
           UpdateDatabaseArtistInfo(artist, artistScraper, false);
         }
       }
@@ -948,7 +968,6 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
               artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
               CArtist artist;
               m_musicDatabase.GetArtist(artistCredit.GetArtistId(), artist);
-              artist.bScrapedMBID = m_musicDatabase.HasScrapedArtistMBID(artist.idArtist);
               UpdateDatabaseArtistInfo(artist, artistScraper, false);
             }
           }

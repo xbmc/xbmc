@@ -44,7 +44,6 @@ public:
   const CAlbum &GetAlbum() const { return m_album; }
   CAlbum& GetAlbum() { return m_album; }
   void SetAlbum(CAlbum& album);
-  const VECSONGS &GetSongs() const { return m_album.infoSongs; }
   const std::string& GetTitle2() const { return m_strTitle2; }
   void SetTitle(const std::string& strTitle) { m_album.strAlbum = strTitle; }
   const CScraperUrl& GetAlbumURL() const { return m_albumURL; }

@@ -81,8 +81,8 @@ public:
     dateAdded.Reset();
     lastPlayed.Reset();
     songs.clear();
-    infoSongs.clear();
     releaseType = Album;
+    strLastScraped.clear();
     bScrapedMBID = false;
     bArtistSongMerge = false;
   }
@@ -165,8 +165,8 @@ public:
   CDateTime dateAdded;
   CDateTime lastPlayed;
   VECSONGS songs;     ///< Local songs
-  VECSONGS infoSongs; ///< Scraped songs
   ReleaseType releaseType;
+  std::string strLastScraped;
   bool bScrapedMBID;
   bool bArtistSongMerge;
 };
