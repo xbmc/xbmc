@@ -31,6 +31,7 @@
 
 #include "threads/SingleLock.h"
 
+#include <memory>
 #include <vector>
 
 #ifdef TARGET_WINDOWS
@@ -52,11 +53,11 @@ namespace XBMCAddonUtils
   class GuiLock
   {
   public:
-    GuiLock();
+    GuiLock(XBMCAddon::LanguageHook* languageHook);
     ~GuiLock();
 
   protected:
-    XBMCAddon::LanguageHook* languageHook;
+    XBMCAddon::LanguageHook* m_languageHook = nullptr;
   };
 
   class InvertSingleLockGuard
@@ -66,8 +67,6 @@ namespace XBMCAddonUtils
     InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.Leave(); }
     ~InvertSingleLockGuard() { lock.Enter(); }
   };
-
-#define LOCKGUI XBMCAddonUtils::GuiLock __gl
 
   /*
    * Looks in references.xml for image name
