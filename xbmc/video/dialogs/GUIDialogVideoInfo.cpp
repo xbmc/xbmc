@@ -302,6 +302,11 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 
   // setup cast list
   ClearCastList();
+  
+  // When the scraper throws an error, the video tag can be null here
+  if (!item->HasVideoInfoTag())
+    return;
+  
   MediaType type = item->GetVideoInfoTag()->m_type;
 
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
