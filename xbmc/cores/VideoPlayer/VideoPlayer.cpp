@@ -1940,7 +1940,7 @@ void CVideoPlayer::HandlePlaySpeed()
             CLog::Log(LOGDEBUG,"CVideoPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
             FlushBuffers(DVD_NOPTS_VALUE, true, true);
             CDVDMsgPlayerSeek::CMode mode;
-            mode.time = (int)GetTime();
+            mode.time = (int)GetUpdatedTime();
             mode.backward = false;
             mode.accurate = true;
             mode.sync = true;
@@ -2616,12 +2616,12 @@ void CVideoPlayer::HandleMessages()
       CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
       double start = DVD_NOPTS_VALUE;
       int offset = 0;
-      int64_t beforeSeek = GetTime();
 
       // This should always be the case.
       if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
       {
         FlushBuffers(start, true, true);
+        int64_t beforeSeek = GetTime();
         offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
         m_callback.OnPlayBackSeekChapter(msg.GetChapter());
       }
@@ -2655,7 +2655,7 @@ void CVideoPlayer::HandleMessages()
             m_dvd.iSelectedAudioStream = -1;
             CloseStream(m_CurrentAudio, false);
             CDVDMsgPlayerSeek::CMode mode;
-            mode.time = (int)GetTime();
+            mode.time = (int)GetUpdatedTime();
             mode.backward = true;
             mode.accurate = true;
             mode.trickplay = true;
@@ -2670,7 +2670,7 @@ void CVideoPlayer::HandleMessages()
           AdaptForcedSubtitles();
 
           CDVDMsgPlayerSeek::CMode mode;
-          mode.time = (int)GetTime();
+          mode.time = (int)GetUpdatedTime();
           mode.backward = true;
           mode.accurate = true;
           mode.trickplay = true;
@@ -2694,7 +2694,7 @@ void CVideoPlayer::HandleMessages()
             m_dvd.iSelectedVideoStream = st.id;
 
             CDVDMsgPlayerSeek::CMode mode;
-            mode.time = (int)GetTime();
+            mode.time = (int)GetUpdatedTime();
             mode.backward = true;
             mode.accurate = true;
             mode.trickplay = true;
@@ -2707,7 +2707,7 @@ void CVideoPlayer::HandleMessages()
           CloseStream(m_CurrentVideo, false);
           OpenStream(m_CurrentVideo, st.demuxerId, st.id, st.source);
           CDVDMsgPlayerSeek::CMode mode;
-          mode.time = (int)GetTime();
+          mode.time = (int)GetUpdatedTime();
           mode.backward = true;
           mode.accurate = true;
           mode.trickplay = true;
@@ -3457,18 +3457,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 int64_t CVideoPlayer::GetTime()
 {
   CSingleLock lock(m_StateSection);
-  double offset = 0;
-  const double limit = DVD_MSEC_TO_TIME(500);
-  if (m_State.timestamp > 0)
-  {
-    offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
-    offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
-    if (offset > limit)
-      offset = limit;
-    if (offset < -limit)
-      offset = -limit;
-  }
-  return llrint(m_State.time + DVD_TIME_TO_MSEC(offset));
+  return llrint(m_State.time);
 }
 
 // return length in msec
@@ -4908,6 +4897,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   CSingleLock lock(m_StateSection);
   m_State = state;
+}
+
+int64_t CVideoPlayer::GetUpdatedTime()
+{
+  UpdatePlayState(0);
+  return llrint(m_State.time);
 }
 
 void CVideoPlayer::SetVolume(float nVolume)

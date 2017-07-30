@@ -486,6 +486,7 @@ protected:
   void UpdatePlayState(double timeout);
   void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
+  int64_t GetUpdatedTime();
 
   bool m_players_created;
 
