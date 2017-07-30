@@ -25,7 +25,6 @@
 #define FF_API_OLD_SAMPLE_FMT 0
 #define DEFAULT_STREAM_INDEX (0)
 
-#include <dxva2api.h>
 #include <windows.h>
 #include "DXVAHD.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
