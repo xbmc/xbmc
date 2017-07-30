@@ -269,8 +269,8 @@ namespace audioengine
       : m_kodiBase(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase),
         m_cb(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine)
     {
-      AEStreamHandle *streamHandle = m_cb->MakeStream(m_kodiBase, format, options);
-      if (streamHandle == nullptr)
+      m_StreamHandle = m_cb->MakeStream(m_kodiBase, format, options);
+      if (m_StreamHandle == nullptr)
       {
         kodi::Log(ADDON_LOG_FATAL, "CAddonAEStream: MakeStream failed!");
       }
