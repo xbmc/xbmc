@@ -19,17 +19,17 @@
  */
 #pragma once
 
+#include <wrl.h>
+#include <wrl/client.h>
 #include <concrt.h>
-#include <d3d11_1.h>
 #if defined(TARGET_WIN10)
+#include <agile.h>
 #include <dxgi1_3.h>
 #else
 #include <dxgi1_2.h>
-#endif
 #include <easyhook/easyhook.h>
+#endif
 #include <memory>
-#include <wrl.h>
-#include <wrl/client.h>
 
 #include "DirectXHelper.h"
 #include "guilib/D3DResource.h"
@@ -92,7 +92,6 @@ namespace DX
     void ResizeBuffers();
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
-    void SetWindow(HWND window);
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -109,10 +108,12 @@ namespace DX
 
     void SetMonitor(HMONITOR monitor) const;
     HMONITOR GetMonitor() const;
-#if defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
+    void SetWindow(HWND window);
+#elif defined(TARGET_WIN10)
     void Trim() const;
-    void SetWindow(Windows::UI::Core::Core​Window^ window;
-#endif
+    void SetWindow(Windows::UI::Core::CoreWindow^ window);
+#endif // TARGET_WIN10
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -133,7 +134,7 @@ namespace DX
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WIN10)
-    Windows::UI::Core::Core​Window^ m_coreWindow;
+    Platform::Agile<Windows::UI::Core::CoreWindow> m_coreWindow;
 #endif
     Microsoft::WRL::ComPtr<IDXGIFactory2> m_dxgiFactory;
     Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
@@ -160,8 +161,8 @@ namespace DX
     IDeviceNotify* m_deviceNotify;
 
     // scritical section
-    concurrency::critical_section m_criticalSection;
-    concurrency::critical_section m_resourceSection;
+    Concurrency::critical_section m_criticalSection;
+    Concurrency::critical_section m_resourceSection;
     std::vector<ID3DResource*> m_resources;
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
