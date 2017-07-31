@@ -146,7 +146,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
   return CGUIDialogAddonSettings::ShowForAddon(addonInfo);
 }
 
-char* Interface_General::get_localized_string(void* kodiBase, long dwCode)
+char* Interface_General::get_localized_string(void* kodiBase, long label_id)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -158,13 +158,10 @@ char* Interface_General::get_localized_string(void* kodiBase, long dwCode)
   if (g_application.m_bStop)
     return nullptr;
 
-  std::string string;
-  if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
-    string = g_localizeStrings.GetAddonString(addon->ID(), dwCode).c_str();
-  else
-    string = g_localizeStrings.Get(dwCode).c_str();
-
-  char* buffer = strdup(string.c_str());
+  std::string label = g_localizeStrings.GetAddonString(addon->ID(), label_id);
+  if (label.empty())
+    label = g_localizeStrings.Get(label_id);
+  char* buffer = strdup(label.c_str());
   return buffer;
 }
 
