@@ -98,7 +98,7 @@ public:
   bool IsExtSupported(const char* extension) override { return false; };
   void ApplyHardwareTransform(const TransformMatrix &matrix) override {};
   void RestoreHardwareTransform() override {};
-  bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override { return true; };
+  bool ResetRenderSystem(int width, int height) override { return true; };
 
   std::vector<AVPixelFormat> m_processorFormats;
   std::vector<AVPixelFormat> m_sharedFormats;

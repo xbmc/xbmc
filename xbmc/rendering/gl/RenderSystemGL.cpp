@@ -167,7 +167,7 @@ bool CRenderSystemGL::InitRenderSystem()
   return true;
 }
 
-bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
+bool CRenderSystemGL::ResetRenderSystem(int width, int height)
 {
   m_width = width;
   m_height = height;
