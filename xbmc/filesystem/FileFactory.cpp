@@ -23,7 +23,7 @@
 #include "FileFactory.h"
 #ifdef TARGET_POSIX
 #include "posix/PosixFile.h"
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "win32/Win32File.h"
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"
@@ -118,7 +118,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("image")) return new CImageFile();
 #ifdef TARGET_POSIX
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CWin32File();
 #endif // TARGET_WINDOWS 
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)

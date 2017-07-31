@@ -29,7 +29,7 @@
 #include <map>
 #include "DllLibNfs.h" // for define NFSSTAT
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define S_IRGRP 0
 #define S_IROTH 0
 #define S_IWUSR _S_IWRITE

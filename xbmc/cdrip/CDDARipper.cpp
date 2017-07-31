@@ -177,7 +177,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::
   CFileItem ripPath(strDirectory, true);
   if (ripPath.IsSmb())
     legalType = LEGAL_WIN32_COMPAT;
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if (ripPath.IsHD())
     legalType = LEGAL_WIN32_COMPAT;
 #endif

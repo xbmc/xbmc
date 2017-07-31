@@ -25,7 +25,7 @@
 #if defined(TARGET_POSIX)
 #include "posix/PosixInterfaceForCLog.h"
 typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "win32/Win32InterfaceForCLog.h"
 typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
 #endif

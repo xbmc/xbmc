@@ -623,7 +623,7 @@ bool CInputManager::OnKey(const CKey& key)
         else
         {
           // Check for paste keypress
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
           // In Windows paste is ctrl-V
           if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
 #elif defined(TARGET_LINUX)

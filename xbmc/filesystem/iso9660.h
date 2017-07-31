@@ -26,7 +26,7 @@
 #include <string>
 #include "system.h" // for win32 types
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 // Ideally we should just be including iso9660.h, but it's not win32-ified at this point,
 // and these are all we need
 typedef uint32_t iso723_t;

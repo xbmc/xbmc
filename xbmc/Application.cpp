@@ -169,7 +169,7 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "win32util.h"
 #endif
 
@@ -204,7 +204,7 @@
 #include "platform/android/activity/AndroidFeatures.h"
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "utils/Environment.h"
 #endif
 
@@ -557,7 +557,7 @@ bool CApplication::Create(const CAppParamParser &params)
   setenv("OS","OS X",true);
 #elif defined(TARGET_POSIX)
   setenv("OS","Linux",true);
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   CEnvironment::setenv("OS", "win32");
 #endif
 
@@ -980,7 +980,7 @@ bool CApplication::InitDirectoriesOSX()
 
 bool CApplication::InitDirectoriesWin32()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   std::string xbmcPath = CUtil::GetHomePath();
   CEnvironment::setenv("KODI_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
@@ -1027,7 +1027,7 @@ void CApplication::CreateUserDirs() const
 
 bool CApplication::Initialize()
 {
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
+#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif

@@ -244,7 +244,7 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
       return str;
     }
     free(cstr);
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
@@ -289,7 +289,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
     }
     free(cstr);
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)

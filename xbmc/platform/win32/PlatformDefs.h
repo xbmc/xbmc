@@ -20,7 +20,7 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 
 #define LINE_ENDING "\r\n"
 

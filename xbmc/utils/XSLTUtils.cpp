@@ -23,7 +23,7 @@
 #include <libxslt/xslt.h>
 #include <libxslt/transform.h>
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #include <iostream>
 #endif
 

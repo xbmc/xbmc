@@ -28,7 +28,7 @@
 #include "network/NetworkServices.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "utils/SystemInfo.h"
 #include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
@@ -172,7 +172,7 @@ bool CNetwork::GetHostName(std::string& hostname)
   if (gethostname(hostName, sizeof(hostName)))
     return false;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   std::string hostStr;
   g_charsetConverter.systemToUtf8(hostName, hostStr);
   hostname = hostStr;
@@ -353,7 +353,7 @@ bool CNetwork::WakeOnLan(const char* mac)
 static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, struct timeval& timeOut, bool tryRead)
 {
   // set non-blocking
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   u_long nonblocking = 1;
   int result = ioctlsocket(soc, FIONBIO, &nonblocking);
 #else
@@ -367,7 +367,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 
   if (result < 0)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     if (WSAGetLastError() != WSAEWOULDBLOCK)
 #else
     if (errno != EINPROGRESS)
@@ -454,7 +454,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
 
   if (err_msg && *err_msg)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     std::string sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
 #else
     std::string sock_err = strerror(errno);

@@ -23,7 +23,7 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include <sys\stat.h>
 #endif
 

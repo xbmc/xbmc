@@ -34,14 +34,14 @@
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #ifdef GetDateFormat
 #undef GetDateFormat
 #endif // GetDateFormat
 #ifdef GetTimeFormat
 #undef GetTimeFormat
 #endif // GetTimeFormat
-#endif // TARGET_WINDOWS
+#endif // TARGET_WINDOWS || TARGET_WIN10
 
 class TiXmlNode;
 

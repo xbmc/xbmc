@@ -848,9 +848,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
   const auto videoMask = g_advancedSettings.m_videoExtensions;
   const auto imageMask = g_advancedSettings.GetPictureExtensions();
   auto execMask = "";
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   execMask = ".exe|.bat|.cmd|.py";
-#endif  // defined(TARGET_WINDOWS)
+#endif  // TARGET_WINDOWS || TARGET_WIN10
 
   std::string mask = XMLUtils::GetAttribute(settingElement, "mask");
   if (!mask.empty())

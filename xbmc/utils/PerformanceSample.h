@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #include <sys/times.h>
 #include <sys/resource.h>
-#elif TARGET_WINDOWS
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/PlatformDefs.h"
 #endif
 

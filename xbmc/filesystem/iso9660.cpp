@@ -47,7 +47,7 @@ ISO9660
 #include "system.h"
 #include "utils/log.h"
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 #include "linux/XFileUtils.h"
 #include "linux/XTimeUtils.h"
@@ -644,7 +644,7 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       wcscpy_s(wfdFile->cFileName, MAX_PATH, KODI::PLATFORM::WINDOWS::ToW(m_searchpointer->name).c_str());
 #else
       strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1);
@@ -675,7 +675,7 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     wcscpy_s(wfdFile->cFileName, MAX_PATH, KODI::PLATFORM::WINDOWS::ToW(m_searchpointer->name).c_str());
 #else
     strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1);
@@ -751,12 +751,12 @@ HANDLE iso9660::OpenFile(const char *filename)
 
   intptr_t loop = (intptr_t)FindFirstFile( work, &fileinfo );
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   auto wpointer = KODI::PLATFORM::WINDOWS::ToW(pointer);
 #endif
   while ( loop > 0)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     if (!_wcsicmp(fileinfo.cFileName, wpointer.c_str()))
 #else
     if ( !stricmp(fileinfo.cFileName, pointer ) )

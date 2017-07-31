@@ -31,7 +31,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
 

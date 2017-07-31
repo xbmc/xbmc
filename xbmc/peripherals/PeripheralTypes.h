@@ -25,7 +25,7 @@
 #include <string>
 #include <stdio.h>
 #include <vector>
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "PlatformDefs.h"
 #endif
 #include "utils/StringUtils.h"

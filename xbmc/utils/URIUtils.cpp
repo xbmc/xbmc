@@ -720,7 +720,7 @@ bool URIUtils::IsDVD(const std::string& strFile)
   if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if (IsProtocol(strFile, "dvd"))
     return true;
 

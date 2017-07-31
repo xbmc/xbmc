@@ -25,9 +25,11 @@
 #include "linux/RBP.h"
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include <mmdeviceapi.h>
+#ifndef TARGET_WIN10
 #include "platform/win32/IMMNotificationClient.h"
+#endif
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -87,7 +89,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
   {
     status = g_application.Run(params);
   }
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   catch (const XbmcCommons::UncheckedException &e)
   {
     e.LogThrowMessage("CApplication::Create()");

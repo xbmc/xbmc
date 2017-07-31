@@ -18,7 +18,7 @@
 *
 */
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #error This file is for win32 platforms only
 #endif //!TARGET_WINDOWS
 

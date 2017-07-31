@@ -34,7 +34,7 @@
 #include <memory>
 #include <vector>
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
 

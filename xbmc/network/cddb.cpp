@@ -42,7 +42,7 @@ using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb()
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     : m_cddb_socket(closesocket, INVALID_SOCKET)
 #else
     : m_cddb_socket(close, -1)

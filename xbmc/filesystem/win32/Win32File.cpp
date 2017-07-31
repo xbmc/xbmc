@@ -18,7 +18,7 @@
 *
 */
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "Win32File.h"
 #include "platform/win32/WIN32Util.h"
 #include "utils/win32/Win32Log.h"

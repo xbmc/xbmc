@@ -22,7 +22,7 @@
 
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "system.h" // for SOCKET
 #endif
 

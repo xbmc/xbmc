@@ -252,7 +252,7 @@ public:
     std::stringstream ss;
 // ifdef is needed because when you set _ITERATOR_DEBUG_LEVEL=0 and you use custom numpunct you will get runtime error in debug mode
 // for more info https://connect.microsoft.com/VisualStudio/feedback/details/2655363
-#if !(defined(_DEBUG) && defined(TARGET_WINDOWS))
+#if !(defined(_DEBUG) && (defined(TARGET_WINDOWS) || defined(TARGET_WIN10)))
     ss.imbue(g_langInfo.GetOriginalLocale());
 #endif
     ss.precision(1);

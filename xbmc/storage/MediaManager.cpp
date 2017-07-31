@@ -24,13 +24,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 //! @todo switch all ports to use auto sources
 #include <map>
 #include <utility>
@@ -64,7 +64,7 @@
 #include "linux/LinuxStorageProvider.h"
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
-#elif TARGET_WINDOWS
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "windows/Win32StorageProvider.h"
 #endif
 
@@ -110,7 +110,7 @@ void CMediaManager::Initialize()
       m_platformStorage = new CAndroidStorageProvider();
     #elif defined(TARGET_POSIX)
       m_platformStorage = new CLinuxStorageProvider();
-    #elif TARGET_WINDOWS
+    #elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
@@ -334,7 +334,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
     strDevice = m_strFirstAvailDrive;
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if(!m_bhasoptical)
     return "";
 
@@ -351,7 +351,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
 bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if(!m_bhasoptical)
     return false;
 
@@ -377,7 +377,7 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 bool CMediaManager::IsAudio(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if(!m_bhasoptical)
     return false;
 
@@ -408,7 +408,7 @@ bool CMediaManager::HasOpticalDrive()
 DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
 
@@ -443,7 +443,7 @@ DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
 #ifdef HAS_DVD_DRIVE
 CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if(!m_bhasoptical)
     return NULL;
   
@@ -537,7 +537,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   if (mediaPath.empty())
     mediaPath = devicePath;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if (mediaPath.empty() || mediaPath == "iso9660://")
   {
     mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
@@ -560,7 +560,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 
 std::string CMediaManager::GetDiscPath()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   return g_mediaManager.TranslateDevicePath("");
 #else
 
@@ -594,7 +594,7 @@ bool CMediaManager::Eject(const std::string& mountpath)
 void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   CWIN32Util::EjectTray(cDriveLetter);
 #else
   std::shared_ptr<CLibcdio> c_cdio = CLibcdio::GetInstance();
@@ -634,7 +634,7 @@ void CMediaManager::CloseTray(const char cDriveLetter)
       close(fd);
     }
   }
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   CWIN32Util::CloseTray(cDriveLetter);
 #endif
 #endif
@@ -643,7 +643,7 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 void CMediaManager::ToggleTray(const char cDriveLetter)
 {
 #ifdef HAS_DVD_DRIVE
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   CWIN32Util::ToggleTray(cDriveLetter);
 #else
   if (GetDriveStatus() == TRAY_OPEN || GetDriveStatus() == DRIVE_OPEN)

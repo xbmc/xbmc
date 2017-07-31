@@ -48,7 +48,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
 {
   if (feature == FEATURE_IMON)
   {
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     if (HasSetting("disable_winjoystick") && GetSettingBool("disable_winjoystick"))
       m_bImonConflictsWithDInput = true;
     else 
@@ -68,7 +68,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralImon::AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order)
 {
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
   if (strKey.compare("disable_winjoystick")!=0)
 #endif // !TARGET_WINDOWS
     CPeripheralHID::AddSetting(strKey, setting, order);

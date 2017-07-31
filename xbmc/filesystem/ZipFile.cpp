@@ -26,7 +26,7 @@
 
 #include <sys/stat.h>
 
-#if defined (TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #pragma comment(lib, "zlib.lib")
 #endif
 #define ZIP_CACHE_LIMIT 4*1024*1024

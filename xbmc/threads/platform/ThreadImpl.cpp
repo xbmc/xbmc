@@ -27,7 +27,7 @@
 #else
 #include "threads/platform/linux/ThreadSchedImpl.cpp"
 #endif
-#elif (defined TARGET_WINDOWS)
+#elif (defined(TARGET_WINDOWS) || defined(TARGET_WIN10))
 #include "threads/platform/win/ThreadImpl.cpp"
 #endif
 

@@ -27,10 +27,7 @@
   #if !defined(GL_GLEXT_PROTOTYPES)
     #define GL_GLEXT_PROTOTYPES
   #endif
-  #if defined(TARGET_WINDOWS)
-    #include <GL/gl.h>
-    #include <GL/glu.h>
-  #elif defined(TARGET_LINUX)
+  #if defined(TARGET_LINUX)
     #include <GL/gl.h>
     #include <GL/glu.h>
     #include <GL/glext.h>

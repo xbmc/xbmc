@@ -26,10 +26,10 @@
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 #include "input/InputManager.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "WIN32Util.h"
 #endif
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #include "linux/XTimeUtils.h"
 #endif
 #include <stdlib.h>

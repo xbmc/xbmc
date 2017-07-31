@@ -348,7 +348,7 @@ typedef struct
 }
 SymbolTable_t;
 
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 
 #define IMAGE_SYM_UNDEFINED     0
 #define IMAGE_SYM_ABSOLUTE      0xFFFF

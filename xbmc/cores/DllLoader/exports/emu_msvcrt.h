@@ -31,7 +31,7 @@ typedef off64_t __off64_t;
 typedef fpos_t fpos64_t;
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/dirent.h"
 #else
 #include <dirent.h>
@@ -146,7 +146,7 @@ extern "C"
 #endif
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   int dll_stat64i32(const char *path, struct _stat64i32 *buffer);
 #endif
   int dll_stat(const char *path, struct stat *buffer);
@@ -170,7 +170,7 @@ extern "C"
   int dll_ftrylockfile(FILE *file);
   void dll_funlockfile(FILE *file);
   int dll_fstat64(int fd, struct __stat64 *buf);
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
   int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
 #endif

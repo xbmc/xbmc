@@ -109,12 +109,12 @@ public:
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   static void Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat);
 #endif
   static bool CreateDirectoryEx(const std::string& strPath);
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   static std::string MakeLegalFileName(const std::string &strFile, int LegalType=LEGAL_WIN32_COMPAT);
   static std::string MakeLegalPath(const std::string &strPath, int LegalType=LEGAL_WIN32_COMPAT);
 #else
@@ -204,7 +204,7 @@ public:
    */
   static int GetRandomNumber();
 
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 private:
   static unsigned int s_randomSeed;
 #endif

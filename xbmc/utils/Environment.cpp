@@ -28,13 +28,13 @@
 
 #include "Environment.h"
 #include <stdlib.h>
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include <Windows.h>
 #endif
 
 // --------------------- Helper Functions ---------------------
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 
 std::wstring CEnvironment::win32ConvertUtf8ToW(const std::string &text, bool *resultSuccessful /* = NULL*/)
 {

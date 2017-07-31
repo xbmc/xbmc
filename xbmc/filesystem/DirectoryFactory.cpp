@@ -45,7 +45,7 @@
 
 #ifdef TARGET_POSIX
 #include "posix/PosixDirectory.h"
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "win32/Win32Directory.h"
 #endif
 #ifdef HAS_FILESYSTEM_SMB
@@ -113,7 +113,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
 #ifdef TARGET_POSIX
   if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CPosixDirectory();
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CWin32Directory();
 #else
 #error Local directory access is not implemented for this platform

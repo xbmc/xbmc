@@ -22,7 +22,7 @@
 #ifdef TARGET_POSIX
 #include "SoLoader.h"
 #endif
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "Win32DllLoader.h"
 #endif
 #include "DllLoader.h"
@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "URL.h"
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define ENV_PARTIAL_PATH \
                  "special://xbmcbin/;" \
                  "special://xbmcbin/system/;" \
@@ -250,7 +250,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   LibraryLoader* pLoader;
 #ifdef TARGET_POSIX
   pLoader = new SoLoader(sName, bLoadSymbols);
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   pLoader = new Win32DllLoader(sName, false);
 #else
   pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);

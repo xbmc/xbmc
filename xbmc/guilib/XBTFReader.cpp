@@ -27,7 +27,7 @@
 #include "guilib/XBTF.h"
 #include "utils/EndianSwap.h"
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "filesystem/SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "platform/win32/PlatformDefs.h"
@@ -83,7 +83,7 @@ bool CXBTFReader::Open(const std::string& path)
 
   m_path = path;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   std::wstring strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_path), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");

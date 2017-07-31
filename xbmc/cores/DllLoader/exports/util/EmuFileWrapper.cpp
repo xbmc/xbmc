@@ -27,7 +27,7 @@ CEmuFileWrapper g_emuFileWrapper;
 namespace
 {
 
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
+#if (defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)) || defined(TARGET_WIN10)
 constexpr kodi_iobuf* FileDescriptor(FILE& f)
 {
   return static_cast<kodi_iobuf*>(f._Placeholder);
@@ -57,7 +57,7 @@ CEmuFileWrapper::CEmuFileWrapper()
   {
     memset(&m_files[i], 0, sizeof(EmuFileObject));
     m_files[i].used = false;
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
+#if (defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)) || defined(TARGET_WIN10)
     m_files[i].file_emu._Placeholder = new kodi_iobuf();
 #endif
     FileDescriptor(m_files[i].file_emu)->_file = -1;
@@ -84,14 +84,14 @@ void CEmuFileWrapper::CleanUp()
         delete m_files[i].file_lock;
         m_files[i].file_lock = nullptr;
       }
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
       //Don't memset on Windows as it overwrites our pointer
       memset(&m_files[i], 0, sizeof(EmuFileObject));
 #endif
       m_files[i].used = false;
       FileDescriptor(m_files[i].file_emu)->_file = -1;
     }
-#if defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
+#if (defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)) || defined(TARGET_WIN10)
     delete static_cast<kodi_iobuf*>(m_files[i].file_emu._Placeholder);
     m_files[i].file_emu._Placeholder = nullptr;
 #endif
@@ -138,7 +138,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
     delete m_files[i].file_lock;
     m_files[i].file_lock = nullptr;
   }
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
   //Don't memset on Windows as it overwrites our pointer
   memset(&m_files[i], 0, sizeof(EmuFileObject));
 #endif

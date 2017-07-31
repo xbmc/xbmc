@@ -53,7 +53,7 @@
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define close closesocket
 #endif
 

@@ -24,7 +24,7 @@
 
 #ifdef TARGET_POSIX
 #include <inttypes.h>
-#elif TARGET_WINDOWS
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define __inline__ __inline
 #include <stdint.h>
 #endif
