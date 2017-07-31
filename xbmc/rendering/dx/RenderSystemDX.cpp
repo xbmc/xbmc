@@ -264,14 +264,12 @@ bool CRenderSystemDX::CreateStates()
 
 void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
 {
-  if (!rendered)
-    return;
-
   if (!m_bRenderCreated)
     return;
 
-  if ( m_stereoMode == RENDER_STEREO_MODE_INTERLACED
-    || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
+  if ( rendered 
+    && ( m_stereoMode == RENDER_STEREO_MODE_INTERLACED
+      || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD))
   {
     auto m_pContext = m_deviceResources->GetD3DContext();
 
