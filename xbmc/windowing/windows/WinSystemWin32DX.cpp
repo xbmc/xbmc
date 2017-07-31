@@ -32,7 +32,6 @@
 #endif
 #pragma comment(lib, "dxgi.lib")
 #pragma warning(disable: 4091)
-#include <d3dumddi.h>
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
 

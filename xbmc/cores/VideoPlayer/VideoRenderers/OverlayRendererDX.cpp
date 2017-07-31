@@ -24,6 +24,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIShaderDX.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererDX.h"

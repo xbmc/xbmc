@@ -21,17 +21,15 @@
 #ifndef RENDER_SYSTEM_DX_H
 #define RENDER_SYSTEM_DX_H
 
-#ifdef HAS_DX
-
 #pragma once
 
 #include <vector>
 #include <wrl.h>
+#include <wrl/client.h>
 
-#include "guilib/GUIShaderDX.h"
+#include "DeviceResources.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
-#include "rendering/dx/DeviceResources.h"
 #include "rendering/RenderSystem.h"
 
 enum PCI_Vendors
@@ -42,6 +40,7 @@ enum PCI_Vendors
 };
 
 class ID3DResource;
+class CGUIShaderDX;
 enum AVPixelFormat;
 enum AVPixelFormat;
 
@@ -115,15 +114,16 @@ protected:
   void CheckDeviceCaps();
 
   CCriticalSection m_resourceSection;
+  CCriticalSection m_decoderSection;
 
   // our adapter could change as we go
   bool m_interlaced;
-  bool m_inScene{false}; ///< True if we're in a BeginScene()/EndScene() block
+  bool m_inScene{ false }; ///< True if we're in a BeginScene()/EndScene() block
   bool m_BlendEnabled{ false };
   bool m_ScissorsEnabled{ false };
   D3D11_VIEWPORT m_viewPort;
   CRect m_scissor;
-  CGUIShaderDX* m_pGUIShader{nullptr};
+  CGUIShaderDX* m_pGUIShader{ nullptr };
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
   Microsoft::WRL::ComPtr<ID3D11BlendState> m_BlendEnableState;
   Microsoft::WRL::ComPtr<ID3D11BlendState> m_BlendDisableState;
@@ -132,13 +132,10 @@ protected:
   // stereo interlaced/checkerboard intermediate target
   CD3DTexture m_rightEyeTex;
 
-  CCriticalSection m_decoderSection;
   XbmcThreads::EndTime m_decodingTimer;
   XbmcThreads::ConditionVariable m_decodingEvent;
 
   std::shared_ptr<DX::DeviceResources> m_deviceResources;
 };
-
-#endif
 
 #endif // RENDER_SYSTEM_DX

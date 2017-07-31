@@ -149,25 +149,22 @@
  * Additional platform specific includes
  ****************************************/
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
 #include "DInput.h"
+#if !defined(TARGET_WIN10)
 #include "DSound.h"
+#endif
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
 #include "PlatformInclude.h"
-#ifdef HAS_DX
-#include "d3d9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "d3d11_1.h"
 #include "dxgi.h"
 #include "d3dcompiler.h"
 #include "directxmath.h"
-#else
-#include <d3d9types.h>
-#endif
 #ifdef HAS_SDL
 #include "SDL\SDL.h"
 #endif

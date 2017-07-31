@@ -23,8 +23,8 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#ifdef HAS_DX
-#include "windowing/windows/WinSystemWin32DX.h"
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#include "windowing/WindowingFactory.h"
 #endif
 
 namespace ADDON
@@ -39,7 +39,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
   m_struct = {{0}};
-#ifdef HAS_DX
+#ifdef defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else
   m_struct.props.device = nullptr;

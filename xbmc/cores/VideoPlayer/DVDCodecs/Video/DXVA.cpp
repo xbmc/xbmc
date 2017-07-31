@@ -22,7 +22,6 @@
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
 
-#include <d3d9.h>
 #include <dxva.h>
 #include <d3d11.h>
 #include <Initguid.h>

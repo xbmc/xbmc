@@ -20,8 +20,6 @@
 
 #pragma once
 
-#ifdef HAS_DX
-
 #include <map>
 #include <d3dx11effect.h>
 #include <DirectXMath.h>
@@ -286,5 +284,3 @@ private:
   ID3D11PixelShader*        m_PS;
   bool                      m_inited;
 };
-
-#endif

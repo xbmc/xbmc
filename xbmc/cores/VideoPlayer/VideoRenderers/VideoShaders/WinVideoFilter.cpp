@@ -18,23 +18,23 @@
  *
  */
 
-#ifdef HAS_DX
-
-#include "WinVideoFilter.h"
-#include "windowing/WindowingFactory.h"
-#include "../../../../utils/log.h"
-#include "../../../../FileSystem/File.h"
 #include "ConvolutionKernels.h"
-#include <DirectXPackedVector.h>
-#include "guilib/GraphicContext.h"
-#include "Util.h"
-#include "platform/win32/WIN32Util.h"
-#include "VideoRenderers/WinRenderBuffer.h"
-#include "YUV2RGBShader.h"
-#include <map>
 #include "dither.h"
+#include "filesystem/File.h"
+#include "guilib/GraphicContext.h"
+#include "platform/win32/WIN32Util.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "VideoRenderers/WinRenderBuffer.h"
+#include "windowing/WindowingFactory.h"
+#include "WinVideoFilter.h"
+#include "YUV2RGBShader.h"
+
+#include <DirectXPackedVector.h>
+#include <map>
 
 using namespace DirectX::PackedVector;
+using namespace Microsoft::WRL;
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -1178,5 +1178,3 @@ bool CTestShader::Create()
   }
   return true;
 }
-
-#endif

@@ -785,8 +785,6 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
 {
 #ifdef HAS_DX
-  static const DWORD FVF_VERTEX = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-
   Vertex vertex[5];
   for (int i = 0; i < 4; i++)
   {

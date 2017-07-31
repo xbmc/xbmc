@@ -32,6 +32,7 @@ public:
   static void Register();
 
   EINTERLACEMETHOD GetFallbackDeintMethod() override;
+  std::vector<AVPixelFormat> GetRenderFormats() override;
 };
 
 }

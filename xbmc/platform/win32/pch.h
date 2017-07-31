@@ -34,17 +34,14 @@
 #include <comdef.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
+#if !defined(TARGET_WIN10)
 #include "DSound.h"
-#ifdef HAS_DX
-#include "d3d9.h"
+#endif
 #include "d3d11_1.h"
 #include "dxgi.h"
 #include "d3dcompiler.h"
 #include "directxmath.h"
 #include "directxcolors.h" 
-#else
-#include <d3d9types.h>
-#endif
 #include <memory>
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.
