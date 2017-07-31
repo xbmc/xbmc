@@ -95,7 +95,6 @@ namespace PERIPHERALS
 
     PeripheralAddonVector m_addons;
     PeripheralAddonVector m_failedAddons;
-    CCriticalSection m_critSection;
   };
   using PeripheralBusAddonPtr = std::shared_ptr<CPeripheralBusAddon>;
 }
