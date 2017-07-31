@@ -93,7 +93,9 @@ struct SPlayerState
   {
     timestamp = 0;
     time = 0;
-    time_total = 0;
+    startTime = 0;
+    timeMin = 0;
+    timeMax = 0;
     time_offset = 0;
     dts = DVD_NOPTS_VALUE;
     player_state  = "";
@@ -118,7 +120,9 @@ struct SPlayerState
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time
-  double time_total;        // total playback time
+  double timeMax;
+  double timeMin;
+  time_t startTime;
   double dts;               // last known dts
 
   std::string player_state; // full player state
@@ -306,7 +310,6 @@ public:
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(bool bPlus = true) override;
   void SeekPercentage(float iPercent) override;
-  float GetPercentage() override;
   float GetCachePercentage() override;
 
   void SetVolume(float nVolume) override;
@@ -353,8 +356,6 @@ public:
 
   void SeekTime(int64_t iTime) override;
   bool SeekTimeRelative(int64_t iTime) override;
-  int64_t GetTime() override;
-  int64_t GetTotalTime() override;
   void SetSpeed(float speed) override;
   void SetTempo(float tempo) override;
   bool SupportsTempo() override;
@@ -487,6 +488,8 @@ protected:
   void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
+  int64_t GetTime();
+  float GetPercentage();
 
   bool m_players_created;
 

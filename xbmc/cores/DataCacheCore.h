@@ -75,6 +75,11 @@ public:
   bool GetGuiRender();
   void SetVideoRender(bool video);
   bool GetVideoRender();
+  void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
+  time_t GetStartTime();
+  int64_t GetPlayTime();
+  int64_t GetMinTime();
+  int64_t GetMaxTime();
 
 protected:
   std::atomic_bool m_hasAVInfoChanges;
@@ -117,4 +122,12 @@ protected:
     float m_tempo;
     float m_speed;
   } m_stateInfo;
+
+  struct STimeInfo
+  {
+    time_t m_startTime;
+    int64_t m_time;
+    int64_t m_timeMax;
+    int64_t m_timeMin;
+  } m_timeInfo;
 };

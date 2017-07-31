@@ -96,13 +96,15 @@ public:
   void SetNewTempo(float tempo);
   float GetNewTempo();
   virtual bool IsTempoAllowed(float tempo);
-
   void SetLevelVQ(int level);
   int GetLevelVQ();
   void SetGuiRender(bool gui);
   bool GetGuiRender();
   void SetVideoRender(bool video);
   bool GetVideoRender();
+
+  void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
+  int64_t GetMaxTime();
 
 protected:
   CProcessInfo() = default;
@@ -149,4 +151,8 @@ protected:
   float m_newTempo;
   float m_speed;
   float m_newSpeed;
+  time_t m_startTime;
+  int64_t m_time;
+  int64_t m_timeMax;
+  int64_t m_timeMin;
 };

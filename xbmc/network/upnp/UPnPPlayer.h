@@ -49,7 +49,6 @@ public:
   bool HasAudio() const override { return false; }
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float fPercent = 0) override;
-  float GetPercentage() override;
   void SetVolume(float volume) override;
   bool CanRecord() override { return false; }
   bool IsRecording() override { return false; }
@@ -61,8 +60,6 @@ public:
   int SeekChapter(int iChapter) override { return -1; }
 
   void SeekTime(int64_t iTime = 0) override;
-  int64_t GetTime() override;
-  int64_t GetTotalTime() override;
   void SetSpeed(float speed = 0) override;
 
   bool IsCaching() const override { return false; }
@@ -76,6 +73,9 @@ public:
 
 private:
   bool IsPaused() const;
+  int64_t GetTime();
+  int64_t GetTotalTime();
+  float GetPercentage();
 
   PLT_MediaController* m_control;
   CUPnPPlayerController* m_delegate;

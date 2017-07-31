@@ -64,7 +64,7 @@ public:
 
   class IDisplayTime
   {
-    public:
+  public:
     virtual ~IDisplayTime() = default;
     virtual int GetTotalTime() = 0;
     virtual int GetTime() = 0;
@@ -72,14 +72,14 @@ public:
 
   class IPosTime
   {
-    public:
+  public:
     virtual ~IPosTime() = default;
     virtual bool PosTime(int ms) = 0;
   };
 
   class IChapter
   {
-    public:
+  public:
     virtual ~IChapter() = default;
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
@@ -90,7 +90,7 @@ public:
 
   class IMenus
   {
-    public:
+  public:
     virtual ~IMenus() = default;
     virtual void ActivateButton() = 0;
     virtual void SelectButton(int iButton) = 0;
@@ -116,7 +116,7 @@ public:
 
   class IDemux
   {
-    public:
+  public:
     virtual ~IDemux() = default;
     virtual bool OpenDemux() = 0;
     virtual DemuxPacket* ReadDemux() = 0;

@@ -312,7 +312,7 @@ void CApplicationPlayer::SeekTimeRelative(int64_t iTime)
     // use relative seeking if implemented by player
     if (!player->SeekTimeRelative(iTime))
     {
-      int64_t abstime = player->GetTime() + iTime;
+      int64_t abstime = GetTime() + iTime;
       player->SeekTime(abstime);
     }
   }
@@ -331,7 +331,46 @@ int64_t CApplicationPlayer::GetTime() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetTime();
+    return CDataCacheCore::GetInstance().GetPlayTime();
+  else
+    return 0;
+}
+
+int64_t CApplicationPlayer::GetMinTime() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return CDataCacheCore::GetInstance().GetMinTime();
+  else
+    return 0;
+}
+
+int64_t CApplicationPlayer::GetMaxTime() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return CDataCacheCore::GetInstance().GetMaxTime();
+  else
+    return 0;
+}
+
+time_t CApplicationPlayer::GetStartTime() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return CDataCacheCore::GetInstance().GetStartTime();
+  else
+    return 0;
+}
+
+int64_t CApplicationPlayer::GetTotalTime() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    int64_t total = CDataCacheCore::GetInstance().GetMaxTime() - CDataCacheCore::GetInstance().GetMinTime();
+    return total;
+  }
   else
     return 0;
 }
@@ -446,20 +485,17 @@ std::string CApplicationPlayer::GetRadioText(unsigned int line)
     return "";
 }
 
-int64_t CApplicationPlayer::GetTotalTime() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetTotalTime();
-  else
-    return 0;
-}
-
 float CApplicationPlayer::GetPercentage() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->GetPercentage();
+  {
+    int64_t iTotalTime = GetTotalTime();
+
+    if (!iTotalTime)
+      return 0.0f;
+    return GetTime() * 100 / static_cast<float>(iTotalTime);
+  }
   else
     return 0.0;
 }
