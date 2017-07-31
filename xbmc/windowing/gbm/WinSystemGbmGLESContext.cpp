@@ -124,7 +124,7 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   m_pGLContext.SwapBuffers();
 
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
-  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
 }

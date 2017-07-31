@@ -84,14 +84,14 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroidGLESContext::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, true, 0);
+  CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
   return true;
 }
 
 bool CWinSystemAndroidGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CreateNewWindow("", fullScreen, res);
-  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
   return true;
 }
 

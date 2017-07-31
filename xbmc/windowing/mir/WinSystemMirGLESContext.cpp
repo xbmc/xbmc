@@ -59,7 +59,7 @@ bool CWinSystemMirGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
 
   if (ret)
   {
-    return CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, 0);
+    return CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
   }
 
   return ret;
