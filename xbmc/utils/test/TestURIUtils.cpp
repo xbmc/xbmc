@@ -265,7 +265,7 @@ TEST_F(TestURIUtils, IsDOSPath)
 TEST_F(TestURIUtils, IsDVD)
 {
   EXPECT_TRUE(URIUtils::IsDVD("dvd://path/in/video_ts.ifo"));
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_TRUE(URIUtils::IsDVD("dvd://path/in/file"));
 #else
   EXPECT_TRUE(URIUtils::IsDVD("iso9660://path/in/video_ts.ifo"));
@@ -518,7 +518,7 @@ TEST_F(TestURIUtils, GetRealPath)
   ref = "/path/to";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("/path/to/some/../file/..").c_str());
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   ref = "\\\\path\\to\\file\\";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
   

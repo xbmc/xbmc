@@ -41,7 +41,7 @@ TEST(TestUtil, GetQualifiedFilename)
 TEST(TestUtil, MakeLegalPath)
 {
   std::string path;
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   path = "C:\\foo\\bar";
   EXPECT_EQ(CUtil::MakeLegalPath(path), "C:\\foo\\bar");
   path = "C:\\foo:\\bar\\";

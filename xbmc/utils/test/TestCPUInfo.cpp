@@ -76,7 +76,7 @@ private:
 }
 
 //Disabled for windows because there is no implementation to get the CPU temp and there will probably never be one
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 TEST(TestCPUInfo, getTemperature)
 {
   TemporarySetting command(g_advancedSettings.m_cpuTempCmd, "echo '50 c'");

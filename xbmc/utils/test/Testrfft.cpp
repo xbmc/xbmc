@@ -22,7 +22,7 @@
 
 #include "gtest/gtest.h"
 
-#if defined(TARGET_WINDOWS) && !defined(_USE_MATH_DEFINES)  
+#if (defined(TARGET_WINDOWS) || defined(TARGET_WIN10)) && !defined(_USE_MATH_DEFINES)  
 #define _USE_MATH_DEFINES
 #endif
 

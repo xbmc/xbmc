@@ -84,7 +84,7 @@ void TestBasicEnvironment::SetUp()
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
    */
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   using KODI::PLATFORM::WINDOWS::FromW;
   std::wstring xbmcTempPath;
   TCHAR lpTempPathBuffer[MAX_PATH];
