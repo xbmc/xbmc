@@ -562,7 +562,7 @@ void CRetroPlayer::UpdateVideoRender(bool video)
 void CRetroPlayer::OnSpeedChange(double newSpeed)
 {
   m_audio->Enable(newSpeed == 1.0);
-  m_processInfo->SetSpeed(newSpeed);
+  m_processInfo->SetSpeed(static_cast<float>(newSpeed));
   if (newSpeed != 0.0)
     CloseOSD();
 }
