@@ -29,7 +29,7 @@
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #include "linux/ConvUtils.h" //GetLastError()
 #endif
 

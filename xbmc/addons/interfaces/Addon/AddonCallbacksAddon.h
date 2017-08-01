@@ -25,12 +25,12 @@
 
 struct VFSDirEntry;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #ifndef _SSIZE_T_DEFINED
 typedef intptr_t ssize_t;
 #define _SSIZE_T_DEFINED
 #endif // !_SSIZE_T_DEFINED
-#endif // TARGET_WINDOWS
+#endif // TARGET_WINDOWS || TARGET_WIN10
 
 namespace ADDON
 {

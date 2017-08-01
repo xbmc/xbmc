@@ -32,7 +32,7 @@
 #if defined(TARGET_POSIX)
 #include "posix/PosixFile.h"
 #define CacheLocalFile CPosixFile
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "win32/Win32File.h"
 #define CacheLocalFile CWin32File
 #endif // TARGET_WINDOWS

@@ -36,8 +36,6 @@
 #define ASSERT(f) _ASSERTE((f))
 #endif
 
-#ifdef HAS_DX
-
 using namespace OVERLAY;
 using namespace DirectX;
 
@@ -377,5 +375,3 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->SetWVP(world, view, proj);
   pGUIShader->RestoreBuffers();
 }
-
-#endif

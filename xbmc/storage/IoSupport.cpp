@@ -27,7 +27,7 @@
 #include "system.h"
 #include "IoSupport.h"
 #include "utils/log.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "my_ntddcdrm.h"
 #include "platform/win32/CharsetConverter.h"
 #endif

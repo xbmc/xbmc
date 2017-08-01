@@ -34,14 +34,14 @@
 #include "websocket/WebSocketManager.h"
 #include "Network.h"
 
-#if defined(TARGET_WINDOWS) || defined(HAVE_LIBBLUETOOTH)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10) || defined(HAVE_LIBBLUETOOTH)
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
 static const char     bt_service_prov[] = "XBMC JSON-RPC Provider";
 static const uint32_t bt_service_guid[] = {0x65AE4CC0, 0x775D11E0, 0xBE16CE28, 0x4824019B};
 #endif
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/CharsetConverter.h"
 #endif
 
@@ -285,7 +285,7 @@ bool CTCPServer::InitializeBlue()
   if (!m_nonlocal)
     return false;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 
   SOCKET fd = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
   if (fd == INVALID_SOCKET)

@@ -40,7 +40,7 @@ bool IsAliasShortcut(const std::string& path, bool isdirectory)
   }
 #elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 /* Needs testing under Windows platform so ignore shortcuts for now
     if (CUtil::GetExtension(path) == ".lnk")
     {
@@ -58,7 +58,7 @@ void TranslateAliasShortcut(std::string& path)
 #elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
 
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 /* Needs testing under Windows platform so ignore shortcuts for now
   CComPtr<IShellLink> ipShellLink;
 

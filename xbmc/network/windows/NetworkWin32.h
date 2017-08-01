@@ -17,8 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef NETWORK_LINUX_H_
-#define NETWORK_LINUX_H_
+#ifndef NETWORK_WIN32_H_
+#define NETWORK_WIN32_H_
  
 #include <string>
 #include <vector>

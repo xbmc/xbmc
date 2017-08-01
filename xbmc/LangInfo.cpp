@@ -262,7 +262,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::string strLocale;
   if (m_strRegionLocaleName.length() > 0)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     std::string strLang, strRegion;
     g_LangCodeExpander.ConvertToISO6391(m_strLangLocaleName, strLang);
     g_LangCodeExpander.ConvertToISO6391(m_strRegionLocaleName, strRegion);
@@ -306,7 +306,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::locale::global(current_locale);
 #endif
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
   if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL ||
       setlocale(LC_CTYPE, strLocale.c_str()) == NULL ||
       setlocale(LC_TIME, strLocale.c_str()) == NULL)
@@ -440,7 +440,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   // Windows need 3 chars isolang code
   if (m_defaultRegion.m_strLangLocaleName.length() == 2)
   {
@@ -478,7 +478,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
       if (pRegion->Attribute("locale"))
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       // Windows need 3 chars regions code
       if (region.m_strRegionLocaleName.length() == 2)
       {

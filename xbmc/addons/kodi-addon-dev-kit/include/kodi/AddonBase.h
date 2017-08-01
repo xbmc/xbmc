@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #ifndef __cdecl
 #define __cdecl
 #endif
@@ -371,7 +371,7 @@ inline std::string GetAddonPath(const std::string& append = "")
   {
     if (append.at(0) != '\\' &&
         append.at(0) != '/')
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       ret.append("\\");
 #else
       ret.append("/");
@@ -395,7 +395,7 @@ inline std::string GetBaseUserPath(const std::string& append = "")
   {
     if (append.at(0) != '\\' &&
         append.at(0) != '/')
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       ret.append("\\");
 #else
       ret.append("/");

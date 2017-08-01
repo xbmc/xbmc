@@ -42,7 +42,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
 #include "threads/SingleLock.h"
@@ -284,7 +284,7 @@ bool CProfilesManager::LoadProfile(size_t index)
   CPasswordManager::GetInstance().Clear();
 
   // to set labels - shares are reloaded
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia::UpdateState();
 #endif
 

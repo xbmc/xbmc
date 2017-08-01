@@ -211,7 +211,7 @@ TEST(TestFile, SetHidden)
   file->Close();
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
   bool result = XFILE::CFile::SetHidden(XBMC_TEMPFILEPATH(file), true);
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_TRUE(result);
 #else
   EXPECT_FALSE(result);

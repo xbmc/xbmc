@@ -94,7 +94,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 
   if (m_iSock == INVALID_SOCKET)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     int ierr = WSAGetLastError();
     CLog::Log(LOGERROR, "UDP: Could not create socket %d", ierr);
     // hack for broken third party libs

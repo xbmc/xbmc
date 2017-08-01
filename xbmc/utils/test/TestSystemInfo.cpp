@@ -65,7 +65,7 @@ TEST_F(TestSystemInfo, GetKernelName)
   EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetKernelName(true)) << "'GetKernelName(true)' must match GetBuildTargetPlatformName()";
   EXPECT_EQ(g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetKernelName(false)) << "'GetKernelName(false)' must match GetBuildTargetPlatformName()";
 #endif // !TARGET_DARWIN
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_NE(std::string::npos, g_sysinfo.GetKernelName(true).find("Windows")) << "'GetKernelName(true)' must contain 'Windows'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetKernelName(false).find("Windows")) << "'GetKernelName(false)' must contain 'Windows'";
 #elif defined(TARGET_FREEBSD)
@@ -103,7 +103,7 @@ TEST_F(TestSystemInfo, GetOsName)
   EXPECT_FALSE(g_sysinfo.GetOsName(false).empty()) << "'GetOsName(false)' must not return empty OS name";
   EXPECT_STRCASENE("Unknown OS", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must not return 'Unknown OS'";
   EXPECT_STRCASENE("Unknown OS", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must not return 'Unknown OS'";
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_NE(std::string::npos, g_sysinfo.GetOsName(true).find("Windows")) << "'GetOsName(true)' must contain 'Windows'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetOsName(false).find("Windows")) << "'GetOsName(false)' must contain 'Windows'";
 #elif defined(TARGET_FREEBSD)
@@ -139,11 +139,11 @@ TEST_F(TestSystemInfo, GetOsPrettyNameWithVersion)
   EXPECT_FALSE(g_sysinfo.GetOsPrettyNameWithVersion().empty()) << "'GetOsPrettyNameWithVersion()' must not return empty string";
   EXPECT_EQ(std::string::npos, g_sysinfo.GetOsPrettyNameWithVersion().find("Unknown")) << "'GetOsPrettyNameWithVersion()' must not contain 'Unknown'";
   EXPECT_EQ(std::string::npos, g_sysinfo.GetOsPrettyNameWithVersion().find("unknown")) << "'GetOsPrettyNameWithVersion()' must not contain 'unknown'";
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_NE(std::string::npos, g_sysinfo.GetOsPrettyNameWithVersion().find("Windows")) << "'GetOsPrettyNameWithVersion()' must contain 'Windows'";
-#else  // ! TARGET_WINDOWS
+#else  // ! TARGET_WINDOWS && ! TARGET_WIN10
   EXPECT_NE(std::string::npos, g_sysinfo.GetOsPrettyNameWithVersion().find(g_sysinfo.GetOsVersion())) << "'GetOsPrettyNameWithVersion()' must contain OS version";
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 }
 
 TEST_F(TestSystemInfo, GetManufacturerName)
@@ -156,38 +156,38 @@ TEST_F(TestSystemInfo, GetModelName)
   EXPECT_STRCASENE("unknown", g_sysinfo.GetModelName().c_str()) << "'GetModelName()' must return empty string instead of 'Unknown'";
 }
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 TEST_F(TestSystemInfo, IsAeroDisabled)
 {
   EXPECT_FALSE(g_sysinfo.IsAeroDisabled()) << "'IsAeroDisabled()' must return 'false'";
 }
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 
 TEST_F(TestSystemInfo, IsWindowsVersion)
 {
   EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionUnknown)) << "'IsWindowsVersion()' must return 'false' for 'WindowsVersionUnknown'";
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
   EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionWin7)) << "'IsWindowsVersion()' must return 'false'";
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 }
 
 TEST_F(TestSystemInfo, IsWindowsVersionAtLeast)
 {
   EXPECT_FALSE(g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionUnknown)) << "'IsWindowsVersionAtLeast()' must return 'false' for 'WindowsVersionUnknown'";
   EXPECT_FALSE(g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionFuture)) << "'IsWindowsVersionAtLeast()' must return 'false' for 'WindowsVersionFuture'";
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
   EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionWin7)) << "'IsWindowsVersionAtLeast()' must return 'false'";
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 }
 
 TEST_F(TestSystemInfo, GetWindowsVersion)
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_NE(CSysInfo::WindowsVersionUnknown, g_sysinfo.GetWindowsVersion()) << "'GetWindowsVersion()' must not return 'WindowsVersionUnknown'";
   EXPECT_NE(CSysInfo::WindowsVersionFuture, g_sysinfo.GetWindowsVersion()) << "'GetWindowsVersion()' must not return 'WindowsVersionFuture'";
-#else  // ! TARGET_WINDOWS
+#else  // ! TARGET_WINDOWS && ! TARGET_WIN10
   EXPECT_EQ(CSysInfo::WindowsVersionUnknown, g_sysinfo.GetWindowsVersion()) << "'GetWindowsVersion()' must return 'WindowsVersionUnknown'";
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 }
 
 TEST_F(TestSystemInfo, GetKernelBitness)
@@ -221,7 +221,7 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_EQ(g_sysinfo.GetUserAgent().find(" (") + 1, g_sysinfo.GetUserAgent().find('(')) << "'GetUserAgent()' string must not contain any opening brackets before second parameter";
   EXPECT_GT(g_sysinfo.GetUserAgent().find(')'), g_sysinfo.GetUserAgent().find('(')) << "'GetUserAgent()' string must not contain any closing brackets before second parameter";
   EXPECT_EQ(g_sysinfo.GetUserAgent().find(") "), g_sysinfo.GetUserAgent().find(')')) << "'GetUserAgent()' string must not contain any closing brackets before end of second parameter";
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   EXPECT_EQ(g_sysinfo.GetUserAgent().find('('), g_sysinfo.GetUserAgent().find("(Windows")) << "Second parameter in 'GetUserAgent()' string must start from `Windows`";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("Windows")) << "'GetUserAgent()' must contain 'Windows'";
 #elif defined(TARGET_DARWIN_IOS)
@@ -309,7 +309,7 @@ TEST_F(TestSystemInfo, GetDiskSpace)
   EXPECT_EQ(iTotal, iTotalFree + iTotalUsed) << "'GetDiskSpace()' return 'TotalFree + TotalUsed' not equal to 'Total' for disk ''";
   EXPECT_EQ(100, iPercentFree + iPercentUsed) << "'GetDiskSpace()' return 'PercentFree + PercentUsed' not equal to '100' for disk ''";
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   using KODI::PLATFORM::WINDOWS::FromW;
   wchar_t sysDrive[300];
   DWORD res = GetEnvironmentVariableW(L"SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(wchar_t));

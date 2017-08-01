@@ -55,7 +55,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
 

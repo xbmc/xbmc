@@ -40,7 +40,7 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
 #include "input/InputManager.h"
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   #include "utils/CharsetConverter.h"
   #include "Windows.h"
 #endif

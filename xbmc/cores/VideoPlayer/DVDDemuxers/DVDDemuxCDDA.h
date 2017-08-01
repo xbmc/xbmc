@@ -22,7 +22,7 @@
 #include "DVDDemux.h"
 #include <vector>
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define __attribute__(dummy_val)
 #endif
 

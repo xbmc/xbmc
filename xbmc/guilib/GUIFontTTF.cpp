@@ -89,9 +89,9 @@ public:
       return NULL;
 
     memoryBuf.clear();
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
     if (!realFile.GetProtocol().empty())
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
     {
       // load file into memory if it is not on local drive
       // in case of win32: always load file into memory as filename is in UTF-8,
@@ -102,10 +102,10 @@ public:
       if (FT_New_Memory_Face(m_library, (const FT_Byte*)memoryBuf.get(), memoryBuf.size(), 0, &face) != 0)
         return NULL;
     }
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
     else if (FT_New_Face( m_library, realFile.GetFileName().c_str(), 0, &face ))
       return NULL;
-#endif // ! TARGET_WINDOWS
+#endif // ! TARGET_WINDOWS && ! TARGET_WIN10
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);

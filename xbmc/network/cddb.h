@@ -92,7 +92,7 @@ public:
 
 protected:
   std::string m_strNull;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   using CAutoPtrSocket = KODI::UTILS::CScopeGuard<SOCKET, INVALID_SOCKET, decltype(closesocket)>;
 #else
   using CAutoPtrSocket = KODI::UTILS::CScopeGuard<int, -1, decltype(close)>;

@@ -20,7 +20,7 @@
  *
  */
 
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #ifndef __cdecl
 #define __cdecl
 #endif

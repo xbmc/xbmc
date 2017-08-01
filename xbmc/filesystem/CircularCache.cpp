@@ -34,7 +34,7 @@ CCircularCache::CCircularCache(size_t front, size_t back)
  , m_buf(NULL)
  , m_size(front + back)
  , m_size_back(back)
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
  , m_handle(INVALID_HANDLE_VALUE)
 #endif
 {
@@ -47,7 +47,7 @@ CCircularCache::~CCircularCache()
 
 int CCircularCache::Open()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   m_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, m_size, NULL);
   if(m_handle == NULL)
     return CACHE_RC_ERROR;
@@ -65,7 +65,7 @@ int CCircularCache::Open()
 
 void CCircularCache::Close()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   UnmapViewOfFile(m_buf);
   CloseHandle(m_handle);
   m_handle = INVALID_HANDLE_VALUE;

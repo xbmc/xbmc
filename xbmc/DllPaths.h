@@ -21,7 +21,7 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "DllPaths_win32.h"
 #elif defined (TARGET_ANDROID)
 #include "DllPaths_generated_android.h"

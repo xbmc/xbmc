@@ -55,7 +55,7 @@
 #include "platform/android/activity/AndroidFeatures.h"
 #endif
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/CharsetConverter.h"
 #include <algorithm>
 #include <intrin.h>

@@ -43,7 +43,7 @@
 #include "Util.h"
 #include "URL.h"
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define S_IWUSR _S_IWRITE
 #define S_ISDIR(m) ((m & _S_IFDIR) != 0)
 #define S_ISREG(m) ((m & _S_IFREG) != 0)

@@ -21,7 +21,7 @@
 
 #include "DVDDemux.h"
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #define __attribute__(dummy_val)
 #pragma pack(push)
 #pragma pack(1)
@@ -37,7 +37,7 @@ typedef struct
   uint64_t durationMs;
 } __attribute__((__packed__)) Demux_BXA_FmtHeader;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #pragma pack(pop)
 #endif
 

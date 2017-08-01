@@ -1008,9 +1008,12 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
     "linux",
 #elif defined(TARGET_LINUX)
     "linux",
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     "windx",
     "windows",
+#ifdef TARGET_WIN10
+    "windowsstore"
+#endif
 #elif defined(TARGET_DARWIN_IOS)
     "ios",
 #elif defined(TARGET_DARWIN_OSX)
@@ -1094,10 +1097,14 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
   if (libraryName.empty())
 #endif
   libraryName = GetExtValue(base, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   libraryName = GetExtValue(base, "@library_windx");
   if (libraryName.empty())
     libraryName = GetExtValue(base, "@library_windows");
+#ifdef TARGET_WIN10
+  if (libraryName.empty())
+    libraryName = GetExtValue(base, "@library_windowsstore");
+#endif
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
   libraryName = GetExtValue(base, "@library_ios");

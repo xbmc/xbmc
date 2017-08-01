@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "Util.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "utils/Environment.h"
 #endif
 #include "settings/AdvancedSettings.h"
@@ -466,12 +466,12 @@ void XBPython::Finalize()
       PyEval_ReleaseLock();
     }
 
-#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS))
+#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS) || defined(TARGET_WIN10))
     UnloadExtensionLibs();
 #endif
 
     // first free all dlls loaded by python, after that unload python (this is done by UnloadPythonDlls
-#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS))
+#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS) || defined(TARGET_WIN10))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
@@ -564,7 +564,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // Info about interesting python envvars available
     // at http://docs.python.org/using/cmdline.html#environment-variables
 
-#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10) && !defined(TARGET_ANDROID)
     /* PYTHONOPTIMIZE is set off intentionally when using external Python.
     Reason for this is because we cannot be sure what version of Python
     was used to compile the various Python object files (i.e. .pyo,
@@ -579,7 +579,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
       CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
     }
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     // because the third party build of python is compiled with vs2008 we need
     // a hack to set the PYTHONPATH
     std::string buf;

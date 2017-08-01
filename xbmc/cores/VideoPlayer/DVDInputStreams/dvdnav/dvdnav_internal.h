@@ -30,7 +30,7 @@
 #include <limits.h>
 #include <string.h>
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 
 /* pthread_mutex_* wrapper for win32 */
 #ifndef TARGET_POSIX
@@ -66,7 +66,7 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 
 #include <pthread.h>
 
-#endif /* TARGET_WINDOWS */
+#endif /* TARGET_WINDOWS || TARGET_WIN10 */
 
 /* Uncomment for VM command tracing */
 /* #define TRACE */
@@ -224,7 +224,7 @@ dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state);
 #else
 #define printerrf(...) \
 	do { if (this) snprintf(this->err_str, MAX_ERR_LEN, __VA_ARGS__); } while (0)
-#endif /* TARGET_WINDOWS */
+#endif /* TARGET_WINDOWS || TARGET_WIN10 */
 #endif
 #define printerr(str) \
 	do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)

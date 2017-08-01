@@ -208,7 +208,7 @@ struct STAT_STRUCTURE
   uint32_t    deviceId;
   /// Total size, in bytes
   uint64_t    size;
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
   /// Time of last access
   __time64_t  accessTime;
   /// Time of last modification
@@ -1006,7 +1006,7 @@ namespace vfs
       buffer.accessTime       = frontendBuffer.st_atimespec;
       buffer.modificationTime = frontendBuffer.st_mtimespec;
       buffer.statusTime       = frontendBuffer.st_ctimespec;
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
       buffer.accessTime       = frontendBuffer.st_atime;
       buffer.modificationTime = frontendBuffer.st_mtime;
       buffer.statusTime       = frontendBuffer.st_ctime;

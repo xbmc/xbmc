@@ -34,7 +34,7 @@ namespace DX
     if (FAILED(hr))
     {
       // Set a breakpoint on this line to catch Win32 API errors.
-#if _DEBUG
+#if _DEBUG && !defined(TARGET_WIN10)
       DebugBreak();
 #endif
       throw new XbmcCommons::UncheckedException(__FUNCTION__, "Unhandled error");

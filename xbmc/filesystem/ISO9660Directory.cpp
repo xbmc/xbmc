@@ -28,7 +28,7 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/CharsetConverter.h"
 #endif
 
@@ -77,7 +77,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
         auto strDir = KODI::PLATFORM::WINDOWS::FromW(wfd.cFileName);
 #else
         std::string strDir = wfd.cFileName;
@@ -97,7 +97,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       else
       {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
         auto strDir = KODI::PLATFORM::WINDOWS::FromW(wfd.cFileName);
 #else
         std::string strDir = wfd.cFileName;

@@ -20,7 +20,7 @@
  *
  */
 
-#if !defined(TARGET_WINDOWS)
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 

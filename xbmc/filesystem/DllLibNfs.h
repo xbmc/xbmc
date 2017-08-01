@@ -30,7 +30,7 @@ extern "C" {
 }
 #endif
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 struct __stat64;
 #define NFSSTAT struct __stat64
 #else

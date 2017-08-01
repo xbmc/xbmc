@@ -29,7 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "aojsonrpc.h"
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 #include "XTimeUtils.h"
 #endif
 #include "guilib/LocalizeStrings.h"
@@ -421,7 +421,7 @@ namespace XBMCAddon
           result = g_langInfo.GetDateFormat(false);
           StringUtils::Replace(result, "MM", "%m");
           StringUtils::Replace(result, "DD", "%d");
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
           StringUtils::Replace(result, "M", "%#m");
           StringUtils::Replace(result, "D", "%#d");
 #else

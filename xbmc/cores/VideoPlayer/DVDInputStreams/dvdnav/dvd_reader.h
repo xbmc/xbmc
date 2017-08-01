@@ -36,7 +36,7 @@
 /*****************************************************************************
 * iovec structure: vectored data entry
 *****************************************************************************/
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 struct iovec
 {
   void *iov_base;     /* Pointer to data. */

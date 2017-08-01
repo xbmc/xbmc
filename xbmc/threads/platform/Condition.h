@@ -22,7 +22,7 @@
 
 #if (defined TARGET_POSIX)
 #include "threads/platform/pthreads/Condition.h"
-#elif (defined TARGET_WINDOWS)
+#elif (defined(TARGET_WINDOWS) || defined(TARGET_WIN10))
 #include "threads/platform/win/Condition.h"
 #endif
 

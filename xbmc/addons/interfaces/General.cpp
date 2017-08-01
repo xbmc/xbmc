@@ -343,7 +343,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     result = g_langInfo.GetDateFormat(false);
     StringUtils::Replace(result, "MM", "%m");
     StringUtils::Replace(result, "DD", "%d");
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
     StringUtils::Replace(result, "M", "%#m");
     StringUtils::Replace(result, "D", "%#d");
 #else
