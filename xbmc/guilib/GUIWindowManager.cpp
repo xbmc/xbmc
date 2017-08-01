@@ -897,6 +897,12 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+  case TMSG_GUI_PREVIOUS_WINDOW:
+  {
+    PreviousWindow();
+  }
+  break;
+
   case TMSG_GUI_ADDON_DIALOG:
   {
     if (pMsg->lpVoid)
