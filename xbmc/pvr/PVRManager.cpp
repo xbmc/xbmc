@@ -762,6 +762,7 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
 {
   bool bReturn(false);
+
   if (!fileItem.HasPVRChannelInfoTag())
     return bReturn;
 
@@ -769,59 +770,85 @@ bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
       __FUNCTION__, fileItem.GetPVRChannelInfoTag()->ChannelName().c_str());
 
   // check if we're allowed to play this file
-  if (IsParentalLocked(fileItem.GetPVRChannelInfoTag()))
-    return bReturn;
-
-  if ((bReturn = m_addons->OpenStream(fileItem.GetPVRChannelInfoTag(), false)) != false)
-  {
-    CSingleLock lock(m_critSection);
-    m_currentFile.reset(new CFileItem(fileItem));
-  }
-
-  if (bReturn)
-  {
-    const CPVRChannelPtr channel(m_addons->GetPlayingChannel());
-    if (channel)
-    {
-      SetPlayingGroup(channel);
-      UpdateLastWatched(channel);
-      // set channel as selected item
-      CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
-    }
-  }
+  const CPVRChannelPtr channel = fileItem.GetPVRChannelInfoTag();
+  if (!IsParentalLocked(channel))
+    bReturn = m_addons->OpenStream(channel, false);
 
   return bReturn;
 }
 
-bool CPVRManager::OpenRecordedStream(const CPVRRecordingPtr &tag)
+bool CPVRManager::OpenRecordedStream(const CPVRRecordingPtr &recording)
 {
-  bool bReturn = false;
-  CSingleLock lock(m_critSection);
-
-  if ((bReturn = m_addons->OpenStream(tag)) != false)
-  {
-    m_currentFile.reset(new CFileItem(tag));
-  }
-
-  return bReturn;
+  return m_addons->OpenStream(recording);
 }
 
 void CPVRManager::CloseStream(void)
 {
-  CPVRChannelPtr channel(m_addons->GetPlayingChannel());
-  if (channel)
-  {
-    UpdateLastWatched(channel);
-
-    // store channel settings
-    g_application.SaveFileState();
-  }
-
   m_addons->CloseStream();
+}
 
-  CSingleLock lock(m_critSection);
-  m_bIsChannelPreview = false;
-  m_currentFile.reset();
+void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
+{
+  if (item->HasPVRChannelInfoTag() || item->HasPVRRecordingInfoTag())
+  {
+    if (item->HasPVRChannelInfoTag())
+    {
+      m_addons->SetPlayingChannel(item->GetPVRChannelInfoTag());
+    }
+    else
+    {
+      m_addons->SetPlayingRecording(item->GetPVRRecordingInfoTag());
+    }
+
+    {
+      CSingleLock lock(m_critSection);
+      m_currentFile.reset(new CFileItem(*item));
+    }
+
+    if (item->HasPVRChannelInfoTag())
+    {
+      const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+      SetPlayingGroup(channel);
+      UpdateLastWatched(channel);
+
+      // set channel as selected item
+      CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
+    }
+  }
+}
+
+void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
+{
+  // Playback ended due to user interaction
+
+  if (item->HasPVRChannelInfoTag() || item->HasPVRRecordingInfoTag())
+  {
+    if (item->HasPVRChannelInfoTag())
+    {
+      UpdateLastWatched(item->GetPVRChannelInfoTag());
+
+      // store channel settings
+      g_application.SaveFileState();
+
+      m_addons->ClearPlayingChannel();
+    }
+    else
+    {
+      m_addons->ClearPlayingRecording();
+    }
+
+    {
+      CSingleLock lock(m_critSection);
+      m_bIsChannelPreview = false;
+      m_currentFile.reset();
+    }
+  }
+}
+
+void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)
+{
+  // Playback ended, but not due to user interaction
+  OnPlaybackStopped(item);
 }
 
 void CPVRManager::UpdateCurrentChannel(void)

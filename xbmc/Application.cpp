@@ -3501,6 +3501,8 @@ void CApplication::OnPlayBackEnded()
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
 
+  CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
+
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
@@ -3528,6 +3530,8 @@ void CApplication::OnPlayBackStarted()
   if (m_pPlayer->IsPlayingVideo())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
+
+  CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3567,6 +3571,8 @@ void CApplication::OnPlayBackStopped()
 #elif defined(TARGET_DARWIN_IOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
+
+  CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
