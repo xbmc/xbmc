@@ -70,6 +70,20 @@ public:
     virtual int GetTime() = 0;
   };
 
+  class ITimes
+  {
+  public:
+    struct Times
+    {
+      time_t startTime;
+      double ptsStart;
+      double ptsBegin;
+      double ptsEnd;
+    };
+    virtual ~ITimes() = default;
+    virtual bool GetTimes(Times &times) = 0;
+  };
+
   class IPosTime
   {
   public:
@@ -182,6 +196,7 @@ public:
   virtual IDemux* GetIDemux() { return nullptr; }
   virtual IPosTime* GetIPosTime() { return nullptr; }
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
+  virtual ITimes* GetITimes() { return nullptr; }
 
   const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
 
