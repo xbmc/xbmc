@@ -7970,8 +7970,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == PLAYER_START_TIME)
   {
-    CDateTime time(CDateTime::GetCurrentDateTime());
-    time -= CDateTimeSpan(0, 0, 0, static_cast<int>(GetPlayTime()));
+    CDateTime time(g_application.m_pPlayer->GetStartTime());
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
@@ -9083,13 +9082,8 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
 
 int64_t CGUIInfoManager::GetPlayTime() const
 {
-  if (g_application.m_pPlayer->IsPlaying())
-  {
-    int64_t lPTS = (int64_t)(g_application.GetTime() * 1000);
-    if (lPTS < 0) lPTS = 0;
-    return lPTS;
-  }
-  return 0;
+  int64_t ret = lrint(g_application.GetTime() * 1000);
+  return ret;
 }
 
 std::string CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
@@ -9111,7 +9105,7 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 int CGUIInfoManager::GetTotalPlayTime() const
 {
   int iTotalTime = lrint(g_application.GetTotalTime());
-  return iTotalTime > 0 ? iTotalTime : 0;
+  return iTotalTime;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining() const
