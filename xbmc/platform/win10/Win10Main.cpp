@@ -1,7 +1,6 @@
-#pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +17,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <inttypes.h>
-#ifdef TARGET_WINDOWS_DESKTOP
-#include <io.h>
-#endif
+
+#include <dbghelp.h>
+#include <shellapi.h>
+
+#include "Win10Main.h"
+#include "Win10App.h"
+
+using namespace Windows::ApplicationModel::Core;
+using namespace KODI::PLATFORM::WINDOWS10;
+
+DECLDIR IFrameworkViewSource^ GetViewProvider()
+{
+  return ref new ViewProvider();
+}

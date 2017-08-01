@@ -33,7 +33,11 @@ int rename_utf8(const char* __old, const char* __new)
   std::wstring oldW, newW;
   g_charsetConverter.utf8ToW(__old, oldW, false);
   g_charsetConverter.utf8ToW(__new, newW, false);
+#ifdef TARGET_WINDOWS_STORE
+  return ::MoveFileEx(oldW.c_str(), newW.c_str(), MOVEFILE_REPLACE_EXISTING) ? 0 : -1;
+#else
   return ::MoveFileW(oldW.c_str(), newW.c_str()) ? 0 : -1;
+#endif
 }
 
 FILE* fopen64_utf8(const char* __filename, const char* __modes)
