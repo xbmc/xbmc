@@ -20,6 +20,7 @@
  */
 
 #include "cores/IPlayer.h"
+#include "threads/SystemClock.h"
 #include <string>
 
 class PLT_MediaController;
@@ -68,6 +69,7 @@ public:
   bool OnAction(const CAction &action) override;
 
   std::string GetPlayingTitle() override;
+  void FrameMove() override;
 
   int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 
@@ -83,6 +85,7 @@ private:
   std::string m_current_meta;
   bool m_started;
   bool m_stopremote;
+  XbmcThreads::EndTime m_updateTimer;
 };
 
 } /* namespace UPNP */
