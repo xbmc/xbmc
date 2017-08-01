@@ -64,8 +64,7 @@ void CPVRDatabase::CreateTables()
         "sEPGScraper          varchar(32), "
         "iLastWatched         integer, "
         "iClientId            integer, " //! @todo use mapping table
-        "idEpg                integer, "
-        "bWasPlayingOnQuit    bool"
+        "idEpg                integer"
       ")"
   );
 
@@ -140,12 +139,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 29)
     m_pDS->exec("ALTER TABLE channelgroups ADD iPosition integer");
-
-  if (iVersion < 30)
-    m_pDS->exec("ALTER TABLE channels ADD bWasPlayingOnQuit bool");
-
-  if (iVersion < 31)
-    m_pDS->exec("ALTER TABLE channels DROP bWasPlayingOnQuit");
 }
 
 /********** Channel methods **********/
