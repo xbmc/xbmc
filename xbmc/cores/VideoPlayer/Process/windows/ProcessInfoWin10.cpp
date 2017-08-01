@@ -23,8 +23,6 @@
 #include "windowing/WindowingFactory.h"
 #include <set>
 
-#if defined(TARGET_WINDOWS_STORE)
-
 using namespace VIDEOPLAYER;
 
 CProcessInfo* CProcessInfoWin10::Create()
@@ -53,5 +51,3 @@ std::vector<AVPixelFormat> CProcessInfoWin10::GetRenderFormats()
 
   return std::vector<AVPixelFormat>(formats.begin(), formats.end());
 }
-
-#endif
