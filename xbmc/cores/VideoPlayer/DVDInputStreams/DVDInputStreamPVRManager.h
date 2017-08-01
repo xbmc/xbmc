@@ -40,6 +40,7 @@ class IDemux;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
+  , public CDVDInputStream::ITimes
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IDemux
 {
@@ -59,6 +60,10 @@ public:
 
   PVR::CPVRChannelPtr GetSelectedChannel();
 
+  CDVDInputStream::ITimes* GetITimes() override { return this; }
+  bool GetTimes(Times &times) override;
+
+  // deprecated
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override;
   int GetTime() override;

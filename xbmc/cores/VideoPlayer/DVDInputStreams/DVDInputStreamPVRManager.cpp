@@ -215,6 +215,24 @@ int CDVDInputStreamPVRManager::GetTime()
   return 0;
 }
 
+bool CDVDInputStreamPVRManager::GetTimes(Times &times)
+{
+  if (m_isRecording)
+    return false;
+
+  PVR_STREAM_TIMES streamTimes;
+  bool ret = CServiceBroker::GetPVRManager().Clients()->GetStreamTimes(&streamTimes);
+  if (ret)
+  {
+    times.startTime = streamTimes.startTime;
+    times.ptsStart = streamTimes.ptsStart;
+    times.ptsBegin = streamTimes.ptsBegin;
+    times.ptsEnd = streamTimes.ptsEnd;
+  }
+
+  return ret;
+}
+
 CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel()
 {
   return CServiceBroker::GetPVRManager().GetCurrentChannel();

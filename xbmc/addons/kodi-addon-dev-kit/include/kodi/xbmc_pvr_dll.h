@@ -630,6 +630,11 @@ extern "C"
   void OnPowerSavingDeactivated();
 
   /*!
+   * Get stream times. Intermediate, will be moved to inputstream
+   */
+  PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *times);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param ptr The struct to assign the function pointers to.
    */
@@ -724,5 +729,6 @@ extern "C"
     pClient->toAddon.OnSystemWake                   = OnSystemWake;
     pClient->toAddon.OnPowerSavingActivated         = OnPowerSavingActivated;
     pClient->toAddon.OnPowerSavingDeactivated       = OnPowerSavingDeactivated;
+    pClient->toAddon.GetStreamTimes                 = GetStreamTimes;
   };
 };

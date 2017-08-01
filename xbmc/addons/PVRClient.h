@@ -786,6 +786,11 @@ namespace PVR
     bool IsRealTimeStream() const;
 
     /*!
+     * @brief Get Stream times (will be moved to inputstream)
+     */
+    bool GetStreamTimes(PVR_STREAM_TIMES *times);
+
+    /*!
      * @brief reads the client's properties
      */
     bool GetAddonProperties(void);
