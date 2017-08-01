@@ -1179,6 +1179,7 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
@@ -17079,7 +17080,13 @@ msgctxt "#35255"
 msgid "Browse all emulators"
 msgstr ""
 
-#empty strings from id 35256 to 35504
+#. Error message when a game client fails to install when a game is being launched
+#: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+msgctxt "#35256"
+msgid "Failed to install add-on."
+msgstr ""
+
+#empty strings from id 35257 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

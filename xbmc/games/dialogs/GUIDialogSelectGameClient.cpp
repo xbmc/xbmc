@@ -23,6 +23,7 @@
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogOK.h"
 #include "games/addons/GameClient.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -139,6 +140,9 @@ GameClientPtr CGUIDialogSelectGameClient::InstallGameClient(const GameClientVect
     else
     {
       CLog::Log(LOGERROR, "Select game client dialog: Failed to install %s", gameClientId.c_str());
+      // "Error"
+      // "Failed to install add-on."
+      CGUIDialogOK::ShowAndGetInput(257, 35256);
     }
   }
   else if (result == iAddonBrowser)
