@@ -153,7 +153,7 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   mode->Scaling = scDesc.BufferDesc.Scaling;
   mode->ScanlineOrdering = scDesc.BufferDesc.ScanlineOrdering;
 
-#ifndef TARGET_WIN10
+#ifdef TARGET_WINDOWS_DESKTOP
   DEVMODEW sDevMode;
   memset(&sDevMode, 0, sizeof(sDevMode));
   sDevMode.dmSize = sizeof(sDevMode);
@@ -421,7 +421,7 @@ void DX::DeviceResources::CreateBackBuffer()
 HRESULT DX::DeviceResources::CreateSwapChain(DXGI_SWAP_CHAIN_DESC1& desc, DXGI_SWAP_CHAIN_FULLSCREEN_DESC& fsDesc, IDXGISwapChain1** ppSwapChain) const
 {
   HRESULT hr;
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
   hr = m_dxgiFactory->CreateSwapChainForHwnd(
     m_d3dDevice.Get(),
     m_window,
@@ -625,7 +625,7 @@ void DX::DeviceResources::FinishCommandList(bool bExecute) const
 void DX::DeviceResources::SetLogicalSize(float width, float height)
 {
   if
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   (!m_window)
 #else
   (!m_coreWindow.Get())
@@ -899,7 +899,7 @@ bool DX::DeviceResources::IsStereoAvailable() const
   return false;
 }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
 // This method is called when the window (WND) is created (or re-created).
 void DX::DeviceResources::SetWindow(HWND window)
 {
@@ -908,7 +908,7 @@ void DX::DeviceResources::SetWindow(HWND window)
   CreateDeviceIndependentResources();
   CreateDeviceResources();
 }
-#elif defined(TARGET_WIN10)
+#elif defined(TARGET_WINDOWS_STORE)
 // This method is called when the CoreWindow is created (or re-created).
 void DX::DeviceResources::SetWindow(Windows::UI::Core::CoreWindow^ window)
 {

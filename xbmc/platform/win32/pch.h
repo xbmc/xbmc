@@ -34,7 +34,7 @@
 #include <comdef.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
-#if !defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_DESKTOP)
 #include "DSound.h"
 #endif
 #include "d3d11_1.h"

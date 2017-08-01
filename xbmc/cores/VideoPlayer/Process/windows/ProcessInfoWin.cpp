@@ -24,7 +24,7 @@
 #include <set>
 
 // Override for platform ports
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_DESKTOP)
 
 using namespace VIDEOPLAYER;
 

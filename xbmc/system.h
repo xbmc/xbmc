@@ -149,12 +149,12 @@
  * Additional platform specific includes
  ****************************************/
 
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
 #include "DInput.h"
-#if !defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_DESKTOP)
 #include "DSound.h"
 #endif
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO

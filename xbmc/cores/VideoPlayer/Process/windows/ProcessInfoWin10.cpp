@@ -23,7 +23,7 @@
 #include "windowing/WindowingFactory.h"
 #include <set>
 
-#if defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_STORE)
 
 using namespace VIDEOPLAYER;
 
