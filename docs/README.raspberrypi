@@ -23,7 +23,8 @@ The following commands build for newer Raspberry Pi 2 generation. In order to
 build for the first Raspberry Pi, the commands have to be adapted to use
 `--with-platform=raspberry-pi` instead of `--with-platform=raspberry-pi2`.
 
-    $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre
+    $ sudo apt-get install git autoconf curl g++ zlib1g-dev \
+    libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre zip unzip cmake build-essential
 
     $ git clone https://github.com/raspberrypi/tools
     $ sudo cp -r tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64 /opt
