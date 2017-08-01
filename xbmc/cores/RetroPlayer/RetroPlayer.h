@@ -159,9 +159,8 @@ namespace RETRO
      */
     void PrintGameInfo(const CFileItem &file) const;
 
-    int64_t GetTime();
-    int64_t GetTotalTime();
-    float GetPercentage();
+    uint64_t GetTime();
+    uint64_t GetTotalTime();
 
     enum class State
     {
