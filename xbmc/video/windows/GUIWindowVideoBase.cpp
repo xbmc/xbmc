@@ -408,12 +408,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     if (!CVideoLibraryQueue::GetInstance().RefreshItemModal(item, needsRefresh, pDlgInfo->RefreshAll()))
       return listNeedsUpdating;
 
-    // remove directory caches and reload images
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-    OnMessage(reload);
+    // Make sure item has a videoinfotag else we'll crash and burn
+    if (item->HasVideoInfoTag())
+    {
+      // remove directory caches and reload images
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+      OnMessage(reload);
 
-    pDlgInfo->SetMovie(item.get());
+      pDlgInfo->SetMovie(item.get());
+    }
+
     pDlgInfo->Open();
     item->SetArt("thumb", pDlgInfo->GetThumbnail());
     needsRefresh = pDlgInfo->NeedRefresh();
