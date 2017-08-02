@@ -30,10 +30,6 @@
 
 //time for reaching velocity 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0f
-//time for decreasing the deaccelleration (for doing a smooth stop) in secs
-#define TIME_FOR_DEACELLERATION_DECREASE 0.5f
-//the factor for decreasing the deacceleration
-#define DEACELLERATION_DECREASE_FACTOR 0.9f
 //minimum speed for doing inertial scroll is 100 pixels / s
 #define MINIMUM_SPEED_FOR_INERTIA 100
 
@@ -144,7 +140,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     float absoluteInertialTime = (CTimeUtils::GetFrameTime() - m_inertialStartTime)/(float)1000;
 
     //as long as we aren't over the overall inertial scroll time - do the deacceleration
-    if ( absoluteInertialTime < TIME_TO_ZERO_SPEED + TIME_FOR_DEACELLERATION_DECREASE )
+    if ( absoluteInertialTime < TIME_TO_ZERO_SPEED )
     {
       //v = s/t -> s = t * v
       yMovement = frameTime * m_iFlickVelocity.y;
@@ -166,15 +162,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
       if( (m_inertialDeacceleration.x < 0) == (m_iFlickVelocity.x < 0) )
       {
         m_iFlickVelocity.x = 0;
-      }      
-
-      //did we scroll long enough for decrease the deacceleration?
-      if( absoluteInertialTime > TIME_TO_ZERO_SPEED - TIME_FOR_DEACELLERATION_DECREASE )
-      {
-        //decrease deacceleration by deacceleration decrease factor
-        m_inertialDeacceleration.y*=DEACELLERATION_DECREASE_FACTOR;
-        m_inertialDeacceleration.x *= DEACELLERATION_DECREASE_FACTOR;                          
-      }         
+      }
     }
 
     //if we have movement
