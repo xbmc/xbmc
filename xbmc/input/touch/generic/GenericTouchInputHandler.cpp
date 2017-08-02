@@ -48,6 +48,17 @@ CGenericTouchInputHandler &CGenericTouchInputHandler::GetInstance()
   return sTouchInput;
 }
 
+float CGenericTouchInputHandler::AdjustPointerSize(float size)
+{
+  if (size > 0.0f)
+    return size;
+  else
+    // Set a default size if touch input layer does not have anything useful,
+    // approx. 3.2mm
+    return m_dpi / 8.0f;
+}
+
+
 bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer /* = 0 */, float size /* = 0.0f */)
 {
   if (time < 0 || pointer < 0 || pointer >= MAX_POINTERS)
@@ -81,7 +92,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       m_pointers[pointer].down.y = y;
       m_pointers[pointer].down.time = time;
       m_pointers[pointer].moving = false;
-      m_pointers[pointer].size = size;
+      m_pointers[pointer].size = AdjustPointerSize(size);
 
       // If this is the down event of the primary pointer
       // we start by assuming that it's a single touch
@@ -289,8 +300,7 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, flo
   m_pointers[pointer].current.x = x;
   m_pointers[pointer].current.y = y;
   m_pointers[pointer].current.time = time;
-  if (size > 0.0f)
-    m_pointers[pointer].size = size;
+  m_pointers[pointer].size = AdjustPointerSize(size);
 
   // calculate whether the pointer has moved at all
   if (!m_pointers[pointer].moving)
