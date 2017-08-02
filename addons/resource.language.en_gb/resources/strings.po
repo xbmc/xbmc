@@ -10076,7 +10076,7 @@ msgctxt "#19188"
 msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
 
-# empty string from id 19189 to 19190
+#empty strings from id 19189 to 19190
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"
@@ -10633,7 +10633,7 @@ msgctxt "#19287"
 msgid "All channels"
 msgstr ""
 
-# empty string with id 19288
+#empty string with id 19288
 
 #. Label for button to hide a group in the group manager
 #: addons/skin.estuary/xml/DialogPVRGroupManager.xml
@@ -18092,7 +18092,7 @@ msgctxt "#36227"
 msgid "Switch to full screen display when starting playback of channels and recordings."
 msgstr ""
 
-# empty string with id 36228
+#empty string with id 36228
 
 #: system/settings/settings.xml
 msgctxt "#36229"
@@ -19640,7 +19640,7 @@ msgctxt "#36577"
 msgid "Specify the resolution for the 3D lookup table. Use a lower resolution for quick preview and higher resolution for more accurate picture. Using a high resolution may take seconds to prepare when parameters are changed or a new video is started."
 msgstr ""
 
-#empty strings from id 36578 to 36579
+#empty string with id 36578
 
 #. primaries labels
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
