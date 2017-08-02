@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include <set>
 
 #include "input/touch/ITouchInputHandler.h"
@@ -57,9 +58,9 @@ public:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CGenericTouchInputHandler();
-  CGenericTouchInputHandler(const CGenericTouchInputHandler&);
-  CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&);
-  ~CGenericTouchInputHandler() override;
+  ~CGenericTouchInputHandler();
+  CGenericTouchInputHandler(const CGenericTouchInputHandler&) = delete;
+  CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&) = delete;
 
   typedef enum {
     TouchGestureUnknown = 0,
@@ -87,9 +88,9 @@ private:
   void triggerDetectors(TouchInput event, int32_t pointer);
 
   CCriticalSection m_critical;
-  CTimer *m_holdTimer;
   Pointer m_pointers[TOUCH_MAX_POINTERS];
-  std::set<IGenericTouchGestureDetector*> m_detectors;
+  std::unique_ptr<CTimer> m_holdTimer;
+  std::set<std::unique_ptr<IGenericTouchGestureDetector>> m_detectors;
 
   TouchGestureState m_gestureState;
   TouchGestureState m_gestureStateOld;

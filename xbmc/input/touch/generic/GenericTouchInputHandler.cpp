@@ -29,20 +29,13 @@
 
 #define TOUCH_HOLD_TIMEOUT  1000
 CGenericTouchInputHandler::CGenericTouchInputHandler()
-     : m_gestureState(TouchGestureUnknown),
+     : m_holdTimer(new CTimer(this)),
+       m_gestureState(TouchGestureUnknown),
        m_gestureStateOld(TouchGestureUnknown)
 {
-  m_holdTimer = new CTimer(this);
 }
 
-CGenericTouchInputHandler::~CGenericTouchInputHandler()
-{
-  delete m_holdTimer;
-
-  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-    delete (*detector);
-  m_detectors.clear();
-}
+CGenericTouchInputHandler::~CGenericTouchInputHandler() = default;
 
 CGenericTouchInputHandler &CGenericTouchInputHandler::GetInstance()
 {
@@ -90,9 +83,9 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       if (pointer == 0)
       {
         // create new gesture detectors
-        m_detectors.insert(new CGenericTouchSwipeDetector(this, m_dpi));
-        m_detectors.insert(new CGenericTouchPinchDetector(this, m_dpi));
-        m_detectors.insert(new CGenericTouchRotateDetector(this, m_dpi));
+        m_detectors.emplace(new CGenericTouchSwipeDetector(this, m_dpi));
+        m_detectors.emplace(new CGenericTouchPinchDetector(this, m_dpi));
+        m_detectors.emplace(new CGenericTouchRotateDetector(this, m_dpi));
         triggerDetectors(event, pointer);
 
         setGestureState(TouchGestureSingleTouch);
@@ -313,8 +306,8 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, flo
       m_pointers[pointer].moving = true;
   }
 
-  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-    (*detector)->OnTouchUpdate(pointer, m_pointers[pointer]);
+  for (auto const& detector : m_detectors)
+    detector->OnTouchUpdate(pointer, m_pointers[pointer]);
 
   return true;
 }
@@ -361,30 +354,28 @@ void CGenericTouchInputHandler::triggerDetectors(TouchInput event, int32_t point
   {
     case TouchInputAbort:
     {
-      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-        delete (*detector);
       m_detectors.clear();
       break;
     }
     
     case TouchInputDown:
     {
-      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-        (*detector)->OnTouchDown(pointer, m_pointers[pointer]);
+      for (auto const& detector : m_detectors)
+        detector->OnTouchDown(pointer, m_pointers[pointer]);
       break;
     }
     
     case TouchInputUp:
     {
-      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-        (*detector)->OnTouchUp(pointer, m_pointers[pointer]);
+      for (auto const& detector : m_detectors)
+        detector->OnTouchUp(pointer, m_pointers[pointer]);
       break;
     }
     
     case TouchInputMove:
     {
-      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
-        (*detector)->OnTouchMove(pointer, m_pointers[pointer]);
+      for (auto const& detector : m_detectors)
+        detector->OnTouchMove(pointer, m_pointers[pointer]);
       break;
     }
 
@@ -392,13 +383,11 @@ void CGenericTouchInputHandler::triggerDetectors(TouchInput event, int32_t point
       return;
   }
 
-  std::set<IGenericTouchGestureDetector*> finishedDetectors;
-  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); ++detector)
+  for (auto it = m_detectors.begin(); it != m_detectors.end(); )
   {
-    if ((*detector)->IsDone())
-      finishedDetectors.insert(*detector);
+    if ((*it)->IsDone())
+      it = m_detectors.erase(it);
+    else
+      it++;
   }
-
-  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = finishedDetectors.begin(); detector != finishedDetectors.end(); ++detector)
-    m_detectors.erase(*detector);
 }
