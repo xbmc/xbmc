@@ -45,7 +45,7 @@ CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler *hand
 
 bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   m_size += 1;
@@ -62,7 +62,7 @@ bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &
 
 bool CGenericTouchSwipeDetector::OnTouchUp(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   m_size -= 1;
@@ -91,7 +91,7 @@ bool CGenericTouchSwipeDetector::OnTouchUp(unsigned int index, const Pointer &po
 
 bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   // only handle swipes of moved pointers
@@ -173,7 +173,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
 
 bool CGenericTouchSwipeDetector::OnTouchUpdate(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   if (m_done)

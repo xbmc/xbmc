@@ -97,7 +97,6 @@ typedef unsigned long kernel_ulong_t;
 #include "input/MouseStat.h"
 #include "utils/log.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
-#include "input/touch/generic/GenericTouchInputHandler.h"
 #include "settings/AdvancedSettings.h"
 
 #ifndef BITS_PER_LONG
@@ -111,6 +110,11 @@ typedef unsigned long kernel_ulong_t;
 #define test_bit(bit, array) ((array[LONG(bit)] >> OFF(bit)) & 1)
 
 #define MAX_LINUX_INPUT_DEVICES 16
+
+namespace
+{
+constexpr int TOUCH_MAX_POINTERS = CGenericTouchInputHandler::MAX_POINTERS;
+}
 
 typedef struct {
   unsigned short Key;

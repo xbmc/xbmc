@@ -45,8 +45,8 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
     return false;
   }
 
-  if (numPointers > TOUCH_MAX_POINTERS)
-    numPointers = TOUCH_MAX_POINTERS;
+  if (numPointers > CGenericTouchInputHandler::MAX_POINTERS)
+    numPointers = CGenericTouchInputHandler::MAX_POINTERS;
 
   int32_t eventAction = AMotionEvent_getAction(event);
   int8_t touchAction = eventAction & AMOTION_EVENT_ACTION_MASK;

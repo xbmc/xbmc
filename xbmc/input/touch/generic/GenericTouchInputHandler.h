@@ -19,6 +19,7 @@
  *
  */
 
+#include <array>
 #include <memory>
 #include <set>
 
@@ -26,8 +27,6 @@
 #include "input/touch/TouchTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
-
-#define TOUCH_MAX_POINTERS  2
 
 class IGenericTouchGestureDetector;
 
@@ -50,6 +49,7 @@ public:
    \brief Get an instance of the touch input manager
    */
   static CGenericTouchInputHandler &GetInstance();
+  static constexpr int MAX_POINTERS = 2;
 
   // implementation of ITouchInputHandler
   bool HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer = 0, float size = 0.0f) override;
@@ -88,8 +88,8 @@ private:
   void triggerDetectors(TouchInput event, int32_t pointer);
 
   CCriticalSection m_critical;
-  Pointer m_pointers[TOUCH_MAX_POINTERS];
   std::unique_ptr<CTimer> m_holdTimer;
+  std::array<Pointer, MAX_POINTERS> m_pointers;
   std::set<std::unique_ptr<IGenericTouchGestureDetector>> m_detectors;
 
   TouchGestureState m_gestureState;

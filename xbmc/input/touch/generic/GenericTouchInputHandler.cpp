@@ -19,6 +19,7 @@
  */
 
 #include <math.h>
+#include <algorithm>
 
 #include "GenericTouchInputHandler.h"
 #include "input/touch/generic/GenericTouchPinchDetector.h"
@@ -45,7 +46,7 @@ CGenericTouchInputHandler &CGenericTouchInputHandler::GetInstance()
 
 bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer /* = 0 */, float size /* = 0.0f */)
 {
-  if (time < 0 || pointer < 0 || pointer >= TOUCH_MAX_POINTERS)
+  if (time < 0 || pointer < 0 || pointer >= MAX_POINTERS)
     return false;
 
   CSingleLock lock(m_critical);
@@ -63,8 +64,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       triggerDetectors(event, pointer);
 
       setGestureState(TouchGestureUnknown);
-      for (unsigned int pIndex = 0; pIndex < TOUCH_MAX_POINTERS; pIndex++)
-        m_pointers[pIndex].reset();
+      for (auto& pointer : m_pointers)
+        pointer.reset();
 
       OnTouchAbort();
       break;
@@ -205,15 +206,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
-      bool moving = false;
-      for (unsigned int index = 0; index < TOUCH_MAX_POINTERS; index++)
-      {
-        if (m_pointers[index].valid() && m_pointers[index].moving)
-        {
-          moving = true;
-          break;
-        }
-      }
+      bool moving = std::any_of(m_pointers.cbegin(), m_pointers.cend(), [](Pointer const& p) { return p.valid() && p.moving; });
 
       if (moving)
       {
@@ -282,7 +275,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
 
 bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
 {
-  if (pointer < 0 || pointer >= TOUCH_MAX_POINTERS)
+  if (pointer < 0 || pointer >= MAX_POINTERS)
     return false;
 
   CSingleLock lock(m_critical);
@@ -314,8 +307,8 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, flo
 
 void CGenericTouchInputHandler::saveLastTouch()
 {
-  for (unsigned int pointer = 0; pointer < TOUCH_MAX_POINTERS; pointer++)
-    m_pointers[pointer].last.copy(m_pointers[pointer].current);
+  for (auto& pointer : m_pointers)
+    pointer.last.copy(pointer.current);
 }
 
 void CGenericTouchInputHandler::OnTimeout()
