@@ -234,12 +234,12 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
 
       triggerDetectors(event, pointer);
 
+      // Check if the touch has moved far enough to count as movement
+      if ((m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart) && !m_pointers[pointer].moving)
+        break;
+
       if (m_gestureState == TouchGestureSingleTouch)
       {
-        // Check if the touch has moved far enough to count as movement
-        if (!m_pointers[pointer].moving)
-          break;
-
         m_pointers[pointer].last.copy(m_pointers[pointer].down);
         setGestureState(TouchGesturePan);
       }
