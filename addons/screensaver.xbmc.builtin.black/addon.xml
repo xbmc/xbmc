@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.30"
+       version="1.0.31"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -66,7 +66,7 @@
     <description lang="af_ZA">Die is 'n eenvoudige sluimerskerm wat jou skerm swart maak.</description>
     <description lang="am_ET">ጥቁር ቀላል መመልከቻ ማዳኛ የእርስዎን መመልከቻ ጥቁር ያደርገዋል </description>
     <description lang="ar_SA">بلاك شاشة توقف بسيطة تحول شاشتك لأسود</description>
-    <description lang="be_BY">Black is a simple screensaver that will turn your screen black.</description>
+    <description lang="be_BY">Black - просты ахоўнік экрану, які робіць ваш экран чорным.</description>
     <description lang="bg_BG">"Black" е просто скрийнсейвър, който ще направи екрана Ви черен.</description>
     <description lang="ca_ES">Black és un estalvi de pantalla simple que posarà la teva pantalla en negre.</description>
     <description lang="cs_CZ">Black je jednoduchý spořič obrazovky, který začerní vaši obrazovku.</description>

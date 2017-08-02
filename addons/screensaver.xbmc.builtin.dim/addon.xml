@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.33"
+       version="1.0.34"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -66,7 +66,7 @@
     <summary lang="zh_TW">讓螢幕變暗的螢幕保護程式</summary>
     <description lang="af_ZA">Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%</description>
     <description lang="ar_SA">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
-    <description lang="be_BY">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="be_BY">Dim - просты ахоўнік экрану , які будзе зацямняць экран. Значэнне зацямнення можа змяняцца ад 20 да 100%.</description>
     <description lang="bg_BG">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca_ES">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
     <description lang="cs_CZ">Spořič obrazovky Dim je jednoduchý spořič obrazovky, který ztmaví (posupně) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100 %.</description>

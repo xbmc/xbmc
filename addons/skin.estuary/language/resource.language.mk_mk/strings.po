@@ -24,6 +24,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Барај..."
 
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Режим на кино"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Измени начин"
@@ -32,33 +36,221 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Гледај во 2D"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Произволни филмови"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Негледани филмови"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Превземи икони"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Недогледани филмови"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Најслушани албуми"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Произволни албуми"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Произволни артисти"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Неслушани албуми"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Неодамна снимени"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Неодамна гледани канали"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Оценет"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Неодамна гледани канали"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Прогноза"
 
 msgctxt "#31020"
 msgid "Actions"
-msgstr "Дела"
+msgstr "Акции"
 
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Други опции"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Сортирано по"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Начин на гледање"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Искористеност на меморија"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Верзија"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Редослед"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Сопствена оцена"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Детално инфо"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Страни"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "записи"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Премотај наназад"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Забрзано нанапред"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Производител на камера"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Опции за списоци"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Додај група"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Преименувај група"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Избриши група"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Достапно"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Притисни [B]OK[/B] за стоп"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Промени јазик"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "филтрирани"
 
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Базирано на Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Притисни [B]Left[/B] за премотување назад или [B]Right[/B] за премотување нанапред"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Оди до список"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Елементи на гловното мени"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Секции"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Листи за видеа"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Листи за музика"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Дневник на настани"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Избери шаблон"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Последно ажурирање"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "од"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Опции за напојување"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Филмски сетови"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Завршува на"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Додаток за текстови на песни"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Подесувања за додаток за текстови на песни"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Подесување на визуелизација"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Достапни групи"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Видео мени"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -67,3 +259,79 @@ msgstr "Локален превод е достапен"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Инфо Ѕид"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Ѕид"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Внеси текст..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Телетекст"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Промени аудио стрим"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Барај во л. библиотека"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Барај на YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Барај на TheMovieDB"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Негледани ТВ шоуа"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Прикажувај икони"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Преостанува"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Брзина"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Категории"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Складиште"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Негледани музички спотови"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Произволни музички спотови"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Уреди категории"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Декорации"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Нумеричка тастатура"
