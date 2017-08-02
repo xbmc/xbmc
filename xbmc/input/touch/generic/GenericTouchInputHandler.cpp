@@ -28,7 +28,11 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#define TOUCH_HOLD_TIMEOUT  1000
+namespace
+{
+constexpr int TOUCH_HOLD_TIMEOUT = 1000;
+}
+
 CGenericTouchInputHandler::CGenericTouchInputHandler()
      : m_holdTimer(new CTimer(this)),
        m_gestureState(TouchGestureUnknown),
