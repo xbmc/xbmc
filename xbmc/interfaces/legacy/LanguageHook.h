@@ -111,6 +111,7 @@ namespace XBMCAddon
      */
     virtual String GetAddonId() { return emptyString; }
     virtual String GetAddonVersion() { return emptyString; }
+    virtual long GetInvokerId() { return -1; }
 
     virtual void RegisterPlayerCallback(IPlayerCallback* player) = 0;
     virtual void UnregisterPlayerCallback(IPlayerCallback* player) = 0;
