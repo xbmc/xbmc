@@ -20,7 +20,6 @@
 
 #include "PVRClients.h"
 
-#include <cassert>
 #include <utility>
 #include <functional>
 
@@ -375,6 +374,39 @@ CPVRClientCapabilities CPVRClients::GetClientCapabilities(int iClientId) const
   return CPVRClientCapabilities();
 }
 
+void CPVRClients::SetPlayingChannel(const CPVRChannelPtr channel)
+{
+  const CPVRChannelPtr playingChannel = GetPlayingChannel();
+  if (!playingChannel || *playingChannel != *channel)
+  {
+    if (playingChannel)
+      ClearPlayingChannel();
+
+    PVR_CLIENT client;
+    if (GetCreatedClient(channel->ClientID(), client))
+    {
+      client->SetPlayingChannel(channel);
+
+      CSingleLock lock(m_critSection);
+      m_playingClientId = channel->ClientID();
+      m_bIsPlayingLiveTV = true;
+      m_strPlayingClientName = client->GetFriendlyName();
+    }
+  }
+}
+
+void CPVRClients::ClearPlayingChannel()
+{
+  PVR_CLIENT playingClient;
+  if (GetPlayingClient(playingClient))
+    playingClient->ClearPlayingChannel();
+
+  CSingleLock lock(m_critSection);
+  m_bIsPlayingLiveTV = false;
+  m_playingClientId = PVR_INVALID_CLIENT_ID;
+  m_strPlayingClientName.clear();
+}
+
 CPVRChannelPtr CPVRClients::GetPlayingChannel() const
 {
   PVR_CLIENT client;
@@ -382,6 +414,39 @@ CPVRChannelPtr CPVRClients::GetPlayingChannel() const
     return client->GetPlayingChannel();
 
   return CPVRChannelPtr();
+}
+
+void CPVRClients::SetPlayingRecording(const CPVRRecordingPtr recording)
+{
+  const CPVRRecordingPtr playingRecording = GetPlayingRecording();
+  if (!playingRecording || *playingRecording != *recording)
+  {
+    if (playingRecording)
+      ClearPlayingRecording();
+
+    PVR_CLIENT client;
+    if (GetCreatedClient(recording->ClientID(), client))
+    {
+      client->SetPlayingRecording(recording);
+
+      CSingleLock lock(m_critSection);
+      m_playingClientId = recording->ClientID();
+      m_bIsPlayingRecording = true;
+      m_strPlayingClientName = client->GetFriendlyName();
+    }
+  }
+}
+
+void CPVRClients::ClearPlayingRecording()
+{
+  PVR_CLIENT playingClient;
+  if (GetPlayingClient(playingClient))
+    playingClient->ClearPlayingRecording();
+
+  CSingleLock lock(m_critSection);
+  m_bIsPlayingRecording = false;
+  m_playingClientId = PVR_INVALID_CLIENT_ID;
+  m_strPlayingClientName.clear();
 }
 
 CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
@@ -989,49 +1054,32 @@ std::string CPVRClients::GetLiveStreamURL(const CPVRChannelPtr &channel)
 
 bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
 {
-  assert(channel.get());
-
   bool bReturn(false);
   CloseStream();
 
   /* try to open the stream on the client */
   PVR_CLIENT client;
-  if (GetCreatedClient(channel->ClientID(), client) &&
-      client->OpenStream(channel, bIsSwitchingChannel))
-  {
-    CSingleLock lock(m_critSection);
-    m_playingClientId = channel->ClientID();
-    m_bIsPlayingLiveTV = true;
+  if (GetCreatedClient(channel->ClientID(), client))
+    bReturn = client->OpenStream(channel, bIsSwitchingChannel);
 
-    if (client.get())
-      m_strPlayingClientName = client->GetFriendlyName();
-    else
-      m_strPlayingClientName = g_localizeStrings.Get(13205);
-
-    bReturn = true;
-  }
+  if (bReturn)
+    SetPlayingChannel(channel);
 
   return bReturn;
 }
 
-bool CPVRClients::OpenStream(const CPVRRecordingPtr &channel)
+bool CPVRClients::OpenStream(const CPVRRecordingPtr &recording)
 {
-  assert(channel.get());
-
   bool bReturn(false);
   CloseStream();
 
   /* try to open the recording stream on the client */
   PVR_CLIENT client;
-  if (GetCreatedClient(channel->m_iClientId, client) &&
-      client->OpenStream(channel))
-  {
-    CSingleLock lock(m_critSection);
-    m_playingClientId = channel->m_iClientId;
-    m_bIsPlayingRecording = true;
-    m_strPlayingClientName = client->GetFriendlyName();
-    bReturn = true;
-  }
+  if (GetCreatedClient(recording->ClientID(), client))
+    bReturn = client->OpenStream(recording);
+
+  if (bReturn)
+    SetPlayingRecording(recording);
 
   return bReturn;
 }
@@ -1041,12 +1089,6 @@ void CPVRClients::CloseStream(void)
   PVR_CLIENT playingClient;
   if (GetPlayingClient(playingClient))
     playingClient->CloseStream();
-
-  CSingleLock lock(m_critSection);
-  m_bIsPlayingLiveTV     = false;
-  m_bIsPlayingRecording  = false;
-  m_playingClientId      = PVR_INVALID_CLIENT_ID;
-  m_strPlayingClientName = "";
 }
 
 int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)

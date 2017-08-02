@@ -297,6 +297,17 @@ namespace PVR
     bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
 
     /*!
+     * @brief Set the channel that is currently playing.
+     * @param channel The channel that is currently playing.
+     */
+    void SetPlayingChannel(const CPVRChannelPtr channel);
+
+    /*!
+     * @brief Clear the channel that is currently playing, if any.
+     */
+    void ClearPlayingChannel();
+
+    /*!
      * @brief Get the channel that is currently playing.
      * @return the channel that is currently playing, NULL otherwise.
      */
@@ -309,13 +320,24 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given recording.
-     * @param tag The recording to start playing.
+     * @param recording The recording to start playing.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRRecordingPtr &tag);
+    bool OpenStream(const CPVRRecordingPtr &recording);
 
     /*!
-     * @brief Get the recordings that is currently playing.
+     * @brief Set the recording that is currently playing.
+     * @param recording The recording that is currently playing.
+     */
+    void SetPlayingRecording(const CPVRRecordingPtr recording);
+
+    /*!
+     * @brief Clear the recording that is currently playing, if any.
+     */
+    void ClearPlayingRecording();
+
+    /*!
+     * @brief Get the recording that is currently playing.
      * @return The recording that is currently playing, NULL otherwise.
      */
     CPVRRecordingPtr GetPlayingRecording(void) const;

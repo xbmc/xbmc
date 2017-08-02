@@ -285,6 +285,24 @@ namespace PVR
     void ResetPlayingTag(void);
 
     /*!
+     * @brief Inform PVR manager that playback of an item just started.
+     * @param item The item that started to play.
+     */
+    void OnPlaybackStarted(const CFileItemPtr item);
+
+    /*!
+     * @brief Inform PVR manager that playback of an item was stopped due to user interaction.
+     * @param item The item that stopped to play.
+     */
+    void OnPlaybackStopped(const CFileItemPtr item);
+
+    /*!
+     * @brief Inform PVR manager that playback of an item has stopped without user interaction.
+     * @param item The item that ended to play.
+     */
+    void OnPlaybackEnded(const CFileItemPtr item);
+
+    /*!
      * @brief Close an open PVR stream.
      */
     void CloseStream(void);
