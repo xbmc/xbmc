@@ -18,8 +18,8 @@
  *
  */
 
-#include <math.h>
 #include <algorithm>
+#include <cmath>
 
 #include "GenericTouchInputHandler.h"
 #include "input/touch/generic/GenericTouchPinchDetector.h"
@@ -190,9 +190,9 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
 
           // if neither of the two pointers moved we have a single tap with multiple pointers
           if (m_gestureStateOld != TouchGestureMultiTouchHold && m_gestureStateOld != TouchGestureMultiTouch)
-            OnTap(fabs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
-                        fabs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
-                        2);
+            OnTap(std::abs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
+                  std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
+                  2);
         }
 
         setGestureState(TouchGestureUnknown);
@@ -334,9 +334,9 @@ void CGenericTouchInputHandler::OnTimeout()
         setGestureState(TouchGestureMultiTouchHold);
 
         OnMultiTouchHold(m_pointers[0].down.x, m_pointers[0].down.y);
-        OnLongPress(fabs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
-                          fabs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
-                          2);
+        OnLongPress(std::abs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
+                    std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
+                    2);
       }
       break;
 
