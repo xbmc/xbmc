@@ -22,7 +22,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <concrt.h>
-#if defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_STORE)
 #include <agile.h>
 #include <dxgi1_3.h>
 #else
@@ -108,12 +108,12 @@ namespace DX
 
     void SetMonitor(HMONITOR monitor) const;
     HMONITOR GetMonitor() const;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
     void SetWindow(HWND window);
-#elif defined(TARGET_WIN10)
+#elif defined(TARGET_WINDOWS_STORE)
     void Trim() const;
     void SetWindow(Windows::UI::Core::CoreWindow^ window);
-#endif // TARGET_WIN10
+#endif // TARGET_WINDOWS_STORE
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -133,7 +133,7 @@ namespace DX
     void OnDeviceRestored();
 
     HWND m_window{ nullptr };
-#if defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS_STORE)
     Platform::Agile<Windows::UI::Core::CoreWindow> m_coreWindow;
 #endif
     Microsoft::WRL::ComPtr<IDXGIFactory2> m_dxgiFactory;

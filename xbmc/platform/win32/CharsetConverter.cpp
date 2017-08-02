@@ -18,7 +18,7 @@
  *
  */
 
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
 #include <memory>
 
 #include "CharsetConverter.h"

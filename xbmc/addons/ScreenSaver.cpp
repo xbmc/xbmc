@@ -35,7 +35,7 @@ CScreenSaver::CScreenSaver(BinaryAddonBasePtr addonBase)
   m_profile = CSpecialProtocol::TranslatePath(Profile());
 
   m_struct = {{0}};
-#ifdef HAS_DX
+#ifdef TARGET_WINDOWS
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else
   m_struct.props.device = nullptr;

@@ -80,7 +80,7 @@
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
 
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
 #endif
 

@@ -18,8 +18,6 @@
  *
  */
 
-#ifdef HAS_DX
-
 // setting that here because otherwise SampleFormat is defined to AVSampleFormat
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
@@ -523,5 +521,3 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
   return !FAILED(hr);
 }
-
-#endif

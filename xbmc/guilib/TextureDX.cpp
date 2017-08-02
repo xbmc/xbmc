@@ -22,8 +22,6 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
-#ifdef HAS_DX
-
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
@@ -192,5 +190,3 @@ void CDXTexture::LoadToGPU()
 void CDXTexture::BindToUnit(unsigned int unit)
 {
 }
-
-#endif

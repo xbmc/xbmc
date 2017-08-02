@@ -23,7 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
 #include "windowing/WindowingFactory.h"
 #endif
 
@@ -39,7 +39,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
   m_struct = {{0}};
-#ifdef defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#ifdef defined(TARGET_WINDOWS)
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else
   m_struct.props.device = nullptr;

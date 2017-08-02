@@ -643,18 +643,13 @@ void CSettings::InitializeDefaults()
 #endif // defined(TARGET_POSIX)
 
 #if defined(TARGET_WINDOWS)
-  #if defined(HAS_DX)
   std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
-  #endif
-
-  #if !defined(HAS_GL)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   if (g_sysinfo.IsAeroDisabled())
     std::static_pointer_cast<CSettingBool>(GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
-  #endif
 #endif
 
 #if !defined(TARGET_WINDOWS)
