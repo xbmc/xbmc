@@ -288,6 +288,7 @@
 #define ACTION_GESTURE_ZOOM           502 //!< sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         503
 #define ACTION_GESTURE_PAN            504
+#define ACTION_GESTURE_ABORT          505 //!< gesture was interrupted in unspecified state
 
 #define ACTION_GESTURE_SWIPE_LEFT       511
 #define ACTION_GESTURE_SWIPE_LEFT_TEN   520

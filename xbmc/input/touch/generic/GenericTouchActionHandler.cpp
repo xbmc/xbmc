@@ -36,7 +36,9 @@ CGenericTouchActionHandler &CGenericTouchActionHandler::GetInstance()
 }
 
 void CGenericTouchActionHandler::OnTouchAbort()
-{ }
+{
+  sendEvent(ACTION_GESTURE_ABORT, 0.0f, 0.0f);
+}
 
 bool CGenericTouchActionHandler::OnSingleTouchStart(float x, float y)
 {
