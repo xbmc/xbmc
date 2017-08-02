@@ -161,19 +161,6 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
   return result;
 }
 
-void CGenericTouchActionHandler::touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y)
-{
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  
-  newEvent.type = type;
-  newEvent.button.button = button;
-  newEvent.button.x = x;
-  newEvent.button.y = y;
-  
-  CWinEvents::MessagePush(&newEvent);
-}
-
 void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float x2 /* = 0.0f */, float y2 /* = 0.0f */, int pointers /* = 1 */)
 {
   XBMC_Event newEvent;
