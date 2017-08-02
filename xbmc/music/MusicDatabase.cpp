@@ -91,13 +91,15 @@ static void AnnounceRemove(const std::string& content, int id)
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
 }
 
-static void AnnounceUpdate(const std::string& content, int id)
+static void AnnounceUpdate(const std::string& content, int id, bool added = false)
 {
   CVariant data;
   data["type"] = content;
   data["id"] = id;
   if (g_application.IsMusicScanning())
     data["transaction"] = true;
+  if (added)
+    data["added"] = true;
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
 }
 
@@ -664,7 +666,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
 
     UpdateFileDateAdded(idSong, strPathAndFileName);
 
-    AnnounceUpdate(MediaTypeSong, idSong);
+    AnnounceUpdate(MediaTypeSong, idSong, true);
   }
   catch (...)
   {

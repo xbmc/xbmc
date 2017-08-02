@@ -119,7 +119,8 @@
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
           "type": { "type": "string", "id": "Notifications.Library.Audio.Type", "enum": [ "song" ], "required": true },
-          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." }
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." },
+          "added": { "$ref": "Optional.Boolean", "description": "True if the update is for a newly added item." }
         }
       }
     ],
@@ -200,7 +201,8 @@
           "id": { "$ref": "Library.Id", "required": true },
           "type": { "type": "string", "id": "Notifications.Library.Video.Type", "enum": [ "movie", "tvshow", "episode", "musicvideo" ], "required": true },
           "playcount": { "type": "integer", "minimum": 0, "default": -1 },
-          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." }
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." },
+          "added": { "$ref": "Optional.Boolean", "description": "True if the update is for a newly added item." }
         }
       }
     ],
