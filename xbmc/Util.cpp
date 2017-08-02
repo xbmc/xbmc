@@ -115,8 +115,12 @@ namespace
 bool IsDirectoryValidRoot(std::wstring path)
 {
   path += L"\\system\\settings\\settings.xml";
+#if defined(TARGET_WINDOWS_STORE)
+  auto h = CreateFile2(path.c_str(), GENERIC_READ, 0, OPEN_EXISTING, NULL);
+#else
   auto h = CreateFileW(path.c_str(), GENERIC_READ, 0, nullptr,
     OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+#endif
   if (h != INVALID_HANDLE_VALUE)
   {
     CloseHandle(h);

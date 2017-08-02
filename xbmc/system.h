@@ -75,11 +75,15 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
-#define HAS_FILESYSTEM_SMB
+#if defined(TARGET_WINDOWS_DESKTOP)
+#  define HAS_WIN32_NETWORK
+#  define HAS_FILESYSTEM_SMB
+#elif defined(TARGET_WINDOWS_STORE)
+#  define HAS_WIN10_NETWORK
+#endif
 
-#ifdef HAVE_LIBBLURAY
+#if defined(HAVE_LIBBLURAY) && !defined(TARGET_WINDOWS_STORE)
   #define HAVE_LIBBLURAY_BDJ
 #endif
 
