@@ -1422,25 +1422,6 @@ namespace VIDEO
       }
     }
 
-    // find online art
-    for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
-    {
-      if (art.find(*i) == art.end())
-      {
-        std::string image = GetImage(pItem, false, bApplyToDir, *i);
-        if (!image.empty())
-          art.insert(std::make_pair(*i, image));
-      }
-    }
-
-    // use the first piece of online art as the first art type if no thumb type is available yet
-    if (art.empty() && lookForThumb)
-    {
-      std::string image = GetImage(pItem, false, bApplyToDir, "thumb");
-      if (!image.empty())
-        art.insert(std::make_pair(artTypes.front(), image));
-    }
-
     // get & save fanart image (treated separately due to it being stored in m_fanart)
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
     if (!isEpisode && art.find("fanart") == art.end())
@@ -1448,6 +1429,22 @@ namespace VIDEO
       std::string fanart = GetFanart(pItem, useLocal);
       if (!fanart.empty())
         art.insert(std::make_pair("fanart", fanart));
+    }
+
+    // add online art
+    for (const auto& i : pItem->GetVideoInfoTag()->m_strPictureURL.m_url)
+    {
+      if (i.m_type != CScraperUrl::URLTYPES::URL_TYPE_GENERAL)
+        continue;
+      std::string aspect = i.m_aspect;
+      if (aspect.empty())
+        // temporary support for XML music video scrapers that share music album scraper bits
+        aspect = content == CONTENT_MUSICVIDEOS ? "poster" : "thumb";
+      if (art.find(aspect) != art.end())
+        continue;
+      std::string image = GetImage(i, pItem->GetPath());
+      if (!image.empty())
+        art.insert(std::make_pair(aspect, image));
     }
 
     for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
@@ -1463,25 +1460,15 @@ namespace VIDEO
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
 
-  std::string CVideoInfoScanner::GetImage(CFileItem *pItem, bool useLocal, bool bApplyToDir, const std::string &type)
+  std::string CVideoInfoScanner::GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath)
   {
-    std::string thumb;
-    if (useLocal)
-      thumb = CVideoThumbLoader::GetLocalArt(*pItem, type, bApplyToDir);
-
-    if (thumb.empty())
+    std::string thumb = CScraperUrl::GetThumbURL(image);
+    if (!thumb.empty() &&
+      thumb.find("/") == std::string::npos &&
+      thumb.find("\\") == std::string::npos)
     {
-      thumb = CScraperUrl::GetThumbURL(pItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb(type));
-      if (!thumb.empty())
-      {
-        if (thumb.find("http://") == std::string::npos &&
-            thumb.find("/") == std::string::npos &&
-            thumb.find("\\") == std::string::npos)
-        {
-          std::string strPath = URIUtils::GetDirectory(pItem->GetPath());
-          thumb = URIUtils::AddFileToFolder(strPath, thumb);
-        }
-      }
+      std::string strPath = URIUtils::GetDirectory(itemPath);
+      thumb = URIUtils::AddFileToFolder(strPath, thumb);
     }
     return thumb;
   }
@@ -1848,37 +1835,36 @@ namespace VIDEO
   void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show,
       std::map<int, std::map<std::string, std::string>> &seasonArt, const std::vector<std::string> &artTypes, bool useLocal)
   {
-    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
-
-    // find the maximum number of seasons we have thumbs for (local + remote)
-    int maxSeasons = show.m_strPictureURL.GetMaxSeasonThumb();
-
-    CFileItemList items;
-    CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
-    CRegExp reg;
-    if (items.Size() && reg.RegComp("season([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
+    if (useLocal)
     {
-      for (int i = 0; i < items.Size(); i++)
+      bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
+
+      // find the maximum number of seasons we have local thumbs for
+      int maxSeasons = 0;
+      CFileItemList items;
+      CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+      CRegExp reg;
+      if (items.Size() && reg.RegComp("season([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
       {
-        std::string name = URIUtils::GetFileName(items[i]->GetPath());
-        if (reg.RegFind(name) > -1)
+        for (int i = 0; i < items.Size(); i++)
         {
-          int season = atoi(reg.GetMatch(1).c_str());
-          if (season > maxSeasons)
-            maxSeasons = season;
+          std::string name = URIUtils::GetFileName(items[i]->GetPath());
+          if (reg.RegFind(name) > -1)
+          {
+            int season = atoi(reg.GetMatch(1).c_str());
+            if (season > maxSeasons)
+              maxSeasons = season;
+          }
         }
       }
-    }
-    for (int season = -1; season <= maxSeasons; season++)
-    {
-      // skip if we already have some art
-      std::map<int, std::map<std::string, std::string>>::const_iterator it = seasonArt.find(season);
-      if (it != seasonArt.end() && !it->second.empty())
-        continue;
-
-      std::map<std::string, std::string> art;
-      if (useLocal)
+      for (int season = -1; season <= maxSeasons; season++)
       {
+        // skip if we already have some art
+        std::map<int, std::map<std::string, std::string>>::const_iterator it = seasonArt.find(season);
+        if (it != seasonArt.end() && !it->second.empty())
+          continue;
+
+        std::map<std::string, std::string> art;
         std::string basePath;
         if (season == -1)
           basePath = "season-all";
@@ -1909,27 +1895,24 @@ namespace VIDEO
             }
           }
         }
-      }
 
-      // find online art
-      for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
-      {
-        if (art.find(*i) == art.end())
-        {
-          std::string image = CScraperUrl::GetThumbURL(show.m_strPictureURL.GetSeasonThumb(season, *i));
-          if (!image.empty())
-            art.insert(std::make_pair(*i, image));
-        }
+        seasonArt[season] = art;
       }
-      // use the first piece of online art as the first art type if no thumb type is available yet
-      if (art.empty() && lookForThumb)
-      {
-        std::string image = CScraperUrl::GetThumbURL(show.m_strPictureURL.GetSeasonThumb(season, "thumb"));
-        if (!image.empty())
-          art.insert(std::make_pair(artTypes.front(), image));
-      }
-
-      seasonArt[season] = art;
+    }
+    // add online art
+    for (const auto& i : show.m_strPictureURL.m_url)
+    {
+      if (i.m_type != CScraperUrl::URLTYPES::URL_TYPE_SEASON)
+        continue;
+      std::string aspect = i.m_aspect;
+      if (aspect.empty())
+        aspect = "thumb";
+      std::map<std::string, std::string>& art = seasonArt[i.m_season];
+      if (art.find(aspect) != art.end())
+        continue;
+      std::string image = CScraperUrl::GetThumbURL(i);
+      if (!image.empty())
+        art.insert(std::make_pair(aspect, image));
     }
   }
 
