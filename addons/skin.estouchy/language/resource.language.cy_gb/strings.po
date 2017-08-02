@@ -132,6 +132,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Llwytho Isdeitlau i Lawr"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teludestun"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Croen rhagosodedig"

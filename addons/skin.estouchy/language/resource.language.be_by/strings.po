@@ -30,19 +30,23 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Visualization Options"
+msgstr "Параметры візуалізацыі"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Visualization Presets"
+msgstr "Прадвызначаныя налады візуалізацыі"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Context Menu"
+msgstr "Кантэкстнае меню"
 
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Ідзе праца..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Апошняе"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -55,6 +59,10 @@ msgstr "Эпізоды"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Альбомы"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Звесткі PVR"
 
 msgctxt "#31024"
 msgid "Page"
