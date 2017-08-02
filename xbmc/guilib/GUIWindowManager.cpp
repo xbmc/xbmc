@@ -981,6 +981,35 @@ int CGUIWindowManager::GetMessageMask()
 
 bool CGUIWindowManager::OnAction(const CAction &action) const
 {
+  auto actionId = action.GetID();
+  if (actionId == ACTION_GESTURE_BEGIN)
+  {
+    m_touchGestureActive = true;
+  }
+
+  bool ret;
+  if (!m_inhibitTouchGestureEvents || !action.IsGesture())
+  {
+    ret = HandleAction(action);
+  }
+  else
+  {
+    // We swallow the event, so it is handled
+    ret = true;
+    CLog::Log(LOGDEBUG, "Swallowing touch action %d due to inhibition on window switch", actionId);
+  }
+
+  if (actionId == ACTION_GESTURE_END || actionId == ACTION_GESTURE_ABORT)
+  {
+    m_touchGestureActive = false;
+    m_inhibitTouchGestureEvents = false;
+  }
+
+  return ret;
+}
+
+bool CGUIWindowManager::HandleAction(CAction const& action) const
+{
   CSingleLock lock(g_graphicsContext);
   unsigned int topMost = m_activeDialogs.size();
   while (topMost)
@@ -1633,6 +1662,15 @@ void CGUIWindowManager::ClearWindowHistory()
 
 void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*= 0*/)
 {
+  // Abort touch action if active
+  if (m_touchGestureActive && !m_inhibitTouchGestureEvents)
+  {
+    CLog::Log(LOGDEBUG, "Closing window %d with active touch gesture, sending gesture abort event", window->GetID());
+    window->OnAction({ACTION_GESTURE_ABORT});
+    // Don't send any mid-gesture events to next window until new touch starts
+    m_inhibitTouchGestureEvents = true;
+  }
+
   window->Close(false, nextWindowID);
   while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     ProcessRenderLoop(true);
