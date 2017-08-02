@@ -163,10 +163,8 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 
 void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float x2 /* = 0.0f */, float y2 /* = 0.0f */, int pointers /* = 1 */)
 {
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent{XBMC_TOUCH};
   
-  newEvent.type = XBMC_TOUCH;
   newEvent.touch.action = actionId;
   newEvent.touch.x = x;
   newEvent.touch.y = y;
@@ -179,10 +177,8 @@ void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float
 
 void CGenericTouchActionHandler::focusControl(float x, float y)
 {
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent{XBMC_SETFOCUS};
 
-  newEvent.type = XBMC_SETFOCUS;
   newEvent.focus.x = (uint16_t)x;
   newEvent.focus.y = (uint16_t)y;
 
