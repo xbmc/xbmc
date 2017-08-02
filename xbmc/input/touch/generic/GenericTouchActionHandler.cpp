@@ -19,6 +19,9 @@
  */
 
 #include "GenericTouchActionHandler.h"
+
+#include <cmath>
+
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -103,7 +106,7 @@ void CGenericTouchActionHandler::OnTap(float x, float y, int32_t pointers /* = 1
   if (pointers <= 0 || pointers > 10)
     return;
 
-  sendEvent(ACTION_TOUCH_TAP, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
+  sendEvent(ACTION_TOUCH_TAP, x, y, 0.0f, 0.0f, pointers);
 }
 
 void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers /* = 1 */)
@@ -111,7 +114,7 @@ void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers 
   if (pointers <= 0 || pointers > 10)
     return;
 
-  sendEvent(ACTION_TOUCH_LONGPRESS, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
+  sendEvent(ACTION_TOUCH_LONGPRESS, x, y, 0.0f, 0.0f, pointers);
 }
 
 void CGenericTouchActionHandler::OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers /* = 1 */)
@@ -146,7 +149,7 @@ void CGenericTouchActionHandler::OnRotate(float centerX, float centerY, float an
 
 int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 {
-  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, (int)x, (int)y);
+  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (std::round(x)), static_cast<int> (std::round(y)));
   if (!g_windowManager.SendMessage(msg))
     return 0;
 
@@ -179,8 +182,8 @@ void CGenericTouchActionHandler::focusControl(float x, float y)
 {
   XBMC_Event newEvent{XBMC_SETFOCUS};
 
-  newEvent.focus.x = (uint16_t)x;
-  newEvent.focus.y = (uint16_t)y;
+  newEvent.focus.x = static_cast<int> (std::round(x));
+  newEvent.focus.y = static_cast<int> (std::round(y));
 
   CWinEvents::MessagePush(&newEvent);
 }
