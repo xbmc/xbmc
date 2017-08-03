@@ -52,5 +52,5 @@ public:
   static int GetFallbackWindow(int windowId);
 
 private:
-  static std::map<int, const char*> CreateReverseWindowMapping();
+  static std::map<int, std::string> CreateReverseWindowMapping();
 };
