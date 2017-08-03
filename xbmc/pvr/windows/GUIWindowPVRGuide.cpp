@@ -74,7 +74,7 @@ void CGUIWindowPVRGuideBase::Init()
     epgGridContainer->GoToNow();
   }
 
-  if (!m_refreshTimelineItemsThread)
+  if (epgGridContainer && !epgGridContainer->HasData())
   {
     CSingleLock lock(m_critSection);
     m_bRefreshTimelineItems = true; // force data update on first window open

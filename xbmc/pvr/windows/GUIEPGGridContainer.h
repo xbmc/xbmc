@@ -43,6 +43,12 @@ namespace PVR
 
     CGUIEPGGridContainer *Clone() const override { return new CGUIEPGGridContainer(*this); }
 
+    /*!
+     * @brief Check whether the control currently holds data.
+     * @return true if the control has data, false otherwise.
+     */
+    bool HasData() const;
+
     void AllocResources() override;
     void FreeResources(bool immediately) override;
 
@@ -64,7 +70,7 @@ namespace PVR
     std::string GetLabel(int info) const override;
 
     CFileItemPtr GetSelectedChannelItem() const;
-    PVR::CPVRChannelPtr GetSelectedChannel();
+    PVR::CPVRChannelPtr GetSelectedChannel() const;
 
     void LoadLayout(TiXmlElement *layout);
     void SetPageControl(int id);

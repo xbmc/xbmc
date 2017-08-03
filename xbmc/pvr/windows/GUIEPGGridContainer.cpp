@@ -158,6 +158,11 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
 {
 }
 
+bool CGUIEPGGridContainer::HasData() const
+{
+  return m_gridModel && m_gridModel->HasProgrammeItems();
+}
+
 void CGUIEPGGridContainer::AllocResources()
 {
   IGUIContainer::AllocResources();
@@ -1285,7 +1290,7 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
   return true;
 }
 
-CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel()
+CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel() const
 {
   CFileItemPtr fileItem;
   {
