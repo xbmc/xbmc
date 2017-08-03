@@ -1,6 +1,6 @@
 --- Makefile.pre.in.orig	2015-10-09 19:10:15.042905069 +0200
 +++ Makefile.pre.in	2015-10-09 19:11:01.513642241 +0200
-@@ -1160,8 +1160,6 @@
+@@ -1148,8 +1148,6 @@
  $(srcdir)/Lib/$(PLATDIR):
  	mkdir $(srcdir)/Lib/$(PLATDIR)
  	cp $(srcdir)/Lib/plat-generic/regen $(srcdir)/Lib/$(PLATDIR)/regen
