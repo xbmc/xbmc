@@ -1589,7 +1589,7 @@ DVDNavVideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 {
   CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
-  if (lpstream->Seek(i_pos, 0) >= 0)
+  if (lpstream->Seek(i_pos, SEEK_SET) >= 0)
     return 0;
   else
     return -1;
@@ -1598,7 +1598,24 @@ int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
 {
   CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
-  return lpstream->Read(reinterpret_cast<uint8_t *>(buffer), i_read);
+
+  int i_ret = 0;
+  while (i_ret < i_read)
+  {
+    int i_r;
+    i_r = lpstream->Read(reinterpret_cast<uint8_t *>(buffer) + i_ret, i_read - i_ret);
+    if (i_r < 0)
+    {
+      CLog::Log(LOGERROR,"read error dvd_inputstreamnavigator_cb_read");
+      return i_r;
+    }
+    if (i_r == 0)
+      break;
+
+    i_ret += i_r;
+  }
+
+  return i_ret;
 }
 
 int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks)
