@@ -680,14 +680,14 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   return channeltag ? channeltag->ChannelNumber() : 0;
 }
 
 std::string CPVRTimerInfoTag::ChannelName() const
 {
   std::string strReturn;
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   if (channeltag)
     strReturn = channeltag->ChannelName();
   else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
@@ -699,7 +699,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
 std::string CPVRTimerInfoTag::ChannelIcon() const
 {
   std::string strReturn;
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   if (channeltag)
     strReturn = channeltag->IconPath();
   return strReturn;
@@ -781,7 +781,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
 
   /* check if a valid channel is set */
-  CPVRChannelPtr channel = tag->ChannelTag();
+  CPVRChannelPtr channel = tag->Channel();
   if (!channel)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
@@ -1045,7 +1045,12 @@ void CPVRTimerInfoTag::ClearEpgTag(void)
   SetEpgTag(CPVREpgInfoTagPtr());
 }
 
-CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
+bool CPVRTimerInfoTag::HasChannel() const
+{
+  return m_channel.get() != nullptr;
+}
+
+CPVRChannelPtr CPVRTimerInfoTag::Channel() const
 {
   return m_channel;
 }

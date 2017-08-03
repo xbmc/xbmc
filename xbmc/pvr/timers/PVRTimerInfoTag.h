@@ -92,7 +92,18 @@ namespace PVR
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;
-    CPVRChannelPtr ChannelTag(void) const;
+
+    /*!
+     * @brief Check whether this timer has an associated channel.
+     * @return True if this timer has a channel set, false otherwise.
+     */
+    bool HasChannel() const;
+
+    /*!
+     * @brief Get the channel associated with this timer, if any.
+     * @return the channel or null if non is associated with this timer.
+     */
+    CPVRChannelPtr Channel() const;
 
     /*!
      * @brief updates this timer excluding the state of any children. See UpdateChildState/ResetChildState.

@@ -656,7 +656,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
       {
         bool bDeleteActiveItem = !bCurrentlyActiveOnly || (*timerIt)->IsRecording();
         bool bDeleteTimerRuleItem = bDeleteTimerRules || !(*timerIt)->IsTimerRule();
-        bool bChannelsMatch = (*timerIt)->ChannelTag() == channel;
+        bool bChannelsMatch = (*timerIt)->HasChannel() && (*timerIt)->Channel() == channel;
 
         if (bDeleteActiveItem && bDeleteTimerRuleItem && bChannelsMatch)
         {
@@ -769,7 +769,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
       return timer;
 
     // try to find a matching timer for the tag.
-    const CPVRChannelPtr channel(epgTag->ChannelTag());
+    const CPVRChannelPtr channel(epgTag->Channel());
     if (channel)
     {
       CSingleLock lock(m_critSection);
@@ -815,7 +815,7 @@ bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) c
       if (timersEntry->IsRecording() &&
           !timersEntry->IsTimerRule() &&
           timersEntry->m_iClientId == recording.ClientID() &&
-          timersEntry->ChannelTag()->UniqueID() == recording.ChannelUid() &&
+          timersEntry->m_iClientChannelUid == recording.ChannelUid() &&
           timersEntry->StartAsUTC() <= recording.RecordingTimeAsUTC() &&
           timersEntry->EndAsUTC() >= recording.EndTimeAsUTC())
       {

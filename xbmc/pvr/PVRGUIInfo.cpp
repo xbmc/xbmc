@@ -885,7 +885,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     CPVREpgInfoTagPtr epgTag(GetPlayingTag());
     CPVRChannelPtr channel;
     if (epgTag)
-      channel = epgTag->ChannelTag();
+      channel = epgTag->Channel();
 
     if (!epgTag || !epgTag->IsActive() ||
         !channel || *channel != *currentChannel)

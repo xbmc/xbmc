@@ -1048,7 +1048,7 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
       {
         // Add dummy EPG tag associated with this channel
         epgTag = CPVREpgInfoTag::CreateDefaultTag();
-        epgTag->SetPVRChannel(channel);
+        epgTag->SetChannel(channel);
         results.Add(CFileItemPtr(new CFileItem(epgTag)));
       }
     }

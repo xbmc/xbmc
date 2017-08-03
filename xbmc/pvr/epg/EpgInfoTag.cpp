@@ -59,7 +59,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(void) :
 {
 }
 
-CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
+CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
     m_bNotify(false),
     m_iBroadcastId(-1),
     m_iGenreType(0),
@@ -74,7 +74,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &pvrChann
     m_strIconPath(strIconPath),
     m_epg(epg),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
-    m_pvrChannel(pvrChannel)
+    m_channel(channel)
 {
   UpdatePath();
 }
@@ -141,7 +141,7 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
   bool bChannelMatch(false);
   {
     CSingleLock lock(m_critSection);
-    bChannelMatch = (m_pvrChannel == right.m_pvrChannel);
+    bChannelMatch = (m_channel == right.m_channel);
   }
   return (bChannelMatch &&
           m_bNotify            == right.m_bNotify &&
@@ -220,7 +220,7 @@ CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
   CDateTime now = CDateTime::GetUTCDateTime();
 
   CPVRChannelPtr channel(CServiceBroker::GetPVRManager().Clients()->GetPlayingChannel());
-  if (channel == ChannelTag())
+  if (channel == Channel())
   {
     // Timeshifting active?
     time_t time = CServiceBroker::GetPVRManager().Clients()->GetPlayingTime();
@@ -343,7 +343,7 @@ bool CPVREpgInfoTag::IsParentalLocked() const
   CPVRChannelPtr channel;
   {
     CSingleLock lock(m_critSection);
-    channel = m_pvrChannel;
+    channel = m_channel;
   }
 
   return channel && CServiceBroker::GetPVRManager().IsParentalLocked(channel);
@@ -526,41 +526,41 @@ CPVRTimerInfoTagPtr CPVREpgInfoTag::Timer(void) const
   return m_timer;
 }
 
-void CPVREpgInfoTag::SetPVRChannel(const PVR::CPVRChannelPtr &channel)
+void CPVREpgInfoTag::SetChannel(const PVR::CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
-  m_pvrChannel = channel;
+  m_channel = channel;
 }
 
-bool CPVREpgInfoTag::HasPVRChannel(void) const
+bool CPVREpgInfoTag::HasChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel.get() != NULL;
+  return m_channel.get() != NULL;
 }
 
-int CPVREpgInfoTag::PVRChannelNumber(void) const
+int CPVREpgInfoTag::ChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
+  return m_channel ? m_channel->ChannelNumber() : -1;
 }
 
-std::string CPVREpgInfoTag::PVRChannelName(void) const
+std::string CPVREpgInfoTag::ChannelName(void) const
 {
   std::string strReturn;
 
   {
     CSingleLock lock(m_critSection);
-    if (m_pvrChannel)
-      strReturn = m_pvrChannel->ChannelName();
+    if (m_channel)
+      strReturn = m_channel->ChannelName();
   }
 
   return strReturn;
 }
 
-const PVR::CPVRChannelPtr CPVREpgInfoTag::ChannelTag(void) const
+const PVR::CPVRChannelPtr CPVREpgInfoTag::Channel() const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel;
+  return m_channel;
 }
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
@@ -568,7 +568,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
   bool bChanged(false);
   {
     CSingleLock lock(m_critSection);
-    bChanged = (m_pvrChannel != tag.m_pvrChannel);
+    bChanged = (m_channel != tag.m_channel);
   }
 
   {
@@ -626,7 +626,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
 
       {
         CSingleLock lock(m_critSection);
-        m_pvrChannel       = tag.m_pvrChannel;
+        m_channel          = tag.m_channel;
       }
 
       if (m_iGenreType == EPG_GENRE_USE_STRING)

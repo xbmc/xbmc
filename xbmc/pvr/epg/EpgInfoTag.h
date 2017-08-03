@@ -64,7 +64,7 @@ namespace PVR
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
+    CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel, const std::string &strTableName = "", const std::string &strIconPath = "");
 
     CPVREpgInfoTag(const CPVREpgInfoTag &tag) = delete;
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
@@ -365,22 +365,22 @@ namespace PVR
      * @brief Change the channel tag of this epg tag
      * @param channel The new channel
      */
-    void SetPVRChannel(const PVR::CPVRChannelPtr &channel);
+    void SetChannel(const PVR::CPVRChannelPtr &channel);
 
     /*!
      * @return True if this tag has a PVR channel set.
      */
-    bool HasPVRChannel(void) const;
+    bool HasChannel(void) const;
 
-    int PVRChannelNumber(void) const;
+    int ChannelNumber(void) const;
 
-    std::string PVRChannelName(void) const;
+    std::string ChannelName(void) const;
 
     /*!
      * @brief Get the channel that plays this event.
      * @return a pointer to the channel.
      */
-    const PVR::CPVRChannelPtr ChannelTag(void) const;
+    const PVR::CPVRChannelPtr Channel(void) const;
 
     /*!
      * @brief Persist this tag in the database.
@@ -461,7 +461,7 @@ namespace PVR
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
 
     CCriticalSection         m_critSection;
-    PVR::CPVRChannelPtr      m_pvrChannel;
+    PVR::CPVRChannelPtr      m_channel;
     PVR::CPVRRecordingPtr    m_recording;
   };
 }

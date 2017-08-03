@@ -139,8 +139,8 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
 
   if (!tag->Icon().empty())
     SetIconImage(tag->Icon());
-  else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
-    SetIconImage(tag->ChannelTag()->IconPath());
+  else if (tag->HasChannel() && !tag->Channel()->IconPath().empty())
+    SetIconImage(tag->Channel()->IconPath());
 
   FillInMimeType(false);
 }
@@ -3589,7 +3589,7 @@ CFileItem CFileItem::GetItemToPlay() const
 {
   if (HasEPGInfoTag())
   {
-    const CPVRChannelPtr channel(GetEPGInfoTag()->ChannelTag());
+    const CPVRChannelPtr channel(GetEPGInfoTag()->Channel());
     if (channel)
       return CFileItem(channel);
   }
