@@ -389,13 +389,6 @@ namespace PVR
     void TriggerSearchMissingChannelIcons(void);
 
     /*!
-     * @brief Update the channel that is currently active.
-     * @param item The new channel.
-     * @return True if it was updated correctly, false otherwise.
-     */
-    bool UpdateItem(CFileItem& item);
-
-    /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */
@@ -408,7 +401,7 @@ namespace PVR
     int GetStartTime(void) const;
 
     /*!
-     * @brief Update the current playing file in the guiinfomanager and application.
+     * @brief Update the currently playing file in the guiinfomanager.
      */
     void UpdateCurrentFile(void);
 

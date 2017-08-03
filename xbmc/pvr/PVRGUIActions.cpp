@@ -1121,7 +1121,7 @@ namespace PVR
       StartPlayback(new CFileItem(channel), bFullscreen);
 
       int iChannelInfoDisplayTime = m_settings.GetIntValue(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
-      if ( iChannelInfoDisplayTime > 0)
+      if (iChannelInfoDisplayTime > 0)
         CServiceBroker::GetPVRManager().ShowPlayerInfo(iChannelInfoDisplayTime);
 
       return true;

@@ -33,7 +33,6 @@
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
 #include "PlayListPlayer.h"
 #include "pvr/addons/PVRClients.h"
@@ -861,7 +860,7 @@ void CPVRManager::UpdateCurrentChannel(void)
       !IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag()))
   {
     m_currentFile.reset(new CFileItem(playingChannel));
-    UpdateItem(*m_currentFile);
+    UpdateCurrentFile();
     m_bIsChannelPreview = false;
   }
 }
@@ -869,77 +868,9 @@ void CPVRManager::UpdateCurrentChannel(void)
 void CPVRManager::UpdateCurrentFile(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_currentFile)
-    UpdateItem(*m_currentFile);
-}
 
-bool CPVRManager::UpdateItem(CFileItem& item)
-{
-  /* Don't update if a recording is played */
-  if (item.IsPVRRecording())
-    return false;
-
-  if (!item.IsPVRChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager - %s - no channel tag provided", __FUNCTION__);
-    return false;
-  }
-
-  CSingleLock lock(m_critSection);
-  if (!m_currentFile || !m_currentFile->GetPVRChannelInfoTag() || !item.GetPVRChannelInfoTag() ||
-      *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
-    return false;
-
-  if (!m_bIsChannelPreview)
-    g_application.SetCurrentFileItem(*m_currentFile);
-  
-  g_infoManager.SetCurrentItem(m_currentFile);
-
-  CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
-  CPVREpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
-
-  if (channelTag->IsRadio())
-  {
-    CMusicInfoTag* musictag = item.GetMusicInfoTag();
-    if (musictag)
-    {
-      musictag->SetTitle(epgTagNow
-                         ? epgTagNow->Title()
-                         : m_settings.GetBoolValue(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE)
-                            ? ""
-                            : g_localizeStrings.Get(19055)); // no information available
-      if (epgTagNow)
-        musictag->SetGenre(epgTagNow->Genre());
-      musictag->SetDuration(epgTagNow ? epgTagNow->GetDuration() : 3600);
-      musictag->SetURL(channelTag->Path());
-      musictag->SetArtist(channelTag->ChannelName());
-      musictag->SetAlbumArtist(channelTag->ChannelName());
-      musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
-    }
-  }
-  else
-  {
-    CVideoInfoTag *videotag = item.GetVideoInfoTag();
-    if (videotag)
-    {
-      videotag->m_strTitle = epgTagNow
-        ? epgTagNow->Title()
-        : m_settings.GetBoolValue(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE)
-          ? ""
-          : g_localizeStrings.Get(19055); // no information available
-      if (epgTagNow)
-        videotag->m_genre = epgTagNow->Genre();
-      videotag->m_strPath = channelTag->Path();
-      videotag->m_strFileNameAndPath = channelTag->Path();
-      videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
-      videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
-      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNumber() : 0;
-    }
-  }
-
-  return false;
+  if (m_currentFile && m_currentFile->IsPVRChannel())
+    g_infoManager.SetCurrentItem(m_currentFile);
 }
 
 void CPVRManager::ChannelPreviewUp()
