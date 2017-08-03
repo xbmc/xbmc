@@ -10343,7 +10343,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         number = StringUtils::Format("%i", item->GetPVRChannelInfoTag()->SubChannelNumber());
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
         number = StringUtils::Format("%i", item->GetEPGInfoTag()->ChannelTag()->SubChannelNumber());
-      if (item->HasPVRTimerInfoTag())
+      if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasChannel())
         number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->ChannelTag()->SubChannelNumber());
 
       return number;

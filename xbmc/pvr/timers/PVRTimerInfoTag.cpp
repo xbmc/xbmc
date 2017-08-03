@@ -1045,6 +1045,11 @@ void CPVRTimerInfoTag::ClearEpgTag(void)
   SetEpgTag(CPVREpgInfoTagPtr());
 }
 
+bool CPVRTimerInfoTag::HasChannel() const
+{
+  return m_channel.get() != nullptr;
+}
+
 CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
 {
   return m_channel;
