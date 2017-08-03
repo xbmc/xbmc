@@ -4672,11 +4672,6 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
-void CApplication::SetCurrentFileItem(const CFileItem& item)
-{
-  m_itemCurrentFile.reset(new CFileItem(item));
-}
-
 CFileItem& CApplication::CurrentUnstackedItem()
 {
   if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
