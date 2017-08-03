@@ -77,6 +77,6 @@ private:
   CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&);
   ~CGenericTouchActionHandler() override = default;
 
-  void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, int pointers = 1);
+  void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, float x3 = 0.0f, float y3 = 0.0f, int pointers = 1);
   void focusControl(float x, float y);
 };

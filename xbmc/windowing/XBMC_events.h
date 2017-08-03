@@ -99,6 +99,7 @@ typedef struct XBMC_TouchEvent {
   int action;           /* action ID */
   float x, y;           /* The X/Y coordinates of the mouse */
   float x2, y2;         /* Additional X/Y coordinates */
+  float x3, y3;         /* Additional X/Y coordinates */
   int pointers;         /* number of touch pointers */
 } XBMC_TouchEvent;
 
