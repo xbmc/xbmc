@@ -220,11 +220,6 @@ CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel()
   return CServiceBroker::GetPVRManager().GetCurrentChannel();
 }
 
-bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
-{
-  return CServiceBroker::GetPVRManager().UpdateItem(item);
-}
-
 CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
 {
   m_eof = IsEOF();

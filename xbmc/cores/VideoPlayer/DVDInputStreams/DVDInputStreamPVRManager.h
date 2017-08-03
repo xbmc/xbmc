@@ -70,8 +70,6 @@ public:
   bool CanPause() override;
   void Pause(bool bPaused);
 
-  bool UpdateItem(CFileItem& item);
-
   /* overloaded is streamtype to support m_pOtherStream */
   bool IsStreamType(DVDStreamType type) const;
 
