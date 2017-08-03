@@ -26,21 +26,29 @@
 #include "guilib/GUIWindowManager.h"
 #include "windowing/WindowingFactory.h"
 
+#include "utils/log.h"
+
 #include <cmath>
+#include <numeric>
 
 //time for reaching velocity 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0f
 //minimum speed for doing inertial scroll is 100 pixels / s
 #define MINIMUM_SPEED_FOR_INERTIA 100
+//maximum time between last movement and gesture end in ms to consider as moving
+#define MAXIMUM_DELAY_FOR_INERTIA 200
 
 CInertialScrollingHandler::CInertialScrollingHandler()
 : m_bScrolling(false)
 , m_bAborting(false)
-, m_iFlickVelocity(CPoint(0,0))
 , m_iLastGesturePoint(CPoint(0,0))
-, m_inertialDeacceleration(CPoint(0,0))
 , m_inertialStartTime(0)
 {
+}
+
+unsigned int CInertialScrollingHandler::PanPoint::TimeElapsed() const
+{
+  return CTimeUtils::GetFrameTime() - time;
 }
 
 bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
@@ -56,6 +64,10 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   if( action->GetID() == ACTION_GESTURE_PAN )
   {
     g_application.ResetScreenSaver();
+    if (!m_bScrolling)
+    {
+      m_panPoints.emplace_back(CTimeUtils::GetFrameTime(), CVector{action->GetAmount(4), action->GetAmount(5)});
+    }
     return false;
   }
 
@@ -66,6 +78,10 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     m_bAborting = true;//lets abort
   }
 
+  //trim saved pan points to time range that qualifies for inertial scrolling
+  while (!m_panPoints.empty() && m_panPoints.front().TimeElapsed() > MAXIMUM_DELAY_FOR_INERTIA)
+    m_panPoints.pop_front();
+
   //on begin/tap stop all inertial scrolling
   if ( action->GetID() == ACTION_GESTURE_BEGIN )
   {
@@ -73,18 +89,33 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     //for making switching between multiple lists
     //possible
     CGUIMessage message(GUI_MSG_EXCLUSIVE_MOUSE, 0, 0);
-    g_windowManager.SendMessage(message);     
+    g_windowManager.SendMessage(message);
     m_bScrolling = false;
     //wakeup screensaver on pan begin
     g_application.ResetScreenSaver();    
-    g_application.WakeUpScreenSaverAndDPMS();    
+    g_application.WakeUpScreenSaverAndDPMS();
   }
-  else//do we need to animate inertial scrolling?
+  else if(action->GetID() == ACTION_GESTURE_END && !m_panPoints.empty()) //do we need to animate inertial scrolling?
   {
-    if (action->GetID() == ACTION_GESTURE_END && ( fabs(action->GetAmount(0)) > MINIMUM_SPEED_FOR_INERTIA || fabs(action->GetAmount(1)) > MINIMUM_SPEED_FOR_INERTIA ) )
+    PanPoint lastPanPoint = m_panPoints.front();
+
+    // Calculate velocity in the last MAXIMUM_DELAY_FOR_INERTIA milliseconds.
+    // Do not use the velocity given by the ACTION_GESTURE_END data - it is calculated
+    // for the whole duration of the touch and thus useless for inertia. The user
+    // may scroll around for a few seconds and then only at the end flick in one
+    // direction. Only the last flick should be relevant here.
+    auto velocitySum = std::accumulate(m_panPoints.cbegin(), m_panPoints.cend(), CVector{}, [](CVector val, PanPoint const& p) {
+      return val + p.velocity;
+    });
+    auto velocityX = velocitySum.x / m_panPoints.size();
+    auto velocityY = velocitySum.y / m_panPoints.size();
+
+    CLog::LogF(LOGDEBUG, "Avg touch velocity: %f,%f up to and including touch at %u ms ago", velocityX, velocityY, m_panPoints.front().TimeElapsed());
+
+    if (std::abs(velocityX) > MINIMUM_SPEED_FOR_INERTIA || std::abs(velocityY) > MINIMUM_SPEED_FOR_INERTIA)
     {
       bool inertialRequested = false;
-      CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, (int)action->GetAmount(2), (int)action->GetAmount(3));
+      CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (velocityX), static_cast<int> (velocityY));
 
       //ask if the control wants inertial scrolling
       if(g_windowManager.SendMessage(message))
@@ -106,8 +137,8 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 
       if( inertialRequested )                                                                                                             
       {        
-        m_iFlickVelocity.x = action->GetAmount(0)/2;//in pixels per sec
-        m_iFlickVelocity.y = action->GetAmount(1)/2;//in pixels per sec     
+        m_iFlickVelocity.x = velocityX;//in pixels per sec
+        m_iFlickVelocity.y = velocityY;//in pixels per sec
         m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
         m_iLastGesturePoint.y = action->GetAmount(3);//last gesture point y
 
@@ -117,13 +148,19 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;    
         m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
 
-        //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
+        //CLog::Log(LOGDEBUG, "initial pos: %f,%f velocity: %f,%f dec: %f,%f", m_iLastGesturePoint.x, m_iLastGesturePoint.y, m_iFlickVelocity.x, m_iFlickVelocity.y, m_inertialDeacceleration.x, m_inertialDeacceleration.y);
         m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
         ret = true;
         m_bScrolling = true;//activate the inertial scrolling animation
       }
     }
   }
+
+  if(action->GetID() == ACTION_GESTURE_BEGIN || action->GetID() == ACTION_GESTURE_END || action->GetID() == ACTION_GESTURE_ABORT)
+  {
+    m_panPoints.clear();
+  }
+
   return ret;
 }
 
@@ -132,8 +169,8 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
   //do inertial scroll animation by sending gesture_pan
   if( m_bScrolling)
   {
-    float yMovement = 0.0;
     float xMovement = 0.0;
+    float yMovement = 0.0;
 
     //decrease based on negative acceleration
     //calc the overall inertial scrolling time in secs
@@ -143,36 +180,31 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     if ( absoluteInertialTime < TIME_TO_ZERO_SPEED )
     {
       //v = s/t -> s = t * v
-      yMovement = frameTime * m_iFlickVelocity.y;
       xMovement = frameTime * m_iFlickVelocity.x;
+      yMovement = frameTime * m_iFlickVelocity.y;
+
+      //save new gesture point
+      m_iLastGesturePoint.x += xMovement;
+      m_iLastGesturePoint.y += yMovement;
+
+      //CLog::Log(LOGDEBUG, "@%f: %f,%f offset: %f, %f velocity: %f,%f dec: %f,%f", absoluteInertialTime,  m_iLastGesturePoint.x, m_iLastGesturePoint.y, xMovement, yMovement, m_iFlickVelocity.x, m_iFlickVelocity.y, m_inertialDeacceleration.x, m_inertialDeacceleration.y);
+      //fire the pan action
+      g_application.OnAction(CAction(ACTION_GESTURE_PAN, 0, m_iLastGesturePoint.x, m_iLastGesturePoint.y, xMovement, yMovement, m_iFlickVelocity.x, m_iFlickVelocity.y));
 
       //calc new velocity based on deacceleration
       //v = a*t + v0
+      m_iFlickVelocity.x = m_inertialDeacceleration.x * frameTime + m_iFlickVelocity.x;
       m_iFlickVelocity.y = m_inertialDeacceleration.y * frameTime + m_iFlickVelocity.y;
-      m_iFlickVelocity.x = m_inertialDeacceleration.x * frameTime + m_iFlickVelocity.x;      
-
-      //CLog::Log(LOGDEBUG,"velocity: %f dec: %f time: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y, absoluteInertialTime);      
 
       //check if the signs are equal - which would mean we deaccelerated to long and reversed the direction
-      if( (m_inertialDeacceleration.y < 0) == (m_iFlickVelocity.y < 0) )
-      {
-        m_iFlickVelocity.y = 0;
-      }
-
       if( (m_inertialDeacceleration.x < 0) == (m_iFlickVelocity.x < 0) )
       {
         m_iFlickVelocity.x = 0;
       }
-    }
-
-    //if we have movement
-    if( xMovement || yMovement )
-    {
-      //fire the pan action
-      g_application.OnAction(CAction(ACTION_GESTURE_PAN, 0, m_iLastGesturePoint.x, m_iLastGesturePoint.y, xMovement, yMovement));
-      //save new gesture point
-      m_iLastGesturePoint.y += yMovement;
-      m_iLastGesturePoint.x += xMovement;      
+      if( (m_inertialDeacceleration.y < 0) == (m_iFlickVelocity.y < 0) )
+      {
+        m_iFlickVelocity.y = 0;
+      }
     }   
     else//no movement -> done
     {
@@ -184,11 +216,11 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
   if( m_bAborting )
   {
     //fire gesture end action
-    g_application.OnAction(CAction(ACTION_GESTURE_END, 0, (float)0.0, (float)0.0, (float)0.0, (float)0.0));
+    g_application.OnAction(CAction(ACTION_GESTURE_END, 0, 0.0f, 0.0f, 0.0f, 0.0f));
     m_bAborting = false;
     m_bScrolling = false; //stop scrolling
     m_iFlickVelocity.x = 0;
-    m_iFlickVelocity.y = 0;      
+    m_iFlickVelocity.y = 0;
   }
 
   return true;
