@@ -1353,7 +1353,7 @@ namespace PVR
     {
       if (item->IsEPG())
       {
-        if (item->GetEPGInfoTag()->HasPVRChannel())
+        if (item->GetEPGInfoTag()->HasChannel())
         {
           iClientID = item->GetEPGInfoTag()->Channel()->ClientID();
           menuCategory = PVR_MENUHOOK_EPG;

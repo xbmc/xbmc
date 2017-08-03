@@ -142,7 +142,7 @@ bool CPVREpgSearchFilter::FilterEntry(const CPVREpgInfoTagPtr &tag) const
       MatchSearchTerm(tag) &&
       MatchTimers(tag) &&
       MatchRecordings(tag)) &&
-      (!tag->HasPVRChannel() ||
+      (!tag->HasChannel() ||
        (MatchChannelType(tag) &&
         MatchChannelNumber(tag) &&
         MatchChannelGroup(tag) &&

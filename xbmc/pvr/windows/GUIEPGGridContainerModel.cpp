@@ -79,7 +79,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   for (int i = 0; i < items->Size(); ++i)
   {
     fileItem = items->Get(i);
-    if (!fileItem->HasEPGInfoTag() || !fileItem->GetEPGInfoTag()->HasPVRChannel())
+    if (!fileItem->HasEPGInfoTag() || !fileItem->GetEPGInfoTag()->HasChannel())
       continue;
 
     m_programmeItems.emplace_back(fileItem);
@@ -224,7 +224,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
         else
         {
           CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
-          gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
+          gapTag->SetChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block + blockDelta; i >= block - itemSize + sizeDelta; --i)
           {
@@ -249,7 +249,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
           else
           {
             CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
-            gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
+            gapTag->SetChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
             CFileItemPtr gapItem(new CFileItem(gapTag));
             m_gridIndex[channel][block].item = gapItem;
           }

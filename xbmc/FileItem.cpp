@@ -139,7 +139,7 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
 
   if (!tag->Icon().empty())
     SetIconImage(tag->Icon());
-  else if (tag->HasPVRChannel() && !tag->Channel()->IconPath().empty())
+  else if (tag->HasChannel() && !tag->Channel()->IconPath().empty())
     SetIconImage(tag->Channel()->IconPath());
 
   FillInMimeType(false);

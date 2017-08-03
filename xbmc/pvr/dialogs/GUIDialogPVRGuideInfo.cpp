@@ -78,7 +78,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
   {
     bReturn = true;
 
-    if (!m_progItem || !m_progItem->HasPVRChannel())
+    if (!m_progItem || !m_progItem->HasChannel())
     {
       /* invalid channel */
       CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067});

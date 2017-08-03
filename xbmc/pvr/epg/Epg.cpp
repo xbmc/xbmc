@@ -310,7 +310,7 @@ void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
   if (newTag)
   {
     newTag->Update(tag);
-    newTag->SetPVRChannel(channel);
+    newTag->SetChannel(channel);
     newTag->SetEpg(this);
     newTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(newTag));
     newTag->SetRecording(CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(newTag));
@@ -438,7 +438,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase /* 
 
     infoTag->Update(*tag, bNewTag);
     infoTag->SetEpg(this);
-    infoTag->SetPVRChannel(m_pvrChannel);
+    infoTag->SetChannel(m_pvrChannel);
 
     if (bUpdateDatabase)
       m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
@@ -856,7 +856,7 @@ void CPVREpg::SetChannel(const PVR::CPVRChannelPtr &channel)
     }
     m_pvrChannel = channel;
     for (std::map<CDateTime, CPVREpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); ++it)
-      it->second->SetPVRChannel(m_pvrChannel);
+      it->second->SetChannel(m_pvrChannel);
   }
 }
 
