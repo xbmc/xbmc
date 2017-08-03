@@ -665,7 +665,6 @@ extern "C" {
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
-    unsigned int (__cdecl* GetChannelSwitchDelay)(void);
     bool (__cdecl* CanPauseStream)(void);
     void (__cdecl* PauseStream)(bool);
     bool (__cdecl* CanSeekStream)(void);
