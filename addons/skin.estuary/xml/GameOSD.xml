@@ -27,10 +27,10 @@
 					<ondown>11100</ondown>
 					<orientation>vertical</orientation>
 					<control type="button" id="11102">
-						<description>Resume button</description>
+						<description>Pause/Resume button</description>
 						<width>700</width>
 						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[13404]</label>
+						<label>$LOCALIZE[35224]</label>
 						<label2>Select + X</label2>
 						<onclick>Play</onclick>
 					</control>

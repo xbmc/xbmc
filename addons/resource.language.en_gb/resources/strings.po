@@ -17048,7 +17048,13 @@ msgctxt "#35223"
 msgid "Input settings"
 msgstr ""
 
-#empty strings from id 35224 to 35249
+#. Label of button in the in-game menu for pausing and resuming playback
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35224"
+msgid "Pause / Resume"
+msgstr ""
+
+#empty strings from id 35225 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"
