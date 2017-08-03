@@ -61,13 +61,13 @@ namespace PVR
     }
     else if (m_item->IsEPG())
     {
-      return m_item->GetEPGInfoTag()->ChannelTag();
+      return m_item->GetEPGInfoTag()->Channel();
     }
     else if (m_item->IsPVRTimer())
     {
       const CPVREpgInfoTagPtr epgTag(m_item->GetPVRTimerInfoTag()->GetEpgInfoTag());
       if (epgTag)
-        return epgTag->ChannelTag();
+        return epgTag->Channel();
     }
     else
     {
@@ -130,7 +130,7 @@ namespace PVR
     }
     else if (m_item->IsEPG())
     {
-      const CPVRChannelPtr channel(m_item->GetEPGInfoTag()->ChannelTag());
+      const CPVRChannelPtr channel(m_item->GetEPGInfoTag()->Channel());
       return (channel && channel->IsRadio());
     }
     else if (m_item->IsPVRRecording())

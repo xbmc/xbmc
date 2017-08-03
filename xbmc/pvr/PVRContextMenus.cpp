@@ -202,8 +202,8 @@ namespace PVR
       if (epg)
         return !epg->Timer() &&
                epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime() &&
-               epg->ChannelTag() &&
-               CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->ChannelTag()->ClientID()).SupportsTimers();
+               epg->Channel() &&
+               CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->Channel()->ClientID()).SupportsTimers();
 
       return false;
     }
@@ -505,7 +505,7 @@ namespace PVR
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
       {
-        const CPVRChannelPtr channel(epg->ChannelTag());
+        const CPVRChannelPtr channel(epg->Channel());
         return (channel && CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG));
       }
 

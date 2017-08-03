@@ -84,7 +84,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
 
     m_programmeItems.emplace_back(fileItem);
 
-    channel = fileItem->GetEPGInfoTag()->ChannelTag();
+    channel = fileItem->GetEPGInfoTag()->Channel();
     if (!channel)
       continue;
 
@@ -291,7 +291,7 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
         if (!bFoundPrevChannel && channelUid > -1)
         {
-          chan = tag->ChannelTag();
+          chan = tag->Channel();
           if (chan && chan->UniqueID() == channelUid)
           {
             newChannelIndex = channel;

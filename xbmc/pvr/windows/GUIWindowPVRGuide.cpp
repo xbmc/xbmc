@@ -568,7 +568,7 @@ void CGUIWindowPVRGuideBase::OnInputDone()
         CGUIEPGGridContainer* epgGridContainer = GetGridControl();
         if (epgGridContainer)
         {
-          epgGridContainer->SetChannel(tag->ChannelTag());
+          epgGridContainer->SetChannel(tag->Channel());
           return;
         }
       }

@@ -7360,7 +7360,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
         CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
-        bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
+        bReturn = (epgTag && epgTag->IsActive() && epgTag->Channel());
       }
       break;
     case VISUALISATION_HAS_PRESETS:
@@ -10342,9 +10342,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasPVRChannelInfoTag())
         number = StringUtils::Format("%i", item->GetPVRChannelInfoTag()->SubChannelNumber());
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-        number = StringUtils::Format("%i", item->GetEPGInfoTag()->ChannelTag()->SubChannelNumber());
+        number = StringUtils::Format("%i", item->GetEPGInfoTag()->Channel()->SubChannelNumber());
       if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasChannel())
-        number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->ChannelTag()->SubChannelNumber());
+        number = StringUtils::Format("%i", item->GetPVRTimerInfoTag()->Channel()->SubChannelNumber());
 
       return number;
     }
@@ -10355,9 +10355,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasPVRChannelInfoTag())
         channel = item->GetPVRChannelInfoTag();
       else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-        channel = item->GetEPGInfoTag()->ChannelTag();
+        channel = item->GetEPGInfoTag()->Channel();
       else if (item->HasPVRTimerInfoTag())
-        channel = item->GetPVRTimerInfoTag()->ChannelTag();
+        channel = item->GetPVRTimerInfoTag()->Channel();
 
       return channel ?
           channel->FormattedChannelNumber() :
@@ -10770,7 +10770,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasPVRChannel())
       {
-        return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
+        return pItem->GetEPGInfoTag()->Channel()->IsEncrypted();
       }
     }
     else if (condition == LISTITEM_IS_STEREOSCOPIC)

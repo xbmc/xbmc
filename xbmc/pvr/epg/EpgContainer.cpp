@@ -419,7 +419,7 @@ CPVREpgInfoTagPtr CPVREpgContainer::GetTagById(const CPVRChannelPtr &channel, un
 
 std::vector<CPVREpgInfoTagPtr> CPVREpgContainer::GetEpgTagsForTimer(const CPVRTimerInfoTagPtr &timer) const
 {
-  CPVRChannelPtr channel(timer->ChannelTag());
+  CPVRChannelPtr channel(timer->Channel());
 
   if (!channel)
     channel = timer->UpdateChannel();

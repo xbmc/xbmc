@@ -380,7 +380,7 @@ namespace PVR
      * @brief Get the channel that plays this event.
      * @return a pointer to the channel.
      */
-    const PVR::CPVRChannelPtr ChannelTag(void) const;
+    const PVR::CPVRChannelPtr Channel(void) const;
 
     /*!
      * @brief Persist this tag in the database.

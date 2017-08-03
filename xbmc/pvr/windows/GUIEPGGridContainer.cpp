@@ -692,7 +692,7 @@ void CGUIEPGGridContainer::UpdateItems()
       else
         newBlockIndex = (eventStart - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
 
-      const CPVRChannelPtr channel(prevSelectedEpgTag->ChannelTag());
+      const CPVRChannelPtr channel(prevSelectedEpgTag->Channel());
       if (channel)
         channelUid = channel->UniqueID();
 
@@ -702,7 +702,7 @@ void CGUIEPGGridContainer::UpdateItems()
     {
       const GridItem *currItem(GetItem(m_channelCursor));
       if (currItem)
-        channelUid = currItem->item->GetEPGInfoTag()->ChannelTag()->UniqueID();
+        channelUid = currItem->item->GetEPGInfoTag()->Channel()->UniqueID();
 
       const GridItem *prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)
@@ -772,7 +772,7 @@ void CGUIEPGGridContainer::UpdateItems()
         newChannelIndex = iChannelIndex;
       }
       else if (newChannelIndex >= m_gridModel->ChannelItemsSize() ||
-               m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag()->ChannelTag() != prevSelectedEpgTag->ChannelTag())
+               m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag()->Channel() != prevSelectedEpgTag->Channel())
       {
         // default to first channel
         newChannelIndex = 0;

@@ -220,7 +220,7 @@ CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
   CDateTime now = CDateTime::GetUTCDateTime();
 
   CPVRChannelPtr channel(CServiceBroker::GetPVRManager().Clients()->GetPlayingChannel());
-  if (channel == ChannelTag())
+  if (channel == Channel())
   {
     // Timeshifting active?
     time_t time = CServiceBroker::GetPVRManager().Clients()->GetPlayingTime();
@@ -557,7 +557,7 @@ std::string CPVREpgInfoTag::PVRChannelName(void) const
   return strReturn;
 }
 
-const PVR::CPVRChannelPtr CPVREpgInfoTag::ChannelTag(void) const
+const PVR::CPVRChannelPtr CPVREpgInfoTag::Channel() const
 {
   CSingleLock lock(m_critSection);
   return m_pvrChannel;

@@ -103,7 +103,7 @@ namespace PVR
      * @brief Get the channel associated with this timer, if any.
      * @return the channel or null if non is associated with this timer.
      */
-    CPVRChannelPtr ChannelTag(void) const;
+    CPVRChannelPtr Channel() const;
 
     /*!
      * @brief updates this timer excluding the state of any children. See UpdateChildState/ResetChildState.
