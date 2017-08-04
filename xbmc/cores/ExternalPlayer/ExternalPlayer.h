@@ -44,7 +44,6 @@ public:
   bool CanSeek() override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float iPercent) override;
-  float GetPercentage() override;
   void SetVolume(float volume) override {}
   void SetDynamicRangeCompression(long drc) override {}
   bool CanRecord() override { return false; }
@@ -57,8 +56,6 @@ public:
   float GetSubTitleDelay() override;
 
   void SeekTime(int64_t iTime) override;
-  int64_t GetTime() override;
-  int64_t GetTotalTime() override;
   void SetSpeed(float speed) override;
   void DoAudioWork() override {}
 
@@ -77,6 +74,7 @@ public:
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
   void Process() override;
+  float GetPercentage();
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;

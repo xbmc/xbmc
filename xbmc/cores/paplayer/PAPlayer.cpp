@@ -764,6 +764,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       si->m_seekFrame  = -1;
       m_playerGUIData.m_time = time; //update for GUI
       si->m_seekNextAtFrame = 0;
+      CDataCacheCore::GetInstance().SetPlayTimes(0, time, 0, m_playerGUIData.m_totalTime);
     }
     /* if its FF/RW */
     else
@@ -969,6 +970,7 @@ int64_t PAPlayer::GetTimeInternal()
   time = time * 1000.0;
 
   m_playerGUIData.m_time = (int64_t)time; //update for GUI
+  CDataCacheCore::GetInstance().SetPlayTimes(0, time, 0, m_playerGUIData.m_totalTime);
 
   return (int64_t)time;
 }
@@ -1000,11 +1002,6 @@ void PAPlayer::SetTime(int64_t time)
   m_newForcedPlayerTime = time;
 }
 
-int64_t PAPlayer::GetTime()
-{
-  return m_playerGUIData.m_time;
-}
-
 int64_t PAPlayer::GetTotalTime64()
 {
   CSingleLock lock(m_streamsLock);
@@ -1021,11 +1018,6 @@ int64_t PAPlayer::GetTotalTime64()
 void PAPlayer::SetTotalTime(int64_t time)
 {
   m_newForcedTotalTime = time;
-}
-
-int64_t PAPlayer::GetTotalTime()
-{
-  return m_playerGUIData.m_totalTime;
 }
 
 int PAPlayer::GetCacheLevel() const
@@ -1052,14 +1044,14 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!CanSeek()) return;
 
   __int64 seek;
-  if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2 * g_advancedSettings.m_musicTimeSeekForwardBig)
+  if (g_advancedSettings.m_musicUseTimeSeeking && m_playerGUIData.m_totalTime > 2 * g_advancedSettings.m_musicTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
     else
       seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
     seek *= 1000;
-    seek += GetTime();
+    seek += m_playerGUIData.m_time;
   }
   else
   {

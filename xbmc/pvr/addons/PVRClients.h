@@ -639,6 +639,8 @@ namespace PVR
     time_t GetBufferTimeStart() const;
     time_t GetBufferTimeEnd() const;
 
+    bool GetStreamTimes(PVR_STREAM_TIMES *times) const;
+
     int GetClientId(const std::string& strId) const;
 
     bool IsRealTimeStream() const;

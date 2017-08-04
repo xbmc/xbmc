@@ -63,7 +63,6 @@ namespace RETRO
     void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
     //virtual bool SeekScene(bool bPlus = true) override { return false; }
     void SeekPercentage(float fPercent = 0) override;
-    float GetPercentage() override;
     float GetCachePercentage() override;
     void SetMute(bool bOnOff) override;
     //virtual void SetVolume(float volume) override { }
@@ -101,9 +100,6 @@ namespace RETRO
     //virtual float GetActualFPS() override { return 0.0f; }
     void SeekTime(int64_t iTime = 0) override;
     bool SeekTimeRelative(int64_t iTime) override;
-    int64_t GetTime() override;
-    //virtual void SetTime(int64_t time) override { } // Only used by Air Tunes Server
-    int64_t GetTotalTime() override;
     //virtual void SetTotalTime(int64_t time) override { } // Only used by Air Tunes Server
     //virtual int GetSourceBitrate() override { return 0; }
     bool GetStreamDetails(CStreamDetails &details) override;
@@ -162,6 +158,9 @@ namespace RETRO
      * \brief Dump game information (if any) to the debug log.
      */
     void PrintGameInfo(const CFileItem &file) const;
+
+    uint64_t GetTime();
+    uint64_t GetTotalTime();
 
     enum class State
     {

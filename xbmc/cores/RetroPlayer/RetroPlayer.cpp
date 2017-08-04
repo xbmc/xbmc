@@ -260,23 +260,9 @@ void CRetroPlayer::SeekPercentage(float fPercent /* = 0 */)
   else if (fPercent > 100.0f)
     fPercent = 100.0f;
 
-  int64_t totalTime = GetTotalTime();
+  uint64_t totalTime = GetTotalTime();
   if (totalTime != 0)
     SeekTime(static_cast<int64_t>(totalTime * fPercent / 100.0f));
-}
-
-float CRetroPlayer::GetPercentage()
-{
-  if (m_gameClient)
-  {
-    const float timeMs = static_cast<float>(m_gameClient->GetPlayback()->GetTimeMs());
-    const float totalMs = static_cast<float>(m_gameClient->GetPlayback()->GetTotalTimeMs());
-
-    if (totalMs != 0.0f)
-      return timeMs / totalMs * 100.0f;
-  }
-
-  return 0.0f;
 }
 
 float CRetroPlayer::GetCachePercentage()
@@ -320,14 +306,14 @@ bool CRetroPlayer::SeekTimeRelative(int64_t iTime)
   return true;
 }
 
-int64_t CRetroPlayer::GetTime()
+uint64_t CRetroPlayer::GetTime()
 {
   if (m_gameClient)
     return m_gameClient->GetPlayback()->GetTimeMs();
   return 0;
 }
 
-int64_t CRetroPlayer::GetTotalTime()
+uint64_t CRetroPlayer::GetTotalTime()
 {
   if (m_gameClient)
     return m_gameClient->GetPlayback()->GetTotalTimeMs();
@@ -447,6 +433,8 @@ void CRetroPlayer::FrameMove()
       break;
     }
     }
+
+    m_processInfo->SetPlayTimes(0, GetTime(), 0, GetTotalTime());
   }
 }
 

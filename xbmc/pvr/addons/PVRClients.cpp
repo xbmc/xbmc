@@ -1228,6 +1228,19 @@ time_t CPVRClients::GetBufferTimeEnd() const
   return time;
 }
 
+bool CPVRClients::GetStreamTimes(PVR_STREAM_TIMES *times) const
+{
+  PVR_CLIENT client;
+  bool ret = 0;
+
+  if (GetPlayingClient(client))
+  {
+    ret = client->GetStreamTimes(times);
+  }
+
+  return ret;
+}
+
 bool CPVRClients::IsRealTimeStream(void) const
 {
   PVR_CLIENT client;

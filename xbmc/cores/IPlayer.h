@@ -242,7 +242,6 @@ public:
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
-  virtual float GetPercentage(){ return 0;}
   virtual float GetCachePercentage(){ return 0;}
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
@@ -298,10 +297,7 @@ public:
    \return True if the player supports relative seeking, otherwise false
    */
   virtual bool SeekTimeRelative(int64_t iTime) { return false; }
-  /*!
-   \brief current time in milliseconds
-   */
-  virtual int64_t GetTime() { return 0; }
+
   /*!
    \brief Sets the current time. This 
    can be used for injecting the current time. 
@@ -310,10 +306,7 @@ public:
    tracks in reality (like with airtunes)
    */
   virtual void SetTime(int64_t time) { }
-  /*!
-   \brief total time in milliseconds
-   */
-  virtual int64_t GetTotalTime() { return 0; }
+
   /*!
    \brief Set the total time  in milliseconds
    this can be used for injecting the duration in case

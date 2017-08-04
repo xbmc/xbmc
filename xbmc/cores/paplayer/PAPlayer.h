@@ -55,15 +55,12 @@ public:
   bool CanSeek() override;
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
   void SeekPercentage(float fPercent = 0.0f) override;
-  float GetPercentage() override;
   void SetVolume(float volume) override;
   void SetDynamicRangeCompression(long drc) override;
   void SetSpeed(float speed = 0) override;
   int GetCacheLevel() const override;
-  int64_t GetTotalTime() override;
   void SetTotalTime(int64_t time) override;
   void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
-  int64_t GetTime() override;
   void SetTime(int64_t time) override;
   void SeekTime(int64_t iTime = 0) override;
   void GetAudioCapabilities(std::vector<int> &audioCaps) override {}
@@ -91,6 +88,7 @@ protected:
   void OnStartup() override {}
   void Process() override;
   void OnExit() override;
+  float GetPercentage();
 
 private:
   typedef struct

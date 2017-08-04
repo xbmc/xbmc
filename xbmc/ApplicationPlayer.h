@@ -124,6 +124,9 @@ public:
   TextCacheStruct_t* GetTeletextCache();
   std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
+  int64_t GetMinTime() const;
+  int64_t GetMaxTime() const;
+  time_t GetStartTime() const;
   int64_t GetTotalTime() const;
   int   GetVideoStream();
   int   GetVideoStreamCount();

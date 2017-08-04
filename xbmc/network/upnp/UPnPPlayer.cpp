@@ -379,6 +379,8 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   if(dialog)
     dialog->Close();
 
+  m_updateTimer.Set(0);
+
   return true;
 failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer::OpenFile - unable to open file %s", file.GetPath().c_str());
@@ -612,5 +614,13 @@ void CUPnPPlayer::SetSpeed(float speed)
 
 }
 
+void CUPnPPlayer::FrameMove()
+{
+  if (m_updateTimer.IsTimePast())
+  {
+    CDataCacheCore::GetInstance().SetPlayTimes(0, GetTime(), 0, GetTotalTime());
+    m_updateTimer.Set(500);
+  }
+}
 
 } /* namespace UPNP */

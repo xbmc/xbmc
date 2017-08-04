@@ -64,22 +64,36 @@ public:
 
   class IDisplayTime
   {
-    public:
+  public:
     virtual ~IDisplayTime() = default;
     virtual int GetTotalTime() = 0;
     virtual int GetTime() = 0;
   };
 
+  class ITimes
+  {
+  public:
+    struct Times
+    {
+      time_t startTime;
+      double ptsStart;
+      double ptsBegin;
+      double ptsEnd;
+    };
+    virtual ~ITimes() = default;
+    virtual bool GetTimes(Times &times) = 0;
+  };
+
   class IPosTime
   {
-    public:
+  public:
     virtual ~IPosTime() = default;
     virtual bool PosTime(int ms) = 0;
   };
 
   class IChapter
   {
-    public:
+  public:
     virtual ~IChapter() = default;
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
@@ -90,7 +104,7 @@ public:
 
   class IMenus
   {
-    public:
+  public:
     virtual ~IMenus() = default;
     virtual void ActivateButton() = 0;
     virtual void SelectButton(int iButton) = 0;
@@ -116,7 +130,7 @@ public:
 
   class IDemux
   {
-    public:
+  public:
     virtual ~IDemux() = default;
     virtual bool OpenDemux() = 0;
     virtual DemuxPacket* ReadDemux() = 0;
@@ -182,6 +196,7 @@ public:
   virtual IDemux* GetIDemux() { return nullptr; }
   virtual IPosTime* GetIPosTime() { return nullptr; }
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
+  virtual ITimes* GetITimes() { return nullptr; }
 
   const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
 
