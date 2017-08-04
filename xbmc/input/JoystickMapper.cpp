@@ -118,7 +118,12 @@ bool CJoystickMapper::DeserializeButton(const TiXmlElement *pButton, std::string
   const char *szButton = pButton->Value();
   if (szButton != nullptr)
   {
-    const char *szAction = pButton->FirstChild()->Value();
+    const char *szAction = nullptr;
+
+    const TiXmlNode *actionNode = pButton->FirstChild();
+    if (actionNode != nullptr)
+      szAction = actionNode->Value();
+
     if (szAction != nullptr)
     {
       feature = szButton;
