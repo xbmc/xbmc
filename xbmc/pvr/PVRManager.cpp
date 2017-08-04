@@ -163,6 +163,7 @@ CPVRManager::CPVRManager(void) :
       CSettings::SETTING_PVRPARENTAL_DURATION,
       CSettings::SETTING_EPG_HIDENOINFOAVAILABLE,
       CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT,
+      CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO,
       CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
       CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME
     })
@@ -873,7 +874,7 @@ void CPVRManager::UpdateCurrentFile(void)
     g_infoManager.SetCurrentItem(m_currentFile);
 }
 
-void CPVRManager::ChannelPreviewUp()
+void CPVRManager::ChannelPreviewUp(ChannelSwitchMode eSwitchMode)
 {
   CSingleLock lock(m_critSection);
 
@@ -882,11 +883,11 @@ void CPVRManager::ChannelPreviewUp()
   {
     const CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
     if (group)
-      ChannelPreview(group->GetByChannelUp(currentChannel));
+      ChannelPreview(group->GetByChannelUp(currentChannel), eSwitchMode);
   }
 }
 
-void CPVRManager::ChannelPreviewDown()
+void CPVRManager::ChannelPreviewDown(ChannelSwitchMode eSwitchMode)
 {
   CSingleLock lock(m_critSection);
 
@@ -895,34 +896,34 @@ void CPVRManager::ChannelPreviewDown()
   {
     const CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
     if (group)
-      ChannelPreview(group->GetByChannelDown(currentChannel));
+      ChannelPreview(group->GetByChannelDown(currentChannel), eSwitchMode);
   }
 }
 
-void CPVRManager::ChannelPreview(const CFileItemPtr item)
+void CPVRManager::ChannelPreview(const CFileItemPtr item, ChannelSwitchMode eSwitchMode)
 {
   CSingleLock lock(m_critSection);
 
-  if (!g_infoManager.GetShowInfo() && m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
+  if (!g_infoManager.GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
   {
-    // if no info shown and no channel switch delay, just show info for current channel.
-    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+    // just show info for current channel on first info activation.
+    CServiceBroker::GetPVRManager().ShowPlayerInfo(m_settings.GetIntValue(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
     return;
   }
 
   m_currentFile.reset(new CFileItem(*item));
 
-  CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+  const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
   if (!channel)
     return;
 
   m_bIsChannelPreview = !IsPlayingChannel(channel);
   g_infoManager.SetCurrentItem(m_currentFile);
-  CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+  CServiceBroker::GetPVRManager().ShowPlayerInfo(m_settings.GetIntValue(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
-  if (m_bIsChannelPreview)
+  if (m_bIsChannelPreview && eSwitchMode == ChannelSwitchMode::DELAYED_SWITCH)
   {
-    int iTimeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
+    int iTimeout = m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
     if (iTimeout > 0)
     {
       if (m_iChannelEntryJobId >= 0)
@@ -942,11 +943,6 @@ void CPVRManager::ChannelPreviewSelect()
 
   if (m_bIsChannelPreview)
     m_guiActions->SwitchToChannel(m_currentFile, false);
-}
-
-void CPVRManager::SetChannelPreview(bool bPreview)
-{
-  m_bIsChannelPreview = bPreview;
 }
 
 bool CPVRManager::IsChannelPreview() const

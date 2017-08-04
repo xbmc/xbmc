@@ -135,11 +135,14 @@ bool CPVRActionListener::OnAction(const CAction &action)
       if (!bIsPlayingPVR)
         return false;
 
-      if ((action.GetID() == ACTION_MOVE_UP && // only up/down shows a preview, all others do switch
-           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH)) ||
-          CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0)
+      if (action.GetID() == ACTION_MOVE_UP && // only up/down shows only a preview, all others do switch
+          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
       {
-        CServiceBroker::GetPVRManager().ChannelPreviewUp();
+        CServiceBroker::GetPVRManager().ChannelPreviewUp(ChannelSwitchMode::NO_SWITCH);
+      }
+      else if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0)
+      {
+        CServiceBroker::GetPVRManager().ChannelPreviewUp(ChannelSwitchMode::DELAYED_SWITCH);
       }
       else
       {
@@ -157,11 +160,14 @@ bool CPVRActionListener::OnAction(const CAction &action)
       if (!bIsPlayingPVR)
         return false;
 
-      if ((action.GetID() == ACTION_MOVE_DOWN && // only up/down shows a preview, all others do switch
-           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH)) ||
-          CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0)
+      if (action.GetID() == ACTION_MOVE_DOWN && // only up/down shows only a preview, all others do switch
+          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
       {
-        CServiceBroker::GetPVRManager().ChannelPreviewDown();
+        CServiceBroker::GetPVRManager().ChannelPreviewDown(ChannelSwitchMode::NO_SWITCH);
+      }
+      else if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0)
+      {
+        CServiceBroker::GetPVRManager().ChannelPreviewDown(ChannelSwitchMode::DELAYED_SWITCH);
       }
       else
       {
