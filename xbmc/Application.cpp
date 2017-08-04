@@ -2715,6 +2715,8 @@ bool CApplication::Cleanup()
 {
   try
   {
+    StopPlaying();
+
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
 
