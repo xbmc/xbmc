@@ -21,7 +21,6 @@
 #include "JoystickMapper.h"
 #include "ActionIDs.h"
 #include "ActionTranslator.h"
-#include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/WindowKeymap.h"
@@ -47,6 +46,8 @@ void CJoystickMapper::MapActions(int windowID, const TiXmlNode *pDevice)
 {
   std::string controllerId;
   DeserializeJoystickNode(pDevice, controllerId);
+  if (controllerId.empty())
+    return;
 
   const TiXmlElement *pButton = pDevice->FirstChildElement();
   while (pButton != nullptr)
@@ -106,8 +107,6 @@ std::vector<std::shared_ptr<const IWindowKeymap>> CJoystickMapper::GetJoystickKe
 
 void CJoystickMapper::DeserializeJoystickNode(const TiXmlNode* pDevice, std::string &controllerId)
 {
-  controllerId = DEFAULT_CONTROLLER_ID;
-
   const TiXmlElement* deviceElem = pDevice->ToElement();
   if (deviceElem != nullptr)
     deviceElem->QueryValueAttribute(JOYSTICK_XML_NODE_PROFILE, &controllerId);
