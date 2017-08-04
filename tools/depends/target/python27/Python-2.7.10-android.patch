@@ -48,7 +48,7 @@
      {"tcflow", termios_tcflow,
 --- Modules/posixmodule.c.orig	2015-10-09 13:19:47.524350922 +0200
 +++ Modules/posixmodule.c	2015-10-09 13:20:55.436353454 +0200
-@@ -3981,7 +3981,7 @@
+@@ -3967,7 +3967,7 @@
      slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
      if (slave_fd < 0)
          return posix_error();

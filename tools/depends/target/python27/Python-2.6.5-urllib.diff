@@ -1,6 +1,6 @@
 --- Lib/urllib.py	2010-02-20 17:13:01.000000000 -0500
 +++ Lib/urllib.py	2013-03-14 18:12:02.526251189 -0400
-@@ -1330,7 +1330,6 @@
+@@ -1437,7 +1437,6 @@
  
  
  if sys.platform == 'darwin':
@@ -8,7 +8,7 @@
  
      def proxy_bypass_macosx_sysconf(host):
          """
-@@ -1352,7 +1351,7 @@
+@@ -1459,7 +1458,7 @@
                  parts = (parts + [0, 0, 0, 0])[:4]
              return (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]
  
@@ -17,12 +17,12 @@
  
          # Check for simple host names:
          if '.' not in host:
-@@ -1393,7 +1392,7 @@
+@@ -1504,7 +1503,7 @@
          This function uses the MacOSX framework SystemConfiguration
          to fetch the proxy information.
          """
 -        return _get_proxies()
 +        return {}
  
- 
- 
+     def proxy_bypass(host):
+         """Return True, if a host should be bypassed.
