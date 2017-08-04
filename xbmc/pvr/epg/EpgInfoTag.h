@@ -70,7 +70,7 @@ namespace PVR
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    ~CPVREpgInfoTag() override;
+    ~CPVREpgInfoTag() override = default;
 
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;
@@ -280,6 +280,12 @@ namespace PVR
     int SeriesNumber(void) const;
 
     /*!
+     * @brief The series link for this event.
+     * @return The series link or empty string, if not available.
+     */
+    std::string SeriesLink() const;
+
+    /*!
      * @brief The episode number of this event.
      * @return The episode number.
      */
@@ -459,6 +465,7 @@ namespace PVR
     CPVREpg *                m_epg;                /*!< the schedule that this event belongs to */
 
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
+    std::string              m_strSeriesLink;      /*!< series link */
 
     CCriticalSection         m_critSection;
     PVR::CPVRChannelPtr      m_channel;

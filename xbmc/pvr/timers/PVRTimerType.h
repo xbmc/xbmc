@@ -166,13 +166,20 @@ namespace PVR
      * @return True if new instances require EPG info, false otherwise.
      */
     bool RequiresEpgTagOnCreate() const { return (m_iAttributes & (PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
-                                                                   PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE)) > 0; }
+                                                                   PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE |
+                                                                   PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE)) > 0; }
 
     /*!
      * @brief Check whether this timer type requires epg tag info including series attributes to be present.
      * @return True if new instances require an EPG tag with series attributes, false otherwise.
      */
     bool RequiresEpgSeriesOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE) > 0; }
+
+    /*!
+     * @brief Check whether this timer type requires epg tag info including a series link to be present.
+     * @return True if new instances require an EPG tag with a series link, false otherwise.
+     */
+    bool RequiresEpgSeriesLinkOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE) > 0; }
 
     /*!
      * @brief Check whether this type supports the "enabling/disabling" of timers of its type.

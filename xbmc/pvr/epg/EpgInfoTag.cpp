@@ -128,11 +128,11 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
     m_strEpisodeName = data.strEpisodeName;
   if (data.strIconPath)
     m_strIconPath = data.strIconPath;
+  if (data.strSeriesLink)
+    m_strSeriesLink = data.strSeriesLink;
 
   UpdatePath();
 }
-
-CPVREpgInfoTag::~CPVREpgInfoTag() = default;
 
 bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
 {
@@ -170,7 +170,8 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
           m_endTime            == right.m_endTime &&
-          m_iFlags             == right.m_iFlags);
+          m_iFlags             == right.m_iFlags &&
+          m_strSeriesLink      == right.m_strSeriesLink);
 }
 
 bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
@@ -213,6 +214,7 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
+  value["serieslink"] = m_strSeriesLink;
 }
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
@@ -485,6 +487,11 @@ int CPVREpgInfoTag::SeriesNumber(void) const
   return m_iSeriesNumber;
 }
 
+std::string CPVREpgInfoTag::SeriesLink() const
+{
+  return m_strSeriesLink;
+}
+
 int CPVREpgInfoTag::EpisodeNumber(void) const
 {
   return m_iEpisodeNumber;
@@ -598,7 +605,8 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
         EpgID()              != tag.EpgID() ||
         m_genre              != tag.m_genre ||
         m_strIconPath        != tag.m_strIconPath ||
-        m_iFlags             != tag.m_iFlags
+        m_iFlags             != tag.m_iFlags ||
+        m_strSeriesLink      != tag.m_strSeriesLink
     );
     if (bUpdateBroadcastId)
       bChanged |= (m_iBroadcastId != tag.m_iBroadcastId);
@@ -623,6 +631,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_epg                = tag.m_epg;
       m_iFlags             = tag.m_iFlags;
+      m_strSeriesLink      = tag.m_strSeriesLink;
 
       {
         CSingleLock lock(m_critSection);

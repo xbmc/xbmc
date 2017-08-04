@@ -209,6 +209,12 @@ namespace PVR
     const std::string& Path(void) const;
 
     /*!
+     * @brief The series link for this timer.
+     * @return The series link or empty string, if not available.
+     */
+    const std::string& SeriesLink() const;
+
+    /*!
      * @brief Get the UID of the epg event associated with this timer tag, if any.
      * @return the UID or EPG_TAG_INVALID_UID.
      */
@@ -295,6 +301,8 @@ namespace PVR
     bool                  m_bHasChildConflictNOK; /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_CONFLICT_NOK */
     bool                  m_bHasChildRecording;   /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_RECORDING */
     bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
+
+    std::string m_strSeriesLink; /*!< series link */
 
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
