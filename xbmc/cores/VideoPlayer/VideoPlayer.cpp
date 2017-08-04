@@ -1355,8 +1355,7 @@ void CVideoPlayer::Prepare()
 
   UpdatePlayState(0);
 
-  if (m_playerOptions.identify == false)
-    m_callback.OnPlayBackStarted();
+  m_callback.OnPlayBackStarted();
 
   // we are done initializing now, set the readyevent
   m_openEvent.Set();
@@ -2475,13 +2474,10 @@ void CVideoPlayer::OnExit()
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
-  if (m_playerOptions.identify == false)
-  {
-    if (m_bAbortRequest)
-      m_callback.OnPlayBackStopped();
-    else
-      m_callback.OnPlayBackEnded();
-  }
+  if (m_bAbortRequest)
+    m_callback.OnPlayBackStopped();
+  else
+    m_callback.OnPlayBackEnded();
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   m_openEvent.Set();
