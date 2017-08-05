@@ -31,9 +31,6 @@ namespace GAME
     CDialogGameVideoSettings();
     virtual ~CDialogGameVideoSettings() = default;
 
-    // implementation of CGUIControl via CGUIDialogSlider
-    virtual bool OnAction(const CAction &action) override;
-
   protected:
     // implementation of ISettingCallback via CGUIDialogSettingsManualBase
     virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;

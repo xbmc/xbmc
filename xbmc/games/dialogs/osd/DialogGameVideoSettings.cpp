@@ -23,8 +23,6 @@
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "input/Action.h"
-#include "input/ActionIDs.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
@@ -54,24 +52,6 @@ CDialogGameVideoSettings::CDialogGameVideoSettings() :
 {
   // Initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
-}
-
-bool CDialogGameVideoSettings::OnAction(const CAction &action)
-{
-  switch (action.GetID())
-  {
-  case ACTION_SHOW_OSD:
-  {
-    CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
-    if (pDialog)
-      pDialog->Close(true);
-    return true;
-  }
-  default:
-    break;
-  }
-
-  return CGUIDialogSettingsManualBase::OnAction(action);
 }
 
 void CDialogGameVideoSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)

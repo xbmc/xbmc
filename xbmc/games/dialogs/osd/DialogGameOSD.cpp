@@ -19,10 +19,7 @@
  */
 
 #include "DialogGameOSD.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Action.h"
-#include "input/ActionIDs.h"
+#include "guilib/WindowIDs.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -32,63 +29,4 @@ CDialogGameOSD::CDialogGameOSD() :
 {
   // Initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
-}
-
-bool CDialogGameOSD::OnAction(const CAction &action)
-{
-  switch (action.GetID())
-  {
-  case ACTION_SHOW_OSD:
-  {
-    Close();
-    return true;
-  }
-  case ACTION_PLAYER_PLAY:
-  case ACTION_PLAYER_RESET:
-  case ACTION_PREV_ITEM:
-  case ACTION_STOP:
-  {
-    Close(true);
-    break;
-  }
-  default:
-    break;
-  }
-
-  return CGUIDialog::OnAction(action);
-}
-
-bool CDialogGameOSD::OnMessage(CGUIMessage& message)
-{
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_WINDOW_DEINIT:  // Fired when OSD is hidden
-  {
-    CloseSubDialogs();
-    break;
-  }
-  default:
-    break;
-  }
-
-  return CGUIDialog::OnMessage(message);
-}
-
-std::vector<int> CDialogGameOSD::GetSubDialogs()
-{
-  return std::vector<int>{
-    WINDOW_DIALOG_GAME_VIDEO_SETTINGS,
-    WINDOW_DIALOG_GAME_CONTROLLERS,
-  };
-}
-
-void CDialogGameOSD::CloseSubDialogs()
-{
-  // Remove our subdialogs if visible
-  for (auto windowId : GetSubDialogs())
-  {
-    CGUIDialog *pDialog = g_windowManager.GetDialog(windowId);
-    if (pDialog)
-      pDialog->Close(true);
-  }
 }

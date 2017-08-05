@@ -366,6 +366,14 @@ bool CRetroPlayer::OnAction(const CAction &action)
     }
     return true;
   }
+  case ACTION_SHOW_OSD:
+  {
+    if (m_gameClient && m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+    {
+      CloseOSD();
+      return true;
+    }
+  }
   default:
     break;
   }
@@ -483,9 +491,7 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
 
 void CRetroPlayer::CloseOSD()
 {
-  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
-  if (pDialog)
-    pDialog->Close(true, WINDOW_FULLSCREEN_GAME);
+  g_windowManager.CloseDialogs(true);
 }
 
 void CRetroPlayer::PrintGameInfo(const CFileItem &file) const
