@@ -34,11 +34,11 @@ using namespace JOYSTICK;
 
 void CControllerFeature::Reset(void)
 {
+  m_controller = nullptr;
   m_type = FEATURE_TYPE::UNKNOWN;
   m_category = FEATURE_CATEGORY::UNKNOWN;
-  m_strCategory.clear();
+  m_categoryLabelId = -1;
   m_strName.clear();
-  m_strLabel.clear();
   m_labelId = -1;
   m_inputType = INPUT_TYPE::UNKNOWN;
 }
@@ -47,21 +47,44 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
 {
   if (this != &rhs)
   {
+    m_controller = rhs.m_controller;
     m_type       = rhs.m_type;
     m_category   = rhs.m_category;
-    m_strCategory = rhs.m_strCategory;
+    m_categoryLabelId = rhs.m_categoryLabelId;
     m_strName    = rhs.m_strName;
-    m_strLabel   = rhs.m_strLabel;
     m_labelId    = rhs.m_labelId;
     m_inputType  = rhs.m_inputType;
   }
   return *this;
 }
 
+std::string CControllerFeature::CategoryLabel() const
+{
+  std::string categoryLabel;
+
+  if (m_categoryLabelId >= 0 && m_controller != nullptr)
+    categoryLabel = g_localizeStrings.GetAddonString(m_controller->ID(), m_categoryLabelId);
+
+  if (categoryLabel.empty())
+    categoryLabel = g_localizeStrings.Get(m_categoryLabelId);
+
+  return categoryLabel;
+}
+
+std::string CControllerFeature::Label() const
+{
+  std::string label;
+
+  if (m_labelId >= 0 && m_controller != nullptr)
+    label = g_localizeStrings.GetAddonString(m_controller->ID(), m_labelId);
+
+  return label;
+}
+
 bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
                                      const CController* controller,
                                      FEATURE_CATEGORY category,
-                                     const std::string& strCategory)
+                                     int categoryLabelId)
 {
   Reset();
 
@@ -80,7 +103,7 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
 
   // Cagegory was obtained from parent XML node
   m_category = category;
-  m_strCategory = strCategory;
+  m_categoryLabelId = categoryLabelId;
 
   // Name
   m_strName = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_NAME);
@@ -96,10 +119,6 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
     CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_FEATURE_LABEL);
   else
     std::istringstream(strLabel) >> m_labelId;
-
-  // Label (string)
-  if (m_labelId >= 0)
-    m_strLabel = g_localizeStrings.GetAddonString(controller->ID(), m_labelId);
 
   // Input type
   if (m_type == FEATURE_TYPE::SCALAR)
@@ -121,6 +140,9 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
       }
     }
   }
+
+  // Save controller for string translation
+  m_controller = controller;
 
   return true;
 }

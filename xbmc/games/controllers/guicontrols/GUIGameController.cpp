@@ -20,6 +20,7 @@
 
 #include "GUIGameController.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -68,6 +69,6 @@ void CGUIGameController::ActivateController(const ControllerPtr& controller)
     lock.Leave();
 
     //! @todo Sometimes this fails on window init
-    SetFileName(m_currentController->ImagePath());
+    SetFileName(m_currentController->Layout().ImagePath());
   }
 }

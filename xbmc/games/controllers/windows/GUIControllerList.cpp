@@ -42,6 +42,7 @@
 #include "input/joysticks/JoystickIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
+#include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 
 using namespace KODI;
@@ -97,7 +98,7 @@ bool CGUIControllerList::Refresh(void)
     {
       const ControllerPtr& controller = *it;
 
-      CGUIButtonControl* pButton = new CGUIControllerButton(*m_controllerButton, controller->Label(), buttonId++);
+      CGUIButtonControl* pButton = new CGUIControllerButton(*m_controllerButton, controller->Layout().Label(), buttonId++);
       m_controllerList->AddControl(pButton);
 
       // Just in case
@@ -171,7 +172,7 @@ bool CGUIControllerList::RefreshControllers(void)
 
   auto HasButtonForController = [&](const ControllerPtr &controller)
     {
-      const auto &features = controller->Layout().Features();
+      const auto &features = controller->Features();
       auto it = std::find_if(features.begin(), features.end(), HasButtonForFeature);
       return it == features.end();
     };
@@ -202,7 +203,7 @@ bool CGUIControllerList::RefreshControllers(void)
         if (i->ID() == DEFAULT_CONTROLLER_ID && j->ID() != DEFAULT_CONTROLLER_ID) return true;
         if (i->ID() != DEFAULT_CONTROLLER_ID && j->ID() == DEFAULT_CONTROLLER_ID) return false;
 
-        return i->Name() < j->Name();
+        return StringUtils::CompareNoCase(i->Layout().Label(), j->Layout().Label()) < 0;
       });
   }
 

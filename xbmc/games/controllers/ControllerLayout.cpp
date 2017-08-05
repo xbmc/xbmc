@@ -24,130 +24,121 @@
 #include "ControllerTranslator.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 
-#include <algorithm>
 #include <sstream>
 
 using namespace KODI;
 using namespace GAME;
-using namespace JOYSTICK;
-
-// --- FeatureTypeEqual --------------------------------------------------------
-
-struct FeatureTypeEqual
-{
-  FeatureTypeEqual(FEATURE_TYPE type, INPUT_TYPE inputType) : type(type), inputType(inputType) { }
-
-  bool operator()(const CControllerFeature& feature) const
-  {
-    if (type == FEATURE_TYPE::UNKNOWN)
-      return true; // Match all feature types
-
-    if (type == FEATURE_TYPE::SCALAR && feature.Type() == FEATURE_TYPE::SCALAR)
-    {
-      if (inputType == INPUT_TYPE::UNKNOWN)
-        return true; // Match all input types
-
-      return inputType == feature.InputType();
-    }
-
-    return type == feature.Type();
-  }
-
-  const FEATURE_TYPE type;
-  const INPUT_TYPE   inputType;
-};
-
-// --- CControllerLayout ---------------------------------------------------
 
 void CControllerLayout::Reset(void)
 {
-  m_label = 0;
+  m_controller = nullptr;
+  m_labelId = -1;
+  m_icon.clear();
   m_strImage.clear();
-  m_strOverlay.clear();
-  m_width = 0;
-  m_height = 0;
-  m_features.clear();
+  m_models.clear();
 }
 
-unsigned int CControllerLayout::FeatureCount(FEATURE_TYPE type      /* = FEATURE_TYPE::UNKNOWN */,
-                                             INPUT_TYPE   inputType /* = INPUT_TYPE::UNKNOWN */) const
+bool CControllerLayout::IsValid(bool bLog) const
 {
-  return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
-}
-
-FEATURE_TYPE CControllerLayout::FeatureType(const std::string &featureName) const
-{
-  FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
-
-  auto it = std::find_if(m_features.begin(), m_features.end(),
-    [&featureName](const CControllerFeature &feature)
-    {
-      return feature.Name() == featureName;
-    });
-
-  if (it != m_features.end())
-    type = it->Type();
-
-  return type;
-}
-
-bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller)
-{
-  Reset();
-
-  if (!pElement)
-    return false;
-
-  // Label
-  std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_LABEL);
-  if (strLabel.empty())
+  if (m_labelId < 0)
   {
-    CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
+    if (bLog)
+      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
     return false;
   }
-  std::istringstream(strLabel) >> m_label;
 
-  // Image
-  m_strImage = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
   if (m_strImage.empty())
-    CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
-
-  // Features
-  for (const TiXmlElement* pCategory = pElement->FirstChildElement(); pCategory != nullptr; pCategory = pCategory->NextSiblingElement())
   {
-    if (pCategory->ValueStr() != LAYOUT_XML_ELM_CATEGORY)
-    {
-      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pCategory->ValueStr().c_str());
-      continue;
-    }
-
-    // Category
-    std::string strCategory = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_NAME);
-    FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
-
-    // Category label
-    std::string strCategoryLabel;
-
-    std::string strCategoryLabelId = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_LABEL);
-    if (!strCategoryLabelId.empty())
-    {
-      unsigned int categoryLabelId;
-      std::istringstream(strCategoryLabelId) >> categoryLabelId;
-      strCategoryLabel = g_localizeStrings.GetAddonString(controller->ID(), categoryLabelId);
-      if (strCategoryLabel.empty())
-        strCategoryLabel = g_localizeStrings.Get(categoryLabelId);
-    }
-
-    for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
-    {
-      CControllerFeature feature;
-
-      if (feature.Deserialize(pFeature, controller, category, strCategoryLabel))
-        m_features.push_back(feature);
-    }
+    if (bLog)
+      CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+    return false;
   }
 
   return true;
+}
+
+std::string CControllerLayout::Label(void) const
+{
+  std::string label;
+
+  if (m_labelId >= 0 && m_controller != nullptr)
+    label = g_localizeStrings.GetAddonString(m_controller->ID(), m_labelId);
+
+  return label;
+}
+
+std::string CControllerLayout::ImagePath(void) const
+{
+  std::string path;
+
+  if (!m_strImage.empty() && m_controller != nullptr)
+    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(m_controller->LibPath()), m_strImage);
+
+  return path;
+}
+
+void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
+{
+  if (pElement == nullptr || controller == nullptr)
+    return;
+
+  // Controller (used for string lookup and path translation)
+  m_controller = controller;
+
+  // Label
+  std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_LABEL);
+  if (!strLabel.empty())
+    std::istringstream(strLabel) >> m_labelId;
+
+  // Icon
+  std::string icon = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_ICON);
+  if (!icon.empty())
+    m_icon = icon;
+
+  // Fallback icon, use add-on icon
+  if (m_icon.empty())
+    m_icon = controller->Icon();
+
+  // Image
+  std::string image = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+  if (!image.empty())
+    m_strImage = image;
+
+  // Models
+  std::string models = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_MODELS);
+  if (!models.empty())
+    m_models = models;
+
+  // Features
+  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
+  {
+    if (pChild->ValueStr() == LAYOUT_XML_ELM_CATEGORY)
+    {
+      // Category
+      std::string strCategory = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_NAME);
+      JOYSTICK::FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
+
+      // Category label
+      int categoryLabelId = -1;
+
+      std::string strCategoryLabelId = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_LABEL);
+      if (!strCategoryLabelId.empty())
+        std::istringstream(strCategoryLabelId) >> categoryLabelId;
+
+      for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
+      {
+        CControllerFeature feature;
+
+        if (feature.Deserialize(pFeature, controller, category, categoryLabelId))
+          features.push_back(feature);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pChild->ValueStr().c_str());
+    }
+  }
 }

@@ -26,7 +26,7 @@
 #include "games/controllers/guicontrols/GUIFeatureFactory.h"
 #include "games/controllers/guicontrols/GUIFeatureTranslator.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerLayout.h"
+#include "games/controllers/ControllerFeature.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"
@@ -107,7 +107,7 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
   m_controller = controller;
 
   // Get features
-  const std::vector<CControllerFeature>& features = controller->Layout().Features();
+  const std::vector<CControllerFeature>& features = controller->Features();
 
   // Split into groups
   auto featureGroups = GetFeatureGroups(features);
@@ -151,7 +151,7 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
 
 void CGUIFeatureList::OnSelect(unsigned int index)
 {
-  const unsigned int featureCount = m_controller->Layout().FeatureCount();
+  const unsigned int featureCount = m_controller->FeatureCount();
 
   // Generate list of buttons for the wizard
   std::vector<IFeatureButton*> buttons;

@@ -19,8 +19,6 @@
  */
 #pragma once
 
-#include "ControllerFeature.h"
-
 #include <string>
 #include <vector>
 
@@ -30,36 +28,59 @@ namespace KODI
 {
 namespace GAME
 {
+class CController;
+class CControllerFeature;
 
 class CControllerLayout
 {
 public:
-  CControllerLayout(void) { Reset(); }
+  CControllerLayout() = default;
 
   void Reset(void);
 
-  unsigned int       Label(void) const   { return m_label; }
+  int LabelID(void) const { return m_labelId; }
+  const std::string& Icon(void) const { return m_icon; }
   const std::string& Image(void) const   { return m_strImage; }
-  unsigned int       Width(void) const   { return m_width; }
-  unsigned int       Height(void) const  { return m_height; }
+  const std::string Models() const { return m_models; }
 
-  const std::vector<CControllerFeature>& Features(void) const { return m_features; }
+  /*!
+   * \brief Ensures the layout was deserialized correctly, and optionally logs if not
+   *
+   * \param bLog If true, output the cause of invalidness to the log
+   *
+   * \return True if the layout is valid and can be used in the GUI, false otherwise
+   */
+  bool IsValid(bool bLog) const;
 
-  unsigned int FeatureCount(KODI::JOYSTICK::FEATURE_TYPE type = KODI::JOYSTICK::FEATURE_TYPE::UNKNOWN,
-                            KODI::JOYSTICK::INPUT_TYPE buttonType = KODI::JOYSTICK::INPUT_TYPE::UNKNOWN) const;
+  /*!
+   * \brief Get the label of the primary layout used when mapping the controller
+   *
+   * \return The label, or empty if unknown
+   */
+  std::string Label(void) const;
 
-  KODI::JOYSTICK::FEATURE_TYPE FeatureType(const std::string &featureName) const;
+  /*!
+   * \brief Get the image path of the primary layout used when mapping the controller
+   *
+   * \return The image path, or empty if unknown
+   */
+  std::string ImagePath(void) const;
 
-  bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller);
+  /*!
+   * \brief Deserialize the specified XML element
+   *
+   * \param pLayoutElement The XML element
+   * \param controller The controller, used to obtain read-only properties
+   * \param features The deserialized features, if any
+   */
+  void Deserialize(const TiXmlElement* pLayoutElement, const CController* controller, std::vector<CControllerFeature> &features);
 
 private:
-  unsigned int m_label;
+  const CController *m_controller = nullptr;
+  int m_labelId = -1;
+  std::string m_icon;
   std::string  m_strImage;
-  std::string  m_strOverlay;
-  unsigned int m_width;
-  unsigned int m_height;
-
-  std::vector<CControllerFeature> m_features;
+  std::string m_models;
 };
 
 }

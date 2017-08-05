@@ -27,7 +27,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
@@ -876,7 +875,7 @@ unsigned int CPeripheralAddon::cb_feature_count(void* kodiInstance, const char* 
   CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
   ControllerPtr controller = controllerManager.GetController(controllerId);
   if (controller)
-    count = controller->Layout().FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
+    count = controller->FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
 
   return count;
 }
@@ -890,7 +889,7 @@ JOYSTICK_FEATURE_TYPE CPeripheralAddon::cb_feature_type(void* kodiInstance, cons
   CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
   ControllerPtr controller = controllerManager.GetController(controllerId);
   if (controller)
-    type = CPeripheralAddonTranslator::TranslateFeatureType(controller->Layout().FeatureType(featureName));
+    type = CPeripheralAddonTranslator::TranslateFeatureType(controller->FeatureType(featureName));
 
   return type;
 }
