@@ -193,6 +193,8 @@ bool CVDPAUContext::CreateContext()
   { CSingleLock lock(g_graphicsContext);
     if (!m_display)
       m_display = XOpenDisplay(NULL);
+      if (!m_display)
+        return false;
     mScreen = g_Windowing.GetCurrentScreen();
   }
 
