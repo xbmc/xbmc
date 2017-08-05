@@ -504,9 +504,10 @@ void CGUIDialogMusicInfo::OnGetFanart()
   }
 
   std::string result;
-  VECSOURCES sources = *CMediaSourceSettings::GetInstance().GetSources("music");
+  bool flip = false;
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  AddItemPathToFileBrowserSources(sources, *m_albumItem);
   g_mediaManager.GetLocalDrives(sources);
-  bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445))
     return;   // user cancelled
 
