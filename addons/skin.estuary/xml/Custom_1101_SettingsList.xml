@@ -8,7 +8,7 @@
 			<height>460</height>
 			<centertop>50%</centertop>
 			<width>700</width>
-			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml)</visible>
+			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameControllers)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="700" />
@@ -135,6 +135,30 @@
 						<label>$LOCALIZE[31005]</label>
 						<onclick>StereoModeToMono</onclick>
 						<selected>Integer.IsEqual(System.StereoscopicMode,9)</selected>
+					</control>
+				</control>
+				<control type="grouplist" id="14100">
+					<defaultcontrol always="true">14101</defaultcontrol>
+					<visible>String.IsEqual(window(home).Property(settingslist_content),games)</visible>
+					<width>700</width>
+					<height>360</height>
+					<itemgap>0</itemgap>
+					<onup>14100</onup>
+					<ondown>14100</ondown>
+					<orientation>vertical</orientation>
+					<control type="button" id="14101">
+						<description>Video settings button</description>
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[13395]</label>
+						<onclick>ActivateWindow(GameVideoSettings)</onclick>
+					</control>
+					<control type="button" id="14103">
+						<description>Input settings button</description>
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[35223]</label>
+						<onclick>ActivateWindow(GameControllers)</onclick>
 					</control>
 				</control>
 			</control>
