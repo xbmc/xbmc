@@ -207,8 +207,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
         }
 
         setGestureState(TouchGestureUnknown);
-        m_pointers[pointer].reset();
       }
+      m_pointers[pointer].reset();
 
       return result;
     }
