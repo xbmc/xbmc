@@ -30,19 +30,33 @@ CRPRenderManager::CRPRenderManager(CDVDClock &clock, IRenderMsg *player) :
 {
 }
 
-bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
-{
-  return Supports(method);
-}
-
 bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
 {
   return Supports(feature);
 }
 
+bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
+{
+  return Supports(method);
+}
+
+ViewMode CRPRenderManager::GetRenderViewMode()
+{
+  //! @todo
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  return static_cast<ViewMode>(videoSettings.m_ViewMode);
+}
+
 void CRPRenderManager::SetRenderViewMode(ViewMode mode)
 {
   SetViewMode(mode);
+}
+
+ESCALINGMETHOD CRPRenderManager::GetScalingMethod()
+{
+  //! @todo
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  return videoSettings.m_ScalingMethod;
 }
 
 void CRPRenderManager::SetScalingMethod(ESCALINGMETHOD method)

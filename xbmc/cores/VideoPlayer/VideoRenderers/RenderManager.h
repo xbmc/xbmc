@@ -66,7 +66,7 @@ class CRenderManager
 {
 public:
   CRenderManager(CDVDClock &clock, IRenderMsg *player);
-  ~CRenderManager();
+  virtual ~CRenderManager();
 
   // Functions called from render thread
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);

@@ -28,16 +28,19 @@ class CGUIViewControl;
 
 namespace KODI
 {
+namespace RETRO
+{
+  class IRenderSettingsCallback;
+}
+
 namespace GAME
 {
-  class IVideoSelectCallback;
-
   class CDialogGameVideoSelect : public CGUIDialog
   {
   public:
     ~CDialogGameVideoSelect() override;
 
-    void RegisterCallback(IVideoSelectCallback *callback);
+    void RegisterCallback(RETRO::IRenderSettingsCallback *callback);
     void UnregisterCallback();
 
     // implementation of CGUIControl via CGUIDialog
@@ -62,8 +65,7 @@ namespace GAME
     virtual unsigned int GetFocusedItem() const = 0;
     virtual void PostExit() = 0;
 
-  protected:
-    IVideoSelectCallback *m_callback = nullptr;
+    RETRO::IRenderSettingsCallback *m_callback = nullptr;
 
   private:
     void Update();

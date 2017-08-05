@@ -20,6 +20,7 @@
 #pragma once
 
 #include "DialogGameVideoSelect.h"
+#include "cores/IPlayer.h"
 
 namespace KODI
 {
@@ -31,16 +32,27 @@ namespace GAME
     CDialogGameViewMode();
     ~CDialogGameViewMode() override = default;
 
-    //! @todo
-    bool HasViewModes();
-
   protected:
     // implementation of CDialogGameVideoSelect
-    void PreInit() override { }
+    void PreInit() override;
     void GetItems(CFileItemList &items) override;
     void OnItemFocus(unsigned int index) override;
     unsigned int GetFocusedItem() const override;
-    void PostExit() override { }
+    void PostExit() override;
+
+  private:
+    struct ViewModeProperties
+    {
+      int stringIndex;
+      ViewMode viewMode;
+    };
+
+    std::vector<ViewModeProperties> m_viewModes;
+
+    /*!
+     * \brief The list of all the view modes along with their properties
+     */
+    static const std::vector<ViewModeProperties> m_allViewModes;
   };
 }
 }

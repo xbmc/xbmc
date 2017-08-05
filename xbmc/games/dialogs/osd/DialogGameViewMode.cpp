@@ -19,26 +19,18 @@
  */
 
 #include "DialogGameViewMode.h"
-#include "IVideoSelectCallback.h"
+#include "cores/RetroPlayer/rendering/IRenderSettingsCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "utils/Variant.h"
 #include "FileItem.h"
 
 using namespace KODI;
 using namespace GAME;
 
-struct ViewModeProperties
-{
-  int stringIndex;
-  ViewMode viewMode;
-};
-
-/*!
- * \brief The list of all the view modes along with their properties
- */
-static const std::vector<ViewModeProperties> viewModes =
+const std::vector<CDialogGameViewMode::ViewModeProperties> CDialogGameViewMode::m_allViewModes =
 {
   { 630,   ViewModeNormal },
 //  { 631,   ViewModeZoom }, //! @todo RetroArch allows trimming some outer pixels
@@ -53,27 +45,69 @@ CDialogGameViewMode::CDialogGameViewMode() :
 {
 }
 
+void CDialogGameViewMode::PreInit()
+{
+  m_viewModes.clear();
+
+  for (const auto &viewMode : m_allViewModes)
+  {
+    bool bSupported = false;
+
+    switch (viewMode.viewMode)
+    {
+      case ViewModeNormal:
+      case ViewModeOriginal:
+        bSupported = true;
+        break;
+
+      case ViewModeStretch4x3:
+      case ViewModeStretch16x9:
+        if (m_callback != nullptr)
+        {
+          bSupported = m_callback->SupportsRenderFeature(RENDERFEATURE_STRETCH) ||
+                       m_callback->SupportsRenderFeature(RENDERFEATURE_PIXEL_RATIO);
+        }
+        break;
+
+      case ViewModeStretch16x9Nonlin:
+        if (m_callback != nullptr)
+        {
+          bSupported = m_callback->SupportsRenderFeature(RENDERFEATURE_NONLINSTRETCH);
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    if (bSupported)
+      m_viewModes.emplace_back(viewMode);
+  }
+}
+
 void CDialogGameViewMode::GetItems(CFileItemList &items)
 {
-  for (const auto &viewMode : viewModes)
+  for (const auto &viewMode : m_viewModes)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(viewMode.stringIndex));
+    item->SetProperty("game.viewmode", CVariant{ viewMode.viewMode });
     items.Add(std::move(item));
   }
 }
 
 void CDialogGameViewMode::OnItemFocus(unsigned int index)
 {
-  if (index < viewModes.size() && m_callback != nullptr)
+  if (index < m_viewModes.size())
   {
-    const ViewMode viewMode = viewModes[index].viewMode;
+    const ViewMode viewMode = m_viewModes[index].viewMode;
 
     CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
     if (gameSettings.ViewMode() != viewMode)
     {
       gameSettings.SetViewMode(viewMode);
 
-      m_callback->SetRenderViewMode(viewMode);
+      if (m_callback != nullptr)
+        m_callback->SetRenderViewMode(viewMode);
     }
   }
 }
@@ -82,9 +116,9 @@ unsigned int CDialogGameViewMode::GetFocusedItem() const
 {
   CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
-  for (unsigned int i = 0; i < viewModes.size(); i++)
+  for (unsigned int i = 0; i < m_viewModes.size(); i++)
   {
-    const ViewMode viewMode = viewModes[i].viewMode;
+    const ViewMode viewMode = m_viewModes[i].viewMode;
     if (viewMode == gameSettings.ViewMode())
       return i;
   }
@@ -92,16 +126,7 @@ unsigned int CDialogGameViewMode::GetFocusedItem() const
   return 0;
 }
 
-bool CDialogGameViewMode::HasViewModes()
+void CDialogGameViewMode::PostExit()
 {
-  if (m_callback != nullptr)
-  {
-    if (m_callback->SupportsRenderFeature(RENDERFEATURE_STRETCH))
-      return true;
-
-    if (m_callback->SupportsRenderFeature(RENDERFEATURE_PIXEL_RATIO))
-      return true;
-  }
-
-  return false;
+  m_viewModes.clear();
 }

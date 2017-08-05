@@ -19,27 +19,28 @@
  */
 #pragma once
 
-#include "IRenderSettingsCallback.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/IPlayer.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRPRenderManager : public CRenderManager,
-                           public IRenderSettingsCallback
+  class CGUIRenderSettings
   {
   public:
-    CRPRenderManager(CDVDClock &clock, IRenderMsg *player);
-    ~CRPRenderManager() override = default;
+    void EnableGuiRenderSettings(bool bEnabled) { m_guiRender = bEnabled; }
+    bool IsGuiRenderSettingsEnabled() const { return m_guiRender; }
 
-    // Implementation of IRenderSettingsCallback
-    bool SupportsRenderFeature(ERENDERFEATURE feature) override;
-    bool SupportsScalingMethod(ESCALINGMETHOD method) override;
-    ViewMode GetRenderViewMode() override;
-    void SetRenderViewMode(ViewMode mode) override;
-    ESCALINGMETHOD GetScalingMethod() override;
-    void SetScalingMethod(ESCALINGMETHOD scalingMethod) override;
+    ViewMode GetRenderViewMode() { return m_viewMode; }
+    void SetRenderViewMode(ViewMode mode) { m_viewMode = mode; }
+
+    ESCALINGMETHOD GetScalingMethod() { return m_scalingMethod; }
+    void SetScalingMethod(ESCALINGMETHOD method) { m_scalingMethod = method; }
+
+  private:
+    bool m_guiRender = false;
+    ViewMode m_viewMode = ViewModeNormal;
+    ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_NEAREST;
   };
 }
 }

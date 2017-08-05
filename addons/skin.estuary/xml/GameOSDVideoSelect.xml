@@ -18,37 +18,36 @@
 			<height>410</height>
 			<width>100%</width>
 			<control type="image">
-				<left>0</left>
-				<width>100%</width>
-				<height>410</height>
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="panel" id="11">
-				<left>0</left>
 				<top>50</top>
-				<width>100%</width>
-				<height>410</height>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
-				<itemlayout width="360" height="340">
+				<itemlayout width="480" height="340">
 					<control type="group">
-						<left>70</left>
+						<left>18</left>
+						<right>18</right>
+						<top>5</top>
 						<control type="image">
-							<left>0</left>
-							<top>5</top>
-							<width>330</width>
+							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">DefaultVideo.png</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
+						<control type="gamewindow">
+							<width>444</width>
+							<height>250</height>
+							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
+						</control>
 						<control type="label">
-							<left>20</left>
-							<top>255</top>
-							<width>290</width>
+							<top>250</top>
+							<width>444</width>
 							<height>40</height>
 							<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Label2][/COLOR]</label>
 							<font>font12</font>
@@ -57,23 +56,28 @@
 						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout width="360" height="340">
+				<focusedlayout width="480" height="340">
 					<control type="group">
-						<left>70</left>
+						<left>18</left>
+						<right>18</right>
+						<top>5</top>
 						<control type="image">
-							<left>0</left>
-							<top>5</top>
-							<width>330</width>
+							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">DefaultVideo.png</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
+						<control type="gamewindow">
+							<width>444</width>
+							<height>250</height>
+							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
+						</control>
 						<control type="label">
-							<left>20</left>
-							<top>255</top>
-							<width>290</width>
+							<top>250</top>
+							<width>444</width>
 							<height>40</height>
 							<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Label2][/COLOR]</label>
 							<font>font12</font>
@@ -81,9 +85,7 @@
 							<align>center</align>
 						</control>
 						<control type="image">
-							<left>0</left>
-							<top>5</top>
-							<width>330</width>
+							<width>444</width>
 							<height>250</height>
 							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 							<visible>Control.HasFocus(11)</visible>

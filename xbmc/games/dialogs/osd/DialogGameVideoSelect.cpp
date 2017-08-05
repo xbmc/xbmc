@@ -51,7 +51,7 @@ CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
 
 CDialogGameVideoSelect::~CDialogGameVideoSelect() = default;
 
-void CDialogGameVideoSelect::RegisterCallback(IVideoSelectCallback *callback)
+void CDialogGameVideoSelect::RegisterCallback(RETRO::IRenderSettingsCallback *callback)
 {
   m_callback = callback;
 }
@@ -68,7 +68,7 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage &message)
     case GUI_MSG_WINDOW_INIT:
     {
       // Don't init this dialog if we aren't playing a game
-      if (!g_application.m_pPlayer->HasGame())
+      if (m_callback == nullptr)
         return false;
       break;
     }

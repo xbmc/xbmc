@@ -8,7 +8,6 @@ set(HEADERS DialogGameOSD.h
             DialogGameVideoFilter.h
             DialogGameVideoSelect.h
             DialogGameViewMode.h
-            IVideoSelectCallback.h
 )
 
 core_add_library(gameosddialogs)

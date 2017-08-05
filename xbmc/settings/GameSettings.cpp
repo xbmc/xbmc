@@ -23,7 +23,7 @@
 void CGameSettings::Reset()
 {
   m_scalingMethod = VS_SCALINGMETHOD_NEAREST;
-  m_viewMode = 0;
+  m_viewMode = ViewModeNormal;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const

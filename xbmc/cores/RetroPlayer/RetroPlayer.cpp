@@ -24,6 +24,7 @@
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -452,7 +453,24 @@ void CRetroPlayer::FrameMove()
 
 void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = true */)
 {
+  RETRO::CGUIRenderSettings &renderSettings = CServiceBroker::GetGameServices().RenderSettings();
+
+  ViewMode viewMode = m_renderManager->GetRenderViewMode();
+  ESCALINGMETHOD scalingMedthod = m_renderManager->GetScalingMethod();
+
+  if (renderSettings.IsGuiRenderSettingsEnabled())
+  {
+    m_renderManager->SetRenderViewMode(renderSettings.GetRenderViewMode());
+    m_renderManager->SetScalingMethod(renderSettings.GetScalingMethod());
+  }
+
   m_renderManager->Render(clear, 0, alpha, gui);
+
+  if (renderSettings.IsGuiRenderSettingsEnabled())
+  {
+    m_renderManager->SetRenderViewMode(viewMode);
+    m_renderManager->SetScalingMethod(scalingMedthod);
+  }
 }
 
 void CRetroPlayer::FlushRenderer()
@@ -489,6 +507,7 @@ EINTERLACEMETHOD CRetroPlayer::GetDeinterlacingMethodDefault()
 {
   return m_processInfo->GetDeinterlacingMethodDefault();
 }
+
 bool CRetroPlayer::Supports(ESCALINGMETHOD method)
 {
   return m_renderManager->Supports(method);

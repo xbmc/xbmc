@@ -19,11 +19,12 @@
  */
 
 #include "DialogGameVideoFilter.h"
-#include "IVideoSelectCallback.h"
+#include "cores/RetroPlayer/rendering/IRenderSettingsCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "utils/Variant.h"
 #include "FileItem.h"
 
 using namespace KODI;
@@ -71,6 +72,7 @@ void CDialogGameVideoFilter::GetItems(CFileItemList &items)
   for (const auto &videoFilter : m_videoFilters)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(videoFilter.stringIndex));
+    item->SetProperty("game.videofilter", CVariant{ videoFilter.scalingMethod });
     items.Add(std::move(item));
   }
 
@@ -83,7 +85,7 @@ void CDialogGameVideoFilter::GetItems(CFileItemList &items)
 
 void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 {
-  if (index < m_videoFilters.size() && m_callback != nullptr)
+  if (index < m_videoFilters.size())
   {
     const ESCALINGMETHOD scalingMethod = m_videoFilters[index].scalingMethod;
 
@@ -92,7 +94,8 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     {
       gameSettings.SetScalingMethod(scalingMethod);
 
-      m_callback->SetScalingMethod(scalingMethod);
+      if (m_callback != nullptr)
+        m_callback->SetScalingMethod(scalingMethod);
     }
   }
 }

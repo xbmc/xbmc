@@ -23,16 +23,20 @@
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class IVideoSelectCallback
+  class IRenderSettingsCallback
   {
   public:
-    virtual ~IVideoSelectCallback() = default;
+    virtual ~IRenderSettingsCallback() = default;
 
-    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) = 0;
     virtual bool SupportsRenderFeature(ERENDERFEATURE feature) = 0;
+    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) = 0;
+
+    virtual ViewMode GetRenderViewMode() = 0;
     virtual void SetRenderViewMode(ViewMode mode) = 0;
+
+    virtual ESCALINGMETHOD GetScalingMethod() = 0;
     virtual void SetScalingMethod(ESCALINGMETHOD scalingMethod) = 0;
   };
 }

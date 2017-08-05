@@ -163,7 +163,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
     int viewMode;
     if (XMLUtils::GetInt(pElement, "viewmode", viewMode, ViewModeNormal, ViewModeZoom110Width))
-      m_defaultGameSettings.SetViewMode(viewMode);
+      m_defaultGameSettings.SetViewMode(static_cast<ViewMode>(viewMode));
   }
 
   // mymusic settings
