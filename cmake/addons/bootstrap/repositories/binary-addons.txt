@@ -1,1 +1,1 @@
-binary-addons https://github.com/xbmc/repo-binary-addons.git master
+binary-addons https://github.com/kodi-game/repo-binary-addons.git model
