@@ -244,12 +244,12 @@ int CWindowTranslator::GetFallbackWindow(int windowId)
   return -1;
 }
 
-std::map<int, const char*> CWindowTranslator::CreateReverseWindowMapping()
+std::map<int, std::string> CWindowTranslator::CreateReverseWindowMapping()
 {
-  std::map<WindowID, const char*> reverseWindowMapping;
+  std::map<WindowID, WindowName> reverseWindowMapping;
 
   for (auto itMapping : WindowMapping)
-    reverseWindowMapping.insert(std::make_pair(itMapping.second, itMapping.first.c_str()));
+    reverseWindowMapping.insert(std::make_pair(itMapping.second, itMapping.first));
 
   return reverseWindowMapping;
 }
