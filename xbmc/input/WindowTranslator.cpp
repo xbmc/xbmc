@@ -24,15 +24,10 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
-#include <map>
+#include <cstring>
 #include <stdlib.h>
 
-namespace
-{
-using WindowName = std::string;
-using WindowID = int;
-
-static const std::map<WindowName, WindowID> WindowMapping =
+const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName =
 {
     { "home"                     , WINDOW_HOME },
     { "programs"                 , WINDOW_PROGRAMS },
@@ -153,6 +148,8 @@ static const std::map<WindowName, WindowID> WindowMapping =
     { "gamevideosettings"        , WINDOW_DIALOG_GAME_VIDEO_SETTINGS },
 };
 
+namespace
+{
 struct FallbackWindowMapping
 {
   int origin;
@@ -167,12 +164,23 @@ static const std::vector<FallbackWindowMapping> FallbackWindows =
 };
 } // anonymous namespace
 
+
+bool CWindowTranslator::WindowNameCompare::operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const
+{
+  return std::strcmp(lhs.windowName, rhs.windowName) < 0;
+}
+
+bool CWindowTranslator::WindowIDCompare::operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const
+{
+  return lhs.windowId < rhs.windowId;
+}
+
 void CWindowTranslator::GetWindows(std::vector<std::string> &windowList)
 {
   windowList.clear();
-  windowList.reserve(WindowMapping.size());
-  for (auto itMapping : WindowMapping)
-    windowList.push_back(itMapping.first);
+  windowList.reserve(WindowMappingByName.size());
+  for (auto itMapping : WindowMappingByName)
+    windowList.push_back(itMapping.windowName);
 }
 
 int CWindowTranslator::TranslateWindow(const std::string &window)
@@ -206,9 +214,9 @@ int CWindowTranslator::TranslateWindow(const std::string &window)
   }
 
   // Run through the window structure
-  auto it = WindowMapping.find(strWindow);
-  if (it != WindowMapping.end())
-    return it->second;
+  auto it = WindowMappingByName.find(WindowMapItem{ strWindow.c_str() });
+  if (it != WindowMappingByName.end())
+    return it->windowId;
 
   CLog::Log(LOGERROR, "Window Translator: Can't find window %s", window.c_str());
 
@@ -217,11 +225,11 @@ int CWindowTranslator::TranslateWindow(const std::string &window)
 
 std::string CWindowTranslator::TranslateWindow(int windowId)
 {
-  static auto reverseWindowMapping = CreateReverseWindowMapping();
+  static auto reverseWindowMapping = CreateWindowMappingByID();
 
-  auto it = reverseWindowMapping.find(windowId);
+  auto it = reverseWindowMapping.find(WindowMapItem{ "", windowId });
   if (it != reverseWindowMapping.end())
-    return it->second;
+    return it->windowName;
 
   return "";
 }
@@ -244,12 +252,11 @@ int CWindowTranslator::GetFallbackWindow(int windowId)
   return -1;
 }
 
-std::map<int, const char*> CWindowTranslator::CreateReverseWindowMapping()
+CWindowTranslator::WindowMapByID CWindowTranslator::CreateWindowMappingByID()
 {
-  std::map<WindowID, const char*> reverseWindowMapping;
+  WindowMapByID reverseWindowMapping;
 
-  for (auto itMapping : WindowMapping)
-    reverseWindowMapping.insert(std::make_pair(itMapping.second, itMapping.first.c_str()));
+  reverseWindowMapping.insert(WindowMappingByName.begin(), WindowMappingByName.end());
 
   return reverseWindowMapping;
 }
