@@ -8759,6 +8759,7 @@ msgctxt "#16315"
 msgid "Lanczos3 - Optimised"
 msgstr ""
 
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16316"
 msgid "Auto"
@@ -17054,7 +17055,13 @@ msgctxt "#35224"
 msgid "Pause / Resume"
 msgstr ""
 
-#empty strings from id 35225 to 35249
+#. Label of button in the in-game menu for changing the video filter (also called a video shader)
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+msgctxt "#35225"
+msgid "Video filter"
+msgstr ""
+
+#empty strings from id 35226 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"

@@ -150,7 +150,8 @@
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/windows/GUIWindowGames.h"
 #include "games/dialogs/osd/DialogGameOSD.h"
-#include "games/dialogs/osd/DialogGameVideoSettings.h"
+#include "games/dialogs/osd/DialogGameVideoFilter.h"
+#include "games/dialogs/osd/DialogGameViewMode.h"
 
 using namespace KODI;
 using namespace PVR;
@@ -302,7 +303,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CGUIControllerWindow);
   Add(new GAME::CGUIWindowGames);
   Add(new GAME::CDialogGameOSD);
-  Add(new GAME::CDialogGameVideoSettings);
+  Add(new GAME::CDialogGameVideoFilter);
+  Add(new GAME::CDialogGameViewMode);
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -406,7 +408,8 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
     DestroyWindow(WINDOW_GAMES);
     DestroyWindow(WINDOW_DIALOG_GAME_OSD);
-    DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_SETTINGS);
+    DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER);
+    DestroyWindow(WINDOW_DIALOG_GAME_VIEW_MODE);
 
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_MYPVR);

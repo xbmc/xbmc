@@ -1,9 +1,13 @@
 set(SOURCES DialogGameOSD.cpp
-            DialogGameVideoSettings.cpp
+            DialogGameVideoFilter.cpp
+            DialogGameVideoSelect.cpp
+            DialogGameViewMode.cpp
 )
 
 set(HEADERS DialogGameOSD.h
-            DialogGameVideoSettings.h
+            DialogGameVideoFilter.h
+            DialogGameVideoSelect.h
+            DialogGameViewMode.h
 )
 
 core_add_library(gameosddialogs)

@@ -145,7 +145,8 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "tvtimerrules"             , WINDOW_TV_TIMER_RULES},
     { "radiotimerrules"          , WINDOW_RADIO_TIMER_RULES},
     { "gameosd"                  , WINDOW_DIALOG_GAME_OSD },
-    { "gamevideosettings"        , WINDOW_DIALOG_GAME_VIDEO_SETTINGS },
+    { "gamevideofilter"          , WINDOW_DIALOG_GAME_VIDEO_FILTER },
+    { "gameviewmode"             , WINDOW_DIALOG_GAME_VIEW_MODE },
 };
 
 namespace

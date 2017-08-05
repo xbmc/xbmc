@@ -19,30 +19,37 @@
  */
 #pragma once
 
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "DialogGameVideoSelect.h"
+#include "cores/IPlayer.h"
 
 namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameVideoSettings : public CGUIDialogSettingsManualBase
+  class CDialogGameVideoFilter : public CDialogGameVideoSelect
   {
   public:
-    CDialogGameVideoSettings();
-    virtual ~CDialogGameVideoSettings() = default;
+    CDialogGameVideoFilter();
+    ~CDialogGameVideoFilter() override = default;
 
   protected:
-    // implementation of ISettingCallback via CGUIDialogSettingsManualBase
-    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+    // implementation of CDialogGameVideoSelect
+    void PreInit() override;
+    void GetItems(CFileItemList &items) override;
+    void OnItemFocus(unsigned int index) override;
+    unsigned int GetFocusedItem() const override;
+    void PostExit() override;
 
-    // specialization of CGUIDialogSettingsBase via CGUIDialogSettingsManualBase
-    virtual bool AllowResettingSettings() const override { return false; }
-    virtual void Save() override;
-    virtual void SetupView() override;
+  private:
+    struct VideoFilterProperties
+    {
+      int stringIndex;
+      ESCALINGMETHOD scalingMethod;
+    };
 
-    // specialization of CGUIDialogSettingsManualBase
-    virtual void InitializeSettings() override;
+    std::vector<VideoFilterProperties> m_videoFilters;
+
+    static const std::vector<VideoFilterProperties> m_allVideoFilters;
   };
 }
 }
