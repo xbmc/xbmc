@@ -28,6 +28,9 @@
 #include <androidjni/System.h>
 
 #include <EGL/egl.h>
+
+#include <cmath>
+
 #include "AndroidUtils.h"
 
 #include "guilib/gui3d.h"
@@ -251,7 +254,7 @@ bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO &res)
     CXBMCApp::SetDisplayMode(atoi(res.strId.c_str()));
     s_res_cur_displayMode = res;
   }
-  else if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
+  else if (std::abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
     CXBMCApp::SetRefreshRate(res.fRefreshRate);
   CXBMCApp::SetBuffersGeometry(res.iWidth, res.iHeight, 0);
 
