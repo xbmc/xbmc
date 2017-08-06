@@ -110,11 +110,6 @@ public:
   uint32_t      GetNativeBuffer();
 
 private:
-  uint32_t      m_width;
-  uint32_t      m_height;
-  gfxImageUsage m_usage;
-  uint32_t      m_format;
-
   uint32_t      GetAndroidFormat(uint32_t format);
 
   void          *m_handle;
