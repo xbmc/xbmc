@@ -190,6 +190,7 @@ bool CVAAPIContext::CreateContext()
   int major_version, minor_version;
   if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version)))
   {
+    vaTerminate(m_display);
     m_display = NULL;
     return false;
   }
