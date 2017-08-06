@@ -71,6 +71,12 @@ namespace PVR
     bool m_bStopped;
   };
 
+  enum class ChannelSwitchMode
+  {
+    NO_SWITCH,
+    DELAYED_SWITCH
+  };
+
   class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
   public:
@@ -465,23 +471,17 @@ namespace PVR
     /*!
      * @brief Activate channel preview for next channel in current channel group.
      */
-    void ChannelPreviewUp();
+    void ChannelPreviewUp(ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Activate channel preview for previous channel in current channel group.
      */
-    void ChannelPreviewDown();
+    void ChannelPreviewDown(ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Switch to the channel currently previewed.
      */
     void ChannelPreviewSelect();
-
-    /*!
-     * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
-     * @param bPreview true to activate channel preview, false otherwise.
-     */
-    void SetChannelPreview(bool bPreview);
 
     /*!
      * @brief Query the state of channel preview
@@ -578,7 +578,7 @@ namespace PVR
      * @brief Activate preview for a given channel.
      * @param item the channel the preview is to be activated for.
      */
-    void ChannelPreview(const CFileItemPtr item);
+    void ChannelPreview(const CFileItemPtr item, ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Continue playback on the last played channel.
