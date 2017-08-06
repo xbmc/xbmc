@@ -703,7 +703,7 @@ const CPVREpg *CPVREpgInfoTag::GetTable() const
   return m_epg;
 }
 
-const int CPVREpgInfoTag::EpgID(void) const
+int CPVREpgInfoTag::EpgID(void) const
 {
   return m_epg ? m_epg->EpgID() : -1;
 }

@@ -49,7 +49,7 @@ namespace PERIPHERALS
     /*!
      * @return The bus type
      */
-    const PeripheralBusType Type(void) const { return m_type; }
+    PeripheralBusType Type(void) const { return m_type; }
 
     /*!
      * @return True if this bus needs to be polled for changes, false if this bus performs updates via callbacks

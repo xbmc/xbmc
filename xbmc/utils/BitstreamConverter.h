@@ -113,9 +113,9 @@ public:
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
 protected:
-  static const int  avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);
-  static const int  avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
-  const int         isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len);
+  static int  avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);
+  static int  avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
+  int         isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len);
   // bitstream to bytestream (Annex B) conversion support.
   bool              IsIDR(uint8_t unit_type);
   bool              IsSlice(uint8_t unit_type);

@@ -38,7 +38,7 @@ namespace ADDON
   public:
     CBinaryAddonType(TYPE type, CBinaryAddonBase* info, const TiXmlElement* child);
 
-    const TYPE Type() const { return m_type; }
+    TYPE Type() const { return m_type; }
     std::string LibPath() const;
     const std::string& LibName() const { return m_libname; }
 

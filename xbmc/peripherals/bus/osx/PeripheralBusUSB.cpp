@@ -95,7 +95,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 }
 
 #ifdef TARGET_DARWIN_OSX
-const PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
+PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
 {
   switch (iDeviceClass)
   {

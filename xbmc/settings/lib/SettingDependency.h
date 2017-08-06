@@ -64,8 +64,8 @@ public:
   
   const std::string& GetName() const { return m_name; }
   const std::string& GetSetting() const { return m_setting; }
-  const SettingDependencyTarget GetTarget() const { return m_target; }
-  const SettingDependencyOperator GetOperator() const { return m_operator; }
+  SettingDependencyTarget GetTarget() const { return m_target; }
+  SettingDependencyOperator GetOperator() const { return m_operator; }
 
 private:
   bool setTarget(const std::string &target);

@@ -402,7 +402,7 @@ public:
 
 /* --------------- for fast access ---------------- */
   const result_set& get_result_set() { return result; }
-  const sql_record* const get_sql_record();
+  const sql_record* get_sql_record();
 
  private:
 
