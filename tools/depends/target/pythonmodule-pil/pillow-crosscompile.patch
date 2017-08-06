@@ -1,6 +1,6 @@
 --- setup.py.orig	2015-10-01 22:39:00.000000000 +0200
 +++ setup.py	2015-10-25 12:28:22.023743244 +0100
-@@ -156,6 +156,15 @@
+@@ -156,6 +156,16 @@
  
          _add_directory(include_dirs, "libImaging")
  
@@ -9,7 +9,8 @@
 +        # unfortunately, distutils doesn't let us provide separate C and C++
 +        # compilers
 +        if compiler is not None:
-+            (ccshared,cflags) = sysconfig.get_config_vars('CCSHARED','CFLAGS')
++            ccshared = os.environ.get('CCSHARED') or ''
++            cflags = os.environ.get('CFLAGS') or ''
 +            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
 +        self.compiler.set_executables(**args)
 +

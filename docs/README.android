@@ -77,7 +77,7 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
                   --with-sdk=android-21 \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r14b \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r15c \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
 
@@ -90,7 +90,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision 14b. For the SDK just use the latest available.
+         Revision 15c. For the SDK just use the latest available.
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
@@ -98,7 +98,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r14b
+/opt/android-ndk-r15c
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.9-vanilla/android-21
@@ -151,7 +151,7 @@ Building for arm architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
       --toolchain=arm-linux-androideabi-4.9
 
@@ -160,7 +160,7 @@ Building for aarch64 architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
       --toolchain=aarch64-linux-android-4.9
 
@@ -169,7 +169,7 @@ Building for x86 architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
       --toolchain=x86-4.9 --arch=x86
 

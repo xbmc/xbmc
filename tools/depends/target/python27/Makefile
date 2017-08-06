@@ -41,6 +41,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
 	cd $(PLATFORM); patch -l -p0 < ../python-android-binmodule.patch
 	cd $(PLATFORM); patch -p1 < ../Python-no-abort.patch
+	cd $(PLATFORM); patch -p1 < ../python-android-nl_langinfo.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff

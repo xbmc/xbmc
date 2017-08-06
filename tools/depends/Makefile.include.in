@@ -2,7 +2,7 @@ abs_top_srcdir=@abs_top_srcdir@
 
 DEBUG_BUILD=@use_debug@
 TOOLCHAIN=@use_toolchain@
-NDKROOT=@use_ndk@
+NDKROOT=@use_ndk_path@
 SDKROOT=@use_sdk_path@
 CMAKE_SOURCE_DIR=$(abspath $(abs_top_srcdir)/../../)
 TARBALLS_LOCATION=@use_tarballs@
@@ -11,6 +11,7 @@ HOST=@use_host@
 CPU=@use_cpu@
 NATIVEPLATFORM=@build_cpu@-@build_os@-native
 SDK_PLATFORM=@use_sdk@
+NDK_LEVEL=@use_ndk@
 RETRIEVE_TOOL=@CURL@
 ARCHIVE_TOOL=@TAR@
 PREFIX=@prefix@/@deps_dir@
