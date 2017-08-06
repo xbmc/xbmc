@@ -303,7 +303,11 @@ void CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &ge
   hevc = false;
 
   int major_version, minor_version;
-  vaInitialize(vaDpy, &major_version, &minor_version);
+  if (vaInitialize(vaDpy, &major_version, &minor_version) != VA_STATUS_SUCCESS)
+  {
+    vaTerminate(vaDpy);
+    return;
+  }
 
   int width = 1920;
   int height = 1080;
