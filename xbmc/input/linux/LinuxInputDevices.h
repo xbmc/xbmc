@@ -26,8 +26,7 @@
 #include "windowing/XBMC_events.h"
 #include "input/XBMC_keyboard.h"
 #include "threads/SingleLock.h"
-#include "input/touch/ITouchInputHandler.h"
-#include "input/touch/generic/IGenericTouchGestureDetector.h"
+#include "input/touch/generic/GenericTouchInputHandler.h"
 #include "threads/Thread.h"
 
 struct KeymapEntry
@@ -87,9 +86,9 @@ private:
   bool m_bUnplugged;
   std::deque<XBMC_Event> m_equeue;
   int m_mt_currentSlot;
-  int m_mt_x[TOUCH_MAX_POINTERS];
-  int m_mt_y[TOUCH_MAX_POINTERS];
-  TouchInput m_mt_event[TOUCH_MAX_POINTERS];
+  int m_mt_x[CGenericTouchInputHandler::MAX_POINTERS];
+  int m_mt_y[CGenericTouchInputHandler::MAX_POINTERS];
+  TouchInput m_mt_event[CGenericTouchInputHandler::MAX_POINTERS];
 };
 
 class CLinuxInputDevices
