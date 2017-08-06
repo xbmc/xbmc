@@ -107,16 +107,6 @@ if test "$use_ccache" = "yes"; then
   fi
 fi
 
-AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
-if test "x$HAVE_UNZIP" = "xno" ; then
-  AC_MSG_ERROR("Missing program: unzip")
-fi
-
-AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
-if test "x$HAVE_ZIP" = "xno" ; then
-  AC_MSG_ERROR("Missing program: zip")
-fi
-
 AC_PATH_PROG(CURL,curl,"no")
 if test "x$CURL" = "xno" ; then
   AC_MSG_ERROR("Missing program: curl")
@@ -582,6 +572,20 @@ if test "$platform_os" == "android"; then
   AC_PATH_PROG(ZIPALIGN,zipalign,"no",$build_tools_path)
   if test "x$ZIPALIGN" = "xno" ; then
     AC_MSG_ERROR("Missing program: zipalign")
+  fi
+fi
+
+# darwin needs unzip/zip in Codesign.command
+if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+  AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
+  if test "x$HAVE_UNZIP" = "xno"; then
+    AC_MSG_ERROR("Missing program: unzip")
+  fi
+fi
+if test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+  AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
+  if test "x$HAVE_ZIP" = "xno"; then
+    AC_MSG_ERROR("Missing program: zip")
   fi
 fi
 
