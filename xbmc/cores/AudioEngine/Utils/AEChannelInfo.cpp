@@ -257,6 +257,30 @@ CAEChannelInfo::operator std::string() const
   return s;
 }
 
+bool CAEChannelInfo::IsChannelValid(const unsigned int pos)
+{
+  assert(pos < m_channelCount);
+  bool isValid = false;
+  if (m_channels[pos] > AE_CH_NULL && m_channels[pos] < AE_CH_UNKNOWN1)
+    isValid = true;
+
+  return isValid;
+}
+
+bool CAEChannelInfo::IsLayoutValid()
+{
+  if (m_channelCount == 0)
+    return false;
+
+  for (unsigned int i = 0; i < m_channelCount; ++i)
+  {
+    // we need at least one valid channel
+    if (IsChannelValid(i))
+      return true;
+  }
+  return false;
+}
+
 const char* CAEChannelInfo::GetChName(const enum AEChannel ch)
 {
   assert(ch >= 0 && ch < AE_CH_MAX);
