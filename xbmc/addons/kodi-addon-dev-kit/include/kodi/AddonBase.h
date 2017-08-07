@@ -43,12 +43,19 @@
   #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
     #define ATTRIBUTE_PACKED __attribute__ ((packed))
     #define PRAGMA_PACK 0
+  #if __GNUC__ >= 4
+    #define ATTRIBUTE_HIDDEN __attribute__ ((visibility ("hidden")))
+  #endif
   #endif
 #endif
 
 #if !defined(ATTRIBUTE_PACKED)
   #define ATTRIBUTE_PACKED
   #define PRAGMA_PACK 1
+#endif
+
+#if !defined(ATTRIBUTE_HIDDEN)
+  #define ATTRIBUTE_HIDDEN
 #endif
 
 #include "versions.h"
@@ -273,7 +280,7 @@ private:
 namespace kodi {
 namespace addon {
 /// Add-on main instance class.
-class CAddonBase
+class ATTRIBUTE_HIDDEN CAddonBase
 {
 public:
   CAddonBase()
