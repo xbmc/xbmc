@@ -43,7 +43,6 @@
 class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
-class CFileItemList;
 class CVariant;
 
 namespace PVR
@@ -271,13 +270,6 @@ namespace PVR
      * @brief Update the channel displayed in guiinfomanager and application to match the currently playing channel.
      */
     void UpdateCurrentChannel(void);
-
-    /*!
-     * @brief Return the EPG for the channel that is currently playing.
-     * @param channel The EPG or NULL if no channel is playing.
-     * @return The amount of results that was added or -1 if none.
-     */
-    int GetCurrentEpg(CFileItemList &results) const;
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -526,11 +518,6 @@ namespace PVR
     void SetPlayingGroup(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Save the currently playing channel as last played channel
-     */
-    void SaveLastPlayedChannel() const;
-
-    /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
      */
     bool SetWakeupCommand(void);
@@ -566,15 +553,6 @@ namespace PVR
     void Clear(void);
 
     /*!
-     * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
-     * @param iNewChannelNumber The new channel number after the switch.
-     * @param bPreview Preview window if true.
-     * @param bUp Go one channel up if true, one channel down if false.
-     * @return True if the switch was successful, false otherwise.
-     */
-    bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
-
-    /*!
      * @brief Activate preview for a given channel.
      * @param item the channel the preview is to be activated for.
      */
@@ -595,8 +573,16 @@ namespace PVR
       ManagerStateStarted
     };
 
+    /*!
+     * @brief Get the current state of the PVR manager.
+     * @return the state.
+     */
     ManagerState GetState(void) const;
 
+    /*!
+     * @brief Set the current state of the PVR manager.
+     * @param state the new state.
+     */
     void SetState(ManagerState state);
 
     bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;

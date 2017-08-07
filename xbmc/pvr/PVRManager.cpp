@@ -676,19 +676,6 @@ CPVRRecordingPtr CPVRManager::GetCurrentRecording(void) const
   return m_addons->GetPlayingRecording();
 }
 
-int CPVRManager::GetCurrentEpg(CFileItemList &results) const
-{
-  int iReturn = -1;
-
-  CPVRChannelPtr channel(m_addons->GetPlayingChannel());
-  if (channel)
-    iReturn = channel->GetEPG(results);
-  else
-    CLog::Log(LOGDEBUG,"PVRManager - %s - no current channel set", __FUNCTION__);
-
-  return iReturn;
-}
-
 void CPVRManager::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
