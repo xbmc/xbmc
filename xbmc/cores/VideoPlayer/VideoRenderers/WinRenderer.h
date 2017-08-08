@@ -76,8 +76,6 @@ public:
   bool WantsDoublePass() override;
   bool ConfigChanged(const VideoPicture& picture) override;
 
-  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
-
 protected:
   void PreInit();
   virtual void Render(DWORD flags, CD3DTexture* target);
