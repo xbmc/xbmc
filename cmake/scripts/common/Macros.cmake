@@ -89,6 +89,10 @@ function(core_add_library name)
     target_sources(lib${APP_NAME_LC} PRIVATE ${FILES})
     set(CORE_LIBRARY lib${APP_NAME_LC} PARENT_SCOPE)
   endif()
+  foreach(src ${SOURCES})
+    list(APPEND sca_sources ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+  endforeach()
+  set(sca_sources ${sca_sources} CACHE STRING "" FORCE)
 endfunction()
 
 # Add a test library, and add sources to list for gtest integration macros
