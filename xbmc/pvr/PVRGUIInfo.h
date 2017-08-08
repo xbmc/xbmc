@@ -23,7 +23,6 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
-#include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
@@ -60,13 +59,6 @@ namespace PVR
      * @return The position in milliseconds or NULL if no channel is playing.
      */
     int GetStartTime(void) const;
-
-    /*!
-     * @brief Show the player info.
-     * @param iTimeout Hide the player info after iTimeout seconds.
-     * @todo not really the right place for this :-)
-     */
-    void ShowPlayerInfo(int iTimeout);
 
     /*!
      * @brief Clear the playing EPG tag.
@@ -191,7 +183,6 @@ namespace PVR
     void UpdateTimeshift(void);
 
     void UpdateTimersToggle(void);
-    void ToggleShowInfo(void);
 
     void CharInfoPlayingDuration(std::string &strValue) const;
     void CharInfoPlayingTime(std::string &strValue) const;
@@ -251,7 +242,6 @@ namespace PVR
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
     PVR_DESCRAMBLE_INFO             m_descrambleInfo;    /*!< stream descramble information */
-    XbmcThreads::EndTime            m_ToggleShowInfo;
     CPVREpgInfoTagPtr               m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 

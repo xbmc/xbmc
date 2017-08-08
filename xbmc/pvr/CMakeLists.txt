@@ -7,7 +7,8 @@ set(SOURCES PVRActionListener.cpp
             PVRGUIActions.cpp
             PVRItem.cpp
             PVRChannelNumberInputHandler.cpp
-            PVRJobs.cpp)
+            PVRJobs.cpp
+            PVRGUIChannelNavigator.cpp)
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
@@ -20,6 +21,7 @@ set(HEADERS PVRActionListener.h
             PVRItem.h
             PVRTypes.h
             PVRChannelNumberInputHandler.h
-            PVRJobs.h)
+            PVRJobs.h
+            PVRGUIChannelNavigator.h)
 
 core_add_library(pvr)

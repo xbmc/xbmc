@@ -9174,7 +9174,6 @@ void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
     CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
     if (tag)
       m_currentFile->SetEPGInfoTag(tag);
-    m_isPvrChannelPreview = CServiceBroker::GetPVRManager().IsChannelPreview();
   }
 
   SetChanged();
@@ -9385,9 +9384,6 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::SetShowInfo(bool showinfo)
 {
   m_playerShowInfo = showinfo;
-
-  if (!showinfo)
-    m_isPvrChannelPreview = false;
 }
 
 bool CGUIInfoManager::ToggleShowInfo()
@@ -9438,7 +9434,7 @@ void CGUIInfoManager::UpdateFPS()
 
 void CGUIInfoManager::UpdateAVInfo()
 {
-  if(g_application.m_pPlayer->IsPlaying())
+  if (g_application.m_pPlayer->IsPlaying())
   {
     if (CServiceBroker::GetDataCacheCore().HasAVInfoChanges())
     {
@@ -9450,8 +9446,6 @@ void CGUIInfoManager::UpdateAVInfo()
 
       m_videoInfo = video;
       m_audioInfo = audio;
-
-      m_isPvrChannelPreview = CServiceBroker::GetPVRManager().IsChannelPreview();
     }
   }
 }
@@ -11128,10 +11122,10 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
-  bool bReturn(false);
+  bool bReturn = false;
   if (m_playerShowInfo && m_currentFile->HasPVRChannelInfoTag())
   {
-    if (m_isPvrChannelPreview)
+    if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
     {
       bReturn = true;
     }

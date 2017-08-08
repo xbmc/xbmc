@@ -18,9 +18,10 @@
  *
  */
 
+#include "PVRGUIInfo.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "GUIInfoManager.h"
 #include "epg/EpgInfoTag.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/LocalizeStrings.h"
@@ -35,8 +36,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "PVRGUIInfo.h"
 
 using namespace PVR;
 
@@ -70,7 +69,6 @@ void CPVRGUIInfo::ResetProperties(void)
   m_strBackendChannels          .clear();
   m_iBackendDiskTotal           = 0;
   m_iBackendDiskUsed            = 0;
-  m_ToggleShowInfo.SetInfinite();
   m_iDuration                   = 0;
   m_bIsPlayingTV                = false;
   m_bIsPlayingRadio             = false;
@@ -124,48 +122,6 @@ void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
     UpdateTimersCache();
 }
 
-void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
-{
-  {
-    CSingleLock lock(m_critSection);
-
-    if (iTimeout > 0)
-      m_ToggleShowInfo.Set(iTimeout * 1000);
-  }
-
-  g_infoManager.SetShowInfo(true);
-}
-
-void CPVRGUIInfo::ToggleShowInfo(void)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ToggleShowInfo.IsTimePast())
-  {
-    // if preview was active and user did not select a channel
-    // set current item back to playing channel
-    
-    m_ToggleShowInfo.SetInfinite();
-
-    /* release our lock while calling into global objects (which have
-       their own locks) to avoid deadlocks */
-    lock.Leave();
-
-    g_infoManager.SetShowInfo(false);
-    CServiceBroker::GetPVRManager().UpdateCurrentChannel();
-  }
-  else if (!CServiceBroker::GetPVRManager().IsChannelPreview())
-  {
-    // update current item to playing channel, if preview is not active
-    
-    /* release our lock while calling into global objects (which have
-       their own locks) to avoid deadlocks */
-    lock.Leave();
-
-    CServiceBroker::GetPVRManager().UpdateCurrentChannel();
-  }
-}
-
 void CPVRGUIInfo::Process(void)
 {
   unsigned int mLoop(0);
@@ -180,10 +136,6 @@ void CPVRGUIInfo::Process(void)
 
   while (!g_application.m_bStop && !m_bStop)
   {
-    if (!m_bStop)
-      ToggleShowInfo();
-    Sleep(0);
-
     if (!m_bStop)
       UpdateQualityData();
     Sleep(0);
@@ -890,21 +842,18 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     if (!epgTag || !epgTag->IsActive() ||
         !channel || *channel != *currentChannel)
     {
+      CSingleLock lock(m_critSection);
+      ResetPlayingTag();
+      CPVREpgInfoTagPtr newTag(currentChannel->GetEPGNow());
+      if (newTag)
       {
-        CSingleLock lock(m_critSection);
-        ResetPlayingTag();
-        CPVREpgInfoTagPtr newTag(currentChannel->GetEPGNow());
-        if (newTag)
-        {
-          m_playingEpgTag = newTag;
-          m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
-        }
-        else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
-        {
-          m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
-        }
+        m_playingEpgTag = newTag;
+        m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
       }
-      CServiceBroker::GetPVRManager().UpdateCurrentFile();
+      else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
+      {
+        m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
+      }
     }
   }
   else

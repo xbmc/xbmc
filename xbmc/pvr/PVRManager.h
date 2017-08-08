@@ -70,12 +70,6 @@ namespace PVR
     bool m_bStopped;
   };
 
-  enum class ChannelSwitchMode
-  {
-    NO_SWITCH,
-    DELAYED_SWITCH
-  };
-
   class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
   public:
@@ -195,13 +189,6 @@ namespace PVR
     bool TranslateBoolInfo(DWORD dwInfo) const;
 
     /*!
-     * @brief Show the player info.
-     * @param iTimeout Hide the player info after iTimeout seconds.
-     * @todo not really the right place for this :-)
-     */
-    void ShowPlayerInfo(int iTimeout);
-
-    /*!
      * @brief Check if a TV channel, radio channel or recording is playing.
      * @return True if it's playing, false otherwise.
      */
@@ -265,11 +252,6 @@ namespace PVR
      * @return The recording or NULL if none is playing.
      */
     CPVRRecordingPtr GetCurrentRecording(void) const;
-
-    /*!
-     * @brief Update the channel displayed in guiinfomanager and application to match the currently playing channel.
-     */
-    void UpdateCurrentChannel(void);
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -399,11 +381,6 @@ namespace PVR
     int GetStartTime(void) const;
 
     /*!
-     * @brief Update the currently playing file in the guiinfomanager.
-     */
-    void UpdateCurrentFile(void);
-
-    /*!
      * @brief Check whether names are still correct after the language settings changed.
      */
     void LocalizationChanged(void);
@@ -459,26 +436,6 @@ namespace PVR
      * @brief Signal a connection change of a client
      */
     void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
-
-    /*!
-     * @brief Activate channel preview for next channel in current channel group.
-     */
-    void ChannelPreviewUp(ChannelSwitchMode eSwitchMode);
-
-    /*!
-     * @brief Activate channel preview for previous channel in current channel group.
-     */
-    void ChannelPreviewDown(ChannelSwitchMode eSwitchMode);
-
-    /*!
-     * @brief Switch to the channel currently previewed.
-     */
-    void ChannelPreviewSelect();
-
-    /*!
-     * @brief Query the state of channel preview
-     */
-    bool IsChannelPreview() const;
 
     /*!
      * @brief Query the events available for CEventStream
@@ -553,12 +510,6 @@ namespace PVR
     void Clear(void);
 
     /*!
-     * @brief Activate preview for a given channel.
-     * @param item the channel the preview is to be activated for.
-     */
-    void ChannelPreview(const CFileItemPtr item, ChannelSwitchMode eSwitchMode);
-
-    /*!
      * @brief Continue playback on the last played channel.
      */
     void TriggerPlayChannelOnStartup(void);
@@ -602,11 +553,9 @@ namespace PVR
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
-    CFileItemPtr                    m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
-    bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                            m_bEpgsCreated;                /*!< true if epg data for channels has been created */
     CGUIDialogExtendedProgressBar * m_progressBar;                 /*!< extended progress dialog instance pointer */
     CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
@@ -617,8 +566,6 @@ namespace PVR
 
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
-    std::atomic_bool m_bIsChannelPreview;
-    int m_iChannelEntryJobId = -1;
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;
