@@ -26,7 +26,11 @@
 #if !defined(_WIN32)
   #include <sys/stat.h>
   #if !defined(__stat64)
-    #define __stat64 stat64
+    #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+      #define __stat64 stat
+    #else
+      #define __stat64 stat64
+    #endif
   #endif
 #endif
 #ifdef _WIN32                   // windows
