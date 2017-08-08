@@ -19,28 +19,21 @@
  */
 #pragma once
 
-#include "DialogGameVideoSelect.h"
+#include "cores/IPlayer.h"
 
 namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameViewMode : public CDialogGameVideoSelect
+  class IVideoSelectCallback
   {
   public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
+    virtual ~IVideoSelectCallback() = default;
 
-    //! @todo
-    bool HasViewModes();
-
-  protected:
-    // implementation of CDialogGameVideoSelect
-    void PreInit() override { }
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override { }
+    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) = 0;
+    virtual bool SupportsRenderFeature(ERENDERFEATURE feature) = 0;
+    virtual void SetRenderViewMode(ViewMode mode) = 0;
+    virtual void SetScalingMethod(ESCALINGMETHOD scalingMethod) = 0;
   };
 }
 }

@@ -19,13 +19,11 @@
  */
 
 #include "DialogGameViewMode.h"
-#include "cores/IPlayer.h"
+#include "IVideoSelectCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
-#include "Application.h"
-#include "ApplicationPlayer.h"
 #include "FileItem.h"
 
 using namespace KODI;
@@ -66,7 +64,7 @@ void CDialogGameViewMode::GetItems(CFileItemList &items)
 
 void CDialogGameViewMode::OnItemFocus(unsigned int index)
 {
-  if (index < viewModes.size())
+  if (index < viewModes.size() && m_callback != nullptr)
   {
     const ViewMode viewMode = viewModes[index].viewMode;
 
@@ -75,7 +73,7 @@ void CDialogGameViewMode::OnItemFocus(unsigned int index)
     {
       gameSettings.SetViewMode(viewMode);
 
-      g_application.m_pPlayer->SetRenderViewMode(viewMode);
+      m_callback->SetRenderViewMode(viewMode);
     }
   }
 }
@@ -96,11 +94,14 @@ unsigned int CDialogGameViewMode::GetFocusedItem() const
 
 bool CDialogGameViewMode::HasViewModes()
 {
-  if (g_application.m_pPlayer->Supports(RENDERFEATURE_STRETCH))
-    return true;
+  if (m_callback != nullptr)
+  {
+    if (m_callback->SupportsRenderFeature(RENDERFEATURE_STRETCH))
+      return true;
 
-  if (g_application.m_pPlayer->Supports(RENDERFEATURE_PIXEL_RATIO))
-    return true;
+    if (m_callback->SupportsRenderFeature(RENDERFEATURE_PIXEL_RATIO))
+      return true;
+  }
 
   return false;
 }

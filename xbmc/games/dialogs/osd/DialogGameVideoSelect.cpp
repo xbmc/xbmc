@@ -51,6 +51,16 @@ CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
 
 CDialogGameVideoSelect::~CDialogGameVideoSelect() = default;
 
+void CDialogGameVideoSelect::RegisterCallback(IVideoSelectCallback *callback)
+{
+  m_callback = callback;
+}
+
+void CDialogGameVideoSelect::UnregisterCallback()
+{
+  m_callback = nullptr;
+}
+
 bool CDialogGameVideoSelect::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())

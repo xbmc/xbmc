@@ -17,30 +17,37 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "DialogGameVideoSelect.h"
+#include "RPRenderManager.h"
+#include "settings/MediaSettings.h"
+#include "settings/VideoSettings.h"
 
-namespace KODI
+using namespace KODI;
+using namespace RETRO;
+
+CRPRenderManager::CRPRenderManager(CDVDClock &clock, IRenderMsg *player) :
+  CRenderManager(clock, player)
 {
-namespace GAME
-{
-  class CDialogGameViewMode : public CDialogGameVideoSelect
-  {
-  public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
-
-    //! @todo
-    bool HasViewModes();
-
-  protected:
-    // implementation of CDialogGameVideoSelect
-    void PreInit() override { }
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override { }
-  };
 }
+
+bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
+{
+  return Supports(method);
+}
+
+bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
+{
+  return Supports(feature);
+}
+
+void CRPRenderManager::SetRenderViewMode(ViewMode mode)
+{
+  SetViewMode(mode);
+}
+
+void CRPRenderManager::SetScalingMethod(ESCALINGMETHOD method)
+{
+  //! @todo
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  videoSettings.m_ScalingMethod = method;
 }

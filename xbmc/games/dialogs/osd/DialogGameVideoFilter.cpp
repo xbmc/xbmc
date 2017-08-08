@@ -19,13 +19,11 @@
  */
 
 #include "DialogGameVideoFilter.h"
+#include "IVideoSelectCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
-#include "settings/VideoSettings.h" //! @todo
-#include "Application.h"
-#include "ApplicationPlayer.h"
 #include "FileItem.h"
 
 using namespace KODI;
@@ -58,10 +56,13 @@ void CDialogGameVideoFilter::PreInit()
 {
   m_videoFilters.clear();
 
-  for (const auto &videoFilter : m_allVideoFilters)
+  if (m_callback != nullptr)
   {
-    if (g_application.m_pPlayer->Supports(videoFilter.scalingMethod))
-      m_videoFilters.emplace_back(videoFilter);
+    for (const auto &videoFilter : m_allVideoFilters)
+    {
+      if (m_callback->SupportsScalingMethod(videoFilter.scalingMethod))
+        m_videoFilters.emplace_back(videoFilter);
+    }
   }
 }
 
@@ -82,7 +83,7 @@ void CDialogGameVideoFilter::GetItems(CFileItemList &items)
 
 void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 {
-  if (index < m_videoFilters.size())
+  if (index < m_videoFilters.size() && m_callback != nullptr)
   {
     const ESCALINGMETHOD scalingMethod = m_videoFilters[index].scalingMethod;
 
@@ -91,9 +92,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     {
       gameSettings.SetScalingMethod(scalingMethod);
 
-      //! @todo
-      CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
-      videoSettings.m_ScalingMethod = scalingMethod;
+      m_callback->SetScalingMethod(scalingMethod);
     }
   }
 }

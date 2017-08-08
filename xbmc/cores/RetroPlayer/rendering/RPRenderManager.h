@@ -19,28 +19,25 @@
  */
 #pragma once
 
-#include "DialogGameVideoSelect.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "games/dialogs/osd/IVideoSelectCallback.h"
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class CDialogGameViewMode : public CDialogGameVideoSelect
+  class CRPRenderManager : public CRenderManager,
+                           public GAME::IVideoSelectCallback
   {
   public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
+    CRPRenderManager(CDVDClock &clock, IRenderMsg *player);
+    ~CRPRenderManager() override = default;
 
-    //! @todo
-    bool HasViewModes();
-
-  protected:
-    // implementation of CDialogGameVideoSelect
-    void PreInit() override { }
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override { }
+    // Implementation of IVideoSelectCallback
+    bool SupportsScalingMethod(ESCALINGMETHOD method) override;
+    bool SupportsRenderFeature(ERENDERFEATURE feature) override;
+    void SetRenderViewMode(ViewMode mode) override;
+    void SetScalingMethod(ESCALINGMETHOD method) override;
   };
 }
 }

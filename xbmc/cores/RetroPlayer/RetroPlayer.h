@@ -37,6 +37,7 @@ namespace RETRO
   class CRetroPlayerAudio;
   class CRetroPlayerAutoSave;
   class CRetroPlayerVideo;
+  class CRPRenderManager;
 
   class CRetroPlayer : public IPlayer,
                        public IRenderMsg
@@ -118,20 +119,20 @@ namespace RETRO
     //virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override { audioCaps.assign(1,IPC_AUD_ALL); }
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
     void FrameMove() override;
-    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
-    void FlushRenderer() override { m_renderManager.Flush(true); }
-    void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
-    float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
-    void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
-    bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
+    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
+    void FlushRenderer() override;
+    void SetRenderViewMode(int mode) override;
+    float GetRenderAspectRatio() override;
+    void TriggerUpdateResolution() override;
+    bool IsRenderingVideo() override;
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
-    bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
-    bool Supports(ERENDERFEATURE feature) override { return m_renderManager.Supports(feature); }
-    unsigned int RenderCaptureAlloc() override { return m_renderManager.AllocRenderCapture(); }
-    void RenderCaptureRelease(unsigned int captureId) override { m_renderManager.ReleaseRenderCapture(captureId); }
-    void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { m_renderManager.StartRenderCapture(captureId, width, height, flags); }
-    bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
+    bool Supports(ESCALINGMETHOD method) override;
+    bool Supports(ERENDERFEATURE feature) override;
+    unsigned int RenderCaptureAlloc() override;
+    void RenderCaptureRelease(unsigned int captureId) override;
+    void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;
+    bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override;
 
     // implementation of IRenderMsg
     virtual void VideoParamsChange() override { }
@@ -154,6 +155,9 @@ namespace RETRO
      */
     void CloseOSD();
 
+    void RegisterWindowCallbacks();
+    void UnregisterWindowCallbacks();
+
     /**
      * \brief Dump game information (if any) to the debug log.
      */
@@ -172,7 +176,7 @@ namespace RETRO
     State                              m_state = State::STARTING;
     double                             m_priorSpeed = 0.0f; // Speed of gameplay before entering OSD
     CDVDClock                          m_clock;
-    CRenderManager                     m_renderManager;
+    std::unique_ptr<CRPRenderManager>  m_renderManager;
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;

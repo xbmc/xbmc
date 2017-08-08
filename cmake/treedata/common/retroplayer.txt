@@ -1,0 +1,2 @@
+xbmc/cores/RetroPlayer                                          cores/RetroPlayer
+xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering

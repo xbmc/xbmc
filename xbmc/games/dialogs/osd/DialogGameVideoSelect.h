@@ -30,10 +30,15 @@ namespace KODI
 {
 namespace GAME
 {
+  class IVideoSelectCallback;
+
   class CDialogGameVideoSelect : public CGUIDialog
   {
   public:
     ~CDialogGameVideoSelect() override;
+
+    void RegisterCallback(IVideoSelectCallback *callback);
+    void UnregisterCallback();
 
     // implementation of CGUIControl via CGUIDialog
     bool OnMessage(CGUIMessage &message) override;
@@ -56,6 +61,9 @@ namespace GAME
     virtual void OnItemFocus(unsigned int index) = 0;
     virtual unsigned int GetFocusedItem() const = 0;
     virtual void PostExit() = 0;
+
+  protected:
+    IVideoSelectCallback *m_callback = nullptr;
 
   private:
     void Update();
