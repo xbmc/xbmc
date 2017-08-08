@@ -1325,6 +1325,7 @@ CAMLCodec::CAMLCodec()
   , m_ptsIs64us(false)
   , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_cur_pts(INT64_0)
+  , m_ptsOverflow(0)
   , m_last_pts(0)
   , m_bufferIndex(-1)
   , m_state(0)
@@ -1374,7 +1375,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_zoom = -1.0f;
   m_contrast = -1;
   m_brightness = -1;
-  m_start_adj = 0;
   m_hints = hints;
   m_state = 0;
   m_frameSizes.clear();
@@ -1605,6 +1605,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   CLog::Log(LOGNOTICE, "CAMLCodec::OpenDecoder - using V4L2 pts format: %s", m_ptsIs64us ? "64Bit":"32Bit");
 
+  m_ptsOverflow = m_ptsIs64us ? 0 : INT64_0;
+
   m_opened = true;
   // vcodec is open, update speed if it was
   // changed before VideoPlayer called OpenDecoder.
@@ -1733,8 +1735,8 @@ void CAMLCodec::Reset()
 
   // reset some interal vars
   m_cur_pts = INT64_0;
+  m_ptsOverflow = m_ptsIs64us ? 0 : INT64_0;
   m_state = 0;
-  m_start_adj = 0;
   m_frameSizes.clear();
   m_frameSizeSum = 0;
 
@@ -1764,10 +1766,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     am_private->am_pkt.avpts = INT64_0;
   else
   {
-    am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;\
-    if (!m_start_adj && am_private->am_pkt.avpts >= 0x7fffffff)
-      m_start_adj = am_private->am_pkt.avpts & ~0x0000ffff;
-    am_private->am_pkt.avpts -= m_start_adj;
+    am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;
     m_state |= STATE_HASPTS;
   }
 
@@ -1778,14 +1777,25 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   else
   {
     am_private->am_pkt.avdts = 0.5 + (dts * PTS_FREQ) / DVD_TIME_BASE;
-    if (!m_start_adj && am_private->am_pkt.avdts >= 0x7fffffff)
-      m_start_adj = am_private->am_pkt.avdts & ~0x0000ffff;
-    am_private->am_pkt.avdts -= m_start_adj;
 
     // For VC1 AML decoder uses PTS only on I-Frames
     if (am_private->am_pkt.avpts == INT64_0 && (((size_t)am_private->gcodec.param) & KEYFRAME_PTS_ONLY))
       am_private->am_pkt.avpts = am_private->am_pkt.avdts;
   }
+
+  //Handle PTS overflow
+  if (!m_ptsIs64us)
+  {
+    if (am_private->am_pkt.avpts != INT64_0)
+    {
+      if (m_ptsOverflow == INT64_0)
+        m_ptsOverflow = am_private->am_pkt.avpts & 0xFFFF80000000ULL;
+      am_private->am_pkt.avpts &= 0x7FFFFFFF;
+    }
+    if (am_private->am_pkt.avdts != INT64_0)
+      am_private->am_pkt.avdts &= 0x7FFFFFFF;
+  }
+
   // We use this to determine the fill state if no PTS is given
   if (m_cur_pts == INT64_0)
   {
@@ -1823,10 +1833,11 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
   {
-    CLog::Log(LOGDEBUG, "CAMLCodec::AddData: sz: %u, dts_in: %0.4lf[%llX], pts_in: %0.4lf[%llX]",
+    CLog::Log(LOGDEBUG, "CAMLCodec::AddData: sz: %u, dts_in: %0.4lf[%llX], pts_in: %0.4lf[%llX], overflow:%llx",
       static_cast<unsigned int>(iSize),
       dts / DVD_TIME_BASE, am_private->am_pkt.avdts,
-      pts / DVD_TIME_BASE, am_private->am_pkt.avpts
+      pts / DVD_TIME_BASE, am_private->am_pkt.avpts,
+      m_ptsOverflow
     );
   }
   return true;
@@ -1963,10 +1974,22 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
     if (m_last_pts <= 0)
       pVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
     else
+    {
+      // Check for int overflow
+      if (m_cur_pts + 0xFFFFFFF < m_last_pts)
+      {
+        m_last_pts -= 0x7FFFFFFF;
+        m_ptsOverflow += 0x80000000;
+        CLog::Log(LOGDEBUG, "CAMLCodec::GetPicture, PTS overflow incremented(%lld)", m_ptsOverflow);
+      }
       pVideoPicture->iDuration = (double)((m_cur_pts - m_last_pts) * DVD_TIME_BASE) / PTS_FREQ;
+    }
 
     pVideoPicture->dts = DVD_NOPTS_VALUE;
-    pVideoPicture->pts = (double)GetCurPts() / PTS_FREQ * DVD_TIME_BASE;
+    pVideoPicture->pts = (double)(m_cur_pts + m_ptsOverflow) / PTS_FREQ * DVD_TIME_BASE;
+
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "CAMLCodec::GetPicture: index: %u, pts: %0.4lf[%llX], overflow: %llX",m_bufferIndex, pVideoPicture->pts/DVD_TIME_BASE, m_cur_pts, m_ptsOverflow);
 
     return CDVDVideoCodec::VC_PICTURE;
   }

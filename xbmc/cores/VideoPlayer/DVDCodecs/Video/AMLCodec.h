@@ -53,7 +53,6 @@ public:
   void          SetDrain(bool drain){m_drain = drain;};
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   void          SetVideoRate(int videoRate);
-  int64_t       GetCurPts() const { return m_cur_pts + m_start_adj; }
   int           GetOMXPts() const { return static_cast<int>(m_cur_pts); }
   uint32_t      GetBufferIndex() const { return m_bufferIndex; };
   static float  OMXPtsToSeconds(int omxpts);
@@ -87,8 +86,8 @@ private:
   CDVDStreamInfo   m_hints;
   int              m_speed;
   int64_t          m_cur_pts;
-  int64_t          m_start_adj = 0;
   int64_t          m_last_pts;
+  int64_t          m_ptsOverflow;
   uint32_t         m_bufferIndex;
 
   CRect            m_dst_rect;
