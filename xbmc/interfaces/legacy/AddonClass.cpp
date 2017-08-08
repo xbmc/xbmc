@@ -76,7 +76,7 @@ namespace XBMCAddon
 #endif
     if(ct == 0)
     {
-        ((AddonClass*)this)->isDeleted = true;
+        const_cast<AddonClass*>(this)->isDeleted = true;
         // we're faking a delete but not doing it so call the destructor explicitly
         this->~AddonClass();
     }

@@ -608,7 +608,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::s
 
 void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CMACDiscoveryJob* discoverJob = (CMACDiscoveryJob*)job;
+  CMACDiscoveryJob* discoverJob = static_cast<CMACDiscoveryJob*>(job);
 
   const std::string& host = discoverJob->GetHost();
   const std::string& mac = discoverJob->GetMAC();

@@ -955,7 +955,7 @@ SettingPtr CSettingsManager::CreateSetting(const std::string &settingType, const
   CSharedLock lock(m_critical);
   auto creator = m_settingCreators.find(settingType);
   if (creator != m_settingCreators.end())
-    return creator->second->CreateSetting(settingType, settingId, (CSettingsManager*)this);
+    return creator->second->CreateSetting(settingType, settingId, const_cast<CSettingsManager*>(this));
 
   return nullptr;
 }

@@ -149,7 +149,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority, bool front
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
   {
-    DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+    DemuxPacket* packet = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
     if (packet)
     {
       m_iDataSize += packet->iSize;
@@ -193,7 +193,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
       if (item.message->IsType(CDVDMsg::DEMUXER_PACKET) && item.priority == 0)
       {
-        DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
+        DemuxPacket* packet = static_cast<CDVDMsgDemuxerPacket*>(item.message)->GetPacket();
         if (packet)
         {
           m_iDataSize -= packet->iSize;
@@ -237,7 +237,7 @@ void CDVDMessageQueue::UpdateTimeFront()
     auto &item = m_messages.front();
     if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
+      DemuxPacket* packet = static_cast<CDVDMsgDemuxerPacket*>(item.message)->GetPacket();
       if (packet)
       {
         if (packet->dts != DVD_NOPTS_VALUE)
@@ -259,7 +259,7 @@ void CDVDMessageQueue::UpdateTimeBack()
     auto &item = m_messages.back();
     if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
+      DemuxPacket* packet = static_cast<CDVDMsgDemuxerPacket*>(item.message)->GetPacket();
       if (packet)
       {
         if (packet->dts != DVD_NOPTS_VALUE)

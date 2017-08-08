@@ -123,7 +123,7 @@ void CPictureThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* 
 {
   if (success)
   {
-    CThumbExtractor* loader = (CThumbExtractor*)job;
+    CThumbExtractor* loader = static_cast<CThumbExtractor*>(job);
     loader->m_item.SetPath(loader->m_listpath);
     CFileItemPtr pItem(new CFileItem(loader->m_item));
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);

@@ -396,15 +396,16 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     if (stream->type == STREAM_VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
     {
       CStreamDetailVideo *p = new CStreamDetailVideo();
-      p->m_iWidth = ((CDemuxStreamVideo *)stream)->iWidth;
-      p->m_iHeight = ((CDemuxStreamVideo *)stream)->iHeight;
-      p->m_fAspect = ((CDemuxStreamVideo *)stream)->fAspect;
+      CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
+      p->m_iWidth = vstream->iWidth;
+      p->m_iHeight = vstream->iHeight;
+      p->m_fAspect = vstream->fAspect;
       if (p->m_fAspect == 0.0f)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       p->m_iDuration = pDemux->GetStreamLength();
-      p->m_strStereoMode = ((CDemuxStreamVideo *)stream)->stereo_mode;
-      p->m_strLanguage = ((CDemuxStreamVideo *)stream)->language;
+      p->m_strStereoMode = vstream->stereo_mode;
+      p->m_strLanguage = vstream->language;
 
       // stack handling
       if (URIUtils::IsStack(path))
@@ -433,7 +434,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     else if (stream->type == STREAM_AUDIO)
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
-      p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
+      p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
       p->m_strLanguage = stream->language;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       details.AddStream(p);
@@ -454,11 +455,12 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   // correct bluray runtime. we need the duration from the input stream, not the demuxer.
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
-    if(((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() > 0)
+    if (static_cast<CDVDInputStreamBluray*>(pInputStream)->GetTotalTime() > 0)
     {
-      CStreamDetailVideo* detailVideo = (CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO, 0);
+      const CStreamDetailVideo* dVideo = static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO, 0));
+      CStreamDetailVideo* detailVideo = const_cast<CStreamDetailVideo*>(dVideo);
       if (detailVideo)
-        detailVideo->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
+        detailVideo->m_iDuration = static_cast<CDVDInputStreamBluray*>(pInputStream)->GetTotalTime() / 1000;
     }
   }
 #endif

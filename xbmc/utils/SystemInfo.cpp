@@ -1358,6 +1358,6 @@ CJob *CSysInfo::GetJob() const
 
 void CSysInfo::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  m_info = ((CSysInfoJob *)job)->GetData();
+  m_info = static_cast<CSysInfoJob*>(job)->GetData();
   CInfoLoader::OnJobComplete(jobID, success, job);
 }

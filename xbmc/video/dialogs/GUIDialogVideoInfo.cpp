@@ -432,10 +432,10 @@ void CGUIDialogVideoInfo::Update()
   CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
-  const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
+  CGUIControl* pControl = GetControl(CONTROL_IMAGE);
   if (pControl)
   {
-    CGUIImage* pImageControl = (CGUIImage*)pControl;
+    CGUIImage* pImageControl = static_cast<CGUIImage*>(pControl);
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetArt("thumb"));
   }

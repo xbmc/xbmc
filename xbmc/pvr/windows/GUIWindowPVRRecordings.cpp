@@ -176,7 +176,7 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   bool bGroupRecordings = m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, bGroupRecordings);
 
-  CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
+  CGUIRadioButtonControl *btnShowDeleted = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWDELETED));
   if (btnShowDeleted)
   {
     btnShowDeleted->SetVisible(m_bRadio ? CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings() : CServiceBroker::GetPVRManager().Recordings()->HasDeletedTVRecordings());
@@ -283,7 +283,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWDELETED)
       {
-        CGUIRadioButtonControl *radioButton = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
+        CGUIRadioButtonControl *radioButton = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWDELETED));
         if (radioButton)
         {
           m_bShowDeletedRecordings = radioButton->IsSelected();

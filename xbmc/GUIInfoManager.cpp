@@ -6388,9 +6388,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       if (window)
       {
         if (info==CONTAINER_FOLDERNAME)
-          strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().GetLabel();
+          strLabel = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetLabel();
         else
-          strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath()).GetWithoutUserDetails();
+          strLabel = CURL(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetPath()).GetWithoutUserDetails();
       }
       break;
     }
@@ -6399,7 +6399,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath());
+        CURL url(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetPath());
         if (url.IsProtocol("plugin"))
           strLabel = URIUtils::GetFileName(url.GetHostName());
       }
@@ -6415,7 +6415,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
         if (control && control->IsContainer())
         {
           if (info == CONTAINER_VIEWMODE)
-            strLabel = ((IGUIContainer *)control)->GetLabel();
+            strLabel = static_cast<const IGUIContainer*>(control)->GetLabel();
           else if (info == CONTAINER_VIEWCOUNT)
             strLabel = StringUtils::Format("%i", window->GetViewCount());
         }
@@ -6428,7 +6428,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
         if (viewState)
         {
           if (info == CONTAINER_SORT_METHOD)
@@ -6455,11 +6455,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       if (window)
       {
         if (info == CONTAINER_SHOWPLOT)
-          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot").asString();
+          return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("showplot").asString();
         else if (info == CONTAINER_SHOWTITLE)
-          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showtitle").asString();
+          return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("showtitle").asString();
         else if (info == CONTAINER_PLUGINCATEGORY)
-          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("plugincategory").asString();
+          return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("plugincategory").asString();
       }
     }
     break;
@@ -6470,7 +6470,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        const CFileItemList& items=((CGUIMediaWindow *)window)->CurrentDirectory();
+        const CFileItemList& items=static_cast<CGUIMediaWindow*>(window)->CurrentDirectory();
         int count=0;
         for (int i=0;i<items.Size();++i)
         {
@@ -6704,28 +6704,28 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color1").asString();
+        return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color1").asString();
     }
     break;
   case FANART_COLOR2:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color2").asString();
+        return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color2").asString();
     }
     break;
   case FANART_COLOR3:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color3").asString();
+        return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color3").asString();
     }
     break;
   case FANART_IMAGE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("fanart");
+        return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt("fanart");
     }
     break;
   case SYSTEM_RENDER_VENDOR:
@@ -7073,7 +7073,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
     {
-      const CFileItemList& items=((CGUIMediaWindow*)pWindow)->CurrentDirectory();
+      const CFileItemList& items=static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory();
       for (int i=0;i<items.Size();++i)
       {
         CFileItemPtr item=items.Get(i);
@@ -7094,13 +7094,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
-      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked").asBoolean();
+      bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().GetProperty("isstacked").asBoolean();
   }
   else if (condition == CONTAINER_HAS_THUMB)
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
-      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasArt("thumb");
+      bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().HasArt("thumb");
   }
   else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS ||
            condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
@@ -7114,19 +7114,19 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      bReturn = !((CGUIMediaWindow*)window)->CanFilterAdvanced();
+      bReturn = !static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
   }
   else if (condition == CONTAINER_CAN_FILTERADVANCED)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      bReturn = ((CGUIMediaWindow*)window)->CanFilterAdvanced();
+      bReturn = static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
   }
   else if (condition == CONTAINER_FILTERED)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      bReturn = ((CGUIMediaWindow*)window)->IsFiltered();
+      bReturn = static_cast<CGUIMediaWindow*>(window)->IsFiltered();
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||
@@ -7455,7 +7455,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).empty();
+          bReturn = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1()).empty();
         else
           bReturn = GetImage(info.GetData1(), contextWindow).empty();
         break;
@@ -7466,7 +7466,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           {
             int info2 = -info.GetData2();
             if (item && item->IsFileItem() && info2 >= LISTITEM_START && info2 < LISTITEM_END)
-              compare = GetItemImage((const CFileItem *)item, info2);
+              compare = GetItemImage(static_cast<const CFileItem*>(item), info2);
             else
               compare = GetImage(info2, contextWindow);
           }
@@ -7475,7 +7475,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             compare = m_stringParameters[info.GetData2()];
           }
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-            bReturn = StringUtils::EqualsNoCase(GetItemImage((const CFileItem *)item, info.GetData1()), compare);
+            bReturn = StringUtils::EqualsNoCase(GetItemImage(static_cast<const CFileItem *>(item), info.GetData1()), compare);
           else
             bReturn = StringUtils::EqualsNoCase(GetImage(info.GetData1(), contextWindow), compare);
         }
@@ -7491,7 +7491,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           {
             std::string value;
             if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-              value = GetItemImage((const CFileItem *)item, info.GetData1());
+              value = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1());
             else
               value = GetImage(info.GetData1(), contextWindow);
 
@@ -7526,7 +7526,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           std::string label;
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
           {
-            label = GetItemImage((const CFileItem *)item, info.GetData1());
+            label = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1());
             StringUtils::ToLower(label);
           }
           else
@@ -7655,7 +7655,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
-              bReturn = CMediaSettings::GetInstance().GetWatchedMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
+              bReturn = CMediaSettings::GetInstance().GetWatchedMode(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           }
         }
         break;
@@ -7687,15 +7687,15 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (window)
           {
             if (window->GetID() == WINDOW_DIALOG_MUSIC_INFO)
-              content = ((CGUIDialogMusicInfo *)window)->CurrentDirectory().GetContent();
+              content = static_cast<CGUIDialogMusicInfo*>(window)->CurrentDirectory().GetContent();
             else if (window->GetID() == WINDOW_DIALOG_VIDEO_INFO)
-              content = ((CGUIDialogVideoInfo *)window)->CurrentDirectory().GetContent();
+              content = static_cast<CGUIDialogVideoInfo*>(window)->CurrentDirectory().GetContent();
           }
           if (content.empty())
           {
             window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
-              content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+              content = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent();
           }
           bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData2()], content);
         }
@@ -7736,7 +7736,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             const CGUIControl *control = window->GetControl(info.GetData1());
             if (control && control->IsContainer())
             {
-              CFileItemPtr item = std::static_pointer_cast<CFileItem>(((IGUIContainer *)control)->GetListItem(0));
+              CFileItemPtr item = std::static_pointer_cast<CFileItem>(static_cast<const IGUIContainer*>(control)->GetListItem(0));
               if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
                 bReturn = true;
             }
@@ -7770,7 +7770,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
         if (window)
         {
-          const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+          const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
           if (viewState)
             bReturn = ((unsigned int)viewState->GetSortMethod().sortBy == info.GetData1());
         }
@@ -7781,7 +7781,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
         if (window)
         {
-          const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+          const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
           if (viewState)
             bReturn = ((unsigned int)viewState->GetSortOrder() == info.GetData1());
         }
@@ -8053,11 +8053,11 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     if (control)
     {
       if (control->IsContainer())
-        return ((IGUIContainer *)control)->GetLabel(info.m_info);
+        return static_cast<const IGUIContainer*>(control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
-        return ((CGUIControlGroupList *)control)->GetLabel(info.m_info);
+        return static_cast<const CGUIControlGroupList*>(control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
-        return ((CGUITextBox *)control)->GetLabel(info.m_info);
+        return static_cast<const CGUITextBox*>(control)->GetLabel(info.m_info);
     }
   }
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)
@@ -8077,7 +8077,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
+      return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
   }
   else if (info.m_info == CONTAINER_CONTENT)
   {
@@ -9530,7 +9530,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
       value = 0;
       if (item->IsFileItem())
       {
-        const CFileItem *pItem = (const CFileItem *)item;
+        const CFileItem *pItem = static_cast<const CFileItem*>(item);
         if (pItem && pItem->HasPVRChannelInfoTag())
         {
           CPVREpgInfoTagPtr epgNow(pItem->GetPVRChannelInfoTag()->GetEPGNow());
@@ -9547,11 +9547,17 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     }
     break;
   case LISTITEM_PERCENT_PLAYED:
-    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->GetResumePoint().IsPartWay())
-      value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->GetResumePoint().timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->GetResumePoint().totalTimeInSeconds);
-    else
-      value = 0;
-    return true;
+    {
+      const CFileItem* fitem = static_cast<const CFileItem*>(item);
+
+      if (item->IsFileItem() && fitem->HasVideoInfoTag() &&
+          fitem->GetVideoInfoTag()->GetResumePoint().IsPartWay())
+        value = (int)(100.0 * (fitem->GetVideoInfoTag()->GetResumePoint().timeInSeconds / fitem->GetVideoInfoTag()->GetResumePoint().totalTimeInSeconds));
+      else
+        value = 0;
+
+      return true;
+    }
   }
 
   value = 0;
@@ -10629,9 +10635,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (!g_application.m_strPlayListFile.empty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.
-        return ((const CFileItem *)item)->IsPath(g_application.m_strPlayListFile) || m_currentFile->IsSamePath((const CFileItem *)item);
+        return static_cast<const CFileItem*>(item)->IsPath(g_application.m_strPlayListFile) || m_currentFile->IsSamePath(static_cast<const CFileItem*>(item));
       }
-      return m_currentFile->IsSamePath((const CFileItem *)item);
+      return m_currentFile->IsSamePath(static_cast<const CFileItem*>(item));
     }
   }
   else if (condition == LISTITEM_ISSELECTED)
@@ -10657,7 +10663,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (item->IsFileItem())
   {
-    const CFileItem *pItem = (const CFileItem *)item;
+    const CFileItem *pItem = static_cast<const CFileItem*>(item);
     if (condition == LISTITEM_ISRECORDING)
     {
       if (!CServiceBroker::GetPVRManager().IsStarted())

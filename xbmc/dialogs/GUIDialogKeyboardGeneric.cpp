@@ -102,25 +102,25 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
 {
   g_Windowing.EnableTextInput(false);
-  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
+  CGUIEditControl *edit = static_cast<CGUIEditControl*>(GetControl(CTL_EDIT));
   if (edit)
   {
     // add control CTL_LABEL_HZCODE and CTL_LABEL_HZLIST if not exist
-    CGUIControlGroup *ParentControl = (CGUIControlGroup *)edit->GetParentControl();
+    CGUIControlGroup *ParentControl = static_cast<CGUIControlGroup*>(edit->GetParentControl());
     CLabelInfo labelInfo = edit->GetLabelInfo();
     float px = edit->GetXPosition();
     float py = edit->GetYPosition();
     float pw = edit->GetWidth();
     float ph = edit->GetHeight();
 
-    CGUILabelControl* control = ((CGUILabelControl*)GetControl(CTL_LABEL_HZCODE));
+    CGUILabelControl* control = static_cast<CGUILabelControl*>(GetControl(CTL_LABEL_HZCODE));
     if (!control)
     {
       control = new CGUILabelControl(GetID(), CTL_LABEL_HZCODE, px, py + ph, 90, 30, labelInfo, false, false);
       ParentControl->AddControl(control);
     }
 
-    control = ((CGUILabelControl*)GetControl(CTL_LABEL_HZLIST));
+    control = static_cast<CGUILabelControl*>(GetControl(CTL_LABEL_HZLIST));
     if (!control)
     {
       labelInfo.align = XBFONT_CENTER_Y;
@@ -178,7 +178,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   SetEditText(m_text);
 
   // get HZLIST label options
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_HZLIST));
+  CGUILabelControl* pEdit = static_cast<CGUILabelControl*>(GetControl(CTL_LABEL_HZLIST));
   CLabelInfo labelInfo = pEdit->GetLabelInfo();
   m_listfont = labelInfo.font;
   m_listwidth = pEdit->GetWidth();

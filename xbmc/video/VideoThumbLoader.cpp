@@ -568,7 +568,7 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
 {
   if (success)
   {
-    CThumbExtractor* loader = (CThumbExtractor*)job;
+    CThumbExtractor* loader = static_cast<CThumbExtractor*>(job);
     loader->m_item.SetPath(loader->m_listpath);
 
     if (m_pObserver)

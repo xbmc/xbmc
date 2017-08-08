@@ -504,7 +504,7 @@ CUPnP::ReleaseInstance(bool bWait)
 CUPnPServer* CUPnP::GetServer()
 {
   if(upnp)
-    return (CUPnPServer*)upnp->m_ServerHolder->m_Device.AsPointer();
+    return static_cast<CUPnPServer*>(upnp->m_ServerHolder->m_Device.AsPointer());
   return NULL;
 }
 
@@ -784,7 +784,7 @@ void CUPnP::StopRenderer()
 void CUPnP::UpdateState()
 {
   if (!m_RendererHolder->m_Device.IsNull())
-      ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();
+      static_cast<CUPnPRenderer*>(m_RendererHolder->m_Device.AsPointer())->UpdateState();
 }
 
 void CUPnP::RegisterUserdata(void* ptr)

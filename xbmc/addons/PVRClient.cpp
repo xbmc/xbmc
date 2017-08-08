@@ -802,7 +802,7 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results, bool deleted)
 
   ADDON_HANDLE_STRUCT handle;
   handle.callerAddress = this;
-  handle.dataAddress = (CPVRRecordings*) results;
+  handle.dataAddress = results;
   PVR_ERROR retVal = m_struct.toAddon.GetRecordings(&handle, deleted);
 
   LogError(retVal, __FUNCTION__);

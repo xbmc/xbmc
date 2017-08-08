@@ -236,7 +236,7 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJ
   {
     if (it->first == jobID)
     { // found our job
-      CImageLoader *loader = (CImageLoader *)job;
+      CImageLoader *loader = static_cast<CImageLoader*>(job);
       CLargeTexture *image = it->second;
       image->SetTexture(loader->m_texture);
       loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.

@@ -783,7 +783,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_PLAYLISTPLAYER_ADD:
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
 
       Add(pMsg->param1, (*list));
       delete list;
@@ -793,7 +793,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_PLAYLISTPLAYER_INSERT:
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
       Insert(pMsg->param1, (*list), pMsg->param2);
       delete list;
     }
@@ -842,7 +842,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     // first check if we were called from the PlayFile() function
     if (pMsg->lpVoid && pMsg->param2 == 0)
     {
-      CFileItem *item = (CFileItem *)pMsg->lpVoid;
+      CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
       g_application.PlayFile(*item, "", pMsg->param1 != 0);
       delete item;
       return;
@@ -860,7 +860,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     // play file
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
 
       if (list->Size() > 0)
       {

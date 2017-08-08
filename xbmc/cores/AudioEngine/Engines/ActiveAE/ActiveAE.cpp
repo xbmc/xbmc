@@ -365,7 +365,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::STREAMRESAMPLEMODE:
           MsgStreamParameter *par;
-          par = (MsgStreamParameter*)msg->data;
+          par = reinterpret_cast<MsgStreamParameter*>(msg->data);
           if (par->stream)
           {
             par->stream->m_resampleMode = par->parameter.int_par;
@@ -627,20 +627,20 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::STREAMAMP:
           MsgStreamParameter *par;
-          par = (MsgStreamParameter*)msg->data;
+          par = reinterpret_cast<MsgStreamParameter*>(msg->data);
           par->stream->m_limiter.SetAmplification(par->parameter.float_par);
           par->stream->m_amplify = par->parameter.float_par;
           return;
         case CActiveAEControlProtocol::STREAMVOLUME:
-          par = (MsgStreamParameter*)msg->data;
+          par = reinterpret_cast<MsgStreamParameter*>(msg->data);
           par->stream->m_volume = par->parameter.float_par;
           return;
         case CActiveAEControlProtocol::STREAMRGAIN:
-          par = (MsgStreamParameter*)msg->data;
+          par = reinterpret_cast<MsgStreamParameter*>(msg->data);
           par->stream->m_rgain = par->parameter.float_par;
           return;
         case CActiveAEControlProtocol::STREAMRESAMPLERATIO:
-          par = (MsgStreamParameter*)msg->data;
+          par = reinterpret_cast<MsgStreamParameter*>(msg->data);
           if (par->stream->m_processingBuffers)
           {
             par->stream->m_processingBuffers->SetRR(par->parameter.double_par, m_settings.atempoThreshold);
@@ -648,14 +648,14 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::STREAMFFMPEGINFO:
           MsgStreamFFmpegInfo *info;
-          info = (MsgStreamFFmpegInfo*)msg->data;
+          info = reinterpret_cast<MsgStreamFFmpegInfo*>(msg->data);
           info->stream->m_profile = info->profile;
           info->stream->m_matrixEncoding = info->matrix_encoding;
           info->stream->m_audioServiceType = info->audio_service_type;
           return;
         case CActiveAEControlProtocol::STREAMFADE:
           MsgStreamFade *fade;
-          fade = (MsgStreamFade*)msg->data;
+          fade = reinterpret_cast<MsgStreamFade*>(msg->data);
           fade->stream->m_fadingBase = fade->from;
           fade->stream->m_fadingTarget = fade->target;
           fade->stream->m_fadingTime = fade->millis;
@@ -695,7 +695,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::NEWSTREAM:
           MsgStreamNew *streamMsg;
           CActiveAEStream *stream;
-          streamMsg = (MsgStreamNew*)msg->data;
+          streamMsg = reinterpret_cast<MsgStreamNew*>(msg->data);
           stream = CreateStream(streamMsg);
           if(stream)
           {
@@ -719,7 +719,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::STREAMSAMPLE:
           MsgStreamSample *msgData;
           CSampleBuffer *samples;
-          msgData = (MsgStreamSample*)msg->data;
+          msgData = reinterpret_cast<MsgStreamSample*>(msg->data);
           samples = msgData->stream->m_processingSamples.front();
           msgData->stream->m_processingSamples.pop_front();
           if (samples != msgData->buffer)
@@ -1743,7 +1743,7 @@ bool CActiveAE::InitSink()
       return false;
     }
     SinkReply *data;
-    data = (SinkReply*)reply->data;
+    data = reinterpret_cast<SinkReply*>(reply->data);
     if (data)
     {
       m_sinkFormat = data->format;
@@ -2517,13 +2517,12 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
 {
   if (m_volumeScaled < 1.0 || m_muted)
   {
-    float *buffer;
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
     float volume = m_muted ? 0.0f : m_volumeScaled;
 
     for(int j=0; j<dstSample.planes; j++)
     {
-      buffer = (float*)dstSample.data[j];
+      float* buffer = reinterpret_cast<float*>(dstSample.data[j]);
 #if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
