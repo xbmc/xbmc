@@ -355,11 +355,11 @@ void CDVDDemuxClient::RequestStreams()
 {
   std::map<int, std::shared_ptr<CDemuxStream>> newStreamMap;
   for (auto stream : m_IDemux->GetStreams())
-    RequestStream(stream, newStreamMap);
+    RequestStream(stream, newStreamMap, false);
   m_streams = newStreamMap;
 }
 
-void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map)
+void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map, bool forceInit)
 {
   if (!stream)
   {
@@ -383,7 +383,7 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
     std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>> streamAudio;
     if (oldStream)
       streamAudio = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>>(oldStream);
-    if (!streamAudio || streamAudio->codec != source->codec)
+    if (forceInit || !streamAudio || streamAudio->codec != source->codec)
     {
       streamAudio.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamAudio>());
       streamAudio->m_parser = av_parser_init(source->codec);
@@ -423,8 +423,7 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
     std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>> streamVideo;
     if (oldStream)
       streamVideo = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>>(oldStream);
-    if (!streamVideo || streamVideo->codec != source->codec ||
-        streamVideo->iWidth != source->iWidth || streamVideo->iHeight != source->iHeight)
+    if (forceInit || !streamVideo || streamVideo->codec != source->codec)
     {
       streamVideo.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamVideo>());
       streamVideo->m_parser = av_parser_init(source->codec);
@@ -640,7 +639,7 @@ void CDVDDemuxClient::OpenStream(int id)
   if (m_IDemux)
   {
     m_IDemux->OpenStream(id);
-    RequestStream(m_IDemux->GetStream(id), m_streams);
+    RequestStream(m_IDemux->GetStream(id), m_streams, true);
   }
 }
 
