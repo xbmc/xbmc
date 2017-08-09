@@ -320,12 +320,6 @@ uint64_t CRetroPlayer::GetTotalTime()
   return 0;
 }
 
-bool CRetroPlayer::GetStreamDetails(CStreamDetails &details)
-{
-  //! @todo
-  return false;
-}
-
 void CRetroPlayer::SetSpeed(float speed)
 {
   if (m_gameClient)

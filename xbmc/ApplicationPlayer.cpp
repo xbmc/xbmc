@@ -545,12 +545,6 @@ bool CApplicationPlayer::QueueNextFile(const CFileItem &file)
   return (player && player->QueueNextFile(file));
 }
 
-bool CApplicationPlayer::GetStreamDetails(CStreamDetails &details)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->GetStreamDetails(details));
-}
-
 bool CApplicationPlayer::SetPlayerState(const std::string& state)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

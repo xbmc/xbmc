@@ -362,7 +362,6 @@ public:
   bool OnAction(const CAction &action) override;
 
   int GetSourceBitrate() override;
-  bool GetStreamDetails(CStreamDetails &details) override;
   void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
 
   std::string GetPlayerState() override;
@@ -485,7 +484,6 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdatePlayState(double timeout);
-  void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
   int64_t GetTime();
@@ -587,6 +585,4 @@ protected:
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
-
-  XbmcThreads::EndTime m_player_status_timer;
 };
