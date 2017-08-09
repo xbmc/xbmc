@@ -139,7 +139,7 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       }
     }
   }
-  else
+  else if (m_directoryStatus != LOADING)
     m_image.SetFileName("");
 
   if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
