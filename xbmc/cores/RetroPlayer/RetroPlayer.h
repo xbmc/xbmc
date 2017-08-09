@@ -102,7 +102,6 @@ namespace RETRO
     bool SeekTimeRelative(int64_t iTime) override;
     //virtual void SetTotalTime(int64_t time) override { } // Only used by Air Tunes Server
     //virtual int GetSourceBitrate() override { return 0; }
-    bool GetStreamDetails(CStreamDetails &details) override;
     void SetSpeed(float speed) override;
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }

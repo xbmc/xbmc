@@ -1630,13 +1630,6 @@ void CVideoPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
-
-    // update the player info for streams
-    if (m_player_status_timer.IsTimePast())
-    {
-      m_player_status_timer.Set(500);
-      UpdateStreamInfos();
-    }
   }
 }
 
@@ -2913,7 +2906,6 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
     {
-      UpdateStreamInfos();
       CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
       CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
     }
@@ -3251,67 +3243,6 @@ int CVideoPlayer::GetSubtitleCount()
 int CVideoPlayer::GetSubtitle()
 {
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
-}
-
-void CVideoPlayer::UpdateStreamInfos()
-{
-  if (!m_pDemuxer)
-    return;
-
-  CSingleLock lock(m_SelectionStreams.m_section);
-  int streamId;
-  std::string retVal;
-
-  // video
-  streamId = GetVideoStream();
-
-  if (streamId >= 0 && streamId < GetVideoStreamCount())
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
-    s.aspect_ratio = m_renderManager.GetAspectRatio();
-    CRect viewRect;
-    m_renderManager.GetVideoRect(s.SrcRect, s.DestRect, viewRect);
-    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.demuxerId, m_CurrentVideo.id);
-    if (stream && stream->type == STREAM_VIDEO)
-    {
-      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      {
-        int cout = m_SelectionStreams.Count(STREAM_VIDEO);
-        for (int i = 0; i < cout; ++i)
-        {
-          SelectionStream& select = m_SelectionStreams.Get(STREAM_VIDEO, i);
-          select.width = static_cast<CDemuxStreamVideo*>(stream)->iWidth;
-          select.height = static_cast<CDemuxStreamVideo*>(stream)->iHeight;
-          select.bitrate = static_cast<CDemuxStreamVideo*>(stream)->iBitRate;
-        }
-      }
-      else
-      {
-        s.width = static_cast<CDemuxStreamVideo*>(stream)->iWidth;
-        s.height = static_cast<CDemuxStreamVideo*>(stream)->iHeight;
-        s.bitrate = static_cast<CDemuxStreamVideo*>(stream)->iBitRate;
-      }
-      s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
-      if (s.stereo_mode == "mono")
-        s.stereo_mode = "";
-    }
-  }
-
-  // audio
-  streamId = GetAudioStream();
-
-  if (streamId >= 0 && streamId < GetAudioStreamCount())
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, streamId);
-    s.channels = m_VideoPlayerAudio->GetAudioChannels();
-
-    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.demuxerId, m_CurrentAudio.id);
-    if (stream && stream->type == STREAM_AUDIO)
-    {
-      s.codec = m_pDemuxer->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
-      s.bitrate = static_cast<CDemuxStreamAudio*>(stream)->iBitRate;
-    }
-  }
 }
 
 void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
@@ -4949,46 +4880,6 @@ bool CVideoPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
-}
-
-bool CVideoPlayer::GetStreamDetails(CStreamDetails &details)
-{
-  if (m_pDemuxer)
-  {
-    std::vector<SelectionStream> subs = m_SelectionStreams.Get(STREAM_SUBTITLE);
-    std::vector<CStreamDetailSubtitle> extSubDetails;
-    for (unsigned int i = 0; i < subs.size(); i++)
-    {
-      if (subs[i].filename == m_item.GetPath())
-        continue;
-
-      CStreamDetailSubtitle p;
-      p.m_strLanguage = subs[i].language;
-      extSubDetails.push_back(p);
-    }
-    
-    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, extSubDetails, details);
-    if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
-    {
-      /* 
-       * We can only obtain the aspect & duration from VideoPlayer when the Process() thread is running
-       * and UpdatePlayState() has been called at least once. In this case VideoPlayer duration/AR will
-       * return 0 and we'll have to fallback to the (less accurate) info from the demuxer.
-       */
-      const CStreamDetailVideo* s1 = static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO,0));
-      CStreamDetailVideo* stream = const_cast<CStreamDetailVideo*>(s1);
-      float aspect = m_renderManager.GetAspectRatio();
-      if (aspect > 0.0f)
-        stream->m_fAspect = aspect;
-
-      int64_t duration = m_processInfo->GetMaxTime() / 1000;
-      if (duration > 0)
-        stream->m_iDuration = (int) duration;
-    }
-    return result;
-  }
-  else
-    return false;
 }
 
 std::string CVideoPlayer::GetPlayingTitle()

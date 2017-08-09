@@ -314,7 +314,6 @@ public:
    */
   virtual void SetTotalTime(int64_t time) { }
   virtual int GetSourceBitrate(){ return 0;}
-  virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void SetSpeed(float speed) = 0;
   virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }
