@@ -40,7 +40,6 @@ using namespace XFILE;
 namespace ADDON
 {
 
-cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
 
@@ -330,8 +329,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      this, clog_to_cp(g_advancedSettings.m_logLevel));
+  status = m_cpluff->register_logger(m_cp_context, cp_logger, this, CP_LOG_WARNING);
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -1276,13 +1274,6 @@ int cp_to_clog(cp_log_severity_t lvl)
   if (lvl >= CP_LOG_ERROR)
     return LOGINFO;
   return LOGDEBUG;
-}
-
-cp_log_severity_t clog_to_cp(int lvl)
-{
-  if (lvl >= LOG_LEVEL_DEBUG)
-    return CP_LOG_INFO;
-  return CP_LOG_ERROR;
 }
 
 void cp_fatalErrorHandler(const char *msg)
