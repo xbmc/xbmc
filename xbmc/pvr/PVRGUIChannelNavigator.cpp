@@ -72,8 +72,8 @@ namespace PVR
       {
         CSingleLock lock(m_critSection);
         const CFileItemPtr item = bNext
-          ? group->GetByChannelUp(m_currentChannel)
-          : group->GetByChannelDown(m_currentChannel);;
+          ? group->GetNextChannel(m_currentChannel)
+          : group->GetPreviousChannel(m_currentChannel);;
         if (item)
           return item->GetPVRChannelInfoTag();
       }
