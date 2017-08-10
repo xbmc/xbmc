@@ -282,11 +282,12 @@ namespace PVR
     bool IsEncrypted(void) const;
 
     /*!
-     * @brief Get the stream URL for a given channel from the respective client.
-     * @param channel The channel to get the stream URL for.
-     * @return The stream URL or empty string if not available.
+     * @brief Fill the FileItem for a channel from the PVR backend.
+     * @param channel The channel to get the stream url for.
+     * @param fileItem The FileItem to be filled
+     * @return True if the url and and properties have been set
      */
-    std::string GetLiveStreamURL(const CPVRChannelPtr &channel);
+    bool FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem *fileItem);
 
     /*!
      * @brief Open a stream on the given channel.

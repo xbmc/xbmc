@@ -73,6 +73,7 @@ struct DemuxPacket;
 #define PVR_ADDON_ATTRIBUTE_DESC_LENGTH 64
 #define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
+#define PVR_ADDON_MAX_FILE_ITEM_PROPERTIES    10
 
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
@@ -544,6 +545,15 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
+   * @brief Representation of a file item property
+   */
+  typedef struct PVR_FILE_ITEM_PROPERTY {
+    char   strName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (required) name of property. */
+    char   strValue[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) value of property */
+  } ATTRIBUTE_PACKED PVR_FILE_ITEM_PROPERTY;
+
+
+  /*!
    * @brief Edit definition list (EDL)
    */
   typedef enum
@@ -665,7 +675,7 @@ extern "C" {
     long long (__cdecl* LengthLiveStream)(void);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
-    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
+    PVR_ERROR  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&, char*, int*, PVR_FILE_ITEM_PROPERTY*, int*);
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);

@@ -991,7 +991,7 @@ namespace PVR
   {
     const CPVRChannelPtr channel = item->GetPVRChannelInfoTag();
     if (channel)
-      item->SetDynPath(CServiceBroker::GetPVRManager().Clients()->GetLiveStreamURL(channel));
+      CServiceBroker::GetPVRManager().Clients()->FillLiveStreamFileItem(channel, item);
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
