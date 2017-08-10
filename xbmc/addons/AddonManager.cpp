@@ -358,14 +358,6 @@ bool CAddonMgr::Init()
     }
   }
 
-  VECADDONS repos;
-  if (GetAddons(repos, ADDON_REPOSITORY))
-  {
-    VECADDONS::iterator it = repos.begin();
-    for (;it != repos.end(); ++it)
-      CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", (*it)->ID().c_str());
-  }
-
   return true;
 }
 
@@ -683,7 +675,10 @@ bool CAddonMgr::FindAddons()
       int n;
       cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
       for (int i = 0; i < n; ++i)
+      {
+        CLog::Log(LOGNOTICE, "ADDON: %s v%s installed", cp_addons[i]->identifier, cp_addons[i]->version);
         installed.insert(cp_addons[i]->identifier);
+      }
       m_cpluff->release_info(m_cp_context, cp_addons);
       m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
     }
