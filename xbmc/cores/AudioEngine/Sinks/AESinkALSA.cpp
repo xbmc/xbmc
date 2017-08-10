@@ -618,6 +618,11 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   }
   // adjust format to the configuration we got
   format.m_channelLayout = GetChannelLayout(format, outconfig.channels);
+  // we might end up with an unusable channel layout that contains only UNKNOWN
+  // channels, let's do a sanity check.
+  if (!format.m_channelLayout.IsLayoutValid())
+    return false;
+
   format.m_sampleRate = outconfig.sampleRate;
   format.m_frames = outconfig.periodSize;
   format.m_frameSize = outconfig.frameSize;
