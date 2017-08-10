@@ -138,9 +138,9 @@ private:
 public:
   static CAEChannelInfo          GuessChLayout     (const unsigned int channels);
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
-  static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
-  static const unsigned int      DataFormatToUsedBits (const enum AEDataFormat dataFormat);
-  static const unsigned int      DataFormatToDitherBits(const enum AEDataFormat dataFormat);
+  static unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
+  static unsigned int      DataFormatToUsedBits (const enum AEDataFormat dataFormat);
+  static unsigned int      DataFormatToDitherBits(const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
   static const char* StreamTypeToStr(const enum CAEStreamInfo::DataType dataType);
 
@@ -151,7 +151,7 @@ public:
    \return the corresponding gain in dB from -60dB .. 0dB.
    \sa GainToScale
    */
-  static inline const float PercentToGain(const float value)
+  static inline float PercentToGain(const float value)
   {
     static const float db_range = 60.0f;
     return (value - 1)*db_range;
@@ -164,7 +164,7 @@ public:
    \return value the volume from 0..1
    \sa ScaleToGain
    */
-  static inline const float GainToPercent(const float gain)
+  static inline float GainToPercent(const float gain)
   {
     static const float db_range = 60.0f;
     return 1+(gain/db_range);
@@ -176,7 +176,7 @@ public:
    \return the scale factor (equivalent to a voltage multiplier).
    \sa PercentToGain
    */
-  static inline const float GainToScale(const float dB)
+  static inline float GainToScale(const float dB)
   {
     float val = 0.0f; 
     // we need to make sure that our lowest db returns plain zero
@@ -197,7 +197,7 @@ public:
    \return dB the gain in decibels.
    \sa GainToScale
    */
-  static inline const float ScaleToGain(const float scale)
+  static inline float ScaleToGain(const float scale)
   {
     return 20*log10(scale);
   }

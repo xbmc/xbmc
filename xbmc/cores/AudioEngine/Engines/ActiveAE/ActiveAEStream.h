@@ -163,11 +163,11 @@ public:
   void SetAmplification(float amplify) override;
   void SetFFmpegInfo(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type) override;
 
-  const unsigned int GetFrameSize() const override;
-  const unsigned int GetChannelCount() const override;
+  unsigned int GetFrameSize() const override;
+  unsigned int GetChannelCount() const override;
   
-  const unsigned int GetSampleRate() const override ;
-  const enum AEDataFormat GetDataFormat() const override;
+  unsigned int GetSampleRate() const override ;
+  enum AEDataFormat GetDataFormat() const override;
   
   double GetResampleRatio() override;
   void SetResampleRatio(double ratio) override;

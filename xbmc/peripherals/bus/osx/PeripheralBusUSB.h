@@ -45,7 +45,7 @@ namespace PERIPHERALS
   protected:
     PeripheralScanResults m_scan_results;
   #ifdef TARGET_DARWIN_OSX
-    static const PeripheralType GetType(int iDeviceClass);
+    static PeripheralType GetType(int iDeviceClass);
     static void  DeviceDetachCallback(void *refCon, io_service_t service, natural_t messageType, void *messageArgument);
     static void  DeviceAttachCallback(CPeripheralBusUSB* refCon, io_iterator_t iterator);
 

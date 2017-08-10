@@ -88,10 +88,10 @@ public:
   const std::string GetUniqueID(std::string type = "") const;
   const std::map<std::string, std::string>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
-  const bool HasUniqueID() const;
-  const bool HasYear() const;
-  const int GetYear() const;
-  const bool HasPremiered() const;
+  bool HasUniqueID() const;
+  bool HasYear() const;
+  int GetYear() const;
+  bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
   const CDateTime& GetFirstAired() const;
   const std::string GetCast(bool bIncludeRole = false) const;

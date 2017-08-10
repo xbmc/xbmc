@@ -320,7 +320,7 @@ void Interface_AudioEngine::AEStream_SetAmplification(void* kodiBase, AEStreamHa
   static_cast<IAEStream*>(streamHandle)->SetAmplification(amplify);
 }
 
-const unsigned int Interface_AudioEngine::AEStream_GetFrameSize(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::AEStream_GetFrameSize(void* kodiBase, AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -331,7 +331,7 @@ const unsigned int Interface_AudioEngine::AEStream_GetFrameSize(void* kodiBase, 
   return static_cast<IAEStream*>(streamHandle)->GetFrameSize();
 }
 
-const unsigned int Interface_AudioEngine::AEStream_GetChannelCount(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::AEStream_GetChannelCount(void* kodiBase, AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -342,7 +342,7 @@ const unsigned int Interface_AudioEngine::AEStream_GetChannelCount(void* kodiBas
   return static_cast<IAEStream*>(streamHandle)->GetChannelCount();
 }
 
-const unsigned int Interface_AudioEngine::AEStream_GetSampleRate(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::AEStream_GetSampleRate(void* kodiBase, AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -353,7 +353,7 @@ const unsigned int Interface_AudioEngine::AEStream_GetSampleRate(void* kodiBase,
   return static_cast<IAEStream*>(streamHandle)->GetSampleRate();
 }
 
-const AEDataFormat Interface_AudioEngine::AEStream_GetDataFormat(void* kodiBase, AEStreamHandle* streamHandle)
+AEDataFormat Interface_AudioEngine::AEStream_GetDataFormat(void* kodiBase, AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {

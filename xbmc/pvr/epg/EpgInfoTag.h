@@ -115,7 +115,7 @@ namespace PVR
      */
     const CPVREpg *GetTable() const;
 
-    const int EpgID(void) const;
+    int EpgID(void) const;
 
     /*!
      * @brief Sets the epg reference of this event

@@ -42,7 +42,7 @@ public:
   bool operator!=(const CAEChannelInfo& rhs) const;
   CAEChannelInfo& operator+=(const enum AEChannel& rhs);
   CAEChannelInfo& operator-=(const enum AEChannel& rhs);
-  const enum AEChannel operator[](unsigned int i) const;
+  enum AEChannel operator[](unsigned int i) const;
   operator std::string() const;
 
   /* remove any channels that dont exist in the provided info */

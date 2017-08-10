@@ -175,10 +175,10 @@ extern "C"
     void (*AEStream_SetVolume)(void *kodiBase, AEStreamHandle *handle, float Volume);
     float (*AEStream_GetAmplification)(void *kodiBase, AEStreamHandle *handle);
     void (*AEStream_SetAmplification)(void *kodiBase, AEStreamHandle *handle, float Amplify);
-    const unsigned int (*AEStream_GetFrameSize)(void *kodiBase, AEStreamHandle *handle);
-    const unsigned int (*AEStream_GetChannelCount)(void *kodiBase, AEStreamHandle *handle);
-    const unsigned int (*AEStream_GetSampleRate)(void *kodiBase, AEStreamHandle *handle);
-    const AEDataFormat (*AEStream_GetDataFormat)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*AEStream_GetFrameSize)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*AEStream_GetChannelCount)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*AEStream_GetSampleRate)(void *kodiBase, AEStreamHandle *handle);
+    AEDataFormat (*AEStream_GetDataFormat)(void *kodiBase, AEStreamHandle *handle);
     double (*AEStream_GetResampleRatio)(void *kodiBase, AEStreamHandle *handle);
     void (*AEStream_SetResampleRatio)(void *kodiBase, AEStreamHandle *handle, double Ratio);
   } AddonToKodiFuncTable_kodi_audioengine;
@@ -483,7 +483,7 @@ namespace audioengine
     ///
     /// @return The size in bytes of one frame
     ///
-    const unsigned int GetFrameSize() const
+    unsigned int GetFrameSize() const
     {
       return m_cb->AEStream_GetFrameSize(m_kodiBase, m_StreamHandle);
     }
@@ -495,7 +495,7 @@ namespace audioengine
     ///
     /// @return The channel count
     ///
-    const unsigned int GetChannelCount() const
+    unsigned int GetChannelCount() const
     {
       return m_cb->AEStream_GetChannelCount(m_kodiBase, m_StreamHandle);
     }
@@ -509,7 +509,7 @@ namespace audioengine
     ///
     /// @return The stream's sample rate (eg, 48000)
     ///
-    const unsigned int GetSampleRate() const
+    unsigned int GetSampleRate() const
     {
       return m_cb->AEStream_GetSampleRate(m_kodiBase, m_StreamHandle);
     }
@@ -521,7 +521,7 @@ namespace audioengine
     ///
     /// @return The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
     ///
-    const AEDataFormat GetDataFormat() const
+    AEDataFormat GetDataFormat() const
     {
       return m_cb->AEStream_GetDataFormat(m_kodiBase, m_StreamHandle);
     }
