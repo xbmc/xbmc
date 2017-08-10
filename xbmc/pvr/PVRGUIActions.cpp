@@ -993,6 +993,10 @@ namespace PVR
     if (channel)
       CServiceBroker::GetPVRManager().Clients()->FillLiveStreamFileItem(channel, item);
 
+    const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
+    if (recording)
+      CServiceBroker::GetPVRManager().Clients()->FillRecordingStreamFileItem(recording, item);
+
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
   }

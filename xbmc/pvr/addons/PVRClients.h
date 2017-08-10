@@ -290,6 +290,14 @@ namespace PVR
     bool FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem *fileItem);
 
     /*!
+     * @brief Fill the FileItem for a recording from the PVR backend.
+     * @param recording The recording to get the stream url for.
+     * @param fileItem The FileItem to be filled
+     * @return True if the url and and properties have been set
+     */
+    bool FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, CFileItem *fileItem);
+
+    /*!
      * @brief Open a stream on the given channel.
      * @param channel The channel to start playing.
      * @param bIsSwitchingChannel True when switching channels, false otherwise.

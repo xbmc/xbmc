@@ -437,6 +437,17 @@ extern "C"
   PVR_ERROR GetLiveStreamURL(const PVR_CHANNEL& channel, char* url, int* urlLen, PVR_FILE_ITEM_PROPERTY* properties, int* propertiesCount);
 
   /*!
+     * Get the stream url for a recording from the backend.
+     * @param recording The recording to get the stream url for.
+     * @param[out] url The stream url
+     * @param[out] urlLen The length of the url buffer, out: the length of the returned url
+     * @param[out] properties List of properties required to play the stream
+     * @param[out] propertiesCount Size of properties buffer, out: the number of properties returned
+     * @return PVR_ERROR_NO_ERROR if the stream is available
+     */
+  PVR_ERROR GetRecordingStreamURL(const PVR_RECORDING& recording, char* url, int* urlLen, PVR_FILE_ITEM_PROPERTY* properties, int* propertiesCount);
+
+  /*!
    * Get the stream properties of the stream that's currently being read.
    * @param pProperties The properties of the currently playing stream.
    * @return PVR_ERROR_NO_ERROR if the properties have been fetched successfully.
@@ -690,6 +701,7 @@ extern "C"
     pClient->toAddon.SignalStatus                   = SignalStatus;
     pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
     pClient->toAddon.GetLiveStreamURL               = GetLiveStreamURL;
+    pClient->toAddon.GetRecordingStreamURL          = GetRecordingStreamURL;
     pClient->toAddon.CanPauseStream                 = CanPauseStream;
     pClient->toAddon.PauseStream                    = PauseStream;
     pClient->toAddon.CanSeekStream                  = CanSeekStream;

@@ -1052,6 +1052,15 @@ bool CPVRClients::FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileIte
   return false;
 }
 
+bool CPVRClients::FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, CFileItem *fileItem)
+{
+  PVR_CLIENT client;
+  if (GetCreatedClient(recording->ClientID(), client))
+    return client->FillRecordingStreamFileItem(recording, fileItem);
+
+  return false;
+}
+
 bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
 {
   bool bReturn(false);

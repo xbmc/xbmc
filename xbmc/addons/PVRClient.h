@@ -656,6 +656,14 @@ namespace PVR
     bool FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem *fileItem);
 
     /*!
+     * @brief Fill the FileItem for a recording from the PVR backend.
+     * @param recording The recording to get the stream url for.
+     * @param fileItem The FileItem to be filled
+     * @return True if the url and and properties have been set
+     */
+    bool FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, CFileItem *fileItem);
+
+    /*!
      * @brief Check whether PVR backend supports pausing the currently playing stream
      */
     bool CanPauseStream(void) const;

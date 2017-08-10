@@ -676,6 +676,7 @@ extern "C" {
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
     PVR_ERROR  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&, char*, int*, PVR_FILE_ITEM_PROPERTY*, int*);
+    PVR_ERROR  (__cdecl* GetRecordingStreamURL)(const PVR_RECORDING&, char*, int*, PVR_FILE_ITEM_PROPERTY*, int*);
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
