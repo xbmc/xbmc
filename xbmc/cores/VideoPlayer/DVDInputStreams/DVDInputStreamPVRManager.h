@@ -99,8 +99,6 @@ public:
   bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
   void AbortDemux() override;
   void FlushDemux() override;
-  void EnableStream(int iStreamId, bool enable) override {};
-  void OpenStream(int iStreamId) override {};
 
 protected:
   void UpdateStreamMap();
