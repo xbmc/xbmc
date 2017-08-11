@@ -66,6 +66,19 @@ namespace PVR
     XbmcThreads::EndTime m_delayTimer;
   };
 
+  class CPVRChannelInfoTimeoutJob : public CJob, public IJobCallback
+  {
+  public:
+    CPVRChannelInfoTimeoutJob(int iTimeout);
+    ~CPVRChannelInfoTimeoutJob() override = default;
+    const char *GetType() const override { return "pvr-channel-info-timeout-job"; }
+    void OnJobComplete(unsigned int iJobID, bool bSuccess, CJob *job) override {}
+
+    bool DoWork() override;
+  private:
+    XbmcThreads::EndTime m_delayTimer;
+  };
+
   class CPVREventlogJob : public CJob
   {
   public:

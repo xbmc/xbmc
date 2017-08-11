@@ -19,9 +19,10 @@
  *
  */
 
+#include "pvr/PVRChannelNumberInputHandler.h"
+#include "pvr/PVRGUIChannelNavigator.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
-#include "pvr/PVRChannelNumberInputHandler.h"
 
 #include <memory>
 #include <string>
@@ -323,6 +324,12 @@ namespace PVR
      */
     CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
 
+    /*!
+     * @brief Get the channel navigator.
+     * @return the navigator.
+     */
+    CPVRGUIChannelNavigator &GetChannelNavigator();
+
   private:
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
@@ -423,7 +430,7 @@ namespace PVR
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
     bool m_bChannelScanRunning;
     CPVRSettings m_settings;
-
+    CPVRGUIChannelNavigator m_channelNavigator;
   };
 
 } // namespace PVR

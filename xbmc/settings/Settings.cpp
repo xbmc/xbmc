@@ -225,7 +225,6 @@ const std::string CSettings::SETTING_PVRMANAGER_GROUPMANAGER = "pvrmanager.group
 const std::string CSettings::SETTING_PVRMANAGER_CHANNELSCAN = "pvrmanager.channelscan";
 const std::string CSettings::SETTING_PVRMANAGER_RESETDB = "pvrmanager.resetdb";
 const std::string CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO = "pvrmenu.displaychannelinfo";
-const std::string CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH = "pvrmenu.closechannelosdonswitch";
 const std::string CSettings::SETTING_PVRMENU_ICONPATH = "pvrmenu.iconpath";
 const std::string CSettings::SETTING_PVRMENU_SEARCHICONS = "pvrmenu.searchicons";
 const std::string CSettings::SETTING_EPG_DAYSTODISPLAY = "epg.daystodisplay";

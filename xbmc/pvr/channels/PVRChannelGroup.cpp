@@ -489,7 +489,7 @@ CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber, u
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CPVRChannelPtr &channel) const
+CFileItemPtr CPVRChannelGroup::GetNextChannel(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 
@@ -517,7 +517,7 @@ CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CPVRChannelPtr &channel) con
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelDown(const CPVRChannelPtr &channel) const
+CFileItemPtr CPVRChannelGroup::GetPreviousChannel(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 

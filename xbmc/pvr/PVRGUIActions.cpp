@@ -157,8 +157,7 @@ namespace PVR
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
       CSettings::SETTING_PVRPARENTAL_PIN,
-      CSettings::SETTING_PVRPARENTAL_ENABLED,
-      CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO
+      CSettings::SETTING_PVRPARENTAL_ENABLED
     })
   {
   }
@@ -1119,11 +1118,6 @@ namespace PVR
       }
 
       StartPlayback(new CFileItem(channel), bFullscreen);
-
-      int iChannelInfoDisplayTime = m_settings.GetIntValue(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
-      if (iChannelInfoDisplayTime > 0)
-        CServiceBroker::GetPVRManager().ShowPlayerInfo(iChannelInfoDisplayTime);
-
       return true;
     }
 
@@ -1618,6 +1612,11 @@ namespace PVR
 
     // default
     return m_channelNumberInputHandler;
+  }
+
+  CPVRGUIChannelNavigator &CPVRGUIActions::GetChannelNavigator()
+  {
+    return m_channelNavigator;
   }
 
   void CPVRChannelSwitchingInputHandler::OnInputDone()

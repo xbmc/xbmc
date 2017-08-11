@@ -10302,11 +10302,7 @@ msgctxt "#19228"
 msgid "Timer deleted"
 msgstr ""
 
-#. label for PVR settings close channel OSD after channel switch control
-#: system/settings/settings.xml
-msgctxt "#19229"
-msgid "Close channel OSD after switching channels"
-msgstr ""
+#empty string with id 19229
 
 #. label for PVR settings no epg updates during playback control
 #: system/settings/settings.xml
@@ -18029,10 +18025,7 @@ msgctxt "#36213"
 msgid "Open the group manager, which allows modification of groups and their respective channels"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36214"
-msgid "Close the on screen display controls after switching channels."
-msgstr ""
+#empty string with id 36214
 
 #. Description of setting with label #14110 "Long date format"
 #: system/settings/settings.xml
