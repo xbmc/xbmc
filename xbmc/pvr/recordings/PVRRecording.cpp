@@ -94,7 +94,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strDirectory                   = recording.bIsDeleted ? "" : recording.strDirectory;
   m_strPlot                        = recording.strPlot;
   m_strPlotOutline                 = recording.strPlotOutline;
-  m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
@@ -147,7 +146,6 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        GetDuration()        == right.GetDuration() &&
        m_strPlotOutline     == right.m_strPlotOutline &&
        m_strPlot            == right.m_strPlot &&
-       m_strStreamURL       == right.m_strStreamURL &&
        m_iPriority          == right.m_iPriority &&
        m_iLifetime          == right.m_iLifetime &&
        m_strDirectory       == right.m_strDirectory &&
@@ -178,7 +176,6 @@ void CPVRRecording::Serialize(CVariant& value) const
 
   value["channel"] = m_strChannelName;
   value["lifetime"] = m_iLifetime;
-  value["streamurl"] = m_strStreamURL;
   value["directory"] = m_strDirectory;
   value["icon"] = m_strIconPath;
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
@@ -203,7 +200,6 @@ void CPVRRecording::Reset(void)
   m_iClientId          = 0;
   m_strChannelName     .clear();
   m_strDirectory       .clear();
-  m_strStreamURL       .clear();
   m_iPriority          = -1;
   m_iLifetime          = -1;
   m_strFileNameAndPath .clear();
@@ -366,7 +362,6 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strDirectory      = tag.m_strDirectory;
   m_strPlot           = tag.m_strPlot;
   m_strPlotOutline    = tag.m_strPlotOutline;
-  m_strStreamURL      = tag.m_strStreamURL;
   m_strChannelName    = tag.m_strChannelName;
   m_genre             = tag.m_genre;
   m_strIconPath       = tag.m_strIconPath;
@@ -406,15 +401,8 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 
 void CPVRRecording::UpdatePath(void)
 {
-  if (!m_strStreamURL.empty())
-  {
-    m_strFileNameAndPath = m_strStreamURL;
-  }
-  else
-  {
-    m_strFileNameAndPath = CPVRRecordingsPath(
-      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
-  }
+  m_strFileNameAndPath = CPVRRecordingsPath(
+    m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
 }
 
 const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
