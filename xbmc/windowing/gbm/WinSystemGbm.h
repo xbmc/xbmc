@@ -25,7 +25,7 @@
 
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
-#include "DRMUtils.h"
+#include "DRMLegacy.h"
 
 class IDispResource;
 
@@ -46,6 +46,8 @@ public:
 
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+
+  void FlipPage();
 
   void UpdateResolutions() override;
 

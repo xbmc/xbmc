@@ -24,10 +24,10 @@
 #include <xf86drmMode.h>
 #include <gbm.h>
 #include <vector>
-#include <poll.h>
 
 #include "guilib/Resolution.h"
 #include "GBMUtils.h"
+#include "DRMLegacy.h"
 
 struct crtc
 {
@@ -65,25 +65,19 @@ struct drm_fb
 class CDRMUtils
 {
 public:
-  static drm * GetDrm();
-  static gbm * GetGbm();
-  static bool InitDrm();
-  static bool SetVideoMode(RESOLUTION_INFO res);
-  static void FlipPage();
+  static bool InitDrm(drm *drm);
   static void DestroyDrm();
   static bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
 
-private:
+protected:
   static bool GetMode(RESOLUTION_INFO res);
+  static drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
+
+private:
   static bool GetResources();
   static bool GetConnector();
   static bool GetEncoder();
   static bool GetPreferredMode();
   static bool RestoreOriginalMode();
-  static bool WaitingForFlip();
-  static bool QueueFlip();
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
-  static drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 };

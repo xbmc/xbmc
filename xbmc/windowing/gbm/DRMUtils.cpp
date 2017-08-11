@@ -20,7 +20,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <poll.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,77 +31,15 @@
 #include "WinSystemGbmGLESContext.h"
 #include "guilib/gui3d.h"
 #include "utils/log.h"
-#include "settings/Settings.h"
 
 #include "DRMUtils.h"
 
-static struct drm *m_drm = new drm;
-static struct drm_fb *m_drm_fb = new drm_fb;
-
-static struct gbm *m_gbm = new gbm;
-
-static struct gbm_bo *m_bo = nullptr;
-static struct gbm_bo *m_next_bo = nullptr;
+static struct drm *m_drm = nullptr;
 
 static drmModeResPtr m_drm_resources = nullptr;
 static drmModeConnectorPtr m_drm_connector = nullptr;
 static drmModeEncoderPtr m_drm_encoder = nullptr;
 static drmModeCrtcPtr m_orig_crtc = nullptr;
-
-static struct pollfd m_drm_fds;
-static drmEventContext m_drm_evctx;
-static int flip_happening = 0;
-
-drm * CDRMUtils::GetDrm()
-{
-  return m_drm;
-}
-
-gbm * CDRMUtils::GetGbm()
-{
-  return m_gbm;
-}
-
-bool CDRMUtils::SetVideoMode(RESOLUTION_INFO res)
-{
-  GetMode(res);
-
-  gbm_surface_release_buffer(m_gbm->surface, m_bo);
-
-  m_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  m_drm_fb = DrmFbGetFromBo(m_bo);
-
-  auto ret = drmModeSetCrtc(m_drm->fd,
-                            m_drm->crtc_id,
-                            m_drm_fb->fb_id,
-                            0,
-                            0,
-                            &m_drm->connector_id,
-                            1,
-                            m_drm->mode);
-
-  if(ret == -1)
-  {
-    CLog::Log(LOGERROR,
-              "CDRMUtils::%s - failed to set crtc mode: %dx%d%s @ %d Hz",
-              __FUNCTION__,
-              m_drm->mode->hdisplay,
-              m_drm->mode->vdisplay,
-              m_drm->mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-              m_drm->mode->vrefresh);
-
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "CDRMUtils::%s - set crtc mode: %dx%d%s @ %d Hz",
-            __FUNCTION__,
-            m_drm->mode->hdisplay,
-            m_drm->mode->vdisplay,
-            m_drm->mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-            m_drm->mode->vrefresh);
-
-  return true;
-}
 
 bool CDRMUtils::GetMode(RESOLUTION_INFO res)
 {
@@ -167,87 +104,6 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   gbm_bo_set_user_data(bo, fb, DrmFbDestroyCallback);
 
   return fb;
-}
-
-void CDRMUtils::PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                                unsigned int usec, void *data)
-{
-  (void) fd, (void) frame, (void) sec, (void) usec;
-
-  int *flip_happening = static_cast<int *>(data);
-  *flip_happening = 0;
-}
-
-bool CDRMUtils::WaitingForFlip()
-{
-  if(!flip_happening)
-  {
-    return false;
-  }
-
-  m_drm_fds.revents = 0;
-
-  while(flip_happening)
-  {
-    auto ret = poll(&m_drm_fds, 1, -1);
-
-    if(ret < 0)
-    {
-      return true;
-    }
-
-    if(m_drm_fds.revents & (POLLHUP | POLLERR))
-    {
-      return true;
-    }
-
-    if(m_drm_fds.revents & POLLIN)
-    {
-      drmHandleEvent(m_drm->fd, &m_drm_evctx);
-    }
-  }
-
-  gbm_surface_release_buffer(m_gbm->surface, m_bo);
-  m_bo = m_next_bo;
-
-  return false;
-}
-
-bool CDRMUtils::QueueFlip()
-{
-  m_next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  m_drm_fb = DrmFbGetFromBo(m_next_bo);
-
-  auto ret = drmModePageFlip(m_drm->fd,
-                             m_drm->crtc_id,
-                             m_drm_fb->fb_id,
-                             DRM_MODE_PAGE_FLIP_EVENT,
-                             &flip_happening);
-
-  if(ret)
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to queue DRM page flip", __FUNCTION__);
-    return false;
-  }
-
-  return true;
-}
-
-void CDRMUtils::FlipPage()
-{
-  if(WaitingForFlip())
-  {
-    return;
-  }
-
-  flip_happening = QueueFlip();
-
-  if(g_Windowing.NoOfBuffers() >= 3 && gbm_surface_has_free_buffers(m_gbm->surface))
-  {
-    return;
-  }
-
-  WaitingForFlip();
 }
 
 bool CDRMUtils::GetResources()
@@ -344,8 +200,9 @@ bool CDRMUtils::GetPreferredMode()
   return true;
 }
 
-bool CDRMUtils::InitDrm()
+bool CDRMUtils::InitDrm(drm *drm)
 {
+  m_drm = drm;
   const char *device = "/dev/dri/card0";
 
   m_drm->fd = open(device, O_RDWR);
@@ -392,16 +249,6 @@ bool CDRMUtils::InitDrm()
 
   drmSetMaster(m_drm->fd);
 
-  m_gbm->dev = gbm_create_device(m_drm->fd);
-
-  CGBMUtils::InitGbm(m_gbm, m_drm->mode->hdisplay, m_drm->mode->vdisplay);
-
-  m_drm_fds.fd = m_drm->fd;
-  m_drm_fds.events = POLLIN;
-
-  m_drm_evctx.version = DRM_EVENT_CONTEXT_VERSION;
-  m_drm_evctx.page_flip_handler = PageFlipHandler;
-
   m_drm->connector_id = m_drm_connector->connector_id;
   m_orig_crtc = drmModeGetCrtc(m_drm->fd, m_drm->crtc_id);
 
@@ -442,16 +289,6 @@ void CDRMUtils::DestroyDrm()
 {
   RestoreOriginalMode();
 
-  if(m_gbm->surface)
-  {
-    gbm_surface_destroy(m_gbm->surface);
-  }
-
-  if(m_gbm->dev)
-  {
-    gbm_device_destroy(m_gbm->dev);
-  }
-
   if(m_drm_encoder)
   {
     drmModeFreeEncoder(m_drm_encoder);
@@ -481,9 +318,6 @@ void CDRMUtils::DestroyDrm()
   m_drm->crtc_index = 0;
   m_drm->fd = -1;
   m_drm->mode = nullptr;
-
-  m_bo = nullptr;
-  m_next_bo = nullptr;
 }
 
 bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
