@@ -396,14 +396,6 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
     streamAudio->iBlockAlign     = source->iBlockAlign;
     streamAudio->iBitRate        = source->iBitRate;
     streamAudio->iBitsPerSample  = source->iBitsPerSample;
-    if (source->ExtraSize > 0 && source->ExtraData)
-    {
-      delete[] streamAudio->ExtraData;
-      streamAudio->ExtraData = new uint8_t[source->ExtraSize];
-      streamAudio->ExtraSize = source->ExtraSize;
-      for (unsigned int j=0; j<source->ExtraSize; j++)
-        streamAudio->ExtraData[j] = source->ExtraData[j];
-    }
     streamAudio->m_parser_split = true;
     streamAudio->changes++;
     map[stream->uniqueId] = streamAudio;
@@ -438,14 +430,6 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
     streamVideo->fAspect         = source->fAspect;
     streamVideo->iBitRate = source->iBitRate;
     streamVideo->stereo_mode     = "mono";
-    if (source->ExtraSize > 0 && source->ExtraData)
-    {
-      delete[] streamVideo->ExtraData;
-      streamVideo->ExtraData = new uint8_t[source->ExtraSize];
-      streamVideo->ExtraSize = source->ExtraSize;
-      for (unsigned int j=0; j<source->ExtraSize; j++)
-        streamVideo->ExtraData[j] = source->ExtraData[j];
-    }
     streamVideo->m_parser_split = true;
     streamVideo->changes++;
     map[stream->uniqueId] = streamVideo;
@@ -471,15 +455,6 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
       streamSubtitle->m_parser = av_parser_init(source->codec);
       if (streamSubtitle->m_parser)
         streamSubtitle->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
-    }
-
-    if (source->ExtraSize == 4)
-    {
-      delete[] streamSubtitle->ExtraData;
-      streamSubtitle->ExtraData = new uint8_t[4];
-      streamSubtitle->ExtraSize = 4;
-      for (int j=0; j<4; j++)
-        streamSubtitle->ExtraData[j] = source->ExtraData[j];
     }
     map[stream->uniqueId] = streamSubtitle;
     newStream = streamSubtitle;
@@ -538,10 +513,27 @@ void CDVDDemuxClient::RequestStream(CDemuxStream *stream, std::map<int, std::sha
 
   // only update profile / level if we create a new stream
   // existing streams may be corrected by ParsePacket
+  CDemuxStream *extraSource(stream);
   if (!oldStream)
   {
     newStream->profile = stream->profile;
     newStream->level = stream->level;
+  }
+  else if (oldStream != newStream)
+  {
+    newStream->profile = oldStream->profile;
+    newStream->level = oldStream->level;
+    if (!stream->ExtraSize)
+      extraSource = oldStream.get();
+  }
+
+  if (extraSource && extraSource->ExtraData)
+  {
+    delete[] newStream->ExtraData;
+    newStream->ExtraData = new uint8_t[extraSource->ExtraSize];
+    newStream->ExtraSize = extraSource->ExtraSize;
+    for (unsigned int j = 0; j<extraSource->ExtraSize; j++)
+      newStream->ExtraData[j] = extraSource->ExtraData[j];
   }
 
   newStream->uniqueId = stream->uniqueId;
