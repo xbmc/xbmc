@@ -134,7 +134,7 @@ void CWinSystemGbmGLESContext::PresentRenderImpl(bool rendered)
   if (rendered)
   {
     m_pGLContext.SwapBuffers();
-    CGBMUtils::FlipPage();
+    CDRMUtils::FlipPage();
   }
 }
 

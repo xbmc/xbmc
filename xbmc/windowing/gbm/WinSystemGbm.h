@@ -25,7 +25,7 @@
 
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
-#include "GBMUtils.h"
+#include "DRMUtils.h"
 
 class IDispResource;
 

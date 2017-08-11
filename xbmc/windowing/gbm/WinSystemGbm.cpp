@@ -41,14 +41,14 @@ CWinSystemGbm::CWinSystemGbm() :
 
 bool CWinSystemGbm::InitWindowSystem()
 {
-  if (!CGBMUtils::InitDrm())
+  if (!CDRMUtils::InitDrm())
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize DRM", __FUNCTION__);
     return false;
   }
 
-  m_drm = CGBMUtils::GetDrm();
-  m_gbm = CGBMUtils::GetGbm();
+  m_drm = CDRMUtils::GetDrm();
+  m_gbm = CDRMUtils::GetGbm();
 
   m_nativeDisplay = m_gbm->dev;
 
@@ -68,7 +68,7 @@ bool CWinSystemGbm::InitWindowSystem()
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  CGBMUtils::DestroyDrm();
+  CDRMUtils::DestroyDrm();
   m_nativeDisplay = nullptr;
   m_drm = nullptr;
   m_gbm = nullptr;
@@ -81,7 +81,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
                                     RESOLUTION_INFO& res)
 {
-  if (!CGBMUtils::InitGbm(res))
+  if (!CGBMUtils::InitGbm(m_gbm, m_drm->mode->hdisplay, m_drm->mode->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -95,7 +95,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbm::DestroyWindow()
 {
-  CGBMUtils::DestroyGbm();
+  CGBMUtils::DestroyGbm(m_gbm);
   m_nativeWindow = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);
@@ -114,7 +114,7 @@ void CWinSystemGbm::UpdateResolutions()
 
   std::vector<RESOLUTION_INFO> resolutions;
 
-  if (!CGBMUtils::GetModes(resolutions) || resolutions.empty())
+  if (!CDRMUtils::GetModes(resolutions) || resolutions.empty())
   {
     CLog::Log(LOGWARNING, "CWinSystemGbm::%s - Failed to get resolutions", __FUNCTION__);
   }
@@ -144,7 +144,7 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  auto ret = CGBMUtils::SetVideoMode(res);
+  auto ret = CDRMUtils::SetVideoMode(res);
 
   if (!ret)
   {

@@ -1,10 +1,12 @@
 set(SOURCES GLContextEGL.cpp
             WinSystemGbm.cpp
-            GBMUtils.cpp)
+            GBMUtils.cpp
+            DRMUtils.cpp)
 
 set(HEADERS GLContextEGL.h
             WinSystemGbm.h
-            GBMUtils.h)
+            GBMUtils.h
+            DRMUtils.h)
 
 if(OPENGLES_FOUND)
   list(APPEND SOURCES WinSystemGbmGLESContext.cpp)
