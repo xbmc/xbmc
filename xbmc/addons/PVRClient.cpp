@@ -1152,8 +1152,9 @@ bool CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const
   return false;
 }
 
-bool CPVRClient::FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem *fileItem)
+bool CPVRClient::FillLiveStreamFileItem(CFileItem *fileItem)
 {
+  const CPVRChannelPtr &channel = fileItem->GetPVRChannelInfoTag();
   if (!m_bReadyToUse || !CanPlayChannel(channel))
     return false;
 
@@ -1164,19 +1165,22 @@ bool CPVRClient::FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem
   char url[PVR_ADDON_URL_STRING_LENGTH];
   int urlLength = PVR_ADDON_URL_STRING_LENGTH-1;
   PVR_ERROR err = m_struct.toAddon.GetLiveStreamURL(tag, url, &urlLength, properties, &propertyCount);
-  if (err != PVR_ERROR_NO_ERROR) {
+  if (err != PVR_ERROR_NO_ERROR)
+  {
     return false;
   }
   url[urlLength] = 0x00;
   fileItem->SetDynPath(url);
-  for (int i = 0; i < propertyCount; i++) {
+  for (int i = 0; i < propertyCount; i++)
+  {
     fileItem->SetProperty(properties[i].strName, properties[i].strValue);
   }
   return true;
 }
 
-bool CPVRClient::FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, CFileItem *fileItem)
+bool CPVRClient::FillRecordingStreamFileItem(CFileItem *fileItem)
 {
+  const CPVRRecordingPtr &recording = fileItem->GetPVRRecordingInfoTag();
   if (!m_bReadyToUse)
     return false;
 
@@ -1187,12 +1191,14 @@ bool CPVRClient::FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, 
   char url[PVR_ADDON_URL_STRING_LENGTH];
   int urlLength = PVR_ADDON_URL_STRING_LENGTH-1;
   PVR_ERROR err = m_struct.toAddon.GetRecordingStreamURL(tag, url, &urlLength, properties, &propertyCount);
-  if (err != PVR_ERROR_NO_ERROR) {
+  if (err != PVR_ERROR_NO_ERROR)
+  {
     return false;
   }
   url[urlLength] = 0x00;
   fileItem->SetDynPath(url);
-  for (int i = 0; i < propertyCount; i++) {
+  for (int i = 0; i < propertyCount; i++)
+  {
     fileItem->SetProperty(properties[i].strName, properties[i].strValue);
   }
   return true;

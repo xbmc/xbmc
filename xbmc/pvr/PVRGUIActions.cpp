@@ -991,11 +991,11 @@ namespace PVR
   {
     const CPVRChannelPtr channel = item->GetPVRChannelInfoTag();
     if (channel)
-      CServiceBroker::GetPVRManager().Clients()->FillLiveStreamFileItem(channel, item);
+      CServiceBroker::GetPVRManager().Clients()->FillLiveStreamFileItem(item);
 
     const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
     if (recording)
-      CServiceBroker::GetPVRManager().Clients()->FillRecordingStreamFileItem(recording, item);
+      CServiceBroker::GetPVRManager().Clients()->FillRecordingStreamFileItem(item);
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);

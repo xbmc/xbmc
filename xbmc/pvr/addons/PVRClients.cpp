@@ -1043,20 +1043,20 @@ bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
   return GetCreatedClient(GetPlayingClientID(), client);
 }
 
-bool CPVRClients::FillLiveStreamFileItem(const CPVRChannelPtr &channel, CFileItem *fileItem)
+bool CPVRClients::FillLiveStreamFileItem(CFileItem *fileItem)
 {
   PVR_CLIENT client;
-  if (GetCreatedClient(channel->ClientID(), client))
-    return client->FillLiveStreamFileItem(channel, fileItem);
+  if (GetCreatedClient(fileItem->GetPVRChannelInfoTag()->ClientID(), client))
+    return client->FillLiveStreamFileItem(fileItem);
 
   return false;
 }
 
-bool CPVRClients::FillRecordingStreamFileItem(const CPVRRecordingPtr &recording, CFileItem *fileItem)
+bool CPVRClients::FillRecordingStreamFileItem(CFileItem *fileItem)
 {
   PVR_CLIENT client;
-  if (GetCreatedClient(recording->ClientID(), client))
-    return client->FillRecordingStreamFileItem(recording, fileItem);
+  if (GetCreatedClient(fileItem->GetPVRRecordingInfoTag()->ClientID(), client))
+    return client->FillRecordingStreamFileItem(fileItem);
 
   return false;
 }
