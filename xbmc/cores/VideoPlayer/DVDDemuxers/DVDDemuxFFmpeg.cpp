@@ -534,6 +534,24 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       {
         nProgram = HLSSelectProgram();
       }
+      else
+      {
+        // skip programs without or empty audio/video streams
+        for (unsigned int i = 0; nProgram == UINT_MAX && i < m_pFormatContext->nb_programs; i++)
+        {
+          for (unsigned int j = 0; j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+          {
+            int idx = m_pFormatContext->programs[i]->stream_index[j];
+            AVStream *st = m_pFormatContext->streams[idx];
+            if ((st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec_info_nb_frames > 0) ||
+                (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->sample_rate > 0))
+            {
+              nProgram = i;
+              break;
+            }
+          }
+        }
+      }
     }
     CreateStreams(nProgram);
   }
@@ -1281,15 +1299,9 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
     // look for first non empty stream and discard nonselected programs
     for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
     {
-      for (unsigned int j = 0; m_program == UINT_MAX && j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+      if(m_program == UINT_MAX && m_pFormatContext->programs[i]->nb_stream_indexes > 0)
       {
-        int idx = m_pFormatContext->programs[i]->stream_index[j];
-        AVStream *st = m_pFormatContext->streams[idx];
-        if ((st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec_info_nb_frames > 0) ||
-            (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->sample_rate > 0))
-        {
-          m_program = i;
-        }
+        m_program = i;
       }
 
       if(i != m_program)
