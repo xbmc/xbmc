@@ -58,6 +58,7 @@ using namespace CEC;
 #define LOCALISED_ID_PAUSE        36045
 #define LOCALISED_ID_POWEROFF     13005
 #define LOCALISED_ID_SUSPEND      13011
+#define LOCALISED_ID_HIBERNATE    13010
 #define LOCALISED_ID_QUIT         13009
 #define LOCALISED_ID_IGNORE       36028
 
@@ -637,6 +638,10 @@ void CPeripheralCecAdapter::OnTvStandby(void)
     m_bStarted = false;
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
     break;
+  case LOCALISED_ID_HIBERNATE:
+    m_bStarted = false;
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
+    break;    
   case LOCALISED_ID_QUIT:
     m_bStarted = false;
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
@@ -1389,7 +1394,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
-  m_configuration.bPowerOffOnStandby = iStandbyAction == LOCALISED_ID_SUSPEND ? 1 : 0;
+  m_configuration.bPowerOffOnStandby = (iStandbyAction == LOCALISED_ID_SUSPEND || iStandbyAction == LOCALISED_ID_HIBERNATE) ? 1 : 0;
   m_bShutdownOnStandby = iStandbyAction == LOCALISED_ID_POWEROFF;
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
