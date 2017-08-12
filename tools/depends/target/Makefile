@@ -61,16 +61,22 @@ ifeq ($(NEED_LIBICONV),1)
   ICONV = libiconv
 endif
 
+WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += linux-system-libs
+    WAYLANDPP_DEPS += linux-system-libs
   endif
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
   CROSSGUID_DEPS = libuuid
+endif
+
+ifeq ($(ENABLE_WAYLAND),yes)
+  DEPENDS += wayland waylandpp wayland-protocols
 endif
 
 .PHONY: $(DEPENDS)
@@ -105,6 +111,8 @@ libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
+wayland: expat libffi
+waylandpp: wayland $(WAYLANDPP_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -131,6 +139,7 @@ distclean::
 
 linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/damageproto.pc ] || ln -sf  /usr/share/pkgconfig/damageproto.pc $(PREFIX)/lib/pkgconfig/damageproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/fixesproto.pc ] || ln -sf  /usr/share/pkgconfig/fixesproto.pc $(PREFIX)/lib/pkgconfig/fixesproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/x11-xcb.pc ] || ln -sf  /usr/lib/$(HOST)/pkgconfig/x11-xcb.pc $(PREFIX)/lib/pkgconfig/x11-xcb.pc

@@ -42,6 +42,12 @@ if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 endif()
 
+if(KODI_DEPENDSBUILD)
+  # Binaries should be directly runnable from host, so include rpath to depends
+  set(CMAKE_INSTALL_RPATH "${DEPENDS_PATH}/lib")
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+
 find_package(CXX11 REQUIRED)
 include(LDGOLD)
 
