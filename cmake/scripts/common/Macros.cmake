@@ -72,7 +72,7 @@ function(core_add_library name)
     add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES PREFIX "")
     set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
-    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid)
+    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid ${PLATFORM_GLOBAL_TARGET_DEPS})
     set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
     # Add precompiled headers to Kodi main libraries
