@@ -314,8 +314,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         if (!g_advancedSettings.m_fullScreen)
         {
-          g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
-          g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
+          g_graphicsContext.ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
           CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
           CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
           CServiceBroker::GetSettings().Save();
@@ -326,6 +325,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
       }
+      break;
+    case XBMC_MODECHANGE:
+      g_graphicsContext.ApplyModeChange(newEvent.mode.res);
       break;
     case XBMC_USEREVENT:
       CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));

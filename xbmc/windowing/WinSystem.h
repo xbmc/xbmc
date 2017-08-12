@@ -73,6 +73,8 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
+  virtual void FinishModeChange(RESOLUTION res){}
+  virtual void FinishWindowResize(int newWidth, int newHeight) {ResizeWindow(newWidth, newHeight, -1, -1);}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {}
