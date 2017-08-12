@@ -28,9 +28,10 @@
 #endif
 
 #include <algorithm>
+#include <stdexcept>
 #include <vector>
 
-template<typename T> class CPointGen
+template <typename T> class CPointGen
 {
 public:
   typedef CPointGen<T> this_type;
@@ -112,11 +113,154 @@ using CPoint = CPointGen<float>;
 using CPointInt = CPointGen<int>;
 
 
-template<typename T> class CRectGen
+/**
+ * Generic two-dimensional size representation
+ *
+ * Class invariant: width and height are both non-negative
+ * Throws std::out_of_range if invariant would be violated. The class
+ * is exception-safe. If modification would violate the invariant, the size
+ * is not changed.
+ */
+template <typename T> class CSizeGen
+{
+  T m_w{}, m_h{};
+
+  void CheckSet(T width, T height)
+  {
+    if (width < 0)
+    {
+      throw std::out_of_range("Size may not have negative width");
+    }
+    if (height < 0)
+    {
+      throw std::out_of_range("Size may not have negative height");
+    }
+    m_w = width;
+    m_h = height;
+  }
+
+public:
+  typedef CSizeGen<T> this_type;
+
+  CSizeGen() noexcept = default;
+
+  CSizeGen(T width, T height)
+  {
+    CheckSet(width, height);
+  }
+
+  T Width() const
+  {
+    return m_w;
+  }
+
+  T Height() const
+  {
+    return m_h;
+  }
+
+  void SetWidth(T width)
+  {
+    CheckSet(width, m_h);
+  }
+
+  void SetHeight(T height)
+  {
+    CheckSet(m_w, height);
+  }
+
+  void Set(T width, T height)
+  {
+    CheckSet(width, height);
+  }
+
+  bool IsZero() const
+  {
+    return (m_w == static_cast<T> (0) && m_h == static_cast<T> (0));
+  }
+
+  T Area() const
+  {
+    return m_w * m_h;
+  }
+
+  CPointGen<T> ToPoint() const
+  {
+    return {m_w, m_h};
+  }
+
+  template<class U> explicit CSizeGen<T>(const CSizeGen<U>& rhs)
+  {
+    CheckSet(static_cast<T> (rhs.m_w), static_cast<T> (rhs.m_h));
+  }
+
+  this_type operator+(const this_type& size) const
+  {
+    return {m_w + size.m_w, m_h + size.m_h};
+  };
+
+  this_type& operator+=(const this_type& size)
+  {
+    CheckSet(m_w + size.m_w, m_h + size.m_h);
+    return *this;
+  };
+
+  this_type operator-(const this_type& size) const
+  {
+    return {m_w - size.m_w, m_h - size.m_h};
+  };
+
+  this_type& operator-=(const this_type& size)
+  {
+    CheckSet(m_w - size.m_w, m_h - size.m_h);
+    return *this;
+  };
+
+  this_type operator*(T factor) const
+  {
+    return {m_w * factor, m_h * factor};
+  }
+
+  this_type& operator*=(T factor)
+  {
+    CheckSet(m_w * factor, m_h * factor);
+    return *this;
+  }
+
+  this_type operator/(T factor) const
+  {
+    return {m_w / factor, m_h / factor};
+  }
+
+  this_type& operator/=(T factor)
+  {
+    CheckSet(m_w / factor, m_h / factor);
+    return *this;
+  }
+};
+
+template<typename T>
+inline bool operator==(const CSizeGen<T>& size1, const CSizeGen<T>& size2) noexcept
+{
+  return (size1.Width() == size2.Width() && size1.Height() == size2.Height());
+}
+
+template<typename T>
+inline bool operator!=(const CSizeGen<T>& size1, const CSizeGen<T>& size2) noexcept
+{
+  return !(size1 == size2);
+}
+
+using CSize = CSizeGen<float>;
+using CSizeInt = CSizeGen<int>;
+
+
+template <typename T> class CRectGen
 {
 public:
   typedef CRectGen<T> this_type;
   typedef CPointGen<T> point_type;
+  typedef CSizeGen<T> size_type;
 
   CRectGen() noexcept = default;
 
@@ -230,6 +374,11 @@ public:
   T Area() const XBMC_FORCE_INLINE
   {
     return Width() * Height();
+  };
+
+  size_type ToSize() const
+  {
+    return {Width(), Height()};
   };
 
   std::vector<this_type> SubtractRect(this_type splitterRect)
