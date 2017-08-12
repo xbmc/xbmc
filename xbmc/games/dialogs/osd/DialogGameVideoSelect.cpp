@@ -41,7 +41,7 @@ using namespace GAME;
 #define CONTROL_THUMBS                11
 
 CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
-  CGUIDialog(windowId, "GameOSDVideoSelect.xml"),
+  CGUIDialog(windowId, "DialogSelect.xml"),
   m_viewControl(new CGUIViewControl),
   m_vecItems(new CFileItemList)
 {
