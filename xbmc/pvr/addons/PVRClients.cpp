@@ -1043,13 +1043,22 @@ bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
   return GetCreatedClient(GetPlayingClientID(), client);
 }
 
-std::string CPVRClients::GetLiveStreamURL(const CPVRChannelPtr &channel)
+bool CPVRClients::FillLiveStreamFileItem(CFileItem *fileItem)
 {
   PVR_CLIENT client;
-  if (GetCreatedClient(channel->ClientID(), client))
-    return client->GetLiveStreamURL(channel);
+  if (GetCreatedClient(fileItem->GetPVRChannelInfoTag()->ClientID(), client))
+    return client->FillLiveStreamFileItem(fileItem);
 
-  return std::string();
+  return false;
+}
+
+bool CPVRClients::FillRecordingStreamFileItem(CFileItem *fileItem)
+{
+  PVR_CLIENT client;
+  if (GetCreatedClient(fileItem->GetPVRRecordingInfoTag()->ClientID(), client))
+    return client->FillRecordingStreamFileItem(fileItem);
+
+  return false;
 }
 
 bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)

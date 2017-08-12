@@ -1152,17 +1152,56 @@ bool CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const
   return false;
 }
 
-std::string CPVRClient::GetLiveStreamURL(const CPVRChannelPtr &channel)
+bool CPVRClient::FillLiveStreamFileItem(CFileItem *fileItem)
 {
-  std::string strReturn;
-
+  const CPVRChannelPtr &channel = fileItem->GetPVRChannelInfoTag();
   if (!m_bReadyToUse || !CanPlayChannel(channel))
-    return strReturn;
+    return false;
 
   PVR_CHANNEL tag;
   WriteClientChannelInfo(channel, tag);
-  strReturn = m_struct.toAddon.GetLiveStreamURL(tag);
-  return strReturn;
+  PVR_FILE_ITEM_PROPERTY* properties = new PVR_FILE_ITEM_PROPERTY[PVR_ADDON_MAX_FILE_ITEM_PROPERTIES];
+  int propertyCount = PVR_ADDON_MAX_FILE_ITEM_PROPERTIES;
+  char url[PVR_ADDON_URL_STRING_LENGTH];
+  int urlLength = PVR_ADDON_URL_STRING_LENGTH-1;
+  PVR_ERROR err = m_struct.toAddon.GetLiveStreamURL(tag, url, &urlLength, properties, &propertyCount);
+  if (err != PVR_ERROR_NO_ERROR)
+  {
+    return false;
+  }
+  url[urlLength] = 0x00;
+  fileItem->SetDynPath(url);
+  for (int i = 0; i < propertyCount; i++)
+  {
+    fileItem->SetProperty(properties[i].strName, properties[i].strValue);
+  }
+  return true;
+}
+
+bool CPVRClient::FillRecordingStreamFileItem(CFileItem *fileItem)
+{
+  const CPVRRecordingPtr &recording = fileItem->GetPVRRecordingInfoTag();
+  if (!m_bReadyToUse)
+    return false;
+
+  PVR_RECORDING tag;
+  WriteClientRecordingInfo(*recording, tag);
+  PVR_FILE_ITEM_PROPERTY* properties = new PVR_FILE_ITEM_PROPERTY[PVR_ADDON_MAX_FILE_ITEM_PROPERTIES];
+  int propertyCount = PVR_ADDON_MAX_FILE_ITEM_PROPERTIES;
+  char url[PVR_ADDON_URL_STRING_LENGTH];
+  int urlLength = PVR_ADDON_URL_STRING_LENGTH-1;
+  PVR_ERROR err = m_struct.toAddon.GetRecordingStreamURL(tag, url, &urlLength, properties, &propertyCount);
+  if (err != PVR_ERROR_NO_ERROR)
+  {
+    return false;
+  }
+  url[urlLength] = 0x00;
+  fileItem->SetDynPath(url);
+  for (int i = 0; i < propertyCount; i++)
+  {
+    fileItem->SetProperty(properties[i].strName, properties[i].strValue);
+  }
+  return true;
 }
 
 PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES *props)

@@ -648,11 +648,18 @@ namespace PVR
     bool GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const;
 
     /*!
-     * @brief Get the stream URL for a channel from the PVR backend.
-     * @param channel The channel to get the stream URL for.
-     * @return The requested URL or empty string if not available.
+     * @brief Fill the FileItem for a channel from the PVR backend.
+     * @param fileItem The FileItem to be filled
+     * @return True if the url and and properties have been set
      */
-    std::string GetLiveStreamURL(const CPVRChannelPtr &channel);
+    bool FillLiveStreamFileItem(CFileItem *fileItem);
+
+    /*!
+     * @brief Fill the FileItem for a recording from the PVR backend.
+     * @param fileItem The FileItem to be filled
+     * @return True if the url and and properties have been set
+     */
+    bool FillRecordingStreamFileItem(CFileItem *fileItem);
 
     /*!
      * @brief Check whether PVR backend supports pausing the currently playing stream
