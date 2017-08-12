@@ -1,0 +1,2 @@
+xbmc/windowing/wayland windowing/wayland # WAYLANDPP
+xbmc/cores/VideoPlayer/Process/wayland cores/VideoPlayer/Process/wayland # WAYLANDPP

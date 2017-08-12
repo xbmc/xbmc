@@ -35,6 +35,12 @@
 #elif defined(TARGET_ANDROID) && defined(HAS_GLES)
 #include "android/WinSystemAndroidGLESContext.h"
 
+#elif defined(HAVE_WAYLAND) && defined(HAS_GL)
+#include "wayland/WinSystemWaylandEGLContextGL.h"
+
+#elif defined(HAVE_WAYLAND) && defined(HAS_GLES)
+#include "wayland/WinSystemWaylandEGLContextGLES.h"
+
 #elif defined(TARGET_LINUX) && defined(HAVE_GBM) && defined(HAS_GLES)
 #include "gbm/WinSystemGbmGLESContext.h"
 
