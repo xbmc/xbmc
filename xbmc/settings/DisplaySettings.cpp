@@ -727,7 +727,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && g_Windowing.CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAS_GLX)
+#if defined(HAS_GLX) || defined(HAVE_WAYLAND)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
@@ -790,6 +790,26 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
       current = monitors[i];
     }
     list.push_back(std::make_pair(monitors[i], monitors[i]));
+  }
+#elif defined(HAVE_WAYLAND)
+  std::vector<std::string> monitors;
+  g_Windowing.GetConnectedOutputs(&monitors);
+  bool foundMonitor = false;
+  std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  for (auto const& monitor : monitors)
+  {
+    if(monitor == currentMonitor)
+    {
+      foundMonitor = true;
+    }
+    list.push_back(std::make_pair(monitor, monitor));
+  }
+
+  if (!foundMonitor && !current.empty())
+  {
+    // Add current value so no monitor change is triggered when entering the settings screen and
+    // the preferred monitor is preserved
+    list.push_back(std::make_pair(current, current));
   }
 #endif
 }
