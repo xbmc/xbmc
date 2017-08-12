@@ -42,10 +42,10 @@ class COSScreenSaverManager;
 class COSScreenSaverInhibitor
 {
 public:
-  COSScreenSaverInhibitor();
-  COSScreenSaverInhibitor(COSScreenSaverInhibitor&& other);
-  COSScreenSaverInhibitor& operator=(COSScreenSaverInhibitor&& other);
-  ~COSScreenSaverInhibitor();
+  COSScreenSaverInhibitor() noexcept;
+  COSScreenSaverInhibitor(COSScreenSaverInhibitor&& other) noexcept;
+  COSScreenSaverInhibitor& operator=(COSScreenSaverInhibitor&& other) noexcept;
+  ~COSScreenSaverInhibitor() noexcept;
   void Release();
   bool IsActive() const;
   operator bool() const;
@@ -96,7 +96,7 @@ public:
   /**
    * Create manager with backing OS-specific implementation
    */
-  COSScreenSaverManager(std::unique_ptr<IOSScreenSaver>&& impl);
+  explicit COSScreenSaverManager(std::unique_ptr<IOSScreenSaver> impl);
   /**
    * Create inhibitor that prevents the OS screen saver from becoming active as
    * long as it is alive
@@ -111,7 +111,7 @@ private:
   friend class COSScreenSaverInhibitor;
   void RemoveInhibitor();
 
-  unsigned int m_inhibitionCount = 0;
+  unsigned int m_inhibitionCount{0u};
   std::unique_ptr<IOSScreenSaver> m_impl;
 };
 

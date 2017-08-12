@@ -46,7 +46,7 @@ public:
     , m_deleter{del}
   { };
 
-  ~CScopeGuard()
+  ~CScopeGuard() noexcept
   {
     reset();
   }
