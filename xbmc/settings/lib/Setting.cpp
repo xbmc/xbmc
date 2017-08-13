@@ -237,6 +237,8 @@ void CSetting::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting,
 void CSetting::Copy(const CSetting &setting)
 {
   SetVisible(setting.IsVisible());
+  SetLabel(setting.GetLabel());
+  SetHelp(setting.GetHelp());
   SetRequirementsMet(setting.MeetsRequirements());
   m_callback = setting.m_callback;
   m_level = setting.m_level;
