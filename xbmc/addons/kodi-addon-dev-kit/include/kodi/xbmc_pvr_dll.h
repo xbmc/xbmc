@@ -426,12 +426,24 @@ extern "C"
   PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo);
 
   /*!
-   * Get the stream URL for a channel from the backend. Used by the MediaPortal add-on.
-   * @param channel The channel to get the stream URL for.
-   * @return The requested URL.
-   * @remarks Optional, and only used if bHandlesInputStream is set to true. Return NULL if this add-on won't provide this function.
+   * Get the stream properties for a channel from the backend.
+   * @param[in] channel The channel to get the stream properties for.
+   * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
+   * @param[inout] iPropertiesCount: in the size of the properties array, out: the number of properties returned.
+   * @return PVR_ERROR_NO_ERROR if the stream is available.
+   * @remarks Required if PVR_ADDON_CAPABILITIES::bSupportsTV or PVR_ADDON_CAPABILITIES::bSupportsRadio are set to true and PVR_ADDON_CAPABILITIES::bHandlesInputStream is set to false. In this case the implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the channel. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  const char* GetLiveStreamURL(const PVR_CHANNEL& channel);
+  PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL* channel, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
+
+  /*!
+   * Get the stream properties for a recording from the backend.
+   * @param[in] channel The recording to get the stream properties for.
+   * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
+   * @param[inout] iPropertiesCount: in the size of the properties array, out: the number of properties returned.
+   * @return PVR_ERROR_NO_ERROR if the stream is available.
+   * @remarks Required if PVR_ADDON_CAPABILITIES::bSupportsRecordings is set to true and the add-on does not implement recording stream functions (OpenRecordedStream, ...). In this case your implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the recording. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING* recording, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
 
   /*!
    * Get the stream properties of the stream that's currently being read.
@@ -686,7 +698,8 @@ extern "C"
     pClient->toAddon.LengthLiveStream               = LengthLiveStream;
     pClient->toAddon.SignalStatus                   = SignalStatus;
     pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
-    pClient->toAddon.GetLiveStreamURL               = GetLiveStreamURL;
+    pClient->toAddon.GetChannelStreamProperties     = GetChannelStreamProperties;
+    pClient->toAddon.GetRecordingStreamProperties   = GetRecordingStreamProperties;
     pClient->toAddon.CanPauseStream                 = CanPauseStream;
     pClient->toAddon.PauseStream                    = PauseStream;
     pClient->toAddon.CanSeekStream                  = CanSeekStream;

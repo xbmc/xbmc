@@ -988,9 +988,8 @@ namespace PVR
 
   void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
-    const CPVRChannelPtr channel = item->GetPVRChannelInfoTag();
-    if (channel)
-      item->SetDynPath(CServiceBroker::GetPVRManager().Clients()->GetLiveStreamURL(channel));
+    // Obtain dynamic playback url and properties from the respecive pvr client
+    CServiceBroker::GetPVRManager().FillStreamFileItem(*item);
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
@@ -1009,7 +1008,8 @@ namespace PVR
       return true;
     }
 
-    std::string stream = recording->m_strStreamURL;
+    CServiceBroker::GetPVRManager().FillStreamFileItem(*item); // fill item's dynpath
+    const std::string stream = item->GetDynPath();
     if (stream.empty())
     {
       if (!bCheckResume || CheckResumeRecording(item))
@@ -1051,13 +1051,13 @@ namespace PVR
           /* If we have a stack change the path of the item to it */
           XFILE::CStackDirectory dir;
           std::string stackPath = dir.ConstructStackPath(items, stack);
-          item->SetPath(stackPath);
+          item->SetDynPath(stackPath);
         }
       }
       else
       {
         /* If no asterisk is present play only the given stream URL */
-        item->SetPath(stream);
+        item->SetDynPath(stream);
       }
     }
     else

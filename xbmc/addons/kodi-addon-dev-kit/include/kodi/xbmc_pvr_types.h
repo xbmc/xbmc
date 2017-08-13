@@ -77,6 +77,10 @@ struct DemuxPacket;
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
 
+/* defines for GetChannelStreamProperties and GetRecordingStreamProperties */
+#define PVR_STREAM_MAX_PROPERTIES     20
+#define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
+
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
 
@@ -266,6 +270,14 @@ extern "C" {
   } PVR_RECORDING_CHANNEL_TYPE;
 
   /*!
+   * @brief Representation of a named value
+   */
+  typedef struct PVR_NAMED_VALUE {
+    char  strName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (required) name */
+    char  strValue[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) value */
+  } ATTRIBUTE_PACKED PVR_NAMED_VALUE;
+
+  /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
   typedef struct PVR_PROPERTIES
@@ -335,8 +347,8 @@ extern "C" {
       int               iBlockAlign;        /*!< @brief (required) block alignment */
       int               iBitRate;           /*!< @brief (required) bit rate */
       int               iBitsPerSample;     /*!< @brief (required) bits per sample */
-     } stream[PVR_STREAM_MAX_STREAMS];      /*!< @brief (required) the streams */
-   } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
+    } stream[PVR_STREAM_MAX_STREAMS];       /*!< @brief (required) the streams */
+  } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
 
   /*!
    * @brief Signal status information
@@ -520,7 +532,6 @@ extern "C" {
     int    iSeriesNumber;                                 /*!< @brief (optional) series number (usually called season). Set to "0" for specials/pilot. For 'invalid' see iEpisodeNumber or set to -1 */
     int    iEpisodeNumber;                                /*!< @brief (optional) episode number within the "iSeriesNumber" season. For 'invalid' set to -1 or iSeriesNumber=iEpisodeNumber=0 to show both are invalid */
     int    iYear;                                         /*!< @brief (optional) year of first release (use to identify a specific movie re-make) / first airing for TV shows. Set to '0' for invalid. */
-    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (required) stream URL to access this recording */
     char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (optional) directory of this recording on the client */
     char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) plot outline */
     char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];         /*!< @brief (optional) plot */
@@ -665,7 +676,8 @@ extern "C" {
     long long (__cdecl* LengthLiveStream)(void);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
-    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
+    PVR_ERROR  (__cdecl* GetChannelStreamProperties)(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsigned int*);
+    PVR_ERROR  (__cdecl* GetRecordingStreamProperties)(const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*);
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);

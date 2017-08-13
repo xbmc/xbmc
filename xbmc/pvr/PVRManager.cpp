@@ -1039,6 +1039,16 @@ void CPVRManager::SearchMissingChannelIcons(void)
     m_channelGroups->SearchMissingChannelIcons();
 }
 
+bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
+{
+  if (fileItem.IsPVRChannel())
+    return m_addons->FillChannelStreamFileItem(fileItem);
+  else if (fileItem.IsPVRRecording())
+    return m_addons->FillRecordingStreamFileItem(fileItem);
+  else
+    return false;
+}
+
 void CPVRManager::TriggerEpgsCreate(void)
 {
   m_pendingUpdates.AppendJob(new CPVREpgsCreateJob());

@@ -299,7 +299,6 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording.iLastPlayedPosition = lrint(xbmcRecording.GetLocalResumePoint().timeInSeconds);
   addonRecording.bIsDeleted          = xbmcRecording.IsDeleted();
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
-  strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
   strncpy(addonRecording.strThumbnailPath, xbmcRecording.m_strThumbnailPath.c_str(), sizeof(addonRecording.strThumbnailPath) - 1);
   strncpy(addonRecording.strFanartPath, xbmcRecording.m_strFanartPath.c_str(), sizeof(addonRecording.strFanartPath) - 1);
@@ -1152,17 +1151,62 @@ bool CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const
   return false;
 }
 
-std::string CPVRClient::GetLiveStreamURL(const CPVRChannelPtr &channel)
+bool CPVRClient::FillChannelStreamFileItem(CFileItem &fileItem)
 {
-  std::string strReturn;
+  const CPVRChannelPtr channel = fileItem.GetPVRChannelInfoTag();
 
-  if (!m_bReadyToUse || !CanPlayChannel(channel))
-    return strReturn;
+  if (!m_bReadyToUse)
+    return false;
 
-  PVR_CHANNEL tag;
+  if (!CanPlayChannel(channel))
+    return true; // no error, but no need to obtain the values from the addon
+
+  PVR_CHANNEL tag = {0};
   WriteClientChannelInfo(channel, tag);
-  strReturn = m_struct.toAddon.GetLiveStreamURL(tag);
-  return strReturn;
+
+  PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
+  unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+
+  if (m_struct.toAddon.GetChannelStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
+    return false;
+
+  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  {
+    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
+      fileItem.SetDynPath(properties[i].strValue);
+
+    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
+  }
+  return true;
+}
+
+bool CPVRClient::FillRecordingStreamFileItem(CFileItem &fileItem)
+{
+  if (!m_bReadyToUse)
+    return false;
+
+  if (!m_clientCapabilities.SupportsRecordings())
+    return true; // no error, but no need to obtain the values from the addon
+
+  const CPVRRecordingPtr recording = fileItem.GetPVRRecordingInfoTag();
+
+  PVR_RECORDING tag = {{0}};
+  WriteClientRecordingInfo(*recording, tag);
+
+  PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
+  unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+
+  if (m_struct.toAddon.GetRecordingStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
+    return false;
+
+  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  {
+    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
+      fileItem.SetDynPath(properties[i].strValue);
+
+    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
+  }
+  return true;
 }
 
 PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES *props)
