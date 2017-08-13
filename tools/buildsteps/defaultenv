@@ -1,6 +1,7 @@
 BUILDTHREADS=${BUILDTHREADS:-1}
 SDK_VERSION=${SDK_VERSION:-"Default"}
 NDK_VERSION=${NDK_VERSION:-"Default"}
+NDK_API=${NDK_API:-"Default"}
 Configuration=${Configuration:-"Default"}
 XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
 DARWIN_ARM_CPU=${DARWIN_ARM_CPU:-"Default"}
@@ -33,8 +34,9 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   android)
-    DEFAULT_SDK_VERSION="21"
+    DEFAULT_SDK_VERSION="24"
     DEFAULT_NDK_VERSION="14b"
+    DEFAULT_NDK_API="21"
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;
@@ -59,6 +61,11 @@ fi
 if [ "$NDK_VERSION" == "Default" ]
 then
   NDK_VERSION=$DEFAULT_NDK_VERSION
+fi 
+
+if [ "$NDK_API" == "Default" ]
+then
+  NDK_API=$DEFAULT_NDK_API
 fi 
 
 if [ "$XBMC_DEPENDS_ROOT" == "Default" ]
