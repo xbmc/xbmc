@@ -115,7 +115,10 @@ void CRendererAML::ReleaseBuffer(int idx)
     if (amli)
     {
       if (amli->m_amlCodec)
+      {
         amli->m_amlCodec->ReleaseFrame(amli->m_bufferIndex, true);
+        amli->m_amlCodec = nullptr; // Released
+      }
       amli->Release();
     }
     buf.videoBuffer = nullptr;

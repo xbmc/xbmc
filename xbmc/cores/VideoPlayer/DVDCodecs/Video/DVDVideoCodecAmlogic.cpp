@@ -63,6 +63,11 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
 void CAMLVideoBufferPool::Return(int id)
 {
   CSingleLock lock(m_criticalSection);
+  if (m_videoBuffers[id]->m_amlCodec)
+  {
+    m_videoBuffers[id]->m_amlCodec->ReleaseFrame(m_videoBuffers[id]->m_bufferIndex, true);
+    m_videoBuffers[id]->m_amlCodec = nullptr;
+  }
   m_freeBuffers.push_back(id);
 }
 
