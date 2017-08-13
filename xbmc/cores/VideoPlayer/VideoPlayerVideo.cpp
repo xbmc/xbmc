@@ -358,10 +358,16 @@ void CVideoPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      if (ProcessDecoderOutput(frametime, pts))
+      // don't ask for a new frame if we can't deliver it to renderer
+      if ((m_speed != DVD_PLAYSPEED_PAUSE ||
+           m_syncState != IDVDStreamPlayer::SYNC_INSYNC) &&
+           !m_paused)
       {
-        onlyPrioMsgs = true;
-        continue;
+        if (ProcessDecoderOutput(frametime, pts))
+        {
+          onlyPrioMsgs = true;
+          continue;
+        }
       }
 
       // if we only wanted priority messages, this isn't a stall
