@@ -184,9 +184,9 @@ bool CMediaCodecVideoBuffer::WaitForFrame(int millis)
   return m_frameready->WaitMSec(millis);
 }
 
-void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTime)
+void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTime, CMediaCodecVideoBufferPool* pool)
 {
-  std::shared_ptr<CMediaCodec> codec(static_cast<CMediaCodecVideoBufferPool*>(m_pool.get())->GetMediaCodec());
+  std::shared_ptr<CMediaCodec> codec(static_cast<CMediaCodecVideoBufferPool*>(pool ? pool : m_pool.get())->GetMediaCodec());
 
   if (m_bufferId < 0 || !codec)
     return;
@@ -316,6 +316,7 @@ CVideoBuffer* CMediaCodecVideoBufferPool::Get()
 void CMediaCodecVideoBufferPool::Return(int id)
 {
   CSingleLock lock(m_criticalSection);
+  m_videoBuffers[id]->ReleaseOutputBuffer(false, 0, this);
   m_freeBuffers.push_back(id);
 }
 
