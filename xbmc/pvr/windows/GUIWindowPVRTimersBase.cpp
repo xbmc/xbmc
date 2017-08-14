@@ -18,6 +18,8 @@
  *
  */
 
+#include "GUIWindowPVRTimersBase.h"
+
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
@@ -29,10 +31,8 @@
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
-
-#include "GUIWindowPVRTimersBase.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 

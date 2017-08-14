@@ -20,10 +20,13 @@
 
 #include "PVRClient.h"
 
-#include <cassert>
+#include <algorithm>
 #include <cmath>
 #include <memory>
-#include <algorithm>
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -34,23 +37,19 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
-
-extern "C" {
-#include "libavcodec/avcodec.h"
-}
+#include "pvr/timers/PVRTimers.h"
 
 using namespace ADDON;
 
@@ -354,8 +353,6 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
  */
 void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel)
 {
-  assert(xbmcChannel.get());
-
   addonChannel = {0};
   addonChannel.iUniqueId         = xbmcChannel->UniqueID();
   addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber();
@@ -1313,8 +1310,6 @@ bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
 
 bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
 {
-  assert(channel.get());
-
   return (m_bReadyToUse &&
            ((m_clientCapabilities.SupportsTV() && !channel->IsRadio()) ||
             (m_clientCapabilities.SupportsRadio() && channel->IsRadio())));

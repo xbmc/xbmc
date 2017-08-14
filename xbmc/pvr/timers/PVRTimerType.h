@@ -25,6 +25,8 @@
 #include <utility>
 #include <vector>
 
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+
 struct PVR_TIMER_TYPE;
 
 namespace PVR

@@ -18,17 +18,18 @@
  *
  */
 
+#include "EpgDatabase.h"
+
 #include <cstdlib>
 
-#include "system.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
+#include "system.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-#include "EpgContainer.h"
-#include "EpgDatabase.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace dbiplus;
 using namespace PVR;

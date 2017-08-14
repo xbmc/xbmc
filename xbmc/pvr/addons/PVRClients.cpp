@@ -28,13 +28,14 @@
 #include "cores/IPlayer.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
-#include "pvr/channels/PVRChannelGroups.h"
+#include "utils/log.h"
+
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "utils/log.h"
 
 using namespace ADDON;
 using namespace PVR;

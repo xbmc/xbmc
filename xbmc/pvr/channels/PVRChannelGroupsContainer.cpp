@@ -18,15 +18,15 @@
  *
  */
 
+#include "PVRChannelGroupsContainer.h"
+
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-
-#include "PVRChannelGroupsContainer.h"
 
 using namespace PVR;
 

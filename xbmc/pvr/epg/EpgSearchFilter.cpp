@@ -18,21 +18,21 @@
  *
  */
 
+#include "EpgSearchFilter.h"
+
 #include "FileItem.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/TextSearch.h"
 #include "utils/log.h"
 
-#include "EpgContainer.h"
-#include "EpgSearchFilter.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
-
 
 CPVREpgSearchFilter::CPVREpgSearchFilter()
 {

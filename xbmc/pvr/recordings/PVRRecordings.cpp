@@ -22,15 +22,15 @@
 
 #include <utility>
 
-#include "ServiceBroker.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRManager.h"

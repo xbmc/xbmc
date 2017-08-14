@@ -18,7 +18,10 @@
  *
  */
 
+#include "GUIDialogPVRGroupManager.h"
+
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -26,14 +29,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "GUIDialogPVRGroupManager.h"
 
 using namespace PVR;
 

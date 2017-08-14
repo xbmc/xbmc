@@ -18,11 +18,13 @@
  *
  */
 
+#include "GUIWindowPVRRecordings.h"
+
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -34,8 +36,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
-
-#include "GUIWindowPVRRecordings.h"
 
 using namespace PVR;
 

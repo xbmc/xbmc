@@ -18,6 +18,10 @@
  *
  */
 
+#include "GUIDialogPVRChannelManager.h"
+
+#include <utility>
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -40,10 +44,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "GUIDialogPVRChannelManager.h"
-#include "GUIDialogPVRGroupManager.h"
-#include <utility>
+#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5

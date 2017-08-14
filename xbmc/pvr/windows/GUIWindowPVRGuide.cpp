@@ -21,10 +21,9 @@
 #include "GUIWindowPVRGuide.h"
 
 #include "ContextMenuManager.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "view/GUIViewState.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
@@ -32,6 +31,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "view/GUIViewState.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
