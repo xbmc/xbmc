@@ -57,9 +57,6 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
-#include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
 #include "storage/MediaManager.h"
@@ -1093,75 +1090,6 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
-
-  //! @todo delete entire block in v18
-  //! @deprecated m_strStreamURL is deprecated in v17
-  if (item.IsPVR())
-  {
-    CPVRRecordingsPath path(item.GetPath());
-    if (path.IsValid() && path.IsActive())
-    {
-      if (!CServiceBroker::GetPVRManager().IsStarted())
-        return false;
-
-      /* For recordings we check here for a available stream URL */
-      CFileItemPtr tag = CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath());
-      if (tag && tag->HasPVRRecordingInfoTag())
-      {
-        CServiceBroker::GetPVRManager().FillStreamFileItem(*tag); // fill item's dynpath
-        const std::string stream = tag->GetDynPath();
-
-        if (!stream.empty())
-        {
-          /* Isolate the folder from the filename */
-          size_t found = stream.find_last_of("/");
-          if (found == std::string::npos)
-            found = stream.find_last_of("\\");
-
-          if (found != std::string::npos)
-          {
-            /* Check here for asterix at the begin of the filename */
-            if (stream[found+1] == '*')
-            {
-              /* Create a "stack://" url with all files matching the extension */
-              std::string ext = URIUtils::GetExtension(stream);
-              std::string dir = stream.substr(0, found).c_str();
-
-              CFileItemList items;
-              CDirectory::GetDirectory(dir, items);
-              items.Sort(SortByFile, SortOrderAscending);
-
-              std::vector<int> stack;
-              for (int i = 0; i < items.Size(); ++i)
-              {
-                if (URIUtils::HasExtension(items[i]->GetPath(), ext))
-                  stack.push_back(i);
-              }
-
-              if (stack.size() > 0)
-              {
-                /* If we have a stack change the path of the item to it */
-                CStackDirectory dir;
-                std::string stackPath = dir.ConstructStackPath(items, stack);
-                item.SetDynPath(stackPath);
-              }
-            }
-            else
-            {
-              /* If no asterix is present play only the given stream URL */
-              item.SetDynPath(stream);
-            }
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "%s Can't open recording, no valid filename!", __FUNCTION__);
-            CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
-            return false;
-          }
-        }
-      }
-    }
-  }
 
   PlayMovie(&item, player);
 
