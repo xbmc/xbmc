@@ -181,10 +181,18 @@ bool CWinSystemGbm::Show(bool raise)
   return true;
 }
 
-void CWinSystemGbm::Register(IDispResource * /*resource*/)
+void CWinSystemGbm::Register(IDispResource *resource)
 {
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
 }
 
-void CWinSystemGbm::Unregister(IDispResource * /*resource*/)
+void CWinSystemGbm::Unregister(IDispResource *resource)
 {
+  CSingleLock lock(m_resourceSection);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+  {
+    m_resources.erase(i);
+  }
 }
