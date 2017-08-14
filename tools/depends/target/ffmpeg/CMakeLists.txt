@@ -35,7 +35,11 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
-  list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi --enable-pic)
+  if(CORE_PLATFORM_NAME STREQUAL rbpi)
+    list(APPEND ffmpeg_conf --cpu=${CPU} --disable-vaapi --disable-vdpau)
+  else()
+    list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi --enable-pic)
+  endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   if(CPU MATCHES arm64)
     list(APPEND ffmpeg_conf --cpu=cortex-a53 --arch=aarch64)
@@ -58,8 +62,6 @@ elseif(CORE_SYSTEM_NAME STREQUAL osx)
                           --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin
                           --disable-securetransport)
-elseif(CORE_PLATFORM_NAME STREQUAL rbpi)
-  list(APPEND ffmpeg_conf --cpu=${CPU} --disable-vaapi --disable-vdpau)
 endif()
 
 if(CPU MATCHES arm OR CORE_PLATFORM_NAME STREQUAL rbpi)
