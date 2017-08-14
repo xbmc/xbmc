@@ -71,7 +71,7 @@ bool CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant li
   return dialog->IsConfirmed();
 }
 
-bool CGUIDialogOK::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogOKMessage & options)
+bool CGUIDialogOK::ShowAndGetInput(const HELPERS::DialogOKMessage & options)
 {
   if (!options.heading.isNull())
     SetHeading(options.heading);
