@@ -296,7 +296,7 @@ class CProcessInfo;
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource, public IRenderMsg
 {
 public:
-  CVideoPlayer(IPlayerCallback& callback);
+  explicit CVideoPlayer(IPlayerCallback& callback);
   ~CVideoPlayer() override;
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   bool CloseFile(bool reopen = false) override;

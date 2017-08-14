@@ -58,7 +58,7 @@ class CSong: public ISerializable
 {
 public:
   CSong() ;
-  CSong(CFileItem& item);
+  explicit CSong(CFileItem& item);
   ~CSong() override = default;
   void Clear() ;
   void MergeScrapedSong(const CSong& source, bool override);

@@ -35,7 +35,7 @@ class CProcessInfo;
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
-  CDVDAudioCodecFFmpeg(CProcessInfo &processInfo);
+  explicit CDVDAudioCodecFFmpeg(CProcessInfo &processInfo);
   ~CDVDAudioCodecFFmpeg() override;
   bool Open(CDVDStreamInfo &hints,
                     CDVDCodecOptions &options) override;

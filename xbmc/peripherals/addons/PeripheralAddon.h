@@ -52,7 +52,7 @@ namespace PERIPHERALS
   class CPeripheralAddon : public ADDON::IAddonInstanceHandler
   {
   public:
-    CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo);
+    explicit CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo);
     ~CPeripheralAddon(void) override;
 
     /*!

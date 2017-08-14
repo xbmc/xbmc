@@ -35,7 +35,7 @@ public:
   static const CContextMenuItem MAIN;
   static const CContextMenuItem MANAGE;
 
-  CContextMenuManager(ADDON::CAddonMgr& addonMgr);
+  explicit CContextMenuManager(ADDON::CAddonMgr& addonMgr);
   ~CContextMenuManager();
   static CContextMenuManager& GetInstance();
 

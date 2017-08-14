@@ -87,7 +87,7 @@ class CInputManager : public ISettingCallback,
                       public Observable
 {
 public:
-  CInputManager(const CAppParamParser &params);
+  explicit CInputManager(const CAppParamParser &params);
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;

@@ -38,7 +38,7 @@ namespace PythonBindings
   {
     PyObject* obj;
   public:
-    inline PyObjectDecrementor(PyObject* pyobj) : obj(pyobj) {}
+    inline explicit PyObjectDecrementor(PyObject* pyobj) : obj(pyobj) {}
     inline ~PyObjectDecrementor() { Py_XDECREF(obj); }
 
     inline PyObject* get() { return obj; }

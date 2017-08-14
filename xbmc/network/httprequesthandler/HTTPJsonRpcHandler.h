@@ -73,7 +73,7 @@ private:
   class CHTTPClient : public JSONRPC::IClient
   {
   public:
-    CHTTPClient(HTTPMethod method);
+    explicit CHTTPClient(HTTPMethod method);
     ~CHTTPClient() override = default;
 
     int GetPermissionFlags() override { return m_permissionFlags; }

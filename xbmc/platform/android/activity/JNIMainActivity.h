@@ -26,7 +26,7 @@
 class CJNIMainActivity : public CJNIActivity, public CJNIInputManagerInputDeviceListener
 {
 public:
-  CJNIMainActivity(const ANativeActivity *nativeActivity);
+  explicit CJNIMainActivity(const ANativeActivity *nativeActivity);
   ~CJNIMainActivity();
 
   static CJNIMainActivity* GetAppInstance() { return m_appInstance; }

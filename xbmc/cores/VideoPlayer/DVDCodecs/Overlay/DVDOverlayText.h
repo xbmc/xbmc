@@ -38,7 +38,7 @@ public:
   class CElement
   {
   public:
-    CElement(ElementType type)
+    explicit CElement(ElementType type)
     {
       pNext = NULL;
       m_type = type;
@@ -72,7 +72,7 @@ public:
       else
         m_text.assign(strText, size);
     }
-    CElementText(const std::string& text) : CElement(ELEMENT_TYPE_TEXT),
+    explicit CElementText(const std::string& text) : CElement(ELEMENT_TYPE_TEXT),
       m_text(text)
     {
     }

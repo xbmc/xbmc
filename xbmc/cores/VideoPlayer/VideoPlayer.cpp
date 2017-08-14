@@ -155,7 +155,7 @@ public:
   *          - it's a default and a forced sub (could lead to users seeing forced subs in a foreign language!), or
   *          - its language matches the preferred subtitle's language (unequal to "original stream's language")
   */
-  PredicateSubtitleFilter(std::string& lang)
+  explicit PredicateSubtitleFilter(const std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
       nosub(StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "none")),
@@ -261,7 +261,7 @@ private:
   bool subson;
   PredicateSubtitleFilter filter;
 public:
-  PredicateSubtitlePriority(std::string& lang)
+  explicit PredicateSubtitlePriority(const std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
       subson(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn),

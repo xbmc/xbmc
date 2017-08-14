@@ -231,7 +231,7 @@ struct CVdpauProcessedPicture
 class CVdpauRenderPicture : public CVideoBuffer
 {
 public:
-  CVdpauRenderPicture(int id) : CVideoBuffer(id) { }
+  explicit CVdpauRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
   CVdpauProcessedPicture procPic;
   int width;
@@ -286,7 +286,7 @@ public:
 class CMixer : private CThread
 {
 public:
-  CMixer(CEvent *inMsgEvent);
+  explicit CMixer(CEvent *inMsgEvent);
   ~CMixer() override;
   void Start();
   void Dispose();
@@ -511,7 +511,7 @@ public:
     uint32_t aux; /* optional extra parameter... */
   };
 
-  CDecoder(CProcessInfo& processInfo);
+  explicit CDecoder(CProcessInfo& processInfo);
   ~CDecoder() override;
 
   bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;

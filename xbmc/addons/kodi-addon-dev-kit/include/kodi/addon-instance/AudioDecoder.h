@@ -83,7 +83,7 @@ namespace addon
     /// @param[in] instance             The from Kodi given instance given be
     ///                                 add-on CreateInstance call with instance
     ///                                 id ADDON_INSTANCE_AUDIODECODER.
-    CInstanceAudioDecoder(KODI_HANDLE instance)
+    explicit CInstanceAudioDecoder(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_AUDIODECODER)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)

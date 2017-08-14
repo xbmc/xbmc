@@ -37,7 +37,7 @@ namespace PERIPHERALS
   class CPeripheralBusAddon : public CPeripheralBus
   {
   public:
-    CPeripheralBusAddon(CPeripherals& manager);
+    explicit CPeripheralBusAddon(CPeripherals& manager);
     ~CPeripheralBusAddon(void) override;
 
     void UpdateAddons(void);

@@ -38,7 +38,7 @@ namespace XBMCAddon
   { 
   protected:
     AddonClass* addonClassObject;
-    Callback(AddonClass* _object) : addonClassObject(_object) { XBMC_TRACE; }
+    explicit Callback(AddonClass* _object) : addonClassObject(_object) { XBMC_TRACE; }
 
   public:
     virtual void executeCallback() = 0;

@@ -143,7 +143,7 @@ class CGUIFontCache
 public:
   const CGUIFontTTFBase &m_font;
 
-  CGUIFontCache(CGUIFontTTFBase &font);
+  explicit CGUIFontCache(CGUIFontTTFBase &font);
 
   ~CGUIFontCache();
  

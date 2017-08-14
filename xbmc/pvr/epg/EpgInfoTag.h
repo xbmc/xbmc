@@ -53,7 +53,7 @@ namespace PVR
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
-    CPVREpgInfoTag(const EPG_TAG &data);
+    explicit CPVREpgInfoTag(const EPG_TAG &data);
 
   private:
     /*!

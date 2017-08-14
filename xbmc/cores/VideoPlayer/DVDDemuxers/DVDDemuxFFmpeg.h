@@ -37,7 +37,7 @@ class CURL;
 class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
 {
 public:
-  CDemuxStreamVideoFFmpeg(AVStream* stream) : m_stream(stream) {}
+  explicit CDemuxStreamVideoFFmpeg(AVStream* stream) : m_stream(stream) {}
   std::string GetStreamName() override;
 
   std::string m_description;
@@ -48,7 +48,7 @@ protected:
 class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
 {
 public:
-  CDemuxStreamAudioFFmpeg(AVStream* stream) : m_stream(stream) {}
+  explicit CDemuxStreamAudioFFmpeg(AVStream* stream) : m_stream(stream) {}
   std::string GetStreamName() override;
 
   std::string m_description;
@@ -61,7 +61,7 @@ class CDemuxStreamSubtitleFFmpeg
   : public CDemuxStreamSubtitle
 {
 public:
-  CDemuxStreamSubtitleFFmpeg(AVStream* stream) : m_stream(stream) {}
+  explicit CDemuxStreamSubtitleFFmpeg(AVStream* stream) : m_stream(stream) {}
   std::string GetStreamName() override;
 
   std::string m_description;

@@ -27,7 +27,7 @@ namespace XFILE
 class COverrideFile : public IFile
 {
 public:
-  COverrideFile(bool writable);
+  explicit COverrideFile(bool writable);
   ~COverrideFile() override;
 
   bool Open(const CURL& url) override;

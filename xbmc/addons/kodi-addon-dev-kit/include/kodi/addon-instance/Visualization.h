@@ -340,7 +340,7 @@ namespace addon
     ///
     /// @warning Only use `instance` from the CreateInstance call
     ///
-    CInstanceVisualization(KODI_HANDLE instance)
+    explicit CInstanceVisualization(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_VISUALIZATION),
         m_presetLockedByUser(false)
     {

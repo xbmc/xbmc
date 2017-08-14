@@ -30,7 +30,7 @@
 class CVideoSyncGLX : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncGLX(void *clock) : CVideoSync(clock) {};
+  explicit CVideoSyncGLX(void *clock) : CVideoSync(clock) {};
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;

@@ -25,7 +25,7 @@
 class CAtomicSpinLock
 {
 public:
-  CAtomicSpinLock(std::atomic_flag& lock);
+  explicit CAtomicSpinLock(std::atomic_flag& lock);
   ~CAtomicSpinLock();
 private:
   std::atomic_flag& m_Lock;

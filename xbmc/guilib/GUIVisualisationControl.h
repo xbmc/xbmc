@@ -30,7 +30,7 @@
 class CAudioBuffer
 {
 public:
-  CAudioBuffer(int iSize);
+  explicit CAudioBuffer(int iSize);
   virtual ~CAudioBuffer();
   const float* Get() const;
   int Size() const;

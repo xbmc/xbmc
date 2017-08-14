@@ -319,7 +319,7 @@ namespace addon
       CAddonBase::m_interface->globalSingleInstance = this;
     }
 
-    CInstancePeripheral(KODI_HANDLE instance)
+    explicit CInstancePeripheral(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_PERIPHERAL)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)

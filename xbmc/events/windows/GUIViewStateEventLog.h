@@ -24,7 +24,7 @@
 class CGUIViewStateEventLog : public CGUIViewState
 {
 public:
-  CGUIViewStateEventLog(const CFileItemList& items);
+  explicit CGUIViewStateEventLog(const CFileItemList& items);
   ~CGUIViewStateEventLog() override = default;
 
   // specializations of CGUIViewState

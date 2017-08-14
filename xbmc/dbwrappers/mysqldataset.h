@@ -131,7 +131,7 @@ protected:
 public:
 /* constructor */
   MysqlDataset();
-  MysqlDataset(MysqlDatabase *newDb);
+  explicit MysqlDataset(MysqlDatabase *newDb);
 
 /* destructor */
   ~MysqlDataset() override;

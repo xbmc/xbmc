@@ -426,7 +426,7 @@ private:
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecIMX(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo), m_pFormatName("iMX-xxx") {}
+  explicit CDVDVideoCodecIMX(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo), m_pFormatName("iMX-xxx") {}
   virtual ~CDVDVideoCodecIMX();
 
   // Methods from CDVDVideoCodec which require overrides

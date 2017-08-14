@@ -28,7 +28,7 @@ namespace ADDON
                         public IImage
   {
   public:
-    CImageDecoder(ADDON::BinaryAddonBasePtr addonBase);
+    explicit CImageDecoder(ADDON::BinaryAddonBasePtr addonBase);
     ~CImageDecoder() override;
 
     bool Create(const std::string& mimetype);

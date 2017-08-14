@@ -95,7 +95,7 @@ void CVFSAddonCache::Update()
 class CVFSURLWrapper
 {
   public:
-    CVFSURLWrapper(const CURL& url2)
+    explicit CVFSURLWrapper(const CURL& url2)
     {
       m_strings.push_back(url2.Get());
       m_strings.push_back(url2.GetDomain());

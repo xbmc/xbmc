@@ -52,7 +52,7 @@ namespace PythonBindings
     PyTypeObject pythonType;
     const std::type_index typeIndex;
 
-    TypeInfo(const std::type_info& ti);
+    explicit TypeInfo(const std::type_info& ti);
   };
 
   // This will hold the pointer to the api type, whether known or unknown

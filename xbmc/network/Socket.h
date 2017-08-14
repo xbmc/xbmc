@@ -68,7 +68,7 @@ namespace SOCKETS
       size = sizeof(saddr.saddr4);
     }
 
-    CAddress(const char *address)
+    explicit CAddress(const char *address)
     {
       SetAddress(address);
     }

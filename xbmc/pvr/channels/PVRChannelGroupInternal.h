@@ -34,9 +34,9 @@ namespace PVR
      * @brief Create a new internal channel group.
      * @param bRadio True if this group holds radio channels.
      */
-    CPVRChannelGroupInternal(bool bRadio);
+    explicit CPVRChannelGroupInternal(bool bRadio);
 
-    CPVRChannelGroupInternal(const CPVRChannelGroup &group);
+    explicit CPVRChannelGroupInternal(const CPVRChannelGroup &group);
 
     ~CPVRChannelGroupInternal(void) override;
 

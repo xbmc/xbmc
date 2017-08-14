@@ -29,7 +29,7 @@ namespace RETRO
   class CRetroPlayerAutoSave : protected CThread
   {
   public:
-    CRetroPlayerAutoSave(GAME::CGameClient &gameClient);
+    explicit CRetroPlayerAutoSave(GAME::CGameClient &gameClient);
 
     ~CRetroPlayerAutoSave() override;
 

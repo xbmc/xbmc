@@ -43,7 +43,7 @@ public:
   // struct to keep per host settings
   struct WakeUpEntry
   {
-    WakeUpEntry (bool isAwake = false);
+    explicit WakeUpEntry (bool isAwake = false);
 
     std::string host;
     std::string mac;

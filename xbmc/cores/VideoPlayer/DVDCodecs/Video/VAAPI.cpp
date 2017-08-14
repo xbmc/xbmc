@@ -1213,7 +1213,7 @@ void CDecoder::Register(bool hevc)
 class VAAPI::CVaapiBufferPool : public IVideoBufferPool
 {
 public:
-  CVaapiBufferPool(CDecoder &decoder);
+  explicit CVaapiBufferPool(CDecoder &decoder);
   ~CVaapiBufferPool() override;
   CVideoBuffer* Get() override;
   void Return(int id) override;

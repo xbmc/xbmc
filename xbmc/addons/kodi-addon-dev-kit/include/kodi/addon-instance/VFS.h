@@ -119,7 +119,7 @@ namespace addon
   class CInstanceVFS : public IAddonInstance
   {
   public:
-    CInstanceVFS(KODI_HANDLE instance)
+    explicit CInstanceVFS(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_VFS)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
@@ -350,7 +350,7 @@ namespace addon
         m_cb->require_authentication(m_cb->ctx, url.c_str());
       }
 
-      CVFSCallbacks(const VFSGetDirectoryCallbacks* cb) : m_cb(cb) { }
+      explicit CVFSCallbacks(const VFSGetDirectoryCallbacks* cb) : m_cb(cb) { }
 
     private:
       const VFSGetDirectoryCallbacks* m_cb;
@@ -519,7 +519,7 @@ namespace addon
                                           VFSGetDirectoryCallbacks* callbacks)
     {
       std::vector<kodi::vfs::CDirEntry> addonEntries;
-      bool ret = instance->toAddon.addonInstance->GetDirectory(*url, addonEntries, callbacks);
+      bool ret = instance->toAddon.addonInstance->GetDirectory(*url, addonEntries, CVFSCallbacks(callbacks));
       if (ret)
       {
         VFSDirEntry* entries = static_cast<VFSDirEntry*>(malloc(sizeof(VFSDirEntry) * addonEntries.size()));

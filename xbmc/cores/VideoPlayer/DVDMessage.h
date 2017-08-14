@@ -77,7 +77,7 @@ public:
     SUBTITLE_ADDFILE
   };
 
-  CDVDMsg(Message msg)
+  explicit CDVDMsg(Message msg)
   {
     m_message = msg;
   }
@@ -159,7 +159,7 @@ typedef CDVDMsgType<double> CDVDMsgDouble;
 class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
   int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
@@ -168,7 +168,7 @@ private:
 class CDVDMsgPlayerSetVideoStream : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
   int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
@@ -177,7 +177,7 @@ private:
 class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
   int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
@@ -186,7 +186,7 @@ private:
 class CDVDMsgPlayerSetState : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
+  explicit CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
   std::string GetState() { return m_state; }
 private:
   std::string m_state;
@@ -206,7 +206,7 @@ public:
     bool trickplay = false;
   };
 
-  CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
+  explicit CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
     m_mode(mode)
   {}
   double GetTime() { return m_mode.time; }
@@ -224,7 +224,7 @@ private:
 class CDVDMsgPlayerSeekChapter : public CDVDMsg
 {
   public:
-    CDVDMsgPlayerSeekChapter(int iChapter)
+    explicit CDVDMsgPlayerSeekChapter(int iChapter)
       : CDVDMsg(PLAYER_SEEK_CHAPTER)
       , m_iChapter(iChapter)
     {}
@@ -245,7 +245,7 @@ public:
     bool m_isTempo;
   };
 
-  CDVDMsgPlayerSetSpeed(SpeedParams params)
+  explicit CDVDMsgPlayerSetSpeed(SpeedParams params)
   : CDVDMsg(PLAYER_SETSPEED)
   , m_params(params)
   {}
@@ -268,7 +268,7 @@ public:
     CPlayerOptions m_options;
   };
 
-  CDVDMsgOpenFile(const FileParams &params)
+  explicit CDVDMsgOpenFile(const FileParams &params)
   : CDVDMsg(PLAYER_OPENFILE)
   , m_params(params)
   {}
@@ -323,7 +323,7 @@ public:
 class CDVDMsgSubtitleClutChange : public CDVDMsg
 {
 public:
-  CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+  explicit CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
   uint8_t m_data[16][4];
 private:
 };

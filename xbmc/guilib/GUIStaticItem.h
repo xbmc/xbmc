@@ -62,7 +62,7 @@ public:
    \param contextWindow window context to use for any info labels
    */
   CGUIStaticItem(const TiXmlElement *element, int contextWindow);
-  CGUIStaticItem(const CFileItem &item); // for python
+  explicit CGUIStaticItem(const CFileItem &item); // for python
   ~CGUIStaticItem() override = default;
   CGUIListItem *Clone() const override { return new CGUIStaticItem(*this); };
   

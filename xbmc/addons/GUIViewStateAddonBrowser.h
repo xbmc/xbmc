@@ -25,7 +25,7 @@
 class CGUIViewStateAddonBrowser : public CGUIViewState
 {
 public:
-  CGUIViewStateAddonBrowser(const CFileItemList& items);
+  explicit CGUIViewStateAddonBrowser(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;

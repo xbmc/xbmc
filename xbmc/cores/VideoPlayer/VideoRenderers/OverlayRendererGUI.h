@@ -41,7 +41,7 @@ class COverlayText : public COverlay
 {
 public:
   COverlayText() = default;
-  COverlayText(CDVDOverlayText* src);
+  explicit COverlayText(CDVDOverlayText* src);
   ~COverlayText() override;
   void Render(SRenderState& state) override;
   using COverlay::PrepareRender;

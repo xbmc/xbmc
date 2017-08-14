@@ -35,7 +35,7 @@ namespace JOYSTICK
   class CJoystickEasterEgg : public IButtonSequence
   {
   public:
-    CJoystickEasterEgg(const std::string& controllerId);
+    explicit CJoystickEasterEgg(const std::string& controllerId);
     virtual ~CJoystickEasterEgg() = default;
 
     // implementation of IButtonSequence

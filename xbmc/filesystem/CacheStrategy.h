@@ -113,7 +113,7 @@ protected:
 
 class CDoubleCache : public CCacheStrategy{
 public:
-  CDoubleCache(CCacheStrategy *impl);
+  explicit CDoubleCache(CCacheStrategy *impl);
   ~CDoubleCache() override;
 
   int Open() override;

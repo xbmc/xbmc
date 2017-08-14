@@ -70,8 +70,8 @@ struct androidPackage
 class CActivityResultEvent : public CEvent
 {
 public:
-  CActivityResultEvent(int requestcode)
-    : m_requestcode(requestcode)
+  explicit CActivityResultEvent(int requestcode)
+    : m_requestcode(requestcode), m_resultcode(0)
   {}
   int GetRequestCode() const { return m_requestcode; }
   int GetResultCode() const { return m_resultcode; }
@@ -92,7 +92,7 @@ class CXBMCApp
     , public ANNOUNCEMENT::IAnnouncer
 {
 public:
-  CXBMCApp(ANativeActivity *nativeActivity);
+  explicit CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
   static CXBMCApp* get() { return m_xbmcappinstance; }
 

@@ -32,7 +32,7 @@ class CExternalPlayer : public IPlayer, public CThread
 public:
   enum WARP_CURSOR { WARP_NONE = 0, WARP_TOP_LEFT, WARP_TOP_RIGHT, WARP_BOTTOM_RIGHT, WARP_BOTTOM_LEFT, WARP_CENTER };
 
-  CExternalPlayer(IPlayerCallback& callback);
+  explicit CExternalPlayer(IPlayerCallback& callback);
   ~CExternalPlayer() override;
   bool Initialize(TiXmlElement* pConfig) override;
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;

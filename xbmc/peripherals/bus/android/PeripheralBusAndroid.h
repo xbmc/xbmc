@@ -38,7 +38,7 @@ namespace PERIPHERALS
                                 public IInputDeviceEventHandler
   {
   public:
-    CPeripheralBusAndroid(CPeripherals& manager);
+    explicit CPeripheralBusAndroid(CPeripherals& manager);
     ~CPeripheralBusAndroid() override;
 
     // specialisation of CPeripheralBus

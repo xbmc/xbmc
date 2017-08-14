@@ -28,7 +28,7 @@ namespace GAME
   class CGUIViewStateWindowGames : public CGUIViewState
   {
   public:
-    CGUIViewStateWindowGames(const CFileItemList& items);
+    explicit CGUIViewStateWindowGames(const CFileItemList& items);
 
     virtual ~CGUIViewStateWindowGames() = default;
 

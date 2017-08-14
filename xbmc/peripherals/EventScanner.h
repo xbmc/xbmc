@@ -50,7 +50,7 @@ namespace PERIPHERALS
                         protected CThread
   {
   public:
-    CEventScanner(IEventScannerCallback* callback);
+    explicit CEventScanner(IEventScannerCallback* callback);
 
     ~CEventScanner(void) override = default;
 

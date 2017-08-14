@@ -37,7 +37,7 @@ namespace MUSIC_GRABBER
 class CMusicInfoScraper : public CThread
 {
 public:
-  CMusicInfoScraper(const ADDON::ScraperPtr &scraper);
+  explicit CMusicInfoScraper(const ADDON::ScraperPtr &scraper);
   ~CMusicInfoScraper(void) override;
   void FindAlbumInfo(const std::string& strAlbum, const std::string& strArtist = "");
   void LoadAlbumInfo(int iAlbum);

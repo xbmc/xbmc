@@ -29,7 +29,7 @@ namespace PVR
   class CPVRItem
   {
   public:
-    CPVRItem(const CFileItemPtr &item) : m_item(item) {}
+    explicit CPVRItem(const CFileItemPtr &item) : m_item(item) {}
 
     CPVREpgInfoTagPtr GetEpgInfoTag() const;
     CPVRChannelPtr GetChannel() const;

@@ -53,7 +53,7 @@ private:
     : public CDemuxStreamSubtitle
   {
   public:
-    CStream(CDVDDemuxVobsub* parent)
+    explicit CStream(CDVDDemuxVobsub* parent)
       : m_discard(false), m_parent(parent)
     {}
 

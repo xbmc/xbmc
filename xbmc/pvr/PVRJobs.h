@@ -56,7 +56,7 @@ namespace PVR
   class CPVRChannelEntryTimeoutJob : public CJob, public IJobCallback
   {
   public:
-    CPVRChannelEntryTimeoutJob(int iTimeout);
+    explicit CPVRChannelEntryTimeoutJob(int timeout);
     ~CPVRChannelEntryTimeoutJob() override = default;
     const char *GetType() const override { return "pvr-channel-entry-timeout-job"; }
     void OnJobComplete(unsigned int iJobID, bool bSuccess, CJob *job) override {}

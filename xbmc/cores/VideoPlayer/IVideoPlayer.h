@@ -51,7 +51,7 @@ public:
 class IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
+  explicit IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
   virtual ~IDVDStreamPlayer() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -90,7 +90,7 @@ class CDVDVideoCodec;
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
+  explicit IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerVideo() override = default;
   bool OpenStream(CDVDStreamInfo hint) override = 0;
   void CloseStream(bool bWaitForBuffers) override = 0;
@@ -119,7 +119,7 @@ class CDVDAudioCodec;
 class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
+  explicit IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerAudio() override = default;
   bool OpenStream(CDVDStreamInfo hints) override = 0;
   void CloseStream(bool bWaitForBuffers) override = 0;

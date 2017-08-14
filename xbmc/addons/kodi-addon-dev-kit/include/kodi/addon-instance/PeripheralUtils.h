@@ -104,7 +104,7 @@ namespace addon
     {
     }
 
-    Peripheral(const PERIPHERAL_INFO& info) :
+    explicit Peripheral(const PERIPHERAL_INFO& info) :
       m_type(info.type),
       m_strName(info.name ? info.name : ""),
       m_vendorId(info.vendor_id),
@@ -196,7 +196,7 @@ namespace addon
       SetAxisState(state);
     }
 
-    PeripheralEvent(const PERIPHERAL_EVENT& event) :
+    explicit PeripheralEvent(const PERIPHERAL_EVENT& event) :
       m_event(event)
     {
     }
@@ -259,7 +259,7 @@ namespace addon
       *this = other;
     }
 
-    Joystick(const JOYSTICK_INFO& info) :
+    explicit Joystick(const JOYSTICK_INFO& info) :
       Peripheral(info.peripheral),
       m_provider(info.provider ? info.provider : ""),
       m_requestedPort(info.requested_port),
@@ -445,7 +445,7 @@ namespace addon
       return DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR, motorIndex);
     }
 
-    DriverPrimitive(const JOYSTICK_DRIVER_PRIMITIVE& primitive) :
+    explicit DriverPrimitive(const JOYSTICK_DRIVER_PRIMITIVE& primitive) :
       m_type(primitive.type),
       m_driverIndex(0),
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
@@ -604,12 +604,12 @@ namespace addon
       *this = other;
     }
 
-    JoystickFeature(const JOYSTICK_FEATURE& feature) :
+    explicit JoystickFeature(const JOYSTICK_FEATURE& feature) :
       m_name(feature.name ? feature.name : ""),
       m_type(feature.type)
     {
       for (unsigned int i = 0; i < JOYSTICK_PRIMITIVE_MAX; i++)
-        m_primitives[i] = feature.primitives[i];
+        m_primitives[i] = DriverPrimitive(feature.primitives[i]);
     }
 
     JoystickFeature& operator=(const JoystickFeature& rhs)

@@ -702,7 +702,7 @@ namespace XBMCAddon
           else if (key == "role")
             info.strRole = value;
           else if (key == "thumbnail")
-            info.thumbUrl = value;
+            info.thumbUrl = CScraperUrl(value);
           else if (key == "order")
             info.order = strtol(value.c_str(), nullptr, 10);
         }

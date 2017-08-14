@@ -309,7 +309,7 @@ namespace PVR
     static const std::string PATH_ADDTIMER;
     static const std::string PATH_NEW;
 
-    CPVRTimersPath(const std::string &strPath);
+    explicit CPVRTimersPath(const std::string &strPath);
     CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
     CPVRTimersPath(bool bRadio, bool bTimerRules);
 

@@ -218,7 +218,7 @@ namespace addon
   class CInstanceInputStream : public IAddonInstance
   {
   public:
-    CInstanceInputStream(KODI_HANDLE instance)
+    explicit CInstanceInputStream(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_INPUTSTREAM)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)

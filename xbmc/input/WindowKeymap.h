@@ -28,7 +28,7 @@
 class CWindowKeymap : public IWindowKeymap
 {
 public:
-  CWindowKeymap(const std::string &controllerId);
+  explicit CWindowKeymap(const std::string &controllerId);
 
   // implementation of IWindowKeymap
   virtual std::string ControllerID() const override { return m_controllerId; }
