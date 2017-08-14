@@ -40,7 +40,6 @@ using namespace XFILE;
 namespace ADDON
 {
 
-cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
 
@@ -330,8 +329,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      this, clog_to_cp(g_advancedSettings.m_logLevel));
+  status = m_cpluff->register_logger(m_cp_context, cp_logger, this, CP_LOG_WARNING);
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -358,14 +356,6 @@ bool CAddonMgr::Init()
       CLog::Log(LOGFATAL, "addon '%s' not installed or not enabled.", id.c_str());
       return false;
     }
-  }
-
-  VECADDONS repos;
-  if (GetAddons(repos, ADDON_REPOSITORY))
-  {
-    VECADDONS::iterator it = repos.begin();
-    for (;it != repos.end(); ++it)
-      CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", (*it)->ID().c_str());
   }
 
   return true;
@@ -685,7 +675,10 @@ bool CAddonMgr::FindAddons()
       int n;
       cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
       for (int i = 0; i < n; ++i)
+      {
+        CLog::Log(LOGNOTICE, "ADDON: %s v%s installed", cp_addons[i]->identifier, cp_addons[i]->version);
         installed.insert(cp_addons[i]->identifier);
+      }
       m_cpluff->release_info(m_cp_context, cp_addons);
       m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
     }
@@ -712,11 +705,13 @@ bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
   {
     if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
     {
+      CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addon->ID().c_str());
       m_events.Publish(AddonEvents::InstalledChanged());
       m_events.Publish(AddonEvents::UnInstalled(addon->ID()));
       return true;
     }
   }
+  CLog::Log(LOGERROR, "CAddonMgr: failed to unload %s", addon->ID().c_str());
   return false;
 }
 
@@ -753,6 +748,8 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
     CLog::Log(LOGERROR, "CAddonMgr: '%s' was installed but could not be enabled", addon->ID().c_str());
     return false;
   }
+
+  CLog::Log(LOGDEBUG, "CAddonMgr: %s reloaded", addon->ID().c_str());
   return true;
 }
 
@@ -827,6 +824,7 @@ bool CAddonMgr::DisableAddon(const std::string& id)
     return false;
 
   //success
+  CLog::Log(LOGDEBUG, "CAddonMgr: %s disabled", id.c_str());
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
   {
@@ -1276,13 +1274,6 @@ int cp_to_clog(cp_log_severity_t lvl)
   if (lvl >= CP_LOG_ERROR)
     return LOGINFO;
   return LOGDEBUG;
-}
-
-cp_log_severity_t clog_to_cp(int lvl)
-{
-  if (lvl >= LOG_LEVEL_DEBUG)
-    return CP_LOG_INFO;
-  return CP_LOG_ERROR;
 }
 
 void cp_fatalErrorHandler(const char *msg)
