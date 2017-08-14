@@ -830,39 +830,26 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         {
           SetRequestHeader(it->first, value);
         }
-        // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
-        else if (name == "accept" || name == "accept-language" || name == "accept-datetime" ||
-                 name == "authorization" || name == "cache-control" || name == "connection" ||
-                 name == "content-md5" || name == "content-type" || name == "date" ||
-                 name == "expect" || name == "forwarded" || name == "from" ||
-                 name == "if-match" || name == "if-modified-since" || name == "if-none-match" ||
-                 name == "if-range" || name == "if-unmodified-since" || name == "max-forwards" ||
-                 name == "origin" || name == "pragma" || name == "range" || name == "te" ||
-                 name == "upgrade" || name == "via" || name == "warning" ||
-                 name == "x-requested-with" || name == "dnt" || name == "x-forwarded-for" ||
-                 name == "x-forwarded-host" || name == "x-forwarded-proto" ||
-                 name == "front-end-https" || name == "x-http-method-override" ||
-                 name == "x-att-deviceid" || name == "x-wap-profile" || name == "x-uidh" ||
-                 name == "x-csrf-token" || name == "x-request-id" || name == "x-correlation-id" ||
-                 name == "icy-metadata")
-        {
-          SetRequestHeader(it->first, value);
-          if (name == "authorization")
-            CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'", it->first.c_str());
-          else
-            CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: %s'", it->first.c_str(), value.c_str());
-        }
-        // we don't add blindly all options to headers anymore
-        // if anybody wants to pass options to ffmpeg, explicitly prefix those
-        // to be identified here
         else
         {
-          CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() ignoring header option '%s: %s'", it->first.c_str(), value.c_str());
+          if (name.length() > 0 && name[0] == '!')
+          {
+            SetRequestHeader(it->first.substr(1), value);
+            CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'", it->first.substr(1).c_str());
+          }
+          else
+          {
+            SetRequestHeader(it->first, value);
+            if (name == "authorization")
+              CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'", it->first.c_str());
+            else
+              CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: %s'", it->first.c_str(), value.c_str());
+          }
         }
       }
     }
   }
-  
+
   // Unset the protocol options to have an url without protocol options
   url2.SetProtocolOptions("");
 
@@ -1264,7 +1251,7 @@ bool CCurlFile::Exists(const CURL& url)
 int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 {
   int64_t nextPos = m_state->m_filePos;
-  
+
   if(!m_seekable)
     return -1;
 
@@ -1314,7 +1301,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 
       if (m_state->Seek(nextPos))
         return nextPos;
-      
+
       m_state->Disconnect();
     }
   }
