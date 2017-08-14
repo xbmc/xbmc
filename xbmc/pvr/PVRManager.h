@@ -19,6 +19,11 @@
  *
  */
 
+#include <atomic>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "FileItem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
@@ -34,11 +39,6 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecording.h"
-
-#include <atomic>
-#include <memory>
-#include <string>
-#include <vector>
 
 class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;

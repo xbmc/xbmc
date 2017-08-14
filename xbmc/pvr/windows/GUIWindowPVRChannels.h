@@ -20,8 +20,7 @@
  */
 
 #include "pvr/PVRChannelNumberInputHandler.h"
-
-#include "GUIWindowPVRBase.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 
 namespace PVR
 {

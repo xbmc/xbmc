@@ -21,7 +21,7 @@
 
 #include "threads/CriticalSection.h"
 
-#include "PVRChannelGroups.h"
+#include "pvr/channels/PVRChannelGroups.h"
 
 class CURL;
 

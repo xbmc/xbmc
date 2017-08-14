@@ -19,15 +19,15 @@
  *
  */
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "settings/lib/ISettingCallback.h"
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
-
-#include <memory>
-#include <utility>
-#include <vector>
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;

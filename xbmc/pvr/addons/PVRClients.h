@@ -19,17 +19,16 @@
  *
  */
 
+#include <deque>
+#include <vector>
+
+#include "addons/PVRClient.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
-
-#include "addons/PVRClient.h"
-
-#include <deque>
-#include <vector>
 
 namespace PVR
 {
