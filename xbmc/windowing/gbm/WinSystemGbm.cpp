@@ -31,8 +31,6 @@
 #include "utils/log.h"
 
 CWinSystemGbm::CWinSystemGbm() :
-  m_gbm(nullptr),
-  m_drm(nullptr),
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
 {
@@ -41,26 +39,13 @@ CWinSystemGbm::CWinSystemGbm() :
 
 bool CWinSystemGbm::InitWindowSystem()
 {
-  m_drm = new drm;
-  m_gbm = new gbm;
-
-  if (!m_DRM.InitDrm(m_drm, m_gbm))
+  if (!m_DRM.InitDrm(&m_drm, &m_gbm))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize DRM", __FUNCTION__);
     return false;
   }
 
-  m_nativeDisplay = m_gbm->dev;
-
-  if (!m_drm)
-  {
-    return false;
-  }
-
-  if (!m_gbm)
-  {
-    return false;
-  }
+  m_nativeDisplay = m_gbm.dev;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
@@ -71,12 +56,6 @@ bool CWinSystemGbm::DestroyWindowSystem()
   m_DRM.DestroyDrm();
   m_nativeDisplay = nullptr;
 
-  delete m_drm;
-  m_drm = nullptr;
-
-  delete m_gbm;
-  m_gbm = nullptr;
-
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
   return true;
 }
@@ -85,13 +64,13 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
                                     RESOLUTION_INFO& res)
 {
-  if (!CGBMUtils::InitGbm(m_gbm, m_drm->mode->hdisplay, m_drm->mode->vdisplay))
+  if (!CGBMUtils::InitGbm(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
   }
 
-  m_nativeWindow = m_gbm->surface;
+  m_nativeWindow = m_gbm.surface;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
@@ -99,7 +78,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbm::DestroyWindow()
 {
-  CGBMUtils::DestroyGbm(m_gbm);
+  CGBMUtils::DestroyGbm(&m_gbm);
   m_nativeWindow = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);
@@ -112,9 +91,9 @@ void CWinSystemGbm::UpdateResolutions()
 
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
                           0,
-                          m_drm->mode->hdisplay,
-                          m_drm->mode->vdisplay,
-                          m_drm->mode->vrefresh);
+                          m_drm.mode->hdisplay,
+                          m_drm.mode->vdisplay,
+                          m_drm.mode->vrefresh);
 
   std::vector<RESOLUTION_INFO> resolutions;
 

@@ -62,8 +62,8 @@ public:
 protected:
   CDRM m_DRM;
 
-  gbm* m_gbm;
-  drm* m_drm;
+  gbm m_gbm;
+  drm m_drm;
 
   EGLDisplay m_nativeDisplay;
   EGLNativeWindowType m_nativeWindow;
