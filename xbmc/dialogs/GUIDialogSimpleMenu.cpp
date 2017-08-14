@@ -34,10 +34,6 @@
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
-  /* if asked to resume somewhere, we should not show anything */
-  if (item.m_lStartOffset || (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iBookmarkId > 0))
-    return true;
-
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
