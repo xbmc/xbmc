@@ -129,6 +129,7 @@ bool CRendererAML::Supports(ERENDERFEATURE feature)
   if (feature == RENDERFEATURE_ZOOM ||
       feature == RENDERFEATURE_CONTRAST ||
       feature == RENDERFEATURE_BRIGHTNESS ||
+      feature == RENDERFEATURE_NONLINSTRETCH ||
       feature == RENDERFEATURE_STRETCH ||
       feature == RENDERFEATURE_PIXEL_RATIO ||
       feature == RENDERFEATURE_ROTATION)

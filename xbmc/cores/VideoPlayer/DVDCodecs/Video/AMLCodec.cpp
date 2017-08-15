@@ -2315,9 +2315,10 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   char video_axis[256] = {};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
 
+  int screen_mode = CDisplaySettings::GetInstance().IsNonLinearStretched() ? 4 : 1;
+
   SysfsUtils::SetString("/sys/class/video/axis", video_axis);
-  // make sure we are in 'full stretch' so we can stretch
-  SysfsUtils::SetInt("/sys/class/video/screen_mode", 1);
+  SysfsUtils::SetInt("/sys/class/video/screen_mode", screen_mode);
 
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
