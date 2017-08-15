@@ -18,6 +18,8 @@
  *
  */
 
+#include "GUIViewStatePVR.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
@@ -25,8 +27,6 @@
 
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "GUIViewStatePVR.h"
 
 using namespace PVR;
 

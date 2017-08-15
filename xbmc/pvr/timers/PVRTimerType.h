@@ -19,11 +19,13 @@
  *
  */
 
-#include "pvr/PVRTypes.h"
-
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+
+#include "pvr/PVRTypes.h"
 
 struct PVR_TIMER_TYPE;
 

@@ -19,21 +19,21 @@
  */
 
 #include "PVRChannelGroups.h"
-#include "PVRChannelGroupInternal.h"
+
+#include <algorithm>
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-
-#include <algorithm>
+#include "pvr/channels/PVRChannelGroupInternal.h"
 
 using namespace PVR;
 

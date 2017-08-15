@@ -20,18 +20,17 @@
 
 #include "PVRTimers.h"
 
-#include <cassert>
 #include <cstdlib>
 #include <utility>
 
-#include "ServiceBroker.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"

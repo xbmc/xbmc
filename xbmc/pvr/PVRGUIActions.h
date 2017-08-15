@@ -19,13 +19,13 @@
  *
  */
 
+#include <memory>
+#include <string>
+
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/PVRGUIChannelNavigator.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
-
-#include <memory>
-#include <string>
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;

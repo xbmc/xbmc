@@ -19,22 +19,20 @@
  */
 
 #include "PVRChannel.h"
+
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "PVRChannelGroupInternal.h"
-
-#include <assert.h>
 
 using namespace PVR;
 
@@ -196,8 +194,6 @@ bool CPVRChannel::CreateEPG(bool bForce)
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
 {
-  assert(channel.get());
-
   SetClientID(channel->ClientID());
 
   CSingleLock lock(m_critSection);

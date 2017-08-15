@@ -19,16 +19,17 @@
  *
  */
 
+#include <atomic>
+#include <string>
+#include <vector>
+
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
-#include <atomic>
-#include <string>
-#include <vector>
+#include "pvr/PVRTypes.h"
+#include "pvr/addons/PVRClients.h"
 
 namespace PVR
 {

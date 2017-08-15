@@ -18,6 +18,10 @@
  *
  */
 
+#include "GUIDialogPVRChannelManager.h"
+
+#include <utility>
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -40,10 +44,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "GUIDialogPVRChannelManager.h"
-#include "GUIDialogPVRGroupManager.h"
-#include <utility>
+#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -635,12 +636,6 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
         CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
     }
   }
-  else if (button == CONTEXT_BUTTON_EDIT_SOURCE)
-  {
-    std::string strURL = pItem->GetProperty("StreamURL").asString();
-    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, CVariant{g_localizeStrings.Get(19214)}, false))
-      pItem->SetProperty("StreamURL", strURL);
-  }
   return true;
 }
 
@@ -756,10 +751,9 @@ bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr &pItem, cons
   int iEPGSource            = (int)pItem->GetProperty("EPGSource").asInteger();
   std::string strChannelName= pItem->GetProperty("Name").asString();
   std::string strIconPath   = pItem->GetProperty("Icon").asString();
-  std::string strStreamURL  = pItem->GetProperty("StreamURL").asString();
   bool bUserSetIcon         = pItem->GetProperty("UserSetIcon").asBoolean();
 
-  return group->UpdateChannel(*pItem, bHidden, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, strStreamURL, bUserSetIcon);
+  return group->UpdateChannel(*pItem, bHidden, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, bUserSetIcon);
 }
 
 void CGUIDialogPVRChannelManager::SaveList(void)

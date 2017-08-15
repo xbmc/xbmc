@@ -18,14 +18,15 @@
  *
  */
 
+#include "PVRTimerType.h"
+
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/timers/PVRTimerType.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/PVRManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
 

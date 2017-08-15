@@ -18,6 +18,8 @@
  *
  */
 
+#include "PVRActionListener.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -30,8 +32,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "PVRActionListener.h"
 
 namespace PVR
 {

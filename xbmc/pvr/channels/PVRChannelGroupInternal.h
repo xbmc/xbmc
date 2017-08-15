@@ -20,8 +20,7 @@
  */
 
 #include "pvr/PVREvent.h"
-
-#include "PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroup.h"
 
 namespace PVR
 {

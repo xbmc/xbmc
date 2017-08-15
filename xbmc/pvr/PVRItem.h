@@ -21,6 +21,8 @@
 
 #include <memory>
 
+#include "pvr/PVRTypes.h"
+
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 

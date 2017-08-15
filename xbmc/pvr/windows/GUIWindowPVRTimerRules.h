@@ -19,9 +19,9 @@
  *
  */
 
-#include "GUIWindowPVRTimersBase.h"
-
 #include <string>
+
+#include "pvr/windows/GUIWindowPVRTimersBase.h"
 
 namespace PVR
 {

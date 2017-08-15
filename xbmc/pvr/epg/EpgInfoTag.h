@@ -19,16 +19,17 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "utils/ISerializable.h"
+
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "utils/ISerializable.h"
-
-#include <string>
-#include <vector>
 
 #define EPG_DEBUGGING 0
 

@@ -18,7 +18,7 @@
  *
  */
 
-#include "PVRTimers.h"
+#include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
@@ -27,16 +27,17 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

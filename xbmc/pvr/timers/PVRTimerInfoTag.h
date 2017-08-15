@@ -33,12 +33,13 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
+#include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-#include "XBDateTime.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/timers/PVRTimerType.h"
 
 class CVariant;
 

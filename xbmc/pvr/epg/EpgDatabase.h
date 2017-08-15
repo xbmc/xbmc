@@ -22,7 +22,7 @@
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 
-#include "Epg.h"
+#include "pvr/epg/Epg.h"
 
 namespace PVR
 {

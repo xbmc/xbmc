@@ -19,8 +19,8 @@
  *
  */
 
-#include <string>
 #include <deque>
+#include <string>
 
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"

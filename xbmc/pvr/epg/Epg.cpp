@@ -27,15 +27,15 @@
 #include "EpgDatabase.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 

@@ -35,14 +35,14 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
 
 #include "pvr/PVRTypes.h"
-
-#include <string>
-#include <vector>
 
 class CVideoDatabase;
 class CVariant;

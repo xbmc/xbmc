@@ -19,14 +19,14 @@
  *
  */
 
-#include "utils/IArchivable.h"
-#include "utils/ISerializable.h"
-#include "XBDateTime.h"
-
-#include "pvr/PVRTypes.h"
-
 #include <deque>
 #include <string>
+
+#include "XBDateTime.h"
+#include "utils/IArchivable.h"
+#include "utils/ISerializable.h"
+
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {

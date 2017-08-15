@@ -19,18 +19,18 @@
  *
  */
 
-#include "FileItem.h"
-#include "pvr/channels/PVRChannel.h"
-#include "threads/CriticalSection.h"
-#include "utils/Observer.h"
-
-#include "EpgInfoTag.h"
-#include "EpgSearchFilter.h"
-#include "pvr/PVRTypes.h"
-
 #include <map>
 #include <string>
 #include <vector>
+
+#include "FileItem.h"
+#include "threads/CriticalSection.h"
+#include "utils/Observer.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearchFilter.h"
 
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR

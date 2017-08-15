@@ -18,17 +18,18 @@
  *
  */
 
+#include "PVRItem.h"
+
 #include "FileItem.h"
-#include "epg/EpgInfoTag.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 
-#include "PVRItem.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
 
 namespace PVR
 {

@@ -21,11 +21,12 @@
 
 #include <vector>
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "addons/PVRClient.h"
 #include "FileItem.h"
-#include "pvr/PVRTypes.h"
+#include "addons/PVRClient.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/JobManager.h"
+
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {

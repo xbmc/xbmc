@@ -25,12 +25,13 @@
 #include "ServiceBroker.h"
 #include "dbwrappers/dataset.h"
 #include "addons/PVRClient.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace dbiplus;
 using namespace PVR;

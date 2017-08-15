@@ -23,12 +23,12 @@
 #include <utility>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
-#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

@@ -22,7 +22,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "epg/EpgInfoTag.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -34,6 +33,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 

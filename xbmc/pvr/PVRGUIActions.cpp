@@ -18,7 +18,11 @@
  *
  */
 
+#include "PVRGUIActions.h"
+
 #include "Application.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -26,31 +30,11 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "epg/EpgContainer.h"
-#include "epg/EpgInfoTag.h"
-#include "FileItem.h"
-#include "filesystem/Directory.h"
-#include "filesystem/StackDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRItem.h"
-#include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
-#include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/Thread.h"
@@ -59,7 +43,22 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
-#include "PVRGUIActions.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRItem.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
+#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
+#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
+#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/windows/GUIWindowPVRSearch.h"
 
 using namespace KODI::MESSAGING;
 
@@ -988,7 +987,7 @@ namespace PVR
 
   void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
-    // Obtain dynamic playback url and properties from the respecive pvr client
+    // Obtain dynamic playback url and properties from the respective pvr client
     CServiceBroker::GetPVRManager().FillStreamFileItem(*item);
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
@@ -1008,68 +1007,12 @@ namespace PVR
       return true;
     }
 
-    CServiceBroker::GetPVRManager().FillStreamFileItem(*item); // fill item's dynpath
-    const std::string stream = item->GetDynPath();
-    if (stream.empty())
-    {
-      if (!bCheckResume || CheckResumeRecording(item))
-      {
-        CFileItem *itemToPlay = new CFileItem(recording);
-        itemToPlay->m_lStartOffset = item->m_lStartOffset;
-        StartPlayback(itemToPlay, true);
-      }
-      return true;
-    }
-
-    /* Isolate the folder from the filename */
-    size_t found = stream.find_last_of("/");
-    if (found == std::string::npos)
-      found = stream.find_last_of("\\");
-
-    if (found != std::string::npos)
-    {
-      /* Check here for asterisk at the begin of the filename */
-      if (stream[found+1] == '*')
-      {
-        /* Create a "stack://" url with all files matching the extension */
-        std::string ext = URIUtils::GetExtension(stream);
-        std::string dir = stream.substr(0, found);
-
-        CFileItemList items;
-        XFILE::CDirectory::GetDirectory(dir, items);
-        items.Sort(SortByFile, SortOrderAscending);
-
-        std::vector<int> stack;
-        for (int i = 0; i < items.Size(); ++i)
-        {
-          if (URIUtils::HasExtension(items[i]->GetPath(), ext))
-            stack.push_back(i);
-        }
-
-        if (stack.empty())
-        {
-          /* If we have a stack change the path of the item to it */
-          XFILE::CStackDirectory dir;
-          std::string stackPath = dir.ConstructStackPath(items, stack);
-          item->SetDynPath(stackPath);
-        }
-      }
-      else
-      {
-        /* If no asterisk is present play only the given stream URL */
-        item->SetDynPath(stream);
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "CPVRGUIActions - %s - can't open recording: no valid filename", __FUNCTION__);
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
-      return false;
-    }
-
     if (!bCheckResume || CheckResumeRecording(item))
-      StartPlayback(new CFileItem(*item), true);
-
+    {
+      CFileItem *itemToPlay = new CFileItem(recording);
+      itemToPlay->m_lStartOffset = item->m_lStartOffset;
+      StartPlayback(itemToPlay, true);
+    }
     return true;
   }
 

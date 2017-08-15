@@ -27,9 +27,8 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVRSettings.h"
-
-#include "Epg.h"
-#include "EpgDatabase.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgDatabase.h"
 
 class CFileItemList;
 class CGUIDialogProgressBarHandle;

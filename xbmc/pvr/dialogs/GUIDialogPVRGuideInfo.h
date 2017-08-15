@@ -19,9 +19,9 @@
  *
  */
 
-#include "pvr/PVRTypes.h"
-
 #include "guilib/GUIDialog.h"
+
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {

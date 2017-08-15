@@ -22,8 +22,8 @@
 #include <string>
 #include <vector>
 
-#include "XBDateTime.h"
 #include "FileItem.h"
+#include "XBDateTime.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"

@@ -19,12 +19,12 @@
  *
  */
 
+#include <vector>
+
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 
-#include "PVRChannelGroup.h"
-
-#include <vector>
+#include "pvr/channels/PVRChannelGroup.h"
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;

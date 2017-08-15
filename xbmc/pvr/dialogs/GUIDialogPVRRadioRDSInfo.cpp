@@ -18,16 +18,18 @@
  *
  */
 
+#include "GUIDialogPVRRadioRDSInfo.h"
+
 #include "Application.h"
 #include "FileItem.h"
-#include "GUIDialogPVRRadioRDSInfo.h"
 #include "GUIUserMessages.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GUISpinControl.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUISpinControl.h"
 #include "guilib/GUITextBox.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 
 using namespace PVR;
