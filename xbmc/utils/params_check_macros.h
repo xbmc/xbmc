@@ -35,10 +35,16 @@
 // note: all non-static class member functions take pointer to class object as hidden first parameter
 // for example: class A { bool log_string(int logLevel, const char* functionName, const char* format, ...) PARAM3_PRINTF_FORMAT; };
 #define PARAM3_PRINTF_FORMAT __attribute__((format(printf,3,4)))
+
+// for use in functions that take printf format string as fourth parameter and additional printf parameters as fith parameter
+// note: all non-static class member functions take pointer to class object as hidden first parameter
+// for example: class A { bool log_string(int logLevel, const char* functionName, int component, const char* format, ...) PARAM4_PRINTF_FORMAT; };
+#define PARAM4_PRINTF_FORMAT __attribute__((format(printf,4,5)))
 #else  // ! __GNUC__
 #define PARAM1_PRINTF_FORMAT
 #define PARAM2_PRINTF_FORMAT
 #define PARAM3_PRINTF_FORMAT
+#define PARAM4_PRINTF_FORMAT
 #endif // ! __GNUC__
 #endif // PARAM1_PRINTF_FORMAT
 
