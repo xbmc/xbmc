@@ -1923,7 +1923,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                          const std::vector<std::string>& item_exts,
                                          std::vector<std::string>& associatedFiles)
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Scanning archive %s", CURL::GetRedacted(strArchivePath).c_str());
+  CLog::LogF(LOGDEBUG, "Scanning archive %s", CURL::GetRedacted(strArchivePath).c_str());
   int nItemsAdded = 0;
   CFileItemList ItemList;
 

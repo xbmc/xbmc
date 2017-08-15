@@ -36,7 +36,7 @@ using namespace concurrency;
 #else
 #define breakOnDebug 
 #endif
-#define LOG_HR(hr) CLog::LogFunction(LOGERROR, __FUNCTION__, "function call at line %d ends with error: %s", __LINE__, DX::GetErrorDescription(hr).c_str());
+#define LOG_HR(hr) CLog::LogF(LOGERROR, "function call at line %d ends with error: %s", __LINE__, DX::GetErrorDescription(hr).c_str());
 #define CHECK_ERR() if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return; }
 #define RETURN_ERR(ret) if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return (##ret); }
 
@@ -259,7 +259,7 @@ void DX::DeviceResources::CreateDeviceIndependentResources()
 // Configures the Direct3D device, and stores handles to it and the device context.
 void DX::DeviceResources::CreateDeviceResources() 
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "creating DirectX 11 device.");
+  CLog::LogF(LOGDEBUG, "creating DirectX 11 device.");
 
   UINT creationFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 #if defined(_DEBUG)
@@ -304,7 +304,7 @@ void DX::DeviceResources::CreateDeviceResources()
 
   if (FAILED(hr))
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "unable to create hardware device, trying to create WARP devices then.");
+    CLog::LogF(LOGERROR, "unable to create hardware device, trying to create WARP devices then.");
     hr = D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_WARP, // Create a WARP device instead of a hardware device.
@@ -319,7 +319,7 @@ void DX::DeviceResources::CreateDeviceResources()
     );
     if (FAILED(hr))
     {
-      CLog::LogFunction(LOGFATAL, __FUNCTION__, "unable to create WARP device. Rendering in not possible.");
+      CLog::LogF(LOGFATAL, "unable to create WARP device. Rendering in not possible.");
       CHECK_ERR();
     }
   }
@@ -345,14 +345,14 @@ void DX::DeviceResources::CreateDeviceResources()
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "device is created on adapter '%S' with feature level %04x.", aDesc.Description, m_d3dFeatureLevel);
+  CLog::LogF(LOGDEBUG, "device is created on adapter '%S' with feature level %04x.", aDesc.Description, m_d3dFeatureLevel);
 
   m_bDeviceCreated = true;
 }
 
 void DX::DeviceResources::ReleaseBackBuffer()
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "release buffers.");
+  CLog::LogF(LOGDEBUG, "release buffers.");
 
   // Clear the previous window size specific context.
   ID3D11RenderTargetView* nullViews[] = { nullptr };
@@ -370,7 +370,7 @@ void DX::DeviceResources::CreateBackBuffer()
   if (!m_bDeviceCreated)
     return;
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "create buffers.");
+  CLog::LogF(LOGDEBUG, "create buffers.");
 
   // Get swap chain back buffer.
   ComPtr<ID3D11Texture2D> backBuffer;
@@ -379,7 +379,7 @@ void DX::DeviceResources::CreateBackBuffer()
   // Create back buffer texture from swap chain texture
   if (!m_backBufferTex.Acquire(backBuffer.Get()))
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "failed to create render target.");
+    CLog::LogF(LOGERROR, "failed to create render target.");
     return;
   }
 
@@ -448,7 +448,7 @@ void DX::DeviceResources::ResizeBuffers()
   if (!m_bDeviceCreated)
     return;
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "resize buffers.");
+  CLog::LogF(LOGDEBUG, "resize buffers.");
 
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == g_graphicsContext.GetStereoMode();
   bool windowed = true;
@@ -526,8 +526,8 @@ void DX::DeviceResources::ResizeBuffers()
     if (FAILED(hr) && bHWStereoEnabled)
     {
       // switch to stereo mode failed, create mono swapchain
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "creating stereo swap chain failed with error.");
-      CLog::LogFunction(LOGNOTICE, __FUNCTION__, "fallback to monoscopic mode.");
+      CLog::LogF(LOGERROR, "creating stereo swap chain failed with error.");
+      CLog::LogF(LOGNOTICE, "fallback to monoscopic mode.");
 
       swapChainDesc.Stereo = false;
       bHWStereoEnabled = false;
@@ -613,7 +613,7 @@ void DX::DeviceResources::FinishCommandList(bool bExecute) const
   ComPtr<ID3D11CommandList> pCommandList;
   if (FAILED(m_deferrContext->FinishCommandList(true, &pCommandList)))
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "failed to finish command queue.");
+    CLog::LogF(LOGERROR, "failed to finish command queue.");
     return;
   }
 
@@ -632,11 +632,11 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
 #endif
     return;
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "receive changing logical size to %f x %f", width, height);
+  CLog::LogF(LOGDEBUG, "receive changing logical size to %f x %f", width, height);
 
   if (m_logicalSize.Width != width || m_logicalSize.Height != height)
   {
-    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "change logical size to %f x %f", width, height);
+    CLog::LogF(LOGDEBUG, "change logical size to %f x %f", width, height);
 
     m_logicalSize = Size(width, height);
 
@@ -859,7 +859,7 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
         if (currentDesc.AdapterLuid.HighPart != foundDesc.AdapterLuid.HighPart
           || currentDesc.AdapterLuid.LowPart != foundDesc.AdapterLuid.LowPart)
         {
-          CLog::LogFunction(LOGDEBUG, __FUNCTION__, "selected %S adapter. ", foundDesc.Description);
+          CLog::LogF(LOGDEBUG, "selected %S adapter. ", foundDesc.Description);
 
           // adapter is changed, (re)init hooks into new driver
           g_Windowing.InitHooks(output.Get());
