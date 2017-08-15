@@ -195,11 +195,8 @@ bool CVAAPIContext::CreateContext()
     return false;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
-
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - initialize version %d.%d", major_version, minor_version);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
 
   QueryCaps();
   if (!m_profileCount)
@@ -233,16 +230,13 @@ void CVAAPIContext::QueryCaps()
   for(int i = 0; i < m_attributeCount; i++)
   {
     VADisplayAttribute * const display_attr = &m_attributes[i];
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    {
-      CLog::Log(LOGDEBUG, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
                          , display_attr->type
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
                          , display_attr->min_value
                          , display_attr->max_value
                          , display_attr->value);
-    }
   }
 
   int max_profiles = vaMaxNumProfiles(m_display);
@@ -253,8 +247,7 @@ void CVAAPIContext::QueryCaps()
 
   for(int i = 0; i < m_profileCount; i++)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "VAAPI - profile %d", m_profiles[i]);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %d", m_profiles[i]);
   }
 }
 
@@ -532,8 +525,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
     return false;
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,"VAAPI - open decoder");
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - open decoder");
 
   if (!CVAAPIContext::EnsureContext(&m_vaapiConfig.context, this))
     return false;
@@ -722,8 +714,7 @@ long CDecoder::Release()
   if (m_vaapiConfigured == true)
   {
     CSingleLock lock(m_DecoderSection);
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"VAAPI::Release pre-cleanup");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Release pre-cleanup");
 
     CSingleLock lock1(g_graphicsContext);
     Message *reply;
@@ -946,8 +937,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
   if (state == VAAPI_LOST)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"VAAPI::Check waiting for display reset event");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Check waiting for display reset event");
     if (!m_DisplayEvent.WaitMSec(4000))
     {
       CLog::Log(LOGERROR, "VAAPI::Check - device didn't reset in reasonable time");
@@ -1162,8 +1152,7 @@ void CDecoder::FiniVAAPIOutput()
   m_vaapiConfigured = false;
 
   // destroy surfaces
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI::FiniVAAPIOutput destroying %d video surfaces", m_videoSurfaces.Size());
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::FiniVAAPIOutput destroying %d video surfaces", m_videoSurfaces.Size());
   VASurfaceID surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VA_INVALID_SURFACE)
   {
@@ -1344,8 +1333,7 @@ CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture()
 
     if (!retPic->valid)
     {
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "CVaapiRenderPicture::%s - return of invalid render pic", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CVaapiRenderPicture::%s - return of invalid render pic", __FUNCTION__);
       retPic = nullptr;
     }
     break;
@@ -2259,8 +2247,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create config
   if (!CheckSuccess(vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2289,8 +2276,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                      nb_surfaces,
                                      attribs, 1)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2310,8 +2296,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                     &m_contextId)))
   {
     m_contextId = VA_INVALID_ID;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2323,8 +2308,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2335,8 +2319,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                                deinterlacingCaps,
                                                &numDeinterlacingCaps)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2887,8 +2870,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CFFmpegPostproc::Init  - skip deinterlacing");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
   }

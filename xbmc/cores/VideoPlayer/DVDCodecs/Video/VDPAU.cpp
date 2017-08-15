@@ -688,8 +688,7 @@ void CDecoder::SetWidthHeight(int width, int height)
     m_vdpauConfig.outWidth = width;
     m_vdpauConfig.outHeight = height;
   }
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "CVDPAU::SetWidthHeight Setting OutWidth: %i OutHeight: %i", m_vdpauConfig.outWidth, m_vdpauConfig.outHeight);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CVDPAU::SetWidthHeight Setting OutWidth: %i OutHeight: %i", m_vdpauConfig.outWidth, m_vdpauConfig.outHeight);
 }
 
 void CDecoder::OnLostDisplay()
@@ -805,8 +804,7 @@ void CDecoder::FiniVDPAUOutput()
     return;
   m_vdpauConfig.vdpDecoder = VDP_INVALID_HANDLE;
   
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "CVDPAU::FiniVDPAUOutput destroying %d video surfaces", m_videoSurfaces.Size());
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CVDPAU::FiniVDPAUOutput destroying %d video surfaces", m_videoSurfaces.Size());
 
   VdpVideoSurface surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VDP_INVALID_HANDLE)
@@ -1057,10 +1055,7 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
 
   uint64_t diff = CurrentHostCounter() - startTime;
   if (diff*1000/CurrentHostFrequency() > 30)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVDPAU::DrawSlice - VdpDecoderRender long decoding: %d ms, dec: %d, proc: %d, rend: %d", (int)((diff*1000)/CurrentHostFrequency()), decoded, processed, rend);
-  }
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVDPAU::DrawSlice - VdpDecoderRender long decoding: %d ms, dec: %d, proc: %d, rend: %d", (int)((diff*1000)/CurrentHostFrequency()), decoded, processed, rend);
 
   return 0;
 }
@@ -3302,8 +3297,7 @@ void COutput::PreCleanup()
     CheckStatus(vdp_st, __LINE__);
 
     m_bufferPool->outputSurfaces[i] = VDP_INVALID_HANDLE;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "VDPAU::PreCleanup - released output surface");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VDPAU::PreCleanup - released output surface");
   }
 
 }

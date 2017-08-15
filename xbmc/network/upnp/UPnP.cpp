@@ -40,7 +40,6 @@
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
@@ -120,10 +119,7 @@ int ConvertLogLevel(int nptLogLevel)
 void
 UPnPLogger(const NPT_LogRecord* record)
 {
-    if (!g_advancedSettings.CanLogComponent(LOGUPNP))
-        return;
-
-    CLog::Log(ConvertLogLevel(record->m_Level), "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
+    CLog::Log(ConvertLogLevel(record->m_Level), LOGUPNP, "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
 }
 
 namespace UPNP

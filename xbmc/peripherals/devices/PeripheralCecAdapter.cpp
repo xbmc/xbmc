@@ -31,7 +31,6 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -1253,8 +1252,8 @@ void CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message* 
     break;
   }
 
-  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && CLog::IsLogLevelLogged(LOGDEBUG) && g_advancedSettings.CanLogComponent(LOGCEC)))
-    CLog::Log(iLevel, "%s - %s", __FUNCTION__, message->message);
+  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && CLog::IsLogLevelLogged(LOGDEBUG)))
+    CLog::Log(iLevel, LOGCEC, "%s - %s", __FUNCTION__, message->message);
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configuration &config)

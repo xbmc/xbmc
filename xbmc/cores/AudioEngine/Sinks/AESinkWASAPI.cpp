@@ -24,7 +24,6 @@
 #include <algorithm>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
@@ -1001,8 +1000,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGDEBUG, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
+  CLog::Log(LOGDEBUG, LOGAUDIO, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;

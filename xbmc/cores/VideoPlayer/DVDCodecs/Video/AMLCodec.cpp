@@ -1831,15 +1831,12 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     return false;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-  {
-    CLog::Log(LOGDEBUG, "CAMLCodec::AddData: sz: %u, dts_in: %0.4lf[%llX], pts_in: %0.4lf[%llX], overflow:%llx",
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::AddData: sz: %u, dts_in: %0.4lf[%llX], pts_in: %0.4lf[%llX], overflow:%llx",
       static_cast<unsigned int>(iSize),
       dts / DVD_TIME_BASE, am_private->am_pkt.avdts,
       pts / DVD_TIME_BASE, am_private->am_pkt.avpts,
       m_ptsOverflow
     );
-  }
   return true;
 }
 
@@ -1884,8 +1881,7 @@ int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
   if (drop)
     vbuf.flags |= V4L2_BUF_FLAG_DONE;
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "CAMLCodec::ReleaseFrame idx:%u", index);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::ReleaseFrame idx:%u", index);
 
   if ((ret = m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf)) < 0)
     CLog::Log(LOGERROR, "CAMLCodec::ReleaseFrame - VIDIOC_QBUF failed: %s", strerror(errno));
@@ -1988,8 +1984,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
     pVideoPicture->dts = DVD_NOPTS_VALUE;
     pVideoPicture->pts = (double)(m_cur_pts + m_ptsOverflow) / PTS_FREQ * DVD_TIME_BASE;
 
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CAMLCodec::GetPicture: index: %u, pts: %0.4lf[%llX], overflow: %llX",m_bufferIndex, pVideoPicture->pts/DVD_TIME_BASE, m_cur_pts, m_ptsOverflow);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::GetPicture: index: %u, pts: %0.4lf[%llX], overflow: %llX",m_bufferIndex, pVideoPicture->pts/DVD_TIME_BASE, m_cur_pts, m_ptsOverflow);
 
     return CDVDVideoCodec::VC_PICTURE;
   }
