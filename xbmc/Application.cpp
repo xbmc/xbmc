@@ -1956,9 +1956,9 @@ bool CApplication::OnAction(const CAction &action)
   if (action.IsMouse())
     CServiceBroker::GetInputManager().SetMouseActive(true);
 
-  if (action.GetID() == ACTION_CREATE_EPISODE_BOOKMARK)
+  if (action.GetID() == ACTION_CREATE_MEDIA_BOOKMARK)
   {
-    CGUIDialogVideoBookmarks::OnAddEpisodeBookmark();
+    CGUIDialogVideoBookmarks::OnAddMediaBookmark();
   }
   if (action.GetID() == ACTION_CREATE_BOOKMARK)
   {
@@ -3287,7 +3287,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
           if (tag->m_iBookmarkId > 0)
           {
             CBookmark bookmark;
-            dbs.GetBookMarkForEpisode(*tag, bookmark);
+            dbs.GetBookMarkForMedia(*tag, bookmark);
             options.starttime = bookmark.timeInSeconds;
             options.state = bookmark.playerState;
           }
@@ -3300,7 +3300,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
         if (tag->m_iBookmarkId > 0)
         {
           CBookmark bookmark;
-          dbs.GetBookMarkForEpisode(*tag, bookmark);
+          dbs.GetBookMarkForMedia(*tag, bookmark);
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }

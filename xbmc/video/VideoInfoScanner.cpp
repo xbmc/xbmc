@@ -1231,6 +1231,11 @@ namespace VIDEO
         else
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), movieDetails.m_showLink[i].c_str());
       }
+      if (movieDetails.m_EpBookmark.timeInSeconds > 0)
+      {
+        movieDetails.m_strFileNameAndPath = pItem->GetPath();
+        m_database.AddBookMarkForMedia(movieDetails);
+      }
     }
     else if (content == CONTENT_TVSHOWS)
     {
@@ -1269,9 +1274,7 @@ namespace VIDEO
         if (movieDetails.m_EpBookmark.timeInSeconds > 0)
         {
           movieDetails.m_strFileNameAndPath = pItem->GetPath();
-          movieDetails.m_EpBookmark.seasonNumber = movieDetails.m_iSeason;
-          movieDetails.m_EpBookmark.episodeNumber = movieDetails.m_iEpisode;
-          m_database.AddBookMarkForEpisode(movieDetails, movieDetails.m_EpBookmark);
+          m_database.AddBookMarkForMedia(movieDetails);
         }
       }
     }
@@ -1280,6 +1283,11 @@ namespace VIDEO
       lResult = m_database.SetDetailsForMusicVideo(pItem->GetPath(), movieDetails, art);
       movieDetails.m_iDbId = lResult;
       movieDetails.m_type = MediaTypeMusicVideo;
+      if (movieDetails.m_EpBookmark.timeInSeconds > 0)
+      {
+        movieDetails.m_strFileNameAndPath = pItem->GetPath();
+        m_database.AddBookMarkForMedia(movieDetails);
+      }
     }
 
     if (g_advancedSettings.m_bVideoLibraryImportWatchedState || libraryImport)

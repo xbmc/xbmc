@@ -1033,7 +1033,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
   }
 
-  if (type == MediaTypeEpisode &&
+  if (!CMediaTypes::IsContainer(type) &&
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
@@ -1101,7 +1101,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
       }
 
       case CONTEXT_BUTTON_UNLINK_BOOKMARK:
-        database.DeleteBookMarkForEpisode(*item->GetVideoInfoTag());
+        database.DeleteBookMarkForMedia(*item->GetVideoInfoTag());
         result = true;
         break;
 

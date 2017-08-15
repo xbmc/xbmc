@@ -21,6 +21,7 @@
 
 #include <string>
 #include <vector>
+#include "media/MediaType.h"
 
 class CBookmark
 {
@@ -38,20 +39,24 @@ public:
    */
   bool IsPartWay() const;
 
+  std::string GetBookmarkTitle();
+
   double timeInSeconds;
   double totalTimeInSeconds;
   long partNumber;
   std::string thumbNailImage;
   std::string playerState;
   std::string player;
+  int idBookmark;
   long seasonNumber;
   long episodeNumber;
+  MediaType mediaType;
 
   enum EType
   {
     STANDARD = 0,
     RESUME = 1,
-    EPISODE = 2
+    MEDIA = 2
   } type;
 };
 

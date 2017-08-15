@@ -44,7 +44,7 @@ public:
    
           NOTE: sends a GUI_MSG_REFRESH_LIST message to DialogVideoBookmark on success
    \return True if creation of bookmark was succesful
-   \sa OnAddEpisodeBookmark
+   \sa OnAddMediaBookmark
    */
   static bool OnAddBookmark();
   
@@ -57,14 +57,14 @@ public:
    \return True, if bookmark was successfully created
    \sa OnAddBookmark
    **/
-  static bool OnAddEpisodeBookmark();
+  static bool OnAddMediaBookmark();
   
   
   void Update();
 protected:
   void GotoBookmark(int iItem);
   void ClearBookmarks();
-  static bool AddEpisodeBookmark();
+  static bool AddMediaBookmark();
   static bool AddBookmark(CVideoInfoTag *tag=NULL);
   void Delete(int item);
   void Clear();
@@ -80,6 +80,7 @@ protected:
 
 private:
   void UpdateItem(unsigned int chapterIdx);
+  static bool GetEpisodesByFile(const std::string& currentFile, std::vector<CVideoInfoTag>& episodes);
 
   int m_jobsStarted;
   std::string m_filePath;

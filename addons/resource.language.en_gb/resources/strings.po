@@ -12784,11 +12784,11 @@ msgid "Remove bookmark"
 msgstr ""
 
 msgctxt "#20405"
-msgid "Remove episode bookmark"
+msgid "Remove media bookmark"
 msgstr ""
 
 msgctxt "#20406"
-msgid "Set episode bookmark"
+msgid "Set media bookmark"
 msgstr ""
 
 msgctxt "#20407"
@@ -13103,7 +13103,22 @@ msgctxt "#20471"
 msgid "Show empty TV shows"
 msgstr ""
 
-#empty strings from id 20472 to 21329
+#: xbmc/video/Bookmark.cpp
+msgctxt "#20472"
+msgid "Main music video"
+msgstr ""
+
+#: xbmc/video/Bookmark.cpp
+msgctxt "#20473"
+msgid "Season %i Episode %i"
+msgstr ""
+
+#: xbmc/video/Bookmark.cpp
+msgctxt "#20474"
+msgid "Main movie"
+msgstr ""
+
+#empty strings from id 20475 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -13200,7 +13215,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
 msgctxt "#21363"
-msgid "Episode bookmark created"
+msgid "Media Bookmark created"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp

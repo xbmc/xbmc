@@ -89,7 +89,7 @@ void CVideoInfoTag::Reset()
   m_streamDetails.Reset();
   m_playCount = PLAYCOUNT_NOT_SET;
   m_EpBookmark.Reset();
-  m_EpBookmark.type = CBookmark::EPISODE;
+  m_EpBookmark.type = CBookmark::MEDIA;
   m_basePath.clear();
   m_parentPathID = -1;
   m_resumePoint.Reset();

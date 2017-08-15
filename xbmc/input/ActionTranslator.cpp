@@ -195,7 +195,8 @@ static const std::map<ActionName, ActionID> ActionMappings =
     { "volampdown"               , ACTION_VOLAMP_DOWN },
     { "volumeamplification"      , ACTION_VOLAMP },
     { "createbookmark"           , ACTION_CREATE_BOOKMARK },
-    { "createepisodebookmark"    , ACTION_CREATE_EPISODE_BOOKMARK },
+    { "createepisodebookmark"    , ACTION_CREATE_MEDIA_BOOKMARK },
+    { "createmediabookmark"      , ACTION_CREATE_MEDIA_BOOKMARK },
     { "settingsreset"            , ACTION_SETTINGS_RESET },
     { "settingslevelchange"      , ACTION_SETTINGS_LEVEL_CHANGE },
 

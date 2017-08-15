@@ -124,7 +124,7 @@
 #define ACTION_VOLAMP_UP            93
 #define ACTION_VOLAMP_DOWN          94
 
-#define ACTION_CREATE_EPISODE_BOOKMARK 95 //!< Creates an episode bookmark on the currently playing video file containing more than one episode
+#define ACTION_CREATE_MEDIA_BOOKMARK   95 //!< Creates a media bookmark on the currently playing video file containing more than one episode
 #define ACTION_CREATE_BOOKMARK         96 //!< Creates a bookmark of the currently playing video file
 
 #define ACTION_CHAPTER_OR_BIG_STEP_FORWARD       97 //!< Goto the next chapter, if not available perform a big step forward

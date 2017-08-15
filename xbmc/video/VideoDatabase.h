@@ -89,21 +89,22 @@ enum VideoDbDetails
 #define VIDEODB_DETAILS_MOVIE_SET_ID            VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_MOVIE_USER_RATING       VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_MOVIE_PREMIERED         VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MOVIE_SET_NAME          VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MOVIE_SET_OVERVIEW      VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MOVIE_FILE              VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MOVIE_PATH              VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT         VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_MOVIE_LASTPLAYED        VIDEODB_MAX_COLUMNS + 10
-#define VIDEODB_DETAILS_MOVIE_DATEADDED         VIDEODB_MAX_COLUMNS + 11
-#define VIDEODB_DETAILS_MOVIE_RESUME_TIME       VIDEODB_MAX_COLUMNS + 12
-#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME        VIDEODB_MAX_COLUMNS + 13
-#define VIDEODB_DETAILS_MOVIE_PLAYER_STATE      VIDEODB_MAX_COLUMNS + 14
-#define VIDEODB_DETAILS_MOVIE_RATING            VIDEODB_MAX_COLUMNS + 15
-#define VIDEODB_DETAILS_MOVIE_VOTES             VIDEODB_MAX_COLUMNS + 16
-#define VIDEODB_DETAILS_MOVIE_RATING_TYPE       VIDEODB_MAX_COLUMNS + 17
-#define VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE    VIDEODB_MAX_COLUMNS + 18
-#define VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE     VIDEODB_MAX_COLUMNS + 19
+#define VIDEODB_DETAILS_MOVIE_BOOKMARK          VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MOVIE_SET_NAME          VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MOVIE_SET_OVERVIEW      VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MOVIE_FILE              VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_MOVIE_PATH              VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT         VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_MOVIE_LASTPLAYED        VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_MOVIE_DATEADDED         VIDEODB_MAX_COLUMNS + 12
+#define VIDEODB_DETAILS_MOVIE_RESUME_TIME       VIDEODB_MAX_COLUMNS + 13
+#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME        VIDEODB_MAX_COLUMNS + 14
+#define VIDEODB_DETAILS_MOVIE_PLAYER_STATE      VIDEODB_MAX_COLUMNS + 15
+#define VIDEODB_DETAILS_MOVIE_RATING            VIDEODB_MAX_COLUMNS + 16
+#define VIDEODB_DETAILS_MOVIE_VOTES             VIDEODB_MAX_COLUMNS + 17
+#define VIDEODB_DETAILS_MOVIE_RATING_TYPE       VIDEODB_MAX_COLUMNS + 18
+#define VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE    VIDEODB_MAX_COLUMNS + 19
+#define VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE     VIDEODB_MAX_COLUMNS + 20
 
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_ID       VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_EPISODE_USER_RATING     VIDEODB_MAX_COLUMNS + 3
@@ -144,14 +145,15 @@ enum VideoDbDetails
 
 #define VIDEODB_DETAILS_MUSICVIDEO_USER_RATING  VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_MUSICVIDEO_PREMIERED    VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_MUSICVIDEO_FILE         VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MUSICVIDEO_PATH         VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT    VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED   VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED    VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME  VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME   VIDEODB_MAX_COLUMNS + 10
-#define VIDEODB_DETAILS_MUSICVIDEO_PLAYER_STATE VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_MUSICVIDEO_BOOKMARK     VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_MUSICVIDEO_FILE         VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MUSICVIDEO_PATH         VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT    VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED   VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED    VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME  VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME   VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_MUSICVIDEO_PLAYER_STATE VIDEODB_MAX_COLUMNS + 12
 
 #define VIDEODB_TYPE_UNUSED 0
 #define VIDEODB_TYPE_STRING 1
@@ -600,16 +602,17 @@ public:
   bool GetStackTimes(const std::string &filePath, std::vector<int> &times);
   void SetStackTimes(const std::string &filePath, const std::vector<int> &times);
 
-  void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
-  void AddBookMarkToFile(const std::string& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, MediaType mediaType = MediaTypeNone, bool bAppend=false, long partNumber=0);
+  void AddBookMarkToFile(const std::string& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD, MediaType mediaType = MediaTypeNone, int idFile = -1);
   bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark &bookmark);
   void DeleteResumeBookMark(const std::string &strFilenameAndPath);
-  void ClearBookMarkOfFile(const std::string& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
-  void ClearBookMarksOfFile(const std::string& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
-  void ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
-  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
-  void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
-  void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
+  void ClearBookMarkOfFile(const std::string& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD, MediaType mediaType = MediaTypeNone);
+  void ClearBookMarksOfFile(const std::string& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD, MediaType mediaType = MediaTypeNone);
+  void ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD, MediaType mediaType = MediaTypeNone);
+  void GetEpisodeByBookmarkID(int bookmarkID, long& season, long& episode);
+  bool GetBookMarkForMedia(const CVideoInfoTag& tag, CBookmark& bookmark);
+  void AddBookMarkForMedia(const CVideoInfoTag& tag);
+  void DeleteBookMarkForMedia(const CVideoInfoTag& tag);
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag) const;
