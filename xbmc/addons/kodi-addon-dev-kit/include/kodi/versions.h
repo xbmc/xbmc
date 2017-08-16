@@ -102,8 +102,8 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.0.2"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.0.2"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.0.3"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.0.3"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
 
