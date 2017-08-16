@@ -33,7 +33,6 @@ CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(CProcessInfo &processInfo):
   m_pMode = m_pContext = NULL;
   m_iInitWidth = m_iInitHeight = 0;
   m_deinterlace = false;
-  memset(&m_pTarget, 0, sizeof(VideoPicture));
 }
 
 CDVDVideoPPFFmpeg::~CDVDVideoPPFFmpeg()
@@ -54,12 +53,6 @@ void CDVDVideoPPFFmpeg::Dispose()
     m_pContext = NULL;
   }
 
-  if (m_pTarget.videoBuffer != nullptr)
-  {
-    m_pTarget.videoBuffer->Release();
-    m_pTarget.videoBuffer = nullptr;
-  }
-
   m_iInitWidth = 0;
   m_iInitHeight = 0;
 }
@@ -73,10 +66,10 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
       Dispose();
     }
 
-    m_pContext = pp_get_context(m_pSource->iWidth, m_pSource->iHeight, PPCPUFlags() | PP_FORMAT_420);
+    m_pContext = pp_get_context(iWidth, iHeight, PPCPUFlags() | PP_FORMAT_420);
 
-    m_iInitWidth = m_pSource->iWidth;
-    m_iInitHeight = m_pSource->iHeight;
+    m_iInitWidth = iWidth;
+    m_iInitHeight = iHeight;
 
     m_pMode = pp_get_mode_by_name_and_quality((char *)m_sType.c_str(), PP_QUALITY_MAX);
   }
@@ -100,73 +93,47 @@ void CDVDVideoPPFFmpeg::SetType(const std::string& mType, bool deinterlace)
     Dispose();
 }
 
-bool CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
+void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
 {
-  m_pSource = pPicture;
+  VideoPicture* pSource = pPicture;
+  VideoPicture target;
 
-  if (m_pSource->videoBuffer->GetFormat() != AV_PIX_FMT_YUV420P)
-    return false;
+  if (pSource->videoBuffer->GetFormat() != AV_PIX_FMT_YUV420P)
+    return;
 
-  if (!CheckInit(m_pSource->iWidth, m_pSource->iHeight))
+  if (!CheckInit(pSource->iWidth, pSource->iHeight))
   {
     CLog::Log(LOGERROR, "Initialization of ffmpeg postprocessing failed");
-    return false;
+    return;
   }
 
-  if (m_pTarget.videoBuffer)
+  target.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight * 3/2);
+  if (!target.videoBuffer)
   {
-    m_pTarget.videoBuffer->Release();
-    m_pTarget.videoBuffer = nullptr;
+    return;
   }
 
-  m_pTarget.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight);
-  if (!m_pTarget.videoBuffer)
-  {
-    return false;
-  }
-
-  int strides[YuvImage::MAX_PLANES] = { };
-  strides[0] = pPicture->iWidth;
-  m_pTarget.videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, strides);
-  int pict_type = (m_pSource->qscale_type != DVP_QSCALE_MPEG1) ?
+  int pict_type = (pSource->qscale_type != DVP_QSCALE_MPEG1) ?
                    PP_PICT_TYPE_QP2 : 0;
 
   uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
-  int srcStrides[YuvImage::MAX_PLANES], dstStrides[YuvImage::MAX_PLANES];
-  m_pSource->videoBuffer->GetPlanes(srcPlanes);
-  m_pSource->videoBuffer->GetStrides(srcStrides);
-  m_pTarget.videoBuffer->GetPlanes(dstPlanes);
-  m_pTarget.videoBuffer->GetStrides(dstStrides);
-  pp_postprocess((const uint8_t**)srcPlanes, srcStrides,
-                 dstPlanes, dstStrides,
-                 m_pSource->iWidth, m_pSource->iHeight,
-                 m_pSource->qp_table, m_pSource->qstride,
+  int srcStrides[YuvImage::MAX_PLANES];
+  pSource->videoBuffer->GetPlanes(srcPlanes);
+  pSource->videoBuffer->GetStrides(srcStrides);
+  target.videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
+  target.videoBuffer->GetPlanes(dstPlanes);
+  pp_postprocess((const uint8_t **)srcPlanes, srcStrides,
+                 dstPlanes, srcStrides,
+                 pSource->iWidth, pSource->iHeight,
+                 pSource->qp_table, pSource->qstride,
                  m_pMode, m_pContext,
                  pict_type); //m_pSource->iFrameType);
 
-  //Copy frame information over to target, but make sure it is set as allocated should decoder have forgotten
-  if (m_deinterlace)
-    m_pTarget.iFlags &= ~DVP_FLAG_INTERLACED;
-  m_pTarget.iFrameType = m_pSource->iFrameType;
-  m_pTarget.iRepeatPicture = m_pSource->iRepeatPicture;
-  m_pTarget.iDuration = m_pSource->iDuration;
-  m_pTarget.qp_table = m_pSource->qp_table;
-  m_pTarget.qstride = m_pSource->qstride;
-  m_pTarget.qscale_type = m_pSource->qscale_type;
-  m_pTarget.iDisplayHeight = m_pSource->iDisplayHeight;
-  m_pTarget.iDisplayWidth = m_pSource->iDisplayWidth;
-  m_pTarget.pts = m_pSource->pts;
-  return true;
-}
 
-bool CDVDVideoPPFFmpeg::GetPicture(VideoPicture* pPicture)
-{
-  if (m_pTarget.videoBuffer)
-  {
-    pPicture = &m_pTarget;
-    m_pTarget.videoBuffer = nullptr;
-    return true;
-  }
-  return false;
+  pPicture->SetParams(*pSource);
+  pPicture->videoBuffer = target.videoBuffer;
+
+  if (m_deinterlace)
+    pPicture->iFlags &= ~DVP_FLAG_INTERLACED;
 }
 
