@@ -58,8 +58,8 @@ public:
 
 protected:
   CViewStateSettings();
-  CViewStateSettings(const CViewStateSettings&);
-  CViewStateSettings const& operator=(CViewStateSettings const&);
+  CViewStateSettings(const CViewStateSettings&) = delete;
+  CViewStateSettings& operator=(CViewStateSettings const&) = delete;
   ~CViewStateSettings() override;
 
 private:

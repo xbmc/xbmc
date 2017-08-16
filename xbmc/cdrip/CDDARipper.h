@@ -65,9 +65,9 @@ public:
 private:
   // private construction and no assignments
   CCDDARipper();
-  CCDDARipper(const CCDDARipper&);
+  CCDDARipper(const CCDDARipper&) = delete;
   ~CCDDARipper() override;
-  CCDDARipper const& operator=(CCDDARipper const&);
+  CCDDARipper const& operator=(CCDDARipper const&) = delete;
   
   /*! \brief Return track file name extension for the given encoder type
    \param[in] iEncoder encoder type (see CDDARIP_ENCODER_... constants)

@@ -64,8 +64,8 @@ protected:
   ~CRssManager() override;
 
 private:
-  CRssManager(const CRssManager&);
-  CRssManager& operator=(const CRssManager&);
+  CRssManager(const CRssManager&) = delete;
+  CRssManager& operator=(const CRssManager&) = delete;
   struct READERCONTROL
   {
     int controlID;

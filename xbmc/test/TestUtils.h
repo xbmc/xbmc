@@ -92,8 +92,8 @@ public:
   std::string getNewLineCharacters() const;
 private:
   CXBMCTestUtils();
-  CXBMCTestUtils(CXBMCTestUtils const&);
-  void operator=(CXBMCTestUtils const&);
+  CXBMCTestUtils(CXBMCTestUtils const&) = delete;
+  CXBMCTestUtils& operator=(CXBMCTestUtils const&) = delete;
 
   std::vector<std::string> TestFileFactoryReadUrls;
   std::vector<std::string> TestFileFactoryWriteUrls;

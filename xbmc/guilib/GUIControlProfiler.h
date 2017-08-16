@@ -82,8 +82,8 @@ public:
 private:
   CGUIControlProfiler(void);
   ~CGUIControlProfiler(void) = default;
-  CGUIControlProfiler(const CGUIControlProfiler &that);
-  CGUIControlProfiler &operator=(const CGUIControlProfiler &that);
+  CGUIControlProfiler(const CGUIControlProfiler &that) = delete;
+  CGUIControlProfiler &operator=(const CGUIControlProfiler &that) = delete;
 
   CGUIControlProfilerItem m_ItemHead;
   CGUIControlProfilerItem *m_pLastItem;

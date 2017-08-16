@@ -35,8 +35,8 @@ public:
 
 protected:
   CSplash();
-  CSplash(const CSplash&);
-  CSplash& operator=(CSplash const&);
+  CSplash(const CSplash&) = delete;
+  CSplash& operator=(CSplash const&) = delete;
   virtual ~CSplash() = default;
 
 private:

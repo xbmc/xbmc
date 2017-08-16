@@ -96,8 +96,8 @@ namespace XUTILS
     void* detach(void);
 
   private:
-    auto_buffer(const auto_buffer& other); // disallow copy constructor
-    auto_buffer& operator=(const auto_buffer& other); // disallow assignment
+    auto_buffer(const auto_buffer& other) = delete; // disallow copy constructor
+    auto_buffer& operator=(const auto_buffer& other) = delete; // disallow assignment
 
     void* p;
     size_t s;

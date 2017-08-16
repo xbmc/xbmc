@@ -52,8 +52,8 @@ public:
 
 protected:
   CSkinSettings();
-  CSkinSettings(const CSkinSettings&);
-  CSkinSettings& operator=(CSkinSettings const&);
+  CSkinSettings(const CSkinSettings&) = delete;
+  CSkinSettings& operator=(CSkinSettings const&) = delete;
   ~CSkinSettings() override;
 
 private:

@@ -53,8 +53,8 @@ public:
 
 protected:
   CMediaSourceSettings();
-  CMediaSourceSettings(const CMediaSourceSettings&);
-  CMediaSourceSettings& operator=(CMediaSourceSettings const&);
+  CMediaSourceSettings(const CMediaSourceSettings&) = delete;
+  CMediaSourceSettings& operator=(CMediaSourceSettings const&) = delete;
   ~CMediaSourceSettings() override;
 
 private:

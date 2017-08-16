@@ -155,10 +155,10 @@ public:
   bool GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details);
 
 private:
-  CScraper(const CScraper &rhs);
-  CScraper& operator=(const CScraper&);
-  CScraper(CScraper&&);
-  CScraper& operator=(CScraper&&);
+  CScraper(const CScraper &rhs) = delete;
+  CScraper& operator=(const CScraper&) = delete;
+  CScraper(CScraper&&) = delete;
+  CScraper& operator=(CScraper&&) = delete;
 
   std::string SearchStringEncoding() const
     { return m_parser.GetSearchStringEncoding(); }

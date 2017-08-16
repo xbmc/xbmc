@@ -47,8 +47,8 @@ public:
 
 private:
   CKeyboardLayoutManager() = default;
-  CKeyboardLayoutManager(const CKeyboardLayoutManager&);
-  CKeyboardLayoutManager const& operator=(CKeyboardLayoutManager const&);
+  CKeyboardLayoutManager(const CKeyboardLayoutManager&) = delete;
+  CKeyboardLayoutManager const& operator=(CKeyboardLayoutManager const&) = delete;
 
   KeyboardLayouts m_layouts;
 };

@@ -47,8 +47,8 @@ public:
 
 protected:
   CBuiltins();
-  CBuiltins(const CBuiltins&);
-  const CBuiltins& operator=(const CBuiltins&);
+  CBuiltins(const CBuiltins&) = delete;
+  const CBuiltins& operator=(const CBuiltins&) = delete;
   virtual ~CBuiltins();
 
 private:

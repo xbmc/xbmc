@@ -69,8 +69,8 @@ public:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CDatabaseManager();
-  CDatabaseManager(const CDatabaseManager&);
-  CDatabaseManager const& operator=(CDatabaseManager const&);
+  CDatabaseManager(const CDatabaseManager&) = delete;
+  CDatabaseManager const& operator=(CDatabaseManager const&) = delete;
   virtual ~CDatabaseManager();
 
   enum DB_STATUS { DB_CLOSED, DB_UPDATING, DB_READY, DB_FAILED };

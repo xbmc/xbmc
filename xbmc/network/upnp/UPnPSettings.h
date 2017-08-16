@@ -48,8 +48,8 @@ public:
 
 protected:
   CUPnPSettings();
-  CUPnPSettings(const CUPnPSettings&);
-  CUPnPSettings const& operator=(CUPnPSettings const&);
+  CUPnPSettings(const CUPnPSettings&) = delete;
+  CUPnPSettings& operator=(CUPnPSettings const&) = delete;
   ~CUPnPSettings() override;
 
 private:

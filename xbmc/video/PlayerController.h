@@ -48,8 +48,8 @@ public:
 
 protected:
   CPlayerController();
-  CPlayerController(const CPlayerController&);
-  CPlayerController& operator=(CPlayerController const&);
+  CPlayerController(const CPlayerController&) = delete;
+  CPlayerController& operator=(CPlayerController const&) = delete;
   ~CPlayerController() override;
 
 private:

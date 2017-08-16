@@ -47,8 +47,8 @@ public:
 
 private:
   CXbtManager();
-  CXbtManager(const CXbtManager&);
-  CXbtManager& operator=(const CXbtManager&);
+  CXbtManager(const CXbtManager&) = delete;
+  CXbtManager& operator=(const CXbtManager&) = delete;
 
   struct XBTFReader
   {
