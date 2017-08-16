@@ -31,7 +31,7 @@ class TiXmlElement;
 class CPlayerSelectionRule
 {
 public:
-  CPlayerSelectionRule(TiXmlElement* rule);
+  explicit CPlayerSelectionRule(TiXmlElement* rule);
   virtual ~CPlayerSelectionRule();
 
   void GetPlayers(const CFileItem& item, std::vector<std::string>&validPlayers, std::vector<std::string>&players);

@@ -52,7 +52,7 @@ public:
 
 private:
   friend class COSScreenSaverManager;
-  COSScreenSaverInhibitor(COSScreenSaverManager* manager);
+  explicit COSScreenSaverInhibitor(COSScreenSaverManager* manager);
   bool m_active;
   COSScreenSaverManager* m_manager;
 

@@ -32,7 +32,7 @@ public:
 public:
   CJNIXBMCNsdManagerResolveListener();  
   CJNIXBMCNsdManagerResolveListener(const CJNIXBMCNsdManagerResolveListener& other); 
-  CJNIXBMCNsdManagerResolveListener(const jni::jhobject &object) : CJNIBase(object) {}
+  explicit CJNIXBMCNsdManagerResolveListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCNsdManagerResolveListener();
 
   static void RegisterNatives(JNIEnv* env);

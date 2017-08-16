@@ -89,7 +89,7 @@ class CGUIFontTTFBase
 
 public:
 
-  CGUIFontTTFBase(const std::string& strFileName);
+  explicit CGUIFontTTFBase(const std::string& strFileName);
   virtual ~CGUIFontTTFBase(void);
 
   void Clear();

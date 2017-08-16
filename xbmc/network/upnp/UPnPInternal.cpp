@@ -1001,7 +1001,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
 
 struct ResourcePrioritySort
 {
-  ResourcePrioritySort(const PLT_MediaObject* entry)
+  explicit ResourcePrioritySort(const PLT_MediaObject* entry)
   {
     if (entry->m_ObjectClass.type.StartsWith("object.item.audioItem"))
         m_content = "audio";

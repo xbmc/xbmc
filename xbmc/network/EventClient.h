@@ -130,7 +130,7 @@ namespace EVENTCLIENT
       Initialize();
     }
 
-    CEventClient(SOCKETS::CAddress& addr):
+    explicit CEventClient(SOCKETS::CAddress& addr):
       m_remoteAddr(addr)
     {
       Initialize();

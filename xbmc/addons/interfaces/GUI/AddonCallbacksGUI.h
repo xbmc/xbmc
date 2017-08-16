@@ -36,7 +36,7 @@ namespace GUI
 class CAddonCallbacksGUI
 {
 public:
-  CAddonCallbacksGUI(ADDON::CAddon* addon);
+  explicit CAddonCallbacksGUI(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksGUI();
 
   /**! \name General Functions */

@@ -27,7 +27,7 @@ typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, void *clock);
 class CVideoSync
 {
 public:
-  CVideoSync(void *clock) { m_refClock = clock; };
+  explicit CVideoSync(void *clock) { m_refClock = clock; };
   virtual ~CVideoSync() = default;
   virtual bool Setup(PUPDATECLOCK func) = 0;
   virtual void Run(CEvent& stop) = 0;

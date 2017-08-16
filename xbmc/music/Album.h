@@ -36,7 +36,7 @@ class CFileItem;
 class CAlbum
 {
 public:
-  CAlbum(const CFileItem& item);
+  explicit CAlbum(const CFileItem& item);
   CAlbum()
     : idAlbum(-1)
     , fRating(-1)

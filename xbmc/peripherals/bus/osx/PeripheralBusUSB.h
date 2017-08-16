@@ -34,7 +34,7 @@ namespace PERIPHERALS
   class CPeripheralBusUSB : public CPeripheralBus
   {
   public:
-    CPeripheralBusUSB(CPeripherals& manager);
+    explicit CPeripheralBusUSB(CPeripherals& manager);
     virtual ~CPeripheralBusUSB();
 
     /*!

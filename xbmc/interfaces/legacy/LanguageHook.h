@@ -138,7 +138,7 @@ namespace XBMCAddon
     bool clearOnExit;
 
   public:
-    inline DelayedCallGuard(LanguageHook* languageHook_) : languageHook(languageHook_), clearOnExit(false)
+    inline explicit DelayedCallGuard(LanguageHook* languageHook_) : languageHook(languageHook_), clearOnExit(false)
     { if (languageHook) languageHook->DelayedCallOpen(); }
 
     inline DelayedCallGuard() : languageHook(LanguageHook::GetLanguageHook()), clearOnExit(false) 
@@ -156,7 +156,7 @@ namespace XBMCAddon
   class SetLanguageHookGuard
   {
   public:
-    inline SetLanguageHookGuard(LanguageHook* languageHook) { LanguageHook::SetLanguageHook(languageHook); }
+    inline explicit SetLanguageHookGuard(LanguageHook* languageHook) { LanguageHook::SetLanguageHook(languageHook); }
     inline ~SetLanguageHookGuard() { LanguageHook::ClearLanguageHook(); }
   };
   

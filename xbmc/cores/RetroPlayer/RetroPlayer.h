@@ -42,7 +42,7 @@ namespace RETRO
                        public IRenderMsg
   {
   public:
-    CRetroPlayer(IPlayerCallback& callback);
+    explicit CRetroPlayer(IPlayerCallback& callback);
     ~CRetroPlayer() override;
 
     // implementation of IPlayer

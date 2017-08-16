@@ -30,7 +30,7 @@ class CDVDVideoPPFFmpeg
 {
 public:
 
-  CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
+  explicit CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
   ~CDVDVideoPPFFmpeg();
 
   void SetType(const std::string& mType, bool deinterlace);

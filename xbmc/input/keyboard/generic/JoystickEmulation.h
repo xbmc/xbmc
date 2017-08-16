@@ -40,7 +40,7 @@ namespace KEYBOARD
   class CJoystickEmulation : public IKeyboardHandler
   {
   public:
-    CJoystickEmulation(JOYSTICK::IDriverHandler* handler);
+    explicit CJoystickEmulation(JOYSTICK::IDriverHandler* handler);
 
     ~CJoystickEmulation(void) override = default;
 

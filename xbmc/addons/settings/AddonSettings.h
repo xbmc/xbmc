@@ -40,7 +40,7 @@ namespace ADDON
   class CAddonSettings : public CSettingsBase, public CSettingCreator, public CSettingControlCreator, public ISettingCallback
   {
   public:
-    CAddonSettings(std::shared_ptr<const IAddon> addon);
+    explicit CAddonSettings(std::shared_ptr<const IAddon> addon);
     ~CAddonSettings() override = default;
 
     // specialization of CSettingsBase

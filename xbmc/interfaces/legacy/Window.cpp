@@ -49,7 +49,7 @@ namespace XBMCAddon
     {
       CCriticalSection* lock;
     public:
-      inline MaybeLock(CCriticalSection* p_lock) : lock(p_lock) { if (lock) lock->lock(); }
+      inline explicit MaybeLock(CCriticalSection* p_lock) : lock(p_lock) { if (lock) lock->lock(); }
       inline ~MaybeLock() { if (lock) lock->unlock(); }
     };
 

@@ -1305,7 +1305,7 @@ void CDecoder::Register()
 class VDPAU::CVdpauBufferPool : public IVideoBufferPool
 {
 public:
-  CVdpauBufferPool(CDecoder &decoder);
+  explicit CVdpauBufferPool(CDecoder &decoder);
   ~CVdpauBufferPool() override;
   CVideoBuffer* Get() override;
   void Return(int id) override;

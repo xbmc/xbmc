@@ -27,7 +27,7 @@
 class CGUIDialogProgressBarHandle
 {
 public:
-  CGUIDialogProgressBarHandle(const std::string &strTitle) :
+  explicit CGUIDialogProgressBarHandle(const std::string &strTitle) :
     m_fPercentage(0),
     m_strTitle(strTitle),
     m_bFinished(false) {}

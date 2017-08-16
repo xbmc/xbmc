@@ -41,7 +41,7 @@ class PAPlayer : public IPlayer, public CThread, public IJobCallback
 {
 friend class CQueueNextFileJob;
 public:
-  PAPlayer(IPlayerCallback& callback);
+  explicit PAPlayer(IPlayerCallback& callback);
   ~PAPlayer() override;
 
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;

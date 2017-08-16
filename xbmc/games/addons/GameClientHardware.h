@@ -39,7 +39,7 @@ namespace GAME
      *
      * \param gameClient The game client implementation
      */
-    CGameClientHardware(CGameClient* gameClient);
+    explicit CGameClientHardware(CGameClient* gameClient);
 
     virtual ~CGameClientHardware() = default;
 

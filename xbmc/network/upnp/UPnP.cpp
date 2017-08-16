@@ -160,7 +160,7 @@ public:
 class CUPnPCleaner : public NPT_Thread
 {
 public:
-    CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
+    explicit CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
     void Run() override {
         delete m_UPnP;
     }
@@ -175,7 +175,7 @@ class CMediaBrowser : public PLT_SyncMediaBrowser,
                       public PLT_MediaContainerChangesListener
 {
 public:
-    CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
+    explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
         : PLT_SyncMediaBrowser(ctrlPoint, true)
     {
         SetContainerListener(this);
@@ -310,7 +310,7 @@ class CMediaController
   , public PLT_MediaController
 {
 public:
-  CMediaController(PLT_CtrlPointReference& ctrl_point)
+  explicit CMediaController(PLT_CtrlPointReference& ctrl_point)
     : PLT_MediaController(ctrl_point)
   {
     PLT_MediaController::SetDelegate(this);

@@ -89,7 +89,7 @@ namespace XBMCAddon
     {
       InterceptorBase* w;
     public:
-      inline ref(InterceptorBase* b) : w(b) { w->upcallTls.set(this); }
+      inline explicit ref(InterceptorBase* b) : w(b) { w->upcallTls.set(this); }
       inline ~ref() { w->upcallTls.set(NULL); }
       inline CGUIWindow* operator->() { return w->get(); }
       inline CGUIWindow* get() { return w->get(); }

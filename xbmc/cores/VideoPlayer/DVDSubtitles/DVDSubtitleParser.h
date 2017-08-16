@@ -44,7 +44,7 @@ class CDVDSubtitleParserCollection
   : public CDVDSubtitleParser
 {
 public:
-  CDVDSubtitleParserCollection(const std::string& strFile) : m_filename(strFile) {}
+  explicit CDVDSubtitleParserCollection(const std::string& strFile) : m_filename(strFile) {}
   ~CDVDSubtitleParserCollection() override = default;
   CDVDOverlay* Parse(double iPts) override
   {

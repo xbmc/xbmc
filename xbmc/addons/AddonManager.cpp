@@ -402,7 +402,7 @@ void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
 
 struct AddonIdFinder
 {
-    AddonIdFinder(const std::string& id)
+    explicit AddonIdFinder(const std::string& id)
       : m_id(id)
     {}
 

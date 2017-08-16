@@ -65,7 +65,7 @@ namespace XBMCAddonUtils
   {
     CSingleLock& lock;
   public:
-    InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.Leave(); }
+    explicit InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.Leave(); }
     ~InvertSingleLockGuard() { lock.Enter(); }
   };
 
@@ -86,7 +86,7 @@ namespace XBMCAddonUtils
 
     const char* getSpaces();
 
-    TraceGuard(const char* _function);
+    explicit TraceGuard(const char* _function);
     TraceGuard();
     ~TraceGuard();
   };

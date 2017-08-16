@@ -42,7 +42,7 @@ namespace PVR
     class clazz : public CStaticContextMenuAction \
     { \
     public: \
-      clazz(uint32_t label) : CStaticContextMenuAction(label) {} \
+      explicit clazz(uint32_t label) : CStaticContextMenuAction(label) {} \
       bool IsVisible(const CFileItem &item) const override; \
       bool Execute(const CFileItemPtr &item) const override; \
     };

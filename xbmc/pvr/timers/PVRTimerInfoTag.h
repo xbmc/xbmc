@@ -48,7 +48,7 @@ namespace PVR
   class CPVRTimerInfoTag : public ISerializable
   {
   public:
-    CPVRTimerInfoTag(bool bRadio = false);
+    explicit CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
     ~CPVRTimerInfoTag(void) override;

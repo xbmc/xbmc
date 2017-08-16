@@ -88,7 +88,7 @@ CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
 class CMACDiscoveryJob : public CJob
 {
 public:
-  CMACDiscoveryJob(const std::string& host) : m_host(host) {}
+  explicit CMACDiscoveryJob(const std::string& host) : m_host(host) {}
 
   bool DoWork() override;
 
@@ -164,7 +164,7 @@ int NestDetect::m_nest = 0;
 class ProgressDialogHelper
 {
 public:
-  ProgressDialogHelper (const std::string& heading) : m_dialog(0)
+  explicit ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
     if (g_application.IsCurrentThread())
       m_dialog = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -290,7 +290,7 @@ private:
   class CHostProberJob : public CJob
   {
     public:
-      CHostProberJob(const CWakeOnAccess::WakeUpEntry& server) : m_server (server) {}
+      explicit CHostProberJob(const CWakeOnAccess::WakeUpEntry& server) : m_server (server) {}
 
       bool DoWork() override
       {

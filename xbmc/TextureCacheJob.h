@@ -132,7 +132,7 @@ private:
 class CTextureUseCountJob : public CJob
 {
 public:
-  CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
+  explicit CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
 
   const char* GetType() const override { return "usecount"; };
   bool operator==(const CJob *job) const override;

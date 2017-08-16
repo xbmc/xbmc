@@ -41,7 +41,7 @@ namespace PVR
      * @brief Create a new group container.
      * @param bRadio True if this is a container for radio channels, false if it is for tv channels.
      */
-    CPVRChannelGroups(bool bRadio);
+    explicit CPVRChannelGroups(bool bRadio);
     virtual ~CPVRChannelGroups(void);
 
     /*!

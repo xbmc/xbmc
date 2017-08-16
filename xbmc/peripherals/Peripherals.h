@@ -61,7 +61,7 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
+    explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
 
     ~CPeripherals() override;
 

@@ -54,7 +54,7 @@ namespace PVR
 
   public:
     /*! @brief Create a new channel */
-    CPVRChannel(bool bRadio = false);
+    explicit CPVRChannel(bool bRadio = false);
     CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId);
 
   private:

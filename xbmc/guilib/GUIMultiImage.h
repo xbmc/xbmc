@@ -75,7 +75,7 @@ protected:
   class CMultiImageJob : public CJob
   {
   public:
-    CMultiImageJob(const std::string &path);
+    explicit CMultiImageJob(const std::string &path);
     bool DoWork() override;
     const char *GetType() const override { return "multiimage"; };
 

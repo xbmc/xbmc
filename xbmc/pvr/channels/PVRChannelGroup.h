@@ -76,7 +76,7 @@ namespace PVR
      * @brief Create a new channel group instance from a channel group provided by an add-on.
      * @param group The channel group provided by the add-on.
      */
-    CPVRChannelGroup(const PVR_CHANNEL_GROUP &group);
+    explicit CPVRChannelGroup(const PVR_CHANNEL_GROUP &group);
 
     /*!
      * @brief Copy constructor

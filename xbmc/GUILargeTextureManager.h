@@ -119,7 +119,7 @@ private:
   class CLargeTexture
   {
   public:
-    CLargeTexture(const std::string &path);
+    explicit CLargeTexture(const std::string &path);
     virtual ~CLargeTexture();
 
     void AddRef();

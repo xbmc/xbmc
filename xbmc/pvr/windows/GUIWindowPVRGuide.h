@@ -100,7 +100,7 @@ namespace PVR
   class CPVRRefreshTimelineItemsThread : public CThread
   {
   public:
-    CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow);
+    explicit CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow);
     ~CPVRRefreshTimelineItemsThread() override;
 
     void Process() override;

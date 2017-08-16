@@ -38,7 +38,7 @@ class CGUIDialogYesNo :
       public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogYesNo(int overrideId = -1);
+  explicit CGUIDialogYesNo(int overrideId = -1);
   ~CGUIDialogYesNo(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnBack(int actionID) override;

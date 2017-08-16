@@ -116,7 +116,7 @@ class CArtistCredit
 
 public:
   CArtistCredit() : idArtist(-1), m_bScrapedMBID(false) { }
-  CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
+  explicit CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID)
     : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
   CArtistCredit(std::string strArtist, std::string strSortName, std::string strMusicBrainzArtistID)

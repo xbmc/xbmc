@@ -25,7 +25,7 @@
 class CDVDInputStreamMemory : public CDVDInputStream
 {
 public:
-  CDVDInputStreamMemory(CFileItem &fileitem);
+  explicit CDVDInputStreamMemory(CFileItem &fileitem);
   ~CDVDInputStreamMemory() override;
   bool Open() override;
   void Close() override;

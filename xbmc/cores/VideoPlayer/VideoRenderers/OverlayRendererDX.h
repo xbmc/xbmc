@@ -50,8 +50,8 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    COverlayImageDX(CDVDOverlayImage* o);
-    COverlayImageDX(CDVDOverlaySpu*   o);
+    explicit COverlayImageDX(CDVDOverlayImage* o);
+    explicit COverlayImageDX(CDVDOverlaySpu*   o);
     virtual ~COverlayImageDX();
 
     void Load(uint32_t* rgba, int width, int height, int stride);

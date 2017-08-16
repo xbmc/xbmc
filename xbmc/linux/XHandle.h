@@ -37,7 +37,7 @@ public:
   typedef enum { HND_NULL = 0, HND_FILE, HND_EVENT, HND_MUTEX, HND_FIND_FILE } HandleType;
 
   CXHandle();
-  CXHandle(HandleType nType);
+  explicit CXHandle(HandleType nType);
   CXHandle(const CXHandle &src);
 
   virtual ~CXHandle();

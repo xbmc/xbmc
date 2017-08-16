@@ -101,7 +101,7 @@ namespace PVR
   class AsyncRenameRecording : public AsyncRecordingAction
   {
   public:
-    AsyncRenameRecording(const std::string &strNewName) : m_strNewName(strNewName) {}
+    explicit AsyncRenameRecording(const std::string &strNewName) : m_strNewName(strNewName) {}
 
   private:
     bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->RenameRecording(*item, m_strNewName); }
@@ -370,7 +370,7 @@ namespace PVR
     class InstantRecordingActionSelector
     {
     public:
-      InstantRecordingActionSelector(int iInstantRecordTime);
+      explicit InstantRecordingActionSelector(int iInstantRecordTime);
       virtual ~InstantRecordingActionSelector() = default;
 
       void AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string &title);

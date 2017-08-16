@@ -51,7 +51,7 @@ class CRating
 {
 public:
   CRating(): rating(0.0f), votes(0) {}
-  CRating(float r): rating(r), votes(0) {}
+  explicit CRating(float r): rating(r), votes(0) {}
   CRating(float r, int v): rating(r), votes(v) {}
   float rating;
   int votes;

@@ -75,7 +75,7 @@ private:
 class CCaptionBlock
 {
 public:
-  CCaptionBlock(int size)
+  explicit CCaptionBlock(int size)
   {
     m_data = (uint8_t*)malloc(size);
     m_size = size;

@@ -130,7 +130,7 @@ protected:
 public:
 /* constructor */
   SqliteDataset();
-  SqliteDataset(SqliteDatabase *newDb);
+  explicit SqliteDataset(SqliteDatabase *newDb);
 
 /* destructor */
   ~SqliteDataset() override;

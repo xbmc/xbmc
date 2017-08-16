@@ -31,8 +31,8 @@ namespace XFILE { class CCurlFile; }
 class CScraperUrl
 {
 public:
-  CScraperUrl(const std::string&);
-  CScraperUrl(const TiXmlElement*);
+  explicit CScraperUrl(const std::string&);
+  explicit CScraperUrl(const TiXmlElement*);
   CScraperUrl();
   ~CScraperUrl();
 

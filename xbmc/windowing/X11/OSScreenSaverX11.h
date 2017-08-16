@@ -27,7 +27,7 @@
 class COSScreenSaverX11 : public KODI::WINDOWING::IOSScreenSaver
 {
 public:
-  COSScreenSaverX11(Display* dpy);
+  explicit COSScreenSaverX11(Display* dpy);
   void Inhibit() override;
   void Uninhibit() override;
 

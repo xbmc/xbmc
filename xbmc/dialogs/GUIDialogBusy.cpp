@@ -29,7 +29,7 @@ class CBusyWaiter : public CThread
 {
   std::shared_ptr<CEvent>  m_done;
 public:
-  CBusyWaiter(IRunnable *runnable) : CThread(runnable, "waiting"), m_done(new CEvent()) {  }
+  explicit CBusyWaiter(IRunnable *runnable) : CThread(runnable, "waiting"), m_done(new CEvent()) {  }
   
   bool Wait(unsigned int displaytime, bool allowCancel)
   {
