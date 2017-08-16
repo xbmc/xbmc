@@ -444,8 +444,7 @@ void CDVDVideoCodecAmlogic::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s %x->%x",  __func__, m_codecControlFlags, flags);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s %x->%x",  __func__, m_codecControlFlags, flags);
     m_codecControlFlags = flags;
 
     if (flags & DVD_CODEC_CTRL_DROP)

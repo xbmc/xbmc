@@ -984,11 +984,10 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   if (context == nullptr || context->file == nullptr)
     return -1;
 
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
 #if (MHD_VERSION >= 0x00090200)
-    CLog::Log(LOGDEBUG, "CWebServer [OUT] write maximum %zu bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
+  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %zu bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
 #else
-    CLog::Log(LOGDEBUG, "CWebServer [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
+  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
 #endif
 
   // check if we need to add the end-boundary
@@ -1058,8 +1057,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   // add the number of read bytes to the number of written bytes
   written += res;
 
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-    CLog::Log(LOGDEBUG, "CWebServer [OUT] wrote %d bytes from %" PRIu64 " in range (%" PRIu64 " - %" PRIu64 ")", written, context->writePosition, start, end);
+  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] wrote %d bytes from %" PRIu64 " in range (%" PRIu64 " - %" PRIu64 ")", written, context->writePosition, start, end);
 
   // update the current write position
   context->writePosition += res;
@@ -1080,8 +1078,7 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
   delete context;
 
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-    CLog::Log(LOGDEBUG, "CWebServer [OUT] done");
+  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] done");
 }
 
 // local helper
@@ -1293,8 +1290,7 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
   if (response == nullptr || name.empty())
     return 0;
 
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, name.c_str(), value.c_str());
+  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer[%hu] [OUT] %s: %s", m_port, name.c_str(), value.c_str());
 
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }

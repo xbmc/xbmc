@@ -1171,10 +1171,7 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 {
   if (m_pFilterGraph)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
-    }
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
     avfilter_graph_free(&m_pFilterGraph);
 
     // Disposed by above code

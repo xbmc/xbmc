@@ -198,7 +198,7 @@ bool CInputManager::ProcessMouse(int windowId)
   // handled this mouse action
   if (!mouseaction.GetID())
   {
-    CLog::LogF(LOGDEBUG, "unknown mouse command %d", mousekey);
+    CLog::LogF(LOGDEBUG, LOGAUDIO, "unknown mouse command %d", mousekey);
     return false;
   }
 

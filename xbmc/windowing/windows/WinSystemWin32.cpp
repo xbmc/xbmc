@@ -598,7 +598,7 @@ const MONITOR_DETAILS* CWinSystemWin32::GetMonitor(int screen) const
   }
   else
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
+    CLog::LogF(LOGERROR, "no monitor found for screen %i", screen);
     return nullptr;
   }
 }
@@ -619,7 +619,7 @@ RECT CWinSystemWin32::ScreenRect(int screen) const
 
   if (!details)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
+    CLog::LogF(LOGERROR, "no monitor found for screen %i", screen);
   }
 
   DEVMODEW sDevMode;

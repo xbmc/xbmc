@@ -280,7 +280,7 @@ bool CDXVAContext::CreateContext()
   if ( FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_service)))
     || FAILED(g_Windowing.GetImmediateContext()->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_vcontext))))
   {
-    CLog::LogFunction(LOGWARNING, __FUNCTION__, "failed to get Video Device and Context.");
+    CLog::LogF(LOGWARNING, "failed to get Video Device and Context.");
     return false;
   }
 
@@ -389,7 +389,7 @@ bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO
 
   if (FAILED(res))
   {
-    CLog::LogFunction(LOGNOTICE, __FUNCTION__, "failed getting decoder configuration count.");
+    CLog::LogF(LOGNOTICE, "failed getting decoder configuration count.");
     return false;
   }
 
@@ -400,7 +400,7 @@ bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO
     D3D11_VIDEO_DECODER_CONFIG pConfig = {0};
     if (FAILED(m_service->GetVideoDecoderConfig(format, i, &pConfig)))
     {
-      CLog::LogFunction(LOGNOTICE, __FUNCTION__, "failed getting decoder configuration.");
+      CLog::LogF(LOGNOTICE, "failed getting decoder configuration.");
       return false;
     }
 
@@ -444,7 +444,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   ID3D11Texture2D *texture = nullptr;
   if (FAILED(pDevice->CreateTexture2D(&texDesc, NULL, &texture)))
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "failed creating decoder texture array.");
+    CLog::LogF(LOGERROR, "failed creating decoder texture array.");
     return false;
   }
 
@@ -461,7 +461,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
     hr = m_service->CreateVideoDecoderOutputView(texture, &vdovDesc, &surfaces[i]);
     if (FAILED(hr))
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "failed creating surfaces.");
+      CLog::LogF(LOGERROR, "failed creating surfaces.");
       break;
     }
     pContext->ClearView(surfaces[i], clearColor, nullptr, 0);
@@ -499,7 +499,7 @@ bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_V
 
     if (retry == 0)
     {
-      CLog::LogFunction(LOGNOTICE, __FUNCTION__, "hw may not support multiple decoders, releasing existing ones.");
+      CLog::LogF(LOGNOTICE, "hw may not support multiple decoders, releasing existing ones.");
       for (auto it = m_decoders.begin(); it != m_decoders.end(); ++it)
       {
         (*it)->CloseDXVADecoder();
@@ -508,7 +508,7 @@ bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_V
     retry++;
   }
 
-  CLog::LogFunction(LOGERROR, __FUNCTION__, "failed creating decoder.", __FUNCTION__);
+  CLog::LogF(LOGERROR, "failed creating decoder.");
   return false;
 }
 
@@ -564,7 +564,7 @@ ID3D11View* CDXVAOutputBuffer::GetSRV(unsigned idx)
   HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(pResource, &srvDesc,
     reinterpret_cast<ID3D11ShaderResourceView**>(&planes[idx]));
   if (FAILED(hr))
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "unable to create SRV for decoder surface (%d)", plane_format);
+    CLog::LogF(LOGERROR, "unable to create SRV for decoder surface (%d)", plane_format);
 
   SAFE_RELEASE(pResource);
   return planes[idx];
@@ -595,7 +595,7 @@ CDXVABufferPool::CDXVABufferPool()
 
 CDXVABufferPool::~CDXVABufferPool()
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "destructing buffer pool.");
+  CLog::LogF(LOGDEBUG, "destructing buffer pool.");
   Reset();
 }
 
@@ -750,7 +750,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo)
 
 CDecoder::~CDecoder()
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "destructing decoder, %p.", this);
+  CLog::LogF(LOGDEBUG, "destructing decoder, %p.", this);
   g_Windowing.Unregister(this);
   Close();
   free(m_context->surface);
@@ -778,7 +778,7 @@ void CDecoder::Close()
 
   if (m_dxva_context)
   {
-    CLog::LogFunction(LOGNOTICE, __FUNCTION__, "closing decoder.");
+    CLog::LogF(LOGNOTICE, "closing decoder.");
     m_dxva_context->Release(this);
   }
   m_dxva_context = nullptr;
@@ -1069,7 +1069,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
     lock.Enter();
     if(m_state == DXVA_LOST)
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "device didn't reset in reasonable time.");
+      CLog::LogF(LOGERROR, "device didn't reset in reasonable time.");
       return CDVDVideoCodec::VC_ERROR;
     }
   }
@@ -1079,7 +1079,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     if(!Open(avctx, avctx, avctx->pix_fmt))
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "decoder was not able to reset.");
+      CLog::LogF(LOGERROR, "decoder was not able to reset.");
       Close();
       return CDVDVideoCodec::VC_ERROR;
     }
@@ -1089,7 +1089,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     if(avctx->refs > m_refs)
     {
-      CLog::LogFunction(LOGWARNING, __FUNCTION__, "number of required reference frames increased, recreating decoder.");
+      CLog::LogF(LOGWARNING, "number of required reference frames increased, recreating decoder.");
       Close();
       return CDVDVideoCodec::VC_FLUSHED;
     }
@@ -1177,7 +1177,7 @@ void CDecoder::ReleaseBuffer(uint8_t *data)
   ID3D11VideoDecoderOutputView* view = reinterpret_cast<ID3D11VideoDecoderOutputView*>(data);
   if (!m_bufferPool->IsValid(view))
   {
-    CLog::LogFunction(LOGWARNING, __FUNCTION__, "return of invalid surface.");
+    CLog::LogF(LOGWARNING, "return of invalid surface.");
   }
   m_bufferPool->ReturnView(view);
 
@@ -1200,7 +1200,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   ID3D11View* view = m_bufferPool->GetView();
   if (view == nullptr)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "no surface available.");
+    CLog::LogF(LOGERROR, "no surface available.");
     m_state = DXVA_LOST;
     return -1;
   }
@@ -1218,7 +1218,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CDecoder::FFReleaseBuffer, this, 0);
   if (!buffer)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "error creating buffer.");
+    CLog::LogF(LOGERROR, "error creating buffer.");
     return -1;
   }
   pic->buf[0] = buffer;

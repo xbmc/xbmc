@@ -363,14 +363,14 @@ void CRenderCaptureDX::BeginRender()
 
     if (!m_renderTex.Create(m_width, m_height, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM))
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateTexture2D (RENDER_TARGET) failed.");
+      CLog::LogF(LOGERROR, "CreateTexture2D (RENDER_TARGET) failed.");
       SetState(CAPTURESTATE_FAILED);
       return;
     }
 
     if (!m_copyTex.Create(m_width, m_height, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_B8G8R8A8_UNORM))
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateRenderTargetView failed.");
+      CLog::LogF(LOGERROR, "CreateRenderTargetView failed.");
       SetState(CAPTURESTATE_FAILED);
       return;
     }
@@ -394,7 +394,7 @@ void CRenderCaptureDX::BeginRender()
       result = pDevice->CreateQuery(&queryDesc, &m_query);
       if (FAILED(result))
       {
-        CLog::LogFunction(LOGERROR, __FUNCTION__, "CreateQuery failed %s",
+        CLog::LogF(LOGERROR, "CreateQuery failed %s",
                             DX::GetErrorDescription(result).c_str());
         m_asyncSupported = false;
         SAFE_RELEASE(m_query);

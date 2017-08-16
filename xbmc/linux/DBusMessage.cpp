@@ -33,8 +33,7 @@ CDBusMessage::CDBusMessage(const char *destination, const char *object, const ch
   }
   m_haveArgs = false;
 
-  if (g_advancedSettings.CanLogComponent(LOGDBUS))
-    CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
+  CLog::Log(LOGDEBUG, LOGDBUS, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
 CDBusMessage::CDBusMessage(const std::string& destination, const std::string& object, const std::string& interface, const std::string& method)

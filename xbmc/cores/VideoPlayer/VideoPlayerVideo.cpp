@@ -1095,8 +1095,7 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
   else if (iBufferLevel < 2)
   {
     result |= EOS_BUFFER_LEVEL;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - hurry: %d", iBufferLevel);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayerVideo::CalcDropRequirement - hurry: %d", iBufferLevel);
   }
 
   if (m_bAllowDrop)
@@ -1109,8 +1108,7 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
       m_droppingStats.m_gain.push_back(gain);
       m_droppingStats.m_totalGain += gain.frames;
       result |= EOS_DROPPED;
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped pictures, lateframes: %d, Bufferlevel: %d, dropped: %d", lateframes, iBufferLevel, iSkippedPicture);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayerVideo::CalcDropRequirement - dropped pictures, lateframes: %d, Bufferlevel: %d, dropped: %d", lateframes, iBufferLevel, iSkippedPicture);
     }
     if (iDroppedFrames > 0)
     {
@@ -1120,8 +1118,7 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
       m_droppingStats.m_gain.push_back(gain);
       m_droppingStats.m_totalGain += iDroppedFrames;
       result |= EOS_DROPPED;
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped in decoder, lateframes: %d, Bufferlevel: %d, dropped: %d", lateframes, iBufferLevel, iDroppedFrames);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayerVideo::CalcDropRequirement - dropped in decoder, lateframes: %d, Bufferlevel: %d, dropped: %d", lateframes, iBufferLevel, iDroppedFrames);
     }
   }
 
