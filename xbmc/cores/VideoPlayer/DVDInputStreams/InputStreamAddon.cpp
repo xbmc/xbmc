@@ -406,8 +406,7 @@ bool CInputStreamAddon::OpenStream(int streamId)
   if (!m_struct.toAddon.open_stream)
     return false;
 
-  m_struct.toAddon.open_stream(&m_struct, streamId);
-  return true;
+  return m_struct.toAddon.open_stream(&m_struct, streamId);
 }
 
 int CInputStreamAddon::GetNrOfStreams() const
