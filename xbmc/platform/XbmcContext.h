@@ -35,6 +35,9 @@ namespace XBMC
   public:
     Context();
     virtual ~Context();
+  private:
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
   };
 }
 

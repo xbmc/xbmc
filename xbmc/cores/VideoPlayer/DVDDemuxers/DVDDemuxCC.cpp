@@ -74,6 +74,8 @@ private:
 
 class CCaptionBlock
 {
+  CCaptionBlock(const CCaptionBlock&) = delete;
+  CCaptionBlock& operator=(const CCaptionBlock&) = delete;
 public:
   explicit CCaptionBlock(int size)
   {

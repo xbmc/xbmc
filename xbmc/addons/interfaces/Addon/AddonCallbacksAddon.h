@@ -91,6 +91,9 @@ public:
   static bool CURLOpen(const void* addonData, void* curl, unsigned int flags);
 
 private:
+  CAddonCallbacksAddon(const CAddonCallbacksAddon&) = delete;
+  CAddonCallbacksAddon& operator=(const CAddonCallbacksAddon&) = delete;
+
   ADDON::CAddon* m_addon; /*!< the addon */
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
 };

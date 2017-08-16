@@ -44,6 +44,8 @@ namespace XFILE
       CFileItemList* m_Items;
       DIR_CACHE_TYPE m_cacheType;
     private:
+      CDir(const CDir&) = delete;
+      CDir& operator=(const CDir&) = delete;
       unsigned int m_lastAccess;
     };
   public:

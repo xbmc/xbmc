@@ -283,4 +283,7 @@ protected:
   bool m_initialized;
   CSettingsManager* m_settingsManager;
   CCriticalSection m_critical;
+private:
+  CSettingsBase(const CSettingsBase&) = delete;
+  CSettingsBase& operator=(const CSettingsBase&) = delete;
 };

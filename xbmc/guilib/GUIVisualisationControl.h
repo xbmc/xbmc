@@ -36,6 +36,8 @@ public:
   int Size() const;
   void Set(const float* psBuffer, int iSize);
 private:
+  CAudioBuffer(const CAudioBuffer&) = delete;
+  CAudioBuffer& operator=(const CAudioBuffer&) = delete;
   CAudioBuffer();
   float* m_pBuffer;
   int m_iLen;
