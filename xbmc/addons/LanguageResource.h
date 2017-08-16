@@ -64,7 +64,6 @@ public:
   static std::string GetAddonId(const std::string& locale);
 
   static bool FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage);
-  static bool FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const VECADDONS &languageAddons = VECADDONS());
 
 private:
   CLocale m_locale;

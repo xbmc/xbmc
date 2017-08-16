@@ -69,8 +69,6 @@ public:
   // implementation of ISettingsHandler
   void OnSettingsLoaded() override;
 
-  bool Load(const std::string& strLanguage);
-
   /*!
    \brief Returns the language addon for the given locale (or the current one).
 
@@ -99,16 +97,7 @@ public:
   \param reloadServices (optional) Whether to reload services relying on localization.
   \return True if the language has been successfully loaded, false otherwise.
   */
-  bool SetLanguage(const std::string &strLanguage = "", bool reloadServices = true);
-  /*!
-   \brief Sets and loads the given (or configured) language, its details and strings.
-
-   \param fallback Whether the fallback language has been loaded instead of the given language.
-   \param strLanguage (optional) Language to be loaded.
-   \param reloadServices (optional) Whether to reload services relying on localization.
-   \return True if the language has been successfully loaded, false otherwise.
-   */
-  bool SetLanguage(bool& fallback, const std::string &strLanguage = "", bool reloadServices = true);
+  bool SetLanguage(std::string strLanguage = "", bool reloadServices = true);
 
   const std::string& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639
@@ -200,6 +189,7 @@ public:
 
 protected:
   void SetDefaults();
+  bool Load(const std::string& strLanguage);
 
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
   static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);

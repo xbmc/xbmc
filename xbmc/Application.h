@@ -522,8 +522,6 @@ protected:
   
   std::vector<IActionListener *> m_actionListeners;
 
-  bool m_fallbackLanguageLoaded;
-
   std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
 
 private:

@@ -15003,15 +15003,7 @@ msgctxt "#24132"
 msgid "Would you like to switch to this language?"
 msgstr ""
 
-#: xbmc/Application.cpp
-msgctxt "#24133"
-msgid "Failed to load language"
-msgstr ""
-
-#: xbmc/Application.cpp
-msgctxt "#24134"
-msgid "We were unable to load your configured language. Please check your language settings."
-msgstr ""
+#empty strings from id 24133 to 24134
 
 #. Folder name in addon settings window
 #: xbmc/addons/addon.cpp

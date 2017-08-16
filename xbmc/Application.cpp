@@ -282,7 +282,6 @@ CApplication::CApplication(void)
   , m_volumeLevel(VOLUME_MAXIMUM)
   , m_pInertialScrollingHandler(new CInertialScrollingHandler())
   , m_network(nullptr)
-  , m_fallbackLanguageLoaded(false)
   , m_WaitingExternalCalls(0)
   , m_ProcessedExternalCalls(0)
 {
@@ -4160,9 +4159,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (IsMuted() || GetVolume(false) <= VOLUME_MINIMUM)
           ShowVolumeBar();
 
-        if (m_fallbackLanguageLoaded)
-          CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
-
         if (!m_incompatibleAddons.empty())
         {
           auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
@@ -5164,7 +5160,7 @@ bool CApplication::SetLanguage(const std::string &strLanguage)
 bool CApplication::LoadLanguage(bool reload)
 {
   // load the configured langauge
-  if (!g_langInfo.SetLanguage(m_fallbackLanguageLoaded, "", reload))
+  if (!g_langInfo.SetLanguage("", reload))
     return false;
 
   // set the proper audio and subtitle languages
