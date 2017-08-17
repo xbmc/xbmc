@@ -217,9 +217,6 @@ int CDVDInputStreamPVRManager::GetTime()
 
 bool CDVDInputStreamPVRManager::GetTimes(Times &times)
 {
-  if (m_isRecording)
-    return false;
-
   PVR_STREAM_TIMES streamTimes;
   bool ret = CServiceBroker::GetPVRManager().Clients()->GetStreamTimes(&streamTimes);
   if (ret)
