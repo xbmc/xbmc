@@ -143,6 +143,69 @@ public:
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const std::vector<std::string> &delimiters);
+  /*! \brief Splits the given input string using the given delimiter into separate strings.
+
+   If the given input string is empty nothing will be put into the target iterator.
+
+   \param d_first the beginning of the destination range
+   \param input Input string to be split
+   \param delimiter Delimiter to be used to split the input string
+   \param iMaxStrings (optional) Maximum number of splitted strings
+   \return output iterator to the element in the destination range, one past the last element
+   *       that was put there
+   */
+  template<typename OutputIt>
+  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0)
+  {
+    OutputIt dest = d_first;
+
+    if (input.empty())
+      return dest;
+    if (delimiter.empty())
+    {
+      *d_first++ = input;
+      return dest;
+    }
+
+    const size_t delimLen = delimiter.length();
+    size_t nextDelim;
+    size_t textPos = 0;
+    do
+    {
+      if (--iMaxStrings == 0)
+      {
+        *dest++ = input.substr(textPos);
+        break;
+      }
+      nextDelim = input.find(delimiter, textPos);
+      *dest++ = input.substr(textPos, nextDelim - textPos);
+      textPos = nextDelim + delimLen;
+    } while (nextDelim != std::string::npos);
+
+    return dest;
+  }
+  template<typename OutputIt>
+  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const char delimiter, size_t iMaxStrings = 0)
+  {
+    return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
+  }
+  template<typename OutputIt>
+  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::vector<std::string> &delimiters)
+  {
+    OutputIt dest = d_first;
+    if (input.empty())
+      return dest;
+
+    if (delimiters.empty())
+    {
+      *dest++ = input;
+      return dest;
+    }
+    std::string str = input;
+    for (size_t di = 1; di < delimiters.size(); di++)
+      StringUtils::Replace(str, delimiters[di], delimiters[0]);
+    return SplitTo(dest, str, delimiters[0]);
+  }
   
   /*! \brief Splits the given input strings using the given delimiters into further separate strings.
 

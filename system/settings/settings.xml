@@ -2115,7 +2115,12 @@
     <category id="display" label="14220" help="36603">
       <group id="1" label="16000">
         <setting id="videoscreen.monitor" type="string" label="246" help="">
-          <requirement>HAS_GLX</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GLX</condition>
+              <condition>HAVE_WAYLAND</condition>
+            </or>
+          </requirement>
           <level>0</level>
           <default>Default</default>
           <constraints>

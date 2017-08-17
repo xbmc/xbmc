@@ -59,6 +59,12 @@ void CDBusMessage::AppendArgument<bool>(const bool arg)
   AppendWithType(DBUS_TYPE_BOOLEAN, &convArg);
 }
 
+template<>
+void CDBusMessage::AppendArgument<std::string>(const std::string arg)
+{
+  AppendArgument(arg.c_str());
+}
+
 void CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
 {
   PrepareArgument();
@@ -168,4 +174,31 @@ void CDBusMessage::PrepareArgument()
     dbus_message_iter_init_append(m_message.get(), &m_args);
 
   m_haveArgs = true;
+}
+
+bool CDBusMessage::InitializeReplyIter(DBusMessageIter* iter)
+{
+  if (!m_reply)
+  {
+    throw std::logic_error("Cannot get reply arguments of message that does not have reply");
+  }
+  if (!dbus_message_iter_init(m_reply.get(), iter))
+  {
+    CLog::Log(LOGWARNING, "Tried to obtain reply arguments from message that has zero arguments");
+    return false;
+  }
+  return true;
+}
+
+bool CDBusMessage::CheckTypeAndGetValue(DBusMessageIter* iter, int expectType, void* dest)
+{
+  const int haveType = dbus_message_iter_get_arg_type(iter);
+  if (haveType != expectType)
+  {
+    CLog::Log(LOGDEBUG, "DBus argument type mismatch: expected %d, got %d", expectType, haveType);
+    return false;
+  }
+
+  dbus_message_iter_get_basic(iter, dest);
+  return true;
 }

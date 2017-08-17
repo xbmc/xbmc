@@ -28,6 +28,7 @@
 /* Include file for SDL event handling */
 
 #include "input/XBMC_keyboard.h"
+#include "guilib/Resolution.h"
 
 /* Event enumerations */
 typedef enum {
@@ -40,6 +41,7 @@ typedef enum {
        XBMC_QUIT,               /* User-requested quit */
        XBMC_VIDEORESIZE,        /* User resized video mode */
        XBMC_VIDEOMOVE,          /* User moved the window */
+       XBMC_MODECHANGE,         /* Video mode must be changed */
        XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
        XBMC_TOUCH,
        XBMC_SETFOCUS,
@@ -77,6 +79,11 @@ typedef struct XBMC_MoveEvent {
 	int x;		/* New x position */
 	int y;		/* New y position */
 } XBMC_MoveEvent;
+
+struct XBMC_ModeChangeEvent
+{
+  RESOLUTION res;
+};
 
 /* The "quit requested" event */
 typedef struct XBMC_QuitEvent {
@@ -118,6 +125,7 @@ typedef struct XBMC_Event {
     XBMC_MouseButtonEvent button;
     XBMC_ResizeEvent resize;
     XBMC_MoveEvent move;
+    XBMC_ModeChangeEvent mode;
     XBMC_QuitEvent quit;
     XBMC_UserEvent user;
     XBMC_AppCommandEvent appcommand;

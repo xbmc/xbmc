@@ -675,75 +675,25 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
+std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings)
 {
-  std::vector<std::string> results;
-  if (input.empty())
-    return results;
-  if (delimiter.empty())
-  {
-    results.push_back(input);
-    return results;
-  }
-
-  const size_t delimLen = delimiter.length();
-  size_t nextDelim;
-  size_t textPos = 0;
-  do
-  {
-    if (--iMaxStrings == 0)
-    {
-      results.push_back(input.substr(textPos));
-      break;
-    }
-    nextDelim = input.find(delimiter, textPos);
-    results.push_back(input.substr(textPos, nextDelim - textPos));
-    textPos = nextDelim + delimLen;
-  } while (nextDelim != std::string::npos);
-
-  return results;
+  std::vector<std::string> result;
+  SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
+  return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const char delimiter, size_t iMaxStrings /*= 0*/)
+std::vector<std::string> StringUtils::Split(const std::string& input, const char delimiter, size_t iMaxStrings)
 {
-  std::vector<std::string> results;
-  if (input.empty())
-    return results;
-
-  size_t nextDelim;
-  size_t textPos = 0;
-  do
-  {
-    if (--iMaxStrings == 0)
-    {
-      results.push_back(input.substr(textPos));
-      break;
-    }
-    nextDelim = input.find(delimiter, textPos);
-    results.push_back(input.substr(textPos, nextDelim - textPos));
-    textPos = nextDelim + 1;
-  } while (nextDelim != std::string::npos);
-
-  return results;
+  std::vector<std::string> result;
+  SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
+  return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::vector<std::string> &delimiters)
+std::vector<std::string> StringUtils::Split(const std::string& input, const std::vector<std::string>& delimiters)
 {
-  std::vector<std::string> results;
-  if (input.empty())
-    return results;
-
-  if (delimiters.empty())
-  {
-    results.push_back(input);
-    return results;
-  }
-  std::string str = input;
-  for (size_t di = 1; di < delimiters.size(); di++)
-    StringUtils::Replace(str, delimiters[di], delimiters[0]);
-  results = Split(str, delimiters[0]);
-
-  return results;
+  std::vector<std::string> result;
+  SplitTo(std::back_inserter(result), input, delimiters);
+  return result;
 }
 
 std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings /* = 0 */)

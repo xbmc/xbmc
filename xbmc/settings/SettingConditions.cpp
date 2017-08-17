@@ -288,6 +288,9 @@ void CSettingConditions::Initialize()
 #ifdef HAVE_X11
   m_simpleConditions.insert("have_x11");
 #endif
+#ifdef HAVE_WAYLAND
+  m_simpleConditions.insert("have_wayland");
+#endif
 #ifdef HAS_GL
   m_simpleConditions.insert("has_gl");
 #endif

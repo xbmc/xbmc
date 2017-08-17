@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,18 +17,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
+#pragma once
 
-class ILinuxKeymap
+#include <wayland-client.hpp>
+
+namespace KODI
 {
-public:
+namespace WINDOWING
+{
+namespace WAYLAND
+{
 
-  virtual ~ILinuxKeymap() {};
-  
-  virtual uint32_t KeysymForKeycode(uint32_t code) const = 0;
-  virtual void     UpdateMask(uint32_t depressed, uint32_t latched, uint32_t locked, uint32_t group) = 0;
-  virtual uint32_t CurrentModifiers() const = 0;
-  
-  virtual uint32_t XBMCKeysymForKeycode(uint32_t code) const = 0;
-  virtual uint32_t ActiveXBMCModifiers() const = 0;
+struct WaylandCPtrCompare
+{
+  bool operator()(wayland::proxy_t const& p1, wayland::proxy_t const& p2)
+  {
+    return p1.c_ptr() < p2.c_ptr();
+  }
 };
+
+}
+}
+}

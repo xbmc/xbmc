@@ -32,6 +32,7 @@ HAS_ZLIB=@has_zlib@
 NEED_LIBICONV=@need_libiconv@
 LINK_ICONV=@link_iconv@
 ENABLE_GPLV3=@use_gplv3@
+ENABLE_WAYLAND=@enable_wayland@
 HAS_LIBCRYSTAX=@has_libcrystax@
 
 BASE_URL=http://mirrors.kodi.tv/build-deps/sources

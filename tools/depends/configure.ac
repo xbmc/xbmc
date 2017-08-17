@@ -94,6 +94,12 @@ AC_ARG_ENABLE([gplv3],
   [use_gplv3=$enableval],
   [use_gplv3=yes])
 
+AC_ARG_ENABLE([wayland],
+  [AS_HELP_STRING([--enable-wayland],
+  [build libraries needed for Wayland. default is no])],
+  [enable_wayland=$enableval],
+  [enable_wayland=no])
+
 if test "$use_ccache" = "yes"; then
   AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
   if test "x$HAVE_CCACHE" = "xno" ; then
@@ -531,6 +537,12 @@ if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
 fi
 
+if test "$platform_os" != "linux"; then
+  if test "x$enable_wayland" != "xno"; then
+    AC_MSG_ERROR([Wayland is only supported on the Linux platform])
+  fi
+fi
+
 if test "$platform_os" == "android"; then
   if test -z $use_ndk_path; then
     AC_MSG_ERROR("NDK path is required for android")
@@ -678,6 +690,7 @@ AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
+AC_SUBST(enable_wayland)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)

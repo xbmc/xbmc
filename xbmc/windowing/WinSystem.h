@@ -40,7 +40,8 @@ enum WindowSystemType
   WINDOW_SYSTEM_EGL,
   WINDOW_SYSTEM_RPI,
   WINDOW_SYSTEM_AML,
-  WINDOW_SYSTEM_ANDROID
+  WINDOW_SYSTEM_ANDROID,
+  WINDOW_SYSTEM_WAYLAND
 };
 
 struct RESOLUTION_WHR
@@ -72,6 +73,8 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
+  virtual void FinishModeChange(RESOLUTION res){}
+  virtual void FinishWindowResize(int newWidth, int newHeight) {ResizeWindow(newWidth, newHeight, -1, -1);}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {}
@@ -84,6 +87,25 @@ public:
   virtual bool UseLimitedColor();
   //the number of presentation buffers
   virtual int NoOfBuffers();
+  /**
+   * Get average display latency
+   *
+   * The latency should be measured as the time between finishing the rendering
+   * of a frame, i.e. calling PresentRender, and the rendered content becoming
+   * visible on the screen.
+   *
+   * \return average display latency in seconds, or negative value if unknown
+   */
+  virtual float GetDisplayLatency() { return -1.0f; }
+  /**
+   * Get time that should be subtracted from the display latency for this frame
+   * in milliseconds
+   *
+   * Contrary to \ref GetDisplayLatency, this value is calculated ad-hoc
+   * for the frame currently being rendered and not a value that is calculated/
+   * averaged from past frames and their presentation times
+   */
+  virtual float GetFrameLatencyAdjustment() { return 0.0; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }

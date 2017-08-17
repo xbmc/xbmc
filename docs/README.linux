@@ -60,6 +60,9 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
   zip, zlib1g-dev
 
+If you want to build with Wayland instead of X11, you will need:
+  wayland-protocols (>= 1.7), libwaylandpp-dev
+
 [NOTICE] crossguid / libcrossguid-dev all Linux distributions.
 Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
 We supply a Makefile in tools/depends/target/crossguid
@@ -71,6 +74,22 @@ Kodi now requires libfmt which is not available in Ubuntu repositories at this t
 We supply a Makefile in tools/depends/target/libfmt
 to make it easy to install into /usr/local.
     $ make -C tools/depends/target/libfmt PREFIX=/usr/local
+
+[NOTICE] wayland-protocols all Linux distributions.
+Building Kodi with Wayland requires a recent version of wayland-protocols (at least 1.7)
+which is not available in the Ubuntu LTS repostiories at this time.
+We supply a Makefile in tools/depends/target/wayland-protocols to make it easy to install
+into /usr/local.
+    $ make -C tools/depends/target/wayland-protocols PREFIX=/usr/local
+
+[NOTICE] waylandpp all Linux distributions.
+Building Kodi with Wayland requires waylandpp which is not available in repositories
+of most major distributions at this time.
+We supply a Makefile in tools/depends/target/waylandpp to make it easy to install
+into /usr/local.
+Note that building waylandpp has some dependencies of its own: scons,
+libwayland-dev (>= 1.11.0), libwayland-egl1-mesa
+    $ make -C tools/depends/target/waylandpp PREFIX=/usr/local
 
 Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
     $ sudo apt-get install ccache
@@ -98,7 +117,15 @@ Cmake build instructions V18.0 Leia and higher
 
 Create and change to build directory 
     $ mkdir kodi-build && cd kodi-build
+
+Run CMake
+- for X11
     $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+- for Wayland
+    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
+    (You can use "gles" instead of "gl" if you want to build with GLES)
+
+Build
     $ cmake --build . -- VERBOSE=1
     
 Tip: By adding -j<number> to the make command, you describe how many
