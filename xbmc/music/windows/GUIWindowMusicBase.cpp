@@ -280,17 +280,12 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnItemInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
+void CGUIWindowMusicBase::OnItemInfoAll(const std::string strPath, bool refresh )
 {
-  CMusicDatabaseDirectory dir;
-  std::string strPath = m_vecItems->GetPath();
-  if (bCurrent)
-    strPath = m_vecItems->Get(iItem)->GetPath();
-  
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
-    g_application.StartMusicAlbumScan(strPath,refresh);
+    g_application.StartMusicAlbumScan(strPath, refresh);
   else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
-    g_application.StartMusicArtistScan(strPath,refresh);
+    g_application.StartMusicArtistScan(strPath, refresh);
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIDialogMusicInfo
@@ -367,13 +362,12 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
 
   ADDON::ScraperPtr scraper;
-  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ARTISTS))
+  if (!m_musicdatabase.GetScraper(params.GetArtistId(), CONTENT_ARTISTS, scraper))
     return;
 
   CArtist artist;
   if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
       return;
-  artist.bScrapedMBID = m_musicdatabase.HasScrapedArtistMBID(artist.idArtist);
   m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
   bool refresh = false;
   while (1)
@@ -440,13 +434,12 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
 
   ADDON::ScraperPtr scraper;
-  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+  if (!m_musicdatabase.GetScraper(params.GetAlbumId(), CONTENT_ALBUMS, scraper))
     return false;
 
   CAlbum album;
   if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
     return false;
-  album.bScrapedMBID = m_musicdatabase.HasScrapedAlbumMBID(album.idAlbum);
   m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
   bool refresh = false;
   while (1)

@@ -74,6 +74,7 @@ public:
     strPath.clear();
     dateAdded.Reset();
     bScrapedMBID = false;
+    strLastScraped.clear();
   }
 
   /*! \brief Load artist information from an XML file.
@@ -107,6 +108,7 @@ public:
   std::vector<std::pair<std::string,std::string> > discography;
   CDateTime dateAdded;
   bool bScrapedMBID;
+  std::string strLastScraped;
 };
 
 class CArtistCredit
