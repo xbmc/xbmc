@@ -80,6 +80,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "wma" || 
       strExtension == "flac" || 
       strExtension == "m4a" || strExtension == "mp4" || strExtension == "m4b" ||
+      strExtension == "m4v" ||
       strExtension == "mpc" || strExtension == "mpp" || strExtension == "mp+" ||
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
       strExtension == "opus" ||
