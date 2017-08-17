@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Icelandic" layout="QWERTY">
+    <keyboard>
+      <row>1234567890ö-</row>
+      <row>qwertyuiopð'</row>
+      <row>asdfghjklæ+</row>
+      <row>zxcvbnm,.þ</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890Ö_</row>
+      <row>QWERTYUIOPÐ?</row>
+      <row>ASDFGHJKLÆ*</row>
+      <row>ZXCVBNM;:Þ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>áéíóú&lt;&gt;/?\|</row>
+      <row>ÁÉÍÓÚ`~"</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
