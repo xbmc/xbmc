@@ -34,6 +34,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -785,6 +786,19 @@ PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
       CLog::Log(LOGERROR, "PVR - %s - cannot set epg time frame for client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
     }
   }
+
+  return error;
+}
+
+PVR_ERROR CPVRClients::IsRecordable(const CConstPVREpgInfoTagPtr& tag, bool &bIsRecordable) const
+{
+  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVR_CLIENT client;
+  if (GetCreatedClient(tag->ClientID(), client))
+    error = client->IsRecordable(tag, bIsRecordable);
+
+  if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
+    CLog::Log(LOGERROR, "PVR - %s - unable to obtain 'isRecordable' flag from client '%d': %s", __FUNCTION__, tag->ClientID(), CPVRClient::ToString(error));
 
   return error;
 }

@@ -46,6 +46,7 @@ extern "C" {
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
@@ -365,6 +366,42 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
   strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
 }
 
+void CPVRClient::WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &addonTag)
+{
+  addonTag = {0};
+
+  time_t t;
+  kodiTag->StartAsUTC().GetAsTime(t);
+  addonTag.startTime = t;
+  kodiTag->EndAsUTC().GetAsTime(t);
+  addonTag.endTime = t;
+  addonTag.iParentalRating = kodiTag->ParentalRating();
+  addonTag.iUniqueBroadcastId = kodiTag->UniqueBroadcastID();
+  addonTag.bNotify = kodiTag->Notify();
+  kodiTag->FirstAiredAsUTC().GetAsTime(t);
+  addonTag.firstAired = t;
+  addonTag.iSeriesNumber = kodiTag->SeriesNumber();
+  addonTag.iEpisodeNumber = kodiTag->EpisodeNumber();
+  addonTag.iEpisodePartNumber = kodiTag->EpisodePart();
+  addonTag.iStarRating = kodiTag->StarRating();
+  addonTag.iYear = kodiTag->Year();
+  addonTag.iFlags = kodiTag->Flags();
+  addonTag.strTitle = kodiTag->Title(true).c_str();
+  addonTag.strPlotOutline = kodiTag->PlotOutline().c_str();
+  addonTag.strPlot = kodiTag->Plot().c_str();
+  addonTag.strOriginalTitle = kodiTag->OriginalTitle(true).c_str();
+  addonTag.strCast = kodiTag->Cast().c_str();
+  addonTag.strDirector = kodiTag->Director().c_str();
+  addonTag.strWriter = kodiTag->Writer().c_str();
+  addonTag.strIMDBNumber = kodiTag->IMDBNumber().c_str();
+  addonTag.strEpisodeName = kodiTag->EpisodeName().c_str();
+  addonTag.strIconPath = kodiTag->Icon().c_str();
+  addonTag.iChannelNumber = kodiTag->Channel() ? kodiTag->Channel()->ClientChannelNumber() : 0;
+  addonTag.iGenreType = kodiTag->GenreType();
+  addonTag.iGenreSubType = kodiTag->GenreSubType();
+  addonTag.strSeriesLink = kodiTag->SeriesLink().c_str();
+}
+
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
@@ -682,7 +719,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *e
   handle.callerAddress  = this;
   handle.dataAddress    = epg;
   handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CPVRClient::cb_transfer_epg_entry()
-  PVR_ERROR retVal = m_struct.toAddon.GetEpg(&handle,
+  PVR_ERROR retVal = m_struct.toAddon.GetEPGForChannel(&handle,
       addonChannel,
       start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
       end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0);
@@ -700,6 +737,23 @@ PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   PVR_ERROR retVal = m_struct.toAddon.SetEPGTimeFrame(iDays);
+  LogError(retVal, __FUNCTION__);
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (!m_clientCapabilities.SupportsRecordings() || !m_clientCapabilities.SupportsEPG())
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+
+  EPG_TAG addonTag;
+  WriteEpgTag(tag, addonTag);
+  retVal = m_struct.toAddon.IsEPGTagRecordable(&addonTag, &bIsRecordable);
   LogError(retVal, __FUNCTION__);
   return retVal;
 }
@@ -1299,7 +1353,7 @@ const char *CPVRClient::ToString(const PVR_ERROR error)
 
 bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
 {
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
   {
     CLog::Log(LOGERROR, "PVR - %s - addon '%s' returned an error: %s",
         strMethod, GetFriendlyName().c_str(), ToString(error));
@@ -1644,15 +1698,16 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
     return;
   }
 
+  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   CPVREpg *kodiEpg = static_cast<CPVREpg *>(handle->dataAddress);
-  if (!kodiEpg)
+  if (!epgentry || !client || !kodiEpg)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
   }
 
   /* transfer this entry to the epg */
-  kodiEpg->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
+  kodiEpg->UpdateEntry(epgentry, client->GetID(), handle->dataIdentifier == 1 /* update db */);
 }
 
 void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
@@ -1848,7 +1903,7 @@ typedef struct EpgEventStateChange
   EpgEventStateChange(int _iClientId, unsigned int _iUniqueChannelId, EPG_TAG *_event, EPG_EVENT_STATE _state)
   : iClientId(_iClientId),
     iUniqueChannelId(_iUniqueChannelId),
-    event(new CPVREpgInfoTag(*_event)),
+    event(new CPVREpgInfoTag(*_event, _iClientId)),
     state(_state) {}
 
 } EpgEventStateChange;
@@ -1861,7 +1916,7 @@ void CPVRClient::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
     const CPVREpgPtr epg(channel->GetEPG());
     if (epg)
     {
-      if (!epg->UpdateEntry(ch.event, ch.state))
+      if (!epg->UpdateEntry(ch.event, ch.state, false))
         CLog::Log(LOGERROR, "PVR - %s - epg update failed for %sevent change (%d)",
                   __FUNCTION__, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
     }

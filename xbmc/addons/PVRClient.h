@@ -362,6 +362,14 @@ namespace PVR
      */
     PVR_ERROR RenameChannel(const CPVRChannelPtr &channel);
 
+    /*
+     * @brief Check if an epg tag can be recorded
+     * @param tag The epg tag
+     * @param bIsRecordable Set to true if the tag can be recorded
+     * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
+     */
+    PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
+
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */
@@ -850,6 +858,13 @@ namespace PVR
      * @param addonChannel The channel on the addon's side.
      */
     static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
+
+    /*!
+     * @brief Copy over epg info from CPVREpgInfoTag to EPG_TAG.
+     * @param kodiTag The epg tag on Kodi's side.
+     * @param addonTag The epg tag on the addon's side.
+     */
+    static void WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &addonTag);
 
     /*!
      * @brief Whether a channel can be played by this add-on

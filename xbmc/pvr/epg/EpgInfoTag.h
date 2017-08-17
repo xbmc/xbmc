@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,12 +35,12 @@
 #define EPG_DEBUGGING 0
 
 class CVariant;
-/** an EPG info tag */
+
 namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag : public ISerializable
+  class CPVREpgInfoTag : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -54,7 +55,7 @@ namespace PVR
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
-    explicit CPVREpgInfoTag(const EPG_TAG &data);
+    CPVREpgInfoTag(const EPG_TAG &data, int iClientId);
 
   private:
     /*!
@@ -77,6 +78,12 @@ namespace PVR
     bool operator !=(const CPVREpgInfoTag& right) const;
 
     void Serialize(CVariant &value) const override;
+
+    /*!
+     * @brief Get the identifier of the client that serves this event.
+     * @return The identifier.
+     */
+    int ClientID(void) const { return m_iClientId; }
 
     /*!
      * @brief Check if this event is currently active.
@@ -369,6 +376,12 @@ namespace PVR
     PVR::CPVRRecordingPtr Recording(void) const;
 
     /*!
+     * @brief Check if this event can be recorded.
+     * @return True if it can be recorded, false otherwise.
+     */
+    bool IsRecordable(void) const;
+
+    /*!
      * @brief Change the channel tag of this epg tag
      * @param channel The new channel
      */
@@ -409,6 +422,12 @@ namespace PVR
      */
     bool IsSeries() const;
 
+    /*!
+     * @brief Return the flags (EPG_TAG_FLAG_*) of this event as a bitfield.
+     * @return the flags.
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
   private:
 
     /*!
@@ -428,13 +447,8 @@ namespace PVR
      */
     CDateTime GetCurrentPlayingTime(void) const;
 
-    /*!
-     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
-     */
-    unsigned int Flags() const { return m_iFlags; }
-
     bool                     m_bNotify;            /*!< notify on start */
-
+    int                      m_iClientId;          /*!< client id */
     int                      m_iBroadcastId;       /*!< database ID */
     int                      m_iGenreType;         /*!< genre type */
     int                      m_iGenreSubType;      /*!< genre subtype */

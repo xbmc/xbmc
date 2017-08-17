@@ -347,6 +347,12 @@ namespace PVR
       return false;
     }
 
+    if (!item->IsTimerRule() && item->GetEpgInfoTag() && !item->GetEpgInfoTag()->IsRecordable())
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19189}); // "Information", "The PVR backend does not allow to record this event."
+      return false;
+    }
+
     if (!CheckParentalLock(item->Channel()))
       return false;
 
@@ -578,7 +584,7 @@ namespace PVR
         const CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false) : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration));
 
         if (newTimer)
-          bReturn = newTimer->AddToClient();
+          bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
 
         if (!bReturn)
           CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164}); // "Information", "Can't start recording. Check the log for more information about this message."

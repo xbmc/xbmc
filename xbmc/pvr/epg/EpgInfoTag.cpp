@@ -45,6 +45,7 @@ CPVREpgInfoTagPtr CPVREpgInfoTag::CreateDefaultTag()
 
 CPVREpgInfoTag::CPVREpgInfoTag(void) :
     m_bNotify(false),
+    m_iClientId(-1),
     m_iBroadcastId(-1),
     m_iGenreType(0),
     m_iGenreSubType(0),
@@ -62,6 +63,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(void) :
 
 CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
     m_bNotify(false),
+    m_iClientId(channel ? channel->ClientID() : -1),
     m_iBroadcastId(-1),
     m_iGenreType(0),
     m_iGenreSubType(0),
@@ -80,8 +82,9 @@ CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel,
   UpdatePath();
 }
 
-CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
+CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data, int iClientId) :
     m_bNotify(false),
+    m_iClientId(iClientId),
     m_iBroadcastId(-1),
     m_iGenreType(0),
     m_iGenreSubType(0),
@@ -146,6 +149,7 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
   }
   return (bChannelMatch &&
           m_bNotify            == right.m_bNotify &&
+          m_iClientId          == right.m_iClientId &&
           m_iBroadcastId       == right.m_iBroadcastId &&
           m_iGenreType         == right.m_iGenreType &&
           m_iGenreSubType      == right.m_iGenreSubType &&
@@ -538,6 +542,7 @@ void CPVREpgInfoTag::SetChannel(const PVR::CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
   m_channel = channel;
+  m_iClientId = m_channel ? m_channel->ClientID() : -1;
 }
 
 bool CPVREpgInfoTag::HasChannel(void) const
@@ -581,6 +586,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
 
   {
     bChanged |= (
+        m_iClientId          != tag.m_iClientId ||
         m_strTitle           != tag.m_strTitle ||
         m_strPlotOutline     != tag.m_strPlotOutline ||
         m_strPlot            != tag.m_strPlot ||
@@ -617,6 +623,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
       if (bUpdateBroadcastId)
         m_iBroadcastId     = tag.m_iBroadcastId;
 
+      m_iClientId          = tag.m_iClientId;
       m_strTitle           = tag.m_strTitle;
       m_strPlotOutline     = tag.m_strPlotOutline;
       m_strPlot            = tag.m_strPlot;
@@ -747,6 +754,17 @@ CPVRRecordingPtr CPVREpgInfoTag::Recording(void) const
 {
   CSingleLock lock(m_critSection);
   return m_recording;
+}
+
+bool CPVREpgInfoTag::IsRecordable(void) const
+{
+  bool bIsRecordable = false;
+  if (CServiceBroker::GetPVRManager().Clients()->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR)
+  {
+    // event end time based fallback
+    bIsRecordable = EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+  }
+  return bIsRecordable;
 }
 
 void CPVREpgInfoTag::SetEpg(CPVREpg *epg)

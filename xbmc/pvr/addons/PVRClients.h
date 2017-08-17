@@ -536,6 +536,14 @@ namespace PVR
      */
     PVR_ERROR SetEPGTimeFrame(int iDays);
 
+    /*
+     * @brief Check if an epg tag can be recorded
+     * @param tag The epg tag
+     * @param bIsRecordable Set to true if the tag can be recorded
+     * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
+     */
+    PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
+
     //@}
 
     /*! @name Channel methods */

@@ -202,9 +202,8 @@ namespace PVR
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         return !epg->Timer() &&
-               epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime() &&
-               epg->Channel() &&
-               CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->Channel()->ClientID()).SupportsTimers();
+               epg->Channel() && CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->Channel()->ClientID()).SupportsTimers() &&
+               epg->IsRecordable();
 
       return false;
     }
