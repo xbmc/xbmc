@@ -41,6 +41,7 @@ set(package_files strings.xml
                   src/XBMCInputDeviceListener.java
                   src/XBMCJsonRPC.java
                   src/XBMCMediaContentProvider.java
+                  src/XBMCMediaSession.java
                   src/XBMCRecommendationBuilder.java
                   src/XBMCSearchableActivity.java
                   src/XBMCSettingsContentObserver.java

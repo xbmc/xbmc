@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
 #include <android/native_activity.h>
 
@@ -42,6 +43,7 @@
 #include "IInputHandler.h"
 #include "JNIMainActivity.h"
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "JNIXBMCMediaSession.h"
 #include "platform/xbmc.h"
 
 // forward declares
@@ -105,7 +107,7 @@ public:
   virtual void onVolumeChanged(int volume) override;
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos) override;
-  virtual void onVisibleBehindCanceled() override {}
+  virtual void onVisibleBehindCanceled() override;
   
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
@@ -166,11 +168,13 @@ public:
   static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
-  static void OnPlayBackStarted();
-  static void OnPlayBackPaused();
-  static void OnPlayBackResumed();
-  static void OnPlayBackStopped();
-  static void OnPlayBackEnded();
+  void OnPlayBackStarted();
+  void OnPlayBackPaused();
+  void OnPlayBackStopped();
+
+  // Info callback
+  void UpdateSessionMetadata();
+  void UpdateSessionState();
 
   // input device methods
   static void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
@@ -185,6 +189,9 @@ public:
   static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
   static void DeinitFrameCallback();
 
+  // Application slow ping
+  void ProcessSlow();
+
   static bool WaitVSync(unsigned int milliSeconds);
 
   bool getVideosurfaceInUse();
@@ -197,10 +204,12 @@ protected:
   static int GetMaxSystemVolume(JNIEnv *env);
   bool AcquireAudioFocus();
   bool ReleaseAudioFocus();
+  static void RequestVisibleBehind(bool requested);
 
 private:
   static CXBMCApp* m_xbmcappinstance;
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
+  std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
@@ -215,6 +224,7 @@ private:
   static bool m_headsetPlugged;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
+  static bool m_hasReqVisible;
   bool m_videosurfaceInUse;
   bool m_firstrun;
   bool m_exiting;
@@ -233,4 +243,6 @@ private:
   void XBMC_Stop();
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
+
+  static uint32_t m_playback_state;
 };

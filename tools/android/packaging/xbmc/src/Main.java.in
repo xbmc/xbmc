@@ -31,7 +31,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   native void _onNewIntent(Intent intent);
   native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
   native void _doFrame(long frameTimeNanos);
-
+  native void _onVisibleBehindCanceled();
+  
   private Runnable leanbackUpdateRunnable = new Runnable()
   {
     @Override
@@ -225,6 +226,13 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
+  }
+  
+  @Override
+  public void onVisibleBehindCanceled()
+  {
+    _onVisibleBehindCanceled();
+    super.onVisibleBehindCanceled();
   }
   
   @Override
