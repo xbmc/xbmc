@@ -887,8 +887,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
   {
     m_postProc.SetType(g_advancedSettings.m_videoPPFFmpegPostProc, false);
-    if (m_postProc.Process(pVideoPicture))
-      m_postProc.GetPicture(pVideoPicture);
+    m_postProc.Process(pVideoPicture);
   }
 
   return true;

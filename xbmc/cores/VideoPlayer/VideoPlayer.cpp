@@ -4715,7 +4715,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       }
     }
 
-    state.time = DVD_TIME_TO_MSEC(m_clock.GetClock(false));
+    state.time = m_clock.GetClock(false) * 1000 / DVD_TIME_BASE;
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
 
@@ -4758,7 +4758,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
         state.time_offset = DVD_MSEC_TO_TIME(dispTime) - state.dts;
       }
-      state.time += DVD_TIME_TO_MSEC(state.time_offset);
+      state.time += state.time_offset * 1000 / DVD_TIME_BASE;
       state.timeMax = pDisplayTime->GetTotalTime();
     }
     else
