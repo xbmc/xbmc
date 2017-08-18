@@ -66,7 +66,14 @@ CRenderBufferPoolGuiTexture::CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMe
 
 bool CRenderBufferPoolGuiTexture::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
-  return renderSettings.GetScalingMethod() == m_scalingMethod;
+  if (renderSettings.GetScalingMethod() != m_scalingMethod)
+    return false;
+
+  // Shaders not supported
+  if (!renderSettings.GetShaderPreset().empty())
+    return false;
+
+  return true;
 }
 
 IRenderBuffer* CRenderBufferPoolGuiTexture::CreateRenderBuffer(void* header /* = nullptr */)

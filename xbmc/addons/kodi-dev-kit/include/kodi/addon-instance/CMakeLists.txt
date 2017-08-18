@@ -10,6 +10,7 @@ set(HEADERS
   PVR.h
   Peripheral.h
   Screensaver.h
+  ShaderPreset.h
   VFS.h
   VideoCodec.h
   Visualization.h
