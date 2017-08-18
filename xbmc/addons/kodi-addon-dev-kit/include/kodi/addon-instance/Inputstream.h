@@ -109,11 +109,26 @@ extern "C" {
       TYPE_TELETEXT
     } m_streamType;
 
-    enum Codec_FEATURES
+    enum Codec_FEATURES : uint32_t
     {
       FEATURE_DECODE = 1
     };
-    unsigned int m_features;
+    uint32_t m_features;
+
+    enum STREAM_FLAGS : uint32_t
+    {
+      FLAG_NONE = 0x0000,
+      FLAG_DEFAULT = 0x0001,
+      FLAG_DUB = 0x0002,
+      FLAG_ORIGINAL = 0x0004,
+      FLAG_COMMENT = 0x0008,
+      FLAG_LYRICS = 0x0010,
+      FLAG_KARAOKE = 0x0020,
+      FLAG_FORCED = 0x0040,
+      FLAG_HEARING_IMPAIRED = 0x0080,
+      FLAG_VISUAL_IMPAIRED = 0x0100
+    };
+    uint32_t m_flags;
 
     char m_codecName[32];                /*!< @brief (required) name of codec according to ffmpeg */
     char m_codecInternalName[32];        /*!< @brief (optional) internal name of codec (selectionstream info) */
