@@ -33,7 +33,7 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGUIRenderSettings;
+  class CGUIGameControlManager;
 }
 
 namespace GAME
@@ -53,7 +53,7 @@ namespace GAME
 
     CPortManager& PortManager();
 
-    RETRO::CGUIRenderSettings& RenderSettings() { return *m_renderSettings; }
+    RETRO::CGUIGameControlManager &GameControls() { return *m_gameControlManager; }
 
   private:
     // Construction parameters
@@ -61,7 +61,7 @@ namespace GAME
 
     // Game services
     std::unique_ptr<CPortManager> m_portManager;
-    std::unique_ptr<RETRO::CGUIRenderSettings> m_renderSettings;
+    std::unique_ptr<RETRO::CGUIGameControlManager> m_gameControlManager;
   };
 }
 }

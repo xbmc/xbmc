@@ -19,7 +19,7 @@
  */
 
 #include "GameServices.h"
-#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControlManager.h"
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/ports/PortManager.h"
@@ -31,7 +31,7 @@ using namespace GAME;
 CGameServices::CGameServices(CControllerManager &controllerManager, PERIPHERALS::CPeripherals& peripheralManager) :
   m_controllerManager(controllerManager),
   m_portManager(new CPortManager(peripheralManager)),
-  m_renderSettings(new RETRO::CGUIRenderSettings)
+  m_gameControlManager(new RETRO::CGUIGameControlManager)
 {
 }
 

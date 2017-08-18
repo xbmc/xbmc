@@ -24,6 +24,7 @@
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControlManager.h"
 #include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -453,23 +454,24 @@ void CRetroPlayer::FrameMove()
 
 void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = true */)
 {
-  RETRO::CGUIRenderSettings &renderSettings = CServiceBroker::GetGameServices().RenderSettings();
+  CGUIGameControlManager &gameControls = CServiceBroker::GetGameServices().GameControls();
 
-  ViewMode viewMode = m_renderManager->GetRenderViewMode();
   ESCALINGMETHOD scalingMedthod = m_renderManager->GetScalingMethod();
+  ViewMode viewMode = m_renderManager->GetRenderViewMode();
 
-  if (renderSettings.IsGuiRenderSettingsEnabled())
+  if (gameControls.IsControlActive())
   {
-    m_renderManager->SetRenderViewMode(renderSettings.GetRenderViewMode());
+    const CGUIRenderSettings &renderSettings = gameControls.GetRenderSettings();
     m_renderManager->SetScalingMethod(renderSettings.GetScalingMethod());
+    m_renderManager->SetRenderViewMode(renderSettings.GetRenderViewMode());
   }
 
   m_renderManager->Render(clear, 0, alpha, gui);
 
-  if (renderSettings.IsGuiRenderSettingsEnabled())
+  if (gameControls.IsControlActive())
   {
-    m_renderManager->SetRenderViewMode(viewMode);
     m_renderManager->SetScalingMethod(scalingMedthod);
+    m_renderManager->SetRenderViewMode(viewMode);
   }
 }
 

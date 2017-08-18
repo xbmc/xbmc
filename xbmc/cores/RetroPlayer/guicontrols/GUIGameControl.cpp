@@ -19,7 +19,7 @@
  */
 
 #include "GUIGameControl.h"
-#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
+#include "GUIGameControlManager.h"
 #include "games/GameServices.h"
 #include "guilib/Geometry.h"
 #include "guilib/GraphicContext.h"
@@ -43,14 +43,14 @@ CGUIGameControl::CGUIGameControl(int parentID, int controlID, float posX, float 
   ControlType = GUICONTROL_GAME;
 }
 
-void CGUIGameControl::SetViewMode(const CGUIInfoLabel &viewMode)
-{
-  m_viewModeInfo = viewMode;
-}
-
 void CGUIGameControl::SetVideoFilter(const CGUIInfoLabel &videoFilter)
 {
   m_videoFilterInfo = videoFilter;
+}
+
+void CGUIGameControl::SetViewMode(const CGUIInfoLabel &viewMode)
+{
+  m_viewModeInfo = viewMode;
 }
 
 void CGUIGameControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -125,43 +125,36 @@ bool CGUIGameControl::CanFocus() const
 
 void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
 {
-  m_viewMode = -1;
-  m_scalingMethod = -1;
+  m_renderSettings.Reset();
 
   if (item)
   {
-    std::string strViewMode = m_viewModeInfo.GetItemLabel(item);
-    if (StringUtils::IsNaturalNumber(strViewMode))
-      std::istringstream(std::move(strViewMode)) >> m_viewMode;
-
     std::string strVideoFilter = m_videoFilterInfo.GetItemLabel(item);
     if (StringUtils::IsNaturalNumber(strVideoFilter))
-      std::istringstream(std::move(strVideoFilter)) >> m_scalingMethod;
+    {
+      unsigned int scalingMethod;
+      std::istringstream(std::move(strVideoFilter)) >> scalingMethod;
+      m_renderSettings.SetScalingMethod(static_cast<ESCALINGMETHOD>(scalingMethod));
+    }
+
+    std::string strViewMode = m_viewModeInfo.GetItemLabel(item);
+    if (StringUtils::IsNaturalNumber(strViewMode))
+    {
+      unsigned int viewMode;
+      std::istringstream(std::move(strViewMode)) >> viewMode;
+      m_renderSettings.SetRenderViewMode(static_cast<ViewMode>(viewMode));
+    }
   }
 }
 
 void CGUIGameControl::EnableGUIRender()
 {
-  CGUIRenderSettings &renderSettings = CServiceBroker::GetGameServices().RenderSettings();
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-
-  renderSettings.EnableGuiRenderSettings(true);
-
-  // Set view mode
-  if (m_viewMode >= 0)
-    renderSettings.SetRenderViewMode(static_cast<ViewMode>(m_viewMode));
-  else
-    renderSettings.SetRenderViewMode(gameSettings.ViewMode());
-
-  // Set scaling method
-  if (m_scalingMethod >= 0)
-    renderSettings.SetScalingMethod(static_cast<ESCALINGMETHOD>(m_scalingMethod));
-  else
-    renderSettings.SetScalingMethod(gameSettings.ScalingMethod());
+  CGUIGameControlManager &gameControls = CServiceBroker::GetGameServices().GameControls();
+  gameControls.SetActiveControl(this);
 }
 
 void CGUIGameControl::DisableGUIRender()
 {
-  CGUIRenderSettings &renderSettings = CServiceBroker::GetGameServices().RenderSettings();
-  renderSettings.EnableGuiRenderSettings(false);
+  CGUIGameControlManager &gameControls = CServiceBroker::GetGameServices().GameControls();
+  gameControls.ResetActiveControl();
 }

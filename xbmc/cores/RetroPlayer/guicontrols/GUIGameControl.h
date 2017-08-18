@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIInfoTypes.h"
 
@@ -35,8 +36,10 @@ public:
   CGUIGameControl(int parentID, int controlID, float posX, float posY, float width, float height);
   ~CGUIGameControl() override = default;
 
-  void SetViewMode(const CGUIInfoLabel &viewMode);
   void SetVideoFilter(const CGUIInfoLabel &videoFilter);
+  void SetViewMode(const CGUIInfoLabel &viewMode);
+
+  const CGUIRenderSettings &GetRenderSettings() const { return m_renderSettings; }
 
   // implementation of CGUIControl
   CGUIGameControl *Clone() const override { return new CGUIGameControl(*this); };
@@ -50,11 +53,10 @@ private:
   void EnableGUIRender();
   void DisableGUIRender();
 
-  CGUIInfoLabel m_viewModeInfo;
   CGUIInfoLabel m_videoFilterInfo;
+  CGUIInfoLabel m_viewModeInfo;
 
-  int m_viewMode = -1;
-  int m_scalingMethod = -1;
+  CGUIRenderSettings m_renderSettings;
 };
 
 }

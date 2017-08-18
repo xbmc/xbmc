@@ -36,10 +36,10 @@ namespace RETRO
     // Implementation of IRenderSettingsCallback
     bool SupportsRenderFeature(ERENDERFEATURE feature) override;
     bool SupportsScalingMethod(ESCALINGMETHOD method) override;
-    ViewMode GetRenderViewMode() override;
-    void SetRenderViewMode(ViewMode mode) override;
     ESCALINGMETHOD GetScalingMethod() override;
     void SetScalingMethod(ESCALINGMETHOD scalingMethod) override;
+    ViewMode GetRenderViewMode() override;
+    void SetRenderViewMode(ViewMode mode) override;
   };
 }
 }

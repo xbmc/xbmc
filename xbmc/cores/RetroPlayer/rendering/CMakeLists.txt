@@ -1,4 +1,5 @@
-set(SOURCES RPRenderManager.cpp
+set(SOURCES GUIRenderSettings.cpp
+            RPRenderManager.cpp
 )
 
 set(HEADERS GUIRenderSettings.h
