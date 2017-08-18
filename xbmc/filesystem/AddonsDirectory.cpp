@@ -62,6 +62,7 @@ const std::set<AddonType> infoProviderTypes = {
     AddonType::SCRAPER_MUSICVIDEOS, AddonType::SCRAPER_TVSHOWS,
 };
 
+// clang-format off
 const std::set<AddonType> lookAndFeelTypes = {
     AddonType::SKIN,
     AddonType::SCREENSAVER,
@@ -75,9 +76,11 @@ const std::set<AddonType> lookAndFeelTypes = {
 const std::set<AddonType> gameTypes = {
     AddonType::GAME_CONTROLLER,
     AddonType::GAMEDLL,
+    AddonType::SHADERDLL,
     AddonType::GAME,
     AddonType::RESOURCE_GAMES,
 };
+// clang-format on
 
 static bool IsInfoProviderType(AddonType type)
 {
@@ -127,9 +130,15 @@ static bool IsGameResource(const AddonPtr& addon)
 
 static bool IsGameSupportAddon(const AddonPtr& addon)
 {
-  return addon->Type() == AddonType::GAMEDLL &&
-         !std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsPath() &&
-         !std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsStandalone();
+  if (addon->Type() == AddonType::GAMEDLL &&
+      !std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsPath() &&
+      !std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsStandalone())
+    return true;
+
+  if (addon->Type() == AddonType::SHADERDLL)
+    return true;
+
+  return false;
 }
 
 static bool IsGameAddon(const AddonPtr& addon)
