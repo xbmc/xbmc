@@ -60,11 +60,11 @@ void CLog::Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...)
 
 void CLog::Log(int loglevel, int component, PRINTF_FORMAT_STRING const char *format, ...)
 {
-  if (g_advancedSettings.CanLogComponent(component))
+  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(loglevel))
   {
     va_list va;
     va_start(va, format);
-    CLog::Log(loglevel, format, va);
+    LogString(loglevel, StringUtils::FormatV(format, va));
     va_end(va);
   }
 }
@@ -89,7 +89,7 @@ void CLog::LogFunction(int loglevel, const char* functionName, int component, co
   {
     va_list va;
     va_start(va, format);
-    CLog::LogFunction(loglevel, functionName, format, va);
+    LogFunction(loglevel, functionName, StringUtils::FormatV(format, va).c_str());
     va_end(va);
   }
 }
