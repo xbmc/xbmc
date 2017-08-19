@@ -700,7 +700,7 @@ public class XBMCJsonRPC
     try
     {
       Intent detailsIntent = new Intent(ctx, Splash.class);
-      detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
+      detailsIntent.setAction(Intent.ACTION_VIEW);
       detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.getString("movieid") + "?showinfo=true"));
       //detailsIntent.putExtra(MovieDetailsActivity.MOVIE, movie);
       //detailsIntent.putExtra(MovieDetailsActivity.NOTIFICATION_ID, id);
