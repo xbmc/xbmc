@@ -45,11 +45,11 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
 #include "settings/AdvancedSettings.h"
@@ -78,6 +78,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
 using namespace MUSIC_INFO;
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -380,7 +381,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
+        HELPERS::ShowOKDialogText(CVariant{189}, CVariant{14057});
         break;
       }
 
@@ -397,7 +398,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{21889}, CVariant{20199});
+        HELPERS::ShowOKDialogText(CVariant{21889}, CVariant{20199});
         break;
       }
     }
@@ -457,7 +458,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
+        HELPERS::ShowOKDialogText(CVariant{189}, CVariant{14057});
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -476,7 +477,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{185}, CVariant{500});
+        HELPERS::ShowOKDialogText(CVariant{185}, CVariant{500});
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -688,7 +689,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
+          HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
           return; //hmmm unable to load playlist?
         }
 
@@ -964,7 +965,7 @@ void CGUIWindowMusicBase::OnRipCD()
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -980,7 +981,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -1062,7 +1063,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
+      HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
       return; //hmmm unable to load playlist?
     }
   }

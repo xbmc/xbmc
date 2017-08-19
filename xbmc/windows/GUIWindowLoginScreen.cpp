@@ -31,7 +31,6 @@
 #include "addons/Skin.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogOK.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -43,6 +42,7 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "PlayListPlayer.h"
 #include "profiles/Profile.h"
@@ -121,7 +121,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           else
           {
             if (!bCanceled && iItem != 0)
-              CGUIDialogOK::ShowAndGetInput(CVariant{20068}, CVariant{20117});
+              HELPERS::ShowOKDialogText(CVariant{20068}, CVariant{20117});
           }
         }
       }

@@ -30,7 +30,6 @@
 #include "Artist.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
@@ -44,6 +43,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/cddb.h"
 #include "network/Network.h"
@@ -3402,7 +3402,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         // ..no, an error occured, display it to the user
         std::string strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
-        CGUIDialogOK::ShowAndGetInput(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
+        HELPERS::ShowOKDialogLines(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     else
@@ -3423,7 +3423,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   CFileItemList items;
   if (!CDirectory::GetDirectory(CProfilesManager::GetInstance().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{426});
+    HELPERS::ShowOKDialogText(CVariant{313}, CVariant{426});
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
@@ -3494,7 +3494,7 @@ void CMusicDatabase::Clean()
   // other writing access to the database is prohibited.
   if (g_application.IsMusicScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
+    HELPERS::ShowOKDialogText(CVariant{189}, CVariant{14057});
     return;
   }
   
@@ -3508,7 +3508,7 @@ void CMusicDatabase::Clean()
 
       if (iReturnString != ERROR_OK)
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{iReturnString});
+        HELPERS::ShowOKDialogText(CVariant{313}, CVariant{iReturnString});
       }
     }
   }
@@ -6432,7 +6432,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bo
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
+    HELPERS::ShowOKDialogLines(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)

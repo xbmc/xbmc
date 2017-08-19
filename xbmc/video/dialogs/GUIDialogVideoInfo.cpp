@@ -34,7 +34,6 @@
 #include "video/VideoInfoTag.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -57,6 +56,7 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
 #include <iterator>
 
@@ -507,7 +507,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
+    HELPERS::ShowOKDialogText(CVariant{194}, CVariant{284});
   }
 }
 
@@ -1150,7 +1150,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
   }
 
@@ -1239,7 +1239,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
   }
 
@@ -1884,7 +1884,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
   }
 

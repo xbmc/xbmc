@@ -22,9 +22,10 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/OK.h"
 
 #include "addons/binary-addons/AddonDll.h"
-#include "dialogs/GUIDialogOK.h"
+#include "messaging/helpers/DialogOKHelper.h" 
 #include "utils/log.h"
 #include "utils/Variant.h"
+using namespace KODI::MESSAGING;
 
 extern "C"
 {
@@ -54,7 +55,7 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(void* kodiBase, const
     return;
   }
 
-  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{text});
+  HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{text});
 }
 
 void Interface_GUIDialogOK::show_and_get_input_line_text(void* kodiBase, const char *heading, const char *line0, const char *line1, const char *line2)
@@ -66,8 +67,7 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(void* kodiBase, const c
                                         __FUNCTION__, addon, heading, line0, line1, line2);
     return;
   }
-
-  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});
+  HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ line0 }, CVariant{ line1 }, CVariant{ line2 });
 }
 
 } /* namespace ADDON */

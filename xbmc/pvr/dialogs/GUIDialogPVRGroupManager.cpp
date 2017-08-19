@@ -22,19 +22,20 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers//DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
+using namespace KODI::MESSAGING;
 using namespace PVR;
 
 #define CONTROL_LIST_CHANNELS_LEFT    11
@@ -203,7 +204,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
     {
       if (m_channelGroups->GetFolderCount() == 0)
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19137});
+        HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19137});
       }
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {

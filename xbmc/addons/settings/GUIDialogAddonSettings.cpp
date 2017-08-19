@@ -22,13 +22,15 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "addons/settings/AddonSettings.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h" 
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+using namespace KODI::MESSAGING;
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
   : CGUIDialogSettingsManagerBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
@@ -80,7 +82,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool sa
   if (!addon->HasSettings())
   {
     // addon does not support settings, inform user
-    CGUIDialogOK::ShowAndGetInput(CVariant{ 24000 }, CVariant{ 24030 });
+    HELPERS::ShowOKDialogText(CVariant{ 24000 }, CVariant{ 24030 });
     return false;
   }
 

@@ -38,7 +38,6 @@
 #include "video/windows/GUIWindowVideoNav.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "view/GUIViewState.h"
 #include "input/Key.h"
@@ -47,6 +46,7 @@
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
@@ -854,7 +854,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
+      HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
       return false; //hmmm unable to load playlist?
     }
     CPlayList playlist = *pPlayList;

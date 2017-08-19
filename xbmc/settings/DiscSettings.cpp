@@ -28,10 +28,12 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "dialogs/GUIDialogOK.h"
+#include "messaging/helpers/DialogOKHelper.h" 
 #include "utils/Variant.h"
 
 #include <libbluray/bluray-version.h>
+
+using namespace KODI::MESSAGING;
 
 CDiscSettings::CDiscSettings(void)
 {
@@ -77,7 +79,7 @@ void CDiscSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
         if (!info->libjvm_detected)
         {
           CLog::Log(LOGDEBUG, "DiscSettings - Could not load the java vm.");
-          CGUIDialogOK::ShowAndGetInput(CVariant{ 29803 }, CVariant{ 29804 });
+          HELPERS::ShowOKDialogText(CVariant{ 29803 }, CVariant{ 29804 });
         }
         CLog::Log(LOGDEBUG, "DiscSettings - Could not load the libbluray.jar.");
       }

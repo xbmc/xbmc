@@ -33,11 +33,11 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
-#include "dialogs/GUIDialogOK.h"
 #include "games/addons/GameClient.h"
 #include "games/GameUtils.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
@@ -46,6 +46,7 @@
 
 using namespace KODI;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 namespace XFILE
 {
@@ -558,7 +559,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
 
       if (!database.GetRepositoryContent(addon->ID(), addons))
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{addon->Name()}, CVariant{24991});
+        HELPERS::ShowOKDialogText(CVariant{addon->Name()}, CVariant{24991});
         return false;
       }
     }

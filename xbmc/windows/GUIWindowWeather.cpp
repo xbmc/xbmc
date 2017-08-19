@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "dialogs/GUIDialogOK.h"
+#include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "utils/StringUtils.h"

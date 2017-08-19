@@ -24,11 +24,11 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -82,7 +82,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
     if (!m_progItem || !m_progItem->HasChannel())
     {
       /* invalid channel */
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067});
+      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19067});
       Close();
       return bReturn;
     }

@@ -28,6 +28,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/ActionIDs.h"
+#include "messaging/helpers/DialogOKHelper.h" 
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
 #include "ServiceBroker.h"
@@ -37,6 +38,7 @@
 
 using namespace KODI;
 using namespace GAME;
+using namespace KODI::MESSAGING;
 
 CGUIDialogButtonCapture::CGUIDialogButtonCapture() :
   CThread("ButtonCaptureDlg")
@@ -56,7 +58,7 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ GetDialogHeader() }, CVariant{ GetDialogText() });
+    bool bAccepted = HELPERS::ShowOKDialogText(CVariant{ GetDialogHeader() }, CVariant{ GetDialogText() });
 
     StopThread(false);
 

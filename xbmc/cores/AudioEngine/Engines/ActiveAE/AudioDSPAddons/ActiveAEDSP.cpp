@@ -37,7 +37,6 @@ extern "C" {
 #include "cores/AudioEngine/Interfaces/AEResample.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIWindowManager.h"

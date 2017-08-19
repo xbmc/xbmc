@@ -19,13 +19,14 @@
  */
 
 #include "IDirectory.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "URL.h"
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI::MESSAGING;
 using namespace XFILE;
 
 IDirectory::IDirectory(void)
@@ -141,7 +142,7 @@ bool IDirectory::ProcessRequirements()
   }
   else if (type == "error")
   {
-    CGUIDialogOK::ShowAndGetInput(m_requirements["heading"], m_requirements["line1"], m_requirements["line2"], m_requirements["line3"]);
+    HELPERS::ShowOKDialogLines(CVariant{m_requirements["heading"]}, CVariant{m_requirements["line1"]}, CVariant{m_requirements["line2"]}, CVariant{m_requirements["line3"]});
   }
   m_requirements.clear();
   return false;

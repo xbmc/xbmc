@@ -28,7 +28,6 @@
 #include "addons/Addon.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -43,6 +42,7 @@
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -1854,12 +1854,12 @@ bool CAddonCallbacksGUI::Dialog_FileBrowser_ShowAndGetFile(const char *directory
 //@{
 void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputSingleText(const char *heading, const char *text)
 {
-  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{text});
+  HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{text});
 }
 
 void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2)
 {
-  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});
+  HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});
 }
 //@}
 

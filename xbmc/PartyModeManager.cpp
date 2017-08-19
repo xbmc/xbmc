@@ -23,11 +23,11 @@
 #include <algorithm>
 
 #include "Application.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
 #include "PlayListPlayer.h"
@@ -41,6 +41,7 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
+using namespace KODI::MESSAGING;
 using namespace PLAYLIST;
 
 #define QUEUE_DEPTH       10
@@ -514,7 +515,7 @@ void CPartyModeManager::Play(int iPos)
 void CPartyModeManager::OnError(int iError, const std::string&  strLogMessage)
 {
   // open error dialog
-  CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{16030}, CVariant{iError}, CVariant{0});
+  HELPERS::ShowOKDialogLines(CVariant{257}, CVariant{16030}, CVariant{iError}, CVariant{0});
   CLog::Log(LOGERROR, "PARTY MODE MANAGER: %s", strLogMessage.c_str());
   m_bEnabled = false;
   SendUpdateMessage();
