@@ -32,6 +32,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "threads/Timer.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -53,6 +54,22 @@ std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
 namespace ADDON
 {
+
+class CSkinSettingUpdateHandler : private ITimerCallback
+{
+public:
+  CSkinSettingUpdateHandler(CAddon& addon)
+  : m_addon(addon), m_timer(this) {}
+  ~CSkinSettingUpdateHandler() override = default;
+
+  void OnTimeout() override;
+  void TriggerSave();
+private:
+  static constexpr int DELAY = 500;
+
+  CAddon &m_addon;
+  CTimer m_timer;
+};
 
 bool CSkinSetting::Serialize(TiXmlElement* parent) const
 {
@@ -183,6 +200,17 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
 
 CSkinInfo::CSkinInfo(
     AddonProps props,
+    const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
+    : CAddon(std::move(props)),
+      m_defaultRes(resolution),
+      m_effectsSlowDown(1.f),
+      m_debugging(false)
+  {
+    m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
+  }
+
+CSkinInfo::CSkinInfo(
+    AddonProps props,
     const RESOLUTION_INFO& resolution,
     const std::vector<RESOLUTION_INFO>& resolutions,
     float effectsSlowDown,
@@ -193,8 +221,11 @@ CSkinInfo::CSkinInfo(
       m_effectsSlowDown(effectsSlowDown),
       m_debugging(debugging)
 {
+  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
   LoadStartupWindows(nullptr);
 }
+
+CSkinInfo::~CSkinInfo() = default;
 
 struct closestRes
 {
@@ -587,6 +618,7 @@ void CSkinInfo::SetString(int setting, const std::string &label)
   if (it != m_strings.end())
   {
     it->second->value = label;
+    m_settingsUpdateHandler->TriggerSave();
     return;
   }
 
@@ -609,6 +641,7 @@ int CSkinInfo::TranslateBool(const std::string &setting)
 
   int number = m_bools.size() + m_strings.size();
   m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number, skinBool));
+  m_settingsUpdateHandler->TriggerSave();
 
   return number;
 }
@@ -629,6 +662,7 @@ void CSkinInfo::SetBool(int setting, bool set)
   if (it != m_bools.end())
   {
     it->second->value = set;
+    m_settingsUpdateHandler->TriggerSave();
     return;
   }
 
@@ -644,6 +678,7 @@ void CSkinInfo::Reset(const std::string &setting)
     if (StringUtils::EqualsNoCase(setting, it.second->name))
     {
       it.second->value.clear();
+      m_settingsUpdateHandler->TriggerSave();
       return;
     }
   }
@@ -654,6 +689,7 @@ void CSkinInfo::Reset(const std::string &setting)
     if (StringUtils::EqualsNoCase(setting, it.second->name))
     {
       it.second->value = false;
+      m_settingsUpdateHandler->TriggerSave();
       return;
     }
   }
@@ -667,6 +703,8 @@ void CSkinInfo::Reset()
 
   for (auto& it : m_strings)
     it.second->value.clear();
+
+  m_settingsUpdateHandler->TriggerSave();
 }
 
 std::set<CSkinSettingPtr> CSkinInfo::ParseSettings(const TiXmlElement* rootElement)
@@ -766,6 +804,19 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
     if (!it.second->Serialize(settingsElement))
       CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"%s\"", it.second->name.c_str());
   }
+}
+
+void CSkinSettingUpdateHandler::OnTimeout()
+{
+  m_addon.SaveSettings();
+}
+
+void CSkinSettingUpdateHandler::TriggerSave()
+{
+  if (m_timer.IsRunning())
+    m_timer.Restart();
+  else
+    m_timer.Start(DELAY);
 }
 
 } /*namespace ADDON*/
