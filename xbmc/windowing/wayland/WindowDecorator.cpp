@@ -398,7 +398,7 @@ void CWindowDecorator::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy)
 {
   wayland::seat_t seat{proxy};
   seat.on_capabilities() = std::bind(&CWindowDecorator::OnSeatCapabilities, this, name, _1);
-  m_seats.emplace(name, std::move(seat));
+  m_seats.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::move(seat)));
 }
 
 void CWindowDecorator::OnSeatRemoved(std::uint32_t name)
