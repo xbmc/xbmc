@@ -221,8 +221,6 @@ void CXBMCApp::onResume()
   CJNIAudioManager audioManager(getSystemService("audio"));
   m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
 
-  m_mediaSession->activate(false);
-
   // Clear the applications cache. We could have installed/deinstalled apps
   {
     CSingleLock lock(m_applicationsMutex);
@@ -245,11 +243,7 @@ void CXBMCApp::onPause()
       if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
-    m_mediaSession->activate(true);
   }
-
-  if (m_playback_state != PLAYBACK_STATE_STOPPED)
-    m_mediaSession->activate(true);
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
@@ -739,7 +733,7 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 
 void CXBMCApp::ProcessSlow()
 {
-  if (m_mediaSession->isActive())
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && m_mediaSession->isActive())
     UpdateSessionState();
 }
 
@@ -945,7 +939,7 @@ void CXBMCApp::InitDirectories()
 void CXBMCApp::onReceive(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
@@ -1022,9 +1016,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  CXBMCApp::android_printf("Got Intent: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
-  CXBMCApp::android_printf("-- targetFile: %s", targetFile.c_str());
+  CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
   if (action == "android.intent.action.VIEW")
   {
     CFileItem* item = new CFileItem(targetFile, false);
