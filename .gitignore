@@ -277,6 +277,7 @@ lib/cpluff/stamp-h1
 /system/libmysql.dll
 /system/python27.dll
 /system/zlib.dll
+/system/lcms2.dll
 
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*
