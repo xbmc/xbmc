@@ -1,0 +1,9 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux64-wayland
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;./configure \
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=x86_64-linux-gnu --with-tarballs=$TARBALLS --enable-wayland $DEBUG_SWITCH
+fi
