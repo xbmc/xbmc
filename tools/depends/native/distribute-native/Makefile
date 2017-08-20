@@ -19,7 +19,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 .installed-$(PLATFORM): $(PLATFORM)
-	cd $(PLATFORM); $(PREFIX)/bin/python setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); $(PREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 	touch $@
 
 clean:
