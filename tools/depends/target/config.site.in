@@ -34,7 +34,7 @@ LIBGCRYPT_CONFIG=@prefix@/@deps_dir@/bin/libgcrypt-config
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
-PYTHON_VERSION=2.7
+PYTHON_VERSION=3.7
 PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto"
 PYTHON_CPPFLAGS=-I@prefix@/@deps_dir@/include/python${PYTHON_VERSION}
 PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
