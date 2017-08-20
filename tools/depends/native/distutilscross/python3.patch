@@ -1,0 +1,11 @@
+--- a/distutilscross/crosscompile.py
++++ b/distutilscross/crosscompile.py
+@@ -32,7 +32,7 @@
+ _get_python_lib = sysconfig.get_python_lib
+ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
+     if os.environ.has_key('PYTHONXCPREFIX'):
+-        print "Setting prefix"
++        print("Setting prefix")
+         prefix = os.environ['PYTHONXCPREFIX']
+ 
+     return _get_python_lib(plat_specific, standard_lib, prefix)
