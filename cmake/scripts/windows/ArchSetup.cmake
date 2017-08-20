@@ -35,7 +35,6 @@ set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH}
 list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})
 list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
 list(APPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
-set(PYTHON_INCLUDE_DIR ${DEPENDENCIES_DIR}/include/python)
 
 # -------- Compiler options ---------
 
@@ -74,7 +73,7 @@ link_directories(${DEPENDENCIES_DIR}/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
-                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib)
+                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib Mincore.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)
