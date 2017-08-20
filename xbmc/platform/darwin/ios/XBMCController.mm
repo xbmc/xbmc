@@ -855,7 +855,7 @@ XBMCController *g_xbmcController;
 }
 //--------------------------------------------------------------
 - (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
-  LOG(@"%s: type %d, subtype: %d", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
+  LOG(@"%s: type %zd, subtype: %zd", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
     [self disableNetworkAutoSuspend];
@@ -894,7 +894,7 @@ XBMCController *g_xbmcController;
 		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
-        LOG(@"unhandled subtype: %d", receivedEvent.subtype);
+        LOG(@"unhandled subtype: %zd", receivedEvent.subtype);
         break;
     }
     [self rescheduleNetworkAutoSuspend];
