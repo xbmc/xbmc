@@ -416,7 +416,7 @@ public class Splash extends Activity
 
           if (!(sName.startsWith("assets/") || (mInstallLibs && sName.startsWith("lib/"))))
             continue;
-          if (sName.startsWith("assets/python2.7"))
+          if (sName.startsWith("assets/python"))
             continue;
 
           String sFullPath = null;
