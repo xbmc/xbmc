@@ -1305,7 +1305,7 @@ void CXBMCApp::SetupEnv()
     setenv("HOME", getenv("KODI_TEMP"), 0);
 
   std::string apkPath = getenv("KODI_ANDROID_APK");
-  apkPath += "/assets/python2.7";
+  apkPath += "/assets/python3.7";
   setenv("PYTHONHOME", apkPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
   setenv("PYTHONOPTIMIZE","", 1);
