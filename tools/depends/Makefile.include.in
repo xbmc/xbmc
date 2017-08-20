@@ -112,3 +112,10 @@ export LIBTOOLIZE=@prefix@/@tool_dir@/bin/libtoolize
 export AUTORECONF=@prefix@/@tool_dir@/bin/autoreconf
 export JSON_BUILDER=$(NATIVEPREFIX)/bin/JsonSchemaBuilder
 
+ifeq ($(OS), $(filter $(OS), osx ios))
+    export READELF=$(NATIVEPREFIX)/bin/readelf
+endif
+
+ifeq ($(TARGET_PLATFORM),raspberry-pi)
+  export READELF=$(NATIVEPREFIX)/bin/readelf
+endif

@@ -10,16 +10,10 @@ ARCHIVE=$(SOURCE).tar.xz
 
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
-  export READELF=$(NATIVEPREFIX)/bin/readelf
 endif
 ifeq ($(OS),ios)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-framework CoreFoundation -liconv
-  export READELF=$(NATIVEPREFIX)/bin/readelf
-endif
-
-ifeq ($(TARGET_PLATFORM),raspberry-pi)
-  export READELF=$(NATIVEPREFIX)/bin/readelf
 endif
 
 # configuration settings
