@@ -1,0 +1,60 @@
+--- a/Modules/_localemodule.c
++++ b/Modules/_localemodule.c
+@@ -424,7 +424,7 @@
+ }
+ #endif
+ 
+-#ifdef HAVE_LANGINFO_H
++#if defined(HAVE_LANGINFO_H) && defined(HAVE_NL_LANGINFO)
+ #define LANGINFO(X) {#X, X}
+ static struct langinfo_constant{
+     char* name;
+@@ -690,7 +690,7 @@
+ #if defined(MS_WINDOWS)
+   {"_getdefaultlocale", (PyCFunction) PyLocale_getdefaultlocale, METH_NOARGS},
+ #endif
+-#ifdef HAVE_LANGINFO_H
++#if defined(HAVE_LANGINFO_H) && defined(HAVE_NL_LANGINFO)
+   {"nl_langinfo", (PyCFunction) PyLocale_nl_langinfo,
+    METH_VARARGS, nl_langinfo__doc__},
+ #endif
+@@ -730,7 +730,7 @@
+ PyInit__locale(void)
+ {
+     PyObject *m;
+-#ifdef HAVE_LANGINFO_H
++#if defined(HAVE_LANGINFO_H) && defined(HAVE_NL_LANGINFO)
+     int i;
+ #endif
+ 
+@@ -758,7 +758,7 @@
+     }
+     PyModule_AddObject(m, "Error", Error);
+ 
+-#ifdef HAVE_LANGINFO_H
++#if defined(HAVE_LANGINFO_H) && defined(HAVE_NL_LANGINFO)
+     for (i = 0; langinfo_constants[i].name; i++) {
+         PyModule_AddIntConstant(m, langinfo_constants[i].name,
+                                 langinfo_constants[i].value);
+--- a/Python/fileutils.c
++++ b/Python/fileutils.c
+@@ -56,7 +56,7 @@
+        has no console */
+     if (cp != 0)
+         return PyUnicode_FromFormat("cp%u", (unsigned int)cp);
+-#elif defined(CODESET)
++#elif defined(HAVE_NL_LANGINFO) && defined(CODESET)
+     {
+         char *codeset = nl_langinfo(CODESET);
+         if (codeset != NULL && codeset[0] != 0)
+--- a/configure.ac
++++ b/configure.ac
+@@ -3552,7 +3552,7 @@
+  if_nameindex \
+  initgroups kill killpg lchown lockf linkat lstat lutimes mmap \
+  memrchr mbrtowc mkdirat mkfifo \
+- mkfifoat mknod mknodat mktime mremap nice openat pathconf pause pipe2 plock poll \
++ mkfifoat mknod mknodat mktime mremap nice nl_langinfo openat pathconf pause pipe2 plock poll \
+  posix_fallocate posix_fadvise posix_spawn pread preadv preadv2 \
+  pthread_init pthread_kill putenv pwrite pwritev pwritev2 readlink readlinkat readv realpath renameat \
+  sem_open sem_timedwait sem_getvalue sem_unlink sendfile setegid seteuid \

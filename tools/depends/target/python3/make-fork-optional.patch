@@ -1,15 +1,13 @@
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -167,6 +167,12 @@
+@@ -197,6 +197,10 @@
+ #endif  /* _MSC_VER */
  #endif  /* ! __WATCOMC__ || __QNX__ */
- #endif /* ! __IBMC__ */
  
-+
 +#undef HAVE_FORK
++#undef HAVE_FORKPTY
 +#undef HAVE_EXECV
 +#undef HAVE_SYSTEM
-+
-+
- #ifndef _MSC_VER
  
- #if defined(__sgi)&&_COMPILER_VERSION>=700
+ /*[clinic input]
+ # one of the few times we lie about this name!

@@ -1,0 +1,115 @@
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -38,7 +38,6 @@
+ MAINCC=		@MAINCC@
+ LINKCC=		@LINKCC@
+ AR=		@AR@
+-READELF=	@READELF@
+ SOABI=		@SOABI@
+ LDVERSION=	@LDVERSION@
+ GITVERSION=	@GITVERSION@
+@@ -295,7 +294,7 @@
+ ##########################################################################
+ # Parser
+ PGEN=		Parser/pgen$(EXE)
+-
++PGEN_FOR_BUILD=$(NATIVE_PGEN)
+ POBJS=		\
+ 		Parser/acceler.o \
+ 		Parser/grammar1.o \
+@@ -622,7 +621,7 @@
+ 		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
+ 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
+-		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
++		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
+ 
+ 
+ # Build static library
+@@ -1526,11 +1525,13 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
++	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
++	   	--skip-build \
+ 	   	--prefix=$(prefix) \
+-		--install-scripts=$(BINDIR) \
+-		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++		--install-scripts=$(DESTDIR)$(BINDIR) \
++		--install-platlib=$(DESTDIR)$(DESTSHARED) \
++		--root=/
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
+ 	-rm -r $(DESTDIR)$(DESTSHARED)/__pycache__
+ 
+--- a/configure.ac
++++ b/configure.ac
+@@ -379,10 +379,12 @@
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
+ 		;;
++	*-*-darwin*)
++		ac_sys_system=darwin
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	ac_sys_release=
+     else
+@@ -426,7 +428,6 @@
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
+ fi
+@@ -1200,16 +1201,6 @@
+         ARFLAGS="rcs"
+ fi
+ 
+-AC_CHECK_TOOLS([READELF], [readelf], [:])
+-if test "$cross_compiling" = yes; then
+-    case "$READELF" in
+-	readelf|:)
+-	AC_MSG_ERROR([readelf for the host is required for cross builds])
+-	;;
+-    esac
+-fi
+-AC_SUBST(READELF)
+-
+ 
+ case $MACHDEP in
+ hp*|HP*)
+--- a/setup.py
++++ b/setup.py
+@@ -16,7 +16,7 @@
+ from distutils.command.build_scripts import build_scripts
+ from distutils.spawn import find_executable
+ 
+-cross_compiling = "_PYTHON_HOST_PLATFORM" in os.environ
++cross_compiling = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
+ 
+ # Set common compiler and linker flags derived from the Makefile,
+ # reserved for building the interpreter and the stdlib modules.
+@@ -268,6 +268,7 @@
+ 
+     def build_extensions(self):
+ 
++        return
+         # Detect which modules should be compiled
+         missing = self.detect_modules()
+ 
+@@ -477,6 +478,9 @@
+ 
+         # Don't try to load extensions for cross builds
+         if cross_compiling:
++            self.announce(
++                'WARNING: skipping import check for cross-compiled: "%s"' %
++                ext.name)
+             return
+ 
+         loader = importlib.machinery.ExtensionFileLoader(ext.name, ext_filename)

@@ -142,7 +142,9 @@ if test "@platform_os@" = "osx" ; then
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
+  ac_cv_func_futimens=no
   ac_cv_func_getentropy=no
+  ac_cv_func_utimensat=no
 fi
 
 
@@ -151,7 +153,10 @@ if test "@platform_os@" = "darwin_embedded"; then
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
+  ac_cv_func_clock_settime=no
+  ac_cv_func_futimens=no
   ac_cv_func_getentropy=no
+  ac_cv_func_utimensat=no
 
   # tweaks for libffi
   if test "${PACKAGE_NAME}" = "libffi" ; then
@@ -166,6 +171,11 @@ if test "@platform_os@" = "darwin_embedded"; then
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
+fi
+
+# Python3 build for appletvos
+if test "@target_platform@" = "appletvos"; then
+  ac_cv_func_sigaltstack=no
 fi
 
 #Fix for older, broken android toolchains

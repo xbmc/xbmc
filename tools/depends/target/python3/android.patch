@@ -1,0 +1,40 @@
+--- a/Modules/pwdmodule.c
++++ b/Modules/pwdmodule.c
+@@ -82,7 +82,7 @@
+ #endif
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyLong_FromUid(p->pw_uid));
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyLong_FromGid(p->pw_gid));
+-#if defined(HAVE_STRUCT_PASSWD_PW_GECOS)
++#if defined(HAVE_STRUCT_PASSWD_PW_GECOS) && !defined(__ANDROID__)
+     SETS(setIndex++, p->pw_gecos);
+ #else
+     SETS(setIndex++, "");
+--- a/Modules/termios.c
++++ b/Modules/termios.c
+@@ -224,6 +224,7 @@
+     Py_RETURN_NONE;
+ }
+ 
++#if !defined(__ANDROID__)
+ PyDoc_STRVAR(termios_tcdrain__doc__,
+ "tcdrain(fd) -> None\n\
+ \n\
+@@ -242,6 +243,7 @@
+ 
+     Py_RETURN_NONE;
+ }
++#endif
+ 
+ PyDoc_STRVAR(termios_tcflush__doc__,
+ "tcflush(fd, queue) -> None\n\
+@@ -295,8 +297,10 @@
+      METH_VARARGS, termios_tcsetattr__doc__},
+     {"tcsendbreak", termios_tcsendbreak,
+      METH_VARARGS, termios_tcsendbreak__doc__},
++     #if !defined(__ANDROID__)
+     {"tcdrain", termios_tcdrain,
+      METH_VARARGS, termios_tcdrain__doc__},
++     #endif
+     {"tcflush", termios_tcflush,
+      METH_VARARGS, termios_tcflush__doc__},
+     {"tcflow", termios_tcflow,

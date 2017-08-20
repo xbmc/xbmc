@@ -1,13 +1,13 @@
 --- a/Modules/makesetup
 +++ b/Modules/makesetup
 @@ -212,6 +212,7 @@
- 			objs="$objs $obj"
- 			case $src in
- 			glmodule.c) ;;
+            objs="$objs $obj"
+            case $src in
+            glmodule.c) ;;
 +                       # _*io.c) src='$(srcdir)/'"$srcdir/_io/$(echo $src| tr -d "_")";;
- 			/*) ;;
- 			\$*) ;;
- 			*) src='$(srcdir)/'"$srcdir/$src";;
+            /*) ;;
+            \$*) ;;
+            *) src='$(srcdir)/'"$srcdir/$src";;
 --- a/setup.py
 +++ b/setup.py
 @@ -337,6 +337,9 @@
@@ -16,7 +16,7 @@
              return
 +        #if os.environ.get('CROSS_COMPILE_TARGET') == 'yes':
 +        #    return
-+   
++	
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))

@@ -1,0 +1,33 @@
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
+@@ -113,6 +113,9 @@
+ #include <sys/xattr.h>
+ #endif
+ 
++#if defined(__APPLE__) && defined(_POSIX_C_SOURCE)
++#undef _POSIX_C_SOURCE
++#endif
+ #if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+ #ifdef HAVE_SYS_SOCKET_H
+ #include <sys/socket.h>
+--- a/configure.ac
++++ b/configure.ac
+@@ -2824,11 +2824,17 @@
+ # pthread (first!) on Linux
+ AC_SEARCH_LIBS(sem_init, pthread rt posix4)
+ 
++OLD_LIBS=$LIBS
++if test $ac_sys_system = darwin
++then
++	LIBS="$LIBS -framework CoreFoundation"
++fi
++
+ # check if we need libintl for locale functions
+ AC_CHECK_LIB(intl, textdomain,
+ 	[AC_DEFINE(WITH_LIBINTL, 1,
+ 	[Define to 1 if libintl is needed for locale functions.])
+-        LIBS="-lintl $LIBS"])
++        LIBS="-lintl $LIBS"], LIBS=$OLD_LIBS)
+ 
+ # checks for system dependent C++ extensions support
+ case "$ac_sys_system" in

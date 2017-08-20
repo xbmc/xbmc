@@ -1,18 +1,16 @@
 --- a/Modules/_testcapimodule.c
 +++ b/Modules/_testcapimodule.c
-@@ -8,8 +8,14 @@
+@@ -10,7 +10,13 @@
  #include "Python.h"
  #include <float.h>
  #include "structmember.h"
--#include "datetime.h"
- #include "marshal.h"
 +#ifdef Py_BUILD_CORE
 +#undef Py_BUILD_CORE
-+#include "datetime.h"
+ #include "datetime.h"
 +#define Py_BUILD_CORE
 +#else
 +#include "datetime.h"
 +#endif
+ #include "marshal.h"
  #include <signal.h>
- #ifdef MS_WINDOWS
- #  include <crtdbg.h>
+ 
