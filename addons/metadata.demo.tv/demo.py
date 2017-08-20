@@ -196,6 +196,12 @@ elif action == 'getepisodedetails':
         liz.setProperty('video.actor2.thumb', '/home/akva/Pictures/coffee.jpg')
         liz.setProperty('video.date_added', '2016-01-01')
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
+elif action == 'nfourl': 
+    nfo=urllib.unquote_plus(params["nfo"]) 
+    print 'Find url from nfo file' 
+    liz=xbmcgui.ListItem('Demo show 1', offscreen=True) 
+    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True) 
+ 
 
 
 
