@@ -106,9 +106,9 @@ sharedobb: shared
 	@echo "$(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb created"
 
 python: | xbmc/assets
-	mkdir -p xbmc/assets/python2.7/lib/
-	cp -rfp $(PREFIX)/lib/python2.7 xbmc/assets/python2.7/lib/
-	cd xbmc/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
+	mkdir -p xbmc/assets/python3.6/lib/
+	cp -rfp $(PREFIX)/lib/python3.6 xbmc/assets/python3.6/lib/
+	cd xbmc/assets/python3.6/lib/python3.6/; rm -rf test config lib-dynload
 
 res:
 	mkdir -p xbmc/gen/$(APP_PACKAGE_DIR) xbmc/res xbmc/res/raw xbmc/res/values images
@@ -132,7 +132,7 @@ res:
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	rm -rf xbmc/lib/$(CPU) xbmc/obj/local/$(CPU)
-	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/obj/local/$(CPU)
+	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python3.6/lib/ xbmc/obj/local/$(CPU)
 	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
@@ -140,7 +140,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(DEPENDS_PATH)/share/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(DEPENDS_PATH)/lib/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	DIR=${CURDIR}; cd $(PREFIX)/lib/python2.7/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_"` ; mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
+	DIR=${CURDIR}; cd $(PREFIX)/lib/python3.6/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_"` ; mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
