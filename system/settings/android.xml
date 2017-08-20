@@ -12,6 +12,9 @@
         <setting id="videoscreen.blankdisplays">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.delayrefreshchange">
+          <default>25</default>
+        </setting>
         <setting id="videoscreen.limitgui" type="integer" label="37021" help="36548">
           <level>2</level>
           <default>0</default>
