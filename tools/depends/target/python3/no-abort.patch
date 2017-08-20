@@ -1,8 +1,8 @@
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -8649,7 +8649,7 @@
- static PyObject *
- posix_abort(PyObject *self, PyObject *noargs)
+@@ -10365,7 +10365,7 @@
+ os_abort_impl(PyObject *module)
+ /*[clinic end generated code: output=dcf52586dad2467c input=cf2c7d98bc504047]*/
  {
 -    abort();
 +    // abort();
@@ -11,12 +11,12 @@
      return NULL;
 --- a/Python/pythonrun.c
 +++ b/Python/pythonrun.c
-@@ -1706,7 +1706,7 @@
+@@ -1697,7 +1697,7 @@
      DebugBreak();
  #endif
  #endif /* MS_WINDOWS */
 -    abort();
 +	// abort();
  }
- 
+
  /* Clean up and exit */
