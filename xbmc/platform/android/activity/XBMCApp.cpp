@@ -356,7 +356,7 @@ void CXBMCApp::onLostFocus()
 
 void CXBMCApp::Initialize()
 {
-  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());  
+  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());
 }
 
 void CXBMCApp::Deinitialize()
@@ -1217,7 +1217,7 @@ void CXBMCApp::SetupEnv()
     setenv("HOME", getenv("KODI_TEMP"), 0);
 
   std::string apkPath = getenv("XBMC_ANDROID_APK");
-  apkPath += "/assets/python2.7";
+  apkPath += "/assets/python3.6";
   setenv("PYTHONHOME", apkPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
   setenv("PYTHONOPTIMIZE","", 1);
