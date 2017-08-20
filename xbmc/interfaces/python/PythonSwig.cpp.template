@@ -57,15 +57,15 @@ Helper.setup(this,classes,
      * of the native call to be returned to the python caller.
      */
     [ 'void' : 'Py_INCREF(Py_None);\n    ${result} = Py_None;',
-      'long': '${result} = PyInt_FromLong(${api});',
-      'unsigned long': '${result} = PyInt_FromLong(${api});',
+      'long': '${result} = PyLong_FromLong(${api});',
+      'unsigned long': '${result} = PyLong_FromLong(${api});',
       'bool': '${result} = Py_BuildValue((char*)"b", ${api});',
       'long long': '${result} = Py_BuildValue((char*)"L", ${api});',
       'int': '${result} = Py_BuildValue((char*)"i", ${api});',
       'double': '${result} = PyFloat_FromDouble(${api});',
       'float': '${result} = Py_BuildValue((char*)"f", ${api});',
       'std::string' : new File('typemaps/python.string.outtm'),
-      'p.q(const).char' : '${result} = PyString_FromString(${api});',
+      'p.q(const).char' : '${result} = PyUnicode_FromString(${api});',
       (Pattern.compile('''(p.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.outtm'),
       (Pattern.compile('''std::shared_ptr<\\(.*\\)>''')) : new File('typemaps/python.smart_ptr.outtm'),
       (Pattern.compile('''std::unique_ptr<\\(.*\\)>''')) : new File('typemaps/python.smart_ptr.outtm'),
@@ -90,15 +90,15 @@ Helper.setup(this,classes,
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
       (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.intm'),
       (Pattern.compile('''p.void''')) : '${api} = (void*)${slarg};',
-      'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
-      'long' : '${api} = PyInt_AsLong(${slarg});',
+      'bool' : '${api} = (PyLong_AsLong(${slarg}) == 0L ? false : true);',
+      'long' : '${api} = PyLong_AsLong(${slarg});',
       'unsigned long' : '${api} = PyLong_AsUnsignedLong(${slarg});',
       'long long' : '${api} = PyLong_AsLongLong(${slarg});',
       'unsigned long long' : '${api} = PyLong_AsUnsignedLongLong(${slarg});',
-      'int' : '${api} = (int)PyInt_AsLong(${slarg});',
+      'int' : '${api} = (int)PyLong_AsLong(${slarg});',
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
       'float' : '${api} = (float)PyFloat_AsDouble(${slarg});',
-      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyInt_Check(${slarg}) || PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
+      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyLong_Check(${slarg}) || PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 // ---------------------------------------------------------
 
@@ -149,8 +149,8 @@ void doMethod(Node method, MethodType methodType)
 <%  }
   }
 %>
-  static <% if(methodType == MethodType.destructor) { %>void<% } else { %>PyObject*<% } %> ${module.@name}_${PythonTools.getPyMethodName(method,methodType)} (<%= ((clazz == null) ? "PyObject" : 
-                   (constructor ? "PyTypeObject" : 'PyHolder')) %>* ${constructor ? 'pytype' : 'self'} <% 
+  static <% if(methodType == MethodType.destructor) { %>void<% } else { %>PyObject*<% } %> ${module.@name}_${PythonTools.getPyMethodName(method,methodType)} (<%= ((clazz == null) ? "PyObject" :
+                   (constructor ? "PyTypeObject" : 'PyHolder')) %>* ${constructor ? 'pytype' : 'self'} <%
                    if (doAsMappingIndex) { %>, PyObject* py${params[0].@name}<% }
                    else if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
   {
@@ -273,7 +273,7 @@ void doMethod(Node method, MethodType methodType)
 
     return result; <% } 
     else { %>
-    self->ob_type->tp_free((PyObject*)self); 
+    (((PyObject*)(self))->ob_type)->tp_free((PyObject*)self);
     <%
     }
     %>
@@ -664,22 +664,13 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     pythonType.tp_basicsize = sizeof(PyHolder);
     pythonType.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
-  if (doComparator) { %>
-    pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
-  }
+
   if (clazz.@feature_python_rcmp) { %>
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
   } %>
 
-<%
-  if (clazz.@feature_iterator) { %>
-    pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_ITER;
-<%
-  }
-  else { %>
     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
-<%
-  } %>
+
     pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
   if (properties.size() > 0) { %>
@@ -919,7 +910,16 @@ namespace PythonBindings
     }
   }
 
-  void initModule_${module.@name}()
+  static struct PyModuleDef createModule
+  {
+      PyModuleDef_HEAD_INIT,
+      (char*)"${module.@name}",
+      "",
+      -1,
+      ${module.@name}_methods
+  };
+
+  PyObject *PyInit_Module_${module.@name}()
   {
     initTypes();
 
@@ -930,8 +930,8 @@ namespace PythonBindings
     Py_INCREF(&(Ty${it}_Type.pythonType));<%
    }%>
 
-    module = Py_InitModule((char*)"${module.@name}", ${module.@name}_methods);
-    if (module == NULL) return;
+    module = PyModule_Create(&createModule);
+    if (module == NULL) return NULL;
 
 <% classes.each { clazz -> %>
     PyModule_AddObject(module, (char*)"${clazz.@sym_name}", (PyObject*)(&(Ty${PythonTools.getClassNameAsVariable(clazz)}_Type.pythonType)));<%
@@ -945,12 +945,13 @@ namespace PythonBindings
    PyModule_AddStringConstant(module, (char*)"__platform__", (char*)"ALL");
 
    // need to handle constants
-<% module.depthFirst().findAll( { it.name() == 'constant'} ).each { 
-     String pyCall = 
-        (it.@type == 'int' || it.@type == 'long' || it.@type == 'unsigned int' || it.@type == 'unsigned long' || it.@type == 'bool') ? 
+<% module.depthFirst().findAll( { it.name() == 'constant'} ).each {
+     String pyCall =
+        (it.@type == 'int' || it.@type == 'long' || it.@type == 'unsigned int' || it.@type == 'unsigned long' || it.@type == 'bool') ?
         'PyModule_AddIntConstant' : 'PyModule_AddStringConstant' %>
    ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
   } %>
+  return module;
   }
 
 } // end PythonBindings namespace for python type definitions
