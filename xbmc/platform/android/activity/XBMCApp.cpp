@@ -451,6 +451,7 @@ void CXBMCApp::run()
   std::string filenameToPlay = GetFilenameFromIntent(startIntent);
   if (!filenameToPlay.empty())
   {
+    android_printf("-- filename: %s", filenameToPlay.c_str());
     int argc = 2;
     const char** argv = (const char**) malloc(argc*sizeof(char*));
 
@@ -1019,32 +1020,36 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
   CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
-  if (action == "android.intent.action.VIEW")
-  {
-    CFileItem* item = new CFileItem(targetFile, false);
-    if (item->IsVideoDb())
-    {
-      *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
-      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    }
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
-  }
-  else if (action == "android.intent.action.GET_CONTENT")
+  if (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT")
   {
     CURL targeturl(targetFile);
-    if (targeturl.IsProtocol("videodb"))
+    std::string value;
+    if (action == "android.intent.action.GET_CONTENT" || (targeturl.GetOption("showinfo", value) && value == "true"))
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      if (targeturl.IsProtocol("videodb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      }
+      else if (targeturl.IsProtocol("musicdb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      }
     }
-    else if (targeturl.IsProtocol("musicdb"))
+    else
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      CFileItem* item = new CFileItem(targetFile, false);
+      if (item->IsVideoDb())
+      {
+        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+        item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      }
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     }
   }
   else if (action == ACTION_XBMC_RESUME)
