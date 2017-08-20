@@ -1,0 +1,12 @@
+--- Modules/posixmodule.c.orig	2017-08-06 15:18:11.634696238 +0530
++++ Modules/posixmodule.c	2017-08-06 20:20:07.016010000 +0530
+@@ -195,6 +195,9 @@
+ #endif  /* _MSC_VER */
+ #endif  /* ! __WATCOMC__ || __QNX__ */
+ 
++#undef HAVE_FORK
++#undef HAVE_EXECV
++#undef HAVE_SYSTEM
+ 
+ /*[clinic input]
+ # one of the few times we lie about this name!
