@@ -6,7 +6,7 @@ endif
 
 NATIVE= m4 gettext autoconf automake \
         libtool pkg-config yasm cmake \
-        gas-preprocessor python27 zlib \
+        gas-preprocessor libffi python3 zlib \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
         distribute distutilscross JsonSchemaBuilder TexturePacker \
@@ -23,7 +23,7 @@ endif
 
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    NATIVE += libffi meson ninja python3 setuptools
+    NATIVE += meson ninja setuptools
   endif
 endif
 
@@ -47,10 +47,9 @@ libpng: zlib
 meson: python3 setuptools
 ninja: python3
 swig: pcre
-distribute: python27
-distutilscross: python27 distribute
+distribute: python3
+distutilscross: python3 distribute
 tar: xz automake
-python27: zlib
 python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
 wayland-scanner: expat
