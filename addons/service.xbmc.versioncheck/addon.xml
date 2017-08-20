@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.xbmc.versioncheck"
        name="Version Check"
-      version="0.3.17"
+      version="0.3.23"
       provider-name="Team Kodi">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
