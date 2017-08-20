@@ -6,7 +6,7 @@ endif
 
 NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
-        gas-preprocessor-native python27-native zlib-native \
+        gas-preprocessor-native python36-native zlib-native \
         pcre-native swig-native \
         libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
@@ -36,12 +36,12 @@ automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
 swig-native: pcre-native
-distribute-native: python27-native
-distutilscross-native: python27-native distribute-native
+distribute-native: python36-native
+distutilscross-native: python36-native distribute-native
 tar-native: xz-native automake-native
-python27-native: zlib-native
+python36-native: zlib-native
 wayland-scanner-native: expat-native
-scons-native: python27-native
+scons-native: python36-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
