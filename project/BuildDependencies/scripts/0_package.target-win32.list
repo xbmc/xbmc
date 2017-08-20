@@ -35,9 +35,7 @@ mini_wdk-10.0.14393.0-win32.7z
 mysql-connector-c-6.1.6-win32-vc140-v2.7z
 openssl-1.0.2g-win32-vc140-v2.7z
 pcre-8.37-win32-vc140-v3.7z
-pillow-3.1.0-win32-vc140.7z
-pycryptodome-3.4.3-win32.7z
-python-2.7.13-win32-vc140-v3.7z
+python3-3.7.1-Win32-v141.7z
 rapidjson-1.1.0-win32.7z
 shairplay-0.9.0-win32-vc140-v2.7z
 sqlite-3.10.2-win32-vc140.7z
