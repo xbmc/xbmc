@@ -1,0 +1,16 @@
+--- Modules/_testcapimodule.c.orig	2017-08-01 21:44:07.917316734 +0530
++++ Modules/_testcapimodule.c	2017-08-01 21:47:50.309316734 +0530
+@@ -10,7 +10,13 @@
+ #include "Python.h"
+ #include <float.h>
+ #include "structmember.h"
++#ifdef Py_BUILD_CORE
++#undef Py_BUILD_CORE
+ #include "datetime.h"
++#define Py_BUILD_CORE
++#else
++#include "datetime.h"
++#endif
+ #include "marshal.h"
+ #include <signal.h>
+ 
