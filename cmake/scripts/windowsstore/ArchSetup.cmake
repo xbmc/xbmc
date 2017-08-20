@@ -53,8 +53,6 @@ list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})
 list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
 # dependencies
 list(APPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
-# for python
-set(PYTHON_INCLUDE_DIR ${DEPENDENCIES_DIR}/include/python)
 
 
 # -------- Compiler options ---------
