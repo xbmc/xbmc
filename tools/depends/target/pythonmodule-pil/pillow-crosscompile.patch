@@ -26,8 +26,8 @@
          if prefix:
              _add_directory(library_dirs, os.path.join(prefix, "lib"))
              _add_directory(include_dirs, os.path.join(prefix, "include"))
-+            _add_directory(include_dirs, os.path.join(prefix, "include/python2.7"))
  
++            _add_directory(include_dirs, os.path.join(prefix, "include/python3.6"))
          #
          # add platform directories
 @@ -202,14 +212,14 @@
