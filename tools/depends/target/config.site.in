@@ -151,7 +151,10 @@ if test "@platform_os@" = "ios"; then
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
+  ac_cv_func_clock_settime=no
+  ac_cv_func_futimens=no
   ac_cv_func_getentropy=no
+  ac_cv_func_utimensat=no
 
   # tweaks for libffi
   if test "${PACKAGE_NAME}" = "libffi" ; then
