@@ -10,20 +10,20 @@ VERSION=18.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python3.7/site-packages/"
 ifeq ($(OS),android)
 #PYTHONPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PREFIX)/lib/python3.7/site-packages/"
 endif
 ifeq ($(OS),osx)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -lpython" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -lpython" PYTHONPATH="$(PREFIX)/lib/python3.7/site-packages/"
 endif
 ifeq ($(OS),darwin_embedded)
-PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+PYTHON_O=$(abs_top_srcdir)/target/python3/$(PLATFORM)/Programs/python.o
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python3.7/site-packages/"
 endif
 
-LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py2.7.egg
+LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py3.7.egg
 
 all: .installed-$(PLATFORM)
 
@@ -36,10 +36,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 
 $(LIBDYLIB): $(PLATFORM)
 	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build_ext --plat-name $(OS)-$(CPU)
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 	touch $@
 
 clean:
