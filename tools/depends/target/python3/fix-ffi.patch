@@ -1,6 +1,6 @@
 --- a/Modules/_ctypes/cfield.c
 +++ b/Modules/_ctypes/cfield.c
-@@ -1735,6 +1735,7 @@
+@@ -1634,6 +1634,7 @@
  */
  
  /* align and size are bogus for void, but they must not be zero */
@@ -8,12 +8,12 @@
  ffi_type ffi_type_void = { 1, 1, FFI_TYPE_VOID };
  
  ffi_type ffi_type_uint8 = { 1, 1, FFI_TYPE_UINT8 };
-@@ -1751,14 +1752,14 @@
+@@ -1650,14 +1651,15 @@
  
  ffi_type ffi_type_float = { sizeof(float), FLOAT_ALIGN, FFI_TYPE_FLOAT };
  ffi_type ffi_type_double = { sizeof(double), DOUBLE_ALIGN, FFI_TYPE_DOUBLE };
--
 +*/
+ 
  #ifdef ffi_type_longdouble
  #undef ffi_type_longdouble
  #endif
@@ -24,7 +24,7 @@
  
  ffi_type ffi_type_pointer = { sizeof(void *), VOID_P_ALIGN, FFI_TYPE_POINTER };
 -
-+*/
++  */
  /*---------------- EOF ----------------*/
 --- a/Modules/_ctypes/malloc_closure.c
 +++ b/Modules/_ctypes/malloc_closure.c
