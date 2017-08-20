@@ -1,5 +1,4 @@
 xbmc/interfaces/legacy interfaces/legacy # PYTHON
 xbmc/interfaces/legacy/wsgi interfaces/legacy/wsgi # PYTHON
 xbmc/interfaces/python interfaces/python # PYTHON
-xbmc/interfaces/python3 interfaces/python3 # PYTHON
 xbmc/interfaces/swig build/swig # PYTHON
