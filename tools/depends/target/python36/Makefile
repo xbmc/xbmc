@@ -37,6 +37,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
 	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-android.patch
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
+	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
