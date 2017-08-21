@@ -1960,42 +1960,6 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strC
   CServiceBroker::GetPVRManager().ConnectionStateChange(client, std::string(strConnectionString), newState, msg);
 }
 
-typedef struct EpgEventStateChange
-{
-  int iClientId;
-  CPVREpgInfoTagPtr event;
-  EPG_EVENT_STATE state;
-
-  EpgEventStateChange(int _iClientId, EPG_TAG *_event, EPG_EVENT_STATE _state)
-  : iClientId(_iClientId),
-    event(new CPVREpgInfoTag(*_event, _iClientId)),
-    state(_state) {}
-
-} EpgEventStateChange;
-
-void CPVRClient::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
-{
-  const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(ch.event->UniqueChannelID(), ch.event->ClientID()));
-  if (channel)
-  {
-    const CPVREpgPtr epg(channel->GetEPG());
-    if (epg)
-    {
-      if (!epg->UpdateEntry(ch.event, ch.state, false))
-        CLog::Log(LOGERROR, "PVR - %s - epg update failed for %sevent change (%d)",
-                  __FUNCTION__, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PVR - %s - channel '%s' does not have an EPG! Unable to deliver %sevent change (%d)!",
-                __FUNCTION__, channel->ChannelName().c_str(), bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
-    }
-  }
-  else
-    CLog::Log(LOGERROR, "PVR - %s - invalid channel (%d)! Unable to deliver %sevent change (%d)!",
-              __FUNCTION__, ch.event->UniqueChannelID(), bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
-}
-
 void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState)
 {
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
@@ -2005,35 +1969,7 @@ void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG
     return;
   }
 
-  static CCriticalSection queueMutex;
-  static std::vector<EpgEventStateChange> queuedChanges;
-
-  // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
-  if (CServiceBroker::GetPVRManager().EpgsCreated())
-  {
-    {
-      // deliver queued changes, if any. discard event if delivery fails.
-      CSingleLock lock(queueMutex);
-      if (!queuedChanges.empty())
-        CLog::Log(LOGNOTICE, "PVR - %s - processing %ld queued epg event changes.", __FUNCTION__, queuedChanges.size());
-
-      while (!queuedChanges.empty())
-      {
-        auto it = queuedChanges.begin();
-        UpdateEpgEvent(*it, true);
-        queuedChanges.erase(it);
-      }
-    }
-
-    // deliver current change.
-    UpdateEpgEvent(EpgEventStateChange(client->GetID(), tag, newState), false);
-  }
-  else
-  {
-    // queue for later delivery.
-    CSingleLock lock(queueMutex);
-    queuedChanges.push_back(EpgEventStateChange(client->GetID(), tag, newState));
-  }
+  CServiceBroker::GetPVRManager().EpgContainer().UpdateFromClient(std::make_shared<CPVREpgInfoTag>(*tag, client->GetID()), newState);
 }
 
 class CCodecIds

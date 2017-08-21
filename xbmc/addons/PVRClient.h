@@ -34,7 +34,6 @@ namespace PVR
 {
   class CPVRChannelGroups;
   class CPVRTimersContainer;
-  struct EpgEventStateChange;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 
@@ -1051,8 +1050,6 @@ namespace PVR
      * Returns the ffmpeg codec id from given ffmpeg codec string name
      */
     static xbmc_codec_t cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
-
-    static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
     //@}
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */

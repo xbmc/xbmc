@@ -31,6 +31,7 @@
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
@@ -40,7 +41,76 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
-using namespace PVR;
+namespace PVR
+{
+
+class CEpgUpdateRequest
+{
+public:
+  CEpgUpdateRequest() : CEpgUpdateRequest(-1, PVR_CHANNEL_INVALID_UID) {}
+  CEpgUpdateRequest(int iClientID, unsigned int iUniqueChannelID) : m_iClientID(iClientID), m_iUniqueChannelID(iUniqueChannelID) {}
+
+  void Deliver();
+
+private:
+  int m_iClientID;
+  unsigned int m_iUniqueChannelID;
+};
+
+void CEpgUpdateRequest::Deliver()
+{
+  const CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_iUniqueChannelID, m_iClientID);
+  if (!channel)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid channel (%d)! Unable to do the epg update!", __FUNCTION__, m_iUniqueChannelID);
+    return;
+  }
+
+  const CPVREpgPtr epg = channel->GetEPG();
+  if (!epg)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - channel '%s' does not have an EPG! Unable to do the epg update!", __FUNCTION__, channel->ChannelName().c_str());
+    return;
+  }
+
+  epg->ForceUpdate();
+}
+
+class CEpgTagStateChange
+{
+public:
+  CEpgTagStateChange() : m_state(EPG_EVENT_CREATED) {}
+  CEpgTagStateChange(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
+
+  void Deliver();
+
+private:
+  CPVREpgInfoTagPtr m_epgtag;
+  EPG_EVENT_STATE m_state;
+};
+
+void CEpgTagStateChange::Deliver()
+{
+  const CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_epgtag->UniqueChannelID(), m_epgtag->ClientID());
+  if (!channel)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid channel (%d)! Unable to deliver state change for tag '%d'!",
+              __FUNCTION__, m_epgtag->UniqueChannelID(), m_epgtag->UniqueBroadcastID());
+    return;
+  }
+
+  const CPVREpgPtr epg = channel->GetEPG();
+  if (!epg)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - channel '%s' does not have an EPG! Unable to deliver state change for tag '%d'!",
+              __FUNCTION__, channel->ChannelName().c_str(), m_epgtag->UniqueBroadcastID());
+    return;
+  }
+
+  // update
+  if (!epg->UpdateEntry(m_epgtag, m_state, false))
+    CLog::Log(LOGERROR, "PVR - %s - update failed for epgtag change for channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+}
 
 CPVREpgContainer::CPVREpgContainer(void) :
   CThread("EPGUpdater"),
@@ -316,31 +386,55 @@ void CPVREpgContainer::Process(void)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
+
     while (!m_bStop)
     {
-      SUpdateRequest request;
+      CEpgUpdateRequest request;
       {
         CSingleLock lock(m_updateRequestsLock);
         if (m_updateRequests.empty())
           break;
+
         request = m_updateRequests.front();
         m_updateRequests.pop_front();
       }
 
-      // get the channel
-      CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(request.channelID, request.clientID);
-      CPVREpgPtr epg;
-
-      // get the EPG for the channel
-      if (!channel || !(epg = channel->GetEPG()))
-      {
-        CLog::Log(LOGERROR, "PVR - %s - invalid channel or channel doesn't have an EPG", __FUNCTION__);
-        continue;
-      }
-
-      // force an update
-      epg->ForceUpdate();
+      // do the update
+      request.Deliver();
     }
+
+    /* check for pending EPG tag changes */
+
+    // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
+    if (!m_bStop && CServiceBroker::GetPVRManager().EpgsCreated())
+    {
+      unsigned int iProcessed = 0;
+      XbmcThreads::EndTime processTimeslice(1000); // max 1 sec per cycle, regardless of how many events are in the queue
+
+      while (!m_bStop)
+      {
+        CEpgTagStateChange change;
+        {
+          CSingleLock lock(m_epgTagChangesLock);
+          if (processTimeslice.IsTimePast() || m_epgTagChanges.empty())
+          {
+            if (iProcessed > 0)
+              CLog::Log(LOGDEBUG, "PVR - %s - processed %ld queued epg event changes.", __FUNCTION__, iProcessed);
+
+            break;
+          }
+
+          change = m_epgTagChanges.front();
+          m_epgTagChanges.pop_front();
+        }
+
+        iProcessed++;
+
+        // deliver the updated tag to the respective epg
+        change.Deliver();
+      }
+    }
+
     if (!m_bStop)
     {
       {
@@ -822,11 +916,16 @@ void CPVREpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */
     m_pendingUpdates = 0;
 }
 
-void CPVREpgContainer::UpdateRequest(int clientID, unsigned int channelID)
+void CPVREpgContainer::UpdateRequest(int iClientID, unsigned int iUniqueChannelID)
 {
   CSingleLock lock(m_updateRequestsLock);
-  SUpdateRequest request;
-  request.clientID = clientID;
-  request.channelID = channelID;
-  m_updateRequests.push_back(request);
+  m_updateRequests.emplace_back(CEpgUpdateRequest(iClientID, iUniqueChannelID));
 }
+
+void CPVREpgContainer::UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState)
+{
+  CSingleLock lock(m_epgTagChangesLock);
+  m_epgTagChanges.emplace_back(CEpgTagStateChange(tag, eNewState));
+}
+
+} // namespace PVR

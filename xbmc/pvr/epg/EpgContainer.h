@@ -35,11 +35,8 @@ class CGUIDialogProgressBarHandle;
 
 namespace PVR
 {
-  struct SUpdateRequest
-  {
-    int clientID;
-    unsigned int channelID;
-  };
+  class CEpgUpdateRequest;
+  class CEpgTagStateChange;
 
   class CPVREpgContainer : public Observer, public Observable, private CThread
   {
@@ -216,9 +213,18 @@ namespace PVR
     bool PersistAll(void);
 
     /*!
-     * @brief client can trigger an update request for a channel
+     * @brief A client triggered an epg update request for a channel
+     * @param iClientID The id of the client which triggered the update request
+     * @param iUniqueChannelID The uid of the channel for which the epg shall be updated
      */
-    void UpdateRequest(int clientID, unsigned int channelID);
+    void UpdateRequest(int iClientID, unsigned int iUniqueChannelID);
+
+    /*!
+     * @brief A client announced an updated epg tag for a channel
+     * @param tag The epg tag containing the updated data
+     * @param eNewState The kind of change (CREATED, UPDATED, DELETED)
+     */
+    void UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState);
 
   private:
     /*!
@@ -278,8 +284,11 @@ namespace PVR
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
 
-    std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */
-    CCriticalSection m_updateRequestsLock;      /*!< protect update requests */
+    std::list<CEpgUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */
+    CCriticalSection m_updateRequestsLock;         /*!< protect update requests */
+
+    std::list<CEpgTagStateChange> m_epgTagChanges; /*!< list of updated epg tags announced by addon */
+    CCriticalSection m_epgTagChangesLock;          /*!< protect changed epg tags list */
 
     bool m_bUpdateNotificationPending; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
