@@ -4340,6 +4340,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true when a recording is being watched.
 ///   }
+///   \table_row3{   <b>`Pvr.IsPlayingEpgTag`</b>,
+///                  \anchor Pvr_IsPlayingEpgTag
+///                  _boolean_,
+///     Returns true when an epg tag is being watched.
+///   }
 ///   \table_row3{   <b>`Pvr.Duration`</b>,
 ///                  \anchor Pvr_Duration
 ///                  _time string_,
@@ -4597,6 +4602,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingtv",              PVR_IS_PLAYING_TV },
                                   { "isplayingradio",           PVR_IS_PLAYING_RADIO },
                                   { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
+                                  { "isplayingepgtag",          PVR_IS_PLAYING_EPGTAG },
                                   { "duration",                 PVR_PLAYING_DURATION },
                                   { "time",                     PVR_PLAYING_TIME },
                                   { "progress",                 PVR_PLAYING_PROGRESS },

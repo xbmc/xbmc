@@ -482,6 +482,9 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
   case PVR_IS_PLAYING_RECORDING:
     bReturn = m_bIsPlayingRecording;
     break;
+  case PVR_IS_PLAYING_EPGTAG:
+    bReturn = m_bIsPlayingEpgTag;
+    break;
   case PVR_ACTUAL_STREAM_ENCRYPTED:
     bReturn = m_bIsPlayingEncryptedStream;
     break;
