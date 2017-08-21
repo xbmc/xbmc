@@ -360,6 +360,8 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
             result = m_musicdatabase.SetScraperAll("musicdb://albums/", nullptr);
         }
       }
+    default:
+      break;
     }
     if (!result)
       return false;

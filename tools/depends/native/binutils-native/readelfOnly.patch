@@ -1,0 +1,37 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -5129,7 +5129,7 @@
+ all-binutils: stage_current
+ @endif gcc-bootstrap
+ @if binutils
+-TARGET-binutils=all
++TARGET-binutils=readelf
+ maybe-all-binutils: all-binutils
+ all-binutils: configure-binutils
+ 	@r=`${PWD_COMMAND}`; export r; \
+--- a/binutils/Makefile.am
++++ b/binutils/Makefile.am
+@@ -86,7 +86,7 @@
+ 
+ SRCONV_PROG=srconv$(EXEEXT) sysdump$(EXEEXT) coffdump$(EXEEXT)
+ 
+-bin_PROGRAMS = $(SIZE_PROG) $(OBJDUMP_PROG) $(AR_PROG) $(STRINGS_PROG) $(RANLIB_PROG) $(OBJCOPY_PROG) @BUILD_NLMCONV@ @BUILD_SRCONV@ @BUILD_DLLTOOL@ @BUILD_WINDRES@ @BUILD_WINDMC@ $(ADDR2LINE_PROG) $(READELF_PROG) $(ELFEDIT_PROG) @BUILD_DLLWRAP@
++bin_PROGRAMS = $(READELF_PROG)
+ 
+ bin_SCRIPTS = @BUILD_INSTALL_MISC@
+ EXTRA_SCRIPTS = embedspu
+--- a/binutils/Makefile.in
++++ b/binutils/Makefile.in
+@@ -71,11 +71,7 @@
+ build_triplet = @build@
+ host_triplet = @host@
+ target_triplet = @target@
+-bin_PROGRAMS = $(am__EXEEXT_6) $(am__EXEEXT_7) $(am__EXEEXT_8) \
+-	$(am__EXEEXT_9) $(am__EXEEXT_10) $(am__EXEEXT_11) \
+-	@BUILD_NLMCONV@ @BUILD_SRCONV@ @BUILD_DLLTOOL@ @BUILD_WINDRES@ \
+-	@BUILD_WINDMC@ $(am__EXEEXT_12) $(am__EXEEXT_13) \
+-	$(am__EXEEXT_14) @BUILD_DLLWRAP@
++bin_PROGRAMS = $(am__EXEEXT_13)
+ noinst_PROGRAMS = $(am__EXEEXT_18) $(am__EXEEXT_21) @BUILD_MISC@
+ EXTRA_PROGRAMS = $(am__EXEEXT_1) srconv$(EXEEXT) sysdump$(EXEEXT) \
+ 	coffdump$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3) \

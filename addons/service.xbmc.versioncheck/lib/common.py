@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+import sys
 
 import os
 import xbmc
@@ -25,8 +26,12 @@ import xbmcvfs
 ADDON        = xbmcaddon.Addon()
 ADDONVERSION = ADDON.getAddonInfo('version')
 ADDONNAME    = ADDON.getAddonInfo('name')
-ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
-ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
+if sys.version_info.major >= 3:
+    ADDONPATH    = ADDON.getAddonInfo('path')
+    ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') )
+else:
+    ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
+    ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
 ICON         = ADDON.getAddonInfo('icon')
 
 monitor = xbmc.Monitor()
@@ -34,7 +39,10 @@ monitor = xbmc.Monitor()
 # Fixes unicode problems
 def string_unicode(text, encoding='utf-8'):
     try:
-        text = unicode( text, encoding )
+        if sys.version_info.major >= 3:
+            text = str( text )
+        else:
+            text = unicode( text, encoding )
     except:
         pass
     return text
@@ -51,10 +59,13 @@ def localise(id):
     return string
 
 def log(txt):
-    if isinstance (txt,str):
-        txt = txt.decode("utf-8")
-    message = u'%s: %s' % ("Version Check", txt)
-    xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGDEBUG)
+    if sys.version_info.major >= 3:
+        message = '%s: %s' % ("Version Check", txt.encode('utf-8'))
+    else:
+        if isinstance (txt,str):
+            txt = txt.decode("utf-8") 
+        message = (u'%s: %s' % ("Version Check", txt)).encode("utf-8")
+    xbmc.log(msg=message, level=xbmc.LOGDEBUG)
 
 def get_password_from_user():
     keyboard = xbmc.Keyboard("", ADDONNAME + "," +localise(32022), True)

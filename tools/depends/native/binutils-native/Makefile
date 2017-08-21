@@ -1,18 +1,17 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile
+DEPS= ../../Makefile.include Makefile readelfOnly.patch
 
 # lib name, version
-LIBNAME=Python
-VERSION=2.7.13
+LIBNAME=binutils
+VERSION=2.29
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
-CWD=$(shell pwd)
-HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
+ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=https://ftp.gnu.org/gnu/binutils
 
-CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-toolbox-glue --disable-framework
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX)
 
-LIBDYLIB=$(PLATFORM)/python
+LIBDYLIB=$(PLATFORM)/binutils/readelf
 
 all: .installed-$(PLATFORM)
 
@@ -22,16 +21,14 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	#cd $(PLATFORM); patch -p0 < ../cpython-2.6.5-multiarch.patch
-	#cd $(PLATFORM); patch -p0 < ../cpython-2.6.5-nosslv2.patch
+	cd $(PLATFORM); patch -p1 -i ../readelfOnly.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	cd $(PLATFORM); $(MAKE)
+	$(MAKE) -C $(PLATFORM) all-binutils
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(MAKE) install
-	install $(PLATFORM)/Parser/pgen $(NATIVEPREFIX)/bin
+	cd $(PLATFORM)/binutils; $(MAKE) install-binPROGRAMS
 	touch $@
 
 clean:

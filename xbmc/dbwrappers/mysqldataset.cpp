@@ -1375,7 +1375,6 @@ MYSQL* MysqlDataset::handle(){
 
 void MysqlDataset::make_query(StringList &_sql) {
   std::string query;
-  int result = 0;
   if (db == NULL) throw DbErrors("No Database Connection");
   try
   {
