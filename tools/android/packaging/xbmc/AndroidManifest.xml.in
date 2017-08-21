@@ -37,7 +37,8 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -81,7 +82,8 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@style/AppTheme"
+            >
 
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data

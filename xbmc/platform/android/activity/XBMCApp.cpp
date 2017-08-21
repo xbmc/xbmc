@@ -221,8 +221,6 @@ void CXBMCApp::onResume()
   CJNIAudioManager audioManager(getSystemService("audio"));
   m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
 
-  m_mediaSession->activate(false);
-
   // Clear the applications cache. We could have installed/deinstalled apps
   {
     CSingleLock lock(m_applicationsMutex);
@@ -245,11 +243,7 @@ void CXBMCApp::onPause()
       if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
-    m_mediaSession->activate(true);
   }
-
-  if (m_playback_state != PLAYBACK_STATE_STOPPED)
-    m_mediaSession->activate(true);
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
@@ -457,6 +451,7 @@ void CXBMCApp::run()
   std::string filenameToPlay = GetFilenameFromIntent(startIntent);
   if (!filenameToPlay.empty())
   {
+    android_printf("-- filename: %s", filenameToPlay.c_str());
     int argc = 2;
     const char** argv = (const char**) malloc(argc*sizeof(char*));
 
@@ -739,7 +734,7 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 
 void CXBMCApp::ProcessSlow()
 {
-  if (m_mediaSession->isActive())
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && m_mediaSession->isActive())
     UpdateSessionState();
 }
 
@@ -945,7 +940,7 @@ void CXBMCApp::InitDirectories()
 void CXBMCApp::onReceive(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
@@ -971,7 +966,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
-    if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
+    if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
@@ -1022,35 +1017,39 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  CXBMCApp::android_printf("Got Intent: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
-  CXBMCApp::android_printf("-- targetFile: %s", targetFile.c_str());
-  if (action == "android.intent.action.VIEW")
-  {
-    CFileItem* item = new CFileItem(targetFile, false);
-    if (item->IsVideoDb())
-    {
-      *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
-      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    }
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
-  }
-  else if (action == "android.intent.action.GET_CONTENT")
+  CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
+  if (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT")
   {
     CURL targeturl(targetFile);
-    if (targeturl.IsProtocol("videodb"))
+    std::string value;
+    if (action == "android.intent.action.GET_CONTENT" || (targeturl.GetOption("showinfo", value) && value == "true"))
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      if (targeturl.IsProtocol("videodb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      }
+      else if (targeturl.IsProtocol("musicdb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      }
     }
-    else if (targeturl.IsProtocol("musicdb"))
+    else
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      CFileItem* item = new CFileItem(targetFile, false);
+      if (item->IsVideoDb())
+      {
+        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+        item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      }
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     }
   }
   else if (action == ACTION_XBMC_RESUME)

@@ -2,4 +2,9 @@
 <resources>
    <color name="principal_color">#31AFE1</color>
    <color name="recommendation_color">#31AFE1</color>
+
+    <style name="AppTheme" parent="android:Theme.NoTitleBar">
+        <!-- Main theme colors -->
+        <item name="android:colorPrimary">@color/principal_color</item>
+    </style>
 </resources>
