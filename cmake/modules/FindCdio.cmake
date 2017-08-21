@@ -23,16 +23,25 @@ find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
 find_library(CDIO_LIBRARY NAMES cdio libcdio
                           PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
 
+if(NOT WIN32)
+  find_path(ISO9660_INCLUDE_DIR NAMES cdio/iso9660.h
+                                PATHS ${PC_CDIO_libcdio_INCLUDEDIR}
+                                      ${PC_CDIO_libiso9660_INCLUDEDIR})
+  find_library(ISO9660_LIBRARY NAMES iso9660
+                               PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
+  list(APPEND ISO9660_VARS ISO9660_INCLUDE_DIR ISO9660_LIBRARY)
+endif()
+
 set(CDIO_VERSION ${PC_CDIO_libcdio_VERSION})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Cdio
-                                  REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR
+                                  REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR ${ISO9660_VARS}
                                   VERSION_VAR CDIO_VERSION)
 
 if(CDIO_FOUND)
-  set(CDIO_LIBRARIES ${CDIO_LIBRARY})
-  set(CDIO_INCLUDE_DIRS ${CDIO_INCLUDE_DIR})
+  set(CDIO_LIBRARIES ${CDIO_LIBRARY} ${ISO9660_LIBRARY})
+  set(CDIO_INCLUDE_DIRS ${CDIO_INCLUDE_DIR} ${ISO9660_INCLUDE_DIR})
 
   if(NOT TARGET CDIO::CDIO)
     add_library(CDIO::CDIO UNKNOWN IMPORTED)
@@ -42,4 +51,4 @@ if(CDIO_FOUND)
   endif()
 endif()
 
-mark_as_advanced(CDIO_INCLUDE_DIR CDIO_LIBRARY)
+mark_as_advanced(CDIO_INCLUDE_DIR CDIO_LIBRARY ISO9660_INCLUDE_DIR ISO9660_LIBRARY)
