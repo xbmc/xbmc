@@ -1022,6 +1022,23 @@ namespace PVR
     return true;
   }
 
+  bool CPVRGUIActions::PlayEpgTag(const CFileItemPtr &item) const
+  {
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    if (!epgTag)
+      return false;
+
+    if (CServiceBroker::GetPVRManager().IsPlayingEpgTag(epgTag))
+    {
+      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
+      g_windowManager.SendMessage(msg);
+      return true;
+    }
+
+    StartPlayback(new CFileItem(epgTag), true);
+    return true;
+  }
+
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
     return SwitchToChannel(item, bCheckResume, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));

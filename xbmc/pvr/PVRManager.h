@@ -189,6 +189,15 @@ namespace PVR
     bool TranslateBoolInfo(DWORD dwInfo) const;
 
     /*!
+     * @brief Get a GUIInfoManager video label.
+     * @param item The item to get the label for.
+     * @param iLabel The id of the requested label.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
+     */
+    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
+
+    /*!
      * @brief Check if a TV channel, radio channel or recording is playing.
      * @return True if it's playing, false otherwise.
      */
@@ -196,15 +205,24 @@ namespace PVR
 
     /*!
      * @brief Check if the given channel is playing.
+     * @param channel The channel to check.
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingChannel(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Check if the given recording is playing.
+     * @param recording The recording to check.
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingRecording(const CPVRRecordingPtr &recording) const;
+
+    /*!
+     * @brief Check if the given epg tag is playing.
+     * @param epgTag The tag to check.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
      * @return True while the PVRManager is initialising.
@@ -252,6 +270,12 @@ namespace PVR
      * @return The recording or NULL if none is playing.
      */
     CPVRRecordingPtr GetCurrentRecording(void) const;
+
+    /*!
+     * @brief Return the epg tag that is currently playing.
+     * @return The tag or NULL if none is playing.
+     */
+    CPVREpgInfoTagPtr GetCurrentEpgTag(void) const;
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -339,8 +363,8 @@ namespace PVR
     CPVRChannelGroupPtr GetPlayingGroup(bool bRadio = false);
 
     /*!
-     * @brief Fill the file item for a recording or a channel with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled. Item must contain either a pvr recording or a pvr channel.
+     * @brief Fill the file item for a recording, a channel or an epg tag with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled. Item must contain either a pvr recording, a pvr channel or an epg tag.
      * @return True if the stream properties have been set, false otherwiese.
      */
     bool FillStreamFileItem(CFileItem &fileItem);

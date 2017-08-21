@@ -572,6 +572,11 @@ private:
    */
   CBookmark GetResumePoint() const;
 
+  /*!
+   \brief If given channel is radio, fill item's music tag from given epg tag and channel info.
+   */
+  void FillMusicInfoTag(const PVR::CPVRChannelPtr channel, const PVR::CPVREpgInfoTagPtr tag);
+
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 

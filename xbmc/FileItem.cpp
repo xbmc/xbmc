@@ -66,7 +66,6 @@
 #include "utils/Random.h"
 #include "events/IEvent.h"
 
-#include <assert.h>
 #include <algorithm>
 
 using namespace KODI;
@@ -124,10 +123,33 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
+void CFileItem::FillMusicInfoTag(const CPVRChannelPtr channel, const CPVREpgInfoTagPtr tag)
+{
+  if (channel && channel->IsRadio() && !HasMusicInfoTag())
+  {
+    CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
+
+    if (tag)
+    {
+      musictag->SetTitle(tag->Title());
+      musictag->SetGenre(tag->Genre());
+      musictag->SetDuration(tag->GetDuration());
+    }
+    else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    {
+      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
+    }
+    musictag->SetURL(channel->Path());
+    musictag->SetArtist(channel->ChannelName());
+    musictag->SetAlbumArtist(channel->ChannelName());
+    musictag->SetLoaded(true);
+    musictag->SetComment("");
+    musictag->SetLyrics("");
+  }
+}
+
 CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
 {
-  assert(tag.get());
-
   Initialize();
 
   m_bIsFolder = false;
@@ -142,13 +164,12 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
   else if (tag->HasChannel() && !tag->Channel()->IconPath().empty())
     SetIconImage(tag->Channel()->IconPath());
 
+  FillMusicInfoTag(tag->Channel(), tag);
   FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CPVRChannelPtr& channel)
 {
-  assert(channel.get());
-
   Initialize();
 
   CPVREpgInfoTagPtr epgNow(channel->GetEPGNow());
@@ -161,24 +182,6 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
       CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
                             "" : g_localizeStrings.Get(19055); // no information available
 
-  if (channel->IsRadio())
-  {
-    CMusicInfoTag* musictag = GetMusicInfoTag();
-    if (musictag)
-    {
-      musictag->SetURL(channel->Path());
-      musictag->SetTitle(m_strLabel2);
-      musictag->SetArtist(channel->ChannelName());
-      musictag->SetAlbumArtist(channel->ChannelName());
-      if (epgNow)
-        musictag->SetGenre(epgNow->Genre());
-      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
-      musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
-    }
-  }
-
   if (!channel->IconPath().empty())
     SetIconImage(channel->IconPath());
 
@@ -186,13 +189,12 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
   SetProperty("path", channel->Path());
   SetArt("thumb", channel->IconPath());
 
+  FillMusicInfoTag(channel, epgNow);
   FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CPVRRecordingPtr& record)
 {
-  assert(record.get());
-
   Initialize();
 
   m_bIsFolder = false;
@@ -205,8 +207,6 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
 
 CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
 {
-  assert(timer.get());
-
   Initialize();
 
   m_bIsFolder = timer->IsTimerRule();

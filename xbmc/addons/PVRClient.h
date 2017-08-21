@@ -370,6 +370,21 @@ namespace PVR
      */
     PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
 
+    /*
+     * @brief Check if an epg tag can be played
+     * @param tag The epg tag
+     * @param bIsPlayable Set to true if the tag can be played
+     * @return PVR_ERROR_NO_ERROR if bIsPlayable has been set successfully.
+     */
+    PVR_ERROR IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const;
+
+    /*!
+     * @brief Fill the file item for an epg tag with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillEpgTagStreamFileItem(CFileItem &fileItem);
+
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */
@@ -773,6 +788,23 @@ namespace PVR
      */
     void ClearPlayingRecording();
 
+    /*!
+     * @brief Set the epg tag that is currently playing.
+     * @param epgTag The tag that is currently playing.
+     */
+    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
+
+    /*!
+     * @brief Clear the epg tag that is currently playing, if any.
+     */
+    void ClearPlayingEpgTag();
+
+    /*!
+     * @brief Get the epg tag that is currently playing.
+     * @return The tag that is currently playing, NULL otherwise.
+     */
+    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
+
     static const char *ToString(const PVR_ERROR error);
 
     /*!
@@ -1050,6 +1082,8 @@ namespace PVR
     CPVRChannelPtr      m_playingChannel;
     bool                m_bIsPlayingRecording;
     CPVRRecordingPtr    m_playingRecording;
+    bool                m_bIsPlayingEpgTag;
+    CPVREpgInfoTagPtr   m_playingEpgTag;
 
     AddonInstance_PVR m_struct;
   };

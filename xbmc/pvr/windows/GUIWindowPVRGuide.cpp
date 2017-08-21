@@ -334,6 +334,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                       // past event
                       if (tag->HasRecording())
                         CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
+                      else if (tag->IsPlayable())
+                        CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(pItem);
                       else
                         CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
                     }

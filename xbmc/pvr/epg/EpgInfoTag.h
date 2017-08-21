@@ -382,6 +382,12 @@ namespace PVR
     bool IsRecordable(void) const;
 
     /*!
+     * @brief Check if this event can be played.
+     * @return True if it can be played, false otherwise.
+     */
+    bool IsPlayable(void) const;
+
+    /*!
      * @brief Change the channel tag of this epg tag
      * @param channel The new channel
      */

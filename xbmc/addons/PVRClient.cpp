@@ -141,6 +141,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strBackendName        = DEFAULT_INFO_STRING_VALUE;
   m_bIsPlayingTV          = false;
   m_bIsPlayingRecording   = false;
+  m_bIsPlayingEpgTag      = false;
   m_strBackendHostname.clear();
   m_menuhooks.clear();
   m_timertypes.clear();
@@ -756,6 +757,49 @@ PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsR
   retVal = m_struct.toAddon.IsEPGTagRecordable(&addonTag, &bIsRecordable);
   LogError(retVal, __FUNCTION__);
   return retVal;
+}
+
+PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (!m_clientCapabilities.SupportsEPG())
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+
+  EPG_TAG addonTag;
+  WriteEpgTag(tag, addonTag);
+  retVal = m_struct.toAddon.IsEPGTagPlayable(&addonTag, &bIsPlayable);
+  LogError(retVal, __FUNCTION__);
+  return retVal;
+}
+
+bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
+{
+  if (!m_bReadyToUse)
+    return false;
+
+  const CPVREpgInfoTagPtr epgtag = fileItem.GetEPGInfoTag();
+
+  EPG_TAG tag;
+  WriteEpgTag(epgtag, tag);
+
+  PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
+  unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+
+  if (m_struct.toAddon.GetEPGTagStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
+    return false;
+
+  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  {
+    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
+      fileItem.SetDynPath(properties[i].strValue);
+
+    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
+  }
+  return true;
 }
 
 int CPVRClient::GetChannelGroupsAmount(void)
@@ -1449,6 +1493,29 @@ void CPVRClient::ClearPlayingRecording()
   CSingleLock lock(m_critSection);
   m_playingRecording.reset();
   m_bIsPlayingRecording = false;
+}
+
+void CPVRClient::SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag)
+{
+  CSingleLock lock(m_critSection);
+  m_playingEpgTag = epgTag;
+  m_bIsPlayingEpgTag = true;
+}
+
+CPVREpgInfoTagPtr CPVRClient::GetPlayingEpgTag(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (m_bReadyToUse && m_bIsPlayingEpgTag)
+    return m_playingEpgTag;
+
+  return CPVREpgInfoTagPtr();
+}
+
+void CPVRClient::ClearPlayingEpgTag()
+{
+  CSingleLock lock(m_critSection);
+  m_playingEpgTag.reset();
+  m_bIsPlayingEpgTag = false;
 }
 
 bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)

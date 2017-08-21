@@ -10112,7 +10112,12 @@ msgctxt "#19189"
 msgid "The PVR backend does not allow to record this event."
 msgstr ""
 
-#empty string with id 19190
+#. generic "play program" label used in different places
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19190"
+msgid "Play programme"
+msgstr ""
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"

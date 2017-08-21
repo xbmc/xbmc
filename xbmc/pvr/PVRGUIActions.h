@@ -246,6 +246,13 @@ namespace PVR
     bool PlayRecording(const CFileItemPtr &item, bool bCheckResume) const;
 
     /*!
+     * @brief Play EPG tag.
+     * @param item containing an epg tag.
+     * @return true on success, false otherwise.
+     */
+    bool PlayEpgTag(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Switch channel.
      * @param item containing a channel or an epg tag.
      * @param bCheckResume controls resume check in case a recording for the current epg event is present.

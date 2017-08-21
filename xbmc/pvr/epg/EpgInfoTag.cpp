@@ -767,9 +767,21 @@ bool CPVREpgInfoTag::IsRecordable(void) const
   return bIsRecordable;
 }
 
+bool CPVREpgInfoTag::IsPlayable(void) const
+{
+  bool bIsPlayable = false;
+  if (CServiceBroker::GetPVRManager().Clients()->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR)
+  {
+    // fallback
+    bIsPlayable = false;
+  }
+  return bIsPlayable;
+}
+
 void CPVREpgInfoTag::SetEpg(CPVREpg *epg)
 {
   m_epg = epg;
+  UpdatePath(); // Note: path contains epg id.
 }
 
 bool CPVREpgInfoTag::IsSeries(void) const
