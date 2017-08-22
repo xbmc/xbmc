@@ -22,7 +22,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(ENABLE_WAYLAND),yes)
-  NATIVE += expat-native wayland-scanner-native scons-native
+  NATIVE += expat-native wayland-scanner-native python27-native scons-native
 endif
 
 ifeq ($(TARGET_PLATFORM),raspberry-pi)
@@ -43,9 +43,10 @@ swig-native: pcre-native
 distribute-native: python36-native
 distutilscross-native: python36-native distribute-native
 tar-native: xz-native automake-native
+python27-native: zlib-native
 python36-native: zlib-native
 wayland-scanner-native: expat-native
-scons-native: python36-native
+scons-native: python27-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
