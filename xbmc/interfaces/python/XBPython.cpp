@@ -601,7 +601,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
       PyEval_AcquireLock();
     else
       PyEval_InitThreads();
-    wchar_t* python_argv[1] = { L"" };
+    wchar_t* python_argv[1] = { const_cast<wchar_t*>(L"") };
     PySys_SetArgv(1, python_argv);
 
     if (!(m_mainThreadState = PyThreadState_Get()))
