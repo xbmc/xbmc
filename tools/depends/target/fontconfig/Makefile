@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include lconv.patch fix-aarch64_atomics.patch Makefile
 
 # lib name, version
 LIBNAME=fontconfig
-VERSION=2.11.1
+VERSION=2.12.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
