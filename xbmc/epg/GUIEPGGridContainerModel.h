@@ -86,6 +86,9 @@ namespace EPG
 
     unsigned int GetGridStartPadding() const;
 
+    int GetFirstEventBlock(const CDateTime &eventStart) const;
+    int GetLastEventBlock(const CDateTime &eventEnd) const;
+
   private:
     void FreeItemsMemory();
     void Reset();
