@@ -3066,12 +3066,12 @@ bool CVideoDatabase::GetResumeBookMark(const std::string& strFilenameAndPath, CB
   return false;
 }
 
-void CVideoDatabase::DeleteResumeBookMark(const std::string &strFilenameAndPath)
+void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
 {
   if (!m_pDB.get() || !m_pDS.get())
     return;
 
-  int fileID = GetFileId(strFilenameAndPath);
+  int fileID = item.GetVideoInfoTag()->m_iFileId;
   if (fileID < -1)
     return;
 
@@ -3079,10 +3079,36 @@ void CVideoDatabase::DeleteResumeBookMark(const std::string &strFilenameAndPath)
   {
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
     m_pDS->exec(sql);
+
+    VIDEODB_CONTENT_TYPE iType = static_cast<VIDEODB_CONTENT_TYPE>(item.GetVideoContentType());
+    std::string content;
+    switch (iType)
+    {
+      case VIDEODB_CONTENT_MOVIES:
+        content = MediaTypeMovie;
+        break;
+      case VIDEODB_CONTENT_EPISODES:
+        content = MediaTypeEpisode;
+        break;
+      case VIDEODB_CONTENT_TVSHOWS:
+        content = MediaTypeTvShow;
+        break;
+      case VIDEODB_CONTENT_MUSICVIDEOS:
+        content = MediaTypeMusicVideo;
+        break;
+      default:
+        break;
+    }
+
+    if (!content.empty())
+    {
+      AnnounceUpdate(content, item.GetVideoInfoTag()->m_iDbId);
+    }
+
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, item.GetVideoInfoTag()->m_strFileNameAndPath.c_str());
   }
 }
 
