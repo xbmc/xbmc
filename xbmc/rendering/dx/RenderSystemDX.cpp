@@ -20,6 +20,8 @@
 #include <DirectXPackedVector.h>
 
 #include "Application.h"
+#include "cores/RetroPlayer/process/windows/RPProcessInfoWin.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPWinRenderer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
 #if defined(TARGET_WINDOWS_STORE)
@@ -44,6 +46,7 @@ extern "C" {
 #include "libavutil/pixfmt.h"
 }
 
+using namespace KODI;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
@@ -84,6 +87,8 @@ bool CRenderSystemDX::InitRenderSystem()
   DXVA::CDecoder::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CWinRenderer::Register();
+  RETRO::CRPProcessInfoWin::Register();
+  RETRO::CRPProcessInfoWin::RegisterRendererFactory(new RETRO::CWinRendererFactory);
 
   m_viewPort = m_deviceResources->GetScreenViewport();
   RestoreViewPort();

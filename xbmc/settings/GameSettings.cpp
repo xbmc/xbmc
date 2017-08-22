@@ -20,9 +20,19 @@
 
 #include "GameSettings.h"
 
+CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
+{
+  if (this != &rhs)
+  {
+    m_scalingMethod = rhs.m_scalingMethod;
+    m_viewMode = rhs.m_viewMode;
+  }
+  return *this;
+}
+
 void CGameSettings::Reset()
 {
-  m_scalingMethod = VS_SCALINGMETHOD_NEAREST;
+  m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   m_viewMode = ViewModeNormal;
 }
 
@@ -30,4 +40,22 @@ bool CGameSettings::operator==(const CGameSettings &rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod &&
          m_viewMode == rhs.m_viewMode;
+}
+
+void CGameSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
+{
+  if (scalingMethod != m_scalingMethod)
+  {
+    m_scalingMethod = scalingMethod;
+    SetChanged();
+  }
+}
+
+void CGameSettings::SetViewMode(enum ViewMode viewMode)
+{
+  if (viewMode != m_viewMode)
+  {
+    m_viewMode = viewMode;
+    SetChanged();
+  }
 }

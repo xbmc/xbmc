@@ -18,39 +18,28 @@
  *
  */
 
-#include "GUIRenderSettings.h"
+#include "RenderGeometry.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 
 using namespace KODI;
 using namespace RETRO;
 
-void CGUIRenderSettings::Reset()
+CRenderGeometry::CRenderGeometry(const CRect &dimensions) :
+  m_dimensions(dimensions)
 {
-  m_scalingMethod = -1;
-  m_viewMode = -1;
 }
 
-bool CGUIRenderSettings::operator==(const CGUIRenderSettings &rhs) const
+void CRenderGeometry::Reset()
 {
-  return m_scalingMethod == rhs.m_scalingMethod &&
-         m_viewMode == rhs.m_viewMode;
 }
 
-ESCALINGMETHOD CGUIRenderSettings::GetScalingMethod() const
+bool CRenderGeometry::operator==(const CRenderGeometry &rhs) const
 {
-  if (HasScalingMethod())
-    return static_cast<ESCALINGMETHOD>(m_scalingMethod);
-
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-  return gameSettings.ScalingMethod();
+  return m_dimensions == rhs.m_dimensions;
 }
 
-ViewMode CGUIRenderSettings::GetRenderViewMode() const
+bool CRenderGeometry::operator<(const CRenderGeometry &rhs) const
 {
-  if (HasRenderViewMode())
-    return static_cast<ViewMode>(m_viewMode);
-
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-  return gameSettings.ViewMode();
+  return m_dimensions.Area() < rhs.m_dimensions.Area();
 }

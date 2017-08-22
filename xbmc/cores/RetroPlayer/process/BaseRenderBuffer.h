@@ -19,25 +19,33 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
+#include "IRenderBuffer.h"
+
+#include <atomic>
+#include <memory>
 
 namespace KODI
 {
 namespace RETRO
 {
-  class IRenderSettingsCallback
+  class CBaseRenderBuffer : public IRenderBuffer
   {
   public:
-    virtual ~IRenderSettingsCallback() = default;
+    CBaseRenderBuffer();
+    ~CBaseRenderBuffer() override = default;
 
-    virtual bool SupportsRenderFeature(ERENDERFEATURE feature) = 0;
-    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) = 0;
+    // Partial implementation of IRenderBuffer
+    void Acquire() override;
+    void Acquire(std::shared_ptr<IRenderBufferPool> pool) override;
+    void Release() override;
+    IRenderBufferPool *GetPool() override { return m_pool.get(); }
 
-    virtual ESCALINGMETHOD GetScalingMethod() = 0;
-    virtual void SetScalingMethod(ESCALINGMETHOD scalingMethod) = 0;
+  protected:
+    // Reference counting
+    std::atomic_int m_refCount;
 
-    virtual ViewMode GetRenderViewMode() = 0;
-    virtual void SetRenderViewMode(ViewMode mode) = 0;
+    // Pool callback
+    std::shared_ptr<IRenderBufferPool> m_pool;
   };
 }
 }

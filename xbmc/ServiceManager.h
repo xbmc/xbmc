@@ -69,6 +69,11 @@ namespace GAME
   class CControllerManager;
   class CGameServices;
 }
+
+namespace RETRO
+{
+  class CGUIGameRenderManager;
+}
 }
 
 namespace PERIPHERALS
@@ -112,6 +117,7 @@ public:
   CPlatform& GetPlatform();
   KODI::GAME::CControllerManager& GetGameControllerManager();
   KODI::GAME::CGameServices& GetGameServices();
+  KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
   PERIPHERALS::CPeripherals& GetPeripherals();
 
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
@@ -161,6 +167,7 @@ protected:
   std::unique_ptr<CSettings> m_settings;
   std::unique_ptr<KODI::GAME::CControllerManager> m_gameControllerManager;
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;
+  std::unique_ptr<KODI::RETRO::CGUIGameRenderManager> m_gameRenderManager;
   std::unique_ptr<PERIPHERALS::CPeripherals> m_peripherals;
   std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
   std::unique_ptr<CInputManager> m_inputManager;

@@ -25,6 +25,7 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"
@@ -108,6 +109,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
 
+  m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
+
   init_level = 2;
   return true;
 }
@@ -147,7 +150,9 @@ bool CServiceManager::InitStageThree()
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_peripherals));
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
+    *m_gameRenderManager,
+    *m_peripherals));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
@@ -168,6 +173,7 @@ void CServiceManager::DeinitStageThree()
 
 void CServiceManager::DeinitStageTwo()
 {
+  m_gameRenderManager.reset();
   m_peripherals.reset();
   m_inputManager.reset();
   m_gameControllerManager.reset();
@@ -285,6 +291,11 @@ GAME::CControllerManager& CServiceManager::GetGameControllerManager()
 GAME::CGameServices& CServiceManager::GetGameServices()
 {
   return *m_gameServices;
+}
+
+KODI::RETRO::CGUIGameRenderManager& CServiceManager::GetGameRenderManager()
+{
+  return *m_gameRenderManager;
 }
 
 PERIPHERALS::CPeripherals& CServiceManager::GetPeripherals()

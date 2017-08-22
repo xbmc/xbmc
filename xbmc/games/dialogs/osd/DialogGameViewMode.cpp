@@ -19,7 +19,7 @@
  */
 
 #include "DialogGameViewMode.h"
-#include "cores/RetroPlayer/rendering/IRenderSettingsCallback.h"
+#include "cores/RetroPlayer/rendering/IRenderCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -105,9 +105,7 @@ void CDialogGameViewMode::OnItemFocus(unsigned int index)
     if (gameSettings.ViewMode() != viewMode)
     {
       gameSettings.SetViewMode(viewMode);
-
-      if (m_callback != nullptr)
-        m_callback->SetRenderViewMode(viewMode);
+      gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
     }
   }
 }

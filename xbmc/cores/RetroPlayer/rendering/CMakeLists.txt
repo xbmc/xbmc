@@ -1,9 +1,27 @@
-set(SOURCES GUIRenderSettings.cpp
+set(SOURCES GUIGameRenderManager.cpp
+            GUIGameSettings.cpp
+            GUIRenderHandle.cpp
+            GUIRenderTarget.cpp
+            GUIRenderTargetFactory.cpp
+            RenderContext.cpp
+            RenderGeometry.cpp
+            RenderSettings.cpp
+            RenderVideoSettings.cpp
             RPRenderManager.cpp
 )
 
-set(HEADERS GUIRenderSettings.h
-            IRenderSettingsCallback.h
+set(HEADERS GUIGameRenderManager.h
+            GUIGameSettings.h
+            GUIRenderHandle.h
+            GUIRenderTarget.h
+            GUIRenderTargetFactory.h
+            IGUIRenderSettings.h
+            IRenderCallback.h
+            IRenderManager.h
+            RenderContext.h
+            RenderGeometry.h
+            RenderSettings.h
+            RenderVideoSettings.h
             RPRenderManager.h
 )
 

@@ -95,6 +95,11 @@ GAME::CGameServices& CServiceBroker::GetGameServices()
   return g_application.m_ServiceManager->GetGameServices();
 }
 
+KODI::RETRO::CGUIGameRenderManager& CServiceBroker::GetGameRenderManager()
+{
+  return g_application.m_ServiceManager->GetGameRenderManager();
+}
+
 PERIPHERALS::CPeripherals& CServiceBroker::GetPeripherals()
 {
   return g_application.m_ServiceManager->GetPeripherals();
