@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <drm/drm_fourcc.h>
 #include <drm/drm_mode.h>
 #include <EGL/egl.h>
 #include <unistd.h>
@@ -80,19 +81,28 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   struct drm_fb *fb = new drm_fb;
   fb->bo = bo;
 
-  uint32_t width = gbm_bo_get_width(bo);
-  uint32_t height = gbm_bo_get_height(bo);
-  uint32_t stride = gbm_bo_get_stride(bo);
-  uint32_t handle = gbm_bo_get_handle(bo).u32;
+  uint32_t width,
+           height,
+           handles[4] = {0},
+           strides[4] = {0},
+           offsets[4] = {0};
 
-  auto ret = drmModeAddFB(m_drm->fd,
-                          width,
-                          height,
-                          24,
-                          32,
-                          stride,
-                          handle,
-                          &fb->fb_id);
+  width = gbm_bo_get_width(bo);
+  height = gbm_bo_get_height(bo);
+
+  handles[0] = gbm_bo_get_handle(bo).u32;
+  strides[0] = gbm_bo_get_stride(bo);
+  memset(offsets, 0, 16);
+
+  auto ret = drmModeAddFB2(m_drm->fd,
+                           width,
+                           height,
+                           DRM_FORMAT_ARGB8888,
+                           handles,
+                           strides,
+                           offsets,
+                           &fb->fb_id,
+                           0);
 
   if(ret)
   {
