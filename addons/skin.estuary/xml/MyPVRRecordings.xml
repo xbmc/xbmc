@@ -46,7 +46,7 @@
 							<right>30</right>
 							<aligny>center</aligny>
 							<scroll>true</scroll>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -72,7 +72,7 @@
 							<height>80</height>
 							<right>30</right>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -185,7 +185,7 @@
 									<height>90</height>
 									<width>780</width>
 									<aligny>center</aligny>
-									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]</label>
 									<shadowcolor>text_shadow</shadowcolor>
 								</control>
 							</focusedlayout>
@@ -195,7 +195,7 @@
 									<height>90</height>
 									<width>$PARAM[width]</width>
 									<aligny>center</aligny>
-									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]</label>
 									<shadowcolor>text_shadow</shadowcolor>
 								</control>
 							</itemlayout>
