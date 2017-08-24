@@ -150,6 +150,12 @@ namespace PVR
     int BroadcastId(void) const;
 
     /*!
+     * @brief Get the unique ID of the channel this event belongs to.
+     * @return The unique channel ID.
+     */
+    unsigned int UniqueChannelID(void) const;
+
+    /*!
      * @brief Get the event's start time.
      * @return The new start time.
      */
@@ -464,6 +470,7 @@ namespace PVR
     int                      m_iEpisodeNumber;     /*!< episode number */
     int                      m_iEpisodePart;       /*!< episode part number */
     unsigned int             m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    unsigned int             m_iUniqueChannelID;   /*!< unique channel ID */
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */

@@ -1041,12 +1041,11 @@ namespace PVR
      * @brief Notify a state change for an EPG event
      * @param kodiInstance Pointer to Kodi's CPVRClient class
      * @param tag The EPG event.
-     * @param iUniqueChannelId The unique id of the channel for the EPG event
      * @param newState The new state.
      * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
      *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
      */
-    static void cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+    static void cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState);
 
     /*! @todo remove the use complete from them, or add as generl function?!
      * Returns the ffmpeg codec id from given ffmpeg codec string name

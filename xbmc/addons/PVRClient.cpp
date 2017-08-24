@@ -378,6 +378,7 @@ void CPVRClient::WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &add
   addonTag.endTime = t;
   addonTag.iParentalRating = kodiTag->ParentalRating();
   addonTag.iUniqueBroadcastId = kodiTag->UniqueBroadcastID();
+  addonTag.iUniqueChannelId = kodiTag->UniqueChannelID();
   addonTag.bNotify = kodiTag->Notify();
   kodiTag->FirstAiredAsUTC().GetAsTime(t);
   addonTag.firstAired = t;
@@ -397,7 +398,6 @@ void CPVRClient::WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &add
   addonTag.strIMDBNumber = kodiTag->IMDBNumber().c_str();
   addonTag.strEpisodeName = kodiTag->EpisodeName().c_str();
   addonTag.strIconPath = kodiTag->Icon().c_str();
-  addonTag.iChannelNumber = kodiTag->Channel() ? kodiTag->Channel()->ClientChannelNumber() : 0;
   addonTag.iGenreType = kodiTag->GenreType();
   addonTag.iGenreSubType = kodiTag->GenreSubType();
   addonTag.strSeriesLink = kodiTag->SeriesLink().c_str();
@@ -1963,13 +1963,11 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strC
 typedef struct EpgEventStateChange
 {
   int iClientId;
-  unsigned int iUniqueChannelId;
   CPVREpgInfoTagPtr event;
   EPG_EVENT_STATE state;
 
-  EpgEventStateChange(int _iClientId, unsigned int _iUniqueChannelId, EPG_TAG *_event, EPG_EVENT_STATE _state)
+  EpgEventStateChange(int _iClientId, EPG_TAG *_event, EPG_EVENT_STATE _state)
   : iClientId(_iClientId),
-    iUniqueChannelId(_iUniqueChannelId),
     event(new CPVREpgInfoTag(*_event, _iClientId)),
     state(_state) {}
 
@@ -1977,7 +1975,7 @@ typedef struct EpgEventStateChange
 
 void CPVRClient::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
 {
-  const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
+  const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(ch.event->UniqueChannelID(), ch.event->ClientID()));
   if (channel)
   {
     const CPVREpgPtr epg(channel->GetEPG());
@@ -1995,10 +1993,10 @@ void CPVRClient::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
   }
   else
     CLog::Log(LOGERROR, "PVR - %s - invalid channel (%d)! Unable to deliver %sevent change (%d)!",
-              __FUNCTION__, ch.iUniqueChannelId, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
+              __FUNCTION__, ch.event->UniqueChannelID(), bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
 }
 
-void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState)
 {
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !tag)
@@ -2028,13 +2026,13 @@ void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, uns
     }
 
     // deliver current change.
-    UpdateEpgEvent(EpgEventStateChange(client->GetID(), iUniqueChannelId, tag, newState), false);
+    UpdateEpgEvent(EpgEventStateChange(client->GetID(), tag, newState), false);
   }
   else
   {
     // queue for later delivery.
     CSingleLock lock(queueMutex);
-    queuedChanges.push_back(EpgEventStateChange(client->GetID(), iUniqueChannelId, tag, newState));
+    queuedChanges.push_back(EpgEventStateChange(client->GetID(), tag, newState));
   }
 }
 

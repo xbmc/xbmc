@@ -830,4 +830,3 @@ void CPVREpgContainer::UpdateRequest(int clientID, unsigned int channelID)
   request.channelID = channelID;
   m_updateRequests.push_back(request);
 }
-
