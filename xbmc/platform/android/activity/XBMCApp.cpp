@@ -660,6 +660,14 @@ void CXBMCApp::UpdateSessionState()
   float speed = 0.0;
   if (m_playback_state != PLAYBACK_STATE_STOPPED)
   {
+    if (g_application.m_pPlayer->HasVideo())
+      m_playback_state |= PLAYBACK_STATE_VIDEO;
+    else
+      m_playback_state &= ~PLAYBACK_STATE_VIDEO;
+    if (g_application.m_pPlayer->HasAudio())
+      m_playback_state |= PLAYBACK_STATE_AUDIO;
+    else
+      m_playback_state &= ~PLAYBACK_STATE_AUDIO;
     pos = g_application.m_pPlayer->GetTime();
     speed = g_application.m_pPlayer->GetPlaySpeed();
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
