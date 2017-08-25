@@ -1,4 +1,4 @@
-package org.xbmc.@APP_NAME_LC@;
+package @APP_PACKAGE@;
 
 import android.app.NativeActivity;
 import android.content.ComponentName;
@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import org.xbmc.@APP_NAME_LC@.XBMCVideoView;
+import @APP_PACKAGE@.XBMCVideoView;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {

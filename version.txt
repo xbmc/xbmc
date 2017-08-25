@@ -6,6 +6,7 @@ VERSION_MINOR 4
 VERSION_TAG
 VERSION_CODE 174000
 ADDON_API 17.4.0
+APP_PACKAGE org.xbmc.kodi
 
 # Notes:
 # Change AC_INIT in configure.ac
