@@ -407,16 +407,16 @@ CDateTime CPVREpg::GetLastScanTime(void)
   return m_lastScanTime;
 }
 
-bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId, bool bUpdateDatabase)
 {
   if (!data)
     return false;
 
-  CPVREpgInfoTagPtr tag(new CPVREpgInfoTag(*data));
+  CPVREpgInfoTagPtr tag(new CPVREpgInfoTag(*data, iClientId));
   return UpdateEntry(tag, bUpdateDatabase);
 }
 
-bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
 {
   CPVREpgInfoTagPtr infoTag;
 
@@ -450,7 +450,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase /* 
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
 {
   bool bRet(true);
   bool bNotify(true);

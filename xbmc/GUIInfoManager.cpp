@@ -4340,6 +4340,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true when a recording is being watched.
 ///   }
+///   \table_row3{   <b>`Pvr.IsPlayingEpgTag`</b>,
+///                  \anchor Pvr_IsPlayingEpgTag
+///                  _boolean_,
+///     Returns true when an epg tag is being watched.
+///   }
 ///   \table_row3{   <b>`Pvr.Duration`</b>,
 ///                  \anchor Pvr_Duration
 ///                  _time string_,
@@ -4597,6 +4602,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingtv",              PVR_IS_PLAYING_TV },
                                   { "isplayingradio",           PVR_IS_PLAYING_RADIO },
                                   { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
+                                  { "isplayingepgtag",          PVR_IS_PLAYING_EPGTAG },
                                   { "duration",                 PVR_PLAYING_DURATION },
                                   { "time",                     PVR_PLAYING_TIME },
                                   { "progress",                 PVR_PLAYING_PROGRESS },
@@ -8748,136 +8754,14 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   if (!g_application.m_pPlayer->IsPlaying())
     return "";
 
-  if (m_currentFile->HasPVRChannelInfoTag())
+  if (m_currentFile->IsPVR())
   {
-    CPVRChannelPtr tag(m_currentFile->GetPVRChannelInfoTag());
-    CPVREpgInfoTagPtr epgTag;
-
-    switch (item)
-    {
-    /* Now playing infos */
-    case VIDEOPLAYER_TITLE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ?
-          epgTag->Title() :
-          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
-                            "" : g_localizeStrings.Get(19055); // no information available
-    case VIDEOPLAYER_GENRE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
-    case VIDEOPLAYER_PLOT:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Plot() : "";
-    case VIDEOPLAYER_PLOT_OUTLINE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->PlotOutline() : "";
-    case VIDEOPLAYER_STARTTIME:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_ENDTIME:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_IMDBNUMBER:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->IMDBNumber() : "";
-    case VIDEOPLAYER_ORIGINALTITLE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->OriginalTitle() : "";
-    case VIDEOPLAYER_YEAR:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->Year() > 0)
-        return StringUtils::Format("%i", epgTag->Year());
-      break;
-    case VIDEOPLAYER_EPISODE:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->EpisodeNumber() > 0)
-      {
-        if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
-          return StringUtils::Format("S%i", epgTag->EpisodeNumber());
-        else
-          return StringUtils::Format("%i", epgTag->EpisodeNumber());
-      }
-      break;
-    case VIDEOPLAYER_SEASON:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->SeriesNumber() > 0)
-        return StringUtils::Format("%i", epgTag->SeriesNumber());
-      break;
-    case VIDEOPLAYER_EPISODENAME:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->EpisodeName() : "";
-    case VIDEOPLAYER_CAST:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Cast() : "";
-    case VIDEOPLAYER_DIRECTOR:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Director() : "";
-    case VIDEOPLAYER_WRITER:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Writer() : "";
-
-    /* Next playing infos */
-    case VIDEOPLAYER_NEXT_TITLE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ?
-          epgTag->Title() :
-          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
-                            "" : g_localizeStrings.Get(19055); // no information available
-    case VIDEOPLAYER_NEXT_GENRE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
-    case VIDEOPLAYER_NEXT_PLOT:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->Plot() : "";
-    case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->PlotOutline() : "";
-    case VIDEOPLAYER_NEXT_STARTTIME:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : "";
-    case VIDEOPLAYER_NEXT_ENDTIME:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : "";
-    case VIDEOPLAYER_NEXT_DURATION:
-      {
-        std::string duration;
-        epgTag = tag->GetEPGNext();
-        if (epgTag && epgTag->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(epgTag->GetDuration());
-        return duration;
-      }
-
-    case VIDEOPLAYER_PARENTAL_RATING:
-      {
-        std::string rating;
-        epgTag = tag->GetEPGNow();
-        if (epgTag && epgTag->ParentalRating() > 0)
-          rating = StringUtils::Format("%i", epgTag->ParentalRating());
-        return rating;
-      }
-      break;
-
-    /* General channel infos */
-    case VIDEOPLAYER_CHANNEL_NAME:
-      return tag->ChannelName();
-
-    case VIDEOPLAYER_CHANNEL_NUMBER:
-      return StringUtils::Format("%i", tag->ChannelNumber());
-
-    case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
-      return StringUtils::Format("%i", tag->SubChannelNumber());
-
-    case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
-      return tag->FormattedChannelNumber();
-
-    case VIDEOPLAYER_CHANNEL_GROUP:
-      {
-        if (tag && !tag->IsRadio())
-          return CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
-      }
-    }
+    std::string strValue;
+    if (CServiceBroker::GetPVRManager().GetVideoLabel(*m_currentFile, item, strValue))
+      return strValue;
   }
-  else if (m_currentFile->HasVideoInfoTag())
+
+  if (m_currentFile->HasVideoInfoTag())
   {
     switch (item)
     {
@@ -9015,53 +8899,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         return strPlayCount;
       }
     default:
-      {
-        if (m_currentFile->HasPVRRecordingInfoTag())
-        {
-          const CPVRRecordingPtr tag(m_currentFile->GetPVRRecordingInfoTag());
-          switch (item)
-          {
-            case VIDEOPLAYER_STARTTIME:
-              return tag->RecordingTimeAsLocalTime().GetAsLocalizedTime("", false);
-            case VIDEOPLAYER_ENDTIME:
-              return tag->EndTimeAsLocalTime().GetAsLocalizedTime("", false);
-            case VIDEOPLAYER_EPISODENAME:
-              return tag->EpisodeName();
-            case VIDEOPLAYER_CHANNEL_NAME:
-              return tag->m_strChannelName;
-            case VIDEOPLAYER_CHANNEL_NUMBER:
-            {
-              const CPVRChannelPtr channel(tag->Channel());
-              if (channel)
-                return StringUtils::Format("%i", channel->ChannelNumber());
-              break;
-            }
-            case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
-            {
-              const CPVRChannelPtr channel(tag->Channel());
-              if (channel)
-                return StringUtils::Format("%i", channel->SubChannelNumber());
-              break;
-            }
-            case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
-            {
-              const CPVRChannelPtr channel(tag->Channel());
-              if (channel)
-                return channel->FormattedChannelNumber();
-              break;
-            }
-            case VIDEOPLAYER_CHANNEL_GROUP:
-            {
-              if (!tag->IsRadio())
-                return CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
-              break;
-            }
-            default:
-              break;
-          }
-        }
         break;
-      }
     }
   }
   else if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)

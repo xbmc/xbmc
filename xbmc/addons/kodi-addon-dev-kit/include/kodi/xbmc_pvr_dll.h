@@ -97,6 +97,35 @@ extern "C"
    * @remarks Required if bSupportsEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd);
+
+  /*
+   * Check if the given EPG tag can be recorded.
+   * @param tag the epg tag to check.
+   * @param [out] bIsRecordable Set to true if the tag can be recorded.
+   * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
+   * @remarks Optional, return PVR_ERROR_NOT_IMPLEMENTED to let Kodi decide.
+   */
+  PVR_ERROR IsEPGTagRecordable(const EPG_TAG* tag, bool* bIsRecordable);
+
+  /*
+   * Check if the given EPG tag can be played.
+   * @param tag the epg tag to check.
+   * @param [out] bIsPlayable Set to true if the tag can be played.
+   * @return PVR_ERROR_NO_ERROR if bIsPlayable has been set successfully.
+   * @remarks Required if add-on supports playing epg tags. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR IsEPGTagPlayable(const EPG_TAG* tag, bool* bIsPlayable);
+
+  /*!
+   * Get the stream properties for an epg tag from the backend.
+   * @param[in] tag The epg tag to get the stream properties for.
+   * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
+   * @param[inout] iPropertiesCount in: the size of the properties array, out: the number of properties returned.
+   * @return PVR_ERROR_NO_ERROR if the stream is available.
+   * @remarks Required if add-on supports playing epg tags. In this case your implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the epg tag. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR GetEPGTagStreamProperties(const EPG_TAG* tag, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
+
   //@}
 
   /*! @name PVR channel group methods
@@ -429,7 +458,7 @@ extern "C"
    * Get the stream properties for a channel from the backend.
    * @param[in] channel The channel to get the stream properties for.
    * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
-   * @param[inout] iPropertiesCount: in the size of the properties array, out: the number of properties returned.
+   * @param[inout] iPropertiesCount in: the size of the properties array, out: the number of properties returned.
    * @return PVR_ERROR_NO_ERROR if the stream is available.
    * @remarks Required if PVR_ADDON_CAPABILITIES::bSupportsTV or PVR_ADDON_CAPABILITIES::bSupportsRadio are set to true and PVR_ADDON_CAPABILITIES::bHandlesInputStream is set to false. In this case the implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the channel. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
@@ -439,7 +468,7 @@ extern "C"
    * Get the stream properties for a recording from the backend.
    * @param[in] channel The recording to get the stream properties for.
    * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
-   * @param[inout] iPropertiesCount: in the size of the properties array, out: the number of properties returned.
+   * @param[inout] iPropertiesCount in: the size of the properties array, out: the number of properties returned.
    * @return PVR_ERROR_NO_ERROR if the stream is available.
    * @remarks Required if PVR_ADDON_CAPABILITIES::bSupportsRecordings is set to true and the add-on does not implement recording stream functions (OpenRecordedStream, ...). In this case your implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the recording. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
@@ -657,7 +686,10 @@ extern "C"
     pClient->toAddon.OpenDialogChannelScan          = OpenDialogChannelScan;
     pClient->toAddon.MenuHook                       = CallMenuHook;
 
-    pClient->toAddon.GetEpg                         = GetEPGForChannel;
+    pClient->toAddon.GetEPGForChannel               = GetEPGForChannel;
+    pClient->toAddon.IsEPGTagRecordable             = IsEPGTagRecordable;
+    pClient->toAddon.IsEPGTagPlayable               = IsEPGTagPlayable;
+    pClient->toAddon.GetEPGTagStreamProperties      = GetEPGTagStreamProperties;
 
     pClient->toAddon.GetChannelGroupsAmount         = GetChannelGroupsAmount;
     pClient->toAddon.GetChannelGroups               = GetChannelGroups;

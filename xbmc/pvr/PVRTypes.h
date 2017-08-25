@@ -64,6 +64,7 @@ namespace PVR
 
   class CPVREpgInfoTag;
   typedef std::shared_ptr<CPVREpgInfoTag> CPVREpgInfoTagPtr;
+  typedef std::shared_ptr<const CPVREpgInfoTag> CConstPVREpgInfoTagPtr;
 
 } // namespace PVR
 

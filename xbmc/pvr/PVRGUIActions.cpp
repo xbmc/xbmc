@@ -347,6 +347,12 @@ namespace PVR
       return false;
     }
 
+    if (!item->IsTimerRule() && item->GetEpgInfoTag() && !item->GetEpgInfoTag()->IsRecordable())
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19189}); // "Information", "The PVR backend does not allow to record this event."
+      return false;
+    }
+
     if (!CheckParentalLock(item->Channel()))
       return false;
 
@@ -578,7 +584,7 @@ namespace PVR
         const CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false) : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration));
 
         if (newTimer)
-          bReturn = newTimer->AddToClient();
+          bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
 
         if (!bReturn)
           CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164}); // "Information", "Can't start recording. Check the log for more information about this message."
@@ -1013,6 +1019,23 @@ namespace PVR
       itemToPlay->m_lStartOffset = item->m_lStartOffset;
       StartPlayback(itemToPlay, true);
     }
+    return true;
+  }
+
+  bool CPVRGUIActions::PlayEpgTag(const CFileItemPtr &item) const
+  {
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    if (!epgTag)
+      return false;
+
+    if (CServiceBroker::GetPVRManager().IsPlayingEpgTag(epgTag))
+    {
+      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
+      g_windowManager.SendMessage(msg);
+      return true;
+    }
+
+    StartPlayback(new CFileItem(epgTag), true);
     return true;
   }
 

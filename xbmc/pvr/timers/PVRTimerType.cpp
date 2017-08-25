@@ -80,7 +80,7 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
 }
 
 CPVRTimerType::CPVRTimerType() :
-  m_iClientId(0),
+  m_iClientId(-1),
   m_iTypeId(PVR_TIMER_TYPE_NONE),
   m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE),
   m_iPriorityDefault(50),

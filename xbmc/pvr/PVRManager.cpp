@@ -657,6 +657,20 @@ bool CPVRManager::IsPlayingRecording(const CPVRRecordingPtr &recording) const
   return bReturn;
 }
 
+bool CPVRManager::IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const
+{
+  bool bReturn(false);
+
+  if (epgTag && IsStarted())
+  {
+    CPVREpgInfoTagPtr current(GetCurrentEpgTag());
+    if (current && *current == *epgTag)
+      bReturn = true;
+  }
+
+  return bReturn;
+}
+
 CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
 {
   return m_addons->GetPlayingChannel();
@@ -665,6 +679,11 @@ CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
 CPVRRecordingPtr CPVRManager::GetCurrentRecording(void) const
 {
   return m_addons->GetPlayingRecording();
+}
+
+CPVREpgInfoTagPtr CPVRManager::GetCurrentEpgTag(void) const
+{
+  return m_addons->GetPlayingEpgTag();
 }
 
 void CPVRManager::ResetPlayingTag(void)
@@ -767,26 +786,37 @@ void CPVRManager::CloseStream(void)
 
 void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
 {
-  if (item->HasPVRChannelInfoTag() || item->HasPVRRecordingInfoTag())
+  if (item->HasPVRChannelInfoTag())
   {
-    if (item->HasPVRChannelInfoTag())
-    {
-      const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+    const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-      m_addons->SetPlayingChannel(channel);
+    m_addons->ClearPlayingRecording();
+    m_addons->ClearPlayingEpgTag();
+    m_addons->SetPlayingChannel(channel);
 
-      m_guiActions->GetChannelNavigator().SetPlayingChannel(channel);
+    m_guiActions->GetChannelNavigator().SetPlayingChannel(channel);
 
-      SetPlayingGroup(channel);
-      UpdateLastWatched(channel);
+    SetPlayingGroup(channel);
+    UpdateLastWatched(channel);
 
-      // set channel as selected item
-      CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
-    }
-    else
-    {
-      m_addons->SetPlayingRecording(item->GetPVRRecordingInfoTag());
-    }
+    // set channel as selected item
+    CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
+  }
+  else if (item->HasPVRRecordingInfoTag())
+  {
+    m_addons->ClearPlayingEpgTag();
+    m_addons->ClearPlayingChannel();
+    m_addons->SetPlayingRecording(item->GetPVRRecordingInfoTag());
+  }
+  else if (item->HasEPGInfoTag())
+  {
+    m_addons->ClearPlayingRecording();
+    m_addons->ClearPlayingChannel();
+    m_addons->SetPlayingEpgTag(item->GetEPGInfoTag());
+  }
+  else
+  {
+    CLog::Log(LOGERROR,"PVRManager - %s - unsupported item type", __FUNCTION__);
   }
 }
 
@@ -794,23 +824,27 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
 {
   // Playback ended due to user interaction
 
-  if (item->HasPVRChannelInfoTag() || item->HasPVRRecordingInfoTag())
+  if (item->HasPVRChannelInfoTag())
   {
-    if (item->HasPVRChannelInfoTag())
-    {
-      UpdateLastWatched(item->GetPVRChannelInfoTag());
+    UpdateLastWatched(item->GetPVRChannelInfoTag());
 
-      // store channel settings
-      g_application.SaveFileState();
+    // store channel settings
+    g_application.SaveFileState();
 
-      m_addons->ClearPlayingChannel();
-
-      m_guiActions->GetChannelNavigator().ClearPlayingChannel();
-    }
-    else
-    {
-      m_addons->ClearPlayingRecording();
-    }
+    m_addons->ClearPlayingChannel();
+    m_guiActions->GetChannelNavigator().ClearPlayingChannel();
+  }
+  else if (item->HasPVRRecordingInfoTag())
+  {
+    m_addons->ClearPlayingRecording();
+  }
+  else if (item->HasEPGInfoTag())
+  {
+    m_addons->ClearPlayingEpgTag();
+  }
+  else
+  {
+    CLog::Log(LOGERROR,"PVRManager - %s - unsupported item type", __FUNCTION__);
   }
 }
 
@@ -843,6 +877,11 @@ bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(dwInfo) : 0;
+}
+
+bool CPVRManager::GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetVideoLabel(item, iLabel, strValue) : false;
 }
 
 bool CPVRManager::IsRecording(void) const
@@ -1045,6 +1084,8 @@ bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
     return m_addons->FillChannelStreamFileItem(fileItem);
   else if (fileItem.IsPVRRecording())
     return m_addons->FillRecordingStreamFileItem(fileItem);
+  else if (fileItem.IsEPG())
+    return m_addons->FillEpgTagStreamFileItem(fileItem);
   else
     return false;
 }

@@ -50,6 +50,15 @@ namespace PVR
     int TranslateIntInfo(DWORD dwInfo) const;
 
     /*!
+     * @brief Get a GUIInfoManager video label.
+     * @param item The item to get the label for.
+     * @param iLabel The id of the requested label.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
+     */
+    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
+
+    /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */
@@ -235,6 +244,7 @@ namespace PVR
     bool                            m_bIsPlayingTV;
     bool                            m_bIsPlayingRadio;
     bool                            m_bIsPlayingRecording;
+    bool                            m_bIsPlayingEpgTag;
     bool                            m_bIsPlayingEncryptedStream;
     bool                            m_bHasTVChannels;
     bool                            m_bHasRadioChannels;

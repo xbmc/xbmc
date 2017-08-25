@@ -197,7 +197,7 @@ void CPVRRecording::Serialize(CVariant& value) const
 void CPVRRecording::Reset(void)
 {
   m_strRecordingId     .clear();
-  m_iClientId          = 0;
+  m_iClientId          = -1;
   m_strChannelName     .clear();
   m_strDirectory       .clear();
   m_iPriority          = -1;

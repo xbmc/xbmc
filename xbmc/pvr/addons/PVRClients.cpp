@@ -34,6 +34,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -49,7 +50,8 @@ using namespace KODI::MESSAGING;
 CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
-    m_bIsPlayingRecording(false)
+    m_bIsPlayingRecording(false),
+    m_bIsPlayingEpgTag(false)
 {
 }
 
@@ -146,6 +148,7 @@ void CPVRClients::Unload(void)
   /* reset class properties */
   m_bIsPlayingLiveTV     = false;
   m_bIsPlayingRecording  = false;
+  m_bIsPlayingEpgTag     = false;
   m_strPlayingClientName = "";
 
   for (const auto &client : m_clientMap)
@@ -354,7 +357,7 @@ int CPVRClients::GetPlayingClientID(void) const
 {
   CSingleLock lock(m_critSection);
 
-  if (m_bIsPlayingLiveTV || m_bIsPlayingRecording)
+  if (m_bIsPlayingLiveTV || m_bIsPlayingRecording || m_bIsPlayingEpgTag)
     return m_playingClientId;
   return -EINVAL;
 }
@@ -454,6 +457,45 @@ CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
 {
   PVR_CLIENT client;
   return GetPlayingClient(client) ? client->GetPlayingRecording() : CPVRRecordingPtr();
+}
+
+void CPVRClients::SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag)
+{
+  const CPVREpgInfoTagPtr playingEpgTag = GetPlayingEpgTag();
+  if (!playingEpgTag || *playingEpgTag != *epgTag)
+  {
+    if (playingEpgTag)
+      ClearPlayingEpgTag();
+
+    PVR_CLIENT client;
+    if (GetCreatedClient(epgTag->ClientID(), client))
+    {
+      client->SetPlayingEpgTag(epgTag);
+
+      CSingleLock lock(m_critSection);
+      m_playingClientId = epgTag->ClientID();
+      m_bIsPlayingEpgTag = true;
+      m_strPlayingClientName = client->GetFriendlyName();
+    }
+  }
+}
+
+void CPVRClients::ClearPlayingEpgTag()
+{
+  PVR_CLIENT playingClient;
+  if (GetPlayingClient(playingClient))
+    playingClient->ClearPlayingEpgTag();
+
+  CSingleLock lock(m_critSection);
+  m_bIsPlayingEpgTag = false;
+  m_playingClientId = PVR_INVALID_CLIENT_ID;
+  m_strPlayingClientName.clear();
+}
+
+CPVREpgInfoTagPtr CPVRClients::GetPlayingEpgTag(void) const
+{
+  PVR_CLIENT client;
+  return GetPlayingClient(client) ? client->GetPlayingEpgTag() : CPVREpgInfoTagPtr();
 }
 
 bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients)
@@ -787,6 +829,44 @@ PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
   }
 
   return error;
+}
+
+PVR_ERROR CPVRClients::IsRecordable(const CConstPVREpgInfoTagPtr& tag, bool &bIsRecordable) const
+{
+  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVR_CLIENT client;
+  if (GetCreatedClient(tag->ClientID(), client))
+    error = client->IsRecordable(tag, bIsRecordable);
+
+  if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
+    CLog::Log(LOGERROR, "PVR - %s - unable to obtain 'isRecordable' flag from client '%d': %s", __FUNCTION__, tag->ClientID(), CPVRClient::ToString(error));
+
+  return error;
+}
+
+PVR_ERROR CPVRClients::IsPlayable(const CConstPVREpgInfoTagPtr& tag, bool &bIsPlayable) const
+{
+  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVR_CLIENT client;
+  if (GetCreatedClient(tag->ClientID(), client))
+      error = client->IsPlayable(tag, bIsPlayable);
+
+  if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
+    CLog::Log(LOGERROR, "PVR - %s - unable to obtain 'isPlayable' flag from client '%d': %s", __FUNCTION__, tag->ClientID(), CPVRClient::ToString(error));
+
+  return error;
+}
+
+bool CPVRClients::FillEpgTagStreamFileItem(CFileItem &fileItem)
+{
+  const CPVREpgInfoTagPtr tag = fileItem.GetEPGInfoTag();
+  PVR_CLIENT client;
+  if (GetCreatedClient(tag->ClientID(), client))
+    return client->FillEpgTagStreamFileItem(fileItem);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client '%d'", __FUNCTION__, tag->ClientID());
+
+  return false;
 }
 
 PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
@@ -1145,7 +1225,7 @@ std::string CPVRClients::GetCurrentInputFormat(void) const
 bool CPVRClients::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bIsPlayingRecording || m_bIsPlayingLiveTV;
+  return m_bIsPlayingRecording || m_bIsPlayingLiveTV || m_bIsPlayingEpgTag;
 }
 
 bool CPVRClients::IsPlayingRadio(void) const
@@ -1168,6 +1248,12 @@ bool CPVRClients::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsPlayingRecording;
+}
+
+bool CPVRClients::IsPlayingEpgTag(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsPlayingEpgTag;
 }
 
 bool CPVRClients::IsEncrypted(void) const

@@ -77,9 +77,10 @@ struct DemuxPacket;
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
 
-/* defines for GetChannelStreamProperties and GetRecordingStreamProperties */
+/* defines for GetChannelStreamProperties, GetRecordingStreamProperties and GetEPGTagStreamProperties */
 #define PVR_STREAM_MAX_PROPERTIES     20
-#define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
+#define PVR_STREAM_PROPERTY_STREAMURL "streamurl" /*!< @brief the URL of the stream that should be played. */
+#define PVR_STREAM_PROPERTY_INPUTSTREAMADDON  "inputstreamaddon" /*!< @brief the name of the inputstream add-on that should be used by Kodi to play the stream denoted by PVR_STREAM_PROPERTY_STREAMURL. Leave blank to use Kodi's built-in playing capabilities. */
 
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
@@ -620,7 +621,7 @@ extern "C" {
     DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
 
     void (*ConnectionStateChange)(void* kodiInstance, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
-    void (*EpgEventStateChange)(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+    void (*EpgEventStateChange)(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState);
 
     xbmc_codec_t (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
   } AddonToKodiFuncTable_PVR;
@@ -639,7 +640,10 @@ extern "C" {
     const char* (__cdecl* GetConnectionString)(void);
     PVR_ERROR (__cdecl* GetDriveSpace)(long long*, long long*);
     PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
-    PVR_ERROR (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    PVR_ERROR (__cdecl* IsEPGTagRecordable)(const EPG_TAG*, bool*);
+    PVR_ERROR (__cdecl* IsEPGTagPlayable)(const EPG_TAG*, bool*);
+    PVR_ERROR (__cdecl* GetEPGTagStreamProperties)(const EPG_TAG*, PVR_NAMED_VALUE*, unsigned int*);
     int (__cdecl* GetChannelGroupsAmount)(void);
     PVR_ERROR (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
     PVR_ERROR (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);

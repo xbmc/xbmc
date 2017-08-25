@@ -723,7 +723,17 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   CPVREpgInfoTagPtr epgTag(channel->GetEPGNow());
   CPVRTimerInfoTagPtr newTimer;
   if (epgTag)
-    newTimer = CreateFromEpg(epgTag);
+  {
+    if (epgTag->IsRecordable())
+    {
+      newTimer = CreateFromEpg(epgTag);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "%s - epg tag is not recordable", __FUNCTION__);
+      return CPVRTimerInfoTagPtr();
+    }
+  }
 
   if (!newTimer)
   {
@@ -790,13 +800,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   if (!channel)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
-    return CPVRTimerInfoTagPtr();
-  }
-
-  /* check if the epg end date is in the future */
-  if (tag->EndAsLocalTime() < CDateTime::GetCurrentDateTime() && !bCreateRule)
-  {
-    CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
     return CPVRTimerInfoTagPtr();
   }
 

@@ -362,6 +362,29 @@ namespace PVR
      */
     PVR_ERROR RenameChannel(const CPVRChannelPtr &channel);
 
+    /*
+     * @brief Check if an epg tag can be recorded
+     * @param tag The epg tag
+     * @param bIsRecordable Set to true if the tag can be recorded
+     * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
+     */
+    PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
+
+    /*
+     * @brief Check if an epg tag can be played
+     * @param tag The epg tag
+     * @param bIsPlayable Set to true if the tag can be played
+     * @return PVR_ERROR_NO_ERROR if bIsPlayable has been set successfully.
+     */
+    PVR_ERROR IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const;
+
+    /*!
+     * @brief Fill the file item for an epg tag with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillEpgTagStreamFileItem(CFileItem &fileItem);
+
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */
@@ -765,6 +788,23 @@ namespace PVR
      */
     void ClearPlayingRecording();
 
+    /*!
+     * @brief Set the epg tag that is currently playing.
+     * @param epgTag The tag that is currently playing.
+     */
+    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
+
+    /*!
+     * @brief Clear the epg tag that is currently playing, if any.
+     */
+    void ClearPlayingEpgTag();
+
+    /*!
+     * @brief Get the epg tag that is currently playing.
+     * @return The tag that is currently playing, NULL otherwise.
+     */
+    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
+
     static const char *ToString(const PVR_ERROR error);
 
     /*!
@@ -850,6 +890,13 @@ namespace PVR
      * @param addonChannel The channel on the addon's side.
      */
     static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
+
+    /*!
+     * @brief Copy over epg info from CPVREpgInfoTag to EPG_TAG.
+     * @param kodiTag The epg tag on Kodi's side.
+     * @param addonTag The epg tag on the addon's side.
+     */
+    static void WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &addonTag);
 
     /*!
      * @brief Whether a channel can be played by this add-on
@@ -994,12 +1041,11 @@ namespace PVR
      * @brief Notify a state change for an EPG event
      * @param kodiInstance Pointer to Kodi's CPVRClient class
      * @param tag The EPG event.
-     * @param iUniqueChannelId The unique id of the channel for the EPG event
      * @param newState The new state.
      * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
      *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
      */
-    static void cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+    static void cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState);
 
     /*! @todo remove the use complete from them, or add as generl function?!
      * Returns the ffmpeg codec id from given ffmpeg codec string name
@@ -1035,6 +1081,8 @@ namespace PVR
     CPVRChannelPtr      m_playingChannel;
     bool                m_bIsPlayingRecording;
     CPVRRecordingPtr    m_playingRecording;
+    bool                m_bIsPlayingEpgTag;
+    CPVREpgInfoTagPtr   m_playingEpgTag;
 
     AddonInstance_PVR m_struct;
   };

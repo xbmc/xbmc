@@ -222,13 +222,12 @@ public:
   /*!
    * @brief Notify a state change for an EPG event
    * @param tag The EPG event.
-   * @param iUniqueChannelId The unique id of the channel for the EPG event
    * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
    *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
    */
-  void EpgEventStateChange(EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+  void EpgEventStateChange(EPG_TAG *tag, EPG_EVENT_STATE newState)
   {
-    return m_Callbacks->toKodi.EpgEventStateChange(m_Callbacks->toKodi.kodiInstance, tag, iUniqueChannelId, newState);
+    return m_Callbacks->toKodi.EpgEventStateChange(m_Callbacks->toKodi.kodiInstance, tag, newState);
   }
 
   /*!
