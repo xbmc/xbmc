@@ -44,7 +44,7 @@ swig-native: pcre-native
 distribute-native: python36-native
 distutilscross-native: python36-native distribute-native
 tar-native: xz-native automake-native
-python27-native: zlib-native
+python27-native: zlib-native $(EXPAT)
 python36-native: zlib-native $(EXPAT)
 wayland-scanner-native: expat-native
 scons-native: python27-native
