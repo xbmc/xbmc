@@ -62,6 +62,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
@@ -93,6 +94,7 @@ static const ControlMapping controls[] =
     {"textbox",           CGUIControl::GUICONTROL_TEXTBOX},
     {"togglebutton",      CGUIControl::GUICONTROL_TOGGLEBUTTON},
     {"videowindow",       CGUIControl::GUICONTROL_VIDEO},
+    {"gamewindow",        CGUIControl::GUICONTROL_GAME},
     {"mover",             CGUIControl::GUICONTROL_MOVER},
     {"resize",            CGUIControl::GUICONTROL_RESIZE},
     {"edit",              CGUIControl::GUICONTROL_EDIT},
@@ -1139,6 +1141,21 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     {
       control = new CGUIVideoControl(
         parentID, id, posX, posY, width, height);
+    }
+    break;
+  case CGUIControl::GUICONTROL_GAME:
+    {
+      using namespace RETRO;
+
+      control = new CGUIGameControl(parentID, id, posX, posY, width, height);
+
+      CGUIInfoLabel viewMode;
+      GetInfoLabel(pControlNode, "viewmode", viewMode, parentID);
+      static_cast<CGUIGameControl*>(control)->SetViewMode(viewMode);
+
+      CGUIInfoLabel videoFilter;
+      GetInfoLabel(pControlNode, "videofilter", videoFilter, parentID);
+      static_cast<CGUIGameControl*>(control)->SetVideoFilter(videoFilter);
     }
     break;
   case CGUIControl::GUICONTROL_FADELABEL:

@@ -19,27 +19,27 @@
  */
 #pragma once
 
-#include "cores/IPlayer.h"
+#include "IRenderSettingsCallback.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 
-class CGameSettings
+namespace KODI
 {
-public:
-  CGameSettings() { Reset(); }
+namespace RETRO
+{
+  class CRPRenderManager : public CRenderManager,
+                           public IRenderSettingsCallback
+  {
+  public:
+    CRPRenderManager(CDVDClock &clock, IRenderMsg *player);
+    ~CRPRenderManager() override = default;
 
-  // Restore game settings to default
-  void Reset();
-
-  bool operator==(const CGameSettings &rhs) const;
-  bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
-
-  ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod) { m_scalingMethod = scalingMethod; }
-  
-  enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode) { m_viewMode = viewMode; }
-
-private:
-  // Video settings
-  ESCALINGMETHOD m_scalingMethod;
-  enum ViewMode m_viewMode;
-};
+    // Implementation of IRenderSettingsCallback
+    bool SupportsRenderFeature(ERENDERFEATURE feature) override;
+    bool SupportsScalingMethod(ESCALINGMETHOD method) override;
+    ESCALINGMETHOD GetScalingMethod() override;
+    void SetScalingMethod(ESCALINGMETHOD scalingMethod) override;
+    ViewMode GetRenderViewMode() override;
+    void SetRenderViewMode(ViewMode mode) override;
+  };
+}
+}

@@ -19,18 +19,40 @@
  */
 #pragma once
 
-#include "guilib/GUIDialog.h"
+#include "DialogGameVideoSelect.h"
+#include "cores/IPlayer.h"
 
 namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameOSD : public CGUIDialog
+  class CDialogGameViewMode : public CDialogGameVideoSelect
   {
   public:
-    CDialogGameOSD();
+    CDialogGameViewMode();
+    ~CDialogGameViewMode() override = default;
 
-    ~CDialogGameOSD() override = default;
- };
+  protected:
+    // implementation of CDialogGameVideoSelect
+    void PreInit() override;
+    void GetItems(CFileItemList &items) override;
+    void OnItemFocus(unsigned int index) override;
+    unsigned int GetFocusedItem() const override;
+    void PostExit() override;
+
+  private:
+    struct ViewModeProperties
+    {
+      int stringIndex;
+      ViewMode viewMode;
+    };
+
+    std::vector<ViewModeProperties> m_viewModes;
+
+    /*!
+     * \brief The list of all the view modes along with their properties
+     */
+    static const std::vector<ViewModeProperties> m_allViewModes;
+  };
 }
 }

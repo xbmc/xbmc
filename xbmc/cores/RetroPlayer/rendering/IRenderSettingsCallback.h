@@ -17,17 +17,27 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#include "GameSettings.h"
+#include "cores/IPlayer.h"
 
-void CGameSettings::Reset()
+namespace KODI
 {
-  m_scalingMethod = VS_SCALINGMETHOD_NEAREST;
-  m_viewMode = ViewModeNormal;
+namespace RETRO
+{
+  class IRenderSettingsCallback
+  {
+  public:
+    virtual ~IRenderSettingsCallback() = default;
+
+    virtual bool SupportsRenderFeature(ERENDERFEATURE feature) = 0;
+    virtual bool SupportsScalingMethod(ESCALINGMETHOD method) = 0;
+
+    virtual ESCALINGMETHOD GetScalingMethod() = 0;
+    virtual void SetScalingMethod(ESCALINGMETHOD scalingMethod) = 0;
+
+    virtual ViewMode GetRenderViewMode() = 0;
+    virtual void SetRenderViewMode(ViewMode mode) = 0;
+  };
 }
-
-bool CGameSettings::operator==(const CGameSettings &rhs) const
-{
-  return m_scalingMethod == rhs.m_scalingMethod &&
-         m_viewMode == rhs.m_viewMode;
 }

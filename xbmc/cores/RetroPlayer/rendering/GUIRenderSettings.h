@@ -21,25 +21,32 @@
 
 #include "cores/IPlayer.h"
 
-class CGameSettings
+namespace KODI
 {
-public:
-  CGameSettings() { Reset(); }
+namespace RETRO
+{
+  class CGUIRenderSettings
+  {
+  public:
+    CGUIRenderSettings() { Reset(); }
 
-  // Restore game settings to default
-  void Reset();
+    void Reset();
 
-  bool operator==(const CGameSettings &rhs) const;
-  bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
+    bool operator==(const CGUIRenderSettings &rhs) const;
 
-  ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod) { m_scalingMethod = scalingMethod; }
-  
-  enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode) { m_viewMode = viewMode; }
+    ESCALINGMETHOD GetScalingMethod() const;
+    bool HasScalingMethod() const { return m_scalingMethod != -1; }
+    void SetScalingMethod(ESCALINGMETHOD method) { m_scalingMethod = static_cast<int>(method); }
+    void ResetScalingMethod() { m_scalingMethod = -1; }
 
-private:
-  // Video settings
-  ESCALINGMETHOD m_scalingMethod;
-  enum ViewMode m_viewMode;
-};
+    ViewMode GetRenderViewMode() const;
+    bool HasRenderViewMode() const { return m_viewMode != -1; }
+    void SetRenderViewMode(ViewMode mode) { m_viewMode = static_cast<int>(mode); }
+    void ResetRenderViewMode() { m_viewMode = -1; }
+
+  private:
+    int m_scalingMethod;
+    int m_viewMode;
+  };
+}
+}

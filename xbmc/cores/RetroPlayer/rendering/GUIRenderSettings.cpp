@@ -18,16 +18,39 @@
  *
  */
 
-#include "GameSettings.h"
+#include "GUIRenderSettings.h"
+#include "settings/GameSettings.h"
+#include "settings/MediaSettings.h"
 
-void CGameSettings::Reset()
+using namespace KODI;
+using namespace RETRO;
+
+void CGUIRenderSettings::Reset()
 {
-  m_scalingMethod = VS_SCALINGMETHOD_NEAREST;
-  m_viewMode = ViewModeNormal;
+  m_scalingMethod = -1;
+  m_viewMode = -1;
 }
 
-bool CGameSettings::operator==(const CGameSettings &rhs) const
+bool CGUIRenderSettings::operator==(const CGUIRenderSettings &rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod &&
          m_viewMode == rhs.m_viewMode;
+}
+
+ESCALINGMETHOD CGUIRenderSettings::GetScalingMethod() const
+{
+  if (HasScalingMethod())
+    return static_cast<ESCALINGMETHOD>(m_scalingMethod);
+
+  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  return gameSettings.ScalingMethod();
+}
+
+ViewMode CGUIRenderSettings::GetRenderViewMode() const
+{
+  if (HasRenderViewMode())
+    return static_cast<ViewMode>(m_viewMode);
+
+  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  return gameSettings.ViewMode();
 }

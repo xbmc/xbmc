@@ -19,27 +19,37 @@
  */
 #pragma once
 
+#include "DialogGameVideoSelect.h"
 #include "cores/IPlayer.h"
 
-class CGameSettings
+namespace KODI
 {
-public:
-  CGameSettings() { Reset(); }
+namespace GAME
+{
+  class CDialogGameVideoFilter : public CDialogGameVideoSelect
+  {
+  public:
+    CDialogGameVideoFilter();
+    ~CDialogGameVideoFilter() override = default;
 
-  // Restore game settings to default
-  void Reset();
+  protected:
+    // implementation of CDialogGameVideoSelect
+    void PreInit() override;
+    void GetItems(CFileItemList &items) override;
+    void OnItemFocus(unsigned int index) override;
+    unsigned int GetFocusedItem() const override;
+    void PostExit() override;
 
-  bool operator==(const CGameSettings &rhs) const;
-  bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
+  private:
+    struct VideoFilterProperties
+    {
+      int stringIndex;
+      ESCALINGMETHOD scalingMethod;
+    };
 
-  ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod) { m_scalingMethod = scalingMethod; }
-  
-  enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode) { m_viewMode = viewMode; }
+    std::vector<VideoFilterProperties> m_videoFilters;
 
-private:
-  // Video settings
-  ESCALINGMETHOD m_scalingMethod;
-  enum ViewMode m_viewMode;
-};
+    static const std::vector<VideoFilterProperties> m_allVideoFilters;
+  };
+}
+}

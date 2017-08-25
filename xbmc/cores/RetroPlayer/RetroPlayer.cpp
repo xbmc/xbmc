@@ -24,6 +24,9 @@
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControlManager.h"
+#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
+#include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
@@ -31,6 +34,7 @@
 #include "games/addons/savestates/Savestate.h"
 #include "games/addons/savestates/SavestateUtils.h"
 #include "games/addons/GameClient.h"
+#include "games/dialogs/osd/DialogGameVideoSelect.h"
 #include "games/ports/PortManager.h"
 #include "games/tags/GameInfoTag.h"
 #include "games/GameServices.h"
@@ -56,7 +60,7 @@ using namespace RETRO;
 
 CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
   IPlayer(callback),
-  m_renderManager(m_clock, this),
+  m_renderManager(new CRPRenderManager(m_clock, this)),
   m_processInfo(CProcessInfo::CreateInstance())
 {
   m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
@@ -96,7 +100,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     if (m_gameClient->Initialize())
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
-      m_video.reset(new CRetroPlayerVideo(m_renderManager, *m_processInfo, m_clock));
+      m_video.reset(new CRetroPlayerVideo(*m_renderManager, *m_processInfo, m_clock));
 
       if (!file.GetPath().empty())
         bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get());
@@ -148,6 +152,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
   if (bSuccess)
   {
+    RegisterWindowCallbacks();
     SetSpeed(1);
     m_callback.OnPlayBackStarted();
     m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
@@ -173,6 +178,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   if (m_gameClient)
   {
+    UnregisterWindowCallbacks();
     m_gameClient->CloseFile();
     m_gameClient->Unload();
     m_gameClient.reset();
@@ -360,6 +366,14 @@ bool CRetroPlayer::OnAction(const CAction &action)
     }
     return true;
   }
+  case ACTION_SHOW_OSD:
+  {
+    if (m_gameClient && m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+    {
+      CloseOSD();
+      return true;
+    }
+  }
   default:
     break;
   }
@@ -392,7 +406,7 @@ bool CRetroPlayer::SetPlayerState(const std::string& state)
 
 void CRetroPlayer::FrameMove()
 {
-  m_renderManager.FrameMove();
+  m_renderManager->FrameMove();
 
   if (m_gameClient)
   {
@@ -432,6 +446,54 @@ void CRetroPlayer::FrameMove()
   }
 }
 
+void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = true */)
+{
+  CGUIGameControlManager &gameControls = CServiceBroker::GetGameServices().GameControls();
+
+  ESCALINGMETHOD scalingMedthod = m_renderManager->GetScalingMethod();
+  ViewMode viewMode = m_renderManager->GetRenderViewMode();
+
+  if (gameControls.IsControlActive())
+  {
+    const CGUIRenderSettings &renderSettings = gameControls.GetRenderSettings();
+    m_renderManager->SetScalingMethod(renderSettings.GetScalingMethod());
+    m_renderManager->SetRenderViewMode(renderSettings.GetRenderViewMode());
+  }
+
+  m_renderManager->Render(clear, 0, alpha, gui);
+
+  if (gameControls.IsControlActive())
+  {
+    m_renderManager->SetScalingMethod(scalingMedthod);
+    m_renderManager->SetRenderViewMode(viewMode);
+  }
+}
+
+void CRetroPlayer::FlushRenderer()
+{
+  m_renderManager->Flush(true);
+}
+
+void CRetroPlayer::SetRenderViewMode(int mode)
+{
+  m_renderManager->SetViewMode(mode);
+}
+
+float CRetroPlayer::GetRenderAspectRatio()
+{
+  return m_renderManager->GetAspectRatio();
+}
+
+void CRetroPlayer::TriggerUpdateResolution()
+{
+  m_renderManager->TriggerUpdateResolution(0.0f, 0, 0);
+}
+
+bool CRetroPlayer::IsRenderingVideo()
+{
+  return m_renderManager->IsConfigured();
+}
+
 bool CRetroPlayer::Supports(EINTERLACEMETHOD method)
 {
   return m_processInfo->Supports(method);
@@ -440,6 +502,36 @@ bool CRetroPlayer::Supports(EINTERLACEMETHOD method)
 EINTERLACEMETHOD CRetroPlayer::GetDeinterlacingMethodDefault()
 {
   return m_processInfo->GetDeinterlacingMethodDefault();
+}
+
+bool CRetroPlayer::Supports(ESCALINGMETHOD method)
+{
+  return m_renderManager->Supports(method);
+}
+
+bool CRetroPlayer::Supports(ERENDERFEATURE feature)
+{
+  return m_renderManager->Supports(feature);
+}
+
+unsigned int CRetroPlayer::RenderCaptureAlloc()
+{
+  return m_renderManager->AllocRenderCapture();
+}
+
+void CRetroPlayer::RenderCaptureRelease(unsigned int captureId)
+{
+  m_renderManager->ReleaseRenderCapture(captureId);
+}
+
+void CRetroPlayer::RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
+{
+  m_renderManager->StartRenderCapture(captureId, width, height, flags);
+}
+
+bool CRetroPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
+{
+  return m_renderManager->RenderCaptureGetPixels(captureId, millis, buffer, size);
 }
 
 void CRetroPlayer::UpdateClockSync(bool enabled)
@@ -477,9 +569,29 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
 
 void CRetroPlayer::CloseOSD()
 {
-  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
-  if (pDialog)
-    pDialog->Close(true, WINDOW_FULLSCREEN_GAME);
+  g_windowManager.CloseDialogs(true);
+}
+
+void CRetroPlayer::RegisterWindowCallbacks()
+{
+  CDialogGameVideoSelect *dialogVideoFilter = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER));
+  if (dialogVideoFilter != nullptr)
+    dialogVideoFilter->RegisterCallback(m_renderManager.get());
+
+  CDialogGameVideoSelect *dialogViewMode = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIEW_MODE));
+  if (dialogViewMode != nullptr)
+    dialogViewMode->RegisterCallback(m_renderManager.get());
+}
+
+void CRetroPlayer::UnregisterWindowCallbacks()
+{
+  CDialogGameVideoSelect *dialogVideoFilter = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER));
+  if (dialogVideoFilter != nullptr)
+    dialogVideoFilter->UnregisterCallback();
+
+  CDialogGameVideoSelect *dialogViewMode = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIEW_MODE));
+  if (dialogViewMode != nullptr)
+    dialogViewMode->UnregisterCallback();
 }
 
 void CRetroPlayer::PrintGameInfo(const CFileItem &file) const
