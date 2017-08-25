@@ -17,7 +17,8 @@ endif
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
-                      --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests $(CONFIGURE_HACKS)
+                      --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \
+                      $(CONFIGURE_HACKS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
