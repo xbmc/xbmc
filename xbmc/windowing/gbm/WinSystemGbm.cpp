@@ -103,7 +103,7 @@ void CWinSystemGbm::UpdateResolutions()
   }
   else
   {
-    for (auto i = 0; i < resolutions.size(); i++)
+    for (unsigned int i = 0; i < resolutions.size(); i++)
     {
       g_graphicsContext.ResetOverscan(resolutions[i]);
       CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
