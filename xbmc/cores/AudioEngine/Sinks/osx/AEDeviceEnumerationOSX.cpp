@@ -567,7 +567,7 @@ float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &for
     {
       if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
         score += 5;
-      else if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
+      else if (formatDesc.mBitsPerChannel > CAEUtil::DataFormatToBits(format.m_dataFormat))
         score += 1;
     }
   }
