@@ -38,61 +38,49 @@
 using namespace KODI;
 using namespace GAME;
 
-GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)
+bool CGameUtils::FillInGameClient(CFileItem &item, bool bPrompt)
 {
   using namespace ADDON;
 
-  GameClientPtr gameClient;
-
-  // Get the game client ID from the game info tag
-  std::string gameClientId;
-  if (file.HasGameInfoTag())
-    gameClientId = file.GetGameInfoTag()->GetGameClient();
-
-  // If the fileitem is an add-on, fall back to that
-  if (gameClientId.empty())
+  if (item.GetGameInfoTag()->GetGameClient().empty())
   {
-    if (file.HasAddonInfo() && file.GetAddonInfo()->Type() == ADDON::ADDON_GAMEDLL)
-      gameClientId = file.GetAddonInfo()->ID();
-  }
-
-  // Get game client by ID
-  if (!gameClientId.empty())
-  {
-    CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-    AddonPtr addon = addonCache.GetAddonInstance(gameClientId, ADDON_GAMEDLL);
-    gameClient = std::static_pointer_cast<GAME::CGameClient>(addon);
-  }
-
-  // Need to prompt the user if no game client was found
-  if (!gameClient)
-  {
-    GameClientVector candidates;
-    GameClientVector installable;
-    bool bHasVfsGameClient;
-    GetGameClients(file, candidates, installable, bHasVfsGameClient);
-
-    if (candidates.empty() && installable.empty())
+    // If the fileitem is an add-on, fall back to that
+    if (item.HasAddonInfo() && item.GetAddonInfo()->Type() == ADDON::ADDON_GAMEDLL)
     {
-      int errorTextId = bHasVfsGameClient ?
-          35214 : // "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
-          35212;  // "This game isn't compatible with any available emulators."
-
-      // "Failed to play game"
-      CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, CVariant{ errorTextId });
+      item.GetGameInfoTag()->SetGameClient(item.GetAddonInfo()->ID());
     }
-    else if (candidates.size() == 1 && installable.empty())
+    else if (bPrompt)
     {
-      // Only 1 option, avoid prompting the user
-      gameClient = candidates[0];
-    }
-    else
-    {
-      CGUIDialogSelectGameClient::ShowAndGetGameClient(candidates, installable, gameClient);
+      // No game client specified, need to ask the user
+      GameClientVector candidates;
+      GameClientVector installable;
+      bool bHasVfsGameClient;
+      GetGameClients(item, candidates, installable, bHasVfsGameClient);
+
+      if (candidates.empty() && installable.empty())
+      {
+        int errorTextId = bHasVfsGameClient ?
+            35214 : // "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+            35212;  // "This game isn't compatible with any available emulators."
+
+        // "Failed to play game"
+        CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, CVariant{ errorTextId });
+      }
+      else if (candidates.size() == 1 && installable.empty())
+      {
+        // Only 1 option, avoid prompting the user
+        item.GetGameInfoTag()->SetGameClient(candidates[0]->ID());
+      }
+      else
+      {
+        std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(candidates, installable);
+        if (!gameClient.empty())
+          item.GetGameInfoTag()->SetGameClient(gameClient);
+      }
     }
   }
 
-  return gameClient;
+  return !item.GetGameInfoTag()->GetGameClient().empty();
 }
 
 void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient)

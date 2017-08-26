@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +18,33 @@
  *
  */
 
-#include "EventScanRate.h"
+#include "RetroPlayerInput.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/EventPollHandle.h"
 
-#include <assert.h>
+using namespace KODI;
+using namespace RETRO;
 
-using namespace PERIPHERALS;
-
-CEventRateHandle::CEventRateHandle(double RateHz, IEventRateCallback* callback) :
-  m_rateHz(RateHz),
-  m_callback(callback)
+CRetroPlayerInput::CRetroPlayerInput(PERIPHERALS::CPeripherals &peripheralManager) :
+  m_peripheralManager(peripheralManager)
 {
-  assert(m_callback != nullptr);
+  m_inputPollHandle = m_peripheralManager.RegisterEventPoller();
 }
 
-void CEventRateHandle::Release(void)
+CRetroPlayerInput::~CRetroPlayerInput()
 {
-  m_callback->Release(this);
+  m_inputPollHandle.reset();
+}
+
+void CRetroPlayerInput::SetSpeed(double speed)
+{
+  if (speed != 0)
+    m_inputPollHandle->Activate();
+  else
+    m_inputPollHandle->Deactivate();
+}
+
+void CRetroPlayerInput::PollInput()
+{
+  m_inputPollHandle->HandleEvents(true);
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,31 +19,35 @@
  */
 #pragma once
 
-#include "games/GameTypes.h"
+#include "games/addons/GameClientCallbacks.h"
+#include "peripherals/PeripheralTypes.h"
 
-#include <string>
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class CGUIDialogSelectGameClient
+  class CRetroPlayerInput : public GAME::IGameInputCallback
   {
   public:
-    static std::string ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable);
+    CRetroPlayerInput(PERIPHERALS::CPeripherals &peripheralManager);
+    ~CRetroPlayerInput() override;
+
+    void SetSpeed(double speed);
+
+    // implementation of IGameAudioCallback
+    void PollInput() override;
 
   private:
-    static std::string InstallGameClient(const GameClientVector& installable);
+    // Construction parameters
+    PERIPHERALS::CPeripherals &m_peripheralManager;
 
-    /*!
-     * \brief Utility function to load the add-on manager for installed emulators
-     */
-    static void ActivateAddonMgr();
-
-    /*!
-     * \brief Utility function to load the add-on manager for all emulators
-     */
-    static void ActivateAddonBrowser();
+    // Input variables
+    PERIPHERALS::EventPollHandlePtr m_inputPollHandle;
   };
 }
 }

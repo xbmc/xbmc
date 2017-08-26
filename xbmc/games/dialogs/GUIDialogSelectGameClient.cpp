@@ -32,8 +32,10 @@
 using namespace KODI;
 using namespace GAME;
 
-bool CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable, GameClientPtr& gameClient)
+std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable)
 {
+  std::string gameClient;
+
   CLog::Log(LOGDEBUG, "Select game client dialog: Found %lu candidates", candidates.size());
   for (const auto& gameClient : candidates)
     CLog::Log(LOGDEBUG, "Adding %s as a candidate", gameClient->ID().c_str());
@@ -67,7 +69,7 @@ bool CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& ca
   if (0 <= result && result < static_cast<int>(candidates.size()))
   {
     // Handle emulator
-    gameClient = candidates[result];
+    gameClient = candidates[result]->ID();
   }
   else if (result == iInstallEmulator)
   {
@@ -84,14 +86,14 @@ bool CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& ca
     CLog::Log(LOGDEBUG, "Select game client dialog: User cancelled game client selection");
   }
 
-  return gameClient.get() != nullptr;
+  return gameClient;
 }
 
-GameClientPtr CGUIDialogSelectGameClient::InstallGameClient(const GameClientVector& installable)
+std::string CGUIDialogSelectGameClient::InstallGameClient(const GameClientVector& installable)
 {
   using namespace ADDON;
 
-  GameClientPtr gameClient;
+  std::string gameClient;
 
   //! @todo Switch to add-on browser when more emulators have icons
   /*
@@ -101,9 +103,9 @@ GameClientPtr CGUIDialogSelectGameClient::InstallGameClient(const GameClientVect
     CLog::Log(LOGDEBUG, "Select game client dialog: User installed %s", chosenClientId.c_str());
     AddonPtr addon;
     if (CAddonMgr::GetInstance().GetAddon(chosenClientId, addon, ADDON_GAMEDLL))
-      gameClient = std::dynamic_pointer_cast<CGameClient>(addon);
+      gameClient = addon->ID();
 
-    if (!gameClient)
+    if (gameClient.empty())
       CLog::Log(LOGERROR, "Select game client dialog: Failed to get addon %s", chosenClientId.c_str());
   }
   */
@@ -135,7 +137,7 @@ GameClientPtr CGUIDialogSelectGameClient::InstallGameClient(const GameClientVect
       if (CAddonMgr::GetInstance().IsAddonDisabled(installedAddon->ID()))
         CAddonMgr::GetInstance().EnableAddon(installedAddon->ID());
 
-      gameClient = std::dynamic_pointer_cast<CGameClient>(installedAddon);
+      gameClient = installedAddon->ID();
     }
     else
     {

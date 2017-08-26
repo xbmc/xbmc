@@ -21,6 +21,7 @@
 #include "RetroPlayer.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerAutoSave.h"
+#include "RetroPlayerInput.h"
 #include "RetroPlayerVideo.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
@@ -74,7 +75,17 @@ CRetroPlayer::~CRetroPlayer()
 
 bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
-  std::string redactedPath = CURL::GetRedacted(file.GetPath());
+  CFileItem fileCopy(file);
+
+  // When playing a game, set the game client that we'll use to open the game
+  // Currently this may prompt the user, the goal is to figure this out silently
+  if (!GAME::CGameUtils::FillInGameClient(fileCopy, true))
+  {
+    CLog::Log(LOGINFO, "CApplication: Failed to select a game client, aborting playback");
+    return false;
+  }
+
+  std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
   CLog::Log(LOGINFO, "RetroPlayer: Opening: %s", redactedPath.c_str());
 
   // Reset game settings
@@ -90,37 +101,47 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   if (IsPlaying())
     CloseFile();
 
-  PrintGameInfo(file);
+  PrintGameInfo(fileCopy);
 
   bool bSuccess = false;
 
-  m_gameClient = CGameUtils::OpenGameClient(file);
-  if (m_gameClient)
+  std::string gameClientId = fileCopy.GetGameInfoTag()->GetGameClient();
+
+  ADDON::AddonPtr addon;
+  if (gameClientId.empty())
   {
+    CLog::Log(LOGERROR, "Can't play game, no game client was passed to RetroPlayer!");
+  }
+  else if (!ADDON::CAddonMgr::GetInstance().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL))
+  {
+    CLog::Log(LOGERROR, "Can't find add-on %s for game file!", gameClientId.c_str());
+  }
+  else
+  {
+    m_gameClient = std::static_pointer_cast<CGameClient>(addon);
     if (m_gameClient->Initialize())
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
       m_video.reset(new CRetroPlayerVideo(*m_renderManager, *m_processInfo, m_clock));
+      m_input.reset(new CRetroPlayerInput(CServiceBroker::GetPeripherals()));
 
-      if (!file.GetPath().empty())
-        bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get());
+      if (!fileCopy.GetPath().empty())
+        bSuccess = m_gameClient->OpenFile(fileCopy, m_audio.get(), m_video.get(), m_input.get());
       else
-        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get());
+        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get(), m_input.get());
 
       if (bSuccess)
-        CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", m_gameClient->ID().c_str());
+        CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", gameClientId.c_str());
       else
-        CLog::Log(LOGERROR, "RetroPlayer: Failed to open file using %s", m_gameClient->ID().c_str());
+        CLog::Log(LOGERROR, "RetroPlayer: Failed to open file using %s", gameClientId.c_str());
     }
     else
-      CLog::Log(LOGERROR, "RetroPlayer: Failed to initialize %s", m_gameClient->ID().c_str());
+      CLog::Log(LOGERROR, "RetroPlayer: Failed to initialize %s", gameClientId.c_str());
   }
-  else
-    CLog::Log(LOGERROR, "RetroPlayer: Can't find add-on for game file");
 
   if (bSuccess)
   {
-    std::string savestatePath = CSavestateUtils::MakeMetadataPath(file.GetPath());
+    std::string savestatePath = CSavestateUtils::MakeMetadataPath(fileCopy.GetPath());
 
     CSavestate save;
     if (save.Deserialize(savestatePath))
@@ -213,10 +234,7 @@ void CRetroPlayer::Pause()
   if (m_gameClient)
   {
     m_gameClient->GetPlayback()->PauseUnpause();
-    m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
-
-    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
-      CloseOSD();
+    OnSpeedChange(m_gameClient->GetPlayback()->GetSpeed());
   }
 }
 
@@ -426,6 +444,7 @@ void CRetroPlayer::FrameMove()
       {
         m_priorSpeed = m_gameClient->GetPlayback()->GetSpeed();
         m_gameClient->GetPlayback()->SetSpeed(0.0);
+        OnSpeedChange(0.0);
         m_state = State::BACKGROUND;
       }
       break;
@@ -435,7 +454,10 @@ void CRetroPlayer::FrameMove()
       if (bFullscreen)
       {
         if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+        {
           m_gameClient->GetPlayback()->SetSpeed(m_priorSpeed);
+          OnSpeedChange(m_priorSpeed);
+        }
         m_state = State::FULLSCREEN;
       }
       break;
@@ -562,7 +584,8 @@ void CRetroPlayer::UpdateVideoRender(bool video)
 void CRetroPlayer::OnSpeedChange(double newSpeed)
 {
   m_audio->Enable(newSpeed == 1.0);
-  m_processInfo->SetSpeed(newSpeed);
+  m_input->SetSpeed(newSpeed);
+  m_processInfo->SetSpeed(static_cast<float>(newSpeed));
   if (newSpeed != 0.0)
     CloseOSD();
 }

@@ -17,33 +17,35 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "games/GameTypes.h"
+#include "EventPollHandle.h"
 
-#include <string>
+#include <assert.h>
 
-namespace KODI
+using namespace PERIPHERALS;
+
+CEventPollHandle::CEventPollHandle(IEventPollCallback* callback) :
+  m_callback(callback)
 {
-namespace GAME
-{
-  class CGUIDialogSelectGameClient
-  {
-  public:
-    static std::string ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable);
-
-  private:
-    static std::string InstallGameClient(const GameClientVector& installable);
-
-    /*!
-     * \brief Utility function to load the add-on manager for installed emulators
-     */
-    static void ActivateAddonMgr();
-
-    /*!
-     * \brief Utility function to load the add-on manager for all emulators
-     */
-    static void ActivateAddonBrowser();
-  };
+  assert(m_callback != nullptr);
 }
+
+CEventPollHandle::~CEventPollHandle(void)
+{
+  m_callback->Release(this);
+}
+
+void CEventPollHandle::Activate()
+{
+  m_callback->Activate(this);
+}
+
+void CEventPollHandle::Deactivate()
+{
+  m_callback->Deactivate(this);
+}
+
+void CEventPollHandle::HandleEvents(bool bWait)
+{
+  m_callback->HandleEvents(bWait);
 }

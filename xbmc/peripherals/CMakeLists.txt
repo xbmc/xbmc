@@ -1,8 +1,8 @@
-set(SOURCES EventScanRate.cpp
+set(SOURCES EventPollHandle.cpp
             EventScanner.cpp
             Peripherals.cpp)
 
-set(HEADERS EventScanRate.h
+set(HEADERS EventPollHandle.h
             EventScanner.h
             Peripherals.h
             PeripheralTypes.h)
