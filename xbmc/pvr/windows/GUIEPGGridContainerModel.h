@@ -24,6 +24,8 @@
 
 #include "XBDateTime.h"
 
+#include "pvr/PVRTypes.h"
+
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
@@ -83,11 +85,14 @@ namespace PVR
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
     const CDateTime &GetGridStart() const { return m_gridStart; }
     const CDateTime &GetGridEnd() const { return m_gridEnd; }
-
     unsigned int GetGridStartPadding() const;
 
-    int GetFirstEventBlock(const CDateTime &eventStart) const;
-    int GetLastEventBlock(const CDateTime &eventEnd) const;
+    unsigned int GetPageNowOffset() const;
+    int GetNowBlock() const;
+
+    int GetBlock(const CDateTime &datetime) const;
+    int GetFirstEventBlock(const CPVREpgInfoTagPtr event) const;
+    int GetLastEventBlock(const CPVREpgInfoTagPtr event) const;
 
   private:
     void FreeItemsMemory();
