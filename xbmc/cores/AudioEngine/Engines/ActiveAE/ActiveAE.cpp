@@ -2385,7 +2385,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
           }
         }
 
-        if (!ret->pkt->nb_samples & !ret->pkt->pause_burst_ms)
+        if ((ret->pkt->nb_samples == 0) && (ret->pkt->pause_burst_ms == 0))
         {
           ret->Return();
           ret = nullptr;
