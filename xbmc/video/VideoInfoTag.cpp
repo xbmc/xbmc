@@ -728,12 +728,12 @@ const std::string& CVideoInfoTag::GetDefaultRating() const
   return m_strDefaultRating;
 }
 
-const bool CVideoInfoTag::HasYear() const
+bool CVideoInfoTag::HasYear() const
 {
   return m_firstAired.IsValid() || m_premiered.IsValid();
 }
 
-const int CVideoInfoTag::GetYear() const
+int CVideoInfoTag::GetYear() const
 {
   if (m_firstAired.IsValid())
     return GetFirstAired().GetYear();
@@ -742,7 +742,7 @@ const int CVideoInfoTag::GetYear() const
   return 0;
 }
 
-const bool CVideoInfoTag::HasPremiered() const
+bool CVideoInfoTag::HasPremiered() const
 {
   return m_bHasPremiered;
 }
@@ -779,7 +779,7 @@ const std::string& CVideoInfoTag::GetDefaultUniqueID() const
   return m_strDefaultUniqueID;
 }
 
-const bool CVideoInfoTag::HasUniqueID() const
+bool CVideoInfoTag::HasUniqueID() const
 {
   return !m_uniqueIDs.empty();
 }

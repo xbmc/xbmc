@@ -25,7 +25,7 @@
 class CJSONVariantParserHandler
 {
 public:
-  CJSONVariantParserHandler(CVariant& parsedObject);
+  explicit CJSONVariantParserHandler(CVariant& parsedObject);
 
   bool Null();
   bool Bool(bool b);

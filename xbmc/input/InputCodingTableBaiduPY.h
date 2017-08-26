@@ -31,7 +31,7 @@
 class CInputCodingTableBaiduPY : public IInputCodingTable, public CThread
 {
 public:
-  CInputCodingTableBaiduPY(const std::string& strUrl);
+  explicit CInputCodingTableBaiduPY(const std::string& strUrl);
   ~CInputCodingTableBaiduPY() override = default;
 
   void Initialize() override;

@@ -34,6 +34,7 @@
 #include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
+#include "platform/android/activity/JNIXBMCMediaSession.h"
 #include "platform/android/activity/JNIXBMCNsdManagerRegistrationListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerResolveListener.h"
 #include "utils/StringUtils.h"
@@ -153,6 +154,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jni::CJNIXBMCNsdManagerDiscoveryListener::RegisterNatives(env);
   jni::CJNIXBMCNsdManagerRegistrationListener::RegisterNatives(env);
   jni::CJNIXBMCNsdManagerResolveListener::RegisterNatives(env);
+  jni::CJNIXBMCMediaSession::RegisterNatives(env);
   
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -163,6 +165,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       {"_onActivityResult", "(IILandroid/content/Intent;)V", (void*)&CJNIMainActivity::_onActivityResult},
       {"_doFrame", "(J)V", (void*)&CJNIMainActivity::_doFrame},
       {"_callNative", "(JJ)V", (void*)&CJNIMainActivity::_callNative},
+      {"_onVisibleBehindCanceled", "()V", (void*)&CJNIMainActivity::_onVisibleBehindCanceled},
     };
     env->RegisterNatives(cMain, methods, sizeof(methods)/sizeof(methods[0]));
   }

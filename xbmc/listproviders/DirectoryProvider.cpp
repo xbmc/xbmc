@@ -346,9 +346,9 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
   CSingleLock lock(m_section);
   if (success)
   {
-    m_items = ((CDirectoryJob*)job)->GetItems();
-    m_currentTarget = ((CDirectoryJob*)job)->GetTarget();
-    ((CDirectoryJob*)job)->GetItemTypes(m_itemTypes);
+    m_items = static_cast<CDirectoryJob*>(job)->GetItems();
+    m_currentTarget = static_cast<CDirectoryJob*>(job)->GetTarget();
+    static_cast<CDirectoryJob*>(job)->GetItemTypes(m_itemTypes);
     if (m_updateState == OK)
       m_updateState = DONE;
   }

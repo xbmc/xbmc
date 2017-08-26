@@ -19,14 +19,14 @@
  *
  */
 
+#include <map>
+
 #include "guilib/GUIDialog.h"
 #include "utils/Observer.h"
 #include "view/GUIViewControl.h"
 
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include <map>
 
 class CFileItemList;
 

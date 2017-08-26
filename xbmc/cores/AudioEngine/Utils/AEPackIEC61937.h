@@ -39,6 +39,7 @@
 class CAEPackIEC61937
 {
 public:
+  CAEPackIEC61937() = default;
   typedef int (*PackFunc)(uint8_t *data, unsigned int size, uint8_t *dest);
 
   static int PackAC3     (uint8_t *data, unsigned int size, uint8_t *dest);

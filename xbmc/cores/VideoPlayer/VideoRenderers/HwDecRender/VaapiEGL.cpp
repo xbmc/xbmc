@@ -303,7 +303,11 @@ void CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &ge
   hevc = false;
 
   int major_version, minor_version;
-  vaInitialize(vaDpy, &major_version, &minor_version);
+  if (vaInitialize(vaDpy, &major_version, &minor_version) != VA_STATUS_SUCCESS)
+  {
+    vaTerminate(vaDpy);
+    return;
+  }
 
   int width = 1920;
   int height = 1080;
@@ -391,9 +395,15 @@ bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
   VAImage image;
   VABufferInfo bufferInfo;
 
+  VASurfaceAttrib attribs = { };
+  attribs.flags = VA_SURFACE_ATTRIB_SETTABLE;
+  attribs.type = VASurfaceAttribPixelFormat;
+  attribs.value.type = VAGenericValueTypeInteger;
+  attribs.value.value.i = VA_FOURCC_P010;
+
   if (vaCreateSurfaces(vaDpy,  VA_RT_FORMAT_YUV420_10BPP,
                        width, height,
-                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
+                       &surface, 1, &attribs, 1) != VA_STATUS_SUCCESS)
   {
     return ret;
   }

@@ -94,7 +94,9 @@ namespace XBMCAddon
                bool offscreen = false);
 
 #ifndef SWIG
-      inline ListItem(CFileItemPtr pitem) : item(pitem) {}
+      inline explicit ListItem(CFileItemPtr pitem) :
+        item(pitem), m_offscreen(false)
+      {}
 
       static inline AddonClass::Ref<ListItem> fromString(const String& str)
       {

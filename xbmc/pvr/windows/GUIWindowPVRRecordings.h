@@ -23,8 +23,7 @@
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRSettings.h"
-
-#include "GUIWindowPVRBase.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 
 namespace PVR
 {

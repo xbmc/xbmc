@@ -59,7 +59,7 @@ public:
   CGUIEditControl(int parentID, int controlID, float posX, float posY,
                   float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                   const CLabelInfo& labelInfo, const std::string &text);
-  CGUIEditControl(const CGUIButtonControl &button);
+  explicit CGUIEditControl(const CGUIButtonControl &button);
   ~CGUIEditControl(void) override;
   CGUIEditControl *Clone() const override { return new CGUIEditControl(*this); };
 

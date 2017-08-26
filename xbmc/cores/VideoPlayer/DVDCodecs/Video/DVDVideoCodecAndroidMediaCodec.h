@@ -71,6 +71,8 @@ private:
   AMediaCodec *m_codec;
 };
 
+class CMediaCodecVideoBufferPool;
+
 class CMediaCodecVideoBuffer : public CVideoBuffer
 {
 public:
@@ -85,7 +87,7 @@ public:
   // meat and potatoes
   bool                WaitForFrame(int millis);
   // MediaCodec related
-  void                ReleaseOutputBuffer(bool render, int64_t displayTime);
+  void                ReleaseOutputBuffer(bool render, int64_t displayTime, CMediaCodecVideoBufferPool* pool = nullptr);
   // SurfaceTexture released
   int                 GetBufferId() const;
   int                 GetTextureId() const;

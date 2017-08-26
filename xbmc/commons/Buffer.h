@@ -29,7 +29,7 @@ namespace XbmcCommons
     std::string message;
 
   public:
-    BufferException(const char* message_) : message(message_) {}
+    explicit BufferException(const char* message_) : message(message_) {}
   };
 
   /**
@@ -129,7 +129,7 @@ namespace XbmcCommons
      * other Buffer instances. It will be freed upon destruction of
      * the last Buffer that references it.
      */
-    inline Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : NULL), mcapacity(bufferSize)
+    inline explicit Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : NULL), mcapacity(bufferSize)
     { 
       clear(); 
       bufferRef.reset(buffer, std::default_delete<unsigned char[]>());

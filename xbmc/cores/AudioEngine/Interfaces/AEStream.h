@@ -195,25 +195,25 @@ public:
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */
-  virtual const unsigned int GetFrameSize() const = 0;
+  virtual unsigned int GetFrameSize() const = 0;
 
   /**
    * Returns the number of channels the stream is configured to accept
    * @return The channel count
    */
-  virtual const unsigned int GetChannelCount() const = 0;
+  virtual unsigned int GetChannelCount() const = 0;
 
   /**
    * Returns the stream's sample rate, if the stream is using a dynamic sample rate, this value will NOT reflect any changes made by calls to SetResampleRatio()
    * @return The stream's sample rate (eg, 48000)
    */
-  virtual const unsigned int GetSampleRate() const = 0;
+  virtual unsigned int GetSampleRate() const = 0;
 
   /**
    * Return the data format the stream has been configured with
    * @return The stream's data format (eg, AE_FMT_S16LE)
    */
-  virtual const enum AEDataFormat GetDataFormat() const = 0;
+  virtual enum AEDataFormat GetDataFormat() const = 0;
 
   /**
    * Return the resample ratio

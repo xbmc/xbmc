@@ -5,7 +5,7 @@ XBMC_PLATFORM_DIR=android
 NDK_ARCH=aarch64
 #the following paths must exist on the slave and use the defined scheme here!
 NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
-TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$SDK_VERSION-r$NDK_VERSION
+TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$NDK_API-r$NDK_VERSION
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
@@ -13,8 +13,9 @@ then
     --with-tarballs=$TARBALLS \
     --host=aarch64-linux-android \
     --with-sdk-path=$SDK_PATH \
-    --with-ndk=$NDK_PATH \
+    --with-ndk-path=$NDK_PATH \
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
+    $(if [ "$NDK_API" != "Default" ]; then echo --with-ndk=$NDK_API;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT \
     --enable-neon $DEBUG_SWITCH

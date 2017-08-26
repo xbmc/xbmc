@@ -1280,11 +1280,6 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
-        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19229" help="36214">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="2" label="14302">
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="36216">
@@ -1380,18 +1375,6 @@
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>
-        <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
-          <level>1</level>
-          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
-          <constraints>
-            <options>
-              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
-              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
-              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
         </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>
@@ -1933,15 +1916,30 @@
     <category id="smb" label="1200" help="36346">
       <requirement>HAS_FILESYSTEM_SMB</requirement>
       <group id="1" label="16000">
+        <setting id="smb.workgroup" type="string" label="1202" help="36348">
+          <level>2</level>
+          <default>WORKGROUP</default>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
+      <group id="2" label="36627">
         <setting id="smb.winsserver" type="string" label="1207" help="36347">
           <level>2</level>
           <default>0.0.0.0</default>
           <control type="edit" format="ip" />
         </setting>
-        <setting id="smb.workgroup" type="string" label="1202" help="36348">
+        <setting id="smb.maxprotocol" type="integer" label="36621" help="36622">
           <level>2</level>
-          <default>WORKGROUP</default>
-          <control type="edit" format="string" />
+          <default>3</default>
+          <constraints>
+            <options>
+              <option label="36623">0</option>
+              <option label="36624">1</option>
+              <option label="36625">2</option>
+              <option label="36626">3</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
         </setting>
       </group>
     </category>
@@ -2117,7 +2115,12 @@
     <category id="display" label="14220" help="36603">
       <group id="1" label="16000">
         <setting id="videoscreen.monitor" type="string" label="246" help="">
-          <requirement>HAS_GLX</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GLX</condition>
+              <condition>HAVE_WAYLAND</condition>
+            </or>
+          </requirement>
           <level>0</level>
           <default>Default</default>
           <constraints>
@@ -3268,6 +3271,24 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="regional" label="14222" help="36113">
@@ -3513,8 +3534,20 @@
         </setting>
       </group>
     </category>
-    <category id="other" label="14224" help="36102">
-      <group id="2" label="513">
+    <category id="other" label="14224" help="36292">
+      <group id="2" label="14227">
+        <setting id="lookandfeel.startupaction" type="integer" label="39100" help="36161">
+          <level>0</level>
+          <default>0</default> <!-- STARTUP_ACTION_NONE -->
+          <constraints>
+            <options>
+              <option label="231">0</option> <!-- STARTUP_ACTION_NONE -->
+              <option label="39101">1</option> <!-- STARTUP_ACTION_PLAY_TV -->
+              <option label="39102">2</option> <!-- STARTUP_ACTION_PLAY_RADIO -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="36109">
           <level>0</level>
           <default>10000</default> <!-- WINDOW_HOME -->
@@ -3525,24 +3558,6 @@
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
           <control type="list" format="string" />
-        </setting>
-        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
-          </dependencies>
-          <control type="button" format="action">
-            <hidevalue>true</hidevalue>
-          </control>
         </setting>
       </group>
     </category>

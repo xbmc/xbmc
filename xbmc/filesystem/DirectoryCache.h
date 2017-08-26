@@ -35,7 +35,7 @@ namespace XFILE
     class CDir
     {
     public:
-      CDir(DIR_CACHE_TYPE cacheType);
+      explicit CDir(DIR_CACHE_TYPE cacheType);
       virtual ~CDir();
 
       void SetLastAccess(unsigned int &accessCounter);

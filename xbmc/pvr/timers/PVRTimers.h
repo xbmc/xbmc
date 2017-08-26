@@ -23,12 +23,13 @@
 #include <memory>
 #include <vector>
 
+#include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "utils/Observer.h"
+
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
-#include "PVRTimerInfoTag.h"
-#include "utils/Observer.h"
-#include "XBDateTime.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 class CFileItem;
 class CFileItemList;
@@ -309,7 +310,7 @@ namespace PVR
     static const std::string PATH_ADDTIMER;
     static const std::string PATH_NEW;
 
-    CPVRTimersPath(const std::string &strPath);
+    explicit CPVRTimersPath(const std::string &strPath);
     CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
     CPVRTimersPath(bool bRadio, bool bTimerRules);
 

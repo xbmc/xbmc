@@ -1,5 +1,10 @@
-set(SOURCES PosixInterfaceForCLog.cpp)
+set(SOURCES Mmap.cpp
+            PosixInterfaceForCLog.cpp
+            SharedMemory.cpp)
 
-set(HEADERS PosixInterfaceForCLog.h)
+set(HEADERS FileHandle.h
+            Mmap.h
+            PosixInterfaceForCLog.h
+            SharedMemory.h)
 
 core_add_library(utils_posix)

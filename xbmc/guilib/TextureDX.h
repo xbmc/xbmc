@@ -20,7 +20,6 @@
 
 #pragma once
 
-#ifdef HAS_DX
 #include "Texture.h"
 #include "D3DResource.h"
 
@@ -52,5 +51,3 @@ private:
   CD3DTexture m_texture;
   DXGI_FORMAT GetFormat();
 };
-
-#endif

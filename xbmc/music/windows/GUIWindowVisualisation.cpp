@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -50,13 +51,14 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
-      g_infoManager.IsPlayerChannelPreviewActive() &&
-      (action.GetID() == ACTION_SELECT_ITEM || CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
+      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview() &&
+      (action.GetID() == ACTION_SELECT_ITEM ||
+       CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
   {
     // If confirm channel switch is active, channel preview is currently shown
     // and the button that caused this action matches (global) action "Select" (OK)
     // switch to the channel currently displayed within the preview.
-    CServiceBroker::GetPVRManager().ChannelPreviewSelect();
+    CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SwitchToCurrentChannel();
     return true;
   }
 

@@ -83,7 +83,7 @@ class FileReader
   : public CueReader
 {
 public:
-  FileReader(const std::string &strFile)
+  explicit FileReader(const std::string &strFile) : m_szBuffer{}
   {
     m_opened = m_file.Open(strFile);
   }
@@ -121,7 +121,7 @@ class BufferReader
   : public CueReader
 {
 public:
-  BufferReader(const std::string &strContent)
+  explicit BufferReader(const std::string &strContent)
     : m_data(strContent)
     , m_pos(0)
   {

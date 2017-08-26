@@ -92,6 +92,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Innskrá"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Uppfært:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "HRATT ÁFRAM"
@@ -160,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Uppruni gagna"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Minnisnotkun kerfis:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Síðasta innskráning"
@@ -192,6 +200,18 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráarlista · Velja skjáhvílu"
 
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Stilla skjá · Stilla hljóð · Stilla internetaðgang · Stilla orkusparnað · Stilla atvikaskráningu"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Stilla aðgerðir sem hægt er að nota á meðan afspilun stendur · Stilla hvernig margmiðlunarefni er spilað"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Stilla skinn · Stilla landsvæði · Stilla stýringar · Stilla skjáhvílu · Stilla aðallás"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"
@@ -199,6 +219,10 @@ msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"
 msgctxt "#31548"
 msgid "Home menu"
 msgstr "Heimavalmynd"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Viðbætur við heimavalmynd"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -263,3 +287,11 @@ msgstr "Sýna falið"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Sýna eytt"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Fyrsta keyrsla"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Spila núna..."

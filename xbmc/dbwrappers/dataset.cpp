@@ -409,7 +409,7 @@ const field_value Dataset::get_field_value(int index) {
   throw DbErrors("Dataset state is Inactive");
 }
 
-const sql_record* const Dataset::get_sql_record()
+const sql_record* Dataset::get_sql_record()
 {
   if (result.records.empty() || frecno >= (int)result.records.size())
     return NULL;

@@ -19,26 +19,28 @@
  *
  */
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "utils/ISerializable.h"
+
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "utils/ISerializable.h"
-
-#include <string>
-#include <vector>
 
 #define EPG_DEBUGGING 0
 
 class CVariant;
-/** an EPG info tag */
+
 namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag : public ISerializable
+  class CPVREpgInfoTag : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -53,7 +55,7 @@ namespace PVR
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
-    CPVREpgInfoTag(const EPG_TAG &data);
+    CPVREpgInfoTag(const EPG_TAG &data, int iClientId);
 
   private:
     /*!
@@ -64,18 +66,24 @@ namespace PVR
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
+    CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel, const std::string &strTableName = "", const std::string &strIconPath = "");
 
     CPVREpgInfoTag(const CPVREpgInfoTag &tag) = delete;
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    ~CPVREpgInfoTag() override;
+    ~CPVREpgInfoTag() override = default;
 
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;
 
     void Serialize(CVariant &value) const override;
+
+    /*!
+     * @brief Get the identifier of the client that serves this event.
+     * @return The identifier.
+     */
+    int ClientID(void) const { return m_iClientId; }
 
     /*!
      * @brief Check if this event is currently active.
@@ -115,7 +123,7 @@ namespace PVR
      */
     const CPVREpg *GetTable() const;
 
-    const int EpgID(void) const;
+    int EpgID(void) const;
 
     /*!
      * @brief Sets the epg reference of this event
@@ -140,6 +148,12 @@ namespace PVR
      * @return The database ID.
      */
     int BroadcastId(void) const;
+
+    /*!
+     * @brief Get the unique ID of the channel this event belongs to.
+     * @return The unique channel ID.
+     */
+    unsigned int UniqueChannelID(void) const;
 
     /*!
      * @brief Get the event's start time.
@@ -280,6 +294,12 @@ namespace PVR
     int SeriesNumber(void) const;
 
     /*!
+     * @brief The series link for this event.
+     * @return The series link or empty string, if not available.
+     */
+    std::string SeriesLink() const;
+
+    /*!
      * @brief The episode number of this event.
      * @return The episode number.
      */
@@ -362,25 +382,37 @@ namespace PVR
     PVR::CPVRRecordingPtr Recording(void) const;
 
     /*!
+     * @brief Check if this event can be recorded.
+     * @return True if it can be recorded, false otherwise.
+     */
+    bool IsRecordable(void) const;
+
+    /*!
+     * @brief Check if this event can be played.
+     * @return True if it can be played, false otherwise.
+     */
+    bool IsPlayable(void) const;
+
+    /*!
      * @brief Change the channel tag of this epg tag
      * @param channel The new channel
      */
-    void SetPVRChannel(const PVR::CPVRChannelPtr &channel);
+    void SetChannel(const PVR::CPVRChannelPtr &channel);
 
     /*!
      * @return True if this tag has a PVR channel set.
      */
-    bool HasPVRChannel(void) const;
+    bool HasChannel(void) const;
 
-    int PVRChannelNumber(void) const;
+    int ChannelNumber(void) const;
 
-    std::string PVRChannelName(void) const;
+    std::string ChannelName(void) const;
 
     /*!
      * @brief Get the channel that plays this event.
      * @return a pointer to the channel.
      */
-    const PVR::CPVRChannelPtr ChannelTag(void) const;
+    const PVR::CPVRChannelPtr Channel(void) const;
 
     /*!
      * @brief Persist this tag in the database.
@@ -402,6 +434,12 @@ namespace PVR
      */
     bool IsSeries() const;
 
+    /*!
+     * @brief Return the flags (EPG_TAG_FLAG_*) of this event as a bitfield.
+     * @return the flags.
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
   private:
 
     /*!
@@ -421,13 +459,8 @@ namespace PVR
      */
     CDateTime GetCurrentPlayingTime(void) const;
 
-    /*!
-     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
-     */
-    unsigned int Flags() const { return m_iFlags; }
-
     bool                     m_bNotify;            /*!< notify on start */
-
+    int                      m_iClientId;          /*!< client id */
     int                      m_iBroadcastId;       /*!< database ID */
     int                      m_iGenreType;         /*!< genre type */
     int                      m_iGenreSubType;      /*!< genre subtype */
@@ -437,6 +470,7 @@ namespace PVR
     int                      m_iEpisodeNumber;     /*!< episode number */
     int                      m_iEpisodePart;       /*!< episode part number */
     unsigned int             m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    unsigned int             m_iUniqueChannelID;   /*!< unique channel ID */
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */
@@ -459,9 +493,10 @@ namespace PVR
     CPVREpg *                m_epg;                /*!< the schedule that this event belongs to */
 
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
+    std::string              m_strSeriesLink;      /*!< series link */
 
     CCriticalSection         m_critSection;
-    PVR::CPVRChannelPtr      m_pvrChannel;
+    PVR::CPVRChannelPtr      m_channel;
     PVR::CPVRRecordingPtr    m_recording;
   };
 }

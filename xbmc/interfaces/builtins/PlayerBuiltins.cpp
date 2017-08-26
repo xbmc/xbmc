@@ -169,9 +169,9 @@ static int PlayerControl(const std::vector<std::string>& params)
     {
       float playTempo = g_application.m_pPlayer->GetPlayTempo();
       if (paramlow == "tempodown")
-          playTempo -= 0.1;
+          playTempo -= 0.1f;
       else if (paramlow == "tempoup")
-          playTempo += 0.1;
+          playTempo += 0.1f;
 
       g_application.m_pPlayer->SetTempo(playTempo);
     }

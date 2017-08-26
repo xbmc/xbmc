@@ -72,7 +72,7 @@ const char* CBinaryAddonType::GetPlatformLibraryName(const TiXmlElement* element
   if (libraryName == nullptr)
 #endif
   libraryName = element->Attribute("library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS)
   libraryName = element->Attribute("library_windx");
   if (libraryName == nullptr)
     libraryName = element->Attribute("library_windows");

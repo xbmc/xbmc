@@ -36,7 +36,7 @@ public:
     SUBTITLE
   };
 
-  CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
+  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   virtual bool IsWorseThan(CStreamDetail *that) { return true; };

@@ -64,6 +64,8 @@ public:
   virtual void EnableTextInput(bool bEnable) override;
   virtual bool IsTextInputEnabled() override;
 
+  virtual std::string GetClipboardText(void) override;
+
   void Register(IDispResource *resource);
   void Unregister(IDispResource *resource);
   
@@ -82,9 +84,6 @@ public:
   
   void* GetCGLContextObj();
   void* GetNSOpenGLContext();
-
-  std::string GetClipboardText(void);
-
 
 protected:
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;

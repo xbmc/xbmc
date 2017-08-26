@@ -19,17 +19,16 @@
  *
  */
 
+#include <deque>
+#include <vector>
+
+#include "addons/PVRClient.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
-
-#include "addons/PVRClient.h"
-
-#include <deque>
-#include <vector>
 
 namespace PVR
 {
@@ -282,6 +281,20 @@ namespace PVR
     bool IsEncrypted(void) const;
 
     /*!
+     * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillChannelStreamFileItem(CFileItem &fileItem);
+
+    /*!
+     * @brief Fill the file item for a recording with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillRecordingStreamFileItem(CFileItem &fileItem);
+
+    /*!
      * @brief Open a stream on the given channel.
      * @param channel The channel to start playing.
      * @param bIsSwitchingChannel True when switching channels, false otherwise.
@@ -290,18 +303,15 @@ namespace PVR
     bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
 
     /*!
-     * @brief Get the URL for the stream to the given channel.
-     * @param channel The channel to get the stream url for.
-     * @return The requested stream url or an empty string if it wasn't found.
+     * @brief Set the channel that is currently playing.
+     * @param channel The channel that is currently playing.
      */
-    std::string GetStreamURL(const CPVRChannelPtr &channel);
+    void SetPlayingChannel(const CPVRChannelPtr channel);
 
     /*!
-     * @brief Switch an opened live tv stream to another channel.
-     * @param channel The channel to switch to.
-     * @return True if the switch was successful, false otherwise.
+     * @brief Clear the channel that is currently playing, if any.
      */
-    bool SwitchChannel(const CPVRChannelPtr &channel);
+    void ClearPlayingChannel();
 
     /*!
      * @brief Get the channel that is currently playing.
@@ -316,13 +326,24 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given recording.
-     * @param tag The recording to start playing.
+     * @param recording The recording to start playing.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRRecordingPtr &tag);
+    bool OpenStream(const CPVRRecordingPtr &recording);
 
     /*!
-     * @brief Get the recordings that is currently playing.
+     * @brief Set the recording that is currently playing.
+     * @param recording The recording that is currently playing.
+     */
+    void SetPlayingRecording(const CPVRRecordingPtr recording);
+
+    /*!
+     * @brief Clear the recording that is currently playing, if any.
+     */
+    void ClearPlayingRecording();
+
+    /*!
+     * @brief Get the recording that is currently playing.
      * @return The recording that is currently playing, NULL otherwise.
      */
     CPVRRecordingPtr GetPlayingRecording(void) const;
@@ -515,6 +536,51 @@ namespace PVR
      */
     PVR_ERROR SetEPGTimeFrame(int iDays);
 
+    /*
+     * @brief Check if an epg tag can be recorded
+     * @param tag The epg tag
+     * @param bIsRecordable Set to true if the tag can be recorded
+     * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
+     */
+    PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
+
+    /*
+     * @brief Check if an epg tag can be played
+     * @param tag The epg tag
+     * @param bIsPlayable Set to true if the tag can be played
+     * @return PVR_ERROR_NO_ERROR if bIsPlayable has been set successfully.
+     */
+    PVR_ERROR IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const;
+
+    /*!
+     * @brief Fill the file item for an epg tag with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillEpgTagStreamFileItem(CFileItem &fileItem);
+
+    /*!
+     * @brief Set the epg tag that is currently playing.
+     * @param epgTag The tag that is currently playing.
+     */
+    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
+
+    /*!
+     * @brief Clear the epg tag that is currently playing, if any.
+     */
+    void ClearPlayingEpgTag();
+
+    /*!
+     * @brief Get the epg tag that is currently playing.
+     * @return The tag that is currently playing, NULL otherwise.
+     */
+    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
+
+    /*!
+     * @return True if an epg tag is playing, false otherwise.
+     */
+    bool IsPlayingEpgTag(void) const;
+
     //@}
 
     /*! @name Channel methods */
@@ -624,6 +690,8 @@ namespace PVR
     time_t GetBufferTimeStart() const;
     time_t GetBufferTimeEnd() const;
 
+    bool GetStreamTimes(PVR_STREAM_TIMES *times) const;
+
     int GetClientId(const std::string& strId) const;
 
     bool IsRealTimeStream() const;
@@ -655,14 +723,12 @@ namespace PVR
      */
     bool IsKnownClient(const ADDON::AddonPtr &client) const;
 
-
     int GetClientId(const ADDON::AddonPtr &client) const;
 
-
-    bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
+    bool                  m_bIsPlayingEpgTag;
     std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;

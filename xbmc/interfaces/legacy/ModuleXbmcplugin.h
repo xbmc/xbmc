@@ -339,12 +339,14 @@ namespace XBMCAddon
     /// |:--------:|:--------:|:--------:|:--------:|
     /// |  files   |  songs   | artists  | albums
     /// | movies   | tvshows  | episodes | musicvideos
-    /// | videos   | images   | 
+    /// | videos   | images   |  games   |
     ///
     /// @remark Use **videos** for all videos which do not apply to the 
     /// more specific mentioned ones like "movies", "episodes" etc.
     /// A good example is youtube.
+    ///
     /// ------------------------------------------------------------------------
+    /// @python_v18 Added new **games** content
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}

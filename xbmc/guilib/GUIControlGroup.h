@@ -117,7 +117,7 @@ private:
 
   struct IDCollector
   {
-    IDCollector(IDCollectorList &list)
+    explicit IDCollector(IDCollectorList &list)
       : m_list(list)
       , m_collector(list.Get()) {};
 

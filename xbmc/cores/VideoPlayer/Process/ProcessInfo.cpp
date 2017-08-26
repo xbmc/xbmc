@@ -562,3 +562,23 @@ bool CProcessInfo::GetVideoRender()
 
   return m_renderVideoLayer;
 }
+
+void CProcessInfo::SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max)
+{
+  CSingleLock lock(m_stateSection);
+  m_startTime = start;
+  m_time = current;
+  m_timeMin = min;
+  m_timeMax = max;
+
+  if (m_dataCache)
+  {
+    m_dataCache->SetPlayTimes(start, current, min, max);
+  }
+}
+
+int64_t CProcessInfo::GetMaxTime()
+{
+  CSingleLock lock(m_stateSection);
+  return m_timeMax;
+}

@@ -29,10 +29,11 @@ using namespace VDPAU;
 // interop state
 //-----------------------------------------------------------------------------
 
-bool CInteropState::Init(void *device, void *procFunc)
+bool CInteropState::Init(void *device, void *procFunc, void *decoder)
 {
   m_device = device;
   m_procFunc = procFunc;
+  m_decoder = decoder;
 
   m_interop.glVDPAUInitNV = (PFNGLVDPAUINITNVPROC)glXGetProcAddress((GLubyte *) "glVDPAUInitNV");
   m_interop.glVDPAUFiniNV = (PFNGLVDPAUFININVPROC)glXGetProcAddress((GLubyte *) "glVDPAUFiniNV");
@@ -71,11 +72,13 @@ InteropInfo &CInteropState::GetInterop()
   return m_interop;
 }
 
-bool CInteropState::NeedInit(void *device, void *procFunc)
+bool CInteropState::NeedInit(void *device, void *procFunc, void *decoder)
 {
   if (m_device != device)
     return true;
   if (m_procFunc != procFunc)
+    return true;
+  if (m_decoder != decoder)
     return true;
 
   return false;
@@ -168,6 +171,8 @@ bool CVdpauTexture::MapNV12()
     return false;
   }
 
+  m_interop.glVDPAUUnregisterSurfaceNV(m_glSurface.glVdpauSurface);
+
   m_textureTopY = textures[0];
   m_textureTopUV = textures[2];
   m_textureBotY = textures[1];
@@ -221,6 +226,7 @@ bool CVdpauTexture::MapRGB()
 void CVdpauTexture::UnmapRGB()
 {
   m_interop.glVDPAUUnmapSurfacesNV(1, &m_glSurface.glVdpauSurface);
+  m_interop.glVDPAUUnregisterSurfaceNV(m_glSurface.glVdpauSurface);
   glDeleteTextures(1, &m_texture);
 }
 

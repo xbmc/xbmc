@@ -9,22 +9,52 @@ NOPROMPT=0
 MAKECLEAN=""
 MAKEFLAGS=""
 TOOLS="mingw"
-
-export _WIN32_WINNT=0x0600
-export NTDDI_VERSION=0x06000000
+TRIPLET=""
 
 while true; do
   case $1 in
     --tools=* ) TOOLS="${1#*=}"; shift ;;
     --build32=* ) build32="${1#*=}"; shift ;;
     --build64=* ) build64="${1#*=}"; shift ;;
+    --buildArm=* ) buildArm="${1#*=}"; shift ;;
     --prompt=* ) PROMPTLEVEL="${1#*=}"; shift ;;
     --mode=* ) BUILDMODE="${1#*=}"; shift ;;
+    --win10=* ) win10="${1#*=}"; shift ;;
     -- ) shift; break ;;
     -* ) shift ;;
     * ) break ;;
   esac
 done
+
+if [[ $build32 = "yes" ]]; then
+  TRIPLET=win32
+  ARCH=x86
+elif [[ $build64 = "yes" ]]; then
+  TRIPLET=x64
+  ARCH=x86_64
+elif [[ $buildArm = "yes" ]]; then
+  TRIPLET=arm
+  ARCH=arm
+else
+  echo "-------------------------------------------------------------------------------"
+  echo " none of build types (build32, build64 or buildArm) was specified "
+  echo "-------------------------------------------------------------------------------"
+  # wait for key press
+  if [ "$PROMPTLEVEL" != "noprompt" ]; then
+    echo press a key to close the window
+    read
+  fi
+  exit
+fi
+
+if [[ $win10 = "no" ]]; then
+  export _WIN32_WINNT=0x0600
+  export NTDDI_VERSION=0x06000000
+elif [[ $win10 = "yes" ]]; then
+  TRIPLET=$TRIPLET-uwp
+fi
+
+export TRIPLET ARCH TOOLS
 
 throwerror() {
   $TOUCH $ERRORFILE
@@ -34,31 +64,30 @@ throwerror() {
   fi
 }
 
-setfilepath() {
-  FILEPATH=$1
-}
-
 checkfiles() {
   for i in $@; do
-    if [ ! -f "$FILEPATH/$i" ]; then
-      throwerror "$FILEPATH/$i"
+    if [ ! -f "$PREFIX/bin/$i" ]; then
+      throwerror "$PREFIX/bin/$i"
       exit 1
     fi
   done
 }
 
 buildProcess() {
-export PREFIX=/xbmc/project/BuildDependencies/mingwlibs/$ARCHITECTURE
+export PREFIX=/xbmc/project/BuildDependencies/mingwlibs/$TRIPLET
 if [ "$(pathChanged $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/*/*-VERSION)" == "0" ]; then
   return
 fi
 
-git clean -dffx $PREFIX
+if [ -d "$PREFIX" ]; then
+  rm -rdf $PREFIX/*
+fi
+
 cd /xbmc/tools/buildsteps/windows
 
 # compile our mingw dlls
 echo "-------------------------------------------------------------------------------"
-echo "compiling mingw libs $BITS"
+echo " compiling mingw libs $TRIPLET"
 echo
 echo " NOPROMPT  = $NOPROMPT"
 echo " MAKECLEAN = $MAKECLEAN"
@@ -67,53 +96,55 @@ echo " TOOLCHAIN = $TOOLS"
 echo
 echo "-------------------------------------------------------------------------------"
 
-echo -ne "\033]0;building FFmpeg $BITS\007"
+echo -ne "\033]0;building FFmpeg $TRIPLET\007"
 echo "-------------------------------------------------"
-echo " building FFmpeg $BITS"
+echo " building FFmpeg $TRIPLET"
 echo "-------------------------------------------------"
-./buildffmpeg.sh
-setfilepath $PREFIX/bin
+./buildffmpeg.sh $MAKECLEAN
 checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
-echo " building of FFmpeg $BITS done..."
+echo " building of FFmpeg $TRIPLET done..."
 echo "-------------------------------------------------"
-
-echo -ne "\033]0;building libdvd $BITS\007"
+if [[ $win10 != "yes" ]]; then # currently disabled for uwp
+echo -ne "\033]0;building libdvd $TRIPLET\007"
 echo "-------------------------------------------------"
-echo " building libdvd $BITS"
+echo " building libdvd $TRIPLET"
 echo "-------------------------------------------------"
-./buildlibdvd.sh
+./buildlibdvd.sh $MAKECLEAN
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "-------------------------------------------------"
-echo " building of libdvd $BITS done..."
+echo " building of libdvd $TRIPLET done..."
 echo "-------------------------------------------------"
-
+fi
 echo "-------------------------------------------------------------------------------"
-echo
-echo "compile mingw libs $BITS done..."
-echo
+echo " compile mingw libs $TRIPLET done..."
 echo "-------------------------------------------------------------------------------"
 
 tagSuccessFulBuild $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/*/*-VERSION
 }
 
 run_builds() {
-    new_updates="no"
-    new_updates_packages=""
+    local profile_path=""
     if [[ $build32 = "yes" ]]; then
-        source /local32/etc/profile.local
-        buildProcess
-        echo "-------------------------------------------------------------------------------"
-        echo "compile all libs 32bit done..."
-        echo "-------------------------------------------------------------------------------"
+      profile_path=/local32/etc/profile.local
+    elif [[ $build64 = "yes" ]]; then
+      profile_path=/local64/etc/profile.local
+    elif [[ $buildArm = "yes" ]]; then
+      profile_path=/local32/etc/profile.local
     fi
 
-    if [[ $build64 = "yes" ]]; then
-        source /local64/etc/profile.local
-        buildProcess
-        echo "-------------------------------------------------------------------------------"
-        echo "compile all libs 64bit done..."
-        echo "-------------------------------------------------------------------------------"
+    if [ ! -z $profile_path ]; then
+        if [[ ! -f "$profile_path" ]]; then
+          echo "-------------------------------------------------------------------------------"
+          echo " $TRIPLET build environment not configured, please run download-msys2.bat"
+          echo "-------------------------------------------------------------------------------"
+        else
+          source $profile_path
+          buildProcess
+          echo "-------------------------------------------------------------------------------"
+          echo " compile all libs $TRIPLET done..."
+          echo "-------------------------------------------------------------------------------"
+        fi
     fi
 }
 

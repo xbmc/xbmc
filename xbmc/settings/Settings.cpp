@@ -97,6 +97,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKINTHEME = "lookandfeel.skinth
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINCOLORS = "lookandfeel.skincolors";
 const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
+const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPACTION = "lookandfeel.startupaction";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";
 const std::string CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS = "lookandfeel.enablerssfeeds";
@@ -224,7 +225,6 @@ const std::string CSettings::SETTING_PVRMANAGER_GROUPMANAGER = "pvrmanager.group
 const std::string CSettings::SETTING_PVRMANAGER_CHANNELSCAN = "pvrmanager.channelscan";
 const std::string CSettings::SETTING_PVRMANAGER_RESETDB = "pvrmanager.resetdb";
 const std::string CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO = "pvrmenu.displaychannelinfo";
-const std::string CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH = "pvrmenu.closechannelosdonswitch";
 const std::string CSettings::SETTING_PVRMENU_ICONPATH = "pvrmenu.iconpath";
 const std::string CSettings::SETTING_PVRMENU_SEARCHICONS = "pvrmenu.searchicons";
 const std::string CSettings::SETTING_EPG_DAYSTODISPLAY = "epg.daystodisplay";
@@ -235,7 +235,6 @@ const std::string CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV = "epg.pre
 const std::string CSettings::SETTING_EPG_IGNOREDBFORCLIENT = "epg.ignoredbforclient";
 const std::string CSettings::SETTING_EPG_RESETEPG = "epg.resetepg";
 const std::string CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN = "pvrplayback.switchtofullscreen";
-const std::string CSettings::SETTING_PVRPLAYBACK_STARTLAST = "pvrplayback.startlast";
 const std::string CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY = "pvrplayback.signalquality";
 const std::string CSettings::SETTING_PVRPLAYBACK_SCANTIME = "pvrplayback.scantime";
 const std::string CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH = "pvrplayback.confirmchannelswitch";
@@ -332,6 +331,7 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAYPASSWORD = "services.airpla
 const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.airplayvideosupport";
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
+const std::string CSettings::SETTING_SMB_MAXPROTOCOL = "smb.maxprotocol";
 const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
 const std::string CSettings::SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
 const std::string CSettings::SETTING_VIDEOSCREEN_RESOLUTION = "videoscreen.resolution";
@@ -643,18 +643,13 @@ void CSettings::InitializeDefaults()
 #endif // defined(TARGET_POSIX)
 
 #if defined(TARGET_WINDOWS)
-  #if defined(HAS_DX)
   std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
-  #endif
-
-  #if !defined(HAS_GL)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   if (g_sysinfo.IsAeroDisabled())
     std::static_pointer_cast<CSettingBool>(GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
-  #endif
 #endif
 
 #if !defined(TARGET_WINDOWS)
@@ -995,6 +990,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
   settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
   settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
+  settingSet.insert(CSettings::SETTING_SMB_MAXPROTOCOL);
   GetSettingsManager()->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
 
   settingSet.clear();

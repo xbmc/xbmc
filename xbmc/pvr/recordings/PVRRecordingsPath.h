@@ -34,7 +34,7 @@ namespace PVR
     static const std::string PATH_DELETED_TV_RECORDINGS;
     static const std::string PATH_DELETED_RADIO_RECORDINGS;
 
-    CPVRRecordingsPath(const std::string &strPath);
+    explicit CPVRRecordingsPath(const std::string &strPath);
     CPVRRecordingsPath(bool bDeleted, bool bRadio);
     CPVRRecordingsPath(bool bDeleted, bool bRadio,
                        const std::string &strDirectory, const std::string &strTitle,

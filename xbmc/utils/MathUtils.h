@@ -189,6 +189,20 @@ namespace MathUtils
     MathUtils::abs(0);
   }
 
+  /**
+   * Compare two floating-point numbers for equality and regard them
+   * as equal if their difference is below a given threshold.
+   *
+   * It is usually not useful to compare float numbers for equality with
+   * the standard operator== since very close numbers might have different
+   * representations.
+   */
+  template<typename FloatT>
+  inline bool FloatEquals(FloatT f1, FloatT f2, FloatT maxDelta)
+  {
+    return (std::abs(f2 - f1) < maxDelta);
+  }
+
 #if 0
   /*! \brief test routine for round_int and truncate_int
    Must return true on all platforms.

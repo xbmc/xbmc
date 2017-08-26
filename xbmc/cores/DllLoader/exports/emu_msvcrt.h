@@ -45,13 +45,7 @@ typedef void ( *PFV)(void);
 #define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
 #define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
 #define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))
-#if defined(TARGET_WINDOWS) && (_MSC_VER < 1900)
-#define IS_VALID_STREAM(stream)     (stream != NULL && (stream->_ptr != NULL))
-#elif defined(TARGET_WINDOWS) && (_MSC_VER >= 1900)
-#define IS_VALID_STREAM(stream)     (stream != nullptr && (stream->_Placeholder != nullptr))
-#else
-#define IS_VALID_STREAM(stream)     true
-#endif
+#define IS_VALID_STREAM(stream)     (stream != nullptr)
 
 
 #define IS_STD_STREAM(stream)       (stream != NULL && (__IS_STDIN_STREAM(stream) || __IS_STDOUT_STREAM(stream) || __IS_STDERR_STREAM(stream)))

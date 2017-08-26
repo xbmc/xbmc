@@ -197,7 +197,7 @@ class CFileStreamBuffer
 {
 public:
   ~CFileStreamBuffer() override;
-  CFileStreamBuffer(int backsize = 0);
+  explicit CFileStreamBuffer(int backsize = 0);
 
   void Attach(IFile *file);
   void Detach();
@@ -219,7 +219,7 @@ class CFileStream
   : public std::istream
 {
 public:
-  CFileStream(int backsize = 0);
+  explicit CFileStream(int backsize = 0);
   ~CFileStream() override;
 
   bool Open(const std::string& filename);

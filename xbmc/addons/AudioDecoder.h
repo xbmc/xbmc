@@ -40,7 +40,7 @@ namespace ADDON
                         public XFILE::CMusicFileDirectory
   {
   public:
-    CAudioDecoder(const BinaryAddonBasePtr& addonInfo);
+    explicit CAudioDecoder(const BinaryAddonBasePtr& addonInfo);
     ~CAudioDecoder() override;
 
     // Things that MUST be supplied by the child classes

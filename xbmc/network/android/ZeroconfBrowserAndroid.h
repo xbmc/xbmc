@@ -33,7 +33,7 @@ class CZeroconfBrowserAndroid;
 class CZeroconfBrowserAndroidDiscover : public jni::CJNIXBMCNsdManagerDiscoveryListener
 {
 public:
-  CZeroconfBrowserAndroidDiscover(CZeroconfBrowserAndroid* browser);
+  explicit CZeroconfBrowserAndroidDiscover(CZeroconfBrowserAndroid* browser);
   
   // CJNINsdManagerDiscoveryListener interface
 public:

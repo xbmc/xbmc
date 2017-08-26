@@ -1,7 +1,7 @@
 index dffc0b9..efc79ab 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -246,6 +246,7 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
+@@ -245,6 +245,7 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -9,7 +9,7 @@ index dffc0b9..efc79ab 100644
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -544,9 +545,9 @@ sharedmods: $(BUILDPYTHON) pybuilddir.txt Modules/_math.o
+@@ -543,9 +544,9 @@ sharedmods: $(BUILDPYTHON) pybuilddir.txt Modules/_math.o
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
@@ -21,7 +21,7 @@ index dffc0b9..efc79ab 100644
  
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
-@@ -1132,12 +1133,12 @@ libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
+@@ -1120,12 +1121,12 @@ libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
@@ -36,7 +36,7 @@ index dffc0b9..efc79ab 100644
  		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
  		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
-@@ -1265,11 +1266,13 @@ libainstall:	all python-config
+@@ -1253,11 +1254,13 @@ libainstall:	all python-config
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -57,7 +57,7 @@ diff --git a/configure.ac b/configure.ac
 index 06c877b..de26012 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -326,7 +326,6 @@ then
+@@ -329,7 +329,6 @@ then
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
@@ -65,7 +65,7 @@ index 06c877b..de26012 100644
  	esac
  	ac_sys_release=
      else
-@@ -372,7 +371,6 @@ if test "$cross_compiling" = yes; then
+@@ -375,7 +374,6 @@ if test "$cross_compiling" = yes; then
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"

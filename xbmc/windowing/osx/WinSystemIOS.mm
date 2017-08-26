@@ -144,7 +144,7 @@ bool CWinSystemIOS::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     m_nHeight = newHeight;
   }
 
-  CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, false, 0);
+  CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
 
   return true;
 }
@@ -159,7 +159,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i",m_nWidth, m_nHeight, res.iScreen);
   SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
 }

@@ -41,13 +41,14 @@ namespace GAME
   {
   public:
     /*!
-     * \brief Select a game client, possibly via prompt, for the given game
+     * \brief Set the game client property, possibly via prompt, for the given item
      *
-     * \param file The game being played
+     * \param item The item with or without a game client in its info tag
+     * \param prompt If true and no game client was resolved, prompt the user for one
      *
-     * \return A game client ready to be initialized for playback
+     * \return True if the item has a valid game client ID in its info tag
      */
-    static GameClientPtr OpenGameClient(const CFileItem& file);
+    static bool FillInGameClient(CFileItem &item, bool bPrompt);
 
     /*!
      * \brief Check if the file extension is supported by an add-on in
@@ -59,6 +60,9 @@ namespace GAME
      */
     static bool HasGameExtension(const std::string& path);
 
+    /*!
+     * \brief Get all game extensions
+     */
     static std::set<std::string> GetGameExtensions();
 
     /*!

@@ -19,9 +19,9 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
-
 #include <memory>
+
+#include "pvr/windows/GUIWindowPVRBase.h"
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;

@@ -22,10 +22,10 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 using namespace PVR;
 

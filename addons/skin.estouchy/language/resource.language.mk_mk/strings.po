@@ -56,6 +56,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Албуми"
 
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Искористеност на меморија"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Страна"
@@ -75,6 +79,10 @@ msgstr "ПРЕМОТУВАЊЕ НАНАПРЕД"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕМОТУВАЊЕ"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Брзина"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -148,6 +156,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Превземи преводи"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Телетекст"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Подразбирачка маска"
@@ -175,6 +187,10 @@ msgstr "Кратенка за додатокот"
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Live TV"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Достапни групи"
 
 msgctxt "#31561"
 msgid "Add Group"

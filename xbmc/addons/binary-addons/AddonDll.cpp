@@ -713,7 +713,7 @@ bool CAddonDll::get_setting_float(void* kodiBase, const char* id, float* value)
     return false;
   }
 
-  *value = std::static_pointer_cast<CSettingNumber>(setting)->GetValue();
+  *value = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
   return true;
 }
 

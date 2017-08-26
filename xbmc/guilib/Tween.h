@@ -60,7 +60,7 @@ enum TweenerType
 class Tweener
 {
 public:
-  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; }
+  explicit Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; }
   virtual ~Tweener() = default;
 
   void SetEasing(TweenerType type) { m_tweenerType = type; }
@@ -85,7 +85,7 @@ public:
 class QuadTweener : public Tweener
 {
 public:
-  QuadTweener(float a = 1.0f) { _a=a; }
+  explicit QuadTweener(float a = 1.0f) { _a=a; }
   float Tween(float time, float start, float change, float duration) override
   {
     switch (m_tweenerType)
@@ -178,7 +178,7 @@ public:
 class BackTweener : public Tweener
 {
 public:
-  BackTweener(float s=1.70158) { _s=s; }
+  explicit BackTweener(float s=1.70158) { _s=s; }
 
   float Tween(float time, float start, float change, float duration) override
   {

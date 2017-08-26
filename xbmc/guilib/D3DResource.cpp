@@ -19,9 +19,8 @@
  */
 
 #include "filesystem/File.h"
-#ifdef HAS_DX
-
 #include "D3DResource.h"
+#include "GUIShaderDX.h"
 #include "system.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
@@ -169,6 +168,7 @@ CD3DTexture::CD3DTexture()
   m_pitch = 0;
   m_bindFlags = 0;
   m_cpuFlags = 0;
+  m_viewIdx = 0;
   m_views.clear();
 }
 
@@ -229,17 +229,6 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   }
 
   g_Windowing.Register(this);
-  return true;
-}
-
-bool CD3DTexture::CreateFromExternal(UINT width, UINT height, D3D11_USAGE usage, DXGI_FORMAT format, ID3D11Texture2D* pTexture)
-{
-  m_width = width;
-  m_height = height;
-  m_format = format;
-  m_usage = usage;
-  m_texture = pTexture;
-  m_texture->AddRef();
   return true;
 }
 
@@ -333,9 +322,11 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 
 void CD3DTexture::Release()
 {
-  g_Windowing.Unregister(this);
-  for (auto it = m_views.begin(); it != m_views.end(); ++it)
-    SAFE_RELEASE(it->second);
+  if (m_texture)
+    g_Windowing.Unregister(this);
+
+  for (auto it : m_views)
+    SAFE_RELEASE(it.second);
   SAFE_RELEASE(m_renderTargets[0]);
   SAFE_RELEASE(m_renderTargets[1]);
   SAFE_RELEASE(m_texture);
@@ -1232,5 +1223,3 @@ void CD3DPixelShader::OnDestroyDevice(bool fatal)
 {
   ReleaseShader();
 }
-
-#endif

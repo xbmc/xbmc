@@ -1923,7 +1923,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                          const std::vector<std::string>& item_exts,
                                          std::vector<std::string>& associatedFiles)
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Scanning archive %s", CURL::GetRedacted(strArchivePath).c_str());
+  CLog::LogF(LOGDEBUG, "Scanning archive %s", CURL::GetRedacted(strArchivePath).c_str());
   int nItemsAdded = 0;
   CFileItemList ItemList;
 
@@ -2352,14 +2352,14 @@ bool CUtil::ValidatePort(int port)
 
 int CUtil::GetRandomNumber()
 {
-#ifdef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS)
+  return rand_r(&s_randomSeed);
+#else
   unsigned int number;
   if (rand_s(&number) == 0)
     return (int)number;
-#else
-  return rand_r(&s_randomSeed);
-#endif
 
   return rand();
+#endif
 }
 

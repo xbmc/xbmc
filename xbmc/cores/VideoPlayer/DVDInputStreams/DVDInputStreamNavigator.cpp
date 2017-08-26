@@ -88,7 +88,7 @@ bool CDVDInputStreamNavigator::Open()
   // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
   // libdvdnav is still able to play without, so strip them.
 
-  std::string path = m_item.GetPath();
+  std::string path = m_item.GetDynPath();
   if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
     path = URIUtils::GetParentPath(path);
   URIUtils::RemoveSlashAtEnd(path);
@@ -397,7 +397,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
     case DVDNAV_SPU_STREAM_CHANGE:
       // Player applications should inform their SPU decoder to switch channels
       {
-        dvdnav_spu_stream_change_event_t* event = (dvdnav_spu_stream_change_event_t*)buf;
+        dvdnav_spu_stream_change_event_t* event = reinterpret_cast<dvdnav_spu_stream_change_event_t*>(buf);
 
         //libdvdnav never sets logical, why.. don't know..
         event->logical = GetActiveSubtitleStream();
@@ -429,7 +429,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         //taking a audiostream as given on dvd, it gives the physical stream that
         //refers to in the mpeg file
 
-        dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
+        dvdnav_audio_stream_change_event_t* event = reinterpret_cast<dvdnav_audio_stream_change_event_t*>(buf);
 
         //wrong... stupid docs..
         //event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
@@ -521,7 +521,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature\n", __FUNCTION__, 100 * (double)pos / (double)len);
         //Get total segment time
 
-        dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
+        dvdnav_cell_change_event_t* cell_change_event = reinterpret_cast<dvdnav_cell_change_event_t*>(buf);
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
         m_iTime      = (int) (m_iCellStart / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
@@ -1589,7 +1589,7 @@ DVDNavVideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 {
   CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
-  if (lpstream->Seek(i_pos, 0) >= 0)
+  if (lpstream->Seek(i_pos, SEEK_SET) >= 0)
     return 0;
   else
     return -1;
@@ -1598,7 +1598,24 @@ int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
 {
   CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
-  return lpstream->Read(reinterpret_cast<uint8_t *>(buffer), i_read);
+
+  int i_ret = 0;
+  while (i_ret < i_read)
+  {
+    int i_r;
+    i_r = lpstream->Read(reinterpret_cast<uint8_t *>(buffer) + i_ret, i_read - i_ret);
+    if (i_r < 0)
+    {
+      CLog::Log(LOGERROR,"read error dvd_inputstreamnavigator_cb_read");
+      return i_r;
+    }
+    if (i_r == 0)
+      break;
+
+    i_ret += i_r;
+  }
+
+  return i_ret;
 }
 
 int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks)

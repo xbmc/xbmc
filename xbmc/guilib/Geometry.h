@@ -27,40 +27,31 @@
 #define XBMC_FORCE_INLINE
 #endif
 
-#include <vector>
 #include <algorithm>
+#include <stdexcept>
+#include <vector>
 
 template <typename T> class CPointGen
 {
 public:
   typedef CPointGen<T> this_type;
 
-  CPointGen<T>()
-  {
-    x = 0; y = 0;
-  };
+  CPointGen() noexcept = default;
 
-  CPointGen<T>(T a, T b)
-  {
-    x = a;
-    y = b;
-  };
+  CPointGen(T a, T b)
+  : x{a}, y{b}
+  {}
 
-  template <class U> CPointGen<T>(const CPointGen<U>& rhs)
-  {
-    x = rhs.x;
-    y = rhs.y;
-  }
+  template<class U> explicit CPointGen(const CPointGen<U>& rhs)
+  : x{static_cast<T> (rhs.x)}, y{static_cast<T> (rhs.y)}
+  {}
 
   this_type operator+(const this_type &point) const
   {
-    this_type ans;
-    ans.x = x + point.x;
-    ans.y = y + point.y;
-    return ans;
+    return {x + point.x, y + point.y};
   };
 
-  const this_type &operator+=(const this_type &point)
+  this_type& operator+=(const this_type &point)
   {
     x += point.x;
     y += point.y;
@@ -69,62 +60,240 @@ public:
 
   this_type operator-(const this_type &point) const
   {
-    CPointGen<T> ans;
-    ans.x = x - point.x;
-    ans.y = y - point.y;
-    return ans;
+    return {x - point.x, y - point.y};
   };
 
-  const this_type &operator-=(const this_type &point)
+  this_type& operator-=(const this_type &point)
   {
     x -= point.x;
     y -= point.y;
     return *this;
   };
 
-  bool operator !=(const this_type &point) const
+  this_type operator*(T factor) const
   {
-    if (x != point.x) return true;
-    if (y != point.y) return true;
-    return false;
+    return {x * factor, y * factor};
+  }
+
+  this_type& operator*=(T factor)
+  {
+    x *= factor;
+    y *= factor;
+    return *this;
+  }
+
+  this_type operator/(T factor) const
+  {
+    return {x / factor, y / factor};
+  }
+
+  this_type& operator/=(T factor)
+  {
+    x /= factor;
+    y /= factor;
+    return *this;
+  }
+
+  T x{}, y{};
+};
+
+template<typename T>
+inline bool operator==(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
+{
+  return (point1.x == point2.x && point1.y == point2.y);
+}
+
+template<typename T>
+inline bool operator!=(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
+{
+  return !(point1 == point2);
+}
+
+using CPoint = CPointGen<float>;
+using CPointInt = CPointGen<int>;
+
+
+/**
+ * Generic two-dimensional size representation
+ *
+ * Class invariant: width and height are both non-negative
+ * Throws std::out_of_range if invariant would be violated. The class
+ * is exception-safe. If modification would violate the invariant, the size
+ * is not changed.
+ */
+template <typename T> class CSizeGen
+{
+  T m_w{}, m_h{};
+
+  void CheckSet(T width, T height)
+  {
+    if (width < 0)
+    {
+      throw std::out_of_range("Size may not have negative width");
+    }
+    if (height < 0)
+    {
+      throw std::out_of_range("Size may not have negative height");
+    }
+    m_w = width;
+    m_h = height;
+  }
+
+public:
+  typedef CSizeGen<T> this_type;
+
+  CSizeGen() noexcept = default;
+
+  CSizeGen(T width, T height)
+  {
+    CheckSet(width, height);
+  }
+
+  T Width() const
+  {
+    return m_w;
+  }
+
+  T Height() const
+  {
+    return m_h;
+  }
+
+  void SetWidth(T width)
+  {
+    CheckSet(width, m_h);
+  }
+
+  void SetHeight(T height)
+  {
+    CheckSet(m_w, height);
+  }
+
+  void Set(T width, T height)
+  {
+    CheckSet(width, height);
+  }
+
+  bool IsZero() const
+  {
+    return (m_w == static_cast<T> (0) && m_h == static_cast<T> (0));
+  }
+
+  T Area() const
+  {
+    return m_w * m_h;
+  }
+
+  CPointGen<T> ToPoint() const
+  {
+    return {m_w, m_h};
+  }
+
+  template<class U> explicit CSizeGen<T>(const CSizeGen<U>& rhs)
+  {
+    CheckSet(static_cast<T> (rhs.m_w), static_cast<T> (rhs.m_h));
+  }
+
+  this_type operator+(const this_type& size) const
+  {
+    return {m_w + size.m_w, m_h + size.m_h};
   };
 
-  T x, y;
+  this_type& operator+=(const this_type& size)
+  {
+    CheckSet(m_w + size.m_w, m_h + size.m_h);
+    return *this;
+  };
+
+  this_type operator-(const this_type& size) const
+  {
+    return {m_w - size.m_w, m_h - size.m_h};
+  };
+
+  this_type& operator-=(const this_type& size)
+  {
+    CheckSet(m_w - size.m_w, m_h - size.m_h);
+    return *this;
+  };
+
+  this_type operator*(T factor) const
+  {
+    return {m_w * factor, m_h * factor};
+  }
+
+  this_type& operator*=(T factor)
+  {
+    CheckSet(m_w * factor, m_h * factor);
+    return *this;
+  }
+
+  this_type operator/(T factor) const
+  {
+    return {m_w / factor, m_h / factor};
+  }
+
+  this_type& operator/=(T factor)
+  {
+    CheckSet(m_w / factor, m_h / factor);
+    return *this;
+  }
 };
+
+template<typename T>
+inline bool operator==(const CSizeGen<T>& size1, const CSizeGen<T>& size2) noexcept
+{
+  return (size1.Width() == size2.Width() && size1.Height() == size2.Height());
+}
+
+template<typename T>
+inline bool operator!=(const CSizeGen<T>& size1, const CSizeGen<T>& size2) noexcept
+{
+  return !(size1 == size2);
+}
+
+using CSize = CSizeGen<float>;
+using CSizeInt = CSizeGen<int>;
+
 
 template <typename T> class CRectGen
 {
 public:
   typedef CRectGen<T> this_type;
+  typedef CPointGen<T> point_type;
+  typedef CSizeGen<T> size_type;
 
-  CRectGen<T>() { x1 = y1 = x2 = y2 = 0;};
-  CRectGen<T>(T left, T top, T right, T bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
-  CRectGen<T>(const CPointGen<T> &p1, const CPointGen<T> &p2)
+  CRectGen() noexcept = default;
+
+  CRectGen(T left, T top, T right, T bottom)
+  : x1{left}, y1{top}, x2{right}, y2{bottom}
+  {}
+
+  CRectGen(const point_type &p1, const point_type &p2)
+  : x1{p1.x}, y1{p1.y}, x2{p2.x}, y2{p2.y}
+  {}
+
+  CRectGen(const point_type &origin, const size_type &size)
+  : x1{origin.x}, y1{origin.y}, x2{x1 + size.Width()}, y2{y1 + size.Height()}
+  {}
+
+  template<class U> explicit CRectGen(const CRectGen<U>& rhs)
+  : x1{static_cast<T> (rhs.x1)}, y1{static_cast<T> (rhs.y1)}, x2{static_cast<T> (rhs.x2)}, y2{static_cast<T> (rhs.y2)}
+  {}
+
+  void SetRect(T left, T top, T right, T bottom)
   {
-    x1 = p1.x;
-    y1 = p1.y;
-    x2 = p2.x;
-    y2 = p2.y;
+    x1 = left;
+    y1 = top;
+    x2 = right;
+    y2 = bottom;
   }
 
-  template <class U> CRectGen<T>(const CRectGen<U>& rhs)
+  bool PtInRect(const point_type &point) const
   {
-    x1 = rhs.x1;
-    y1 = rhs.y1;
-    x2 = rhs.x2;
-    y2 = rhs.y2;
-  }
-
-  void SetRect(T left, T top, T right, T bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
-
-  bool PtInRect(const CPointGen<T> &point) const
-  {
-    if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2)
-      return true;
-    return false;
+    return (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2);
   };
 
-  inline const this_type &operator -=(const CPointGen<T> &point) XBMC_FORCE_INLINE
+  this_type& operator-=(const point_type &point) XBMC_FORCE_INLINE
   {
     x1 -= point.x;
     y1 -= point.y;
@@ -133,7 +302,12 @@ public:
     return *this;
   };
 
-  inline const this_type &operator +=(const CPointGen<T> &point) XBMC_FORCE_INLINE
+  this_type operator-(const point_type &point) const
+  {
+    return {x1 - point.x, y1 - point.y, x2 - point.x, y2 - point.y};
+  }
+
+  this_type& operator+=(const point_type &point) XBMC_FORCE_INLINE
   {
     x1 += point.x;
     y1 += point.y;
@@ -142,7 +316,12 @@ public:
     return *this;
   };
 
-  const this_type &Intersect(const this_type &rect)
+  this_type operator+(const point_type &point) const
+  {
+    return {x1 + point.x, y1 + point.y, x2 + point.x, y2 + point.y};
+  }
+
+  this_type& Intersect(const this_type &rect)
   {
     x1 = clamp_range(x1, rect.x1, rect.x2);
     x2 = clamp_range(x2, rect.x1, rect.x2);
@@ -151,7 +330,7 @@ public:
     return *this;
   };
 
-  const this_type &Union(const this_type &rect)
+  this_type& Union(const this_type &rect)
   {
     if (IsEmpty())
       *this = rect;
@@ -167,34 +346,39 @@ public:
     return *this;
   };
 
-  inline bool IsEmpty() const XBMC_FORCE_INLINE
+  bool IsEmpty() const XBMC_FORCE_INLINE
   {
     return (x2 - x1) * (y2 - y1) == 0;
   };
 
-  inline CPointGen<T> P1() const XBMC_FORCE_INLINE
+  point_type P1() const XBMC_FORCE_INLINE
   {
-    return CPointGen<T>(x1, y1);
+    return {x1, y1};
   }
 
-  inline CPointGen<T> P2() const XBMC_FORCE_INLINE
+  point_type P2() const XBMC_FORCE_INLINE
   {
-    return CPointGen<T>(x2, y2);
+    return {x2, y2};
   }
 
-  inline T Width() const XBMC_FORCE_INLINE
+  T Width() const XBMC_FORCE_INLINE
   {
     return x2 - x1;
   };
 
-  inline T Height() const XBMC_FORCE_INLINE
+  T Height() const XBMC_FORCE_INLINE
   {
     return y2 - y1;
   };
 
-  inline T Area() const XBMC_FORCE_INLINE
+  T Area() const XBMC_FORCE_INLINE
   {
     return Width() * Height();
+  };
+
+  size_type ToSize() const
+  {
+    return {Width(), Height()};
   };
 
   std::vector<this_type> SubtractRect(this_type splitterRect)
@@ -234,7 +418,7 @@ public:
     return newRectanglesList;
   }
 
-  std::vector<this_type> SubtractRects(std::vector<this_type > intersectionList)
+  std::vector<this_type> SubtractRects(std::vector<this_type> intersectionList)
   {
     std::vector<this_type> fragmentsList;
     fragmentsList.push_back(*this);
@@ -256,25 +440,25 @@ public:
     return fragmentsList;
   }
 
-  bool operator !=(const this_type &rect) const
-  {
-    if (x1 != rect.x1) return true;
-    if (x2 != rect.x2) return true;
-    if (y1 != rect.y1) return true;
-    if (y2 != rect.y2) return true;
-    return false;
-  };
-
-  T x1, y1, x2, y2;
+  T x1{}, y1{}, x2{}, y2{};
 private:
-  inline static T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
+  static T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
   {
     return (x > h) ? h : ((x < l) ? l : x);
   }
 };
 
-typedef CPointGen<float> CPoint;
-typedef CPointGen<int>   CPointInt;
+template<typename T>
+inline bool operator==(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
+{
+  return (rect1.x1 == rect2.x1 && rect1.y1 == rect2.y1 && rect1.x2 == rect2.x2 && rect1.y2 == rect2.y2);
+}
 
-typedef CRectGen<float>  CRect;
-typedef CRectGen<int>    CRectInt;
+template<typename T>
+inline bool operator!=(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
+{
+  return !(rect1 == rect2);
+}
+
+using CRect = CRectGen<float>;
+using CRectInt = CRectGen<int>;

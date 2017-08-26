@@ -32,7 +32,7 @@ namespace XFILE
   class CFileCache : public IFile, public CThread
   {
   public:
-    CFileCache(const unsigned int flags);
+    explicit CFileCache(const unsigned int flags);
     CFileCache(CCacheStrategy *pCache, bool bDeleteCache = true);
     ~CFileCache() override;
 

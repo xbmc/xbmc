@@ -20,6 +20,8 @@
 
 #include "GUIEPGGridContainerModel.h"
 
+#include <cmath>
+
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
@@ -79,12 +81,12 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   for (int i = 0; i < items->Size(); ++i)
   {
     fileItem = items->Get(i);
-    if (!fileItem->HasEPGInfoTag() || !fileItem->GetEPGInfoTag()->HasPVRChannel())
+    if (!fileItem->HasEPGInfoTag() || !fileItem->GetEPGInfoTag()->HasChannel())
       continue;
 
     m_programmeItems.emplace_back(fileItem);
 
-    channel = fileItem->GetEPGInfoTag()->ChannelTag();
+    channel = fileItem->GetEPGInfoTag()->Channel();
     if (!channel)
       continue;
 
@@ -184,6 +186,9 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
         item = m_programmeItems[progIdx];
         tag = item->GetEPGInfoTag();
 
+        // Note: Start block of an event is start-time-based calculated block + 1,
+        //       unless start times matches exactly the begin of a block.
+
         if (tag->EpgID() != iEpgId || gridCursor < tag->StartAsUTC() || m_gridEnd <= tag->StartAsUTC())
           break;
 
@@ -224,7 +229,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
         else
         {
           CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
-          gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
+          gapTag->SetChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block + blockDelta; i >= block - itemSize + sizeDelta; --i)
           {
@@ -249,7 +254,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
           else
           {
             CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
-            gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
+            gapTag->SetChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
             CFileItemPtr gapItem(new CFileItem(gapTag));
             m_gridIndex[channel][block].item = gapItem;
           }
@@ -269,35 +274,35 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
 void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const
 {
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
-  bool bFoundPrevChannel = false;
 
   newChannelIndex = INVALID_INDEX;
   newBlockIndex = INVALID_INDEX;
 
-  for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
+  // find the channel
+  int iCurrentChannel = 0;
+  for (const auto& channel : m_channelItems)
   {
+    if (channel->GetPVRChannelInfoTag()->UniqueID() == channelUid)
+    {
+      newChannelIndex = iCurrentChannel;
+      break;
+    }
+    iCurrentChannel++;
+  }
+
+  if (newChannelIndex != INVALID_INDEX)
+  {
+    // find the block
     CDateTime gridCursor(m_gridStart); //reset cursor for new channel
-    unsigned long progIdx = m_epgItemsPtr[channel].start;
-    unsigned long lastIdx = m_epgItemsPtr[channel].stop;
+    unsigned long progIdx = m_epgItemsPtr[newChannelIndex].start;
+    unsigned long lastIdx = m_epgItemsPtr[newChannelIndex].stop;
     int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
     CPVREpgInfoTagPtr tag;
-    CPVRChannelPtr chan;
-
     for (int block = 0; block < m_blocks; ++block)
     {
       while (progIdx <= lastIdx)
       {
         tag = m_programmeItems[progIdx]->GetEPGInfoTag();
-
-        if (!bFoundPrevChannel && channelUid > -1)
-        {
-          chan = tag->ChannelTag();
-          if (chan && chan->UniqueID() == channelUid)
-          {
-            newChannelIndex = channel;
-            bFoundPrevChannel = true;
-          }
-        }
 
         if (tag->EpgID() != iEpgId || gridCursor < tag->StartAsUTC() || m_gridEnd <= tag->StartAsUTC())
           break; // next block
@@ -306,9 +311,8 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
         {
           if (broadcastUid > 0 && tag->UniqueBroadcastID() == broadcastUid)
           {
-            newChannelIndex = channel;
-            newBlockIndex   = block + eventOffset;
-            return; // both found. done.
+            newBlockIndex = block + eventOffset;
+            return; // done.
           }
           break; // next block
         }
@@ -419,4 +423,28 @@ void CGUIEPGGridContainerModel::FreeItemsMemory()
     channel->FreeMemory();
   for (const auto &ruler : m_rulerItems)
     ruler->FreeMemory();
+}
+
+int CGUIEPGGridContainerModel::GetFirstEventBlock(const CDateTime &eventStart) const
+{
+  int diff = (eventStart - m_gridStart).GetSecondsTotal();
+  if (diff <= 0)
+    return -1;
+
+  // First block of a tag is always the block calculated using event's start time, rounded up.
+  // Refer to CGUIEPGGridContainerModel::Refresh, where the model is created, for details!
+  float fBlockIndex = diff / 60.0f / MINSPERBLOCK;
+  return std::ceil(fBlockIndex);
+}
+
+int CGUIEPGGridContainerModel::GetLastEventBlock(const CDateTime &eventEnd) const
+{
+  int diff = (eventEnd - m_gridStart).GetSecondsTotal();
+  if (diff <= 0)
+    return -1;
+
+  // Last block of a tag is always the block calculated using event's end time, not rounded up.
+  // Refer to CGUIEPGGridContainerModel::Refresh, where the model is created, for details!
+  int iBlockIndex = diff / 60 / MINSPERBLOCK;
+  return iBlockIndex;
 }

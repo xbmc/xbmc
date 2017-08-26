@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="2.0.2" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="2.0.3" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -40,6 +40,7 @@
 		<summary lang="ko_KR">phil65와 Piers가 만든 Estuary 스킨 (Kodi 기본 스킨)</summary>
 		<summary lang="lt_LT">Estuary teminė išvaizda, kurią sukūrė phil65 ir Piers. (Numatytoji Kodi teminė išvaizda)</summary>
 		<summary lang="lv_LV">Estuary apvalks no phil65. (Kodi noklusējuma apvalks)</summary>
+		<summary lang="mk_MK">Estuary skin by phil65. (Kodi's default skin)</summary>
 		<summary lang="ms_MY">Kulit Estuary oleh phil65 dan rakan-rakan. (Kulit lalai Kodi)</summary>
 		<summary lang="nb_NO">Esturay-drakt av phil65 og Piers. (Kodis forvalgte drakt)</summary>
 		<summary lang="nl_NL">Estuary skin door phil65 en Piers. (Kodi's standaardskin)</summary>

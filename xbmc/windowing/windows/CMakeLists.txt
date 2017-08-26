@@ -6,6 +6,7 @@ set(SOURCES VideoSyncD3D.cpp
 set(HEADERS VideoSyncD3D.h
             WinEventsWin32.h
             WinSystemWin32.h
-            WinSystemWin32DX.h)
+            WinSystemWin32DX.h
+            WinKeyMap.h)
 
 core_add_library(windowing_windows)

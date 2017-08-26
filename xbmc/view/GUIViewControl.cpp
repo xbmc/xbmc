@@ -51,7 +51,7 @@ void CGUIViewControl::Reset()
 void CGUIViewControl::AddView(const CGUIControl *control)
 {
   if (!control || !control->IsContainer()) return;
-  m_allViews.push_back((CGUIControl *)control);
+  m_allViews.push_back(const_cast<CGUIControl*>(control));
 }
 
 void CGUIViewControl::SetViewControlID(int control)
@@ -126,7 +126,7 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
     g_windowManager.SendMessage(msg, m_parentWindow);
   }
 
-  UpdateViewAsControl(((IGUIContainer *)pNewView)->GetLabel());
+  UpdateViewAsControl(static_cast<IGUIContainer*>(pNewView)->GetLabel());
 }
 
 void CGUIViewControl::SetItems(CFileItemList &items)
@@ -262,9 +262,9 @@ int CGUIViewControl::GetViewModeNumber(int number) const
 {
   IGUIContainer *nextView = nullptr;
   if (number >= 0 && number < (int)m_visibleViews.size())
-    nextView = (IGUIContainer *)m_visibleViews[number];
+    nextView = static_cast<IGUIContainer*>(m_visibleViews[number]);
   else if (m_visibleViews.size())
-    nextView = (IGUIContainer *)m_visibleViews[0];
+    nextView = static_cast<IGUIContainer*>(m_visibleViews[0]);
   if (nextView)
     return (nextView->GetType() << 16) | nextView->GetID();
   return 0;  // no view modes :(
@@ -280,7 +280,7 @@ int CGUIViewControl::GetViewModeByID(int id) const
 {
   for (unsigned int i = 0; i < m_visibleViews.size(); ++i)
   {
-    IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
+    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     if (view->GetID() == id)
       return (view->GetType() << 16) | view->GetID();
   }
@@ -295,7 +295,7 @@ int CGUIViewControl::GetNextViewMode(int direction) const
 
   int viewNumber = (m_currentView + direction) % (int)m_visibleViews.size();
   if (viewNumber < 0) viewNumber += m_visibleViews.size();
-  IGUIContainer *nextView = (IGUIContainer *)m_visibleViews[viewNumber];
+  IGUIContainer *nextView = static_cast<IGUIContainer*>(m_visibleViews[viewNumber]);
   return (nextView->GetType() << 16) | nextView->GetID();
 }
 
@@ -312,7 +312,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 {
   for (int i = 0; i < (int)m_visibleViews.size(); i++)
   {
-    IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
+    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == id))
       return i;
   }
@@ -325,7 +325,7 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   std::vector< std::pair<std::string, int> > labels;
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
-    IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
+    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
     labels.emplace_back(std::move(label), i);
   }

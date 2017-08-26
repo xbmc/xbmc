@@ -761,49 +761,6 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   return bSuccess;
 }
 
-#ifdef HAS_GL
-void CWIN32Util::CheckGLVersion()
-{
-  if(CWIN32Util::HasGLDefaultDrivers())
-  {
-    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your video card vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
-    exit(1);
-  }
-
-  if(!CWIN32Util::HasReqGLVersion())
-  {
-    if(MessageBox(NULL, "Your OpenGL version doesn't meet the XBMC requirements", "XBMC: Warning", MB_OKCANCEL|MB_ICONWARNING) == IDCANCEL)
-    {
-      exit(1);
-    }
-  }
-}
-
-bool CWIN32Util::HasGLDefaultDrivers()
-{
-  unsigned int a=0,b=0;
-
-  std::string strVendor = g_Windowing.GetRenderVendor();
-  g_Windowing.GetRenderVersion(a, b);
-
-  if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
-    return true;
-  else
-    return false;
-}
-
-bool CWIN32Util::HasReqGLVersion()
-{
-  unsigned int a=0,b=0;
-
-  g_Windowing.GetRenderVersion(a, b);
-  if((a>=2) || (a == 1 && b >= 3))
-    return true;
-  else
-    return false;
-}
-#endif
-
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {
   BOOL b;
@@ -900,9 +857,6 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
           case DRIVE_REMOVABLE:
             if(share.strName.empty())
               share.strName = StringUtils::Format( "%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
-            break;
-          case DRIVE_UNKNOWN:
-            share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(13205).c_str());
             break;
           default:
             if(share.strName.empty())

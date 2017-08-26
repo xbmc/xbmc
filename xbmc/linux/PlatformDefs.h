@@ -166,8 +166,10 @@
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
+#undef APIENTRY
 #define APIENTRY    WINAPI
 #else
+#undef APIENTRY
 #define APIENTRY
 #endif
 #define APIPRIVATE  __stdcall

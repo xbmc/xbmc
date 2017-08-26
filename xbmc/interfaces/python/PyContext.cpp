@@ -30,7 +30,7 @@ namespace XBMCAddon
   {
     struct PyContextState
     {
-      inline PyContextState(bool pcreatedByGilRelease = false) : 
+      inline explicit PyContextState(bool pcreatedByGilRelease = false) :
         value(0), state(NULL), gilReleasedDepth(0), createdByGilRelease(pcreatedByGilRelease) {}
 
       int value;
@@ -87,7 +87,7 @@ namespace XBMCAddon
       // we need to handle this.
       if (!cur)
       {
-        cur = (PyContextState*)PyContext::enterContext();
+        cur = static_cast<PyContextState*>(PyContext::enterContext());
         cur->createdByGilRelease = true;
       }
 

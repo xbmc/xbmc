@@ -61,7 +61,7 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
+    explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
 
     ~CPeripherals() override;
 
@@ -225,11 +225,10 @@ namespace PERIPHERALS
     bool GetNextKeypress(float frameTime, CKey &key);
 
     /*!
-     * @brief Request event scan rate
-     * @brief rateHz The rate in Hz
-     * @return A handle that unsets its rate when expired
+     * @brief Register with the event scanner to control scan timing
+     * @return A handle that unregisters itself when expired
      */
-    EventRateHandle SetEventScanRate(double rateHz) { return m_eventScanner.SetRate(rateHz); }
+    EventPollHandlePtr RegisterEventPoller() { return m_eventScanner.RegisterPollHandle(); }
 
     /*!
      * 

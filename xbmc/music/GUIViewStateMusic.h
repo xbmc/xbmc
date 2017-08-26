@@ -25,7 +25,7 @@
 class CGUIViewStateWindowMusic : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items) {}
+  explicit CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items) {}
 protected:
   VECSOURCES& GetSources() override;
   int GetPlaylist() override;
@@ -37,7 +37,7 @@ protected:
 class CGUIViewStateMusicSearch : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateMusicSearch(const CFileItemList& items);
+  explicit CGUIViewStateMusicSearch(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;
@@ -46,7 +46,7 @@ protected:
 class CGUIViewStateMusicDatabase : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateMusicDatabase(const CFileItemList& items);
+  explicit CGUIViewStateMusicDatabase(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;
@@ -55,7 +55,7 @@ protected:
 class CGUIViewStateMusicSmartPlaylist : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateMusicSmartPlaylist(const CFileItemList& items);
+  explicit CGUIViewStateMusicSmartPlaylist(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;
@@ -64,7 +64,7 @@ protected:
 class CGUIViewStateMusicPlaylist : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateMusicPlaylist(const CFileItemList& items);
+  explicit CGUIViewStateMusicPlaylist(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;
@@ -73,7 +73,7 @@ protected:
 class CGUIViewStateWindowMusicNav : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateWindowMusicNav(const CFileItemList& items);
+  explicit CGUIViewStateWindowMusicNav(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;
@@ -86,7 +86,7 @@ private:
 class CGUIViewStateWindowMusicPlaylist : public CGUIViewStateWindowMusic
 {
 public:
-  CGUIViewStateWindowMusicPlaylist(const CFileItemList& items);
+  explicit CGUIViewStateWindowMusicPlaylist(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;

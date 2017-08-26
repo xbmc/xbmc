@@ -22,8 +22,6 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
-#ifdef HAS_DX
-
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
@@ -39,7 +37,7 @@ CDXTexture::~CDXTexture()
 
 void CDXTexture::CreateTextureObject()
 {
-  m_texture.Create(m_textureWidth, m_textureHeight, 1, g_Windowing.DefaultD3DUsage(), GetFormat());
+  m_texture.Create(m_textureWidth, m_textureHeight, 1, D3D11_USAGE_DEFAULT, GetFormat());
 }
 
 DXGI_FORMAT CDXTexture::GetFormat()
@@ -84,8 +82,8 @@ void CDXTexture::LoadToGPU()
   }
 
   bool needUpdate = true;
-  D3D11_USAGE usage = g_Windowing.DefaultD3DUsage();
-  if (m_format == XB_FMT_RGB8 && usage == D3D11_USAGE_DEFAULT)
+  D3D11_USAGE usage = D3D11_USAGE_DEFAULT;
+  if (m_format == XB_FMT_RGB8)
     usage = D3D11_USAGE_DYNAMIC; // fallback to dynamic to allow CPU write to texture
 
   if (m_texture.Get() == nullptr)
@@ -192,5 +190,3 @@ void CDXTexture::LoadToGPU()
 void CDXTexture::BindToUnit(unsigned int unit)
 {
 }
-
-#endif

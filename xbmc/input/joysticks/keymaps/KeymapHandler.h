@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "input/joysticks/IButtonSequence.h"
 #include "input/joysticks/IInputHandler.h"
 #include "input/joysticks/interfaces/IKeymapHandler.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -62,6 +63,10 @@ namespace JOYSTICK
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
     virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
+
+  protected:
+    // Keep track of cheat code presses
+    std::unique_ptr<IButtonSequence> m_easterEgg;
 
   private:
     // Analog stick helper functions

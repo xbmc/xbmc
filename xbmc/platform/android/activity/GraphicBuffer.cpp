@@ -98,7 +98,7 @@ enum
 };
 
 CGraphicBuffer::CGraphicBuffer(uint32_t width, uint32_t height, uint32_t format, gfxImageUsage usage):
-  m_width(width), m_height(height), m_usage(usage), m_format(format), m_handle(0)
+  m_handle(0)
 {
   CLog::Log(LOGDEBUG, "CGraphicBuffer::CGraphicBuffer");
   if (!m_dll)

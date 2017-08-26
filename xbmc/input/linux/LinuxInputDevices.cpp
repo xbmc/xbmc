@@ -97,7 +97,6 @@ typedef unsigned long kernel_ulong_t;
 #include "input/MouseStat.h"
 #include "utils/log.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
-#include "input/touch/generic/GenericTouchInputHandler.h"
 #include "settings/AdvancedSettings.h"
 
 #ifndef BITS_PER_LONG
@@ -111,6 +110,11 @@ typedef unsigned long kernel_ulong_t;
 #define test_bit(bit, array) ((array[LONG(bit)] >> OFF(bit)) & 1)
 
 #define MAX_LINUX_INPUT_DEVICES 16
+
+namespace
+{
+constexpr int TOUCH_MAX_POINTERS = CGenericTouchInputHandler::MAX_POINTERS;
+}
 
 typedef struct {
   unsigned short Key;
@@ -718,7 +722,6 @@ bool CLinuxInputDevice::mtAbsEvent(const struct input_event& levt)
  */
 bool CLinuxInputDevice::mtSynEvent(const struct input_event& levt)
 {
-  float size = 10.0f;
   int64_t nanotime = levt.time.tv_sec * 1000000000LL + levt.time.tv_usec * 1000LL;
 
   for (int ptr=0; ptr < TOUCH_MAX_POINTERS; ptr++)
@@ -726,14 +729,14 @@ bool CLinuxInputDevice::mtSynEvent(const struct input_event& levt)
     /* While the comments of ITouchInputHandler::UpdateTouchPointer() say
        "If there's an event for every touch action this method does not need to be called at all"
        gesture detection currently doesn't work properly without this call. */
-    CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(ptr, m_mt_x[ptr], m_mt_y[ptr], nanotime, size);
+    CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(ptr, m_mt_x[ptr], m_mt_y[ptr], nanotime);
   }
 
   for (int ptr=0; ptr < TOUCH_MAX_POINTERS; ptr++)
   {
     if (m_mt_event[ptr] != TouchInputUnchanged)
     {
-      CGenericTouchInputHandler::GetInstance().HandleTouchInput(m_mt_event[ptr], m_mt_x[ptr], m_mt_y[ptr], nanotime, ptr, size);
+      CGenericTouchInputHandler::GetInstance().HandleTouchInput(m_mt_event[ptr], m_mt_x[ptr], m_mt_y[ptr], nanotime, ptr);
       m_mt_event[ptr] = TouchInputUnchanged;
     }
   }

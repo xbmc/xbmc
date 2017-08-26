@@ -18,14 +18,11 @@
  *
  */
 
-#ifdef HAS_DX
-
 // setting that here because otherwise SampleFormat is defined to AVSampleFormat
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
 #define DEFAULT_STREAM_INDEX (0)
 
-#include <dxva2api.h>
 #include <windows.h>
 #include "DXVAHD.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -524,5 +521,3 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
   return !FAILED(hr);
 }
-
-#endif

@@ -32,7 +32,7 @@ public:
   void CheckOpenGLQuirks();
   bool InitRenderSystem() override;
   bool DestroyRenderSystem() override;
-  bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override;
+  bool ResetRenderSystem(int width, int height) override;
 
   bool BeginRender() override;
   bool EndRender() override;

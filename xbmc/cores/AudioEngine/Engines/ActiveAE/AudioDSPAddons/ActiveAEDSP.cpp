@@ -395,7 +395,6 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     strValue = activeMaster->IconOverrideModePath();
     break;
   default:
-    bReturn = true;
     strValue.clear();
     bReturn = false;
     break;

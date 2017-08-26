@@ -158,7 +158,7 @@ namespace kodi
     class CInstanceVideoCodec : public IAddonInstance
     {
     public:
-      CInstanceVideoCodec(KODI_HANDLE instance)
+      explicit CInstanceVideoCodec(KODI_HANDLE instance)
         : IAddonInstance(ADDON_INSTANCE_VIDEOCODEC)
       {
         if (CAddonBase::m_interface->globalSingleInstance != nullptr)

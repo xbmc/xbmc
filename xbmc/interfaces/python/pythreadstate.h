@@ -29,7 +29,7 @@
 class CPyThreadState
 {
   public:
-    CPyThreadState(bool save = true)
+    explicit CPyThreadState(bool save = true)
     {
       m_threadState = NULL;
 
@@ -68,6 +68,6 @@ class CPyThreadState
 class GilSafeSingleLock : public CPyThreadState, public CSingleLock
 {
 public:
-  GilSafeSingleLock(const CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
+  explicit GilSafeSingleLock(const CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
 };
 

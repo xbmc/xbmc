@@ -156,7 +156,6 @@ void CPixelConverterRBP::GetPicture(VideoPicture& picture)
   m_renderBuffer = nullptr;
 
   picture.dts            = DVD_NOPTS_VALUE;
-  picture.pts            = DVD_NOPTS_VALUE;
   picture.iFlags         = 0;
   picture.color_matrix   = 4; // CONF_FLAGS_YUVCOEF_BT601
   picture.color_range    = 0; // *not* CONF_FLAGS_YUV_FULLRANGE

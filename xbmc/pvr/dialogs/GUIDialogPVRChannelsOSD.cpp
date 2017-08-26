@@ -21,11 +21,11 @@
 #include "GUIDialogPVRChannelsOSD.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "ServiceBroker.h"
 #include "view/ViewState.h"
 
 #include "pvr/PVRGUIActions.h"

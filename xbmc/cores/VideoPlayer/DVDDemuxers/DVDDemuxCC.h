@@ -28,7 +28,7 @@ class CDecoderCC708;
 class CDVDDemuxCC : public CDVDDemux
 {
 public:
-  CDVDDemuxCC(AVCodecID codec);
+  explicit CDVDDemuxCC(AVCodecID codec);
   ~CDVDDemuxCC() override;
 
   void Reset() override {};

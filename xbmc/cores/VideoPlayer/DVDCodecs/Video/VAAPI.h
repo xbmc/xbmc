@@ -180,7 +180,7 @@ struct CVaapiProcessedPicture
 class CVaapiRenderPicture : public CVideoBuffer
 {
 public:
-  CVaapiRenderPicture(int id) : CVideoBuffer(id) { }
+  explicit CVaapiRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
   CVaapiProcessedPicture procPic;
   AVFrame *avFrame = nullptr;
@@ -364,7 +364,7 @@ class CDecoder
 
 public:
 
-  CDecoder(CProcessInfo& processInfo);
+  explicit CDecoder(CProcessInfo& processInfo);
   ~CDecoder() override;
 
   bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;

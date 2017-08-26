@@ -143,7 +143,7 @@ private:
   {
   public:
     CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);
-    CPublish(const tServiceMap& servmap);
+    explicit CPublish(const tServiceMap& servmap);
 
     bool DoWork() override;
 

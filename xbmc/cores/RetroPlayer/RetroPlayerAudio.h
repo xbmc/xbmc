@@ -34,7 +34,7 @@ namespace RETRO
   class CRetroPlayerAudio : public GAME::IGameAudioCallback
   {
   public:
-    CRetroPlayerAudio(CProcessInfo& processInfo);
+    explicit CRetroPlayerAudio(CProcessInfo& processInfo);
     ~CRetroPlayerAudio() override;
 
     // implementation of IGameAudioCallback

@@ -77,11 +77,6 @@ public:
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
   static bool EjectDrive(const char cDriveLetter='\0');
-#ifdef HAS_GL
-  static void CheckGLVersion();
-  static bool HasGLDefaultDrivers();
-  static bool HasReqGLVersion();
-#endif
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
   static std::string GetFirstOpticalDrive();

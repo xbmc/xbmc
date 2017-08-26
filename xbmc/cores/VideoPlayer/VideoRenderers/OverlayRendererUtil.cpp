@@ -236,8 +236,8 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // allocate space for the glyph positions and texturedata
 
-  quads.quad = (SQuad*)  calloc(quads.count, sizeof(SQuad));
-  quads.data = (uint8_t*)calloc(quads.size_x * quads.size_y, 1);
+  quads.quad = static_cast<SQuad*>(calloc(quads.count, sizeof(SQuad)));
+  quads.data = static_cast<uint8_t*>(calloc(quads.size_x * quads.size_y, 1));
 
   SQuad*   v    = quads.quad;
   uint8_t* data = quads.data;

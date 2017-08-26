@@ -21,6 +21,8 @@
 
 #include "games/GameTypes.h"
 
+#include <string>
+
 namespace KODI
 {
 namespace GAME
@@ -28,10 +30,10 @@ namespace GAME
   class CGUIDialogSelectGameClient
   {
   public:
-    static bool ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable, GameClientPtr& gameClient);
+    static std::string ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable);
 
   private:
-    static GameClientPtr InstallGameClient(const GameClientVector& installable);
+    static std::string InstallGameClient(const GameClientVector& installable);
 
     /*!
      * \brief Utility function to load the add-on manager for installed emulators

@@ -21,30 +21,35 @@
 #ifndef WIN_SYSTEM_WIN32_DX_H
 #define WIN_SYSTEM_WIN32_DX_H
 
-#ifdef HAS_DX
-
 #pragma once
 
-#include "windowing/windows/WinSystemWin32.h"
+#include "easyhook/easyhook.h"
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/GlobalsHandling.h"
+#include "windowing/windows/WinSystemWin32.h"
 
+struct D3D10DDIARG_CREATERESOURCE;
 
 class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
 {
+  friend interface DX::IDeviceNotify;
 public:
   CWinSystemWin32DX();
   ~CWinSystemWin32DX();
 
-  virtual bool CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res);
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual void OnMove(int x, int y);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
-  virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
-  virtual void NotifyAppFocusChange(bool bGaining);
-  virtual void PresentRender(bool rendered, bool videoLayer);
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  void PresentRenderImpl(bool rendered) override;
+  bool DPIChanged(WORD dpi, RECT windowRect) const override;
+  void SetWindow(HWND hWnd) const;
+  bool DestroyRenderSystem() override;
 
-  std::string GetClipboardText(void);
+  void UninitHooks();
+  void InitHooks(IDXGIOutput* pOutput);
+
+  void OnMove(int x, int y) override;
+  void OnResize(int width, int height);
 
   /*!
    \brief Register as a dependent of the DirectX Render System
@@ -54,28 +59,38 @@ public:
    where any resources dependent on the DirectX device should be destroyed and recreated.
    \sa Unregister, ID3DResource
   */
-  void Register(ID3DResource *resource) override { CRenderSystemDX::Register(resource); };
+  void Register(ID3DResource *resource) const
+  { 
+    m_deviceResources->Register(resource);
+  };
   /*!
    \brief Unregister as a dependent of the DirectX Render System
    Resources should call this on destruction if they're a dependent on the Render System
    \sa Register, ID3DResource
   */
-  void Unregister(ID3DResource *resource) override { CRenderSystemDX::Unregister(resource); };
+  void Unregister(ID3DResource *resource) const
+  { 
+    m_deviceResources->Unregister(resource);
+  };
 
   void Register(IDispResource *resource) override { CWinSystemWin32::Register(resource); };
   void Unregister(IDispResource *resource) override { CWinSystemWin32::Unregister(resource); };
 
+  void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
+
 protected:
-  bool UseWindowedDX(bool fullScreen);
-  void UpdateMonitor() override;
-  void OnDisplayLost() override { CWinSystemWin32::OnDisplayLost(); };
-  void OnDisplayReset() override { CWinSystemWin32::OnDisplayReset(); };
-  void OnDisplayBack() override { CWinSystemWin32::OnDisplayBack(); };
+  void UpdateMonitor() const;
+  void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
+  void ReleaseBackBuffer() override;
+  void CreateBackBuffer() override;
+  void ResizeDeviceBuffers() override;
+  bool IsStereoEnabled() override;
+
+  HMODULE m_hDriverModule;
+  TRACED_HOOK_HANDLE m_hHook;
 };
 
 XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);
 #define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32DX)
-
-#endif
 
 #endif // WIN_SYSTEM_WIN32_DX_H

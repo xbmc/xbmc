@@ -36,6 +36,8 @@ class CSetting;
 namespace ADDON
 {
 
+class CSkinSettingUpdateHandler;
+
 class CSkinSetting
 {
 public:
@@ -109,11 +111,9 @@ public:
   static std::unique_ptr<CSkinInfo> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
   //FIXME: CAddonCallbacksGUI/WindowXML hack
-  explicit CSkinInfo(CAddonInfo addonInfo, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
-      : CAddon(std::move(addonInfo)),
-        m_defaultRes(resolution),
-        m_effectsSlowDown(1.f),
-        m_debugging(false) {}
+  explicit CSkinInfo(
+      CAddonInfo addonInfo,
+      const RESOLUTION_INFO& resolution = RESOLUTION_INFO());
 
   CSkinInfo(
       CAddonInfo addonInfo,
@@ -121,6 +121,8 @@ public:
       const std::vector<RESOLUTION_INFO>& resolutions,
       float effectsSlowDown,
       bool debugging);
+
+  ~CSkinInfo() override;
 
   /*! \brief Load resolution information from directories in Path().
    */
@@ -243,6 +245,7 @@ protected:
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
   std::map<int, CSkinSettingBoolPtr> m_bools;
+  std::unique_ptr<CSkinSettingUpdateHandler> m_settingsUpdateHandler;
 };
 
 } /*namespace ADDON*/

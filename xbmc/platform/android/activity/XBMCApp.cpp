@@ -33,6 +33,7 @@
 #include <android/native_window.h>
 
 #include <androidjni/ApplicationInfo.h>
+#include <androidjni/BitmapFactory.h>
 #include <androidjni/BroadcastReceiver.h>
 #include <androidjni/Build.h>
 #include <androidjni/CharSequence.h>
@@ -53,6 +54,7 @@
 #include <androidjni/PowerManager.h>
 #include <androidjni/StatFs.h>
 #include <androidjni/System.h>
+#include <androidjni/SystemClock.h>
 #include <androidjni/URI.h>
 #include <androidjni/View.h>
 #include <androidjni/WakeLock.h>
@@ -71,6 +73,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "ServiceBroker.h"
+#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "input/Key.h"
@@ -79,6 +83,7 @@
 #include "network/android/NetworkAndroid.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
+#include "TextureCache.h"
 #include "utils/StringUtils.h"
 #include "filesystem/VideoDatabaseFile.h"
 #include "utils/URIUtils.h"
@@ -87,13 +92,19 @@
 #include "windowing/WinEvents.h"
 #include "platform/xbmc.h"
 #include "platform/XbmcContext.h"
-#include "windowing/XBMC_events.h"
-#include "input/XBMC_keysym.h"
 
 #define GIGABYTES       1073741824
 
+#define ACTION_XBMC_RESUME "android.intent.XBMC_RESUME"
+
+#define PLAYBACK_STATE_STOPPED  0x0000
+#define PLAYBACK_STATE_PLAYING  0x0001
+#define PLAYBACK_STATE_VIDEO    0x0100
+#define PLAYBACK_STATE_AUDIO    0x0200
+
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
+using namespace jni;
 
 template<class T, void(T::*fn)()>
 void* thread_run(void* obj)
@@ -112,12 +123,14 @@ bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
+bool CXBMCApp::m_hasReqVisible = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 
+uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIMainActivity(nativeActivity)
@@ -144,12 +157,29 @@ CXBMCApp::~CXBMCApp()
 
 void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if ((flag & Input) && strcmp(sender, "xbmc") == 0)
+  if (strcmp(sender, "xbmc") != 0)
+    return;
+
+  if (flag & Input)
   {
     if (strcmp(message, "OnInputRequested") == 0)
       CAndroidKey::SetHandleSearchKeys(true);
     else if (strcmp(message, "OnInputFinished") == 0)
       CAndroidKey::SetHandleSearchKeys(false);
+  }
+  else if (flag & Player)
+  {
+     if (strcmp(message, "OnPlay") == 0)
+      OnPlayBackStarted();
+    else if (strcmp(message, "OnPause") == 0)
+      OnPlayBackPaused();
+    else if (strcmp(message, "OnStop") == 0)
+      OnPlayBackStopped();
+  }
+  else if (flag & Info)
+  {
+     if (strcmp(message, "OnChanged") == 0)
+      UpdateSessionMetadata();
   }
 }
 
@@ -157,32 +187,31 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (!m_firstrun)
+  if (m_firstrun)
   {
-    android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
-    return;
-  }
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
+    pthread_attr_destroy(&attr);
 
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-  pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
-  pthread_attr_destroy(&attr);
+    // Some intent filters MUST be registered in code rather than through the manifest
+    CJNIIntentFilter intentFilter;
+    intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+    intentFilter.addAction("android.intent.action.SCREEN_ON");
+    intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+    intentFilter.addAction("android.intent.action.HDMI_AUDIO_PLUG");
+    intentFilter.addAction("android.intent.action.SCREEN_OFF");
+    intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+    registerReceiver(*this, intentFilter);
+
+    m_mediaSession.reset(new CJNIXBMCMediaSession());
+  }
 }
 
 void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-
-  // Some intent filters MUST be registered in code rather than through the manifest
-  CJNIIntentFilter intentFilter;
-  intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
-  intentFilter.addAction("android.intent.action.SCREEN_ON");
-  intentFilter.addAction("android.intent.action.HEADSET_PLUG");
-  intentFilter.addAction("android.intent.action.HDMI_AUDIO_PLUG");
-  intentFilter.addAction("android.intent.action.SCREEN_OFF");
-  intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-  registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
     EnableWakeLock(true);
@@ -192,13 +221,15 @@ void CXBMCApp::onResume()
   CJNIAudioManager audioManager(getSystemService("audio"));
   m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
 
-  unregisterMediaButtonEventReceiver();
-
   // Clear the applications cache. We could have installed/deinstalled apps
   {
     CSingleLock lock(m_applicationsMutex);
     m_applications.clear();
   }
+
+  // Re-request Visible Behind
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
+    RequestVisibleBehind(true);
 }
 
 void CXBMCApp::onPause()
@@ -209,22 +240,30 @@ void CXBMCApp::onPause()
   {
     if (g_application.m_pPlayer->HasVideo())
     {
-      if (!g_application.m_pPlayer->IsPaused())
+      if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
 
   EnableWakeLock(false);
+  m_hasReqVisible = false;
 }
 
 void CXBMCApp::onStop()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasReqVisible)
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
 }
 
 void CXBMCApp::onDestroy()
 {
   android_printf("%s", __PRETTY_FUNCTION__);
+
+  unregisterReceiver(*this);
+
+  m_mediaSession.release();
 
   // If android is forcing us to stop, ask XBMC to exit then wait until it's
   // been destroyed.
@@ -383,6 +422,15 @@ bool CXBMCApp::ReleaseAudioFocus()
   return true;
 }
 
+void CXBMCApp::RequestVisibleBehind(bool requested)
+{
+  if (requested == m_hasReqVisible)
+    return;
+
+  m_hasReqVisible = requestVisibleBehind(requested);
+  CLog::Log(LOGDEBUG, "Visible Behind request: %s", m_hasReqVisible ? "true" : "false");
+}
+
 bool CXBMCApp::IsHeadsetPlugged()
 {
   return m_headsetPlugged;
@@ -403,6 +451,7 @@ void CXBMCApp::run()
   std::string filenameToPlay = GetFilenameFromIntent(startIntent);
   if (!filenameToPlay.empty())
   {
+    android_printf("-- filename: %s", filenameToPlay.c_str());
     int argc = 2;
     const char** argv = (const char**) malloc(argc*sizeof(char*));
 
@@ -562,34 +611,120 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }
 
+void CXBMCApp::UpdateSessionMetadata()
+{
+  CJNIMediaMetadataBuilder builder;
+  builder
+      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
+      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
+      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.m_pPlayer->GetTotalTime())
+//      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
+//      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
+//      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
+      ;
+  
+  std::string thumb;
+  if (m_playback_state & PLAYBACK_STATE_VIDEO)
+  {
+    builder
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(VIDEOPLAYER_TAGLINE))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(VIDEOPLAYER_DIRECTOR))
+        ;
+    thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+  }
+  else if (m_playback_state & PLAYBACK_STATE_AUDIO)
+  {
+    builder
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
+        ;
+    thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+  }
+  bool needrecaching = false;
+  std::string cachefile = CTextureCache::GetInstance().CheckCachedImage(thumb, needrecaching);
+  if (!cachefile.empty())
+  {
+    std::string actualfile = CSpecialProtocol::TranslatePath(cachefile);
+    CJNIBitmap bmp = CJNIBitmapFactory::decodeFile(actualfile);
+    if (bmp)
+      builder.putBitmap(CJNIMediaMetadata::METADATA_KEY_ART, bmp);
+  }
+  m_mediaSession->updateMetadata(builder.build());
+}
+
+void CXBMCApp::UpdateSessionState()
+{
+  CJNIPlaybackStateBuilder builder;
+  int state = CJNIPlaybackState::STATE_NONE;
+  int64_t pos = 0;
+  float speed = 0.0;
+  if (m_playback_state != PLAYBACK_STATE_STOPPED)
+  {
+    if (g_application.m_pPlayer->HasVideo())
+      m_playback_state |= PLAYBACK_STATE_VIDEO;
+    else
+      m_playback_state &= ~PLAYBACK_STATE_VIDEO;
+    if (g_application.m_pPlayer->HasAudio())
+      m_playback_state |= PLAYBACK_STATE_AUDIO;
+    else
+      m_playback_state &= ~PLAYBACK_STATE_AUDIO;
+    pos = g_application.m_pPlayer->GetTime();
+    speed = g_application.m_pPlayer->GetPlaySpeed();
+    if (m_playback_state & PLAYBACK_STATE_PLAYING)
+      state = CJNIPlaybackState::STATE_PLAYING;
+    else
+      state = CJNIPlaybackState::STATE_PAUSED;
+  }
+  else
+    state = CJNIPlaybackState::STATE_STOPPED;
+  builder
+      .setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
+      .setActions(0xffffffffffffffff)
+      ;
+  m_mediaSession->updatePlaybackState(builder.build());
+}
+
 void CXBMCApp::OnPlayBackStarted()
 {
+  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+
+  m_playback_state = PLAYBACK_STATE_PLAYING;
+  if (g_application.m_pPlayer->HasVideo())
+    m_playback_state |= PLAYBACK_STATE_VIDEO;
+  if (g_application.m_pPlayer->HasAudio())
+    m_playback_state |= PLAYBACK_STATE_AUDIO;
+
+  m_mediaSession->activate(true);
+
+  CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
+  m_mediaSession->updateIntent(intent);
+
   m_xbmcappinstance->AcquireAudioFocus();
-  registerMediaButtonEventReceiver();
-  CAndroidKey::SetHandleMediaKeys(true);
+  CAndroidKey::SetHandleMediaKeys(false);
+
+  RequestVisibleBehind(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
 {
-  m_xbmcappinstance->ReleaseAudioFocus();
-}
+  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
-void CXBMCApp::OnPlayBackResumed()
-{
-  m_xbmcappinstance->AcquireAudioFocus();
+  m_playback_state &= ~PLAYBACK_STATE_PLAYING;
+
+  RequestVisibleBehind(false);
+  m_xbmcappinstance->ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackStopped()
 {
-  CAndroidKey::SetHandleMediaKeys(false);
-  unregisterMediaButtonEventReceiver();
-  m_xbmcappinstance->ReleaseAudioFocus();
-}
+  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
-void CXBMCApp::OnPlayBackEnded()
-{
-  CAndroidKey::SetHandleMediaKeys(false);
-  unregisterMediaButtonEventReceiver();
+  m_playback_state = PLAYBACK_STATE_STOPPED;
+  UpdateSessionState();
+  m_mediaSession->activate(false);
+
+  RequestVisibleBehind(false);
+  CAndroidKey::SetHandleMediaKeys(true);
   m_xbmcappinstance->ReleaseAudioFocus();
 }
 
@@ -603,6 +738,12 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 {
   CJNIInputManager inputManager(getSystemService("input"));
   return inputManager.getInputDeviceIds();
+}
+
+void CXBMCApp::ProcessSlow()
+{
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && m_mediaSession->isActive())
+    UpdateSessionState();
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
@@ -807,7 +948,7 @@ void CXBMCApp::InitDirectories()
 void CXBMCApp::onReceive(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
@@ -833,11 +974,16 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
-    if (g_application.m_pPlayer->IsPlayingVideo())
+    if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
+    if (m_playback_state == PLAYBACK_STATE_STOPPED)
+    {
+      CLog::Log(LOGINFO, "Ignore MEDIA_BUTTON intent: no media playing");
+      return;
+    }
     CJNIKeyEvent keyevt = (CJNIKeyEvent)intent.getParcelableExtra(CJNIIntent::EXTRA_KEY_EVENT);
 
     int keycode = keyevt.getKeyCode();
@@ -879,35 +1025,49 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   std::string action = intent.getAction();
-  CXBMCApp::android_printf("Got Intent: %s", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
-  CXBMCApp::android_printf("-- targetFile: %s", targetFile.c_str());
-  if (action == "android.intent.action.VIEW")
-  {
-    CFileItem* item = new CFileItem(targetFile, false);
-    if (item->IsVideoDb())
-    {
-      *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
-      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    }
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
-  }
-  else if (action == "android.intent.action.GET_CONTENT")
+  CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
+  if (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT")
   {
     CURL targeturl(targetFile);
-    if (targeturl.IsProtocol("videodb"))
+    std::string value;
+    if (action == "android.intent.action.GET_CONTENT" || (targeturl.GetOption("showinfo", value) && value == "true"))
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      if (targeturl.IsProtocol("videodb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+      }
+      else if (targeturl.IsProtocol("musicdb"))
+      {
+        std::vector<std::string> params;
+        params.push_back(targeturl.Get());
+        params.push_back("return");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      }
     }
-    else if (targeturl.IsProtocol("musicdb"))
+    else
     {
-      std::vector<std::string> params;
-      params.push_back(targeturl.Get());
-      params.push_back("return");
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+      CFileItem* item = new CFileItem(targetFile, false);
+      if (item->IsVideoDb())
+      {
+        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+        item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      }
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+    }
+  }
+  else if (action == ACTION_XBMC_RESUME)
+  {
+    if (m_playback_state != PLAYBACK_STATE_STOPPED)
+    {
+      if (m_playback_state & PLAYBACK_STATE_VIDEO)
+        RequestVisibleBehind(true);
+      if (!(m_playback_state & PLAYBACK_STATE_PLAYING))
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
 }
@@ -925,6 +1085,16 @@ void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resu
       break;
     }
   }
+}
+
+void CXBMCApp::onVisibleBehindCanceled()
+{
+  CLog::Log(LOGDEBUG, "Visible Behind Cancelled");
+  m_hasReqVisible = false;
+
+  // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
 }
 
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
@@ -955,9 +1125,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
-    unregisterMediaButtonEventReceiver();
-
-    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    if (m_playback_state & PLAYBACK_STATE_PLAYING)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
 }

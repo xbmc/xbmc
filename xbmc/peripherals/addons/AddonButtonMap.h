@@ -80,6 +80,18 @@ namespace PERIPHERALS
       const KODI::JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
+    bool GetRelativePointer(
+      const KODI::JOYSTICK::FeatureName& feature,
+      KODI::JOYSTICK::ANALOG_STICK_DIRECTION direction,
+      KODI::JOYSTICK::CDriverPrimitive& primitive
+    ) override;
+
+    void AddRelativePointer(
+      const KODI::JOYSTICK::FeatureName& feature,
+      KODI::JOYSTICK::ANALOG_STICK_DIRECTION direction,
+      const KODI::JOYSTICK::CDriverPrimitive& primitive
+    ) override;
+
     bool GetAccelerometer(
       const KODI::JOYSTICK::FeatureName& feature,
       KODI::JOYSTICK::CDriverPrimitive& positiveX,

@@ -1104,7 +1104,7 @@ HANDLE udf25::OpenFile( const char* filename )
 
   bdfile->file     = file;
   bdfile->filesize = filesize;
-  return (HANDLE)bdfile;
+  return reinterpret_cast<HANDLE>(bdfile);
 }
 
 
@@ -1230,14 +1230,14 @@ udf_dir_t *udf25::OpenDir( const char *subdir )
 
   result = (udf_dir_t *)calloc(1, sizeof(udf_dir_t));
   if (!result) {
-    CloseFile((HANDLE)bd_file);
+    CloseFile(reinterpret_cast<HANDLE>(bd_file));
     return NULL;
   }
 
   result->dir_location = UDFFileBlockPos(bd_file->file, 0);
   result->dir_current  = UDFFileBlockPos(bd_file->file, 0);
   result->dir_length   = (uint32_t) bd_file->filesize;
-  CloseFile((HANDLE)bd_file);
+  CloseFile(reinterpret_cast<HANDLE>(bd_file));
 
   return result;
 }

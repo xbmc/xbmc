@@ -33,7 +33,7 @@ CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler *ha
 
 bool CGenericTouchRotateDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   if (m_done)
@@ -46,7 +46,7 @@ bool CGenericTouchRotateDetector::OnTouchDown(unsigned int index, const Pointer 
 
 bool CGenericTouchRotateDetector::OnTouchUp(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   if (m_done)
@@ -70,7 +70,7 @@ bool CGenericTouchRotateDetector::OnTouchUp(unsigned int index, const Pointer &p
 
 bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
 
   if (m_done)
@@ -117,7 +117,7 @@ bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer 
 
 bool CGenericTouchRotateDetector::OnTouchUpdate(unsigned int index, const Pointer &pointer)
 {
-  if (index >= TOUCH_MAX_POINTERS)
+  if (index >= MAX_POINTERS)
     return false;
   
   if (m_done)

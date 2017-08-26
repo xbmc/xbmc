@@ -34,7 +34,7 @@ class CAction
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const std::string &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const std::string &name = "");
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, float velocityX = 0.0f, float velocityY = 0.0f, const std::string &name = "");
   CAction(int actionID, const std::string &name, const CKey &key);
   CAction(int actionID, const std::string &name);
 
@@ -100,7 +100,7 @@ private:
   int          m_id;
   std::string   m_name;
 
-  static const unsigned int max_amounts = 4; // Must be at least 4.
+  static const unsigned int max_amounts = 6; // Must be at least 6
   float        m_amount[max_amounts];
 
   float        m_repeat;

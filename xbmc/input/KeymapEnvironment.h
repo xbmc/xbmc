@@ -31,6 +31,7 @@ public:
   virtual void SetWindowID(int windowId) override { m_windowId = windowId; }
   virtual int GetFallthrough(int windowId) const override;
   virtual bool UseGlobalFallthrough() const override { return true; }
+  virtual bool UseEasterEgg() const override { return true; }
 
 private:
   int m_windowId = -1;

@@ -19,12 +19,13 @@
  *
  */
 
-#include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/PVRChannelNumberInputHandler.h"
-
 #include <memory>
 #include <string>
+
+#include "pvr/PVRChannelNumberInputHandler.h"
+#include "pvr/PVRGUIChannelNavigator.h"
+#include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
@@ -245,6 +246,13 @@ namespace PVR
     bool PlayRecording(const CFileItemPtr &item, bool bCheckResume) const;
 
     /*!
+     * @brief Play EPG tag.
+     * @param item containing an epg tag.
+     * @return true on success, false otherwise.
+     */
+    bool PlayEpgTag(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Switch channel.
      * @param item containing a channel or an epg tag.
      * @param bCheckResume controls resume check in case a recording for the current epg event is present.
@@ -267,10 +275,10 @@ namespace PVR
     bool SwitchToChannel(PlaybackType type) const;
 
     /*!
-     * @brief Continue playback of the last played channel.
-     * @return True if playback was continued, false otherwise.
+     * @brief Plays the last played channel or the first channel of TV or Radio on startup.
+     * @return True if playback was started, false otherwise.
      */
-    bool ContinueLastPlayedChannel() const;
+    bool PlayChannelOnStartup() const;
 
     /*!
      * @brief Hide a channel, always showing a confirmation dialog.
@@ -322,6 +330,12 @@ namespace PVR
      * @return the handler.
      */
     CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
+
+    /*!
+     * @brief Get the channel navigator.
+     * @return the navigator.
+     */
+    CPVRGUIChannelNavigator &GetChannelNavigator();
 
   private:
     CPVRGUIActions(const CPVRGUIActions&) = delete;
@@ -423,7 +437,7 @@ namespace PVR
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
     bool m_bChannelScanRunning;
     CPVRSettings m_settings;
-
+    CPVRGUIChannelNavigator m_channelNavigator;
   };
 
 } // namespace PVR

@@ -49,7 +49,7 @@ namespace XBMCAddon
     {
       CCriticalSection* lock;
     public:
-      inline MaybeLock(CCriticalSection* p_lock) : lock(p_lock) { if (lock) lock->lock(); }
+      inline explicit MaybeLock(CCriticalSection* p_lock) : lock(p_lock) { if (lock) lock->lock(); }
       inline ~MaybeLock() { if (lock) lock->unlock(); }
     };
 
@@ -671,7 +671,7 @@ namespace XBMCAddon
 
       {
         DelayedCallGuard dcguard(languageHook);
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iOldWindowId, 0);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_PREVIOUS_WINDOW, iOldWindowId, 0);
       }
 
       iOldWindowId = 0;
@@ -748,10 +748,10 @@ namespace XBMCAddon
       pControl->iControlLeft = pControl->iControlId;
       pControl->iControlRight = pControl->iControlId;
 
-      pControl->pGUIControl->SetAction(ACTION_MOVE_UP,    pControl->iControlUp);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_DOWN,  pControl->iControlDown);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_LEFT,  pControl->iControlLeft);
-      pControl->pGUIControl->SetAction(ACTION_MOVE_RIGHT, pControl->iControlRight);
+      pControl->pGUIControl->SetAction(ACTION_MOVE_UP,    CGUIAction(pControl->iControlUp));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_DOWN,  CGUIAction(pControl->iControlDown));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_LEFT,  CGUIAction(pControl->iControlLeft));
+      pControl->pGUIControl->SetAction(ACTION_MOVE_RIGHT, CGUIAction(pControl->iControlRight));
 
       // add control to list and allocate resources for the control
       vecControls.push_back(AddonClass::Ref<Control>(pControl));

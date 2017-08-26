@@ -33,12 +33,13 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
+#include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-#include "XBDateTime.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/timers/PVRTimerType.h"
 
 class CVariant;
 
@@ -47,7 +48,7 @@ namespace PVR
   class CPVRTimerInfoTag : public ISerializable
   {
   public:
-    CPVRTimerInfoTag(bool bRadio = false);
+    explicit CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
     ~CPVRTimerInfoTag(void) override;
@@ -92,7 +93,18 @@ namespace PVR
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;
-    CPVRChannelPtr ChannelTag(void) const;
+
+    /*!
+     * @brief Check whether this timer has an associated channel.
+     * @return True if this timer has a channel set, false otherwise.
+     */
+    bool HasChannel() const;
+
+    /*!
+     * @brief Get the channel associated with this timer, if any.
+     * @return the channel or null if non is associated with this timer.
+     */
+    CPVRChannelPtr Channel() const;
 
     /*!
      * @brief updates this timer excluding the state of any children. See UpdateChildState/ResetChildState.
@@ -198,6 +210,12 @@ namespace PVR
     const std::string& Path(void) const;
 
     /*!
+     * @brief The series link for this timer.
+     * @return The series link or empty string, if not available.
+     */
+    const std::string& SeriesLink() const;
+
+    /*!
      * @brief Get the UID of the epg event associated with this timer tag, if any.
      * @return the UID or EPG_TAG_INVALID_UID.
      */
@@ -284,6 +302,8 @@ namespace PVR
     bool                  m_bHasChildConflictNOK; /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_CONFLICT_NOK */
     bool                  m_bHasChildRecording;   /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_RECORDING */
     bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
+
+    std::string m_strSeriesLink; /*!< series link */
 
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */

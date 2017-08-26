@@ -53,7 +53,7 @@ bool CDVDInputStreamStack::Open()
   CStackDirectory dir;
   CFileItemList   items;
 
-  const CURL pathToUrl(m_item.GetPath());
+  const CURL pathToUrl(m_item.GetDynPath());
   if(!dir.GetDirectory(pathToUrl, items))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get list of stacked items");
@@ -67,9 +67,9 @@ bool CDVDInputStreamStack::Open()
   {
     TFile file(new CFile());
 
-    if (!file->Open(items[index]->GetPath(), READ_TRUNCATED))
+    if (!file->Open(items[index]->GetDynPath(), READ_TRUNCATED))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->GetPath().c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->GetDynPath().c_str());
       continue;
     }
     TSeg segment;
@@ -78,7 +78,7 @@ bool CDVDInputStreamStack::Open()
 
     if(segment.length <= 0)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get file length for '%s' - skipping", items[index]->GetPath().c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get file length for '%s' - skipping", items[index]->GetDynPath().c_str());
       continue;
     }
 

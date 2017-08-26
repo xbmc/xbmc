@@ -21,11 +21,12 @@
 
 #include <vector>
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "addons/PVRClient.h"
 #include "FileItem.h"
-#include "pvr/PVRTypes.h"
+#include "addons/PVRClient.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/JobManager.h"
+
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
@@ -43,12 +44,12 @@ namespace PVR
     bool m_bOnOff;
   };
 
-  class CPVRContinueLastChannelJob : public CJob
+  class CPVRPlayChannelOnStartupJob : public CJob
   {
   public:
-    CPVRContinueLastChannelJob() = default;
-    ~CPVRContinueLastChannelJob() override = default;
-    const char *GetType() const override { return "pvr-continue-last-channel-job"; }
+    CPVRPlayChannelOnStartupJob() = default;
+    ~CPVRPlayChannelOnStartupJob() override = default;
+    const char *GetType() const override { return "pvr-play-channel-on-startup"; }
 
     bool DoWork() override;
   };
@@ -56,10 +57,23 @@ namespace PVR
   class CPVRChannelEntryTimeoutJob : public CJob, public IJobCallback
   {
   public:
-    CPVRChannelEntryTimeoutJob(int timeout);
+    explicit CPVRChannelEntryTimeoutJob(int timeout);
     ~CPVRChannelEntryTimeoutJob() override = default;
     const char *GetType() const override { return "pvr-channel-entry-timeout-job"; }
-    void OnJobComplete(unsigned int jobID, bool success, CJob *job) override { }
+    void OnJobComplete(unsigned int iJobID, bool bSuccess, CJob *job) override {}
+
+    bool DoWork() override;
+  private:
+    XbmcThreads::EndTime m_delayTimer;
+  };
+
+  class CPVRChannelInfoTimeoutJob : public CJob, public IJobCallback
+  {
+  public:
+    CPVRChannelInfoTimeoutJob(int iTimeout);
+    ~CPVRChannelInfoTimeoutJob() override = default;
+    const char *GetType() const override { return "pvr-channel-info-timeout-job"; }
+    void OnJobComplete(unsigned int iJobID, bool bSuccess, CJob *job) override {}
 
     bool DoWork() override;
   private:

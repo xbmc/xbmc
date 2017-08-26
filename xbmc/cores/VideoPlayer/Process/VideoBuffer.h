@@ -107,7 +107,7 @@ public:
   static bool CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc);
 
 protected:
-  CVideoBuffer(int id);
+  explicit CVideoBuffer(int id);
   AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   std::atomic_int m_refCount;
   int m_id;

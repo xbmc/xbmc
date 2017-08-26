@@ -61,7 +61,7 @@ struct DemuxCryptoSession
 
 struct DemuxCryptoInfo
 {
-  DemuxCryptoInfo(const unsigned int numSubs)
+  explicit DemuxCryptoInfo(const unsigned int numSubs)
     : numSubSamples(numSubs)
     , flags(0)
     , clearBytes(new uint16_t[numSubs])

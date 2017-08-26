@@ -25,7 +25,7 @@
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "utils/CPUInfo.h"
 #include "utils/win32/memcpy_sse2.h"
-#include "windowing/windows/WinSystemWin32DX.h"
+#include "windowing/WindowingFactory.h"
 #include "WinRenderer.h"
 #include "WinRenderBuffer.h"
 

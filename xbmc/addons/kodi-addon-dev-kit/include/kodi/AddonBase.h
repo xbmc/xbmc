@@ -43,12 +43,19 @@
   #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
     #define ATTRIBUTE_PACKED __attribute__ ((packed))
     #define PRAGMA_PACK 0
+  #if __GNUC__ >= 4
+    #define ATTRIBUTE_HIDDEN __attribute__ ((visibility ("hidden")))
+  #endif
   #endif
 #endif
 
 #if !defined(ATTRIBUTE_PACKED)
   #define ATTRIBUTE_PACKED
   #define PRAGMA_PACK 1
+#endif
+
+#if !defined(ATTRIBUTE_HIDDEN)
+  #define ATTRIBUTE_HIDDEN
 #endif
 
 #include "versions.h"
@@ -234,7 +241,7 @@ namespace addon {
 class IAddonInstance
 {
 public:
-  IAddonInstance(ADDON_TYPE type) : m_type(type) { }
+  explicit IAddonInstance(ADDON_TYPE type) : m_type(type) { }
   virtual ~IAddonInstance() = default;
 
   virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
@@ -254,7 +261,7 @@ namespace kodi {
 class CSettingValue
 {
 public:
-  CSettingValue(const void *settingValue) : m_settingValue(settingValue) {}
+  explicit CSettingValue(const void *settingValue) : m_settingValue(settingValue) {}
 
   bool empty() const { return (m_settingValue == nullptr) ? true : false; }
   std::string GetString() const { return (char*)m_settingValue; }
@@ -273,7 +280,7 @@ private:
 namespace kodi {
 namespace addon {
 /// Add-on main instance class.
-class CAddonBase
+class ATTRIBUTE_HIDDEN CAddonBase
 {
 public:
   CAddonBase()

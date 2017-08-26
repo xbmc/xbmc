@@ -94,7 +94,7 @@ namespace JSONRPC
     class CWebSocketClient : public CTCPClient
     {
     public:
-      CWebSocketClient(CWebSocket *websocket);
+      explicit CWebSocketClient(CWebSocket *websocket);
       CWebSocketClient(const CWebSocketClient& client);
       CWebSocketClient(CWebSocket *websocket, const CTCPClient& client);
       CWebSocketClient& operator=(const CWebSocketClient& client);

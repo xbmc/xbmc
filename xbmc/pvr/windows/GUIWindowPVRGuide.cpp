@@ -21,10 +21,9 @@
 #include "GUIWindowPVRGuide.h"
 
 #include "ContextMenuManager.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "view/GUIViewState.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
@@ -32,6 +31,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "view/GUIViewState.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
@@ -74,7 +74,7 @@ void CGUIWindowPVRGuideBase::Init()
     epgGridContainer->GoToNow();
   }
 
-  if (!m_refreshTimelineItemsThread)
+  if (epgGridContainer && !epgGridContainer->HasData())
   {
     CSingleLock lock(m_critSection);
     m_bRefreshTimelineItems = true; // force data update on first window open
@@ -334,6 +334,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                       // past event
                       if (tag->HasRecording())
                         CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
+                      else if (tag->IsPlayable())
+                        CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(pItem);
                       else
                         CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
                     }
@@ -563,12 +565,12 @@ void CGUIWindowPVRGuideBase::OnInputDone()
     for (const CFileItemPtr event : m_vecItems->GetList())
     {
       const CPVREpgInfoTagPtr tag(event->GetEPGInfoTag());
-      if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
+      if (tag->HasChannel() && tag->ChannelNumber() == iChannelNumber)
       {
         CGUIEPGGridContainer* epgGridContainer = GetGridControl();
         if (epgGridContainer)
         {
-          epgGridContainer->SetChannel(tag->ChannelTag());
+          epgGridContainer->SetChannel(tag->Channel());
           return;
         }
       }

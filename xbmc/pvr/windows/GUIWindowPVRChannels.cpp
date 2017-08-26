@@ -21,6 +21,7 @@
 #include "GUIWindowPVRChannels.h"
 
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -29,7 +30,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -97,7 +97,7 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string &strDirectory, bool upd
 
 void CGUIWindowPVRChannelsBase::UpdateButtons(void)
 {
-  CGUIRadioButtonControl *btnShowHidden = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWHIDDEN);
+  CGUIRadioButtonControl *btnShowHidden = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
   if (btnShowHidden)
   {
     btnShowHidden->SetVisible(CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio)->GetNumHiddenChannels() > 0);
@@ -166,7 +166,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWHIDDEN)
       {
-        CGUIRadioButtonControl *radioButton = (CGUIRadioButtonControl*)GetControl(CONTROL_BTNSHOWHIDDEN);
+        CGUIRadioButtonControl *radioButton = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
         if (radioButton)
         {
           m_bShowHiddenChannels = radioButton->IsSelected();

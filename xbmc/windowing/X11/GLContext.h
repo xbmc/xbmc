@@ -26,7 +26,7 @@
 class CGLContext
 {
 public:
-  CGLContext(Display *dpy)
+  explicit CGLContext(Display *dpy)
   {
     m_dpy = dpy;
   }

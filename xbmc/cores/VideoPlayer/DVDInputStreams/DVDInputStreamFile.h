@@ -25,7 +25,7 @@
 class CDVDInputStreamFile : public CDVDInputStream
 {
 public:
-  CDVDInputStreamFile(const CFileItem& fileitem);
+  explicit CDVDInputStreamFile(const CFileItem& fileitem);
   ~CDVDInputStreamFile() override;
   bool Open() override;
   void Close() override;

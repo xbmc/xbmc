@@ -66,11 +66,11 @@ bool CDVDInputStreamFile::Open()
    * 3) No buffer
    * 4) Buffer all non-local (remote) filesystems
    */
-  if (!URIUtils::IsOnDVD(m_item.GetPath()) && !URIUtils::IsBluray(m_item.GetPath())) // Never cache these
+  if (!URIUtils::IsOnDVD(m_item.GetDynPath()) && !URIUtils::IsBluray(m_item.GetDynPath())) // Never cache these
   {
-    if ((g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), true))
-     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), false))
-     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(m_item.GetPath()))
+    if ((g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_INTERNET && URIUtils::IsInternetStream(m_item.GetDynPath(), true))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET && URIUtils::IsInternetStream(m_item.GetDynPath(), false))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(m_item.GetDynPath()))
      || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_ALL))
     {
       flags |= READ_CACHED;
@@ -90,7 +90,7 @@ bool CDVDInputStreamFile::Open()
     flags |= READ_MULTI_STREAM;
 
   // open file in binary mode
-  if (!m_pFile->Open(m_item.GetPath(), flags))
+  if (!m_pFile->Open(m_item.GetDynPath(), flags))
   {
     delete m_pFile;
     m_pFile = NULL;

@@ -75,7 +75,7 @@ namespace dialogs
     ///
     /// @param[in] title  Title string
     ///
-    CExtendedProgress(const std::string& title = "")
+    explicit CExtendedProgress(const std::string& title = "")
     {
       using namespace ::kodi::addon;
       m_DialogHandle = CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->new_dialog(CAddonBase::m_interface->toKodi->kodiBase, title.c_str());

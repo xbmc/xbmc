@@ -20,22 +20,22 @@
 
 #include "PVRJobs.h"
 
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "interfaces/AnnouncementManager.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
-#include "PlayListPlayer.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "ServiceBroker.h"
-#ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
-#endif
 
 namespace PVR
 {
@@ -45,9 +45,9 @@ bool CPVRSetRecordingOnChannelJob::DoWork()
   return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(m_channel, m_bOnOff);
 }
 
-CPVRChannelEntryTimeoutJob::CPVRChannelEntryTimeoutJob(int timeout)
+CPVRChannelEntryTimeoutJob::CPVRChannelEntryTimeoutJob(int iTimeout)
 {
-  m_delayTimer.Set(timeout);
+  m_delayTimer.Set(iTimeout);
 }
 
 bool CPVRChannelEntryTimeoutJob::DoWork()
@@ -56,7 +56,7 @@ bool CPVRChannelEntryTimeoutJob::DoWork()
   {
     if (m_delayTimer.IsTimePast())
     {
-      CServiceBroker::GetPVRManager().ChannelPreviewSelect();
+      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SwitchToCurrentChannel();
       return true;
     }
     Sleep(10);
@@ -64,9 +64,28 @@ bool CPVRChannelEntryTimeoutJob::DoWork()
   return false;
 }
 
-bool CPVRContinueLastChannelJob::DoWork()
+CPVRChannelInfoTimeoutJob::CPVRChannelInfoTimeoutJob(int iTimeout)
 {
-  return CServiceBroker::GetPVRManager().GUIActions()->ContinueLastPlayedChannel();
+  m_delayTimer.Set(iTimeout);
+}
+
+bool CPVRChannelInfoTimeoutJob::DoWork()
+{
+  while (!ShouldCancel(0, 0))
+  {
+    if (m_delayTimer.IsTimePast())
+    {
+      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().HideInfo();
+      return true;
+    }
+    Sleep(10);
+  }
+  return false;
+}
+
+bool CPVRPlayChannelOnStartupJob::DoWork()
+{
+  return CServiceBroker::GetPVRManager().GUIActions()->PlayChannelOnStartup();
 }
 
 CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)

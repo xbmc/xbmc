@@ -19,18 +19,18 @@
  *
  */
 
-#include "FileItem.h"
-#include "pvr/channels/PVRChannel.h"
-#include "threads/CriticalSection.h"
-#include "utils/Observer.h"
-
-#include "EpgInfoTag.h"
-#include "EpgSearchFilter.h"
-#include "pvr/PVRTypes.h"
-
 #include <map>
 #include <string>
 #include <vector>
+
+#include "FileItem.h"
+#include "threads/CriticalSection.h"
+#include "utils/Observer.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearchFilter.h"
 
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR
@@ -188,10 +188,11 @@ namespace PVR
     /*!
      * @brief Update an entry in this EPG.
      * @param data The tag to update.
+     * @param iClientId The id of the pvr client this event belongs to.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
+    bool UpdateEntry(const EPG_TAG *data, int iClientId, bool bUpdateDatabase);
 
     /*!
      * @brief Update an entry in this EPG.
@@ -199,7 +200,7 @@ namespace PVR
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase = false);
+    bool UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase);
 
     /*!
      * @brief Update an entry in this EPG.
@@ -208,7 +209,7 @@ namespace PVR
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase = false);
+    bool UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.

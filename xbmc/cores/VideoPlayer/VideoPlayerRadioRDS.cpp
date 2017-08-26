@@ -663,7 +663,7 @@ void CDVDRadioRDSData::Process()
     {
       CSingleLock lock(m_critSection);
 
-      DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+      DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
 
       ProcessUECP(pPacket->pData, pPacket->iSize);
     }

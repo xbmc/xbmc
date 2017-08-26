@@ -47,7 +47,7 @@ void CEdl::Clear()
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
-  m_lastCheckASSTime = 0;
+  m_lastCutTime = 0;
 }
 
 bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrameRate, const int iHeight)
@@ -842,14 +842,14 @@ bool CEdl::InCut(const int iSeek, Cut *pCut)
   return false;
 }
 
-int CEdl::GetLastCheckASSTime() const
+int CEdl::GetLastCutTime() const
 {
-  return m_lastCheckASSTime;
+  return m_lastCutTime;
 }
 
-void CEdl::SetLastCheckASSTime(const int iCheckASSTime)
+void CEdl::SetLastCutTime(const int iCutTime)
 {
-  m_lastCheckASSTime = iCheckASSTime;
+  m_lastCutTime = iCutTime;
 }
 
 bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const

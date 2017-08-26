@@ -51,7 +51,6 @@ class CVideoReferenceClock : CThread
     int64_t m_LastIntTime;       //last interpolated clock value, to make sure the clock doesn't go backwards
     double  m_CurrTimeFract;     //fractional part that is lost due to rounding when updating the clock
     double  m_ClockSpeed;        //the frequency of the clock set by VideoPlayer
-    int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
     int64_t m_SystemFrequency;   //frequency of the systemclock
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source

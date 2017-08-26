@@ -22,7 +22,7 @@
 
 #include <string>
 
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#if defined(TARGET_WINDOWS)
 namespace KODI
 {
 namespace PLATFORM

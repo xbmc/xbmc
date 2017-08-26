@@ -26,6 +26,8 @@
 namespace PVR
 {
 
+enum class ChannelSwitchMode;
+
 class CPVRActionListener : public IActionListener, public ISettingCallback
 {
 public:
@@ -42,6 +44,8 @@ public:
 private:
   CPVRActionListener(const CPVRActionListener&) = delete;
   CPVRActionListener& operator=(const CPVRActionListener&) = delete;
+
+  static ChannelSwitchMode GetChannelSwitchMode(int iAction);
 };
 
 } // namespace PVR

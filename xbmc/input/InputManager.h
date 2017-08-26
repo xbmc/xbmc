@@ -87,7 +87,7 @@ class CInputManager : public ISettingCallback,
                       public Observable
 {
 public:
-  CInputManager(const CAppParamParser &params);
+  explicit CInputManager(const CAppParamParser &params);
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;
@@ -138,13 +138,6 @@ public:
    * \brief Deinitialize input and keymaps
    */
   void Deinitialize();
-
-  /*! \brief Enable or disable the joystick
-   *
-   * \param enabled true to enable joystick, false to disable
-   * \return void
-   */
-  void SetEnabledJoystick(bool enabled = true);
 
   /*! \brief Handle an input event
    * 

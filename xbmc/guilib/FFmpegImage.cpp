@@ -128,7 +128,7 @@ static int64_t mem_file_seek(void *h, int64_t pos, int whence)
     mbuf->pos = Clamp(((int64_t)mbuf->pos) + pos, mbuf->size);
   }
   else
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Unknown seek mode: %i", whence);
+    CLog::LogF(LOGERROR, "Unknown seek mode: %i", whence);
 
   return mbuf->pos;
 }
@@ -180,7 +180,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
   uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
   if (!fbuffer)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate buffer");
+    CLog::LogF(LOGERROR, "Could not allocate buffer");
     return false;
   }
   m_buf.data = buffer;
@@ -193,7 +193,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
   if (!m_ioctx)
   {
     av_free(fbuffer);
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVIOContext");
+    CLog::LogF(LOGERROR, "Could not allocate AVIOContext");
     return false;
   }
 
@@ -201,7 +201,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
   if (!m_fctx)
   {
     FreeIOCtx(&m_ioctx);
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVFormatContext");
+    CLog::LogF(LOGERROR, "Could not allocate AVFormatContext");
     return false;
   }
 
@@ -284,7 +284,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
 {
   if (!m_fctx || !m_fctx->streams[0])
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "No valid format context or stream");
+    CLog::LogF(LOGERROR, "No valid format context or stream");
     return nullptr;
   }
 
@@ -379,7 +379,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   if (!m_pFrame || !m_pFrame->data[0])
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame member not allocated");
+    CLog::LogF(LOGERROR, "AVFrame member not allocated");
     return false;
   }
 
@@ -441,7 +441,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   AVFrame* pictureRGB = av_frame_alloc();
   if (!pictureRGB)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame could not be allocated");
+    CLog::LogF(LOGERROR, "AVFrame could not be allocated");
     return false;
   }
 
@@ -449,7 +449,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
   if (size < 0)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVFrame member with %i x %i pixes", width, height);
+    CLog::LogF(LOGERROR, "Could not allocate AVFrame member with %i x %i pixes", width, height);
     av_frame_free(&pictureRGB);
     return false;
   }
@@ -474,7 +474,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     // we copy the data manually later so give a chance to intrinsics (e.g. mmx, neon)
     if (av_frame_get_buffer(pictureRGB, 32) < 0)
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate temp buffer of size %i bytes", size);
+      CLog::LogF(LOGERROR, "Could not allocate temp buffer of size %i bytes", size);
       av_frame_free(&pictureRGB);
       return false;
     }
@@ -523,7 +523,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     int minPitch = std::min((int)pitch, pictureRGB->linesize[0]);
     if (minPitch < 0)
     {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "negative pitch or height");
+      CLog::LogF(LOGERROR, "negative pitch or height");
       av_frame_free(&pictureRGB);
       return false;
     }

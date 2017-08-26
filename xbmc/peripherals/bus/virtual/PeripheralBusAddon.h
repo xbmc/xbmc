@@ -37,7 +37,7 @@ namespace PERIPHERALS
   class CPeripheralBusAddon : public CPeripheralBus
   {
   public:
-    CPeripheralBusAddon(CPeripherals& manager);
+    explicit CPeripheralBusAddon(CPeripherals& manager);
     ~CPeripheralBusAddon(void) override;
 
     void UpdateAddons(void);
@@ -95,7 +95,6 @@ namespace PERIPHERALS
 
     PeripheralAddonVector m_addons;
     PeripheralAddonVector m_failedAddons;
-    CCriticalSection m_critSection;
   };
   using PeripheralBusAddonPtr = std::shared_ptr<CPeripheralBusAddon>;
 }

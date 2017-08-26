@@ -34,7 +34,7 @@ template<typename T> struct IDVDResourceCounted
   virtual T*  Acquire()
   {
     ++m_refs;
-    return (T*)this;
+    return static_cast<T*>(this);
   }
 
   virtual long Release()
@@ -42,7 +42,7 @@ template<typename T> struct IDVDResourceCounted
     long count = --m_refs;
     assert(count >= 0);
     if (count == 0)
-      delete (T*)this;
+      delete static_cast<T*>(this);
     return count;
   }
   std::atomic<long> m_refs;

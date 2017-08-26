@@ -412,7 +412,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
       { // bind our items
         Reset();
-        CFileItemList *items = (CFileItemList *)message.GetPointer();
+        CFileItemList *items = static_cast<CFileItemList*>(message.GetPointer());
         for (int i = 0; i < items->Size(); i++)
           m_items.push_back(items->Get(i));
         UpdateLayout(true); // true to refresh all items
@@ -738,7 +738,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     ValidateOffset();
     return EVENT_RESULT_HANDLED;
   }
-  else if (event.m_id == ACTION_GESTURE_END)
+  else if (event.m_id == ACTION_GESTURE_END || event.m_id == ACTION_GESTURE_ABORT)
   { // release exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
     SendWindowMessage(msg);

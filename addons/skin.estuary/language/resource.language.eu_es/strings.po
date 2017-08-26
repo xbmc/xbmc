@@ -56,6 +56,10 @@ msgctxt "#31009"
 msgid "Download icons"
 msgstr "Deskargatu ikonoak"
 
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Hasitako pelikulak"
+
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Gehien erreproduzitutako albumak"

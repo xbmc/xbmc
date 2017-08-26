@@ -85,7 +85,7 @@ bool CDVDInputStreamPVRManager::Open()
   if (!CDVDInputStream::Open())
     return false;
 
-  CURL url(m_item.GetPath());
+  CURL url(m_item.GetDynPath());
 
   std::string strURL = url.Get();
 
@@ -146,7 +146,7 @@ bool CDVDInputStreamPVRManager::Open()
   }
 
   ResetScanTimeout((unsigned int) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
-  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(m_item.GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(m_item.GetDynPath()).c_str());
 
   m_StreamProps->iStreamCount = 0;
   return true;
@@ -215,14 +215,24 @@ int CDVDInputStreamPVRManager::GetTime()
   return 0;
 }
 
+bool CDVDInputStreamPVRManager::GetTimes(Times &times)
+{
+  PVR_STREAM_TIMES streamTimes;
+  bool ret = CServiceBroker::GetPVRManager().Clients()->GetStreamTimes(&streamTimes);
+  if (ret)
+  {
+    times.startTime = streamTimes.startTime;
+    times.ptsStart = streamTimes.ptsStart;
+    times.ptsBegin = streamTimes.ptsBegin;
+    times.ptsEnd = streamTimes.ptsEnd;
+  }
+
+  return ret;
+}
+
 CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel()
 {
   return CServiceBroker::GetPVRManager().GetCurrentChannel();
-}
-
-bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
-{
-  return CServiceBroker::GetPVRManager().UpdateItem(item);
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()

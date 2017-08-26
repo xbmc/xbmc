@@ -20,18 +20,19 @@
  *
  */
 
-#include <vector>
 
-#include "../../guilib/Geometry.h"
-#include "../WinRenderer.h"
+#include "cores/IPlayer.h"
+#include "guilib/Geometry.h"
+#include "guilib/D3DResource.h"
+
 #include <DirectXMath.h>
-#include <wrl.h>
+#include <vector>
+#include <wrl/client.h>
 
 enum EBufferFormat;
 class CRenderBuffer;
 
 using namespace DirectX;
-using namespace Microsoft::WRL;
 
 class CYUV2RGBMatrix
 {
@@ -76,7 +77,7 @@ private:
   CD3DBuffer m_ib;
   unsigned int m_vbsize;
   unsigned int m_vertsize;
-  ComPtr<ID3D11InputLayout> m_inputLayout;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 };
 
 class COutputShader : public CWinShader
@@ -116,7 +117,7 @@ private:
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
   bool m_useDithering{ false };
   int m_ditherDepth{ 0 };
-  ComPtr<ID3D11ShaderResourceView> m_pDitherView;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pDitherView;
 
   struct CUSTOMVERTEX {
     FLOAT x, y, z;

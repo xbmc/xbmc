@@ -41,7 +41,7 @@ public:
   virtual void ReleaseBuffer(int idx) override;
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; };
-  virtual bool ConfigChanged(const VideoPicture &picture) { return false; };
+  virtual bool ConfigChanged(const VideoPicture &picture) override { return false; };
   virtual CRenderInfo GetRenderInfo() override;
   virtual void FlipPage(int source) override;
   virtual void UnInit() override {};
@@ -51,11 +51,11 @@ public:
   virtual bool SupportsMultiPassRendering() override { return false; };
 
   // Player functions
-  virtual bool IsGuiLayer() { return false; };
+  virtual bool IsGuiLayer() override { return false; };
 
   // Feature support
-  virtual bool Supports(ESCALINGMETHOD method) { return false; };
-  virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(ESCALINGMETHOD method) override { return false; };
+  virtual bool Supports(ERENDERFEATURE feature) override;
 
 protected:
   virtual void ReorderDrawPoints() override;

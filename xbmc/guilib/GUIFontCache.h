@@ -113,7 +113,7 @@ struct CGUIFontCacheHash
       hash += key.m_text[i];
     if (key.m_colors.size())
       hash += key.m_colors[0];
-    hash += MatrixHashContribution(key);
+    hash += static_cast<size_t>(MatrixHashContribution(key)); // horrible
     return hash;
   }
 };
@@ -143,7 +143,7 @@ class CGUIFontCache
 public:
   const CGUIFontTTFBase &m_font;
 
-  CGUIFontCache(CGUIFontTTFBase &font);
+  explicit CGUIFontCache(CGUIFontTTFBase &font);
 
   ~CGUIFontCache();
  

@@ -72,7 +72,7 @@ class CTextureInfo
 {
 public:
   CTextureInfo();
-  CTextureInfo(const std::string &file);
+  explicit CTextureInfo(const std::string &file);
   CTextureInfo& operator=(const CTextureInfo &right);
   bool       useLarge;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load

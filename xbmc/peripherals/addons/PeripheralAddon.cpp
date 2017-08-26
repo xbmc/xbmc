@@ -19,6 +19,7 @@
  */
 
 #include "PeripheralAddon.h"
+#include "PeripheralAddonTranslator.h"
 #include "ServiceBroker.h"
 #include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
@@ -26,7 +27,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
@@ -86,6 +86,7 @@ void CPeripheralAddon::ResetProperties(void)
 
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.feature_count = cb_feature_count;
+  m_struct.toKodi.feature_type = cb_feature_type;
   m_struct.toKodi.refresh_button_maps = cb_refresh_button_maps;
   m_struct.toKodi.trigger_scan = cb_trigger_scan;
 }
@@ -874,7 +875,21 @@ unsigned int CPeripheralAddon::cb_feature_count(void* kodiInstance, const char* 
   CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
   ControllerPtr controller = controllerManager.GetController(controllerId);
   if (controller)
-    count = controller->Layout().FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
+    count = controller->FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
 
   return count;
+}
+
+JOYSTICK_FEATURE_TYPE CPeripheralAddon::cb_feature_type(void* kodiInstance, const char* controllerId, const char* featureName)
+{
+  using namespace GAME;
+
+  JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE::JOYSTICK_FEATURE_TYPE_UNKNOWN;
+
+  CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
+  ControllerPtr controller = controllerManager.GetController(controllerId);
+  if (controller)
+    type = CPeripheralAddonTranslator::TranslateFeatureType(controller->FeatureType(featureName));
+
+  return type;
 }

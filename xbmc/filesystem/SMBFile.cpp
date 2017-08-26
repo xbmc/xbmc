@@ -28,6 +28,7 @@
 #include "ServiceBroker.h"
 #include "SMBDirectory.h"
 #include <libsmbclient.h>
+#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -92,33 +93,39 @@ void CSMB::Deinit()
 void CSMB::Init()
 {
   CSingleLock lock(*this);
+
   if (!m_context)
   {
-    // Create ~/.smb/smb.conf. This file is used by libsmbclient.
+    // force libsmbclient to use our own smb.conf by overriding HOME
+    std::string truehome(getenv("HOME"));
+    setenv("HOME", CSpecialProtocol::TranslatePath("special://home").c_str(), 1);
+
+    // Create ~/.kodi/.smb/smb.conf. This file is used by libsmbclient.
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
-    char smb_conf[MAX_PATH];
+    std::string smb_conf;
     std::string home(getenv("HOME"));
     URIUtils::RemoveSlashAtEnd(home);
-    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
-    if (mkdir(smb_conf, 0755) == 0)
+    smb_conf = home + "/.smb";
+    int result = mkdir(smb_conf.c_str(), 0755);
+    if (result == 0 || (errno == EEXIST && IsFirstInit))
     {
-      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
-      FILE* f = fopen(smb_conf, "w");
+      smb_conf += "/smb.conf";
+      FILE* f = fopen(smb_conf.c_str(), "w");
       if (f != NULL)
       {
         fprintf(f, "[global]\n");
 
-        // make sure we're not acting like a server
-        fprintf(f, "\tpreferred master = no\n");
-        fprintf(f, "\tlocal master = no\n");
-        fprintf(f, "\tdomain master = no\n");
+        fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
-        // use the weaker LANMAN password hash in order to be compatible with older servers
-        fprintf(f, "\tclient lanman auth = yes\n");
-        fprintf(f, "\tlanman auth = yes\n");
-
-        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+        // set maximum smbclient protocol version
+        if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) > 0)
+        {
+          if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
+            fprintf(f, "\tclient max protocol = NT1\n");
+          else
+            fprintf(f, "\tclient max protocol = SMB%d\n", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL));
+        }
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
@@ -134,6 +141,9 @@ void CSMB::Init()
         // samba tries to use charset 850 but falls back to ASCII in case it is not available
         if (g_advancedSettings.m_sambadoscodepage.length() > 0)
           fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
+
+        // include users configuration if available
+        fprintf(f, "\tinclude = %s/.smb/user.conf\n", home.c_str());
 
         fclose(f);
       }
@@ -151,6 +161,10 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
+
+    // restore HOME
+    setenv("HOME", truehome.c_str(), 1);
+
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
@@ -647,3 +661,4 @@ int CSMBFile::IoControl(EIoControl request, void* param)
 
   return -1;
 }
+

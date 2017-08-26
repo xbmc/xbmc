@@ -26,15 +26,14 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
-set msysver=20160205
+set msysver=20161025
 set msys2=msys64
 set build32=yes
 set build64=no
 set instdir=%WORKSPACE%\project\BuildDependencies
-set msyspackages=autoconf automake libtool m4 make gettext patch pkg-config wget p7zip coreutils
+set msyspackages=autoconf automake libtool m4 make gettext patch pkg-config wget p7zip coreutils gcc perl
 set mingwpackages=dlfcn gcc gcc-libs gettext libiconv libgpg-error libpng yasm nettle libtasn1 openssl xz
-set locals32=gnutls-3.4.14-static
-set locals64=gnutls-3.4.14-static
+set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
 set usemirror=yes
 set opt=mintty
 
@@ -71,7 +70,7 @@ if %opt%==mintty (
 ::------------------------------------------------------------------
 ::download and install basic msys2 system:
 ::------------------------------------------------------------------
-if exist "%instdir%\%msys2%\msys2_shell.bat" GOTO minttySettings
+if exist "%instdir%\%msys2%\msys2_shell.cmd" GOTO minttySettings
 	if not exist %downloaddir% mkdir %downloaddir%
 
 :download
@@ -129,7 +128,6 @@ if not exist "%instdir%\%msys2%\home\%USERNAME%" mkdir "%instdir%\%msys2%\home\%
         echo.FontHeight=^9
         echo.FontSmoothing=full
         echo.AllowBlinking=yes
-        echo.Font=DejaVu Sans Mono
         echo.Columns=120
         echo.Rows=30
         echo.Term=xterm-256color
@@ -189,34 +187,38 @@ if %msys2%==msys32 (
 if %build32%==yes (
     if not exist %instdir%\build mkdir %instdir%\build
     if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
-    if not exist %instdir%\local32\share (
+    if not exist %instdir%\locals mkdir %instdir%\locals
+    if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
+    if not exist %instdir%\locals\win32\share (
         echo.-------------------------------------------------------------------------------
-        echo.create local32 folders
+        echo.create local win32 folders
         echo.-------------------------------------------------------------------------------
-        mkdir %instdir%\local32
-        mkdir %instdir%\local32\bin
-        mkdir %instdir%\local32\etc
-        mkdir %instdir%\local32\include
-        mkdir %instdir%\local32\lib
-        mkdir %instdir%\local32\lib\pkgconfig
-        mkdir %instdir%\local32\share
+        mkdir %instdir%\locals\win32
+        mkdir %instdir%\locals\win32\bin
+        mkdir %instdir%\locals\win32\etc
+        mkdir %instdir%\locals\win32\include
+        mkdir %instdir%\locals\win32\lib
+        mkdir %instdir%\locals\win32\lib\pkgconfig
+        mkdir %instdir%\locals\win32\share
         )
     )
 
 if %build64%==yes (
     if not exist %instdir%\build mkdir %instdir%\build
     if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
-    if not exist %instdir%\local64\share (
+    if not exist %instdir%\locals mkdir %instdir%\locals
+    if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
+    if not exist %instdir%\locals\x64\share (
         echo.-------------------------------------------------------------------------------
-        echo.create local64 folders
+        echo.create local x64 folders
         echo.-------------------------------------------------------------------------------
-        mkdir %instdir%\local64
-        mkdir %instdir%\local64\bin
-        mkdir %instdir%\local64\etc
-        mkdir %instdir%\local64\include
-        mkdir %instdir%\local64\lib
-        mkdir %instdir%\local64\lib\pkgconfig
-        mkdir %instdir%\local64\share
+        mkdir %instdir%\locals\x64
+        mkdir %instdir%\locals\x64\bin
+        mkdir %instdir%\locals\x64\etc
+        mkdir %instdir%\locals\x64\include
+        mkdir %instdir%\locals\x64\lib
+        mkdir %instdir%\locals\x64\lib\pkgconfig
+        mkdir %instdir%\locals\x64\share
         )
     )
 
@@ -251,14 +253,19 @@ if "%searchRes%"=="local64" GOTO installbase
     if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%instdir%\%msys2%\etc\fstab.
     (
         echo.
-        echo.%instdir%\build\           /build
-        echo.%instdir%\downloads\       /downloads
-        echo.%instdir%\local32\         /local32
-        echo.%instdir%\local64\         /local64
-        echo.%instdir%\%msys2%\mingw32\ /mingw32
-        echo.%instdir%\%msys2%\mingw64\ /mingw64
-        echo.%instdir%\downloads2\      /var/cache/pacman/pkg
-        echo.%instdir%\..\..\           /xbmc
+        echo.%instdir%\build\            /build
+        echo.%instdir%\downloads\        /downloads
+        echo.%instdir%\locals\win32\     /local32
+        echo.%instdir%\locals\x64\       /local64
+        echo.%instdir%\%msys2%\mingw32\  /mingw32
+        echo.%instdir%\%msys2%\mingw64\  /mingw64
+        echo.%instdir%\downloads2\       /var/cache/pacman/pkg
+        echo.%instdir%\win32\            /depends/win32
+        echo.%instdir%\x64\              /depends/x64
+        echo.%instdir%\arm-uwp\          /depends/arm-uwp
+        echo.%instdir%\win32-uwp\        /depends/win32-uwp
+        echo.%instdir%\x64-uwp\          /depends/x64-uwp
+        echo.%instdir%\..\..\            /xbmc
         )>>%instdir%\%msys2%\etc\fstab.
 
 :installbase
@@ -392,7 +399,7 @@ Setlocal DisableDelayedExpansion
 
 :writeProfile32
 if %build32%==yes (
-    if exist %instdir%\local32\etc\profile.local GOTO writeProfile64
+    if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
         echo -------------------------------------------------------------------------------
         echo.- write profile for 32 bit compiling
         echo -------------------------------------------------------------------------------
@@ -437,17 +444,12 @@ if %build32%==yes (
             echo.# package installation prefix
             echo.LOCALDESTDIR=/local32
             echo.export LOCALBUILDDIR LOCALDESTDIR
-            echo.
-            echo.BITS='32bit'
-            echo.export BITS
-            echo.ARCHITECTURE='win32'
-            echo.export ARCHITECTURE
-            )>>%instdir%\local32\etc\profile.local
+            )>>%instdir%\locals\win32\etc\profile.local
         )
 
 :writeProfile64
 if %build64%==yes (
-    if exist %instdir%\local64\etc\profile.local GOTO loginProfile
+    if exist %instdir%\locals\x64\etc\profile.local GOTO loginProfile
         echo -------------------------------------------------------------------------------
         echo.- write profile for 64 bit compiling
         echo -------------------------------------------------------------------------------
@@ -492,12 +494,7 @@ if %build64%==yes (
             echo.# package installation prefix
             echo.LOCALDESTDIR=/local64
             echo.export LOCALBUILDDIR LOCALDESTDIR
-            echo.
-            echo.BITS='64bit'
-            echo.export BITS
-            echo.ARCHITECTURE='x64'
-            echo.export ARCHITECTURE
-            )>>%instdir%\local64\etc\profile.local
+            )>>%instdir%\locals\x64\etc\profile.local
         )
 
 :loginProfile
@@ -514,7 +511,7 @@ if %build32%==no GOTO loginProfile64
             )>>%instdir%\%msys2%\etc\profile.
     )
 
-    GOTO loadlocals32
+    GOTO loadGasPreproc
 
 :loginProfile64
     %instdir%\%msys2%\usr\bin\grep -q -e 'profile.local' %instdir%\%msys2%\etc\profile || (
@@ -529,44 +526,14 @@ if %build32%==no GOTO loginProfile64
             )>>%instdir%\%msys2%\etc\profile.
     )
 
-:loadlocals32
-if "%MSYS_MIRROR%" == "" goto end
-set pkgbaseurl=%MSYS_MIRROR%/locals
+:loadGasPreproc
+set gaspreprocfile=gas-preprocessor.tar.gz
+if exist %downloaddir%\%gaspreprocfile% goto extractGasPreproc
+    %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\%gaspreprocfile% %gaspreprocurl%
 
-echo.-------------------------------------------------------------------------------
-echo.Download precompiled libs
-echo.-------------------------------------------------------------------------------
-
-if %build32%==no goto loadlocal64
-for %%i in (%locals32%) do (
-    setlocal EnableDelayedExpansion
-    set pkgfile=i686-%%i.tar.gz
-    if not exist "%downloaddir%\!pkgfile!" (
-      %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\!pkgfile! %pkgbaseurl%/!pkgfile!
-    )
-    if errorlevel == 1 del "%downloaddir%\!pkgfile!"
-    if exist "%downloaddir%\!pkgfile!" (
-      %unpack_exe% x %downloaddir%\!pkgfile!^
-        -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
-    )
-    endlocal
-  )
-
-:loadlocal64
-if %build64%==no goto end
-for %%i in (%locals64%) do (
-    setlocal EnableDelayedExpansion
-    set pkgfile=x86_64-%%i.tar.gz
-    if not exist "%downloaddir%\!pkgfile!" (
-      %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\!pkgfile! %pkgbaseurl%/!pkgfile!
-    )
-    if errorlevel == 1 del "%downloaddir%\!pkgfile!"
-    if exist "%downloaddir%\!pkgfile!" (
-      %unpack_exe% x %downloaddir%\!pkgfile!^
-        -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
-    )
-    endlocal
-  )
+:extractGasPreproc
+if exist %instdir%\%msys2%\usr\bin\gas-preprocessor.pl goto end
+    %unpack_exe% x %downloaddir%\%gaspreprocfile% -so | %unpack_exe% e -si -ttar -o%instdir%\%msys2%\usr\bin *.pl -r
 
 :end
 cd %instdir%

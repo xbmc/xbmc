@@ -133,6 +133,15 @@
 */
 #define TMSG_GUI_DIALOG_YESNO             TMSG_MASK_WINDOWMANAGER + 8
 
+/*!
+  \def TMSG_GUI_PREVIOUS_WINDOW
+  \brief Message sent through CApplicationMessenger to go back to the previous window
+
+  This is an alternative to TMSG_GUI_ACTIVATE_WINDOW, but it keeps
+  all configured parameters, like startup directory.
+*/
+#define TMSG_GUI_PREVIOUS_WINDOW          TMSG_MASK_WINDOWMANAGER + 9
+
 
 #define TMSG_CALLBACK                     800
 

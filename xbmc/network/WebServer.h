@@ -58,7 +58,7 @@ protected:
     struct MHD_PostProcessor *postprocessor;
     int errorStatus;
 
-    ConnectionHandler(const std::string& uri)
+    explicit ConnectionHandler(const std::string& uri)
       : fullUri(uri)
       , isNew(true)
       , requestHandler(nullptr)

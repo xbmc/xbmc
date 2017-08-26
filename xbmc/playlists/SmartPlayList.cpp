@@ -231,7 +231,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   if (data == NULL)
     return true;
 
-  CSmartPlaylistRule *rule = (CSmartPlaylistRule*)data;
+  CSmartPlaylistRule *rule = static_cast<CSmartPlaylistRule*>(data);
 
   // check if there's a validator for this rule
   StringValidation::Validator validator = NULL;

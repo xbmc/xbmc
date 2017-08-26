@@ -594,7 +594,7 @@ class ParamReplacer
   int m_numTotalParams;
   int m_numUndefinedParams;
 public:
-  ParamReplacer(const std::map<std::string, std::string>& params)
+  explicit ParamReplacer(const std::map<std::string, std::string>& params)
     : m_params(params), m_numTotalParams(0), m_numUndefinedParams(0) {}
   int GetNumTotalParams() const { return m_numTotalParams; }
   int GetNumDefinedParams() const { return m_numTotalParams - m_numUndefinedParams; }

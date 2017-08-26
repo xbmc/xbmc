@@ -3,14 +3,13 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=fribidi
-VERSION=0.19.1
+VERSION=0.19.7
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
 export CFLAGS+=-D__STDC_INT64__
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-docs --enable-malloc \
-          --disable-shared --with-glib=no
+          ./configure --prefix=$(PREFIX) --disable-shared --with-glib=no
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

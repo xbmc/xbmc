@@ -126,11 +126,11 @@ bool CGUIDialogProgress::OnBack(int actionID)
 void CGUIDialogProgress::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-  const CGUIControl *control = GetControl(CONTROL_PROGRESS_BAR);
+  CGUIControl *control = GetControl(CONTROL_PROGRESS_BAR);
   if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
   {
     // make sure we have the appropriate info set
-    CGUIProgressControl *progress = (CGUIProgressControl *)control;
+    CGUIProgressControl *progress = static_cast<CGUIProgressControl*>(control);
     if (!progress->GetInfo())
       progress->SetInfo(SYSTEM_PROGRESS_BAR);
   }

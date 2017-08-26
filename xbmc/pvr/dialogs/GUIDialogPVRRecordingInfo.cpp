@@ -18,12 +18,14 @@
  *
  */
 
+#include "GUIDialogPVRRecordingInfo.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
+
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
-#include "GUIDialogPVRRecordingInfo.h"
 
 using namespace PVR;
 

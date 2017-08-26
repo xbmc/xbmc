@@ -45,7 +45,7 @@ namespace AddOn
 class CAddonCallbacksAddon
 {
 public:
-  CAddonCallbacksAddon(ADDON::CAddon* addon);
+  explicit CAddonCallbacksAddon(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksAddon();
 
   /*!

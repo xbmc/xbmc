@@ -56,7 +56,7 @@ public:
   void Save(TiXmlNode *root) const;
 
   const std::string& getDate() const { return m_date;}
-  const int getId() const { return m_id; }
+  int getId() const { return m_id; }
   const std::string& getName() const { return m_name;}
   const std::string& getDirectory() const { return m_directory;}
   const std::string& getThumb() const { return m_thumb;}

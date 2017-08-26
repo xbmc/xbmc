@@ -21,8 +21,6 @@
 
 #include "guilib/GUIDialog.h"
 
-#include <vector>
-
 namespace KODI
 {
 namespace GAME
@@ -32,16 +30,7 @@ namespace GAME
   public:
     CDialogGameOSD();
 
-    virtual ~CDialogGameOSD() = default;
-
-    // implementation of CGUIControl via CGUIDialog
-    virtual bool OnAction(const CAction &action) override;
-    virtual bool OnMessage(CGUIMessage &message) override;
-
-    static std::vector<int> GetSubDialogs();
-
-  private:
-    void CloseSubDialogs();
+    ~CDialogGameOSD() override = default;
  };
 }
 }

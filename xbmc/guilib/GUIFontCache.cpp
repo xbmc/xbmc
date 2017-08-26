@@ -88,7 +88,7 @@ class CGUIFontCacheImpl
   
 public:
 
-  CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
+  explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
   Value &Lookup(Position &pos,
                 const vecColors &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,

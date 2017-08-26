@@ -54,7 +54,7 @@ namespace ADDON
   public:
     //! \brief Construct from add-on properties.
     //! \param addonInfo General addon properties
-    CVFSEntry(BinaryAddonBasePtr addonInfo);
+    explicit CVFSEntry(BinaryAddonBasePtr addonInfo);
     ~CVFSEntry() override;
 
     // Things that MUST be supplied by the child classes
@@ -105,7 +105,7 @@ namespace ADDON
   public:
     //! \brief The constructor initializes the reference to the wrapped CVFSEntry.
     //! \param ptr The CVFSEntry to wrap.
-    CVFSEntryIFileWrapper(VFSEntryPtr ptr);
+    explicit CVFSEntryIFileWrapper(VFSEntryPtr ptr);
 
     //! \brief Empty destructor.
     ~CVFSEntryIFileWrapper() override;
@@ -189,7 +189,7 @@ namespace ADDON
   public:
     //! \brief The constructor initializes the reference to the wrapped CVFSEntry.
     //! \param ptr The CVFSEntry to wrap.
-    CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr);
+    explicit CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr);
 
     //! \brief Empty destructor.
     ~CVFSEntryIDirectoryWrapper() override = default;
@@ -246,7 +246,7 @@ namespace ADDON
   public:
     //! \brief The constructor initializes the reference to the wrapped CVFSEntry.
     //! \param ptr The CVFSEntry to wrap.
-    CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr) : CVFSEntryIDirectoryWrapper(ptr) {}
+    explicit CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr) : CVFSEntryIDirectoryWrapper(ptr) {}
 
     //! \brief Empty destructor.
     ~CVFSEntryIFileDirectoryWrapper() override = default;

@@ -185,34 +185,4 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   return true;
 }
 
-bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const VECADDONS &languageAddons /* = VECADDONS() */)
-{
-  if (legacyLanguage.empty())
-    return false;
-
-  VECADDONS addons;
-  if (!languageAddons.empty())
-    addons = languageAddons;
-  else if (!CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_RESOURCE_LANGUAGE) || addons.empty())
-    return false;
-
-  // try to find a language that matches the old language in name or id
-  for (VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
-  {
-    const CLanguageResource* languageAddon = static_cast<CLanguageResource*>(addon->get());
-
-    // check if the old language matches the language addon id, the language
-    // locale or the language addon name
-    if (legacyLanguage.compare((*addon)->ID()) == 0 ||
-        languageAddon->GetLocale().Equals(legacyLanguage) ||
-        StringUtils::EqualsNoCase(legacyLanguage, languageAddon->Name()))
-    {
-      addonId = (*addon)->ID();
-      return true;
-    }
-  }
-
-  return false;
-}
-
 }

@@ -406,8 +406,7 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
   CSingleLock lock(m_sharedSection);
   CRenderInfo info;
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s opaque:%p", CLASSNAME, __func__, this);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s opaque:%p", CLASSNAME, __func__, this);
 
   info.max_buffer_size = NUM_BUFFERS;
   info.optimal_buffer_size = NUM_BUFFERS;
@@ -440,8 +439,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
   if (!m_vout)
   {
     /* Create video renderer */
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s CreateRenderer", CLASSNAME, __func__);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s CreateRenderer", CLASSNAME, __func__);
 
     status = mmal_component_create(MMAL_COMPONENT_DEFAULT_VIDEO_RENDERER, &m_vout);
     if(status != MMAL_SUCCESS)
@@ -621,8 +619,7 @@ void CMMALRenderer::Process()
     }
     // This algorithm is basically making the decision according to Bresenham's line algorithm.  Imagine drawing a line where x-axis is display frames, and y-axis is video frames
     m_error += inc;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - debug vsync:%d queue:%d fps:%.2f/%.2f/%.2f inc:%f diff:%f", CLASSNAME, __func__, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), fps, m_fps, dfps, inc, m_error);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - debug vsync:%d queue:%d fps:%.2f/%.2f/%.2f inc:%f diff:%f", CLASSNAME, __func__, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), fps, m_fps, dfps, inc, m_error);
     // we may need to discard frames if queue length gets too high or video frame rate is above display frame rate
     while (mmal_queue_length(m_queue_render) > 2 || (mmal_queue_length(m_queue_render) > 1 && m_error > 1.0))
     {
@@ -636,8 +633,7 @@ void CMMALRenderer::Process()
         CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
         assert(buffer == omvb->mmal_buffer);
         omvb->Release();
-        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          CLog::Log(LOGDEBUG, "%s::%s - discard omvb:%p mmal:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, omvb, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
+        CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - discard omvb:%p mmal:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, omvb, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
       }
     }
     // this is case where we would like to display a new frame
@@ -656,8 +652,7 @@ void CMMALRenderer::Process()
         if (status != MMAL_SUCCESS)
           CLog::Log(LOGERROR, "%s::%s - Failed to send omvb:%p mmal:%p to %s (status=0%x %s)", CLASSNAME, __func__, omvb, buffer, m_vout_input->name, status, mmal_status_to_string(status));
       }
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "%s::%s - omvb:%p mmal:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer ? buffer->user_data : nullptr, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - omvb:%p mmal:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer ? buffer->user_data : nullptr, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
     }
   }
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
@@ -914,8 +909,7 @@ void CMMALRenderer::Flush()
 
 void CMMALRenderer::Update()
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s", CLASSNAME, __func__);
   if (!m_bConfigured) return;
   ManageRenderArea();
 }
@@ -928,8 +922,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (!m_bConfigured)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
     goto exit;
   }
 
@@ -945,8 +938,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   // we only want to upload frames once
   if (omvb && omvb->m_rendered)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
     SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
     goto exit;
   }
@@ -963,8 +955,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED | MMAL_BUFFER_HEADER_VIDEO_FLAG_TOP_FIELD_FIRST;
     else if (flags & RENDER_FLAG_BOT)
       omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x len:%d data:%p enc:%.4s", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags, omvb->mmal_buffer->length, omvb->mmal_buffer->data, (char *)&omvb->Encoding());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x len:%d data:%p enc:%.4s", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags, omvb->mmal_buffer->length, omvb->mmal_buffer->data, (char *)&omvb->Encoding());
     assert(omvb->mmal_buffer && omvb->mmal_buffer->data && omvb->mmal_buffer->length);
     omvb->Acquire();
     omvb->m_rendered = true;
@@ -992,8 +983,7 @@ void CMMALRenderer::FlipPage(int source)
   CSingleLock lock(m_sharedSection);
   if (!m_bConfigured)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, source);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - not configured: source:%d", CLASSNAME, __func__, source);
     return;
   }
 
@@ -1269,8 +1259,7 @@ void CMMALRenderer::DestroyDeinterlace()
 {
   MMAL_STATUS_T status;
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s", CLASSNAME, __func__);
 
   // (lazily) destroy pool first so new buffers aren't allocated when flushing
   m_deint_output_pool = nullptr;
@@ -1315,8 +1304,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
 
   if (!m_deint)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s CreateDeinterlace", CLASSNAME, __func__);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s CreateDeinterlace", CLASSNAME, __func__);
 
     /* Create deinterlace component with attached pool */
     m_deint_output_pool = std::make_shared<CMMALPool>("vc.ril.image_fx", false, 3, 0, output_encoding, MMALStateDeint);

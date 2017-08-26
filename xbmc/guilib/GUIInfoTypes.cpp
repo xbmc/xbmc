@@ -177,9 +177,9 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
       {
         std::string infoLabel;
         if (preferImages)
-          infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion->m_info, fallback);
+          infoLabel = g_infoManager.GetItemImage(static_cast<const CFileItem*>(item), portion->m_info, fallback);
         else
-          infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion->m_info, fallback);
+          infoLabel = g_infoManager.GetItemLabel(static_cast<const CFileItem *>(item), portion->m_info, fallback);
         needsUpdate |= portion->NeedsUpdate(infoLabel);
       }
     }

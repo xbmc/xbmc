@@ -43,7 +43,7 @@
 class CGUIFontTTFGL : public CGUIFontTTFBase
 {
 public:
-  CGUIFontTTFGL(const std::string& strFileName);
+  explicit CGUIFontTTFGL(const std::string& strFileName);
   ~CGUIFontTTFGL(void) override;
 
   bool FirstBegin() override;

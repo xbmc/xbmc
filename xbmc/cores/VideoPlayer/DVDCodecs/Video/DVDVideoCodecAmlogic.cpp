@@ -63,6 +63,11 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
 void CAMLVideoBufferPool::Return(int id)
 {
   CSingleLock lock(m_criticalSection);
+  if (m_videoBuffers[id]->m_amlCodec)
+  {
+    m_videoBuffers[id]->m_amlCodec->ReleaseFrame(m_videoBuffers[id]->m_bufferIndex, true);
+    m_videoBuffers[id]->m_amlCodec = nullptr;
+  }
   m_freeBuffers.push_back(id);
 }
 
@@ -439,8 +444,7 @@ void CDVDVideoCodecAmlogic::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s %x->%x",  __func__, m_codecControlFlags, flags);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s %x->%x",  __func__, m_codecControlFlags, flags);
     m_codecControlFlags = flags;
 
     if (flags & DVD_CODEC_CTRL_DROP)

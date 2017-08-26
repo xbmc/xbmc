@@ -50,7 +50,7 @@ namespace XBMCAddon
 
     public:
 
-      inline PythonLanguageHook(PyInterpreterState* interp) : m_interp(interp)  {  }
+      inline explicit PythonLanguageHook(PyInterpreterState* interp) : m_interp(interp)  {  }
       ~PythonLanguageHook() override;
 
       void DelayedCallOpen() override;

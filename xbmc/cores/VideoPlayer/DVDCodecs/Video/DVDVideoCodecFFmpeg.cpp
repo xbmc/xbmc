@@ -379,7 +379,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (!m_pCodecContext)
     return false;
 
-  m_pCodecContext->opaque = (ICallbackHWAccel*)this;
+  m_pCodecContext->opaque = static_cast<ICallbackHWAccel*>(this);
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
@@ -887,8 +887,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
   {
     m_postProc.SetType(g_advancedSettings.m_videoPPFFmpegPostProc, false);
-    if (m_postProc.Process(pVideoPicture))
-      m_postProc.GetPicture(pVideoPicture);
+    m_postProc.Process(pVideoPicture);
   }
 
   return true;
@@ -1171,10 +1170,7 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 {
   if (m_pFilterGraph)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
-    }
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecFFmpeg::FilterClose - Freeing filter graph");
     avfilter_graph_free(&m_pFilterGraph);
 
     // Disposed by above code

@@ -90,7 +90,7 @@ protected:
 
   void RetrieveMusicInfo();
   void OnItemInfo(int iItem, bool bShowInfo = true);
-  void OnItemInfoAll(int iItem, bool bCurrent=false, bool refresh=false);
+  void OnItemInfoAll(const std::string strPath, bool refresh = false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
   bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);

@@ -282,7 +282,6 @@ CApplication::CApplication(void)
   , m_volumeLevel(VOLUME_MAXIMUM)
   , m_pInertialScrollingHandler(new CInertialScrollingHandler())
   , m_network(nullptr)
-  , m_fallbackLanguageLoaded(false)
   , m_WaitingExternalCalls(0)
   , m_ProcessedExternalCalls(0)
 {
@@ -315,8 +314,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         if (!g_advancedSettings.m_fullScreen)
         {
-          g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
-          g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
+          g_graphicsContext.ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
           CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
           CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
           CServiceBroker::GetSettings().Save();
@@ -324,19 +322,12 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_VIDEOMOVE:
-#ifdef TARGET_WINDOWS
-      if (g_advancedSettings.m_fullScreen)
-      {
-        // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
-        RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-        CDisplaySettings::GetInstance().SetCurrentResolution(newRes, true);
-        g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
-      }
-      else
-#endif
       {
         g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
       }
+      break;
+    case XBMC_MODECHANGE:
+      g_graphicsContext.ApplyModeChange(newEvent.mode.res);
       break;
     case XBMC_USEREVENT:
       CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
@@ -680,20 +671,6 @@ bool CApplication::CreateGUI()
     return false;
   }
 
-  // Set default screen saver mode
-  auto screensaverModeSetting = std::static_pointer_cast<CSettingString>(m_ServiceManager->GetSettings().GetSetting(CSettings::SETTING_SCREENSAVER_MODE));
-  // Can only set this after windowing has been initialized since it depends on it
-  if (g_Windowing.GetOSScreenSaver())
-  {
-    // If OS has a screen saver, use it by default
-    screensaverModeSetting->SetDefault("");
-  }
-  else
-  {
-    // If OS has no screen saver, use Kodi one by default
-    screensaverModeSetting->SetDefault("screensaver.xbmc.builtin.dim");
-  }
-  CheckOSScreenSaverInhibitionSetting();
 
   // Retrieve the matching resolution based on GUI settings
   bool sav_res = false;
@@ -728,6 +705,21 @@ bool CApplication::CreateGUI()
   {
     return false;
   }
+
+  // Set default screen saver mode
+  auto screensaverModeSetting = std::static_pointer_cast<CSettingString>(m_ServiceManager->GetSettings().GetSetting(CSettings::SETTING_SCREENSAVER_MODE));
+  // Can only set this after windowing has been initialized since it depends on it
+  if (g_Windowing.GetOSScreenSaver())
+  {
+    // If OS has a screen saver, use it by default
+    screensaverModeSetting->SetDefault("");
+  }
+  else
+  {
+    // If OS has no screen saver, use Kodi one by default
+    screensaverModeSetting->SetDefault("screensaver.xbmc.builtin.dim");
+  }
+  CheckOSScreenSaverInhibitionSetting();
 
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
@@ -2694,19 +2686,19 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   if (processGUI && m_renderGUI)
   {
     m_skipGuiRender = false;
+#if defined(TARGET_RASPBERRY_PI) || defined(HAS_IMXVPU)
     int fps = 0;
 
-#if defined(TARGET_RASPBERRY_PI) || defined(HAS_IMXVPU)
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
     // it makes only sense on architectures with multiple layers
     if (g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback() && m_pPlayer->IsRenderingVideoLayer())
       fps = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
-#endif
 
     unsigned int now = XbmcThreads::SystemClockMillis();
     unsigned int frameTime = now - m_lastRenderTime;
     if (fps > 0 && frameTime * fps < 1000)
       m_skipGuiRender = true;
+#endif
 
     if (!m_bStop)
     {
@@ -2725,6 +2717,8 @@ bool CApplication::Cleanup()
 {
   try
   {
+    StopPlaying();
+
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
 
@@ -2928,8 +2922,9 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   //If item is a plugin, expand out now and run ourselves again
   if (item.IsPlugin())
   {
+    bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
     CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new, resume))
       return PlayMedia(item_new, player, iPlaylist);
     return false;
   }
@@ -3207,18 +3202,11 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
+    bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
     CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new, resume))
       return PlayFile(std::move(item_new), player, false);
     return PLAYBACK_FAIL;
-  }
-
-  // a disc image might be Blu-Ray disc
-  if (item.IsBDFile() || item.IsDiscImage())
-  {
-    //check if we must show the simplified bd menu
-    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
-      return PLAYBACK_CANCELED;
   }
 
 #ifdef HAS_UPNP
@@ -3320,6 +3308,14 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
       dbs.Close();
     }
+  }
+
+  // a disc image might be Blu-Ray disc
+  if (!(options.startpercent > 0.0f || options.starttime > 0.0f) && (item.IsBDFile() || item.IsDiscImage()))
+  {
+    //check if we must show the simplified bd menu
+    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
+      return PLAYBACK_CANCELED;
   }
 
   // this really aught to be inside !bRestart, but since PlayStack
@@ -3505,11 +3501,11 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackEnded();
 #endif
-#ifdef TARGET_ANDROID
-  CXBMCApp::OnPlayBackEnded();
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
+
+  CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
@@ -3532,12 +3528,12 @@ void CApplication::OnPlayBackStarted()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
 #endif
-#ifdef TARGET_ANDROID
-  CXBMCApp::OnPlayBackStarted();
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   if (m_pPlayer->IsPlayingVideo())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
+
+  CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3572,11 +3568,11 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackStopped();
 #endif
-#ifdef TARGET_ANDROID
-  CXBMCApp::OnPlayBackStopped();
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
+
+  CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
@@ -3591,9 +3587,7 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
-#ifdef TARGET_ANDROID
-  CXBMCApp::OnPlayBackPaused();
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
 
@@ -3608,9 +3602,7 @@ void CApplication::OnPlayBackResumed()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
 #endif
-#ifdef TARGET_ANDROID
-  CXBMCApp::OnPlayBackResumed();
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   if (m_pPlayer->IsPlayingVideo())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
@@ -3731,11 +3723,6 @@ void CApplication::UpdateFileState()
            streamdetails if total duration > 15m (Should yield more correct info) */
         if (!(m_progressTrackingItem->IsDiscImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
         {
-          CStreamDetails details;
-          // Update with stream details from player, if any
-          if (m_pPlayer->GetStreamDetails(details))
-            m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails = details;
-
           if (m_progressTrackingItem->IsStack())
             m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, (int)GetTotalTime()); // Overwrite with CApp's totaltime as it takes into account total stack time
         }
@@ -4165,9 +4152,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (IsMuted() || GetVolume(false) <= VOLUME_MINIMUM)
           ShowVolumeBar();
 
-        if (m_fallbackLanguageLoaded)
-          CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
-
         if (!m_incompatibleAddons.empty())
         {
           auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
@@ -4237,7 +4221,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // handle plugin://
       CURL url(file.GetPath());
       if (url.IsProtocol("plugin"))
-        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
+        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
 
       // Don't queue if next media type is different from current one
       if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
@@ -4544,6 +4528,11 @@ void CApplication::ProcessSlow()
   if (!m_pPlayer->IsPlayingVideo())
     CSectionLoader::UnloadDelayed();
 
+#ifdef TARGET_ANDROID
+  // Pass the slow loop to droid
+  CXBMCApp::get()->ProcessSlow();
+#endif
+
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
 
@@ -4559,7 +4548,7 @@ void CApplication::ProcessSlow()
 
   // update upnp server/renderer states
 #ifdef HAS_UPNP
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP) && UPNP::CUPnP::IsInstantiated())
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP) && UPNP::CUPnP::IsInstantiated())
     UPNP::CUPnP::GetInstance()->UpdateState();
 #endif
 
@@ -4672,11 +4661,6 @@ std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;
-}
-
-void CApplication::SetCurrentFileItem(const CFileItem& item)
-{
-  m_itemCurrentFile.reset(new CFileItem(item));
 }
 
 CFileItem& CApplication::CurrentUnstackedItem()
@@ -5174,7 +5158,7 @@ bool CApplication::SetLanguage(const std::string &strLanguage)
 bool CApplication::LoadLanguage(bool reload)
 {
   // load the configured langauge
-  if (!g_langInfo.SetLanguage(m_fallbackLanguageLoaded, "", reload))
+  if (!g_langInfo.SetLanguage("", reload))
     return false;
 
   // set the proper audio and subtitle languages

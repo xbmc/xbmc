@@ -36,7 +36,7 @@ extern "C" {
 class COMXAudioCodecOMX
 {
 public:
-  COMXAudioCodecOMX(CProcessInfo &processInfo);
+  explicit COMXAudioCodecOMX(CProcessInfo &processInfo);
   virtual ~COMXAudioCodecOMX();
   bool Open(CDVDStreamInfo &hints);
   void Dispose();

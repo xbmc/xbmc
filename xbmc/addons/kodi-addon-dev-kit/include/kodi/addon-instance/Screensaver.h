@@ -261,7 +261,7 @@ namespace addon
     ///
     /// @warning Only use `instance` from the CreateInstance call
     ///
-    CInstanceScreensaver(KODI_HANDLE instance)
+    explicit CInstanceScreensaver(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_SCREENSAVER)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)

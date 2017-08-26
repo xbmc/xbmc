@@ -52,7 +52,7 @@ namespace XFILE
     virtual int Stat(struct __stat64* statData);
 
   protected:
-    CWin32File(bool asSmbFile);
+    explicit CWin32File(bool asSmbFile);
     HANDLE  m_hFile;
     int64_t m_filePos;
     bool    m_allowWrite;

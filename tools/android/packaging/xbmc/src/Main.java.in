@@ -1,0 +1,258 @@
+package @APP_PACKAGE@;
+
+import android.app.NativeActivity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.hardware.input.InputManager;
+import android.graphics.Rect;
+import android.media.AudioManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Choreographer;
+import android.view.Gravity;
+import android.view.View;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.os.Handler;
+
+public class Main extends NativeActivity implements Choreographer.FrameCallback
+{
+  private static final String TAG = "@APP_NAME_LC@";
+
+  public static Main MainActivity = null;
+
+  private XBMCSettingsContentObserver mSettingsContentObserver;
+  private XBMCInputDeviceListener mInputDeviceListener;
+  private XBMCJsonRPC mJsonRPC = null;
+  private View thisView = null;
+  private Handler handler = new Handler();
+  private Intent mNewIntent = null;
+
+  native void _onNewIntent(Intent intent);
+  native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
+  native void _doFrame(long frameTimeNanos);
+  native void _onVisibleBehindCanceled();
+  
+  private Runnable leanbackUpdateRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      Log.d(TAG, "Updating recommendations");
+      new Thread()
+      {
+        public void run()
+        {
+          mJsonRPC.updateLeanback(Main.this);
+        }
+      }.start();
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60*60) * 1000);
+    }
+  };
+
+  public Main()
+  {
+    super();
+    MainActivity = this;
+  }
+
+  public Rect getDisplayRect()
+  {
+    Rect ret = new Rect();
+    ret.top = 0;
+    ret.left = 0;
+    ret.right = 0;
+    ret.bottom = 0;
+
+    try
+    {
+      ret.right = thisView.getRootView().getWidth();
+      ret.bottom = thisView.getRootView().getHeight();
+    }
+    catch (Exception e) {}
+
+    return ret;
+  }
+
+  public void registerMediaButtonEventReceiver()
+  {
+    AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+    manager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
+  }
+
+  public void unregisterMediaButtonEventReceiver()
+  {
+    AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+    manager.unregisterMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState)
+  {
+    System.loadLibrary("@APP_NAME_LC@");
+
+    super.onCreate(savedInstanceState);
+    getWindow().setFormat(PixelFormat.TRANSPARENT);
+
+    setContentView(R.layout.activity_main);
+    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+    mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
+    getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
+
+    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    {
+      // Leanback
+      mJsonRPC = new XBMCJsonRPC();
+      handler.removeCallbacks(leanbackUpdateRunnable);
+      handler.postDelayed(leanbackUpdateRunnable, 30*1000);
+    }
+
+    // register the InputDeviceListener implementation
+    mInputDeviceListener = new XBMCInputDeviceListener();
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.registerInputDeviceListener(mInputDeviceListener, handler);
+
+    thisView = getWindow().getDecorView();
+    thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
+          {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility)
+            {
+              if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0)
+              {
+                handler.post(new Runnable()
+                {
+                  public void run()
+                  {
+                    if (android.os.Build.VERSION.SDK_INT >= 19) {
+                      // Immersive mode
+
+                      // Constants from API > 17
+                      final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+
+                      thisView.setSystemUiVisibility(
+                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_FULLSCREEN
+                              | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    }
+                  }
+                });
+              }
+            }
+          });
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent)
+  {
+    super.onNewIntent(intent);
+    // Delay until after Resume
+    mNewIntent = intent;
+  }
+
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    getWindow().setFormat(PixelFormat.TRANSPARENT);
+
+    Choreographer.getInstance().removeFrameCallback(this);
+    Choreographer.getInstance().postFrameCallback(this);
+  }
+
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+
+    if (android.os.Build.VERSION.SDK_INT >= 19) {
+      // Immersive mode
+
+      // Constants from API > 17
+      final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+
+      thisView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+              | View.SYSTEM_UI_FLAG_FULLSCREEN
+              | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    // New intent ?
+    if (mNewIntent != null)
+    {
+      handler.postDelayed(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          try {
+            _onNewIntent(mNewIntent);
+          } catch (UnsatisfiedLinkError e) {
+            Log.e("Main", "Native not registered");
+          } finally {
+            mNewIntent = null;
+          }
+        }
+      }, 500);
+    }
+  }
+
+  @Override
+  public void onPause()
+  {
+    super.onPause();
+  }
+  
+  @Override
+  public void onActivityResult(int requestCode, int resultCode,
+      Intent resultData)
+  {
+    _onActivityResult(requestCode, resultCode, resultData);
+  }
+
+  @Override
+  public void onDestroy()
+  {
+    // unregister the InputDeviceListener implementation
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.unregisterInputDeviceListener(mInputDeviceListener);
+
+    getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
+    super.onDestroy();
+  }
+  
+  @Override
+  public void onVisibleBehindCanceled()
+  {
+    _onVisibleBehindCanceled();
+    super.onVisibleBehindCanceled();
+  }
+  
+  @Override
+  public void doFrame(long frameTimeNanos)
+  {
+    Choreographer.getInstance().postFrameCallback(this);
+    _doFrame(frameTimeNanos);
+  }
+
+  private native void _callNative(long funcAddr, long variantAddr);
+
+  private void runNativeOnUiThread(final long funcAddr, final long variantAddr)
+  {
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        _callNative(funcAddr, variantAddr);
+      }
+    });
+  }
+}

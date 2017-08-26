@@ -60,7 +60,7 @@ class NPT_XbmcFileStream
 {
 public:
     // constructors and destructor
-    NPT_XbmcFileStream(NPT_XbmcFileReference file) :
+    explicit NPT_XbmcFileStream(NPT_XbmcFileReference file) :
       m_FileReference(file) {}
 
     // NPT_FileInterface methods
@@ -126,7 +126,7 @@ class NPT_XbmcFileInputStream : public NPT_InputStream,
 {
 public:
     // constructors and destructor
-    NPT_XbmcFileInputStream(NPT_XbmcFileReference& file) :
+    explicit NPT_XbmcFileInputStream(NPT_XbmcFileReference& file) :
         NPT_XbmcFileStream(file) {}
 
     // NPT_InputStream methods
@@ -208,7 +208,7 @@ class NPT_XbmcFileOutputStream : public NPT_OutputStream,
 {
 public:
     // constructors and destructor
-    NPT_XbmcFileOutputStream(NPT_XbmcFileReference& file) :
+    explicit NPT_XbmcFileOutputStream(NPT_XbmcFileReference& file) :
         NPT_XbmcFileStream(file) {}
 
     // NPT_OutputStream methods
@@ -253,7 +253,7 @@ class NPT_XbmcFile: public NPT_FileInterface
 {
 public:
     // constructors and destructor
-    NPT_XbmcFile(NPT_File& delegator);
+    explicit NPT_XbmcFile(NPT_File& delegator);
    ~NPT_XbmcFile() override;
 
     // NPT_FileInterface methods

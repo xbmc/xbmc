@@ -146,7 +146,7 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
                                  unsigned int usec, void *data)
 {
   drmVBlank vbl;
-  VblInfo *info = (VblInfo*)data;
+  VblInfo *info = static_cast<VblInfo*>(data);
   drmVBlankSeqType crtcSel = CrtcSel();
 
   vbl.request.type = (drmVBlankSeqType)(DRM_VBLANK_RELATIVE | DRM_VBLANK_EVENT | crtcSel);

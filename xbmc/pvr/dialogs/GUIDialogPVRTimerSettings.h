@@ -19,17 +19,17 @@
  *
  */
 
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h" // PVR_CHANNEL_INVALID_UID
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/SettingConditions.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
 
 #include "pvr/PVRTypes.h"
-
-#include <map>
-#include <utility>
-#include <vector>
-#include <string>
 
 class CSetting;
 

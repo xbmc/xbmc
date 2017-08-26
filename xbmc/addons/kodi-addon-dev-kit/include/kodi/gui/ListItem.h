@@ -37,7 +37,7 @@ namespace gui
     GUIHANDLE GetControlHandle() const { return m_controlHandle; }
 
   protected:
-    CAddonGUIControlBase(CAddonGUIControlBase* window)
+    explicit CAddonGUIControlBase(CAddonGUIControlBase* window)
     : m_controlHandle(nullptr),
       m_interface(::kodi::addon::CAddonBase::m_interface->toKodi),
       m_Window(window) {}
@@ -111,7 +111,7 @@ namespace gui
      * Related to call of "ListItemPtr kodi::gui::CWindow::GetListItem(int listPos)"
      * Not needed for addon development itself
      */
-    CListItem(GUIHANDLE listItemHandle)
+    explicit CListItem(GUIHANDLE listItemHandle)
       : CAddonGUIControlBase(nullptr)
     {
       m_controlHandle = listItemHandle;

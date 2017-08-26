@@ -23,9 +23,6 @@
 #include "windowing/WindowingFactory.h"
 #include <set>
 
-// Override for platform ports
-#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
-
 using namespace VIDEOPLAYER;
 
 CProcessInfo* CProcessInfoWin::Create()
@@ -54,5 +51,3 @@ std::vector<AVPixelFormat> CProcessInfoWin::GetRenderFormats()
 
   return std::vector<AVPixelFormat>(formats.begin(), formats.end());
 }
-
-#endif

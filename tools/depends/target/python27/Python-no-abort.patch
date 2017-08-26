@@ -1,7 +1,7 @@
 diff -ur orig/Modules/posixmodule.c arm-linux-androideabi-21/Modules/posixmodule.c
 --- orig/Modules/posixmodule.c	2016-07-30 22:35:02.016158026 +0200
 +++ arm-linux-androideabi-21/Modules/posixmodule.c	2016-08-27 13:02:46.755833610 +0200
-@@ -8632,7 +8632,7 @@
+@@ -8615,7 +8615,7 @@
  static PyObject *
  posix_abort(PyObject *self, PyObject *noargs)
  {

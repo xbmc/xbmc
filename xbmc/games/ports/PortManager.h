@@ -55,7 +55,7 @@ namespace GAME
   class CPortManager : public Observable
   {
   public:
-    CPortManager(PERIPHERALS::CPeripherals& peripheralManager);
+    explicit CPortManager(PERIPHERALS::CPeripherals& peripheralManager);
     virtual ~CPortManager();
 
     /*!

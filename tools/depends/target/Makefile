@@ -11,7 +11,7 @@ DEPENDS = \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mysql libffi \
 	python27 libshairplay libfmt \
-	libplist libcec libbluray tinyxml dummy-libxbmc \
+	libplist libcec libbluray tinyxml \
 	libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
@@ -42,7 +42,8 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += libuuid libandroidjni
+  DEPENDS += dummy-libxbmc libuuid libandroidjni
+  PYMODULE_DEPS = dummy-libxbmc
   CROSSGUID_DEPS = libuuid
 endif
 
@@ -60,16 +61,22 @@ ifeq ($(NEED_LIBICONV),1)
   ICONV = libiconv
 endif
 
+WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += linux-system-libs
+    WAYLANDPP_DEPS += linux-system-libs
   endif
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
   CROSSGUID_DEPS = libuuid
+endif
+
+ifeq ($(ENABLE_WAYLAND),yes)
+  DEPENDS += wayland waylandpp wayland-protocols
 endif
 
 .PHONY: $(DEPENDS)
@@ -80,10 +87,11 @@ gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 curl: openssl
-libass: fontconfig libpng freetype2 expat $(ICONV)
+libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
+libcdio-gplv3: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
@@ -93,9 +101,9 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pycryptodome: python27 pythonmodule-setuptools
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
-pythonmodule-setuptools: python27
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) python27 pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
+pythonmodule-setuptools: $(PYMODULE_DEPS) python27
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 platform: p8-platform
@@ -103,6 +111,8 @@ libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
+wayland: expat libffi
+waylandpp: wayland $(WAYLANDPP_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -129,6 +139,7 @@ distclean::
 
 linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/damageproto.pc ] || ln -sf  /usr/share/pkgconfig/damageproto.pc $(PREFIX)/lib/pkgconfig/damageproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/fixesproto.pc ] || ln -sf  /usr/share/pkgconfig/fixesproto.pc $(PREFIX)/lib/pkgconfig/fixesproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/x11-xcb.pc ] || ln -sf  /usr/lib/$(HOST)/pkgconfig/x11-xcb.pc $(PREFIX)/lib/pkgconfig/x11-xcb.pc

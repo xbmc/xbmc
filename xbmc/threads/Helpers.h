@@ -43,7 +43,7 @@ namespace XbmcThreads
     P predicate;
 
   public:
-    inline InversePredicate(P predicate_) : predicate(predicate_) {}
+    inline explicit InversePredicate(P predicate_) : predicate(predicate_) {}
     inline InversePredicate(const InversePredicate<P>& other) : predicate(other.predicate) {}
     inline InversePredicate<P>& operator=(InversePredicate<P>& other) { predicate = other.predicate; }
 

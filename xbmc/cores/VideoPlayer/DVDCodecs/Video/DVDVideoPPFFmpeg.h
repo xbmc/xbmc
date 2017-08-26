@@ -30,12 +30,11 @@ class CDVDVideoPPFFmpeg
 {
 public:
 
-  CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
+  explicit CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
   ~CDVDVideoPPFFmpeg();
 
   void SetType(const std::string& mType, bool deinterlace);
-  bool Process(VideoPicture *pPicture);
-  bool GetPicture(VideoPicture *pPicture);
+  void Process(VideoPicture *pPicture);
 
 protected:
   std::string m_sType;
@@ -44,9 +43,6 @@ protected:
   void *m_pContext;
   void *m_pMode;
   bool m_deinterlace;
-
-  VideoPicture *m_pSource = nullptr;
-  VideoPicture m_pTarget;
 
   void Dispose();
 

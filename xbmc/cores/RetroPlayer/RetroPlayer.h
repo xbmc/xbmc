@@ -36,13 +36,15 @@ namespace RETRO
 {
   class CRetroPlayerAudio;
   class CRetroPlayerAutoSave;
+  class CRetroPlayerInput;
   class CRetroPlayerVideo;
+  class CRPRenderManager;
 
   class CRetroPlayer : public IPlayer,
                        public IRenderMsg
   {
   public:
-    CRetroPlayer(IPlayerCallback& callback);
+    explicit CRetroPlayer(IPlayerCallback& callback);
     ~CRetroPlayer() override;
 
     // implementation of IPlayer
@@ -63,7 +65,6 @@ namespace RETRO
     void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
     //virtual bool SeekScene(bool bPlus = true) override { return false; }
     void SeekPercentage(float fPercent = 0) override;
-    float GetPercentage() override;
     float GetCachePercentage() override;
     void SetMute(bool bOnOff) override;
     //virtual void SetVolume(float volume) override { }
@@ -101,12 +102,8 @@ namespace RETRO
     //virtual float GetActualFPS() override { return 0.0f; }
     void SeekTime(int64_t iTime = 0) override;
     bool SeekTimeRelative(int64_t iTime) override;
-    int64_t GetTime() override;
-    //virtual void SetTime(int64_t time) override { } // Only used by Air Tunes Server
-    int64_t GetTotalTime() override;
     //virtual void SetTotalTime(int64_t time) override { } // Only used by Air Tunes Server
     //virtual int GetSourceBitrate() override { return 0; }
-    bool GetStreamDetails(CStreamDetails &details) override;
     void SetSpeed(float speed) override;
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }
@@ -122,20 +119,20 @@ namespace RETRO
     //virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override { audioCaps.assign(1,IPC_AUD_ALL); }
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
     void FrameMove() override;
-    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
-    void FlushRenderer() override { m_renderManager.Flush(true); }
-    void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
-    float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
-    void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
-    bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
+    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
+    void FlushRenderer() override;
+    void SetRenderViewMode(int mode) override;
+    float GetRenderAspectRatio() override;
+    void TriggerUpdateResolution() override;
+    bool IsRenderingVideo() override;
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
-    bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
-    bool Supports(ERENDERFEATURE feature) override { return m_renderManager.Supports(feature); }
-    unsigned int RenderCaptureAlloc() override { return m_renderManager.AllocRenderCapture(); }
-    void RenderCaptureRelease(unsigned int captureId) override { m_renderManager.ReleaseRenderCapture(captureId); }
-    void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { m_renderManager.StartRenderCapture(captureId, width, height, flags); }
-    bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
+    bool Supports(ESCALINGMETHOD method) override;
+    bool Supports(ERENDERFEATURE feature) override;
+    unsigned int RenderCaptureAlloc() override;
+    void RenderCaptureRelease(unsigned int captureId) override;
+    void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;
+    bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override;
 
     // implementation of IRenderMsg
     virtual void VideoParamsChange() override { }
@@ -148,14 +145,26 @@ namespace RETRO
 
   private:
     /*!
+     * \brief Called when the speed changes
+     * \param newSpeed The new speed, possibly equal to the previous speed
+     */
+    void OnSpeedChange(double newSpeed);
+
+    /*!
      * \brief Closes the OSD and shows the FullscreenGame window
      */
     void CloseOSD();
+
+    void RegisterWindowCallbacks();
+    void UnregisterWindowCallbacks();
 
     /**
      * \brief Dump game information (if any) to the debug log.
      */
     void PrintGameInfo(const CFileItem &file) const;
+
+    uint64_t GetTime();
+    uint64_t GetTotalTime();
 
     enum class State
     {
@@ -167,10 +176,11 @@ namespace RETRO
     State                              m_state = State::STARTING;
     double                             m_priorSpeed = 0.0f; // Speed of gameplay before entering OSD
     CDVDClock                          m_clock;
-    CRenderManager                     m_renderManager;
+    std::unique_ptr<CRPRenderManager>  m_renderManager;
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;
+    std::unique_ptr<CRetroPlayerInput> m_input;
     std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
     GAME::GameClientPtr                m_gameClient;
     CCriticalSection                   m_mutex;

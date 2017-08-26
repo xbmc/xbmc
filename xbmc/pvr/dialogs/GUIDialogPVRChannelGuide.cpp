@@ -21,9 +21,9 @@
 #include "GUIDialogPVRChannelGuide.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "ServiceBroker.h"
 #include "view/ViewState.h"
 
 #include "pvr/PVRGUIActions.h"

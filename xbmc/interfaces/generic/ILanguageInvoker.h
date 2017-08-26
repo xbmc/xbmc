@@ -40,7 +40,7 @@ typedef enum {
 class ILanguageInvoker
 {
 public:
-  ILanguageInvoker(ILanguageInvocationHandler *invocationHandler);
+  explicit ILanguageInvoker(ILanguageInvocationHandler *invocationHandler);
   virtual ~ILanguageInvoker();
 
   virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>());

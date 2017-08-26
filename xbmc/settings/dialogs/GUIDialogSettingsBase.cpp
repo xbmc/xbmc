@@ -319,9 +319,9 @@ void CGUIDialogSettingsBase::DoProcess(unsigned int currentTime, CDirtyRegionLis
     if (m_fadedControl && (m_fadedControl != control->GetID() || m_fadedControl == m_focusedControl))
     {
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-        ((CGUIButtonControl *)control)->SetAlpha(0xFF);
+        static_cast<CGUIButtonControl*>(control)->SetAlpha(0xFF);
       else
-        ((CGUIButtonControl *)control)->SetSelected(false);
+        static_cast<CGUIButtonControl*>(control)->SetSelected(false);
       m_fadedControl = 0;
     }
 
@@ -329,9 +329,9 @@ void CGUIDialogSettingsBase::DoProcess(unsigned int currentTime, CDirtyRegionLis
     {
       m_fadedControl = control->GetID();
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-        ((CGUIButtonControl *)control)->SetAlpha(0x80);
+        static_cast<CGUIButtonControl*>(control)->SetAlpha(0x80);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
-        ((CGUIButtonControl *)control)->SetSelected(true);
+        static_cast<CGUIButtonControl*>(control)->SetSelected(true);
       else
         m_fadedControl = 0;
 
@@ -416,7 +416,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
     {
       CGUIButtonControl *pButton = NULL;
       if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
-        pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
+        pButton = new CGUIToggleButtonControl(*static_cast<CGUIToggleButtonControl*>(m_pOriginalCategoryButton));
       else
         pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
       pButton->SetLabel(GetSettingsLabel(*category));
@@ -651,8 +651,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
 
-    ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlRadioButtonSetting((CGUIRadioButtonControl *)pControl, iControlID, pSetting, this));
+    static_cast<CGUIRadioButtonControl*>(pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlRadioButtonSetting(static_cast<CGUIRadioButtonControl*>(pControl), iControlID, pSetting, this));
   }
   else if (controlType == "spinner")
   {
@@ -661,8 +661,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
 
-    ((CGUISpinControlEx *)pControl)->SetText(label);
-    pSettingControl.reset(new CGUIControlSpinExSetting((CGUISpinControlEx *)pControl, iControlID, pSetting, this));
+    static_cast<CGUISpinControlEx*>(pControl)->SetText(label);
+    pSettingControl.reset(new CGUIControlSpinExSetting(static_cast<CGUISpinControlEx*>(pControl), iControlID, pSetting, this));
   }
   else if (controlType == "edit")
   {
@@ -671,8 +671,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
       
-    ((CGUIEditControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlEditSetting((CGUIEditControl *)pControl, iControlID, pSetting, this));
+    static_cast<CGUIEditControl*>(pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlEditSetting(static_cast<CGUIEditControl*>(pControl), iControlID, pSetting, this));
   }
   else if (controlType == "list")
   {
@@ -681,8 +681,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
 
-    ((CGUIButtonControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
+    static_cast<CGUIButtonControl*>(pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlListSetting(static_cast<CGUIButtonControl*>(pControl), iControlID, pSetting, this));
   }
   else if (controlType == "button" || controlType == "slider")
   {
@@ -694,8 +694,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
       if (pControl == NULL)
         return NULL;
       
-      ((CGUIButtonControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
+      static_cast<CGUIButtonControl*>(pControl)->SetLabel(label);
+      pSettingControl.reset(new CGUIControlButtonSetting(static_cast<CGUIButtonControl*>(pControl), iControlID, pSetting, this));
     }
     else
     {
@@ -704,8 +704,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
       if (pControl == NULL)
         return NULL;
       
-      ((CGUISettingsSliderControl *)pControl)->SetText(label);
-      pSettingControl.reset(new CGUIControlSliderSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
+      static_cast<CGUISettingsSliderControl*>(pControl)->SetText(label);
+      pSettingControl.reset(new CGUIControlSliderSetting(static_cast<CGUISettingsSliderControl*>(pControl), iControlID, pSetting, this));
     }
   }
   else if (controlType == "range")
@@ -715,8 +715,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
 
-    ((CGUISettingsSliderControl *)pControl)->SetText(label);
-    pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
+    static_cast<CGUISettingsSliderControl*>(pControl)->SetText(label);
+    pSettingControl.reset(new CGUIControlRangeSetting(static_cast<CGUISettingsSliderControl*>(pControl), iControlID, pSetting, this));
   }
   else if (controlType == "label")
   {
@@ -725,8 +725,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     if (pControl == NULL)
       return NULL;
 
-    ((CGUIButtonControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlLabelSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
+    static_cast<CGUIButtonControl*>(pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlLabelSetting(static_cast<CGUIButtonControl*>(pControl), iControlID, pSetting, this));
   }
   else
     return NULL;
@@ -746,7 +746,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
   if (pControl == NULL)
     return NULL;
 
-  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID, this)), width, iControlID);
+  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting(static_cast<CGUIImage*>(pControl), iControlID, this)), width, iControlID);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(std::shared_ptr<CSettingGroup> group, float width, int &iControlID)
@@ -758,9 +758,9 @@ CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(std::shared_ptr<CSettingGroup
   if (pControl == NULL)
     return NULL;
 
-  ((CGUILabelControl *)pControl)->SetLabel(GetSettingsLabel(group));
+  static_cast<CGUILabelControl*>(pControl)->SetLabel(GetSettingsLabel(group));
 
-  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting((CGUILabelControl *)pControl, iControlID, this)), width, iControlID);
+  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting(static_cast<CGUILabelControl*>(pControl), iControlID, this)), width, iControlID);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID)

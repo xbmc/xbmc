@@ -158,6 +158,11 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
 {
 }
 
+bool CGUIEPGGridContainer::HasData() const
+{
+  return m_gridModel && m_gridModel->HasProgrammeItems();
+}
+
 void CGUIEPGGridContainer::AllocResources()
 {
   IGUIContainer::AllocResources();
@@ -681,18 +686,18 @@ void CGUIEPGGridContainer::UpdateItems()
 
     if (prevSelectedEpgTag->StartAsUTC().IsValid() && prevSelectedEpgTag->EndAsUTC().IsValid()) // "normal" tag selected
     {
-      const CDateTime gridStart(m_gridModel->GetGridStart());
       const CDateTime eventStart(prevSelectedEpgTag->StartAsUTC());
-
-      if (gridStart >= eventStart)
+      if (oldGridStart >= eventStart)
       {
         // start of previously selected event is before grid start
         newBlockIndex = eventOffset;
       }
       else
-        newBlockIndex = (eventStart - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+      {
+        newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart) + eventOffset;
+      }
 
-      const CPVRChannelPtr channel(prevSelectedEpgTag->ChannelTag());
+      const CPVRChannelPtr channel(prevSelectedEpgTag->Channel());
       if (channel)
         channelUid = channel->UniqueID();
 
@@ -702,7 +707,7 @@ void CGUIEPGGridContainer::UpdateItems()
     {
       const GridItem *currItem(GetItem(m_channelCursor));
       if (currItem)
-        channelUid = currItem->item->GetEPGInfoTag()->ChannelTag()->UniqueID();
+        channelUid = currItem->item->GetEPGInfoTag()->Channel()->UniqueID();
 
       const GridItem *prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)
@@ -710,16 +715,21 @@ void CGUIEPGGridContainer::UpdateItems()
         const CPVREpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
-          const CDateTime gridStart(m_gridModel->GetGridStart());
-          const CDateTime eventEnd(tag->EndAsUTC());
+          const CDateTime eventStart(tag->StartAsUTC());
 
-          if (gridStart >= eventEnd)
+          if (oldGridStart >= eventStart)
           {
-            // start of previously selected gap tag is before grid start
+            // start of previously selected event is before grid start
             newBlockIndex = eventOffset;
           }
           else
-            newBlockIndex = (eventEnd - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+          {
+            // first block of previously selected gap tag is one block after last block of tag before previously selected gap tag.
+            int gapTagStartIndex = m_gridModel->GetLastEventBlock(tag->EndAsUTC()) + 1;
+
+            newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart); // points to tag before previously selected gap tag
+            eventOffset = gapTagStartIndex - newBlockIndex; // newBlockIndex + eventOffset points to first block of previously selected gap tag
+          }
 
           broadcastUid = tag->UniqueBroadcastID();
         }
@@ -772,7 +782,7 @@ void CGUIEPGGridContainer::UpdateItems()
         newChannelIndex = iChannelIndex;
       }
       else if (newChannelIndex >= m_gridModel->ChannelItemsSize() ||
-               m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag()->ChannelTag() != prevSelectedEpgTag->ChannelTag())
+               m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag()->Channel() != prevSelectedEpgTag->Channel())
       {
         // default to first channel
         newChannelIndex = 0;
@@ -1204,6 +1214,7 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
       return EVENT_RESULT_HANDLED;
     }
   case ACTION_GESTURE_END:
+  case ACTION_GESTURE_ABORT:
     {
       // we're done with exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
@@ -1285,7 +1296,7 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
   return true;
 }
 
-CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel()
+CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel() const
 {
   CFileItemPtr fileItem;
   {

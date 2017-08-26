@@ -93,7 +93,9 @@ struct SPlayerState
   {
     timestamp = 0;
     time = 0;
-    time_total = 0;
+    startTime = 0;
+    timeMin = 0;
+    timeMax = 0;
     time_offset = 0;
     dts = DVD_NOPTS_VALUE;
     player_state  = "";
@@ -118,7 +120,9 @@ struct SPlayerState
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time
-  double time_total;        // total playback time
+  double timeMax;
+  double timeMin;
+  time_t startTime;
   double dts;               // last known dts
 
   std::string player_state; // full player state
@@ -292,7 +296,7 @@ class CProcessInfo;
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource, public IRenderMsg
 {
 public:
-  CVideoPlayer(IPlayerCallback& callback);
+  explicit CVideoPlayer(IPlayerCallback& callback);
   ~CVideoPlayer() override;
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   bool CloseFile(bool reopen = false) override;
@@ -306,7 +310,6 @@ public:
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(bool bPlus = true) override;
   void SeekPercentage(float iPercent) override;
-  float GetPercentage() override;
   float GetCachePercentage() override;
 
   void SetVolume(float nVolume) override;
@@ -353,15 +356,12 @@ public:
 
   void SeekTime(int64_t iTime) override;
   bool SeekTimeRelative(int64_t iTime) override;
-  int64_t GetTime() override;
-  int64_t GetTotalTime() override;
   void SetSpeed(float speed) override;
   void SetTempo(float tempo) override;
   bool SupportsTempo() override;
   bool OnAction(const CAction &action) override;
 
   int GetSourceBitrate() override;
-  bool GetStreamDetails(CStreamDetails &details) override;
   void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
 
   std::string GetPlayerState() override;
@@ -454,8 +454,6 @@ protected:
 
   void SetCaching(ECacheState state);
 
-  int64_t GetTotalTimeInMsec();
-
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
@@ -486,8 +484,10 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdatePlayState(double timeout);
-  void UpdateStreamInfos();
   void GetGeneralInfo(std::string& strVideoInfo);
+  int64_t GetUpdatedTime();
+  int64_t GetTime();
+  float GetPercentage();
 
   bool m_players_created;
 
@@ -585,6 +585,4 @@ protected:
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;
   bool m_omxplayer_mode;            // using omxplayer acceleration
-
-  XbmcThreads::EndTime m_player_status_timer;
 };

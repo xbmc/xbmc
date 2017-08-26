@@ -74,8 +74,8 @@ namespace PERIPHERALS
     const char *VendorIdAsString(void) const       { return m_strVendorId.c_str(); }
     int ProductId(void) const                      { return m_iProductId; }
     const char *ProductIdAsString(void) const      { return m_strProductId.c_str(); }
-    const PeripheralType Type(void) const          { return m_type; }
-    const PeripheralBusType GetBusType(void) const { return m_busType; };
+    PeripheralType Type(void) const          { return m_type; }
+    PeripheralBusType GetBusType(void) const { return m_busType; };
     const std::string &DeviceName(void) const       { return m_strDeviceName; }
     bool IsHidden(void) const                      { return m_bHidden; }
     void SetHidden(bool bSetTo = true)             { m_bHidden = bSetTo; }

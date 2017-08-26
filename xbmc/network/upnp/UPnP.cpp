@@ -40,7 +40,6 @@
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
@@ -120,10 +119,7 @@ int ConvertLogLevel(int nptLogLevel)
 void
 UPnPLogger(const NPT_LogRecord* record)
 {
-    if (!g_advancedSettings.CanLogComponent(LOGUPNP))
-        return;
-
-    CLog::Log(ConvertLogLevel(record->m_Level), "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
+    CLog::Log(ConvertLogLevel(record->m_Level), LOGUPNP, "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
 }
 
 namespace UPNP
@@ -160,7 +156,7 @@ public:
 class CUPnPCleaner : public NPT_Thread
 {
 public:
-    CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
+    explicit CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
     void Run() override {
         delete m_UPnP;
     }
@@ -175,7 +171,7 @@ class CMediaBrowser : public PLT_SyncMediaBrowser,
                       public PLT_MediaContainerChangesListener
 {
 public:
-    CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
+    explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
         : PLT_SyncMediaBrowser(ctrlPoint, true)
     {
         SetContainerListener(this);
@@ -310,7 +306,7 @@ class CMediaController
   , public PLT_MediaController
 {
 public:
-  CMediaController(PLT_CtrlPointReference& ctrl_point)
+  explicit CMediaController(PLT_CtrlPointReference& ctrl_point)
     : PLT_MediaController(ctrl_point)
   {
     PLT_MediaController::SetDelegate(this);
@@ -504,7 +500,7 @@ CUPnP::ReleaseInstance(bool bWait)
 CUPnPServer* CUPnP::GetServer()
 {
   if(upnp)
-    return (CUPnPServer*)upnp->m_ServerHolder->m_Device.AsPointer();
+    return static_cast<CUPnPServer*>(upnp->m_ServerHolder->m_Device.AsPointer());
   return NULL;
 }
 
@@ -784,7 +780,7 @@ void CUPnP::StopRenderer()
 void CUPnP::UpdateState()
 {
   if (!m_RendererHolder->m_Device.IsNull())
-      ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();
+      static_cast<CUPnPRenderer*>(m_RendererHolder->m_Device.AsPointer())->UpdateState();
 }
 
 void CUPnP::RegisterUserdata(void* ptr)

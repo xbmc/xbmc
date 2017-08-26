@@ -26,6 +26,20 @@
   #define M_PI       3.14159265358979323846
 #endif
 
+#ifndef _d3d9TYPES_H_
+#include "DirectXPackedVector.h"
+using namespace DirectX::PackedVector;
+
+DWORD D3DCOLOR_COLORVALUE(float r, float g, float b, float a)
+{
+  XMCOLOR xColor;
+  XMVECTOR xVector = XMVectorSet(r, g, b, a);
+  XMStoreColor(&xColor, xVector);
+  DWORD color = xColor;
+  return color;
+}
+#endif
+
 CGUIWindowTestPatternDX::CGUIWindowTestPatternDX(void) : CGUIWindowTestPattern()
 {
   m_vb = NULL;

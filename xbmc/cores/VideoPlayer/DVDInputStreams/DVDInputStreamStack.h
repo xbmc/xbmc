@@ -27,7 +27,7 @@
 class CDVDInputStreamStack : public CDVDInputStream
 {
 public:
-  CDVDInputStreamStack(const CFileItem& fileitem);
+  explicit CDVDInputStreamStack(const CFileItem& fileitem);
   ~CDVDInputStreamStack() override;
 
   bool Open() override;

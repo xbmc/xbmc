@@ -27,7 +27,7 @@
 class CSettingRequirementCondition : public CSettingConditionItem
 {
 public:
-  CSettingRequirementCondition(CSettingsManager *settingsManager = nullptr)
+  explicit CSettingRequirementCondition(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionItem(settingsManager)
   { }
   ~CSettingRequirementCondition() override = default;
@@ -38,7 +38,7 @@ public:
 class CSettingRequirementConditionCombination : public CSettingConditionCombination
 {
 public:
-  CSettingRequirementConditionCombination(CSettingsManager *settingsManager = nullptr)
+  explicit CSettingRequirementConditionCombination(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionCombination(settingsManager)
   { }
   ~CSettingRequirementConditionCombination() override = default;
@@ -53,6 +53,6 @@ private:
 class CSettingRequirement : public CSettingCondition
 {
 public:
-  CSettingRequirement(CSettingsManager *settingsManager = nullptr);
+  explicit CSettingRequirement(CSettingsManager *settingsManager = nullptr);
   ~CSettingRequirement() override = default;
 };

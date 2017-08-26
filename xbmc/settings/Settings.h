@@ -43,6 +43,7 @@ public:
   static const std::string SETTING_LOOKANDFEEL_SKINCOLORS;
   static const std::string SETTING_LOOKANDFEEL_FONT;
   static const std::string SETTING_LOOKANDFEEL_SKINZOOM;
+  static const std::string SETTING_LOOKANDFEEL_STARTUPACTION;
   static const std::string SETTING_LOOKANDFEEL_STARTUPWINDOW;
   static const std::string SETTING_LOOKANDFEEL_SOUNDSKIN;
   static const std::string SETTING_LOOKANDFEEL_ENABLERSSFEEDS;
@@ -170,7 +171,6 @@ public:
   static const std::string SETTING_PVRMANAGER_CHANNELSCAN;
   static const std::string SETTING_PVRMANAGER_RESETDB;
   static const std::string SETTING_PVRMENU_DISPLAYCHANNELINFO;
-  static const std::string SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH;
   static const std::string SETTING_PVRMENU_ICONPATH;
   static const std::string SETTING_PVRMENU_SEARCHICONS;
   static const std::string SETTING_EPG_DAYSTODISPLAY;
@@ -181,7 +181,6 @@ public:
   static const std::string SETTING_EPG_IGNOREDBFORCLIENT;
   static const std::string SETTING_EPG_RESETEPG;
   static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN;
-  static const std::string SETTING_PVRPLAYBACK_STARTLAST;
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;
   static const std::string SETTING_PVRPLAYBACK_SCANTIME;
   static const std::string SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH;
@@ -278,6 +277,7 @@ public:
   static const std::string SETTING_SERVICES_AIRPLAYVIDEOSUPPORT;
   static const std::string SETTING_SMB_WINSSERVER;
   static const std::string SETTING_SMB_WORKGROUP;
+  static const std::string SETTING_SMB_MAXPROTOCOL;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;
   static const std::string SETTING_VIDEOSCREEN_SCREEN;
   static const std::string SETTING_VIDEOSCREEN_RESOLUTION;

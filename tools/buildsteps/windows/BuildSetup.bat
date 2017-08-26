@@ -79,7 +79,7 @@ set WORKSPACE=%base_dir%\kodi-build
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "%cmakeGenerator%" %base_dir%
+  cmake.exe -G "%cmakeGenerator%" %cmakeProps% %base_dir%
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE

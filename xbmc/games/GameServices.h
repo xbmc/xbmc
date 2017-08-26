@@ -31,6 +31,11 @@ namespace PERIPHERALS
 
 namespace KODI
 {
+namespace RETRO
+{
+  class CGUIGameControlManager;
+}
+
 namespace GAME
 {
   class CControllerManager;
@@ -48,12 +53,15 @@ namespace GAME
 
     CPortManager& PortManager();
 
+    RETRO::CGUIGameControlManager &GameControls() { return *m_gameControlManager; }
+
   private:
     // Construction parameters
     CControllerManager &m_controllerManager;
 
     // Game services
     std::unique_ptr<CPortManager> m_portManager;
+    std::unique_ptr<RETRO::CGUIGameControlManager> m_gameControlManager;
   };
 }
 }

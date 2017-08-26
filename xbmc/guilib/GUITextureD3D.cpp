@@ -18,8 +18,6 @@
  *
  */
 
-#ifdef HAS_DX
-
 #include "D3DResource.h"
 #include "GUIShaderDX.h"
 #include "GUITextureD3D.h"
@@ -147,5 +145,3 @@ void CGUITextureD3D::DrawQuad(const CRect &rect, color_t color, CBaseTexture *te
 
   CD3DTexture::DrawQuad(rect, color, numViews, &views, texCoords, texture ? SHADER_METHOD_RENDER_TEXTURE_BLEND : SHADER_METHOD_RENDER_DEFAULT);
 }
-
-#endif

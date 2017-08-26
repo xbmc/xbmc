@@ -634,7 +634,7 @@ bool CGUIControlButtonSetting::OnClick()
       SYSTEMTIME systemdate;
       settingDate->GetDate().GetAsSystemTime(systemdate);
       if (CGUIDialogNumeric::ShowAndGetDate(systemdate, Localize(buttonControl->GetHeading())))
-        SetValid(settingDate->SetDate(systemdate));
+        SetValid(settingDate->SetDate(CDateTime(systemdate)));
     }
     else if (controlFormat == "time")
     {
@@ -651,7 +651,7 @@ bool CGUIControlButtonSetting::OnClick()
       }
       */
       if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))
-        SetValid(settingTime->SetTime(systemtime));
+        SetValid(settingTime->SetTime(CDateTime(systemtime)));
     }
     else if (controlFormat == "action")
     {
@@ -1219,8 +1219,8 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
 
       if (controlFormat == "date" || controlFormat == "time")
       {
-        CDateTime dateLower = (time_t)valueLower;
-        CDateTime dateUpper = (time_t)valueUpper;
+        CDateTime dateLower((time_t)valueLower);
+        CDateTime dateUpper((time_t)valueUpper);
 
         if (controlFormat == "date")
         {

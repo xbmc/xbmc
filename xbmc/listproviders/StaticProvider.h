@@ -29,7 +29,7 @@ class CStaticListProvider : public IListProvider
 {
 public:
   CStaticListProvider(const TiXmlElement *element, int parentID);
-  CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
+  explicit CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
   ~CStaticListProvider() override;
 
   bool Update(bool forceRefresh) override;

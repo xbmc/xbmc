@@ -91,8 +91,8 @@ extern "C" {
    */
   typedef struct EPG_TAG {
     unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event. Event uids must be unique for a channel. Valid uids must be greater than EPG_TAG_INVALID_UID. */
+    unsigned int  iUniqueChannelId;    /*!< @brief (required) unique identifier of the channel this event belongs to. */
     const char *  strTitle;            /*!< @brief (required) this event's title */
-    unsigned int  iChannelNumber;      /*!< @brief (required) the number of the channel this event occurs on */
     time_t        startTime;           /*!< @brief (required) start time in UTC */
     time_t        endTime;             /*!< @brief (required) end time in UTC */
     const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
@@ -116,6 +116,7 @@ extern "C" {
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
     unsigned int  iFlags;              /*!< @brief (optional) bit field of independent flags associated with the EPG entry */
+    const char *  strSeriesLink;       /*!< @brief (optional) series link for this event */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus

@@ -148,7 +148,8 @@ bool Protocol::SendOutMessage(int signal, void *data /* = NULL */, int size /* =
   { CSingleLock lock(criticalSection);
     outMessages.push(msg);
   }
-  containerOutEvent->Set();
+  if (containerOutEvent)
+    containerOutEvent->Set();
 
   return true;
 }
@@ -176,7 +177,8 @@ bool Protocol::SendInMessage(int signal, void *data /* = NULL */, int size /* = 
   { CSingleLock lock(criticalSection);
     inMessages.push(msg);
   }
-  containerInEvent->Set();
+  if (containerInEvent)
+    containerInEvent->Set();
 
   return true;
 }

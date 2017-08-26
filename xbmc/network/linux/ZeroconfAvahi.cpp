@@ -38,7 +38,7 @@
 ///helper RAII-struct to block event loop for modifications
 struct ScopedEventLoopBlock
 {
-  ScopedEventLoopBlock(AvahiThreadedPoll* fp_poll):mp_poll(fp_poll)
+  explicit ScopedEventLoopBlock(AvahiThreadedPoll* fp_poll):mp_poll(fp_poll)
   {
     avahi_threaded_poll_lock(mp_poll);
   }

@@ -31,7 +31,7 @@ class CJNIXBMCNsdManagerRegistrationListener : public CJNINsdManagerRegistration
 public:
   CJNIXBMCNsdManagerRegistrationListener();
   CJNIXBMCNsdManagerRegistrationListener(const CJNIXBMCNsdManagerRegistrationListener& other); 
-  CJNIXBMCNsdManagerRegistrationListener(const jni::jhobject &object) : CJNIBase(object) {}
+  explicit CJNIXBMCNsdManagerRegistrationListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCNsdManagerRegistrationListener();
 
   static void RegisterNatives(JNIEnv* env);

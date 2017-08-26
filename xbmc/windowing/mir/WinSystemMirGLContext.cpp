@@ -58,7 +58,7 @@ bool CWinSystemMirGLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res
   auto ret = CWinSystemMir::SetFullScreen(fullScreen, res, blankOtherDisplays);
   if (ret)
   {
-    CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, 0);
+    CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);
   }
 
   return ret;

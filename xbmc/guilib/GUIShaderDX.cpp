@@ -17,7 +17,6 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#ifdef HAS_DX
 
 #include <d3dcompiler.h>
 #include "GUIShaderDX.h"
@@ -426,5 +425,3 @@ void CGUIShaderDX::ClipToScissorParams(void)
     m_clipYOffset = m_clipYOffset * yMult + (viewPort.y2 + viewPort.y1) / 2;
   }
 }
-
-#endif

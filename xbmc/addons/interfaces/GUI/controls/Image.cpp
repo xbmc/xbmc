@@ -83,7 +83,7 @@ void Interface_GUIControlImage::set_color_diffuse(void* kodiBase, void* handle, 
     return;
   }
 
-  control->SetColorDiffuse(colorDiffuse);
+  control->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
 }
 
 } /* namespace ADDON */

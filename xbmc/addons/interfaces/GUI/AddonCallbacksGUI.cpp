@@ -337,7 +337,7 @@ void CAddonCallbacksGUI::Window_Delete(void *addonData, GUIHANDLE handle)
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -367,7 +367,7 @@ void CAddonCallbacksGUI::Window_SetCallbacks(void *addonData, GUIHANDLE handle, 
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   pAddonWindow->m_clientHandle  = clienthandle;
@@ -392,7 +392,7 @@ bool CAddonCallbacksGUI::Window_Show(void *addonData, GUIHANDLE handle)
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
@@ -402,7 +402,7 @@ bool CAddonCallbacksGUI::Window_Show(void *addonData, GUIHANDLE handle)
 
   Lock();
   if (pAddonWindow->IsDialog())
-    ((CGUIAddonWindowDialog*)pAddonWindow)->Show();
+    static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show();
   else
     g_windowManager.ActivateWindow(pAddonWindow->m_iWindowId);
   Unlock();
@@ -424,21 +424,21 @@ bool CAddonCallbacksGUI::Window_Close(void *addonData, GUIHANDLE handle)
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
   pAddonWindow->m_bModal = false;
   if (pAddonWindow->IsDialog())
-    ((CGUIAddonWindowDialog*)pAddonWindow)->PulseActionEvent();
+    static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->PulseActionEvent();
   else
-    ((CGUIAddonWindow*)pAddonWindow)->PulseActionEvent();
+    static_cast<CGUIAddonWindow*>(pAddonWindow)->PulseActionEvent();
 
   Lock();
   // if it's a dialog, we have to close it a bit different
   if (pAddonWindow->IsDialog())
-    ((CGUIAddonWindowDialog*)pAddonWindow)->Show(false);
+    static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show(false);
   else
     g_windowManager.ActivateWindow(pAddonWindow->m_iOldWindowId);
   pAddonWindow->m_iOldWindowId = 0;
@@ -462,7 +462,7 @@ bool CAddonCallbacksGUI::Window_DoModal(void *addonData, GUIHANDLE handle)
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
@@ -489,7 +489,7 @@ bool CAddonCallbacksGUI::Window_SetFocusId(void *addonData, GUIHANDLE handle, in
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
@@ -524,7 +524,7 @@ int CAddonCallbacksGUI::Window_GetFocusId(void *addonData, GUIHANDLE handle)
     return iControlId;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return iControlId;
@@ -562,7 +562,7 @@ bool CAddonCallbacksGUI::Window_SetCoordinateResolution(void *addonData, GUIHAND
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
@@ -586,7 +586,7 @@ void CAddonCallbacksGUI::Window_SetProperty(void *addonData, GUIHANDLE handle, c
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -613,7 +613,7 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -640,7 +640,7 @@ void CAddonCallbacksGUI::Window_SetPropertyBool(void *addonData, GUIHANDLE handl
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -667,7 +667,7 @@ void CAddonCallbacksGUI::Window_SetPropertyDouble(void *addonData, GUIHANDLE han
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -694,7 +694,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
     return NULL;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return NULL;
@@ -723,7 +723,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
     return -1;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return -1;
@@ -752,7 +752,7 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
     return false;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
@@ -781,7 +781,7 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
     return 0.0;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return 0.0;
@@ -810,7 +810,7 @@ void CAddonCallbacksGUI::Window_ClearProperties(void *addonData, GUIHANDLE handl
     return;
   }
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
@@ -826,7 +826,7 @@ int CAddonCallbacksGUI::Window_GetListSize(void *addonData, GUIHANDLE handle)
   if (!helper || !handle)
     return -1;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   int listSize = pAddonWindow->GetListSize();
@@ -841,7 +841,7 @@ void CAddonCallbacksGUI::Window_ClearList(void *addonData, GUIHANDLE handle)
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   pAddonWindow->ClearList();
@@ -856,8 +856,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_AddItem(void *addonData, GUIHANDLE handle, 
   if (!helper || !handle || !item)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CFileItemPtr pItem((CFileItem*)item);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CFileItemPtr pItem(static_cast<CFileItem*>(item));
   Lock();
   pAddonWindow->AddItem(pItem, itemPosition);
   Unlock();
@@ -871,7 +871,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_AddStringItem(void *addonData, GUIHANDLE ha
   if (!helper || !handle || !itemName)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   CFileItemPtr item(new CFileItem(itemName));
   Lock();
   pAddonWindow->AddItem(item, itemPosition);
@@ -886,7 +886,7 @@ void CAddonCallbacksGUI::Window_RemoveItem(void *addonData, GUIHANDLE handle, in
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   pAddonWindow->RemoveItem(itemPosition);
@@ -902,7 +902,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetListItem(void *addonData, GUIHANDLE hand
     return NULL;
 
   CAddonCallbacksGUI* guiHelper = static_cast<CAddonCallbacksGUI*>(helper->GUILib_GetHelper());
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   CFileItemPtr fi = pAddonWindow->GetListItem(listPos);
@@ -923,7 +923,7 @@ void CAddonCallbacksGUI::Window_SetCurrentListPosition(void *addonData, GUIHANDL
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   pAddonWindow->SetCurrentListPosition(listPos);
@@ -938,7 +938,7 @@ int CAddonCallbacksGUI::Window_GetCurrentListPosition(void *addonData, GUIHANDLE
   if (!helper || !handle)
     return -1;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   Lock();
   int listPos = pAddonWindow->GetCurrentListPosition();
@@ -953,8 +953,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Spin(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_SPINEX)
     return NULL;
 
@@ -967,8 +967,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Button(void *addonData, GUIHANDL
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_BUTTON)
     return NULL;
 
@@ -981,8 +981,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_RadioButton(void *addonData, GUI
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_RADIO)
     return NULL;
 
@@ -995,8 +995,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Edit(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_EDIT)
     return NULL;
 
@@ -1009,8 +1009,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Progress(void *addonData, GUIHAN
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_PROGRESS)
     return NULL;
 
@@ -1023,13 +1023,13 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_RenderAddon(void *addonData, GUI
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_RENDERADDON)
     return NULL;
 
   CGUIAddonRenderingControl *pProxyControl;
-  pProxyControl = new CGUIAddonRenderingControl((CGUIRenderingControl*)pGUIControl);
+  pProxyControl = new CGUIAddonRenderingControl(static_cast<CGUIRenderingControl*>(pGUIControl));
   return pProxyControl;
 }
 
@@ -1039,7 +1039,7 @@ void CAddonCallbacksGUI::Window_SetControlLabel(void *addonData, GUIHANDLE handl
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, pAddonWindow->m_iWindowId, controlId);
   msg.SetLabel(label);
@@ -1052,7 +1052,7 @@ void CAddonCallbacksGUI::Window_MarkDirtyRegion(void *addonData, GUIHANDLE handl
   if (!helper || !handle)
     return;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
 
   pAddonWindow->MarkDirtyRegion();
 }
@@ -1063,7 +1063,7 @@ void CAddonCallbacksGUI::Control_Spin_SetVisible(void *addonData, GUIHANDLE spin
   if (!helper || !spinhandle)
     return;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   pSpin->SetVisible(yesNo);
 }
 
@@ -1073,7 +1073,7 @@ void CAddonCallbacksGUI::Control_Spin_SetText(void *addonData, GUIHANDLE spinhan
   if (!helper || !spinhandle)
     return;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   pSpin->SetText(label);
 }
 
@@ -1083,7 +1083,7 @@ void CAddonCallbacksGUI::Control_Spin_Clear(void *addonData, GUIHANDLE spinhandl
   if (!helper || !spinhandle)
     return;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   pSpin->Clear();
 }
 
@@ -1093,7 +1093,7 @@ void CAddonCallbacksGUI::Control_Spin_AddLabel(void *addonData, GUIHANDLE spinha
   if (!helper || !spinhandle)
     return;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   pSpin->AddLabel(label, iValue);
 }
 
@@ -1103,7 +1103,7 @@ int CAddonCallbacksGUI::Control_Spin_GetValue(void *addonData, GUIHANDLE spinhan
   if (!helper || !spinhandle)
     return -1;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   return pSpin->GetValue();
 }
 
@@ -1113,7 +1113,7 @@ void CAddonCallbacksGUI::Control_Spin_SetValue(void *addonData, GUIHANDLE spinha
   if (!helper || !spinhandle)
     return;
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx*)spinhandle;
+  CGUISpinControlEx *pSpin = static_cast<CGUISpinControlEx*>(spinhandle);
   pSpin->SetValue(iValue);
 }
 
@@ -1123,7 +1123,7 @@ void CAddonCallbacksGUI::Control_RadioButton_SetVisible(void *addonData, GUIHAND
   if (!helper || !handle)
     return;
 
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl*)handle;
+  CGUIRadioButtonControl *pRadioButton = static_cast<CGUIRadioButtonControl*>(handle);
   pRadioButton->SetVisible(yesNo);
 }
 
@@ -1133,7 +1133,7 @@ void CAddonCallbacksGUI::Control_RadioButton_SetText(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return;
 
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl*)handle;
+  CGUIRadioButtonControl *pRadioButton = static_cast<CGUIRadioButtonControl*>(handle);
   pRadioButton->SetLabel(label);
 }
 
@@ -1143,7 +1143,7 @@ void CAddonCallbacksGUI::Control_RadioButton_SetSelected(void *addonData, GUIHAN
   if (!helper || !handle)
     return;
 
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl*)handle;
+  CGUIRadioButtonControl *pRadioButton = static_cast<CGUIRadioButtonControl*>(handle);
   pRadioButton->SetSelected(yesNo);
 }
 
@@ -1153,7 +1153,7 @@ bool CAddonCallbacksGUI::Control_RadioButton_IsSelected(void *addonData, GUIHAND
   if (!helper || !handle)
     return false;
 
-  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl*)handle;
+  CGUIRadioButtonControl *pRadioButton = static_cast<CGUIRadioButtonControl*>(handle);
   return pRadioButton->IsSelected();
 }
 
@@ -1163,7 +1163,7 @@ void CAddonCallbacksGUI::Control_Progress_SetPercentage(void *addonData, GUIHAND
   if (!helper || !handle)
     return;
 
-  CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
+  CGUIProgressControl *pControl = static_cast<CGUIProgressControl*>(handle);
   pControl->SetPercentage(fPercent);
 }
 
@@ -1173,7 +1173,7 @@ float CAddonCallbacksGUI::Control_Progress_GetPercentage(void *addonData, GUIHAN
   if (!helper || !handle)
     return 0.0;
 
-  CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
+  CGUIProgressControl *pControl = static_cast<CGUIProgressControl*>(handle);
   return pControl->GetPercentage();
 }
 
@@ -1183,7 +1183,7 @@ void CAddonCallbacksGUI::Control_Progress_SetInfo(void *addonData, GUIHANDLE han
   if (!helper || !handle)
     return;
 
-  CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
+  CGUIProgressControl *pControl = static_cast<CGUIProgressControl*>(handle);
   pControl->SetInfo(iInfo);
 }
 
@@ -1193,7 +1193,7 @@ int CAddonCallbacksGUI::Control_Progress_GetInfo(void *addonData, GUIHANDLE hand
   if (!helper || !handle)
     return -1;
 
-  CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
+  CGUIProgressControl *pControl = static_cast<CGUIProgressControl*>(handle);
   return pControl->GetInfo();
 }
 
@@ -1203,7 +1203,7 @@ const char* CAddonCallbacksGUI::Control_Progress_GetDescription(void *addonData,
   if (!helper || !handle)
     return NULL;
 
-  CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
+  CGUIProgressControl *pControl = static_cast<CGUIProgressControl*>(handle);
   std::string string = pControl->GetDescription();
 
   char *buffer = (char*) malloc (string.length()+1);
@@ -1220,8 +1220,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_Slider(void *addonData, GUIHANDL
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_SLIDER)
     return NULL;
 
@@ -1234,7 +1234,7 @@ void CAddonCallbacksGUI::Control_Slider_SetVisible(void *addonData, GUIHANDLE ha
   if (!helper || !handle)
     return;
 
-  CGUIControl *pControl = (CGUIControl*)handle;
+  CGUIControl *pControl = static_cast<CGUIControl*>(handle);
   pControl->SetVisible(yesNo);
 }
 
@@ -1244,7 +1244,7 @@ const char* CAddonCallbacksGUI::Control_Slider_GetDescription(void *addonData, G
   if (!helper || !handle)
     return NULL;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   std::string string = pControl->GetDescription();
 
   char *buffer = (char*) malloc (string.length()+1);
@@ -1258,7 +1258,7 @@ void CAddonCallbacksGUI::Control_Slider_SetIntRange(void *addonData, GUIHANDLE h
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetRange(iStart, iEnd);
 }
 
@@ -1268,7 +1268,7 @@ void CAddonCallbacksGUI::Control_Slider_SetIntValue(void *addonData, GUIHANDLE h
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_INT);
   pControl->SetIntValue(iValue);
 }
@@ -1279,7 +1279,7 @@ int CAddonCallbacksGUI::Control_Slider_GetIntValue(void *addonData, GUIHANDLE ha
   if (!helper || !handle)
     return 0;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   return pControl->GetIntValue();
 }
 
@@ -1289,7 +1289,7 @@ void CAddonCallbacksGUI::Control_Slider_SetIntInterval(void *addonData, GUIHANDL
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetIntInterval(iInterval);
 }
 
@@ -1299,7 +1299,7 @@ void CAddonCallbacksGUI::Control_Slider_SetPercentage(void *addonData, GUIHANDLE
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
   pControl->SetPercentage(fPercent);
 }
@@ -1310,7 +1310,7 @@ float CAddonCallbacksGUI::Control_Slider_GetPercentage(void *addonData, GUIHANDL
   if (!helper || !handle)
     return 0.0f;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   return pControl->GetPercentage();
 }
 
@@ -1320,7 +1320,7 @@ void CAddonCallbacksGUI::Control_Slider_SetFloatRange(void *addonData, GUIHANDLE
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetFloatRange(fStart, fEnd);
 }
 
@@ -1330,7 +1330,7 @@ void CAddonCallbacksGUI::Control_Slider_SetFloatValue(void *addonData, GUIHANDLE
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
   pControl->SetFloatValue(iValue);
 }
@@ -1341,7 +1341,7 @@ float CAddonCallbacksGUI::Control_Slider_GetFloatValue(void *addonData, GUIHANDL
   if (!helper || !handle)
     return 0.0f;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   return pControl->GetFloatValue();
 }
 
@@ -1351,7 +1351,7 @@ void CAddonCallbacksGUI::Control_Slider_SetFloatInterval(void *addonData, GUIHAN
   if (!helper || !handle)
     return;
 
-  CGUISliderControl *pControl = (CGUISliderControl*)handle;
+  CGUISliderControl *pControl = static_cast<CGUISliderControl*>(handle);
   pControl->SetFloatInterval(fInterval);
 }
 
@@ -1364,8 +1364,8 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetControl_SettingsSlider(void *addonData, 
   if (!helper || !handle)
     return NULL;
 
-  CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
-  CGUIControl* pGUIControl = (CGUIControl*)pAddonWindow->GetControl(controlId);
+  CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  CGUIControl* pGUIControl = pAddonWindow->GetControl(controlId);
   if (pGUIControl && pGUIControl->GetControlType() != CGUIControl::GUICONTROL_SETTINGS_SLIDER)
     return NULL;
 
@@ -1378,7 +1378,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetVisible(void *addonData, GUIH
   if (!helper || !handle)
     return;
 
-  CGUIControl *pControl = (CGUIControl*)handle;
+  CGUIControl *pControl = static_cast<CGUIControl*>(handle);
   pControl->SetVisible(yesNo);
 }
 
@@ -1388,7 +1388,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetText(void *addonData, GUIHAND
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetText(label);
 }
 
@@ -1398,7 +1398,7 @@ const char* CAddonCallbacksGUI::Control_SettingsSlider_GetDescription(void *addo
   if (!helper || !handle)
     return NULL;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   std::string string = pControl->GetDescription();
 
   char *buffer = (char*) malloc (string.length()+1);
@@ -1412,7 +1412,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetIntRange(void *addonData, GUI
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetRange(iStart, iEnd);
 }
 
@@ -1422,7 +1422,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetIntValue(void *addonData, GUI
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_INT);
   pControl->SetIntValue(iValue);
 }
@@ -1433,7 +1433,7 @@ int CAddonCallbacksGUI::Control_SettingsSlider_GetIntValue(void *addonData, GUIH
   if (!helper || !handle)
     return 0;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   return pControl->GetIntValue();
 }
 
@@ -1443,7 +1443,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetIntInterval(void *addonData, 
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetIntInterval(iInterval);
 }
 
@@ -1453,7 +1453,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetPercentage(void *addonData, G
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
   pControl->SetPercentage(fPercent);
 }
@@ -1464,7 +1464,7 @@ float CAddonCallbacksGUI::Control_SettingsSlider_GetPercentage(void *addonData, 
   if (!helper || !handle)
     return 0.0f;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   return pControl->GetPercentage();
 }
 
@@ -1474,7 +1474,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatRange(void *addonData, G
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetFloatRange(fStart, fEnd);
 }
 
@@ -1484,7 +1484,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatValue(void *addonData, G
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetType(SPIN_CONTROL_TYPE_FLOAT);
   pControl->SetFloatValue(fValue);
 }
@@ -1495,7 +1495,7 @@ float CAddonCallbacksGUI::Control_SettingsSlider_GetFloatValue(void *addonData, 
   if (!helper || !handle)
     return 0.0f;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   return pControl->GetFloatValue();
 }
 
@@ -1505,7 +1505,7 @@ void CAddonCallbacksGUI::Control_SettingsSlider_SetFloatInterval(void *addonData
   if (!helper || !handle)
     return;
 
-  CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl*)handle;
+  CGUISettingsSliderControl *pControl = static_cast<CGUISettingsSliderControl*>(handle);
   pControl->SetFloatInterval(fInterval);
 }
 
@@ -1543,7 +1543,7 @@ const char* CAddonCallbacksGUI::ListItem_GetLabel(void *addonData, GUIHANDLE han
   if (!helper || !handle)
     return NULL;
 
-  std::string string = ((CFileItem*)handle)->GetLabel();
+  std::string string = static_cast<CFileItem*>(handle)->GetLabel();
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;
@@ -1555,7 +1555,7 @@ void CAddonCallbacksGUI::ListItem_SetLabel(void *addonData, GUIHANDLE handle, co
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetLabel(label);
+  static_cast<CFileItem*>(handle)->SetLabel(label);
 }
 
 const char* CAddonCallbacksGUI::ListItem_GetLabel2(void *addonData, GUIHANDLE handle)
@@ -1564,7 +1564,7 @@ const char* CAddonCallbacksGUI::ListItem_GetLabel2(void *addonData, GUIHANDLE ha
   if (!helper || !handle)
     return NULL;
 
-  std::string string = ((CFileItem*)handle)->GetLabel2();
+  std::string string = static_cast<CFileItem*>(handle)->GetLabel2();
 
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
@@ -1577,7 +1577,7 @@ void CAddonCallbacksGUI::ListItem_SetLabel2(void *addonData, GUIHANDLE handle, c
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetLabel2(label);
+  static_cast<CFileItem*>(handle)->SetLabel2(label);
 }
 
 void CAddonCallbacksGUI::ListItem_SetIconImage(void *addonData, GUIHANDLE handle, const char *image)
@@ -1586,7 +1586,7 @@ void CAddonCallbacksGUI::ListItem_SetIconImage(void *addonData, GUIHANDLE handle
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetIconImage(image);
+  static_cast<CFileItem*>(handle)->SetIconImage(image);
 }
 
 void CAddonCallbacksGUI::ListItem_SetThumbnailImage(void *addonData, GUIHANDLE handle, const char *image)
@@ -1595,7 +1595,7 @@ void CAddonCallbacksGUI::ListItem_SetThumbnailImage(void *addonData, GUIHANDLE h
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetArt("thumb", image);
+  static_cast<CFileItem*>(handle)->SetArt("thumb", image);
 }
 
 void CAddonCallbacksGUI::ListItem_SetInfo(void *addonData, GUIHANDLE handle, const char *info)
@@ -1612,7 +1612,7 @@ void CAddonCallbacksGUI::ListItem_SetProperty(void *addonData, GUIHANDLE handle,
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetProperty(key, value);
+  static_cast<CFileItem*>(handle)->SetProperty(key, value);
 }
 
 const char* CAddonCallbacksGUI::ListItem_GetProperty(void *addonData, GUIHANDLE handle, const char *key)
@@ -1621,7 +1621,7 @@ const char* CAddonCallbacksGUI::ListItem_GetProperty(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return NULL;
 
-  std::string string = ((CFileItem*)handle)->GetProperty(key).asString();
+  std::string string = static_cast<CFileItem*>(handle)->GetProperty(key).asString();
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;
@@ -1633,7 +1633,7 @@ void CAddonCallbacksGUI::ListItem_SetPath(void *addonData, GUIHANDLE handle, con
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->SetPath(path);
+  static_cast<CFileItem*>(handle)->SetPath(path);
 }
 
 void CAddonCallbacksGUI::RenderAddon_SetCallbacks(void *addonData, GUIHANDLE handle, GUIHANDLE clienthandle, bool (*createCB)(GUIHANDLE,int,int,int,int,void*), void (*renderCB)(GUIHANDLE), void (*stopCB)(GUIHANDLE), bool (*dirtyCB)(GUIHANDLE))
@@ -1642,7 +1642,7 @@ void CAddonCallbacksGUI::RenderAddon_SetCallbacks(void *addonData, GUIHANDLE han
   if (!helper || !handle)
     return;
 
-  CGUIAddonRenderingControl *pAddonControl = (CGUIAddonRenderingControl*)handle;
+  CGUIAddonRenderingControl *pAddonControl = static_cast<CGUIAddonRenderingControl*>(handle);
 
   Lock();
   pAddonControl->m_clientHandle  = clienthandle;
@@ -1661,7 +1661,7 @@ void CAddonCallbacksGUI::RenderAddon_Delete(void *addonData, GUIHANDLE handle)
   if (!helper || !handle)
     return;
 
-  CGUIAddonRenderingControl *pAddonControl = (CGUIAddonRenderingControl*)handle;
+  CGUIAddonRenderingControl *pAddonControl = static_cast<CGUIAddonRenderingControl*>(handle);
 
   Lock();
   pAddonControl->Delete();

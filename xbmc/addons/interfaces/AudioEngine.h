@@ -152,25 +152,25 @@ namespace ADDON
     * Returns the size of one audio frame in bytes (channelCount * resolution)
     * @return The size in bytes of one frame
     */
-    static const unsigned int AEStream_GetFrameSize(void* kodiBase, AEStreamHandle* streamHandle);
+    static unsigned int AEStream_GetFrameSize(void* kodiBase, AEStreamHandle* streamHandle);
 
     /**
     * Returns the number of channels the stream is configured to accept
     * @return The channel count
     */
-    static const unsigned int AEStream_GetChannelCount(void* kodiBase, AEStreamHandle* streamHandle);
+    static unsigned int AEStream_GetChannelCount(void* kodiBase, AEStreamHandle* streamHandle);
 
     /**
     * Returns the stream's sample rate, if the stream is using a dynamic sample rate, this value will NOT reflect any changes made by calls to SetResampleRatio()
     * @return The stream's sample rate (eg, 48000)
     */
-    static const unsigned int AEStream_GetSampleRate(void* kodiBase, AEStreamHandle* streamHandle);
+    static unsigned int AEStream_GetSampleRate(void* kodiBase, AEStreamHandle* streamHandle);
 
     /**
     * Return the data format the stream has been configured with
     * @return The stream's data format (eg, AE_FMT_S16LE)
     */
-    static const AEDataFormat AEStream_GetDataFormat(void* kodiBase, AEStreamHandle* streamHandle);
+    static AEDataFormat AEStream_GetDataFormat(void* kodiBase, AEStreamHandle* streamHandle);
 
     /**
     * Return the resample ratio

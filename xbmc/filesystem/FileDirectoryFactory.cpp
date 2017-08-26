@@ -85,8 +85,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   {
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
-      if (!vfsAddon->HasFileDirectories() &&
-           vfsAddon->GetExtensions().find(strExtension) != std::string::npos)
+      if (vfsAddon->HasFileDirectories() &&
+          vfsAddon->GetExtensions().find(strExtension) != std::string::npos)
       {
         CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
         if (wrap->ContainsFiles(url))

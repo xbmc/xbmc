@@ -29,6 +29,10 @@ if which tput >/dev/null 2>&1; then
     ncols=72
 fi
 
+if [[ ! -d /build/src ]]; then
+  mkdir /build/src
+fi
+
 do_wget() {
   local URL="$1"
   local archive="$2"
@@ -46,9 +50,13 @@ do_makeinstall() {
 }
 
 do_makelib() {
-  do_print_status "$LIBNAME-$VERSION (${BITS})" "$blue_color" "Compiling"
+  do_print_status "$LIBNAME-$VERSION (${TRIPLET})" "$blue_color" "Compiling"
   do_makeinstall $1
-  do_print_status "$LIBNAME-$VERSION (${BITS})" "$green_color" "Done"
+  if [ $? == 0 ]; then
+    do_print_status "$LIBNAME-$VERSION (${TRIPLET})" "$green_color" "Done"
+  else
+    do_print_status "$LIBNAME-$VERSION (${TRIPLET})" "$red_color" "Error"
+  fi
 }
 
 do_print_status() {
@@ -87,46 +95,43 @@ do_pkgConfig() {
   fi
 }
 
-get_last_version() {
-  local filelist="$1"
-  local filter="$2"
-  local version="$3"
-  local ret=$(echo "$filelist" | /usr/bin/grep -E "$filter" | sort -V | tail -1)
-  if [[ -z "$version" ]]; then
-    echo $ret
-  else
-    echo $ret | /usr/bin/grep -oP "$version"
-  fi
-}
-
 do_autoreconf() {
-  if [[ ! -f configure ]]; then 
+  if [[ ! -f $LOCALSRCDIR/configure ]]; then 
+    local CURDIR=$(pwd)
+    cd $LOCALSRCDIR
     autoreconf -fiv
+    cd $CURDIR
   fi
 }
 
 do_clean() {
-  if [[ "$1" == "clean" ]] || [[ ! -f $ARCHIVE ]]; then
-    if [ -d $LIBNAME ]; then
-      do_print_status "$LIBNAME" "$red_color" "Removing"
-      rm -r $LIBNAME
+  if [[ "$1" == "clean" ]]; then
+    if [ -d "$LIBBUILDDIR" ]; then
+      do_print_status "$LIBNAME ($TRIPLET)" "$red_color" "Removing"
+      rm -rf "$LIBBUILDDIR"
     fi
   fi
 }
 
 do_download() {
-  if [ ! -d $LIBNAME ]; then
+  if [ ! -d "$LOCALSRCDIR" ]; then
     if [ ! -f /downloads/$ARCHIVE ]; then
       do_print_status "$LIBNAME-$VERSION" "$orange_color" "Downloading"
       do_wget $BASE_URL/$VERSION.tar.gz $ARCHIVE
     fi
 
     do_print_status "$LIBNAME-$VERSION" "$blue_color" "Extracting"
-    mkdir $LIBNAME && cd $LIBNAME
+    mkdir $LOCALSRCDIR && cd $LOCALSRCDIR
     tar -xaf /downloads/$ARCHIVE --strip 1
-  else
-    cd $LIBNAME
   fi
+  # applying patches
+  local patches=(/xbmc/tools/buildsteps/windows/patches/*-$LIBNAME-*.patch)
+  for patch in ${patches[@]}; do
+    echo "Applying patch ${patch}"
+    if [[ -f $patch ]]; then
+      patch -d $LOCALSRCDIR -i $patch -N -r -
+    fi
+  done
 }
 
 do_loaddeps() {
@@ -135,25 +140,35 @@ do_loaddeps() {
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
   GNUTLS_VER=$(grep "GNUTLS_VER=" $file | sed 's/GNUTLS_VER=//g;s/#.*$//g;/^$/d')
-  GITREV=$(git ls-remote $BASE_URL $VERSION | awk '{print $1}')
+  GITREV=$(git ls-remote $BASE_URL $VERSION | awk '{print substr($1, 1, 10)}')
   if [[ -z "$GITREV" ]]; then
     ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
   else
     ARCHIVE=$LIBNAME-$GITREV.tar.gz
   fi
   BASE_URL=$BASE_URL/archive
+  local libsrcdir=$LIBNAME-$VERSION
+  if [[ ! -z "$GITREV" ]]; then
+    libsrcdir=$LIBNAME-$GITREV
+  fi
+  LOCALSRCDIR=$LOCALBUILDDIR/src/$libsrcdir
+  LIBBUILDDIR=$LOCALBUILDDIR/$LIBNAME-$TRIPLET
 }
 
 do_clean_get() {
-  cd "$LOCALBUILDDIR"
   do_clean $1
   do_download
+
+  if [[ ! -d "$LIBBUILDDIR" ]]; then
+    mkdir "$LIBBUILDDIR"
+  fi
+  cd "$LIBBUILDDIR"
 }
 
 
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
 
-#hash a dir based on the git revision, $BITS and $tools 
+#hash a dir based on the git revision, $TRIPLET and $tools 
 #param1 path to be hashed
 function getBuildHash ()
 {
@@ -162,7 +177,7 @@ function getBuildHash ()
   shift 1
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath $@)"
-  hashStr="$hashStr $@ $BITS $TOOLS"
+  hashStr="$hashStr $@ $TRIPLET $TOOLS"
   echo $hashStr
 }
 

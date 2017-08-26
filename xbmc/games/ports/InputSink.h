@@ -31,7 +31,7 @@ namespace GAME
   class CInputSink : public JOYSTICK::IInputHandler
   {
   public:
-    CInputSink(CGameClient &m_gameClient);
+    explicit CInputSink(CGameClient &m_gameClient);
 
     virtual ~CInputSink() = default;
 

@@ -42,7 +42,7 @@ class CVideoBufferPoolFFmpeg;
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec, public ICallbackHWAccel
 {
 public:
-  CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
+  explicit CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   ~CDVDVideoCodecFFmpeg() override;
   bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
   bool AddData(const DemuxPacket &packet) override;

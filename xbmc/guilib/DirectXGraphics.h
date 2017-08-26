@@ -130,7 +130,7 @@ typedef enum _XB_D3DFORMAT
   XB_D3DFMT_FORCE_DWORD          =0x7fffffff
 } XB_D3DFORMAT;
 
-D3DFORMAT GetD3DFormat(XB_D3DFORMAT format);
+DWORD GetD3DFormat(XB_D3DFORMAT format);
 DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format);
 bool IsPalettedFormat(XB_D3DFORMAT format);
 void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset);

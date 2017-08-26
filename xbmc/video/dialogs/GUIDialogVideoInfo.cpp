@@ -306,6 +306,11 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 
   // setup cast list
   ClearCastList();
+  
+  // When the scraper throws an error, the video tag can be null here
+  if (!item->HasVideoInfoTag())
+    return;
+  
   MediaType type = item->GetVideoInfoTag()->m_type;
 
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
@@ -427,10 +432,10 @@ void CGUIDialogVideoInfo::Update()
   CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
-  const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
+  CGUIControl* pControl = GetControl(CONTROL_IMAGE);
   if (pControl)
   {
-    CGUIImage* pImageControl = (CGUIImage*)pControl;
+    CGUIImage* pImageControl = static_cast<CGUIImage*>(pControl);
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetArt("thumb"));
   }

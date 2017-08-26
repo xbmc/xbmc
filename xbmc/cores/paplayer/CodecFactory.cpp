@@ -56,7 +56,7 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
 
 ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filecache)
 {
-  CURL urlFile(file.GetPath());
+  CURL urlFile(file.GetDynPath());
   std::string content = file.GetMimeType();
   StringUtils::ToLower(content);
   if (!content.empty())

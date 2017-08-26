@@ -239,8 +239,7 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
   CVariant inputroot, outputroot, result;
   bool hasResponse = false;
 
-  if(g_advancedSettings.CanLogComponent(LOGJSONRPC))
-    CLog::Log(LOGDEBUG, "JSONRPC: Incoming request: %s", inputString.c_str());
+  CLog::Log(LOGDEBUG, LOGJSONRPC, "JSONRPC: Incoming request: %s", inputString.c_str());
 
   if (CJSONVariantParser::Parse(inputString, inputroot) && !inputroot.isNull())
   {

@@ -55,7 +55,7 @@ public:
   void SetMultiSelection(bool multiSelection);
 
 protected:
-  CGUIDialogSelect(int windowid);
+  explicit CGUIDialogSelect(int windowid);
   CGUIControl *GetFirstFocusableControl(int id) override;
   void OnWindowLoaded() override;
   void OnInitWindow() override;

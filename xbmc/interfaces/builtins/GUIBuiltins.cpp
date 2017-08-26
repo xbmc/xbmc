@@ -93,7 +93,7 @@ static int ActivateWindow(const std::vector<std::string>& params2)
     {
       CGUIWindow *activeWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
       if (activeWindow && activeWindow->IsMediaWindow())
-        bIsSameStartFolder = ((CGUIMediaWindow*) activeWindow)->IsSameStartFolder(params[0]);
+        bIsSameStartFolder = static_cast<CGUIMediaWindow*>(activeWindow)->IsSameStartFolder(params[0]);
     }
 
     // activate window only if window and path differ from the current active window
@@ -255,7 +255,7 @@ static int CloseDialog(const std::vector<std::string>& params)
     int id = CWindowTranslator::TranslateWindow(params[0]);
     CGUIWindow *window = g_windowManager.GetWindow(id);
     if (window && window->IsDialog())
-      ((CGUIDialog *)window)->Close(bForce);
+      static_cast<CGUIDialog*>(window)->Close(bForce);
   }
 
   return 0;

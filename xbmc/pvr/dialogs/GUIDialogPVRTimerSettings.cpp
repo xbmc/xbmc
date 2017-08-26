@@ -20,19 +20,19 @@
 
 #include "GUIDialogPVRTimerSettings.h"
 
-#include "dialogs/GUIDialogNumeric.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "addons/PVRClient.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "addons/PVRClient.h"
-#include "ServiceBroker.h"
+#include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
-#include "settings/SettingUtils.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/PVRSettings.h"
@@ -763,13 +763,26 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
         continue;
     }
 
+    // Drop TimerTypes which need series link if none is set
+    if (type->RequiresEpgSeriesLinkOnCreate())
+    {
+      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      if (!epgTag || epgTag->SeriesLink().empty())
+        continue;
+    }
+
     // Drop TimerTypes that forbid EPGInfo, if it is populated
     if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
       continue;
 
-    // Drop TimerTypes that aren't rules if end time is in the past
-    if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
-      continue;
+    // Drop TimerTypes that aren't rules and cannot be recorded
+    if (!type->IsTimerRule())
+    {
+      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      bool bCanRecord = epgTag ? epgTag->IsRecordable() : m_timerInfoTag->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+      if (!bCanRecord)
+        continue;
+    }
 
     if (!bFoundThisType && *type == *m_timerType)
       bFoundThisType = true;

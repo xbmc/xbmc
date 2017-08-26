@@ -23,8 +23,6 @@
 #include "OverlayRenderer.h"
 #include "guilib/D3DResource.h"
 
-#ifdef HAS_DX
-
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
@@ -52,8 +50,8 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    COverlayImageDX(CDVDOverlayImage* o);
-    COverlayImageDX(CDVDOverlaySpu*   o);
+    explicit COverlayImageDX(CDVDOverlayImage* o);
+    explicit COverlayImageDX(CDVDOverlaySpu*   o);
     virtual ~COverlayImageDX();
 
     void Load(uint32_t* rgba, int width, int height, int stride);
@@ -66,6 +64,3 @@ namespace OVERLAY {
   };
 
 }
-
-
-#endif

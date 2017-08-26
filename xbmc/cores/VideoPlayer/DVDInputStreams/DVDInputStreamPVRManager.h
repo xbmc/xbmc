@@ -40,6 +40,7 @@ class IDemux;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
+  , public CDVDInputStream::ITimes
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IDemux
 {
@@ -59,6 +60,10 @@ public:
 
   PVR::CPVRChannelPtr GetSelectedChannel();
 
+  CDVDInputStream::ITimes* GetITimes() override { return this; }
+  bool GetTimes(Times &times) override;
+
+  // deprecated
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override;
   int GetTime() override;
@@ -69,8 +74,6 @@ public:
   bool CanSeek() override;
   bool CanPause() override;
   void Pause(bool bPaused);
-
-  bool UpdateItem(CFileItem& item);
 
   /* overloaded is streamtype to support m_pOtherStream */
   bool IsStreamType(DVDStreamType type) const;
@@ -96,8 +99,6 @@ public:
   bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
   void AbortDemux() override;
   void FlushDemux() override;
-  void EnableStream(int iStreamId, bool enable) override {};
-  void OpenStream(int iStreamId) override {};
 
 protected:
   void UpdateStreamMap();

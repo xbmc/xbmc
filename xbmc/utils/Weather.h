@@ -94,7 +94,7 @@ public:
 class CWeatherJob : public CJob
 {
 public:
-  CWeatherJob(int location);
+  explicit CWeatherJob(int location);
 
   bool DoWork() override;
 

@@ -31,7 +31,7 @@
 class LibraryLoader
 {
 public:
-  LibraryLoader(const std::string& libraryFile);
+  explicit LibraryLoader(const std::string& libraryFile);
   virtual ~LibraryLoader();
 
   virtual bool Load() = 0;

@@ -25,7 +25,7 @@
 class CGUIViewStateWindowPrograms : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowPrograms(const CFileItemList& items);
+  explicit CGUIViewStateWindowPrograms(const CFileItemList& items);
 
 protected:
   void SaveViewState() override;

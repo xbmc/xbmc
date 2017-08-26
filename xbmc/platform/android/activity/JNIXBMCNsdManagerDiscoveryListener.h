@@ -31,7 +31,7 @@ class CJNIXBMCNsdManagerDiscoveryListener : public CJNINsdManagerDiscoveryListen
 public:
   CJNIXBMCNsdManagerDiscoveryListener();
   CJNIXBMCNsdManagerDiscoveryListener(const CJNIXBMCNsdManagerDiscoveryListener& other); 
-  CJNIXBMCNsdManagerDiscoveryListener(const jni::jhobject &object) : CJNIBase(object) {}
+  explicit CJNIXBMCNsdManagerDiscoveryListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCNsdManagerDiscoveryListener();
   
   static void RegisterNatives(JNIEnv* env);

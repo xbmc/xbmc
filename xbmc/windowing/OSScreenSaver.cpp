@@ -24,14 +24,14 @@
 
 using namespace KODI::WINDOWING;
 
-COSScreenSaverManager::COSScreenSaverManager(std::unique_ptr<IOSScreenSaver>&& impl)
-: m_impl(std::move(impl))
+COSScreenSaverManager::COSScreenSaverManager(std::unique_ptr<IOSScreenSaver> impl)
+: m_impl{std::move(impl)}
 {
 }
 
 COSScreenSaverInhibitor COSScreenSaverManager::CreateInhibitor()
 {
-  COSScreenSaverInhibitor inhibitor(this);
+  COSScreenSaverInhibitor inhibitor{this};
   if (m_inhibitionCount++ == 0)
   {
     // Inhibit if this was first inhibitor
@@ -56,23 +56,23 @@ void COSScreenSaverManager::RemoveInhibitor()
   }
 }
 
-COSScreenSaverInhibitor::COSScreenSaverInhibitor()
-: m_active(false), m_manager(nullptr)
+COSScreenSaverInhibitor::COSScreenSaverInhibitor() noexcept
+: m_active{false}, m_manager{}
 {
 }
 
 COSScreenSaverInhibitor::COSScreenSaverInhibitor(COSScreenSaverManager* manager)
-: m_active(true), m_manager(manager)
+: m_active{true}, m_manager{manager}
 {
 }
 
-COSScreenSaverInhibitor::COSScreenSaverInhibitor(COSScreenSaverInhibitor&& other)
-: m_active(false), m_manager(nullptr)
+COSScreenSaverInhibitor::COSScreenSaverInhibitor(COSScreenSaverInhibitor&& other) noexcept
+: m_active{false}, m_manager{}
 {
   *this = std::move(other);
 }
 
-COSScreenSaverInhibitor& COSScreenSaverInhibitor::operator=(COSScreenSaverInhibitor&& other)
+COSScreenSaverInhibitor& COSScreenSaverInhibitor::operator=(COSScreenSaverInhibitor&& other) noexcept
 {
   Release();
   m_active = other.m_active;
@@ -101,7 +101,7 @@ void COSScreenSaverInhibitor::Release()
   }
 }
 
-COSScreenSaverInhibitor::~COSScreenSaverInhibitor()
+COSScreenSaverInhibitor::~COSScreenSaverInhibitor() noexcept
 {
   Release();
 }

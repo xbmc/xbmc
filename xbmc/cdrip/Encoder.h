@@ -33,7 +33,7 @@ namespace XFILE { class CFile; }
 class CEncoder
 {
 public:
-  CEncoder(std::shared_ptr<IEncoder> encoder);
+  explicit CEncoder(std::shared_ptr<IEncoder> encoder);
   virtual ~CEncoder();
   virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream);

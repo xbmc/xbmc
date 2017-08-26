@@ -172,6 +172,36 @@ namespace JOYSTICK
     ) = 0;
 
     /*!
+     * \brief Get a relative pointer direction from the button map
+     *
+     * \param      feature   Must be a relative pointer stick or this will return false
+     * \param      direction The direction whose primitive is to be retrieved
+     * \param[out] primitive The primitive mapped to the specified direction
+     *
+     * \return True if the feature and direction resolved to a driver primitive
+     */
+    virtual bool GetRelativePointer(
+      const FeatureName& feature,
+      ANALOG_STICK_DIRECTION direction,
+      CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
+     * \brief Add or update a relative pointer direction
+     *
+     * \param feature   Must be a relative pointer or this will return false
+     * \param direction The direction being mapped
+     * \param primitive The driver primitive for the specified analog stick and direction
+     *
+     * \return True if the analog stick was updated, false otherwise
+     */
+    virtual void AddRelativePointer(
+      const FeatureName& feature,
+      ANALOG_STICK_DIRECTION direction,
+      const CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
      * \brief Get an accelerometer from the button map
      *
      * \param feature       Must be an accelerometer or this will return false

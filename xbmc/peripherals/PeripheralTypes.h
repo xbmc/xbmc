@@ -88,6 +88,9 @@ namespace PERIPHERALS
   typedef std::shared_ptr<CPeripheralAddon> PeripheralAddonPtr;
   typedef std::vector<PeripheralAddonPtr>   PeripheralAddonVector;
 
+  class CEventPollHandle;
+  typedef std::unique_ptr<CEventPollHandle> EventPollHandlePtr;
+
   struct PeripheralID
   {
     int m_iVendorId;
@@ -270,9 +273,7 @@ namespace PERIPHERALS
         return FEATURE_DISK;
       else if (strTypeLowerCase == "nyxboard")
         return FEATURE_NYXBOARD;
-      else if (strTypeLowerCase == "cec")
-        return FEATURE_CEC;
-      else if (strTypeLowerCase == "bluethopoth")
+      else if (strTypeLowerCase == "bluetooth")
         return FEATURE_BLUETOOTH;
       else if (strTypeLowerCase == "tuner")
         return FEATURE_TUNER;
@@ -309,7 +310,7 @@ namespace PERIPHERALS
   class PeripheralScanResult
   {
   public:
-    PeripheralScanResult(const PeripheralBusType busType) :
+    explicit PeripheralScanResult(const PeripheralBusType busType) :
       m_type(PERIPHERAL_UNKNOWN),
       m_iVendorId(0),
       m_iProductId(0),
@@ -356,11 +357,11 @@ namespace PERIPHERALS
   {
     bool GetDeviceOnLocation(const std::string& strLocation, PeripheralScanResult* result) const
     {
-      for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); it++)
+      for (const auto& it : m_results)
       {
-        if ((*it).m_strLocation == strLocation)
+        if (it.m_strLocation == strLocation)
         {
-          *result = *it;
+          *result = it;
           return true;
         }
       }

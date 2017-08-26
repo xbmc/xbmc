@@ -35,14 +35,14 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
 
 #include "pvr/PVRTypes.h"
-
-#include <string>
-#include <vector>
 
 class CVideoDatabase;
 class CVariant;
@@ -74,7 +74,6 @@ namespace PVR
     std::string   m_strChannelName;   /*!< name of the channel this was recorded from */
     int           m_iPriority;        /*!< priority of this recording */
     int           m_iLifetime;        /*!< lifetime of this recording */
-    std::string   m_strStreamURL;     /*!< stream URL. if empty use pvr client */
     std::string   m_strDirectory;     /*!< directory of this recording on the client */
     std::string   m_strIconPath;      /*!< icon path */
     std::string   m_strThumbnailPath; /*!< thumbnail path */

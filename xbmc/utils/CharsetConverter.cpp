@@ -366,7 +366,7 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
 struct charPtrPtrAdapter
 {
   const char** pointer;
-  charPtrPtrAdapter(const char** p) :
+  explicit charPtrPtrAdapter(const char** p) :
     pointer(p) { }
   operator char**()
   { return const_cast<char**>(pointer); }

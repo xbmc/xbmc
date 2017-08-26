@@ -32,23 +32,22 @@ void XPhysicalFree(LPVOID lpAddress)
   free(lpAddress);
 }
 
-D3DFORMAT GetD3DFormat(XB_D3DFORMAT format)
+DWORD GetD3DFormat(XB_D3DFORMAT format)
 {
   switch (format)
   {
   case XB_D3DFMT_A8R8G8B8:
   case XB_D3DFMT_LIN_A8R8G8B8:
-    return D3DFMT_LIN_A8R8G8B8;
-  case XB_D3DFMT_DXT1:
-    return D3DFMT_DXT1;
-  case XB_D3DFMT_DXT2:
-    return D3DFMT_DXT2;
-  case XB_D3DFMT_DXT4:
-    return D3DFMT_DXT4;
   case XB_D3DFMT_P8:
-    return D3DFMT_LIN_A8R8G8B8;
+    return 21;
+  case XB_D3DFMT_DXT1:
+    return MAKEFOURCC('D', 'X', 'T', '1');
+  case XB_D3DFMT_DXT2:
+    return MAKEFOURCC('D', 'X', 'T', '2');
+  case XB_D3DFMT_DXT4:
+    return MAKEFOURCC('D', 'X', 'T', '4');
   default:
-    return D3DFMT_UNKNOWN;
+    return 0;
   }
 }
 

@@ -192,7 +192,6 @@ public:
   void SetShowInfo(bool showinfo);
   bool GetShowInfo() const { return m_playerShowInfo; }
   bool ToggleShowInfo();
-  bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();
@@ -347,12 +346,12 @@ protected:
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;
-  bool m_isPvrChannelPreview;
 
   CCriticalSection m_critInfo;
 
 private:
   static std::string FormatRatingAndVotes(float rating, int votes);
+  bool IsPlayerChannelPreviewActive() const;
 };
 
 /*!

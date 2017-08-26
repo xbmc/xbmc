@@ -1,10 +1,10 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
-       Python-setup.patch fix-datetime.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+       Python-setup.patch fix-datetime.patch fix-ffi.patch python-android-binmodule.patch Python-no-abort.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.12
+VERSION=2.7.13
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 

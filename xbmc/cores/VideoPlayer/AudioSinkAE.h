@@ -39,7 +39,7 @@ class CDVDClock;
 class CAudioSinkAE : IAEClockCallback
 {
 public:
-  CAudioSinkAE(CDVDClock *clock);
+  explicit CAudioSinkAE(CDVDClock *clock);
   ~CAudioSinkAE();
 
   void SetVolume(float fVolume);

@@ -190,15 +190,13 @@ bool CVAAPIContext::CreateContext()
   int major_version, minor_version;
   if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version)))
   {
+    vaTerminate(m_display);
     m_display = NULL;
     return false;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
-
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - initialize version %d.%d", major_version, minor_version);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - driver in use: %s", vaQueryVendorString(m_display));
 
   QueryCaps();
   if (!m_profileCount)
@@ -232,16 +230,13 @@ void CVAAPIContext::QueryCaps()
   for(int i = 0; i < m_attributeCount; i++)
   {
     VADisplayAttribute * const display_attr = &m_attributes[i];
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    {
-      CLog::Log(LOGDEBUG, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
                          , display_attr->type
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
                          , display_attr->min_value
                          , display_attr->max_value
                          , display_attr->value);
-    }
   }
 
   int max_profiles = vaMaxNumProfiles(m_display);
@@ -252,8 +247,7 @@ void CVAAPIContext::QueryCaps()
 
   for(int i = 0; i < m_profileCount; i++)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "VAAPI - profile %d", m_profiles[i]);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %d", m_profiles[i]);
   }
 }
 
@@ -316,7 +310,7 @@ bool CVAAPIContext::IsValidDecoder(CDecoder *decoder)
 
 void CVAAPIContext::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CDecoder *va = (CDecoder*)opaque;
+  CDecoder *va = static_cast<CDecoder*>(opaque);
   if (m_context && m_context->IsValidDecoder(va))
   {
     va->FFReleaseBuffer(data);
@@ -531,8 +525,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
     return false;
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,"VAAPI - open decoder");
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - open decoder");
 
   if (!CVAAPIContext::EnsureContext(&m_vaapiConfig.context, this))
     return false;
@@ -721,8 +714,7 @@ long CDecoder::Release()
   if (m_vaapiConfigured == true)
   {
     CSingleLock lock(m_DecoderSection);
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"VAAPI::Release pre-cleanup");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Release pre-cleanup");
 
     CSingleLock lock1(g_graphicsContext);
     Message *reply;
@@ -850,7 +842,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
     // send frame to output for processing
     CVaapiDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
@@ -945,8 +937,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
   if (state == VAAPI_LOST)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"VAAPI::Check waiting for display reset event");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Check waiting for display reset event");
     if (!m_DisplayEvent.WaitMSec(4000))
     {
       CLog::Log(LOGERROR, "VAAPI::Check - device didn't reset in reasonable time");
@@ -1161,8 +1152,7 @@ void CDecoder::FiniVAAPIOutput()
   m_vaapiConfigured = false;
 
   // destroy surfaces
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI::FiniVAAPIOutput destroying %d video surfaces", m_videoSurfaces.Size());
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::FiniVAAPIOutput destroying %d video surfaces", m_videoSurfaces.Size());
   VASurfaceID surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VA_INVALID_SURFACE)
   {
@@ -1212,7 +1202,7 @@ void CDecoder::Register(bool hevc)
 class VAAPI::CVaapiBufferPool : public IVideoBufferPool
 {
 public:
-  CVaapiBufferPool(CDecoder &decoder);
+  explicit CVaapiBufferPool(CDecoder &decoder);
   ~CVaapiBufferPool() override;
   CVideoBuffer* Get() override;
   void Return(int id) override;
@@ -1343,8 +1333,7 @@ CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture()
 
     if (!retPic->valid)
     {
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "CVaapiRenderPicture::%s - return of invalid render pic", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CVaapiRenderPicture::%s - return of invalid render pic", __FUNCTION__);
       retPic = nullptr;
     }
     break;
@@ -1379,9 +1368,9 @@ void CVaapiBufferPool::DeleteTextures(bool precleanup)
 //-----------------------------------------------------------------------------
 COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
   CThread("Vaapi-Output"),
-  m_vaapi(decoder),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent)
+  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+  m_vaapi(decoder)
 {
   m_inMsgEvent = inMsgEvent;
   m_bufferPool = std::make_shared<CVaapiBufferPool>(decoder);
@@ -1497,7 +1486,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case COutputControlProtocol::INIT:
           CVaapiConfig *data;
-          data = (CVaapiConfig*)msg->data;
+          data = reinterpret_cast<CVaapiConfig*>(msg->data);
           if (data)
           {
             m_config = *data;
@@ -1549,7 +1538,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case COutputDataProtocol::NEWFRAME:
           CVaapiDecodedPicture *frame;
-          frame = (CVaapiDecodedPicture*)msg->data;
+          frame = reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
           if (frame)
           {
             m_bufferPool->decodedPics.push_back(*frame);
@@ -1840,7 +1829,7 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CVaapiDecodedPicture pic = *(CVaapiDecodedPicture*)msg->data;
+      CVaapiDecodedPicture pic = *reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
       m_config.videoSurfaces->ClearRender(pic.videoSurface);
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)
@@ -2258,8 +2247,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create config
   if (!CheckSuccess(vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2288,8 +2276,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                      nb_surfaces,
                                      attribs, 1)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2309,8 +2296,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                     &m_contextId)))
   {
     m_contextId = VA_INVALID_ID;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2322,8 +2308,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2334,8 +2319,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                                deinterlacingCaps,
                                                &numDeinterlacingCaps)))
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
 
     return false;
   }
@@ -2886,8 +2870,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CFFmpegPostproc::Init  - skip deinterlacing");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
   }

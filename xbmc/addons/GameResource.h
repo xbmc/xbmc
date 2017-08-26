@@ -29,7 +29,7 @@ namespace ADDON
 class CGameResource : public CResource
 {
 public:
-  CGameResource(CAddonInfo addonInfo);
+  explicit CGameResource(CAddonInfo addonInfo);
   ~CGameResource() override = default;
 
   static std::unique_ptr<CGameResource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);

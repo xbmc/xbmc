@@ -248,6 +248,8 @@ private:
 
   void ProcessRenderLoop(bool renderOnly = false);
 
+  bool HandleAction(const CAction &action) const;
+
   std::unordered_map<int, CGUIWindow*> m_mapWindows;
   std::vector<CGUIWindow*> m_vecCustomWindows;
   std::vector<CGUIWindow*> m_activeDialogs;
@@ -262,6 +264,8 @@ private:
 
   int  m_iNested;
   bool m_initialized;
+  mutable bool m_touchGestureActive{false};
+  mutable bool m_inhibitTouchGestureEvents{false};
 
   CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;

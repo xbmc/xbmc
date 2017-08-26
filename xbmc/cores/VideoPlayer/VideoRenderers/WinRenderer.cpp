@@ -855,7 +855,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     && image->format != BUFFER_FMT_D3D11_P016)
     return;
   
-  if (!image->HasPic())
+  if (!image->loaded)
     return;
 
   int past = 0;
@@ -871,12 +871,15 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_renderBuffers[i].HasPic()
-        && m_renderBuffers[i].frameIdx == image->frameIdx + (future*2 + 2))
+      if (m_renderBuffers[i].frameIdx == image->frameIdx + (future*2 + 2))
       {
-        views[1 - future++] = &m_renderBuffers[i];
-        found = true;
-        break;
+        // a future frame may not be loaded yet
+        if (m_renderBuffers[i].loaded || m_renderBuffers[i].UploadBuffer())
+        {
+          views[1 - future++] = &m_renderBuffers[i];
+          found = true;
+          break;
+        }
       }
     }
     if (!found)
@@ -889,12 +892,14 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_renderBuffers[i].HasPic()
-        && m_renderBuffers[i].frameIdx == image->frameIdx - (past*2 + 2))
+      if (m_renderBuffers[i].frameIdx == image->frameIdx - (past*2 + 2))
       {
-        views[3 + past++] = &m_renderBuffers[i];
-        found = true;
-        break;
+        if (m_renderBuffers[i].loaded)
+        {
+          views[3 + past++] = &m_renderBuffers[i];
+          found = true;
+          break;
+        }
       }
     }
     if (!found)

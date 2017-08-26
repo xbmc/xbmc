@@ -80,7 +80,7 @@ public:
 class CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPool(const AEAudioFormat& format);
+  explicit CActiveAEBufferPool(const AEAudioFormat& format);
   virtual ~CActiveAEBufferPool();
   virtual bool Create(unsigned int totaltime);
   CSampleBuffer *GetFreeBuffer();
@@ -137,7 +137,7 @@ class CActiveAEFilter;
 class CActiveAEBufferPoolAtempo : public CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPoolAtempo(const AEAudioFormat& format);
+  explicit CActiveAEBufferPoolAtempo(const AEAudioFormat& format);
   ~CActiveAEBufferPoolAtempo() override;
   bool Create(unsigned int totaltime) override;
   bool ProcessBuffers();

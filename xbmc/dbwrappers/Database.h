@@ -40,8 +40,8 @@ public:
   {
   public:
     Filter() : fields("*") {};
-    Filter(const char *w) : fields("*"), where(w) {};
-    Filter(const std::string &w) : fields("*"), where(w) {};
+    explicit Filter(const char *w) : fields("*"), where(w) {};
+    explicit Filter(const std::string &w) : fields("*"), where(w) {};
     
     void AppendField(const std::string &strField);
     void AppendJoin(const std::string &strJoin);
@@ -60,7 +60,7 @@ public:
   class ExistsSubQuery
   {
   public:
-    ExistsSubQuery(const std::string &table) : tablename(table) {};
+    explicit ExistsSubQuery(const std::string &table) : tablename(table) {};
     ExistsSubQuery(const std::string &table, const std::string &parameter) : tablename(table), param(parameter) {};
     void AppendJoin(const std::string &strJoin);
     void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);

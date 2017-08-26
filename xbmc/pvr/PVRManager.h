@@ -19,6 +19,11 @@
  *
  */
 
+#include <atomic>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "FileItem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
@@ -35,28 +40,15 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecording.h"
 
-#include <atomic>
-#include <memory>
-#include <string>
-#include <vector>
-
 class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
-class CFileItemList;
 class CVariant;
 
 namespace PVR
 {
   class CPVRClient;
   class CPVRGUIInfo;
-
-  enum ContinueLastChannelOnStartup
-  {
-    CONTINUE_LAST_CHANNEL_OFF  = 0,
-    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
-    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
-  };
 
   class CPVRManagerJobQueue
   {
@@ -197,11 +189,13 @@ namespace PVR
     bool TranslateBoolInfo(DWORD dwInfo) const;
 
     /*!
-     * @brief Show the player info.
-     * @param iTimeout Hide the player info after iTimeout seconds.
-     * @todo not really the right place for this :-)
+     * @brief Get a GUIInfoManager video label.
+     * @param item The item to get the label for.
+     * @param iLabel The id of the requested label.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
      */
-    void ShowPlayerInfo(int iTimeout);
+    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.
@@ -211,15 +205,24 @@ namespace PVR
 
     /*!
      * @brief Check if the given channel is playing.
+     * @param channel The channel to check.
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingChannel(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Check if the given recording is playing.
+     * @param recording The recording to check.
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingRecording(const CPVRRecordingPtr &recording) const;
+
+    /*!
+     * @brief Check if the given epg tag is playing.
+     * @param epgTag The tag to check.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
      * @return True while the PVRManager is initialising.
@@ -269,16 +272,10 @@ namespace PVR
     CPVRRecordingPtr GetCurrentRecording(void) const;
 
     /*!
-     * @brief Update the channel displayed in guiinfomanager and application to match the currently playing channel.
+     * @brief Return the epg tag that is currently playing.
+     * @return The tag or NULL if none is playing.
      */
-    void UpdateCurrentChannel(void);
-
-    /*!
-     * @brief Return the EPG for the channel that is currently playing.
-     * @param channel The EPG or NULL if no channel is playing.
-     * @return The amount of results that was added or -1 if none.
-     */
-    int GetCurrentEpg(CFileItemList &results) const;
+    CPVREpgInfoTagPtr GetCurrentEpgTag(void) const;
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -291,9 +288,23 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
-    void ChannelPreviewUpDown(bool up);
+    /*!
+     * @brief Inform PVR manager that playback of an item just started.
+     * @param item The item that started to play.
+     */
+    void OnPlaybackStarted(const CFileItemPtr item);
 
-    void ChannelPreviewSelect();
+    /*!
+     * @brief Inform PVR manager that playback of an item was stopped due to user interaction.
+     * @param item The item that stopped to play.
+     */
+    void OnPlaybackStopped(const CFileItemPtr item);
+
+    /*!
+     * @brief Inform PVR manager that playback of an item has stopped without user interaction.
+     * @param item The item that ended to play.
+     */
+    void OnPlaybackEnded(const CFileItemPtr item);
 
     /*!
      * @brief Close an open PVR stream.
@@ -352,6 +363,13 @@ namespace PVR
     CPVRChannelGroupPtr GetPlayingGroup(bool bRadio = false);
 
     /*!
+     * @brief Fill the file item for a recording, a channel or an epg tag with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled. Item must contain either a pvr recording, a pvr channel or an epg tag.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillStreamFileItem(CFileItem &fileItem);
+
+    /*!
      * @brief Let the background thread create epg tags for all channels.
      */
     void TriggerEpgsCreate(void);
@@ -382,13 +400,6 @@ namespace PVR
     void TriggerSearchMissingChannelIcons(void);
 
     /*!
-     * @brief Update the channel that is currently active.
-     * @param item The new channel.
-     * @return True if it was updated correctly, false otherwise.
-     */
-    bool UpdateItem(CFileItem& item);
-
-    /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */
@@ -399,11 +410,6 @@ namespace PVR
      * @return The position in milliseconds or NULL if no channel is playing.
      */
     int GetStartTime(void) const;
-
-    /*!
-     * @brief Update the current playing file in the guiinfomanager and application.
-     */
-    void UpdateCurrentFile(void);
 
     /*!
      * @brief Check whether names are still correct after the language settings changed.
@@ -463,16 +469,6 @@ namespace PVR
     void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
 
     /*!
-     * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
-     */
-    void SetChannelPreview(bool preview);
-
-    /*!
-     * @brief Query the state of channel preview
-     */
-    bool IsChannelPreview() const;
-
-    /*!
      * @brief Query the events available for CEventStream
      */
     CEventStream<PVREvent>& Events() { return m_events; }
@@ -510,11 +506,6 @@ namespace PVR
     void SetPlayingGroup(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Save the currently playing channel as last played channel
-     */
-    void SaveLastPlayedChannel() const;
-
-    /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
      */
     bool SetWakeupCommand(void);
@@ -550,20 +541,9 @@ namespace PVR
     void Clear(void);
 
     /*!
-     * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
-     * @param iNewChannelNumber The new channel number after the switch.
-     * @param bPreview Preview window if true.
-     * @param bUp Go one channel up if true, one channel down if false.
-     * @return True if the switch was successful, false otherwise.
-     */
-    bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
-
-    void ChannelPreview(const CFileItemPtr item);
-
-    /*!
      * @brief Continue playback on the last played channel.
      */
-    void TriggerContinueLastChannel(void);
+    void TriggerPlayChannelOnStartup(void);
 
     enum ManagerState
     {
@@ -575,8 +555,16 @@ namespace PVR
       ManagerStateStarted
     };
 
+    /*!
+     * @brief Get the current state of the PVR manager.
+     * @return the state.
+     */
     ManagerState GetState(void) const;
 
+    /*!
+     * @brief Set the current state of the PVR manager.
+     * @param state the new state.
+     */
     void SetState(ManagerState state);
 
     bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;
@@ -596,11 +584,9 @@ namespace PVR
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
-    CFileItemPtr                    m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
-    bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                            m_bEpgsCreated;                /*!< true if epg data for channels has been created */
     CGUIDialogExtendedProgressBar * m_progressBar;                 /*!< extended progress dialog instance pointer */
     CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
@@ -611,8 +597,6 @@ namespace PVR
 
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
-    std::atomic_bool m_isChannelPreview;
-    int m_channelEntryJobId = -1;
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;

@@ -80,6 +80,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "wma" || 
       strExtension == "flac" || 
       strExtension == "m4a" || strExtension == "mp4" || strExtension == "m4b" ||
+      strExtension == "m4v" ||
       strExtension == "mpc" || strExtension == "mpp" || strExtension == "mp+" ||
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
       strExtension == "opus" ||
@@ -90,19 +91,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "wv")
   {
     CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
-    return (IMusicInfoTagLoader*)pTagLoader;
+    return pTagLoader;
   }
 #ifdef HAS_DVD_DRIVE
   else if (strExtension == "cdda")
   {
     CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
-    return (IMusicInfoTagLoader*)pTagLoader;
+    return pTagLoader;
   }
 #endif
   else if (strExtension == "shn")
   {
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
-    return (IMusicInfoTagLoader*)pTagLoader;
+    return pTagLoader;
   }
   else if (strExtension == "mka" || strExtension == "dsf" ||
            strExtension == "dff")

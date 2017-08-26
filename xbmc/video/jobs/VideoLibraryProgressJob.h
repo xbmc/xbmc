@@ -36,5 +36,5 @@ public:
   bool operator==(const CJob* job) const override { return false; }
 
 protected:
-  CVideoLibraryProgressJob(CGUIDialogProgressBarHandle* progressBar);
+  explicit CVideoLibraryProgressJob(CGUIDialogProgressBarHandle* progressBar);
 };

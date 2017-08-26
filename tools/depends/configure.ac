@@ -68,10 +68,10 @@ AC_ARG_WITH([cpu],
   [optional. specify target cpu. guessed if not specified])],
   [use_cpu=$withval],use_cpu=auto)
 
-AC_ARG_WITH([ndk],
-  [AS_HELP_STRING([--with-ndk],
+AC_ARG_WITH([ndk-path],
+  [AS_HELP_STRING([--with-ndk-path],
   [specify path to ndk (required for android only)])],
-  [use_ndk=$withval])
+  [use_ndk_path=$withval])
 
 AC_ARG_WITH([sdk-path],
   [AS_HELP_STRING([--with-sdk-path],
@@ -80,14 +80,25 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [specify sdk platform version (optional for android). default is android-21])],
+  [specify sdk platform version (optional for android). default is android-24])],
   [use_sdk=$withval])
+
+AC_ARG_WITH([ndk-api],
+  [AS_HELP_STRING([--with-ndk-api],
+  [spcify ndk level (optional for android). default is 21])],
+  [use_ndk_api=$withval])
 
 AC_ARG_ENABLE([gplv3],
   [AS_HELP_STRING([--enable-gplv3],
   [enable gplv3 components. default is yes])],
   [use_gplv3=$enableval],
   [use_gplv3=yes])
+
+AC_ARG_ENABLE([wayland],
+  [AS_HELP_STRING([--enable-wayland],
+  [build libraries needed for Wayland. default is no])],
+  [enable_wayland=$enableval],
+  [enable_wayland=no])
 
 if test "$use_ccache" = "yes"; then
   AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
@@ -160,16 +171,17 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC"
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api-$build_type"
+    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
-    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
@@ -178,16 +190,17 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="arm64-v8a"
     fi
-    use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC"
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api-$build_type"
+    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarm64-v8a"; then
       platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
     fi
-    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
@@ -196,13 +209,14 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC"
+    use_sdk="${use_sdk:-android-24}"
+    use_ndk_api="${use_ndk_api:-21}"
+    deps_dir="$use_host-$use_ndk_api-$build_type"
+    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
-    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
     cross_compiling="yes"
@@ -523,13 +537,19 @@ if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
 fi
 
+if test "$platform_os" != "linux"; then
+  if test "x$enable_wayland" != "xno"; then
+    AC_MSG_ERROR([Wayland is only supported on the Linux platform])
+  fi
+fi
+
 if test "$platform_os" == "android"; then
-  if test -z $use_ndk; then
+  if test -z $use_ndk_path; then
     AC_MSG_ERROR("NDK path is required for android")
   fi
 
-  if ([! test -f "$use_ndk/source.properties"] && [! test -f "$use_ndk/RELEASE.TXT"]) ; then
-    AC_MSG_ERROR("$use_ndk is not an NDK directory")
+  if ([! test -f "$use_ndk_path/source.properties"] && [! test -f "$use_ndk_path/RELEASE.TXT"]) ; then
+    AC_MSG_ERROR("$use_ndk_path is not an NDK directory")
   fi
 
   if test -z $use_sdk_path; then
@@ -540,7 +560,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR(verify sdk path)
   fi
 
-  if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
+  if [ ! test -f $use_ndk_path/sources/android/native_app_glue/android_native_app_glue.h ]; then
     AC_MSG_ERROR(verify ndk path)
   fi
 
@@ -639,8 +659,9 @@ fi
 if test "$platform_os" == "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
-  AC_SUBST(use_ndk)
+  AC_SUBST(use_ndk_path)
   AC_SUBST(use_sdk)
+  AC_SUBST(use_ndk_api)
   AC_SUBST(build_tools_path)
 fi
 
@@ -669,6 +690,7 @@ AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
+AC_SUBST(enable_wayland)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)

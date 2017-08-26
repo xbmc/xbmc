@@ -54,5 +54,13 @@ namespace GAME
     virtual void AddData(const uint8_t* data, unsigned int size) = 0;
     virtual void CloseStream() = 0;
   };
+
+  class IGameInputCallback
+  {
+  public:
+    virtual ~IGameInputCallback() = default;
+
+    virtual void PollInput() = 0;
+  };
 }
 }

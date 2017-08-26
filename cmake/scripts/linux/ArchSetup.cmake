@@ -42,8 +42,27 @@ if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 endif()
 
+if(KODI_DEPENDSBUILD)
+  # Binaries should be directly runnable from host, so include rpath to depends
+  set(CMAKE_INSTALL_RPATH "${DEPENDS_PATH}/lib")
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+
 find_package(CXX11 REQUIRED)
 include(LDGOLD)
+
+include(CheckIncludeFiles)
+check_include_files("linux/memfd.h" HAVE_LINUX_MEMFD)
+if(HAVE_LINUX_MEMFD)
+  list(APPEND ARCH_DEFINES "-DHAVE_LINUX_MEMFD=1")
+endif()
+include(CheckSymbolExists)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
+check_symbol_exists("mkostemp" "stdlib.h" HAVE_MKOSTEMP)
+set(CMAKE_REQUIRED_DEFINITIONS "")
+if(HAVE_MKOSTEMP)
+  list(APPEND ARCH_DEFINES "-DHAVE_MKOSTEMP=1" "-D_GNU_SOURCE")
+endif()
 
 # Code Coverage
 if(CMAKE_BUILD_TYPE STREQUAL Coverage)

@@ -79,7 +79,7 @@ endif()
 
 # add Android directories and tools
 if(CORE_SYSTEM_NAME STREQUAL android)
-  set(NDKROOT @use_ndk@)
+  set(NDKROOT @use_ndk_path@)
   set(SDKROOT @use_sdk_path@)
   set(SDK_PLATFORM @use_sdk@)
   string(REPLACE ":" ";" SDK_BUILDTOOLS_PATH "@build_tools_path@")
@@ -102,7 +102,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 # for libraries and headers in the target directories
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig)
+set(CMAKE_FIND_FRAMEWORK LAST)
+set(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig:@prefix@/@deps_dir@/share/pkgconfig)
 
 # Binary Addons
 if(NOT CORE_SYSTEM_NAME STREQUAL linux)

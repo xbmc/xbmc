@@ -441,7 +441,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
         return focusedControl;
     }
     else if (control->HasFocus())
-      return (CGUIControl *)control;
+      return control;
   }
   return NULL;
 }

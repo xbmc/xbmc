@@ -19,17 +19,17 @@
  *
  */
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/addons/PVRClients.h"
-#include "threads/CriticalSection.h"
-#include "threads/SystemClock.h"
-#include "threads/Thread.h"
-#include "utils/Observer.h"
-
 #include <atomic>
 #include <string>
 #include <vector>
+
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "utils/Observer.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/addons/PVRClients.h"
 
 namespace PVR
 {
@@ -50,6 +50,15 @@ namespace PVR
     int TranslateIntInfo(DWORD dwInfo) const;
 
     /*!
+     * @brief Get a GUIInfoManager video label.
+     * @param item The item to get the label for.
+     * @param iLabel The id of the requested label.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
+     */
+    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
+
+    /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */
@@ -60,13 +69,6 @@ namespace PVR
      * @return The position in milliseconds or NULL if no channel is playing.
      */
     int GetStartTime(void) const;
-
-    /*!
-     * @brief Show the player info.
-     * @param iTimeout Hide the player info after iTimeout seconds.
-     * @todo not really the right place for this :-)
-     */
-    void ShowPlayerInfo(int iTimeout);
 
     /*!
      * @brief Clear the playing EPG tag.
@@ -191,7 +193,6 @@ namespace PVR
     void UpdateTimeshift(void);
 
     void UpdateTimersToggle(void);
-    void ToggleShowInfo(void);
 
     void CharInfoPlayingDuration(std::string &strValue) const;
     void CharInfoPlayingTime(std::string &strValue) const;
@@ -243,6 +244,7 @@ namespace PVR
     bool                            m_bIsPlayingTV;
     bool                            m_bIsPlayingRadio;
     bool                            m_bIsPlayingRecording;
+    bool                            m_bIsPlayingEpgTag;
     bool                            m_bIsPlayingEncryptedStream;
     bool                            m_bHasTVChannels;
     bool                            m_bHasRadioChannels;
@@ -251,7 +253,6 @@ namespace PVR
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
     PVR_DESCRAMBLE_INFO             m_descrambleInfo;    /*!< stream descramble information */
-    XbmcThreads::EndTime            m_ToggleShowInfo;
     CPVREpgInfoTagPtr               m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 

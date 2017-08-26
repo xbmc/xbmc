@@ -19,12 +19,12 @@
  *
  */
 
+#include <vector>
+
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 
-#include "PVRChannelGroup.h"
-
-#include <vector>
+#include "pvr/channels/PVRChannelGroup.h"
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
@@ -41,7 +41,7 @@ namespace PVR
      * @brief Create a new group container.
      * @param bRadio True if this is a container for radio channels, false if it is for tv channels.
      */
-    CPVRChannelGroups(bool bRadio);
+    explicit CPVRChannelGroups(bool bRadio);
     virtual ~CPVRChannelGroups(void);
 
     /*!

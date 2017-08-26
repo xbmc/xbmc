@@ -28,12 +28,12 @@
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
@@ -489,7 +489,7 @@ CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber, u
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CPVRChannelPtr &channel) const
+CFileItemPtr CPVRChannelGroup::GetNextChannel(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 
@@ -517,7 +517,7 @@ CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CPVRChannelPtr &channel) con
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelDown(const CPVRChannelPtr &channel) const
+CFileItemPtr CPVRChannelGroup::GetPreviousChannel(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 
@@ -1048,7 +1048,7 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
       {
         // Add dummy EPG tag associated with this channel
         epgTag = CPVREpgInfoTag::CreateDefaultTag();
-        epgTag->SetPVRChannel(channel);
+        epgTag->SetChannel(channel);
         results.Add(CFileItemPtr(new CFileItem(epgTag)));
       }
     }
@@ -1165,7 +1165,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, const std::string &strStreamURL, bool bUserSetIcon)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, bool bUserSetIcon)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;

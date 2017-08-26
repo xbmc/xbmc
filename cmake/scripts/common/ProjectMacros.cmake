@@ -75,6 +75,39 @@ function(GTEST_ADD_TESTS executable extra_args)
     endforeach()
 endfunction()
 
+function(sca_add_tests)
+  find_program(CLANGCHECK_COMMAND clang-check)
+  find_program(CPPCHECK_COMMAND cppcheck)
+  if(CLANGCHECK_COMMAND AND CMAKE_EXPORT_COMPILE_COMMANDS)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/scripts/linux/clang-check-test.sh.in
+                   ${CORE_BUILD_DIR}/clang-check-test.sh)
+  endif()
+  if(CPPCHECK_COMMAND)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/scripts/linux/cppcheck-test.sh.in
+                   ${CORE_BUILD_DIR}/cppcheck-test.sh)
+    set(CPPCHECK_INCLUDES)
+    foreach(inc ${INCLUDES})
+      list(APPEND CPPCHECK_INCLUDES -I ${inc})
+    endforeach()
+  endif()
+  foreach(src ${sca_sources})
+    file(RELATIVE_PATH name ${PROJECT_SOURCE_DIR} ${src})
+    get_filename_component(EXT ${src} EXT)
+    if(EXT STREQUAL .cpp)
+      if(CLANGCHECK_COMMAND AND CMAKE_EXPORT_COMPILE_COMMANDS)
+        add_test(NAME clang-check+${name}
+                 COMMAND ${CORE_BUILD_DIR}/clang-check-test.sh ${CLANGCHECK_COMMAND} ${src}
+                 CONFIGURATIONS analyze clang-check)
+      endif()
+      if(CPPCHECK_COMMAND)
+        add_test(NAME cppcheck+${name}
+                 COMMAND ${CORE_BUILD_DIR}/cppcheck-test.sh ${CPPCHECK_COMMAND} ${src} ${CPPCHECK_INCLUDES}
+                 CONFIGURATIONS analyze cppcheck)
+      endif()
+    endif()
+  endforeach()
+endfunction()
+
 function(whole_archive output)
   if(CMAKE_CXX_COMPILER_ID STREQUAL GNU OR CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     set(${output} -Wl,--whole-archive ${ARGN} -Wl,--no-whole-archive PARENT_SCOPE)

@@ -286,7 +286,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   if (strcmp(job->GetType(), kJobTypeCacheImage) == 0)
-    OnCachingComplete(success, (CTextureCacheJob *)job);
+    OnCachingComplete(success, static_cast<CTextureCacheJob*>(job));
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 
@@ -296,7 +296,7 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
   { // check our processing list
     {
       CSingleLock lock(m_processingSection);
-      const CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
+      const CTextureCacheJob *cacheJob = static_cast<const CTextureCacheJob*>(job);
       std::set<std::string>::iterator i = m_processinglist.find(cacheJob->m_url);
       if (i == m_processinglist.end())
       {

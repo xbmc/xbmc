@@ -104,7 +104,7 @@ public:
   class CDownloadJob
   {
   public:
-    CDownloadJob(unsigned int id)
+    explicit CDownloadJob(unsigned int id)
     {
       jobID = id;
       progress = 0;

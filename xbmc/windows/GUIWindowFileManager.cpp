@@ -1161,7 +1161,7 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
 {
   if(!success)
   {
-    CFileOperationJob* fileJob = (CFileOperationJob*)job;
+    CFileOperationJob* fileJob = static_cast<CFileOperationJob*>(job);
     CGUIDialogOK::ShowAndGetInput(CVariant{fileJob->GetHeading()},
                                   CVariant{fileJob->GetLine()}, CVariant{16200}, CVariant{0});
   }

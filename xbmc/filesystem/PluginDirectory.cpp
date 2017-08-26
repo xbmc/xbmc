@@ -112,7 +112,7 @@ CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
   return NULL;
 }
 
-bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir)
+bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)
 {
   CURL url(strPath);
 
@@ -151,8 +151,13 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   argv.push_back(strHandle);
   argv.push_back(options);
 
+  std::string strResume = "resume:false";
+  if (resume)
+    strResume = "resume:true";
+  argv.push_back(strResume);
+
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
   int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv);
@@ -170,12 +175,12 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   return success;
 }
 
-bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem)
+bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume)
 {
   CURL url(strPath);
   CPluginDirectory newDir;
 
-  bool success = newDir.StartScript(strPath, false);
+  bool success = newDir.StartScript(strPath, false, resume);
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
@@ -183,6 +188,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
       resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
     resultItem.SetPath(newDir.m_fileResult->GetPath());
     resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
+    resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());
     resultItem.UpdateInfo(*newDir.m_fileResult);
     if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->GetResumePoint().IsSet())
       resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
@@ -429,7 +435,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
 bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const std::string pathToUrl(url.Get());
-  bool success = StartScript(pathToUrl, true);
+  bool success = StartScript(pathToUrl, true, false);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -437,7 +443,7 @@ bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   return success;
 }
 
-bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
+bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resume)
 {
   CURL url(strPath);
   if (url.GetHostName().empty()) // called with no script - should never happen
@@ -464,8 +470,13 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
   argv.push_back(strHandle);
   argv.push_back(options);
 
+  std::string strResume = "resume:false";
+  if (resume)
+    strResume = "resume:true";
+  argv.push_back(strResume);
+
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   if (CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
     return true;
   else

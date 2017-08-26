@@ -46,8 +46,8 @@ class CXBMCTinyXML : public TiXmlDocument
 {
 public:
   CXBMCTinyXML();
-  CXBMCTinyXML(const char*);
-  CXBMCTinyXML(const std::string& documentName);
+  explicit CXBMCTinyXML(const char*);
+  explicit CXBMCTinyXML(const std::string& documentName);
   CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset);
   bool LoadFile(TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool LoadFile(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);

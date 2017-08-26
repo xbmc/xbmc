@@ -17,8 +17,6 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#ifdef HAS_DX
-
 #pragma once
 
 #include "Geometry.h"
@@ -150,5 +148,3 @@ private:
   float               m_clipYFactor;
   float               m_clipYOffset;
 };
-
-#endif

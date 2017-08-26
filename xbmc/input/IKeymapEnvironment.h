@@ -62,4 +62,9 @@ public:
    *        fallback window are undefined
    */
   virtual bool UseGlobalFallthrough() const = 0;
+
+  /*!
+   * \brief Specify if the agent should monitor for easter egg presses
+   */
+  virtual bool UseEasterEgg() const = 0;
 };

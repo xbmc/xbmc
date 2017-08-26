@@ -19,6 +19,7 @@
  */
 
 #include "PVRRadioRDSInfoTag.h"
+
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"

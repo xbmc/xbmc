@@ -59,7 +59,7 @@ namespace XBMCAddon
       { }
 
 #ifndef SWIG
-      Action(const CAction& caction) { setFromCAction(caction); }
+      explicit Action(const CAction& caction) { setFromCAction(caction); }
 
       void setFromCAction(const CAction& caction);
 
@@ -231,7 +231,7 @@ namespace XBMCAddon
        * the difference.
        * subclasses should use this constructor and not the other.
        */
-      Window(bool discrim);
+      explicit Window(bool discrim);
 
       void deallocating() override;
 
@@ -265,7 +265,7 @@ namespace XBMCAddon
 #endif
 
     public:
-      Window(int existingWindowId = -1);
+      explicit Window(int existingWindowId = -1);
 
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       virtual ~Window();

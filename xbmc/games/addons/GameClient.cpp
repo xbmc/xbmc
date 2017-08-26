@@ -35,7 +35,6 @@
 #include "games/addons/playback/GameClientRealtimePlayback.h"
 #include "games/addons/playback/GameClientReversiblePlayback.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerLayout.h"
 #include "games/ports/PortManager.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
@@ -71,8 +70,6 @@ using namespace GAME;
 #define GAME_PROPERTY_SUPPORTS_STANDALONE  "supports_standalone"
 #define GAME_PROPERTY_SUPPORTS_KEYBOARD    "supports_keyboard"
 #define GAME_PROPERTY_SUPPORTS_MOUSE       "supports_mouse"
-
-#define INPUT_SCAN_RATE  125 // Hz
 
 // --- NormalizeExtension ------------------------------------------------------
 
@@ -255,7 +252,7 @@ void CGameClient::Unload()
   Destroy();
 }
 
-bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   if (audio == nullptr || video == nullptr)
     return false;
@@ -295,13 +292,13 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
     return false;
   }
 
-  if (!InitializeGameplay(file.GetPath(), audio, video))
+  if (!InitializeGameplay(file.GetPath(), audio, video, input))
     return false;
 
   return true;
 }
 
-bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   CLog::Log(LOGDEBUG, "GameClient: Loading %s in standalone mode", ID().c_str());
 
@@ -323,13 +320,13 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
     return false;
   }
 
-  if (!InitializeGameplay(ID(), audio, video))
+  if (!InitializeGameplay(ID(), audio, video, input))
     return false;
 
   return true;
 }
 
-bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video)
+bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input)
 {
   if (LoadGameInfo() && NormalizeAudio(audio))
   {
@@ -338,7 +335,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
     m_serializeSize   = GetSerializeSize();
     m_audio           = audio;
     m_video           = video;
-    m_inputRateHandle = CServiceBroker::GetPeripherals().SetEventScanRate(INPUT_SCAN_RATE);
+    m_input           = input;
 
     if (m_bSupportsKeyboard)
       OpenKeyboard();
@@ -531,19 +528,25 @@ void CGameClient::CloseFile()
   m_bIsPlaying = false;
   m_gamePath.clear();
   m_serializeSize = 0;
-  if (m_inputRateHandle)
-  {
-    m_inputRateHandle->Release();
-    m_inputRateHandle.reset();
-  }
 
   m_audio = nullptr;
   m_video = nullptr;
+  m_input = nullptr;
   m_timing.Reset();
 }
 
 void CGameClient::RunFrame()
 {
+  IGameInputCallback *input;
+
+  {
+    CSingleLock lock(m_critSection);
+    input = m_input;
+  }
+
+  if (input)
+    input->PollInput();
+
   CSingleLock lock(m_critSection);
 
   if (m_bIsPlaying)
@@ -804,14 +807,14 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
       game_controller controllerStruct;
 
       controllerStruct.controller_id        = strId.c_str();
-      controllerStruct.digital_button_count = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
-      controllerStruct.analog_button_count  = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
-      controllerStruct.analog_stick_count   = controller->Layout().FeatureCount(FEATURE_TYPE::ANALOG_STICK);
-      controllerStruct.accelerometer_count  = controller->Layout().FeatureCount(FEATURE_TYPE::ACCELEROMETER);
+      controllerStruct.digital_button_count = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
+      controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
+      controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
+      controllerStruct.accelerometer_count  = controller->FeatureCount(FEATURE_TYPE::ACCELEROMETER);
       controllerStruct.key_count            = 0; //! @todo
-      controllerStruct.rel_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::RELPOINTER);
-      controllerStruct.abs_pointer_count    = 0; //! @todo
-      controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
+      controllerStruct.rel_pointer_count    = controller->FeatureCount(FEATURE_TYPE::RELPOINTER);
+      controllerStruct.abs_pointer_count    = controller->FeatureCount(FEATURE_TYPE::ABSPOINTER);
+      controllerStruct.motor_count          = controller->FeatureCount(FEATURE_TYPE::MOTOR);
 
       try { m_struct.toAddon.UpdatePort(port, true, &controllerStruct); }
       catch (...) { LogException("UpdatePort()"); }

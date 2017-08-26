@@ -253,7 +253,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::CONFIGURE:
           SinkConfig *data;
-          data = (SinkConfig*)msg->data;
+          data = reinterpret_cast<SinkConfig*>(msg->data);
           if (data)
           {
             m_requestedFormat = data->format;
@@ -261,7 +261,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
-          m_extSilenceTimer = 0;
+          m_extSilenceTimer.Set(0);
           m_extStreaming = false;
           ReturnBuffers();
           OpenSink();

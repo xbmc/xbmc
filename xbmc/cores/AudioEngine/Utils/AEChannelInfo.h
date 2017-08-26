@@ -32,7 +32,7 @@ class CAEChannelInfo {
 
 public:
   CAEChannelInfo();
-  CAEChannelInfo(const enum AEChannel* rhs);
+  explicit CAEChannelInfo(const enum AEChannel* rhs);
   CAEChannelInfo(const enum AEStdChLayout rhs);
   ~CAEChannelInfo();
   CAEChannelInfo& operator=(const CAEChannelInfo& rhs);
@@ -42,7 +42,7 @@ public:
   bool operator!=(const CAEChannelInfo& rhs) const;
   CAEChannelInfo& operator+=(const enum AEChannel& rhs);
   CAEChannelInfo& operator-=(const enum AEChannel& rhs);
-  const enum AEChannel operator[](unsigned int i) const;
+  enum AEChannel operator[](unsigned int i) const;
   operator std::string() const;
 
   /* remove any channels that dont exist in the provided info */
@@ -51,6 +51,8 @@ public:
   inline unsigned int Count() const { return m_channelCount; }
   static const char* GetChName(const enum AEChannel ch);
   bool HasChannel(const enum AEChannel ch) const;
+  bool IsChannelValid(const unsigned int pos);
+  bool IsLayoutValid();
   bool ContainsChannels(const CAEChannelInfo& rhs) const;
   void ReplaceChannel(const enum AEChannel from, const enum AEChannel to);
   int BestMatch(const std::vector<CAEChannelInfo>& dsts, int* score = NULL) const;

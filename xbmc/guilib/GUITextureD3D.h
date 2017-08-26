@@ -31,8 +31,6 @@
 #include "GUITexture.h"
 #include "D3DResource.h"
 
-#ifdef HAS_DX
-
 class CGUITextureD3D : public CGUITextureBase
 {
 public:
@@ -48,7 +46,5 @@ protected:
 private:
   color_t       m_col;
 };
-
-#endif
 
 #endif

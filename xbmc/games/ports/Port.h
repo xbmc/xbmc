@@ -63,6 +63,7 @@ namespace GAME
     virtual void SetWindowID(int windowId) override { }
     virtual int GetFallthrough(int windowId) const override { return -1; }
     virtual bool UseGlobalFallthrough() const override { return false; }
+    virtual bool UseEasterEgg() const override { return false; }
 
   private:
     // Construction parameters

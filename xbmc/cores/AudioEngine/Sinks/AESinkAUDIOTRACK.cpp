@@ -141,7 +141,7 @@ static CAEChannelInfo AUDIOTRACKChannelMaskToAEChannelMap(int atMask)
 
 static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
 {
-  info.ResolveChannels(KnownChannels);
+  info.ResolveChannels(CAEChannelInfo(KnownChannels));
 
   // Detect layouts with 6 channels including one LFE channel
   // We currently support the following layouts:

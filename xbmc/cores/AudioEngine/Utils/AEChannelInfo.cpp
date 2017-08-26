@@ -235,7 +235,7 @@ CAEChannelInfo& CAEChannelInfo::operator-=(const enum AEChannel& rhs)
   return *this;
 }
 
-const enum AEChannel CAEChannelInfo::operator[](unsigned int i) const
+enum AEChannel CAEChannelInfo::operator[](unsigned int i) const
 {
   assert(i < m_channelCount);
   return m_channels[i];
@@ -255,6 +255,30 @@ CAEChannelInfo::operator std::string() const
   s.append(GetChName(m_channels[m_channelCount-1]));
 
   return s;
+}
+
+bool CAEChannelInfo::IsChannelValid(const unsigned int pos)
+{
+  assert(pos < m_channelCount);
+  bool isValid = false;
+  if (m_channels[pos] > AE_CH_NULL && m_channels[pos] < AE_CH_UNKNOWN1)
+    isValid = true;
+
+  return isValid;
+}
+
+bool CAEChannelInfo::IsLayoutValid()
+{
+  if (m_channelCount == 0)
+    return false;
+
+  for (unsigned int i = 0; i < m_channelCount; ++i)
+  {
+    // we need at least one valid channel
+    if (IsChannelValid(i))
+      return true;
+  }
+  return false;
 }
 
 const char* CAEChannelInfo::GetChName(const enum AEChannel ch)

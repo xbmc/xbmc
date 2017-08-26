@@ -124,7 +124,7 @@ namespace XbmcThreads
   protected:
     L& mutex;
     bool owns;
-    inline UniqueLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock(); }
+    inline explicit UniqueLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock(); }
     inline UniqueLock(L& lockable, bool try_to_lock_discrim ) : mutex(lockable) { owns = mutex.try_lock(); }
     inline ~UniqueLock() { if (owns) mutex.unlock(); }
 
@@ -159,7 +159,7 @@ namespace XbmcThreads
   protected:
     L& mutex;
     bool owns;
-    inline SharedLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock_shared(); }
+    inline explicit SharedLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock_shared(); }
     inline ~SharedLock() { if (owns) mutex.unlock_shared(); }
 
     inline bool owns_lock() const { return owns; }

@@ -19,6 +19,7 @@
  */
 
 #include "log.h"
+#include "settings/AdvancedSettings.h"
 #include "system.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
@@ -46,9 +47,20 @@ void CLog::Close()
   s_globals.m_repeatLine.clear();
 }
 
-void CLog::Log(int loglevel, const char *format, ...)
+void CLog::Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...)
 {
   if (IsLogLevelLogged(loglevel))
+  {
+    va_list va;
+    va_start(va, format);
+    LogString(loglevel, StringUtils::FormatV(format, va));
+    va_end(va);
+  }
+}
+
+void CLog::Log(int loglevel, int component, PRINTF_FORMAT_STRING const char *format, ...)
+{
+  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(loglevel))
   {
     va_list va;
     va_start(va, format);
@@ -67,6 +79,24 @@ void CLog::LogFunction(int loglevel, const char* functionName, const char* forma
     va_list va;
     va_start(va, format);
     LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
+    va_end(va);
+  }
+}
+
+void CLog::LogFunction(int loglevel, const char* functionName, int component, const char* format, ...)
+{
+  if (g_advancedSettings.CanLogComponent(component))
+  {
+    va_list va;
+    va_start(va, format);
+    #if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wformat-security"
+    #endif
+    LogFunction(loglevel, functionName, StringUtils::FormatV(format, va).c_str());
+    #if defined(__GNUC__)
+    #pragma GCC diagnostic pop
+    #endif
     va_end(va);
   }
 }

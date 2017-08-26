@@ -101,26 +101,26 @@ class CFileItem :
 public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
-  CFileItem(const CGUIListItem& item);
+  explicit CFileItem(const CGUIListItem& item);
   explicit CFileItem(const std::string& strLabel);
   explicit CFileItem(const char* strLabel);
   CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const std::string& strPath, bool bIsFolder);
-  CFileItem(const CSong& song);
+  explicit CFileItem(const CSong& song);
   CFileItem(const CSong& song, const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CURL &path, const CAlbum& album);
   CFileItem(const std::string &path, const CAlbum& album);
-  CFileItem(const CArtist& artist);
-  CFileItem(const CGenre& genre);
-  CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
-  CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const PVR::CPVREpgInfoTagPtr& tag);
-  CFileItem(const PVR::CPVRChannelPtr& channel);
-  CFileItem(const PVR::CPVRRecordingPtr& record);
-  CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
-  CFileItem(const CMediaSource& share);
-  CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
-  CFileItem(const EventPtr& eventLogEntry);
+  explicit CFileItem(const CArtist& artist);
+  explicit CFileItem(const CGenre& genre);
+  explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
+  explicit CFileItem(const CVideoInfoTag& movie);
+  explicit CFileItem(const PVR::CPVREpgInfoTagPtr& tag);
+  explicit CFileItem(const PVR::CPVRChannelPtr& channel);
+  explicit CFileItem(const PVR::CPVRRecordingPtr& record);
+  explicit CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
+  explicit CFileItem(const CMediaSource& share);
+  explicit CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
+  explicit CFileItem(const EventPtr& eventLogEntry);
 
   ~CFileItem(void) override;
   CGUIListItem *Clone() const override { return new CFileItem(*this); };
@@ -132,12 +132,17 @@ public:
   void SetPath(const std::string &path) { m_strPath = path; };
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
+  const CURL GetDynURL() const;
+  void SetDynURL(const CURL& url);
+  const std::string &GetDynPath() const;
+  void SetDynPath(const std::string &path);
+
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
    \sa Initialize
    */
   void Reset();
-  const CFileItem& operator=(const CFileItem& item);
+  CFileItem& operator=(const CFileItem& item);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem &sortable, Field field) const override;
@@ -567,7 +572,13 @@ private:
    */
   CBookmark GetResumePoint() const;
 
+  /*!
+   \brief If given channel is radio, fill item's music tag from given epg tag and channel info.
+   */
+  void FillMusicInfoTag(const PVR::CPVRChannelPtr channel, const PVR::CPVREpgInfoTagPtr tag);
+
   std::string m_strPath;            ///< complete path to item
+  std::string m_strDynPath;
 
   SortSpecial m_specialSort;
   bool m_bIsParentFolder;

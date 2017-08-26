@@ -37,7 +37,7 @@ enum DVDOverlayType
 class CDVDOverlay
 {
 public:
-  CDVDOverlay(DVDOverlayType type)
+  explicit CDVDOverlay(DVDOverlayType type)
   {
     m_type = type;
 

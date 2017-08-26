@@ -18,7 +18,7 @@
  *
  */
 
-#include "PVRTimers.h"
+#include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
@@ -27,16 +27,17 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -120,6 +121,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_StartTime(timer.startTime + g_advancedSettings.m_iPVRTimeCorrection),
   m_StopTime(timer.endTime + g_advancedSettings.m_iPVRTimeCorrection),
   m_FirstDay(timer.firstDay + g_advancedSettings.m_iPVRTimeCorrection),
+  m_strSeriesLink(timer.strSeriesLink),
   m_iEpgUid(timer.iEpgUid),
   m_channel(channel)
 {
@@ -210,6 +212,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_state               == right.m_state &&
           m_timerType           == right.m_timerType &&
           m_iTimerId            == right.m_iTimerId &&
+          m_strSeriesLink       == right.m_strSeriesLink &&
           m_iEpgUid             == right.m_iEpgUid &&
           m_iActiveChildTimers  == right.m_iActiveChildTimers &&
           m_bHasChildConflictNOK== right.m_bHasChildConflictNOK &&
@@ -312,6 +315,7 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["recordinggroup"]    = m_iRecordingGroup;
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
+  value["serieslink"]        = m_strSeriesLink;
 }
 
 void CPVRTimerInfoTag::UpdateEpgInfoTag(void)
@@ -599,6 +603,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_bIsRadio            = tag->m_bIsRadio;
   m_iMarginStart        = tag->m_iMarginStart;
   m_iMarginEnd          = tag->m_iMarginEnd;
+  m_strSeriesLink       = tag->m_strSeriesLink;
   m_iEpgUid             = tag->m_iEpgUid;
   m_epgTag              = tag->m_epgTag;
   m_strSummary          = tag->m_strSummary;
@@ -680,14 +685,14 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   return channeltag ? channeltag->ChannelNumber() : 0;
 }
 
 std::string CPVRTimerInfoTag::ChannelName() const
 {
   std::string strReturn;
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   if (channeltag)
     strReturn = channeltag->ChannelName();
   else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
@@ -699,7 +704,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
 std::string CPVRTimerInfoTag::ChannelIcon() const
 {
   std::string strReturn;
-  CPVRChannelPtr channeltag = ChannelTag();
+  CPVRChannelPtr channeltag = Channel();
   if (channeltag)
     strReturn = channeltag->IconPath();
   return strReturn;
@@ -718,7 +723,17 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   CPVREpgInfoTagPtr epgTag(channel->GetEPGNow());
   CPVRTimerInfoTagPtr newTimer;
   if (epgTag)
-    newTimer = CreateFromEpg(epgTag);
+  {
+    if (epgTag->IsRecordable())
+    {
+      newTimer = CreateFromEpg(epgTag);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "%s - epg tag is not recordable", __FUNCTION__);
+      return CPVRTimerInfoTagPtr();
+    }
+  }
 
   if (!newTimer)
   {
@@ -781,17 +796,10 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
 
   /* check if a valid channel is set */
-  CPVRChannelPtr channel = tag->ChannelTag();
+  CPVRChannelPtr channel = tag->Channel();
   if (!channel)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
-    return CPVRTimerInfoTagPtr();
-  }
-
-  /* check if the epg end date is in the future */
-  if (tag->EndAsLocalTime() < CDateTime::GetCurrentDateTime() && !bCreateRule)
-  {
-    CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
     return CPVRTimerInfoTagPtr();
   }
 
@@ -806,19 +814,29 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   newTag->m_iClientId          = channel->ClientID();
   newTag->m_bIsRadio           = channel->IsRadio();
   newTag->m_channel            = channel;
+  newTag->m_strSeriesLink      = tag->SeriesLink();
   newTag->m_iEpgUid            = tag->UniqueBroadcastID();
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
 
+  const int iMustNotHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL |
+                                  PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+                                  PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE;
   CPVRTimerTypePtr timerType;
   if (bCreateRule)
   {
-    // create epg-based timer rule
-    timerType = CPVRTimerType::CreateFromAttributes(
-      PVR_TIMER_TYPE_IS_REPEATING,
-      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE,
-      channel->ClientID());
+    // create epg-based timer rule, prefer rule using series link if available.
 
+    const int iMustHaveAttribs = PVR_TIMER_TYPE_IS_REPEATING;
+
+    if (!tag->SeriesLink().empty())
+      timerType = CPVRTimerType::CreateFromAttributes(iMustHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE,
+                                                      iMustNotHaveAttribs,
+                                                      channel->ClientID());
+    if (!timerType)
+      timerType = CPVRTimerType::CreateFromAttributes(iMustHaveAttribs,
+                                                      iMustNotHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE,
+                                                      channel->ClientID());
     if (timerType)
     {
       if (timerType->SupportsEpgTitleMatch())
@@ -837,10 +855,9 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   else
   {
     // create one-shot epg-based timer
-    timerType = CPVRTimerType::CreateFromAttributes(
-      PVR_TIMER_TYPE_ATTRIBUTE_NONE,
-      PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE,
-      channel->ClientID());
+    timerType = CPVRTimerType::CreateFromAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE,
+                                                    PVR_TIMER_TYPE_IS_REPEATING | iMustNotHaveAttribs,
+                                                    channel->ClientID());
   }
 
   if (!timerType)
@@ -1045,7 +1062,12 @@ void CPVRTimerInfoTag::ClearEpgTag(void)
   SetEpgTag(CPVREpgInfoTagPtr());
 }
 
-CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
+bool CPVRTimerInfoTag::HasChannel() const
+{
+  return m_channel.get() != nullptr;
+}
+
+CPVRChannelPtr CPVRTimerInfoTag::Channel() const
 {
   return m_channel;
 }
@@ -1072,4 +1094,9 @@ const std::string& CPVRTimerInfoTag::Summary(void) const
 const std::string& CPVRTimerInfoTag::Path(void) const
 {
   return m_strFileNameAndPath;
+}
+
+const std::string& CPVRTimerInfoTag::SeriesLink() const
+{
+  return m_strSeriesLink;
 }

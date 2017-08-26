@@ -81,7 +81,9 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   while (!stopEvent.Signaled() && !m_displayLost && !m_displayReset)
   {
     // sleep until vblank
-    HRESULT hr = g_Windowing.GetCurrentOutput()->WaitForVBlank();
+    Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
+    DX::DeviceResources::Get()->GetOutput(&pOutput);
+    HRESULT hr = pOutput->WaitForVBlank();
 
     // calculate how many vblanks happened
     Now = CurrentHostCounter();
@@ -128,7 +130,7 @@ void CVideoSyncD3D::Cleanup()
 float CVideoSyncD3D::GetFps()
 {
   DXGI_MODE_DESC DisplayMode;
-  g_Windowing.GetDisplayMode(&DisplayMode, true);
+  DX::DeviceResources::Get()->GetDisplayMode(&DisplayMode);
 
   m_fps = (DisplayMode.RefreshRate.Denominator != 0) ? (float)DisplayMode.RefreshRate.Numerator / (float)DisplayMode.RefreshRate.Denominator : 0.0f;
 
@@ -143,17 +145,5 @@ float CVideoSyncD3D::GetFps()
     m_fps *= 2;
   }
   return m_fps;
-}
-
-std::string CVideoSyncD3D::GetErrorDescription(HRESULT hr)
-{
-  WCHAR buff[1024];
-  DXGetErrorDescription(hr, buff, 1024);
-  std::wstring error(DXGetErrorString(hr));
-  std::wstring descr(buff);
-  std::wstring errMsgW = StringUtils::Format(L"%s: %s", error.c_str(), descr.c_str());
-  std::string errMsg;
-  g_charsetConverter.wToUTF8(errMsgW, errMsg);
-  return errMsg;
 }
 

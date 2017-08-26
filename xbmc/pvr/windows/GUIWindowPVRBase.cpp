@@ -20,19 +20,19 @@
 
 #include "GUIWindowPVRBase.h"
 
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"

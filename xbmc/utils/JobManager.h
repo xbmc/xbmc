@@ -31,7 +31,7 @@ class CJobManager;
 class CJobWorker : public CThread
 {
 public:
-  CJobWorker(CJobManager *manager);
+  explicit CJobWorker(CJobManager *manager);
   ~CJobWorker() override;
 
   void Process() override;
@@ -57,7 +57,7 @@ class CJobQueue: public IJobCallback
   class CJobPointer
   {
   public:
-    CJobPointer(CJob *job)
+    explicit CJobPointer(CJob *job)
     {
       m_job = job;
       m_id = 0;

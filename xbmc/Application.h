@@ -112,6 +112,13 @@ struct ReplayGainSettings
   bool bAvoidClipping;
 };
 
+enum StartupAction
+{
+  STARTUP_ACTION_NONE = 0,
+  STARTUP_ACTION_PLAY_TV,
+  STARTUP_ACTION_PLAY_RADIO
+};
+
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
@@ -156,7 +163,6 @@ public:
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
-  void SetCurrentFileItem(const CFileItem &item);
   CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
   std::string GetCurrentPlayer();
@@ -515,8 +521,6 @@ protected:
   ReplayGainSettings m_replayGainSettings;
   
   std::vector<IActionListener *> m_actionListeners;
-
-  bool m_fallbackLanguageLoaded;
 
   std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
 

@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -52,5 +52,26 @@ public:
   static int GetFallbackWindow(int windowId);
 
 private:
-  static std::map<int, const char*> CreateReverseWindowMapping();
+  struct WindowMapItem
+  {
+    const char *windowName;
+    int windowId;
+  };
+
+  struct WindowNameCompare
+  {
+    bool operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const;
+  };
+
+  struct WindowIDCompare
+  {
+    bool operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const;
+  };
+
+  using WindowMapByName = std::set<WindowMapItem, WindowNameCompare>;
+  using WindowMapByID = std::set<WindowMapItem, WindowIDCompare>;
+
+  static WindowMapByID CreateWindowMappingByID();
+
+  static const WindowMapByName WindowMappingByName;
 };

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This script performs a single analysis using clang-check
+# It is used by the 'make test' target in the buildsystems
+# Usually you should use 'ctest -C clang-check' rather than calling this script directly
+#
+# Parameters: $1 = Application binary
+#             $2 = Source file to process
+
+clangcheck_cmd=$1
+source_file=$2
+
+tmpfil=`mktemp`
+$clangcheck_cmd -p @CMAKE_BINARY_DIR@ -analyze $source_file &> $tmpfil
+nerr=`cat $tmpfil | grep -v "warning: /usr/bin/c++: 'linker' input unused" | wc -l`
+if test $nerr -gt 0
+then
+  cat $tmpfil
+  rm $tmpfil
+  exit 1
+fi
+
+rm $tmpfil
+exit 0

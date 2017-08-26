@@ -41,7 +41,7 @@ namespace ActiveAE
   class CActiveAEDSPProcess
   {
     public:
-      CActiveAEDSPProcess(AE_DSP_STREAM_ID streamId);
+      explicit CActiveAEDSPProcess(AE_DSP_STREAM_ID streamId);
       virtual ~CActiveAEDSPProcess();
 
       //@{

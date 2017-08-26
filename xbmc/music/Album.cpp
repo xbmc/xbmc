@@ -323,12 +323,11 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     for (auto &song : songs)
     {
       if (!song.strMusicBrainzTrackID.empty())
-        for (auto sourceSong : source.infoSongs)
+        for (auto sourceSong : source.songs)
           if ((sourceSong.strMusicBrainzTrackID == song.strMusicBrainzTrackID) && (sourceSong.iTrack == song.iTrack))
             song.MergeScrapedSong(sourceSong, override);
     }
   }
-  infoSongs = source.infoSongs;
 }
 
 std::string CAlbum::GetGenreString() const
@@ -469,8 +468,8 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,              "title", strAlbum);
   XMLUtils::GetString(album, "musicbrainzalbumid", strMusicBrainzAlbumID);
-  XMLUtils::GetString(album, "musicBrainzAlbumID", strMusicBrainzAlbumID);
   XMLUtils::GetString(album, "musicbrainzreleasegroupid", strReleaseGroupMBID);
+  XMLUtils::GetBoolean(album, "scrapedmbid", bScrapedMBID);
   XMLUtils::GetString(album, "artistdesc", strArtistDesc);
   std::vector<std::string> artist; // Support old style <artist></artist> for backwards compatibility
   XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
@@ -564,53 +563,6 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     }
   }
 
-  const TiXmlElement* node = album->FirstChildElement("track");
-  if (node)
-    infoSongs.clear();  // this means that the tracks can't be spread over separate pages
-                    // but this is probably a reasonable limitation
-  bool bIncrement = false;
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-
-      CSong song;
-      const TiXmlElement* songArtistCreditsNode = node->FirstChildElement("songArtistCredits");
-      if (songArtistCreditsNode)
-        song.artistCredits.clear();
-      
-      while (songArtistCreditsNode)
-      {
-        if (songArtistCreditsNode->FirstChild())
-        {
-          CArtistCredit artistCredit;
-          XMLUtils::GetString(songArtistCreditsNode,  "artist",               artistCredit.m_strArtist);
-          XMLUtils::GetString(songArtistCreditsNode,  "musicBrainzArtistID",  artistCredit.m_strMusicBrainzArtistID);
-          song.artistCredits.push_back(artistCredit);
-        }
-        
-        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("songArtistCredits");
-      }
-
-      XMLUtils::GetString(node,   "musicBrainzTrackID",   song.strMusicBrainzTrackID);
-      XMLUtils::GetInt(node, "position", song.iTrack);
-
-      if (song.iTrack == 0)
-        bIncrement = true;
-
-      XMLUtils::GetString(node,"title",song.strTitle);
-      std::string strDur;
-      XMLUtils::GetString(node,"duration",strDur);
-      song.iDuration = StringUtils::TimeStringToSeconds(strDur);
-
-      if (bIncrement)
-        song.iTrack = song.iTrack + 1;
-
-      infoSongs.push_back(song);
-    }
-    node = node->NextSiblingElement("track");
-  }
-
   std::string strReleaseType;
   if (XMLUtils::GetString(album, "releasetype", strReleaseType))
     SetReleaseType(strReleaseType);
@@ -632,8 +584,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   XMLUtils::SetString(album,                    "title", strAlbum);
   XMLUtils::SetString(album,       "musicbrainzalbumid", strMusicBrainzAlbumID);
-  XMLUtils::SetString(album, "musicBrainzAlbumID", strMusicBrainzAlbumID);
   XMLUtils::SetString(album, "musicbrainzreleasegroupid", strReleaseGroupMBID);
+  XMLUtils::SetBoolean(album, "scrapedmbid", bScrapedMBID);
   XMLUtils::SetString(album,              "artistdesc", strArtistDesc); //Can be different from artist credits
   XMLUtils::SetStringArray(album,               "genre", genre);
   XMLUtils::SetStringArray(album,               "style", styles);
@@ -678,25 +630,6 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     XMLUtils::SetString(albumArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
   }
   
-  for( VECSONGS::const_iterator song = infoSongs.begin(); song != infoSongs.end(); ++song)
-  {
-    // add a <song> tag
-    TiXmlElement cast("track");
-    TiXmlNode *node = album->InsertEndChild(cast);
-    for( VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
-    {
-      // add an <albumArtistCredits> tag
-      TiXmlElement songArtistCreditsElement("songArtistCredits");
-      TiXmlNode *songArtistCreditsNode = node->InsertEndChild(songArtistCreditsElement);
-      XMLUtils::SetString(songArtistCreditsNode,               "artist", artistCredit->m_strArtist);
-      XMLUtils::SetString(songArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
-    }
-    XMLUtils::SetString(node,   "musicBrainzTrackID",   song->strMusicBrainzTrackID);
-    XMLUtils::SetString(node,   "title",                song->strTitle);
-    XMLUtils::SetInt(node,      "position",             song->iTrack);
-    XMLUtils::SetString(node,   "duration",             StringUtils::SecondsToTimeString(song->iDuration));
-  }
-
   XMLUtils::SetString(album, "releasetype", GetReleaseType());
 
   return true;

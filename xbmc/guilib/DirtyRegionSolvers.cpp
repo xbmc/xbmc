@@ -41,7 +41,7 @@ void CFillViewportAlwaysRegionSolver::Solve(const CDirtyRegionList &input, CDirt
 void CFillViewportOnChangeRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
   if (!input.empty())
-    output.assign(1,g_graphicsContext.GetViewWindow());
+    output.assign(1,CDirtyRegion(g_graphicsContext.GetViewWindow()));
 }
 
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()

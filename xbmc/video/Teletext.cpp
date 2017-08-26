@@ -32,21 +32,11 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 
-#define SDL_memset4(dst, val, len)		\
-do {						\
-	uint32_t _count = (len);		\
-	uint32_t _n = (_count + 3) / 4;		\
-	uint32_t *_p = static_cast<uint32_t *>(dst);	\
-	uint32_t _val = (val);			\
-	if (len == 0) break;			\
-        switch (_count % 4) {			\
-        case 0: do {    *_p++ = _val;		\
-        case 3:         *_p++ = _val;		\
-        case 2:         *_p++ = _val;		\
-        case 1:         *_p++ = _val;		\
-		} while ( --_n );		\
-	}					\
-} while(0)
+static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
+{
+  for (; len > 0; --len)
+    *dst++ = val;
+}
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len) << 2)
 
 static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";

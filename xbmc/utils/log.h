@@ -43,8 +43,10 @@ public:
   ~CLog(void);
   static void Close();
   static void Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...);
+  static void Log(int loglevel, int component, PRINTF_FORMAT_STRING const char *format, ...);
   static void LogFunction(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const char* format, ...) PARAM3_PRINTF_FORMAT;
-#define LogF(loglevel,format,...) LogFunction((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
+  static void LogFunction(int loglevel, IN_OPT_STRING const char* functionName, int component, PRINTF_FORMAT_STRING const char* format, ...) PARAM4_PRINTF_FORMAT;
+#define LogF(loglevel,...) LogFunction((loglevel), __FUNCTION__, ##__VA_ARGS__)
   static void MemDump(char *pData, int length);
   static bool Init(const std::string& path);
   static void PrintDebugString(const std::string& line); // universal interface for printing debug strings

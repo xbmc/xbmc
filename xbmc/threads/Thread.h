@@ -53,7 +53,7 @@ class CThread
   static XbmcCommons::ILogger* logger;
 
 protected:
-  CThread(const char* ThreadName);
+  explicit CThread(const char* ThreadName);
 
 public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
@@ -124,7 +124,7 @@ private:
   // -----------------------------------------------------------------------------------
 
   ThreadIdentifier m_ThreadId;
-  ThreadOpaque m_ThreadOpaque;
+  ThreadOpaque m_ThreadOpaque = {};
   bool m_bAutoDelete;
   CEvent m_StopEvent;
   CEvent m_TermEvent;

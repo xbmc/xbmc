@@ -41,13 +41,14 @@ namespace JOYSTICK
    *
    * Available types:
    *
-   *   1) scalar[1]
+   *   1) scalar[*]
    *   2) analog stick
    *   3) accelerometer
    *   4) rumble motor
    *   5) relative pointer
+   *   6) absolute pointer
    *
-   * [1] All three driver primitives (buttons, hats and axes) have a state that
+   * [*] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,
    *     features that map to a single primitive are called "scalar features".
    */
@@ -59,6 +60,7 @@ namespace JOYSTICK
     ACCELEROMETER,
     MOTOR,
     RELPOINTER,
+    ABSPOINTER,
   };
 
   /*!
@@ -73,6 +75,13 @@ namespace JOYSTICK
     ANALOG_STICK,
     ACCELEROMETER,
     HAPTICS,
+    MOUSE_BUTTON,
+    POINTER,
+    LIGHTGUN,
+    OFFSCREEN, // Virtual button to shoot light gun offscreen
+    KEY, // A keyboard key
+    KEYPAD, // A key on a numeric keymap, including star and pound
+    HARDWARE, // A button or functionality on the console
   };
 
   /*!

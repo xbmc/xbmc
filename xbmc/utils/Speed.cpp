@@ -99,7 +99,7 @@ bool CSpeed::operator !=(const CSpeed& right) const
   return !operator ==(right.m_value);
 }
 
-const CSpeed& CSpeed::operator =(const CSpeed& right)
+CSpeed& CSpeed::operator =(const CSpeed& right)
 {
   m_valid = right.m_valid;
   m_value = right.m_value;

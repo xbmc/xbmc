@@ -24,6 +24,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIShaderDX.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererDX.h"
@@ -34,8 +35,6 @@
 #include <crtdbg.h>
 #define ASSERT(f) _ASSERTE((f))
 #endif
-
-#ifdef HAS_DX
 
 using namespace OVERLAY;
 using namespace DirectX;
@@ -376,5 +375,3 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->SetWVP(world, view, proj);
   pGUIShader->RestoreBuffers();
 }
-
-#endif

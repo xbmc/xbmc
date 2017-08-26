@@ -43,7 +43,7 @@ namespace ADDON
   class CBinaryAddonBase : public std::enable_shared_from_this<CBinaryAddonBase>
   {
   public:
-    CBinaryAddonBase(const CAddonInfo& addonInfo) : m_addonInfo(addonInfo) { }
+    explicit CBinaryAddonBase(const CAddonInfo& addonInfo) : m_addonInfo(addonInfo) { }
 
     bool Create();
 

@@ -35,8 +35,8 @@
 class CSingleLock : public XbmcThreads::UniqueLock<CCriticalSection>
 {
 public:
-  inline CSingleLock(CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection>(cs) {}
-  inline CSingleLock(const CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection> ((CCriticalSection&)cs) {}
+  inline explicit CSingleLock(CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection>(cs) {}
+  inline explicit CSingleLock(const CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection> ((CCriticalSection&)cs) {}
 
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }
@@ -52,7 +52,7 @@ protected:
 class CSingleTryLock : public CSingleLock
 {
 public:
-  inline CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
+  inline explicit CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
 
   inline bool IsOwner() const { return owns_lock(); }
 };
@@ -70,7 +70,7 @@ class CSingleExit
   CCriticalSection& sec;
   unsigned int count;
 public:
-  inline CSingleExit(CCriticalSection& cs) : sec(cs), count(cs.exit()) { }
+  inline explicit CSingleExit(CCriticalSection& cs) : sec(cs), count(cs.exit()) { }
   inline ~CSingleExit() { sec.restore(count); }
 };
 

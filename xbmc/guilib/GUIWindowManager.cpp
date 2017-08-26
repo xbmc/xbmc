@@ -150,7 +150,8 @@
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/windows/GUIWindowGames.h"
 #include "games/dialogs/osd/DialogGameOSD.h"
-#include "games/dialogs/osd/DialogGameVideoSettings.h"
+#include "games/dialogs/osd/DialogGameVideoFilter.h"
+#include "games/dialogs/osd/DialogGameViewMode.h"
 
 using namespace KODI;
 using namespace PVR;
@@ -302,7 +303,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CGUIControllerWindow);
   Add(new GAME::CGUIWindowGames);
   Add(new GAME::CDialogGameOSD);
-  Add(new GAME::CDialogGameVideoSettings);
+  Add(new GAME::CDialogGameVideoFilter);
+  Add(new GAME::CDialogGameViewMode);
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -406,7 +408,8 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
     DestroyWindow(WINDOW_GAMES);
     DestroyWindow(WINDOW_DIALOG_GAME_OSD);
-    DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_SETTINGS);
+    DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER);
+    DestroyWindow(WINDOW_DIALOG_GAME_VIEW_MODE);
 
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_MYPVR);
@@ -897,6 +900,12 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+  case TMSG_GUI_PREVIOUS_WINDOW:
+  {
+    PreviousWindow();
+  }
+  break;
+
   case TMSG_GUI_ADDON_DIALOG:
   {
     if (pMsg->lpVoid)
@@ -975,6 +984,35 @@ int CGUIWindowManager::GetMessageMask()
 
 bool CGUIWindowManager::OnAction(const CAction &action) const
 {
+  auto actionId = action.GetID();
+  if (actionId == ACTION_GESTURE_BEGIN)
+  {
+    m_touchGestureActive = true;
+  }
+
+  bool ret;
+  if (!m_inhibitTouchGestureEvents || !action.IsGesture())
+  {
+    ret = HandleAction(action);
+  }
+  else
+  {
+    // We swallow the event, so it is handled
+    ret = true;
+    CLog::Log(LOGDEBUG, "Swallowing touch action %d due to inhibition on window switch", actionId);
+  }
+
+  if (actionId == ACTION_GESTURE_END || actionId == ACTION_GESTURE_ABORT)
+  {
+    m_touchGestureActive = false;
+    m_inhibitTouchGestureEvents = false;
+  }
+
+  return ret;
+}
+
+bool CGUIWindowManager::HandleAction(CAction const& action) const
+{
   CSingleLock lock(g_graphicsContext);
   unsigned int topMost = m_activeDialogs.size();
   while (topMost)
@@ -1039,12 +1077,12 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
 void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(CRect(0, 0, float(g_graphicsContext.GetWidth()), float(g_graphicsContext.GetHeight())));
+  m_tracker.MarkDirtyRegion(CDirtyRegion(CRect(0, 0, float(g_graphicsContext.GetWidth()), float(g_graphicsContext.GetHeight()))));
 }
 
 void CGUIWindowManager::MarkDirty(const CRect& rect)
 {
-  m_tracker.MarkDirtyRegion(rect);
+  m_tracker.MarkDirtyRegion(CDirtyRegion(rect));
 }
 
 void CGUIWindowManager::RenderPass() const
@@ -1627,6 +1665,15 @@ void CGUIWindowManager::ClearWindowHistory()
 
 void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*= 0*/)
 {
+  // Abort touch action if active
+  if (m_touchGestureActive && !m_inhibitTouchGestureEvents)
+  {
+    CLog::Log(LOGDEBUG, "Closing window %d with active touch gesture, sending gesture abort event", window->GetID());
+    window->OnAction({ACTION_GESTURE_ABORT});
+    // Don't send any mid-gesture events to next window until new touch starts
+    m_inhibitTouchGestureEvents = true;
+  }
+
   window->Close(false, nextWindowID);
   while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     ProcessRenderLoop(true);

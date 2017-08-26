@@ -32,7 +32,7 @@ namespace PERIPHERALS
   class CPeripheralBusApplication : public CPeripheralBus
   {
   public:
-    CPeripheralBusApplication(CPeripherals& manager);
+    explicit CPeripheralBusApplication(CPeripherals& manager);
     ~CPeripheralBusApplication(void) override = default;
 
     // implementation of CPeripheralBus

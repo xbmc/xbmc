@@ -23,10 +23,7 @@
 
 #include "system.h"
 
-#if   defined(TARGET_WINDOWS) && defined(HAS_GL)
-#include "windows/WinSystemWin32GL.h"
-
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+#if defined(TARGET_WINDOWS)
 #include "windows/WinSystemWin32DX.h"
 
 #elif defined(TARGET_RASPBERRY_PI) && defined(HAS_GLES)
@@ -37,6 +34,12 @@
 
 #elif defined(TARGET_ANDROID) && defined(HAS_GLES)
 #include "android/WinSystemAndroidGLESContext.h"
+
+#elif defined(HAVE_WAYLAND) && defined(HAS_GL)
+#include "wayland/WinSystemWaylandEGLContextGL.h"
+
+#elif defined(HAVE_WAYLAND) && defined(HAS_GLES)
+#include "wayland/WinSystemWaylandEGLContextGLES.h"
 
 #elif defined(TARGET_LINUX) && defined(HAVE_GBM) && defined(HAS_GLES)
 #include "gbm/WinSystemGbmGLESContext.h"

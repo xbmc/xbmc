@@ -41,7 +41,7 @@ namespace XbmcThreads
     {
       unsigned int count;
       CCriticalSection& cc;
-      inline AlmostExit(CCriticalSection& pcc) : count(pcc.exit(1)), cc(pcc) { cc.count = 0; }
+      inline explicit AlmostExit(CCriticalSection& pcc) : count(pcc.exit(1)), cc(pcc) { cc.count = 0; }
       inline ~AlmostExit() { cc.count = 1; cc.restore(count); }
     };
 

@@ -45,13 +45,11 @@ public:
   {
     starttime = 0LL;
     startpercent = 0LL;
-    identify = false;
     fullscreen = false;
     video_only = false;
   }
   double  starttime; /* start time in seconds */
   double  startpercent; /* start time in percent */  
-  bool    identify;  /* identify mode, used for checking format and length of a file */
   std::string state;  /* potential playerstate to restore to */
   bool    fullscreen; /* player is allowed to switch to fullscreen */
   bool    video_only; /* player is not allowed to play audio streams, video streams only */
@@ -118,7 +116,7 @@ struct SPlayerVideoStreamInfo
   CRect DestRect;
   std::string stereoMode;
 
-  SPlayerVideoStreamInfo()
+  SPlayerVideoStreamInfo() : SrcRect {}, DestRect {}
   {
     valid = false;
     bitrate = 0;
@@ -225,7 +223,7 @@ enum ViewMode {
 class IPlayer
 {
 public:
-  IPlayer(IPlayerCallback& callback): m_callback(callback){};
+  explicit IPlayer(IPlayerCallback& callback): m_callback(callback){};
   virtual ~IPlayer() = default;
   virtual bool Initialize(TiXmlElement* pConfig) { return true; };
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
@@ -244,7 +242,6 @@ public:
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
-  virtual float GetPercentage(){ return 0;}
   virtual float GetCachePercentage(){ return 0;}
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
@@ -300,10 +297,7 @@ public:
    \return True if the player supports relative seeking, otherwise false
    */
   virtual bool SeekTimeRelative(int64_t iTime) { return false; }
-  /*!
-   \brief current time in milliseconds
-   */
-  virtual int64_t GetTime() { return 0; }
+
   /*!
    \brief Sets the current time. This 
    can be used for injecting the current time. 
@@ -312,10 +306,7 @@ public:
    tracks in reality (like with airtunes)
    */
   virtual void SetTime(int64_t time) { }
-  /*!
-   \brief total time in milliseconds
-   */
-  virtual int64_t GetTotalTime() { return 0; }
+
   /*!
    \brief Set the total time  in milliseconds
    this can be used for injecting the duration in case
@@ -323,7 +314,6 @@ public:
    */
   virtual void SetTotalTime(int64_t time) { }
   virtual int GetSourceBitrate(){ return 0;}
-  virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void SetSpeed(float speed) = 0;
   virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }

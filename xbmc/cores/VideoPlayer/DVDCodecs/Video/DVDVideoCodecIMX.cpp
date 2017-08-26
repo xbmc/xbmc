@@ -216,10 +216,7 @@ bool CIMXCodec::VpuOpen()
     goto VpuOpenError;
   }
   else
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "VPU Lib version : major.minor.rel=%d.%d.%d.\n", vpuVersion.nLibMajor, vpuVersion.nLibMinor, vpuVersion.nLibRelease);
-  }
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VPU Lib version : major.minor.rel=%d.%d.%d.\n", vpuVersion.nLibMajor, vpuVersion.nLibMinor, vpuVersion.nLibRelease);
 
   ret = VPU_DecQueryMem(&memInfo);
   if (ret != VPU_DEC_RET_SUCCESS)
@@ -498,25 +495,21 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
   }
 
   m_hints = hints;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "Let's decode with iMX VPU\n");
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Let's decode with iMX VPU\n");
 
   int param = 0;
   SetVPUParams(VPU_DEC_CONF_INPUTTYPE, &param);
   SetVPUParams(VPU_DEC_CONF_SKIPMODE, &param);
 
 #ifdef MEDIAINFO
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-  {
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: CodecID %d \n", m_hints.codec);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: StreamType %d \n", m_hints.type);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Level %d \n", m_hints.level);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Profile %d \n", m_hints.profile);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: PTS_invalid %d \n", m_hints.ptsinvalid);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Tag %d \n", m_hints.codec_tag);
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %dx%d \n", m_hints.width,  m_hints.height);
-  }
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: CodecID %d \n", m_hints.codec);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: StreamType %d \n", m_hints.type);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: Level %d \n", m_hints.level);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: Profile %d \n", m_hints.profile);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: PTS_invalid %d \n", m_hints.ptsinvalid);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: Tag %d \n", m_hints.codec_tag);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: %dx%d \n", m_hints.width,  m_hints.height);
   { char str_tag[128]; av_get_codec_tag_string(str_tag, sizeof(str_tag), m_hints.codec_tag);
       CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: Tag fourcc %s\n", str_tag);
   }
@@ -527,14 +520,10 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
     for (unsigned int i=0; i < m_hints.extrasize; i++)
       sprintf(buf+i*2, "%02x", ((uint8_t*)m_hints.extradata)[i]);
 
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %s extradata %d %s\n", *(char*)m_hints.extradata == 1 ? "AnnexB" : "avcC", m_hints.extrasize, buf);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: %s extradata %d %s\n", *(char*)m_hints.extradata == 1 ? "AnnexB" : "avcC", m_hints.extrasize, buf);
   }
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-  {
-    CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: %d / %d \n", m_hints.width,  m_hints.height);
-    CLog::Log(LOGDEBUG, "Decode: aspect %f - forced aspect %d\n", m_hints.aspect, m_hints.forced_aspect);
-  }
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: MEDIAINFO: %d / %d \n", m_hints.width,  m_hints.height);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "Decode: aspect %f - forced aspect %d\n", m_hints.aspect, m_hints.forced_aspect);
 #endif
 
   m_warnOnce = true;

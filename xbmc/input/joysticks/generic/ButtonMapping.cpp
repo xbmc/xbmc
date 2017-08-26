@@ -21,7 +21,6 @@
 #include "ButtonMapping.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
@@ -265,7 +264,7 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
     CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
     ControllerPtr controller = controllerManager.GetController(m_keymap->ControllerID());
 
-    const auto& features = controller->Layout().Features();
+    const auto& features = controller->Features();
     for (const auto& feature : features)
     {
       bool bIsSelectAction = false;

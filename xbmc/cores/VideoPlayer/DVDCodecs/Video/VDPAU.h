@@ -231,7 +231,7 @@ struct CVdpauProcessedPicture
 class CVdpauRenderPicture : public CVideoBuffer
 {
 public:
-  CVdpauRenderPicture(int id) : CVideoBuffer(id) { }
+  explicit CVdpauRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
   CVdpauProcessedPicture procPic;
   int width;
@@ -239,6 +239,7 @@ public:
   CRect crop;
   void *device;
   void *procFunc;
+  void *decoder;
 };
 
 //-----------------------------------------------------------------------------
@@ -285,7 +286,7 @@ public:
 class CMixer : private CThread
 {
 public:
-  CMixer(CEvent *inMsgEvent);
+  explicit CMixer(CEvent *inMsgEvent);
   ~CMixer() override;
   void Start();
   void Dispose();
@@ -451,6 +452,7 @@ public:
   VdpVideoSurface RemoveNext(bool skiprender = false);
   void Reset();
   int Size();
+  bool HasRefs();
 protected:
   std::map<VdpVideoSurface, int> m_state;
   std::list<VdpVideoSurface> m_freeSurfaces;
@@ -509,7 +511,7 @@ public:
     uint32_t aux; /* optional extra parameter... */
   };
 
-  CDecoder(CProcessInfo& processInfo);
+  explicit CDecoder(CProcessInfo& processInfo);
   ~CDecoder() override;
 
   bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
@@ -570,6 +572,7 @@ protected:
   CVdpauConfig m_vdpauConfig;
   CVideoSurfaces m_videoSurfaces;
   AVVDPAUContext m_hwContext;
+  AVCodecContext* m_avctx = nullptr;
 
   COutput m_vdpauOutput;
   CVdpauBufferStats m_bufferStats;

@@ -40,7 +40,7 @@ namespace ADDON
   class CAddonInterfaces
   {
   public:
-    CAddonInterfaces(CAddon* addon);
+    explicit CAddonInterfaces(CAddon* addon);
     ~CAddonInterfaces();
 
     AddonCB* GetCallbacks()        { return m_callbacks; }

@@ -18,10 +18,10 @@
  *
  */
 
-#include "ProcessInfoWin.h"
+#include "ProcessInfoWin10.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-
-#if defined(TARGET_WINDOWS) && defined(TARGET_WIN10)
+#include "windowing/WindowingFactory.h"
+#include <set>
 
 using namespace VIDEOPLAYER;
 
@@ -40,4 +40,14 @@ EINTERLACEMETHOD CProcessInfoWin10::GetFallbackDeintMethod()
   return EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO;
 }
 
-#endif
+std::vector<AVPixelFormat> CProcessInfoWin10::GetRenderFormats()
+{
+  auto processor = g_Windowing.m_processorFormats;
+  auto shaders = g_Windowing.m_shaderFormats;
+
+  std::set<AVPixelFormat> formats;
+  formats.insert(processor.begin(), processor.end());
+  formats.insert(shaders.begin(), shaders.end());
+
+  return std::vector<AVPixelFormat>(formats.begin(), formats.end());
+}

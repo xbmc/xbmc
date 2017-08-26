@@ -393,7 +393,7 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
   COverlay* r = NULL;
 
   if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
-    r = Convert((CDVDOverlaySSA*)o, pts);
+    r = Convert(static_cast<CDVDOverlaySSA*>(o), pts);
   else if(o->m_textureid)
   {
     std::map<unsigned int, COverlay*>::iterator it = m_textureCache.find(o->m_textureid);
@@ -408,18 +408,18 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 
 #if defined(HAS_GL) || defined(HAS_GLES)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayTextureGL((CDVDOverlayImage*)o);
+    r = new COverlayTextureGL(static_cast<CDVDOverlayImage*>(o));
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = new COverlayTextureGL((CDVDOverlaySpu*)o);
+    r = new COverlayTextureGL(static_cast<CDVDOverlaySpu*>(o));
 #elif defined(HAS_DX)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayImageDX((CDVDOverlayImage*)o);
+    r = new COverlayImageDX(static_cast<CDVDOverlayImage*>(o));
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = new COverlayImageDX((CDVDOverlaySpu*)o);
+    r = new COverlayImageDX(static_cast<CDVDOverlaySpu*>(o));
 #endif
 
   if(!r && o->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
-    r = new COverlayText((CDVDOverlayText*)o);
+    r = new COverlayText(static_cast<CDVDOverlayText*>(o));
 
   m_textureCache[m_textureid] = r;
   o->m_textureid = m_textureid;

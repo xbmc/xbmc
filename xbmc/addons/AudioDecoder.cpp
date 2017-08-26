@@ -52,12 +52,12 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 
   // for replaygain
   CTagLoaderTagLib tag;
-  tag.Load(file.GetPath(), XFILE::CMusicFileDirectory::m_tag, NULL);
+  tag.Load(file.GetDynPath(), XFILE::CMusicFileDirectory::m_tag, NULL);
 
   int channels;
   int sampleRate;
 
- bool ret = m_struct.toAddon.init(&m_struct, file.GetPath().c_str(), filecache,
+ bool ret = m_struct.toAddon.init(&m_struct, file.GetDynPath().c_str(), filecache,
                                   &channels, &sampleRate,
                                   &m_bitsPerSample, &m_TotalTime,
                                   &m_bitRate, &m_format.m_dataFormat, &m_channel);
