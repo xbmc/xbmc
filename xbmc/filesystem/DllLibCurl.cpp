@@ -63,6 +63,7 @@ using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
+static CURLSH *g_curlShared = nullptr;
 #if(0)
 static unsigned int g_curlTimeout = 0;
 #endif
@@ -87,6 +88,28 @@ bool DllLibCurlGlobal::Load()
     CLog::Log(LOGERROR, "Error initializing libcurl");
     return false;
   }
+
+  g_curlShared = share_init();
+  CURLSHcode ret = share_setopt(g_curlShared, CURLSHOPT_LOCKFUNC, DllLibCurlGlobal::lock);
+  if (ret != CURLSHE_OK)
+  {
+    CLog::Log(LOGERROR, "Failed to set 'CURLSHOPT_LOCKFUNC': %s", share_strerror(ret));
+    return false;
+  }
+  ret = share_setopt(g_curlShared, CURLSHOPT_UNLOCKFUNC, DllLibCurlGlobal::unlock);
+  if (ret != CURLSHE_OK)
+  {
+    CLog::Log(LOGERROR, "Failed to set 'CURLSHOPT_UNLOCKFUNC': %s", share_strerror(ret));
+    return false;
+  }
+
+  ret = share_setopt(g_curlShared, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
+  if (ret != CURLSHE_OK)
+  {
+    CLog::Log(LOGERROR, "Failed to set 'CURLSHOPT_SHARE': %s", share_strerror(ret));
+    return false;
+  }
+
 
   /* check idle will clean up the last one */
   g_curlReferences = 2;
@@ -114,6 +137,8 @@ void DllLibCurlGlobal::Unload()
 
     // close libcurl
     global_cleanup();
+
+    share_cleanup(g_curlShared);
 
 #if defined(HAS_CURL_STATIC)
     // Cleanup ssl locking array
@@ -174,6 +199,26 @@ void DllLibCurlGlobal::CheckIdle()
 #endif
 }
 
+CCriticalSection DllLibCurlGlobal::m_curlLock;
+
+void DllLibCurlGlobal::lock(CURL_HANDLE *handle, curl_lock_data data, curl_lock_access access, void *useptr )
+{
+  m_curlLock.lock();
+}
+
+void DllLibCurlGlobal::unlock(CURL_HANDLE *handle, curl_lock_data data, void *useptr )
+{
+  m_curlLock.unlock();
+
+}
+
+CURL_HANDLE *DllLibCurlGlobal::easy_init_share()
+{
+  CURL_HANDLE *handle = easy_init();
+  easy_setopt(handle, CURLOPT_SHARE, g_curlShared);
+  return handle;
+}
+
 void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)
 {
   assert(easy_handle != NULL);
@@ -193,7 +238,7 @@ void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, 
         if(easy_handle)
         {
           if(!it->m_easy)
-            it->m_easy = easy_init();
+            it->m_easy = easy_init_share();
 
           *easy_handle = it->m_easy;
         }
@@ -221,7 +266,7 @@ void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, 
 
   if(easy_handle)
   {
-    session.m_easy = easy_init();
+    session.m_easy = easy_init_share();
     *easy_handle = session.m_easy;
   }
 
