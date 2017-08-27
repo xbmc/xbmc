@@ -30,11 +30,11 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Myndskreyting valmöguleikar"
+msgstr "Valkostir sjónhrifa"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Myndskreyting forstillingar"
+msgstr "Forstillingar sjónhrifa"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -200,17 +200,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráarlista · Velja skjáhvílu"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Stilla og sýsla með margmiðlunarþjónustur · Stilla og sýsla með veðurþjónustu"
+
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
 msgstr "Stilla skjá · Stilla hljóð · Stilla internetaðgang · Stilla orkusparnað · Stilla atvikaskráningu"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Breyttu uppsettum viðbótum · Leitaðu að og settu upp viðbætur frá kodi.tv · Breyta stillingum viðbóta"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Stilla aðgerðir sem hægt er að nota á meðan afspilun stendur · Stilla hvernig margmiðlunarefni er spilað"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Stilltu uppruna í safni · Stilltu hvernig efni birtist í listum · Stilltu hvernig flakkað er um lista í safni"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Stilla skinn · Stilla landsvæði · Stilla stýringar · Stilla skjáhvílu · Stilla aðallás"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Stilla persónusniðin þín · Settu valkosti fyrir læsingar · Virkjaðu innskráningarglugga"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Birta upplýsingar um kerfið · Tölfræði vélbúnaðar · Athuga með tiltækt geymslupláss · Skoða uppsetningu netkerfis"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -258,7 +278,7 @@ msgstr "Fela lifandi bakgrunn"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Fela myndhrif í bakgrunni"
+msgstr "Fela sjónhrif í bakgrunni"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -291,6 +311,18 @@ msgstr "Sýna eytt"
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Fyrsta keyrsla"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Það er tvennt sem þarf að vita þegar flakkað er í Estouchy-skinninu"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi-merkið virkar sem 'Heim'-hnappur. Alltaf þegar þú kemur við hann færistu yfir á upphafsskjáinn."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Þegar þú ert að spila hljóð eða myndskeið birtist titill atriðisins efst á skjánum. Sé titillinn snertur opnast myndskreyting eða myndspilunargluggi á öllum skjánum."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
