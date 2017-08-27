@@ -891,13 +891,6 @@ namespace PVR
     static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
 
     /*!
-     * @brief Copy over epg info from CPVREpgInfoTag to EPG_TAG.
-     * @param kodiTag The epg tag on Kodi's side.
-     * @param addonTag The epg tag on the addon's side.
-     */
-    static void WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &addonTag);
-
-    /*!
      * @brief Whether a channel can be played by this add-on
      * @param channel The channel to check.
      * @return True when it can be played, false otherwise.
