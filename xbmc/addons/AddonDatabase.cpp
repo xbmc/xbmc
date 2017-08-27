@@ -786,10 +786,9 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
 
     DeleteRepository(repository);
 
-    if (!SetLastChecked(repository, version, CDateTime::GetCurrentDateTime().GetAsDBDateTime()))
+    int idRepo = SetLastChecked(repository, version, CDateTime::GetCurrentDateTime().GetAsDBDateTime());
+    if (idRepo < 0)
       return false;
-
-    int idRepo = static_cast<int>(m_pDS->lastinsertid());
     assert(idRepo > 0);
 
     m_pDB->start_transaction();
@@ -807,7 +806,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
           addon->Description().c_str(),
           addon->ChangeLog().c_str()));
 
-      auto idAddon = m_pDS->lastinsertid();
+      int idAddon = static_cast<int>(m_pDS->lastinsertid());
       if (idAddon <= 0)
       {
         CLog::Log(LOGERROR, "%s insert failed on addon '%s'", __FUNCTION__, addon->ID().c_str());
@@ -876,7 +875,7 @@ std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std:
   return std::make_pair(date, version);
 }
 
-bool CAddonDatabase::SetLastChecked(const std::string& id,
+int CAddonDatabase::SetLastChecked(const std::string& id,
     const ADDON::AddonVersion& version, const std::string& time)
 {
   try
@@ -884,24 +883,32 @@ bool CAddonDatabase::SetLastChecked(const std::string& id,
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    int retId = -1;
     std::string sql = PrepareSQL("SELECT * FROM repo WHERE addonID='%s'", id.c_str());
     m_pDS->query(sql);
 
     if (m_pDS->eof())
+    {
       sql = PrepareSQL("INSERT INTO repo (id, addonID, lastcheck, version) "
           "VALUES (NULL, '%s', '%s', '%s')", id.c_str(), time.c_str(), version.asString().c_str());
+      m_pDS->exec(sql);
+      retId = static_cast<int>(m_pDS->lastinsertid());
+    }
     else
+    {
+      retId = m_pDS->fv(0).get_asInt();
       sql = PrepareSQL("UPDATE repo SET lastcheck='%s', version='%s' WHERE addonID='%s'",
           time.c_str(), version.asString().c_str(), id.c_str());
+      m_pDS->exec(sql);
+    }
 
-    m_pDS->exec(sql);
-    return true;
+    return retId;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  return false;
+  return -1;
 }
 
 bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
