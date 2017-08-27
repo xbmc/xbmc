@@ -162,11 +162,11 @@ msgstr "objekt"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Spola bakåt"
+msgstr "Spolar bakåt"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Spola framåt"
+msgstr "Spolar framåt"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
