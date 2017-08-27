@@ -68,7 +68,12 @@ public:
   /*! Get addons across all repositories */
   bool GetRepositoryContent(ADDON::VECADDONS& addons);
 
-  bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
+  /*!
+   \brief Set repo last checked date, and create the repo if needed
+   \param id id of the repository
+   \returns id of the repository, or -1 on error.
+   */
+  int SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
   /*!
    \brief Retrieve the time a repository was last checked and the version it was for
