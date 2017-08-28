@@ -35,6 +35,7 @@
 #ifdef TARGET_POSIX
 #include "linux/XMemUtils.h"
 #endif
+#include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
@@ -64,6 +65,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_region = get_region;
   addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
   addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
+  addonInterface->toKodi->kodi->get_current_skin_id = get_current_skin_id;
   addonInterface->toKodi->kodi->kodi_version = kodi_version;
 }
 
@@ -411,6 +413,18 @@ int Interface_General::get_global_idle_time(void* kodiBase)
   }
 
   return g_application.GlobalIdleTime();
+}
+
+char* Interface_General::get_current_skin_id(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p')", __FUNCTION__, addon);
+    return nullptr;
+  }
+
+  return strdup(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
 }
 
 void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
