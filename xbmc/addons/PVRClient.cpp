@@ -736,6 +736,9 @@ public:
     endTime = t;
     kodiTag->FirstAiredAsUTC().GetAsTime(t);
     firstAired = t;
+    iUniqueBroadcastId = kodiTag->UniqueBroadcastID();
+    iUniqueChannelId = kodiTag->UniqueChannelID();
+    iParentalRating = kodiTag->ParentalRating();
     iSeriesNumber = kodiTag->SeriesNumber();
     iEpisodeNumber = kodiTag->EpisodeNumber();
     iEpisodePartNumber = kodiTag->EpisodePart();
@@ -744,6 +747,7 @@ public:
     iFlags = kodiTag->Flags();
     iGenreType = kodiTag->GenreType();
     iGenreSubType = kodiTag->GenreSubType();
+    bNotify = kodiTag->Notify();
     strTitle = m_strTitle.c_str();
     strPlotOutline = m_strPlotOutline.c_str();
     strPlot = m_strPlot.c_str();
