@@ -520,16 +520,16 @@ void CGUIEPGGridContainer::UpdateItems()
 
     if (prevSelectedEpgTag->StartAsUTC().IsValid()) // "normal" tag selected
     {
-      const CDateTime gridStart(m_gridModel->GetGridStart());
       const CDateTime eventStart(prevSelectedEpgTag->StartAsUTC());
-
-      if (gridStart >= eventStart)
+      if (oldGridStart >= eventStart)
       {
         // start of previously selected event is before grid start
         newBlockIndex = eventOffset;
       }
       else
-        newBlockIndex = (eventStart - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+      {
+        newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart) + eventOffset;
+      }
 
       const CPVRChannelPtr channel(prevSelectedEpgTag->ChannelTag());
       if (channel)
@@ -549,16 +549,21 @@ void CGUIEPGGridContainer::UpdateItems()
         const CEpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
-          const CDateTime gridStart(m_gridModel->GetGridStart());
-          const CDateTime eventEnd(tag->EndAsUTC());
+          const CDateTime eventStart(tag->StartAsUTC());
 
-          if (gridStart >= eventEnd)
+          if (oldGridStart >= eventStart)
           {
-            // start of previously selected gap tag is before grid start
+            // start of previously selected event is before grid start
             newBlockIndex = eventOffset;
           }
           else
-            newBlockIndex = (eventEnd - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+          {
+            // first block of previously selected gap tag is one block after last block of tag before previously selected gap tag.
+            int gapTagStartIndex = m_gridModel->GetLastEventBlock(tag->EndAsUTC()) + 1;
+
+            newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart); // points to tag before previously selected gap tag
+            eventOffset = gapTagStartIndex - newBlockIndex; // newBlockIndex + eventOffset points to first block of previously selected gap tag
+          }
 
           broadcastUid = tag->UniqueBroadcastID();
         }
