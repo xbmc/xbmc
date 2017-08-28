@@ -181,10 +181,6 @@ namespace PVR
 
     int GetSelectedItem() const;
 
-    CPVREpgInfoTagPtr GetSelectedEpgInfoTag() const;
-
-    unsigned int GetPageNowOffset() const;
-
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channelsPerPage;
     int m_programmesPerPage;

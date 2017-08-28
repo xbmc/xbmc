@@ -661,7 +661,10 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
 
   /* Safe currently selected epg tag and grid coordinates. Selection shall be restored after update. */
-  CPVREpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+  CPVREpgInfoTagPtr prevSelectedEpgTag;
+  if (m_item)
+    prevSelectedEpgTag = m_item->item->GetEPGInfoTag();
+
   const int oldChannelIndex = m_channelOffset + m_channelCursor;
   const int oldBlockIndex   = m_blockOffset + m_blockCursor;
   const CDateTime oldGridStart(m_gridModel->GetGridStart());
@@ -686,15 +689,14 @@ void CGUIEPGGridContainer::UpdateItems()
 
     if (prevSelectedEpgTag->StartAsUTC().IsValid() && prevSelectedEpgTag->EndAsUTC().IsValid()) // "normal" tag selected
     {
-      const CDateTime eventStart(prevSelectedEpgTag->StartAsUTC());
-      if (oldGridStart >= eventStart)
+      if (oldGridStart >= prevSelectedEpgTag->StartAsUTC())
       {
         // start of previously selected event is before grid start
         newBlockIndex = eventOffset;
       }
       else
       {
-        newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart) + eventOffset;
+        newBlockIndex = m_gridModel->GetFirstEventBlock(prevSelectedEpgTag) + eventOffset;
       }
 
       const CPVRChannelPtr channel(prevSelectedEpgTag->Channel());
@@ -715,9 +717,7 @@ void CGUIEPGGridContainer::UpdateItems()
         const CPVREpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
-          const CDateTime eventStart(tag->StartAsUTC());
-
-          if (oldGridStart >= eventStart)
+          if (oldGridStart >= tag->StartAsUTC())
           {
             // start of previously selected event is before grid start
             newBlockIndex = eventOffset;
@@ -725,9 +725,9 @@ void CGUIEPGGridContainer::UpdateItems()
           else
           {
             // first block of previously selected gap tag is one block after last block of tag before previously selected gap tag.
-            int gapTagStartIndex = m_gridModel->GetLastEventBlock(tag->EndAsUTC()) + 1;
+            int gapTagStartIndex = m_gridModel->GetLastEventBlock(tag) + 1;
 
-            newBlockIndex = m_gridModel->GetFirstEventBlock(eventStart); // points to tag before previously selected gap tag
+            newBlockIndex = m_gridModel->GetFirstEventBlock(tag); // points to tag before previously selected gap tag
             eventOffset = gapTagStartIndex - newBlockIndex; // newBlockIndex + eventOffset points to first block of previously selected gap tag
           }
 
@@ -749,13 +749,7 @@ void CGUIEPGGridContainer::UpdateItems()
     if (oldGridStart != m_gridModel->GetGridStart())
     {
       // grid start changed. block offset for selected event might have changed.
-      int diff;
-      if (m_gridModel->GetGridStart() > oldGridStart)
-        diff = -(m_gridModel->GetGridStart() - oldGridStart).GetSecondsTotal();
-      else
-        diff = (oldGridStart - m_gridModel->GetGridStart()).GetSecondsTotal();
-
-      newBlockIndex += diff / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK;
+      newBlockIndex += m_gridModel->GetBlock(oldGridStart);
       if (newBlockIndex < 0 || newBlockIndex + 1 > m_gridModel->GetBlockCount())
       {
         // previous selection is no longer in grid.
@@ -795,8 +789,7 @@ void CGUIEPGGridContainer::UpdateItems()
       else if (newBlockIndex >= m_gridModel->GetBlockCount())
       {
         // default to now
-        const CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-        newBlockIndex = (currentDate - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK - GetPageNowOffset();
+        newBlockIndex = m_gridModel->GetNowBlock();
       }
     }
 
@@ -821,8 +814,6 @@ void CGUIEPGGridContainer::UpdateItems()
   else
   {
     // no previous selection, goto now
-    m_item = GetItem(m_channelCursor);
-
     SetInvalid();
     GoToNow();
   }
@@ -1335,27 +1326,6 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
   return item;
 }
 
-CPVREpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
-{
-  CPVREpgInfoTagPtr tag;
-
-  if (m_gridModel->HasGridItems() &&
-      m_gridModel->HasChannelItems() &&
-      m_channelCursor + m_channelOffset < m_gridModel->ChannelItemsSize() &&
-      m_blockCursor + m_blockOffset < m_gridModel->GetBlockCount())
-  {
-    CFileItemPtr currentItem(m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset));
-    if (currentItem)
-      tag = currentItem->GetEPGInfoTag();
-  }
-
-  return tag;
-}
-
-unsigned int CGUIEPGGridContainer::GetPageNowOffset() const
-{
-  return m_gridModel->GetGridStartPadding() / CGUIEPGGridContainerModel::MINSPERBLOCK; // this is the 'now' block relative to page start
-}
 
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
 {
@@ -1677,10 +1647,8 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::GoToNow()
 {
-  CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-  int offset = (currentDate - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK - GetPageNowOffset();
-  ScrollToBlockOffset(offset);
-  SetBlock(GetPageNowOffset());
+  ScrollToBlockOffset(m_gridModel->GetNowBlock());
+  SetBlock(m_gridModel->GetPageNowOffset());
 }
 
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)
