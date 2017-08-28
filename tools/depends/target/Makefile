@@ -113,6 +113,7 @@ libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
+dbus: expat
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
