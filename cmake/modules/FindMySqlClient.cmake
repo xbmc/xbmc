@@ -21,7 +21,7 @@ else()
   set(EXTRA_FIND_ARGS)
 endif()
 
-find_path(MYSQLCLIENT_INCLUDE_DIR mysql/mysql_time.h)
+find_path(MYSQLCLIENT_INCLUDE_DIR NAMES mysql/mysql.h mysql/server/mysql.h)
 find_library(MYSQLCLIENT_LIBRARY_RELEASE NAMES mysqlclient libmysql
                                          PATH_SUFFIXES mysql
                                          ${EXTRA_FIND_ARGS})
