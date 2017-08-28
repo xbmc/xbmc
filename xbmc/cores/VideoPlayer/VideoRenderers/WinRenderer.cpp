@@ -1141,9 +1141,9 @@ bool CWinRenderer::NeedBuffer(int idx)
   // check if processor wants to keep past frames
   if (m_renderMethod == RENDER_DXVA && m_processor)
   {
-    int numPast = m_processor->PastRefs();
-    if (m_renderBuffers[idx].HasPic())
+    if (m_renderBuffers[idx].loaded)
     {
+      int numPast = m_processor->PastRefs();
       if (m_renderBuffers[idx].frameIdx + numPast*2 >= m_renderBuffers[m_iYV12RenderBuffer].frameIdx)
         return true;
     }
