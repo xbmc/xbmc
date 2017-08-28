@@ -367,42 +367,6 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
   strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
 }
 
-void CPVRClient::WriteEpgTag(const CConstPVREpgInfoTagPtr &kodiTag, EPG_TAG &addonTag)
-{
-  addonTag = {0};
-
-  time_t t;
-  kodiTag->StartAsUTC().GetAsTime(t);
-  addonTag.startTime = t;
-  kodiTag->EndAsUTC().GetAsTime(t);
-  addonTag.endTime = t;
-  addonTag.iParentalRating = kodiTag->ParentalRating();
-  addonTag.iUniqueBroadcastId = kodiTag->UniqueBroadcastID();
-  addonTag.iUniqueChannelId = kodiTag->UniqueChannelID();
-  addonTag.bNotify = kodiTag->Notify();
-  kodiTag->FirstAiredAsUTC().GetAsTime(t);
-  addonTag.firstAired = t;
-  addonTag.iSeriesNumber = kodiTag->SeriesNumber();
-  addonTag.iEpisodeNumber = kodiTag->EpisodeNumber();
-  addonTag.iEpisodePartNumber = kodiTag->EpisodePart();
-  addonTag.iStarRating = kodiTag->StarRating();
-  addonTag.iYear = kodiTag->Year();
-  addonTag.iFlags = kodiTag->Flags();
-  addonTag.strTitle = kodiTag->Title(true).c_str();
-  addonTag.strPlotOutline = kodiTag->PlotOutline().c_str();
-  addonTag.strPlot = kodiTag->Plot().c_str();
-  addonTag.strOriginalTitle = kodiTag->OriginalTitle(true).c_str();
-  addonTag.strCast = kodiTag->Cast().c_str();
-  addonTag.strDirector = kodiTag->Director().c_str();
-  addonTag.strWriter = kodiTag->Writer().c_str();
-  addonTag.strIMDBNumber = kodiTag->IMDBNumber().c_str();
-  addonTag.strEpisodeName = kodiTag->EpisodeName().c_str();
-  addonTag.strIconPath = kodiTag->Icon().c_str();
-  addonTag.iGenreType = kodiTag->GenreType();
-  addonTag.iGenreSubType = kodiTag->GenreSubType();
-  addonTag.strSeriesLink = kodiTag->SeriesLink().c_str();
-}
-
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
@@ -742,6 +706,73 @@ PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
   return retVal;
 }
 
+// This class wraps an EPG_TAG (PVR Addon API struct) to ensure that the string members of
+// that struct, which are const char pointers, stay valid until the EPG_TAG gets destructed.
+// Please note that this struct is also used to transfer huge amount of EPG_TAGs from
+// addon to Kodi. Thus, changing the struct to contain char arrays is not recommened,
+// because this would lead to huge amount of string copies when transferring epg data
+// from addon to Kodi.
+class CAddonEpgTag : public EPG_TAG
+{
+public:
+  CAddonEpgTag() = delete;
+  explicit CAddonEpgTag(const CConstPVREpgInfoTagPtr kodiTag) :
+    m_strTitle(kodiTag->Title(true)),
+    m_strPlotOutline(kodiTag->PlotOutline(true)),
+    m_strPlot(kodiTag->Plot(true)),
+    m_strOriginalTitle(kodiTag->OriginalTitle(true)),
+    m_strCast(kodiTag->Cast()),
+    m_strDirector(kodiTag->Director()),
+    m_strWriter(kodiTag->Writer()),
+    m_strIMDBNumber(kodiTag->IMDBNumber()),
+    m_strEpisodeName(kodiTag->EpisodeName()),
+    m_strIconPath(kodiTag->Icon()),
+    m_strSeriesLink(kodiTag->SeriesLink())
+  {
+    time_t t;
+    kodiTag->StartAsUTC().GetAsTime(t);
+    startTime = t;
+    kodiTag->EndAsUTC().GetAsTime(t);
+    endTime = t;
+    kodiTag->FirstAiredAsUTC().GetAsTime(t);
+    firstAired = t;
+    iSeriesNumber = kodiTag->SeriesNumber();
+    iEpisodeNumber = kodiTag->EpisodeNumber();
+    iEpisodePartNumber = kodiTag->EpisodePart();
+    iStarRating = kodiTag->StarRating();
+    iYear = kodiTag->Year();
+    iFlags = kodiTag->Flags();
+    iGenreType = kodiTag->GenreType();
+    iGenreSubType = kodiTag->GenreSubType();
+    strTitle = m_strTitle.c_str();
+    strPlotOutline = m_strPlotOutline.c_str();
+    strPlot = m_strPlot.c_str();
+    strOriginalTitle = m_strOriginalTitle.c_str();
+    strCast = m_strCast.c_str();
+    strDirector = m_strDirector.c_str();
+    strWriter = m_strWriter.c_str();
+    strIMDBNumber = m_strIMDBNumber.c_str();
+    strEpisodeName = m_strEpisodeName.c_str();
+    strIconPath = m_strIconPath.c_str();
+    strSeriesLink = m_strSeriesLink.c_str();
+  }
+
+  virtual ~CAddonEpgTag() = default;
+
+private:
+  std::string m_strTitle;
+  std::string m_strPlotOutline;
+  std::string m_strPlot;
+  std::string m_strOriginalTitle;
+  std::string m_strCast;
+  std::string m_strDirector;
+  std::string m_strWriter;
+  std::string m_strIMDBNumber;
+  std::string m_strEpisodeName;
+  std::string m_strIconPath;
+  std::string m_strSeriesLink;
+};
+
 PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const
 {
   if (!m_bReadyToUse)
@@ -752,8 +783,7 @@ PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsR
 
   PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
 
-  EPG_TAG addonTag;
-  WriteEpgTag(tag, addonTag);
+  CAddonEpgTag addonTag(tag);
   retVal = m_struct.toAddon.IsEPGTagRecordable(&addonTag, &bIsRecordable);
   LogError(retVal, __FUNCTION__);
   return retVal;
@@ -769,8 +799,7 @@ PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPla
 
   PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
 
-  EPG_TAG addonTag;
-  WriteEpgTag(tag, addonTag);
+  CAddonEpgTag addonTag(tag);
   retVal = m_struct.toAddon.IsEPGTagPlayable(&addonTag, &bIsPlayable);
   LogError(retVal, __FUNCTION__);
   return retVal;
@@ -781,15 +810,12 @@ bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
   if (!m_bReadyToUse)
     return false;
 
-  const CPVREpgInfoTagPtr epgtag = fileItem.GetEPGInfoTag();
-
-  EPG_TAG tag;
-  WriteEpgTag(epgtag, tag);
+  CAddonEpgTag addonTag(fileItem.GetEPGInfoTag());
 
   PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
   unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
 
-  if (m_struct.toAddon.GetEPGTagStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
+  if (m_struct.toAddon.GetEPGTagStreamProperties(&addonTag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
     return false;
 
   for (unsigned int i = 0; i < iPropertyCount; ++i)
@@ -799,6 +825,7 @@ bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
 
     fileItem.SetProperty(properties[i].strName, properties[i].strValue);
   }
+
   return true;
 }
 
