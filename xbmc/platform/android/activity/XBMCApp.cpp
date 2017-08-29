@@ -175,6 +175,10 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
       OnPlayBackPaused();
     else if (strcmp(message, "OnStop") == 0)
       OnPlayBackStopped();
+     else if (strcmp(message, "OnSeek") == 0)
+       UpdateSessionState();
+     else if (strcmp(message, "OnSpeedChanged") == 0)
+       UpdateSessionState();
   }
   else if (flag & Info)
   {
