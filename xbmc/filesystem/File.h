@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string>
 #include "utils/auto_buffer.h"
+#include "utils/StringUtils.h"
 #include "IFileTypes.h"
 #include "PlatformDefs.h"
 #include "URL.h"
@@ -109,8 +110,7 @@ public:
   int64_t GetLength();
   void Close();
   int GetChunkSize();
-  std::string GetContentMimeType(void);
-  std::string GetContentCharset(void);
+  const std::string GetProperty(XFILE::FileProperty type, const std::string &name = StringUtils::Empty) const;
   ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
 
@@ -128,7 +128,7 @@ public:
 
   int IoControl(EIoControl request, void* param);
 
-  IFile *GetImplementation() { return m_pFile; }
+  IFile *GetImplementation() const { return m_pFile; }
 
   // CURL interface
   static bool Exists(const CURL& file, bool bUseCache = true);

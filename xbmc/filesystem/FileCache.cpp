@@ -566,21 +566,12 @@ void CFileCache::StopThread(bool bWait /*= true*/)
   CThread::StopThread(bWait);
 }
 
-std::string CFileCache::GetContent()
+const std::string CFileCache::GetProperty(XFILE::FileProperty type, const std::string &name) const
 {
   if (!m_source.GetImplementation())
-    return IFile::GetContent();
+    return IFile::GetProperty(type, name);
 
-  return m_source.GetImplementation()->GetContent();
-}
-
-std::string CFileCache::GetContentCharset(void)
-{
-  IFile* impl = m_source.GetImplementation();
-  if (!impl)
-    return IFile::GetContentCharset();
-
-  return impl->GetContentCharset();
+  return m_source.GetImplementation()->GetProperty(type, name);
 }
 
 int CFileCache::IoControl(EIoControl request, void* param)

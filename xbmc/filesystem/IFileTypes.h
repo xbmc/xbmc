@@ -21,6 +21,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 namespace XFILE
 {
@@ -83,4 +84,15 @@ enum CURLOPTIONTYPE
   CURL_OPTION_HEADER      /**< Add a Header           */
 };
 
+enum FileProperty
+{
+  FILE_PROPERTY_RESPONSE_PROTOCOL,          /**< Get response protocol line  */
+  FILE_PROPERTY_RESPONSE_HEADER,            /**< Get response Header value  */
+  FILE_PROPERTY_CONTENT_TYPE,               /**< Get file content-type  */
+  FILE_PROPERTY_CONTENT_CHARSET,            /**< Get file content charset  */
+  FILE_PROPERTY_MIME_TYPE                   /**< Get file mime type  */
+};
+
+/* default content-type for use in returns by ref */
+const std::string DefaultContentType = "application/octet-stream";
 }

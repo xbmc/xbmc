@@ -156,7 +156,7 @@ bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
   }
 
   if (URIUtils::HasExtension(repo.info, ".gz")
-      || CMime::GetFileTypeFromMime(http.GetMimeType()) == CMime::EFileType::FileTypeGZip)
+      || CMime::GetFileTypeFromMime(http.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE)) == CMime::EFileType::FileTypeGZip)
   {
     CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", repo.info.c_str());
     std::string buffer;

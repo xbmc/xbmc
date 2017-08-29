@@ -83,7 +83,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   buffer.clear(); // free memory early
 
   if (encoding == TIXML_ENCODING_UNKNOWN)
-    Parse(data, file.GetContentCharset());
+    Parse(data, file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
   else
     Parse(data, encoding);
 

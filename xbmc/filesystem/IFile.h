@@ -30,6 +30,7 @@
 #pragma once
 
 #include "PlatformDefs.h" // for __stat64, ssize_t
+#include "utils/StringUtils.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -129,8 +130,10 @@ public:
 
   virtual int IoControl(EIoControl request, void* param) { return -1; }
 
-  virtual std::string GetContent()                           { return "application/octet-stream"; }
-  virtual std::string GetContentCharset(void)                { return ""; }
+  virtual const std::string GetProperty(XFILE::FileProperty type, const std::string &name = StringUtils::Empty) const
+  {
+    return type == XFILE::FILE_PROPERTY_CONTENT_TYPE ? XFILE::DefaultContentType : StringUtils::Empty;
+  };
 };
 
 class CRedirectException
