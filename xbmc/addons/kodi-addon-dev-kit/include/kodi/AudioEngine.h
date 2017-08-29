@@ -139,7 +139,7 @@ extern "C"
         }
       }
 
-      return  true;
+      return true;
     }
   };
   //@}
@@ -154,34 +154,34 @@ extern "C"
    */
   typedef struct AddonToKodiFuncTable_kodi_audioengine
   {
-    AEStreamHandle* (*MakeStream) (void *kodiBase, AudioEngineFormat format, unsigned int options);
-    void (*FreeStream) (void *kodiBase, AEStreamHandle *stream);
-    bool (*GetCurrentSinkFormat) (void *kodiBase, AudioEngineFormat *SinkFormat);
+    AEStreamHandle* (*make_stream)(void *kodiBase, AudioEngineFormat* format, unsigned int options);
+    void (*free_stream)(void *kodiBase, AEStreamHandle *stream);
+    bool (*get_current_sink_format)(void *kodiBase, AudioEngineFormat* sink_format);
 
     // Audio Engine Stream definitions
-    unsigned int (*AEStream_GetSpace) (void *kodiBase, AEStreamHandle *handle);
-    unsigned int (*AEStream_AddData) (void *kodiBase, AEStreamHandle *handle, uint8_t* const *data,
+    unsigned int (*aestream_get_space)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*aestream_add_data)(void *kodiBase, AEStreamHandle *handle, uint8_t* const *data,
                                       unsigned int offset, unsigned int frames, double pts);
-    double (*AEStream_GetDelay)(void *kodiBase, AEStreamHandle *handle);
-    bool (*AEStream_IsBuffering)(void *kodiBase, AEStreamHandle *handle);
-    double (*AEStream_GetCacheTime)(void *kodiBase, AEStreamHandle *handle);
-    double (*AEStream_GetCacheTotal)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_Pause)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_Resume)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_Drain)(void *kodiBase, AEStreamHandle *handle, bool Wait);
-    bool (*AEStream_IsDraining)(void *kodiBase, AEStreamHandle *handle);
-    bool (*AEStream_IsDrained)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_Flush)(void *kodiBase, AEStreamHandle *handle);
-    float (*AEStream_GetVolume)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_SetVolume)(void *kodiBase, AEStreamHandle *handle, float Volume);
-    float (*AEStream_GetAmplification)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_SetAmplification)(void *kodiBase, AEStreamHandle *handle, float Amplify);
-    unsigned int (*AEStream_GetFrameSize)(void *kodiBase, AEStreamHandle *handle);
-    unsigned int (*AEStream_GetChannelCount)(void *kodiBase, AEStreamHandle *handle);
-    unsigned int (*AEStream_GetSampleRate)(void *kodiBase, AEStreamHandle *handle);
-    AEDataFormat (*AEStream_GetDataFormat)(void *kodiBase, AEStreamHandle *handle);
-    double (*AEStream_GetResampleRatio)(void *kodiBase, AEStreamHandle *handle);
-    void (*AEStream_SetResampleRatio)(void *kodiBase, AEStreamHandle *handle, double Ratio);
+    double (*aestream_get_delay)(void *kodiBase, AEStreamHandle *handle);
+    bool (*aestream_is_buffering)(void *kodiBase, AEStreamHandle *handle);
+    double (*aestream_get_cache_time)(void *kodiBase, AEStreamHandle *handle);
+    double (*aestream_get_cache_total)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_pause)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_resume)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_drain)(void *kodiBase, AEStreamHandle *handle, bool wait);
+    bool (*aestream_is_draining)(void *kodiBase, AEStreamHandle *handle);
+    bool (*aestream_is_drained)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_flush)(void *kodiBase, AEStreamHandle *handle);
+    float (*aestream_get_volume)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_set_volume)(void *kodiBase, AEStreamHandle *handle, float volume);
+    float (*aestream_get_amplification)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_set_amplification)(void *kodiBase, AEStreamHandle *handle, float amplify);
+    unsigned int (*aestream_get_frame_size)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*aestream_get_channel_count)(void *kodiBase, AEStreamHandle *handle);
+    unsigned int (*aestream_get_sample_rate)(void *kodiBase, AEStreamHandle *handle);
+    AEDataFormat (*aestream_get_data_format)(void *kodiBase, AEStreamHandle *handle);
+    double (*aestream_get_resample_ratio)(void *kodiBase, AEStreamHandle *handle);
+    void (*aestream_set_resample_ratio)(void *kodiBase, AEStreamHandle *handle, double ratio);
   } AddonToKodiFuncTable_kodi_audioengine;
 
 } /* extern "C" */
@@ -243,12 +243,12 @@ namespace audioengine
     ///
     /// **Bit options to pass to CAELib_Stream (on Kodi by <c>IAE::MakeStream</c>)**
     ///
-    /// | enum AEStreamOptions     | Value: | Description:
-    /// |-------------------------:|:------:|:-----------------------------------
-    /// | AE_STREAM_FORCE_RESAMPLE | 1 << 0 | Force resample even if rates match
-    /// | AE_STREAM_PAUSED         | 1 << 1 | Create the stream paused
-    /// | AE_STREAM_AUTOSTART      | 1 << 2 | Autostart the stream when enough data is buffered
-    /// | AE_STREAM_BYPASS_ADSP    | 1 << 3 | if this option is set the ADSP-System is bypassed and the raw stream will be passed through IAESink.
+    /// | enum AEStreamOptions        | Value: | Description:
+    /// |----------------------------:|:------:|:-----------------------------------
+    /// | AUDIO_STREAM_FORCE_RESAMPLE | 1 << 0 | Force resample even if rates match
+    /// | AUDIO_STREAM_PAUSED         | 1 << 1 | Create the stream paused
+    /// | AUDIO_STREAM_AUTOSTART      | 1 << 2 | Autostart the stream when enough data is buffered
+    /// | AUDIO_STREAM_BYPASS_ADSP    | 1 << 3 | if this option is set the ADSP-System is bypassed and the raw stream will be passed through IAESink.
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -262,7 +262,16 @@ namespace audioengine
     ///
     /// ...
     ///
-    /// CAddonAEStream* stream = new CAddonAEStream(AE_FMT_S16LE, AE_STREAM_AUTOSTART | AE_STREAM_BYPASS_ADSP);
+    /// AudioEngineFormat format;
+    /// format.m_dataFormat = AE_FMT_FLOAT;
+    /// format.m_channelCount = 2;
+    /// format.m_channels[0] = AE_CH_FL;
+    /// format.m_channels[1] = AE_CH_FR;
+    /// format.m_channels[2] = AE_CH_NULL;
+    /// format.m_sampleRate = 48000;
+    /// format.m_frameSize = sizeof(float)*format.m_channelCount;
+    /// format.m_frames = 512;
+    /// CAddonAEStream* stream = new CAddonAEStream(format, AE_STREAM_AUTOSTART | AE_STREAM_BYPASS_ADSP);
     ///
     /// ~~~~~~~~~~~~~
     ///
@@ -270,22 +279,27 @@ namespace audioengine
       : m_kodiBase(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase),
         m_cb(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine)
     {
-      m_StreamHandle = m_cb->MakeStream(m_kodiBase, format, options);
+      m_StreamHandle = m_cb->make_stream(m_kodiBase, &format, options);
       if (m_StreamHandle == nullptr)
       {
-        kodi::Log(ADDON_LOG_FATAL, "CAddonAEStream: MakeStream failed!");
+        kodi::Log(ADDON_LOG_FATAL, "CAddonAEStream: make_stream failed!");
       }
     }
     //--------------------------------------------------------------------------
 
+    //==========================================================================
+    /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+    /// @brief Class destructor
+    ///
     ~CAddonAEStream()
     {
       if (m_StreamHandle)
       {
-        m_cb->FreeStream(m_kodiBase, m_StreamHandle);
+        m_cb->free_stream(m_kodiBase, m_StreamHandle);
         m_StreamHandle = nullptr;
       }
     }
+    //--------------------------------------------------------------------------
 
     //==========================================================================
     /// @ingroup cpp_kodi_audioengine_CAddonAEStream
@@ -295,7 +309,7 @@ namespace audioengine
     ///
     unsigned int GetSpace()
     {
-      return m_cb->AEStream_GetSpace(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_space(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -303,15 +317,15 @@ namespace audioengine
     /// @ingroup cpp_kodi_audioengine_CAddonAEStream
     /// @brief Add planar or interleaved PCM data to the stream
     ///
-    /// @param data             array of pointers to the planes
-    /// @param offset           to frame in frames
-    /// @param frames           number of frames
-    /// @param pts              presentation timestamp
+    /// @param[in] data         array of pointers to the planes
+    /// @param[in] offset       to frame in frames
+    /// @param[in] frames       number of frames
+    /// @param[in] pts          presentation timestamp
     /// @return                 The number of frames consumed
     ///
     unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0)
     {
-      return m_cb->AEStream_AddData(m_kodiBase, m_StreamHandle, data, offset, frames, pts);
+      return m_cb->aestream_add_data(m_kodiBase, m_StreamHandle, data, offset, frames, pts);
     }
     //--------------------------------------------------------------------------
 
@@ -324,7 +338,7 @@ namespace audioengine
     ///
     double GetDelay()
     {
-      return m_cb->AEStream_GetDelay(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_delay(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -336,7 +350,7 @@ namespace audioengine
     ///
     bool IsBuffering()
     {
-      return m_cb->AEStream_IsBuffering(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_is_buffering(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -349,7 +363,7 @@ namespace audioengine
     ///
     double GetCacheTime()
     {
-      return m_cb->AEStream_GetCacheTime(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_cache_time(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -361,7 +375,7 @@ namespace audioengine
     ///
     double GetCacheTotal()
     {
-      return m_cb->AEStream_GetCacheTotal(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_cache_total(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -371,7 +385,7 @@ namespace audioengine
     ///
     void Pause()
     {
-      return m_cb->AEStream_Pause(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_pause(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -381,7 +395,7 @@ namespace audioengine
     ///
     void Resume()
     {
-      return m_cb->AEStream_Resume(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_resume(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -394,9 +408,9 @@ namespace audioengine
     ///
     /// @note Once called AddData will not consume more data.
     ///
-    void Drain(bool wait)
+    void Drain(bool wait = true)
     {
-      return m_cb->AEStream_Drain(m_kodiBase, m_StreamHandle, wait=true);
+      return m_cb->aestream_drain(m_kodiBase, m_StreamHandle, wait);
     }
     //--------------------------------------------------------------------------
 
@@ -406,7 +420,7 @@ namespace audioengine
     ///
     bool IsDraining()
     {
-      return m_cb->AEStream_IsDraining(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_is_draining(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -416,7 +430,7 @@ namespace audioengine
     ///
     bool IsDrained()
     {
-      return m_cb->AEStream_IsDrained(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_is_drained(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -426,7 +440,7 @@ namespace audioengine
     ///
     void Flush()
     {
-      return m_cb->AEStream_Flush(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_flush(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -438,7 +452,7 @@ namespace audioengine
     ///
     float GetVolume()
     {
-      return m_cb->AEStream_GetVolume(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_volume(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -450,7 +464,7 @@ namespace audioengine
     ///
     void SetVolume(float volume)
     {
-      return m_cb->AEStream_SetVolume(m_kodiBase, m_StreamHandle, volume);
+      return m_cb->aestream_set_volume(m_kodiBase, m_StreamHandle, volume);
     }
     //--------------------------------------------------------------------------
 
@@ -462,7 +476,7 @@ namespace audioengine
     ///
     float GetAmplification()
     {
-      return m_cb->AEStream_GetAmplification(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_amplification(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -475,7 +489,7 @@ namespace audioengine
     ///
     void SetAmplification(float amplify)
     {
-      return m_cb->AEStream_SetAmplification(m_kodiBase, m_StreamHandle, amplify);
+      return m_cb->aestream_set_amplification(m_kodiBase, m_StreamHandle, amplify);
     }
     //--------------------------------------------------------------------------
 
@@ -487,7 +501,7 @@ namespace audioengine
     ///
     unsigned int GetFrameSize() const
     {
-      return m_cb->AEStream_GetFrameSize(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_frame_size(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -499,7 +513,7 @@ namespace audioengine
     ///
     unsigned int GetChannelCount() const
     {
-      return m_cb->AEStream_GetChannelCount(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_channel_count(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -513,7 +527,7 @@ namespace audioengine
     ///
     unsigned int GetSampleRate() const
     {
-      return m_cb->AEStream_GetSampleRate(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_sample_rate(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -525,7 +539,7 @@ namespace audioengine
     ///
     AEDataFormat GetDataFormat() const
     {
-      return m_cb->AEStream_GetDataFormat(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_data_format(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -539,7 +553,7 @@ namespace audioengine
     ///
     double GetResampleRatio()
     {
-      return m_cb->AEStream_GetResampleRatio(m_kodiBase, m_StreamHandle);
+      return m_cb->aestream_get_resample_ratio(m_kodiBase, m_StreamHandle);
     }
     //--------------------------------------------------------------------------
 
@@ -555,7 +569,7 @@ namespace audioengine
     ///
     void SetResampleRatio(double ratio)
     {
-      m_cb->AEStream_SetResampleRatio(m_kodiBase, m_StreamHandle, ratio);
+      m_cb->aestream_set_resample_ratio(m_kodiBase, m_StreamHandle, ratio);
     }
     //--------------------------------------------------------------------------
 
@@ -574,7 +588,8 @@ namespace audioengine
   ///
   inline bool GetCurrentSinkFormat(AudioEngineFormat &format)
   {
-    return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine->GetCurrentSinkFormat(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, &format);
+    using namespace kodi::addon;
+    return CAddonBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(CAddonBase::m_interface->toKodi->kodiBase, &format);
   }
   //----------------------------------------------------------------------------
 
