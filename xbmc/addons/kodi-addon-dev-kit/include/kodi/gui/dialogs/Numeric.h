@@ -68,8 +68,7 @@ namespace dialogs
       bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password(CAddonBase::m_interface->toKodi->kodiBase, &pw);
       if (pw != nullptr)
       {
-        if (std::strlen(pw))
-          newPassword = pw;
+        newPassword = pw;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, pw);
       }
       return ret;
@@ -172,8 +171,7 @@ namespace dialogs
                                                                                                  toVerify.c_str(), &retString, heading.c_str(), verifyInput);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          toVerify = retString;
+        toVerify = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -279,8 +277,7 @@ namespace dialogs
                                                                                                    ipAddress.c_str(), &retString, heading.c_str());
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          ipAddress = retString;
+        ipAddress = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -326,8 +323,7 @@ namespace dialogs
                                                                                                input.c_str(), &retString, heading.c_str(), autoCloseTimeoutMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          input = retString;
+        input = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -354,8 +350,7 @@ namespace dialogs
                                                                                                 time.c_str(), &retString, heading.c_str());
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          time = retString;
+        time = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
