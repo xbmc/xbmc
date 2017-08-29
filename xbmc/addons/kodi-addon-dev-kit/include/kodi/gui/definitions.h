@@ -262,6 +262,8 @@ typedef struct AddonToKodiFuncTable_kodi_gui_dialogProgress
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogSelect
 {
   int (*open)(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, unsigned int autoclose);
+  bool (*open_multi_select)(void* kodiBase, const char* heading, const char* entryIDs[], const char* entryNames[],
+                            bool entriesSelected[], unsigned int size, unsigned int autoclose);
 } AddonToKodiFuncTable_kodi_gui_dialogSelect;
 
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogTextViewer
