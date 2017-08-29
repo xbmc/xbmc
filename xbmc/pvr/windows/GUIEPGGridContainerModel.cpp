@@ -23,7 +23,8 @@
 #include <cmath>
 
 #include "FileItem.h"
-#include "settings/AdvancedSettings.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 
 #include "pvr/channels/PVRChannel.h"
@@ -325,10 +326,10 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
 unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
 {
-  unsigned int iEpgLingerTime = g_advancedSettings.m_iEpgLingerTime;
+  unsigned int iPastMinutes = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY) * 24 * 60;
 
-  if (iEpgLingerTime < GRID_START_PADDING)
-    return iEpgLingerTime;
+  if (iPastMinutes < GRID_START_PADDING)
+    return iPastMinutes;
 
   return GRID_START_PADDING; // minutes
 }

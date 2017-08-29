@@ -150,7 +150,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_struct = {{0}};
   m_struct.props.strUserPath = m_strUserPath.c_str();
   m_struct.props.strClientPath = m_strClientPath.c_str();
-  m_struct.props.iEpgMaxDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
+  m_struct.props.iEpgMaxDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
 
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.TransferEpgEntry = cb_transfer_epg_entry;

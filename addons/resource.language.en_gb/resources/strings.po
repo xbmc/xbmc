@@ -10064,10 +10064,10 @@ msgctxt "#19181"
 msgid "Menu / OSD"
 msgstr ""
 
-#. pvr settings "epg days to display" setting value
+#. pvr settings "future epg days to display" setting value
 #: system/settings/settings.xml
 msgctxt "#19182"
-msgid "Days to display"
+msgid "Future days to display"
 msgstr ""
 
 #. Settings -> Interface -> Other -> Startup window value
@@ -10339,7 +10339,11 @@ msgctxt "#19228"
 msgid "Timer deleted"
 msgstr ""
 
-#empty string with id 19229
+#. pvr settings "past epg days to display" setting value
+#: system/settings/settings.xml
+msgctxt "#19229"
+msgid "Past days to display"
+msgstr ""
 
 #. label for PVR settings no epg updates during playback control
 #: system/settings/settings.xml
@@ -18090,11 +18094,14 @@ msgctxt "#36218"
 msgid "This category contains the electronic programming guide (EPG) settings."
 msgstr ""
 
-#empty string with id 36219
+#: system/settings/settings.xml
+msgctxt "#36219"
+msgid "Number of past days to show in the guide and to import from backends."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36220"
-msgid "Number of days to show in the guide and import data for from backends."
+msgid "Number of future days to show in the guide and to import from backends."
 msgstr ""
 
 #: system/settings/settings.xml
