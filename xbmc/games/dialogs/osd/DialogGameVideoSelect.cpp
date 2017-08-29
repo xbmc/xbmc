@@ -21,6 +21,8 @@
 #include "DialogGameVideoSelect.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/ActionIDs.h"
 #include "settings/GameSettings.h"
@@ -37,6 +39,7 @@ using namespace KODI;
 using namespace GAME;
 
 #define CONTROL_THUMBS                11
+#define CONTROL_DESCRIPTION           12
 
 CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
   CGUIDialog(windowId, "DialogSelect.xml"),
@@ -144,6 +147,8 @@ void CDialogGameVideoSelect::OnInitWindow()
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_THUMBS);
   OnMessage(msg);
+
+  FrameMove();
 }
 
 void CDialogGameVideoSelect::OnDeinitWindow(int nextWindowID)
@@ -186,7 +191,10 @@ void CDialogGameVideoSelect::OnRefreshList()
   GetItems(*m_vecItems);
 
   m_viewControl->SetItems(*m_vecItems);
-  m_viewControl->SetSelectedItem(GetFocusedItem());
+
+  auto focusedIndex = GetFocusedItem();
+  m_viewControl->SetSelectedItem(focusedIndex);
+  OnItemFocus(focusedIndex);
 }
 
 void CDialogGameVideoSelect::SaveSettings()
@@ -199,4 +207,11 @@ void CDialogGameVideoSelect::SaveSettings()
     defaultSettings = currentSettings;
     CServiceBroker::GetSettings().Save();
   }
+}
+
+void CDialogGameVideoSelect::OnDescriptionChange(const std::string &description)
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_DESCRIPTION);
+  msg.SetLabel(description);
+  g_windowManager.SendThreadMessage(msg, GetID());
 }

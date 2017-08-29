@@ -65,6 +65,8 @@ namespace GAME
     virtual unsigned int GetFocusedItem() const = 0;
     virtual void PostExit() = 0;
 
+    void OnDescriptionChange(const std::string &description);
+
     RETRO::IRenderCallback *m_callback = nullptr;
 
   private:
