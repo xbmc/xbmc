@@ -145,7 +145,7 @@ void CPVREpg::Clear(void)
 
 void CPVREpg::Cleanup(void)
 {
-  int iPastDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+  int iPastDays = CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
   const CDateTime cleanupTime = CDateTime::GetUTCDateTime() - CDateTimeSpan(iPastDays, 0, 0, 0);
   Cleanup(cleanupTime);
 }
@@ -477,7 +477,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState
     else
     {
       // Respect epg linger time.
-      int iPastDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+      int iPastDays = CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
       const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (it->second->EndAsUTC() < cleanupTime)
       {

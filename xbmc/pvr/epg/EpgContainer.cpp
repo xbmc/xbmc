@@ -325,8 +325,7 @@ void CPVREpgContainer::LoadFromDB(void)
       ShowProgressDialog(false);
     }
 
-    int iPastDays = m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
-    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(iPastDays, 0, 0, 0));
+    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
     m_database.DeleteEpgEntries(cleanupTime);
     m_database.Get(*this);
 
@@ -594,8 +593,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 
 bool CPVREpgContainer::RemoveOldEntries(void)
 {
-  int iPastDays = m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
-  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(iPastDays, 0, 0, 0));
+  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
   /* call Cleanup() on all known EPG tables */
   for (const auto &epgEntry : m_epgs)
@@ -706,8 +704,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   time_t start;
   time_t end;
   CDateTime::GetUTCDateTime().GetAsTime(start);
-  end = start + m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY) * 24 * 60 * 60;
-  start -= m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY) * 24 * 60 * 60;
+  end = start + GetFutureDaysToDisplay() * 24 * 60 * 60;
+  start -= GetPastDaysToDisplay() * 24 * 60 * 60;
   bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
@@ -928,6 +926,16 @@ void CPVREpgContainer::UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_S
 {
   CSingleLock lock(m_epgTagChangesLock);
   m_epgTagChanges.emplace_back(CEpgTagStateChange(tag, eNewState));
+}
+
+int CPVREpgContainer::GetPastDaysToDisplay() const
+{
+  return m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+}
+
+int CPVREpgContainer::GetFutureDaysToDisplay() const
+{
+  return m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
 }
 
 } // namespace PVR

@@ -495,7 +495,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
         endDate = startDate;
 
       // limit start to linger time
-      int iPastDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+      int iPastDays = CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
       const CDateTime maxPastDate(currentDate - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (startDate < maxPastDate)
         startDate = maxPastDate;
