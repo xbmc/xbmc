@@ -64,7 +64,7 @@ endif
 WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += libuuid
+  DEPENDS += dbus libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += linux-system-libs
@@ -113,6 +113,7 @@ libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
+dbus: expat
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
