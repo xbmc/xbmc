@@ -262,7 +262,7 @@ void CGUIAddonWindow::ClearList()
 void CGUIAddonWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   // maybe on day we can make an easy way to do this context menu
-  // with out this method overriding the MediaWindow version, it will display 'Add to Favorites'
+  // with out this method overriding the MediaWindow version, it will display 'Add to Favourites'
 }
 
 void CGUIAddonWindow::WaitForActionEvent(unsigned int timeout)
