@@ -155,7 +155,8 @@ unsigned int Interface_AudioEngine::AEStream_GetSpace(void* kodiBase, AEStreamHa
   return static_cast<IAEStream*>(streamHandle)->GetSpace();
 }
 
-unsigned int Interface_AudioEngine::AEStream_AddData(void* kodiBase, AEStreamHandle* streamHandle, uint8_t* const *data, unsigned int offset, unsigned int frames)
+unsigned int Interface_AudioEngine::AEStream_AddData(void* kodiBase, AEStreamHandle* streamHandle, uint8_t* const *data,
+                                                     unsigned int offset, unsigned int frames, double pts)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -163,7 +164,7 @@ unsigned int Interface_AudioEngine::AEStream_AddData(void* kodiBase, AEStreamHan
     return 0;
   }
 
-  return static_cast<IAEStream*>(streamHandle)->AddData(data, offset, frames);
+  return static_cast<IAEStream*>(streamHandle)->AddData(data, offset, frames, pts);
 }
 
 double Interface_AudioEngine::AEStream_GetDelay(void* kodiBase, AEStreamHandle* streamHandle)

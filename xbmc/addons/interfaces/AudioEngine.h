@@ -65,7 +65,8 @@ namespace ADDON
     * @param[in] frames number of frames
     * @return The number of frames consumed
     */
-    static unsigned int AEStream_AddData(void* kodiBase, AEStreamHandle* streamHandle, uint8_t* const *data, unsigned int offset, unsigned int frames);
+    static unsigned int AEStream_AddData(void* kodiBase, AEStreamHandle* streamHandle, uint8_t* const *data,
+                                         unsigned int offset, unsigned int frames, double pts);
 
     /**
     * Returns the time in seconds that it will take

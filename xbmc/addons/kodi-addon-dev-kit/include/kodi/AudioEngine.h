@@ -160,7 +160,8 @@ extern "C"
 
     // Audio Engine Stream definitions
     unsigned int (*AEStream_GetSpace) (void *kodiBase, AEStreamHandle *handle);
-    unsigned int (*AEStream_AddData) (void *kodiBase, AEStreamHandle *handle, uint8_t* const *Data, unsigned int Offset, unsigned int Frames);
+    unsigned int (*AEStream_AddData) (void *kodiBase, AEStreamHandle *handle, uint8_t* const *data,
+                                      unsigned int offset, unsigned int frames, double pts);
     double (*AEStream_GetDelay)(void *kodiBase, AEStreamHandle *handle);
     bool (*AEStream_IsBuffering)(void *kodiBase, AEStreamHandle *handle);
     double (*AEStream_GetCacheTime)(void *kodiBase, AEStreamHandle *handle);
@@ -305,11 +306,12 @@ namespace audioengine
     /// @param data             array of pointers to the planes
     /// @param offset           to frame in frames
     /// @param frames           number of frames
+    /// @param pts              presentation timestamp
     /// @return                 The number of frames consumed
     ///
-    unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames)
+    unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0)
     {
-      return m_cb->AEStream_AddData(m_kodiBase, m_StreamHandle, data, offset, frames);
+      return m_cb->AEStream_AddData(m_kodiBase, m_StreamHandle, data, offset, frames, pts);
     }
     //--------------------------------------------------------------------------
 
