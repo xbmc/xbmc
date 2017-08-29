@@ -75,7 +75,7 @@ CAction::CAction(int actionID, const std::string &name, const CKey &key):
     m_amount[i] = 0;
   m_repeat = key.GetRepeat();
   m_buttonCode = key.GetButtonCode();
-  m_unicode = 0;
+  m_unicode = key.GetUnicode();
   m_holdTime = key.GetHeld();
   // get the action amounts of the analog buttons
   if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
