@@ -813,7 +813,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
           addon->Description().c_str(),
           addon->ChangeLog().c_str()));
 
-      auto idAddon = m_pDS->lastinsertid();
+      int idAddon = static_cast<int>(m_pDS->lastinsertid());
       if (idAddon <= 0)
       {
         CLog::Log(LOGERROR, "%s insert failed on addon '%s'", __FUNCTION__, addon->ID().c_str());
