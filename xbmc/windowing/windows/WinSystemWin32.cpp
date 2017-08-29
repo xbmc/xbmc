@@ -1085,7 +1085,7 @@ std::string CWinSystemWin32::GetClipboardText()
 
 void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 {
-  if (m_state == WINDOW_STATE_FULLSCREEN)
+  if (m_state == WINDOW_STATE_FULLSCREEN && !m_IsAlteringWindow)
   {
     m_IsAlteringWindow = true;
     ReleaseBackBuffer();
@@ -1094,8 +1094,9 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
       SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
 
     RESOLUTION_INFO res = { 0 };
-    if (bGaining)
-      res = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+    const RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
+    if (bGaining && resolution > RES_INVALID)
+      res = CDisplaySettings::GetInstance().GetResolutionInfo(resolution);
 
     SetDeviceFullScreen(bGaining, res);
 

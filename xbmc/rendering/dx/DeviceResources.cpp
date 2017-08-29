@@ -209,29 +209,32 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
   }
   else if (fullscreen)
   {
-    DXGI_MODE_DESC currentMode;
-    GetDisplayMode(&currentMode);
-
-    if ( currentMode.Width != res.iWidth
-      || currentMode.Height != res.iHeight
-      || DX::RationalToFloat(currentMode.RefreshRate) != res.fRefreshRate
-      // force resolution change for stereo mode
-      // some drivers unable to create stereo swapchain if mode does not match @23.976
-      || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+    const bool isResValid = res.iWidth > 0 && res.iHeight > 0 && res.fRefreshRate > 0.f;
+    if (isResValid)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate);
+      DXGI_MODE_DESC currentMode;
+      GetDisplayMode(&currentMode);
 
-      int refresh = static_cast<int>(res.fRefreshRate);
-      int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
+      if (currentMode.Width != res.iWidth
+        || currentMode.Height != res.iHeight
+        || DX::RationalToFloat(currentMode.RefreshRate) != res.fRefreshRate
+        // force resolution change for stereo mode
+        // some drivers unable to create stereo swapchain if mode does not match @23.976
+        || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate);
 
-      currentMode.Width = res.iWidth;
-      currentMode.Height = res.iHeight;
-      currentMode.RefreshRate.Numerator = (refresh + i) * 1000;
-      currentMode.RefreshRate.Denominator = 1000 + i;
+        int refresh = static_cast<int>(res.fRefreshRate);
+        int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
 
-      recreate |= SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
+        currentMode.Width = res.iWidth;
+        currentMode.Height = res.iHeight;
+        currentMode.RefreshRate.Numerator = (refresh + i) * 1000;
+        currentMode.RefreshRate.Denominator = 1000 + i;
+
+        recreate |= SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
+      }
     }
-
     if (!bFullScreen)
     {
       ComPtr<IDXGIOutput> pOutput;
