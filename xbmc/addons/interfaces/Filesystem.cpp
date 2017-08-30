@@ -73,6 +73,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->get_file_download_speed = get_file_download_speed;
   addonInterface->toKodi->kodi_filesystem->close_file = close_file;
   addonInterface->toKodi->kodi_filesystem->get_file_chunk_size = get_file_chunk_size;
+  addonInterface->toKodi->kodi_filesystem->get_property = get_property;
 
   addonInterface->toKodi->kodi_filesystem->curl_create = curl_create;
   addonInterface->toKodi->kodi_filesystem->curl_add_option = curl_add_option;
@@ -501,6 +502,40 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
   }
 
   return static_cast<CFile*>(file)->GetChunkSize();
+}
+
+char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, const char *name)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr || name == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
+    return nullptr;
+  }
+
+  XFILE::FileProperty internalType;
+  switch (type)
+  {
+  case ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL:
+    internalType = XFILE::FILE_PROPERTY_RESPONSE_PROTOCOL;
+    break;
+  case ADDON_FILE_PROPERTY_RESPONSE_HEADER:
+    internalType = XFILE::FILE_PROPERTY_RESPONSE_HEADER;
+    break;
+  case ADDON_FILE_PROPERTY_CONTENT_TYPE:
+    internalType = XFILE::FILE_PROPERTY_CONTENT_TYPE;
+    break;
+  case ADDON_FILE_PROPERTY_CONTENT_CHARSET:
+    internalType = XFILE::FILE_PROPERTY_CONTENT_CHARSET;
+    break;
+  case ADDON_FILE_PROPERTY_MIME_TYPE:
+    internalType = XFILE::FILE_PROPERTY_MIME_TYPE;
+    break;
+  default:
+    CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
+    return nullptr;
+  };
+  return strdup(static_cast<CFile*>(file)->GetProperty(internalType, name).c_str());
 }
 
 void* Interface_Filesystem::curl_create(void* kodiBase, const char* url)

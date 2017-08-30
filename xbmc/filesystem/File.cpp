@@ -950,18 +950,11 @@ int CFile::GetChunkSize()
   return 0;
 }
 
-std::string CFile::GetContentMimeType(void)
+const std::string CFile::GetProperty(XFILE::FileProperty type, const std::string &name) const
 {
   if (!m_pFile)
     return "";
-  return m_pFile->GetContent();
-}
-
-std::string CFile::GetContentCharset(void)
-{
-  if (!m_pFile)
-    return "";
-  return m_pFile->GetContentCharset();
+  return m_pFile->GetProperty(type, name);
 }
 
 ssize_t CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)

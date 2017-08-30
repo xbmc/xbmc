@@ -61,10 +61,8 @@ namespace XFILE
       bool ReadString(char *szLine, int iLineLength) override { return m_state->ReadString(szLine, iLineLength); }
       ssize_t Read(void* lpBuf, size_t uiBufSize) override { return m_state->Read(lpBuf, uiBufSize); }
       ssize_t Write(const void* lpBuf, size_t uiBufSize) override;
-      virtual std::string GetMimeType() { return m_state->m_httpheader.GetMimeType(); }
-      std::string GetContent() override { return m_state->m_httpheader.GetValue("content-type"); }
+      const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
       int IoControl(EIoControl request, void* param) override;
-      std::string GetContentCharset(void) override { return GetServerReportedCharset(); }
       double GetDownloadSpeed() override;
 
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
@@ -94,7 +92,6 @@ namespace XFILE
       void SetBufferSize(unsigned int size);
 
       const CHttpHeader& GetHttpHeader() const { return m_state->m_httpheader; }
-      std::string GetServerReportedCharset(void);
       std::string GetURL(void);
 
       /* static function that will get content type of a file */

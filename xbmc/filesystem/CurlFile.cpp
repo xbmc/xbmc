@@ -1766,14 +1766,6 @@ void CCurlFile::SetRequestHeader(const std::string& header, long value)
   m_requestheaders[header] = StringUtils::Format("%ld", value);
 }
 
-std::string CCurlFile::GetServerReportedCharset(void)
-{
-  if (!m_state)
-    return "";
-
-  return m_state->m_httpheader.GetCharset();
-}
-
 std::string CCurlFile::GetURL(void)
 {
   return m_url;
@@ -1812,7 +1804,7 @@ bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::st
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
     else
-      content = file.GetMimeType();
+      content = file.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE);
     CLog::Log(LOGDEBUG, "CCurlFile::GetMimeType - %s -> %s", redactUrl.c_str(), content.c_str());
     return true;
   }
@@ -1834,7 +1826,7 @@ bool CCurlFile::GetContentType(const CURL &url, std::string &content, const std:
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
     else
-      content = file.GetContent();
+      content = file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_TYPE, "");
     CLog::Log(LOGDEBUG, "CCurlFile::GetContentType - %s -> %s", redactUrl.c_str(), content.c_str());
     return true;
   }
@@ -1916,6 +1908,25 @@ int CCurlFile::IoControl(EIoControl request, void* param)
   }
 
   return -1;
+}
+
+const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::string &name) const
+{
+  switch (type)
+  {
+  case FILE_PROPERTY_RESPONSE_PROTOCOL:
+    return m_state->m_httpheader.GetProtoLine();
+  case FILE_PROPERTY_RESPONSE_HEADER:
+    return m_state->m_httpheader.GetValue(name);
+  case FILE_PROPERTY_CONTENT_TYPE:
+    return m_state->m_httpheader.GetValue("content-type");
+  case FILE_PROPERTY_CONTENT_CHARSET:
+    return m_state->m_httpheader.GetCharset();
+  case FILE_PROPERTY_MIME_TYPE:
+    return m_state->m_httpheader.GetMimeType();
+  default:
+    return "";
+  }
 }
 
 double CCurlFile::GetDownloadSpeed()

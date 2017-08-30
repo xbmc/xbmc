@@ -177,7 +177,7 @@ void CRssReader::Process()
         {
           if (http.Get(strUrl, strXML))
           {
-            fileCharset = http.GetServerReportedCharset();
+            fileCharset = http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
             CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
             break;
           }

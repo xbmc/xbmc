@@ -230,7 +230,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   strHTML = strHTML1;
 
-  std::string mimeType(http.GetMimeType());
+  std::string mimeType(http.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE));
   CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
   if (ftype == CMime::FileTypeUnknown)
     ftype = CMime::GetFileTypeFromContent(strHTML);
@@ -249,7 +249,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       CLog::Log(LOGWARNING, "%s: \"%s\" looks like archive, but cannot be unpacked", __FUNCTION__, scrURL.m_url.c_str());
   }
 
-  std::string reportedCharset(http.GetServerReportedCharset());
+  std::string reportedCharset(http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
   if (ftype == CMime::FileTypeHtml)
   {
     std::string realHtmlCharset, converted;
