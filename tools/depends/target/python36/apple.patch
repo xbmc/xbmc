@@ -1,0 +1,12 @@
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
+@@ -111,6 +111,9 @@
+ #include <sys/xattr.h>
+ #endif
+ 
++#if defined(__APPLE__) && defined(_POSIX_C_SOURCE)
++#undef _POSIX_C_SOURCE
++#endif
+ #if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+ #ifdef HAVE_SYS_SOCKET_H
+ #include <sys/socket.h>

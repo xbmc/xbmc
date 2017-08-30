@@ -10,7 +10,7 @@ DEPENDS = \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mysql libffi \
-	python27 libshairplay libfmt \
+	python36 libshairplay libfmt \
 	libplist libcec libbluray tinyxml \
 	libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
@@ -89,7 +89,7 @@ fontconfig: freetype2 expat $(ICONV)
 curl: openssl
 libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python27: expat gettext libxml2 sqlite3 openssl libffi
+python36: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libcdio-gplv3: $(ICONV)
 libplist: libxml2 $(ZLIB)
@@ -101,9 +101,9 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pycryptodome: $(PYMODULE_DEPS) python27 pythonmodule-setuptools
-pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
-pythonmodule-setuptools: $(PYMODULE_DEPS) python27
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) python36 pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python36 pythonmodule-setuptools
+pythonmodule-setuptools: $(PYMODULE_DEPS) python36
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 platform: p8-platform

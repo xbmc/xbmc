@@ -16,7 +16,7 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 import xbmc
-from common import *
+from .common import *
 
 try:
     #import apt
@@ -26,7 +26,7 @@ try:
 except:
     log('python apt import error')
 
-class AptdeamonHandler:
+class AptdaemonHandler:
 
     def __init__(self):
         self.aptclient = client.AptClient()

@@ -28,8 +28,12 @@ import xbmcaddon
 ADDON        = xbmcaddon.Addon('service.xbmc.versioncheck')
 ADDONVERSION = ADDON.getAddonInfo('version')
 ADDONNAME    = ADDON.getAddonInfo('name')
-ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
-ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
+if sys.version_info.major >= 3:
+    ADDONPATH    = ADDON.getAddonInfo('path')
+    ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') )
+else:
+    ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
+    ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
 ICON         = ADDON.getAddonInfo('icon')
 
 class Viewer:
@@ -61,7 +65,7 @@ class Viewer:
         try:
             if sys.argv[ 1 ] == "gotham-alpha_notice":
                 return "Call to Gotham alpha users", self.readFile(os.path.join(ADDONPATH , "resources/gotham-alpha_notice.txt"))
-        except Exception, e:
+        except Exception as e:
             xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
         return "", ""
 
@@ -79,7 +83,7 @@ class WebBrowser:
             xbmc.sleep(100)
             # launch url
             self.launchUrl(url)
-        except Exception, e:
+        except Exception as e:
             xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
 
     def launchUrl(self, url):
@@ -92,7 +96,7 @@ def Main():
             WebBrowser()
         else:
             Viewer()
-    except Exception, e:
+    except Exception as e:
         xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
 
 if (__name__ == "__main__"):
