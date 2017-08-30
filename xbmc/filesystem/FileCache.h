@@ -59,7 +59,7 @@ namespace XFILE
 
     IFile *GetFileImp();
 
-    virtual const std::string GetProperty(XFILE::FileProperty type, const std::string &name = StringUtils::Empty) const override;
+    const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
 
   private:
     CCacheStrategy *m_pCache;

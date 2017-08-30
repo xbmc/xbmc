@@ -21,7 +21,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <string>
 
 namespace XFILE
 {
@@ -93,6 +92,4 @@ enum FileProperty
   FILE_PROPERTY_MIME_TYPE                   /**< Get file mime type  */
 };
 
-/* default content-type for use in returns by ref */
-const std::string DefaultContentType = "application/octet-stream";
 }

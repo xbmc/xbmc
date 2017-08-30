@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <string>
 #include "utils/auto_buffer.h"
-#include "utils/StringUtils.h"
 #include "IFileTypes.h"
 #include "PlatformDefs.h"
 #include "URL.h"
@@ -110,7 +109,7 @@ public:
   int64_t GetLength();
   void Close();
   int GetChunkSize();
-  const std::string GetProperty(XFILE::FileProperty type, const std::string &name = StringUtils::Empty) const;
+  const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const;
   ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
 

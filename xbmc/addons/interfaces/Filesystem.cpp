@@ -507,7 +507,7 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
 const char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, const char *name)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || file == nullptr)
+  if (addon == nullptr || file == nullptr || name == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
     return "";

@@ -1925,7 +1925,7 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
   case FILE_PROPERTY_MIME_TYPE:
     return m_state->m_httpheader.GetMimeType();
   default:
-    return StringUtils::Empty;
+    return "";
   }
 }
 

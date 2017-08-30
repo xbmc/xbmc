@@ -30,7 +30,6 @@
 #pragma once
 
 #include "PlatformDefs.h" // for __stat64, ssize_t
-#include "utils/StringUtils.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -130,9 +129,9 @@ public:
 
   virtual int IoControl(EIoControl request, void* param) { return -1; }
 
-  virtual const std::string GetProperty(XFILE::FileProperty type, const std::string &name = StringUtils::Empty) const
+  virtual const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const
   {
-    return type == XFILE::FILE_PROPERTY_CONTENT_TYPE ? XFILE::DefaultContentType : StringUtils::Empty;
+    return type == XFILE::FILE_PROPERTY_CONTENT_TYPE ? "application/octet-stream" : "";
   };
 };
 

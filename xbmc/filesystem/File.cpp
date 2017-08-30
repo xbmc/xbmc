@@ -953,7 +953,7 @@ int CFile::GetChunkSize()
 const std::string CFile::GetProperty(XFILE::FileProperty type, const std::string &name) const
 {
   if (!m_pFile)
-    return StringUtils::Empty;
+    return "";
   return m_pFile->GetProperty(type, name);
 }
 
