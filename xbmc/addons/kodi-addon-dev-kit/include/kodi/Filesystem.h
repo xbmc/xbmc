@@ -906,6 +906,37 @@ namespace vfs
   }
   //----------------------------------------------------------------------------
 
+
+  //============================================================================
+  ///
+  /// @ingroup cpp_kodi_vfs
+  /// @brief Remove the slash on given path name
+  ///
+  /// @param[in,out] path The complete path
+  ///
+  ///
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/Filesystem.h>
+  /// ...
+  /// std::string dirName = "special://temp/";
+  /// kodi::vfs::RemoveSlashAtEnd(dirName);
+  /// fprintf(stderr, "Directory name is '%s'\n", dirName.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
+  inline void RemoveSlashAtEnd(std::string& path)
+  {
+    if (!path.empty())
+    {
+      char last = path[path.size() - 1];
+      if (last == '/' || last == '\\')
+        path.erase(path.size() - 1);
+    }
+  }
+  //----------------------------------------------------------------------------
+
   //============================================================================
   ///
   /// @ingroup cpp_kodi_vfs
