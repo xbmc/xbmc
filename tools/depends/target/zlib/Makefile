@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile visibility.patch remove_fixe_ar_osx.patch
 
 # lib name, version
 LIBNAME=zlib
-VERSION=1.2.7
+VERSION=1.2.11
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
