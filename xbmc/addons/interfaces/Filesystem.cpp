@@ -504,13 +504,13 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
   return static_cast<CFile*>(file)->GetChunkSize();
 }
 
-const char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, const char *name)
+char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, const char *name)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr || name == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
-    return "";
+    return nullptr;
   }
 
   XFILE::FileProperty internalType;
@@ -533,9 +533,9 @@ const char* Interface_Filesystem::get_property(void* kodiBase, void* file, int t
     break;
   default:
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
-    return "";
+    return nullptr;
   };
-  return static_cast<CFile*>(file)->GetProperty(internalType, name).c_str();
+  return strdup(static_cast<CFile*>(file)->GetProperty(internalType, name).c_str());
 }
 
 void* Interface_Filesystem::curl_create(void* kodiBase, const char* url)

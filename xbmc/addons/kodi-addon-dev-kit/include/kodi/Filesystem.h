@@ -110,7 +110,7 @@ extern "C"
     double (*get_file_download_speed)(void* kodiBase, void* file);
     void (*close_file)(void* kodiBase, void* file);
     int (*get_file_chunk_size)(void* kodiBase, void* file);
-    const char* (*get_property)(void* kodiBase, void* file, int type, const char *name);
+    char* (*get_property)(void* kodiBase, void* file, int type, const char *name);
 
     void* (*curl_create)(void* kodiBase, const char* url);
     bool (*curl_add_option)(void* kodiBase, void* file, int type, const char* name, const char* value);
@@ -1547,7 +1547,15 @@ namespace vfs
         kodi::Log(ADDON_LOG_ERROR, "kodi::vfs::CURLCreate(...) needed to call before GetProperty!");
         return "";
       }
-      return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->get_property(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str());
+      char *res(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->get_property(
+        ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str()));
+      if (res)
+      {
+        std::string strReturn(res);
+        ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, res);
+        return strReturn;
+      }
+      return "";
     }
     //--------------------------------------------------------------------------
 
