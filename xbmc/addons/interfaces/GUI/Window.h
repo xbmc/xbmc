@@ -189,7 +189,7 @@ namespace ADDON
     bool IsDialog() const override { return true; };
     bool IsModalDialog() const  override { return true; };
 
-    void Show(bool show = true);
+    void Show(bool show = true, bool modal = true);
     void Show_Internal(bool show = true);
 
   private:

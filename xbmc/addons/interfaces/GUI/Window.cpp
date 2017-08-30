@@ -280,7 +280,7 @@ bool Interface_GUIWindow::show(void* kodiBase, void* handle)
 
   Interface_GUIGeneral::lock();
   if (pAddonWindow->IsDialog())
-    dynamic_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show();
+    dynamic_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show(true, false);
   else
     g_windowManager.ActivateWindow(pAddonWindow->GetID());
   Interface_GUIGeneral::unlock();
@@ -321,13 +321,24 @@ bool Interface_GUIWindow::do_modal(void* kodiBase, void* handle)
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
+                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 
-  if (pAddonWindow->GetID() != g_windowManager.GetActiveWindow())
-    show(kodiBase, handle);
+  if (pAddonWindow->GetID() == g_windowManager.GetActiveWindow())
+    return true;
+
+  if (pAddonWindow->m_oldWindowId != pAddonWindow->m_windowId &&
+      pAddonWindow->m_windowId != g_windowManager.GetActiveWindow())
+    pAddonWindow->m_oldWindowId = g_windowManager.GetActiveWindow();
+
+  Interface_GUIGeneral::lock();
+  if (pAddonWindow->IsDialog())
+    dynamic_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show(true, true);
+  else
+    g_windowManager.ActivateWindow(pAddonWindow->GetID());
+  Interface_GUIGeneral::unlock();
 
   return true;
 }
@@ -1211,11 +1222,16 @@ CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, const std::string& strXML, 
 {
 }
 
-void CGUIAddonWindowDialog::Show(bool show /* = true */)
+void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
 {
-  unsigned int count = g_graphicsContext.exit();
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
-  g_graphicsContext.restore(count);
+  if (modal)
+  {
+    unsigned int count = g_graphicsContext.exit();
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
+    g_graphicsContext.restore(count);
+  }
+  else
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)

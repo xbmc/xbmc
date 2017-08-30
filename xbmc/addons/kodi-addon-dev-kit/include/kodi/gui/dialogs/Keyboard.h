@@ -96,8 +96,7 @@ namespace dialogs
                                                                                                          hiddenInput, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          text = retString;
+        text = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -129,8 +128,7 @@ namespace dialogs
                                                                                                allowEmptyResult, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          text = retString;
+        text = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -162,8 +160,7 @@ namespace dialogs
                                                                                                                 allowEmptyResult, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          newPassword = retString;
+        newPassword = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -192,8 +189,7 @@ namespace dialogs
                                                                                                       newPassword.c_str(), &retString, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          newPassword = retString;
+        newPassword = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -275,8 +271,7 @@ namespace dialogs
                                                                                                                    autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          newPassword = retString;
+        newPassword = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -305,8 +300,7 @@ namespace dialogs
                                                                                                          &retString, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          newPassword = retString;
+        newPassword = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -339,8 +333,7 @@ namespace dialogs
                                                                                                     retries, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          password = retString;
+        password = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
@@ -373,8 +366,7 @@ namespace dialogs
                                                                                                 text.c_str(), &retString, searching, autoCloseMs);
       if (retString != nullptr)
       {
-        if (std::strlen(retString))
-          text = retString;
+        text = retString;
         CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;

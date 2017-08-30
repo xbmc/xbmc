@@ -52,6 +52,8 @@ namespace ADDON
      */
     //@{
     static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, unsigned int autoclose);
+    static bool open_multi_select(void* kodiBase, const char *heading, const char *entryIDs[], const char *entryNames[],
+                                  bool entriesSelected[], unsigned int size, unsigned int autoclose);
     //@}
   };
 
