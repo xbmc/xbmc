@@ -48,7 +48,7 @@ CPVRActionListener::CPVRActionListener()
     CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
     CSettings::SETTING_PVRMENU_SEARCHICONS,
     CSettings::SETTING_PVRCLIENT_MENUHOOK,
-    CSettings::SETTING_EPG_DAYSTODISPLAY
+    CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY
   });
 }
 
@@ -203,7 +203,7 @@ void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> settin
         std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
     }
   }
-  else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
+  else if (settingId == CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY)
   {
     CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   }

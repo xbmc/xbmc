@@ -118,7 +118,9 @@ CPVREpgContainer::CPVREpgContainer(void) :
   m_settings({
     CSettings::SETTING_EPG_IGNOREDBFORCLIENT,
     CSettings::SETTING_EPG_EPGUPDATE,
-    CSettings::SETTING_EPG_DAYSTODISPLAY
+    CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
+    CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
+    CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV
   })
 {
   m_progressHandle = NULL;
@@ -323,8 +325,7 @@ void CPVREpgContainer::LoadFromDB(void)
       ShowProgressDialog(false);
     }
 
-    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
+    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
     m_database.DeleteEpgEntries(cleanupTime);
     m_database.Get(*this);
 
@@ -592,8 +593,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 
 bool CPVREpgContainer::RemoveOldEntries(void)
 {
-  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() -
-    CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
+  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
   /* call Cleanup() on all known EPG tables */
   for (const auto &epgEntry : m_epgs)
@@ -673,7 +673,7 @@ bool CPVREpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
+    (m_settings.GetBoolValue(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 
@@ -703,9 +703,9 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   /* set start and end time */
   time_t start;
   time_t end;
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
-  end = start + m_settings.GetIntValue(CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
-  start -= g_advancedSettings.m_iEpgLingerTime * 60;
+  CDateTime::GetUTCDateTime().GetAsTime(start);
+  end = start + GetFutureDaysToDisplay() * 24 * 60 * 60;
+  start -= GetPastDaysToDisplay() * 24 * 60 * 60;
   bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
@@ -926,6 +926,16 @@ void CPVREpgContainer::UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_S
 {
   CSingleLock lock(m_epgTagChangesLock);
   m_epgTagChanges.emplace_back(CEpgTagStateChange(tag, eNewState));
+}
+
+int CPVREpgContainer::GetPastDaysToDisplay() const
+{
+  return m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+}
+
+int CPVREpgContainer::GetFutureDaysToDisplay() const
+{
+  return m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
 }
 
 } // namespace PVR

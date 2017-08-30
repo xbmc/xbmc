@@ -226,6 +226,18 @@ namespace PVR
      */
     void UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState);
 
+    /*!
+     * @brief Get the number of past days to show in the guide and to import from backends.
+     * @return the number of past epg days.
+     */
+    int GetPastDaysToDisplay() const;
+
+    /*!
+     * @brief Get the number of future days to show in the guide and to import from backends.
+     * @return the number of future epg days.
+     */
+    int GetFutureDaysToDisplay() const;
+
   private:
     /*!
      * @brief Load the EPG settings.

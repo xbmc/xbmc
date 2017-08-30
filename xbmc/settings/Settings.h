@@ -173,7 +173,8 @@ public:
   static const std::string SETTING_PVRMENU_DISPLAYCHANNELINFO;
   static const std::string SETTING_PVRMENU_ICONPATH;
   static const std::string SETTING_PVRMENU_SEARCHICONS;
-  static const std::string SETTING_EPG_DAYSTODISPLAY;
+  static const std::string SETTING_EPG_PAST_DAYSTODISPLAY;
+  static const std::string SETTING_EPG_FUTURE_DAYSTODISPLAY;
   static const std::string SETTING_EPG_SELECTACTION;
   static const std::string SETTING_EPG_HIDENOINFOAVAILABLE;
   static const std::string SETTING_EPG_EPGUPDATE;

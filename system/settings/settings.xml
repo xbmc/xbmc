@@ -1308,7 +1308,19 @@
     </category>
     <category id="epg" label="22020" help="36218">
       <group id="1" label="128">
-        <setting id="epg.daystodisplay" type="integer" label="19182" help="36220">
+        <setting id="epg.pastdaystodisplay" type="integer" label="19229" help="36219">
+          <level>2</level>
+          <default>1</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>31</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>17999</formatlabel>
+          </control>
+        </setting>
+        <setting id="epg.futuredaystodisplay" type="integer" label="19182" help="36220">
           <level>2</level>
           <default>3</default>
           <constraints>
