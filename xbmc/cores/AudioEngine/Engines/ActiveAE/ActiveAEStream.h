@@ -49,6 +49,13 @@ public:
     m_timer.Set(interval);
   }
 
+  void SetErrorInterval(int interval = 100)
+  {
+    m_buffer = 0.0f;
+    m_count = 0;
+    m_timer.Set(interval);
+  }
+
   bool Get(double& error, int interval = 100)
   {
     if(m_timer.IsTimePast())

@@ -2460,7 +2460,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
   }
-  stream->m_syncError.Flush(stream->GetErrorInterval());
+  stream->m_syncError.SetErrorInterval(stream->GetErrorInterval());
 
   return ret;
 }
