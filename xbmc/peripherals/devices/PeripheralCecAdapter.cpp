@@ -630,11 +630,11 @@ void CPeripheralCecAdapter::OnTvStandby(void)
   {
   case LOCALISED_ID_POWEROFF:
     m_bStarted = false;
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SYSTEM_POWERDOWN, TMSG_SHUTDOWN);
     break;
   case LOCALISED_ID_SUSPEND:
     m_bStarted = false;
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SYSTEM_POWERDOWN, TMSG_SUSPEND);
     break;
   case LOCALISED_ID_QUIT:
     m_bStarted = false;
