@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile removeshm-2.patch removeshm-3.patch removeshm-upstream.patch timeval.patch
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libasound
-VERSION=1.0.23
+VERSION=1.1.4.1
 SOURCE=alsa-lib-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
@@ -33,13 +33,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p1 < ../removeshm-upstream.patch
-	cd $(PLATFORM); patch -p0 < ../removeshm-2.patch
-	cd $(PLATFORM); patch -p0 < ../removeshm-3.patch
-	cd $(PLATFORM); patch -p0 < ../timeval.patch
-endif
-	cd $(PLATFORM); patch -p0 < ../host-os.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
