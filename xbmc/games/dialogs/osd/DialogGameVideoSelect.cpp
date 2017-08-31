@@ -22,9 +22,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/WindowIDs.h"
-#include "input/Action.h"
 #include "input/ActionIDs.h"
-#include "messaging/ApplicationMessenger.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -92,9 +90,8 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage &message)
         {
           using namespace MESSAGING;
 
-          // Send OSD command to resume gameplay
-          CAction *action = new CAction(ACTION_SHOW_OSD);
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+          // Changed from sending ACTION_SHOW_OSD to closing the dialog
+          Close();
 
           return true;
         }
