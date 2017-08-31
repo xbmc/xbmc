@@ -155,6 +155,7 @@ typedef struct CB_AddOn
   int (*GetFileChunkSize)(const void* addonData, void* file);
   bool (*FileExists)(const void* addonData, const char *strFileName, bool bUseCache);
   int (*StatFile)(const void* addonData, const char *strFileName, struct __stat64* buffer);
+  char *(*GetFileProperty)(const void* addonData, void* file, XFILE::FileProperty type, const char *name);
   bool (*DeleteFile)(const void* addonData, const char *strFileName);
   bool (*CanOpenDirectory)(const void* addonData, const char* strURL);
   bool (*CreateDirectory)(const void* addonData, const char *strPath);
@@ -462,6 +463,18 @@ namespace ADDON
     int StatFile(const char *strFileName, struct __stat64* buffer)
     {
       return m_Callbacks->StatFile(m_Handle->addonData, strFileName, buffer);
+    }
+
+    /*!
+    * @brief Get a property from an open file.
+    * @param file The file to get an property for
+    * @param type type of the requested property.
+    * @param name of the requested property / can be null.
+    * @return The value of the requested property, must be FreeString'ed.
+    */
+    char *GetFileProperty(void* file, XFILE::FileProperty type, const char *name)
+    {
+      return m_Callbacks->GetFileProperty(m_Handle->addonData, file, type, name);
     }
 
     /*!

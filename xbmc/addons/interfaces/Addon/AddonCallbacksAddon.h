@@ -79,6 +79,7 @@ public:
   static int GetFileChunkSize(const void* addonData, void* file);
   static bool FileExists(const void* addonData, const char *strFileName, bool bUseCache);
   static int StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer);
+  static char *GetFileProperty(const void* addonData, void* file, XFILE::FileProperty type, const char *name);
   static bool DeleteFile(const void* addonData, const char *strFileName);
   static bool CanOpenDirectory(const void* addonData, const char* strURL);
   static bool CreateDirectory(const void* addonData, const char *strPath);

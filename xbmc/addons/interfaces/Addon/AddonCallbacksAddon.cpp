@@ -76,6 +76,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->GetFileChunkSize   = GetFileChunkSize;
   m_callbacks->FileExists         = FileExists;
   m_callbacks->StatFile           = StatFile;
+  m_callbacks->GetFileProperty    = GetFileProperty;
   m_callbacks->DeleteFile         = DeleteFile;
 
   m_callbacks->CanOpenDirectory   = CanOpenDirectory;
@@ -502,6 +503,18 @@ int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileNam
     return -1;
 
   return CFile::Stat(strFileName, buffer);
+}
+
+char *CAddonCallbacksAddon::GetFileProperty(const void* addonData, void* file, XFILE::FileProperty type, const char *name)
+{
+  CAddonInterfaces* helper = (CAddonInterfaces*)addonData;
+  if (!helper)
+    return nullptr;
+
+  CFile* cfile = (CFile*)file;
+  if (cfile)
+    return strdup(cfile->GetProperty(type, name).c_str());
+  return nullptr;
 }
 
 bool CAddonCallbacksAddon::DeleteFile(const void* addonData, const char *strFileName)
