@@ -46,15 +46,15 @@ struct InteropInfo
 class CInteropState
 {
 public:
-  bool Init(void *device, void *procFunc, void *decoder);
+  bool Init(void *device, void *procFunc, void *ident);
   void Finish();
   InteropInfo &GetInterop();
-  bool NeedInit(void *device, void *procFunc, void *decoder);
+  bool NeedInit(void *device, void *procFunc, void *ident);
 
 protected:
   void *m_device = nullptr;
   void *m_procFunc = nullptr;
-  void *m_decoder = nullptr;
+  void *m_ident = nullptr;
   InteropInfo m_interop;
 };
 

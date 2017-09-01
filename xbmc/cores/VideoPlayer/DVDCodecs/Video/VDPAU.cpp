@@ -491,6 +491,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_DisplayState = VDPAU_OPEN;
   m_vdpauConfig.context = 0;
   m_vdpauConfig.processInfo = &m_processInfo;
+  m_vdpauConfig.resetCounter = 0;
 }
 
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
@@ -934,6 +935,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   m_inMsgEvent.Reset();
   m_vdpauConfigured = true;
   m_ErrorCount = 0;
+  m_vdpauConfig.resetCounter++;
   return true;
 }
 
@@ -1308,6 +1310,7 @@ public:
   bool HasFree();
   void QueueReturnPicture(CVdpauRenderPicture *pic);
   CVdpauRenderPicture* ProcessSyncPicture();
+  void InvalidateUsed();
 
   unsigned short numOutputSurfaces;
   std::vector<VdpOutputSurface> outputSurfaces;
@@ -1437,6 +1440,16 @@ CVdpauRenderPicture* CVdpauBufferPool::ProcessSyncPicture()
     break;
   }
   return retPic;
+}
+
+void CVdpauBufferPool::InvalidateUsed()
+{
+  std::deque<int>::iterator it;
+  for (it = usedRenderPics.begin(); it != usedRenderPics.end(); ++it)
+  {
+    allRenderPics[*it]->procPic.outputSurface = VDP_INVALID_HANDLE;
+    allRenderPics[*it]->procPic.videoSurface = VDP_INVALID_HANDLE;
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -2911,7 +2924,6 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          m_bufferPool->ProcessSyncPicture();
           m_extTimeout = 100;
           if (HasWork())
           {
@@ -3073,12 +3085,14 @@ void COutput::Flush()
   }
 
   Message *msg;
-  while (m_mixer.m_dataPort.ReceiveInMessage(&msg))
+
+  while (m_dataPort.ReceiveInMessage(&msg))
   {
-    if (msg->signal == CMixerDataProtocol::PICTURE)
+    if (msg->signal == COutputDataProtocol::PICTURE)
     {
-      CVdpauProcessedPicture pic = *reinterpret_cast<CVdpauProcessedPicture*>(msg->data);
-      m_bufferPool->processedPics.push(pic);
+      CVdpauRenderPicture *pic;
+      pic = *((CVdpauRenderPicture**)msg->data);
+      pic->Release();
     }
     msg->Release();
   }
@@ -3099,13 +3113,12 @@ void COutput::Flush()
     msg->Release();
   }
 
-  while (m_dataPort.ReceiveInMessage(&msg))
+  while (m_mixer.m_dataPort.ReceiveInMessage(&msg))
   {
-    if (msg->signal == COutputDataProtocol::PICTURE)
+    if (msg->signal == CMixerDataProtocol::PICTURE)
     {
-      CVdpauRenderPicture *pic;
-      pic = *((CVdpauRenderPicture**)msg->data);
-      QueueReturnPicture(pic);
+      CVdpauProcessedPicture pic = *reinterpret_cast<CVdpauProcessedPicture*>(msg->data);
+      m_bufferPool->processedPics.push(pic);
     }
     msg->Release();
   }
@@ -3156,7 +3169,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
     retPic->procPic = procPic;
     retPic->device = reinterpret_cast<void*>(m_config.context->GetDevice());
     retPic->procFunc = reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address);
-    retPic->decoder = m_config.vdpau;
+    retPic->ident = m_config.vdpau + m_config.resetCounter;
 
     retPic->DVDPic.SetParams(procPic.DVDPic);
     if (!procPic.isYuv)
@@ -3197,9 +3210,10 @@ void COutput::ProcessSyncPicture()
 
   pic = m_bufferPool->ProcessSyncPicture();
 
-  if (pic)
+  while (pic != nullptr)
   {
     ProcessReturnPicture(pic);
+    pic = m_bufferPool->ProcessSyncPicture();
   }
 }
 
@@ -3211,13 +3225,15 @@ void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
     {
       if (pic->procPic.isYuv)
       {
-        VdpVideoSurface surf = it->videoSurface;
-        m_config.videoSurfaces->ClearRender(surf);
+        VdpVideoSurface surf = pic->procPic.videoSurface;
+        if (surf != VDP_INVALID_HANDLE)
+          m_config.videoSurfaces->ClearRender(surf);
       }
       else
       {
-        VdpOutputSurface outSurf = it->outputSurface;
-        m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &outSurf, sizeof(outSurf));
+        VdpOutputSurface outSurf = pic->procPic.outputSurface;
+        if (outSurf != VDP_INVALID_HANDLE)
+          m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &outSurf, sizeof(outSurf));
       }
       m_bufferPool->processedPicsAway.erase(it);
       break;
@@ -3255,6 +3271,7 @@ void COutput::ReleaseBufferPool()
   VdpStatus vdp_st;
 
   // release all output surfaces
+  m_bufferPool->InvalidateUsed();
   for (unsigned int i = 0; i < m_bufferPool->outputSurfaces.size(); ++i)
   {
     if (m_bufferPool->outputSurfaces[i] == VDP_INVALID_HANDLE)
