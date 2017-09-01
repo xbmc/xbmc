@@ -489,7 +489,7 @@ void CRenderSystemGL::GetViewPort(CRect& viewPort)
   viewPort.y2 = viewPort.y1 + m_viewPort[3];
 }
 
-void CRenderSystemGL::SetViewPort(CRect& viewPort)
+void CRenderSystemGL::SetViewPort(const CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

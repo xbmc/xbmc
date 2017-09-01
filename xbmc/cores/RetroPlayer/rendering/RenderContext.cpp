@@ -43,7 +43,7 @@ CRenderContext::CRenderContext(CRenderSystemBase *rendering,
 
 void CRenderContext::SetViewPort(const CRect& viewPort)
 {
-  m_rendering->SetViewPort(const_cast<CRect&>(viewPort)); //! @todo Remove const cast
+  m_rendering->SetViewPort(viewPort);
 }
 
 void CRenderContext::GetViewPort(CRect &viewPort)

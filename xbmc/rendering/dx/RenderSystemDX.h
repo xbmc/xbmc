@@ -57,7 +57,7 @@ public:
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
   bool ClearBuffers(color_t color) override;
-  void SetViewPort(CRect& viewPort) override;
+  void SetViewPort(const CRect& viewPort) override;
   void GetViewPort(CRect& viewPort) override;
   void RestoreViewPort() override;
   CRect ClipRectToScissorRect(const CRect &rect) override;
