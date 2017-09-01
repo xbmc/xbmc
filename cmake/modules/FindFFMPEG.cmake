@@ -250,6 +250,7 @@ if(NOT FFMPEG_FOUND)
                                  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                                  -DFFMPEG_VER=${FFMPEG_VER}
                                  -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
+                                 -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
                                  -DCPU=${CPU}
                                  -DENABLE_NEON=${ENABLE_NEON}
                                  -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
