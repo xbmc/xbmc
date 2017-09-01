@@ -825,7 +825,11 @@ bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
   {
     if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
       fileItem.SetDynPath(properties[i].strValue);
-
+    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
+    {
+      fileItem.SetMimeType(properties[i].strValue);
+      fileItem.SetContentLookup(false);
+    }
     fileItem.SetProperty(properties[i].strName, properties[i].strValue);
   }
 
@@ -1299,7 +1303,11 @@ bool CPVRClient::FillChannelStreamFileItem(CFileItem &fileItem)
   {
     if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
       fileItem.SetDynPath(properties[i].strValue);
-
+    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
+    {
+      fileItem.SetMimeType(properties[i].strValue);
+      fileItem.SetContentLookup(false);
+    }
     fileItem.SetProperty(properties[i].strName, properties[i].strValue);
   }
   return true;
@@ -1328,7 +1336,11 @@ bool CPVRClient::FillRecordingStreamFileItem(CFileItem &fileItem)
   {
     if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
       fileItem.SetDynPath(properties[i].strValue);
-
+    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
+    {
+      fileItem.SetMimeType(properties[i].strValue);
+      fileItem.SetContentLookup(false);
+    }
     fileItem.SetProperty(properties[i].strName, properties[i].strValue);
   }
   return true;
