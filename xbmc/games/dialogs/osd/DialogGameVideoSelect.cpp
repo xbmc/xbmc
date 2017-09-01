@@ -118,6 +118,8 @@ void CDialogGameVideoSelect::FrameMove()
   CGUIBaseContainer *thumbs = dynamic_cast<CGUIBaseContainer*>(GetControl(CONTROL_THUMBS));
   if (thumbs != nullptr)
     OnItemFocus(thumbs->GetSelectedItem());
+
+  CGUIDialog::FrameMove();
 }
 
 void CDialogGameVideoSelect::OnWindowLoaded()

@@ -19,17 +19,47 @@
  */
 #pragma once
 
-#include "video/windows/GUIWindowFullScreen.h" //! @todo
+#include "guilib/GUIWindow.h"
+
+class CGUIDialog;
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CGameWindowFullScreen : public CGUIWindowFullScreen
+  class CGameWindowFullScreenText;
+
+  class CGameWindowFullScreen : public CGUIWindow
   {
   public:
     CGameWindowFullScreen();
-    ~CGameWindowFullScreen() override = default;
+    ~CGameWindowFullScreen() override;
+
+    // implementation of CGUIControl via CGUIWindow
+    void Process(unsigned int currentTime, CDirtyRegionList &dirtyregion) override;
+    void Render() override;
+    void RenderEx() override;
+    bool OnAction(const CAction &action) override;
+    bool OnMessage(CGUIMessage& message) override;
+
+    // implementation of CGUIWindow
+    void FrameMove() override;
+    void ClearBackground() override;
+    bool HasVisibleControls() override;
+    void OnWindowLoaded() override;
+    void OnDeinitWindow(int nextWindowID) override;
+
+  protected:
+    // implementation of CGUIWindow
+    void OnInitWindow() override;
+
+  private:
+    void ToggleOSD();
+    void TriggerOSD();
+    CGUIDialog *GetOSD();
+
+    // GUI parameters
+    std::unique_ptr<CGameWindowFullScreenText> m_fullscreenText;
   };
 }
 }

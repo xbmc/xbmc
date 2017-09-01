@@ -19,12 +19,200 @@
  */
 
 #include "GameWindowFullScreen.h"
+#include "GameWindowFullScreenText.h"
+#include "guilib/GraphicContext.h" //! @todo Remove me
+#include "guilib/GUIDialog.h"
+#include "guilib/GUIControl.h"
+#include "guilib/GUIWindowManager.h" //! @todo Remove me
 #include "guilib/WindowIDs.h"
+#include "input/Action.h"
+#include "input/ActionIDs.h"
+#include "Application.h" //! @todo Remove me
+#include "ApplicationPlayer.h" //! @todo Remove me
+#include "GUIInfoManager.h" //! @todo Remove me
 
 using namespace KODI;
 using namespace RETRO;
 
 CGameWindowFullScreen::CGameWindowFullScreen(void) :
-  CGUIWindowFullScreen(WINDOW_FULLSCREEN_GAME)
+  CGUIWindow(WINDOW_FULLSCREEN_GAME, "VideoFullScreen.xml"),
+  m_fullscreenText(new CGameWindowFullScreenText(*this))
 {
+  // initialize CGUIControl
+  m_controlStats = new GUICONTROLSTATS;
+
+  // initialize CGUIWindow
+  m_loadType = KEEP_IN_MEMORY;
+}
+
+CGameWindowFullScreen::~CGameWindowFullScreen()
+{
+  delete m_controlStats;
+}
+
+void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
+{
+  MarkDirtyRegion();
+
+  m_controlStats->Reset();
+
+  CGUIWindow::Process(currentTime, dirtyregion);
+
+  //! @todo This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
+  //!       which is probably the job of the renderer as it can more easily track resizing etc.
+  m_renderRegion.SetRect(0, 0, static_cast<float>(g_graphicsContext.GetWidth()), static_cast<float>(g_graphicsContext.GetHeight()));
+}
+
+void CGameWindowFullScreen::Render()
+{
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  g_application.m_pPlayer->Render(true, 255);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CGUIWindow::Render();
+}
+
+void CGameWindowFullScreen::RenderEx()
+{
+  CGUIWindow::RenderEx();
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  g_application.m_pPlayer->Render(false, 255, false);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+}
+
+bool CGameWindowFullScreen::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_SHOW_OSD:
+  {
+    ToggleOSD();
+    return true;
+  }
+  case ACTION_TRIGGER_OSD:
+  {
+    TriggerOSD();
+    return true;
+  }
+  case ACTION_SHOW_GUI:
+  {
+    // Switch back to the menu
+    g_windowManager.PreviousWindow();
+    return true;
+  }
+  case ACTION_ASPECT_RATIO:
+  {
+    // Toggle the aspect ratio mode (only if the info is onscreen)
+    //g_application.m_pPlayer->SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
+    return true;
+  }
+  default:
+    break;
+  }
+
+  return CGUIWindow::OnAction(action);
+}
+
+bool CGameWindowFullScreen::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+  case GUI_MSG_SETFOCUS:
+  case GUI_MSG_LOSTFOCUS:
+  {
+    if (message.GetSenderId() != WINDOW_FULLSCREEN_GAME)
+      return true;
+    break;
+  }
+  default:
+    break;
+  }
+
+  return CGUIWindow::OnMessage(message);
+}
+
+void CGameWindowFullScreen::FrameMove()
+{
+  if (!g_application.m_pPlayer->HasPlayer())
+    return;
+
+  m_fullscreenText->FrameMove();
+
+  CGUIWindow::FrameMove();
+}
+
+void CGameWindowFullScreen::ClearBackground()
+{
+  if (g_application.m_pPlayer->IsRenderingVideoLayer())
+#ifdef HAS_IMXVPU
+    g_graphicsContext.Clear((16 << 16) | (8 << 8) | 16);
+#else
+    g_graphicsContext.Clear(0);
+#endif
+}
+
+bool CGameWindowFullScreen::HasVisibleControls()
+{
+  return m_controlStats->nCountVisible > 0;
+}
+
+void CGameWindowFullScreen::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+
+  // Override the clear colour - we must never clear fullscreen
+  m_clearBackground = 0;
+
+  m_fullscreenText->OnWindowLoaded();
+}
+
+void CGameWindowFullScreen::OnInitWindow()
+{
+  g_infoManager.SetShowInfo(false);
+  g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off
+
+  // Switch resolution
+  g_graphicsContext.SetFullScreenVideo(true); //! @todo
+
+  CGUIWindow::OnInitWindow();
+}
+
+void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
+{
+  // Close all active modal dialogs
+  g_windowManager.CloseInternalModalDialogs(true);
+
+  CGUIWindow::OnDeinitWindow(nextWindowID);
+
+  CSingleLock lock(g_graphicsContext);
+
+  g_graphicsContext.SetFullScreenVideo(false); //! @todo
+}
+
+void CGameWindowFullScreen::ToggleOSD()
+{
+  CGUIDialog *pOSD = GetOSD();
+  if (pOSD != nullptr)
+  {
+    if (pOSD->IsDialogRunning())
+      pOSD->Close();
+    else
+      pOSD->Open();
+  }
+
+  MarkDirtyRegion();
+}
+
+void CGameWindowFullScreen::TriggerOSD()
+{
+  CGUIDialog *pOSD = GetOSD();
+  if (pOSD != nullptr)
+  {
+    if (!pOSD->IsDialogRunning())
+      pOSD->Open();
+  }
+}
+
+CGUIDialog *CGameWindowFullScreen::GetOSD()
+{
+  return g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
 }
