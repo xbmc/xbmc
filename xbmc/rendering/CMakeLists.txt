@@ -1,6 +1,7 @@
 set(SOURCES RenderSystem.cpp)
 
-set(HEADERS RenderSystem.h)
+set(HEADERS RenderSystem.h
+            RenderSystemTypes.h)
 
 core_add_library(rendering)
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
