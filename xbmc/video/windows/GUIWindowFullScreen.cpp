@@ -77,8 +77,8 @@ using namespace KODI::MESSAGING;
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
-CGUIWindowFullScreen::CGUIWindowFullScreen(void)
-    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
+CGUIWindowFullScreen::CGUIWindowFullScreen(int windowId)
+    : CGUIWindow(windowId, "VideoFullScreen.xml")
 {
   m_viewModeChanged = true;
   m_dwShowViewModeTimeout = 0;

@@ -21,13 +21,14 @@
  */
 
 #include "guilib/GUIWindow.h"
+#include "guilib/WindowIDs.h" //! @todo
 
 class CGUIDialog;
 
 class CGUIWindowFullScreen : public CGUIWindow
 {
 public:
-  CGUIWindowFullScreen(void);
+  CGUIWindowFullScreen(int windowId = WINDOW_FULLSCREEN_VIDEO); //! @todo
   ~CGUIWindowFullScreen(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;

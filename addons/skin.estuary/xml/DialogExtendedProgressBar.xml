@@ -10,7 +10,7 @@
 			<width>80</width>
 			<top>0</top>
 			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo)">conditional</animation>
+			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(FullscreenGame)">conditional</animation>
 			<control type="image">
 				<left>20</left>
 				<top>10</top>

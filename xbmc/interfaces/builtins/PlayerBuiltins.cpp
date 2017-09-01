@@ -389,6 +389,7 @@ static int PlayMedia(const std::vector<std::string>& params)
   // restore to previous window if needed
   if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
       g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
       g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION )
     g_windowManager.PreviousWindow();
 
