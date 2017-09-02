@@ -236,6 +236,10 @@ namespace PVR
 
     bool StopRecording::IsVisible(const CFileItem &item) const
     {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording && recording->IsInProgress())
+        return true;
+
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
         return channel->IsRecording();
@@ -258,7 +262,7 @@ namespace PVR
     bool EditRecording::IsVisible(const CFileItem &item) const
     {
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (recording && !recording->IsDeleted())
+      if (recording && !recording->IsDeleted() && !recording->IsInProgress())
         return true;
 
       return false;
@@ -277,6 +281,7 @@ namespace PVR
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording &&
           !recording->IsDeleted() &&
+          !recording->IsInProgress() &&
           CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(recording->ClientID()).SupportsRecordingsRename())
         return true;
 
@@ -302,7 +307,8 @@ namespace PVR
 
     bool DeleteRecording::IsVisible(const CFileItem &item) const
     {
-      if (item.GetPVRRecordingInfoTag())
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording && !recording->IsInProgress())
         return true;
 
       // recordings folder?
