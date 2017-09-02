@@ -6452,6 +6452,8 @@ msgctxt "#13375"
 msgid "Enable device"
 msgstr ""
 
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+#: xbmc/games/dialogs/osd/DialogGameVolume.cpp
 msgctxt "#13376"
 msgid "Volume"
 msgstr ""

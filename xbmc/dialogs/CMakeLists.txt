@@ -56,6 +56,7 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogSubMenu.h
             GUIDialogTextViewer.h
             GUIDialogVolumeBar.h
-            GUIDialogYesNo.h)
+            GUIDialogYesNo.h
+            IGUIVolumeBarCallback.h)
 
 core_add_library(dialogs)
