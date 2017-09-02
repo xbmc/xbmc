@@ -287,7 +287,7 @@ namespace PVR
     std::string EpisodeName(void) const { return m_strShowTitle; }
 
     /*!
-     * @brief check whether this recording is currently in progress (according to its start time and duration)
+     * @brief check whether this recording is currently in progress
      * @return true if the recording is in progress, false otherwise
      */
     bool IsInProgress() const;
