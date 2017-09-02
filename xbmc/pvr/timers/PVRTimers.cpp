@@ -805,6 +805,11 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
 
 bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) const
 {
+  return GetRecordingTimerForRecording(recording) != nullptr;
+}
+
+CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecording &recording) const
+{
   CSingleLock lock(m_critSection);
 
   for (const auto &tagsEntry : m_tags)
@@ -818,12 +823,12 @@ bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) c
           timersEntry->StartAsUTC() <= recording.RecordingTimeAsUTC() &&
           timersEntry->EndAsUTC() >= recording.EndTimeAsUTC())
       {
-        return true;
+        return timersEntry;
       }
     }
   }
 
-  return false;
+  return CPVRTimerInfoTagPtr();
 }
 
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) const

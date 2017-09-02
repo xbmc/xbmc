@@ -251,6 +251,13 @@ namespace PVR
     bool HasRecordingTimerForRecording(const CPVRRecording &recording) const;
 
     /*!
+     * @brief Get the timer currently recording the given recording, if any.
+     * @param recording The recording to check.
+     * @return The requested timer tag, or an null if none was found.
+     */
+    CPVRTimerInfoTagPtr GetRecordingTimerForRecording(const CPVRRecording &recording) const;
+
+    /*!
      * Get the timer rule for a given timer tag
      * @param timer The timer to query the timer rule for
      * @return The timer rule, or null if none was found.

@@ -714,7 +714,14 @@ namespace PVR
 
   bool CPVRGUIActions::DeleteTimer(const CFileItemPtr &item, bool bIsRecording, bool bDeleteRule) const
   {
-    CPVRTimerInfoTagPtr timer(CPVRItem(item).GetTimerInfoTag());
+    CPVRTimerInfoTagPtr timer;
+    const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
+    if (recording)
+      timer = CServiceBroker::GetPVRManager().Timers()->GetRecordingTimerForRecording(*recording);
+
+    if (!timer)
+      timer = CPVRItem(item).GetTimerInfoTag();
+
     if (!timer)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no timer!", __FUNCTION__);
