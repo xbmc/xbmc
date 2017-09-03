@@ -174,6 +174,7 @@ struct CVdpauConfig
   bool useInteropYuv;
   CVDPAUContext *context;
   CProcessInfo *processInfo;
+  int resetCounter;
 };
 
 /**
@@ -239,7 +240,7 @@ public:
   CRect crop;
   void *device;
   void *procFunc;
-  void *decoder;
+  void *ident;
 };
 
 //-----------------------------------------------------------------------------

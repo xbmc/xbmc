@@ -29,11 +29,11 @@ using namespace VDPAU;
 // interop state
 //-----------------------------------------------------------------------------
 
-bool CInteropState::Init(void *device, void *procFunc, void *decoder)
+bool CInteropState::Init(void *device, void *procFunc, void *ident)
 {
   m_device = device;
   m_procFunc = procFunc;
-  m_decoder = decoder;
+  m_ident = ident;
 
   m_interop.glVDPAUInitNV = (PFNGLVDPAUINITNVPROC)glXGetProcAddress((GLubyte *) "glVDPAUInitNV");
   m_interop.glVDPAUFiniNV = (PFNGLVDPAUFININVPROC)glXGetProcAddress((GLubyte *) "glVDPAUFiniNV");
@@ -72,13 +72,13 @@ InteropInfo &CInteropState::GetInterop()
   return m_interop;
 }
 
-bool CInteropState::NeedInit(void *device, void *procFunc, void *decoder)
+bool CInteropState::NeedInit(void *device, void *procFunc, void *ident)
 {
   if (m_device != device)
     return true;
   if (m_procFunc != procFunc)
     return true;
-  if (m_decoder != decoder)
+  if (m_ident != ident)
     return true;
 
   return false;
