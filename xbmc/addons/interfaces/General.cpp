@@ -35,6 +35,7 @@
 #ifdef TARGET_POSIX
 #include "linux/XMemUtils.h"
 #endif
+#include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
@@ -64,6 +65,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_region = get_region;
   addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
   addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
+  addonInterface->toKodi->kodi->get_current_skin_id = get_current_skin_id;
   addonInterface->toKodi->kodi->kodi_version = kodi_version;
 }
 
@@ -144,7 +146,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
   return CGUIDialogAddonSettings::ShowForAddon(addonInfo);
 }
 
-char* Interface_General::get_localized_string(void* kodiBase, long dwCode)
+char* Interface_General::get_localized_string(void* kodiBase, long label_id)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -156,13 +158,10 @@ char* Interface_General::get_localized_string(void* kodiBase, long dwCode)
   if (g_application.m_bStop)
     return nullptr;
 
-  std::string string;
-  if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
-    string = g_localizeStrings.GetAddonString(addon->ID(), dwCode).c_str();
-  else
-    string = g_localizeStrings.Get(dwCode).c_str();
-
-  char* buffer = strdup(string.c_str());
+  std::string label = g_localizeStrings.GetAddonString(addon->ID(), label_id);
+  if (label.empty())
+    label = g_localizeStrings.Get(label_id);
+  char* buffer = strdup(label.c_str());
   return buffer;
 }
 
@@ -411,6 +410,18 @@ int Interface_General::get_global_idle_time(void* kodiBase)
   }
 
   return g_application.GlobalIdleTime();
+}
+
+char* Interface_General::get_current_skin_id(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_General::%s - invalid data (addon='%p')", __FUNCTION__, addon);
+    return nullptr;
+  }
+
+  return strdup(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
 }
 
 void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)

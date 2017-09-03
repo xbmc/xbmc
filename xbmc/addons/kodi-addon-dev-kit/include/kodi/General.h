@@ -37,7 +37,7 @@ typedef struct AddonToKodiFuncTable_kodi
   char* (*get_addon_info)(void* kodiBase, const char* id);
   bool (*open_settings_dialog)(void* kodiBase);
   char* (*unknown_to_utf8)(void* kodiBase, const char* source, bool* ret, bool failOnBadChar);
-  char* (*get_localized_string)(void* kodiBase, long dwCode);
+  char* (*get_localized_string)(void* kodiBase, long label_id);
   char* (*get_language)(void* kodiBase, int format, bool region);
   bool (*queue_notification)(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
   void (*get_md5)(void* kodiBase, const char* text, char* md5);
@@ -46,6 +46,7 @@ typedef struct AddonToKodiFuncTable_kodi
   void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
   int  (*get_global_idle_time)(void* kodiBase);
   void (*kodi_version)(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
+  char* (*get_current_skin_id)(void* kodiBase);
 } AddonToKodiFuncTable_kodi;
 
 //==============================================================================
@@ -615,6 +616,47 @@ inline int GetGlobalIdleTime()
 {
   AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   return toKodi->kodi->get_global_idle_time(toKodi->kodiBase);
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Get the currently used skin identification name from Kodi
+///-----------------------------------------------------------------------
+///
+/// @return The active skin id name as a string
+///
+///
+/// @note This is not the full path like 'special://home/addons/MediaCenter',
+/// but only 'MediaCenter'.
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ..
+/// std::string skinid = kodi::GetCurrentSkinId();
+/// ..
+/// ~~~~~~~~~~~~~
+///
+inline std::string GetCurrentSkinId()
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+
+  std::string strReturn;
+  char* strMsg = toKodi->kodi->get_current_skin_id(toKodi->kodiBase);
+  if (strMsg != nullptr)
+  {
+    if (std::strlen(strMsg))
+      strReturn = strMsg;
+    toKodi->free_string(toKodi->kodiBase, strMsg);
+  }
+  return strReturn;
 }
 } /* namespace kodi */
 //------------------------------------------------------------------------------
