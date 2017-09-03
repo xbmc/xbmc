@@ -589,6 +589,9 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
     // 'Now playing' infos
     case VIDEOPLAYER_TITLE:
     {
+      if (recording)
+        return false; // CPVRRecording is derived from CVideoInfoTag. Base class properties will be handled by CGUIInfoManager.
+
       GET_CURRENT_VIDEO_LABEL_OR_DEFAULT(epgTag->Title(),
                                          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE)
                                           ? ""
