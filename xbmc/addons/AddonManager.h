@@ -178,7 +178,7 @@ namespace ADDON
      *
      * Returns true if the addon was successfully loaded and enabled; otherwise false.
      */
-    bool ReloadAddon(AddonPtr& addon);
+    bool LoadAddon(const std::string& addonId);
 
     /*! @note: should only be called by AddonInstaller
      *

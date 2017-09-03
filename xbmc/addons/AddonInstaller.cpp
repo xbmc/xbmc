@@ -604,11 +604,17 @@ bool CAddonInstallJob::DoWork()
   // run any pre-install functions
   ADDON::OnPreInstall(m_addon);
 
+  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
+  {
+    CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
+    return false;
+  }
+
   // perform install
   if (!Install(installFrom, m_repo))
     return false;
 
-  if (!CAddonMgr::GetInstance().ReloadAddon(m_addon))
+  if (!CAddonMgr::GetInstance().LoadAddon(m_addon->ID()))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
     return false;
