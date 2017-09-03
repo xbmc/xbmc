@@ -71,5 +71,17 @@ namespace ADDON
      * @deprecated Use Enabled, ReInstalled and UnInstalled instead.
      */
     struct InstalledChanged : AddonEvent {};
+
+    struct Load : AddonEvent
+    {
+      std::string id;
+      explicit Load(std::string id) : id(std::move(id)) {}
+    };
+
+    struct Unload : AddonEvent
+    {
+      std::string id;
+      explicit Unload(std::string id) : id(std::move(id)) {}
+    };
   };
 };

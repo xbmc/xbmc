@@ -706,6 +706,10 @@ bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
     if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
     {
       CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addon->ID().c_str());
+
+      lock.Leave();
+      AddonEvents::Unload event(addon->ID());
+      m_unloadEvents.HandleEvent(event);
       return true;
     }
   }
@@ -736,6 +740,11 @@ bool CAddonMgr::LoadAddon(const std::string& addonId)
     CLog::Log(LOGERROR, "CAddonMgr: could not load add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
     return false;
   }
+
+  lock.Leave();
+
+  AddonEvents::Load event(addon->ID());
+  m_unloadEvents.HandleEvent(event);
 
   if (IsAddonDisabled(addon->ID()))
   {
