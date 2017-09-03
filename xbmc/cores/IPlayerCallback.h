@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 class CFileItem;
 
 class IPlayerCallback
