@@ -60,12 +60,7 @@ bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
 
 bool CRemoveResumePoint::Execute(const CFileItemPtr& item) const
 {
-  CVideoDatabase videoDatabase;
-  if (videoDatabase.Open())
-  {
-    videoDatabase.DeleteResumeBookMark(*item);
-  }
-
+  CVideoLibraryQueue::GetInstance().ResetResumePoint(item);
   return true;
 }
 

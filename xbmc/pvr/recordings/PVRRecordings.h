@@ -52,17 +52,25 @@ namespace PVR
     bool HasDeletedRadioRecordings() const;
 
     /**
-     * Deletes the item in question, be it a directory or a file
+     * @brief Deletes the item in question, be it a directory or a file
      * @param item the item to delete
      * @return whether the item was deleted successfully
      */
     bool Delete(const CFileItem &item);
+
     bool Undelete(const CFileItem &item);
     bool DeleteAllRecordingsFromTrash();
     bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
     bool IncrementRecordingsPlayCount(const CFileItemPtr &item);
     bool MarkWatched(const CFileItemPtr &item, bool bWatched);
+
+    /**
+     * @brief Resets a recording's resume point, if any
+     * @param item The item to process
+     * @return True, if the item's resume point was reset successfully, false otherwise
+     */
+    bool ResetResumePoint(const CFileItemPtr item);
 
     bool GetDirectory(const std::string& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const std::string &path);

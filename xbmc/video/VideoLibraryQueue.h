@@ -112,6 +112,13 @@ public:
   void MarkAsWatched(const CFileItemPtr &item, bool watched);
 
   /*!
+   \brief Queue a reset resume point job.
+
+   \param[in] item Item to reset the resume point for
+   */
+  void ResetResumePoint(const CFileItemPtr item);
+
+  /*!
    \brief Adds the given job to the queue.
 
    \param[in] job Video library job to be queued.
