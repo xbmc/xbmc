@@ -814,10 +814,6 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
     m_addons->ClearPlayingChannel();
     m_addons->SetPlayingEpgTag(item->GetEPGInfoTag());
   }
-  else
-  {
-    CLog::Log(LOGERROR,"PVRManager - %s - unsupported item type", __FUNCTION__);
-  }
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
@@ -841,10 +837,6 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   else if (item->HasEPGInfoTag())
   {
     m_addons->ClearPlayingEpgTag();
-  }
-  else
-  {
-    CLog::Log(LOGERROR,"PVRManager - %s - unsupported item type", __FUNCTION__);
   }
 }
 
