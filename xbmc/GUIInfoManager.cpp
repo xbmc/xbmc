@@ -6207,7 +6207,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_VIDEO_ASPECT:
     if (g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(CServiceBroker::GetDataCacheCore().GetVideoDAR());
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
