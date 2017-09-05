@@ -392,14 +392,14 @@ namespace PVR
     /*!
      * @return The menu hooks for this add-on.
      */
-    PVR_MENUHOOKS *GetMenuHooks(void);
+    PVR_MENUHOOKS& GetMenuHooks();
 
     /*!
      * @brief Call one of the menu hooks of this client.
      * @param hook The hook to call.
      * @param item The selected file item for which the hook was called.
      */
-    void CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item);
+    void CallMenuHook(const PVR_MENUHOOK &hook, const CFileItemPtr item);
 
     //@}
     /** @name PVR EPG methods */

@@ -636,7 +636,7 @@ PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
   return retVal;
 }
 
-void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
+void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItemPtr item)
 {
   if (!m_bReadyToUse)
     return;
@@ -1399,9 +1399,9 @@ bool CPVRClient::HasMenuHooks(PVR_MENUHOOK_CAT cat) const
   return bReturn;
 }
 
-PVR_MENUHOOKS *CPVRClient::GetMenuHooks(void)
+PVR_MENUHOOKS& CPVRClient::GetMenuHooks(void)
 {
-  return &m_menuhooks;
+  return m_menuhooks;
 }
 
 const char *CPVRClient::ToString(const PVR_ERROR error)
@@ -1889,17 +1889,15 @@ void CPVRClient::cb_add_menu_hook(void *kodiInstance, PVR_MENUHOOK *hook)
     return;
   }
 
-  PVR_MENUHOOKS *hooks = client->GetMenuHooks();
-  if (hooks)
-  {
-    PVR_MENUHOOK hookInt;
-    hookInt.iHookId            = hook->iHookId;
-    hookInt.iLocalizedStringId = hook->iLocalizedStringId;
-    hookInt.category           = hook->category;
+  PVR_MENUHOOKS& hooks = client->GetMenuHooks();
 
-    /* add this new hook */
-    hooks->push_back(hookInt);
-  }
+  PVR_MENUHOOK hookInt;
+  hookInt.iHookId            = hook->iHookId;
+  hookInt.iLocalizedStringId = hook->iLocalizedStringId;
+  hookInt.category           = hook->category;
+
+  /* add this new hook */
+  hooks.emplace_back(hookInt);
 }
 
 void CPVRClient::cb_recording(void *kodiInstance, const char *strName, const char *strFileName, bool bOnOff)
