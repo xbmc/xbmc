@@ -891,6 +891,14 @@ namespace PVR
     static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
 
     /*!
+     * @brief Write the given addon properties to the properties of the given file item.
+     * @param properties Pointer to an array of addon properties.
+     * @param iPropertyCount The number of properties contained in the addon properties array.
+     * @param fileItem The item the addon properties shall be written to.
+     */
+    static void WriteFileItemProperties(const PVR_NAMED_VALUE *properties, unsigned int iPropertyCount, CFileItem &fileItem);
+
+    /*!
      * @brief Whether a channel can be played by this add-on
      * @param channel The channel to check.
      * @return True when it can be played, false otherwise.

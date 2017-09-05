@@ -808,6 +808,24 @@ PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPla
   return retVal;
 }
 
+void CPVRClient::WriteFileItemProperties(const PVR_NAMED_VALUE *properties, unsigned int iPropertyCount, CFileItem &fileItem)
+{
+  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  {
+    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
+    {
+        fileItem.SetDynPath(properties[i].strValue);
+    }
+    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
+    {
+      fileItem.SetMimeType(properties[i].strValue);
+      fileItem.SetContentLookup(false);
+    }
+
+    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
+  }
+}
+
 bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
 {
   if (!m_bReadyToUse)
@@ -821,18 +839,7 @@ bool CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
   if (m_struct.toAddon.GetEPGTagStreamProperties(&addonTag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
     return false;
 
-  for (unsigned int i = 0; i < iPropertyCount; ++i)
-  {
-    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
-      fileItem.SetDynPath(properties[i].strValue);
-    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
-    {
-      fileItem.SetMimeType(properties[i].strValue);
-      fileItem.SetContentLookup(false);
-    }
-    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
-  }
-
+  WriteFileItemProperties(properties, iPropertyCount, fileItem);
   return true;
 }
 
@@ -1299,17 +1306,7 @@ bool CPVRClient::FillChannelStreamFileItem(CFileItem &fileItem)
   if (m_struct.toAddon.GetChannelStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
     return false;
 
-  for (unsigned int i = 0; i < iPropertyCount; ++i)
-  {
-    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
-      fileItem.SetDynPath(properties[i].strValue);
-    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
-    {
-      fileItem.SetMimeType(properties[i].strValue);
-      fileItem.SetContentLookup(false);
-    }
-    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
-  }
+  WriteFileItemProperties(properties, iPropertyCount, fileItem);
   return true;
 }
 
@@ -1332,17 +1329,7 @@ bool CPVRClient::FillRecordingStreamFileItem(CFileItem &fileItem)
   if (m_struct.toAddon.GetRecordingStreamProperties(&tag, properties, &iPropertyCount) != PVR_ERROR_NO_ERROR)
     return false;
 
-  for (unsigned int i = 0; i < iPropertyCount; ++i)
-  {
-    if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_STREAMURL, strlen(PVR_STREAM_PROPERTY_STREAMURL)) == 0)
-      fileItem.SetDynPath(properties[i].strValue);
-    else if (strncmp(properties[i].strName, PVR_STREAM_PROPERTY_MIMETYPE, strlen(PVR_STREAM_PROPERTY_MIMETYPE)) == 0)
-    {
-      fileItem.SetMimeType(properties[i].strValue);
-      fileItem.SetContentLookup(false);
-    }
-    fileItem.SetProperty(properties[i].strName, properties[i].strValue);
-  }
+  WriteFileItemProperties(properties, iPropertyCount, fileItem);
   return true;
 }
 
