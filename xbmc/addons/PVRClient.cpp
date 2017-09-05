@@ -1424,7 +1424,7 @@ const char *CPVRClient::ToString(const PVR_ERROR error)
   }
 }
 
-bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
+bool CPVRClient::LogError(PVR_ERROR error, const char *strMethod) const
 {
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
   {

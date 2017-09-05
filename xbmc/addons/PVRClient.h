@@ -910,7 +910,12 @@ namespace PVR
      */
     void StopRunningInstance();
 
-    bool LogError(const PVR_ERROR error, const char *strMethod) const;
+    /*!
+     * @brief Write an error to the error log.
+     * @param error The error code.
+     * @param strMethod The name of the (member) function that produced the error.
+     */
+    bool LogError(PVR_ERROR error, const char *strMethod) const;
 
     /*!
      * @brief Callback functions from addon to kodi
