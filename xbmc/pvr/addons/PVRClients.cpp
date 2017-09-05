@@ -305,7 +305,7 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
 
     SBackend properties;
 
-    if (client->GetDriveSpace(&properties.diskTotal, &properties.diskUsed) == PVR_ERROR_NO_ERROR)
+    if (client->GetDriveSpace(properties.diskTotal, properties.diskUsed) == PVR_ERROR_NO_ERROR)
     {
       properties.diskTotal *= 1024;  
       properties.diskUsed *= 1024;

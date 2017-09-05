@@ -541,16 +541,24 @@ const std::string& CPVRClient::GetFriendlyName(void) const
   return m_strFriendlyName;
 }
 
-PVR_ERROR CPVRClient::GetDriveSpace(long long *iTotal, long long *iUsed)
+PVR_ERROR CPVRClient::GetDriveSpace(long long &iTotal, long long &iUsed)
 {
   /* default to 0 in case of error */
-  *iTotal = 0;
-  *iUsed  = 0;
+  iTotal = 0;
+  iUsed  = 0;
 
   if (!m_bReadyToUse)
     return PVR_ERROR_SERVER_ERROR;
 
-  return m_struct.toAddon.GetDriveSpace(iTotal, iUsed);
+  long long iTotalSpace = 0;
+  long long iUsedSpace = 0;
+  PVR_ERROR error = m_struct.toAddon.GetDriveSpace(&iTotalSpace, &iUsedSpace);
+  if (error == PVR_ERROR_NO_ERROR)
+  {
+    iTotal = iTotalSpace;
+    iUsed = iUsedSpace;
+  }
+  return error;
 }
 
 PVR_ERROR CPVRClient::StartChannelScan(void)

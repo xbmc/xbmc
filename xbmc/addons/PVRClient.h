@@ -325,7 +325,7 @@ namespace PVR
      * @param iUsed The used disk space.
      * @return PVR_ERROR_NO_ERROR if the drive space has been fetched successfully.
      */
-    PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed);
+    PVR_ERROR GetDriveSpace(long long &iTotal, long long &iUsed);
 
     /*!
      * @brief Start a channel scan on the server.
