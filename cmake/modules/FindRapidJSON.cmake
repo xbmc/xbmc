@@ -10,7 +10,7 @@
 #
 if(ENABLE_INTERNAL_RapidJSON)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/rapidjson/Makefile VER REGEX MATCH "^[ ]*VERSION[ ]*=.+$")
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/rapidjson/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
   string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" RJSON_VER "${VER}")
 
   # allow user to override the download URL with a local tarball
