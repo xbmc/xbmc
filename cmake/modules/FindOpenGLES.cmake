@@ -10,14 +10,18 @@
 # OPENGLES_LIBRARIES - the OpenGLES libraries
 # OPENGLES_DEFINITIONS - the OpenGLES definitions
 
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+    set(_brcmprefix brcm)
+endif()
+
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_OPENGLES glesv2 QUIET)
+  pkg_check_modules(PC_OPENGLES ${_brcmprefix}glesv2 QUIET)
 endif()
 
 if(NOT CORE_SYSTEM_NAME STREQUAL ios)
   find_path(OPENGLES_INCLUDE_DIR GLES2/gl2.h
                                  PATHS ${PC_OPENGLES_INCLUDEDIR})
-  find_library(OPENGLES_gl_LIBRARY NAMES GLESv2
+  find_library(OPENGLES_gl_LIBRARY NAMES ${_brcmprefix}GLESv2
                                    PATHS ${PC_OPENGLES_LIBDIR})
 else()
   find_library(OPENGLES_gl_LIBRARY NAMES OpenGLES
