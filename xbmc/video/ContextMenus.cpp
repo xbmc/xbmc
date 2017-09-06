@@ -49,6 +49,21 @@ bool CVideoInfo::Execute(const CFileItemPtr& item) const
   return true;
 }
 
+bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
+{
+  CFileItem item(itemIn.GetItemToPlay());
+  if (item.IsDeleted()) // e.g. trashed pvr recording
+    return false;
+
+  return CGUIWindowVideoBase::HasResumeItemOffset(&item);
+}
+
+bool CRemoveResumePoint::Execute(const CFileItemPtr& item) const
+{
+  CVideoLibraryQueue::GetInstance().ResetResumePoint(item);
+  return true;
+}
+
 bool CMarkWatched::IsVisible(const CFileItem& item) const
 {
   if (item.IsDeleted()) // e.g. trashed pvr recording

@@ -20656,7 +20656,13 @@ msgctxt "#38208"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr ""
 
-#empty strings from id 38209 to 38999
+#. Contextmenu entry to remove the resume point of the currently selected item
+#: xbmc/video/ContextMenus.h
+msgctxt "#38209"
+msgid "Reset resume position"
+msgstr ""
+
+#empty strings from id 38210 to 38999
 
 #: system/settings/settings.xml
 msgctxt "#39000"

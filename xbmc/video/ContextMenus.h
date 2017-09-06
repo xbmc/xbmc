@@ -56,6 +56,13 @@ struct CMovieInfo : CVideoInfo
   CMovieInfo() : CVideoInfo(MediaTypeMovie) {}
 };
 
+struct CRemoveResumePoint : CStaticContextMenuAction
+{
+  CRemoveResumePoint() : CStaticContextMenuAction(38209) {}
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
 struct CMarkWatched : CStaticContextMenuAction
 {
   CMarkWatched() : CStaticContextMenuAction(16103) {}

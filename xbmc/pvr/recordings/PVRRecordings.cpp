@@ -523,7 +523,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
       items.Add(item);
 
     CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
-    for (int i=0;i<items.Size();++i)
+    for (int i = 0; i < items.Size(); ++i)
     {
       CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
 
@@ -575,4 +575,22 @@ bool CPVRRecordings::MarkWatched(const CFileItemPtr &item, bool bWatched)
     return IncrementRecordingsPlayCount(item);
   else
     return SetRecordingsPlayCount(item, 0);
+}
+
+bool CPVRRecordings::ResetResumePoint(const CFileItemPtr item)
+{
+  bool bResult = false;
+
+  const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
+  if (recording && m_database.IsOpen())
+  {
+    bResult = true;
+
+    m_database.ClearBookMarksOfFile(item->GetPath(), CBookmark::RESUME);
+    recording->SetResumePoint(CBookmark());
+
+    CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
+  }
+
+  return bResult;
 }
