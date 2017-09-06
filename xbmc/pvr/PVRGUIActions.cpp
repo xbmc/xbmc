@@ -1406,19 +1406,21 @@ namespace PVR
       pDialog->Reset();
       pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
 
-      PVR_MENUHOOKS *hooks = client->GetMenuHooks();
+      PVR_MENUHOOKS& hooks = client->GetMenuHooks();
       std::vector<int> hookIDs;
-      int selection = 0;
+      unsigned int i = 0;
 
-      for (unsigned int i = 0; i < hooks->size(); ++i)
+      for (const auto& hook : hooks)
       {
-        if (hooks->at(i).category == menuCategory || hooks->at(i).category == PVR_MENUHOOK_ALL)
+        if (hook.category == menuCategory || hook.category == PVR_MENUHOOK_ALL)
         {
-          pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
-          hookIDs.push_back(i);
+          pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hook.iLocalizedStringId));
+          hookIDs.emplace_back(i);
         }
+        ++i;
       }
 
+      int selection = 0;
       if (hookIDs.size() > 1)
       {
         pDialog->Open();
@@ -1426,7 +1428,7 @@ namespace PVR
       }
 
       if (selection >= 0)
-        client->CallMenuHook(hooks->at(hookIDs.at(selection)), item.get());
+        client->CallMenuHook(hooks.at(hookIDs.at(selection)), item);
       else
         return false;
     }
