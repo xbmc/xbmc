@@ -6,4 +6,4 @@ set(HEADERS AddonSettings.h
             GUIDialogAddonSettings.h
             SettingUrlEncodedString.h)
 
-core_add_library(addonsSettings)
+core_add_library(addons_settings)
