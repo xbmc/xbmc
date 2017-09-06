@@ -786,16 +786,17 @@ void CPVRManager::CloseStream(void)
 
 void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
 {
+  m_addons->ClearPlayingChannel();
+  m_addons->ClearPlayingRecording();
+  m_addons->ClearPlayingEpgTag();
+
   if (item->HasPVRChannelInfoTag())
   {
     const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-    m_addons->ClearPlayingRecording();
-    m_addons->ClearPlayingEpgTag();
     m_addons->SetPlayingChannel(channel);
 
     m_guiActions->GetChannelNavigator().SetPlayingChannel(channel);
-
     SetPlayingGroup(channel);
     UpdateLastWatched(channel);
 
@@ -804,14 +805,10 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   }
   else if (item->HasPVRRecordingInfoTag())
   {
-    m_addons->ClearPlayingEpgTag();
-    m_addons->ClearPlayingChannel();
     m_addons->SetPlayingRecording(item->GetPVRRecordingInfoTag());
   }
   else if (item->HasEPGInfoTag())
   {
-    m_addons->ClearPlayingRecording();
-    m_addons->ClearPlayingChannel();
     m_addons->SetPlayingEpgTag(item->GetEPGInfoTag());
   }
 }
