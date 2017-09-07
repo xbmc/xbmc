@@ -27,7 +27,7 @@ class CGUIDialog;
 class CGUIWindowFullScreen : public CGUIWindow
 {
 public:
-  CGUIWindowFullScreen(void);
+  CGUIWindowFullScreen();
   ~CGUIWindowFullScreen(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;

@@ -7314,7 +7314,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
-      bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+      bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+                g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
     break;
     case VIDEOPLAYER_HASMENU:
       bReturn = g_application.m_pPlayer->HasMenu();

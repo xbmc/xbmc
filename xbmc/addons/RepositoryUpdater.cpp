@@ -169,6 +169,7 @@ void CRepositoryUpdater::OnTimeout()
 {
   //workaround
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
       g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
   {
     CLog::Log(LOGDEBUG,"CRepositoryUpdater: busy playing. postponing scheduled update");

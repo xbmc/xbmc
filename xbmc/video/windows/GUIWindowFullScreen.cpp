@@ -21,6 +21,7 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIWindowFullScreen.h"
+#include "GUIWindowFullScreenDefines.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
@@ -57,27 +58,11 @@
 
 using namespace KODI::MESSAGING;
 
-#define BLUE_BAR                          0
-#define LABEL_ROW1                       10
-#define LABEL_ROW2                       11
-#define LABEL_ROW3                       12
-
-//Displays current position, visible after seek or when forced
-//Alt, use conditional visibility Player.DisplayAfterSeek
-#define LABEL_CURRENT_TIME               22
-
-//Displays when video is rebuffering
-//Alt, use conditional visibility Player.IsCaching
-#define LABEL_BUFFERING                  24
-
-//Progressbar used for buffering status and after seeking
-#define CONTROL_PROGRESS                 23
-
 #if defined(TARGET_DARWIN)
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
-CGUIWindowFullScreen::CGUIWindowFullScreen(void)
+CGUIWindowFullScreen::CGUIWindowFullScreen()
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
   m_viewModeChanged = true;
@@ -480,8 +465,5 @@ bool CGUIWindowFullScreen::HasVisibleControls()
 
 CGUIDialog *CGUIWindowFullScreen::GetOSD()
 {
-  if (g_application.m_pPlayer->IsPlayingGame())
-    return g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
-  else
-    return g_windowManager.GetDialog(WINDOW_DIALOG_VIDEO_OSD);
+  return g_windowManager.GetDialog(WINDOW_DIALOG_VIDEO_OSD);
 }

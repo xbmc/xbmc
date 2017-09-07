@@ -1,3 +1,4 @@
 xbmc/cores/RetroPlayer                                          cores/RetroPlayer
 xbmc/cores/RetroPlayer/guicontrols                              cores/RetroPlayer/guicontrols
 xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering
+xbmc/cores/RetroPlayer/windows                                  cores/RetroPlayer/windows

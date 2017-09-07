@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">201</defaultcontrol>
-	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
+	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(FullscreenGame) + !Window.IsActive(Visualisation)</visible>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">

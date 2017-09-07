@@ -1570,7 +1570,14 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   // store player and rendering state
   bool bPreviousPlayingState = false;
-  bool bPreviousRenderingState = false;
+
+  enum class RENDERING_STATE
+  {
+    NONE,
+    VIDEO,
+    GAME,
+  } previousRenderingState = RENDERING_STATE::NONE;
+
   if (m_pPlayer->IsPlayingVideo())
   {
     bPreviousPlayingState = !m_pPlayer->IsPausedPlayback();
@@ -1580,8 +1587,14 @@ bool CApplication::LoadSkin(const std::string& skinID)
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
       g_windowManager.ActivateWindow(WINDOW_HOME);
-      bPreviousRenderingState = true;
+      previousRenderingState = RENDERING_STATE::VIDEO;
     }
+    else if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
+    {
+      g_windowManager.ActivateWindow(WINDOW_HOME);
+      previousRenderingState = RENDERING_STATE::GAME;
+    }
+
   }
 
   CSingleLock lock(g_graphicsContext);
@@ -1683,8 +1696,18 @@ bool CApplication::LoadSkin(const std::string& skinID)
   {
     if (bPreviousPlayingState)
       m_pPlayer->Pause();
-    if (bPreviousRenderingState)
+
+    switch (previousRenderingState)
+    {
+    case RENDERING_STATE::VIDEO:
       g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      break;
+    case RENDERING_STATE::GAME:
+      g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_GAME);
+      break;
+    default:
+      break;
+    }
   }
   
   return true;
@@ -2101,6 +2124,7 @@ bool CApplication::OnAction(const CAction &action)
   // Now check with the player if action can be handled.
   bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().IsPVRChannel());
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
       (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel) ||
       ((g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD || (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel)) &&
         (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
@@ -2438,7 +2462,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
 
   case TMSG_SWITCHTOFULLSCREEN:
-    if (g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+    if (g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
+        g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
       SwitchToFullScreen(true);
     break;
 
@@ -3432,13 +3457,15 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     {
       // if player didn't manage to switch to fullscreen by itself do it here
       if (options.fullscreen && m_pPlayer->IsRenderingVideo() &&
-          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
+          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
        SwitchToFullScreen(true);
     }
     else
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
-          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
         g_windowManager.PreviousWindow();
     }
 
@@ -3793,7 +3820,8 @@ void CApplication::StopPlaying()
 
     // turn off visualisation window when stopping
     if ((iWin == WINDOW_VISUALISATION
-    ||  iWin == WINDOW_FULLSCREEN_VIDEO)
+    || iWin == WINDOW_FULLSCREEN_VIDEO
+    || iWin == WINDOW_FULLSCREEN_GAME)
     && !m_bStop)
       g_windowManager.PreviousWindow();
 
@@ -4311,7 +4339,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (!m_pPlayer->IsPlayingVideo())
       {
-        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+           g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
         {
           g_windowManager.PreviousWindow();
         }
@@ -4505,7 +4534,11 @@ void CApplication::ProcessSlow()
 
   // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
-  if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
+  if (CurrentFileItem().IsVideo() ||
+      CurrentFileItem().IsPicture() ||
+      currentWindow == WINDOW_FULLSCREEN_VIDEO ||
+      currentWindow == WINDOW_FULLSCREEN_GAME ||
+      currentWindow == WINDOW_SLIDESHOW)
   {
     CJobManager::GetInstance().PauseJobs();
   }
@@ -4953,8 +4986,13 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
   }
 
   int windowID = WINDOW_INVALID;
+
+  // See if we're playing a game, and are in GUI mode
+  if (m_pPlayer->IsPlayingGame() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
+    windowID = WINDOW_FULLSCREEN_GAME;
+
   // See if we're playing a video, and are in GUI mode
-  if (m_pPlayer->IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+  else if (m_pPlayer->IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)

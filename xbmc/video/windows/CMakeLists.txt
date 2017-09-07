@@ -5,6 +5,7 @@ set(SOURCES GUIWindowFullScreen.cpp
             VideoFileItemListModifier.cpp)
 
 set(HEADERS GUIWindowFullScreen.h
+            GUIWindowFullScreenDefines.h
             GUIWindowVideoBase.h
             GUIWindowVideoNav.h
             GUIWindowVideoPlaylist.h
