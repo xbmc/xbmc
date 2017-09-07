@@ -296,8 +296,10 @@ void CWinRenderer::Update()
   ManageTextures();
 }
 
-void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
+void CWinRenderer::RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha)
 {
+  m_iYV12RenderBuffer = index;
+
   if (clear)
     g_graphicsContext.Clear(g_Windowing.UseLimitedColor() ? 0x101010 : 0);
 
@@ -308,14 +310,6 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
   ManageTextures();
   ManageRenderArea();
   Render(flags, g_Windowing.GetBackBuffer());
-}
-
-void CWinRenderer::FlipPage(int source)
-{
-  if( source >= 0 && source < m_NumYV12Buffers )
-    m_iYV12RenderBuffer = source;
-  else
-    m_iYV12RenderBuffer = NextBuffer();
 }
 
 void CWinRenderer::PreInit()
