@@ -23,9 +23,9 @@
 #include "messaging/ApplicationMessenger.h"
 #include "LocalizeStrings.h"
 #include "GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogOK.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
@@ -169,7 +169,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, CVa
     StringUtils::ToLower(newPassword);
     return true;
   }
-  CGUIDialogOK::ShowAndGetInput(CVariant{12341}, CVariant{12344});
+  HELPERS::ShowOKDialogText(CVariant{12341}, CVariant{12344});
   return false;
 }
 

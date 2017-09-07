@@ -24,8 +24,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -93,13 +93,7 @@ void CAddonStatusHandler::Process()
   /* Request to restart the AddOn and data structures need updated */
   if (m_status == ADDON_STATUS_NEED_RESTART)
   {
-    CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(CVariant{heading});
-    pDialog->SetLine(1, CVariant{24074});
-    pDialog->Open();
-
+    HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{24074});
     CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Some required settings are missing/invalid */

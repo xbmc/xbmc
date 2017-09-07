@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogTextViewer.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
@@ -32,6 +31,7 @@
 #include "guilib/GUIListContainer.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -52,6 +52,7 @@
 #define LIST_OUTPUT_RESAMPLE                    4
 
 using namespace ActiveAE;
+using namespace KODI::MESSAGING;
 
 typedef struct
 {
@@ -641,7 +642,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
+    HELPERS::ShowOKDialogLines(CVariant{19033}, CVariant{0}, CVariant{15040}, CVariant{0});
   }
 
   return true;

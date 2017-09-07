@@ -21,10 +21,11 @@
 #include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -674,13 +675,13 @@ bool CPVRTimerInfoTag::UpdateOnClient()
 void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
+    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); /* print info dialog "Couldn't save timer!" */
+    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19109}); /* print info dialog "Couldn't save timer!" */
   else if (err == PVR_ERROR_ALREADY_PRESENT)
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067}); /* print info dialog */
+    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19067}); /* print info dialog */
   else
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
+    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
 }
 
 int CPVRTimerInfoTag::ChannelNumber() const

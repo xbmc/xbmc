@@ -66,6 +66,7 @@
 #include "messaging/ThreadMessage.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
@@ -139,7 +140,6 @@
 
 // Dialog includes
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
 #include "dialogs/GUIDialogButtonMenu.h"
@@ -3201,7 +3201,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     }
     else
 #endif
-      CGUIDialogOK::ShowAndGetInput(CVariant{435}, CVariant{436});
+      HELPERS::ShowOKDialogText(CVariant{435}, CVariant{436});
 
     return PLAYBACK_OK;
   }
@@ -4165,7 +4165,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         {
           auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
           auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
-          CGUIDialogOK::ShowAndGetInput(CVariant{24148}, CVariant{std::move(msg)});
+          HELPERS::ShowOKDialogText(CVariant{24148}, CVariant{std::move(msg)});
           m_incompatibleAddons.clear();
         }
 
@@ -4428,7 +4428,7 @@ void CApplication::ShowAppMigrationMessage()
   if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
       !CFile::Exists("special://home/.kodi_migration_info_shown"))
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{24128}, CVariant{24129});
+    HELPERS::ShowOKDialogText(CVariant{24128}, CVariant{24129});
     CFile tmpFile;
     // create the file which will prevent this dialog from appearing in the future
     tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");

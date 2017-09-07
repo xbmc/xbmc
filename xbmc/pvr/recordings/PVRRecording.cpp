@@ -21,8 +21,8 @@
 #include "PVRRecording.h"
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -38,6 +38,7 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),

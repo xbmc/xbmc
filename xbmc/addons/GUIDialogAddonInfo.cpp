@@ -31,7 +31,6 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/GameUtils.h"
@@ -40,6 +39,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/Settings.h"
 #include "utils/JobManager.h"
@@ -294,7 +294,7 @@ void CGUIDialogAddonInfo::OnUpdate()
   }
 
   if (versions.empty())
-    CGUIDialogOK::ShowAndGetInput(CVariant{21341}, CVariant{21342});
+    HELPERS::ShowOKDialogText(CVariant{21341}, CVariant{21342});
   else
   {
     int i = AskForVersion(versions);
@@ -421,7 +421,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   {
     std::string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
     std::string line1 = StringUtils::Join(deps, ", ");
-    CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
+    HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
     return true;
   }
   return false;

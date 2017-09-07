@@ -25,10 +25,10 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -188,7 +188,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
     {
       if (!StartWebserver())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{33101}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{33101}, CVariant{33100});
         return false;
       }
     }
@@ -210,7 +210,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
       // cannot disable 
       if (IsAirPlayServerRunning() || IsAirTunesServerRunning())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{1259}, CVariant{34303});
+        HELPERS::ShowOKDialogText(CVariant{1259}, CVariant{34303});
         return false;
       }
 
@@ -230,7 +230,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
       // AirPlay needs zeroconf
       if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ZEROCONF))
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{34302});
+        HELPERS::ShowOKDialogText(CVariant{1273}, CVariant{34302});
         return false;
       }
 #endif //HAS_ZEROCONF
@@ -239,14 +239,14 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #ifdef HAS_AIRTUNES
       if (!StartAirTunesServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{1274}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{1274}, CVariant{33100});
         return false;
       }
 #endif //HAS_AIRTUNES
       
       if (!StartAirPlayServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{1273}, CVariant{33100});
         return false;
       }      
     }
@@ -271,7 +271,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
     {
       if (!StartAirPlayServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{1273}, CVariant{33100});
         return false;
       }
     }
@@ -353,7 +353,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #ifdef HAS_EVENT_SERVER
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{33102}, CVariant{33100});
         result = false;
       }
 #endif // HAS_EVENT_SERVER
@@ -361,7 +361,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #ifdef HAS_JSONRPC
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{33103}, CVariant{33100});
         result = false;
       }
 #endif // HAS_JSONRPC
@@ -388,7 +388,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
     if (!StartEventServer())
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
+      HELPERS::ShowOKDialogText(CVariant{33102}, CVariant{33100});
       return false;
     }
 
@@ -408,7 +408,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{33102}, CVariant{33100});
         return false;
       }
     }
@@ -422,7 +422,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
+        HELPERS::ShowOKDialogText(CVariant{33103}, CVariant{33100});
         return false;
       }
     }

@@ -33,7 +33,6 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogOK.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
@@ -48,10 +47,12 @@
 #include "music/MusicDatabase.h"
 #include "addons/AudioEncoder.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
 using namespace ADDON;
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace KODI::MESSAGING;
 
 CCDDARipper& CCDDARipper::GetInstance()
 {
@@ -168,7 +169,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::
     // no rip path has been set, show error
     CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
     g_graphicsContext.Lock();
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{608});
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{608});
     g_graphicsContext.Unlock();
     return false;
   }

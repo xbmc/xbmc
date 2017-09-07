@@ -22,11 +22,11 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
-#include "dialogs/GUIDialogOK.h"
 #include "games/addons/GameClient.h"
 #include "games/dialogs/GUIDialogSelectGameClient.h"
 #include "games/tags/GameInfoTag.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -64,7 +64,7 @@ bool CGameUtils::FillInGameClient(CFileItem &item, bool bPrompt)
             35212;  // "This game isn't compatible with any available emulators."
 
         // "Failed to play game"
-        CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, CVariant{ errorTextId });
+        KODI::MESSAGING::HELPERS::ShowOKDialogText(CVariant{ 35210 }, CVariant{ errorTextId });
       }
       else if (candidates.size() == 1 && installable.empty())
       {

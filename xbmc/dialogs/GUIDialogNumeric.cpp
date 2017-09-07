@@ -25,13 +25,13 @@
 #include "guilib/GUILabelControl.h"
 #include "utils/md5.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIDialogOK.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
 #define CONTROL_HEADING_LABEL  1
 #define CONTROL_INPUT_LABEL    4
@@ -42,6 +42,7 @@
 #define CONTROL_NEXT          22
 #define CONTROL_BACKSPACE     23
 
+using namespace KODI::MESSAGING;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
   : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")
@@ -565,7 +566,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
   {
     // Show error to user saying the password entry was blank
-    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12358}); // Password is empty/blank
+    HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12358}); // Password is empty/blank
     return false;
   }
 
@@ -577,7 +578,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
   {
     // Show error to user saying the password re-entry failed
-    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12344}); // Password do not match
+    HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12344}); // Password do not match
     return false;
   }
 

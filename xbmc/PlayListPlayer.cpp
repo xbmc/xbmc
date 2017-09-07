@@ -25,7 +25,6 @@
 #include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -38,6 +37,7 @@
 #include "URL.h"
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/VideoDatabaseFile.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
@@ -327,7 +327,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
       // open error dialog
-      CGUIDialogOK::ShowAndGetInput(CVariant{16026}, CVariant{16027});
+      HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       g_windowManager.SendThreadMessage(msg);

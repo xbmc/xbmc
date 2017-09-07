@@ -41,10 +41,10 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "filesystem/Directory.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
@@ -71,6 +71,7 @@ using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
 using namespace ADDON;
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -242,7 +243,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
       // no video file in this folder
       if (!bFoundFile)
       {
-        CGUIDialogOK::ShowAndGetInput(CVariant{13346}, CVariant{20349});
+        HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{20349});
         return;
       }
     }
@@ -390,7 +391,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
 
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{13346}, CVariant{14057});
+    HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
     return false;
   }
   
@@ -522,7 +523,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
+          HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
           return; //hmmm unable to load playlist?
         }
 
@@ -1164,7 +1165,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
+      HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
       return; //hmmm unable to load playlist?
     }
   }
@@ -1400,7 +1401,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Close();
 
   // done...
-  CGUIDialogOK::ShowAndGetInput(CVariant{20177}, CVariant{movie.m_strTitle},
+  HELPERS::ShowOKDialogLines(CVariant{20177}, CVariant{movie.m_strTitle},
                                 CVariant{StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator)},
                                 CVariant{movie.GetUniqueID()});
 
@@ -1453,7 +1454,7 @@ void CGUIWindowVideoBase::OnSearch()
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
+    HELPERS::ShowOKDialogText(CVariant{194}, CVariant{284});
   }
 }
 

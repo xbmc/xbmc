@@ -21,11 +21,12 @@
 #include "GUIWindowPVRSearch.h"
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -38,6 +39,7 @@
 #include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 namespace
 {
@@ -127,7 +129,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList &items)
     AsyncSearchAction(&items, &m_searchfilter).Execute();
 
     if (items.IsEmpty())
-      CGUIDialogOK::ShowAndGetInput(CVariant{284}, // "No results found"
+      HELPERS::ShowOKDialogText(CVariant{284}, // "No results found"
                                     m_searchfilter.GetSearchTerm());
   }
 

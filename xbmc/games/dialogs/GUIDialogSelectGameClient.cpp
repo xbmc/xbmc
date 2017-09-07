@@ -23,13 +23,14 @@
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogOK.h"
 #include "games/addons/GameClient.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/DialogOKHelper.h" 
 #include "utils/log.h"
 
 using namespace KODI;
+using namespace KODI::MESSAGING;
 using namespace GAME;
 
 std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const GameClientVector& candidates, const GameClientVector& installable)
@@ -144,7 +145,7 @@ std::string CGUIDialogSelectGameClient::InstallGameClient(const GameClientVector
       CLog::Log(LOGERROR, "Select game client dialog: Failed to install %s", gameClientId.c_str());
       // "Error"
       // "Failed to install add-on."
-      CGUIDialogOK::ShowAndGetInput(257, 35256);
+      HELPERS::ShowOKDialogText(257, 35256);
     }
   }
   else if (result == iAddonBrowser)

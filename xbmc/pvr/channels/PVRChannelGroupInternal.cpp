@@ -23,8 +23,8 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -37,6 +37,7 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_iHiddenChannels(0)
@@ -166,7 +167,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (currentChannel && currentChannel == channel)
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19098}, CVariant{19102});
+    HELPERS::ShowOKDialogText(CVariant{19098}, CVariant{19102});
     return false;
   }
 

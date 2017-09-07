@@ -31,7 +31,6 @@
 #include "GUIPassword.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
-#include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
@@ -47,7 +46,9 @@
 #include "URL.h"
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
+using namespace KODI::MESSAGING;
 using namespace XFILE;
 
 #define CONTROL_LIST          450
@@ -223,7 +224,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             Close();
           }
           else
-            CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20072});
+            HELPERS::ShowOKDialogText(CVariant{257}, CVariant{20072});
         }
         else
         {
@@ -255,7 +256,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           if (CDirectory::Create(strPath))
             Update(m_vecItems->GetPath());
           else
-            CGUIDialogOK::ShowAndGetInput(CVariant{20069}, CVariant{20072});
+            HELPERS::ShowOKDialogText(CVariant{20069}, CVariant{20072});
         }
       }
       else if (message.GetSenderId() == CONTROL_FLIP)
@@ -568,7 +569,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
   {
     if ( !g_mediaManager.IsDiscInDrive() )
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{218}, CVariant{219});
+      HELPERS::ShowOKDialogText(CVariant{218}, CVariant{219});
       return false;
     }
   }
@@ -577,7 +578,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
     //! @todo Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{221});
+      HELPERS::ShowOKDialogText(CVariant{220}, CVariant{221});
       return false;
     }
   }

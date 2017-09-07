@@ -29,7 +29,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "GUIDialogNumeric.h"
-#include "GUIDialogOK.h"
 #include "GUIDialogKeyboardGeneric.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"

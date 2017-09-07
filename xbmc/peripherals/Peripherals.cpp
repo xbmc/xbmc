@@ -44,7 +44,6 @@
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
@@ -58,6 +57,7 @@
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ThreadMessage.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -77,6 +77,7 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements) :
   m_announcements(announcements),
@@ -959,7 +960,7 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
         PeripheralPtr peripheral = GetByPath(pItem->GetPath());
         if (!peripheral || peripheral->GetSettings().empty())
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{35000}, CVariant{35004});
+          HELPERS::ShowOKDialogText(CVariant{35000}, CVariant{35004});
           continue;
         }
 

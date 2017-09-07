@@ -21,9 +21,12 @@
  */
 
 #include "GUIDialogBoxBase.h"
+#include "messaging/helpers/DialogOKHelper.h"
 
 class CGUIMessage;
 class CVariant;
+
+using namespace KODI::MESSAGING;
 
 class CGUIDialogOK :
       public CGUIDialogBoxBase
@@ -34,6 +37,15 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   static bool ShowAndGetInput(CVariant heading, CVariant text);
   static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2);
+  /*!
+  \brief Open a OK dialog and wait for input
+
+  \param[in] options  a struct of type DialogOKMessage containing
+  the options to set for this dialog.
+
+  \sa KODI::MESSAGING::HELPERS::DialogOKMessage
+  */
+  bool ShowAndGetInput(const HELPERS::DialogOKMessage& options);
 protected:
   void OnInitWindow() override;
   int GetDefaultLabelID(int controlId) const override;

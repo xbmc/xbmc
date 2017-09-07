@@ -23,7 +23,6 @@
 #include "TextureDatabase.h"
 #include "addons/Scraper.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -31,12 +30,15 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+
+using namespace KODI::MESSAGING;
 
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo /* = false */, const std::string& searchTitle /* = "" */)
   : CVideoLibraryProgressJob(nullptr),
@@ -302,7 +304,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // check if the user cancelled
       if (!IsCancelled() && IsModal())
-        CGUIDialogOK::ShowAndGetInput(195, itemTitle);
+        HELPERS::ShowOKDialogText(CVariant{195}, CVariant{itemTitle});
 
       return false;
     }
@@ -327,7 +329,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   } while (needsRefresh);
 
   if (failure && IsModal())
-    CGUIDialogOK::ShowAndGetInput(195, itemTitle);
+    HELPERS::ShowOKDialogText(CVariant{195}, CVariant{itemTitle});
 
   return true;
 }

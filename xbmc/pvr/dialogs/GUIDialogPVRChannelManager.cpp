@@ -25,7 +25,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -34,6 +33,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
@@ -62,6 +62,7 @@
 #define BUTTON_RADIO_TV           34
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
     CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
@@ -475,9 +476,9 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     if (ret == PVR_ERROR_NO_ERROR)
       Update();
     else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
+      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else
-      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
   }
   return true;
 }
@@ -605,9 +606,9 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   {
     PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag());
     if (ret == PVR_ERROR_NOT_IMPLEMENTED)
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
+      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else if (ret != PVR_ERROR_NO_ERROR)
-      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
@@ -631,9 +632,9 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
         Renumber();
       }
       else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
-        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
+        HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
       else
-        CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+        HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
     }
   }
   return true;
@@ -735,7 +736,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr &pItem)
     channel->SetChannelName(strChannelName);
 
     if (!CServiceBroker::GetPVRManager().Clients()->RenameChannel(channel))
-      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
   }
 }
 

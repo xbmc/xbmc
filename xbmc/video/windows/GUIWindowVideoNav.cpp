@@ -29,7 +29,6 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseFile.h"
 #include "view/GUIViewState.h"
-#include "dialogs/GUIDialogOK.h"
 #include "PartyModeManager.h"
 #include "music/MusicDatabase.h"
 #include "guilib/GUIWindowManager.h"
@@ -39,6 +38,7 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -1140,7 +1140,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
     }
     else
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{662});
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{662});
       return true;
     }	  
   }
@@ -1149,7 +1149,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
     // dont allow update while scanning
     if (g_application.IsVideoScanning())
     {
-      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
       return true;
     }
 
@@ -1172,7 +1172,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
     if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       std::string strError = StringUtils::Format(g_localizeStrings.Get(20463).c_str(), strTag.c_str());
-      CGUIDialogOK::ShowAndGetInput(CVariant{20462}, CVariant{std::move(strError)});
+      HELPERS::ShowOKDialogText(CVariant{20462}, CVariant{std::move(strError)});
       return true;
     }
 
