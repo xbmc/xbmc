@@ -160,6 +160,7 @@ typedef struct AddonToKodiFuncTable_Addon
 
   // Function addresses used for callbacks from addon to Kodi
   void (*free_string)(void* kodiBase, char* str);
+  void (*free_string_array)(void* kodiBase, char** arr, int numElements);
   char* (*get_addon_path)(void* kodiBase);
   char* (*get_base_user_path)(void* kodiBase);
   void (*addon_log_msg)(void* kodiBase, const int loglevel, const char *msg);

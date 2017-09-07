@@ -1929,6 +1929,21 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
   }
 }
 
+const std::vector<std::string> CCurlFile::GetPropertyValues(XFILE::FileProperty type, const std::string &name) const
+{
+  if (type == FILE_PROPERTY_RESPONSE_HEADER)
+  {
+    return m_state->m_httpheader.GetValues(name);
+  }
+  std::vector<std::string> values;
+  std::string value = GetProperty(type, name);
+  if (!value.empty())
+  {
+    values.emplace_back(value);
+  }
+  return values;
+}
+
 double CCurlFile::GetDownloadSpeed()
 {
   double res = 0.0f;

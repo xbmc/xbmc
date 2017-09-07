@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include <string>
+#include <vector>
 
 #if !defined(SIZE_MAX) || !defined(SSIZE_MAX)
 #include <limits.h>
@@ -133,6 +134,17 @@ public:
   {
     return type == XFILE::FILE_PROPERTY_CONTENT_TYPE ? "application/octet-stream" : "";
   };
+
+  virtual const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const
+  {
+    std::vector<std::string> values;
+    std::string value = GetProperty(type, name);
+    if (!value.empty())
+    {
+      values.emplace_back(value);
+    }
+    return values;
+  }
 };
 
 class CRedirectException

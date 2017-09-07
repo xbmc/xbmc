@@ -498,6 +498,7 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   m_interface.toKodi->set_setting_float = set_setting_float;
   m_interface.toKodi->set_setting_string = set_setting_string;
   m_interface.toKodi->free_string = free_string;
+  m_interface.toKodi->free_string_array = free_string_array;
 
   // Create function list from addon to kodi, generated with calloc to have
   // compatible with other versions and everything with "0"
@@ -835,6 +836,19 @@ void CAddonDll::free_string(void* kodiBase, char* str)
   if (str)
     free(str);
 }
+
+void CAddonDll::free_string_array(void* kodiBase, char** arr, int numElements)
+{
+  if (arr)
+  {
+    for (int i = 0; i < numElements; ++i)
+    {
+      free(arr[i]);
+    }
+    free(arr);
+  }
+}
+
 
 //@}
 
