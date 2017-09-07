@@ -159,7 +159,6 @@ protected:
   CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution = false;
   bool m_bRenderGUI = true;
-  int m_waitForBufferCount = 0;
   int m_rendermethod = 0;
   bool m_renderedOverlay = false;
   bool m_renderDebug = false;

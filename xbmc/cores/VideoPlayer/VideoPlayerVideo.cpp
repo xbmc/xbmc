@@ -693,7 +693,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       msg.player = VideoPlayer_VIDEO;
       msg.cachetime = DVD_MSEC_TO_TIME(50); //! @todo implement
       msg.cachetotal = DVD_MSEC_TO_TIME(100); //! @todo implement
-      msg.timestamp = hasTimestamp ? pts : DVD_NOPTS_VALUE;
+      msg.timestamp = hasTimestamp ? (pts + m_renderManager.GetDelay() * 1000) : DVD_NOPTS_VALUE;
       m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
     }
 

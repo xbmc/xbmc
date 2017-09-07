@@ -224,7 +224,6 @@ bool CRenderManager::Configure()
       m_free.push_back(i);
 
     m_bRenderGUI = true;
-    m_waitForBufferCount = 0;
     m_bTriggerUpdateResolution = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
@@ -1037,22 +1036,15 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
   while(m_free.empty())
   {
     m_presentevent.wait(lock, std::min(50, timeout));
-    if(endtime.IsTimePast() || bStop)
+    if (endtime.IsTimePast() || bStop)
     {
       if (timeout != 0 && !bStop)
       {
         CLog::Log(LOGWARNING, "CRenderManager::WaitForBuffer - timeout waiting for buffer");
-        m_waitForBufferCount++;
-        if (m_waitForBufferCount > 2)
-        {
-          m_bRenderGUI = false;
-        }
       }
       return -1;
     }
   }
-
-  m_waitForBufferCount = 0;
 
   // make sure overlay buffer is released, this won't happen on AddOverlay
   m_overlays.Release(m_free.front());
