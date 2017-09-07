@@ -173,7 +173,6 @@ protected:
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
-  int m_iLastRenderBuffer;
 
   bool m_bConfigured;
   bool m_bValidated;

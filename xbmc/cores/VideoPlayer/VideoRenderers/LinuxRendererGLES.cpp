@@ -93,7 +93,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   m_NumYV12Buffers = 0;
-  m_iLastRenderBuffer = 0;
   m_bConfigured = false;
   m_bValidated = false;
   m_StrictBinding = false;
@@ -178,8 +177,6 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
-
-  m_iLastRenderBuffer = -1;
 
   return true;
 }
@@ -383,8 +380,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
 
   ManageRenderArea();
-
-  m_iLastRenderBuffer = index;
 
   if (clear)
   {
@@ -691,7 +686,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       break;
     }
   }
-  
+
   AfterRenderHook(index);
 }
 
@@ -1327,4 +1322,3 @@ bool CLinuxRendererGLES::IsGuiLayer()
 }
 
 #endif
-
