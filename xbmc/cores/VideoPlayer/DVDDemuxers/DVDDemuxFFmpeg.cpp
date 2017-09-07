@@ -543,8 +543,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
           {
             int idx = m_pFormatContext->programs[i]->stream_index[j];
             AVStream *st = m_pFormatContext->streams[idx];
-            if ((st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec_info_nb_frames > 0) ||
-                (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->sample_rate > 0))
+            if ((st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && st->codec_info_nb_frames > 0) ||
+                (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && st->codecpar->sample_rate > 0))
             {
               nProgram = i;
               break;
