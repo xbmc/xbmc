@@ -1597,10 +1597,12 @@ void CPVRClient::CloseStream(void)
   if (IsPlayingLiveStream())
   {
     m_struct.toAddon.CloseLiveStream();
+    ClearPlayingChannel();
   }
   else if (IsPlayingRecording())
   {
     m_struct.toAddon.CloseRecordedStream();
+    ClearPlayingRecording();
   }
 }
 
