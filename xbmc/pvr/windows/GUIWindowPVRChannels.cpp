@@ -24,12 +24,12 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -42,6 +42,7 @@
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/epg/EpgContainer.h"
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace PVR;
 
 CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const std::string &xmlFile) :
@@ -256,10 +257,10 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr &item)
 {
   const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19251}, // "Update guide information"
-                                        CVariant{19252}, // "Schedule guide update for this channel?"
-                                        CVariant{""},
-                                        CVariant{channel->ChannelName()}))
+  if (ShowYesNoDialogLines(CVariant{19251}, // "Update guide information"
+                           CVariant{19252}, // "Schedule guide update for this channel?"
+                           CVariant{""},
+                           CVariant{channel->ChannelName()}) != DialogResponse::YES)
     return;
 
   const CPVREpgPtr epg = channel->GetEPG();

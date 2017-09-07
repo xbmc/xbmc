@@ -24,7 +24,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"

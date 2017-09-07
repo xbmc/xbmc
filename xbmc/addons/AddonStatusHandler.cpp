@@ -23,9 +23,9 @@
 #include "threads/SingleLock.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -99,16 +99,8 @@ void CAddonStatusHandler::Process()
   /* Some required settings are missing/invalid */
   else if (m_status == ADDON_STATUS_NEED_SETTINGS)
   {
-    CGUIDialogYesNo* pDialogYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    if (!pDialogYesNo) return;
-
-    pDialogYesNo->SetHeading(CVariant{heading});
-    pDialogYesNo->SetLine(1, CVariant{24070});
-    pDialogYesNo->SetLine(2, CVariant{24072});
-    pDialogYesNo->SetLine(3, CVariant{m_message});
-    pDialogYesNo->Open();
-
-    if (!pDialogYesNo->IsConfirmed()) return;
+    if (HELPERS::ShowYesNoDialogLines(CVariant{ heading }, CVariant{ 24070 }, CVariant{ 24072 }, CVariant{ m_message }) != HELPERS::DialogResponse::YES) 
+      return;
 
     if (!m_addon->HasSettings())
       return;

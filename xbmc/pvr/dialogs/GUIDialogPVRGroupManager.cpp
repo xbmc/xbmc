@@ -22,12 +22,12 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers//DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -142,17 +142,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
     if (!m_selectedGroup)
       return bReturn;
 
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return bReturn;
-
-    pDialog->SetHeading(CVariant{117});
-    pDialog->SetLine(0, CVariant{""});
-    pDialog->SetLine(1, CVariant{m_selectedGroup->GroupName()});
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-
-    if (pDialog->IsConfirmed())
+    if (HELPERS::ShowYesNoDialogLines(CVariant{117}, CVariant{""}, CVariant{m_selectedGroup->GroupName()}, CVariant{""}) == HELPERS::DialogResponse::YES)
     {
       if (static_cast<CPVRChannelGroups*>(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*m_selectedGroup))
         Update();

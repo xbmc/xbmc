@@ -27,9 +27,9 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -46,6 +46,8 @@
 #define CONTROL_PIXEL_RATIO  11
 #define CONTROL_VIDEO   20
 #define CONTROL_NONE   0
+
+using namespace KODI::MESSAGING::HELPERS;
 
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
     : CGUIWindow(WINDOW_SCREEN_CALIBRATION, "SettingsScreenCalibration.xml")
@@ -72,15 +74,8 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
   case ACTION_CALIBRATE_RESET:
     {
-      CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-      pDialog->SetHeading(CVariant{20325});
       std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
-      pDialog->SetLine(0, CVariant{std::move(strText)});
-      pDialog->SetLine(1, CVariant{20327});
-      pDialog->SetChoice(0, CVariant{222});
-      pDialog->SetChoice(1, CVariant{186});
-      pDialog->Open();
-      if (pDialog->IsConfirmed())
+      if (ShowYesNoDialogLines(CVariant{20325}, CVariant{std::move(strText)}, CVariant{20327}, CVariant(), CVariant{222}, CVariant{186}) == DialogResponse::YES)
       {
         g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
         ResetControls();

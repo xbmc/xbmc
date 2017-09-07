@@ -27,12 +27,12 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
@@ -238,21 +238,8 @@ bool CGUIDialogPVRChannelManager::OnClickButtonCancel(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
 {
-  if (m_bContainsChanges)
-  {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return true;
-
-    pDialog->SetHeading(CVariant{20052});
-    pDialog->SetLine(0, CVariant{""});
-    pDialog->SetLine(1, CVariant{19212});
-    pDialog->SetLine(2, CVariant{20103});
-    pDialog->Open();
-
-    if (pDialog->IsConfirmed())
+  if (m_bContainsChanges && HELPERS::ShowYesNoDialogLines(CVariant{20052}, CVariant{""}, CVariant{19212}, CVariant{20103}) == HELPERS::DialogResponse::YES)
       SaveList();
-  }
 
   m_iSelected = 0;
   m_bMovingMode = false;
@@ -612,15 +599,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return true;
-
-    pDialog->SetHeading(CVariant{19211}); // Delete channel
-    pDialog->SetText(CVariant{750});      // Are you sure?
-    pDialog->Open();
-
-    if (pDialog->IsConfirmed())
+    if (HELPERS::ShowYesNoDialogText(CVariant{19211}, CVariant{750}) == HELPERS::DialogResponse::YES)      // Delete Channel. Are you sure?
     {
       CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
       PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->DeleteChannel(channel);

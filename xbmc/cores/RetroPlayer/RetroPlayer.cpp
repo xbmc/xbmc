@@ -29,7 +29,6 @@
 #include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
 #include "games/addons/playback/IGameClientPlayback.h"
 #include "games/addons/savestates/Savestate.h"
@@ -44,6 +43,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
 #include "settings/MediaSettings.h"
@@ -56,6 +56,7 @@
 #include "URL.h"
 
 using namespace KODI;
+using namespace KODI::MESSAGING::HELPERS;
 using namespace GAME;
 using namespace RETRO;
 
@@ -155,7 +156,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
           // Warn the user that continuing with a different game client will
           // overwrite the save
           bool dummy;
-          if (!CGUIDialogYesNo::ShowAndGetInput(438, StringUtils::Format(g_localizeStrings.Get(35217), addon->Name()), dummy, 222, 35218, 0))
+          if (ShowYesNoDialogLines(438, StringUtils::Format(g_localizeStrings.Get(35217), addon->Name()), dummy, 222, 35218, 0) != DialogResponse::YES)
             bSuccess = false;
         }
       }

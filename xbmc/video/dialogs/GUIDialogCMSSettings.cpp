@@ -27,7 +27,6 @@
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"

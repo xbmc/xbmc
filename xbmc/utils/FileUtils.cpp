@@ -20,7 +20,6 @@
 #include "FileUtils.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
@@ -29,6 +28,7 @@
 #include "URIUtils.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "messaging/helpers/DialogHelper.h"
 #include <vector>
 #include "settings/MediaSourceSettings.h"
 #include "Util.h"
@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace XFILE;
 
 bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
@@ -53,16 +54,8 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   if (!item || item->IsParentFolder())
     return false;
 
-  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (!force && pDialog)
-  {
-    pDialog->SetHeading(CVariant{122});
-    pDialog->SetLine(0, CVariant{125});
-    pDialog->SetLine(1, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()});
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (!pDialog->IsConfirmed()) return false;
-  }
+  if (ShowYesNoDialogLines(CVariant{122}, CVariant{125}, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()}) != DialogResponse::YES)
+    return false;
 
   // Create a temporary item list containing the file/folder for deletion
   CFileItemPtr pItemTemp(new CFileItem(*item));

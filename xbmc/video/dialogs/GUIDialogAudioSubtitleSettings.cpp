@@ -29,12 +29,12 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -64,6 +64,8 @@
 #define SETTING_SUBTITLE_BROWSER               "subtitles.browser"
 
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
+
+using namespace KODI::MESSAGING::HELPERS;
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml"),
@@ -253,7 +255,7 @@ void CGUIDialogAudioSubtitleSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
+  if (ShowYesNoDialogText(CVariant{12376}, CVariant{12377}) != DialogResponse::YES)
     return;
 
   // reset the settings

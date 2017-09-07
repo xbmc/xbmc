@@ -33,11 +33,11 @@
 #include "music/MusicDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogMediaSource.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -58,9 +58,9 @@
 
 #include <utility>
 
+using namespace KODI::MESSAGING;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
-using namespace KODI::MESSAGING;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -837,13 +837,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
            pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(CVariant{432});
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
-    pDialog->SetLine(1, CVariant{std::move(strLabel)});
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (pDialog->IsConfirmed())
+    if (HELPERS::ShowYesNoDialogText(CVariant{432}, CVariant{std::move(strLabel)}) == HELPERS::DialogResponse::YES)
     {
       CFileItemList items;
       CDirectory::GetDirectory(pItem->GetPath(),items,"",DIR_FLAG_NO_FILE_DIRS);
@@ -858,12 +853,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
   else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
   {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(CVariant{432});
-    pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (pDialog->IsConfirmed())
+    if (HELPERS::ShowYesNoDialogText(CVariant{432}, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) }) == HELPERS::DialogResponse::YES)
     {
       CVideoDatabaseDirectory dir;
       CQueryParams params;

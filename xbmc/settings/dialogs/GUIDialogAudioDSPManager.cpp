@@ -25,12 +25,12 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIListContainer.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "input/Key.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -213,7 +213,7 @@ void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
     }
     else
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19098), g_localizeStrings.Get(15079)))
+      if (HELPERS::ShowYesNoDialogText(g_localizeStrings.Get(19098), g_localizeStrings.Get(15079)) == HELPERS::DialogResponse::YES)
       {
         SaveList();
       }

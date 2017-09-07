@@ -23,9 +23,9 @@
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -33,6 +33,7 @@
 #include <cstring>
 
 using namespace KODI;
+using namespace KODI::MESSAGING::HELPERS;
 using namespace ADDON;
 using namespace GAME;
 using namespace XFILE;
@@ -104,7 +105,7 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
         {
           // Failed to play game
           // This game depends on a disabled add-on. Would you like to enable it?
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 35210 }, CVariant{ 35215 }))
+          if (ShowYesNoDialogText(CVariant{ 35210 }, CVariant{ 35215 }) == DialogResponse::YES)
             CAddonMgr::GetInstance().EnableAddon(addon->ID());
           else
             addon.reset();

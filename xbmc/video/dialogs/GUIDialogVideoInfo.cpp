@@ -34,11 +34,11 @@
 #include "video/VideoInfoTag.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "storage/MediaManager.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -131,8 +131,8 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       {
         if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
         {
-          bool bCanceled=false;
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20377}, CVariant{20378}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
+          auto res = HELPERS::ShowYesNoDialogText(CVariant{ 20377 }, CVariant{ 20378 });
+          if (res == HELPERS::DialogResponse::YES)
           {
             m_bRefreshAll = true;
             CVideoDatabase db;
@@ -145,7 +145,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           else
             m_bRefreshAll = false;
 
-          if (bCanceled)
+          if (res == HELPERS::DialogResponse::CANCELLED)
             return false;
         }
         m_bRefresh = true;
@@ -1243,10 +1243,6 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
     return false;
   }
 
-  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (pDialog == nullptr)
-    return false;
-  
   int heading = -1;
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(item->GetVideoContentType());
   switch (type)
@@ -1271,22 +1267,13 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
       return false;
   }
 
-  pDialog->SetHeading(CVariant{heading});
-
+  HELPERS::DialogResponse res;
   if (unavailable)
-  {
-    pDialog->SetLine(0, CVariant{g_localizeStrings.Get(662)});
-    pDialog->SetLine(1, CVariant{g_localizeStrings.Get(663)});
-  }
+    res = HELPERS::ShowYesNoDialogLines(CVariant{ heading }, CVariant{ g_localizeStrings.Get(662) }, CVariant{ g_localizeStrings.Get(663) });
   else
-  {
-    pDialog->SetLine(0, CVariant{StringUtils::Format(g_localizeStrings.Get(433).c_str(), item->GetLabel().c_str())});
-    pDialog->SetLine(1, CVariant{""});
-  }
-  pDialog->SetLine(2, CVariant{""});
-  pDialog->Open();
+    res = HELPERS::ShowYesNoDialogText(CVariant{ heading }, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), item->GetLabel().c_str()) });
 
-  if (!pDialog->IsConfirmed())
+  if (res != HELPERS::DialogResponse::YES)
     return false;
 
   CVideoDatabase database;

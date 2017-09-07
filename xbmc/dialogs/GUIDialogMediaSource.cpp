@@ -33,8 +33,8 @@
 #include "utils/Variant.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PVRDirectory.h"
-#include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
@@ -47,6 +47,7 @@
 #include "filesystem/File.h"
 #endif
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace XFILE;
 
 #define CONTROL_HEADING          2
@@ -397,7 +398,7 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(m_type);
   if (shares)
     shares->push_back(share);
-  if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(CVariant{ 1001 }, CVariant{ 1025 }))
+  if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || ShowYesNoDialogText(CVariant{ 1001 }, CVariant{ 1025 }) == DialogResponse::YES)
   {
     m_confirmed = true;
     Close();

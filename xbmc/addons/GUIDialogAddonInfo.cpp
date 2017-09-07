@@ -32,7 +32,6 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "games/GameUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
@@ -440,12 +439,12 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
+  if (HELPERS::ShowYesNoDialogText(CVariant{24037}, CVariant{750}) != HELPERS::DialogResponse::YES)
     return;
 
   bool removeData = false;
   if (CDirectory::Exists("special://profile/addon_data/"+m_localAddon->ID()))
-    removeData = CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{39014});
+    removeData = (HELPERS::ShowYesNoDialogText(CVariant{24037}, CVariant{39014}) == HELPERS::DialogResponse::YES);
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
                                     &CAddonInstaller::GetInstance());

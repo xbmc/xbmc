@@ -45,7 +45,6 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
@@ -63,6 +62,7 @@
 #include "utils/Variant.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -1317,13 +1317,13 @@ void CGUIWindowMusicBase::OnInitWindow()
     if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
     {
       // rescan of music library required
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38060}))
+      if (HELPERS::ShowYesNoDialogText(CVariant{799}, CVariant{38060}) == HELPERS::DialogResponse::YES)
       {
         int flags = CMusicInfoScanner::SCAN_RESCAN;
         // When set to fetch information on update enquire about scraping that as well
         // It may take some time, so the user may want to do it later by "Query Info For All"
         if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38061}))
+          if (HELPERS::ShowYesNoDialogText(CVariant{799}, CVariant{38061}) == HELPERS::DialogResponse::YES)
             flags |= CMusicInfoScanner::SCAN_ONLINE;
         if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
           flags |= CMusicInfoScanner::SCAN_BACKGROUND;
@@ -1382,7 +1382,7 @@ void CGUIWindowMusicBase::DoScan(const std::string &strPath)
 void CGUIWindowMusicBase::OnRemoveSource(int iItem)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT))
+  if (HELPERS::ShowYesNoDialogLines(CVariant{522}, CVariant{20340}, bCanceled, CVariant{""}, CVariant{""}) == HELPERS::DialogResponse::YES)
   {
     MAPSONGS songs;
     CMusicDatabase database;
@@ -1407,7 +1407,7 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
   // Add content selection logic here, if music is ready for that some day
 
   // This won't ask you to clean/delete your content, when you change the scraper to none (if music gets this), might ne nice in the future
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20444 }, CVariant{ 20447 }))
+  if (HELPERS::ShowYesNoDialogText(CVariant{ 20444 }, CVariant{ 20447 }) == HELPERS::DialogResponse::YES)
     g_application.StartMusicScan(path, true);
 }
 

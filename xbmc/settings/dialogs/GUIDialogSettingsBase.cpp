@@ -24,7 +24,6 @@
 
 #include "GUIDialogSettingsBase.h"
 #include "GUIUserMessages.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
@@ -36,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -58,6 +58,8 @@
 #define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_DEFAULT_SLIDER          13
 #define CONTROL_DEFAULT_SETTING_LABEL   14
+
+using namespace KODI::MESSAGING::HELPERS;
 
 CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &xmlFile)
     : CGUIDialog(windowId, xmlFile),
@@ -798,7 +800,7 @@ void CGUIDialogSettingsBase::SetDescription(const CVariant &label)
 
 void CGUIDialogSettingsBase::OnResetSettings()
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
+  if (ShowYesNoDialogText(CVariant{10041}, CVariant{10042}) == DialogResponse::YES)
   {
     for(std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
     {

@@ -28,7 +28,6 @@
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "FileItem.h"
@@ -36,7 +35,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "TextureDatabase.h"
 #include "URL.h"
@@ -50,9 +48,6 @@
 
 using namespace XFILE;
 using namespace ADDON;
-using namespace KODI::MESSAGING;
-
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {

@@ -19,7 +19,6 @@
  */
 #include "LanguageHook.h"
 
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
@@ -36,6 +35,7 @@
 #include "utils/Variant.h"
 #include "WindowException.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "Dialog.h"
 #include "ListItem.h"
@@ -61,31 +61,7 @@ namespace XBMCAddon
                        int autoclose)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      // get lines, last 4 lines are optional.
-      if (!heading.empty())
-        pDialog->SetHeading(CVariant{heading});
-      if (!line1.empty())
-        pDialog->SetLine(0, CVariant{line1});
-      if (!line2.empty())
-        pDialog->SetLine(1, CVariant{line2});
-      if (!line3.empty())
-        pDialog->SetLine(2, CVariant{line3});
-
-      if (!nolabel.empty())
-        pDialog->SetChoice(0, CVariant{nolabel});
-      if (!yeslabel.empty())
-        pDialog->SetChoice(1, CVariant{yeslabel});
-
-      if (autoclose > 0)
-        pDialog->SetAutoClose(autoclose);
-
-      pDialog->Open();
-
-      return pDialog->IsConfirmed();
+      return (HELPERS::ShowYesNoDialogLines(CVariant{ heading }, CVariant{ line1 }, CVariant{ line2 }, CVariant{ line3 }) == HELPERS::DialogResponse::YES);
     }
 
     bool Dialog::info(const ListItem* item)

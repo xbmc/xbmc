@@ -24,10 +24,10 @@
 
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
@@ -64,6 +64,8 @@
 #define SETTING_VIDEO_MAKE_DEFAULT        "video.save"
 #define SETTING_VIDEO_CALIBRATION         "video.calibration"
 #define SETTING_VIDEO_STREAM              "video.stream"
+
+using namespace KODI::MESSAGING::HELPERS;
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "DialogSettings.xml"),
@@ -179,7 +181,7 @@ void CGUIDialogVideoSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12377)))
+  if (ShowYesNoDialogText(CVariant(12376), CVariant(12377)) == DialogResponse::YES)
   { // reset the settings
     CVideoDatabase db;
     if (!db.Open())

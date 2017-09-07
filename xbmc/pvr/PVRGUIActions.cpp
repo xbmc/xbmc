@@ -28,12 +28,12 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/Thread.h"
@@ -762,28 +762,26 @@ namespace PVR
     if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
     {
       // timer was scheduled by a timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
-      bool bCancel(false);
-      bDeleteRule = CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
-                                                     CVariant{840}, // "Do you want to delete only this timer or also the timer rule that has scheduled it?"
-                                                     CVariant{""},
-                                                     CVariant{timer->Title()},
-                                                     bCancel,
-                                                     CVariant{841}, // "Only this"
-                                                     CVariant{593}, // "All"
-                                                     0); // no autoclose
-      bConfirmed = !bCancel;
+      auto res = HELPERS::ShowYesNoDialogLines(CVariant{122}, // "Confirm delete"
+                                               CVariant{840}, // "Do you want to delete only this timer or also the timer rule that has scheduled it?"
+                                               CVariant{""},
+                                               CVariant{timer->Title()},
+                                               CVariant{841}, // "Only this"
+                                               CVariant{593}); // "All"
+      bDeleteRule = res == HELPERS::DialogResponse::YES;
+      bConfirmed = res != HELPERS::DialogResponse::CANCELLED;
     }
     else
     {
       bDeleteRule = false;
 
       // prompt user for confirmation for deleting the timer
-      bConfirmed = CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
-                                                    timer->IsTimerRule()
-                                                      ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
-                                                      : CVariant{846}, // "Are you sure you want to delete this timer?"
-                                                    CVariant{""},
-                                                    CVariant{timer->Title()});
+      bConfirmed = (HELPERS::ShowYesNoDialogLines(CVariant{122}, // "Confirm delete"
+                                                  timer->IsTimerRule()
+                                                    ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
+                                                    : CVariant{846}, // "Are you sure you want to delete this timer?"
+                                                  CVariant{""},
+                                                  CVariant{timer->Title()}) == HELPERS::DialogResponse::YES);
     }
 
     return bConfirmed;
@@ -800,10 +798,10 @@ namespace PVR
 
   bool CPVRGUIActions::ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer) const
   {
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{847}, // "Confirm stop recording"
-                                            CVariant{848}, // "Are you sure you want to stop this recording?"
-                                            CVariant{""},
-                                            CVariant{timer->Title()});
+    return (HELPERS::ShowYesNoDialogLines(CVariant{847}, // "Confirm stop recording"
+                                          CVariant{848}, // "Are you sure you want to stop this recording?"
+                                          CVariant{""},
+                                          CVariant{timer->Title()}) == HELPERS::DialogResponse::YES);
   }
 
   bool CPVRGUIActions::EditRecording(const CFileItemPtr &item) const
@@ -880,14 +878,14 @@ namespace PVR
 
   bool CPVRGUIActions::ConfirmDeleteRecording(const CFileItemPtr &item) const
   {
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
-                                            item->m_bIsFolder
-                                              ? CVariant{19113} // "Delete all recordings in this folder?"
-                                              : item->GetPVRRecordingInfoTag()->IsDeleted()
-                                                ? CVariant{19294}  // "Remove this deleted recording from trash? This operation cannot be reverted."
-                                                : CVariant{19112}, // "Delete this recording?"
-                                            CVariant{""},
-                                            CVariant{item->GetLabel()});
+    return (HELPERS::ShowYesNoDialogLines(CVariant{122}, // "Confirm delete"
+                                          item->m_bIsFolder
+                                            ? CVariant{19113} // "Delete all recordings in this folder?"
+                                            : item->GetPVRRecordingInfoTag()->IsDeleted()
+                                              ? CVariant{19294}  // "Remove this deleted recording from trash? This operation cannot be reverted."
+                                              : CVariant{19112}, // "Delete this recording?"
+                                          CVariant{""},
+                                          CVariant{item->GetLabel()}) == HELPERS::DialogResponse::YES);
   }
 
   bool CPVRGUIActions::DeleteAllRecordingsFromTrash() const
@@ -903,8 +901,8 @@ namespace PVR
 
   bool CPVRGUIActions::ConfirmDeleteAllRecordingsFromTrash() const
   {
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{19292},  // "Delete all permanently"
-                                            CVariant{19293}); // "Remove all deleted recordings from trash? This operation cannot be reverted."
+    return (HELPERS::ShowYesNoDialogText(CVariant{19292},  // "Delete all permanently"
+                                         CVariant{19293}) == HELPERS::DialogResponse::YES); // "Remove all deleted recordings from trash? This operation cannot be reverted."
   }
 
   bool CPVRGUIActions::UndeleteRecording(const CFileItemPtr &item) const
@@ -1071,19 +1069,16 @@ namespace PVR
       const CPVRRecordingPtr recording(channel->GetRecording());
       if (recording)
       {
-        bool bCancel(false);
-        bool bPlayRecording = CGUIDialogYesNo::ShowAndGetInput(CVariant{19687}, // "Play recording"
-                                                       CVariant{""},
-                                                       CVariant{12021}, // "Play from beginning"
-                                                       CVariant{recording->m_strTitle},
-                                                       bCancel,
-                                                       CVariant{19000}, // "Switch to channel"
-                                                       CVariant{19687}, // "Play recording"
-                                                       0); // no autoclose
-        if (bCancel)
+        auto res = HELPERS::ShowYesNoDialogLines(CVariant{19687}, // "Play recording"
+                                                 CVariant{""},
+                                                 CVariant{12021}, // "Play from beginning"
+                                                 CVariant{recording->m_strTitle},
+                                                 CVariant{19000}, // "Switch to channel"
+                                                 CVariant{19687}); // "Play recording"
+        if (res == HELPERS::DialogResponse::CANCELLED)
           return false;
 
-        if (bPlayRecording)
+        if (res == HELPERS::DialogResponse::YES)
         {
           const CFileItemPtr recordingItem(new CFileItem(recording));
           return PlayRecording(recordingItem, bCheckResume);
@@ -1228,10 +1223,10 @@ namespace PVR
     if (!channel || channel->ChannelNumber() <= 0)
       return false;
 
-    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19054}, // "Hide channel"
-                                          CVariant{19039}, // "Are you sure you want to hide this channel?"
-                                          CVariant{""},
-                                          CVariant{channel->ChannelName()}))
+    if (HELPERS::ShowYesNoDialogLines(CVariant{19054}, // "Hide channel"
+                                      CVariant{19039}, // "Are you sure you want to hide this channel?"
+                                      CVariant{""},
+                                      CVariant{channel->ChannelName()}) != HELPERS::DialogResponse::YES)
       return false;
 
     if (!CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel))
@@ -1449,15 +1444,15 @@ namespace PVR
 
     if (bResetEPGOnly)
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
-                                            CVariant{19188})) // "All your guide data will be cleared. Are you sure?"
+      if (HELPERS::ShowYesNoDialogText(CVariant{19098},  // "Warning!"
+                                            CVariant{19188}) != HELPERS::DialogResponse::YES) // "All your guide data will be cleared. Are you sure?"
         return false;
     }
     else
     {
       if (!CheckParentalPIN() ||
-          !CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
-                                            CVariant{19186})) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
+          HELPERS::ShowYesNoDialogText(CVariant{19098},  // "Warning!"
+                                            CVariant{19186}) != HELPERS::DialogResponse::YES) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
         return false;
     }
 

@@ -32,7 +32,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/Skin.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
@@ -40,6 +39,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -65,6 +65,7 @@
 #define XML_NEXTID        "nextIdProfile"
 #define XML_PROFILE       "profile"
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace XFILE;
 
 static CProfile EmptyProfile;
@@ -304,18 +305,8 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (profile == NULL)
     return false;
 
-  CGUIDialogYesNo* dlgYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo == NULL)
-    return false;
-
   std::string str = g_localizeStrings.Get(13201);
-  dlgYesNo->SetHeading(CVariant{13200});
-  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
-  dlgYesNo->SetLine(1, CVariant{""});
-  dlgYesNo->SetLine(2, CVariant{""});
-  dlgYesNo->Open();
-
-  if (!dlgYesNo->IsConfirmed())
+  if (ShowYesNoDialogText(CVariant{13200}, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())}) != DialogResponse::YES)
     return false;
 
   // fall back to master profile if necessary

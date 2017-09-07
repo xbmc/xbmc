@@ -29,7 +29,6 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "view/GUIViewState.h"
 #include "playlists/PlayListFactory.h"
 #include "Application.h"
@@ -53,6 +52,7 @@
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
@@ -65,6 +65,7 @@
 #include "utils/GroupUtils.h"
 #include "TextureDatabase.h"
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
@@ -1568,10 +1569,10 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
 
 bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header, int text)
 {
-  bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{header}, CVariant{text}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
+  auto res = ShowYesNoDialogText(CVariant{ header }, CVariant{ text });
+  if (res == DialogResponse::YES)
   {
     CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);
@@ -1581,7 +1582,7 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header,
   }
   else
   {
-    if (!bCanceled)
+    if (res != DialogResponse::CANCELLED)
     {
       ADDON::ScraperPtr info;
       SScanSettings settings;

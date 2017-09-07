@@ -28,7 +28,6 @@
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerLayout.h"
@@ -41,11 +40,13 @@
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 
 using namespace KODI;
+using namespace KODI::MESSAGING::HELPERS;
 using namespace ADDON;
 using namespace GAME;
 
@@ -141,7 +142,7 @@ void CGUIControllerList::ResetController(void)
     // For now, ask the user if they would like to reset all peripherals
     // "Reset controller profile"
     // "Would you like to reset this controller profile for all devices?"
-    if (!CGUIDialogYesNo::ShowAndGetInput(35060, 35061))
+    if (ShowYesNoDialogText(35060, 35061) != DialogResponse::YES)
       return;
 
     CServiceBroker::GetPeripherals().ResetButtonMaps(strControllerId);

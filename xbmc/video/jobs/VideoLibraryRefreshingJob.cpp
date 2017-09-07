@@ -25,11 +25,11 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -114,7 +114,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           heading = m_item->m_bIsFolder ? 20351 : 20352;
         else if (scraper->Content() == CONTENT_MUSICVIDEOS)
           heading = 20393;
-        if (CGUIDialogYesNo::ShowAndGetInput(heading, 20446))
+        if (HELPERS::ShowYesNoDialogText(heading, 20446) == HELPERS::DialogResponse::YES)
         {
           hasDetails = false;
           ignoreNfo = true;

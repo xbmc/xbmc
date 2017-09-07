@@ -37,7 +37,6 @@
 #include "network/Network.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "favourites/FavouritesService.h"
@@ -49,6 +48,7 @@
 #include "settings/Settings.h"
 #include "input/InputManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -708,7 +708,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 
 void CGUIWindowFileManager::OnCopy(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{120}, CVariant{123}))
+  if (HELPERS::ShowYesNoDialogText(CVariant{120}, CVariant{123}) !=HELPERS::DialogResponse::YES)
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy,
@@ -719,7 +719,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
 void CGUIWindowFileManager::OnMove(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{121}, CVariant{124}))
+  if (HELPERS::ShowYesNoDialogText(CVariant{121}, CVariant{124}) != HELPERS::DialogResponse::YES)
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionMove,
@@ -730,7 +730,7 @@ void CGUIWindowFileManager::OnMove(int iList)
 
 void CGUIWindowFileManager::OnDelete(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{125}))
+  if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{125}) != HELPERS::DialogResponse::YES)
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,

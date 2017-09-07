@@ -23,8 +23,8 @@
 #include <utility>
 
 #include "addons/Skin.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
@@ -32,6 +32,7 @@
 #include "utils/Variant.h"
 #include "ServiceBroker.h"
 
+using namespace KODI::MESSAGING::HELPERS;
 using namespace PERIPHERALS;
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
@@ -108,7 +109,7 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   if (!peripheral)
     return;
 
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
+  if (ShowYesNoDialogText(CVariant{10041}, CVariant{10042}) != DialogResponse::YES)
     return;
 
   // reset the settings in the peripheral

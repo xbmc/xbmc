@@ -31,7 +31,6 @@
 #include "GUIPassword.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
-#include "GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
 #include "filesystem/Directory.h"
@@ -42,6 +41,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "utils/log.h"
 #include "URL.h"
 #include "utils/Variant.h"
@@ -897,7 +897,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   {
     // verify the path by doing a GetDirectory.
     CFileItemList items;
-    if (CDirectory::GetDirectory(path, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(CVariant{1001}, CVariant{1002}))
+    if (CDirectory::GetDirectory(path, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || HELPERS::ShowYesNoDialogText(CVariant{1001}, CVariant{1002}) == HELPERS::DialogResponse::YES)
     { // add the network location to the shares list
       CMediaSource share;
       share.strPath = path; //setPath(path);

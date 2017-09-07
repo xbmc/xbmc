@@ -22,7 +22,6 @@
 
 #include "Application.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"

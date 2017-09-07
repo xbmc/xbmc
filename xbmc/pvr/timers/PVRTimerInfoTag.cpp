@@ -22,7 +22,6 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"

@@ -34,7 +34,6 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -46,6 +45,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
@@ -8740,18 +8740,8 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
             del = false;
           else
           {
-            CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-            if (pDialog != NULL)
-            {
-              CURL sourceUrl(sourcePath);
-              pDialog->SetHeading(CVariant{15012});
-              pDialog->SetText(CVariant{StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str())});
-              pDialog->SetChoice(0, CVariant{15015});
-              pDialog->SetChoice(1, CVariant{15014});
-              pDialog->Open();
-
-              del = !pDialog->IsConfirmed();
-            }
+            CURL sourceUrl(sourcePath);
+            del = (HELPERS::ShowYesNoDialogText(CVariant{ 15012 }, CVariant{ StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()) }, CVariant{ 15015 }, CVariant{ 15014 }) != HELPERS::DialogResponse::YES);
           }
         }
 

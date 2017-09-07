@@ -25,7 +25,6 @@
 #include "GUIDialogAddonInfo.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
@@ -56,6 +55,7 @@
 
 using namespace ADDON;
 using namespace XFILE;
+using namespace KODI::MESSAGING::HELPERS;
 
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
@@ -186,7 +186,6 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (item->GetPath() == "addons://install/")
   {
-    using namespace KODI::MESSAGING::HELPERS;
 
     if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
     {
@@ -218,7 +217,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
     // cancel a downloading job
     if (item->HasProperty("Addon.Downloading"))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty("Addon.Name"), CVariant{24066}, CVariant{""}))
+      if (ShowYesNoDialogText(CVariant{24000}, item->GetProperty("Addon.Name"), CVariant{24066}, CVariant{""}) == DialogResponse::YES)
       {
         if (CAddonInstaller::GetInstance().Cancel(item->GetProperty("Addon.ID").asString()))
           Refresh();

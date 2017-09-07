@@ -41,13 +41,13 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "view/GUIViewState.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
@@ -317,7 +317,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
         msgctxt = 38069;
         if (content == CONTENT_ARTISTS)
           msgctxt = 38068;
-        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20195 }, msgctxt)) // Change information provider, confirm for all shown
+        if (HELPERS::ShowYesNoDialogText(CVariant{ 20195 }, msgctxt) == HELPERS::DialogResponse::YES) // Change information provider, confirm for all shown
         { 
           // Set scraper for all items on curent view. 
           std::string strPath = "musicdb://";
@@ -343,7 +343,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
         msgctxt = 38071; 
         if (content == CONTENT_ARTISTS)
           msgctxt = 38070;
-        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, msgctxt)) // Change information provider, confirm default and clear
+        if (HELPERS::ShowYesNoDialogText(CVariant{20195}, msgctxt) == HELPERS::DialogResponse::YES) // Change information provider, confirm default and clear
         {
           // Save scraper addon default setting values
           scraper->SaveSettings();
@@ -370,13 +370,13 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
     if (action == CONTEXT_BUTTON_SETTINGS || action == CONTEXT_BUTTON_SET_DEFAULT)
     { 
       // Change information provider, all artists or albums
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38072}))
+      if (HELPERS::ShowYesNoDialogText(CVariant{20195}, CVariant{38072}) == HELPERS::DialogResponse::YES)
         OnItemInfoAll(m_vecItems->GetPath(), true);
     }
     else
     {
       // Change information provider, selected artist or album
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38073}))
+      if (HELPERS::ShowYesNoDialogText(CVariant{20195}, CVariant{38073}) == HELPERS::DialogResponse::YES)
       {
         std::string itempath = StringUtils::Format("musicdb://albums/%li/", id);
         if (content == CONTENT_ARTISTS)

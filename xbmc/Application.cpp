@@ -5065,7 +5065,7 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
     // Ask for full rescan of music files
     //! @todo replace with a music library setting in UI
     if (g_advancedSettings.m_bMusicLibraryPromptFullTagScan)
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 799 }, CVariant{ 38062 }))
+      if (HELPERS::ShowYesNoDialogText(CVariant{ 799 }, CVariant{ 38062 }) == HELPERS::DialogResponse::YES)
         flags |= CMusicInfoScanner::SCAN_RESCAN;
   }
 

@@ -36,15 +36,17 @@
 #include "storage/MediaManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "TextureCache.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "addons/Scraper.h"
+
+using namespace KODI::MESSAGING::HELPERS;
 
 #define BACKGROUND_IMAGE       999
 #define GROUP_LIST             996
@@ -304,7 +306,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
         return false;
     }
     // prompt user if they want to really delete the source
-    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{751}, CVariant{750}))
+    if (ShowYesNoDialogText(CVariant{751}, CVariant{750}) != DialogResponse::YES)
       return false;
 
     // check default before we delete, as deletion will kill the share object
@@ -446,7 +448,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12335}, CVariant{750}))
+      if (ShowYesNoDialogText(CVariant{12335}, CVariant{750}) != DialogResponse::YES)
         return false;
 
       share->m_iHasLock = 0;

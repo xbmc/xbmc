@@ -22,7 +22,6 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/YesNo.h"
 
 #include "addons/binary-addons/AddonDll.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "utils/log.h"
 
