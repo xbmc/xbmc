@@ -114,7 +114,6 @@ public:
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
-  virtual void FlipPage(int source) override;
   virtual void UnInit() override;
   virtual void Reset() override;
   virtual void Flush() override;
@@ -122,7 +121,7 @@ public:
   virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   virtual bool IsGuiLayer() override;
   virtual void ReleaseBuffer(int idx) override;
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  virtual void RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha) override;
   virtual void Update() override;
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual CRenderInfo GetRenderInfo() override;

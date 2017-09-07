@@ -358,8 +358,10 @@ void CLinuxRendererGLES::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
 {
+  m_iYV12RenderBuffer = index;
+
   if (!m_bConfigured)
     return;
 
@@ -373,8 +375,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
   }
 
-  int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf =  m_buffers[index];
+  YUVBUFFER& buf = m_buffers[index];
 
   if (!buf.fields[FIELD_FULL][0].id)
     return;
@@ -422,16 +423,6 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (IsGuiLayer())
     return;
-}
-
-void CLinuxRendererGLES::FlipPage(int source)
-{
-  if( source >= 0 && source < m_NumYV12Buffers )
-    m_iYV12RenderBuffer = source;
-  else
-    m_iYV12RenderBuffer = NextYV12Texture();
-
-  return;
 }
 
 void CLinuxRendererGLES::UpdateVideoFilter()
