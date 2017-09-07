@@ -108,13 +108,12 @@ public:
   bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   bool IsConfigured() override { return m_bConfigured; }
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
-  void FlipPage(int source) override;
   void UnInit() override;
   void Reset() override;
   void Flush() override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  void RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha) override;
   void Update() override;
   bool RenderCapture(CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
@@ -131,7 +130,6 @@ protected:
   void DrawBlackBars();
 
   bool ValidateRenderer();
-  int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
   void SetTextureFilter(GLenum method);

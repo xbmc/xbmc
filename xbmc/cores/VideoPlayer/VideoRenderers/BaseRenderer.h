@@ -68,7 +68,6 @@ public:
   virtual bool IsConfigured() = 0;
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) = 0;
   virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
-  virtual void FlipPage(int source) = 0;
   virtual void UnInit() = 0;
   virtual void Reset() = 0;
   virtual void Flush() {};
@@ -79,7 +78,7 @@ public:
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
-  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
+  virtual void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 

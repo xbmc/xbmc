@@ -320,7 +320,6 @@ void CRenderManager::FrameMove()
 
     if (m_presentstep == PRESENT_FLIP)
     {
-      m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
     }
@@ -652,90 +651,6 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
-                              EINTERLACEMETHOD deintMethod, EFIELDSYNC sync, bool wait)
-{
-  { CSingleLock lock(m_statelock);
-
-    if (bStop)
-      return;
-
-    if (!m_pRenderer)
-      return;
-  }
-
-  EPRESENTMETHOD presentmethod;
-
-  EINTERLACEMETHOD interlacemethod = deintMethod;
-
-  if (interlacemethod == VS_INTERLACEMETHOD_NONE)
-  {
-    presentmethod = PRESENT_METHOD_SINGLE;
-    sync = FS_NONE;
-  }
-  else
-  {
-    if (sync == FS_NONE)
-      presentmethod = PRESENT_METHOD_SINGLE;
-    else
-    {
-      if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)
-        presentmethod = PRESENT_METHOD_BLEND;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)
-        presentmethod = PRESENT_METHOD_WEAVE;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)
-        presentmethod = PRESENT_METHOD_BOB;
-      else
-      {
-        if (!m_pRenderer->WantsDoublePass())
-          presentmethod = PRESENT_METHOD_SINGLE;
-        else
-          presentmethod = PRESENT_METHOD_BOB;
-      }
-    }
-  }
-
-  CSingleLock lock(m_presentlock);
-
-  if (m_free.empty())
-    return;
-
-  int source = m_free.front();
-
-  SPresent& m = m_Queue[source];
-  m.presentfield = sync;
-  m.presentmethod = presentmethod;
-  m.pts = pts;
-  requeue(m_queued, m_free);
-  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
-
-  // signal to any waiters to check state
-  if (m_presentstep == PRESENT_IDLE)
-  {
-    m_presentstep = PRESENT_READY;
-    m_presentevent.notifyAll();
-  }
-
-  if (wait)
-  {
-    m_forceNext = true;
-    XbmcThreads::EndTime endtime(200);
-    while (m_presentstep == PRESENT_READY)
-    {
-      m_presentevent.wait(lock, 20);
-      if(endtime.IsTimePast() || bStop)
-      {
-        if (!bStop)
-        {
-          CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for render");
-        }
-        break;
-      }
-    }
-    m_forceNext = false;
-  }
-}
-
 RESOLUTION CRenderManager::GetResolution()
 {
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
@@ -875,11 +790,11 @@ void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
   SPresent& m = m_Queue[m_presentsource];
 
   if (m.presentfield == FS_BOT)
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT, alpha);
   else if (m.presentfield == FS_TOP)
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP, alpha);
   else
-    m_pRenderer->RenderUpdate(clear, flags, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, clear, flags, alpha);
 }
 
 /* new simpler method of handling interlaced material, *
@@ -891,16 +806,16 @@ void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
   if(m_presentstep == PRESENT_FRAME)
   {
     if( m.presentfield == FS_BOT)
-      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
-      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
   }
   else
   {
     if( m.presentfield == FS_TOP)
-      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
-      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
   }
 }
 
@@ -910,13 +825,13 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 
   if( m.presentfield == FS_BOT )
   {
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
-    m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_TOP, alpha / 2);
+    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, false, flags | RENDER_FLAG_TOP, alpha / 2);
   }
   else
   {
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
-    m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_BOT, alpha / 2);
+    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, false, flags | RENDER_FLAG_BOT, alpha / 2);
   }
 }
 
@@ -966,19 +881,21 @@ void CRenderManager::ToggleDebug()
 
 bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait)
 {
-  int index;
-  {
-    CSingleLock lock(m_presentlock);
-    if (m_free.empty())
-      return false;
-    index = m_free.front();
-  }
+  CSingleLock lock(m_presentlock);
 
-  CSingleLock lock(m_datalock);
-  if (!m_pRenderer)
+  if (m_free.empty())
     return false;
 
-  m_pRenderer->AddVideoPicture(picture, index, m_dvdClock.GetClock());
+  int index = m_free.front();
+
+  {
+    CSingleLock lock(m_datalock);
+    if (!m_pRenderer)
+      return false;
+
+    m_pRenderer->AddVideoPicture(picture, index, m_dvdClock.GetClock());
+  }
+
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC displayField = FS_NONE;
@@ -993,7 +910,68 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     }
   }
 
-  FlipPage(bStop, picture.pts, deintMethod, displayField, wait);
+  EPRESENTMETHOD presentmethod = PRESENT_METHOD_SINGLE;
+  if (deintMethod == VS_INTERLACEMETHOD_NONE)
+  {
+    presentmethod = PRESENT_METHOD_SINGLE;
+    displayField = FS_NONE;
+  }
+  else
+  {
+    if (displayField == FS_NONE)
+      presentmethod = PRESENT_METHOD_SINGLE;
+    else
+    {
+      if (deintMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
+        presentmethod = PRESENT_METHOD_BLEND;
+      else if (deintMethod == VS_INTERLACEMETHOD_RENDER_WEAVE)
+        presentmethod = PRESENT_METHOD_WEAVE;
+      else if (deintMethod == VS_INTERLACEMETHOD_RENDER_BOB)
+        presentmethod = PRESENT_METHOD_BOB;
+      else
+      {
+        if (!m_pRenderer->WantsDoublePass())
+          presentmethod = PRESENT_METHOD_SINGLE;
+        else
+          presentmethod = PRESENT_METHOD_BOB;
+      }
+    }
+  }
+
+
+  SPresent& m = m_Queue[index];
+  m.presentfield = displayField;
+  m.presentmethod = presentmethod;
+  m.pts = picture.pts;
+  requeue(m_queued, m_free);
+  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
+
+  // signal to any waiters to check state
+  if (m_presentstep == PRESENT_IDLE)
+  {
+    m_presentstep = PRESENT_READY;
+    m_presentevent.notifyAll();
+  }
+
+  if (wait)
+  {
+    m_forceNext = true;
+    XbmcThreads::EndTime endtime(200);
+    while (m_presentstep == PRESENT_READY)
+    {
+      m_presentevent.wait(lock, 20);
+      if(endtime.IsTimePast() || bStop)
+      {
+        if (!bStop)
+        {
+          CLog::Log(LOGWARNING, "CRenderManager::AddVideoPicture - timeout waiting for render");
+        }
+        break;
+      }
+    }
+    m_forceNext = false;
+  }
+
   return true;
 }
 

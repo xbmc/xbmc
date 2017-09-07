@@ -311,11 +311,6 @@ bool CLinuxRendererGL::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-int CLinuxRendererGL::NextYV12Texture()
-{
-  return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
-}
-
 void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   YUVBUFFER &buf = m_buffers[index];
@@ -499,9 +494,10 @@ void CLinuxRendererGL::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
 {
-  int index = m_iYV12RenderBuffer;
+  m_iLastRenderBuffer = m_iYV12RenderBuffer;
+  m_iYV12RenderBuffer = index;
 
   if (!ValidateRenderer())
   {
@@ -619,18 +615,6 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   glEnd();
-}
-
-void CLinuxRendererGL::FlipPage(int source)
-{
-  m_iLastRenderBuffer = m_iYV12RenderBuffer;
-
-  if( source >= 0 && source < m_NumYV12Buffers )
-    m_iYV12RenderBuffer = source;
-  else
-    m_iYV12RenderBuffer = NextYV12Texture();
-
-  return;
 }
 
 void CLinuxRendererGL::UpdateVideoFilter()
