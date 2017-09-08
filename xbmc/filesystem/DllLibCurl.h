@@ -56,6 +56,9 @@ namespace XCURL
     virtual struct curl_slist* slist_append(struct curl_slist *, const char *)=0;
     virtual void  slist_free_all(struct curl_slist *)=0;
     virtual const char* easy_strerror(CURLcode)=0;
+    virtual CURLSH *share_init(void)=0;
+    virtual void share_cleanup(CURLSH *handle)=0;
+    virtual const char* share_strerror(CURLSHcode)=0;
 #if defined(HAS_CURL_STATIC)
     virtual void crypto_set_id_callback(unsigned long (*)(void))=0;
     virtual void crypto_set_locking_callback(void (*)(int, int, const char*, int))=0;
@@ -86,6 +89,10 @@ namespace XCURL
     DEFINE_METHOD2(struct curl_slist*, slist_append, (struct curl_slist * p1, const char * p2))
     DEFINE_METHOD1(void, slist_free_all, (struct curl_slist * p1))
     DEFINE_METHOD1(const char *, easy_strerror, (CURLcode p1))
+    DEFINE_METHOD0(CURLSH *, share_init)
+    DEFINE_METHOD1(void, share_cleanup, (CURLSH *p1))
+    DEFINE_METHOD_FP(CURLSHcode, share_setopt, (CURLSH *p1, CURLSHoption p2, ...))
+    DEFINE_METHOD1(const char *, share_strerror, (CURLSHcode p1))
 #if defined(HAS_CURL_STATIC)
     DEFINE_METHOD1(void, crypto_set_id_callback, (unsigned long (*p1)(void)))
     DEFINE_METHOD1(void, crypto_set_locking_callback, (void (*p1)(int, int, const char *, int)))
@@ -112,6 +119,10 @@ namespace XCURL
       RESOLVE_METHOD_RENAME(curl_multi_cleanup, multi_cleanup)
       RESOLVE_METHOD_RENAME(curl_slist_append, slist_append)
       RESOLVE_METHOD_RENAME(curl_slist_free_all, slist_free_all)
+      RESOLVE_METHOD_RENAME(curl_share_init, share_init)
+      RESOLVE_METHOD_RENAME(curl_share_cleanup, share_cleanup)
+      RESOLVE_METHOD_RENAME_FP(curl_share_setopt, share_setopt)
+      RESOLVE_METHOD_RENAME(curl_share_strerror, share_strerror)
 #if defined(HAS_CURL_STATIC)
       RESOLVE_METHOD_RENAME(CRYPTO_set_id_callback, crypto_set_id_callback)
       RESOLVE_METHOD_RENAME(CRYPTO_set_locking_callback, crypto_set_locking_callback)
@@ -149,6 +160,12 @@ namespace XCURL
 
     VEC_CURLSESSIONS m_sessions;
     CCriticalSection m_critSection;
+  private:
+    CURL_HANDLE *easy_init_share();
+    static void lock(CURL_HANDLE *handle, curl_lock_data data, curl_lock_access access, void *useptr);
+    static void unlock(CURL_HANDLE *handle, curl_lock_data data, void *useptr);
+    static CCriticalSection m_curlLock;
+
   };
 }
 
