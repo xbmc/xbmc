@@ -151,7 +151,6 @@ public:
   // Player functions
   virtual bool         Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual void         ReleaseBuffer(int idx) override;
-  virtual void         FlipPage(int source) override;
   virtual void         UnInit();
   virtual void         Reset() override; /* resets renderer after seek for example */
   virtual void         Flush() override;
@@ -164,7 +163,7 @@ public:
   virtual bool         Supports(ERENDERFEATURE feature) override;
   virtual bool         Supports(ESCALINGMETHOD method) override;
 
-  virtual void         RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  virtual void         RenderUpdate(int source, bool clear, unsigned int flags, unsigned int alpha) override;
 
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
   virtual bool         IsGuiLayer() override { return false; }
@@ -178,8 +177,6 @@ public:
   static bool Register();
 
 protected:
-  int m_iYV12RenderBuffer;
-
   CMMALBuffer         *m_buffers[NUM_BUFFERS];
   bool                 m_bConfigured;
   unsigned int         m_extended_format;

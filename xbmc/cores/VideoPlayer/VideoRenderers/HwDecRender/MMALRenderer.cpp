@@ -544,7 +544,6 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   memset(m_buffers, 0, sizeof m_buffers);
   m_iFlags = 0;
   m_bConfigured = false;
-  m_iYV12RenderBuffer = 0;
   m_queue_render = nullptr;
   m_error = 0.0;
   m_fps = 0.0;
@@ -904,7 +903,6 @@ void CMMALRenderer::Flush()
   if (m_vout_input)
     mmal_port_flush(m_vout_input);
   ReleaseBuffers();
-  m_iYV12RenderBuffer = 0;
 }
 
 void CMMALRenderer::Update()
@@ -914,10 +912,9 @@ void CMMALRenderer::Update()
   ManageRenderArea();
 }
 
-void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CMMALRenderer::RenderUpdate(int source, bool clear, unsigned int flags, unsigned int alpha)
 {
   CSingleLock lock(m_sharedSection);
-  int source = m_iYV12RenderBuffer;
   CMMALBuffer *omvb = nullptr;
 
   if (!m_bConfigured)
@@ -976,21 +973,6 @@ exit:
    }
    else
      m_vsync_count++;
-}
-
-void CMMALRenderer::FlipPage(int source)
-{
-  CSingleLock lock(m_sharedSection);
-  if (!m_bConfigured)
-  {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - not configured: source:%d", CLASSNAME, __func__, source);
-    return;
-  }
-
-  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - source:%d", CLASSNAME, __func__, source);
-
-  m_iYV12RenderBuffer = source;
 }
 
 void CMMALRenderer::ReleaseBuffers()
