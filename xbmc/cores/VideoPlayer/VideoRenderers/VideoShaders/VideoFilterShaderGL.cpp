@@ -21,11 +21,10 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES >= 2
 #include <string>
 #include <math.h>
 
-#include "VideoFilterShader.h"
+#include "VideoFilterShaderGL.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
@@ -272,5 +271,3 @@ bool DefaultFilterShader::OnEnabled()
   VerifyGLState();
   return true;
 }
-
-#endif

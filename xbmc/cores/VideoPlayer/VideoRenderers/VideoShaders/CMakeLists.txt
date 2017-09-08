@@ -13,11 +13,14 @@ endif()
 
 if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES GLSLOutput.cpp
-                      VideoFilterShader.cpp
                       YUV2RGBShader.cpp)
   list(APPEND HEADERS GLSLOutput.h
-                      VideoFilterShader.h
                       YUV2RGBShader.h)
+endif()
+
+if(OPENGL_FOUND)
+  list(APPEND SOURCES VideoFilterShaderGL.cpp)
+  list(APPEND HEADERS VideoFilterShaderGL.h)
 endif()
 
 core_add_library(videoshaders)
