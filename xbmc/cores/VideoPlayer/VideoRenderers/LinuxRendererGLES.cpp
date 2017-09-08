@@ -36,7 +36,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "VideoShaders/YUV2RGBShader.h"
+#include "VideoShaders/YUV2RGBShaderGLES.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/Texture.h"
@@ -541,8 +541,8 @@ void CLinuxRendererGLES::LoadShaders(int field)
           CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, shaderFormat);
-          m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, shaderFormat);
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(m_iFlags, shaderFormat);
+          m_pYUVBobShader = new YUV2RGBBobShader(m_iFlags, shaderFormat);
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
               && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
           {
