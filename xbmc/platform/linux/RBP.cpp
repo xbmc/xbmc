@@ -378,7 +378,7 @@ static int get_image_params(int file_desc, VC_IMAGE_T * img)
 CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
 {
   m_numbytes = numbytes;
-  m_vcsm_handle = vcsm_malloc_cache(numbytes, cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE, (char *)"CGPUMEM");
+  m_vcsm_handle = vcsm_malloc_cache(numbytes, static_cast<VCSM_CACHE_TYPE_T>(0x80 | static_cast<unsigned>(cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE)), const_cast<char*>("CGPUMEM"));
   if (m_vcsm_handle)
     m_vc_handle = vcsm_vc_hdl_from_hdl(m_vcsm_handle);
   if (m_vc_handle)
