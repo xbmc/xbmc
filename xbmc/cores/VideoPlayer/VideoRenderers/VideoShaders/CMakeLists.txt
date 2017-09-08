@@ -23,4 +23,9 @@ if(OPENGL_FOUND)
   list(APPEND HEADERS VideoFilterShaderGL.h)
 endif()
 
+if(OPENGLES_FOUND)
+  list(APPEND SOURCES VideoFilterShaderGLES.cpp)
+  list(APPEND HEADERS VideoFilterShaderGLES.h)
+endif()
+
 core_add_library(videoshaders)

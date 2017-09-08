@@ -18,10 +18,18 @@
  *
  */
 
+#ifdef GL_ES
+  precision highp float;
+#endif
+
 uniform sampler2D img;
 uniform vec2      stepxy;
 uniform float     m_stretch;
 varying vec2      cord;
+
+#ifdef GL_ES
+  uniform float     m_alpha;
+#endif
 
 #if (USE1DTEXTURE)
   uniform sampler1D kernelTex;
@@ -103,7 +111,12 @@ vec4 process()
     line(xystart.y + stepxy.y * 2.0, xpos, linetaps) * columntaps.b +
     line(xystart.y + stepxy.y * 3.0, xpos, linetaps) * columntaps.a;
 
+#ifdef GL_ES
+  rgb.a = m_alpha;
+#else
   rgb.a = gl_Color.a;
+#endif
+
   return rgb;
 }
 
