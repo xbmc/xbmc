@@ -1758,17 +1758,34 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
 {
   try
   {
-    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
-      "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
-      "song_genre ON song.idSong = song_genre.idSong JOIN "
-      "genre ON song_genre.idGenre = genre.idGenre "
-      "WHERE song_artist.idArtist = %i ORDER BY song_genre.idGenre", idArtist);
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
+      "album_artist JOIN song ON album_artist.idAlbum = song.idAlbum "
+      "JOIN song_genre ON song.idSong = song_genre.idSong "
+      "JOIN genre ON song_genre.idGenre = genre.idGenre "
+      "WHERE album_artist.idArtist = %i "
+      "ORDER BY song_genre.idGenre", idArtist);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
     {
+      // Artist does have any song genres via albums may not be an album artist.
+      // Check via songs artist to fetch song genres from compilations or where they are guest artist
       m_pDS->close();
-      return true;
+      strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
+        "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
+        "song_genre ON song.idSong = song_genre.idSong "
+        "JOIN genre ON song_genre.idGenre = genre.idGenre "
+        "WHERE song_artist.idArtist = %i "
+        "ORDER BY song_genre.idGenre", idArtist);
+      if (!m_pDS->query(strSQL))
+        return false;
+      if (m_pDS->num_rows() == 0)
+      {
+        //No song genres, but query sucessfull
+        m_pDS->close();
+        return true;
+      }
     }
 
     CVariant artistSongGenres(CVariant::VariantTypeArray);
