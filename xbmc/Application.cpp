@@ -285,7 +285,7 @@ CApplication::CApplication(void)
 {
   TiXmlBase::SetCondenseWhiteSpace(false);
 
-#ifdef HAS_GLX
+#ifdef HAVE_X11
   XInitThreads();
 #endif
 }

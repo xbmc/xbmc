@@ -294,9 +294,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_GL
   m_simpleConditions.insert("has_gl");
 #endif
-#ifdef HAS_GLX
-  m_simpleConditions.insert("has_glx");
-#endif
 #ifdef HAS_GLES
   m_simpleConditions.insert("has_gles");
 #endif

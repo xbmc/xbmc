@@ -2117,7 +2117,7 @@
         <setting id="videoscreen.monitor" type="string" label="246" help="">
           <requirement>
             <or>
-              <condition>HAS_GLX</condition>
+              <condition>HAVE_X11</condition>
               <condition>HAVE_WAYLAND</condition>
             </or>
           </requirement>

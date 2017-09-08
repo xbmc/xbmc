@@ -326,7 +326,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
     return true;
   }
-#if defined(HAS_GLX)
+#if defined(HAVE_X11)
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
   {
     g_Windowing.UpdateResolutions();
@@ -727,7 +727,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && g_Windowing.CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAS_GLX) || defined(HAVE_WAYLAND)
+#if defined(HAVE_X11) || defined(HAVE_WAYLAND)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
@@ -778,7 +778,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-#if defined(HAS_GLX)
+#if defined(HAVE_X11)
   std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
