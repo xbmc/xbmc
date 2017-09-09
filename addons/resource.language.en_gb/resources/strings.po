@@ -16383,8 +16383,20 @@ msgctxt "#34128"
 msgid "192.0"
 msgstr ""
 
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34129"
+msgid "352.8"
+msgstr ""
+
+#. SPDIF max sampling rate
+#: system/settings/settings.xml
+msgctxt "#34130"
+msgid "384.0"
+msgstr ""
+
 #empty strings from id 34129 to 34200
-#34129-34200 reserved for future use
+#34131-34200 reserved for future use
 
 #: xbmc/PlayListPlayer.cpp
 msgctxt "#34201"
