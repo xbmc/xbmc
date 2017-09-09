@@ -246,7 +246,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), TRUE);
   }
 
-  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO ||
+  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO &&
       nextWindowID != WINDOW_FULLSCREEN_GAME)
   {
     // wait for any outstanding picture loads

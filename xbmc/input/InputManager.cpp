@@ -566,7 +566,7 @@ bool CInputManager::OnKey(const CKey& key)
     return true;
   }
 
-  if (iWin != WINDOW_FULLSCREEN_VIDEO ||
+  if (iWin != WINDOW_FULLSCREEN_VIDEO &&
       iWin != WINDOW_FULLSCREEN_GAME)
   {
     // current active window isnt the fullscreen window
