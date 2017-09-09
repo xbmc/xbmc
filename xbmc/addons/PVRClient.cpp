@@ -1571,6 +1571,13 @@ bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChan
     WriteClientChannelInfo(channel, tag);
 
     bReturn = m_struct.toAddon.OpenLiveStream(tag);
+
+    if (bReturn)
+    {
+      SetPlayingChannel(channel);
+      ClearPlayingEpgTag();
+      ClearPlayingRecording();
+    }
   }
 
   return bReturn;
@@ -1587,6 +1594,13 @@ bool CPVRClient::OpenStream(const CPVRRecordingPtr &recording)
     WriteClientRecordingInfo(*recording, tag);
 
     bReturn = m_struct.toAddon.OpenRecordedStream(tag);
+
+    if (bReturn)
+    {
+      SetPlayingRecording(recording);
+      ClearPlayingEpgTag();
+      ClearPlayingChannel();
+    }
   }
 
   return bReturn;
