@@ -17067,7 +17067,11 @@ msgctxt "#35218"
 msgid "Erase savestate"
 msgstr ""
 
-#empty string with id 35219
+#. Error dialog text when trying to play a game and the game's files aren't found.
+#: xbmc/games/GameClient.cpp
+msgctxt "#35219"
+msgid "The required files can't be found."
+msgstr ""
 
 #. Description of add-on category for game providers
 #: xbmc/filesystem/AddonsDirectory.cpp
