@@ -43,11 +43,10 @@ public:
   virtual bool IsConfigured() override { return m_bConfigured; };
   virtual bool ConfigChanged(const VideoPicture &picture) override { return false; };
   virtual CRenderInfo GetRenderInfo() override;
-  virtual void FlipPage(int source) override;
   virtual void UnInit() override {};
   virtual void Reset() override;
   virtual void Update() override {};
-  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) override;
+  virtual void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) override;
   virtual bool SupportsMultiPassRendering() override { return false; };
 
   // Player functions
