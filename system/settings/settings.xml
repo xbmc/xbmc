@@ -2580,6 +2580,8 @@
               <option label="34126">88200</option>
               <option label="34127">96000</option>
               <option label="34128">192000</option>
+              <option label="34129">352800</option>
+              <option label="34130">384000</option>
             </options>
           </constraints>
           <control type="list" format="integer" />
