@@ -33,8 +33,7 @@
 #include "settings/AdvancedSettings.h"
 
 CRendererAML::CRendererAML()
- : m_iRenderBuffer(0)
- , m_prevVPts(-1)
+ : m_prevVPts(-1)
  , m_bConfigured(false)
 {
   CLog::Log(LOGINFO, "Constructing CRendererAML");
@@ -125,16 +124,6 @@ void CRendererAML::ReleaseBuffer(int idx)
   }
 }
 
-void CRendererAML::FlipPage(int source)
-{
-  if( source >= 0 && source < m_numRenderBuffers )
-    m_iRenderBuffer = source;
-  else
-    m_iRenderBuffer = (m_iRenderBuffer + 1) % m_numRenderBuffers;
-
-  return;
-}
-
 bool CRendererAML::Supports(ERENDERFEATURE feature)
 {
   if (feature == RENDERFEATURE_ZOOM ||
@@ -161,11 +150,11 @@ void CRendererAML::Reset()
   }
 }
 
-void CRendererAML::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CRendererAML::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
 {
   ManageRenderArea();
 
-  CAMLVideoBuffer *amli = dynamic_cast<CAMLVideoBuffer *>(m_buffers[m_iRenderBuffer].videoBuffer);
+  CAMLVideoBuffer *amli = dynamic_cast<CAMLVideoBuffer *>(m_buffers[index].videoBuffer);
   if(amli && amli->m_amlCodec)
   {
     int pts = amli->m_omxPts;
