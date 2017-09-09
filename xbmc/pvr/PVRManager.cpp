@@ -769,7 +769,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
   // check if we're allowed to play this file
   const CPVRChannelPtr channel = fileItem.GetPVRChannelInfoTag();
   if (!IsParentalLocked(channel))
-    bReturn = m_addons->OpenStream(channel, false);
+    bReturn = m_addons->OpenStream(channel);
 
   return bReturn;
 }
