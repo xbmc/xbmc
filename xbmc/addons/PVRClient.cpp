@@ -1555,7 +1555,7 @@ void CPVRClient::ClearPlayingEpgTag()
   m_bIsPlayingEpgTag = false;
 }
 
-bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
+bool CPVRClient::OpenStream(const CPVRChannelPtr &channel)
 {
   bool bReturn(false);
   CloseStream();

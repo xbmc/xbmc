@@ -1142,7 +1142,7 @@ bool CPVRClients::FillRecordingStreamFileItem(CFileItem &fileItem)
   return false;
 }
 
-bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
+bool CPVRClients::OpenStream(const CPVRChannelPtr &channel)
 {
   bool bReturn(false);
   CloseStream();
@@ -1150,7 +1150,7 @@ bool CPVRClients::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingCha
   /* try to open the stream on the client */
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
-    bReturn = client->OpenStream(channel, bIsSwitchingChannel);
+    bReturn = client->OpenStream(channel);
 
   if (bReturn)
     SetPlayingChannel(channel);
