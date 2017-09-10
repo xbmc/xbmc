@@ -769,7 +769,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (m_proxyhost.empty()
         && s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
         && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-        && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0)
+        && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+        && !url2.IsLocalHost())
     {
       m_proxytype = (ProxyType)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       m_proxyhost = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);

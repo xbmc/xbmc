@@ -217,6 +217,8 @@ extern "C" void __stdcall update_emu_environ()
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );
+    // do not proxy localhost
+    CEnvironment::setenv( "NO_PROXY", "127.0.0.1,localhost,::1", true );
   }
   else
   {
