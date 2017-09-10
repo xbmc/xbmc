@@ -1,5 +1,5 @@
---- Modules/_ctypes/malloc_closure.c.orig	2015-10-11 20:37:30.534378131 +0200
-+++ Modules/_ctypes/malloc_closure.c	2015-10-11 20:38:57.322381368 +0200
+--- Modules/_ctypes/malloc_closure.c.orig	2017-08-06 19:18:47.412010000 +0530
++++ Modules/_ctypes/malloc_closure.c	2017-08-06 19:21:37.760010000 +0530
 @@ -89,6 +89,7 @@
  /******************************************************************/
  
@@ -21,9 +21,11 @@
      return (void *)item;
  }
 +*/
---- Modules/_ctypes/cfield.c.orig	2015-10-11 20:34:03.034370393 +0200
-+++ Modules/_ctypes/cfield.c	2015-10-11 20:37:04.462377159 +0200
-@@ -1727,6 +1727,7 @@
+
+
+--- Modules/_ctypes/cfield.c.orig	2017-08-06 19:19:03.724010000 +0530
++++ Modules/_ctypes/cfield.c	2017-08-06 19:32:45.592010000 +0530
+@@ -1631,6 +1631,7 @@
  */
  
  /* align and size are bogus for void, but they must not be zero */
@@ -31,12 +33,12 @@
  ffi_type ffi_type_void = { 1, 1, FFI_TYPE_VOID };
  
  ffi_type ffi_type_uint8 = { 1, 1, FFI_TYPE_UINT8 };
-@@ -1743,14 +1744,14 @@
+@@ -1647,14 +1648,15 @@
  
  ffi_type ffi_type_float = { sizeof(float), FLOAT_ALIGN, FFI_TYPE_FLOAT };
  ffi_type ffi_type_double = { sizeof(double), DOUBLE_ALIGN, FFI_TYPE_DOUBLE };
--
 +*/
+ 
  #ifdef ffi_type_longdouble
  #undef ffi_type_longdouble
  #endif
@@ -47,5 +49,5 @@
  
  ffi_type ffi_type_pointer = { sizeof(void *), VOID_P_ALIGN, FFI_TYPE_POINTER };
 -
-+*/
++  */
  /*---------------- EOF ----------------*/

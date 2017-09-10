@@ -1,10 +1,10 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
-       Python-setup.patch fix-datetime.patch fix-ffi.patch python-android-binmodule.patch Python-no-abort.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-3.6.2-android.patch \
+       fix-datetime.patch apple.patch modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.13
+VERSION=3.6.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -20,9 +20,9 @@ endif
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \
   ./configure --prefix=$(PREFIX) --host=$(HOST) \
-  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6 
+  --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6
 
-LIBDYLIB=$(PLATFORM)/libpython2.7.a
+LIBDYLIB=$(PLATFORM)/libpython3.6.a
 
 all: .installed-$(PLATFORM)
 
@@ -33,17 +33,13 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../Python-2.7.12-crosscompile.patch
-	cd $(PLATFORM); patch -p0 < ../Python-setup.patch
+	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-crosscompile.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-android.patch
-	cd $(PLATFORM); patch -p0 < ../Python-no-export-path.patch
+	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-android.patch
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
-	cd $(PLATFORM); patch -l -p0 < ../python-android-binmodule.patch
-	cd $(PLATFORM); patch -p1 < ../Python-no-abort.patch
+	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
@@ -57,7 +53,7 @@ else
 endif
 ifeq ($(OS),osx)
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
-	echo "_scproxy \$$(srcdir)/Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
+	echo "_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
 endif
 
 ifeq ($(OS),android)
@@ -68,13 +64,16 @@ endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython2.7.a
+	# Hack to fix a circular dependency issue in pythons Makefile
+	# only occurs if _blake2 module is enabled
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes clinic
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython3.6.a
 	touch $@
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
-	find $(PREFIX)/lib/python2.7 -type f -name "*.py" -delete
-	find $(PREFIX)/lib/python2.7 -type f -name "*.pyc" -delete
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
+	# find $(PREFIX)/lib/python3.6 -type f -name "*.py" -delete
+	find $(PREFIX)/lib/python3.6 -type f -name "*.pyc" -delete
 	touch $(LIBDYLIB)
 	touch $@
 

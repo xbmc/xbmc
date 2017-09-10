@@ -168,6 +168,8 @@ core_optional_dep(${optional_deps})
 core_require_dyload_dep(${required_dyload})
 core_optional_dyload_dep(${dyload_optional})
 
+SET(PYTHON_VERSION 3.6)
+
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
 endif()

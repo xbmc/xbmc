@@ -18,6 +18,8 @@
  *
  */
 
+#include <Python.h>
+
 #include "HTTPPythonWsgiInvoker.h"
 
 #include <utility>
@@ -30,7 +32,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 
-#define MODULE      "xbmc"
+#define MODULE "xbmc"
 
 #define RUNSCRIPT_PREAMBLE \
   "" \
@@ -52,14 +54,14 @@
 
 #define RUNSCRIPT_SETUPTOOLS_HACK \
   "" \
-  "import imp,sys\n" \
+  "import types,sys\n" \
   "pkg_resources_code = \\\n" \
   "\"\"\"\n" \
   "def resource_filename(__name__,__path__):\n" \
   "  return __path__\n" \
   "\"\"\"\n" \
-  "pkg_resources = imp.new_module('pkg_resources')\n" \
-  "exec pkg_resources_code in pkg_resources.__dict__\n" \
+  "pkg_resources = types.ModuleType('pkg_resources')\n" \
+  "exec(pkg_resources_code, pkg_resources.__dict__)\n" \
   "sys.modules['pkg_resources'] = pkg_resources\n" \
   ""
 
@@ -76,8 +78,8 @@
 #endif
 
 namespace PythonBindings {
-  void initModule_xbmc(void);
-  void initModule_xbmcwsgi(void);
+  PyObject* PyInit_Module_xbmc(void);
+  PyObject* PyInit_Module_xbmcwsgi(void);
 }
 
 using namespace PythonBindings;
@@ -90,8 +92,8 @@ typedef struct
 
 static PythonModule PythonModules[] =
 {
-  { "xbmc",           initModule_xbmc },
-  { "xbmcwsgi",       initModule_xbmcwsgi }
+  { "xbmc",           PyInit_Module_xbmc },
+  { "xbmcwsgi",       PyInit_Module_xbmcwsgi }
 };
 
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
@@ -99,7 +101,10 @@ static PythonModule PythonModules[] =
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
   : CHTTPPythonInvoker(invocationHandler, request),
     m_wsgiResponse(NULL)
-{ }
+{
+    PyImport_AppendInittab("xbmc",     PyInit_Module_xbmc);
+    PyImport_AppendInittab("xbmcwsgi", PyInit_Module_xbmcwsgi);
+}
 
 CHTTPPythonWsgiInvoker::~CHTTPPythonWsgiInvoker()
 {
@@ -146,7 +151,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   // get the script
   std::string scriptName = URIUtils::GetFileName(script);
   URIUtils::RemoveExtension(scriptName);
-  pyScript = PyString_FromStringAndSize(scriptName.c_str(), scriptName.size());
+  pyScript = PyUnicode_FromStringAndSize(scriptName.c_str(), scriptName.size());
   if (pyScript == NULL)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to convert script \"%s\" to python string", script.c_str());
@@ -199,7 +204,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
     pyEnviron = PyDict_New();
     for (std::map<std::string, std::string>::const_iterator cgiEnv = cgiEnvironment.begin(); cgiEnv != cgiEnvironment.end(); ++cgiEnv)
     {
-      PyObject* pyEnvEntry = PyString_FromStringAndSize(cgiEnv->second.c_str(), cgiEnv->second.size());
+      PyObject* pyEnvEntry = PyUnicode_FromStringAndSize(cgiEnv->second.c_str(), cgiEnv->second.size());
       PyDict_SetItemString(pyEnviron, cgiEnv->first.c_str(), pyEnvEntry);
       Py_DECREF(pyEnvEntry);
     }
@@ -406,7 +411,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   }
   {
     // wsgi.url_scheme
-    PyObject* pyValue = PyString_FromStringAndSize("http", 4);
+    PyObject* pyValue = PyUnicode_FromStringAndSize("http", 4);
     PyDict_SetItemString(pyEnviron, "wsgi.url_scheme", pyValue);
     Py_DECREF(pyValue);
   }

@@ -41,9 +41,7 @@
 #include "interfaces/python/swig.h"
 #include "interfaces/python/XBPython.h"
 #include "threads/SingleLock.h"
-#if defined(TARGET_WINDOWS)
 #include "utils/CharsetConverter.h"
-#endif // defined(TARGET_WINDOWS)
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -97,23 +95,23 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
   return message;
 }
 
-static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std::string> const & input)
+static std::vector<std::vector<wchar_t>> storeArgumentsCCompatible(std::vector<std::wstring> const & input)
 {
-  std::vector<std::vector<char>> output;
+  std::vector<std::vector<wchar_t>> output;
   std::transform(input.begin(), input.end(), std::back_inserter(output),
-                [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
+                [](std::wstring const & i) { return std::vector<wchar_t>(i.c_str(), i.c_str() + i.length() + 1); });
 
   if (output.empty())
-    output.push_back(std::vector<char>(1u, '\0'));
+    output.push_back(std::vector<wchar_t>(1u, '\0'));
 
   return output;
 }
 
-static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
+static std::vector<wchar_t *> getCPointersToArguments(std::vector<std::vector<wchar_t>> & input)
 {
-  std::vector<char *> output;
-  std::transform(input.begin(), input.end(), std::back_inserter(output), 
-                [](std::vector<char> & i) { return &i[0]; });
+  std::vector<wchar_t *> output;
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
+                [](std::vector<wchar_t> & i) { return &i[0]; });
   return output;
 }
 
@@ -157,18 +155,31 @@ bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::s
 
 bool CPythonInvoker::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
+  std::vector<std::wstring> w_arguments;
+  for (auto argument : arguments)
+  {
+    std::wstring w_argument;
+    g_charsetConverter.utf8ToW(argument, w_argument);
+    w_arguments.push_back(w_argument);
+  }
+  return execute(script, w_arguments);
+}
+
+bool CPythonInvoker::execute(const std::string &script, const std::vector<std::wstring> &arguments)
+{
   // copy the code/script into a local string buffer
   m_sourceFile = script;
 
   // copy the arguments into a local buffer
   unsigned int argc = arguments.size();
-  std::vector<std::vector<char>> argvStorage = storeArgumentsCCompatible(arguments);
-  std::vector<char *> argv = getCPointersToArguments(argvStorage);
+  std::vector<std::vector<wchar_t>> argvStorage = storeArgumentsCCompatible(arguments);
+  std::vector<wchar_t *> argv = getCPointersToArguments(argvStorage);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
   // get the global lock
-  PyEval_AcquireLock();
+  extern PyThreadState* savestate;
+  PyEval_RestoreThread(savestate);
   PyThreadState* state = Py_NewInterpreter();
   if (state == NULL)
   {
@@ -228,26 +239,33 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     for (int i = 0; i < PyList_Size(pathObj); i++)
     {
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-      if (e != NULL && PyString_Check(e))
-        addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
+      if (e != NULL && PyUnicode_Check(e))
+        addNativePath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
     }
   }
   else
-    addNativePath(Py_GetPath());
+  {
+      std::string GetPath;
+      g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
+      addNativePath(GetPath);
+  }
 
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
   PySys_SetArgv(argc, &argv[0]);
 
-#ifdef TARGET_WINDOWS
+  #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
   g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), pyPathUtf8.c_str());
-#else // ! TARGET_WINDOWS
+  #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
-#endif // ! TARGET_WINDOWS
-  PySys_SetPath((char *)m_pythonPath.c_str());
+  #endif // ! TARGET_WINDOWS
+
+  std::wstring pypath;
+  g_charsetConverter.utf8ToW(m_pythonPath, pypath);
+  PySys_SetPath(pypath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule((char*)"__main__");
@@ -264,8 +282,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     stopping = m_stop;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   bool failed = false;
   std::string exceptionType, exceptionValue, exceptionTraceback;
@@ -278,19 +295,22 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       //  is linked against may not be the DLL that xbmc is linked against so
       //  passing a FILE* to python from an fopen has the potential to crash.
       std::string nativeFilename(realFilename); // filename in system encoding
-#ifdef TARGET_WINDOWS
-      if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
-      {
-        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
-        return false;
-      }
-#endif
-      PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
-      FILE *fp = PyFile_AsFile(file);
+      #ifdef TARGET_WINDOWS
+        if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
+        {
+          CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding", GetId(), m_sourceFile.c_str(), realFilename.c_str());
+          return false;
+        }
+      #endif
+    PyObject *ioMod, *openedFile;
+    ioMod = PyImport_ImportModule("io");
+    openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
+    Py_DECREF(ioMod);
+    FILE *fp = PyFile_AsFileWithMode(openedFile, (char *)"r");
 
       if (fp != NULL)
       {
-        PyObject *f = PyString_FromString(nativeFilename.c_str());
+        PyObject *f = PyUnicode_FromString(nativeFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
 
         onPythonModuleInitialization(moduleDict);
@@ -400,8 +420,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     m_threadState = NULL;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   onDeinitialization();
 
@@ -414,7 +433,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // to run the GC if that's the case.
   if (!m_stop && languageHook->HasRegisteredAddonClasses() && !systemExitThrown &&
       PyRun_SimpleString(GC_SCRIPT) == -1)
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to shutting down the Interpreter", GetId(), m_sourceFile.c_str());
+  CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to shutting down the Interpreter", GetId(), m_sourceFile.c_str());
 
   Py_EndInterpreter(state);
 
@@ -422,7 +441,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   if (languageHook->HasRegisteredAddonClasses())
     CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): the python script \"%s\" has left several "
       "classes in memory that we couldn't clean up. The classes include: %s",
-      GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), getListOfAddonClassesAsString(languageHook).c_str());
+    GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), getListOfAddonClassesAsString(languageHook).c_str());
 
   // unregister the language hook
   languageHook->UnregisterMe();
@@ -441,6 +460,30 @@ void CPythonInvoker::executeScript(void *fp, const std::string &script, void *mo
 
   int m_Py_file_input = Py_file_input;
   PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, NULL);
+}
+
+FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject *py_file, const char *mode)
+{
+    FILE *f;
+    PyObject *ret;
+    int fd;
+
+    ret = PyObject_CallMethod(py_file, "flush", "");
+    if (ret == NULL)
+        return NULL;
+    Py_DECREF(ret);
+
+    fd = PyObject_AsFileDescriptor(py_file);
+    if (fd == -1)
+        return NULL;
+
+    f = fdopen(fd, mode);
+    if (f == NULL) {
+        PyErr_SetFromErrno(PyExc_OSError);
+        return NULL;
+    }
+
+    return f;
 }
 
 bool CPythonInvoker::stop(bool abort)
@@ -541,12 +584,6 @@ void CPythonInvoker::onExecutionFailed()
   ILanguageInvoker::onExecutionFailed();
 }
 
-std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker::getModules() const
-{
-  static std::map<std::string, PythonModuleInitialization> modules;
-  return modules;
-}
-
 void CPythonInvoker::onInitialization()
 {
   XBMC_TRACE;
@@ -572,11 +609,11 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
   PyObject *moduleDictionary = (PyObject *)moduleDict;
 
-  PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
+  PyObject *pyaddonid = PyUnicode_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
   ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
-  PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
+  PyObject *pyxbmcapiversion = PyUnicode_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
   PyObject *pyinvokerid = PyLong_FromLong(GetId());
@@ -610,11 +647,6 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   }
 }
 
-const char* CPythonInvoker::getInitializationScript() const
-{
-  return NULL;
-}
-
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
 {
   for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
@@ -629,8 +661,8 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   if (module == NULL)
     return false;
 
-  module();
-  return true;
+  return module() != nullptr;
+
 }
 
 void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)

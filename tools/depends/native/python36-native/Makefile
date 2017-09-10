@@ -1,20 +1,22 @@
 include ../../Makefile.include
-PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS=../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
-LIBNAME=expat
-VERSION=2.2.0
+LIBNAME=Python
+VERSION=3.6.2
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE).tar.xz
+CWD=$(shell pwd)
+HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 
-# configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; CFLAGS="-fPIC" ./configure --prefix=$(PREFIX) --disable-shared
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc
+ifeq ($(ENABLE_WAYLAND),yes)
+  CONFIGURE += --with-system-expat
+endif
 
-LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
+LIBDYLIB=$(PLATFORM)/python
 
 all: .installed-$(PLATFORM)
 
@@ -27,15 +29,16 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	cd $(PLATFORM); $(MAKE) regen-grammar
+	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
+	cd $(PLATFORM); $(MAKE) install
+	install $(PLATFORM)/Parser/pgen $(NATIVEPREFIX)/bin
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -rf $(PLATFORM) .installed-$(PLATFORM)
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
