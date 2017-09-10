@@ -104,10 +104,6 @@ void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
 {
 }
 
-void CRendererMediaCodecSurface::FlipPage(int source)
-{
-}
-
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 {
   if (feature == RENDERFEATURE_ZOOM ||
@@ -123,7 +119,7 @@ void CRendererMediaCodecSurface::Reset()
 {
 }
 
-void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CRendererMediaCodecSurface::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
 {
   CXBMCApp::get()->WaitVSync(100);
   ManageRenderArea();

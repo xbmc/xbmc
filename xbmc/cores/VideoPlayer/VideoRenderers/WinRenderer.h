@@ -58,13 +58,12 @@ public:
   // Player functions
   bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
-  void FlipPage(int source) override;
   void UnInit() override;
   void Reset() override; /* resets renderer after seek for example */
   bool IsConfigured() override { return m_bConfigured; }
   void Flush() override;
   CRenderInfo GetRenderInfo() override;
-  void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) override;
+  void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) override;
   void SetBufferSize(int numBuffers) override { m_neededBuffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;

@@ -39,13 +39,13 @@
 #include "VideoShaders/WinVideoFilter.h"
 #include "windowing/WindowingFactory.h"
 
-typedef struct 
+typedef struct
 {
   RenderMethod  method;
   const char   *name;
 } RenderMethodDetail;
 
-static RenderMethodDetail RenderMethodDetails[] = 
+static RenderMethodDetail RenderMethodDetails[] =
 {
     { RENDER_SW     , "Software" },
     { RENDER_PS     , "Pixel Shaders" },
@@ -290,14 +290,16 @@ void CWinRenderer::Reset()
 
 void CWinRenderer::Update()
 {
-  if (!m_bConfigured) 
+  if (!m_bConfigured)
     return;
   ManageRenderArea();
   ManageTextures();
 }
 
-void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
+void CWinRenderer::RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha)
 {
+  m_iYV12RenderBuffer = index;
+
   if (clear)
     g_graphicsContext.Clear(g_Windowing.UseLimitedColor() ? 0x101010 : 0);
 
@@ -308,14 +310,6 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
   ManageTextures();
   ManageRenderArea();
   Render(flags, g_Windowing.GetBackBuffer());
-}
-
-void CWinRenderer::FlipPage(int source)
-{
-  if( source >= 0 && source < m_NumYV12Buffers )
-    m_iYV12RenderBuffer = source;
-  else
-    m_iYV12RenderBuffer = NextBuffer();
 }
 
 void CWinRenderer::PreInit()
@@ -343,7 +337,7 @@ void CWinRenderer::UnInit()
 
   SAFE_DELETE(m_colorShader);
   SAFE_DELETE(m_scalerShader);
-  
+
   m_bConfigured = false;
   m_bFilterInitialized = false;
 
@@ -467,7 +461,7 @@ EBufferFormat CWinRenderer::SelectBufferFormat(AVPixelFormat format, const Rende
     case DXGI_FORMAT_P016:
       decoderFormat = AV_PIX_FMT_YUV420P16;
       break;
-    default: 
+    default:
       break;
     }
   }
@@ -557,7 +551,7 @@ void CWinRenderer::SelectPSVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    bool scaleUp = static_cast<int>(m_sourceHeight) < g_graphicsContext.GetHeight() 
+    bool scaleUp = static_cast<int>(m_sourceHeight) < g_graphicsContext.GetHeight()
                 && static_cast<int>(m_sourceWidth) < g_graphicsContext.GetWidth();
     bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
 
@@ -741,7 +735,7 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
     return;
 
   // Don't know where this martian comes from but it can happen in the initial frames of a video
-  if (m_destRect.x1 < 0 && m_destRect.x2 < 0 
+  if (m_destRect.x1 < 0 && m_destRect.x2 < 0
    || m_destRect.y1 < 0 && m_destRect.y2 < 0)
     return;
 
@@ -778,7 +772,7 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
 
   for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
     buf->MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
-  
+
   D3D11_MAPPED_SUBRESOURCE destlr;
   if (!m_IntermediateTarget.LockRect(0, &destlr, D3D11_MAP_WRITE_DISCARD))
     CLog::Log(LOGERROR, "%s: failed to lock swtarget texture into memory.", __FUNCTION__);
@@ -814,7 +808,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   // reset view port
   g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
 
-  // select destination rectangle 
+  // select destination rectangle
   CPoint destPoints[4];
   if (m_renderOrientation)
   {
@@ -854,7 +848,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     && image->format != BUFFER_FMT_D3D11_P010
     && image->format != BUFFER_FMT_D3D11_P016)
     return;
-  
+
   if (!image->loaded)
     return;
 
@@ -925,7 +919,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 
   CRect src = m_sourceRect, dst = destRect;
   CRect targetRect = CRect(0.0f, 0.0f,
-                       static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                       static_cast<float>(m_IntermediateTarget.GetWidth()),
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
 
   if (target != g_Windowing.GetBackBuffer())
@@ -1035,7 +1029,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   {
     if (m_renderMethod == RENDER_DXVA)
     {
-      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE 
+      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE
        || method == VS_SCALINGMETHOD_AUTO)
         return true;
       if (!g_advancedSettings.m_DXVAAllowHqScaling || m_renderOrientation)
@@ -1043,7 +1037,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
     }
 
     if ( method == VS_SCALINGMETHOD_AUTO
-     || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
+     || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS))
         return true;
 
     if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
@@ -1108,15 +1102,15 @@ bool CWinRenderer::HandlesVideoBuffer(CVideoBuffer* buffer)
 CRenderInfo CWinRenderer::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats = 
-  { 
-    AV_PIX_FMT_D3D11VA_VLD, 
-    AV_PIX_FMT_NV12, 
-    AV_PIX_FMT_P010, 
-    AV_PIX_FMT_P016, 
-    AV_PIX_FMT_YUV420P, 
-    AV_PIX_FMT_YUV420P10, 
-    AV_PIX_FMT_YUV420P16 
+  info.formats =
+  {
+    AV_PIX_FMT_D3D11VA_VLD,
+    AV_PIX_FMT_NV12,
+    AV_PIX_FMT_P010,
+    AV_PIX_FMT_P016,
+    AV_PIX_FMT_YUV420P,
+    AV_PIX_FMT_YUV420P10,
+    AV_PIX_FMT_YUV420P16
   };
   info.max_buffer_size = NUM_BUFFERS;
   if (m_renderMethod == RENDER_DXVA && m_processor)

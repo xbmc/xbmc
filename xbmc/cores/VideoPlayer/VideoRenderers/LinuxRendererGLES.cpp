@@ -93,7 +93,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   m_NumYV12Buffers = 0;
-  m_iLastRenderBuffer = 0;
   m_bConfigured = false;
   m_bValidated = false;
   m_StrictBinding = false;
@@ -178,8 +177,6 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
-
-  m_iLastRenderBuffer = -1;
 
   return true;
 }
@@ -361,8 +358,10 @@ void CLinuxRendererGLES::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
 {
+  m_iYV12RenderBuffer = index;
+
   if (!m_bConfigured)
     return;
 
@@ -376,15 +375,12 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
   }
 
-  int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf =  m_buffers[index];
+  YUVBUFFER& buf = m_buffers[index];
 
   if (!buf.fields[FIELD_FULL][0].id)
     return;
 
   ManageRenderArea();
-
-  m_iLastRenderBuffer = index;
 
   if (clear)
   {
@@ -427,16 +423,6 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (IsGuiLayer())
     return;
-}
-
-void CLinuxRendererGLES::FlipPage(int source)
-{
-  if( source >= 0 && source < m_NumYV12Buffers )
-    m_iYV12RenderBuffer = source;
-  else
-    m_iYV12RenderBuffer = NextYV12Texture();
-
-  return;
 }
 
 void CLinuxRendererGLES::UpdateVideoFilter()
@@ -691,7 +677,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       break;
     }
   }
-  
+
   AfterRenderHook(index);
 }
 
@@ -1327,4 +1313,3 @@ bool CLinuxRendererGLES::IsGuiLayer()
 }
 
 #endif
-

@@ -116,8 +116,6 @@ public:
    * AddVideoPicture and AddOverlay. It waits for max 50 ms before it returns -1
    * in case no buffer is available. Player may call this in a loop and decides
    * by itself when it wants to drop a frame.
-   * If no buffering is requested in Configure, player does not need to call this,
-   * because FlipPage will block.
    */
   int WaitForBuffer(volatile std::atomic_bool& bStop, int timeout = 100);
 
@@ -152,8 +150,6 @@ protected:
 
   void UpdateLatencyTweak();
   void CheckEnableClockSync();
-
-  void FlipPage(volatile std::atomic_bool& bStop, double pts, EINTERLACEMETHOD deintMethod, EFIELDSYNC sync, bool wait);
 
   CBaseRenderer *m_pRenderer = nullptr;
   OVERLAY::CRenderer m_overlays;
