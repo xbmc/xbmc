@@ -117,22 +117,6 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
   unsigned char *pData(const_cast<uint8_t*>(packet.pData));
   int iSize(packet.iSize);
 
-  // get rid of potential side data
-  if (pData)
-  {
-    AVPacket pkt;
-    av_init_packet(&pkt);
-    pkt.data = pData;
-    pkt.size = iSize;
-    int didSplit = av_packet_split_side_data(&pkt);
-    if (didSplit)
-    {
-      pData = pkt.data;
-      iSize = pkt.size;
-      av_packet_free_side_data(&pkt);
-    }
-  }
-
   if (pData)
   {
     if (m_currentPts == DVD_NOPTS_VALUE)
