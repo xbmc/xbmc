@@ -215,7 +215,7 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
 
 float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
 {
-  return MAX_CACHE_LEVEL + m_sinkCacheTotal;
+  return MAX_CACHE_LEVEL + MAX_WATER_LEVEL + m_sinkCacheTotal;
 }
 
 float CEngineStats::GetWaterLevel()
@@ -1912,6 +1912,16 @@ bool CActiveAE::RunStages()
         double delay = status.GetDelay() * 1000;
         double playingPts = pts - delay;
         double error = playingPts - (*it)->m_pClock->GetClock();
+        if (error > 1000)
+        {
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %d", error);
+          error = 1000;
+        }
+        else if (error < -1000)
+        {
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %d", error);
+          error = -1000;
+        }
         (*it)->m_syncError.Add(error);
       }
     }
@@ -2413,14 +2423,14 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       }
       else
       {
-        int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
-        for(int i=0; i<buf->pkt->planes; i++)
+        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample / buf->pkt->planes;
+        for (int i=0; i<buf->pkt->planes; i++)
         {
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
         }
         buf->pkt->nb_samples -= framesToSkip;
-        stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
-        error += framesToSkip*1000/buf->pkt->config.sample_rate;
+        stream->m_syncError.Correction((double)framesToSkip * 1000 / buf->pkt->config.sample_rate);
+        error += (double)framesToSkip * 1000 / buf->pkt->config.sample_rate;
       }
     }
 
@@ -2460,6 +2470,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
   }
+
   stream->m_syncError.SetErrorInterval(stream->GetErrorInterval());
 
   return ret;
