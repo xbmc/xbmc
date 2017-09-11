@@ -607,10 +607,9 @@ namespace PVR
     /*!
      * @brief Open a live stream on the server.
      * @param channel The channel to stream.
-     * @param bIsSwitchingChannel True when switching channels, false otherwise.
      * @return True if the stream opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
+    bool OpenStream(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Close an open live stream.
