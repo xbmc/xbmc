@@ -52,7 +52,8 @@ macro (build_addon target prefix libs)
     # Read used headers from addon, needed to identitfy used kodi addon interface headers
     if(${prefix}_HEADERS)
       # Add the used header files defined with CMakeLists.txt from addon itself
-      if(${prefix}_HEADERS MATCHES ${PROJECT_SOURCE_DIR})
+      string(FIND "${${prefix}_HEADERS}" "${PROJECT_SOURCE_DIR}" position)
+      if(position GREATER -1)
         # include path name already complete
         list(APPEND USED_SOURCES ${${prefix}_HEADERS})
       else()
@@ -75,7 +76,8 @@ macro (build_addon target prefix libs)
     endif()
 
     # Add the used source files defined with CMakeLists.txt from addon itself
-    if(${prefix}_SOURCES MATCHES ${PROJECT_SOURCE_DIR})
+    string(FIND "${${prefix}_SOURCES}" "${PROJECT_SOURCE_DIR}" position)
+    if(position GREATER -1)
       # include path name already complete
       list(APPEND USED_SOURCES ${${prefix}_SOURCES})
     else()
