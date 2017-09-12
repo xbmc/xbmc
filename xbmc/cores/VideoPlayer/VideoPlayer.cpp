@@ -2954,8 +2954,6 @@ void CVideoPlayer::SetCaching(ECacheState state)
     m_VideoPlayerVideo->SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_streamPlayerSpeed = DVD_PLAYSPEED_PAUSE;
 
-    m_pInputStream->ResetScanTimeout((unsigned int) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
-
     m_cachingTimer.Set(5000);
   }
 
@@ -2966,7 +2964,6 @@ void CVideoPlayer::SetCaching(ECacheState state)
     m_VideoPlayerAudio->SetSpeed(m_playSpeed);
     m_VideoPlayerVideo->SetSpeed(m_playSpeed);
     m_streamPlayerSpeed = m_playSpeed;
-    m_pInputStream->ResetScanTimeout(0);
   }
   m_caching = state;
 

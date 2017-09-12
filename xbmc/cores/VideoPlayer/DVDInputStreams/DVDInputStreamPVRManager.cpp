@@ -66,11 +66,6 @@ CDVDInputStreamPVRManager::~CDVDInputStreamPVRManager()
   delete m_StreamProps;
 }
 
-void CDVDInputStreamPVRManager::ResetScanTimeout(unsigned int iTimeoutMs)
-{
-  m_ScanTimeout.Set(iTimeoutMs);
-}
-
 bool CDVDInputStreamPVRManager::IsEOF()
 {
   // don't mark as eof while within the scan timeout
@@ -145,7 +140,6 @@ bool CDVDInputStreamPVRManager::Open()
       m_demuxActive = true;
   }
 
-  ResetScanTimeout((unsigned int) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(m_item.GetDynPath()).c_str());
 
   m_StreamProps->iStreamCount = 0;
