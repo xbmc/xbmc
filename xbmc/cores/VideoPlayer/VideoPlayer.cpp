@@ -701,7 +701,7 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
     params.m_item.SetMimeTypeForInternetFile();
     m_messenger.Put(new CDVDMsgOpenFile(params), 1);
 
-    if (m_openEvent.WaitMSec(2000))
+    if (m_openEvent.WaitMSec(5000))
     {
       if (!m_bStop && !m_bAbortRequest)
         return true;
