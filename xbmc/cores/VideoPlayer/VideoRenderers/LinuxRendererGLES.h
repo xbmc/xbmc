@@ -160,7 +160,8 @@ protected:
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
-  void RenderMultiPass(int index, int field);     // multi pass glsl renderer
+  void RenderToFBO(int index, int field, bool weave = false);
+  void RenderFromFBO();
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
 
   // hooks for HwDec Renderered
@@ -168,7 +169,11 @@ protected:
   virtual bool RenderHook(int idx) { return false; };
   virtual void AfterRenderHook(int idx) {};
 
-  CFrameBufferObject m_fbo;
+  struct
+  {
+    CFrameBufferObject fbo;
+    float width, height;
+  } m_fbo;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
