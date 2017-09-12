@@ -688,7 +688,7 @@ CVideoPlayer::~CVideoPlayer()
 
 bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CLog::Log(LOGNOTICE, "VideoPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
+  CLog::Log(LOGNOTICE, "VideoPlayer::OpenFile: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
   // if playing a file close it first
   // this has to be changed so we won't have to close it.
@@ -701,10 +701,14 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
     params.m_item.SetMimeTypeForInternetFile();
     m_messenger.Put(new CDVDMsgOpenFile(params), 1);
 
-    if (m_openEvent.WaitMSec(2000))
+    if (!CGUIDialogBusy::WaitOnEvent(m_openEvent, 2000, true))
     {
       if (!m_bStop && !m_bAbortRequest)
         return true;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "CVideoPlayer::OpenFile: cancelled");
     }
     CloseFile();
   }
@@ -719,7 +723,11 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 
   m_openEvent.Reset();
   Create();
-  CGUIDialogBusy::WaitOnEvent(m_openEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+  if (!CGUIDialogBusy::WaitOnEvent(m_openEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, true))
+  {
+    CLog::Log(LOGNOTICE, "CVideoPlayer::OpenFile: cancelled (2)");
+    CloseFile();
+  }
 
   // Playback might have been stopped due to some error
   if (m_bStop || m_bAbortRequest)
@@ -870,7 +878,7 @@ bool CVideoPlayer::OpenDemuxStream()
   CLog::Log(LOGNOTICE, "Creating Demuxer");
 
   int attempts = 10;
-  while(!m_bStop && attempts-- > 0)
+  while (!m_bStop && attempts-- > 0)
   {
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
     if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
@@ -885,7 +893,7 @@ bool CVideoPlayer::OpenDemuxStream()
     break;
   }
 
-  if(!m_pDemuxer)
+  if (!m_pDemuxer)
   {
     CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
     return false;
@@ -1259,7 +1267,7 @@ void CVideoPlayer::Prepare()
     CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
-  if(!OpenDemuxStream())
+  if (!OpenDemuxStream())
   {
     m_bAbortRequest = true;
     return;
