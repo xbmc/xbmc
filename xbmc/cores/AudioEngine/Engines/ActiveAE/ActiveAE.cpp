@@ -1914,12 +1914,12 @@ bool CActiveAE::RunStages()
         double error = playingPts - (*it)->m_pClock->GetClock();
         if (error > 1000)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %d", error);
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
           error = 1000;
         }
         else if (error < -1000)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %d", error);
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
           error = -1000;
         }
         (*it)->m_syncError.Add(error);
