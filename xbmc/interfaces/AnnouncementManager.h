@@ -69,8 +69,8 @@ namespace ANNOUNCEMENT
     CEvent m_queueEvent;
 
   private:
-    CAnnouncementManager(const CAnnouncementManager&);
-    CAnnouncementManager const& operator=(CAnnouncementManager const&);
+    CAnnouncementManager(const CAnnouncementManager&) = delete;
+    CAnnouncementManager const& operator=(CAnnouncementManager const&) = delete;
 
     CCriticalSection m_critSection;
     std::vector<IAnnouncer *> m_announcers;

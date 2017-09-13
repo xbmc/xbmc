@@ -70,6 +70,8 @@ namespace ADDON
     static void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg);
 
   private:
+    CAddonInterfaces(const CAddonInterfaces&) = delete;
+    CAddonInterfaces& operator=(const CAddonInterfaces&) = delete;
     AddonCB*  m_callbacks;
     CAddon*   m_addon;
 

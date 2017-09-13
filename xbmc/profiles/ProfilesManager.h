@@ -179,8 +179,8 @@ public:
 
 protected:
   CProfilesManager();
-  CProfilesManager(const CProfilesManager&);
-  CProfilesManager const& operator=(CProfilesManager const&);
+  CProfilesManager(const CProfilesManager&) = delete;
+  CProfilesManager& operator=(CProfilesManager const&) = delete;
   ~CProfilesManager() override;
 
 private:

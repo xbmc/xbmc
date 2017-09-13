@@ -105,8 +105,8 @@ public:
 
 protected:
   CMediaSettings();
-  CMediaSettings(const CMediaSettings&);
-  CMediaSettings& operator=(CMediaSettings const&);
+  CMediaSettings(const CMediaSettings&) = delete;
+  CMediaSettings& operator=(CMediaSettings const&) = delete;
   ~CMediaSettings() override;
 
   static std::string GetWatchedContent(const std::string &content);

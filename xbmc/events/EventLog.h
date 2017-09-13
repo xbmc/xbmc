@@ -64,8 +64,8 @@ public:
 
 protected:
   CEventLog() = default;
-  CEventLog(const CEventLog&);
-  CEventLog const& operator=(CEventLog const&);
+  CEventLog(const CEventLog&) = delete;
+  CEventLog& operator=(CEventLog const&) = delete;
 
   // implementation of ISettingCallback
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;

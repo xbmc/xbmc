@@ -73,8 +73,8 @@ public:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CGenericTouchActionHandler() = default;
-  CGenericTouchActionHandler(const CGenericTouchActionHandler&);
-  CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&);
+  CGenericTouchActionHandler(const CGenericTouchActionHandler&) = delete;
+  CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&) = delete;
   ~CGenericTouchActionHandler() override = default;
 
   void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, float x3 = 0.0f, float y3 = 0.0f, int pointers = 1);

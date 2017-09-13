@@ -61,8 +61,8 @@ public:
 
 protected:
   CPlayerCoreFactory();
-  CPlayerCoreFactory(const CPlayerCoreFactory&);
-  CPlayerCoreFactory& operator=(CPlayerCoreFactory const&);
+  CPlayerCoreFactory(const CPlayerCoreFactory&) = delete;
+  CPlayerCoreFactory& operator=(CPlayerCoreFactory const&) = delete;
   ~CPlayerCoreFactory() override;
   int GetPlayerIndex(const std::string& strCoreName) const;
   std::string GetPlayerName(size_t idx) const;

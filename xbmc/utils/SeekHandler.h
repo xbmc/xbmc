@@ -59,8 +59,8 @@ public:
 
 protected:
   CSeekHandler();
-  CSeekHandler(const CSeekHandler&);
-  CSeekHandler& operator=(CSeekHandler const&);
+  CSeekHandler(const CSeekHandler&) = delete;
+  CSeekHandler& operator=(CSeekHandler const&) = delete;
   ~CSeekHandler() override;
   bool SeekTimeCode(const CAction &action);
   void ChangeTimeCode(int remote);

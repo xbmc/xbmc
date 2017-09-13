@@ -331,8 +331,8 @@ protected:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CJobManager();
-  CJobManager(const CJobManager&);
-  CJobManager const& operator=(CJobManager const&);
+  CJobManager(const CJobManager&) = delete;
+  CJobManager const& operator=(CJobManager const&) = delete;
   virtual ~CJobManager();
 
   /*! \brief Pop a job off the job queue and add to the processing queue ready to process

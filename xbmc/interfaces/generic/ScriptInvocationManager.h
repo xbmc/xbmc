@@ -113,8 +113,8 @@ protected:
 
 private:
   CScriptInvocationManager();
-  CScriptInvocationManager(const CScriptInvocationManager&);
-  CScriptInvocationManager const& operator=(CScriptInvocationManager const&);
+  CScriptInvocationManager(const CScriptInvocationManager&) = delete;
+  CScriptInvocationManager const& operator=(CScriptInvocationManager const&) = delete;
   virtual ~CScriptInvocationManager();
 
   typedef struct {

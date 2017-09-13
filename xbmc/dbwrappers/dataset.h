@@ -405,6 +405,8 @@ public:
   const sql_record* get_sql_record();
 
  private:
+  Dataset(const Dataset&) = delete;
+  Dataset& operator=(const Dataset&) = delete;
 
   unsigned int fieldIndexMapID;
 

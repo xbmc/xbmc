@@ -90,6 +90,8 @@ protected:
 
 private:
   void reset();
+  CWebSocketFrame(const CWebSocketFrame&) = delete;
+  CWebSocketFrame& operator=(const CWebSocketFrame&) = delete;
 };
 
 class CWebSocketMessage

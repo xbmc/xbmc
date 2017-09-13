@@ -158,8 +158,8 @@ public:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CTextureCache();
-  CTextureCache(const CTextureCache&);
-  CTextureCache const& operator=(CTextureCache const&);
+  CTextureCache(const CTextureCache&) = delete;
+  CTextureCache const& operator=(CTextureCache const&) = delete;
   ~CTextureCache() override;
 
   /*! \brief Check if the given image is a cached image

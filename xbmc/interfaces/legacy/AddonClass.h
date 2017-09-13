@@ -72,7 +72,7 @@ namespace XBMCAddon
     bool m_isDeallocating;
 
     // no copying
-    inline AddonClass(const AddonClass&);
+    inline AddonClass(const AddonClass&) = delete;
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     bool isDeleted;

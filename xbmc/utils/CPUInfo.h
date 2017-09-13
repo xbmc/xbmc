@@ -102,6 +102,8 @@ public:
   unsigned int GetCPUFeatures() const { return m_cpuFeatures; }
 
 private:
+  CCPUInfo(const CCPUInfo&) = delete;
+  CCPUInfo& operator=(const CCPUInfo&) = delete;
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
                     unsigned long long& idle, unsigned long long& io);
   void ReadCPUFeatures();

@@ -84,6 +84,9 @@ public:
     static void RegisterUserdata(void* ptr);
     static void UnregisterUserdata(void* ptr);
 private:
+    CUPnP(const CUPnP&) = delete;
+    CUPnP& operator=(const CUPnP&) = delete;
+
     void CreateControlPoint();
     void DestroyControlPoint();
 

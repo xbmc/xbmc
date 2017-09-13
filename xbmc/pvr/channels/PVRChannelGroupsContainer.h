@@ -207,8 +207,8 @@ namespace PVR
     CPVRChannelGroupPtr m_lastPlayedGroups[2]; /*!< used to store the last played groups */
 
   private :
-    CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&);
-    CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&);
+    CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
+    CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;
 
     bool FilterDirectory(const CURL &url, CFileItemList &results) const;
 

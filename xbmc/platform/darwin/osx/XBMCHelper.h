@@ -53,8 +53,8 @@ class XBMCHelper : public ISettingCallback
 
 private:
   XBMCHelper();
-  XBMCHelper(XBMCHelper const& );
-  XBMCHelper& operator=(XBMCHelper const&);
+  XBMCHelper(XBMCHelper const& ) = delete;
+  XBMCHelper& operator=(XBMCHelper const&) = delete;
 
   void HandleLaunchAgent();
   void Install();

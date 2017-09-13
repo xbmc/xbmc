@@ -35,8 +35,8 @@ public:
 
 private:
   CFileItemListModification();
-  CFileItemListModification(const CFileItemListModification&);
-  CFileItemListModification const& operator=(CFileItemListModification const&);
+  CFileItemListModification(const CFileItemListModification&) = delete;
+  CFileItemListModification& operator=(CFileItemListModification const&) = delete;
 
   std::set<IFileItemListModifier*> m_modifiers;
 };
