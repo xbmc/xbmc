@@ -86,8 +86,6 @@ public:
    */
   std::string GetInputFormat();
 
-  void ResetScanTimeout(unsigned int iTimeoutMs) override;
-
   // Demux interface
   CDVDInputStream::IDemux* GetIDemux() override;
   bool OpenDemux() override;
