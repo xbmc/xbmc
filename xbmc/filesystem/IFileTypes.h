@@ -78,10 +78,28 @@ typedef enum {
 enum CURLOPTIONTYPE
 {
   CURL_OPTION_OPTION,     /**< Set a general option   */
-  CURL_OPTION_PROTOCOL,   /**< Set a protocol option  */
+  CURL_OPTION_PROTOCOL,   /**< Set a protocol option (see below)  */
   CURL_OPTION_CREDENTIALS,/**< Set User and password  */
   CURL_OPTION_HEADER      /**< Add a Header           */
 };
+
+/**
+ * The following names for CURL_OPTION_PROTOCOL are possible:
+ *
+ * accept-charset: Set the "accept-charset" header
+ * acceptencoding or encoding: Set the "accept-encoding" header
+ * active-remote: Set the "active-remote" header
+ * auth: Set the authentication method. Possible values: any, anysafe, digest, ntlm
+ * connection-timeout: Set the connection timeout in seconds
+ * cookie: Set the "cookie" header
+ * customrequest: Set a custom HTTP request like DELETE
+ * noshout: Set to true if kodi detects a stream as shoutcast by mistake.
+ * postdata: Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
+ * referer: Set the "referer" header
+ * user-agent: Set the "user-agent" header
+ * seekable: Set the stream seekable. 1: enable, 0: disable
+ * sslcipherlist: Set list of accepted SSL ciphers.
+ */
 
 enum FileProperty
 {
