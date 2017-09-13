@@ -72,7 +72,6 @@
 #include "utils/StreamUtils.h"
 #include "utils/Variant.h"
 #include "storage/MediaManager.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
@@ -675,6 +674,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   CreatePlayers();
 
   m_displayLost = false;
+  m_error = false;
   g_Windowing.Register(this);
 }
 
@@ -690,27 +690,15 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 {
   CLog::Log(LOGNOTICE, "VideoPlayer::OpenFile: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
-  // if playing a file close it first
-  // this has to be changed so we won't have to close it.
   if (IsRunning())
   {
-    m_openEvent.Reset();
     CDVDMsgOpenFile::FileParams params;
     params.m_item = file;
     params.m_options = options;
     params.m_item.SetMimeTypeForInternetFile();
     m_messenger.Put(new CDVDMsgOpenFile(params), 1);
 
-    if (!CGUIDialogBusy::WaitOnEvent(m_openEvent, 2000, true))
-    {
-      if (!m_bStop && !m_bAbortRequest)
-        return true;
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "CVideoPlayer::OpenFile: cancelled");
-    }
-    CloseFile();
+    return true;
   }
 
   m_playerOptions = options;
@@ -719,19 +707,10 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   m_item.SetMimeTypeForInternetFile();
 
   m_bAbortRequest = false;
+  m_error = false;
   m_renderManager.PreInit();
 
-  m_openEvent.Reset();
   Create();
-  if (!CGUIDialogBusy::WaitOnEvent(m_openEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, true))
-  {
-    CLog::Log(LOGNOTICE, "CVideoPlayer::OpenFile: cancelled (2)");
-    CloseFile();
-  }
-
-  // Playback might have been stopped due to some error
-  if (m_bStop || m_bAbortRequest)
-    return false;
 
   return true;
 }
@@ -1250,6 +1229,7 @@ void CVideoPlayer::Prepare()
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
+    m_error = true;
     return;
   }
 
@@ -1270,6 +1250,7 @@ void CVideoPlayer::Prepare()
   if (!OpenDemuxStream())
   {
     m_bAbortRequest = true;
+    m_error = true;
     return;
   }
   // give players a chance to reconsider now codecs are known
@@ -1365,9 +1346,6 @@ void CVideoPlayer::Prepare()
   UpdatePlayState(0);
 
   m_callback.OnPlayBackStarted();
-
-  // we are done initializing now, set the readyevent
-  m_openEvent.Set();
 
   SetCaching(CACHESTATE_FLUSH);
 }
@@ -2475,14 +2453,13 @@ void CVideoPlayer::OnExit()
   }
 
   m_bStop = true;
-  // if we didn't stop playing, advance to the next item in xbmc's playlist
-  if (m_bAbortRequest)
+
+  if (m_error)
+    m_callback.OnPlayBackError();
+  else if (m_bAbortRequest)
     m_callback.OnPlayBackStopped();
   else
     m_callback.OnPlayBackEnded();
-
-  // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  m_openEvent.Set();
 
   CFFmpegLog::ClearLogLevel();
 }

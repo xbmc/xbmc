@@ -3618,6 +3618,14 @@ void CApplication::OnPlayBackStopped()
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CApplication::OnPlayBackError()
+{
+  //@todo Playlists can be continued by calling OnPlaybackEnded instead
+  // open error dialog
+  HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
+  OnPlayBackStopped();
+}
+
 void CApplication::OnPlayBackPaused()
 {
 #ifdef HAS_PYTHON
