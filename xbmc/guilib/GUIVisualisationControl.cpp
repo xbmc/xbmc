@@ -177,8 +177,11 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
         m_alreadyStarted = false;
       }
 
-      std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
-      m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, strFile);
+      std::string songTitle = URIUtils::GetFileName(g_application.CurrentFile());
+      const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+      if (tag && !tag->GetTitle().empty())
+        songTitle = tag->GetTitle();
+      m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, songTitle);
       g_graphicsContext.ApplyStateBlock();
       m_callStart = false;
       m_updateTrack = true;
