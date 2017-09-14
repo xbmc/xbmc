@@ -184,6 +184,7 @@ namespace XFILE
       std::string m_cipherlist;
       bool m_ftppasvip;
       int m_connecttimeout;
+      int m_redirectlimit;
       int m_lowspeedtime;
       bool m_opened;
       bool m_forWrite;
