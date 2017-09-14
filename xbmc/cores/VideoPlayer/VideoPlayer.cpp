@@ -2482,6 +2482,7 @@ void CVideoPlayer::HandleMessages()
       SAFE_DELETE(m_pCCDemuxer);
       SAFE_DELETE(m_pInputStream);
 
+      m_callback.OnPlayBackStopped();
       m_item = msg.GetItem();
       m_playerOptions = msg.GetOptions();
       Prepare();
