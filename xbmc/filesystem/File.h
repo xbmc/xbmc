@@ -32,6 +32,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <vector>
 #include "utils/auto_buffer.h"
 #include "IFileTypes.h"
 #include "PlatformDefs.h"
@@ -110,6 +111,7 @@ public:
   void Close();
   int GetChunkSize();
   const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const;
+  const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const;
   ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
 

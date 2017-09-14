@@ -77,7 +77,7 @@ namespace ADDON
     static double get_file_download_speed(void* kodiBase, void* file);
     static void close_file(void* kodiBase, void* file);
     static int get_file_chunk_size(void* kodiBase, void* file);
-    static char* get_property(void* kodiBase, void* file, int type, const char *name);
+    static char** get_property_values(void* kodiBase, void* file, int type, const char *name, int *numValues);
 
     static void* curl_create(void* kodiBase, const char* url);
     static bool curl_add_option(void* kodiBase, void* file, int type, const char* name, const char* value);

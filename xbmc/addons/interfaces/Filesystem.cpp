@@ -18,6 +18,8 @@
  *
  */
 
+#include <vector>
+
 #include "Filesystem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
 
@@ -73,7 +75,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->get_file_download_speed = get_file_download_speed;
   addonInterface->toKodi->kodi_filesystem->close_file = close_file;
   addonInterface->toKodi->kodi_filesystem->get_file_chunk_size = get_file_chunk_size;
-  addonInterface->toKodi->kodi_filesystem->get_property = get_property;
+  addonInterface->toKodi->kodi_filesystem->get_property_values = get_property_values;
 
   addonInterface->toKodi->kodi_filesystem->curl_create = curl_create;
   addonInterface->toKodi->kodi_filesystem->curl_add_option = curl_add_option;
@@ -504,7 +506,7 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
   return static_cast<CFile*>(file)->GetChunkSize();
 }
 
-char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, const char *name)
+char** Interface_Filesystem::get_property_values(void* kodiBase, void* file, int type, const char *name, int *numValues)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr || name == nullptr)
@@ -535,7 +537,14 @@ char* Interface_Filesystem::get_property(void* kodiBase, void* file, int type, c
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
     return nullptr;
   };
-  return strdup(static_cast<CFile*>(file)->GetProperty(internalType, name).c_str());
+  std::vector<std::string> values = static_cast<CFile*>(file)->GetPropertyValues(internalType, name);
+  *numValues = values.size();
+  char **ret = static_cast<char**>(malloc(sizeof(char*)*values.size()));
+  for (int i = 0; i < *numValues; ++i)
+  {
+    ret[i] = strdup(values[i].c_str());
+  }
+  return ret;
 }
 
 void* Interface_Filesystem::curl_create(void* kodiBase, const char* url)

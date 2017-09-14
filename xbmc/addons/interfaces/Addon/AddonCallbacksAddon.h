@@ -62,6 +62,7 @@ public:
   static char* GetLocalizedString(const void* addonData, long dwCode);
   static char* GetDVDMenuLanguage(const void* addonData);
   static void FreeString(const void* addonData, char* str);
+  static void FreeStringArray(const void* addonData, char** arr, int numElements);
 
   // file operations
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
@@ -79,7 +80,8 @@ public:
   static int GetFileChunkSize(const void* addonData, void* file);
   static bool FileExists(const void* addonData, const char *strFileName, bool bUseCache);
   static int StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer);
-  static char *GetFileProperty(const void* addonData, void* file, XFILE::FileProperty type, const char *name);
+  static char *GetFilePropertyValue(const void* addonData, void* file, XFILE::FileProperty type, const char *name);
+  static char **GetFilePropertyValues(const void* addonData, void* file, XFILE::FileProperty type, const char *name, int *numValues);
   static bool DeleteFile(const void* addonData, const char *strFileName);
   static bool CanOpenDirectory(const void* addonData, const char* strURL);
   static bool CreateDirectory(const void* addonData, const char *strPath);

@@ -131,6 +131,7 @@ namespace ADDON
     static bool set_setting_float(void* kodiBase, const char* id, float value);
     static bool set_setting_string(void* kodiBase, const char* id, const char* value);
     static void free_string(void* kodiBase, char* str);
+    static void free_string_array(void* kodiBase, char** arr, int numElements);
     //@}
   };
 
