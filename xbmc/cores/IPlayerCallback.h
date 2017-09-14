@@ -29,6 +29,7 @@ public:
   virtual void OnPlayBackPaused() {};
   virtual void OnPlayBackResumed() {};
   virtual void OnPlayBackStopped() = 0;
+  virtual void OnPlayBackError() = 0;
   virtual void OnQueueNextItem() = 0;
   virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) {};
   virtual void OnPlayBackSeekChapter(int iChapter) {};

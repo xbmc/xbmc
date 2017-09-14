@@ -202,6 +202,12 @@ namespace XBMCAddon
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackStopped));
     }
 
+    void Player::OnPlayBackError()
+    {
+      XBMC_TRACE;
+      invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackError));
+    }
+
     void Player::OnPlayBackPaused()
     { 
       XBMC_TRACE;
@@ -249,6 +255,11 @@ namespace XBMCAddon
     }
 
     void Player::onPlayBackStopped()
+    {
+      XBMC_TRACE;
+    }
+
+    void Player::onPlayBackError()
     {
       XBMC_TRACE;
     }

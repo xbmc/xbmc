@@ -492,9 +492,9 @@ protected:
   bool m_players_created;
 
   CFileItem m_item;
-  CEvent m_openEvent;
   CPlayerOptions m_playerOptions;
   bool m_bAbortRequest;
+  bool m_error;
 
   ECacheState  m_caching;
   XbmcThreads::EndTime m_cachingTimer;

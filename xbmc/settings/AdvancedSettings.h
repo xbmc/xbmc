@@ -190,7 +190,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAForceProcessorRenderer;
     bool m_DXVAAllowHqScaling;
     int  m_videoFpsDetect;
-    int  m_videoBusyDialogDelay_ms;
     bool m_mediacodecForceSoftwareRendering;
 
     std::string m_videoDefaultPlayer;
