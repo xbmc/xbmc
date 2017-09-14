@@ -1393,18 +1393,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrplayback.scantime" type="integer" label="19170" help="36230">
-          <level>3</level>
-          <default>10</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
           <level>1</level>
           <default>true</default>

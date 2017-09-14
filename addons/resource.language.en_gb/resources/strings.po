@@ -9990,11 +9990,7 @@ msgctxt "#19169"
 msgid "Hide video information box"
 msgstr ""
 
-#. pvr settings "playback timeout" setting label
-#: system/settings/settings.xml
-msgctxt "#19170"
-msgid "Timeout when starting playback"
-msgstr ""
+#empty string with id 19170
 
 #. pvr settings "start playback full screen" setting label
 #: system/settings/settings.xml
@@ -18158,10 +18154,7 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36230"
-msgid "Time to wait for a channel to be received after a channel change. Useful for over-the-air channels that occasionally lose signal strength."
-msgstr ""
+#empty string with id 36230
 
 #: system/settings/settings.xml
 msgctxt "#36231"
