@@ -833,6 +833,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         {
           SetRequestHeader(it->first, value);
         }
+        else if (name == "customrequest")
+        {
+          SetCustomRequest(value);
+        }
         else
         {
           if (name.length() > 0 && name[0] == '!')
