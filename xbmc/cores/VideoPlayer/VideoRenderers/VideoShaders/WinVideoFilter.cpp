@@ -28,7 +28,7 @@
 #include "VideoRenderers/WinRenderBuffer.h"
 #include "windowing/WindowingFactory.h"
 #include "WinVideoFilter.h"
-#include "YUV2RGBShader.h"
+#include "YUVMatrix.h"
 
 #include <DirectXPackedVector.h>
 #include <map>

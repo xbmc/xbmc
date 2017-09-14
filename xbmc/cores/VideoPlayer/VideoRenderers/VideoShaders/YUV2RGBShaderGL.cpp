@@ -21,152 +21,15 @@
 
 #include "system.h"
 #include "../RenderFlags.h"
-#include "YUV2RGBShader.h"
+#include "YUV2RGBShaderGL.h"
+#include "YUVMatrix.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
 #include "utils/log.h"
-#if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
-#endif
 
 #include <string>
 #include <sstream>
-
-// http://www.martinreddy.net/gfx/faqs/colorconv.faq
-
-//
-// Transformation matrixes for different colorspaces.
-//
-static float yuv_coef_bt601[4][4] = 
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.344f,   1.773f,   0.0f },
-    { 1.403f,   -0.714f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f } 
-};
-
-static float yuv_coef_bt709[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.1870f,  1.8556f,  0.0f },
-    { 1.5701f,  -0.4664f,  0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float yuv_coef_bt2020[4][4] =
-{
-    { 1.0f,     1.0f,     1.0f,    0.0f },
-    { 0.0f,    -0.1645f,  1.8814f, 0.0f },
-    { 1.4745f, -0.5713f,  0.0f,    0.0f },
-    { 0.0f,     0.0f,     0.0f,    0.0f }
-};
-
-static float yuv_coef_ebu[4][4] = 
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.3960f,  2.029f,   0.0f },
-    { 1.140f,   -0.581f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float yuv_coef_smtp240m[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.2253f,  1.8270f,  0.0f },
-    { 1.5756f,  -0.5000f,  0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float** PickYUVConversionMatrix(unsigned flags)
-{
-  // Pick the matrix.
-   
-   switch(CONF_FLAGS_YUVCOEF_MASK(flags))
-   {
-     case CONF_FLAGS_YUVCOEF_240M:
-       return reinterpret_cast<float**>(yuv_coef_smtp240m);
-     case CONF_FLAGS_YUVCOEF_BT2020:
-       return reinterpret_cast<float**>(yuv_coef_bt2020);
-     case CONF_FLAGS_YUVCOEF_BT709:
-       return reinterpret_cast<float**>(yuv_coef_bt709);
-     case CONF_FLAGS_YUVCOEF_BT601:    
-       return reinterpret_cast<float**>(yuv_coef_bt601);
-     case CONF_FLAGS_YUVCOEF_EBU:
-       return reinterpret_cast<float**>(yuv_coef_ebu);
-   }
-   
-   return reinterpret_cast<float**>(yuv_coef_bt601);
-}
-
-void CalculateYUVMatrix(TransformMatrix &matrix
-                        , unsigned int  flags
-                        , EShaderFormat format
-                        , float         black
-                        , float         contrast
-                        , bool          limited)
-{
-  TransformMatrix coef;
-
-  matrix *= TransformMatrix::CreateScaler(contrast, contrast, contrast);
-  matrix *= TransformMatrix::CreateTranslation(black, black, black);
-
-  float (*conv)[4] = (float (*)[4])PickYUVConversionMatrix(flags);
-  for(int row = 0; row < 3; row++)
-    for(int col = 0; col < 4; col++)
-      coef.m[row][col] = conv[col][row];
-  coef.identity = false;
-
-  if (limited)
-  {
-    matrix *= TransformMatrix::CreateTranslation(+ 16.0f / 255
-                                               , + 16.0f / 255
-                                               , + 16.0f / 255);
-    matrix *= TransformMatrix::CreateScaler((235 - 16) / 255.0f
-                                          , (235 - 16) / 255.0f
-                                          , (235 - 16) / 255.0f);
-  }
-
-  matrix *= coef;
-  matrix *= TransformMatrix::CreateTranslation(0.0, -0.5, -0.5);
-
-  if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
-  {
-    matrix *= TransformMatrix::CreateScaler(255.0f / (235 - 16)
-                                          , 255.0f / (240 - 16)
-                                          , 255.0f / (240 - 16));
-    matrix *= TransformMatrix::CreateTranslation(- 16.0f / 255
-                                               , - 16.0f / 255
-                                               , - 16.0f / 255);
-  }
-
-  int effectiveBpp;
-  switch (format)
-  {
-    case SHADER_YV12_9:
-      effectiveBpp = 9;
-      break;
-    case SHADER_YV12_10:
-      effectiveBpp = 10;
-      break;
-    case SHADER_YV12_12:
-      effectiveBpp = 12;
-      break;
-    case SHADER_YV12_14:
-      effectiveBpp = 14;
-      break;
-    default:
-      effectiveBpp = 0;
-  }
-
-  if (effectiveBpp > 8 && effectiveBpp < 16)
-  {
-    // Convert range to 2 bytes
-    float scale = 65535.0f / ((1 << effectiveBpp) - 1);
-    matrix *= TransformMatrix::CreateScaler(scale, scale, scale);
-  }
-}
-
-#if defined(HAS_GL) || HAS_GLES >= 2
 
 using namespace Shaders;
 
@@ -221,7 +84,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += m_glslOutput->GetDefines();
   }
 
-#ifdef HAS_GL
   if(rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
   else
@@ -259,27 +121,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
-#elif HAS_GLES >= 2
-  m_hVertex = -1;
-  m_hYcoord = -1;
-  m_hUcoord = -1;
-  m_hVcoord = -1;
-  m_hProj   = -1;
-  m_hModel  = -1;
-  m_hAlpha  = -1;
-  if (m_format == SHADER_YV12)
-    m_defines += "#define XBMC_YV12\n";
-  else if (m_format == SHADER_NV12)
-    m_defines += "#define XBMC_NV12\n";
-  else if (m_format == SHADER_NV12_RRG)
-    m_defines += "#define XBMC_NV12_RRG\n";
-  else if (m_format == SHADER_YV12)
-    m_defines += "#define XBMC_YV12\n";
-  else
-    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
-
-  VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
-#endif
 
   CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
 }
@@ -291,15 +132,6 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-#if HAS_GLES >= 2
-  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
-  m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
-  m_hVcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordV");
-  m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
-#endif
   m_hYTex    = glGetUniformLocation(ProgramHandle(), "m_sampY");
   m_hUTex    = glGetUniformLocation(ProgramHandle(), "m_sampU");
   m_hVTex    = glGetUniformLocation(ProgramHandle(), "m_sampV");
@@ -325,11 +157,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
-#if HAS_GLES >= 2
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1f(m_hAlpha, m_alpha);
-#endif
+
   VerifyGLState();
   if (m_glslOutput) m_glslOutput->OnEnabled();
   return true;
@@ -347,7 +175,6 @@ void BaseYUV2RGBGLSLShader::Free()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format)
 {
   m_width         = 1;
@@ -361,7 +188,6 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format)
   m_hUTex  = -1;
   m_hVTex  = -1;
 }
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
@@ -372,12 +198,8 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
                                                    GLSLOutput *output)
   : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
-#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("output.glsl");
-#elif HAS_GLES >= 2
-  PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
-#endif
 }
 
 
@@ -391,11 +213,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, EShaderFormat form
   m_hStepX = -1;
   m_hStepY = -1;
   m_hField = -1;
-#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
-#elif HAS_GLES >= 2
-  PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
-#endif
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()
@@ -422,7 +240,6 @@ bool YUV2RGBBobShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
-#if defined(HAS_GL)	// No ARB Shader when using GLES2.0
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags, EShaderFormat format)
   : BaseYUV2RGBARBShader(flags, format)
 {
@@ -479,5 +296,3 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
                                m_width, m_height);
   return true;
 }
-#endif
-#endif // HAS_GL
