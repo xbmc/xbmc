@@ -38,20 +38,6 @@
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
 #define MAX_SKIP_XFADE_TIME     2000 /* max 2 seconds crossfade on track skip */
 
-class CQueueNextFileJob : public CJob
-{
-  CFileItem m_item;
-  PAPlayer &m_player;
-
-public: CQueueNextFileJob(const CFileItem& item, PAPlayer &player)
-    : m_item(item), m_player(player) {}
-  ~CQueueNextFileJob() override = default;
-  bool  DoWork() override
-  {
-    return m_player.QueueNextFileEx(m_item, true, true);
-  }
-};
-
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
@@ -251,19 +237,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_isPaused = false; // Make sure to reset the pause state
   }
 
-  // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
-  // waits until the engine is resumed. if we block the main thread here, it can't
-  // resume the engine after a DisplayReset event
-  if (CServiceBroker::GetActiveAE().IsSuspended())
   {
-    if (!QueueNextFile(file))
-      return false;
+    CSingleLock lock(m_streamsLock);
+    m_jobCounter++;
   }
-  else
-  {
-    if (!QueueNextFileEx(file, false))
-      return false;
-  }
+  CJobManager::GetInstance().Submit([this, file]() {
+    QueueNextFileEx(file, false);
+  }, this, CJob::PRIORITY_NORMAL);
 
   CSingleLock lock(m_streamsLock);
   if (m_streams.size() == 2)
@@ -326,11 +306,14 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     CSingleLock lock(m_streamsLock);
     m_jobCounter++;
   }
-  CJobManager::GetInstance().AddJob(new CQueueNextFileJob(file, *this), this, CJob::PRIORITY_NORMAL);
+  CJobManager::GetInstance().Submit([this, file]() {
+    QueueNextFileEx(file, true);
+  }, this, CJob::PRIORITY_NORMAL);
+
   return true;
 }
 
-bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, bool job /* = false */)
+bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 {
   // check if we advance a track of a CUE sheet
   // if this is the case we don't need to open a new stream
@@ -358,15 +341,14 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
     delete si;
     // advance playlist
-    if (job)
-      m_callback.OnPlayBackStarted();
+    m_callback.OnPlayBackStarted(*m_FileItem);
     m_callback.OnQueueNextItem();
     return false;
   }
 
   /* decode until there is data-available */
   si->m_decoder.Start();
-  while(si->m_decoder.GetDataSize(true) == 0)
+  while (si->m_decoder.GetDataSize(true) == 0)
   {
     int status = si->m_decoder.GetStatus();
     if (status == STATUS_ENDED   ||
@@ -378,8 +360,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
       si->m_decoder.Destroy();
       delete si;
       // advance playlist
-      if (job)
-        m_callback.OnPlayBackStarted();
+      m_callback.OnPlayBackStarted(*m_FileItem);
       m_callback.OnQueueNextItem();
       return false;
     }
@@ -441,8 +422,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
     si->m_decoder.Destroy();
     delete si;
     // advance playlist
-    if (job)
-      m_callback.OnPlayBackStarted();
+    m_callback.OnPlayBackStarted(file);
     m_callback.OnQueueNextItem();
     return false;
   }
@@ -604,11 +584,6 @@ void PAPlayer::Process()
 
     GetTimeInternal(); //update for GUI
   }
-
-  if(m_isFinished && !m_bStop)
-    m_callback.OnPlayBackEnded();
-  else
-    m_callback.OnPlayBackStopped();
 }
 
 inline void PAPlayer::ProcessStreams(double &freeBufferTime)
@@ -744,7 +719,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (!si->m_isSlaved)
       si->m_stream->Resume();
     si->m_stream->FadeVolume(0.0f, 1.0f, m_upcomingCrossfadeMS);
-    m_callback.OnPlayBackStarted();
+    m_callback.OnPlayBackStarted(*m_FileItem);
   }
 
   /* if we have not started yet and the stream has been primed */
@@ -820,7 +795,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       UpdateStreamInfoPlayNextAtFrame(m_currentStream, m_upcomingCrossfadeMS);
 
       UpdateGUIData(si);
-      m_callback.OnPlayBackStarted();
+      m_callback.OnPlayBackStarted(*m_FileItem);
       m_continueStream = false;
     }
     else
@@ -904,7 +879,11 @@ bool PAPlayer::QueueData(StreamInfo *si)
 
 void PAPlayer::OnExit()
 {
-
+  //@todo signal OnPlayBackError if there was an error on last stream
+  if (m_isFinished && !m_bStop)
+    m_callback.OnPlayBackEnded();
+  else
+    m_callback.OnPlayBackStopped();
 }
 
 void PAPlayer::OnNothingToQueueNotify()

@@ -101,6 +101,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
 {
   try
   {
+    m_file = file;
     m_bIsPlaying = true;
     m_time = 0;
     m_playbackStartTime = XbmcThreads::SystemClockMillis();
@@ -318,7 +319,7 @@ void CExternalPlayer::Process()
     CLog::Log(LOGERROR,"%s: AudioEngine did not suspend before launching external player", __FUNCTION__);
   }
 
-  m_callback.OnPlayBackStarted();
+  m_callback.OnPlayBackStarted(m_file);
 
   bool ret = true;
 #if defined(TARGET_WINDOWS)

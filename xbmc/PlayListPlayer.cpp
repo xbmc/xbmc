@@ -109,6 +109,11 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
       }
     }
     break;
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      m_bPlaybackStarted = true;
+    }
+    break;
   }
 
   return false;
@@ -293,10 +298,10 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
   // check if the item itself is a playlist, and can be expanded
   // only allow a few levels, this could end up in a loop
   // if they refer to each other in a loop
-  for(int i=0;i<5;i++)
+  for (int i=0;i<5;i++)
   {
-     if(!playlist.Expand(iSong))
-        break;
+    if(!playlist.Expand(iSong))
+      break;
   }
 
   m_iCurrentSong = iSong;
@@ -367,7 +372,6 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
   // consecutive error counter so reset if the current item is playing
   m_iFailedSongs = 0;
   m_failedSongsStart = 0;
-  m_bPlaybackStarted = true;
   m_bPlayedFirstFile = true;
   return true;
 }

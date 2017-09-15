@@ -701,10 +701,10 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
     return true;
   }
 
-  m_callback.OnPlayBackStarted();
+  m_item = file;
+  m_callback.OnPlayBackStarted(m_item);
 
   m_playerOptions = options;
-  m_item = file;
   // Try to resolve the correct mime type
   m_item.SetMimeTypeForInternetFile();
 
@@ -2452,6 +2452,7 @@ void CVideoPlayer::OnExit()
     m_OmxPlayerState.av_clock.OMXDeinitialize();
   }
 
+  CFFmpegLog::ClearLogLevel();
   m_bStop = true;
 
   if (m_error)
@@ -2460,8 +2461,6 @@ void CVideoPlayer::OnExit()
     m_callback.OnPlayBackStopped();
   else
     m_callback.OnPlayBackEnded();
-
-  CFFmpegLog::ClearLogLevel();
 }
 
 void CVideoPlayer::HandleMessages()
@@ -2475,8 +2474,11 @@ void CVideoPlayer::HandleMessages()
     {
       CDVDMsgOpenFile &msg(*static_cast<CDVDMsgOpenFile*>(pMsg));
 
+      m_item = msg.GetItem();
+      m_playerOptions = msg.GetOptions();
+
       CJobManager::GetInstance().Submit([this]() {
-        m_callback.OnPlayBackStarted();
+        m_callback.OnPlayBackStarted(m_item);
       }, CJob::PRIORITY_NORMAL);
 
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
@@ -2486,8 +2488,6 @@ void CVideoPlayer::HandleMessages()
       SAFE_DELETE(m_pCCDemuxer);
       SAFE_DELETE(m_pInputStream);
 
-      m_item = msg.GetItem();
-      m_playerOptions = msg.GetOptions();
       Prepare();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) &&
