@@ -161,7 +161,7 @@ void CThread::StopThread(bool bWait /*= true*/)
   m_bStop = true;
   m_StopEvent.Set();
   CSingleLock lock(m_CriticalSection);
-  if (m_ThreadId && bWait)
+  if (m_ThreadId && bWait && !IsCurrentThread(m_ThreadId))
   {
     lock.Leave();
     WaitForThreadExit(0xFFFFFFFF);
