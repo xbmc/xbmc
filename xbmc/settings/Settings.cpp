@@ -237,7 +237,6 @@ const std::string CSettings::SETTING_EPG_IGNOREDBFORCLIENT = "epg.ignoredbforcli
 const std::string CSettings::SETTING_EPG_RESETEPG = "epg.resetepg";
 const std::string CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN = "pvrplayback.switchtofullscreen";
 const std::string CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY = "pvrplayback.signalquality";
-const std::string CSettings::SETTING_PVRPLAYBACK_SCANTIME = "pvrplayback.scantime";
 const std::string CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH = "pvrplayback.confirmchannelswitch";
 const std::string CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT = "pvrplayback.channelentrytimeout";
 const std::string CSettings::SETTING_PVRPLAYBACK_FPS = "pvrplayback.fps";
