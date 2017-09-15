@@ -167,7 +167,7 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   std::string GetCurrentPlayer();
   void OnPlayBackEnded() override;
-  void OnPlayBackStarted() override;
+  void OnPlayBackStarted(const CFileItem &file) override;
   void OnPlayBackPaused() override;
   void OnPlayBackResumed() override;
   void OnPlayBackStopped() override;

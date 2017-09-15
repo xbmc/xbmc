@@ -3467,16 +3467,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
   }
 
-  //@todo check PAPlayer and remove this block, Callbacks must not be called by CApplication itself
-  if (iResult == PLAYBACK_FAIL)
-  {
-    // we send this if it isn't playlistplayer that is doing this
-    int next = CServiceBroker::GetPlaylistPlayer().GetNextSong();
-    int size = CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size();
-    if (next < 0 || next >= size)
-      OnPlayBackStopped();
-  }
-
   return iResult;
 }
 
@@ -3503,20 +3493,21 @@ void CApplication::OnPlayBackEnded()
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CApplication::OnPlayBackStarted()
+void CApplication::OnPlayBackStarted(const CFileItem &file)
 {
   CLog::LogF(LOGDEBUG,"CApplication::OnPlayBackStarted");
 
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
-  g_pythonParser.OnPlayBackStarted();
+  g_pythonParser.OnPlayBackStarted(file);
 #endif
 #if defined(TARGET_DARWIN_IOS)
   if (m_pPlayer->IsPlayingVideo())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
+  m_itemCurrentFile.reset(new CFileItem(file));
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
@@ -3764,15 +3755,15 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
 void CApplication::StopPlaying()
 {
   int iWin = g_windowManager.GetActiveWindow();
-  if ( m_pPlayer->IsPlaying() )
+  if (m_pPlayer->IsPlaying())
   {
-    m_pPlayer->CloseFile();
+    m_pPlayer->ClosePlayer();
 
     // turn off visualisation window when stopping
-    if ((iWin == WINDOW_VISUALISATION
-    || iWin == WINDOW_FULLSCREEN_VIDEO
-    || iWin == WINDOW_FULLSCREEN_GAME)
-    && !m_bStop)
+    if ((iWin == WINDOW_VISUALISATION ||
+         iWin == WINDOW_FULLSCREEN_VIDEO ||
+         iWin == WINDOW_FULLSCREEN_GAME) &&
+         !m_bStop)
       g_windowManager.PreviousWindow();
 
     g_partyModeManager.Disable();
@@ -4275,11 +4266,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        CServiceBroker::GetPlaylistPlayer().PlayNext(1, true);
-      }
-      else
-      {
-        m_pPlayer->ClosePlayer();
+        if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
+          m_pPlayer->ClosePlayer();
       }
 
       if (!m_pPlayer->IsPlaying())

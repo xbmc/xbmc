@@ -20,6 +20,7 @@
  *
  */
 
+#include "FileItem.h"
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
 #include <string>
@@ -101,4 +102,5 @@ private:
   WARP_CURSOR m_warpcursor;
   int m_playCountMinTime;
   std::vector<std::string> m_filenameReplacers;
+  CFileItem m_file;
 };

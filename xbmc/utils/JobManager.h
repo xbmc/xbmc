@@ -248,6 +248,15 @@ public:
   }
 
   /*!
+   \brief Add a function f to this job manager for asynchronously execution.
+   */
+  template<typename F>
+  void Submit(F&& f, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW)
+  {
+    AddJob(new CLambdaJob<F>(std::forward<F>(f)), callback, priority);
+  }
+
+  /*!
    \brief Cancel a job with the given id.
    \param jobID the id of the job to cancel, retrieved previously from AddJob()
    \sa AddJob()

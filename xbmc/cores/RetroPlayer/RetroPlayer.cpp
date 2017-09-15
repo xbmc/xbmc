@@ -175,7 +175,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     RegisterWindowCallbacks();
     SetSpeed(1);
-    m_callback.OnPlayBackStarted();
+    m_callback.OnPlayBackStarted(fileCopy);
     m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
   }
   else

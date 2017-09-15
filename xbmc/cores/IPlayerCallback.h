@@ -20,12 +20,14 @@
 
 #pragma once
 
+class CFileItem;
+
 class IPlayerCallback
 {
 public:
   virtual ~IPlayerCallback() = default;
   virtual void OnPlayBackEnded() = 0;
-  virtual void OnPlayBackStarted() = 0;
+  virtual void OnPlayBackStarted(const CFileItem &file) = 0;
   virtual void OnPlayBackPaused() {};
   virtual void OnPlayBackResumed() {};
   virtual void OnPlayBackStopped() = 0;

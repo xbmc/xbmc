@@ -143,7 +143,7 @@ private:
   int64_t             m_newForcedTotalTime;
   std::unique_ptr<CProcessInfo> m_processInfo;
 
-  bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true, bool job = false);
+  bool QueueNextFileEx(const CFileItem &file, bool fadeIn);
   void SoftStart(bool wait = false);
   void SoftStop(bool wait = false, bool close = true);
   void CloseAllStreams(bool fade = true);
