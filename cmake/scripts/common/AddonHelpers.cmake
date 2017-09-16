@@ -232,7 +232,7 @@ macro (build_addon target prefix libs)
     # Pack files together to create an archive
     install(DIRECTORY ${target} DESTINATION ./
                                 COMPONENT ${target}-${${prefix}_VERSION}
-                                REGEX ".+\.xml\.in(clude)?$" EXCLUDE)
+                                REGEX ".+\\.xml\\.in(clude)?$" EXCLUDE)
     if(WIN32)
       if(NOT CPACK_PACKAGE_DIRECTORY)
         # determine the temporary path
@@ -326,7 +326,7 @@ macro (build_addon target prefix libs)
       install(FILES ${LIBRARY_LOCATION} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target} RENAME ${LIBRARY_FILENAME})
     endif()
     install(DIRECTORY ${target} DESTINATION ${CMAKE_INSTALL_DATADIR}/addons
-                                REGEX ".+\.xml\.in(clude)?$" EXCLUDE)
+                                REGEX ".+\\.xml\\.in(clude)?$" EXCLUDE)
     if(${prefix}_CUSTOM_DATA)
       install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${CMAKE_INSTALL_DATADIR}/addons/${target}/resources)
     endif()
