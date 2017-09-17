@@ -533,16 +533,59 @@ static void setupWindowMenu(void)
   return result;
 }
 
-/*
- * Catch document open requests...this lets us notice files when the app
- *  was launched by double-clicking a document, or when a document was
- *  dragged/dropped on the app's icon. You need to have a
- *  CFBundleDocumentsType section in your Info.plist to get this message,
- *  apparently.
- *
  * If invoked after app already started just collects requested files than
  *  replaces the current playlist with the newly requested file list.
  */
+- (BOOL) openFile:(NSString *)fileName
+{
+- (void) replacePlaylist
+{
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpReplace);
+  gAppParamParser.m_playlist.Clear();
+}
+
+- (void) enqueueNextPlaylist
+{
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpNext);
+  gAppParamParser.m_playlist.Clear();
+}
+
+- (void) enqueueLastPlaylist
+{
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpLast);
+  gAppParamParser.m_playlist.Clear();
+}
+
+- (BOOL) openFiles:(NSArray *)fileNames operation:(EnqueueOperation)operation
+{
+  assert(operation >= EOpReplace && operation <= EOpLast && "Invalid Enqueue operation");
+  BOOL result = YES;
+  
+  for (NSString* fileName in fileNames)
+    result = (result && [self openFile:fileName]);
+  
+  // Here we need a little trick as even [NSApplicartionDelegate application:openFiles:]
+  // can be called several times in case of multiple file open requested at once.
+  // We will replace the current playlist only we have not received new request
+  // after a while, now cOpenFileScheduleTimeoutInterval.
+  //
+  // First cancel possible previous request if it is not the first openFile
+  // request within the timeout period.
+  //
+  SEL operations[] = { @selector(replacePlaylist), @selector(enqueueNextPlaylist), @selector(enqueueLastPlaylist) };
+  [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                           selector:operations[operation]
+                                             object:nil];
+  [self performSelector:operations[operation]
+             withObject:nil
+             afterDelay:cOpenFileScheduleTimeoutInterval];
+  
+  return result;
+}
+
 - (BOOL) openFile:(NSString *)fileName
 {
   // MacOS is passing command line args.

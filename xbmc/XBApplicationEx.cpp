@@ -67,9 +67,9 @@ void CXBApplicationEx::EnqueuePlayList(CFileItemList &playlist, EnqueueOperation
     {
         int currentPlayListNdx = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
     
-	    if (currentPlayListNdx < 0)
-		    currentPlayListNdx = 0;
-    
+        if (currentPlayListNdx < 0)
+            currentPlayListNdx = 0;
+        
 	    switch (op) {
       		case EOpReplace:
 		        CServiceBroker::GetPlaylistPlayer().ClearPlaylist(currentPlayListNdx);
