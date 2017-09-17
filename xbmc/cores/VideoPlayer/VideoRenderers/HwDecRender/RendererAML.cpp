@@ -150,7 +150,7 @@ void CRendererAML::Reset()
   }
 }
 
-void CRendererAML::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   ManageRenderArea();
 

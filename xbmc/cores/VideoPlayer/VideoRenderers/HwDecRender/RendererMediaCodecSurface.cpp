@@ -119,7 +119,7 @@ void CRendererMediaCodecSurface::Reset()
 {
 }
 
-void CRendererMediaCodecSurface::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   CXBMCApp::get()->WaitVSync(100);
   ManageRenderArea();
