@@ -78,7 +78,7 @@ public:
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
-  virtual void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) = 0;
+  virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 

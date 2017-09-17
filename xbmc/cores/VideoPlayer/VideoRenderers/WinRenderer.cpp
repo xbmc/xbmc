@@ -296,7 +296,7 @@ void CWinRenderer::Update()
   ManageTextures();
 }
 
-void CWinRenderer::RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha)
+void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   m_iYV12RenderBuffer = index;
 

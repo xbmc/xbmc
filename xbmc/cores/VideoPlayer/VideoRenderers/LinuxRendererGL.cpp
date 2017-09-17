@@ -143,7 +143,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
   m_NumYV12Buffers = 0;
-  m_iLastRenderBuffer = 0;
   m_bConfigured = false;
   m_bValidated = false;
   m_clearColour = 0.0f;
@@ -259,8 +258,6 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
-
-  m_iLastRenderBuffer = -1;
 
   m_nonLinStretch    = false;
   m_nonLinStretchGui = false;
@@ -494,10 +491,12 @@ void CLinuxRendererGL::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGL::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  m_iLastRenderBuffer = m_iYV12RenderBuffer;
-  m_iYV12RenderBuffer = index;
+  if (index2 >= 0)
+    m_iYV12RenderBuffer = index2;
+  else
+    m_iYV12RenderBuffer = index;
 
   if (!ValidateRenderer())
   {
@@ -518,7 +517,7 @@ void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD al
       ClearBackBuffer();
   }
 
-  if (alpha<255)
+  if (alpha < 255)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -530,31 +529,16 @@ void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD al
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
 
-  if(flags & RENDER_FLAG_WEAVE)
+  if (!Render(flags, m_iYV12RenderBuffer) && clear)
+    ClearBackBuffer();
+
+  if (index2 >= 0)
   {
-    int top_index = index;
-    int bot_index = index;
-
-    if((flags & RENDER_FLAG_FIELD0) && m_iLastRenderBuffer > -1)
-    {
-      if(flags & RENDER_FLAG_TOP)
-        bot_index = m_iLastRenderBuffer;
-      else
-        top_index = m_iLastRenderBuffer;
-    }
-
-    glEnable(GL_POLYGON_STIPPLE);
-    glPolygonStipple(stipple_weave);
-    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_TOP, top_index);
-    glPolygonStipple(stipple_weave+4);
-    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_BOT, bot_index);
-    glDisable(GL_POLYGON_STIPPLE);
-
-  }
-  else
-  {
-    if (!Render(flags, index) && clear)
-      ClearBackBuffer();
+    m_iYV12RenderBuffer = index;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+    Render(flags, m_iYV12RenderBuffer);
   }
 
   VerifyGLState();

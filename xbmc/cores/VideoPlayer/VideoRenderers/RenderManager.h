@@ -178,7 +178,6 @@ protected:
   {
     PRESENT_METHOD_SINGLE = 0,
     PRESENT_METHOD_BLEND,
-    PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
   };
 
@@ -228,6 +227,7 @@ protected:
   XbmcThreads::EndTime m_presentTimer;
   bool m_forceNext = false;
   int m_presentsource = 0;
+  int m_presentsourcePast = -1;
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
   CDVDClock &m_dvdClock;
