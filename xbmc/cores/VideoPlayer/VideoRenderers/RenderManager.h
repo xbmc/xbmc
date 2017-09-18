@@ -187,7 +187,7 @@ protected:
     STATE_CONFIGURING,
     STATE_CONFIGURED,
   };
-  ERENDERSTATE m_renderState;
+  ERENDERSTATE m_renderState = STATE_UNCONFIGURED;
   CEvent m_stateEvent;
 
   /// Display latency tweak value from AdvancedSettings for the current refresh rate
