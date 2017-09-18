@@ -233,8 +233,14 @@ void CRetroPlayer::Pause()
 
   if (m_gameClient)
   {
-    m_gameClient->GetPlayback()->PauseUnpause();
-    OnSpeedChange(m_gameClient->GetPlayback()->GetSpeed());
+    double speed;
+
+    if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+      speed = 1.0;
+    else
+      speed = 0.0;
+
+    SetSpeed(speed);
   }
 }
 

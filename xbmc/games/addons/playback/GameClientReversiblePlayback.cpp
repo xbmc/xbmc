@@ -64,14 +64,6 @@ CGameClientReversiblePlayback::~CGameClientReversiblePlayback()
   m_gameLoop.Stop();
 }
 
-void CGameClientReversiblePlayback::PauseUnpause()
-{
-  if (GetSpeed() == 0.0)
-    m_gameLoop.SetSpeed(1.0);
-  else
-    m_gameLoop.SetSpeed(0.0);
-}
-
 void CGameClientReversiblePlayback::SeekTimeMs(unsigned int timeMs)
 {
   const int offsetTimeMs = timeMs - GetTimeMs();
