@@ -463,7 +463,6 @@ void CActiveAEStream::Flush()
     m_currentBuffer = NULL;
     m_leftoverBytes = 0;
     m_activeAE->FlushStream(this);
-    ResetFreeBuffers();
     m_streamIsFlushed = true;
   }
 }
