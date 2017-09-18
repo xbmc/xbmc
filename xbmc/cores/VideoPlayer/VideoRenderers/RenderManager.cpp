@@ -1089,10 +1089,12 @@ void CRenderManager::PrepareNextRender()
 
   CLog::LogF(LOGDEBUG, LOGAVTIMING, "frameOnScreen: %f renderPts: %f nextFramePts: %f -> diff: %f  render: %u forceNext: %u", frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts), renderPts >= nextFramePts, m_forceNext);
 
+  bool combined = false;
   if (m_presentsourcePast >= 0)
   {
     m_discard.push_back(m_presentsourcePast);
     m_presentsourcePast = -1;
+    combined = true;
   }
 
   if (renderPts >= nextFramePts || m_forceNext)
@@ -1141,7 +1143,7 @@ void CRenderManager::PrepareNextRender()
 
     m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
-  else if (renderPts >= nextFramePts - frametime)
+  else if (!combined && renderPts > (nextFramePts - frametime))
   {
     m_lateframes = 0;
     m_presentstep = PRESENT_FLIP;
