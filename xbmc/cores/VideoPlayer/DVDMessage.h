@@ -63,6 +63,7 @@ public:
     PLAYER_AVCHANGE,                // signal a change in audio or video parameters
     PLAYER_ABORT,
     PLAYER_REPORT_STATE,
+    PLAYER_FRAME_ADVANCE,
 
     // demuxer related messages
     DEMUXER_PACKET,                 // data packet
