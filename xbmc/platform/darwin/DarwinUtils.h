@@ -31,11 +31,8 @@ class CDarwinUtils
 {
 public:
   static const char *getIosPlatformString(void);
-  static bool        IsMavericks(void);
-  static bool        IsLion(void); 
-  static bool        IsSnowLeopard(void);
+  static bool        IsMavericksOrHigher(void);
   static bool        DeviceHasRetina(double &scale);
-  static bool        DeviceHasLeakyVDA(void);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
   static float       GetIOSVersion(void);

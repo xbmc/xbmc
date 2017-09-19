@@ -43,14 +43,6 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
-#ifndef NSAppKitVersionNumber10_5
-#define NSAppKitVersionNumber10_5 949
-#endif
-
-#ifndef NSAppKitVersionNumber10_6
-#define NSAppKitVersionNumber10_6 1038
-#endif
-
 #ifndef NSAppKitVersionNumber10_9
 #define NSAppKitVersionNumber10_9 1265
 #endif
@@ -215,7 +207,7 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool CDarwinUtils::IsMavericks(void)
+bool CDarwinUtils::IsMavericksOrHigher(void)
 {
   static int isMavericks = -1;
 #if defined(TARGET_DARWIN_OSX)
@@ -225,38 +217,12 @@ bool CDarwinUtils::IsMavericks(void)
   // us when mavericks came out
   if (isMavericks == -1)
   {
-    CLog::Log(LOGDEBUG, "Detected Mavericks...");
     isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
+    if (isMavericks == 1)
+      CLog::Log(LOGDEBUG, "Detected Mavericks or higher ...");
   }
 #endif
   return isMavericks == 1;
-}
-
-bool CDarwinUtils::IsLion(void)
-{
-  static int isLion = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isLion == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    // everything lower 10.8 is 10.7.x because 10.7 is deployment target...
-    isLion = (appKitVersion < NSAppKitVersionNumber10_8) ? 1 : 0;
-  }
-#endif
-  return isLion == 1;
-}
-
-bool CDarwinUtils::IsSnowLeopard(void)
-{
-  static int isSnowLeopard = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isSnowLeopard == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    isSnowLeopard = (appKitVersion <= NSAppKitVersionNumber10_6 && appKitVersion > NSAppKitVersionNumber10_5) ? 1 : 0;
-  }
-#endif
-  return isSnowLeopard == 1;
 }
 
 bool CDarwinUtils::DeviceHasRetina(double &scale)
@@ -283,16 +249,6 @@ bool CDarwinUtils::DeviceHasRetina(double &scale)
   }
 
   return (platform >= iPhone4);
-}
-
-bool CDarwinUtils::DeviceHasLeakyVDA(void)
-{
-  static int hasLeakyVDA = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (hasLeakyVDA == -1)
-    hasLeakyVDA = NSAppKitVersionNumber <= NSAppKitVersionNumber10_9 ? 1 : 0;
-#endif
-  return hasLeakyVDA == 1;
 }
 
 const char *CDarwinUtils::GetOSReleaseString(void)
