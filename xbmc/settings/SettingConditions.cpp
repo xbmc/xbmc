@@ -331,10 +331,6 @@ void CSettingConditions::Initialize()
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
 #endif
-#ifdef TARGET_DARWIN_OSX
-  if (CDarwinUtils::IsSnowLeopard())
-    m_simpleConditions.insert("osxissnowleopard");
-#endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.insert("has_dx");
   m_simpleConditions.insert("hasdxva2");

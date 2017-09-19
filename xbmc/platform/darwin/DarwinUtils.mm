@@ -43,14 +43,6 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
-#ifndef NSAppKitVersionNumber10_5
-#define NSAppKitVersionNumber10_5 949
-#endif
-
-#ifndef NSAppKitVersionNumber10_6
-#define NSAppKitVersionNumber10_6 1038
-#endif
-
 #ifndef NSAppKitVersionNumber10_9
 #define NSAppKitVersionNumber10_9 1265
 #endif
@@ -230,33 +222,6 @@ bool CDarwinUtils::IsMavericks(void)
   }
 #endif
   return isMavericks == 1;
-}
-
-bool CDarwinUtils::IsLion(void)
-{
-  static int isLion = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isLion == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    // everything lower 10.8 is 10.7.x because 10.7 is deployment target...
-    isLion = (appKitVersion < NSAppKitVersionNumber10_8) ? 1 : 0;
-  }
-#endif
-  return isLion == 1;
-}
-
-bool CDarwinUtils::IsSnowLeopard(void)
-{
-  static int isSnowLeopard = -1;
-#if defined(TARGET_DARWIN_OSX)
-  if (isSnowLeopard == -1)
-  {
-    double appKitVersion = floor(NSAppKitVersionNumber);
-    isSnowLeopard = (appKitVersion <= NSAppKitVersionNumber10_6 && appKitVersion > NSAppKitVersionNumber10_5) ? 1 : 0;
-  }
-#endif
-  return isSnowLeopard == 1;
 }
 
 bool CDarwinUtils::DeviceHasRetina(double &scale)
