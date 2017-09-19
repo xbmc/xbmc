@@ -359,6 +359,7 @@ public:
   void SetSpeed(float speed) override;
   void SetTempo(float tempo) override;
   bool SupportsTempo() override;
+  void FrameAdvance(int frames) override;
   bool OnAction(const CAction &action) override;
 
   int GetSourceBitrate() override;

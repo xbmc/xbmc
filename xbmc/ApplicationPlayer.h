@@ -75,6 +75,7 @@ public:
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
   void SetPlaySpeed(float speed);
   void SetTempo(float tempo);
+  void FrameAdvance(int frames);
 
   void FrameMove();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
