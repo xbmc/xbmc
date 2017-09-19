@@ -315,7 +315,12 @@ void CVideoPlayerAudio::Process()
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f), level: %d, cache: %f",
                 pts, m_messageQueue.GetLevel(), m_audioSink.GetDelay());
 
-      m_audioClock = pts + m_audioSink.GetDelay();
+      double delay = m_audioSink.GetDelay();
+      if (pts > m_audioClock - delay + 0.5 * DVD_TIME_BASE)
+      {
+        m_audioSink.Flush();
+      }
+      m_audioClock = pts + delay;
       if (m_speed != DVD_PLAYSPEED_PAUSE)
         m_audioSink.Resume();
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
@@ -501,7 +506,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
   audioframe.framesOut += framesOutput;
 
   // signal to our parent that we have initialized
-  if(m_syncState == IDVDStreamPlayer::SYNC_STARTING)
+  if (m_syncState == IDVDStreamPlayer::SYNC_STARTING)
   {
     double cachetotal = DVD_SEC_TO_TIME(m_audioSink.GetCacheTotal());
     double cachetime = m_audioSink.GetDelay();
