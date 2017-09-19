@@ -1478,6 +1478,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_paused = false;
   stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
   stream->m_syncError.Flush();
+  stream->ResetFreeBuffers();
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
