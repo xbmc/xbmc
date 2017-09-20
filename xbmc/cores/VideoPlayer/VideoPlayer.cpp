@@ -2455,12 +2455,17 @@ void CVideoPlayer::OnExit()
   CFFmpegLog::ClearLogLevel();
   m_bStop = true;
 
-  if (m_error)
-    m_callback.OnPlayBackError();
-  else if (m_bAbortRequest)
-    m_callback.OnPlayBackStopped();
-  else
-    m_callback.OnPlayBackEnded();
+  IPlayerCallback *cb = &m_callback;
+  bool error = m_error;
+  bool abort = m_bAbortRequest;
+  CJobManager::GetInstance().Submit([=]() {
+    if (error)
+      cb->OnPlayBackError();
+    else if (abort)
+      cb->OnPlayBackStopped();
+    else
+      cb->OnPlayBackEnded();
+  }, CJob::PRIORITY_NORMAL);
 }
 
 void CVideoPlayer::HandleMessages()
