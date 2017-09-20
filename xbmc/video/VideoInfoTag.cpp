@@ -1388,6 +1388,9 @@ void CVideoInfoTag::SetPremieredFromDBDate(std::string premieredString)
 
 void CVideoInfoTag::SetYear(int year)
 {
+  if (year <= 0)
+    return;
+
   if (m_bHasPremiered)
     m_premiered.SetDate(year, m_premiered.GetMonth(), m_premiered.GetDay());
   else
