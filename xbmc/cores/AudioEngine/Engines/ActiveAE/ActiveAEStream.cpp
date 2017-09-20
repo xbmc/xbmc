@@ -372,7 +372,12 @@ double CActiveAEStream::GetCacheTime()
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return m_activeAE->GetCacheTotal(this);
+  return m_activeAE->GetCacheTotal();
+}
+
+double CActiveAEStream::GetMaxDelay()
+{
+  return m_activeAE->GetMaxDelay();
 }
 
 void CActiveAEStream::Pause()

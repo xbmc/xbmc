@@ -117,6 +117,12 @@ public:
   virtual double GetCacheTotal() = 0;
 
   /**
+   * Returns the total time in seconds of maximum delay
+   * @return seconds
+   */
+  virtual double GetMaxDelay() = 0;
+
+  /**
    * Pauses the stream playback
    */
   virtual void Pause() = 0;
