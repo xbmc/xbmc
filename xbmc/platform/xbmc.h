@@ -23,6 +23,6 @@
 
 class CAppParamParser;
 
-extern "C" void XBMC_EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op);
+extern "C" void XBMC_EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op);
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params);
 

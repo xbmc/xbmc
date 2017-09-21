@@ -37,7 +37,7 @@
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
 
-extern "C" void XBMC_EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op)
+extern "C" void XBMC_EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op)
 {
   g_application.EnqueuePlayList(playlist, op);
 }

@@ -61,7 +61,7 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-void CXBApplicationEx::EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op)
+void CXBApplicationEx::EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op)
 {
     if (playlist.Size() > 0)
     {
