@@ -294,9 +294,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_GL
   m_simpleConditions.insert("has_gl");
 #endif
-#ifdef HAS_GLX
-  m_simpleConditions.insert("has_glx");
-#endif
 #ifdef HAS_GLES
   m_simpleConditions.insert("has_gles");
 #endif
@@ -333,10 +330,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
-#endif
-#ifdef TARGET_DARWIN_OSX
-  if (CDarwinUtils::IsSnowLeopard())
-    m_simpleConditions.insert("osxissnowleopard");
 #endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.insert("has_dx");

@@ -2845,6 +2845,12 @@ void CVideoPlayer::HandleMessages()
       if (m_pDemuxer)
         m_pDemuxer->SetSpeed(speed);
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_FRAME_ADVANCE))
+    {
+      int frames = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      double time = DVD_TIME_BASE / m_processInfo->GetVideoFps() * frames;
+      m_clock.Advance(time);
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
       OnAction(static_cast<CDVDMsgType<CAction>*>(pMsg)->m_value);
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
@@ -3425,6 +3431,15 @@ void CVideoPlayer::SetTempo(float tempo)
 
     m_processInfo->SetNewTempo(tempo);
   }
+}
+
+void CVideoPlayer::FrameAdvance(int frames)
+{
+  float currentSpeed = m_processInfo->GetNewSpeed();
+  if (currentSpeed != DVD_PLAYSPEED_PAUSE)
+    return;
+
+  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_FRAME_ADVANCE, frames));
 }
 
 bool CVideoPlayer::SupportsTempo()

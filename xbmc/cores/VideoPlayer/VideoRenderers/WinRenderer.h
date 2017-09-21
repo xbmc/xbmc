@@ -63,7 +63,7 @@ public:
   bool IsConfigured() override { return m_bConfigured; }
   void Flush() override;
   CRenderInfo GetRenderInfo() override;
-  void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void SetBufferSize(int numBuffers) override { m_neededBuffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;

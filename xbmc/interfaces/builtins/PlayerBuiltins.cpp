@@ -137,6 +137,20 @@ static int PlayerControl(const std::vector<std::string>& params)
   {
     g_application.StopPlaying();
   }
+  else if (StringUtils::StartsWithNoCase(params[0], "frameadvance"))
+  {
+    std::string strFrames;
+    if (params[0].size() == 12)
+      CLog::Log(LOGERROR, "PlayerControl(frameadvance(n)) called with no argument");
+    else if (params[0].size() < 15) // arg must be at least "(N)"
+      CLog::Log(LOGERROR, "PlayerControl(frameadvance(n)) called with invalid argument: \"%s\"", params[0].substr(13).c_str());
+    else
+
+    strFrames = params[0].substr(13);
+    StringUtils::TrimRight(strFrames, ")");
+    float frames = (float) atof(strFrames.c_str());
+    g_application.m_pPlayer->FrameAdvance(frames);
+  }
   else if (paramlow =="rewind" || paramlow == "forward")
   {
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())

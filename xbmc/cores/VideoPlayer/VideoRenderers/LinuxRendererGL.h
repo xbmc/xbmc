@@ -113,7 +113,7 @@ public:
   void Flush() override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
-  void RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
   bool RenderCapture(CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
@@ -175,7 +175,6 @@ protected:
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
-  int m_iLastRenderBuffer;
 
   bool m_bConfigured;
   bool m_bValidated;

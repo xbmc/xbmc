@@ -213,7 +213,12 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   return delay;
 }
 
-float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
+float CEngineStats::GetCacheTotal()
+{
+  return MAX_CACHE_LEVEL;
+}
+
+float CEngineStats::GetMaxDelay()
 {
   return MAX_CACHE_LEVEL + MAX_WATER_LEVEL + m_sinkCacheTotal;
 }
@@ -1478,6 +1483,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_paused = false;
   stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
   stream->m_syncError.Flush();
+  stream->ResetFreeBuffers();
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
