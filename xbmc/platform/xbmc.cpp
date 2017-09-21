@@ -37,6 +37,11 @@
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
 
+extern "C" void XBMC_EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op)
+{
+  g_application.EnqueuePlayList(playlist, op);
+}
+
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
   int status = -1;

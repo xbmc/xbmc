@@ -61,6 +61,55 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
+void CXBApplicationEx::EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op)
+{
+    if (playlist.Size() > 0)
+    {
+        int currentPlayListNdx = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+    
+        if (currentPlayListNdx < 0)
+            currentPlayListNdx = 0;
+        
+	    switch (op) {
+      		case EOpReplace:
+		        CServiceBroker::GetPlaylistPlayer().ClearPlaylist(currentPlayListNdx);
+			    CServiceBroker::GetPlaylistPlayer().Add(0, playlist);
+		    	CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
+			    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+	        break;
+
+			case EOpNext: {
+		        int currItemNdx = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+		        bool shouldStartPlaylist = false;
+        
+		        if (currItemNdx < 0) {
+		      		currItemNdx = 0;
+		        	shouldStartPlaylist = true;
+		        }
+        		else
+          			++currItemNdx;
+		        CServiceBroker::GetPlaylistPlayer().Insert(currentPlayListNdx, playlist, currItemNdx);
+		        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(currentPlayListNdx);
+		        if (shouldStartPlaylist)
+			    	KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+        		break;
+      		}
+        
+      		case EOpLast: {
+        		int currItemNdx = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+        		bool shouldStartPlaylist = (currItemNdx < 0);
+        
+        		CServiceBroker::GetPlaylistPlayer().Add(currentPlayListNdx, playlist);
+        		CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(currentPlayListNdx);
+        		if (shouldStartPlaylist)
+          			KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+        		break;
+      		}
+		}
+ 	}
+}
+
+/* Function that runs the application */
 INT CXBApplicationEx::Run(const CAppParamParser &params)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
@@ -69,12 +118,7 @@ INT CXBApplicationEx::Run(const CAppParamParser &params)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  if (params.Playlist().Size() > 0)
-  {
-    CServiceBroker::GetPlaylistPlayer().Add(0, params.Playlist());
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-  }
+  EnqueuePlayList(params.Playlist(), EOpReplace);
 
   // Run xbmc
   while (!m_bStop)

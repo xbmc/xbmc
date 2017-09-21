@@ -27,6 +27,7 @@ class CAppParamParser
     void Parse(const char* const* argv, int nArgs);
 
     const CFileItemList &Playlist() const { return m_playlist; }
+    void ClearPlaylist() { m_playlist.Clear(); }
     bool RemoteControlEnabled() const { return m_remoteControlEnabled; }
     const std::string &RemoteControlName() const { return m_remoteControlName; }
 
