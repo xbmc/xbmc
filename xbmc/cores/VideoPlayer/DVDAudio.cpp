@@ -278,6 +278,14 @@ double CDVDAudio::GetCacheTotal()
   return m_pAudioStream->GetCacheTotal();
 }
 
+double CDVDAudio::GetMaxDelay()
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pAudioStream)
+    return 0.0;
+  return m_pAudioStream->GetMaxDelay();
+}
+
 double CDVDAudio::GetPlayingPts()
 {
   if (m_playingPts == DVD_NOPTS_VALUE)

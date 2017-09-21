@@ -212,7 +212,12 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   return delay;
 }
 
-float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
+float CEngineStats::GetCacheTotal()
+{
+  return MAX_CACHE_LEVEL;
+}
+
+float CEngineStats::GetMaxDelay()
 {
   return MAX_CACHE_LEVEL + m_sinkCacheTotal;
 }

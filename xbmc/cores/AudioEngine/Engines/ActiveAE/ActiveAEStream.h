@@ -145,6 +145,7 @@ public:
   virtual bool IsBuffering();
   virtual double GetCacheTime();
   virtual double GetCacheTotal();
+  virtual double GetMaxDelay();
 
   virtual void Pause();
   virtual void Resume();

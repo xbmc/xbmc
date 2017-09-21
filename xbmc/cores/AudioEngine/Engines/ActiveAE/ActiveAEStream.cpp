@@ -368,7 +368,12 @@ double CActiveAEStream::GetCacheTime()
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return AE.GetCacheTotal(this);
+  return AE.GetCacheTotal();
+}
+
+double CActiveAEStream::GetMaxDelay()
+{
+  return AE.GetMaxDelay();
 }
 
 void CActiveAEStream::Pause()

@@ -56,7 +56,8 @@ public:
   unsigned int AddPackets(const DVDAudioFrame &audioframe);
   double GetPlayingPts();
   double GetCacheTime();
-  double GetCacheTotal(); // returns total amount the audio device can buffer
+  double GetCacheTotal(); // returns total time a stream can buffer
+  double GetMaxDelay(); // returns total time of audio in AE for the stream
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetSyncError();
   void SetSyncErrorCorrection(double correction);
