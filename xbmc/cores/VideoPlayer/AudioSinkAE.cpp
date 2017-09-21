@@ -109,7 +109,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 
   CSingleLock lock (m_critSection);
 
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0;
 
   CAESyncInfo info = m_pAudioStream->GetSyncInfo();
@@ -252,7 +252,7 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
 double CAudioSinkAE::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
 
   double delay = 0.0;
@@ -265,9 +265,17 @@ double CAudioSinkAE::GetCacheTime()
 double CAudioSinkAE::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
   return m_pAudioStream->GetCacheTotal();
+}
+
+double CAudioSinkAE::GetMaxDelay()
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pAudioStream)
+    return 0.0;
+  return m_pAudioStream->GetMaxDelay();
 }
 
 double CAudioSinkAE::GetPlayingPts()

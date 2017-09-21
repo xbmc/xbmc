@@ -158,6 +158,7 @@ public:
   bool IsBuffering() override;
   double GetCacheTime() override;
   double GetCacheTotal() override;
+  double GetMaxDelay() override;
 
   void Pause() override;
   void Resume() override;
