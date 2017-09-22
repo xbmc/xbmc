@@ -123,16 +123,9 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
 {
   if (m_group)
   {
-    if (m_group != GetPlayingGroup())
-    {
-      CGUIWindowPVRBase::SetSelectedItemPath(CServiceBroker::GetPVRManager().IsPlayingRadio(), GetLastSelectedItemPath(m_group->GroupID()));
-      CServiceBroker::GetPVRManager().SetPlayingGroup(m_group);
-    }
-    else
-    {
-      CGUIWindowPVRBase::SetSelectedItemPath(CServiceBroker::GetPVRManager().IsPlayingRadio(), m_viewControl.GetSelectedItemPath());
-    }
+    CGUIWindowPVRBase::SetSelectedItemPath(m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
 
+    // next OnInitWindow will set the group which is then selceted
     m_group.reset();
   }
 
@@ -152,9 +145,9 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       SaveControlStates();
 
       // switch to next or previous group
-      CPVRChannelGroupPtr group = GetPlayingGroup();
-      CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? group->GetNextGroup() : group->GetPreviousGroup();
+      const CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup();
       CServiceBroker::GetPVRManager().SetPlayingGroup(nextGroup);
+      m_group = nextGroup;
       Update();
 
       // restore control states and previously selected item of group
@@ -178,15 +171,6 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
   }
 
   return CGUIDialog::OnAction(action);
-}
-
-CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
-{
-  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
-  if (channel)
-    return CServiceBroker::GetPVRManager().GetPlayingGroup(channel->IsRadio());
-  else
-    return CPVRChannelGroupPtr();
 }
 
 void CGUIDialogPVRChannelsOSD::Update()
@@ -238,19 +222,17 @@ void CGUIDialogPVRChannelsOSD::SaveControlStates()
 {
   CGUIDialog::SaveControlStates();
 
-  CPVRChannelGroupPtr group = GetPlayingGroup();
-  if (group)
-    SaveSelectedItemPath(group->GroupID());
+  if (m_group)
+    SaveSelectedItemPath(m_group->GroupID());
 }
 
 void CGUIDialogPVRChannelsOSD::RestoreControlStates()
 {
   CGUIDialog::RestoreControlStates();
 
-  CPVRChannelGroupPtr group = GetPlayingGroup();
-  if (group)
+  if (m_group)
   {
-    std::string path = GetLastSelectedItemPath(group->GroupID());
+    std::string path = GetLastSelectedItemPath(m_group->GroupID());
     if (!path.empty())
       m_viewControl.SetSelectedItem(path);
     else
@@ -271,7 +253,6 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
   Close();
   CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
-  m_group = GetPlayingGroup();
 }
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
