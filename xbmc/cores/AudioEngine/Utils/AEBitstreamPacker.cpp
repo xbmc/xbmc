@@ -93,11 +93,11 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
   }
 }
 
-void CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts)
+bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts)
 {
   // re-use last buffer
   if (m_pauseDuration == millis)
-    return;
+    return false;
 
   switch (info.m_type)
   {
@@ -125,6 +125,8 @@ void CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, boo
   {
     memset(m_packedBuffer, 0, m_dataSize);
   }
+
+  return true;
 }
 
 unsigned int CAEBitstreamPacker::GetSize()
