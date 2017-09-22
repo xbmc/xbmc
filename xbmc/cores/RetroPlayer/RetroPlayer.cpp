@@ -48,6 +48,7 @@
 #include "input/ActionIDs.h"
 #include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
@@ -174,7 +175,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   if (bSuccess)
   {
     RegisterWindowCallbacks();
-    SetSpeed(1);
+    SetSpeedInternal(1.0);
     m_callback.OnPlayBackStarted(fileCopy);
     m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
   }
@@ -233,12 +234,12 @@ void CRetroPlayer::Pause()
 
   if (m_gameClient)
   {
-    double speed;
+    float speed;
 
     if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
-      speed = 1.0;
+      speed = 1.0f;
     else
-      speed = 0.0;
+      speed = 0.0f;
 
     SetSpeed(speed);
   }
@@ -362,8 +363,7 @@ void CRetroPlayer::SetSpeed(float speed)
         m_callback.OnPlayBackPaused();
     }
 
-    m_gameClient->GetPlayback()->SetSpeed(speed);
-    OnSpeedChange(speed);
+    SetSpeedInternal(static_cast<double>(speed));
   }
 }
 
@@ -375,18 +375,17 @@ bool CRetroPlayer::OnAction(const CAction &action)
   {
     if (m_gameClient)
     {
-      double speed = m_gameClient->GetPlayback()->GetSpeed();
+      float speed = static_cast<float>(m_gameClient->GetPlayback()->GetSpeed());
 
       m_gameClient->GetPlayback()->SetSpeed(0.0);
 
       CServiceBroker::GetGameServices().PortManager().HardwareReset();
 
       // If rewinding or paused, begin playback
-      if (speed <= 0.0)
-        speed = 1.0;
+      if (speed <= 0.0f)
+        speed = 1.0f;
 
-      m_gameClient->GetPlayback()->SetSpeed(speed);
-      OnSpeedChange(speed);
+      SetSpeed(speed);
     }
     return true;
   }
@@ -449,8 +448,18 @@ void CRetroPlayer::FrameMove()
       if (!bFullscreen)
       {
         m_priorSpeed = m_gameClient->GetPlayback()->GetSpeed();
-        m_gameClient->GetPlayback()->SetSpeed(0.0);
-        OnSpeedChange(0.0);
+
+        if (m_priorSpeed != 0.0)
+        {
+          IPlayerCallback *callback = &m_callback;
+          CJobManager::GetInstance().Submit([callback]()
+            {
+              callback->OnPlayBackPaused();
+            }, CJob::PRIORITY_NORMAL);
+        }
+
+        SetSpeedInternal(0.0);
+
         m_state = State::BACKGROUND;
       }
       break;
@@ -459,11 +468,17 @@ void CRetroPlayer::FrameMove()
     {
       if (bFullscreen)
       {
-        if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+        if (m_gameClient->GetPlayback()->GetSpeed() == 0.0 && m_priorSpeed != 0.0)
         {
-          m_gameClient->GetPlayback()->SetSpeed(m_priorSpeed);
-          OnSpeedChange(m_priorSpeed);
+          IPlayerCallback *callback = &m_callback;
+          CJobManager::GetInstance().Submit([callback]()
+            {
+              callback->OnPlayBackResumed();
+            }, CJob::PRIORITY_NORMAL);
+
+          SetSpeedInternal(m_priorSpeed);
         }
+
         m_state = State::FULLSCREEN;
       }
       break;
@@ -585,6 +600,16 @@ void CRetroPlayer::UpdateGuiRender(bool gui)
 void CRetroPlayer::UpdateVideoRender(bool video)
 {
   m_processInfo->SetVideoRender(video);
+}
+
+void CRetroPlayer::SetSpeedInternal(double speed)
+{
+  OnSpeedChange(speed);
+
+  if (speed == 0.0)
+    m_gameClient->GetPlayback()->PauseAsync();
+  else
+    m_gameClient->GetPlayback()->SetSpeed(speed);
 }
 
 void CRetroPlayer::OnSpeedChange(double newSpeed)

@@ -57,6 +57,7 @@ namespace GAME
 
     double GetSpeed() const { return m_speedFactor; }
     void SetSpeed(double speedFactor);
+    void PauseAsync();
 
   protected:
     // implementation of CThread
@@ -70,6 +71,7 @@ namespace GAME
     IGameLoopCallback* const m_callback;
     const double             m_fps;
     double                   m_speedFactor;
+    bool                     m_bPauseAsync = false;
     double                   m_lastFrameMs;
     CEvent                   m_sleepEvent;
     CCriticalSection         m_mutex;

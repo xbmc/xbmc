@@ -42,6 +42,7 @@ namespace GAME
     virtual void SeekTimeMs(unsigned int timeMs) = 0;
     virtual double GetSpeed() const = 0;
     virtual void SetSpeed(double speedFactor) = 0;
+    virtual void PauseAsync() = 0; // Pauses after the following frame
 
     // Savestates
     virtual std::string CreateSavestate() = 0; // Returns the path of savestate on success

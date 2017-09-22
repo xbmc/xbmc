@@ -144,6 +144,8 @@ namespace RETRO
     virtual void UpdateVideoRender(bool video) override;
 
   private:
+    void SetSpeedInternal(double speed);
+
     /*!
      * \brief Called when the speed changes
      * \param newSpeed The new speed, possibly equal to the previous speed

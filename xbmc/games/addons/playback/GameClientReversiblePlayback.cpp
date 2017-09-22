@@ -104,6 +104,11 @@ void CGameClientReversiblePlayback::SetSpeed(double speedFactor)
     m_gameLoop.SetSpeed(speedFactor * REWIND_FACTOR);
 }
 
+void CGameClientReversiblePlayback::PauseAsync()
+{
+  m_gameLoop.PauseAsync();
+}
+
 std::string CGameClientReversiblePlayback::CreateSavestate()
 {
   std::string empty;

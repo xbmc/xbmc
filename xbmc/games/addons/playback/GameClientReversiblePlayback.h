@@ -55,6 +55,7 @@ namespace GAME
     virtual void SeekTimeMs(unsigned int timeMs) override;
     virtual double GetSpeed() const override;
     virtual void SetSpeed(double speedFactor) override;
+    virtual void PauseAsync() override;
     virtual std::string CreateSavestate() override;
     virtual bool LoadSavestate(const std::string& path) override;
 
