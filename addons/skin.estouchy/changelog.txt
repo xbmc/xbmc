@@ -1,5 +1,6 @@
+
 V2.0.0
-- Kodi v18 LittlePony
+- Kodi v18 Leia
 
 V1.1.0
 - Redesign
