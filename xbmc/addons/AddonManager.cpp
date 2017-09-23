@@ -706,8 +706,10 @@ bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
     if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
     {
       CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addon->ID().c_str());
-      m_events.Publish(AddonEvents::InstalledChanged());
-      m_events.Publish(AddonEvents::UnInstalled(addon->ID()));
+
+      lock.Leave();
+      AddonEvents::Unload event(addon->ID());
+      m_unloadEvents.HandleEvent(event);
       return true;
     }
   }
@@ -715,17 +717,16 @@ bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
   return false;
 }
 
-bool CAddonMgr::ReloadAddon(AddonPtr& addon)
+bool CAddonMgr::LoadAddon(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
-  if (!addon ||!m_cpluff || !m_cp_context)
+  if (!m_cpluff || !m_cp_context)
     return false;
 
-  AddonPtr tmp;
-  bool isReinstall = GetAddon(addon->ID(), tmp, ADDON_UNKNOWN, false);
-  if (isReinstall)
+  AddonPtr addon;
+  if (GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
-    m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
+    return true;
   }
 
   if (!FindAddons())
@@ -734,22 +735,26 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
     return false;
   }
 
-  if (!GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false))
+  if (!GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonMgr: could not load add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
     return false;
   }
 
-  if (isReinstall)
-    m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
+  lock.Leave();
 
-  if (!EnableAddon(addon->ID()))
+  AddonEvents::Load event(addon->ID());
+  m_unloadEvents.HandleEvent(event);
+
+  if (IsAddonDisabled(addon->ID()))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: '%s' was installed but could not be enabled", addon->ID().c_str());
-    return false;
+    EnableAddon(addon->ID());
+    return true;
   }
 
-  CLog::Log(LOGDEBUG, "CAddonMgr: %s reloaded", addon->ID().c_str());
+  m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
+  m_events.Publish(AddonEvents::InstalledChanged());
+  CLog::Log(LOGDEBUG, "CAddonMgr: %s successfully loaded", addon->ID().c_str());
   return true;
 }
 
@@ -758,6 +763,8 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
   CSingleLock lock(m_critSection);
   m_disabled.erase(id);
   m_updateBlacklist.erase(id);
+  m_events.Publish(AddonEvents::InstalledChanged());
+  m_events.Publish(AddonEvents::UnInstalled(id));
 }
 
 bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)

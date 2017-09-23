@@ -50,6 +50,7 @@ CServiceAddonManager::CServiceAddonManager(CAddonMgr& addonMgr) :
 CServiceAddonManager::~CServiceAddonManager()
 {
   m_addonMgr.Events().Unsubscribe(this);
+  m_addonMgr.UnloadEvents().Unsubscribe(this);
 }
 
 void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
@@ -68,8 +69,25 @@ void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
   }
   else if (auto reinstallEvent = dynamic_cast<const AddonEvents::ReInstalled*>(&event))
   {
-    Stop(reinstallEvent->id);
     Start(reinstallEvent->id);
+  }
+
+  else if (auto e = dynamic_cast<const ADDON::AddonEvents::Unload*>(&event))
+  {
+    CLog::Log(LOGINFO, "CServiceAddonManager: Unloading %s", e->id.c_str());
+    CSingleLock lock(m_criticalSection);
+    Stop(e->id);
+    m_blacklistedAddons.push_back(e->id);
+  }
+  else if (auto e = dynamic_cast<const ADDON::AddonEvents::Load*>(&event))
+  {
+    CLog::Log(LOGINFO, "CServiceAddonManager: Removing %s from blacklist", e->id.c_str());
+    CSingleLock lock(m_criticalSection);
+    auto it = std::find(m_blacklistedAddons.begin(), m_blacklistedAddons.end(), e->id);
+    if (it != m_blacklistedAddons.end())
+    {
+      m_blacklistedAddons.erase(it);
+    }
   }
 }
 
@@ -92,6 +110,7 @@ void CServiceAddonManager::StartBeforeLogin()
 void CServiceAddonManager::Start()
 {
   m_addonMgr.Events().Subscribe(this, &CServiceAddonManager::OnEvent);
+  m_addonMgr.UnloadEvents().Subscribe(this, &CServiceAddonManager::OnEvent);
   VECADDONS addons;
   if (m_addonMgr.GetAddons(addons, ADDON_SERVICE))
   {
@@ -117,6 +136,12 @@ void CServiceAddonManager::Start(const AddonPtr& addon)
   if (m_services.find(addon->ID()) != m_services.end())
   {
     CLog::Log(LOGDEBUG, "CServiceAddonManager: %s already started.", addon->ID().c_str());
+    return;
+  }
+
+  if (std::find(m_blacklistedAddons.begin(), m_blacklistedAddons.end(), addon->ID()) != m_blacklistedAddons.end())
+  {
+    CLog::Log(LOGINFO, "CServiceAddonManager: Not executing blacklisted addon %s", addon->ID().c_str());
     return;
   }
 

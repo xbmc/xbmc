@@ -88,3 +88,18 @@ public:
     CJobManager::GetInstance().Submit(std::move(task));
   }
 };
+
+template<typename Event>
+class CBlockingEventSource : public CEventStream<Event>
+{
+public:
+  template<typename A>
+  void HandleEvent(A event)
+  {
+    CSingleLock lock(this->m_criticalSection);
+    for (const auto& subscription : this->m_subscriptions)
+    {
+      subscription->HandleEvent(event);
+    }
+  }
+};

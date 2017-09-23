@@ -82,6 +82,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     CEventStream<AddonEvent>& Events() { return m_events; }
+    CEventStream<AddonEvent>& UnloadEvents() { return m_unloadEvents; }
 
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
@@ -178,7 +179,7 @@ namespace ADDON
      *
      * Returns true if the addon was successfully loaded and enabled; otherwise false.
      */
-    bool ReloadAddon(AddonPtr& addon);
+    bool LoadAddon(const std::string& addonId);
 
     /*! @note: should only be called by AddonInstaller
      *
@@ -312,6 +313,7 @@ namespace ADDON
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
     CEventSource<AddonEvent> m_events;
+    CBlockingEventSource<AddonEvent> m_unloadEvents;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
   };

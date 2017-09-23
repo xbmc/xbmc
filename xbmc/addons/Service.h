@@ -89,5 +89,7 @@ namespace ADDON
     CCriticalSection m_criticalSection;
     /** add-on id -> script id */
     std::map<std::string, int> m_services;
+
+    std::vector<std::string> m_blacklistedAddons;
   };
 }
