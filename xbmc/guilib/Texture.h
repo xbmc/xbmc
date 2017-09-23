@@ -120,7 +120,7 @@ public:
 
 private:
   // no copy constructor
-  CBaseTexture(const CBaseTexture &copy);
+  CBaseTexture(const CBaseTexture &copy) = delete;
 
 protected:
   bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
