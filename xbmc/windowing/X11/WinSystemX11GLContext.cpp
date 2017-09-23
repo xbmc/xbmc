@@ -187,12 +187,11 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
   XVisualInfo vTemplate;
   XVisualInfo *visual = nullptr;
 
-  int vMask = VisualScreenMask | VisualDepthMask | VisualClassMask | VisualBitsPerRGBMask;
+  int vMask = VisualScreenMask | VisualDepthMask | VisualClassMask;
 
   vTemplate.screen = m_nScreen;
   vTemplate.depth = 24;
   vTemplate.c_class = TrueColor;
-  vTemplate.bits_per_rgb = 8;
 
   visual = XGetVisualInfo(m_dpy, vMask, &vTemplate, &count);
 
