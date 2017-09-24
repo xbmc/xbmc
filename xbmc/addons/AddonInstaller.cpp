@@ -604,7 +604,7 @@ bool CAddonInstallJob::DoWork()
   // run any pre-install functions
   ADDON::OnPreInstall(m_addon);
 
-  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
+  if (!CServiceBroker::GetAddonMgr().UnloadAddon(m_addon->ID()))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
     return false;
@@ -840,7 +840,7 @@ bool CAddonUnInstallJob::DoWork()
 
   //Unregister addon with the manager to ensure nothing tries
   //to interact with it while we are uninstalling.
-  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
+  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon->ID()))
   {
     CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
     return false;

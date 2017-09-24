@@ -172,7 +172,7 @@ namespace ADDON
      *
      * Unload addon from the system. Returns true if it was unloaded, otherwise false.
      */
-    bool UnloadAddon(const AddonPtr& addon);
+    bool UnloadAddon(const std::string& addonId);
 
     /*!
      * @note: should only be called by AddonInstaller
