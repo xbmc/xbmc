@@ -2488,10 +2488,12 @@ void CVideoPlayer::HandleMessages()
 
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
       m_renderManager.Flush(false);
-      CloseDemuxer();
+      SAFE_DELETE(m_pDemuxer);
       SAFE_DELETE(m_pSubtitleDemuxer);
       SAFE_DELETE(m_pCCDemuxer);
       SAFE_DELETE(m_pInputStream);
+
+      m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
       Prepare();
     }

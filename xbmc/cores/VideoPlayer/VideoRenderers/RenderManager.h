@@ -230,6 +230,7 @@ protected:
   int m_presentsourcePast = -1;
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
+  CEvent m_initEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
 
