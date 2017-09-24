@@ -116,6 +116,20 @@ std::string CDataCacheCore::GetVideoPixelFormat()
   return m_playerVideoInfo.pixFormat;
 }
 
+void CDataCacheCore::SetVideoStereoMode(std::string mode)
+{
+  CSingleLock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.stereoMode = mode;
+}
+
+std::string CDataCacheCore::GetVideoStereoMode()
+{
+  CSingleLock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.stereoMode;
+}
+
 void CDataCacheCore::SetVideoDimensions(int width, int height)
 {
   CSingleLock lock(m_videoPlayerSection);

@@ -202,7 +202,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   }
 
   // use aspect in stream if available
-  if(hint.forced_aspect)
+  if (hint.forced_aspect)
     m_fForcedAspectRatio = static_cast<float>(hint.aspect);
   else
     m_fForcedAspectRatio = 0.0f;
@@ -229,6 +229,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
       StopThread();
     }
   }
+
   m_pVideoCodec = codec;
   m_hints = hint;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
@@ -784,45 +785,50 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
                                         , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
         else
           overlays.push_back(pOverlay);
-
       }
     }
 
     for(it = overlays.begin(); it != overlays.end(); ++it)
     {
       double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
-
       m_renderManager.AddOverlay(*it, pts2);
     }
   }
-
-
 }
 
 std::string CVideoPlayerVideo::GetStereoMode()
 {
-  std::string  stereo_mode;
+  std::string  stereoMode;
 
   switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
   {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
-    default:                                  stereo_mode = m_hints.stereo_mode; break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      stereoMode = "left_right";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      stereoMode = "top_bottom";
+      break;
+    default:
+      stereoMode = m_processInfo.GetVideoStereoMode();
+      break;
   }
 
-  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
-    stereo_mode = GetStereoModeInvert(stereo_mode);
-  return stereo_mode;
+  if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
+    stereoMode = GetStereoModeInvert(stereoMode);
+
+  return stereoMode;
 }
 
 CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
 {
   m_bAbortOutput = false;
 
-  /* grab stereo mode from image if available */
-  if (pPicture->stereo_mode[0] && m_hints.stereo_mode.compare(pPicture->stereo_mode) != 0)
+  if (m_syncState == ESyncState::SYNC_STARTING)
+    m_processInfo.SetVideoStereoMode(m_hints.stereo_mode);
+  // grab stereo mode from image if available
+  if (pPicture->stereo_mode[0] && m_processInfo.GetVideoStereoMode().compare(pPicture->stereo_mode) != 0)
   {
-    m_hints.stereo_mode = pPicture->stereo_mode;
+    m_processInfo.SetVideoStereoMode(pPicture->stereo_mode);
     // signal about changes in video parameters
     m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
   }
@@ -833,7 +839,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
 
   unsigned flags = 0;
-  if(pPicture->color_range == 1)
+  if (pPicture->color_range == 1)
     flags |= CONF_FLAGS_YUV_FULLRANGE;
 
   flags |= GetFlagsChromaPosition(pPicture->chroma_position)
