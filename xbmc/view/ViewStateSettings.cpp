@@ -47,7 +47,7 @@ CViewStateSettings::CViewStateSettings()
 {
   AddViewState("musicnavartists");
   AddViewState("musicnavalbums");
-  AddViewState("musicnavsongs");
+  AddViewState("musicnavsongs", DEFAULT_VIEW_LIST, SortByTrackNumber);
   AddViewState("musiclastfm");
   AddViewState("videonavactors");
   AddViewState("videonavyears");
