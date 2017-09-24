@@ -191,7 +191,6 @@
 			<timeblocks>40</timeblocks>
 			<rulerunit>6</rulerunit>
 			<progresstexture border="0,3,8,3">epg_marker.png</progresstexture>
-			<preloaditems>4</preloaditems>
 			<rulerlayout height="30" width="40">
 				<control type="label" id="2">
 					<posx>10</posx>
