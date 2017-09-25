@@ -876,7 +876,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   SVertex* v = &vertices[vertices.size() - 4];
   m_color = color;
 
-#ifndef HAS_DX
+#if !defined(HAS_DX)
   unsigned char r = GET_R(color)
               , g = GET_G(color)
               , b = GET_B(color)
@@ -902,7 +902,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
 #endif
   }
 
-#if defined(HAS_GL) || defined(HAS_DX)
+#if defined(HAS_DX)
   for(int i = 0; i < 4; i++)
   {
     v[i].x = x[i];
@@ -922,7 +922,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   v[3].u = tl;
   v[3].v = tb;
 #else
-  // GLES uses triangle strips, not quads, so have to rearrange the vertex order
+  // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
   v[0].u = tl;
   v[0].v = tt;
   v[0].x = x[0];
