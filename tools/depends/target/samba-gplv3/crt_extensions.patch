@@ -1,0 +1,11 @@
+--- lib/replace/replace.h	2017-09-25 19:50:26.000000000 +0200
++++ lib/replace/replace.h	2017-09-25 19:48:25.000000000 +0200
+@@ -197,7 +197,7 @@
+ 
+ #if !HAVE_DECL_ENVIRON
+ #ifdef __APPLE__
+-#include <crt_externs.h>
++//#include <crt_externs.h>
+ #define environ (*_NSGetEnviron())
+ #else
+ extern char **environ;
