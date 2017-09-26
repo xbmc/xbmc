@@ -254,11 +254,6 @@ CAddonMgr::~CAddonMgr()
   DeInit();
 }
 
-CAddonMgr &CAddonMgr::GetInstance()
-{
-  return CServiceBroker::GetAddonMgr();
-}
-
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
 {
   if (m_managers.find(type) == m_managers.end())
