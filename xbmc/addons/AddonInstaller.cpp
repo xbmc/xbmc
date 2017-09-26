@@ -614,7 +614,9 @@ bool CAddonInstallJob::DoWork()
   if (!Install(installFrom, m_repo))
     return false;
 
-  if (!CAddonMgr::GetInstance().LoadAddon(m_addon->ID()))
+  // Load new installed and if successed replace defined m_addon here with new one
+  if (!CAddonMgr::GetInstance().LoadAddon(m_addon->ID()) ||
+      !CAddonMgr::GetInstance().GetAddon(m_addon->ID(), m_addon))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
     return false;
