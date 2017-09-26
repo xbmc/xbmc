@@ -698,22 +698,26 @@ bool CAddonMgr::FindAddons()
   return result;
 }
 
-bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
+bool CAddonMgr::UnloadAddon(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
+
+  if (!IsAddonInstalled(addonId))
+    return true;
+
   if (m_cpluff && m_cp_context)
   {
-    if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
+    if (m_cpluff->uninstall_plugin(m_cp_context, addonId.c_str()) == CP_OK)
     {
-      CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addon->ID().c_str());
+      CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addonId.c_str());
 
       lock.Leave();
-      AddonEvents::Unload event(addon->ID());
+      AddonEvents::Unload event(addonId);
       m_unloadEvents.HandleEvent(event);
       return true;
     }
   }
-  CLog::Log(LOGERROR, "CAddonMgr: failed to unload %s", addon->ID().c_str());
+  CLog::Log(LOGERROR, "CAddonMgr: failed to unload %s", addonId.c_str());
   return false;
 }
 
