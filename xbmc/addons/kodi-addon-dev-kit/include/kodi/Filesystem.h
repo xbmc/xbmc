@@ -181,43 +181,50 @@ typedef enum OpenFileFlags
 
 //==============================================================================
 /// \ingroup cpp_kodi_vfs_Defs
-/// @brief Used CURL message types
+/// @brief CURL message types
+///
+/// Used on kodi::vfs::CFile::CURLAddOption()
 ///
 typedef enum CURLOptiontype
 {
   /// Set a general option
   ADDON_CURL_OPTION_OPTION,
-  /// Set a protocol option (see below)
+
+  /// Set a protocol option
+  ///
+  /// The following names for *ADDON_CURL_OPTION_PROTOCOL* are possible:
+  ///
+  /// | Option name                | Description
+  /// |---------------------------:|:----------------------------------------------------------
+  /// | accept-charset             | Set the "accept-charset" header
+  /// | acceptencoding or encoding | Set the "accept-encoding" header
+  /// | active-remote              | Set the "active-remote" header
+  /// | auth                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
+  /// | connection-timeout         | Set the connection timeout in seconds
+  /// | cookie                     | Set the "cookie" header
+  /// | customrequest              | Set a custom HTTP request like DELETE
+  /// | noshout                    | Set to true if kodi detects a stream as shoutcast by mistake.
+  /// | postdata                   | Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
+  /// | referer                    | Set the "referer" header
+  /// | user-agent                 | Set the "user-agent" header
+  /// | seekable                   | Set the stream seekable. 1: enable, 0: disable
+  /// | sslcipherlist              | Set list of accepted SSL ciphers.
+  ///
   ADDON_CURL_OPTION_PROTOCOL,
+
   /// Set User and password
   ADDON_CURL_OPTION_CREDENTIALS,
+
   /// Add a Header
   ADDON_CURL_OPTION_HEADER
 } CURLOptiontype;
 //------------------------------------------------------------------------------
 
-///
-// The following names for ADDON_CURL_OPTION_PROTOCOL are possible:
-//
-// accept-charset: Set the "accept-charset" header
-// acceptencoding or encoding: Set the "accept-encoding" header
-// active-remote: Set the "active-remote" header
-// auth: Set the authentication method. Possible values: any, anysafe, digest, ntlm
-// connection-timeout: Set the connection timeout in seconds
-// cookie: Set the "cookie" header
-// customrequest: Set a custom HTTP request like DELETE
-// noshout: Set to true if kodi detects a stream as shoutcast by mistake.
-// postdata: Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
-// referer: Set the "referer" header
-// user-agent: Set the "user-agent" header
-// seekable: Set the stream seekable. 1: enable, 0: disable
-// sslcipherlist: Set list of accepted SSL ciphers.
-//
-///
-
 //==============================================================================
 /// \ingroup cpp_kodi_vfs_Defs
-/// @brief Used CURL message types
+/// @brief CURL message types
+///
+/// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues()
 ///
 typedef enum FilePropertyTypes
 {
@@ -1047,7 +1054,7 @@ namespace vfs
   /// #include <kodi/Filesystem.h>
   /// ...
   /// STAT_STRUCTURE statFile;
-  /// int ret = kodi::vfs::StatFile("special://temp/kodi.log", &statFile);
+  /// int ret = kodi::vfs::StatFile("special://temp/kodi.log", statFile);
   /// fprintf(stderr, "deviceId (ID of device containing file)       = %u\n"
   ///                 "size (total size, in bytes)                   = %lu\n"
   ///                 "accessTime (time of last access)              = %lu\n"
