@@ -40,6 +40,7 @@ namespace ADDON
   {
   public:
     CBinaryAddonManager();
+    CBinaryAddonManager(const CBinaryAddonManager&) = delete;
     ~CBinaryAddonManager();
 
     bool Init();
