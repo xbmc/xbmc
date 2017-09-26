@@ -112,7 +112,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CLog::Log(LOGERROR, "Can't play game, no game client was passed to RetroPlayer!");
   }
-  else if (!ADDON::CAddonMgr::GetInstance().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL))
+  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL))
   {
     CLog::Log(LOGERROR, "Can't find add-on %s for game file!", gameClientId.c_str());
   }
@@ -150,7 +150,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       if (save.GameClient() != m_gameClient->ID())
       {
         ADDON::AddonPtr addon;
-        if (ADDON::CAddonMgr::GetInstance().GetAddon(save.GameClient(), addon))
+        if (CServiceBroker::GetAddonMgr().GetAddon(save.GameClient(), addon))
         {
           // Warn the user that continuing with a different game client will
           // overwrite the save

@@ -20,6 +20,7 @@
 
 #include "GameClientProperties.h"
 #include "GameClient.h"
+#include "ServiceBroker.h"
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
@@ -97,15 +98,15 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
     {
       const std::string& strAddonId = it->first;
       AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
       {
         // If add-on is disabled, ask the user to enable it
-        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+        if (CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID()))
         {
           // Failed to play game
           // This game depends on a disabled add-on. Would you like to enable it?
           if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 35210 }, CVariant{ 35215 }))
-            CAddonMgr::GetInstance().EnableAddon(addon->ID());
+            CServiceBroker::GetAddonMgr().EnableAddon(addon->ID());
           else
             addon.reset();
         }
@@ -132,7 +133,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
     {
       const std::string& strAddonId = it->first;
       AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES))
       {
         std::shared_ptr<CGameResource> resource = std::static_pointer_cast<CGameResource>(addon);
 

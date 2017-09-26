@@ -19,13 +19,15 @@
  */
 
 #include "ContextMenuAddon.h"
+
 #include "AddonManager.h"
 #include "ContextMenuManager.h"
 #include "ContextMenuItem.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include <sstream>
 
+#include <sstream>
 
 namespace ADDON
 {
@@ -37,8 +39,8 @@ void CContextMenuAddon::ParseMenu(
     int& anonGroupCount,
     std::vector<CContextMenuItem>& items)
 {
-  auto menuId = CAddonMgr::GetInstance().GetExtValue(elem, "@id");
-  auto menuLabel = CAddonMgr::GetInstance().GetExtValue(elem, "label");
+  auto menuId = CServiceBroker::GetAddonMgr().GetExtValue(elem, "@id");
+  auto menuLabel = CServiceBroker::GetAddonMgr().GetExtValue(elem, "label");
   if (StringUtils::IsNaturalNumber(menuLabel))
     menuLabel = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(menuLabel.c_str()));
 
@@ -53,18 +55,18 @@ void CContextMenuAddon::ParseMenu(
   items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, addonInfo.ID()));
 
   ELEMENTS subMenus;
-  if (CAddonMgr::GetInstance().GetExtElements(elem, "menu", subMenus))
+  if (CServiceBroker::GetAddonMgr().GetExtElements(elem, "menu", subMenus))
     for (const auto& subMenu : subMenus)
       ParseMenu(addonInfo, subMenu, menuId, anonGroupCount, items);
 
   ELEMENTS elems;
-  if (CAddonMgr::GetInstance().GetExtElements(elem, "item", elems))
+  if (CServiceBroker::GetAddonMgr().GetExtElements(elem, "item", elems))
   {
     for (const auto& elem : elems)
     {
-      auto visCondition = CAddonMgr::GetInstance().GetExtValue(elem, "visible");
-      auto library = CAddonMgr::GetInstance().GetExtValue(elem, "@library");
-      auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
+      auto visCondition = CServiceBroker::GetAddonMgr().GetExtValue(elem, "visible");
+      auto library = CServiceBroker::GetAddonMgr().GetExtValue(elem, "@library");
+      auto label = CServiceBroker::GetAddonMgr().GetExtValue(elem, "label");
       if (StringUtils::IsNaturalNumber(label))
         label = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(label.c_str()));
 
@@ -82,7 +84,7 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(CAddonInfo a
 {
   std::vector<CContextMenuItem> items;
 
-  cp_cfg_element_t* menu = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "menu");
+  cp_cfg_element_t* menu = CServiceBroker::GetAddonMgr().GetExtElement(ext->configuration, "menu");
   if (menu)
   {
     int tmp = 0;
@@ -92,18 +94,18 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(CAddonInfo a
   {
     //backwards compatibility. add first item definition
     ELEMENTS elems;
-    if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "item", elems))
+    if (CServiceBroker::GetAddonMgr().GetExtElements(ext->configuration, "item", elems))
     {
       cp_cfg_element_t *elem = elems[0];
 
-      std::string visCondition = CAddonMgr::GetInstance().GetExtValue(elem, "visible");
+      std::string visCondition = CServiceBroker::GetAddonMgr().GetExtValue(elem, "visible");
       if (visCondition.empty())
         visCondition = "false";
 
-      std::string parent = CAddonMgr::GetInstance().GetExtValue(elem, "parent") == "kodi.core.manage"
+      std::string parent = CServiceBroker::GetAddonMgr().GetExtValue(elem, "parent") == "kodi.core.manage"
           ? CContextMenuManager::MANAGE.m_groupId : CContextMenuManager::MAIN.m_groupId;
 
-      auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
+      auto label = CServiceBroker::GetAddonMgr().GetExtValue(elem, "label");
       if (StringUtils::IsNaturalNumber(label))
         label = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(label.c_str()));
 

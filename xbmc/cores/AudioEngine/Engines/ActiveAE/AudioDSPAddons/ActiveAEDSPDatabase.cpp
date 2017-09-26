@@ -91,10 +91,10 @@ void CActiveAEDSPDatabase::CreateTables()
 
   // disable all Audio DSP add-on when started the first time
   ADDON::VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_ADSPDLL))
+  if (CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON_ADSPDLL))
   {
     for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
-      CAddonMgr::GetInstance().DisableAddon(it->get()->ID());
+      CServiceBroker::GetAddonMgr().DisableAddon(it->get()->ID());
   }
 }
 

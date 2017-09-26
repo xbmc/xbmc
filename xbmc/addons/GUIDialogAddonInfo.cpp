@@ -173,10 +173,10 @@ void CGUIDialogAddonInfo::UpdateControls()
     return;
 
   bool isInstalled = NULL != m_localAddon.get();
-  m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
-  bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
+  m_addonEnabled = m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
+  bool canDisable = isInstalled && CServiceBroker::GetAddonMgr().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetAddonInfo()->Broken().empty();
-  bool canUninstall = m_localAddon && CAddonMgr::GetInstance().CanUninstall(m_localAddon);
+  bool canUninstall = m_localAddon && CServiceBroker::GetAddonMgr().CanUninstall(m_localAddon);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall || canUninstall);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
@@ -197,7 +197,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool autoUpdatesOn = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON;
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn &&
-      !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
+      !CServiceBroker::GetAddonMgr().IsBlacklisted(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
@@ -246,7 +246,7 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
       item.SetIconImage("DefaultAddonRepository.png");
       dialog->Add(item);
     }
-    else if (CAddonMgr::GetInstance().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
+    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
     {
       item.SetLabel2(repo->Name());
       item.SetIconImage(repo->Icon());
@@ -303,7 +303,7 @@ void CGUIDialogAddonInfo::OnUpdate()
       Close();
       //turn auto updating off if downgrading
       if (m_localAddon->Version() > versions[i].first)
-        CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
+        CServiceBroker::GetAddonMgr().AddToUpdateBlacklist(m_localAddon->ID());
 
       if (versions[i].second == LOCAL_CACHE)
         CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format(
@@ -322,9 +322,9 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
   {
     bool selected = msg.GetParam1() == 1;
     if (selected)
-      CAddonMgr::GetInstance().RemoveFromUpdateBlacklist(m_localAddon->ID());
+      CServiceBroker::GetAddonMgr().RemoveFromUpdateBlacklist(m_localAddon->ID());
     else
-      CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
+      CServiceBroker::GetAddonMgr().AddToUpdateBlacklist(m_localAddon->ID());
   }
 }
 
@@ -408,7 +408,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   VECADDONS addons;
   std::vector<std::string> deps;
-  CAddonMgr::GetInstance().GetAddons(addons);
+  CServiceBroker::GetAddonMgr().GetAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
   {
@@ -465,10 +465,10 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     if (PromptIfDependency(24075, 24091))
       return; //required. can't disable
 
-    CAddonMgr::GetInstance().DisableAddon(m_localAddon->ID());
+    CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID());
   }
   else
-    CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
+    CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
 
   UpdateControls();
 }
@@ -572,6 +572,6 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
-  CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
+  CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
   return true;
 }

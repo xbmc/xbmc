@@ -20,6 +20,7 @@
 
 #include "ControllerManager.h"
 #include "Controller.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "input/joysticks/JoystickIDs.h"
 
@@ -35,7 +36,7 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
   if (!cachedController && m_failedControllers.find(controllerId) == m_failedControllers.end())
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER, false))
+    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER, false))
       cachedController = LoadController(std::move(addon));
   }
 
@@ -54,7 +55,7 @@ ControllerVector CControllerManager::GetControllers()
   ControllerVector controllers;
 
   VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_GAME_CONTROLLER))
+  if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON_GAME_CONTROLLER))
   {
     for (auto& addon : addons)
     {

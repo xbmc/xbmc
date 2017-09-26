@@ -6134,7 +6134,7 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE &content, ADDON::Scra
 
       // Use pre configured or default scraper
       ADDON::AddonPtr addon;
-      if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
+      if (!scraperUUID.empty() && CServiceBroker::GetAddonMgr().GetAddon(scraperUUID, addon) && addon)
       {
         scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
         if (scraper)

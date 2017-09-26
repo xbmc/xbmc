@@ -103,7 +103,7 @@ void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candida
 
   // Get remote candidates
   VECADDONS remoteAddons;
-  if (CAddonMgr::GetInstance().GetInstallableAddons(remoteAddons, ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, ADDON_GAMEDLL))
   {
     GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
     bHasVfsGameClient |= bVfs;
@@ -185,7 +185,7 @@ bool CGameUtils::HasGameExtension(const std::string &path)
 
   // Check remote add-ons
   gameClients.clear();
-  if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
     {
@@ -215,7 +215,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
 
   // Check remote add-ons
   gameClients.clear();
-  if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
     {

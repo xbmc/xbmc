@@ -35,13 +35,13 @@ CVFSAddonCache::~CVFSAddonCache()
 
 void CVFSAddonCache::Init()
 {
-  CAddonMgr::GetInstance().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
   Update();
 }
 
 void CVFSAddonCache::Deinit()
 {
-  CAddonMgr::GetInstance().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
 const std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()

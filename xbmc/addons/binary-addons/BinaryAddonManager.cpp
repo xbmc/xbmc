@@ -21,6 +21,7 @@
 #include "BinaryAddonManager.h"
 #include "BinaryAddonBase.h"
 
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
@@ -41,10 +42,10 @@ CBinaryAddonManager::~CBinaryAddonManager()
 
 bool CBinaryAddonManager::Init()
 {
-  CAddonMgr::GetInstance().Events().Subscribe(this, &CBinaryAddonManager::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CBinaryAddonManager::OnEvent);
 
   BINARY_ADDON_LIST binaryAddonList;
-  if (!CAddonMgr::GetInstance().GetInstalledBinaryAddons(binaryAddonList))
+  if (!CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList))
   {
     CLog::Log(LOGNOTICE, "CBinaryAddonManager::%s: No binary addons present and related manager, init not necessary", __FUNCTION__);
     return true;
@@ -64,7 +65,7 @@ void CBinaryAddonManager::DeInit()
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
     XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
 
-  CAddonMgr::GetInstance().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
 bool CBinaryAddonManager::HasInstalledAddons(const TYPE &type) const
@@ -233,7 +234,7 @@ void CBinaryAddonManager::DisableEvent(const std::string& addonId)
 void CBinaryAddonManager::InstalledChangeEvent()
 {
   BINARY_ADDON_LIST binaryAddonList;
-  CAddonMgr::GetInstance().GetInstalledBinaryAddons(binaryAddonList);
+  CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList);
 
   CSingleLock lock(m_critSection);
 

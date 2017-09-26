@@ -22,6 +22,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "NfoFile.h"
+#include "ServiceBroker.h"
 #include "video/VideoInfoDownloader.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
@@ -99,7 +100,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath,
 
   // Add all scrapers except selected and default
   VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(addons, m_type);
+  CServiceBroker::GetAddonMgr().GetAddons(addons, m_type);
 
   for (unsigned i = 0; i < addons.size(); ++i)
   {

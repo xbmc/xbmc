@@ -305,7 +305,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
-  ADDON::CAddonMgr::GetInstance().ReInit();
+  CServiceBroker::GetAddonMgr().ReInit();
 
   // let CApplication know that we are logging into a new profile
   g_application.SetLoggingIn(true);
