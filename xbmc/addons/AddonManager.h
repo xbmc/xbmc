@@ -72,13 +72,12 @@ namespace ADDON
   class CAddonMgr
   {
   public:
-    static CAddonMgr &GetInstance();
     bool ReInit() { DeInit(); return Init(); }
     bool Init();
     void DeInit();
 
     CAddonMgr();
-    CAddonMgr(const CAddonMgr&);
+    CAddonMgr(const CAddonMgr&) = delete;
     virtual ~CAddonMgr();
 
     CEventStream<AddonEvent>& Events() { return m_events; }

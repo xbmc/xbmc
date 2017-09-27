@@ -41,7 +41,7 @@ CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager) :
 {
   using namespace ADDON;
 
-  CAddonMgr::GetInstance().Events().Subscribe(this, &CPeripheralBusAddon::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPeripheralBusAddon::OnEvent);
 
   UpdateAddons();
 }
@@ -50,7 +50,7 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
 {
   using namespace ADDON;
 
-  CAddonMgr::GetInstance().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   // stop everything before destroying any (loaded) addons
   Clear();
@@ -479,7 +479,7 @@ void CPeripheralBusAddon::PromptEnableAddons(const ADDON::BinaryAddonBaseList& d
     for (const auto& addonInfo : disabledAddons)
     {
       if (CPeripheralAddon::ProvidesJoysticks(addonInfo))
-        CAddonMgr::GetInstance().EnableAddon(addonInfo->ID());
+        CServiceBroker::GetAddonMgr().EnableAddon(addonInfo->ID());
     }
   }
 }

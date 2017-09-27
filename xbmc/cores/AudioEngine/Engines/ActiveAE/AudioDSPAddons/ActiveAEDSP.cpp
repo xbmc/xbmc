@@ -269,7 +269,7 @@ bool CActiveAEDSP::IsInUse(const std::string &strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (AE_DSP_ADDONMAP_CITR citr = m_addonMap.begin(); citr != m_addonMap.end(); ++citr)
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(citr->second->ID()) && citr->second->ID() == strAddonId)
+    if (!CServiceBroker::GetAddonMgr().IsAddonDisabled(citr->second->ID()) && citr->second->ID() == strAddonId)
       return true;
   return false;
 }
@@ -598,7 +598,7 @@ void CActiveAEDSP::UpdateAddons()
 
   for (auto &addonInfo : addonInfos)
   {
-    bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled(addonInfo->ID());
+    bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addonInfo->ID());
     if (bEnabled && (!IsKnownAudioDSPAddon(addonInfo->ID()) || !IsReadyAudioDSPAddon(addonInfo)))
     {
       std::hash<std::string> hasher;
@@ -690,7 +690,7 @@ int CActiveAEDSP::EnabledAudioDSPAddonAmount(void) const
 
   for (AE_DSP_ADDONMAP_CITR citr = m_addonMap.begin(); citr != m_addonMap.end(); ++citr)
   {
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(citr->second->ID()))
+    if (!CServiceBroker::GetAddonMgr().IsAddonDisabled(citr->second->ID()))
       ++iReturn;
   }
 
@@ -709,7 +709,7 @@ int CActiveAEDSP::GetEnabledAudioDSPAddons(AE_DSP_ADDONMAP &addons) const
 
   for (AE_DSP_ADDONMAP_CITR citr = m_addonMap.begin(); citr != m_addonMap.end(); ++citr)
   {
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(citr->second->ID()))
+    if (!CServiceBroker::GetAddonMgr().IsAddonDisabled(citr->second->ID()))
     {
       addons.insert(std::make_pair(citr->second->GetID(), citr->second));
       ++iReturn;
@@ -833,7 +833,7 @@ bool CActiveAEDSP::HaveMenuHooks(AE_DSP_MENUHOOK_CAT cat, int iDSPAddonID)
       else if (cat == AE_DSP_MENUHOOK_SETTING)
       {
         AddonPtr addon;
-        if (CAddonMgr::GetInstance().GetAddon(citr->second->ID(), addon) && addon->HasSettings())
+        if (CServiceBroker::GetAddonMgr().GetAddon(citr->second->ID(), addon) && addon->HasSettings())
           return true;
       }
     }

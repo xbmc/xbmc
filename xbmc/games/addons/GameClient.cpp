@@ -111,7 +111,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonI
 
   for (const auto& property : properties)
   {
-    std::string strProperty = CAddonMgr::GetInstance().GetExtValue(ext->configuration, property.c_str());
+    std::string strProperty = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, property.c_str());
     if (!strProperty.empty())
       addonInfo.AddExtraInfo(property, strProperty);
   }
@@ -452,7 +452,7 @@ std::string CGameClient::GetMissingResource()
     if (StringUtils::StartsWith(strDependencyId, "resource.games"))
     {
       AddonPtr addon;
-      const bool bInstalled = CAddonMgr::GetInstance().GetAddon(strDependencyId, addon);
+      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(strDependencyId, addon);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;

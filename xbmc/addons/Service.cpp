@@ -19,6 +19,7 @@
  */
 #include "Service.h"
 #include "AddonManager.h"
+#include "ServiceBroker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "system.h"
 #include "utils/log.h"
@@ -31,7 +32,7 @@ namespace ADDON
 std::unique_ptr<CService> CService::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   START_OPTION startOption(START_OPTION::LOGIN);
-  std::string start = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@start");
+  std::string start = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@start");
   if (start == "startup")
     startOption = START_OPTION::STARTUP;
   return std::unique_ptr<CService>(new CService(std::move(addonInfo), startOption));

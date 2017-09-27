@@ -336,7 +336,7 @@ void CDirectoryProvider::Reset()
     m_isAnnounced = false;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
-    ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
+    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
     CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
   }
 }
@@ -448,7 +448,7 @@ bool CDirectoryProvider::UpdateURL()
   {
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
-    ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
+    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
     CServiceBroker::GetFavouritesService().Events().Subscribe(this, &CDirectoryProvider::OnFavouritesEvent);
   }

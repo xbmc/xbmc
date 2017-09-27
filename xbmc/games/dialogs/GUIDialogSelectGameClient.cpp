@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSelectGameClient.h"
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
@@ -103,7 +104,7 @@ std::string CGUIDialogSelectGameClient::InstallGameClient(const GameClientVector
   {
     CLog::Log(LOGDEBUG, "Select game client dialog: User installed %s", chosenClientId.c_str());
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(chosenClientId, addon, ADDON_GAMEDLL))
+    if (CServiceBroker::GetAddonMgr().GetAddon(chosenClientId, addon, ADDON_GAMEDLL))
       gameClient = addon->ID();
 
     if (gameClient.empty())
@@ -135,8 +136,8 @@ std::string CGUIDialogSelectGameClient::InstallGameClient(const GameClientVector
       CLog::Log(LOGDEBUG, "Select game client dialog: Successfully installed %s", installedAddon->ID().c_str());
 
       // if the addon is disabled we need to enable it
-      if (CAddonMgr::GetInstance().IsAddonDisabled(installedAddon->ID()))
-        CAddonMgr::GetInstance().EnableAddon(installedAddon->ID());
+      if (CServiceBroker::GetAddonMgr().IsAddonDisabled(installedAddon->ID()))
+        CServiceBroker::GetAddonMgr().EnableAddon(installedAddon->ID());
 
       gameClient = installedAddon->ID();
     }

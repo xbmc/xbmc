@@ -19,6 +19,7 @@
  */
 
 #include "Scraper.h"
+#include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
@@ -130,10 +131,10 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
 
 std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+  bool requiressettings = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration,"@requiressettings") == "true";
 
   CDateTimeSpan persistence;
-  std::string tmp = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
+  std::string tmp = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@cachepersistence");
   if (!tmp.empty())
     persistence.SetFromTimeString(tmp);
 
@@ -376,7 +377,7 @@ bool CScraper::Load()
 
       bool bOptional = itr->second.second;
 
-      if (CAddonMgr::GetInstance().GetAddon((*itr).first, dep))
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).first, dep))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))

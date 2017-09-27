@@ -19,6 +19,7 @@
  */
 
 #include "HTTPWebinterfaceAddonsHandler.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "network/WebServer.h"
 
@@ -33,7 +34,7 @@ int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
   ADDON::VECADDONS addons;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_WEB_INTERFACE) || addons.empty())
+  if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_WEB_INTERFACE) || addons.empty())
   {
     m_response.type = HTTPError;
     m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;

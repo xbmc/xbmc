@@ -36,14 +36,14 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
 {
   AddonPtr addon;
   return item.HasAddonInfo()
-         && CAddonMgr::GetInstance().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
+         && CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
          && addon->HasSettings();
 }
 
 bool CAddonSettings::Execute(const CFileItemPtr& item) const
 {
   AddonPtr addon;
-  return CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
+  return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
          && CGUIDialogAddonSettings::ShowForAddon(addon);
 }
 
@@ -55,7 +55,7 @@ bool CCheckForUpdates::IsVisible(const CFileItem& item) const
 bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
 {
   AddonPtr addon;
-  if (item->HasAddonInfo() && CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_REPOSITORY))
+  if (item->HasAddonInfo() && CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_REPOSITORY))
   {
     CServiceBroker::GetRepositoryUpdater().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
     return true;
@@ -67,24 +67,24 @@ bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
 bool CEnableAddon::IsVisible(const CFileItem& item) const
 {
   return item.HasAddonInfo() &&
-      CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
-      CAddonMgr::GetInstance().CanAddonBeEnabled(item.GetAddonInfo()->ID());
+      CServiceBroker::GetAddonMgr().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+      CServiceBroker::GetAddonMgr().CanAddonBeEnabled(item.GetAddonInfo()->ID());
 }
 
 bool CEnableAddon::Execute(const CFileItemPtr& item) const
 {
-  return CAddonMgr::GetInstance().EnableAddon(item->GetAddonInfo()->ID());
+  return CServiceBroker::GetAddonMgr().EnableAddon(item->GetAddonInfo()->ID());
 }
 
 bool CDisableAddon::IsVisible(const CFileItem& item) const
 {
   return item.HasAddonInfo() &&
-      !CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
-      CAddonMgr::GetInstance().CanAddonBeDisabled(item.GetAddonInfo()->ID());
+      !CServiceBroker::GetAddonMgr().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+      CServiceBroker::GetAddonMgr().CanAddonBeDisabled(item.GetAddonInfo()->ID());
 }
 
 bool CDisableAddon::Execute(const CFileItemPtr& item) const
 {
-  return CAddonMgr::GetInstance().DisableAddon(item->GetAddonInfo()->ID());
+  return CServiceBroker::GetAddonMgr().DisableAddon(item->GetAddonInfo()->ID());
 }
 }

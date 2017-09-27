@@ -203,7 +203,7 @@ void CAddon::SaveSettings(void)
   m_hasUserSettings = true;
   
   //push the settings changes to the running addon instance
-  CAddonMgr::GetInstance().ReloadSettings(ID());
+  CServiceBroker::GetAddonMgr().ReloadSettings(ID());
 #ifdef HAS_PYTHON
   g_pythonParser.OnSettingsChanged(ID());
 #endif

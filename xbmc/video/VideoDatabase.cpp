@@ -7274,7 +7274,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
       std::string scraperID = m_pDS->fv("path.strScraper").get_asString();
 
       AddonPtr addon;
-      if (!scraperID.empty() && CAddonMgr::GetInstance().GetAddon(scraperID, addon))
+      if (!scraperID.empty() && CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon))
       {
         scraper = std::dynamic_pointer_cast<CScraper>(addon);
         if (!scraper)
@@ -7317,7 +7317,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
 
           AddonPtr addon;
           if (content != CONTENT_NONE &&
-              CAddonMgr::GetInstance().GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon))
+              CServiceBroker::GetAddonMgr().GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon))
           {
             scraper = std::dynamic_pointer_cast<CScraper>(addon);
             scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
@@ -9417,7 +9417,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         AddonPtr addon;
         std::string id;
         XMLUtils::GetString(path,"scraperpath",id);
-        if (CAddonMgr::GetInstance().GetAddon(id, addon))
+        if (CServiceBroker::GetAddonMgr().GetAddon(id, addon))
         {
           SScanSettings settings;
           ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);

@@ -137,7 +137,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), addonInfo))
+  if (CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
   {
     CLog::Log(LOGERROR, "Interface_General::%s - Could not get addon information for '%s'", __FUNCTION__, addon->ID().c_str());
     return false;
