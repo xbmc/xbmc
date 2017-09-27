@@ -19,7 +19,7 @@ do_getFFmpegConfig() {
     FFMPEG_OPTS_SHARED="$FFMPEG_BASE_OPTS $FFMPEG_DEFAULT_OPTS"
   fi
 
-  if [ "$ARCH" == "x86_x64" ]; then
+  if [ "$ARCH" == "x86_64" ]; then
     FFMPEG_TARGET_OS=mingw64
   elif [ "$ARCH" == "x86" ]; then
     FFMPEG_TARGET_OS=mingw32
@@ -85,7 +85,7 @@ if [ "$TOOLS" = "msvc" ]; then
   do_addOption "--disable-openssl"
   do_addOption "--toolchain=msvc"
 
-  if [ "$ARCH" == "x86_x64" ]; then
+  if [ "$ARCH" == "x86_64" ]; then
     FFMPEG_TARGET_OS=win64
   elif [ "$ARCH" = "x86" ]; then
     FFMPEG_TARGET_OS=win32
