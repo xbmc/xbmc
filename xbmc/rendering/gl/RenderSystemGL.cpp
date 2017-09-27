@@ -194,7 +194,6 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
 
   glMatrixProject.Clear();
@@ -362,7 +361,6 @@ void CRenderSystemGL::ApplyStateBlock()
   glMatrixTexture.PopLoad();
 
   glActiveTextureARB(GL_TEXTURE0_ARB);
-  glEnable(GL_TEXTURE_2D);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);
@@ -457,7 +455,7 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   // max out at 2^(8+8)
   for (int i = 0 ; i<8 ; i++)
   {
-    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, 4, width, width, 0, GL_BGRA,
+    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, width, width, 0, GL_BGRA,
                  GL_UNSIGNED_BYTE, NULL);
     glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
                              &width);
@@ -615,7 +613,6 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
   CRenderSystemBase::SetStereoMode(mode, view);
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-  glDisable(GL_POLYGON_STIPPLE);
   glDrawBuffer(GL_BACK);
 
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)

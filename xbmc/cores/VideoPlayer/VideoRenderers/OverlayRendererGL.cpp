@@ -183,7 +183,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   }
 
   glGenTextures(1, &m_texture);
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -246,7 +245,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   }
 
   glGenTextures(1, &m_texture);
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -292,7 +290,6 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
     return;
 
   glGenTextures(1, &m_texture);
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
   LoadTexture(GL_TEXTURE_2D
@@ -371,7 +368,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   if ((m_texture == 0) || (m_count == 0))
     return;
 
-  glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -452,7 +448,6 @@ COverlayTextureGL::~COverlayTextureGL()
 
 void COverlayTextureGL::Render(SRenderState& state)
 {
-  glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
 
   glBindTexture(GL_TEXTURE_2D, m_texture);

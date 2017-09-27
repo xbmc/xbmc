@@ -26,6 +26,8 @@
 #include "guilib/Geometry.h"
 #include "windowing/WindowingFactory.h"
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
@@ -104,6 +106,13 @@ void CGUITextureGL::End()
     GLint tex1Loc = g_Windowing.ShaderGetCoord1();
     GLint uniColLoc = g_Windowing.ShaderGetUniCol();
 
+    GLuint VertexVBO;
+    GLuint IndexVBO;
+
+    glGenBuffers(1, &VertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*m_packedVertices.size(), &m_packedVertices[0], GL_STATIC_DRAW);
+
     if (uniColLoc >= 0)
     {
       glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
@@ -111,22 +120,31 @@ void CGUITextureGL::End()
 
     if (m_diffuse.size())
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
       glEnableVertexAttribArray(tex1Loc);
     }
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
 
-    glDrawElements(GL_TRIANGLE_STRIP, m_packedVertices.size(), GL_UNSIGNED_SHORT, m_idx.data());
+    glGenBuffers(1, &IndexVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*m_idx.size(), m_idx.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, 0);
 
     if (m_diffuse.size())
       glDisableVertexAttribArray(tex1Loc);
 
     glDisableVertexAttribArray(posLoc);
     glDisableVertexAttribArray(tex0Loc);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &VertexVBO);
+    glDeleteBuffers(1, &IndexVBO);
   }
 
   if (m_diffuse.size())
@@ -216,13 +234,15 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
     m_packedVertices.push_back(vertices[i]);
   }
 
-  if (m_packedVertices.size() > m_idx.size())
+  if ((m_packedVertices.size() / 4) > (m_idx.size() / 6))
   {
     size_t i = m_packedVertices.size() - 4;
     m_idx.push_back(i+0);
     m_idx.push_back(i+1);
-    m_idx.push_back(i+3);
     m_idx.push_back(i+2);
+    m_idx.push_back(i+2);
+    m_idx.push_back(i+3);
+    m_idx.push_back(i+0);
   }
 }
 
