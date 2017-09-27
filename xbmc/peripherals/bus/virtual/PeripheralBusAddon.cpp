@@ -334,7 +334,8 @@ void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
       typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
+      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
     UpdateAddons();
 }
 

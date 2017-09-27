@@ -175,15 +175,16 @@ bool CBinaryAddonManager::AddAddonBaseEntry(BINARY_ADDON_LIST_ENTRY& entry)
 
 void CBinaryAddonManager::OnEvent(const AddonEvent& event)
 {
-  if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
+  if (typeid(event) == typeid(AddonEvents::Enabled))
   {
-    EnableEvent(enableEvent->id);
+    EnableEvent(event.id);
   }
-  else if (auto disableEvent = dynamic_cast<const AddonEvents::Disabled*>(&event))
+  else if (typeid(event) == typeid(AddonEvents::Disabled))
   {
-    DisableEvent(disableEvent->id);
+    DisableEvent(event.id);
   }
-  else if (typeid(event) == typeid(AddonEvents::InstalledChanged))
+  else if (typeid(event) == typeid(AddonEvents::ReInstalled) ||
+           typeid(event) == typeid(AddonEvents::UnInstalled))
   {
     InstalledChangeEvent();
   }
