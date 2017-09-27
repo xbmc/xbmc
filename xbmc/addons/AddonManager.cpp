@@ -654,6 +654,12 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   return false;
 }
 
+bool CAddonMgr::HasType(const std::string &id, const TYPE &type)
+{
+  AddonPtr addon;
+  return GetAddon(id, addon, type, false);
+}
+
 bool CAddonMgr::FindAddons()
 {
   bool result = false;
