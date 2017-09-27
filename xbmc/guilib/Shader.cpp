@@ -20,12 +20,11 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES >= 2
-
 #include "Shader.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "windowing/WindowingFactory.h"
 
 #ifdef HAS_GLES
 #define GLchar char
@@ -46,7 +45,10 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
 
   CFileStream file;
 
-  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  std::string path = "special://xbmc/system/shaders/";
+  path += g_Windowing.GetShaderPath();
+  path += filename;
+  if(!file.Open(path))
   {
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
@@ -64,7 +66,10 @@ bool CShader::AppendSource(const std::string& filename)
   CFileStream file;
   std::string temp;
 
-  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  std::string path = "special://xbmc/system/shaders/";
+  path += g_Windowing.GetShaderPath();
+  path += filename;
+  if(!file.Open(path))
   {
     CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file %s", filename.c_str());
     return false;
@@ -478,7 +483,5 @@ void CARBShaderProgram::Disable()
     OnDisabled();
   }
 }
-
-#endif
 
 #endif

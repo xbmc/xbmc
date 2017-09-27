@@ -98,6 +98,8 @@ public:
    */
   virtual void Project(float &x, float &y, float &z) { }
 
+  virtual std::string GetShaderPath() { return ""; }
+
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
   const std::string& GetRenderVendor() const { return m_RenderVendor; }
   const std::string& GetRenderRenderer() const { return m_RenderRenderer; }

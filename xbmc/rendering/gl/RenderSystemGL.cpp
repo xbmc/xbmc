@@ -810,3 +810,9 @@ GLint CRenderSystemGL::ShaderGetModel()
 
   return -1;
 }
+
+std::string CRenderSystemGL::GetShaderPath()
+{
+  std::string path = "GL/1.2/";
+  return path;
+}
