@@ -90,10 +90,10 @@ STRIP_FOR_BUILD=@STRIP_FOR_BUILD@
 READELF_FOR_BUILD=@READELF_FOR_BUILD@
 OBJDUMP_FOR_BUILD=@OBJDUMP_FOR_BUILD@
 
-NATIVE_CFLAGS=-I@prefix@/@tool_dir@/include
-NATIVE_LDFLAGS=-L@prefix@/@tool_dir@/lib
-NATIVE_CPPFLAGS=-I@prefix@/@tool_dir@/include
-NATIVE_CXXFLAGS=-I@prefix@/@tool_dir@/include
+NATIVE_CFLAGS=@native_platform_min_version@ -I@prefix@/@tool_dir@/include
+NATIVE_LDFLAGS=@native_platform_min_version@ -L@prefix@/@tool_dir@/lib
+NATIVE_CPPFLAGS=@native_platform_min_version@ -I@prefix@/@tool_dir@/include
+NATIVE_CXXFLAGS=@native_platform_min_version@ -I@prefix@/@tool_dir@/include
 
 
 ifeq ($(CPU), arm64)

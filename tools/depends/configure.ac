@@ -257,6 +257,8 @@ case $host in
     if test "x$prefix" = "xNONE"; then
       prefix=/Users/Shared/xbmc-depends
     fi
+
+    native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed "s/.*:.*\(10\..*\)\..*/\1/"`
     use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
     use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
@@ -699,6 +701,7 @@ AC_SUBST(enable_wayland)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
+AC_SUBST(native_platform_min_version)
 
 AC_OUTPUT
 echo -e "ccache:\t $use_ccache"
