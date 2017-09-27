@@ -110,11 +110,28 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
   }
 
-  s = glGetString(GL_EXTENSIONS);
-  if (s)
-    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
+  std::string extensions;
+#if !defined(GL_NUM_EXTENSIONS)
+  extensions += (const char*) glGetString(GL_EXTENSIONS);
+#else
+  GLint n;
+  glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+  if (n > 0)
+  {
+    GLint i;
+    for (i = 0; i < n; i++)
+    {
+      extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+      extensions += " ";
+    }
+  }
+#endif
+
+  if (!extensions.empty())
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", extensions.c_str());
   else
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
+
 
 #else /* !HAS_GL */
   CLog::Log(LOGNOTICE,
