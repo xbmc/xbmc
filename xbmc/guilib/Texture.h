@@ -88,6 +88,8 @@ public:
   bool IsMipmapped() const;
   void SetScalingMethod(TEXTURE_SCALING scalingMethod) { m_scalingMethod = scalingMethod; }
   TEXTURE_SCALING GetScalingMethod() const { return m_scalingMethod; }
+  void SetCacheMemory(bool bCacheMemory) { m_bCacheMemory = bCacheMemory; }
+  bool GetCacheMemory() const { return m_bCacheMemory; }
 
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
@@ -144,6 +146,7 @@ protected:
   bool m_hasAlpha;
   bool m_mipmapping;
   TEXTURE_SCALING m_scalingMethod = TEXTURE_SCALING::LINEAR;
+  bool m_bCacheMemory = false;
 };
 
 #if defined(TARGET_RASPBERRY_PI)

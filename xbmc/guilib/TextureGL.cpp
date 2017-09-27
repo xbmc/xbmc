@@ -202,8 +202,11 @@ void CGLTexture::LoadToGPU()
 #endif
   VerifyGLState();
 
-  _aligned_free(m_pixels);
-  m_pixels = NULL;
+  if (!m_bCacheMemory)
+  {
+    _aligned_free(m_pixels);
+    m_pixels = NULL;
+  }
 
   m_loadedToGPU = true;
 }
