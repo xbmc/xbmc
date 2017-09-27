@@ -29,7 +29,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                         , float         contrast
                         , bool          limited);
 
-#include "GLSLOutput.h"
+#include "GLSLOutputGLES.h"
 
 #ifndef __GNUC__
 #pragma warning( push )

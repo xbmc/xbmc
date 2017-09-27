@@ -23,7 +23,7 @@
 #include "system_gl.h"
 #include "utils/log.h"
 
-#include "GLSLOutput.h"
+#include "GLSLOutputGLES.h"
 #include "dither.h"
 
 using namespace Shaders;
@@ -62,8 +62,10 @@ std::string GLSLOutput::GetDefines()
     defines += "#define XBMC_DITHER\n";
   if (m_fullRange)
     defines += "#define XBMC_FULLRANGE\n";
+#ifdef HAS_GL
   if (m_3DLUT)
     defines += "#define KODI_3DLUT\n";
+#endif //HAS_GL
   return defines;
 }
 
@@ -82,8 +84,10 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
   //   3DLUT
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     m_hCLUT        = glGetUniformLocation(programHandle, "m_CLUT");
     m_hCLUTSize    = glGetUniformLocation(programHandle, "m_CLUTsize");
+#endif //HAS_GL
   }
 
   if (m_dither)
@@ -101,14 +105,18 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
     glActiveTexture(GL_TEXTURE0 + m_uDither);
     glBindTexture(GL_TEXTURE_2D, m_tDitherTex);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#if defined(HAS_GL)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+#if defined(HAS_GL)
     // load dither texture data
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, dither_size, dither_size, 0, GL_RED, GL_UNSIGNED_SHORT, dither_matrix);
+#endif
   }
 
   glActiveTexture(GL_TEXTURE0);
@@ -140,6 +148,7 @@ bool GLSLOutput::OnEnabled()
 
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     // set texture units
     glUniform1i(m_hCLUT, m_uCLUT);
     glUniform1f(m_hCLUTSize, m_uCLUTSize);
@@ -150,6 +159,7 @@ bool GLSLOutput::OnEnabled()
     glBindTexture(GL_TEXTURE_3D, m_tCLUTTex);
     glActiveTexture(GL_TEXTURE0);
     VerifyGLState();
+#endif //HAS_GL
   }
 
   VerifyGLState();
@@ -166,8 +176,10 @@ void GLSLOutput::OnDisabled()
   }
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     glActiveTexture(GL_TEXTURE0 + m_uCLUT);
     glDisable(GL_TEXTURE_3D);
+#endif //HAS_GL
   }
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
@@ -186,4 +198,3 @@ void GLSLOutput::FreeTextures()
     m_tDitherTex = 0;
   }
 }
-

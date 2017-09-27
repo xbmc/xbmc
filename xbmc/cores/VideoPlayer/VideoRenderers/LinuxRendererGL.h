@@ -40,7 +40,7 @@
 class CRenderCapture;
 
 class CBaseTexture;
-namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
 struct DRAWRECT
@@ -158,7 +158,6 @@ protected:
   void RenderToFBO(int renderBuffer, int field, bool weave = false);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
@@ -227,7 +226,7 @@ protected:
 
   void GetPlaneTextureSize(YUVPLANE& plane);
 
-  Shaders::BaseYUV2RGBShader *m_pYUVShader;
+  Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
