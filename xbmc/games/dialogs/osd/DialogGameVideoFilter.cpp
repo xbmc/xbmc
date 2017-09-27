@@ -19,7 +19,7 @@
  */
 
 #include "DialogGameVideoFilter.h"
-#include "cores/RetroPlayer/rendering/IRenderCallback.h"
+#include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -69,11 +69,11 @@ void CDialogGameVideoFilter::PreInit()
 
 void CDialogGameVideoFilter::InitScalingMethods()
 {
-  if (m_callback != nullptr)
+  if (m_gameVideoHandle)
   {
     for (const auto &scalingMethodProps : scalingMethods)
     {
-      if (m_callback->SupportsScalingMethod(scalingMethodProps.scalingMethod))
+      if (m_gameVideoHandle->SupportsScalingMethod(scalingMethodProps.scalingMethod))
       {
         CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));

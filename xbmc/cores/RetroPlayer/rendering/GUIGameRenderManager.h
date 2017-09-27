@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -26,27 +27,36 @@
 
 namespace KODI
 {
+namespace GAME
+{
+  class CDialogGameVideoSelect;
+}
+
 namespace RETRO
 {
   class CGameWindowFullScreen;
   class CGUIGameControl;
+  class CGUIGameVideoHandle;
   class CGUIRenderTargetFactory;
   class CGUIRenderHandle;
   class CGUIRenderTarget;
+  class IRenderCallback;
 
   class CGUIGameRenderManager
   {
+    friend class CGUIGameVideoHandle;
     friend class CGUIRenderHandle;
 
   public:
     CGUIGameRenderManager() = default;
     ~CGUIGameRenderManager();
 
-    void RegisterFactory(CGUIRenderTargetFactory *factory);
-    void UnregisterFactory();
+    void RegisterPlayer(CGUIRenderTargetFactory *factory, IRenderCallback *callback);
+    void UnregisterPlayer();
 
     std::shared_ptr<CGUIRenderHandle> RegisterControl(CGUIGameControl &control);
     std::shared_ptr<CGUIRenderHandle> RegisterWindow(CGameWindowFullScreen &window);
+    std::shared_ptr<CGUIGameVideoHandle> RegisterDialog(GAME::CDialogGameVideoSelect &dialog);
 
   protected:
     // Functions exposed to friend class CGUIRenderHandle
@@ -56,6 +66,12 @@ namespace RETRO
     void ClearBackground(CGUIRenderHandle *handle);
     bool IsDirty(CGUIRenderHandle *handle);
 
+    // Functions exposed to friend class CGUIGameVideoHandle
+    void UnregisterHandle(CGUIGameVideoHandle *handle) { }
+    bool IsPlayingGame();
+    bool SupportsRenderFeature(ERENDERFEATURE feature);
+    bool SupportsScalingMethod(ESCALINGMETHOD method);
+
   private:
     void UpdateRenderTargets();
 
@@ -63,8 +79,10 @@ namespace RETRO
 
     CGUIRenderTargetFactory *m_factory = nullptr;
     std::map<CGUIRenderHandle*, std::shared_ptr<CGUIRenderTarget>> m_renderTargets;
+    CCriticalSection m_targetMutex;
 
-    CCriticalSection m_mutex;
+    IRenderCallback *m_callback = nullptr;
+    CCriticalSection m_callbackMutex;
   };
 }
 }
