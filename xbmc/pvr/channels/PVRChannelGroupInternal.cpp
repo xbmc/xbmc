@@ -224,15 +224,9 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = Size();
 
-  if (database->Get(*this) > 0)
+  if (database->Get(*this, bCompress) == 0)
   {
-    if (bCompress)
-      database->Compress(true);
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database",
-        __FUNCTION__);
+    CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database", __FUNCTION__);
   }
 
   SortByChannelNumber();

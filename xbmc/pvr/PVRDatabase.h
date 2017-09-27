@@ -19,12 +19,16 @@
  *
  */
 
+#include <map>
 #include <vector>
 
 #include "dbwrappers/Database.h"
+#include "threads/CriticalSection.h"
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
@@ -51,6 +55,11 @@ namespace PVR
     bool Open() override;
 
     /*!
+     * @brief Close the database.
+     */
+    void Close() override;
+
+    /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
@@ -74,9 +83,10 @@ namespace PVR
     /*!
      * @brief Add or update a channel entry in the database
      * @param channel The channel to persist.
+     * @param bCommit queue only or queue and commit
      * @return True when persisted or queued, false otherwise.
      */
-    bool Persist(CPVRChannel &channel);
+    bool Persist(CPVRChannel &channel, bool bCommit);
 
     /*!
      * @brief Remove a channel entry from the database
@@ -88,9 +98,10 @@ namespace PVR
     /*!
      * @brief Get the list of channels from the database
      * @param results The channel group to store the results in.
+     * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroupInternal &results);
+    int Get(CPVRChannelGroupInternal &results, bool bCompressDB);
 
     //@}
 
@@ -120,9 +131,10 @@ namespace PVR
     /*!
      * @brief Add the group members to a group.
      * @param group The group to get the channels for.
+     * @param allChannels All channels contained in the "all channels group" matching param group's 'IsRadio' property.
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup &group);
+    int Get(CPVRChannelGroup &group, const std::map<int, CPVRChannelPtr> &allChannels);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -180,5 +192,7 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup &group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+
+    CCriticalSection m_critSection;
   };
 }

@@ -343,7 +343,7 @@ void CPVRManager::Stop(void)
 
   /* close database */
   const CPVRDatabasePtr database(GetTVDatabase());
-  if (database && database->IsOpen())
+  if (database)
     database->Close();
 
   SetState(ManagerStateStopped);
