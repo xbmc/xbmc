@@ -823,10 +823,15 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     Returns true if colour management is supported from Kodi
 ///     \note currently only supported for OpenGL
 ///   }
-///   \table_row3{   <b>`System.HasModalDialog`</b>,
-///                  \anchor System_HasModalDialog
+///   \table_row3{   <b>`System.HasActiveModalDialog`</b>,
+///                  \anchor System_HasActiveModalDialog
 ///                  _boolean_,
-///     Returns true true if a modal dialog is visible
+///     Returns true if a modal dialog is active
+///   }
+///   \table_row3{   <b>`System.HasVisibleModalDialog`</b>,
+///                  \anchor System_HasVisibleModalDialog
+///                  _boolean_,
+///     Returns true if a modal dialog is visible
 ///   }
 ///   \table_row3{   <b>`System.Time(startTime\,endTime)`</b>,
 ///                  \anchor System_Time
