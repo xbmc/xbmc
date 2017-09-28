@@ -1149,13 +1149,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       control = new CGUIGameControl(parentID, id, posX, posY, width, height);
 
+      CGUIInfoLabel scalingMethod;
+      GetInfoLabel(pControlNode, "scalingmethod", scalingMethod, parentID);
+      static_cast<CGUIGameControl*>(control)->SetScalingMethod(scalingMethod);
+
       CGUIInfoLabel viewMode;
       GetInfoLabel(pControlNode, "viewmode", viewMode, parentID);
       static_cast<CGUIGameControl*>(control)->SetViewMode(viewMode);
-
-      CGUIInfoLabel videoFilter;
-      GetInfoLabel(pControlNode, "videofilter", videoFilter, parentID);
-      static_cast<CGUIGameControl*>(control)->SetVideoFilter(videoFilter);
     }
     break;
   case CGUIControl::GUICONTROL_FADELABEL:

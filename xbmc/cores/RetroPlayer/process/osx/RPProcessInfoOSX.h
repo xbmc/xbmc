@@ -19,29 +19,17 @@
  */
 #pragma once
 
-#include "guilib/GUIControl.h"
-#include "guilib/GUIInfoTypes.h"
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CGUIGameControl;
-  class CGUIRenderSettings;
-
-  class CGUIGameControlManager
+  class CRPProcessInfoOSX : public CRPProcessInfo
   {
   public:
-    CGUIGameControlManager() = default;
-
-    void SetActiveControl(CGUIGameControl *control);
-    bool IsControlActive() const;
-    void ResetActiveControl();
-
-    const CGUIRenderSettings &GetRenderSettings() const;
-
-  private:
-    CGUIGameControl *m_activeControl = nullptr;
+    static CRPProcessInfo* Create();
+    static void Register();
   };
 }
 }

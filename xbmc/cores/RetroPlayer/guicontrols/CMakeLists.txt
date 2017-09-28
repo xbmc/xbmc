@@ -1,9 +1,9 @@
 set(SOURCES GUIGameControl.cpp
-            GUIGameControlManager.cpp
+            GUIRenderSettings.cpp
 )
 
 set(HEADERS GUIGameControl.h
-            GUIGameControlManager.h
+            GUIRenderSettings.h
 )
 
 core_add_library(retroplayer_guicontrols)

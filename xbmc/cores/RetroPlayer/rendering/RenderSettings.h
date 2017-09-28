@@ -19,34 +19,33 @@
  */
 #pragma once
 
+#include "RenderGeometry.h"
+#include "RenderVideoSettings.h"
 #include "cores/IPlayer.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CGUIRenderSettings
+  class CRenderSettings
   {
   public:
-    CGUIRenderSettings() { Reset(); }
+    CRenderSettings() { Reset(); }
 
     void Reset();
 
-    bool operator==(const CGUIRenderSettings &rhs) const;
+    bool operator==(const CRenderSettings &rhs) const;
+    bool operator<(const CRenderSettings &rhs) const;
 
-    ESCALINGMETHOD GetScalingMethod() const;
-    bool HasScalingMethod() const { return m_scalingMethod != -1; }
-    void SetScalingMethod(ESCALINGMETHOD method) { m_scalingMethod = static_cast<int>(method); }
-    void ResetScalingMethod() { m_scalingMethod = -1; }
+    CRenderGeometry &Geometry() { return m_geometry; }
+    const CRenderGeometry &Geometry() const { return m_geometry; }
 
-    ViewMode GetRenderViewMode() const;
-    bool HasRenderViewMode() const { return m_viewMode != -1; }
-    void SetRenderViewMode(ViewMode mode) { m_viewMode = static_cast<int>(mode); }
-    void ResetRenderViewMode() { m_viewMode = -1; }
+    CRenderVideoSettings &VideoSettings() { return m_videoSettings; }
+    const CRenderVideoSettings &VideoSettings() const { return m_videoSettings; }
 
   private:
-    int m_scalingMethod;
-    int m_viewMode;
+    CRenderGeometry m_geometry;
+    CRenderVideoSettings m_videoSettings;
   };
 }
 }

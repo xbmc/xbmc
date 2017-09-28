@@ -33,13 +33,13 @@ namespace GAME
     // implementation of IGameClientPlayback
     virtual bool CanPause() const override { return false; }
     virtual bool CanSeek() const override { return false; }
-    virtual void PauseUnpause() override { }
     virtual unsigned int GetTimeMs() const override { return 0; }
     virtual unsigned int GetTotalTimeMs() const override { return 0; }
     virtual unsigned int GetCacheTimeMs() const override { return 0; }
     virtual void SeekTimeMs(unsigned int timeMs) override { }
     virtual double GetSpeed() const override { return 1.0; }
     virtual void SetSpeed(double speedFactor) override { }
+    virtual void PauseAsync() override { }
     virtual std::string CreateSavestate() override { return ""; }
     virtual bool LoadSavestate(const std::string& path) override { return false; }
   };

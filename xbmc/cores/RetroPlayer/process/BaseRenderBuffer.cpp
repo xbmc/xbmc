@@ -13,38 +13,39 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with this Program; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "GUIGameControlManager.h"
-#include "GUIGameControl.h"
-#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
+#include "BaseRenderBuffer.h"
+#include "IRenderBufferPool.h"
 
 using namespace KODI;
 using namespace RETRO;
 
-void CGUIGameControlManager::SetActiveControl(CGUIGameControl *control)
+CBaseRenderBuffer::CBaseRenderBuffer() :
+  m_refCount(0)
 {
-  m_activeControl = control;
 }
 
-bool CGUIGameControlManager::IsControlActive() const
+void CBaseRenderBuffer::Acquire()
 {
-  return m_activeControl != nullptr;
+  m_refCount++;
 }
 
-void CGUIGameControlManager::ResetActiveControl()
+void CBaseRenderBuffer::Acquire(std::shared_ptr<IRenderBufferPool> pool)
 {
-  m_activeControl = nullptr;
+  m_refCount++;
+  m_pool = pool;
 }
 
-const CGUIRenderSettings &CGUIGameControlManager::GetRenderSettings() const
+void CBaseRenderBuffer::Release()
 {
-  if (m_activeControl != nullptr)
-    return m_activeControl->GetRenderSettings();
-
-  static const CGUIRenderSettings defaultSettings;
-  return defaultSettings;
+  if (--m_refCount <= 0 && m_pool)
+  {
+    std::shared_ptr<IRenderBufferPool> pool = m_pool->GetPtr();
+    m_pool.reset();
+    pool->Return(this);
+  }
 }

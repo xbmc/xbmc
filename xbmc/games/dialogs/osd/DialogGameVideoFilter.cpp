@@ -19,11 +19,12 @@
  */
 
 #include "DialogGameVideoFilter.h"
-#include "cores/RetroPlayer/rendering/IRenderSettingsCallback.h"
+#include "cores/RetroPlayer/rendering/IRenderCallback.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "FileItem.h"
 
@@ -72,7 +73,7 @@ void CDialogGameVideoFilter::GetItems(CFileItemList &items)
   for (const auto &videoFilter : m_videoFilters)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(videoFilter.stringIndex));
-    item->SetProperty("game.videofilter", CVariant{ videoFilter.scalingMethod });
+    item->SetProperty("game.scalingmethod", CVariant{ videoFilter.scalingMethod });
     items.Add(std::move(item));
   }
 
@@ -93,9 +94,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     if (gameSettings.ScalingMethod() != scalingMethod)
     {
       gameSettings.SetScalingMethod(scalingMethod);
-
-      if (m_callback != nullptr)
-        m_callback->SetScalingMethod(scalingMethod);
+      gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
     }
   }
 }

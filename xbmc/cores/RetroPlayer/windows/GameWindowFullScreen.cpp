@@ -20,6 +20,8 @@
 
 #include "GameWindowFullScreen.h"
 #include "GameWindowFullScreenText.h"
+#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/rendering/GUIRenderHandle.h"
 #include "guilib/GraphicContext.h" //! @todo Remove me
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIControl.h"
@@ -27,9 +29,8 @@
 #include "guilib/WindowIDs.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
-#include "Application.h" //! @todo Remove me
-#include "ApplicationPlayer.h" //! @todo Remove me
 #include "GUIInfoManager.h" //! @todo Remove me
+#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace RETRO;
@@ -43,16 +44,21 @@ CGameWindowFullScreen::CGameWindowFullScreen(void) :
 
   // initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
+
+  RegisterWindow();
 }
 
 CGameWindowFullScreen::~CGameWindowFullScreen()
 {
+  UnregisterWindow();
+
   delete m_controlStats;
 }
 
 void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
 {
-  MarkDirtyRegion();
+  if (m_renderHandle->IsDirty())
+    MarkDirtyRegion();
 
   m_controlStats->Reset();
 
@@ -65,18 +71,16 @@ void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &
 
 void CGameWindowFullScreen::Render()
 {
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-  g_application.m_pPlayer->Render(true, 255);
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  m_renderHandle->Render();
+
   CGUIWindow::Render();
 }
 
 void CGameWindowFullScreen::RenderEx()
 {
   CGUIWindow::RenderEx();
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-  g_application.m_pPlayer->Render(false, 255, false);
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+
+  m_renderHandle->RenderEx();
 }
 
 bool CGameWindowFullScreen::OnAction(const CAction &action)
@@ -132,9 +136,6 @@ bool CGameWindowFullScreen::OnMessage(CGUIMessage& message)
 
 void CGameWindowFullScreen::FrameMove()
 {
-  if (!g_application.m_pPlayer->HasPlayer())
-    return;
-
   m_fullscreenText->FrameMove();
 
   CGUIWindow::FrameMove();
@@ -142,12 +143,9 @@ void CGameWindowFullScreen::FrameMove()
 
 void CGameWindowFullScreen::ClearBackground()
 {
-  if (g_application.m_pPlayer->IsRenderingVideoLayer())
-#ifdef HAS_IMXVPU
-    g_graphicsContext.Clear((16 << 16) | (8 << 8) | 16);
-#else
-    g_graphicsContext.Clear(0);
-#endif
+  m_renderHandle->ClearBackground();
+
+  CGUIWindow::ClearBackground();
 }
 
 bool CGameWindowFullScreen::HasVisibleControls()
@@ -215,4 +213,14 @@ void CGameWindowFullScreen::TriggerOSD()
 CGUIDialog *CGameWindowFullScreen::GetOSD()
 {
   return g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
+}
+
+void CGameWindowFullScreen::RegisterWindow()
+{
+  m_renderHandle = CServiceBroker::GetGameRenderManager().RegisterWindow(*this);
+}
+
+void CGameWindowFullScreen::UnregisterWindow()
+{
+  m_renderHandle.reset();
 }

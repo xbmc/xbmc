@@ -63,6 +63,11 @@ namespace GAME
   class CControllerManager;
   class CGameServices;
 }
+
+namespace RETRO
+{
+  class CGUIGameRenderManager;
+}
 }
 
 namespace PERIPHERALS
@@ -87,6 +92,7 @@ public:
   static CSettings& GetSettings();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
+  static KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
   static ADDON::CServiceAddonManager& GetServiceAddons();

@@ -28,6 +28,7 @@ namespace KODI
 namespace RETRO
 {
   class CGameWindowFullScreenText;
+  class CGUIRenderHandle;
 
   class CGameWindowFullScreen : public CGUIWindow
   {
@@ -58,8 +59,14 @@ namespace RETRO
     void TriggerOSD();
     CGUIDialog *GetOSD();
 
+    void RegisterWindow();
+    void UnregisterWindow();
+
     // GUI parameters
     std::unique_ptr<CGameWindowFullScreenText> m_fullscreenText;
+
+    // Rendering parameters
+    std::shared_ptr<CGUIRenderHandle> m_renderHandle;
   };
 }
 }

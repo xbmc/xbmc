@@ -19,9 +19,10 @@
  */
 #pragma once
 
-#include "cores/RetroPlayer/rendering/GUIRenderSettings.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIInfoTypes.h"
+
+#include <memory>
 
 class CGUIInfoLabel;
 
@@ -29,17 +30,25 @@ namespace KODI
 {
 namespace RETRO
 {
+class CGUIRenderSettings;
+class CGUIRenderHandle;
+class IGUIRenderSettings;
 
 class CGUIGameControl : public CGUIControl
 {
 public:
   CGUIGameControl(int parentID, int controlID, float posX, float posY, float width, float height);
-  ~CGUIGameControl() override = default;
+  CGUIGameControl(const CGUIGameControl &other);
+  ~CGUIGameControl() override;
 
-  void SetVideoFilter(const CGUIInfoLabel &videoFilter);
+  // GUI functions
+  void SetScalingMethod(const CGUIInfoLabel &scalingMethod);
   void SetViewMode(const CGUIInfoLabel &viewMode);
 
-  const CGUIRenderSettings &GetRenderSettings() const { return m_renderSettings; }
+  // Rendering functions
+  bool HasScalingMethod() const { return m_bHasScalingMethod; }
+  bool HasViewMode() const { return m_bHasViewMode; }
+  IGUIRenderSettings *GetRenderSettings() const;
 
   // implementation of CGUIControl
   CGUIGameControl *Clone() const override { return new CGUIGameControl(*this); };
@@ -47,16 +56,26 @@ public:
   void Render() override;
   void RenderEx() override;
   bool CanFocus() const override;
+  void SetPosition(float posX, float posY) override;
+  void SetWidth(float width) override;
+  void SetHeight(float height) override;
   void UpdateInfo(const CGUIListItem *item = nullptr) override;
 
 private:
-  void EnableGUIRender();
-  void DisableGUIRender();
+  void Reset();
 
-  CGUIInfoLabel m_videoFilterInfo;
+  void RegisterControl();
+  void UnregisterControl();
+
+  // GUI properties
+  CGUIInfoLabel m_scalingMethodInfo;
   CGUIInfoLabel m_viewModeInfo;
 
-  CGUIRenderSettings m_renderSettings;
+  // Rendering properties
+  bool m_bHasScalingMethod = false;
+  bool m_bHasViewMode = false;
+  std::unique_ptr<CGUIRenderSettings> m_renderSettings;
+  std::shared_ptr<CGUIRenderHandle> m_renderHandle;
 };
 
 }

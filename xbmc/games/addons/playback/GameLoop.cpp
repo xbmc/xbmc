@@ -61,7 +61,19 @@ void CGameLoop::SetSpeed(double speedFactor)
   {
     CSingleLock lock(m_mutex);
     m_speedFactor = speedFactor;
+    m_bPauseAsync = false;
   }
+
+  m_sleepEvent.Set();
+}
+
+void CGameLoop::PauseAsync()
+{
+  {
+    CSingleLock lock(m_mutex);
+    m_bPauseAsync = true;
+  }
+
   m_sleepEvent.Set();
 }
 
@@ -74,6 +86,13 @@ void CGameLoop::Process(void)
   while (!m_bStop)
   {
     double speedFactor = m_speedFactor;
+
+    // Pause game if the pause async flag was set
+    if (m_bPauseAsync)
+    {
+      m_bPauseAsync = false;
+      m_speedFactor = 0.0;
+    }
 
     {
       CSingleExit exit(m_mutex);
