@@ -37,8 +37,6 @@ using namespace dbiplus;
 using namespace PVR;
 using namespace ADDON;
 
-#define PVRDB_DEBUGGING 0
-
 bool CPVRDatabase::Open()
 {
   CSingleLock lock(m_critSection);
@@ -220,9 +218,6 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results, bool bCompressDB)
           channel->m_iEpgId                = m_pDS->fv("idEpg").get_asInt();
         channel->UpdateEncryptionName();
 
-#if PVRDB_DEBUGGING
-        CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
-#endif
         PVRChannelGroupMember newMember = { channel, (unsigned int)m_pDS->fv("iChannelNumber").get_asInt() };
         results.m_sortedMembers.push_back(newMember);
         results.m_members.insert(std::make_pair(channel->StorageId(), newMember));
@@ -481,9 +476,6 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const std::map<int, CPVRChannelPt
 
         if (channel != allChannels.end())
         {
-#if PVRDB_DEBUGGING
-          CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
-#endif
           PVRChannelGroupMember newMember = { channel->second, static_cast<unsigned int>(iChannelNumber) };
           group.m_sortedMembers.emplace_back(newMember);
           group.m_members.insert(std::make_pair(channel->second->StorageId(), newMember));
