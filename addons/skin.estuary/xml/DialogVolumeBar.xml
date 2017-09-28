@@ -3,7 +3,7 @@
 	<zorder>4</zorder>
 	<controls>
 		<control type="group">
-			<visible>!Window.IsActive(startup)</visible>
+			<visible>!Window.IsActive(startup) + !Window.IsActive(GameVolume)</visible>
 			<centerleft>50%</centerleft>
 			<width>112</width>
 			<top>0</top>

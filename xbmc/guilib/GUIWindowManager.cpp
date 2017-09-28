@@ -153,6 +153,7 @@
 #include "games/dialogs/osd/DialogGameOSD.h"
 #include "games/dialogs/osd/DialogGameVideoFilter.h"
 #include "games/dialogs/osd/DialogGameViewMode.h"
+#include "games/dialogs/osd/DialogGameVolume.h"
 
 using namespace KODI;
 using namespace PVR;
@@ -306,6 +307,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CDialogGameOSD);
   Add(new GAME::CDialogGameVideoFilter);
   Add(new GAME::CDialogGameViewMode);
+  Add(new GAME::CDialogGameVolume);
   Add(new RETRO::CGameWindowFullScreen);
 }
 
@@ -412,6 +414,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_GAME_OSD);
     DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER);
     DestroyWindow(WINDOW_DIALOG_GAME_VIEW_MODE);
+    DestroyWindow(WINDOW_DIALOG_GAME_VOLUME);
     DestroyWindow(WINDOW_FULLSCREEN_GAME);
 
     Remove(WINDOW_SETTINGS_SERVICE);
