@@ -24,16 +24,12 @@
 
 #include "dbwrappers/Database.h"
 #include "threads/CriticalSection.h"
-#include "utils/log.h"
-
-#include "pvr/PVRManager.h"
 
 #include "pvr/PVRTypes.h"
 
 namespace PVR
 {
   class CPVRChannelGroup;
-  class CPVRChannelGroupInternal;
   class CPVRChannel;
   class CPVRChannelGroups;
 
@@ -101,7 +97,7 @@ namespace PVR
      * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroupInternal &results, bool bCompressDB);
+    int Get(CPVRChannelGroup &results, bool bCompressDB);
 
     //@}
 
