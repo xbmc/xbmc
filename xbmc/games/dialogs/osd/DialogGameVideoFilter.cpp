@@ -52,6 +52,11 @@ CDialogGameVideoFilter::CDialogGameVideoFilter() :
 {
 }
 
+std::string CDialogGameVideoFilter::GetHeading()
+{
+  return g_localizeStrings.Get(35225); // "Video filter"
+}
+
 void CDialogGameVideoFilter::PreInit()
 {
   m_items.Clear();

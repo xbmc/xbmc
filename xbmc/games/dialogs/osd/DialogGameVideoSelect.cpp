@@ -40,6 +40,7 @@
 using namespace KODI;
 using namespace GAME;
 
+#define CONTROL_HEADING               1
 #define CONTROL_THUMBS                11
 #define CONTROL_DESCRIPTION           12
 
@@ -148,6 +149,9 @@ void CDialogGameVideoSelect::OnInitWindow()
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_THUMBS);
   OnMessage(msg);
+
+  std::string heading = GetHeading();
+  SET_CONTROL_LABEL(CONTROL_HEADING, heading);
 
   FrameMove();
 }

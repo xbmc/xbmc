@@ -56,6 +56,7 @@ namespace GAME
     void OnInitWindow() override;
 
     // Video select interface
+    virtual std::string GetHeading() = 0;
     virtual void PreInit() = 0;
     virtual void GetItems(CFileItemList &items) = 0;
     virtual void OnItemFocus(unsigned int index) = 0;

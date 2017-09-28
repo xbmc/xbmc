@@ -45,6 +45,11 @@ CDialogGameViewMode::CDialogGameViewMode() :
 {
 }
 
+std::string CDialogGameViewMode::GetHeading()
+{
+  return g_localizeStrings.Get(629); // "View mode"
+}
+
 void CDialogGameViewMode::PreInit()
 {
   m_viewModes.clear();
