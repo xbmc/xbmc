@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "view/ViewStateSettings.h"
@@ -57,7 +58,7 @@ std::string CGUIViewStateWindowMusic::GetLockType()
 
 std::string CGUIViewStateWindowMusic::GetExtensions()
 {
-  return g_advancedSettings.GetMusicExtensions();
+  return CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
 }
 
 VECSOURCES& CGUIViewStateWindowMusic::GetSources()

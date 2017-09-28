@@ -39,6 +39,7 @@
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "utils/FileExtensionProvider.h"
 
 using namespace KODI;
 
@@ -111,6 +112,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
+  m_fileExtensionProvider.reset(new CFileExtensionProvider());
+
   init_level = 2;
   return true;
 }
@@ -173,6 +176,7 @@ void CServiceManager::DeinitStageThree()
 
 void CServiceManager::DeinitStageTwo()
 {
+  m_fileExtensionProvider.reset();
   m_gameRenderManager.reset();
   m_peripherals.reset();
   m_inputManager.reset();
@@ -311,6 +315,11 @@ CFavouritesService& CServiceManager::GetFavouritesService()
 CInputManager& CServiceManager::GetInputManager()
 {
   return *m_inputManager;
+}
+
+CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
+{
+  return *m_fileExtensionProvider;
 }
 
 // deleters for unique_ptr

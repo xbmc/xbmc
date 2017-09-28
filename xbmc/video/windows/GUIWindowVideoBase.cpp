@@ -53,6 +53,7 @@
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
@@ -221,7 +222,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items, g_advancedSettings.m_videoExtensions);
+      CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
       items.Stack();
 
       // check for media files

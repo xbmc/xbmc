@@ -28,6 +28,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -183,7 +184,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
       CFileItemList items;
 
-      CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
+      CDirectory::GetDirectory(pathToUrl, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
       
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
@@ -202,7 +203,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       {
         if (pItem->IsCBZ() || pItem->IsCBR())
         {
-          CDirectory::GetDirectory(pathToUrl, items, g_advancedSettings.GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
+          CDirectory::GetDirectory(pathToUrl, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
           for (int i=0;i<items.Size();++i)
           {
             CFileItemPtr item = items[i];

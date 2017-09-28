@@ -16,6 +16,7 @@ set(SOURCES ActorProtocol.cpp
             DatabaseUtils.cpp
             EndianSwap.cpp
             Environment.cpp
+            FileExtensionProvider.cpp
             Fanart.cpp
             FileOperationJob.cpp
             FileUtils.cpp
@@ -96,6 +97,7 @@ set(HEADERS ActorProtocol.h
             Environment.h
             EventStream.h
             EventStreamDetail.h
+            FileExtensionProvider.h
             Fanart.h
             FileOperationJob.h
             FileUtils.h

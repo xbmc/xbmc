@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogFileBrowser.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -45,6 +46,7 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "utils/Variant.h"
+#include "utils/FileExtensionProvider.h"
 #include "settings/AdvancedSettings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 
@@ -654,12 +656,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path)
 {
-  return ShowAndGetFile(shares, g_advancedSettings.GetPictureExtensions(), heading, path, true); // true for use thumbs
+  return ShowAndGetFile(shares, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path)
 {
-  return ShowAndGetFileList(shares, g_advancedSettings.GetPictureExtensions(), heading, path, true); // true for use thumbs
+  return ShowAndGetFileList(shares, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly)

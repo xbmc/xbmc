@@ -82,6 +82,7 @@ namespace PERIPHERALS
 }
 
 class CInputManager;
+class CFileExtensionProvider;
 
 class CServiceManager
 {
@@ -126,6 +127,7 @@ public:
   CSettings& GetSettings();
   CFavouritesService& GetFavouritesService();
   CInputManager &GetInputManager();
+  CFileExtensionProvider &GetFileExtensionProvider();
 
 protected:
   struct delete_dataCacheCore
@@ -171,4 +173,5 @@ protected:
   std::unique_ptr<PERIPHERALS::CPeripherals> m_peripherals;
   std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
   std::unique_ptr<CInputManager> m_inputManager;
+  std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
 };
