@@ -404,6 +404,12 @@
       <escape>Fullscreen</escape>
     </keyboard>
   </FullscreenGame>
+  <GameOSD>
+    <keyboard>
+      <m>OSD</m>
+      <menu>OSD</menu>
+    </keyboard>
+  </GameOSD>
   <VideoTimeSeek>
     <keyboard>
       <return>Select</return>
