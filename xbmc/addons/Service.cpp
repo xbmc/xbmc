@@ -55,22 +55,19 @@ CServiceAddonManager::~CServiceAddonManager()
 
 void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
   {
-    Start(enableEvent->id);
+    Start(event.id);
   }
-  else if (auto disableEvent = dynamic_cast<const AddonEvents::Disabled*>(&event))
+  else if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    Stop(disableEvent->id);
+    Stop(event.id);
+    Start(event.id);
   }
-  else if (auto uninstallEvent = dynamic_cast<const AddonEvents::UnInstalled*>(&event))
+  else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+           typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    Stop(uninstallEvent->id);
-  }
-  else if (auto reinstallEvent = dynamic_cast<const AddonEvents::ReInstalled*>(&event))
-  {
-    Stop(reinstallEvent->id);
-    Start(reinstallEvent->id);
+    Stop(event.id);
   }
 }
 

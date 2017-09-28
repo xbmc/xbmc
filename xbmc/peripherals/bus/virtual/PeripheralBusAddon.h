@@ -90,6 +90,7 @@ namespace PERIPHERALS
 
   private:
     void OnEvent(const ADDON::AddonEvent& event);
+    void UnRegisterAddon(const std::string& addonId);
 
     void PromptEnableAddons(const ADDON::BinaryAddonBaseList& disabledAddons);
 

@@ -96,6 +96,8 @@ namespace ADDON
      */
     bool GetAddon(const std::string &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
 
+    bool HasType(const std::string &id, const TYPE &type);
+
     bool HasAddons(const TYPE &type);
 
     bool HasInstalledAddons(const TYPE &type);

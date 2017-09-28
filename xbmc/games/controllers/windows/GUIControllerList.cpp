@@ -150,7 +150,8 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
+  if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);

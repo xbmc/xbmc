@@ -26,6 +26,8 @@
 namespace ADDON
 {
 
+const std::vector<TYPE> ADDONS_TO_CACHE = { ADDON_PVRDLL, ADDON_GAMEDLL };
+
 CBinaryAddonCache::~CBinaryAddonCache()
 {
   Deinit();
@@ -33,10 +35,6 @@ CBinaryAddonCache::~CBinaryAddonCache()
 
 void CBinaryAddonCache::Init()
 {
-  m_addonsToCache = {
-    ADDON_PVRDLL,
-    ADDON_GAMEDLL,
-  };
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
   Update();
 }
@@ -103,8 +101,24 @@ AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type
 
 void CBinaryAddonCache::OnEvent(const AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::InstalledChanged))
+  if (typeid(event) == typeid(AddonEvents::ReInstalled) ||
+      typeid(event) == typeid(AddonEvents::UnInstalled))
+  {
     Update();
+  }
+  else if (typeid(event) == typeid(AddonEvents::Enabled) ||
+           typeid(event) == typeid(AddonEvents::Disabled) ||
+           typeid(event) == typeid(AddonEvents::ReInstalled))
+  {
+    for (auto &type : ADDONS_TO_CACHE)
+    {
+      if (CServiceBroker::GetAddonMgr().HasType(event.id, type))
+      {
+        Update();
+        break;
+      }
+    }
+  }
 }
 
 void CBinaryAddonCache::Update()
@@ -112,7 +126,7 @@ void CBinaryAddonCache::Update()
   using AddonMap = std::multimap<TYPE, VECADDONS>;
   AddonMap addonmap;
 
-  for (auto &addonType : m_addonsToCache)
+  for (auto &addonType : ADDONS_TO_CACHE)
   {
     VECADDONS addons;
     CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, addonType);

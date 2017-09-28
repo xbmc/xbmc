@@ -36,11 +36,13 @@ CVFSAddonCache::~CVFSAddonCache()
 void CVFSAddonCache::Init()
 {
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
+  CServiceBroker::GetAddonMgr().UnloadEvents().Subscribe(this, &CVFSAddonCache::OnEvent);
   Update();
 }
 
 void CVFSAddonCache::Deinit()
 {
+  CServiceBroker::GetAddonMgr().UnloadEvents().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
@@ -50,7 +52,7 @@ const std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()
   return m_addonsInstances;
 }
 
-VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId, TYPE type)
+VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
 {
   VFSEntryPtr addon;
 
@@ -70,8 +72,16 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId, TYPE type
 
 void CVFSAddonCache::OnEvent(const AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::InstalledChanged))
-    Update();
+  if (typeid(event) == typeid(AddonEvents::Disabled) ||
+      typeid(event) == typeid(AddonEvents::Unload) ||
+      typeid(event) == typeid(AddonEvents::Enabled) ||
+      typeid(event) == typeid(AddonEvents::Load))
+  {
+    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_VFS))
+    {
+      Update();
+    }
+  }
 }
 
 void CVFSAddonCache::Update()
