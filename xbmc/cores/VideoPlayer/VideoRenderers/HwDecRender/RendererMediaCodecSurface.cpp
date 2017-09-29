@@ -72,8 +72,6 @@ bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fp
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 
-  m_bConfigured = true;
-
   return true;
 }
 
@@ -93,11 +91,12 @@ bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
 
 void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  int64_t nanodiff(static_cast<int64_t>((picture.pts - currentClock) * 1000));
-
-  if (dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer))
+  if (m_bConfigured && dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer))
+  {
+    int64_t nanodiff(static_cast<int64_t>((picture.pts - currentClock) * 1000));
     dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)->RenderUpdate(m_surfDestRect,
       std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() + nanodiff);
+  }
 }
 
 void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
@@ -123,6 +122,7 @@ void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear,
 {
   CXBMCApp::get()->WaitVSync(100);
   ManageRenderArea();
+  m_bConfigured = true;
 }
 
 void CRendererMediaCodecSurface::ReorderDrawPoints()
