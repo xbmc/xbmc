@@ -76,7 +76,7 @@ public:
   CDatabase(void);
   virtual ~CDatabase(void);
   bool IsOpen();
-  void Close();
+  virtual void Close();
   bool Compress(bool bForce=true);
   void Interrupt();
 

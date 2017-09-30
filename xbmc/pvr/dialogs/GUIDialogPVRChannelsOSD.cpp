@@ -125,7 +125,7 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
   {
     CGUIWindowPVRBase::SetSelectedItemPath(m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
 
-    // next OnInitWindow will set the group which is then selceted
+    // next OnInitWindow will set the group which is then selected
     m_group.reset();
   }
 

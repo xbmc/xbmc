@@ -29,6 +29,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/epg/EpgContainer.h"
@@ -235,7 +236,7 @@ bool CPVRChannel::Persist()
   const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
   {
-    bool bReturn = database->Persist(*this) && database->CommitInsertQueries();
+    bool bReturn = database->Persist(*this, true);
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
