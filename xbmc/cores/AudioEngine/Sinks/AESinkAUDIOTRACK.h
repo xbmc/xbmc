@@ -54,6 +54,7 @@ public:
 
 protected:
   static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
+  static bool VerifySinkConfiguration(int sampleRate, int channelMask, int encoding);
   static bool HasAmlHD();
   static void UpdateAvailablePCMCapabilities();
   static void UpdateAvailablePassthroughCapabilities();
