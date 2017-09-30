@@ -21,7 +21,7 @@
 #include "RPWinRenderer.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
-#include "cores/VideoPlayer/VideoRenderers/VideoShaders/WinVideoFilter.h" //! @todo
+#include "cores/RetroPlayer/rendering/VideoShaders/windows/RPWinOutputShader.h"
 #include "guilib/D3DResource.h"
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/log.h"
@@ -196,13 +196,19 @@ bool CWinRenderBufferPool::ConfigureDX(DXGI_FORMAT dxFormat)
 
 CRPWinRenderer::CRPWinRenderer(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
   CRPBaseRenderer(renderSettings, context, std::move(bufferPool)),
-  m_outputShader(new COutputShader)
+  m_outputShader(new CRPWinOutputShader)
 {
 }
 
 CRPWinRenderer::~CRPWinRenderer()
 {
   Deinitialize();
+}
+
+void CRPWinRenderer::CompileOutputShader(ESCALINGMETHOD scalingMethod)
+{
+  if (!m_outputShader->Create(scalingMethod))
+    CLog::Log(LOGERROR, "RPWinRenderer: Unable to create output shader");
 }
 
 bool CRPWinRenderer::ConfigureInternal()
@@ -213,11 +219,8 @@ bool CRPWinRenderer::ConfigureInternal()
 
   static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX(targetDxFormat);
 
-  if (!m_outputShader->Create(false, false, 0))
-  {
-    CLog::Log(LOGERROR, "WinRenderer: Unable to create output shader");
-    return false;
-  }
+  // Compile output shader
+  HandleScalingChange();
 
   return true;
 }
@@ -230,6 +233,16 @@ void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
   renderingDx->SetAlphaBlendEnable(alpha < 0xFF);
 
   Render(renderingDx->GetBackBuffer());
+}
+
+void CRPWinRenderer::HandleScalingChange()
+{
+  ESCALINGMETHOD scalingMethod = m_renderSettings.VideoSettings().GetScalingMethod();
+  if (scalingMethod != m_prevScalingMethod)
+  {
+    CompileOutputShader(scalingMethod);
+    m_prevScalingMethod = scalingMethod;
+  }
 }
 
 bool CRPWinRenderer::Supports(ERENDERFEATURE feature) const
@@ -247,7 +260,8 @@ bool CRPWinRenderer::Supports(ERENDERFEATURE feature) const
 
 bool CRPWinRenderer::SupportsScalingMethod(ESCALINGMETHOD method)
 {
-  if (method == VS_SCALINGMETHOD_LINEAR)
+  if (method == VS_SCALINGMETHOD_LINEAR ||
+      method == VS_SCALINGMETHOD_NEAREST)
     return true;
 
   return false;
@@ -255,14 +269,19 @@ bool CRPWinRenderer::SupportsScalingMethod(ESCALINGMETHOD method)
 
 void CRPWinRenderer::Render(CD3DTexture *target)
 {
+  HandleScalingChange();
+
   if (m_renderBuffer != nullptr && m_outputShader)
   {
     CD3DTexture *intermediateTarget = static_cast<CWinRenderBuffer*>(m_renderBuffer)->GetTarget();
     if (intermediateTarget != nullptr)
     {
+      CRect viewPort;
+      m_context.GetViewPort(viewPort);
+
       m_outputShader->Render(*intermediateTarget, m_sourceWidth, m_sourceHeight,
-        m_sourceRect, m_rotatedDestCoords, target,
-        m_context.UseLimitedColor() ? 1 : 0, 0.5f, 0.5f);
+        m_sourceRect, m_rotatedDestCoords, viewPort, target,
+        m_context.UseLimitedColor() ? 1 : 0);
     }
   }
 }
