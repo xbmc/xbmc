@@ -30,6 +30,7 @@
 					<item>
 						<label>$LOCALIZE[20150]</label>
 						<onclick>AlarmClock(shutdowntimer,Shutdown())</onclick>
+						<visible>false</visible>
 						<visible>!System.HasAlarm(shutdowntimer)</visible>
 						<visible>System.CanPowerDown | System.CanSuspend | System.CanHibernate</visible>
 					</item>
