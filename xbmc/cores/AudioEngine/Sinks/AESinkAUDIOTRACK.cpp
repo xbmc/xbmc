@@ -263,6 +263,44 @@ CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
   Deinitialize();
 }
 
+bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate, int channelMask, int encoding)
+{
+  int minBufferSize = CJNIAudioTrack::getMinBufferSize(sampleRate, channelMask, encoding);
+  if (minBufferSize < 0)
+    return false;
+
+ // Try to construct a jniSink
+  jni::CJNIAudioTrack *jniAt = NULL;
+
+  try
+  {
+    jniAt = new CJNIAudioTrack(CJNIAudioManager::STREAM_MUSIC,
+                               sampleRate,
+                               channelMask,
+                               encoding,
+                               minBufferSize,
+                               CJNIAudioTrack::MODE_STREAM);
+  }
+  catch (const std::invalid_argument& e)
+  {
+    CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation faild: Encoding: %d ChannelMask: %d Error: %s", encoding, channelMask, e.what());
+  }
+
+  bool success = (jniAt && jniAt->getState() == CJNIAudioTrack::STATE_INITIALIZED);
+
+  // Deinitialize
+  if (jniAt)
+  {
+    jniAt->stop();
+    jniAt->flush();
+    jniAt->release();
+    delete jniAt;
+  }
+
+  return success;
+}
+
+
 bool CAESinkAUDIOTRACK::IsSupported(int sampleRateInHz, int channelConfig, int encoding)
 {
   int ret = CJNIAudioTrack::getMinBufferSize( sampleRateInHz, channelConfig, encoding);
@@ -878,30 +916,35 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
     // Android v24 and backports can do real IEC API
     if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
     {
-      bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
-      m_info.m_wantsIECPassthrough = true;
-      m_info.m_streamTypes.clear();
-      m_info.m_dataFormats.push_back(AE_FMT_RAW);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-      CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: %d", CJNIAudioFormat::ENCODING_IEC61937);
-      if (supports_192khz)
+      // check if we support opening an IEC sink at all:
+      bool supports_iec = VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_IEC61937);
+      if (supports_iec)
       {
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-       // Check for IEC 8 channel 192 khz PT
-       int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
-       if (IsSupported(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
-       {
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-          CLog::Log(LOGDEBUG, "8 Channel PT via IEC61937 is supported");
+        bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
+        m_info.m_wantsIECPassthrough = true;
+        m_info.m_streamTypes.clear();
+        m_info.m_dataFormats.push_back(AE_FMT_RAW);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+        CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: %d", CJNIAudioFormat::ENCODING_IEC61937);
+        if (supports_192khz)
+        {
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+          // Check for IEC 8 channel 192 khz PT
+          int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
+          if (VerifySinkConfiguration(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
+          {
+            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+            CLog::Log(LOGDEBUG, "8 Channel PT via IEC61937 is supported");
+          }
         }
-     }
-   }
- }
+      }
+    }
+  }
 }
 
 void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
