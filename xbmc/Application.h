@@ -250,7 +250,7 @@ public:
   bool IsMusicScanning() const;
   bool IsVideoScanning() const;
 
-  /*! 
+  /*!
    \brief Starts a video library cleanup.
    \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
    */

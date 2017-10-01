@@ -97,7 +97,6 @@ std::string CSpecialProtocol::GetXBMCPath()
 std::string CSpecialProtocol::GetXBMCPath(const std::string &fileName) 
 {
 	return URIUtils::AddFileToFolder(GetXBMCPath(), fileName);
-	//TODO: need to add other platforms
 }
 #endif
 
