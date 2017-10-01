@@ -37,9 +37,9 @@
   #elif defined(TARGET_FREEBSD)
     #include <GL/gl.h>
   #elif defined(TARGET_DARWIN)
-    #include <OpenGL/gl.h>
+    #include <OpenGL/gl3.h>
     #include <OpenGL/glu.h>
-    #include <OpenGL/glext.h>
+    #include <OpenGL/gl3ext.h>
   #endif
 #elif HAS_GLES >= 2
   #if defined(TARGET_DARWIN)
