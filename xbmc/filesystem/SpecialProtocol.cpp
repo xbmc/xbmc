@@ -41,7 +41,7 @@
 
 
 #ifdef TARGET_WINDOWS
- //Getters
+//Getters
 std::string CSpecialProtocol::GetHomePath() 
 {
 	return CWIN32Util::GetProfilePath();
@@ -97,7 +97,6 @@ std::string CSpecialProtocol::GetXBMCPath()
 std::string CSpecialProtocol::GetXBMCPath(const std::string &fileName) 
 {
 	return URIUtils::AddFileToFolder(GetXBMCPath(), fileName);
-	//TODO: need to add other platforms
 }
 #endif
 

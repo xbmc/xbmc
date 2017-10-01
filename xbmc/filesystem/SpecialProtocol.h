@@ -82,7 +82,6 @@ private:
 	static std::string GetXBMCPath();
 	static std::string GetXBMCPath(const std::string &fileName);
 	static std::string GetXBMCBinAddonPath();
-	//static std::string GetXBMCBinAddonPath(const std::string &fileName);  // I don't think there is a need to this signature.
 	static std::string GetHomePath();
 	static std::string GetHomePath(const std::string &fileName);
 	static std::string GetTmpPath();

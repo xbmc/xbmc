@@ -610,7 +610,7 @@ bool CApplication::Create(const CAppParamParser &params)
   //! @todo - move to CPlatformXXX
 #ifdef TARGET_WINDOWS
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
-#endif // TARGET_WINDOWS 
+#endif // TARGET_WINDOWS
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
