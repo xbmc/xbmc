@@ -101,6 +101,7 @@
 #define PLAYBACK_STATE_PLAYING  0x0001
 #define PLAYBACK_STATE_VIDEO    0x0100
 #define PLAYBACK_STATE_AUDIO    0x0200
+#define PLAYBACK_STATE_CANNOT_PAUSE 0x0400
 
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
@@ -257,8 +258,13 @@ void CXBMCApp::onStop()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasReqVisible)
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_hasReqVisible)
+  {
+    if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    else if (m_playback_state & PLAYBACK_STATE_VIDEO)
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  }
 }
 
 void CXBMCApp::onDestroy()
@@ -697,6 +703,8 @@ void CXBMCApp::OnPlayBackStarted()
     m_playback_state |= PLAYBACK_STATE_VIDEO;
   if (g_application.m_pPlayer->HasAudio())
     m_playback_state |= PLAYBACK_STATE_AUDIO;
+  if (!g_application.m_pPlayer->CanPause())
+    m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);
   UpdateSessionState();
@@ -1099,8 +1107,13 @@ void CXBMCApp::onVisibleBehindCanceled()
   m_hasReqVisible = false;
 
   // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING))
+  {
+    if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    else if (m_playback_state & PLAYBACK_STATE_VIDEO)
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  }
 }
 
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
@@ -1131,8 +1144,13 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
-    if (m_playback_state & PLAYBACK_STATE_PLAYING)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    if ((m_playback_state & PLAYBACK_STATE_PLAYING))
+    {
+      if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      else
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    }
   }
 }
 
