@@ -1,27 +1,10 @@
-/*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
- */
+#version 150
 
 uniform sampler2D img;
-uniform vec2      stepxy;
-uniform float     m_stretch;
-varying vec2      m_cord;
+uniform vec2 stepxy;
+uniform float m_stretch;
+in vec2 m_cord;
+out vec4 fragColor;
 
 #if (USE1DTEXTURE)
   uniform sampler1D kernelTex;
@@ -41,15 +24,15 @@ half3 weight(float pos)
 {
 #if (HAS_FLOAT_TEXTURE)
   #if (USE1DTEXTURE)
-    return texture1D(kernelTex, pos).rgb;
+    return texture(kernelTex, pos).rgb;
   #else
-    return texture2D(kernelTex, vec2(pos, 0.5)).rgb;
+    return texture(kernelTex, vec2(pos, 0.5)).rgb;
   #endif
 #else
   #if (USE1DTEXTURE)
-    return texture1D(kernelTex, pos).rgb * 2.0 - 1.0;
+    return texture(kernelTex, pos).rgb * 2.0 - 1.0;
   #else
-    return texture2D(kernelTex, vec2(pos, 0.5)).rgb * 2.0 - 1.0;
+    return texture(kernelTex, vec2(pos, 0.5)).rgb * 2.0 - 1.0;
   #endif
 #endif
 }
@@ -69,7 +52,7 @@ vec2 stretch(vec2 pos)
 
 half3 pixel(float xpos, float ypos)
 {
-  return texture2D(img, vec2(xpos, ypos)).rgb;
+  return texture(img, vec2(xpos, ypos)).rgb;
 }
 
 half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2)
@@ -114,11 +97,7 @@ vec4 process()
    line(xystart.y + stepxy.y * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
    line(xystart.y + stepxy.y * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
-#ifdef GL_ES
-  rgb.a = m_alpha;
-#else
-  rgb.a = gl_Color.a;
-#endif
+  rgb.a = fragColor.a;
 
   return rgb;
 }

@@ -106,6 +106,9 @@ bool CRenderSystemGL::InitRenderSystem()
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
 
+  // Get the GL version number
+  m_RenderVersionMajor = 0;
+  m_RenderVersionMinor = 0;
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
   {
@@ -114,28 +117,26 @@ bool CRenderSystemGL::InitRenderSystem()
   }
 
   m_RenderExtensions  = " ";
-#if !defined(GL_NUM_EXTENSIONS)
-  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
-#else
-  GLint n;
-  glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-  if (n > 0)
+  if (m_RenderVersionMajor > 3 ||
+      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
-    GLint i;
-    for (i = 0; i < n; i++)
+    GLint n;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    if (n > 0)
     {
-      m_RenderExtensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
-      m_RenderExtensions += " ";
+      GLint i;
+      for (i = 0; i < n; i++)
+      {
+        m_RenderExtensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+        m_RenderExtensions += " ";
+      }
     }
   }
-#endif
+  else
+  {
+    m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  }
   m_RenderExtensions += " ";
-
-  LogGraphicsInfo();
-
-  // Get the GL version number
-  m_RenderVersionMajor = 0;
-  m_RenderVersionMinor = 0;
 
   if (IsExtSupported("GL_ARB_shading_language_100"))
   {
@@ -150,6 +151,8 @@ bool CRenderSystemGL::InitRenderSystem()
       m_glslMinor = 0;
     }
   }
+
+  LogGraphicsInfo();
 
   // Get our driver vendor and renderer
   const char* tmpVendor = (const char*) glGetString(GL_VENDOR);
@@ -176,6 +179,13 @@ bool CRenderSystemGL::InitRenderSystem()
   CheckOpenGLQuirks();
 
   m_bRenderCreated = true;
+
+  if (m_RenderVersionMajor > 3 ||
+      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
+  {
+    glGenVertexArrays(1, &m_vertexArray);
+    glBindVertexArray(m_vertexArray);
+  }
 
   InitialiseShader();
 
@@ -248,6 +258,11 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
 
 bool CRenderSystemGL::DestroyRenderSystem()
 {
+  if (m_vertexArray != GL_NONE)
+  {
+    glDeleteVertexArrays(1, &m_vertexArray);
+  }
+
   m_bRenderCreated = false;
 
   return true;
@@ -293,6 +308,19 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
+  if (m_RenderVersionMajor > 3 ||
+      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
+  {
+    if (strcmp( extension, "GL_EXT_framebuffer_object") == 0)
+    {
+      return true;
+    }
+    if (strcmp( extension, "GL_ARB_texture_non_power_of_two") == 0)
+    {
+      return true;
+    }
+  }
+
   std::string name;
   name  = " ";
   name += extension;
@@ -812,5 +840,10 @@ GLint CRenderSystemGL::ShaderGetModel()
 std::string CRenderSystemGL::GetShaderPath()
 {
   std::string path = "GL/1.2/";
+
+  if (m_RenderVersionMajor > 3 ||
+      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
+    path = "GL/1.5/";
+
   return path;
 }

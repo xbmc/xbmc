@@ -60,6 +60,8 @@
 //! is a multiple of 128 and deinterlacing is on
 #define PBO_OFFSET 16
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
@@ -564,19 +566,13 @@ void CLinuxRendererGL::DrawBlackBars()
     float x,y,z;
   };
   Svertex vertices[24];
-  Svertex vertex;
   GLubyte count = 0;
-
-  //GLfloat vertex[4][3];
-  //GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   g_Windowing.EnableShader(SM_DEFAULT);
   GLint posLoc = g_Windowing.ShaderGetPos();
   GLint uniCol = g_Windowing.ShaderGetUniCol();
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), (char*)(&vertices[0]));
-  glEnableVertexAttribArray(posLoc);
 
   //top quad
   if (m_rotatedDestCoords[0].y > 0.0)
@@ -662,8 +658,20 @@ void CLinuxRendererGL::DrawBlackBars()
     count += 6;
   }
 
+  GLuint vertexVBO;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex)*count, &vertices[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
+  glEnableVertexAttribArray(posLoc);
+
   glDrawArrays(GL_TRIANGLES, 0, count);
+
   glDisableVertexAttribArray(posLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
 
   g_Windowing.DisableShader();
 }
@@ -705,7 +713,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged && !cmsChanged)
+  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod &&
+      !nonLinStretchChanged && !cmsChanged)
     return;
   else
     m_reloadShaders = 1;
@@ -890,7 +899,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     if (!m_cmsOn)
       m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+    CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1046,62 +1055,95 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLfloat vertex[4][3];
-  GLfloat texture[3][4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+    float u3, v3;
+  }vertex[4];
 
   GLint vertLoc = m_pYUVShader->GetVertexLoc();
   GLint Yloc = m_pYUVShader->GetYcoordLoc();
   GLint Uloc = m_pYUVShader->GetUcoordLoc();
   GLint Vloc = m_pYUVShader->GetVcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vertex);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, texture[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, texture[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, texture[2]);
+  // Setup vertex position values
+  for(int i = 0; i < 4; i++)
+  {
+    vertex[i].x = m_rotatedDestCoords[i].x;
+    vertex[i].y = m_rotatedDestCoords[i].y;
+    vertex[i].z = 0.0f;// set z to 0
+  }
+
+  // bottom left
+  vertex[0].u1 = planes[0].rect.x1;
+  vertex[0].v1 = planes[0].rect.y1;
+  vertex[0].u2 = planes[1].rect.x1;
+  vertex[0].v2 = planes[1].rect.y1;
+  vertex[0].u3 = planes[2].rect.x1;
+  vertex[0].v3 = planes[2].rect.y1;
+
+  // bottom right
+  vertex[1].u1 = planes[0].rect.x2;
+  vertex[1].v1 = planes[0].rect.y1;
+  vertex[1].u2 = planes[1].rect.x2;
+  vertex[1].v2 = planes[1].rect.y1;
+  vertex[1].u3 = planes[2].rect.x2;
+  vertex[1].v3 = planes[2].rect.y1;
+
+  // top right
+  vertex[2].u1 = planes[0].rect.x2;
+  vertex[2].v1 = planes[0].rect.y2;
+  vertex[2].u2 = planes[1].rect.x2;
+  vertex[2].v2 = planes[1].rect.y2;
+  vertex[2].u3 = planes[2].rect.x2;
+  vertex[2].v3 = planes[2].rect.y2;
+
+  // top left
+  vertex[3].u1 = planes[0].rect.x1;
+  vertex[3].v1 = planes[0].rect.y2;
+  vertex[3].u2 = planes[1].rect.x1;
+  vertex[3].v2 = planes[1].rect.y2;
+  vertex[3].u3 = planes[2].rect.x1;
+  vertex[3].v3 = planes[2].rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
   glEnableVertexAttribArray(Vloc);
 
-  // Setup vertex position values
-  for(int i = 0; i < 4; i++)
-  {
-    vertex[i][0] = m_rotatedDestCoords[i].x;
-    vertex[i][1] = m_rotatedDestCoords[i].y;
-    vertex[i][2] = 0.0f;// set z to 0
-  }
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  // Setup texture coordinates
-  for (int i=0; i<3; i++)
-  {
-    // bottom left
-    texture[i][0][0] = planes[i].rect.x1;
-    texture[i][0][1] = planes[i].rect.y1;
-
-    // bottom right
-    texture[i][1][0] = planes[i].rect.x2;
-    texture[i][1][1] = planes[i].rect.y1;
-
-    // top right
-    texture[i][2][0] = planes[i].rect.x2;
-    texture[i][2][1] = planes[i].rect.y2;
-
-    // top left
-    texture[i][3][0] = planes[i].rect.x1;
-    texture[i][3][1] = planes[i].rect.y2;
-  }
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-  VerifyGLState();
-
-  m_pYUVShader->Disable();
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
 
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
   glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
+
+  m_pYUVShader->Disable();
+  VerifyGLState();
 
   glActiveTexture(GL_TEXTURE1);
   glDisable(m_textureTarget);
@@ -1186,9 +1228,6 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   VerifyGLState();
 
-  glPushAttrib(GL_VIEWPORT_BIT);
-  glPushAttrib(GL_SCISSOR_BIT);
-
   glMatrixModview.Push();
   glMatrixModview->LoadIdentity();
   glMatrixModview.Load();
@@ -1198,6 +1237,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glMatrixProject->Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
   glMatrixProject.Load();
 
+  CRect viewport;
+  g_Windowing.GetViewPort(viewport);
   glViewport(0, 0, m_sourceWidth, m_sourceHeight);
   glScissor (0, 0, m_sourceWidth, m_sourceHeight);
 
@@ -1222,74 +1263,106 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   // 1st Pass to video frame size
   GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLfloat vertex[4][3];
-  GLfloat texture[3][4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+    float u3, v3;
+  } vertex[4];
 
   GLint vertLoc = m_pYUVShader->GetVertexLoc();
   GLint Yloc = m_pYUVShader->GetYcoordLoc();
   GLint Uloc = m_pYUVShader->GetUcoordLoc();
   GLint Vloc = m_pYUVShader->GetVcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vertex);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, texture[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, texture[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, texture[2]);
+  // top left
+  vertex[0].x = 0.0f;
+  vertex[0].y = 0.0f;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = planes[0].rect.x1;
+  vertex[0].v1 = planes[0].rect.y1;
+  vertex[0].u2 = planes[1].rect.x1;
+  vertex[0].v2 = planes[1].rect.y1;
+  vertex[0].u3 = planes[2].rect.x1;
+  vertex[0].v3 = planes[2].rect.y1;
+
+  // top right
+  vertex[1].x = m_fbo.width;
+  vertex[1].y = 0.0f;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = planes[0].rect.x2;
+  vertex[1].v1 = planes[0].rect.y1;
+  vertex[1].u2 = planes[1].rect.x2;
+  vertex[1].v2 = planes[1].rect.y1;
+  vertex[1].u3 = planes[2].rect.x2;
+  vertex[1].v3 = planes[2].rect.y1;
+
+  // bottom right
+  vertex[2].x = m_fbo.width;
+  vertex[2].y = m_fbo.height;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = planes[0].rect.x2;
+  vertex[2].v1 = planes[0].rect.y2;
+  vertex[2].u2 = planes[1].rect.x2;
+  vertex[2].v2 = planes[1].rect.y2;
+  vertex[2].u3 = planes[2].rect.x2;
+  vertex[2].v3 = planes[2].rect.y2;
+
+  // bottom left
+  vertex[3].x = 0.0f;
+  vertex[3].y = m_fbo.height;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = planes[0].rect.x1;
+  vertex[3].v1 = planes[0].rect.y2;
+  vertex[3].u2 = planes[1].rect.x1;
+  vertex[3].v2 = planes[1].rect.y2;
+  vertex[3].u3 = planes[2].rect.x1;
+  vertex[3].v3 = planes[2].rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
   glEnableVertexAttribArray(Vloc);
 
-  // Setup vertex position values
-  vertex[0][0] = 0.0f;
-  vertex[0][1] = 0.0f;
-  vertex[0][2] = 0.0f;
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  vertex[1][0] = m_fbo.width;
-  vertex[1][1] = 0.0f;
-  vertex[1][2] = 0.0f;
-
-  vertex[2][0] = m_fbo.width;
-  vertex[2][1] = m_fbo.height;
-  vertex[2][2] = 0.0f;
-
-  vertex[3][0] = 0.0f;
-  vertex[3][1] = m_fbo.height;
-  vertex[3][2] = 0.0f;
-
-  // Setup texture coordinates
-  for (int i=0; i<3; i++)
-  {
-    // top left
-    texture[i][0][0] = planes[i].rect.x1;
-    texture[i][0][1] = planes[i].rect.y1;
-
-    // top right
-    texture[i][1][0] = planes[i].rect.x2;
-    texture[i][1][1] = planes[i].rect.y1;
-
-    // bottom right
-    texture[i][2][0] = planes[i].rect.x2;
-    texture[i][2][1] = planes[i].rect.y2;
-
-    // bottom left
-    texture[i][3][0] = planes[i].rect.x1;
-    texture[i][3][1] = planes[i].rect.y2;
-  }
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   m_pYUVShader->Disable();
 
   glMatrixModview.PopLoad();
   glMatrixProject.PopLoad();
 
-  glPopAttrib(); // pop scissor
-  glPopAttrib(); // pop viewport
-  VerifyGLState();
+  g_Windowing.SetViewPort(viewport);
 
   m_fbo.fbo.EndRender();
+
+  VerifyGLState();
 
   glActiveTextureARB(GL_TEXTURE1);
   glDisable(m_textureTarget);
@@ -1338,49 +1411,72 @@ void CLinuxRendererGL::RenderFromFBO()
   float imgheight = m_fbo.height / m_sourceHeight;
 
   GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLfloat vertex[4][3];
-  GLfloat texture[4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
 
   GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
   GLint loc = m_pVideoFilterShader->GetCoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vertex);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, texture);
+  // Setup vertex position values
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = 0.0;
+  vertex[0].v1 = 0.0;
+
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = imgwidth;
+  vertex[1].v1 = 0.0f;
+
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = imgwidth;
+  vertex[2].v1 = imgheight;
+
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = 0.0f;
+  vertex[3].v1 = imgheight;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+  
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
 
-  // Setup vertex position values
-  vertex[0][0] = m_rotatedDestCoords[0].x;
-  vertex[0][1] = m_rotatedDestCoords[0].y;
-  vertex[0][2] = 0.0f;
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  vertex[1][0] = m_rotatedDestCoords[1].x;
-  vertex[1][1] = m_rotatedDestCoords[1].y;
-  vertex[1][2] = 0.0f;
-
-  vertex[2][0] = m_rotatedDestCoords[2].x;
-  vertex[2][1] = m_rotatedDestCoords[2].y;
-  vertex[2][2] = 0.0f;
-
-  vertex[3][0] = m_rotatedDestCoords[3].x;
-  vertex[3][1] = m_rotatedDestCoords[3].y;
-  vertex[3][2] = 0.0f;
-
-  texture[0][0] = 0.0f;
-  texture[0][1] = 0.0f;
-  texture[1][0] = imgwidth;
-  texture[1][1] = 0.0f;
-  texture[2][0] = imgwidth;
-  texture[2][1] = imgheight;
-  texture[3][0] = 0.0f;
-  texture[3][1] = imgheight;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
 
-  if (m_pVideoFilterShader)
-    m_pVideoFilterShader->Disable();
+  glDisableVertexAttribArray(loc);
+  glDisableVertexAttribArray(vertLoc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
+
+  m_pVideoFilterShader->Disable();
 
   VerifyGLState();
 
@@ -1547,17 +1643,16 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
 static GLint GetInternalFormat(GLint format, int bpp)
 {
-  if(bpp == 2)
+  if (bpp == 2)
   {
     switch (format)
     {
-#ifdef GL_ALPHA16
-      case GL_ALPHA:     return GL_ALPHA16;
+#ifdef GL_R16
+      case GL_RED:
+        return GL_R16;
 #endif
-#ifdef GL_LUMINANCE16
-      case GL_LUMINANCE: return GL_LUMINANCE16;
-#endif
-      default:           return format;
+      default:
+        return format;
     }
   }
   else
@@ -1758,21 +1853,16 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       }
     }
 
-    for(int p = 0; p < 3; p++)
+    for (int p = 0; p < 3; p++)
     {
       YUVPLANE &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
         continue;
 
       glBindTexture(m_textureTarget, plane.id);
-      GLenum format;
       GLint internalformat;
-      if (p == 2) //V plane needs an alpha texture
-        format = GL_ALPHA;
-      else
-        format = GL_LUMINANCE;
-      internalformat = GetInternalFormat(format, im.bpp);
-      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
+      internalformat = GetInternalFormat(GL_RED, im.bpp);
+      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1804,47 +1894,47 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
   if (deinterlacing)
   {
     // Load Even Y Field
-    LoadPlane(buf.fields[FIELD_TOP][0] , GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][0] , GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] );
 
     //load Odd Y Field
-    LoadPlane(buf.fields[FIELD_BOT][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][0], GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]);
 
     // Load Even U & V Fields
-    LoadPlane(buf.fields[FIELD_TOP][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][1], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1]);
 
-    LoadPlane(buf.fields[FIELD_TOP][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_TOP][2], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[2]*2, im->bpp, im->plane[2]);
 
     // Load Odd U & V Fields
-    LoadPlane(buf.fields[FIELD_BOT][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][1], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1]);
 
-    LoadPlane(buf.fields[FIELD_BOT][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_BOT][2], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2]);
   }
   else
   {
     //Load Y plane
-    LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_FULL][0], GL_RED,
               im->width, im->height,
               im->stride[0], im->bpp, im->plane[0]);
 
     //load U plane
-    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_RED,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[1], im->bpp, im->plane[1]);
 
     //load V plane
-    LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_FULL][2], GL_RED,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[2], im->bpp, im->plane[2]);
   }
@@ -1926,22 +2016,22 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   if (deinterlacing)
   {
     // Load Odd Y field
-    LoadPlane(buf.fields[FIELD_TOP][0] , GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][0] , GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0]);
 
     // Load Even Y field
-    LoadPlane(buf.fields[FIELD_BOT][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][0], GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
 
     // Load Odd UV Fields
-    LoadPlane(buf.fields[FIELD_TOP][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_TOP][1], GL_RG,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1]);
 
     // Load Even UV Fields
-    LoadPlane(buf.fields[FIELD_BOT][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_BOT][1], GL_RG,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1]);
 
@@ -1949,12 +2039,12 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   else
   {
     // Load Y plane
-    LoadPlane(buf. fields[FIELD_FULL][0], GL_LUMINANCE,
+    LoadPlane(buf. fields[FIELD_FULL][0], GL_RED,
               im->width, im->height,
               im->stride[0], im->bpp, im->plane[0]);
 
     // Load UV plane
-    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_RG,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[1], im->bpp, im->plane[1]);
   }
@@ -2472,7 +2562,15 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
-    if (g_Windowing.IsExtSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+    bool hasFramebuffer = false;
+    unsigned int major, minor;
+    g_Windowing.GetRenderVersion(major, minor);
+    if (major > 3 ||
+        (major == 3 && minor >= 2))
+      hasFramebuffer = true;
+    if (g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
+      hasFramebuffer = true;
+    if (hasFramebuffer  && (m_renderMethod & RENDER_GLSL))
     {
       // spline36 and lanczos3 are only allowed through advancedsettings.xml
       if(method != VS_SCALINGMETHOD_SPLINE36

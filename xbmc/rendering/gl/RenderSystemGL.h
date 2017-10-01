@@ -79,6 +79,7 @@ public:
 
   std::string GetShaderPath() override;
 
+  void GetGLVersion(int& major, int& minor);
   void GetGLSLVersion(int& major, int& minor);
 
   void ResetGLErrors();
@@ -112,4 +113,5 @@ protected:
 
   std::unique_ptr<CGLShader*[]> m_pShader;
   ESHADERMETHOD m_method = SM_DEFAULT;
+  GLuint m_vertexArray = GL_NONE;
 };

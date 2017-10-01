@@ -110,22 +110,28 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
   }
 
+  unsigned int renderVersionMajor, renderVersionMinor;
+  g_Windowing.GetRenderVersion(renderVersionMajor, renderVersionMinor);
   std::string extensions;
-#if !defined(GL_NUM_EXTENSIONS)
-  extensions += (const char*) glGetString(GL_EXTENSIONS);
-#else
-  GLint n;
-  glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-  if (n > 0)
+  if (renderVersionMajor > 3 ||
+      (renderVersionMajor == 3 && renderVersionMinor >= 2))
   {
-    GLint i;
-    for (i = 0; i < n; i++)
+    GLint n;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    if (n > 0)
     {
-      extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
-      extensions += " ";
+      GLint i;
+      for (i = 0; i < n; i++)
+      {
+        extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+        extensions += " ";
+      }
     }
   }
-#endif
+  else
+  {
+    extensions += (const char*) glGetString(GL_EXTENSIONS);
+  }
 
   if (!extensions.empty())
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", extensions.c_str());
@@ -158,6 +164,12 @@ int glFormatElementByteCount(GLenum format)
   case GL_LUMINANCE:
   case GL_ALPHA:
     return 1;
+  case GL_RED:
+    return 1;
+  case GL_GREEN:
+    return 1;
+  case GL_RG:
+    return 2;
   default:
     CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
     return 1;

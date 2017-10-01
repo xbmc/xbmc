@@ -38,6 +38,7 @@
 #include FT_OUTLINE_H
 
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
@@ -58,6 +59,11 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 bool CGUIFontTTFGL::FirstBegin()
 {
+  GLenum pixformat = GL_RED;
+#if !defined(HAS_GL)
+  pixformat = GL_ALPHA; // deprecated
+#endif
+
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
     if (glIsTexture(m_nTexture))
@@ -78,8 +84,8 @@ bool CGUIFontTTFGL::FirstBegin()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-        GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, pixformat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+        pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -88,7 +94,7 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_UPDATED)
   {
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, GL_ALPHA, GL_UNSIGNED_BYTE,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
         m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
     glDisable(GL_TEXTURE_2D);
 
@@ -99,6 +105,7 @@ bool CGUIFontTTFGL::FirstBegin()
   // Turn Blending On
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
   glEnable(GL_BLEND);
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_nTexture);
   return true;
 }
@@ -108,10 +115,52 @@ void CGUIFontTTFGL::LastEnd()
 #ifdef HAS_GL
   g_Windowing.EnableShader(SM_FONTS);
 
-  GLint posLoc  = g_Windowing.ShaderGetPos();
-  GLint colLoc  = g_Windowing.ShaderGetCol();
+  GLint posLoc = g_Windowing.ShaderGetPos();
+  GLint colLoc = g_Windowing.ShaderGetCol();
   GLint tex0Loc = g_Windowing.ShaderGetCoord0();
   GLint modelLoc = g_Windowing.ShaderGetModel();
+
+  CreateStaticVertexBuffers();
+
+  // Enable the attributes used by this shader
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  if (!m_vertex.empty())
+  {
+
+    // Deal with vertices that had to use software clipping
+    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
+    SVertex *vertices = &vecVertices[0];
+    for (size_t i=0; i<m_vertex.size(); i+=4)
+    {
+      *vertices++ = m_vertex[i];
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+2];
+
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+3];
+      *vertices++ = m_vertex[i+2];
+    }
+    vertices = &vecVertices[0];
+
+    GLuint VertexVBO;
+
+    glGenBuffers(1, &VertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, x)));
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, r)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, u)));
+
+    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &VertexVBO);
+  }
+
 #else
   // GLES 2.0 version.
   g_Windowing.EnableGUIShader(SM_FONTS);
@@ -120,7 +169,7 @@ void CGUIFontTTFGL::LastEnd()
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
   GLint modelLoc = g_Windowing.GUIShaderGetModel();
-#endif
+
 
   CreateStaticVertexBuffers();
 
@@ -148,13 +197,13 @@ void CGUIFontTTFGL::LastEnd()
 
     vertices = &vecVertices[0];
 
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-    // Normalize color values. Does not affect Performance at all.
-    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, x)));
+    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, r)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, u)));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
   }
+#endif
 
   if (!m_vertexTrans.empty())
   {

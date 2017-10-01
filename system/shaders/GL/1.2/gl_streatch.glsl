@@ -21,8 +21,8 @@
 #version 120
 
 uniform sampler2D img;
-uniform float     m_stretch;
-varying vec2      m_cord;
+uniform float  m_stretch;
+varying vec2  m_cord;
 
 vec2 stretch(vec2 pos)
 {

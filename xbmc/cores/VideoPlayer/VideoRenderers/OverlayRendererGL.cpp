@@ -46,6 +46,8 @@
 
 #define USE_PREMULTIPLIED_ALPHA 1
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 using namespace OVERLAY;
 
 static void LoadTexture(GLenum target
@@ -462,7 +464,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   DRAWRECT rd;
-  if(m_pos == POSITION_RELATIVE)
+  if (m_pos == POSITION_RELATIVE)
   {
     rd.top     = state.y - state.height * 0.5;
     rd.bottom  = state.y + state.height * 0.5;
@@ -480,16 +482,78 @@ void COverlayTextureGL::Render(SRenderState& state)
 #if defined(HAS_GL)
   g_Windowing.EnableShader(SM_TEXTURE);
   GLint posLoc = g_Windowing.ShaderGetPos();
-  GLint colLoc = g_Windowing.ShaderGetCol();
   GLint tex0Loc = g_Windowing.ShaderGetCoord0();
   GLint uniColLoc = g_Windowing.ShaderGetUniCol();
+
+  GLfloat col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+
+  glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
+
+  // Setup vertex position values
+  vertex[0].x = rd.left;
+  vertex[0].y = rd.top;
+  vertex[0].z = 0;
+  vertex[0].u1 = 0.0f;
+  vertex[0].v1 = 0.0;
+
+  vertex[1].x = rd.right;
+  vertex[1].y = rd.top;
+  vertex[1].z = 0;
+  vertex[1].u1 = m_u;
+  vertex[1].v1 = 0.0f;
+
+  vertex[2].x = rd.right;
+  vertex[2].y = rd.bottom;
+  vertex[2].z = 0;
+  vertex[2].u1 = m_u;
+  vertex[2].v1 = m_v;
+
+  vertex[3].x = rd.left;
+  vertex[3].y = rd.bottom;
+  vertex[3].z = 0;
+  vertex[3].u1 = 0.0f;
+  vertex[3].v1 = m_v;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(tex0Loc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
+
+  g_Windowing.DisableShader();
+
 #else
   g_Windowing.EnableGUIShader(SM_TEXTURE);
   GLint posLoc = g_Windowing.GUIShaderGetPos();
   GLint colLoc = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
   GLint uniColLoc = g_Windowing.GUIShaderGetUniCol();
-#endif
 
   GLfloat col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   GLfloat ver[4][2];
@@ -522,9 +586,6 @@ void COverlayTextureGL::Render(SRenderState& state)
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-#if defined(HAS_GL)
-  g_Windowing.DisableShader();
-#else
   g_Windowing.DisableGUIShader();
 #endif
 
