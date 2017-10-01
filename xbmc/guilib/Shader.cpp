@@ -54,7 +54,16 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
     return false;
   }
   getline(file, m_source, '\0');
-  m_source.insert(0, prefix);
+
+  size_t pos = 0;
+  size_t versionPos = m_source.find("#version");
+  if (versionPos != std::string::npos)
+  {
+    versionPos = m_source.find("\n", versionPos);
+    if (versionPos != std::string::npos)
+      pos = versionPos + 1;
+  }
+  m_source.insert(pos, prefix);
   return true;
 }
 
@@ -301,7 +310,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Vertex Shader compiled successfully");
 
   // compile pixel shader
   if (!m_pFP->Compile())
@@ -310,7 +318,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Fragment Shader compiled successfully");
 
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
