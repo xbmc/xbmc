@@ -68,9 +68,7 @@ struct YUVCOEF
 enum RenderMethod
 {
   RENDER_GLSL=0x01,
-  RENDER_ARB=0x02,
-  RENDER_POT=0x04,
-  RENDER_CUSTOM=0x08
+  RENDER_CUSTOM=0x02
 };
 
 enum RenderQuality
@@ -258,41 +256,4 @@ protected:
   void DeleteCLUT();
 };
 
-
-inline int NP2( unsigned x ) {
-#if defined(TARGET_POSIX) && \
-    !defined(__POWERPC__) && \
-    !defined(__PPC__) && \
-    !defined(__arm__) && \
-    !defined(__aarch64__) && \
-    !defined(__mips__) && \
-    !defined(__SH4__) && \
-    !defined(__sparc__) && \
-    !defined(__arc__) && \
-    !defined(__xtensa__)
-  // If there are any issues compiling this, just append a ' && 0'
-  // to the above to make it '#if defined(TARGET_POSIX) && 0'
-
-  // Linux assembly is AT&T Unix style, not Intel style
-  unsigned y;
-  __asm__("dec %%ecx \n"
-          "movl $1, %%eax \n"
-          "bsr %%ecx,%%ecx \n"
-          "inc %%ecx \n"
-          "shl %%cl, %%eax \n"
-          "movl %%eax, %0 \n"
-          :"=r"(y)
-          :"c"(x)
-          :"%eax");
-  return y;
-#else
-    --x;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    return ++x;
-#endif
-}
 

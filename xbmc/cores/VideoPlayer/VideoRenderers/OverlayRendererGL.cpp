@@ -69,13 +69,12 @@ static void LoadTexture(GLenum target
 #endif
   int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
+#ifdef HAS_GLES
   if (!g_Windowing.SupportsNPOT(0))
   {
     width2  = NP2(width);
     height2 = NP2(height);
   }
-
-#ifdef HAS_GLES
 
   /** OpenGL ES does not support BGR **/
   if (!alpha)
