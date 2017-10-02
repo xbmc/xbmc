@@ -131,7 +131,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
     if (!m_isYuv && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
-    return (m_renderMethod & RENDER_GLSL) || (m_renderMethod & RENDER_ARB);
+    return (m_renderMethod & RENDER_GLSL);
   }
   else if (feature == RENDERFEATURE_NOISE ||
            feature == RENDERFEATURE_SHARPNESS)
