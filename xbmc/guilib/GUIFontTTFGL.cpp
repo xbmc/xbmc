@@ -59,9 +59,10 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 bool CGUIFontTTFGL::FirstBegin()
 {
+#if defined(HAS_GL)
   GLenum pixformat = GL_RED;
-#if !defined(HAS_GL)
-  pixformat = GL_ALPHA; // deprecated
+#else
+  GLenum pixformat = GL_ALPHA; // deprecated
 #endif
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
