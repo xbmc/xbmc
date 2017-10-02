@@ -601,7 +601,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         return false;
       break;
     }
-#if VA_CHECK_VERSION(0,38,1)
     case AV_CODEC_ID_VP9:
     {
       profile = VAProfileVP9Profile0;
@@ -609,7 +608,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         return false;
       break;
     }
-#endif
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
