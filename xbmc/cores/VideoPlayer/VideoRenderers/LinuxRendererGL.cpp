@@ -224,9 +224,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       return false;
 
     if (m_textureTarget == GL_TEXTURE_RECTANGLE_ARB)
-      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
+      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_RECTANGLE_ARB");
     else
-      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
+      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_2D");
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateTexture(i);
@@ -893,7 +893,7 @@ void CLinuxRendererGL::LoadShaders(int field)
                            m_CLUTsize);
     }
     EShaderFormat shaderFormat = GetShaderFormat();
-    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
+    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
                                                 m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                 out);
     if (!m_cmsOn)

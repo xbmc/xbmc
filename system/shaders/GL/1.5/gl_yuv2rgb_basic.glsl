@@ -1,7 +1,6 @@
 #version 150
 
 #if(XBMC_texture_rectangle)
-# extension GL_ARB_texture_rectangle : enable
 # define texture2D texture2DRect
 # define sampler2D sampler2DRect
 #endif
@@ -57,21 +56,14 @@ vec4 process()
                  , texture(m_sampV, stretch(m_cordV)).g
                  , 1.0 );
   rgb   = m_yuvmat * yuv;
-  rgb.a = gl_Color.a;
+  rgb.a = fragColor.a;
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
-#if(XBMC_texture_rectangle)
-  vec2 stepxy = vec2(1.0, 1.0);
-  vec2 pos    = stretch(m_cordY);
-  pos         = vec2(pos.x - 0.25, pos.y);
-  vec2 f      = fract(pos);
-#else
   vec2 stepxy = m_step;
   vec2 pos    = stretch(m_cordY);
   pos         = vec2(pos.x - stepxy.x * 0.25, pos.y);
   vec2 f      = fract(pos / stepxy);
-#endif
 
   //y axis will be correctly interpolated by opengl
   //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
