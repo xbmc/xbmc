@@ -62,7 +62,7 @@
 					<font>font25</font>
 					<texturefocus>list_focus.png</texturefocus>
 					<texturenofocus></texturenofocus>
-					<label>$LOCALIZE[10035]</label>
+					<label>$LOCALIZE[13007]</label>
 					<label2>Select + B</label2>
 					<onclick>PlayerControl(Reset)</onclick>
 				</control>
