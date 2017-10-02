@@ -35,6 +35,71 @@
 #include "utils/StringUtils.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include "platform/win32/WIN32Util.h"
+#endif
+
+
+#ifdef TARGET_WINDOWS
+ //Getters
+std::string CSpecialProtocol::GetHomePath()
+{
+  return CWIN32Util::GetProfilePath();
+}
+
+std::string CSpecialProtocol::GetHomePath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetHomePath(), fileName);
+}
+
+std::string CSpecialProtocol::GetTmpPath()
+{
+  return URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache");
+}
+
+std::string CSpecialProtocol::GetTmpPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetTmpPath(), fileName);
+}
+
+
+std::string CSpecialProtocol::GetXBMCBinAddonPath()
+{
+  std::string str = GetXBMCPath("/addons");
+  return str;
+}
+
+std::string CSpecialProtocol::GetProfilePath()
+{
+  return CProfilesManager::GetInstance().GetProfileUserDataFolder();
+}
+
+std::string CSpecialProtocol::GetProfilePath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetProfilePath(), fileName);
+}
+
+std::string CSpecialProtocol::GetMasterProfilePath()
+{
+  return URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata");
+}
+
+std::string CSpecialProtocol::GetMasterProfilePath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetMasterProfilePath(), fileName);
+}
+
+std::string CSpecialProtocol::GetXBMCPath()
+{
+  return CUtil::GetHomePath();
+}
+
+std::string CSpecialProtocol::GetXBMCPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetXBMCPath(), fileName);
+}
+#endif
+
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
   SetPath("profile", dir);
@@ -122,7 +187,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     if (path.length() >= 2 && path[1] == ':')
     {
       CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
-     // printf("Trying to access old style dir: %s\n", path.c_str());
+      // printf("Trying to access old style dir: %s\n", path.c_str());
     }
 #endif
 
@@ -130,7 +195,6 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   }
 
   std::string FullFileName = url.GetFileName();
-
   std::string translatedPath;
   std::string FileName;
   std::string RootDir;
@@ -167,18 +231,49 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     translatedPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName);
 
   // from here on, we have our "real" special paths
-  else if (RootDir == "xbmc" ||
-           RootDir == "xbmcbin" ||
-           RootDir == "xbmcbinaddons" ||
-           RootDir == "xbmcaltbinaddons" ||
-           RootDir == "home" ||
-           RootDir == "envhome" ||
-           RootDir == "userhome" ||
-           RootDir == "temp" ||
-           RootDir == "profile" ||
-           RootDir == "masterprofile" ||
-           RootDir == "frameworks" ||
-           RootDir == "logpath")
+
+/* In Windows platform the static path map isn't used anymore. Instead we use specific getters.
+   (for alleviating the early destruction of the map when exiting Kodi)
+*/
+#ifdef TARGET_WINDOWS
+  else if (RootDir == "profile")
+  {
+    translatedPath = GetProfilePath(FileName);
+  }
+  else if (RootDir == "masterprofile")
+  {
+    translatedPath = GetMasterProfilePath(FileName);
+  }
+  else if (RootDir == "xbmc" || RootDir == "xbmcbin")
+  {
+    translatedPath = GetXBMCPath(FileName);
+  }
+  else if (RootDir == "xbmcbinaddons")
+  {
+    translatedPath = GetXBMCBinAddonPath();
+  }
+  else if (RootDir == "home" || RootDir == "logpath")
+  {
+    translatedPath = GetHomePath(FileName);
+  }
+  else if (RootDir == "temp")
+  {
+    translatedPath = GetTmpPath(FileName);
+  }
+#else
+  else if (
+    RootDir == "xbmc" ||
+    RootDir == "xbmcbin" ||
+    RootDir == "xbmcbinaddons" ||
+    RootDir == "xbmcaltbinaddons" ||
+    RootDir == "home" ||
+    RootDir == "envhome" ||
+    RootDir == "userhome" ||
+    RootDir == "temp" ||
+    RootDir == "profile" ||
+    RootDir == "masterprofile" ||
+    RootDir == "frameworks" ||
+    RootDir == "logpath")
   {
     std::string basePath = GetPath(RootDir);
     if (!basePath.empty())
@@ -186,6 +281,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     else
       translatedPath.clear();
   }
+#endif
 
   // check if we need to recurse in
   if (URIUtils::IsSpecial(translatedPath))
@@ -263,16 +359,16 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
 
 void CSpecialProtocol::LogPaths()
 {
-  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetPath("xbmcbinaddons").c_str());
-  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
+  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetXBMCPath().c_str());
+  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetXBMCPath().c_str());
+  CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetXBMCBinAddonPath().c_str());
+  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetMasterProfilePath().c_str());
 #if defined(TARGET_POSIX)
   CLog::Log(LOGNOTICE, "special://envhome/ is mapped to: %s", GetPath("envhome").c_str());
 #endif
-  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
-  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
-  CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetPath("logpath").c_str());
+  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetHomePath().c_str());
+  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetTmpPath().c_str());
+  CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetHomePath().c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
   if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
