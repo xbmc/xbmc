@@ -67,7 +67,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
     for (const auto& addonInfo : addonInfos)
     {
-      if (CAudioDecoder::HasTags(addonInfo) &&
+      if (CAudioDecoder::HasTracks(addonInfo) &&
           CAudioDecoder::GetExtensions(addonInfo).find(strExtension) != std::string::npos)
       {
         CAudioDecoder* result = new CAudioDecoder(addonInfo);

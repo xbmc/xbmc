@@ -31,6 +31,7 @@ CAudioDecoder::CAudioDecoder(const BinaryAddonBasePtr& addonInfo)
 {
   m_CodecName = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@name").asString();
   m_strExt = m_CodecName + "stream";
+  m_hasTags = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
   m_struct = {{ 0 }};
 }
 
@@ -116,10 +117,18 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
   int result = m_struct.toAddon.track_count(&m_struct, strPath.c_str());
 
-  if (result > 1 && !Load(strPath, XFILE::CMusicFileDirectory::m_tag, nullptr))
-    return 0;
+  if (result > 1)
+  {
+    if (m_hasTags)
+    {
+      if (!Load(strPath, XFILE::CMusicFileDirectory::m_tag, nullptr))
+        return 0;
+    }
+    else
+      XFILE::CMusicFileDirectory::m_tag.SetTitle(CURL(strPath).GetFileNameWithoutPath());
+    XFILE::CMusicFileDirectory::m_tag.SetLoaded(true);
+  }
 
-  XFILE::CMusicFileDirectory::m_tag.SetLoaded(true);
   return result;
 }
 
