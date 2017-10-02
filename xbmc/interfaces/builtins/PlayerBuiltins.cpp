@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "system.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/SeekHandler.h"
 #include "utils/StringUtils.h"
@@ -448,8 +449,8 @@ static int PlayMedia(const std::vector<std::string>& params)
   if (item.m_bIsFolder)
   {
     CFileItemList items;
-    std::string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.GetMusicExtensions();
-    XFILE::CDirectory::GetDirectory(item.GetPath(),items,extensions);
+    std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
+    XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions);
 
     bool containsMusic = false, containsVideo = false;
     for (int i = 0; i < items.Size(); i++)

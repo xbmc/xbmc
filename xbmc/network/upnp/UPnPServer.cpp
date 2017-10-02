@@ -37,6 +37,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/md5.h"
 #include "utils/SortUtils.h"
@@ -678,10 +679,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // this is the only way to hide unplayable items in the 'files'
             // view as we cannot tell what context (eg music vs video) the
             // request came from
-            std::string supported = g_advancedSettings.GetPictureExtensions() + "|"
-                                  + g_advancedSettings.m_videoExtensions + "|"
-                                  + g_advancedSettings.GetMusicExtensions() + "|"
-                                  + g_advancedSettings.m_discStubExtensions;
+            std::string supported = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions() + "|"
+                                  + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|"
+                                  + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions() + "|"
+                                  + CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
             CDirectory::GetDirectory((const char*)parent_id, items, supported);
             DefaultSortItems(items);
         }

@@ -48,6 +48,7 @@
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "storage/MediaManager.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -457,11 +458,11 @@ namespace XBMCAddon
       XBMC_TRACE;
       String result;
       if (strcmpi(mediaType, "video") == 0)
-        result = g_advancedSettings.m_videoExtensions;
+        result = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
       else if (strcmpi(mediaType, "music") == 0)
-        result = g_advancedSettings.GetMusicExtensions();
+        result = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_advancedSettings.GetPictureExtensions();
+        result = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
 
       //! @todo implement
       //    else

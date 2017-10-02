@@ -25,11 +25,6 @@
 #include <string>
 #include <vector>
 
-#include "addons/AudioDecoder.h"
-#include "addons/BinaryAddonCache.h"
-#include "addons/IAddon.h"
-#include "addons/ImageDecoder.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -1422,34 +1417,4 @@ void CAdvancedSettings::setExtraLogLevel(const std::vector<CVariant> &components
 
     m_extraLogLevels |= static_cast<int>(it->asInteger());
   }
-}
-
-std::string CAdvancedSettings::GetMusicExtensions() const
-{
-  std::string result(m_musicExtensions);
-
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
-  for (const auto& addonInfo : addonInfos)
-  {
-    result += '|';
-    result += CAudioDecoder::GetExtensions(addonInfo);
-  }
-
-  return result;
-}
-
-std::string CAdvancedSettings::GetPictureExtensions() const
-{
-  std::string result(m_pictureExtensions);
-
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER);
-  for (auto addonInfo : addonInfos)
-  {
-    result += '|';
-    result += addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@extension").asString();
-  }
-
-  return result;
 }

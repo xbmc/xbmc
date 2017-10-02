@@ -80,6 +80,7 @@
 #ifdef HAS_IRSERVERSUITE
 #endif
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -539,7 +540,7 @@ bool CUtil::IsTVRecording(const std::string& strFile)
 bool CUtil::IsPicture(const std::string& strFile)
 {
   return URIUtils::HasExtension(strFile,
-                  g_advancedSettings.GetPictureExtensions()+ "|.tbn|.dds");
+                  CServiceBroker::GetFileExtensionProvider().GetPictureExtensions()+ "|.tbn|.dds");
 }
 
 bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)
@@ -1875,7 +1876,7 @@ void CUtil::GetItemsToScan(const std::string& videoPath,
   for (std::vector<std::string>::const_iterator it = additionalPaths.begin(); it != additionalPaths.end(); ++it)
   {
     CFileItemList moreItems;
-    CDirectory::GetDirectory(*it, moreItems, g_advancedSettings.m_subtitlesExtensions, flags);
+    CDirectory::GetDirectory(*it, moreItems, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), flags);
     items.Append(moreItems);
   }
 }
@@ -1987,7 +1988,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
-  GetItemsToScan(strBasePath, g_advancedSettings.m_subtitlesExtensions, common_sub_dirs, items);
+  GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), common_sub_dirs, items);
 
   if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() && !CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty()) // to avoid checking non-existent directories (network) every time..
   {
@@ -2018,11 +2019,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   for (std::vector<std::string>::const_iterator it = strLookInPaths.begin(); it != strLookInPaths.end(); ++it)
   {
     CFileItemList moreItems;
-    CDirectory::GetDirectory(*it, moreItems, g_advancedSettings.m_subtitlesExtensions, flags);
+    CDirectory::GetDirectory(*it, moreItems, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), flags);
     items.Append(moreItems);
   }
 
-  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.m_subtitlesExtensions, '|');
+  std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), '|');
   exts.erase(std::remove(exts.begin(), exts.end(), ".zip"), exts.end());
   exts.erase(std::remove(exts.begin(), exts.end(), ".rar"), exts.end());
 
@@ -2294,9 +2295,9 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "audio", "tracks"};
-  GetItemsToScan(strBasePath, g_advancedSettings.GetMusicExtensions(), common_sub_dirs, items);
+  GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), common_sub_dirs, items);
 
-  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
+  std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
   ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
 }
 

@@ -28,6 +28,8 @@
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "URL.h"
+#include "utils/FileExtensionProvider.h"
+#include "ServiceBroker.h"
 #include "StringUtils.h"
 
 #if defined(TARGET_WINDOWS)
@@ -131,10 +133,10 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     strExtension += "|";
 
     std::string strFileMask;
-    strFileMask = g_advancedSettings.GetPictureExtensions();
-    strFileMask += "|" + g_advancedSettings.GetMusicExtensions();
-    strFileMask += "|" + g_advancedSettings.m_videoExtensions;
-    strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
+    strFileMask = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
+    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
+    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
+    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
 #if defined(TARGET_DARWIN)
     strFileMask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
 #else
