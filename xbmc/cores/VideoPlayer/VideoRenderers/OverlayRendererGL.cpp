@@ -60,13 +60,15 @@ static void LoadTexture(GLenum target
   char *pixelVector = NULL;
   const GLvoid *pixelData = pixels;
 
-  GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
 #ifdef HAS_GLES
   /** OpenGL ES does not support BGR so use RGB and swap later **/
+  GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
   GLenum externalFormat = alpha ? GL_ALPHA : GL_RGBA;
 #else
-  GLenum externalFormat = alpha ? GL_ALPHA : GL_BGRA;
+  GLenum internalFormat = alpha ? GL_RED : GL_RGBA;
+  GLenum externalFormat = alpha ? GL_RED : GL_BGRA;
 #endif
+
   int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
 #ifdef HAS_GLES
@@ -389,12 +391,50 @@ void COverlayGlyphGL::Render(SRenderState& state)
   GLint posLoc  = g_Windowing.ShaderGetPos();
   GLint colLoc  = g_Windowing.ShaderGetCol();
   GLint tex0Loc = g_Windowing.ShaderGetCoord0();
+
+  std::vector<VERTEX> vecVertices( 6 * m_count);
+  VERTEX *vertices = &vecVertices[0];
+
+  for (int i=0; i<m_count*4; i+=4)
+  {
+    *vertices++ = m_vertex[i];
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+2];
+
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+3];
+    *vertices++ = m_vertex[i+2];
+  }
+  GLuint VertexVBO;
+
+  glGenBuffers(1, &VertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX), BUFFER_OFFSET(offsetof(VERTEX, x)));
+  glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX), BUFFER_OFFSET(offsetof(VERTEX, r)));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX), BUFFER_OFFSET(offsetof(VERTEX, u)));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &VertexVBO);
+
+  g_Windowing.DisableShader();
+
 #else
   g_Windowing.EnableGUIShader(SM_FONTS);
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
-#endif
 
   // stack object until VBOs will be used
   std::vector<VERTEX> vecVertices( 6 * m_count);
@@ -427,9 +467,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-#ifdef HAS_GL
-  g_Windowing.DisableShader();
-#else
   g_Windowing.DisableGUIShader();
 #endif
 

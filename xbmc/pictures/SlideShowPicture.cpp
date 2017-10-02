@@ -41,6 +41,8 @@
 
 #define FPS                                 25
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
 CSlideShowPic::CSlideShowPic() : m_alpha(0)
@@ -860,16 +862,50 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   }
 
   GLubyte colour[4];
-  GLfloat vertex[4][3];
-  GLfloat texture[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
+
+  // Setup vertex position values
+  vertex[0].x = x[0];
+  vertex[0].y = y[0];
+  vertex[0].z = 0;
+  vertex[0].u1 = u1;
+  vertex[0].v1 = v1;
+
+  vertex[1].x = x[1];
+  vertex[1].y = y[1];
+  vertex[1].z = 0;
+  vertex[1].u1 = u2;
+  vertex[1].v1 = v1;
+
+  vertex[2].x = x[2];
+  vertex[2].y = y[2];
+  vertex[2].z = 0;
+  vertex[2].u1 = u2;
+  vertex[2].v1 = v2;
+
+  vertex[3].x = x[3];
+  vertex[3].y = y[3];
+  vertex[3].z = 0;
+  vertex[3].u1 = u1;
+  vertex[3].v1 = v2;
 
   GLint posLoc  = g_Windowing.ShaderGetPos();
   GLint tex0Loc = g_Windowing.ShaderGetCoord0();
   GLint uniColLoc= g_Windowing.ShaderGetUniCol();
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, vertex);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, texture);
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);
@@ -887,25 +923,22 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     colour[2] = (235 - 16) * colour[2] / 255;
   }
 
-  for (int i=0; i<4; i++)
-  {
-    // Setup vertex position values
-    vertex[i][0] = x[i];
-    vertex[i][1] = y[i];
-    vertex[i][2] = 0.0f;
-  }
-  // Setup texture coordinates
-  texture[0][0] = texture[3][0] = u1;
-  texture[0][1] = texture[1][1] = v1;
-  texture[1][0] = texture[2][0] = u2;
-  texture[2][1] = texture[3][1] = v2;
-
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
                         (colour[2] / 255.0f), (colour[3] / 255.0f));
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   g_Windowing.DisableShader();
 
