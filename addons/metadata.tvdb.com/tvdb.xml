@@ -2,7 +2,7 @@
 <!-- should be self-explanatory -->
 <scraper framework="1.1" date="2013-04-04">
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
 			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
@@ -14,7 +14,7 @@
 	</NfoUrl>
 
 	<GetTVDBId dest="3">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;</expression>
 		</RegExp>
 	</GetTVDBId>
@@ -43,7 +43,7 @@
 	<!-- returns:	results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -141,7 +141,7 @@
 
 	<GetArt dest="3">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseArt&quot; cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/1D62F2F90030C444/series/\1/banners.xml&lt;/url&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseArt&quot; cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/banners.xml&lt;/url&gt;" dest="4">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>

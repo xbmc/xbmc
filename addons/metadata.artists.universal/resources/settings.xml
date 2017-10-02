@@ -29,12 +29,9 @@
     <setting type="lsep" label="Thumb Sources"/>
     <setting label="30005" type="bool" id="fanarttvthumbs" default="true"/>
     <setting label="30022" type="bool" id="tadbthumbs" default="true"/>
-    <setting label="30001" type="bool" id="allmusicartistthumbs" default="true"/>
-    <setting label="30003" type="bool" id="htbthumbs" default="true"/>
     <setting type="lsep" label="Fanart Sources"/>
     <setting label="30004" type="bool" id="fanarttvfanart" default="true"/>
     <setting label="30023" type="bool" id="tadbfanart" default="true"/>
-    <setting label="30000" type="bool" id="htbfanart" default="true"/>
   </category>
   
   <category label="30025">
