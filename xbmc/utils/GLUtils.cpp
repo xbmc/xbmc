@@ -149,14 +149,20 @@ int glFormatElementByteCount(GLenum format)
 {
   switch (format)
   {
-#ifndef HAS_GLES
+#ifdef HAS_GL
   case GL_BGRA:
+    return 4;
+  case GL_RED:
+    return 1;
+  case GL_GREEN:
+    return 1;
+  case GL_RG:
+    return 2;
+  case GL_BGR:
+    return 3;
 #endif
   case GL_RGBA:
     return 4;
-#ifndef HAS_GLES
-  case GL_BGR:
-#endif
   case GL_RGB:
     return 3;
   case GL_LUMINANCE_ALPHA:
@@ -164,12 +170,6 @@ int glFormatElementByteCount(GLenum format)
   case GL_LUMINANCE:
   case GL_ALPHA:
     return 1;
-  case GL_RED:
-    return 1;
-  case GL_GREEN:
-    return 1;
-  case GL_RG:
-    return 2;
   default:
     CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
     return 1;
