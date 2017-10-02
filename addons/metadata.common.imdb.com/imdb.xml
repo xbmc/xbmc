@@ -123,7 +123,7 @@
 	<ParseIMDBOutline dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
-				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;</expression>
+				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;(.+?)&lt;/div&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

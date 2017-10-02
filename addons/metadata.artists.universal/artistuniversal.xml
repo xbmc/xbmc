@@ -67,16 +67,10 @@
 			<RegExp input="$$8" conditional="tadbthumbs" output="&lt;chain function=&quot;GetTADBArtistThumbsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
-			<RegExp input="$$8" conditional="htbthumbs" output="&lt;chain function=&quot;GetHTBThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
 			<RegExp input="$$8" conditional="fanarttvfanart" output="&lt;chain function=&quot;GetFanartTvArtistFanartsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<RegExp input="$$8" conditional="tadbfanart" output="&lt;chain function=&quot;GetTADBArtistFanartsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$8" conditional="htbfanart" output="&lt;chain function=&quot;GetHTBFanartByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;chain function=&quot;GetAMGData&quot;&gt;\1&lt;/chain&gt;" dest="5+">
@@ -141,9 +135,6 @@
 			</RegExp>
 			<RegExp input="$INFO[yearsasource]" output="&lt;chain function=&quot;GetAMGArtistYearsActiveByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="2+">
 				<expression>allmusic.com</expression>
-			</RegExp>
-			<RegExp input="$$9" conditional="allmusicartistthumbs" output="&lt;chain function=&quot;GetAMGArtistThumbsByAMGID&quot;&gt;\1&lt;/chain&gt;" dest="2+">
-				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

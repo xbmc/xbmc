@@ -94,6 +94,25 @@
 			<RegExp input="$$1" output="&lt;musicBrainzAlbumID&gt;\1&lt;/musicBrainzAlbumID&gt;&lt;title&gt;\2&lt;/title&gt;" dest="2">
 				<expression noclean="1">&lt;release id=&quot;([^&quot;]*)&quot;&gt;&lt;title&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
+			<!--MBID - release group-->			
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\stype=&quot;[^&quot;]*&quot;\sid=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\stype=&quot;[^&quot;]*&quot;\stype-id=&quot;[^&quot;]*&quot;\sid=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\sid=&quot;([^&quot;]*)&quot;\stype=&quot;[^&quot;]*&quot;</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\sid=&quot;([^&quot;]*)&quot;\stype-id=&quot;[^&quot;]*&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\stype-id=&quot;[^&quot;]*&quot;\sid=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;" dest="2+">
+				<expression noclean="1">&lt;release-group\stype-id=&quot;[^&quot;]*&quot;\stype=&quot;[^&quot;]*&quot;\sid=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>			
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseMBAlbumTitle>
