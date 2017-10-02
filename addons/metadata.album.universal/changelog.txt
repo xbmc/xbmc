@@ -1,3 +1,15 @@
+[B]2.7.3[/B]
+Fixed: albums without year on MusicBrainz won't be found
+
+[B]2.7.2[/B]
+Added: Return "relevance" for album search results, from Musicbrainz "score"
+Added: Return Musicbrainz release group id in album details
+Fixed: Duplicated request of release data from Musicbrainz when have album mbid from tags, by return url cache from ResolveIDToUrl
+Bump to using metadata.common.musicbrainz.org" v2.1.2
+
+[B]2.7.1[/B]
+Fixed: Won't scrape MBID randomly
+
 [B]2.7.0[/B]
 Added: ability to define MusicBrainz mirror
 

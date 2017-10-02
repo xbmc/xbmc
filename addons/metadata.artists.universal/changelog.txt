@@ -1,3 +1,6 @@
+[B]3.7.3[/B]
+cleanup: sources and options what won't work
+
 [B]3.7.2[/B]
 Fixed: another try to fix all scenarios for mbid resolution
 

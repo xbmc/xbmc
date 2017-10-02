@@ -1,3 +1,9 @@
+[B]3.9.4[/B]
+- Fixed after API layout changes
+
+[B]3.9.3[/B]
+- Update
+
 [B]3.9.2[/B]
 - added: some new languages
 

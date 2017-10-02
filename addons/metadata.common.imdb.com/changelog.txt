@@ -1,3 +1,6 @@
+[B]2.8.8[/B]
+- fixed: potential issue with IMDb outline (thanks scudlee)
+
 [B]2.8.7[/B]
 - fixed: IMDb countries
 
