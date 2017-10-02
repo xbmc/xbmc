@@ -258,7 +258,12 @@ void CXBMCApp::onStop()
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO) && !m_hasReqVisible)
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  {
+    if (g_application.m_pPlayer->CanPause())
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    else
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+  }
 }
 
 void CXBMCApp::onDestroy()
@@ -1100,7 +1105,12 @@ void CXBMCApp::onVisibleBehindCanceled()
 
   // Pressing the pause button calls OnStop() (cf. https://code.google.com/p/android/issues/detail?id=186469)
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+  {
+    if (g_application.m_pPlayer->CanPause())
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    else
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+  }
 }
 
 int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
@@ -1132,7 +1142,12 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    {
+      if (g_application.m_pPlayer->CanPause())
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      else
+       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    }
   }
 }
 
