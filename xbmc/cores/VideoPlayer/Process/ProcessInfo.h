@@ -50,6 +50,8 @@ public:
   std::string GetVideoDeintMethod();
   void SetVideoPixelFormat(const std::string &pixFormat);
   std::string GetVideoPixelFormat();
+  void SetVideoStereoMode(const std::string &mode);
+  std::string GetVideoStereoMode();
   void SetVideoDimensions(int width, int height);
   void GetVideoDimensions(int &width, int &height);
   void SetVideoFps(float fps);
@@ -116,6 +118,7 @@ protected:
   std::string m_videoDecoderName;
   std::string m_videoDeintMethod;
   std::string m_videoPixelFormat;
+  std::string m_videoStereoMode;
   int m_videoWidth;
   int m_videoHeight;
   float m_videoFPS;

@@ -263,18 +263,25 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
 
 std::string OMXPlayerVideo::GetStereoMode()
 {
-  std::string  stereo_mode;
+  std::string  stereoMode;
 
   switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
   {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
-    default:                                  stereo_mode = m_hints.stereo_mode; break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      stereoMode = "left_right";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      stereoMode = "top_bottom";
+      break;
+    default:
+      stereoMode = m_processInfo.GetVideoStereoMode();
+      break;
   }
 
-  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
-    stereo_mode = GetStereoModeInvert(stereo_mode);
-  return stereo_mode;
+  if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
+    stereoMode = GetStereoModeInvert(stereoMode);
+
+  return stereoMode;
 }
 
 void OMXPlayerVideo::Output(double pts, bool bDropPacket)
@@ -754,6 +761,8 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
   uint32_t video_width   = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth;
   uint32_t video_height  = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight;
+
+  m_processInfo.SetVideoStereoMode(m_hints.stereo_mode);
 
   /* figure out stereomode expected based on user settings and hints */
   unsigned flags = GetStereoModeFlags(GetStereoMode());

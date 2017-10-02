@@ -83,7 +83,6 @@ public:
   double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
-  std::string GetStereoMode() override;
   void SetSpeed(int iSpeed) override;
 
   // classes
@@ -114,6 +113,7 @@ protected:
   void ResetFrameRateCalc();
   void CalcFrameRate();
   int CalcDropRequirement(double pts);
+  std::string GetStereoMode();
 
   double m_iSubtitleDelay;
 

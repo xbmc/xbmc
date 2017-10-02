@@ -85,6 +85,7 @@ protected:
   virtual void Process();
   void SendMessageBack(CDVDMsg* pMsg, int priority = 0);
   MsgQueueReturnCode GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
+  std::string GetStereoMode();
 private:
 public:
   OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager, CProcessInfo &processInfo);
@@ -108,7 +109,6 @@ public:
   void SetSpeed(int iSpeed) override;
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
-  std::string GetStereoMode() override;
   double GetOutputDelay() override;
   double GetSubtitleDelay()                         override { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)               override { m_iSubtitleDelay = delay; }
