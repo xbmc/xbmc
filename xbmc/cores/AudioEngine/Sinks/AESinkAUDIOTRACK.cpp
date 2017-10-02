@@ -239,6 +239,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
 bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
+bool CAESinkAUDIOTRACK::m_sinkSupportsIEC = false;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
@@ -323,7 +324,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         m_sink_sampleRate = 192000;
 
       // new Android N format
-      if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+      if (m_sinkSupportsIEC)
       {
         m_encoding = CJNIAudioFormat::ENCODING_IEC61937;
         // this will be sent tunneled, therefore the IEC path needs e.g.
@@ -370,7 +371,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   // old aml without IEC61937 passes everything via 2 channels
-  if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough && (CJNIAudioFormat::ENCODING_IEC61937 == -1))
+  if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough && !m_sinkSupportsIEC)
     atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
 
   while (!m_at_jni)
@@ -452,7 +453,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       {
         m_min_buffer_size *= 2;
         // AML in old mode needs more buffer or it stutters when faking PT
-        if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough && (CJNIAudioFormat::ENCODING_IEC61937 == -1))
+        if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough && !m_sinkSupportsIEC)
         {
           if (m_sink_sampleRate > 48000)
             m_min_buffer_size *= (m_sink_sampleRate / 48000); // same amount of buffer in seconds as for 48 khz
@@ -465,7 +466,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       // again a workaround for AML old code
-      if (m_passthrough && aml_present() && m_info.m_wantsIECPassthrough && (CJNIAudioFormat::ENCODING_IEC61937 == -1))
+      if (m_passthrough && aml_present() && m_info.m_wantsIECPassthrough && !m_sinkSupportsIEC)
         m_sink_frameSize = 2 * CAEUtil::DataFormatToBits(AE_FMT_S16LE) / 8; // sending via 2 channels 2 * 16 / 8 = 4
       else
         m_sink_frameSize = m_format.m_frameSize;
@@ -876,7 +877,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
       }
     }
     // Android v24 and backports can do real IEC API
-    if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+    int atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
+    m_sinkSupportsIEC = IsSupported(48000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937);
+    if (m_sinkSupportsIEC)
     {
       bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
       m_info.m_wantsIECPassthrough = true;
@@ -892,7 +895,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
       {
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
        // Check for IEC 8 channel 192 khz PT
-       int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
+       atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
        if (IsSupported(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
        {
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
