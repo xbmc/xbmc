@@ -78,7 +78,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   // Currently this may prompt the user, the goal is to figure this out silently
   if (!GAME::CGameUtils::FillInGameClient(fileCopy, true))
   {
-    CLog::Log(LOGINFO, "CApplication: Failed to select a game client, aborting playback");
+    CLog::Log(LOGINFO, "RetroPlayer: No compatible game client selected, aborting playback");
     return false;
   }
 
