@@ -22,6 +22,7 @@
 
 uniform sampler2D img;
 uniform float  m_stretch;
+uniform float m_alpha;
 varying vec2  m_cord;
 
 vec2 stretch(vec2 pos)
@@ -36,5 +37,5 @@ vec2 stretch(vec2 pos)
 void main()
 {
   gl_FragColor.rgb = texture2D(img, stretch(m_cord)).rgb;
-  gl_FragColor.a = gl_Color.a;
+  gl_FragColor.a = m_alpha;
 }

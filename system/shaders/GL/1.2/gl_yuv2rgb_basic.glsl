@@ -33,6 +33,7 @@ varying vec2      m_cordV;
 uniform vec2      m_step;
 uniform mat4      m_yuvmat;
 uniform float     m_stretch;
+uniform float m_alpha;
 
 vec2 stretch(vec2 pos)
 {
@@ -64,7 +65,7 @@ vec4 process()
                  , 1.0 );
 
   rgb   = m_yuvmat * yuv;
-  rgb.a = gl_Color.a;
+  rgb.a = m_alpha;
 
 #elif defined(XBMC_NV12_RRG)
 
@@ -75,7 +76,7 @@ vec4 process()
                    , 1.0 );
 
     rgb   = m_yuvmat * yuv;
-    rgb.a = gl_Color.a;
+    rgb.a = m_alpha;
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
@@ -114,7 +115,7 @@ vec4 process()
   vec4  yuv     = vec4(outY, outUV, 1.0);
   rgb           = m_yuvmat * yuv;
 
-  rgb.a = gl_Color.a;
+  rgb.a = m_alpha;
 
 #endif
 

@@ -522,13 +522,16 @@ void CLinuxRendererGL::RenderUpdate(int index, int index2, bool clear, unsigned 
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0f, 1.0f, 1.0f, alpha / 255.0f);
   }
   else
   {
     glDisable(GL_BLEND);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
+
+  if (m_pYUVShader)
+    m_pYUVShader->SetAlpha(alpha/255);
+  if (m_pVideoFilterShader)
+    m_pVideoFilterShader->SetAlpha(alpha/255);
 
   if (!Render(flags, m_iYV12RenderBuffer) && clear)
     ClearBackBuffer();

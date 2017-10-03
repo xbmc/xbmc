@@ -3,6 +3,7 @@
 uniform sampler2D img;
 uniform vec2 stepxy;
 uniform float m_stretch;
+uniform float m_alpha;
 in vec2 m_cord;
 out vec4 fragColor;
 
@@ -86,6 +87,6 @@ vec4 process()
     line(xystart.y + stepxy.y * 2.0, xpos, linetaps) * columntaps.b +
     line(xystart.y + stepxy.y * 3.0, xpos, linetaps) * columntaps.a;
 
-  rgb.a = fragColor.a;
+  rgb.a = m_alpha;
   return rgb;
 }

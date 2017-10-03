@@ -138,6 +138,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   m_hStepXY = glGetUniformLocation(ProgramHandle(), "stepxy");
   m_hKernTex = glGetUniformLocation(ProgramHandle(), "kernelTex");
   m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
@@ -208,6 +209,7 @@ bool ConvolutionFilterShader::OnEnabled()
   glUniform1i(m_hKernTex, 2);
   glUniform2f(m_hStepXY, m_stepX, m_stepY);
   glUniform1f(m_hStretch, m_stretch);
+  glUniform1f(m_hAlpha, m_alpha);
 
   glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
@@ -244,6 +246,7 @@ void StretchFilterShader::OnCompiledAndLinked()
 {
   m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
   m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
@@ -254,6 +257,7 @@ bool StretchFilterShader::OnEnabled()
 {
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
   glUniform1f(m_hStretch, m_stretch);
+  glUniform1f(m_hAlpha, m_alpha);
   glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   VerifyGLState();
@@ -271,11 +275,13 @@ void DefaultFilterShader::OnCompiledAndLinked()
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
   m_hCoord = glGetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
 }
 
 bool DefaultFilterShader::OnEnabled()
 {
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
+  glUniform1f(m_hAlpha, m_alpha);
   glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   VerifyGLState();

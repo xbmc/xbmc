@@ -21,6 +21,7 @@
 uniform sampler2D img;
 uniform vec2      stepxy;
 uniform float     m_stretch;
+uniform float m_alpha;
 varying vec2      m_cord;
 
 #if (USE1DTEXTURE)
@@ -103,11 +104,7 @@ vec4 process()
     line(xystart.y + stepxy.y * 2.0, xpos, linetaps) * columntaps.b +
     line(xystart.y + stepxy.y * 3.0, xpos, linetaps) * columntaps.a;
 
-#ifdef GL_ES
   rgb.a = m_alpha;
-#else
-  rgb.a = gl_Color.a;
-#endif
 
   return rgb;
 }

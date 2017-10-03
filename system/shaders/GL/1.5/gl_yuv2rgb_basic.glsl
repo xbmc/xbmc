@@ -11,6 +11,7 @@ uniform sampler2D m_sampV;
 uniform vec2 m_step;
 uniform mat4 m_yuvmat;
 uniform float m_stretch;
+uniform float m_alpha;
 in vec2 m_cordY;
 in vec2 m_cordU;
 in vec2 m_cordV;
@@ -46,7 +47,7 @@ vec4 process()
                  , 1.0 );
 
   rgb   = m_yuvmat * yuv;
-  rgb.a = fragColor.a;
+  rgb.a = m_alpha;
 
 #elif defined(XBMC_NV12_RRG)
 
@@ -56,7 +57,7 @@ vec4 process()
                  , texture(m_sampV, stretch(m_cordV)).g
                  , 1.0 );
   rgb   = m_yuvmat * yuv;
-  rgb.a = fragColor.a;
+  rgb.a = m_alpha;
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
@@ -88,7 +89,7 @@ vec4 process()
   vec4  yuv     = vec4(outY, outUV, 1.0);
   rgb           = m_yuvmat * yuv;
 
-  rgb.a = fragColor.a;
+  rgb.a = m_alpha;
 
 #endif
 
