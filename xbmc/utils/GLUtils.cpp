@@ -110,9 +110,10 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
   }
 
+  std::string extensions;
+#if defined(HAS_GL)
   unsigned int renderVersionMajor, renderVersionMinor;
   g_Windowing.GetRenderVersion(renderVersionMajor, renderVersionMinor);
-  std::string extensions;
   if (renderVersionMajor > 3 ||
       (renderVersionMajor == 3 && renderVersionMinor >= 2))
   {
@@ -129,6 +130,7 @@ void LogGraphicsInfo()
     }
   }
   else
+#endif
   {
     extensions += (const char*) glGetString(GL_EXTENSIONS);
   }
