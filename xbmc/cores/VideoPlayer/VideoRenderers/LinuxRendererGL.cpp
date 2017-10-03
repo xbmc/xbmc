@@ -1527,45 +1527,67 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
   m_pVideoFilterShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLfloat vertex[4][3];
-  GLfloat texture[4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
 
   GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
   GLint loc = m_pVideoFilterShader->GetCoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vertex);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, texture);
+  // Setup vertex position values
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = plane.rect.x1;
+  vertex[0].v1 = plane.rect.y1;
+
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = plane.rect.x2;
+  vertex[1].v1 = plane.rect.y1;
+
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = plane.rect.x2;
+  vertex[2].v1 = plane.rect.y2;
+
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = plane.rect.x1;
+  vertex[3].v1 = plane.rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
 
-  // Setup vertex position values
-  vertex[0][0] = m_rotatedDestCoords[0].x;
-  vertex[0][1] = m_rotatedDestCoords[0].y;
-  vertex[0][2] = 0.0f;
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  vertex[1][0] = m_rotatedDestCoords[1].x;
-  vertex[1][1] = m_rotatedDestCoords[1].y;
-  vertex[1][2] = 0.0f;
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  vertex[2][0] = m_rotatedDestCoords[2].x;
-  vertex[2][1] = m_rotatedDestCoords[2].y;
-  vertex[2][2] = 0.0f;
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
-  vertex[3][0] = m_rotatedDestCoords[3].x;
-  vertex[3][1] = m_rotatedDestCoords[3].y;
-  vertex[3][2] = 0.0f;
-
-  texture[0][0] = plane.rect.x1;
-  texture[0][1] = plane.rect.y1;
-  texture[1][0] = plane.rect.x2;
-  texture[1][1] = plane.rect.y1;
-  texture[2][0] = plane.rect.x2;
-  texture[2][1] = plane.rect.y2;
-  texture[3][0] = plane.rect.x1;
-  texture[3][1] = plane.rect.y2;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
   VerifyGLState();
 
   m_pVideoFilterShader->Disable();
