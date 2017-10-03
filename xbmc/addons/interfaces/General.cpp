@@ -312,9 +312,9 @@ char* Interface_General::get_temp_path(void* kodiBase)
     return nullptr;
   }
 
-  const std::string tempPath = URIUtils::AddFileToFolder(CServiceBroker::GetBinaryAddonManager().GetTempAddonBasePath(), addon->ID());
-  if (!XFILE::CDirectory::Exists(tempPath))
-    XFILE::CDirectory::Create(tempPath);
+  std::string tempPath = URIUtils::AddFileToFolder(CServiceBroker::GetBinaryAddonManager().GetTempAddonBasePath(), addon->ID());
+  tempPath += "-temp";
+  XFILE::CDirectory::Create(tempPath);
 
   return strdup(CSpecialProtocol::TranslatePath(tempPath).c_str());
 }
