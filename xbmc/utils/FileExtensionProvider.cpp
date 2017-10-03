@@ -86,12 +86,33 @@ std::string CFileExtensionProvider::GetSubtitleExtensions() const
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
   std::string extensions(m_advancedSettings->m_videoExtensions);
-  extensions += '|' + GetAddonExtensions(ADDON_VFS);
+  if (!extensions.empty())
+    extensions += '|';
+  extensions += GetAddonExtensions(ADDON_VFS);
+
+  return extensions;
+}
+
+std::string CFileExtensionProvider::GetFileFolderExtensions() const
+{
+  std::string extensions(GetAddonFileFolderExtensions(ADDON_VFS));
+  if (!extensions.empty())
+    extensions += '|';
+  extensions += GetAddonFileFolderExtensions(ADDON_AUDIODECODER);
 
   return extensions;
 }
 
 std::string CFileExtensionProvider::GetAddonExtensions(const TYPE &type) const
+{
+  auto it = m_addonExtensions.find(type);
+  if (it != m_addonExtensions.end())
+    return it->second;
+
+  return "";
+}
+
+std::string CFileExtensionProvider::GetAddonFileFolderExtensions(const TYPE &type) const
 {
   auto it = m_addonExtensions.find(type);
   if (it != m_addonExtensions.end())
@@ -111,16 +132,28 @@ void CFileExtensionProvider::SetAddonExtensions()
 void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
 {
   std::vector<std::string> extensions;
+  std::vector<std::string> fileFolderExtensions;
   BinaryAddonBaseList addonInfos;
   CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, type);
   for (const auto& addonInfo : addonInfos)
   {
-    std::string ext = addonInfo->Type(type)->GetValue(ADDON_VFS == type ? "@extensions" : "@extension").asString();
+    std::string info = ADDON_VFS == type ? "@extensions" : "@extension";
+    std::string ext = addonInfo->Type(type)->GetValue(info).asString();
     if (!ext.empty())
+    {
       extensions.push_back(ext);
+      if (type == ADDON_VFS || type == ADDON_AUDIODECODER)
+      {
+        std::string info2 = ADDON_VFS == type ? "@filedirectories" : "@tracks";
+        if (addonInfo->Type(type)->GetValue(info2).asBoolean())
+          fileFolderExtensions.push_back(ext);
+      }
+    }
   }
 
   m_addonExtensions.insert(make_pair(type, StringUtils::Join(extensions, "|")));
+  if (!fileFolderExtensions.empty())
+    m_addonFileFolderExtensions.insert(make_pair(type, StringUtils::Join(fileFolderExtensions, "|")));
 }
 
 void CFileExtensionProvider::OnAddonEvent(const AddonEvent& event)
