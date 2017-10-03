@@ -119,11 +119,9 @@ bool CRendererVTB::CreateTexture(int index)
     planes[p].pixpertex_y = 1;
   }
 
-  glEnable(m_textureTarget);
   glGenTextures(1, &planes[0].id);
   glGenTextures(1, &planes[1].id);
   planes[2].id = planes[1].id;
-  glDisable(m_textureTarget);
 
   return true;
 }
@@ -159,8 +157,6 @@ bool CRendererVTB::UploadTexture(int index)
   }
 
   CVImageBufferRef cvBufferRef = vb->GetPB();
-
-  glEnable(m_textureTarget);
 
   // It is the fastest way to render a CVPixelBuffer backed
   // with an IOSurface as there is no CPU -> GPU upload.
@@ -204,8 +200,6 @@ bool CRendererVTB::UploadTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glBindTexture(m_textureTarget, 0);
-
-  glDisable(m_textureTarget);
 
   CalculateTextureSourceRects(index, 3);
 

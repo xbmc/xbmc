@@ -162,7 +162,6 @@ void GLSLOutput::OnDisabled()
   if (m_dither)
   {
     glActiveTexture(GL_TEXTURE0 + m_uDither);
-    glDisable(GL_TEXTURE_2D);
   }
   if (m_3DLUT)
   {

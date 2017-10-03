@@ -97,7 +97,6 @@ bool CGUIFontTTFGL::FirstBegin()
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
         m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
-    glDisable(GL_TEXTURE_2D);
 
     m_updateY1 = m_updateY2 = 0;
     m_textureStatus = TEXTURE_READY;

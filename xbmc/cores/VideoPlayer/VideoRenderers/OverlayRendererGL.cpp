@@ -204,7 +204,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
     free(rgba);
 
   glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
 
   if(o->source_width && o->source_height)
   {
@@ -266,7 +265,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   free(rgba);
 
   glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
 
   m_align  = ALIGN_VIDEO;
   m_pos    = POSITION_ABSOLUTE;
@@ -357,7 +355,6 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
 }
 
 COverlayGlyphGL::~COverlayGlyphGL()
@@ -473,7 +470,6 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glMatrixModview.PopLoad();
 
   glDisable(GL_BLEND);
-  glDisable(GL_TEXTURE_2D);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -626,7 +622,6 @@ void COverlayTextureGL::Render(SRenderState& state)
 #endif
 
   glDisable(GL_BLEND);
-  glDisable(GL_TEXTURE_2D);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 }

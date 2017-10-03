@@ -849,8 +849,6 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   }
   else
   {
-    glDisable(GL_TEXTURE_2D);
-
     g_Windowing.EnableShader(SM_DEFAULT);
   }
 
@@ -955,8 +953,6 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   }
   else
   {
-    glDisable(GL_TEXTURE_2D);
-
     g_Windowing.EnableGUIShader(SM_DEFAULT);
   }
 
