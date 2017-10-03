@@ -26,6 +26,7 @@
 
 #include "input/joysticks/interfaces/IInputProvider.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
+#include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;
@@ -46,6 +47,11 @@ namespace KEYBOARD
 {
   class IKeyboardDriverHandler;
 }
+
+namespace MOUSE
+{
+  class IMouseDriverHandler;
+}
 }
 
 namespace PERIPHERALS
@@ -63,7 +69,8 @@ namespace PERIPHERALS
   } CecStateChange;
 
   class CPeripheral : public KODI::JOYSTICK::IInputProvider,
-                      public KODI::KEYBOARD::IKeyboardInputProvider
+                      public KODI::KEYBOARD::IKeyboardInputProvider,
+                      public KODI::MOUSE::IMouseInputProvider
   {
     friend class CGUIDialogPeripheralSettings;
 
@@ -212,6 +219,9 @@ namespace PERIPHERALS
     virtual void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) { }
 
+    virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler) { }
+
     // implementation of IInputProvider
     void RegisterInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous) override;
     void UnregisterInputHandler(KODI::JOYSTICK::IInputHandler* handler) override;
@@ -219,6 +229,10 @@ namespace PERIPHERALS
     // implementation of IKeyboardInputProvider
     void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardInputHandler* handler, bool bPromiscuous) override;
     void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardInputHandler* handler) override;
+
+    // implementation of IMouseInputProvider
+    void RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler, bool bPromiscuous) override;
+    void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
 
     virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
     virtual void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
@@ -253,6 +267,7 @@ namespace PERIPHERALS
     CPeripheralBus*                  m_bus;
     std::map<KODI::JOYSTICK::IInputHandler*, std::unique_ptr<KODI::JOYSTICK::IDriverHandler>> m_inputHandlers;
     std::map<KODI::KEYBOARD::IKeyboardInputHandler*, std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler>> m_keyboardHandlers;
+    std::map<KODI::MOUSE::IMouseInputHandler*, std::unique_ptr<KODI::MOUSE::IMouseDriverHandler>> m_mouseHandlers;
     std::map<KODI::JOYSTICK::IButtonMapper*, std::unique_ptr<CAddonButtonMapping>> m_buttonMappers;
   };
 }

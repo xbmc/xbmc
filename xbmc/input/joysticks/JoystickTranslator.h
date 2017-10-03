@@ -20,6 +20,7 @@
 #pragma once
 
 #include "JoystickTypes.h"
+#include "input/mouse/MouseTypes.h"
 
 namespace KODI
 {
@@ -136,6 +137,20 @@ namespace JOYSTICK
      *         CARDINAL_DIRECTION::UNKNOWN if x and y are both 0
      */
     static CARDINAL_DIRECTION VectorToCardinalDirection(float x, float y);
+
+    /*!
+     * \brief Get the closest cardinal or intercardinal direction to the given
+     *        vector
+     *
+     * Ties are resolved in the clockwise direction.
+     *
+     * \param x  The x component of the vector
+     * \param y  The y component of the vector
+     *
+     * \return The closest intercardinal direction, or
+     *         INTERCARDINAL_DIRECTION::UNPRESSED if x and y are both 0
+     */
+    static INTERCARDINAL_DIRECTION VectorToIntercardinalDirection(float x, float y);
 
     /*!
      * \brief Get the localized name of the primitive

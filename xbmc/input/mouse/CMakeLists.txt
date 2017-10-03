@@ -7,6 +7,7 @@ set(HEADERS interfaces/IMouseDriverHandler.h
             interfaces/IMouseInputProvider.h
             MouseStat.h
             MouseTranslator.h
+            MouseTypes.h
 )
 
 core_add_library(input_mouse)

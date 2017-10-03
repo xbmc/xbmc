@@ -515,7 +515,6 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
       }
 
       case JOYSTICK_FEATURE_TYPE_ANALOG_STICK:
-      case JOYSTICK_FEATURE_TYPE_RELPOINTER:
       {
         std::vector<JOYSTICK_FEATURE_PRIMITIVE> primitives = {
           JOYSTICK_ANALOG_STICK_UP,
@@ -573,6 +572,20 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         break;
       }
 
+      case JOYSTICK_FEATURE_TYPE_RELPOINTER:
+      {
+        std::vector<JOYSTICK_FEATURE_PRIMITIVE> primitives = {
+          JOYSTICK_RELPOINTER_UP,
+          JOYSTICK_RELPOINTER_DOWN,
+          JOYSTICK_RELPOINTER_RIGHT,
+          JOYSTICK_RELPOINTER_LEFT,
+        };
+
+        for (auto primitive : primitives)
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+        break;
+      }
+
       default:
         break;
     }
@@ -603,10 +616,10 @@ JOYSTICK_FEATURE_PRIMITIVE CAddonButtonMap::GetRelativePointerIndex(JOYSTICK::RE
 
   switch (dir)
   {
-    case RELATIVE_POINTER_DIRECTION::UP:    return JOYSTICK_ANALOG_STICK_UP;
-    case RELATIVE_POINTER_DIRECTION::DOWN:  return JOYSTICK_ANALOG_STICK_DOWN;
-    case RELATIVE_POINTER_DIRECTION::RIGHT: return JOYSTICK_ANALOG_STICK_RIGHT;
-    case RELATIVE_POINTER_DIRECTION::LEFT:  return JOYSTICK_ANALOG_STICK_LEFT;
+    case RELATIVE_POINTER_DIRECTION::UP:    return JOYSTICK_RELPOINTER_UP;
+    case RELATIVE_POINTER_DIRECTION::DOWN:  return JOYSTICK_RELPOINTER_DOWN;
+    case RELATIVE_POINTER_DIRECTION::RIGHT: return JOYSTICK_RELPOINTER_RIGHT;
+    case RELATIVE_POINTER_DIRECTION::LEFT:  return JOYSTICK_RELPOINTER_LEFT;
     default: break;
   }
 

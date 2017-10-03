@@ -20,6 +20,7 @@
 
 #include "MouseInputHandling.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/joysticks/JoystickTranslator.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
 
 using namespace KODI;
@@ -35,12 +36,24 @@ CMouseInputHandling::CMouseInputHandling(IMouseInputHandler* handler, JOYSTICK::
 
 bool CMouseInputHandling::OnPosition(int x, int y)
 {
+  using namespace JOYSTICK;
+
   int dx = x - m_x;
   int dy = y - m_y;
 
   bool bHandled = false;
 
-  //! @todo
+  //! @todo Handle axis mapping
+
+  auto dir = CJoystickTranslator::VectorToCardinalDirection(static_cast<float>(dx), static_cast<float>(dy));
+
+  CDriverPrimitive source(dir);
+  if (source.IsValid())
+  {
+    PointerName pointerName;
+    if (m_buttonMap->GetFeature(source, pointerName))
+      bHandled = m_handler->OnMotion(pointerName, dx, dy);
+  }
 
   m_x = x;
   m_y = y;
@@ -48,16 +61,24 @@ bool CMouseInputHandling::OnPosition(int x, int y)
   return bHandled;
 }
 
-bool CMouseInputHandling::OnButtonPress(unsigned int button)
+bool CMouseInputHandling::OnButtonPress(BUTTON_ID button)
 {
   bool bHandled = false;
 
-  //! @todo
+  JOYSTICK::CDriverPrimitive source(button);
+
+  ButtonName buttonName;
+  if (m_buttonMap->GetFeature(source, buttonName))
+    bHandled = m_handler->OnButtonPress(buttonName);
 
   return bHandled;
 }
 
-void CMouseInputHandling::OnButtonRelease(unsigned int button)
+void CMouseInputHandling::OnButtonRelease(BUTTON_ID button)
 {
-  //! @todo
+  JOYSTICK::CDriverPrimitive source(button);
+
+  ButtonName buttonName;
+  if (m_buttonMap->GetFeature(source, buttonName))
+    m_handler->OnButtonRelease(buttonName);
 }

@@ -19,6 +19,8 @@
  */
 #pragma once
 
+#include "input/mouse/MouseTypes.h"
+
 #include <string>
 
 namespace KODI
@@ -50,7 +52,7 @@ namespace MOUSE
      *
      * \return True if the event was handled, otherwise false
      */
-    virtual bool OnMotion(const std::string& relpointer, int dx, int dy) = 0;
+    virtual bool OnMotion(const PointerName& relpointer, int dx, int dy) = 0;
 
     /*!
      * \brief A mouse button has been pressed
@@ -59,14 +61,14 @@ namespace MOUSE
      *
      * \return True if the event was handled, otherwise false
      */
-    virtual bool OnButtonPress(const std::string& button) = 0;
+    virtual bool OnButtonPress(const ButtonName& button) = 0;
 
     /*!
      * \brief A mouse button has been released
      *
      * \param button      The name of the feature being released
      */
-    virtual void OnButtonRelease(const std::string& button) = 0;
+    virtual void OnButtonRelease(const ButtonName& button) = 0;
   };
 }
 }

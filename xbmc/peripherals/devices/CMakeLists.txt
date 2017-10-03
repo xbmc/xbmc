@@ -5,6 +5,7 @@ set(SOURCES Peripheral.cpp
             PeripheralImon.cpp
             PeripheralJoystick.cpp
             PeripheralKeyboard.cpp
+            PeripheralMouse.cpp
             PeripheralNIC.cpp
             PeripheralNyxboard.cpp
             PeripheralTuner.cpp)
@@ -16,6 +17,7 @@ set(HEADERS Peripheral.h
             PeripheralImon.h
             PeripheralJoystick.h
             PeripheralKeyboard.h
+            PeripheralMouse.h
             PeripheralNIC.h
             PeripheralNyxboard.h
             PeripheralTuner.h)

@@ -192,6 +192,8 @@ namespace JOYSTICK
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
     KEY,         // a keyboard key
+    MOUSE_BUTTON, // a mouse button
+    RELATIVE_POINTER, // a relative pointer, such as on a mouse
   };
 
   /*!

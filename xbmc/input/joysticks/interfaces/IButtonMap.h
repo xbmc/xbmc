@@ -83,7 +83,7 @@ namespace JOYSTICK
      * Multiple primitives can be mapped to the same feature. For example,
      * analog sticks use one primitive for each direction.
      *
-     * \param primitive    The driver primitive (a button, hat direction or semi-axis)
+     * \param primitive    The driver primitive
      * \param feature      The name of the resolved joystick feature, or
      *                     invalid if false is returned
      *

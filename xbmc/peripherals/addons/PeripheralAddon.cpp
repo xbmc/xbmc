@@ -52,6 +52,9 @@ using namespace XFILE;
 #define KEYBOARD_BUTTON_MAP_NAME  "Keyboard"
 #define KEYBOARD_PROVIDER         "application"
 
+#define MOUSE_BUTTON_MAP_NAME     "Mouse"
+#define MOUSE_PROVIDER            "application"
+
 #ifndef SAFE_DELETE
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
@@ -828,10 +831,11 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device, kodi::addon::J
     joystickInfo.SetMotorCount(joystick->MotorCount());
     joystickInfo.SetSupportsPowerOff(joystick->SupportsPowerOff());
   }
-  else if (device->Type() == PERIPHERAL_KEYBOARD)
+  else if (device->Type() == PERIPHERAL_KEYBOARD ||
+           device->Type() == PERIPHERAL_MOUSE)
   {
-    joystickInfo.SetName(GetDeviceName(PERIPHERAL_KEYBOARD)); // Override name with non-localized version
-    joystickInfo.SetProvider(GetProvider(PERIPHERAL_KEYBOARD));
+    joystickInfo.SetName(GetDeviceName(device->Type())); // Override name with non-localized version
+    joystickInfo.SetProvider(GetProvider(device->Type()));
   }
 }
 
@@ -863,6 +867,8 @@ std::string CPeripheralAddon::GetDeviceName(PeripheralType type)
   {
   case PERIPHERAL_KEYBOARD:
     return KEYBOARD_BUTTON_MAP_NAME;
+  case PERIPHERAL_MOUSE:
+    return MOUSE_BUTTON_MAP_NAME;
   default:
     break;
   }
@@ -876,6 +882,8 @@ std::string CPeripheralAddon::GetProvider(PeripheralType type)
   {
   case PERIPHERAL_KEYBOARD:
     return KEYBOARD_PROVIDER;
+  case PERIPHERAL_MOUSE:
+    return MOUSE_PROVIDER;
   default:
     break;
   }

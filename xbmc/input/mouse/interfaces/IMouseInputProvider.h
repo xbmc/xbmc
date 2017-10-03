@@ -38,8 +38,10 @@ namespace MOUSE
      * \brief Registers a handler to be called on mouse input
      *
      * \param handler The handler to receive mouse input provided by this class
+     * \param bPromiscuous True to observe all events without affecting
+     *        subsequent handlers
      */
-    virtual void RegisterMouseHandler(IMouseInputHandler* handler) = 0;
+    virtual void RegisterMouseHandler(IMouseInputHandler* handler, bool bPromiscuous) = 0;
 
     /*!
      * \brief Unregisters handler from mouse input

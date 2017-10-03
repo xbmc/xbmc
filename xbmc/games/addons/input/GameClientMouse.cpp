@@ -37,7 +37,7 @@ CGameClientMouse::CGameClientMouse(const CGameClient &gameClient,
   m_inputProvider(inputProvider),
   m_controllerId() //! @todo
 {
-  inputProvider->RegisterMouseHandler(this);
+  inputProvider->RegisterMouseHandler(this, false);
 }
 
 CGameClientMouse::~CGameClientMouse()

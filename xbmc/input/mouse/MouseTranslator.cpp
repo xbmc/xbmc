@@ -27,6 +27,9 @@
 
 #include <string>
 
+using namespace KODI;
+using namespace MOUSE;
+
 namespace
 {
 
@@ -86,4 +89,60 @@ uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement *pButton)
   }
 
   return buttonId;
+}
+
+bool CMouseTranslator::TranslateEventID(unsigned int eventId, BUTTON_ID &buttonId)
+{
+  switch (eventId)
+  {
+  case XBMC_BUTTON_LEFT:
+  {
+    buttonId = BUTTON_ID::LEFT;
+    return true;
+  }
+  case XBMC_BUTTON_MIDDLE:
+  {
+    buttonId = BUTTON_ID::MIDDLE;
+    return true;
+  }
+  case XBMC_BUTTON_RIGHT:
+  {
+    buttonId = BUTTON_ID::RIGHT;
+    return true;
+  }
+  case XBMC_BUTTON_WHEELUP:
+  {
+    buttonId = BUTTON_ID::WHEEL_UP;
+    return true;
+  }
+  case XBMC_BUTTON_WHEELDOWN:
+  {
+    buttonId = BUTTON_ID::WHEEL_DOWN;
+    return true;
+  }
+  case XBMC_BUTTON_X1:
+  {
+    buttonId = BUTTON_ID::BUTTON4;
+    return true;
+  }
+  case XBMC_BUTTON_X2:
+  {
+    buttonId = BUTTON_ID::BUTTON5;
+    return true;
+  }
+  case XBMC_BUTTON_X3:
+  {
+    buttonId = BUTTON_ID::HORIZ_WHEEL_LEFT;
+    return true;
+  }
+  case XBMC_BUTTON_X4:
+  {
+    buttonId = BUTTON_ID::HORIZ_WHEEL_RIGHT;
+    return true;
+  }
+  default:
+    break;
+  }
+
+  return false;
 }

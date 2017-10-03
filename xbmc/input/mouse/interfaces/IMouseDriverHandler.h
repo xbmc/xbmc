@@ -19,6 +19,8 @@
  */
 #pragma once
 
+#include "input/mouse/MouseTypes.h"
+
 namespace KODI
 {
 namespace MOUSE
@@ -49,14 +51,14 @@ namespace MOUSE
      *
      * \return True if the event was handled, otherwise false
      */
-    virtual bool OnButtonPress(unsigned int button) = 0;
+    virtual bool OnButtonPress(BUTTON_ID button) = 0;
 
     /*!
      * \brief A mouse button has been released
      *
      * \param button   The index of the released button
      */
-    virtual void OnButtonRelease(unsigned int button) = 0;
+    virtual void OnButtonRelease(BUTTON_ID button) = 0;
   };
 }
 }

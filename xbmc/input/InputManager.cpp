@@ -29,8 +29,9 @@
 #include "KeymapEnvironment.h"
 #include "TouchTranslator.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
-#include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
+#include "input/mouse/MouseTranslator.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
@@ -406,13 +407,19 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       }
       case XBMC_MOUSEBUTTONDOWN:
       {
-        if (driverHandler->OnButtonPress(newEvent.button.button))
-          handled = true;
+        MOUSE::BUTTON_ID buttonId;
+        if (CMouseTranslator::TranslateEventID(newEvent.button.button, buttonId))
+        {
+          if (driverHandler->OnButtonPress(buttonId))
+            handled = true;
+        }
         break;
       }
       case XBMC_MOUSEBUTTONUP:
       {
-        driverHandler->OnButtonRelease(newEvent.button.button);
+        MOUSE::BUTTON_ID buttonId;
+        if (CMouseTranslator::TranslateEventID(newEvent.button.button, buttonId))
+          driverHandler->OnButtonRelease(buttonId);
         break;
       }
       default:

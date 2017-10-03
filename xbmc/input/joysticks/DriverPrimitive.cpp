@@ -55,6 +55,18 @@ CDriverPrimitive::CDriverPrimitive(XBMCKey keycode) :
 {
 }
 
+CDriverPrimitive::CDriverPrimitive(MOUSE::BUTTON_ID index) :
+  m_type(PRIMITIVE_TYPE::MOUSE_BUTTON),
+  m_driverIndex(static_cast<unsigned int>(index))
+{
+}
+
+CDriverPrimitive::CDriverPrimitive(RELATIVE_POINTER_DIRECTION direction) :
+  m_type(PRIMITIVE_TYPE::RELATIVE_POINTER),
+  m_pointerDirection(direction)
+{
+}
+
 bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
 {
   if (m_type == rhs.m_type)
@@ -63,6 +75,7 @@ bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
     {
     case PRIMITIVE_TYPE::BUTTON:
     case PRIMITIVE_TYPE::MOTOR:
+    case PRIMITIVE_TYPE::MOUSE_BUTTON:
       return m_driverIndex == rhs.m_driverIndex;
     case PRIMITIVE_TYPE::HAT:
       return m_driverIndex == rhs.m_driverIndex && m_hatDirection == rhs.m_hatDirection;
@@ -73,6 +86,8 @@ bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
              m_range             == rhs.m_range;
     case PRIMITIVE_TYPE::KEY:
       return m_keycode == rhs.m_keycode;
+    case PRIMITIVE_TYPE::RELATIVE_POINTER:
+      return m_pointerDirection == rhs.m_pointerDirection;
     default:
       return true;
     }
@@ -88,7 +103,8 @@ bool CDriverPrimitive::operator<(const CDriverPrimitive& rhs) const
   if (m_type == PRIMITIVE_TYPE::BUTTON ||
       m_type == PRIMITIVE_TYPE::HAT ||
       m_type == PRIMITIVE_TYPE::SEMIAXIS ||
-      m_type == PRIMITIVE_TYPE::MOTOR)
+      m_type == PRIMITIVE_TYPE::MOTOR ||
+      m_type == PRIMITIVE_TYPE::MOUSE_BUTTON)
   {
     if (m_driverIndex < rhs.m_driverIndex) return true;
     if (m_driverIndex > rhs.m_driverIndex) return false;
@@ -118,13 +134,20 @@ bool CDriverPrimitive::operator<(const CDriverPrimitive& rhs) const
     if (m_keycode > rhs.m_keycode) return false;
   }
 
+  if (m_type == PRIMITIVE_TYPE::RELATIVE_POINTER)
+  {
+    if (m_pointerDirection < rhs.m_pointerDirection) return true;
+    if (m_pointerDirection > rhs.m_pointerDirection) return false;
+  }
+
   return false;
 }
 
 bool CDriverPrimitive::IsValid(void) const
 {
   if (m_type == PRIMITIVE_TYPE::BUTTON ||
-      m_type == PRIMITIVE_TYPE::MOTOR)
+      m_type == PRIMITIVE_TYPE::MOTOR ||
+      m_type == PRIMITIVE_TYPE::MOUSE_BUTTON)
     return true;
 
   if (m_type == PRIMITIVE_TYPE::HAT)
@@ -171,6 +194,14 @@ bool CDriverPrimitive::IsValid(void) const
 
   if (m_type == PRIMITIVE_TYPE::KEY)
     return m_keycode != XBMCK_UNKNOWN;
+
+  if (m_type == PRIMITIVE_TYPE::RELATIVE_POINTER)
+  {
+    return m_pointerDirection == RELATIVE_POINTER_DIRECTION::UP    ||
+           m_pointerDirection == RELATIVE_POINTER_DIRECTION::DOWN  ||
+           m_pointerDirection == RELATIVE_POINTER_DIRECTION::RIGHT ||
+           m_pointerDirection == RELATIVE_POINTER_DIRECTION::LEFT;
+  }
 
   return false;
 }

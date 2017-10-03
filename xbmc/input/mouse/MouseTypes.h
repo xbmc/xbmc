@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,27 +19,41 @@
  */
 #pragma once
 
-#include "MouseTypes.h"
+#include <string>
 
-#include <stdint.h>
-
-class TiXmlElement;
-
-class CMouseTranslator
+namespace KODI
 {
-public:
+namespace MOUSE
+{
   /*!
-   * \brief Translate a keymap element to a key ID
+   * \brief Buttons on a mouse
    */
-  static uint32_t TranslateCommand(const TiXmlElement *pButton);
+  enum class BUTTON_ID
+  {
+    UNKNOWN,
+    LEFT,
+    RIGHT,
+    MIDDLE,
+    BUTTON4,
+    BUTTON5,
+    WHEEL_UP,
+    WHEEL_DOWN,
+    HORIZ_WHEEL_LEFT,
+    HORIZ_WHEEL_RIGHT,
+  };
 
   /*!
-   * \brief Translate a mouse event ID to a mouse button index
+   * \brief Name of a mouse button
    *
-   * \param eventId The event ID from MouseStat.h
-   * \param[out] buttonId The button ID from MouseTypes.h, or unmodified if unsuccessful
-   *
-   * \return True if successful, false otherwise
+   * Names are defined in the mouse's controller profile.
    */
-  static bool TranslateEventID(unsigned int eventId, KODI::MOUSE::BUTTON_ID &buttonId);
-};
+  using ButtonName = std::string;
+
+  /*!
+   * \brief Name of the mouse pointer
+   *
+   * Names are defined in the mouse's controller profile.
+   */
+  using PointerName = std::string;
+}
+}

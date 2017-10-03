@@ -45,8 +45,8 @@ namespace MOUSE
 
     // implementation of IMouseDriverHandler
     bool OnPosition(int x, int y) override;
-    bool OnButtonPress(unsigned int button) override;
-    void OnButtonRelease(unsigned int button) override;
+    bool OnButtonPress(BUTTON_ID button) override;
+    void OnButtonRelease(BUTTON_ID button) override;
 
   private:
     // Construction parameters

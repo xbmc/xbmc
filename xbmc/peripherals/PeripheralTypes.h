@@ -63,6 +63,7 @@ namespace PERIPHERALS
     FEATURE_RUMBLE,
     FEATURE_POWER_OFF,
     FEATURE_KEYBOARD,
+    FEATURE_MOUSE,
   };
 
   enum PeripheralType
@@ -78,6 +79,7 @@ namespace PERIPHERALS
     PERIPHERAL_IMON,
     PERIPHERAL_JOYSTICK,
     PERIPHERAL_KEYBOARD,
+    PERIPHERAL_MOUSE,
   };
 
   class CPeripheral;
@@ -140,6 +142,8 @@ namespace PERIPHERALS
         return "joystick";
       case PERIPHERAL_KEYBOARD:
         return "keyboard";
+      case PERIPHERAL_MOUSE:
+        return "mouse";
       default:
         return "unknown";
       }
@@ -170,6 +174,8 @@ namespace PERIPHERALS
         return PERIPHERAL_JOYSTICK;
       else if (strTypeLowerCase == "keyboard")
         return PERIPHERAL_KEYBOARD;
+      else if (strTypeLowerCase == "mouse")
+        return PERIPHERAL_MOUSE;
 
       return PERIPHERAL_UNKNOWN;
     };
@@ -252,6 +258,8 @@ namespace PERIPHERALS
         return "poweroff";
       case FEATURE_KEYBOARD:
         return "keyboard";
+      case FEATURE_MOUSE:
+        return "mouse";
       case FEATURE_UNKNOWN:
       default:
         return "unknown";
@@ -285,6 +293,8 @@ namespace PERIPHERALS
         return FEATURE_POWER_OFF;
       else if (strTypeLowerCase == "keyboard")
         return FEATURE_KEYBOARD;
+      else if (strTypeLowerCase == "mouse")
+        return FEATURE_MOUSE;
 
       return FEATURE_UNKNOWN;
     };

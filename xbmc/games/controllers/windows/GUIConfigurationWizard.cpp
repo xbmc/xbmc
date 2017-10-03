@@ -284,56 +284,67 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       {
         const CControllerFeature& feature = currentButton->Feature();
 
-        CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
-          m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
-
-        switch (feature.Type())
+        if (primitive.Type() == PRIMITIVE_TYPE::RELATIVE_POINTER &&
+            feature.Type() != FEATURE_TYPE::RELPOINTER)
         {
-          case FEATURE_TYPE::SCALAR:
+          // Don't allow relative pointers to map to other features
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
+            m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
+
+          switch (feature.Type())
           {
-            buttonMap->AddScalar(feature.Name(), primitive);
-            bHandled = true;
-            break;
+            case FEATURE_TYPE::SCALAR:
+            {
+              buttonMap->AddScalar(feature.Name(), primitive);
+              bHandled = true;
+              break;
+            }
+            case FEATURE_TYPE::ANALOG_STICK:
+            {
+              buttonMap->AddAnalogStick(feature.Name(), cardinalDirection, primitive);
+              bHandled = true;
+              break;
+            }
+            case FEATURE_TYPE::RELPOINTER:
+            {
+              buttonMap->AddRelativePointer(feature.Name(), cardinalDirection, primitive);
+              bHandled = true;
+              break;
+            }
+            case FEATURE_TYPE::WHEEL:
+            {
+              buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
+              bHandled = true;
+              break;
+            }
+            case FEATURE_TYPE::THROTTLE:
+            {
+              buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
+              bHandled = true;
+              break;
+            }
+            case FEATURE_TYPE::KEY:
+            {
+              buttonMap->AddKey(feature.Name(), primitive);
+              bHandled = true;
+              break;
+            }
+            default:
+              break;
           }
-          case FEATURE_TYPE::ANALOG_STICK:
-          {
-            buttonMap->AddAnalogStick(feature.Name(), cardinalDirection, primitive);
-            bHandled = true;
-            break;
-          }
-          case FEATURE_TYPE::RELPOINTER:
-          {
-            buttonMap->AddRelativePointer(feature.Name(), cardinalDirection, primitive);
-            bHandled = true;
-            break;
-          }
-          case FEATURE_TYPE::WHEEL:
-          {
-            buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
-            bHandled = true;
-            break;
-          }
-          case FEATURE_TYPE::THROTTLE:
-          {
-            buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
-            bHandled = true;
-            break;
-          }
-          case FEATURE_TYPE::KEY:
-          {
-            buttonMap->AddKey(feature.Name(), primitive);
-            bHandled = true;
-            break;
-          }
-          default:
-            break;
         }
 
         if (bHandled)
         {
           m_history.insert(primitive);
 
-          OnMotion(buttonMap);
+          // Don't record motion for relative pointers
+          if (primitive.Type() != PRIMITIVE_TYPE::RELATIVE_POINTER)
+            OnMotion(buttonMap);
+
           m_inputEvent.Set();
 
           if (m_deviceName.empty())
@@ -450,8 +461,13 @@ bool CGUIConfigurationWizard::IsMapping(const std::string &deviceName) const
 
 void CGUIConfigurationWizard::InstallHooks(void)
 {
+  // Install button mapper with lowest priority
   CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+
+  // Install hook to reattach button mapper when peripherals change
   CServiceBroker::GetPeripherals().RegisterObserver(this);
+
+  // Install hook to cancel the button mapper
   CServiceBroker::GetInputManager().RegisterKeyboardDriverHandler(this);
 }
 
