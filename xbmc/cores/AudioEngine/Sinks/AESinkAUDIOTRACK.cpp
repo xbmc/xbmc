@@ -811,24 +811,33 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
   m_info.m_streamTypes.clear();
   if (CJNIAudioFormat::ENCODING_AC3 != -1)
   {
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_AC3))
+    {
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
+    }
   }
 
   // EAC3 working on shield, broken on FireTV
   if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
   {
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-    CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_E_AC3))
+    {
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+      CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
+    }
   }
 
   if (CJNIAudioFormat::ENCODING_DTS != -1)
   {
-    CLog::Log(LOGDEBUG, "Firmware implements DTS RAW");
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_DTS))
+    {
+      CLog::Log(LOGDEBUG, "Firmware implements DTS RAW");
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    }
   }
 
   if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
@@ -853,13 +862,19 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
     {
       if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
       {
-        CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1), CJNIAudioFormat::ENCODING_DTS_HD))
+        {
+          CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        }
       }
       if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
       {
-        CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+        if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1), CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
+        {
+          CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+        }
       }
     }
     // Android v24 and backports can do real IEC API
