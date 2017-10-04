@@ -117,7 +117,7 @@ void CDialogGameVolume::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char
 {
   if (flag == ANNOUNCEMENT::Application && strcmp(message, "OnVolumeChanged") == 0)
   {
-    const float volumePercent = data["volume"].asDouble();
+    const float volumePercent = static_cast<float>(data["volume"].asDouble());
 
     if (std::fabs(volumePercent - m_volumePercent) > 0.1f)
     {
