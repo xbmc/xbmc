@@ -29,7 +29,6 @@
 #include <vector>
 
 class CD3DTexture;
-class COutputShader;
 struct SwsContext;
 
 namespace KODI
@@ -37,6 +36,7 @@ namespace KODI
 namespace RETRO
 {
   class CRenderContext;
+  class CRPWinOutputShader;
 
   class CWinRendererFactory : public IRendererFactory
   {
@@ -115,17 +115,20 @@ namespace RETRO
     /*!
      * \brief The default scaling method of the renderer
      */
-    static const ESCALINGMETHOD DEFAULT_SCALING_METHOD = VS_SCALINGMETHOD_LINEAR;
+    static const ESCALINGMETHOD DEFAULT_SCALING_METHOD = VS_SCALINGMETHOD_NEAREST;
 
-protected:
+  protected:
     // implementation of CRPBaseRenderer
     bool ConfigureInternal() override;
     void RenderInternal(bool clear, uint8_t alpha) override;
 
   private:
+    void CompileOutputShader(ESCALINGMETHOD scalingMethod);
+    void HandleScalingChange();
     void Render(CD3DTexture *target);
 
-    std::unique_ptr<COutputShader> m_outputShader;
+    std::unique_ptr<CRPWinOutputShader> m_outputShader;
+    ESCALINGMETHOD m_prevScalingMethod = VS_SCALINGMETHOD_AUTO;
   };
 }
 }
