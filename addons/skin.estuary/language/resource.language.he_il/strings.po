@@ -48,9 +48,13 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "סרטים שלא נצפו"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "אפשר יישומוני קבוצות"
+
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "הורד אייקונים"
+msgstr "הורד סמלילים"
 
 msgctxt "#31010"
 msgid "In progress movies"
@@ -108,21 +112,25 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "סוג תצוגה"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "בחר דירוג כדי להציג פרטי מדיה"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "לא נמצאו מועדפים. ניתן להוסיף כל פריט מדיה לרשימה זו ע\"י שימוש בתפריט משנה."
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "טיימשיפט"
+msgstr "הסטת זמן"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "הראה אומנות מעריצים"
+msgstr "הראה פאנארט"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "חובר לאחרונה"
+msgstr "התחברות אחרונה למערכת"
 
 msgctxt "#31030"
 msgid "System memory usage"
@@ -198,11 +206,11 @@ msgstr "החלף שפה"
 
 msgctxt "#31052"
 msgid "filtered"
-msgstr "סינון"
+msgstr "לאחר סינון"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "מבוסס Arial"
+msgstr "מבוסס על אריאל"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
@@ -258,7 +266,7 @@ msgstr "על ידי"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "אפשרויות חשמל"
+msgstr "אפשרויות הפעלה"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -314,7 +322,7 @@ msgstr "אפשרויות ערוץ"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "יש לבחור חשבון משתמש Kodi[CR]להתחברות והמשך"
+msgstr "יש לבחור חשבון משתמש קודי[CR]להתחברות והמשך"
 
 msgctxt "#31099"
 msgid "IconWall"
@@ -322,7 +330,7 @@ msgstr "קיר איקונים"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "שיפט"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -342,7 +350,7 @@ msgstr "הספריה שלך ריקה כרגע. על מנת להוסיף לה א�
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "הוסף מקורות וידאו והגדר את סוג התכנים המתאימים לצורך איכלוס ספריית הוידאו שלך"
+msgstr "הוסף מקורות וידאו והגדר את סוג התכנים המתאימים שייכנסו לספריית הווידאו שלך"
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -370,7 +378,7 @@ msgstr "חפש ספרייה מקומית"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "חפש ביוטיוב"
+msgstr "חפש ביו-טיוב"
 
 msgctxt "#31115"
 msgid "Search TheMovieDB"
@@ -390,7 +398,7 @@ msgstr "הפעל הרחבות דפדפן"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "אין לך שום הרחבות מותקנות עדיין. בקר בהרחבות הדפדפן ודפדפן באוסף שלנו ושפר את חווית הקודי שלך."
+msgstr "אין לך עדיין שום הרחבות מותקנות. כנס להרחבות הדפדפן, דפדף באוסף שלנו ושפר את חווית הקודי שלך."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -414,11 +422,11 @@ msgstr "הראה תמונות במפה"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "בשביל מידע על השחקן up  לחץ על"
+msgstr "בשביל מידע על השחקן לחץ על [B] למעלה[/B] "
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "על מנת לקרוא עלילה OK לחץ על "
+msgstr "על מנת לקרוא עלילה לחץ על [B] אישור[/B] "
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -438,7 +446,7 @@ msgstr "הגדרות תפריט ראשי: הגדר את מסך הבית לטעמ
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "בחר חבילת חליפת (סקין) אמנים אוהדים"
+msgstr "בחר חבילת מעטפת פאנארט"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -466,7 +474,7 @@ msgstr "פורמט פיקסל"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "שינויים בגרסא"
+msgstr "שינויים בגרסה"
 
 msgctxt "#31142"
 msgid "Play speed"
@@ -490,11 +498,11 @@ msgstr "קטגוריות"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "בחר סוג חבילת אמנים אוהדים"
+msgstr "בחר ז'אנר חבילת פאנארט"
 
 msgctxt "#31150"
 msgid "Repository"
-msgstr "מאגר"
+msgstr "מאגר הרחבות"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -510,11 +518,11 @@ msgstr "אין לך שום הרחבה מסוג זה מותקנת. היכנס ל�
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "לחץ אישור להחלפת מיקום"
+msgstr "לחץ על [B]אישור[/B]  להחלפת מיקום"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "אין סימניות שנוצרו עדיין."
+msgstr "אין עדיין סימניות שנוצרו."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
@@ -522,7 +530,7 @@ msgstr "בחר תבנית רקע"
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr "עריכת קטגוריות"
+msgstr "עריכת קבוצות"
 
 msgctxt "#31158"
 msgid "Touch mode"
@@ -538,4 +546,12 @@ msgstr "הראה דגלי מדיה"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "מקשי פד הספרות"
+msgstr "לוח מקשי ספרות"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "שחק במשחקים האישיים שלך או להוריד אחד מתוספי המשחקים הרבים מהמאגר הרשמי "
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "הראה רקע פאנארט"

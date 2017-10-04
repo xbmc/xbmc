@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.35"
+       version="1.0.36"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -92,7 +92,7 @@
     <description lang="hr_HR">Dim čuvar zaslona je jednostavan čuvar zaslona koji će zatamniti (postepeno isčeznuti) vaš zaslon na odabranu vrijednost između 20 i 100% .</description>
     <description lang="hu_HU">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
     <description lang="id_ID">Penyelamat layar Redup adalah penyelamat layar sederhana yang akan meredupkan (membuat gambar menjadi hilang) layar Anda ke suatu nilai yang dapat diatur antara 20 dan 100%.</description>
-    <description lang="is_IS">Dim er einföld skjáhvíla sem lækkar birtustigið á skjánum um stillanlegt gildi á milli 20 og 100%</description>
+    <description lang="is_IS">Dimma er einföld skjáhvíla sem lækkar birtustigið á skjánum (deyfa út) um stillanlegt gildi á milli 20 og 100%</description>
     <description lang="it_IT">Dim è un semplice salvaschermo che diminuirà la luminosità del tuo schermo ad un valore (regolabile) tra il 20% e il 100%.</description>
     <description lang="ja_JP">Dim はシンプルなスクリーンセーバーで、画面を(フェードアウトで)薄暗くします。値は20%から100%まで設定可能です。</description>
     <description lang="ko_KR">Dim 화면보호기는 화면을 어둡게(페이드 아웃)하는 간단한 화면 보호기 입니다. 어둡게 하는 정도를 20-100%사이에서 설정할 수 있습니다.</description>

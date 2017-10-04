@@ -114,7 +114,7 @@ msgstr "Widok"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "Wybiec ocenę wyświetlaną z mediami"
+msgstr "Wybierz ocenę wyświetlaną z mediami"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."

@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Usete film"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Aktiver kategorikontroller"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Hent ikoner"
@@ -103,6 +107,18 @@ msgstr "Andre indstillinger"
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sorter efter"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Visningstype"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Vælg bedømmelse at vise for medieelementer"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Ingen favoritter fundet. Du kan tilføje elementer fra medievisninger til denne liste ved at bruge kontekstmenuen."
 
 msgctxt "#31026"
 msgid "Timeshift"

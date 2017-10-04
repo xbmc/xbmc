@@ -182,7 +182,7 @@ msgstr "Veldu hvaða tegund og bættu við reglum til að útbúa snjallan-spilu
 
 msgctxt "#31044"
 msgid "Add group"
-msgstr "Bæta við hóp"
+msgstr "Bæta við hópi"
 
 msgctxt "#31045"
 msgid "Rename group"
@@ -190,7 +190,7 @@ msgstr "Endurnefna hóp"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Eyða hóp"
+msgstr "Eyða hópi"
 
 msgctxt "#31048"
 msgid "Available"
@@ -314,7 +314,7 @@ msgstr "Nota rennslishreyfingar"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Staðvær þýðingartexti tiltækur"
+msgstr "Staðvær skjátexti tiltækur"
 
 msgctxt "#31097"
 msgid "Channel options"
