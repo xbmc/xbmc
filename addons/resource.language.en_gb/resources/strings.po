@@ -8712,7 +8712,31 @@ msgctxt "#16206"
 msgid "Failed to delete at least one file. Check the log for more information about this message."
 msgstr ""
 
-#empty strings from id 16207 to 16299
+#empty strings from id 16207 to 16295
+
+#. Name of the video filter that uses jagged pixels without smoothing
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
+msgctxt "#16296"
+msgid "Pixelate"
+msgstr ""
+
+#. Name of the video filter that smooths pixels to remove jagged edges
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
+msgctxt "#16297"
+msgid "Smooth"
+msgstr ""
+
+#. Description of the video filter that uses jagged pixels without smoothing
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
+msgctxt "#16298"
+msgid "Shows the game's pixels without any modifications."
+msgstr ""
+
+#. Description of the video filter that smooths pixels to remove jagged edges
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
+msgctxt "#16299"
+msgid "Removes the jagged edges of pixels by evenly fading between adjacent pixels."
+msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16300"

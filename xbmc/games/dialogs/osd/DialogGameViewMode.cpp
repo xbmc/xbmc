@@ -19,7 +19,7 @@
  */
 
 #include "DialogGameViewMode.h"
-#include "cores/RetroPlayer/rendering/IRenderCallback.h"
+#include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -45,6 +45,11 @@ CDialogGameViewMode::CDialogGameViewMode() :
 {
 }
 
+std::string CDialogGameViewMode::GetHeading()
+{
+  return g_localizeStrings.Get(629); // "View mode"
+}
+
 void CDialogGameViewMode::PreInit()
 {
   m_viewModes.clear();
@@ -62,17 +67,17 @@ void CDialogGameViewMode::PreInit()
 
       case ViewModeStretch4x3:
       case ViewModeStretch16x9:
-        if (m_callback != nullptr)
+        if (m_gameVideoHandle)
         {
-          bSupported = m_callback->SupportsRenderFeature(RENDERFEATURE_STRETCH) ||
-                       m_callback->SupportsRenderFeature(RENDERFEATURE_PIXEL_RATIO);
+          bSupported = m_gameVideoHandle->SupportsRenderFeature(RENDERFEATURE_STRETCH) ||
+                       m_gameVideoHandle->SupportsRenderFeature(RENDERFEATURE_PIXEL_RATIO);
         }
         break;
 
       case ViewModeStretch16x9Nonlin:
-        if (m_callback != nullptr)
+        if (m_gameVideoHandle)
         {
-          bSupported = m_callback->SupportsRenderFeature(RENDERFEATURE_NONLINSTRETCH);
+          bSupported = m_gameVideoHandle->SupportsRenderFeature(RENDERFEATURE_NONLINSTRETCH);
         }
         break;
 

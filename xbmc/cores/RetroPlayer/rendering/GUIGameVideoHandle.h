@@ -19,41 +19,27 @@
  */
 #pragma once
 
-#include "DialogGameVideoSelect.h"
 #include "cores/IPlayer.h"
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class CDialogGameViewMode : public CDialogGameVideoSelect
+  class CGUIGameRenderManager;
+
+  class CGUIGameVideoHandle
   {
   public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
+    CGUIGameVideoHandle(CGUIGameRenderManager &renderManager);
+    virtual ~CGUIGameVideoHandle();
 
-  protected:
-    // implementation of CDialogGameVideoSelect
-    std::string GetHeading() override;
-    void PreInit() override;
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override;
+    bool IsPlayingGame();
+    bool SupportsRenderFeature(ERENDERFEATURE feature);
+    bool SupportsScalingMethod(ESCALINGMETHOD method);
 
   private:
-    struct ViewModeProperties
-    {
-      int stringIndex;
-      ViewMode viewMode;
-    };
-
-    std::vector<ViewModeProperties> m_viewModes;
-
-    /*!
-     * \brief The list of all the view modes along with their properties
-     */
-    static const std::vector<ViewModeProperties> m_allViewModes;
+    // Construction parameters
+    CGUIGameRenderManager &m_renderManager;
   };
 }
 }

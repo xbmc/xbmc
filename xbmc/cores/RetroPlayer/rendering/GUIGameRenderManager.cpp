@@ -19,9 +19,11 @@
  */
 
 #include "GUIGameRenderManager.h"
+#include "GUIGameVideoHandle.h"
 #include "GUIRenderHandle.h"
 #include "GUIRenderTarget.h"
 #include "GUIRenderTargetFactory.h"
+#include "IRenderCallback.h"
 #include "threads/SingleLock.h"
 
 using namespace KODI;
@@ -29,25 +31,37 @@ using namespace RETRO;
 
 CGUIGameRenderManager::~CGUIGameRenderManager() = default;
 
-void CGUIGameRenderManager::RegisterFactory(CGUIRenderTargetFactory *factory)
+void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory, IRenderCallback *callback)
 {
-  CSingleLock lock(m_mutex);
+  {
+    CSingleLock lock(m_targetMutex);
+    m_factory = factory;
+    UpdateRenderTargets();
+  }
 
-  m_factory = factory;
-  UpdateRenderTargets();
+  {
+    CSingleLock lock(m_callbackMutex);
+    m_callback = callback;
+  }
 }
 
-void CGUIGameRenderManager::UnregisterFactory()
+void CGUIGameRenderManager::UnregisterPlayer()
 {
-  CSingleLock lock(m_mutex);
+  {
+    CSingleLock lock(m_callbackMutex);
+    m_callback = nullptr;
+  }
 
-  m_factory = nullptr;
-  UpdateRenderTargets();
+  {
+    CSingleLock lock(m_targetMutex);
+    m_factory = nullptr;
+    UpdateRenderTargets();
+  }
 }
 
 std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGameControl &control)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderControlHandle(*this, control));
 
@@ -62,7 +76,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGam
 
 std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWindowFullScreen &window)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderFullScreenHandle(*this, window));
 
@@ -75,16 +89,21 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWin
   return renderHandle;
 }
 
+std::shared_ptr<CGUIGameVideoHandle> CGUIGameRenderManager::RegisterDialog(GAME::CDialogGameVideoSelect &dialog)
+{
+  return std::make_shared<CGUIGameVideoHandle>(*this);
+}
+
 void CGUIGameRenderManager::UnregisterHandle(CGUIRenderHandle *handle)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   m_renderTargets.erase(handle);
 }
 
 void CGUIGameRenderManager::Render(CGUIRenderHandle *handle)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -97,7 +116,7 @@ void CGUIGameRenderManager::Render(CGUIRenderHandle *handle)
 
 void CGUIGameRenderManager::RenderEx(CGUIRenderHandle *handle)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -110,7 +129,7 @@ void CGUIGameRenderManager::RenderEx(CGUIRenderHandle *handle)
 
 void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle *handle)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -123,7 +142,7 @@ void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle *handle)
 
 bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle *handle)
 {
-  CSingleLock lock(m_mutex);
+  CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -132,6 +151,33 @@ bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle *handle)
     if (renderTarget)
       return renderTarget->IsDirty();
   }
+
+  return false;
+}
+
+bool CGUIGameRenderManager::IsPlayingGame()
+{
+  CSingleLock lock(m_callbackMutex);
+
+  return m_callback != nullptr;
+}
+
+bool CGUIGameRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_callback != nullptr)
+    return m_callback->SupportsRenderFeature(feature);
+
+  return false;
+}
+
+bool CGUIGameRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_callback != nullptr)
+    return m_callback->SupportsScalingMethod(method);
 
   return false;
 }

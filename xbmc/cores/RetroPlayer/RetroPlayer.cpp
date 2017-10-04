@@ -40,7 +40,6 @@
 #include "games/tags/GameInfoTag.h"
 #include "games/GameServices.h"
 #include "games/GameUtils.h"
-#include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -544,28 +543,13 @@ void CRetroPlayer::CloseOSD()
 
 void CRetroPlayer::RegisterWindowCallbacks()
 {
-  m_gameServices.GameRenderManager().RegisterFactory(m_renderManager->GetGUIRenderTargetFactory());
-
-  CDialogGameVideoSelect *dialogVideoFilter = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER));
-  if (dialogVideoFilter != nullptr)
-    dialogVideoFilter->RegisterCallback(m_renderManager.get());
-
-  CDialogGameVideoSelect *dialogViewMode = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIEW_MODE));
-  if (dialogViewMode != nullptr)
-    dialogViewMode->RegisterCallback(m_renderManager.get());
+  m_gameServices.GameRenderManager().RegisterPlayer(m_renderManager->GetGUIRenderTargetFactory(),
+                                                    m_renderManager.get());
 }
 
 void CRetroPlayer::UnregisterWindowCallbacks()
 {
-  CDialogGameVideoSelect *dialogVideoFilter = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER));
-  if (dialogVideoFilter != nullptr)
-    dialogVideoFilter->UnregisterCallback();
-
-  CDialogGameVideoSelect *dialogViewMode = dynamic_cast<CDialogGameVideoSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_GAME_VIEW_MODE));
-  if (dialogViewMode != nullptr)
-    dialogViewMode->UnregisterCallback();
-
-  m_gameServices.GameRenderManager().UnregisterFactory();
+  m_gameServices.GameRenderManager().UnregisterPlayer();
 }
 
 void CRetroPlayer::PrintGameInfo(const CFileItem &file) const
