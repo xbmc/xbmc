@@ -80,6 +80,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Brugernavn"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Opdateret:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "SPOL FREM"

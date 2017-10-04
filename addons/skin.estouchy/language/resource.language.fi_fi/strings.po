@@ -86,7 +86,7 @@ msgstr "Sivu"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Lista ja tiedot"
+msgstr "Infolista"
 
 msgctxt "#31038"
 msgid "Login"
@@ -166,7 +166,7 @@ msgstr "Tietojen tarjoaja"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Järjestelmän käyttämä muisti:"
+msgstr "Järjestelmän muistinkäyttö:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -250,7 +250,7 @@ msgstr "Taustakuvat"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Lisäosan pikavalinta"
+msgstr "Lisäosan pikakuvake"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -270,7 +270,7 @@ msgstr "Määritä tv-asetukset · Vaihda kokoruudun infoa · Muokkaa ohjelmaopp
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Tv-lähetys"
+msgstr "Tv"
 
 msgctxt "#31557"
 msgid "Hide video background"
