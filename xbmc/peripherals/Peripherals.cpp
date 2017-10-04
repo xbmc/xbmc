@@ -77,8 +77,10 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
-CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements) :
+CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
+                           CInputManager &inputManager) :
   m_announcements(announcements),
+  m_inputManager(inputManager),
   m_eventScanner(this)
 {
   // Register settings

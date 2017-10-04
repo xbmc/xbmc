@@ -33,6 +33,7 @@
 #include "utils/Observer.h"
 
 class CFileItemList;
+class CInputManager;
 class CSetting;
 class CSettingsCategory;
 class TiXmlElement;
@@ -61,7 +62,8 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements);
+    explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
+                          CInputManager &inputManager);
 
     ~CPeripherals() override;
 
@@ -313,6 +315,11 @@ namespace PERIPHERALS
     // implementation of IAnnouncer
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
+    /*!
+     * \brief Access the input manager passed to the constructor
+     */
+    CInputManager &GetInputManager() { return m_inputManager; }
+
   private:
     bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
@@ -322,6 +329,7 @@ namespace PERIPHERALS
 
     // Construction parameters
     ANNOUNCEMENT::CAnnouncementManager &m_announcements;
+    CInputManager &m_inputManager;
 
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed = false;

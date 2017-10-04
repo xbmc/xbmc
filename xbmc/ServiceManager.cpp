@@ -139,7 +139,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
-  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
+  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager,
+                                                    *m_inputManager));
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
