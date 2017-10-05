@@ -260,9 +260,15 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
   VerifyGLState();
 
   GLubyte col[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  }vertex[4];
 
   if (texture)
     g_Windowing.EnableShader(SM_TEXTURE);
@@ -273,14 +279,6 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
   GLint tex0Loc = g_Windowing.ShaderGetCoord0();
   GLint uniColLoc = g_Windowing.ShaderGetUniCol();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  if (texture)
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  if (texture)
-    glEnableVertexAttribArray(tex0Loc);
-
   // Setup Colors
   col[0] = (GLubyte)GET_R(color);
   col[1] = (GLubyte)GET_G(color);
@@ -289,26 +287,62 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
 
   glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
-  ver[0][0] = ver[3][0] = rect.x1;
-  ver[0][1] = ver[1][1] = rect.y1;
-  ver[1][0] = ver[2][0] = rect.x2;
-  ver[2][1] = ver[3][1] = rect.y2;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2]= 0;
+  // bottom left
+  vertex[0].x = rect.x1;
+  vertex[0].y = rect.y1;
+  vertex[0].z = 0;
+
+  // bottom right
+  vertex[1].x = rect.x2;
+  vertex[1].y = rect.y1;
+  vertex[1].z = 0;
+
+  // top right
+  vertex[2].x = rect.x2;
+  vertex[2].y = rect.y2;
+  vertex[2].z = 0;
+
+  // top left
+  vertex[3].x = rect.x1;
+  vertex[3].y = rect.y2;
+  vertex[3].z = 0;
 
   if (texture)
   {
-    // Setup texture coordinates
     CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
-    tex[0][0] = tex[3][0] = coords.x1;
-    tex[0][1] = tex[1][1] = coords.y1;
-    tex[1][0] = tex[2][0] = coords.x2;
-    tex[2][1] = tex[3][1] = coords.y2;
+    vertex[0].u1 = vertex[3].u1 = coords.x1;
+    vertex[0].v1 = vertex[1].v1 = coords.y1;
+    vertex[1].u1 = vertex[2].u1 = coords.x2;
+    vertex[2].v1 = vertex[3].v1 = coords.y2;
   }
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glEnableVertexAttribArray(posLoc);
+
+  if (texture)
+  {
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+    glEnableVertexAttribArray(tex0Loc);
+  }
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(posLoc);
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   g_Windowing.DisableShader();
 }
