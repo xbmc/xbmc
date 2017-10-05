@@ -8,7 +8,8 @@ set(SOURCES PVRActionListener.cpp
             PVRItem.cpp
             PVRChannelNumberInputHandler.cpp
             PVRJobs.cpp
-            PVRGUIChannelNavigator.cpp)
+            PVRGUIChannelNavigator.cpp
+            PVRGUIProgressHandler.cpp)
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
@@ -22,6 +23,7 @@ set(HEADERS PVRActionListener.h
             PVRTypes.h
             PVRChannelNumberInputHandler.h
             PVRJobs.h
-            PVRGUIChannelNavigator.h)
+            PVRGUIChannelNavigator.h
+            PVRGUIProgressHandler.h)
 
 core_add_library(pvr)

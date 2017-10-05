@@ -24,8 +24,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -35,6 +33,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/PVRGUIProgressHandler.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgSearchFilter.h"
@@ -123,7 +122,6 @@ CPVREpgContainer::CPVREpgContainer(void) :
     CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV
   })
 {
-  m_progressHandle = NULL;
   m_bStop = true;
   m_bIsUpdating = false;
   m_bIsInitialising = true;
@@ -312,18 +310,7 @@ void CPVREpgContainer::LoadFromDB(void)
   unsigned int iCounter(0);
   if (m_database.IsOpen())
   {
-    {
-      //! @bug
-      //! unlock m_critSection before calling ShowProgressDialog() -
-      //! this is not legal, but works around a deadlock bug (because
-      //! ShowProgressDialog() calls functions which lock
-      //! g_graphicsContext); note that ShowProgressDialog() is
-      //! sometimes called with m_critSection locked and sometimes
-      //! without; this is a major bug that must be addressed
-      //! eventually
-      CSingleExit exit(m_critSection);
-      ShowProgressDialog(false);
-    }
+    CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19250)); // Loading guide from database
 
     const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
     m_database.DeleteEpgEntries(cleanupTime);
@@ -333,13 +320,15 @@ void CPVREpgContainer::LoadFromDB(void)
     {
       if (m_bStop)
         break;
-      UpdateProgressDialog(++iCounter, m_epgs.size(), epgEntry.second->Name());
+
+      progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgs.size());
+
       lock.Leave();
       epgEntry.second->Load();
       lock.Enter();
     }
 
-    CloseProgressDialog();
+    progressHandler->DestroyProgress();
   }
 
   m_bLoaded = bLoaded;
@@ -630,37 +619,6 @@ bool CPVREpgContainer::DeleteEpg(const CPVREpg &epg, bool bDeleteFromDatabase /*
   return true;
 }
 
-void CPVREpgContainer::CloseProgressDialog(void)
-{
-  if (m_progressHandle)
-  {
-    m_progressHandle->MarkFinished();
-    m_progressHandle = NULL;
-  }
-}
-
-void CPVREpgContainer::ShowProgressDialog(bool bUpdating /* = true */)
-{
-  if (!m_progressHandle)
-  {
-    CGUIDialogExtendedProgressBar *progressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
-    if (progressDialog)
-      m_progressHandle = progressDialog->GetHandle(bUpdating ? g_localizeStrings.Get(19004) : g_localizeStrings.Get(19250));
-  }
-}
-
-void CPVREpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const std::string &strText)
-{
-  if (!m_progressHandle)
-    ShowProgressDialog();
-
-  if (m_progressHandle)
-  {
-    m_progressHandle->SetProgress(iCurrent, iMax);
-    m_progressHandle->SetText(strText);
-  }
-}
-
 bool CPVREpgContainer::IgnoreDB() const
 {
   return m_settings.GetBoolValue(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
@@ -716,9 +674,6 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     pendingUpdates = m_pendingUpdates;
   }
 
-  if (bShowProgress && !bOnlyPending)
-    ShowProgressDialog();
-
   if (!IgnoreDB() && !m_database.IsOpen())
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
@@ -729,13 +684,14 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       m_updateEvent.Set();
     }
 
-    if (bShowProgress && !bOnlyPending)
-      CloseProgressDialog();
-
     return false;
   }
 
   std::vector<CPVREpgPtr> invalidTables;
+
+  CPVRGUIProgressHandler* progressHandler = nullptr;
+  if (bShowProgress && !bOnlyPending)
+    progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19004)); // Importing guide from clients
 
   /* load or update all EPG tables */
   unsigned int iCounter(0);
@@ -752,7 +708,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       continue;
 
     if (bShowProgress && !bOnlyPending)
-      UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
+      progressHandler->UpdateProgress(epg->Name(), ++iCounter, m_epgs.size());
 
     // we currently only support update via pvr add-ons. skip update when the pvr manager isn't started
     if (!CServiceBroker::GetPVRManager().IsStarted())
@@ -773,6 +729,9 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       invalidTables.push_back(epg);
   }
 
+  if (bShowProgress && !bOnlyPending)
+    progressHandler->DestroyProgress();
+
   for (auto it = invalidTables.begin(); it != invalidTables.end(); ++it)
     DeleteEpg(**it, true);
 
@@ -791,9 +750,6 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     if (m_pendingUpdates == pendingUpdates)
       m_pendingUpdates = 0;
   }
-
-  if (bShowProgress && !bOnlyPending)
-    CloseProgressDialog();
 
   /* notify observers */
   if (iUpdatedTables > 0)

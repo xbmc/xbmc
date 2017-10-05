@@ -31,7 +31,6 @@
 #include "pvr/epg/EpgDatabase.h"
 
 class CFileItemList;
-class CGUIDialogProgressBarHandle;
 
 namespace PVR
 {
@@ -165,25 +164,6 @@ namespace PVR
     unsigned int NextEpgId(void);
 
     /*!
-     * @brief Close the progress bar if it's visible.
-     */
-    void CloseProgressDialog(void);
-
-    /*!
-     * @brief Show the progress bar
-     * @param bUpdating True if updating epg entries, false if just loading them from db
-     */
-    void ShowProgressDialog(bool bUpdating = true);
-
-    /*!
-     * @brief Update the progress bar.
-     * @param iCurrent The current position.
-     * @param iMax The maximum position.
-     * @param strText The text to display.
-     */
-    void UpdateProgressDialog(int iCurrent, int iMax, const std::string &strText);
-
-    /*!
      * @return True to not to store EPG entries in the database.
      */
     bool IgnoreDB() const;
@@ -292,7 +272,6 @@ namespace PVR
     EPGMAP       m_epgs;                   /*!< the EPGs in this container */
     //@}
 
-    CGUIDialogProgressBarHandle *  m_progressHandle; /*!< the progress dialog that is visible when updating the first time */
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
 

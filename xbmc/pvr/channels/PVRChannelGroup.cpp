@@ -24,7 +24,6 @@
 
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -36,6 +35,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRDatabase.h"
+#include "pvr/PVRGUIProgressHandler.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -278,8 +278,6 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (fileItemList.IsEmpty())
     return;
 
-  CGUIDialogProgressBarHandle* dlgProgressHandle = CServiceBroker::GetPVRManager().ShowProgressDialog(g_localizeStrings.Get(19286)); // Searching for channel icons
-
   CSingleLock lock(m_critSection);
 
   /* create a map for fast lookup of normalized file base name */
@@ -293,6 +291,8 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     fileItemMap.insert(std::make_pair(baseName, (*it)->GetPath()));
   }
 
+  CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19286)); // Searching for channel icons
+
   int channelIndex = 0;
   CPVRChannelPtr channel;
   for(PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
@@ -300,11 +300,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     channel = it->second.channel;
 
     /* update progress dialog */
-    if (dlgProgressHandle)
-    {
-      dlgProgressHandle->SetProgress(channelIndex++, m_members.size());
-      dlgProgressHandle->SetText(channel->ChannelName());
-    }
+    progressHandler->UpdateProgress(channel->ChannelName(), channelIndex++, m_members.size());
 
     /* skip if an icon is already set and exists */
     if (channel->IsIconExists())
@@ -333,8 +329,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     //! @todo start channel icon scraper here if nothing was found
   }
 
-  if (dlgProgressHandle)
-    dlgProgressHandle->MarkFinished();
+  progressHandler->DestroyProgress();
 }
 
 /********** sort methods **********/

@@ -111,7 +111,7 @@ void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage ms
   if (msg == ObservableMessageManagerStopped)
     ClearData();
 
-  if (IsActive())
+  if (m_active)
   {
     CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
     CApplicationMessenger::GetInstance().SendGUIMessage(m);

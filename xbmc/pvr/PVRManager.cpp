@@ -26,9 +26,7 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
@@ -49,6 +47,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRGUIInfo.h"
 #include "pvr/PVRJobs.h"
+#include "pvr/PVRGUIProgressHandler.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -148,8 +147,6 @@ CPVRManager::CPVRManager(void) :
     m_guiActions(new CPVRGUIActions),
     m_bFirstStart(true),
     m_bEpgsCreated(false),
-    m_progressBar(nullptr),
-    m_progressHandle(nullptr),
     m_managerState(ManagerStateStopped),
     m_settings({
       CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
@@ -243,8 +240,6 @@ void CPVRManager::Clear(void)
   m_database.reset();
 
   m_bEpgsCreated = false;
-
-  HideProgressDialog();
 }
 
 void CPVRManager::ResetProperties(void)
@@ -262,14 +257,6 @@ void CPVRManager::ResetProperties(void)
 
 void CPVRManager::Init()
 {
-  // Note: we're holding the progress bar dialog instance pointer in a member because it is needed by pvr core
-  //       components. The latter might run in a different thread than the gui and g_windowManager.GetWindow()
-  //       locks the global graphics mutex, which easily can lead to deadlocks.
-  m_progressBar = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
-
-  if (!m_progressBar)
-    CLog::Log(LOGERROR, "CPVRManager - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);
-
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
   CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
@@ -542,9 +529,6 @@ void CPVRManager::OnWake()
 
 bool CPVRManager::Load(bool bShowProgress)
 {
-  if (!bShowProgress)
-    HideProgressDialog();
-
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
     Sleep(50);
@@ -554,69 +538,57 @@ bool CPVRManager::Load(bool bShowProgress)
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
+  CPVRGUIProgressHandler* progressHandler = nullptr;
+
   /* load all channels and groups */
   if (bShowProgress)
-    ShowProgressDialog(g_localizeStrings.Get(19236), 0); // Loading channels from clients
+  {
+    progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
+    progressHandler->UpdateProgress(g_localizeStrings.Get(19236), 0); // Loading channels from clients
+  }
+
   if (!m_channelGroups->Load() || !IsInitialising())
+  {
+    if (progressHandler)
+      progressHandler->DestroyProgress();
+
     return false;
+  }
 
   SetChanged();
   NotifyObservers(ObservableMessageChannelGroupsLoaded);
 
   /* get timers from the backends */
   if (bShowProgress)
-    ShowProgressDialog(g_localizeStrings.Get(19237), 50); // Loading timers from clients
+    progressHandler->UpdateProgress(g_localizeStrings.Get(19237), 50); // Loading timers from clients
+
   m_timers->Load();
 
   /* get recordings from the backend */
   if (bShowProgress)
-    ShowProgressDialog(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
+    progressHandler->UpdateProgress(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
+
   m_recordings->Load();
 
   if (!IsInitialising())
+  {
+    if (progressHandler)
+      progressHandler->DestroyProgress();
+
     return false;
+  }
 
   /* start the other pvr related update threads */
   if (bShowProgress)
-    ShowProgressDialog(g_localizeStrings.Get(19239), 85); // Starting background threads
-  m_guiInfo->Start();
+  {
+    progressHandler->UpdateProgress(g_localizeStrings.Get(19239), 85); // Starting background threads
+    progressHandler->DestroyProgress();
+  }
 
-  /* close the progress dialog */
-  if (bShowProgress)
-    HideProgressDialog();
+  m_guiInfo->Start();
 
   return true;
 }
-
-void CPVRManager::ShowProgressDialog(const std::string &strText, int iProgress)
-{
-  if (!m_progressHandle && m_progressBar)
-    m_progressHandle = m_progressBar->GetHandle(g_localizeStrings.Get(19235)); // PVR manager is starting up
-
-  if (m_progressHandle)
-  {
-    m_progressHandle->SetPercentage(static_cast<float>(iProgress));
-    m_progressHandle->SetText(strText);
-  }
-}
-
-void CPVRManager::HideProgressDialog(void)
-{
-  if (m_progressHandle)
-  {
-    m_progressHandle->MarkFinished();
-    m_progressHandle = NULL;
-  }
-}
-
-CGUIDialogProgressBarHandle* CPVRManager::ShowProgressDialog(const std::string &strTitle) const
-{
-  if (m_progressBar)
-    return m_progressBar->GetHandle(strTitle);
-
-  return nullptr;
-}
-
 
 void CPVRManager::TriggerPlayChannelOnStartup(void)
 {
