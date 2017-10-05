@@ -116,7 +116,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       GLint format;
 
       glGenTextures(1, &m_textureY);
-      glEnable(m_interop.textureTarget);
       glBindTexture(m_interop.textureTarget, m_textureY);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -126,7 +125,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glGenTextures(1, &m_textureVU);
-      glEnable(m_interop.textureTarget);
       glBindTexture(m_interop.textureTarget, m_textureVU);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -136,7 +134,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glBindTexture(m_interop.textureTarget, 0);
-      glDisable(m_interop.textureTarget);
 
       break;
     }
@@ -193,7 +190,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       GLint format;
 
       glGenTextures(1, &m_textureY);
-      glEnable(m_interop.textureTarget);
       glBindTexture(m_interop.textureTarget, m_textureY);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -203,7 +199,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glGenTextures(1, &m_textureVU);
-      glEnable(m_interop.textureTarget);
       glBindTexture(m_interop.textureTarget, m_textureVU);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -213,7 +208,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glBindTexture(m_interop.textureTarget, 0);
-      glDisable(m_interop.textureTarget);
 
       break;
     }
@@ -241,7 +235,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       }
 
       glGenTextures(1, &m_texture);
-      glEnable(m_interop.textureTarget);
       glBindTexture(m_interop.textureTarget, m_texture);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -251,7 +244,6 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImage);
 
       glBindTexture(m_interop.textureTarget, 0);
-      glDisable(m_interop.textureTarget);
 
       break;
     }

@@ -1,11 +1,3 @@
-/*!
-\file GUITextureGL.h
-\brief
-*/
-
-#ifndef GUILIB_GUITEXTUREGL_H
-#define GUILIB_GUITEXTUREGL_H
-
 #pragma once
 
 /*
@@ -28,21 +20,32 @@
  *
  */
 
-#include "GUITexture.h"
-
 #include "system_gl.h"
+
+#include "GUITexture.h"
 
 class CGUITextureGL : public CGUITextureBase
 {
 public:
   CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);
   static void DrawQuad(const CRect &coords, color_t color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
+
 protected:
   void Begin(color_t color) override;
   void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation) override;
   void End() override;
+
 private:
   GLubyte m_col[4];
+
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+  };
+
+  std::vector<PackedVertex> m_packedVertices;
+  std::vector<GLushort> m_idx;
 };
 
-#endif

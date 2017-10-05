@@ -62,7 +62,6 @@ set(SOURCES DDSImage.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
             Resolution.cpp
-            Shader.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
@@ -149,7 +148,6 @@ set(HEADERS DDSImage.h
             IWindowManagerCallback.h
             LocalizeStrings.h
             Resolution.h
-            Shader.h
             StereoscopicsManager.h
             Texture.h
             TextureBundle.h
@@ -166,10 +164,12 @@ if(OPENGL_FOUND)
   list(APPEND SOURCES GUIFontTTFGL.cpp
                       GUITextureGL.cpp
                       MatrixGLES.cpp
+                      Shader.cpp
                       TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
                       GUITextureGL.h
                       MatrixGLES.h
+                      Shader.h
                       TextureGL.h)
 endif()
 
@@ -178,11 +178,13 @@ if(OPENGLES_FOUND)
                       GUIShader.cpp
                       GUITextureGLES.cpp
                       MatrixGLES.cpp
+                      Shader.cpp
                       TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
                       GUIShader.h
                       GUITextureGLES.h
                       MatrixGLES.h
+                      Shader.h
                       TextureGL.h)
 endif()
 

@@ -78,7 +78,7 @@ void CRendererVTB::ReleaseBuffer(int idx)
 
 EShaderFormat CRendererVTB::GetShaderFormat()
 {
-  return SHADER_YV12;
+  return SHADER_NV12_RRG;
 }
 
 bool CRendererVTB::LoadShadersHook()
@@ -119,11 +119,9 @@ bool CRendererVTB::CreateTexture(int index)
     planes[p].pixpertex_y = 1;
   }
 
-  glEnable(m_textureTarget);
   glGenTextures(1, &planes[0].id);
   glGenTextures(1, &planes[1].id);
   planes[2].id = planes[1].id;
-  glDisable(m_textureTarget);
 
   return true;
 }
@@ -160,8 +158,6 @@ bool CRendererVTB::UploadTexture(int index)
 
   CVImageBufferRef cvBufferRef = vb->GetPB();
 
-  glEnable(m_textureTarget);
-
   // It is the fastest way to render a CVPixelBuffer backed
   // with an IOSurface as there is no CPU -> GPU upload.
   CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
@@ -187,8 +183,8 @@ bool CRendererVTB::UploadTexture(int index)
 
   glBindTexture(m_textureTarget, planes[0].id);
 
-  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_LUMINANCE,
-                         widthY, heightY, GL_LUMINANCE, GL_UNSIGNED_BYTE, surface, 0);
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RED,
+                         widthY, heightY, GL_RED, GL_UNSIGNED_BYTE, surface, 0);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -196,16 +192,14 @@ bool CRendererVTB::UploadTexture(int index)
 
   glBindTexture(m_textureTarget, planes[1].id);
 
-  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_LUMINANCE_ALPHA,
-                         widthUV, heightUV, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, surface, 1);
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RG,
+                         widthUV, heightUV, GL_RG, GL_UNSIGNED_BYTE, surface, 1);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glBindTexture(m_textureTarget, 0);
-
-  glDisable(m_textureTarget);
 
   CalculateTextureSourceRects(index, 3);
 

@@ -22,10 +22,7 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES >= 2
 #include "system_gl.h"
-
-
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "GLSLOutput.h"
@@ -36,12 +33,19 @@ namespace Shaders {
   {
   public:
     BaseVideoFilterShader();
-    void Free() override { CGLSLShaderProgram::Free(); }
-    virtual void SetSourceTexture(GLint ytex) { m_sourceTexUnit = ytex; }
-    virtual void SetWidth(int w) { m_width  = w; m_stepX = w>0?1.0f/w:0; }
-    virtual void SetHeight(int h) { m_height = h; m_stepY = h>0?1.0f/h:0; }
-    virtual void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+    virtual ~BaseVideoFilterShader();
     virtual bool GetTextureFilter(GLint& filter) { return false; }
+
+    void SetSourceTexture(GLint ytex) { m_sourceTexUnit = ytex; }
+    void SetWidth(int w) { m_width  = w; m_stepX = w>0?1.0f/w:0; }
+    void SetHeight(int h) { m_height = h; m_stepY = h>0?1.0f/h:0; }
+    void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+    void SetAlpha(GLfloat alpha) { m_alpha= alpha; }
+
+    GLint GetVertexLoc() { return m_hVertex; }
+    GLint GetCoordLoc() { return m_hCoord; }
+
+    void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
 
   protected:
     int m_width;
@@ -49,12 +53,20 @@ namespace Shaders {
     float m_stepX;
     float m_stepY;
     float m_stretch;
+    GLfloat m_alpha;
     GLint m_sourceTexUnit;
+    GLfloat *m_proj = nullptr;
+    GLfloat *m_model = nullptr;
 
     // shader attribute handles
     GLint m_hSourceTex;
     GLint m_hStepXY;
-    GLint m_hStretch = 0;
+    GLint m_hStretch = -1;
+    GLint m_hAlpha = -1;
+    GLint m_hVertex = -1;
+    GLint m_hCoord = -1;
+    GLint m_hProj = -1;
+    GLint m_hModel = -1;
   };
 
   class ConvolutionFilterShader : public BaseVideoFilterShader
@@ -100,5 +112,4 @@ namespace Shaders {
 
 } // end namespace
 
-#endif
 

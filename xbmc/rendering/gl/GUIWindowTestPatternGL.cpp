@@ -196,7 +196,7 @@ void CGUIWindowTestPatternGL::BeginRender()
 
 void CGUIWindowTestPatternGL::EndRender()
 {
-  glEnable(GL_TEXTURE_2D);
+
 }
 
 #endif

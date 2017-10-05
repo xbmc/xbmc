@@ -326,10 +326,7 @@ void CMatrixGL::PrintMatrix(void)
 
 void CMatrixGLStack::Load()
 {
-#ifdef HAS_GL
-  glMatrixMode(m_type);
-  glLoadMatrixf(m_current);
-#endif
+
 }
 
 #endif

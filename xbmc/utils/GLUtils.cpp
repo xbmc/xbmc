@@ -110,11 +110,36 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
   }
 
-  s = glGetString(GL_EXTENSIONS);
-  if (s)
-    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
+  std::string extensions;
+#if defined(HAS_GL)
+  unsigned int renderVersionMajor, renderVersionMinor;
+  g_Windowing.GetRenderVersion(renderVersionMajor, renderVersionMinor);
+  if (renderVersionMajor > 3 ||
+      (renderVersionMajor == 3 && renderVersionMinor >= 2))
+  {
+    GLint n;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    if (n > 0)
+    {
+      GLint i;
+      for (i = 0; i < n; i++)
+      {
+        extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+        extensions += " ";
+      }
+    }
+  }
+  else
+#endif
+  {
+    extensions += (const char*) glGetString(GL_EXTENSIONS);
+  }
+
+  if (!extensions.empty())
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", extensions.c_str());
   else
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
+
 
 #else /* !HAS_GL */
   CLog::Log(LOGNOTICE,
@@ -126,14 +151,20 @@ int glFormatElementByteCount(GLenum format)
 {
   switch (format)
   {
-#ifndef HAS_GLES
+#ifdef HAS_GL
   case GL_BGRA:
+    return 4;
+  case GL_RED:
+    return 1;
+  case GL_GREEN:
+    return 1;
+  case GL_RG:
+    return 2;
+  case GL_BGR:
+    return 3;
 #endif
   case GL_RGBA:
     return 4;
-#ifndef HAS_GLES
-  case GL_BGR:
-#endif
   case GL_RGB:
     return 3;
   case GL_LUMINANCE_ALPHA:

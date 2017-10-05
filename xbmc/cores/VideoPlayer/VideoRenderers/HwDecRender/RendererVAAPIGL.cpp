@@ -205,8 +205,6 @@ bool CRendererVAAPI::UploadTexture(int index)
   planes[1].id = m_vaapiTextures[index].m_textureVU;
   planes[2].id = m_vaapiTextures[index].m_textureVU;
 
-  glEnable(m_textureTarget);
-
   for (int p=0; p<2; p++)
   {
     glBindTexture(m_textureTarget, planes[p].id);
@@ -220,7 +218,6 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   CalculateTextureSourceRects(index, 3);
-  glDisable(m_textureTarget);
   return true;
 }
 

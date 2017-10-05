@@ -215,9 +215,6 @@ void CGLTexture::BindToUnit(unsigned int unit)
 {
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, m_texture);
-#ifndef HAS_GLES
-  glEnable(GL_TEXTURE_2D);
-#endif
 }
 
 #endif // HAS_GL

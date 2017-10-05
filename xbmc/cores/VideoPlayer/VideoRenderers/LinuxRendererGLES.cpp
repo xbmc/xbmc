@@ -1001,7 +1001,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
 
 void CLinuxRendererGLES::RenderFromFBO()
 {
-  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_fbo.fbo.Texture());
   VerifyGLState();

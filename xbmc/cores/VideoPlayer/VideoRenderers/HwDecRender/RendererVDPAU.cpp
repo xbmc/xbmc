@@ -131,7 +131,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
     if (!m_isYuv && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
-    return (m_renderMethod & RENDER_GLSL) || (m_renderMethod & RENDER_ARB);
+    return (m_renderMethod & RENDER_GLSL);
   }
   else if (feature == RENDERFEATURE_NOISE ||
            feature == RENDERFEATURE_SHARPNESS)
@@ -455,7 +455,6 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
   buf.fields[2][1].id = m_vdpauTextures[index].m_textureBotUV;
   buf.fields[2][2].id = m_vdpauTextures[index].m_textureBotUV;
 
-  glEnable(m_textureTarget);
   for (int f = FIELD_TOP; f <= FIELD_BOT; f++)
   {
     for (int p=0; p<2; p++)
@@ -471,6 +470,5 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
     }
   }
   CalculateTextureSourceRects(index, 3);
-  glDisable(m_textureTarget);
   return true;
 }

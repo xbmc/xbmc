@@ -588,9 +588,4 @@ void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSet
   list.push_back(make_pair(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
   list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
 #endif
-
-#ifdef HAS_GL
-  list.push_back(make_pair(g_localizeStrings.Get(13417), RENDER_METHOD_ARB));
-  list.push_back(make_pair(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL));
-#endif
 }

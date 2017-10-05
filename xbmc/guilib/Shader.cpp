@@ -20,12 +20,11 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES >= 2
-
 #include "Shader.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "windowing/WindowingFactory.h"
 
 #ifdef HAS_GLES
 #define GLchar char
@@ -46,13 +45,25 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
 
   CFileStream file;
 
-  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  std::string path = "special://xbmc/system/shaders/";
+  path += g_Windowing.GetShaderPath();
+  path += filename;
+  if(!file.Open(path))
   {
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
   }
   getline(file, m_source, '\0');
-  m_source.insert(0, prefix);
+
+  size_t pos = 0;
+  size_t versionPos = m_source.find("#version");
+  if (versionPos != std::string::npos)
+  {
+    versionPos = m_source.find("\n", versionPos);
+    if (versionPos != std::string::npos)
+      pos = versionPos + 1;
+  }
+  m_source.insert(pos, prefix);
   return true;
 }
 
@@ -64,7 +75,10 @@ bool CShader::AppendSource(const std::string& filename)
   CFileStream file;
   std::string temp;
 
-  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  std::string path = "special://xbmc/system/shaders/";
+  path += g_Windowing.GetShaderPath();
+  path += filename;
+  if(!file.Open(path))
   {
     CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file %s", filename.c_str());
     return false;
@@ -296,7 +310,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Vertex Shader compiled successfully");
 
   // compile pixel shader
   if (!m_pFP->Compile())
@@ -305,7 +318,6 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
     return false;
   }
-  CLog::Log(LOGDEBUG, "GL: Fragment Shader compiled successfully");
 
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
@@ -478,7 +490,5 @@ void CARBShaderProgram::Disable()
     OnDisabled();
   }
 }
-
-#endif
 
 #endif

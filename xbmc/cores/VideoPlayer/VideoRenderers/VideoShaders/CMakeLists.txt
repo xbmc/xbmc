@@ -27,10 +27,10 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                        CORE_PLATFORM_NAME_LC STREQUAL imx OR
                        CORE_PLATFORM_NAME_LC STREQUAL mir OR
                        CORE_PLATFORM_NAME_LC STREQUAL wayland))
-  list(APPEND SOURCES GLSLOutput.cpp
+  list(APPEND SOURCES GLSLOutputGLES.cpp
                       VideoFilterShaderGLES.cpp
                       YUV2RGBShaderGLES.cpp)
-  list(APPEND HEADERS GLSLOutput.h
+  list(APPEND HEADERS GLSLOutputGLES.h
                       VideoFilterShaderGLES.h
                       YUV2RGBShaderGLES.h)
 endif()
