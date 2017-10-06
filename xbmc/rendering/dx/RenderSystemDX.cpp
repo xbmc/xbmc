@@ -20,8 +20,10 @@
 #include <DirectXPackedVector.h>
 
 #include "Application.h"
+#if defined(TARGET_WINDOWS_DESKTOP)
 #include "cores/RetroPlayer/process/windows/RPProcessInfoWin.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPWinRenderer.h"
+#endif
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
 #if defined(TARGET_WINDOWS_STORE)
@@ -87,9 +89,10 @@ bool CRenderSystemDX::InitRenderSystem()
   DXVA::CDecoder::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CWinRenderer::Register();
+#if defined(TARGET_WINDOWS_DESKTOP)
   RETRO::CRPProcessInfoWin::Register();
   RETRO::CRPProcessInfoWin::RegisterRendererFactory(new RETRO::CWinRendererFactory);
-
+#endif
   m_viewPort = m_deviceResources->GetScreenViewport();
   RestoreViewPort();
 
