@@ -99,6 +99,9 @@ static const std::vector<dxva2_mode_t> dxva2_modes = {
     { "HEVC / H.265 variable-length decoder, main",   &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN,   AV_CODEC_ID_HEVC },
     { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, AV_CODEC_ID_HEVC },
 
+    /* VP9 */
+    { "VP9 VLD, Profile 0", &D3D11_DECODER_PROFILE_VP9_VLD_PROFILE0, AV_CODEC_ID_VP9 },
+
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
     { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
