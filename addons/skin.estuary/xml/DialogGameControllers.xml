@@ -56,9 +56,9 @@
 			</control>
 			<control type="gamecontroller" id="31">
 				<left>400</left>
-				<top>210</top>
+				<top>108</top>
 				<width>547</width>
-				<height>343</height>
+				<height>547</height>
 			</control>
 			<control type="group">
 				<left>1000</left>
