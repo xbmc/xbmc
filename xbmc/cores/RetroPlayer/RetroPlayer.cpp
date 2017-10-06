@@ -195,12 +195,17 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   CLog::Log(LOGDEBUG, "RetroPlayer: Closing file");
 
   m_autoSave.reset();
-  GetPlayerState();
 
   CSingleLock lock(m_mutex);
 
   if (m_gameClient)
   {
+    std::string savePath = m_gameClient->GetPlayback()->CreateSavestate();
+    if (!savePath.empty())
+      CLog::Log(LOGDEBUG, "Saved state to %s", CURL::GetRedacted(savePath).c_str());
+    else
+      CLog::Log(LOGDEBUG, "Failed to save state at close");
+
     UnregisterWindowCallbacks();
     m_gameClient->CloseFile();
     m_gameClient->Unload();
