@@ -280,7 +280,7 @@
 							<param name="sortby" value="lastused"/>
 							<param name="sortorder" value="descending"/>
 							<param name="list_id" value="8700"/>
-							<param name="fallback_icon" value="DefaultAddon.png"/>
+							<param name="fallback_icon" value="DefaultAddonGame.png"/>
 							<param name="visible" value="System.GetBool(gamesgeneral.enable)"/>
 						</include>
 						<include content="WidgetListSquare">
@@ -752,27 +752,30 @@
 					<include content="Visible_Right_Delayed">
 						<param name="id" value="games"/>
 					</include>
+					<control type="grouplist" id="17001">
+						<include>WidgetGroupListCommon</include>
+						<pagecontrol>17010</pagecontrol>
+						<include content="WidgetListSquare">
+							<param name="content_path" value="addons://sources/game/"/>
+							<param name="widget_header" value="$LOCALIZE[35049]"/>
+							<param name="widget_target" value="games"/>
+							<param name="sortby" value="lastused"/>
+							<param name="sortorder" value="descending"/>
+							<param name="list_id" value="17200"/>
+							<param name="fallback_icon" value="DefaultAddonGame.png"/>
+						</include>
+					</control>
 					<include content="ImageWidget">
 						<param name="text_label" value="$LOCALIZE[31162]" />
 						<param name="button_label" value="$LOCALIZE[31110]" />
 						<param name="button_onclick" value="ActivateWindow(games)"/>
 						<param name="button_id" value="17100"/>
+						<param name="visible" value="!Integer.IsGreater(Container(17001).NumItems,0)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
 					</include>
-					<!--
-															<control type="grouplist" id="17001">
-																<include>WidgetGroupListCommon</include>
-																<include content="ImageWidget">
-
-																	<param name="text_label" value="$LOCALIZE[31162]" />
-																	<param name="button_label" value="$LOCALIZE[31110]" />
-																	<param name="button_onclick" value="ActivateWindow(games)"/>
-																	<param name="button_id" value="17100"/>
-																	<param name="visible" value="true"/>
-																	<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
-																</include>
-															</control>
-															-->
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="17010"/>
+					</include>
 				</control>
 				<control type="group" id="21000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),disc)</visible>
