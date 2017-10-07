@@ -5040,18 +5040,15 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
   if (m_musicInfoScanner->IsScanning())
     return;
 
+  // Setup default flags
   if (!flags)
-  { // setup default flags
+  { // Online scraping of additional info during scanning
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
       flags |= CMusicInfoScanner::SCAN_ONLINE;
-    if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
-      flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-    // Ask for full rescan of music files
-    //! @todo replace with a music library setting in UI
-    if (g_advancedSettings.m_bMusicLibraryPromptFullTagScan)
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 799 }, CVariant{ 38062 }))
-        flags |= CMusicInfoScanner::SCAN_RESCAN;
   }
+  if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
+    flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+
 
   if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
     m_musicInfoScanner->ShowDialog(true);

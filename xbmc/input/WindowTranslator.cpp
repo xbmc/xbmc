@@ -106,6 +106,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS },
     { "locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS },
     { "contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS },
+    { "libexportsettings"        , WINDOW_DIALOG_LIBEXPORT_SETTINGS },
     { "songinformation"          , WINDOW_DIALOG_SONG_INFO },
     { "smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR },
     { "smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE },

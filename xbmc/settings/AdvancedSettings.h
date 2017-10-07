@@ -255,7 +255,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
-    bool m_bMusicLibraryPromptFullTagScan;
     bool m_bMusicLibraryArtistSortOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
     bool m_prioritiseAPEv2tags;

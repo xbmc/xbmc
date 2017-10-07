@@ -891,12 +891,18 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
 {
   std::string cmd;
   if (parameterObject["options"].isMember("path"))
-    cmd = StringUtils::Format("exportlibrary(video, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
+    cmd = StringUtils::Format("exportlibrary2(video, singlefile, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
   else
-    cmd = StringUtils::Format("exportlibrary(video, true, %s, %s, %s)",
-                              parameterObject["options"]["images"].asBoolean() ? "true" : "false",
-                              parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
-                              parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
+  {
+    cmd = "exportlibrary2(video, separate, dummy";
+    if (parameterObject["options"].isMember("images"))
+      cmd += ", artwork";
+    if (parameterObject["options"].isMember("overwrite"))
+      cmd += ", overwrite";
+    if (parameterObject["options"].isMember("actorthumbs"))
+      cmd += ", actorthumbs";
+    cmd += ")";
+  }
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;

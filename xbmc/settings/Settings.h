@@ -206,6 +206,7 @@ public:
   static const std::string SETTING_PVRTIMERS_HIDEDISABLEDTIMERS;
   static const std::string SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS;
   static const std::string SETTING_MUSICLIBRARY_DOWNLOADINFO;
+  static const std::string SETTING_MUSICLIBRARY_ARTISTSFOLDER;
   static const std::string SETTING_MUSICLIBRARY_ALBUMSSCRAPER;
   static const std::string SETTING_MUSICLIBRARY_ARTISTSSCRAPER;
   static const std::string SETTING_MUSICLIBRARY_OVERRIDETAGS;
@@ -214,6 +215,13 @@ public:
   static const std::string SETTING_MUSICLIBRARY_BACKGROUNDUPDATE;
   static const std::string SETTING_MUSICLIBRARY_CLEANUP;
   static const std::string SETTING_MUSICLIBRARY_EXPORT;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_FILETYPE;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_FOLDER;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_ITEMS;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_UNSCRAPED;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_OVERWRITE;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_ARTWORK;
+  static const std::string SETTING_MUSICLIBRARY_EXPORT_SKIPNFO;
   static const std::string SETTING_MUSICLIBRARY_IMPORT;
   static const std::string SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM;
   static const std::string SETTING_MUSICPLAYER_QUEUEBYDEFAULT;

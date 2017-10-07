@@ -686,12 +686,16 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
 {
   std::string cmd;
   if (parameterObject["options"].isMember("path"))
-    cmd = StringUtils::Format("exportlibrary(music, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
+    cmd = StringUtils::Format("exportlibrary2(music, singlefile, %s, albums, albumartists)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
   else
-    cmd = StringUtils::Format("exportlibrary(music, true, %s, %s)",
-                              parameterObject["options"]["images"].asBoolean() ? "true" : "false",
-                              parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
-
+  {
+    cmd = "exportlibrary2(music, library, dummy, albums, albumartists";
+    if (parameterObject["options"].isMember("images"))
+      cmd += ", artwork";
+    if (parameterObject["options"].isMember("overwrite"))
+      cmd += ", overwrite";
+    cmd += ")";
+  }
   CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
