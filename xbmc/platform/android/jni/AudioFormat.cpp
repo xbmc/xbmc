@@ -37,6 +37,7 @@ int CJNIAudioFormat::ENCODING_IEC61937                 = 0x0000000d;
 int CJNIAudioFormat::CHANNEL_OUT_MONO                  = 0x00000004;
 int CJNIAudioFormat::CHANNEL_OUT_STEREO                = 0x0000000c;
 int CJNIAudioFormat::CHANNEL_OUT_5POINT1               = 0x000000fc;
+int CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND      = 0x000018fc;
 
 int CJNIAudioFormat::CHANNEL_OUT_FRONT_LEFT            = 0x00000004;
 int CJNIAudioFormat::CHANNEL_OUT_FRONT_LEFT_OF_CENTER  = 0x00000100;
@@ -116,6 +117,10 @@ void CJNIAudioFormat::PopulateStaticFields()
           CJNIAudioFormat::ENCODING_DOLBY_TRUEHD = value;
 
         GetStaticValue(c, CJNIAudioFormat::ENCODING_IEC61937, "ENCODING_IEC61937");
+      }
+      if (sdk >= 23)
+      {
+        CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND = get_static_field<int>(c, "CHANNEL_OUT_7POINT1_SURROUND");
       }
     }
   }

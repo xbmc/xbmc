@@ -43,6 +43,7 @@ public:
   static int CHANNEL_OUT_MONO;
   static int CHANNEL_OUT_STEREO;
   static int CHANNEL_OUT_5POINT1;
+  static int CHANNEL_OUT_7POINT1_SURROUND;
 
   static int CHANNEL_OUT_FRONT_LEFT;
   static int CHANNEL_OUT_FRONT_LEFT_OF_CENTER;
