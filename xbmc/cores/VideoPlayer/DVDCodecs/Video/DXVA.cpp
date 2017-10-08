@@ -59,7 +59,7 @@ typedef struct {
 } dxva2_mode_t;
 
 /* XXX Prefered modes must come first */
-static const dxva2_mode_t dxva2_modes[] = {
+static const std::vector<dxva2_mode_t> dxva2_modes = {
     { "MPEG2 VLD",    &D3D11_DECODER_PROFILE_MPEG2_VLD,     AV_CODEC_ID_MPEG2VIDEO },
     { "MPEG1/2 VLD",  &D3D11_DECODER_PROFILE_MPEG2and1_VLD, AV_CODEC_ID_MPEG2VIDEO },
     { "MPEG2 MoComp", &D3D11_DECODER_PROFILE_MPEG2_MOCOMP,  0 },
@@ -99,6 +99,9 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "HEVC / H.265 variable-length decoder, main",   &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN,   AV_CODEC_ID_HEVC },
     { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, AV_CODEC_ID_HEVC },
 
+    /* VP9 */
+    { "VP9 VLD, Profile 0", &D3D11_DECODER_PROFILE_VP9_VLD_PROFILE0, AV_CODEC_ID_VP9 },
+
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
     { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
@@ -106,8 +109,6 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 #endif
-
-    { nullptr, nullptr, 0 }
 };
 
 // Prefered targets must be first
@@ -198,11 +199,12 @@ static std::string GUIDToString(const GUID& guid)
 
 static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
 {
-    for (unsigned i = 0; dxva2_modes[i].name; i++) {
-        if (IsEqualGUID(*dxva2_modes[i].guid, *guid))
-            return &dxva2_modes[i];
-    }
-    return nullptr;
+  for (const dxva2_mode_t& mode : dxva2_modes)
+  {
+    if (IsEqualGUID(*mode.guid, *guid))
+      return &mode;
+  }
+  return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -332,14 +334,14 @@ bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid
 
   // iterate through our predefined dxva modes and find the first matching for desired codec
   // once we found a mode, get a target we support in render_targets_dxgi DXGI_FORMAT_UNKNOWN
-  for (const dxva2_mode_t* mode = dxva2_modes; mode->name && outFormat == DXGI_FORMAT_UNKNOWN; mode++)
+  for (const dxva2_mode_t& mode : dxva2_modes)
   {
-    if (mode->codec != codec)
+    if (mode.codec != codec)
       continue;
 
     for (unsigned i = 0; i < m_input_count && outFormat == DXGI_FORMAT_UNKNOWN; i++)
     {
-      bool supported = IsEqualGUID(m_input_list[i], *mode->guid) != 0;
+      bool supported = IsEqualGUID(m_input_list[i], *mode.guid) != 0;
       if (codec == AV_CODEC_ID_HEVC)
       {
         if (bHighBitdepth && !IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))
@@ -350,7 +352,7 @@ bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid
       if (!supported)
         continue;
 
-      CLog::LogFunction(LOGDEBUG, "DXVA", "trying '%s'.", mode->name);
+      CLog::LogFunction(LOGDEBUG, "DXVA", "trying '%s'.", mode.name);
       for (unsigned j = 0; render_targets_dxgi[j] != DXGI_FORMAT_UNKNOWN && outFormat == DXGI_FORMAT_UNKNOWN; j++)
       {
         BOOL supported;
@@ -373,6 +375,9 @@ bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid
         }
       }
     }
+
+  if (outFormat != DXGI_FORMAT_UNKNOWN)
+    break;
   }
 
   if (outFormat == DXGI_FORMAT_UNKNOWN)
