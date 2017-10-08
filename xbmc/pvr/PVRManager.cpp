@@ -143,6 +143,9 @@ bool CPVRManagerJobQueue::WaitForJobs(unsigned int milliSeconds)
 
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
+    m_channelGroups(new CPVRChannelGroupsContainer),
+    m_recordings(new CPVRRecordings),
+    m_timers(new CPVRTimers),
     m_addons(new CPVRClients),
     m_guiActions(new CPVRGUIActions),
     m_bFirstStart(true),
