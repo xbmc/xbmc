@@ -19,7 +19,7 @@
 ::    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ::-------------------------------------------------------------------------------------
 
-@echo off
+
 title msys2
 
 set msysver=20160205
