@@ -422,7 +422,7 @@ void CPVRManager::Process(void)
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
-  while (!Load(!progressTimeout.IsTimePast()) && IsInitialising())
+  while (!LoadComponents(!progressTimeout.IsTimePast()) && IsInitialising())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
     Sleep(1000);
@@ -431,10 +431,10 @@ void CPVRManager::Process(void)
   if (!IsInitialising())
     return;
 
-  SetState(ManagerStateStarted);
-
-  /* start epg container */
+  m_guiInfo->Start();
   m_epgContainer.Start(true);
+
+  SetState(ManagerStateStarted);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
@@ -470,6 +470,8 @@ void CPVRManager::Process(void)
     if (IsStarted() && !bRestart)
       m_pendingUpdates.WaitForJobs(1000);
   }
+
+  UnloadComponents();
 
   if (IsStarted())
   {
@@ -530,7 +532,7 @@ void CPVRManager::OnWake()
   TriggerTimersUpdate();
 }
 
-bool CPVRManager::Load(bool bShowProgress)
+bool CPVRManager::LoadComponents(bool bShowProgress)
 {
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
@@ -588,9 +590,14 @@ bool CPVRManager::Load(bool bShowProgress)
     progressHandler->DestroyProgress();
   }
 
-  m_guiInfo->Start();
-
   return true;
+}
+
+void CPVRManager::UnloadComponents()
+{
+  m_recordings->Unload();
+  m_timers->Unload();
+  m_channelGroups->Unload();
 }
 
 void CPVRManager::TriggerPlayChannelOnStartup(void)
