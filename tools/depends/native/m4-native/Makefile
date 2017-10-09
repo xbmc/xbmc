@@ -1,11 +1,11 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile
+DEPS= ../../Makefile.include.in Makefile osx_snprintf.patch
 
 # lib name, version
 LIBNAME=m4
-VERSION=1.4.17
+VERSION=1.4.18
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -24,9 +24,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../osx_snprintf.patch
+	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	cd $(PLATFORM); $(CONFIGURE)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
