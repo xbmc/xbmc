@@ -1287,7 +1287,6 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
   if (!getenv("KODI_GL_PROFILE_3_2"))
     pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
 
-  pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
   if (!pixFmt)
     return nil;
 
