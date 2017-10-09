@@ -55,7 +55,6 @@ CPVRRecordings::CPVRRecordings(void) :
 
 CPVRRecordings::~CPVRRecordings()
 {
-  Clear();
   if (m_database.IsOpen())
     m_database.Close();
 }
@@ -63,7 +62,7 @@ CPVRRecordings::~CPVRRecordings()
 void CPVRRecordings::UpdateFromClients(void)
 {
   CSingleLock lock(m_critSection);
-  Clear();
+  Unload();
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false);
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
 }
@@ -149,9 +148,19 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
 
 int CPVRRecordings::Load(void)
 {
+  Unload();
   Update();
-
   return m_recordings.size();
+}
+
+void CPVRRecordings::Unload()
+{
+  CSingleLock lock(m_critSection);
+  m_bDeletedTVRecordings = false;
+  m_bDeletedRadioRecordings = false;
+  m_iTVRecordings = 0;
+  m_iRadioRecordings = 0;
+  m_recordings.clear();
 }
 
 void CPVRRecordings::Update(void)
@@ -417,16 +426,6 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
     retVal = it->second;
 
   return retVal;
-}
-
-void CPVRRecordings::Clear()
-{
-  CSingleLock lock(m_critSection);
-  m_bDeletedTVRecordings = false;
-  m_bDeletedRadioRecordings = false;
-  m_iTVRecordings = 0;
-  m_iRadioRecordings = 0;
-  m_recordings.clear();
 }
 
 void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)

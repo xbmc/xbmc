@@ -143,6 +143,9 @@ bool CPVRManagerJobQueue::WaitForJobs(unsigned int milliSeconds)
 
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
+    m_channelGroups(new CPVRChannelGroupsContainer),
+    m_recordings(new CPVRRecordings),
+    m_timers(new CPVRTimers),
     m_addons(new CPVRClients),
     m_guiActions(new CPVRGUIActions),
     m_bFirstStart(true),
@@ -175,9 +178,9 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   if ((flag & (ANNOUNCEMENT::GUI)))
   {
     if (strcmp(message, "OnScreensaverActivated") == 0)
-      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingActivated();
+      m_addons->OnPowerSavingActivated();
     else if (strcmp(message, "OnScreensaverDeactivated") == 0)
-      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingDeactivated();
+      m_addons->OnPowerSavingDeactivated();
   }
 }
 
@@ -264,9 +267,7 @@ void CPVRManager::Init()
 
 void CPVRManager::Reinit()
 {
-  // initial check for enabled addons
-  // if at least one pvr addon is enabled, PVRManager start up
-  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+  Init();
 }
 
 void CPVRManager::Start()
@@ -419,7 +420,7 @@ void CPVRManager::Process(void)
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
-  while (!Load(!progressTimeout.IsTimePast()) && IsInitialising())
+  while (!LoadComponents(!progressTimeout.IsTimePast()) && IsInitialising())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
     Sleep(1000);
@@ -428,10 +429,10 @@ void CPVRManager::Process(void)
   if (!IsInitialising())
     return;
 
-  SetState(ManagerStateStarted);
-
-  /* start epg container */
+  m_guiInfo->Start();
   m_epgContainer.Start(true);
+
+  SetState(ManagerStateStarted);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
@@ -468,10 +469,14 @@ void CPVRManager::Process(void)
       m_pendingUpdates.WaitForJobs(1000);
   }
 
+  CLog::Log(LOGDEBUG, "PVRManager - %s - leaving main loop", __FUNCTION__);
+
+  UnloadComponents();
+
   if (IsStarted())
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 1);
+    Reinit();
   }
 }
 
@@ -527,7 +532,7 @@ void CPVRManager::OnWake()
   TriggerTimersUpdate();
 }
 
-bool CPVRManager::Load(bool bShowProgress)
+bool CPVRManager::LoadComponents(bool bShowProgress)
 {
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
@@ -585,9 +590,14 @@ bool CPVRManager::Load(bool bShowProgress)
     progressHandler->DestroyProgress();
   }
 
-  m_guiInfo->Start();
-
   return true;
+}
+
+void CPVRManager::UnloadComponents()
+{
+  m_recordings->Unload();
+  m_timers->Unload();
+  m_channelGroups->Unload();
 }
 
 void CPVRManager::TriggerPlayChannelOnStartup(void)
