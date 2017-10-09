@@ -916,9 +916,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
 
   if (g_Windowing.UseLimitedColor())
   {
-    colour[0] = (235 - 16) * colour[0] / 255;
-    colour[1] = (235 - 16) * colour[1] / 255;
-    colour[2] = (235 - 16) * colour[2] / 255;
+    colour[0] = (235 - 16) * colour[0] / 255 + 16.0f / 255.0f;
+    colour[1] = (235 - 16) * colour[1] / 255 + 16.0f / 255.0f;
+    colour[2] = (235 - 16) * colour[2] / 255 + 16.0f / 255.0f;
   }
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
