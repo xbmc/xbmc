@@ -178,9 +178,9 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   if ((flag & (ANNOUNCEMENT::GUI)))
   {
     if (strcmp(message, "OnScreensaverActivated") == 0)
-      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingActivated();
+      m_addons->OnPowerSavingActivated();
     else if (strcmp(message, "OnScreensaverDeactivated") == 0)
-      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingDeactivated();
+      m_addons->OnPowerSavingDeactivated();
   }
 }
 
