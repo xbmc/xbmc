@@ -10,18 +10,8 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescripti
                    DEPENDS ${JSON_SRCS}
                    COMMENT "Generating ServiceDescription.h")
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml
-                   COMMAND ${CMAKE_COMMAND}
-                           -DCMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
-                           -DCORE_BINARY_DIR=${CMAKE_BINARY_DIR}
-                           -P ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAddonXml.cmake
-                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                   DEPENDS ${JSON_SRCS} ${CMAKE_SOURCE_DIR}/addons/xbmc.json/addon.xml.in
-                   COMMENT "Generating xbmc.json/addon.xml")
-
 add_custom_target(generate_json_header ALL
-                  DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescription.h
-                          ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml)
+                  DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescription.h)
 set_target_properties(generate_json_header PROPERTIES FOLDER "Build Utilities")
 
 if(BOOTSTRAP_IN_TREE)
