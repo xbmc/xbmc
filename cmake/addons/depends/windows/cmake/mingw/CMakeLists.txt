@@ -8,10 +8,11 @@ endfunction()
 
 get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../../../../.. REALPATH)
 
-set(MSYS_PATH "${CORE_SOURCE_DIR}/project/BuildDependencies/msys64")
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(MSYS_PATH "${CORE_SOURCE_DIR}/tools/buildsteps/windows/win32/msys64")
   set(MINGW_PATH "${MSYS_PATH}/mingw32")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(MSYS_PATH "${CORE_SOURCE_DIR}/tools/buildsteps/windows/x64/msys64")
   set(MINGW_PATH "${MSYS_PATH}/mingw64")
 endif()
 
