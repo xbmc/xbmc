@@ -267,9 +267,7 @@ void CPVRManager::Init()
 
 void CPVRManager::Reinit()
 {
-  // initial check for enabled addons
-  // if at least one pvr addon is enabled, PVRManager start up
-  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+  Init();
 }
 
 void CPVRManager::Start()
@@ -471,12 +469,14 @@ void CPVRManager::Process(void)
       m_pendingUpdates.WaitForJobs(1000);
   }
 
+  CLog::Log(LOGDEBUG, "PVRManager - %s - leaving main loop", __FUNCTION__);
+
   UnloadComponents();
 
   if (IsStarted())
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 1);
+    Reinit();
   }
 }
 
