@@ -495,7 +495,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNot
     else if (type == "music")
       heading = g_localizeStrings.Get(10049);
     else if (type == "pictures")
-      heading = g_localizeStrings.Get(10050);
+      heading = g_localizeStrings.Get(13006);
     else if (type == "games")
       heading = g_localizeStrings.Get(35251); // "Add game source"
     else if (type == "programs")

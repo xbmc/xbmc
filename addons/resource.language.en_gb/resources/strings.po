@@ -4702,6 +4702,8 @@ msgstr ""
 
 #empty strings from id 2105 to 9999
 
+# ID's from 10000 to 10999 reserved for window names
+
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"
 msgid "Home"
@@ -4730,15 +4732,7 @@ msgctxt "#10004"
 msgid "Settings"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10005"
-msgid "Music"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10006"
-msgid "Videos"
-msgstr ""
+#empty strings from id 10005 to 10006
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10007"
@@ -4747,15 +4741,10 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10008"
-msgid "Settings - General"
+msgid "Settings - Test patterns"
 msgstr ""
 
-msgctxt "#10009"
-msgid "Settings - Screen"
-msgstr ""
-
-msgctxt "#10010"
-msgid "Settings - Appearance - GUI calibration"
+#empty strings from id 10009 to 10010
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -4763,56 +4752,31 @@ msgctxt "#10011"
 msgid "Settings - Videos - Screen calibration"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10012"
-msgid "Settings - Pictures"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10013"
-msgid "Settings - Programs"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10014"
-msgid "Settings - Weather"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10015"
-msgid "Settings - Music"
-msgstr ""
+#empty strings from id 10012 to 10015
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10016"
 msgid "Settings - System"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10017"
-msgid "Settings - Videos"
-msgstr ""
+#empty string with id 10017
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10018"
-msgid "Settings - Network"
+msgid "Settings - Service"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10019"
-msgid "Settings - Appearance"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10020"
-msgid "Scripts"
-msgstr ""
+#empty strings from id 10019 to 10020
 
 msgctxt "#10021"
 msgid "Settings - TV"
 msgstr ""
 
-#empty strings from id 10022 to 10023
+msgctxt "#10022"
+msgid "Settings - Games"
+msgstr ""
+
+#empty string with id 10023
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
@@ -4838,15 +4802,31 @@ msgctxt "#10029"
 msgid "Login screen"
 msgstr ""
 
-#empty strings from id 10030 to 10033
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10030"
+msgid "Settings - Player"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10031"
+msgid "Settings - Media"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10032"
+msgid "Settings - Interface"
+msgstr ""
+
+#empty string with id 10033
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr ""
 
+#: xbmc/guilib/WindowIDs.h
 msgctxt "#10035"
-msgid "Reset"
+msgid "Skin Settings"
 msgstr ""
 
 msgctxt "#10036"
@@ -4912,9 +4892,9 @@ msgctxt "#10049"
 msgid "Add music source"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: xbmc/guilib/WindowIDs.h
 msgctxt "#10050"
-msgid "Add picture source"
+msgid "Event log"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -4952,19 +4932,109 @@ msgctxt "#10057"
 msgid "Edit file source"
 msgstr ""
 
-#empty strings from id 10058 to 10099
+#empty strings from id 10058 to 10098
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10099"
+msgid "Pointer"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
-msgid "Yes / No dialogue"
+msgid "Yes / No dialog"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10101"
-msgid "Progress dialogue"
+msgid "Progress dialog"
 msgstr ""
 
-#empty strings from id 10102 to 10125
+#empty strings from id 10102 to 10102
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10103"
+msgid "Virtual keyboard"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10104"
+msgid "Volume bar"
+msgstr ""
+
+#empty string with id 10105
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10106"
+msgid "Context menu"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10107"
+msgid "Notification dialog"
+msgstr ""
+
+#empty string with id 10108
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10109"
+msgid "Numeric Input"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10110"
+msgid "Gamepad input"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10111"
+msgid "Shutdown menu"
+msgstr ""
+
+#empty strings from id 10112 to 10113
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10114"
+msgid "Player controls"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10115"
+msgid "Seek bar"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10116"
+msgid "Player process info"
+msgstr ""
+
+#empty strings from id 10117 to 10119
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10120"
+msgid "Music OSD"
+msgstr ""
+
+#empty string with id 10121
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10122"
+msgid "Visualization preset list"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10123"
+msgid "Video OSD settings"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10124"
+msgid "Audio OSD settings"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10125"
+msgid "Video bookmarks"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10126"
@@ -5007,7 +5077,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10135"
-msgid "Songs / Info"
+msgid "Song info"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -5024,7 +5094,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10139"
-msgid "Pictures / Info"
+msgid "Picture info"
 msgstr ""
 
 #: addons/skin.estuary/xml/MyGames.xml
@@ -5033,14 +5103,70 @@ msgctxt "#10140"
 msgid "Add-on settings"
 msgstr ""
 
-#empty strings from id 10141 to 10145
+#empty string with id 10141
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10142"
+msgid "Fullscreen info"
+msgstr ""
+
+#empty strings from id 10143 to 10144
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10145"
+msgid "Slider dialog"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10146"
-msgid "Add-ons / Info"
+msgid "Add-on info"
 msgstr ""
 
-#empty strings from id 10147 to 10209
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10147"
+msgid "Text viewer"
+msgstr ""
+
+#empty strings from id 10148 to 10149
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10150"
+msgid "Peripheral settings"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10151"
+msgid "Extended progress dialog"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10152"
+msgid "Media filter"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10153"
+msgid "Subtitle search"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10154"
+msgid "Audio DSP manager"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10155"
+msgid "OSD audio DSP settings"
+msgstr ""
+
+#empty string with id 10156
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10157"
+msgid "OSD CMS settings"
+msgstr ""
+
+#empty strings from id 10158 to 10209
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -5066,7 +5192,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10500"
-msgid "Music / Playlist"
+msgid "Music playlist"
 msgstr ""
 
 #empty string with id 10501
@@ -5078,7 +5204,7 @@ msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10503"
-msgid "Playlist editor"
+msgid "Music playlist editor"
 msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeTop100.cpp
@@ -5140,31 +5266,169 @@ msgctxt "#10524"
 msgid "Movie information"
 msgstr ""
 
-#empty strings from id 10525 to 11999
+#empty strings from id 10525 to 11549
+
+msgctxt "#10550"
+msgid "Teletext"
+msgstr ""
+
+#empty strings from id 10551 to 11599
+
+msgctxt "#10600"
+msgid "PVR guide info"
+msgstr ""
+
+msgctxt "#10601"
+msgid "PVR recording info"
+msgstr ""
+
+msgctxt "#10602"
+msgid "PVR timer setting"
+msgstr ""
+
+msgctxt "#10603"
+msgid "PVR group manager"
+msgstr ""
+
+msgctxt "#10604"
+msgid "PVR channel manager"
+msgstr ""
+
+msgctxt "#10605"
+msgid "PVR guide search"
+msgstr ""
+
+msgctxt "#10606"
+msgid "PVR channel scan"
+msgstr ""
+
+msgctxt "#10607"
+msgid "PVR update progress"
+msgstr ""
+
+msgctxt "#10608"
+msgid "PVR OSD channels"
+msgstr ""
+
+msgctxt "#10609"
+msgid "PVR OSD guide"
+msgstr ""
+
+msgctxt "#10610"
+msgid "PVR radio RDS info"
+msgstr ""
+
+msgctxt "#10611"
+msgid "PVR recording setting"
+msgstr ""
+
+#empty strings from id 10612 to 11699
+
+msgctxt "#10700"
+msgid "TV channels"
+msgstr ""
+
+msgctxt "#10701"
+msgid "TV recordings"
+msgstr ""
+
+msgctxt "#10702"
+msgid "TV guide"
+msgstr ""
+
+msgctxt "#10703"
+msgid "TV timers"
+msgstr ""
+
+msgctxt "#10704"
+msgid "TV search"
+msgstr ""
+
+msgctxt "#10705"
+msgid "Radio channels"
+msgstr ""
+
+msgctxt "#10706"
+msgid "Radio recordings"
+msgstr ""
+
+msgctxt "#10707"
+msgid "Radio guide"
+msgstr ""
+
+msgctxt "#10708"
+msgid "Radio timers"
+msgstr ""
+
+msgctxt "#10709"
+msgid "Radio search"
+msgstr ""
+
+msgctxt "#10710"
+msgid "TV timer rules"
+msgstr ""
+
+msgctxt "#10711"
+msgid "Radio timer rules"
+msgstr ""
+
+#empty strings from id 10712 to 11799
+
+msgctxt "#10800"
+msgid "Fullscreen live TV"
+msgstr ""
+
+msgctxt "#10801"
+msgid "Fullscreen radio"
+msgstr ""
+
+#empty strings from id 10802 to 11819
+
+msgctxt "#10820"
+msgid "Game video filter"
+msgstr ""
+
+msgctxt "#10821"
+msgid "Games"
+msgstr ""
+
+msgctxt "#10822"
+msgid "Game OSD"
+msgstr ""
+
+msgctxt "#10823"
+msgid "Game controllers"
+msgstr ""
+
+msgctxt "#10824"
+msgid "Game video settings"
+msgstr ""
+
+#empty strings from id 10825 to 11999
+
+# ID's from 12000 to 12999 reserved for window names
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
-msgid "Select dialogue"
+msgid "Select dialog"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12001"
-msgid "Music / Info"
+msgid "Music info"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12002"
-msgid "Dialogue OK"
+msgid "OK dialog"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12003"
-msgid "Videos / Info"
+msgid "Video info"
 msgstr ""
 
-msgctxt "#12004"
-msgid "Scripts / Info"
-msgstr ""
+#empty string with id 12004
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12005"
@@ -5176,12 +5440,12 @@ msgctxt "#12006"
 msgid "Audio visualisation"
 msgstr ""
 
-#empty string with id 12007
-
 #: xbmc/guilib/WindowIDs.h
-msgctxt "#12008"
-msgid "File stacking dialogue"
+msgctxt "#12007"
+msgid "Audio visualisation"
 msgstr ""
+
+#empty string with id 12008
 
 #. Does not match window ID description
 #: xbmc/guilib/WindowIDs.h
@@ -5603,8 +5867,19 @@ msgctxt "#12901"
 msgid "Fullscreen OSD"
 msgstr ""
 
-#empty strings from id 12902 to 12999
-#string id 12902 to 12905 match in WindowIDs.h
+#empty strings from id 12902 to 12905
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12906"
+msgid "Fullscreen game"
+msgstr ""
+
+#empty strings from id 12907 to 12998
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12999"
+msgid "Startup"
+msgstr ""
 
 #: system/settings/settings.xml
 #: addons/skin.estuary/xml/Includes.xml
@@ -5638,7 +5913,20 @@ msgctxt "#13005"
 msgid "Shutdown"
 msgstr ""
 
-#empty strings from id 13006 to 13007
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#13006"
+msgid "Add picture source"
+msgstr ""
+
+#: addons/skin.estouchy/xml/DialogPVRGuideSearch.xml
+#: addons/skin.estouchy/xml/GameOSD.xml
+#: addons/skin.estouchy/xml/DialogGameControllers.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/GameOSD.xml
+#: addons/skin.estuary/xml/DialogGameControllers.xml
+msgctxt "#13007"
+msgid "Reset"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13008"

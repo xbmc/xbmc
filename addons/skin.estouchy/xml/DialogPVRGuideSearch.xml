@@ -239,7 +239,7 @@
 				<description>Defaults button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>10035</label>
+				<label>13007</label>
 			</control>
 			<control type="button" id="25">
 				<description>Cancel button</description>
