@@ -593,6 +593,9 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
     Reset();
   }
 
+  if (packet.recoveryPoint)
+    m_started = true;
+
   m_dts = packet.dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(packet.pts);
 
