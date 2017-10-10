@@ -89,8 +89,6 @@ namespace ADDON
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
     virtual bool MeetsVersion(const AddonVersion &version) const =0;
     virtual bool ReloadSettings() =0;
-    virtual void OnDisabled() =0;
-    virtual void OnEnabled() =0;
     virtual AddonPtr GetRunningInstance() const=0;
     virtual void OnPreInstall() =0;
     virtual void OnPostInstall(bool update, bool modal) =0;

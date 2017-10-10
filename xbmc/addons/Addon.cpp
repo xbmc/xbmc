@@ -393,16 +393,6 @@ AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
   return AddonVersion("0.0.0");
 }
 
-void OnEnabled(const AddonPtr& addon)
-{
-  addon->OnEnabled();
-}
-
-void OnDisabled(const AddonPtr& addon)
-{
-  addon->OnDisabled();
-}
-
 void OnPreInstall(const AddonPtr& addon)
 {
   //Fallback to the pre-install callback in the addon.

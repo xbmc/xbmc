@@ -69,18 +69,6 @@ CPVRClient::~CPVRClient(void)
   Destroy();
 }
 
-void CPVRClient::OnDisabled()
-{
-  CAddon::OnDisabled();
-  CServiceBroker::GetPVRManager().Clients()->UpdateAddons();
-}
-
-void CPVRClient::OnEnabled()
-{
-  CAddon::OnEnabled();
-  CServiceBroker::GetPVRManager().Clients()->UpdateAddons();
-}
-
 void CPVRClient::StopRunningInstance()
 {
   const ADDON::AddonPtr addon(GetRunningInstance());

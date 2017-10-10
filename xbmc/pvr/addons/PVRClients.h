@@ -30,6 +30,11 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 
+namespace ADDON
+{
+  struct AddonEvent;
+}
+
 namespace PVR
 {
   class CPVREpg;
@@ -705,6 +710,12 @@ namespace PVR
     void OnSystemWake();
     void OnPowerSavingActivated();
     void OnPowerSavingDeactivated();
+
+    /*!
+     * @brief Handle addon events (enable, disable, ...).
+     * @param event The addon event.
+     */
+    void OnAddonEvent(const ADDON::AddonEvent& event);
 
   private:
     /*!
