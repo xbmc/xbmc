@@ -43,6 +43,7 @@ typedef struct DemuxPacket
   double dts = DVD_NOPTS_VALUE;
   double duration = 0; // duration in DVD_TIME_BASE if available
   int dispTime = 0;
+  bool recoveryPoint = false;
 
   std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
 } DemuxPacket;
