@@ -82,6 +82,9 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     return false;
   }
 
+  // Check if we should open in standalone mode
+  const bool bStandalone = fileCopy.GetPath().empty();
+
   m_processInfo.reset(CRPProcessInfo::CreateInstance());
   if (!m_processInfo)
   {
@@ -93,9 +96,6 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   m_processInfo->ResetInfo();
 
   m_renderManager.reset(new CRPRenderManager(*m_processInfo));
-
-  std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
-  CLog::Log(LOGINFO, "RetroPlayer: Opening: %s", redactedPath.c_str());
 
   CSingleLock lock(m_mutex);
 
@@ -126,10 +126,17 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       m_video.reset(new CRetroPlayerVideo(*m_renderManager, *m_processInfo));
       m_input.reset(new CRetroPlayerInput(CServiceBroker::GetPeripherals()));
 
-      if (!fileCopy.GetPath().empty())
+      if (!bStandalone)
+      {
+        std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
+        CLog::Log(LOGINFO, "RetroPlayer: Opening: %s", redactedPath.c_str());
         bSuccess = m_gameClient->OpenFile(fileCopy, m_audio.get(), m_video.get(), m_input.get());
+      }
       else
+      {
+        CLog::Log(LOGINFO, "RetroPlayer: Opening standalone");
         bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get(), m_input.get());
+      }
 
       if (bSuccess)
         CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", gameClientId.c_str());
@@ -140,7 +147,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       CLog::Log(LOGERROR, "RetroPlayer: Failed to initialize %s", gameClientId.c_str());
   }
 
-  if (bSuccess)
+  if (bSuccess && !bStandalone)
   {
     std::string savestatePath = CSavestateUtils::MakeMetadataPath(fileCopy.GetPath());
 
@@ -177,7 +184,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     RegisterWindowCallbacks();
     SetSpeedInternal(1.0);
     m_callback.OnPlayBackStarted(fileCopy);
-    m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
+    if (!bStandalone)
+      m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
     m_processInfo->SetVideoFps(static_cast<float>(m_gameClient->Timing().GetFrameRate()));
   }
   else
