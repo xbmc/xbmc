@@ -27,6 +27,7 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgDatabase.h"
 
@@ -56,7 +57,7 @@ namespace PVR
      * @brief Get a pointer to the database instance.
      * @return A pointer to the database instance.
      */
-    CPVREpgDatabase *GetDatabase(void) { return &m_database; }
+    CPVREpgDatabasePtr GetEpgDatabase() const;
 
     /*!
      * @brief Start the EPG update thread.
@@ -255,7 +256,7 @@ namespace PVR
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
-    CPVREpgDatabase m_database; /*!< the EPG database */
+    CPVREpgDatabasePtr m_database; /*!< the EPG database */
 
     /** @name Class state properties */
     //@{

@@ -687,8 +687,8 @@ bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
 #endif
 
-  CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer().GetDatabase();
-  if (!database || (bSingleUpdate && !database->IsOpen()))
+  CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
+  if (!database)
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
