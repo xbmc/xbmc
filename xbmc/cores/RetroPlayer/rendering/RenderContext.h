@@ -22,11 +22,6 @@
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "rendering/RenderSystemTypes.h"
-#include "system_gl.h"
-
-#if HAS_GLES >= 2
-#include "rendering/gles/RenderSystemGLES.h" // for ESHADERMETHOD
-#endif
 
 class CCriticalSection;
 class CDisplaySettings;
@@ -64,14 +59,12 @@ namespace RETRO
     void SetScissors(const CRect &rect);
     void ApplyStateBlock();
 
-#if HAS_GLES >= 2
-    // OpenGLES rendering functions
-    void EnableGUIShader(ESHADERMETHOD method);
+    // OpenGL(ES) rendering functions
+    void EnableGUIShader();
     void DisableGUIShader();
-    GLint GUIShaderGetPos();
-    GLint GUIShaderGetCoord0();
-    GLint GUIShaderGetUniCol();
-#endif
+    int GUIShaderGetPos();
+    int GUIShaderGetCoord0();
+    int GUIShaderGetUniCol();
 
 #if defined(HAS_DX)
     // DirectX rendering functions
