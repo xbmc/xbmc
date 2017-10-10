@@ -118,6 +118,7 @@ namespace JOYSTICK
     INPUT_TYPE       m_inputType = INPUT_TYPE::UNKNOWN;
     bool             m_bDigitalState;
     unsigned int     m_motionStartTimeMs;
+    bool             m_bInitialPressHandled = false;
 
     // Analog state variables
     float            m_analogState; // The current magnitude

@@ -118,18 +118,27 @@ void CScalarFeature::ProcessMotions(void)
 
 bool CScalarFeature::OnDigitalMotion(bool bPressed)
 {
+  bool bHandled = false;
+
   if (m_bDigitalState != bPressed)
   {
     m_bDigitalState = bPressed;
     m_motionStartTimeMs = 0; // This is set in ProcessMotions()
 
-    CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
-              bPressed ? "pressed" : "released");
+    bHandled = m_bInitialPressHandled = m_handler->OnButtonPress(m_name, bPressed);
 
-    return m_handler->OnButtonPress(m_name, bPressed);
+    if (m_bDigitalState)
+      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s pressed (%s)", m_name.c_str(), m_handler->ControllerID().c_str(),
+        bHandled ? "handled" : "ignored");
+    else
+      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s released", m_name.c_str(), m_handler->ControllerID().c_str());
+  }
+  else if (m_bDigitalState)
+  {
+    bHandled = m_bInitialPressHandled;
   }
 
-  return false;
+  return bHandled;
 }
 
 bool CScalarFeature::OnAnalogMotion(float magnitude)

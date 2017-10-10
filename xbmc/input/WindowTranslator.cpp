@@ -162,7 +162,6 @@ static const std::vector<FallbackWindowMapping> FallbackWindows =
 {
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
     { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION },
-    { WINDOW_FULLSCREEN_GAME     , WINDOW_FULLSCREEN_VIDEO }
 };
 } // anonymous namespace
 
