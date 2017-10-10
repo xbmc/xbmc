@@ -21,7 +21,6 @@
 
 #include "Peripheral.h"
 #include "input/joysticks/IDriverReceiver.h"
-#include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "threads/CriticalSection.h"
 
@@ -40,6 +39,7 @@ namespace JOYSTICK
   class CRumbleGenerator;
   class IButtonMap;
   class IDriverHandler;
+  class IInputHandler;
 }
 }
 
@@ -128,7 +128,7 @@ namespace PERIPHERALS
     bool                                m_supportsPowerOff;
     std::unique_ptr<KODI::JOYSTICK::CKeymapHandling> m_appInput;
     std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
-    KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
+    std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_joystickMonitor;
     std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;
     std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
     std::vector<DriverHandler>          m_driverHandlers;
