@@ -20,6 +20,7 @@
  *
  */
 
+#include "../TimingConstants.h"
 #include <cstdint>
 #include <memory>
 
@@ -32,24 +33,16 @@ typedef struct DemuxPacket
 {
   DemuxPacket() = default;
 
-  DemuxPacket(unsigned char *pData, int const iSize, double const pts, double const dts)
-    : pData(pData)
-    , iSize(iSize)
-    , pts(pts)
-    , dts(dts)
-  {};
-
-  unsigned char *pData;   // data
-  int iSize;     // data size
-  int iStreamId; // integer representing the stream index
+  unsigned char *pData = nullptr;
+  int iSize = 0;
+  int iStreamId = -1;
   int64_t demuxerId; // id of the demuxer that created the packet
-  int iGroupId;  // the group this data belongs to, used to group data from different streams together
+  int iGroupId = -1; // the group this data belongs to, used to group data from different streams together
 
-  double pts; // pts in DVD_TIME_BASE
-  double dts; // dts in DVD_TIME_BASE
-  double duration; // duration in DVD_TIME_BASE if available
-
-  int dispTime;
+  double pts = DVD_NOPTS_VALUE;
+  double dts = DVD_NOPTS_VALUE;
+  double duration = 0; // duration in DVD_TIME_BASE if available
+  int dispTime = 0;
 
   std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
 } DemuxPacket;
