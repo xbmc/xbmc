@@ -23,6 +23,10 @@
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
 
+#include <cmath>
+
+#define AXIS_THRESHOLD       0.75f // Axis must exceed this value to be mapped
+
 using namespace KODI;
 using namespace JOYSTICK;
 
@@ -50,7 +54,9 @@ bool CJoystickMonitor::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
 bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
-  if (position)
+  const bool bIsActive = (std::abs(position) >= AXIS_THRESHOLD);
+
+  if (bIsActive)
   {
     CServiceBroker::GetInputManager().SetMouseActive(false);
     return ResetTimers();
