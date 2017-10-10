@@ -139,16 +139,16 @@ int CRenderContext::GUIShaderGetUniCol()
   return -1;
 }
 
-#if defined(HAS_DX)
 CGUIShaderDX* CRenderContext::GetGUIShader()
 {
+#if defined(HAS_DX)
   CRenderSystemDX *renderingDX = dynamic_cast<CRenderSystemDX*>(m_rendering);
   if (renderingDX != nullptr)
     return renderingDX->GetGUIShader();
+#endif
 
   return nullptr;
 }
-#endif
 
 bool CRenderContext::UseLimitedColor()
 {

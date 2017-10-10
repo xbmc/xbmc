@@ -27,14 +27,11 @@ class CCriticalSection;
 class CDisplaySettings;
 class CGameSettings;
 class CGraphicContext;
+class CGUIShaderDX;
 class CMediaSettings;
 class CRenderSystemBase;
 class CWinSystemBase;
 class TransformMatrix;
-
-#if defined(HAS_DX)
-class CGUIShaderDX;
-#endif
 
 namespace KODI
 {
@@ -66,10 +63,8 @@ namespace RETRO
     int GUIShaderGetCoord0();
     int GUIShaderGetUniCol();
 
-#if defined(HAS_DX)
     // DirectX rendering functions
     CGUIShaderDX* GetGUIShader();
-#endif
 
     // Windowing functions
     bool UseLimitedColor();
