@@ -21,6 +21,7 @@
 
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
+#include "threads/CriticalSection.h"
 
 #include "pvr/epg/Epg.h"
 
@@ -48,7 +49,22 @@ namespace PVR
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
      */
-    bool Open(void) override;
+    bool Open() override;
+
+    /*!
+     * @brief Close the database.
+     */
+    void Close() override;
+
+    /*!
+     * @brief Lock the database.
+     */
+    void Lock();
+
+    /*!
+     * @brief Unlock the database.
+     */
+    void Unlock();
 
     /*!
      * @brief Get the minimal database version that is required to operate correctly.
@@ -122,8 +138,6 @@ namespace PVR
      */
     bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
 
-    bool Persist(const EPGMAP &epgs);
-
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.
@@ -147,7 +161,7 @@ namespace PVR
 
     //@}
 
-  protected:
+  private:
     /*!
      * @brief Create the EPG database tables.
      */
@@ -165,5 +179,7 @@ namespace PVR
     void UpdateTables(int version) override;
 
     int GetMinSchemaVersion() const override { return 4; }
+
+    CCriticalSection m_critSection;
   };
 }

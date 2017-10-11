@@ -113,6 +113,7 @@ void CEpgTagStateChange::Deliver()
 
 CPVREpgContainer::CPVREpgContainer(void) :
   CThread("EPGUpdater"),
+  m_database(new CPVREpgDatabase),
   m_bUpdateNotificationPending(false),
   m_settings({
     CSettings::SETTING_EPG_IGNOREDBFORCLIENT,
@@ -139,6 +140,15 @@ CPVREpgContainer::CPVREpgContainer(void) :
 CPVREpgContainer::~CPVREpgContainer(void)
 {
   Unload();
+}
+
+CPVREpgDatabasePtr CPVREpgContainer::GetEpgDatabase() const
+{
+  CSingleLock lock(m_critSection);
+  if (!m_database || !m_database->IsOpen())
+    CLog::Log(LOGERROR, "EpgContainer - %s - failed to open the EPG database", __FUNCTION__);
+
+  return m_database;
 }
 
 void CPVREpgContainer::Unload(void)
@@ -187,11 +197,7 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb && !IgnoreDB())
   {
-    if (!m_database.IsOpen())
-      m_database.Open();
-
-    if (m_database.IsOpen())
-      m_database.DeleteEpg();
+    m_database->DeleteEpg();
   }
 
   SetChanged();
@@ -231,8 +237,7 @@ void CPVREpgContainer::Start(bool bAsync)
   {
     CSingleLock lock(m_critSection);
 
-    if (!m_database.IsOpen())
-      m_database.Open();
+    m_database->Open();
 
     m_bIsInitialising = true;
     m_bStop = false;
@@ -270,8 +275,7 @@ bool CPVREpgContainer::Stop(void)
 {
   StopThread();
 
-  if (m_database.IsOpen())
-    m_database.Close();
+  m_database->Close();
 
   CSingleLock lock(m_critSection);
   m_bStarted = false;
@@ -301,35 +305,31 @@ void CPVREpgContainer::LoadFromDB(void)
   if (m_bLoaded || IgnoreDB())
     return;
 
-  if (!m_database.IsOpen())
-    m_database.Open();
-
-  m_iNextEpgId = m_database.GetLastEPGId();
-
   bool bLoaded(true);
   unsigned int iCounter(0);
-  if (m_database.IsOpen())
+
+  CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19250)); // Loading guide from database
+  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
+
+  m_database->Lock();
+  m_iNextEpgId = m_database->GetLastEPGId();
+  m_database->DeleteEpgEntries(cleanupTime);
+  m_database->Get(*this);
+  m_database->Unlock();
+
+  for (const auto &epgEntry : m_epgs)
   {
-    CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19250)); // Loading guide from database
+    if (m_bStop)
+      break;
 
-    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
-    m_database.DeleteEpgEntries(cleanupTime);
-    m_database.Get(*this);
+    progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgs.size());
 
-    for (const auto &epgEntry : m_epgs)
-    {
-      if (m_bStop)
-        break;
-
-      progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgs.size());
-
-      lock.Leave();
-      epgEntry.second->Load();
-      lock.Enter();
-    }
-
-    progressHandler->DestroyProgress();
+    lock.Leave();
+    epgEntry.second->Load();
+    lock.Enter();
   }
+
+  progressHandler->DestroyProgress();
 
   m_bLoaded = bLoaded;
 }
@@ -589,8 +589,8 @@ bool CPVREpgContainer::RemoveOldEntries(void)
     epgEntry.second->Cleanup(cleanupTime);
 
   /* remove the old entries from the database */
-  if (!IgnoreDB() && m_database.IsOpen())
-    m_database.DeleteEpgEntries(cleanupTime);
+  if (!IgnoreDB())
+    m_database->DeleteEpgEntries(cleanupTime);
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -610,8 +610,8 @@ bool CPVREpgContainer::DeleteEpg(const CPVREpg &epg, bool bDeleteFromDatabase /*
     return false;
 
   CLog::Log(LOGDEBUG, "deleting EPG table %s (%d)", epg.Name().c_str(), epg.EpgID());
-  if (bDeleteFromDatabase && !IgnoreDB() && m_database.IsOpen())
-    m_database.Delete(*epgEntry->second);
+  if (bDeleteFromDatabase && !IgnoreDB())
+    m_database->Delete(*epgEntry->second);
 
   epgEntry->second->UnregisterObserver(this);
   m_epgs.erase(epgEntry);
@@ -672,19 +672,6 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       return false;
     m_bIsUpdating = true;
     pendingUpdates = m_pendingUpdates;
-  }
-
-  if (!IgnoreDB() && !m_database.IsOpen())
-  {
-    CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
-
-    {
-      CSingleLock lock(m_critSection);
-      m_bIsUpdating = false;
-      m_updateEvent.Set();
-    }
-
-    return false;
   }
 
   std::vector<CPVREpgPtr> invalidTables;
