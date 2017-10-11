@@ -18,25 +18,33 @@
  *
  */
 
-#pragma once
+#include "utils/log.h"
 
-#include <xf86drm.h>
-#include <xf86drmMode.h>
-#include <gbm.h>
-#include <vector>
+#include "DRM.h"
+#include "DRMLegacy.h"
 
-#include "guilib/Resolution.h"
-
-struct gbm
+void CDRM::FlipPage(CGLContextEGL *pGLContext)
 {
-  struct gbm_device *dev;
-  struct gbm_surface *surface;
-  int width, height;
-};
+  CDRMLegacy::FlipPage(pGLContext);
+}
 
-class CGBMUtils
+bool CDRM::SetVideoMode(RESOLUTION_INFO res)
 {
-public:
-  static bool InitGbm(struct gbm *gbm, int hdisplay, int vdisplay);
-  static void DestroyGbm(struct gbm *gbm);
-};
+  return CDRMLegacy::SetVideoMode(res);
+}
+
+bool CDRM::InitDrm(drm *drm, gbm *gbm)
+{
+  if (CDRMLegacy::InitDrmLegacy(drm, gbm))
+  {
+    CLog::Log(LOGNOTICE, "CDRM::%s - initialized Legacy DRM", __FUNCTION__);
+    return true;
+  }
+
+  return false;
+}
+
+void CDRM::DestroyDrm()
+{
+  CDRMLegacy::DestroyDrmLegacy();
+}

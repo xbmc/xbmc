@@ -20,23 +20,15 @@
 
 #pragma once
 
-#include <xf86drm.h>
-#include <xf86drmMode.h>
-#include <gbm.h>
-#include <vector>
+#include "DRMUtils.h"
+#include "GLContextEGL.h"
 
-#include "guilib/Resolution.h"
-
-struct gbm
-{
-  struct gbm_device *dev;
-  struct gbm_surface *surface;
-  int width, height;
-};
-
-class CGBMUtils
+class CDRM
 {
 public:
-  static bool InitGbm(struct gbm *gbm, int hdisplay, int vdisplay);
-  static void DestroyGbm(struct gbm *gbm);
+  ~CDRM() = default;
+  void FlipPage(CGLContextEGL *pGLContext);
+  bool SetVideoMode(RESOLUTION_INFO res);
+  bool InitDrm(drm *drm, gbm *gbm);
+  void DestroyDrm();
 };

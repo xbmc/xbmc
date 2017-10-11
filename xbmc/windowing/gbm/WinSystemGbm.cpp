@@ -31,8 +31,6 @@
 #include "utils/log.h"
 
 CWinSystemGbm::CWinSystemGbm() :
-  m_gbm(nullptr),
-  m_drm(nullptr),
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
 {
@@ -41,26 +39,13 @@ CWinSystemGbm::CWinSystemGbm() :
 
 bool CWinSystemGbm::InitWindowSystem()
 {
-  if (!CGBMUtils::InitDrm())
+  if (!m_DRM.InitDrm(&m_drm, &m_gbm))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize DRM", __FUNCTION__);
     return false;
   }
 
-  m_drm = CGBMUtils::GetDrm();
-  m_gbm = CGBMUtils::GetGbm();
-
-  m_nativeDisplay = m_gbm->dev;
-
-  if (!m_drm)
-  {
-    return false;
-  }
-
-  if (!m_gbm)
-  {
-    return false;
-  }
+  m_nativeDisplay = m_gbm.dev;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
@@ -68,10 +53,8 @@ bool CWinSystemGbm::InitWindowSystem()
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  CGBMUtils::DestroyDrm();
+  m_DRM.DestroyDrm();
   m_nativeDisplay = nullptr;
-  m_drm = nullptr;
-  m_gbm = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
   return true;
@@ -81,13 +64,13 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
                                     RESOLUTION_INFO& res)
 {
-  if (!CGBMUtils::InitGbm(res))
+  if (!CGBMUtils::InitGbm(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
   }
 
-  m_nativeWindow = m_gbm->surface;
+  m_nativeWindow = m_gbm.surface;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
@@ -95,7 +78,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbm::DestroyWindow()
 {
-  CGBMUtils::DestroyGbm();
+  CGBMUtils::DestroyGbm(&m_gbm);
   m_nativeWindow = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);
@@ -108,19 +91,19 @@ void CWinSystemGbm::UpdateResolutions()
 
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
                           0,
-                          m_drm->mode->hdisplay,
-                          m_drm->mode->vdisplay,
-                          m_drm->mode->vrefresh);
+                          m_drm.mode->hdisplay,
+                          m_drm.mode->vdisplay,
+                          m_drm.mode->vrefresh);
 
   std::vector<RESOLUTION_INFO> resolutions;
 
-  if (!CGBMUtils::GetModes(resolutions) || resolutions.empty())
+  if (!CDRMUtils::GetModes(resolutions) || resolutions.empty())
   {
     CLog::Log(LOGWARNING, "CWinSystemGbm::%s - Failed to get resolutions", __FUNCTION__);
   }
   else
   {
-    for (auto i = 0; i < resolutions.size(); i++)
+    for (unsigned int i = 0; i < resolutions.size(); i++)
     {
       g_graphicsContext.ResetOverscan(resolutions[i]);
       CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
@@ -144,14 +127,18 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  auto ret = CGBMUtils::SetVideoMode(res);
-
+  auto ret = m_DRM.SetVideoMode(res);
   if (!ret)
   {
     return false;
   }
 
   return true;
+}
+
+void CWinSystemGbm::FlipPage(CGLContextEGL *pGLContext)
+{
+  m_DRM.FlipPage(pGLContext);
 }
 
 void* CWinSystemGbm::GetVaDisplay()
@@ -194,10 +181,18 @@ bool CWinSystemGbm::Show(bool raise)
   return true;
 }
 
-void CWinSystemGbm::Register(IDispResource * /*resource*/)
+void CWinSystemGbm::Register(IDispResource *resource)
 {
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
 }
 
-void CWinSystemGbm::Unregister(IDispResource * /*resource*/)
+void CWinSystemGbm::Unregister(IDispResource *resource)
 {
+  CSingleLock lock(m_resourceSection);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+  {
+    m_resources.erase(i);
+  }
 }
