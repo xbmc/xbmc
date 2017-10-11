@@ -3,15 +3,16 @@ set(SOURCES OptionalsReg.cpp
             WinSystemGbm.cpp
             GBMUtils.cpp
             DRMUtils.cpp
-            DRMLegacy.cpp)
-
+            DRMLegacy.cpp
+            DRMAtomic.cpp)
 
 set(HEADERS OptionalsReg.h
             GLContextEGL.h
             WinSystemGbm.h
             GBMUtils.h
             DRMUtils.h
-            DRMLegacy.h)
+            DRMLegacy.h
+            DRMAtomic.h)
 
 if(OPENGLES_FOUND)
   list(APPEND SOURCES WinSystemGbmGLESContext.cpp)
