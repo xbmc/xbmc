@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 01-gcrypt-android-select.patch Makefile
+DEPS= ../../Makefile.include 01-gcrypt-android-select.patch 02-fix-armv7-neon.patch 03-remove-cipher-gcm-armv8.patch Makefile
 
 # lib name, version
 LIBNAME=libgcrypt
@@ -8,11 +8,14 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 ifeq ($(OS),osx)
-CONFIGURE_FLAGS+= --disable-asm --disable-avx-support --disable-avx2-support
+  CONFIGURE_FLAGS+= --disable-asm --disable-avx-support --disable-avx2-support
 endif
-ifeq ($(CPU),arm64)
-CONFIGURE_FLAGS+= --disable-asm --disable-neon-support
+ifeq ($(findstring arm64, $(CPU)), arm64)
+  CONFIGURE_FLAGS+= --disable-asm
+else
+  CONFIGURE_FLAGS+= --disable-asm --disable-arm-crypto-support
 endif
+
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
@@ -32,6 +35,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../01-gcrypt-android-select.patch
+	cd $(PLATFORM); patch -p0 < ../02-fix-armv7-neon.patch
+ifneq ($(findstring arm64, $(CPU)), arm64)
+	cd $(PLATFORM); patch -p0 < ../03-remove-cipher-gcm-armv8.patch
+endif
 	# do not build the tests or docs
 	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
 	sed -ie "s|\$$(doc) tests||" "$(PLATFORM)/Makefile.am"
