@@ -211,8 +211,6 @@ namespace PVR
     explicit CPVRClient(ADDON::CAddonInfo addonInfo);
     ~CPVRClient(void) override;
 
-    void OnDisabled() override;
-    void OnEnabled() override;
     void OnPreInstall() override;
     void OnPostInstall(bool update, bool modal) override;
     void OnPreUnInstall() override;

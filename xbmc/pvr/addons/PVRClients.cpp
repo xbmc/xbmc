@@ -57,6 +57,7 @@ CPVRClients::CPVRClients(void) :
 
 CPVRClients::~CPVRClients(void)
 {
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(ADDON_PVRDLL);
   Unload();
 }
@@ -64,7 +65,7 @@ CPVRClients::~CPVRClients(void)
 void CPVRClients::Start(void)
 {
   CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
   UpdateAddons();
 }
 
@@ -1457,4 +1458,13 @@ void CPVRClients::OnPowerSavingDeactivated()
   /* propagate event to each client */
   for (auto &client : clients)
     client.second->OnPowerSavingDeactivated();
+}
+
+void CPVRClients::OnAddonEvent(const AddonEvent& event)
+{
+  if (typeid(event) == typeid(AddonEvents::Enabled) ||
+      typeid(event) == typeid(AddonEvents::Disabled))
+  {
+    UpdateAddons();
+  }
 }
