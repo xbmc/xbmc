@@ -18,22 +18,33 @@
  *
  */
 
-#pragma once
+#include "utils/log.h"
 
-#include "DRMUtils.h"
-#include "GLContextEGL.h"
+#include "DRM.h"
+#include "DRMLegacy.h"
 
-class CDRMLegacy : public CDRMUtils
+void CDRM::FlipPage(CGLContextEGL *pGLContext)
 {
-public:
-  static void FlipPage(CGLContextEGL *pGLContext);
-  static bool SetVideoMode(RESOLUTION_INFO res);
-  static bool InitDrmLegacy(drm *drm, gbm *gbm);
-  static void DestroyDrmLegacy();
+  CDRMLegacy::FlipPage(pGLContext);
+}
 
-private:
-  static bool WaitingForFlip();
-  static bool QueueFlip();
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
-};
+bool CDRM::SetVideoMode(RESOLUTION_INFO res)
+{
+  return CDRMLegacy::SetVideoMode(res);
+}
+
+bool CDRM::InitDrm(drm *drm, gbm *gbm)
+{
+  if (CDRMLegacy::InitDrmLegacy(drm, gbm))
+  {
+    CLog::Log(LOGNOTICE, "CDRM::%s - initialized Legacy DRM", __FUNCTION__);
+    return true;
+  }
+
+  return false;
+}
+
+void CDRM::DestroyDrm()
+{
+  CDRMLegacy::DestroyDrmLegacy();
+}

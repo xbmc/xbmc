@@ -27,7 +27,6 @@
 
 #include "guilib/Resolution.h"
 #include "GBMUtils.h"
-#include "DRMLegacy.h"
 
 struct crtc
 {

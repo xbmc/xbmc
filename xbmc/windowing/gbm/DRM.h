@@ -23,17 +23,12 @@
 #include "DRMUtils.h"
 #include "GLContextEGL.h"
 
-class CDRMLegacy : public CDRMUtils
+class CDRM
 {
 public:
-  static void FlipPage(CGLContextEGL *pGLContext);
-  static bool SetVideoMode(RESOLUTION_INFO res);
-  static bool InitDrmLegacy(drm *drm, gbm *gbm);
-  static void DestroyDrmLegacy();
-
-private:
-  static bool WaitingForFlip();
-  static bool QueueFlip();
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
+  ~CDRM() = default;
+  void FlipPage(CGLContextEGL *pGLContext);
+  bool SetVideoMode(RESOLUTION_INFO res);
+  bool InitDrm(drm *drm, gbm *gbm);
+  void DestroyDrm();
 };

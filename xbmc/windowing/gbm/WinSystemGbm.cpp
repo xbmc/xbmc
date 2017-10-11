@@ -44,7 +44,7 @@ bool CWinSystemGbm::InitWindowSystem()
   m_drm = new drm;
   m_gbm = new gbm;
 
-  if (!CDRMLegacy::InitDrmLegacy(m_drm, m_gbm))
+  if (!m_DRM.InitDrm(m_drm, m_gbm))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize DRM", __FUNCTION__);
     return false;
@@ -68,7 +68,7 @@ bool CWinSystemGbm::InitWindowSystem()
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  CDRMLegacy::DestroyDrmLegacy();
+  m_DRM.DestroyDrm();
   m_nativeDisplay = nullptr;
 
   delete m_drm;
@@ -148,8 +148,7 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  auto ret = CDRMLegacy::SetVideoMode(res);
-
+  auto ret = m_DRM.SetVideoMode(res);
   if (!ret)
   {
     return false;
@@ -158,9 +157,9 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return true;
 }
 
-void CWinSystemGbm::FlipPage()
+void CWinSystemGbm::FlipPage(CGLContextEGL *pGLContext)
 {
-  CDRMLegacy::FlipPage();
+  m_DRM.FlipPage(pGLContext);
 }
 
 void* CWinSystemGbm::GetVaDisplay()
