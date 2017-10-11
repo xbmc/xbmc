@@ -52,7 +52,7 @@ void CProcessInfo::SetDataCache(CDataCacheCore *cache)
   m_dataCache = cache;;
 
   ResetVideoCodecInfo();
-  m_renderGuiLayer = true;
+  m_renderGuiLayer = false;
   m_renderVideoLayer = false;
   m_dataCache->SetGuiRender(m_renderGuiLayer);
   m_dataCache->SetVideoRender(m_renderVideoLayer);
