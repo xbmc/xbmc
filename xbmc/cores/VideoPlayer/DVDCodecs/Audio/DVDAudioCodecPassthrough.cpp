@@ -219,7 +219,7 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
 int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
 {
   if (!m_dataSize)
-    AddData(DemuxPacket(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE));
+    AddData(DemuxPacket());
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     *dst = m_trueHDBuffer.get();

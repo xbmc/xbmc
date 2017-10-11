@@ -100,7 +100,7 @@ protected:
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
-  bool   m_started;
+  bool m_started = false;
   std::vector<AVPixelFormat> m_formats;
   double m_decoderPts;
   int    m_skippedDeint;
