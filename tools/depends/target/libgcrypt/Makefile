@@ -32,9 +32,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 < ../01-asm-Allow-building-x86-and-amd64-using-old-compilers.patch 
-	#cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
-	#cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
 	# do not build the tests or docs
 	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
 	sed -ie "s|!defined (__arm__)|!defined (__arm__) \&\& !defined (__aarch64__)|" "$(PLATFORM)/src/hwf-arm.c"
