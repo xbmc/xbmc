@@ -477,7 +477,7 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   viewPort.y2 = m_viewPort.TopLeftY + m_viewPort.Height;
 }
 
-void CRenderSystemDX::SetViewPort(CRect& viewPort)
+void CRenderSystemDX::SetViewPort(const CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

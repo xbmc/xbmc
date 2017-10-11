@@ -1084,21 +1084,6 @@ bool CWinRenderer::ConfigChanged(const VideoPicture& picture)
   return false;
 }
 
-bool CWinRenderer::HandlesVideoBuffer(CVideoBuffer* buffer)
-{
-  AVPixelFormat format = buffer->GetFormat();
-  if ( format == AV_PIX_FMT_D3D11VA_VLD
-    || format == AV_PIX_FMT_NV12
-    || format == AV_PIX_FMT_P010
-    || format == AV_PIX_FMT_P016
-    || format == AV_PIX_FMT_YUV420P
-    || format == AV_PIX_FMT_YUV420P10
-    || format == AV_PIX_FMT_YUV420P16)
-    return true;
-
-  return false;
-}
-
 CRenderInfo CWinRenderer::GetRenderInfo()
 {
   CRenderInfo info;

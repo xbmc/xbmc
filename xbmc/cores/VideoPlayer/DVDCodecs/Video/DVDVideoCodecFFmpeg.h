@@ -69,7 +69,6 @@ protected:
   void UpdateName();
   bool SetPictureParams(VideoPicture* pVideoPicture);
 
-  IHardwareDecoder* CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo);
   bool HasHardware() { return m_pHardware != nullptr; };
   void SetHardware(IHardwareDecoder *hardware);
 
