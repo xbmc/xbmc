@@ -32,6 +32,7 @@
 #include <interface/mmal/util/mmal_util_params.h>
 
 #include <assert.h>
+#include <math.h>
 
 using namespace KODI;
 using namespace RETRO;

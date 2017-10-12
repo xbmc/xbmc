@@ -24,6 +24,13 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
+#include "system_gl.h"
+
+#if defined(HAS_GL)
+#include "rendering/gl/RenderSystemGL.h"
+#elif HAS_GLES >= 2
+#include "rendering/gles/RenderSystemGLES.h"
+#endif
 
 using namespace KODI;
 using namespace RETRO;
@@ -61,59 +68,87 @@ void CRenderContext::ApplyStateBlock()
   m_rendering->ApplyStateBlock();
 }
 
-#if HAS_GLES >= 2
-void CRenderContext::EnableGUIShader(ESHADERMETHOD method)
+void CRenderContext::EnableGUIShader()
 {
+#if defined(HAS_GL)
+  CRenderSystemGL *rendering = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (rendering != nullptr)
+    rendering->EnableShader(SM_TEXTURE);
+#elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    renderingGLES->EnableGUIShader(method);
+    renderingGLES->EnableGUIShader(SM_TEXTURE);
+#endif
 }
 
 void CRenderContext::DisableGUIShader()
 {
+#if defined(HAS_GL)
+  CRenderSystemGL *renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (renderingGL != nullptr)
+    renderingGL->DisableShader();
+#elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     renderingGLES->DisableGUIShader();
+#endif
 }
 
-GLint CRenderContext::GUIShaderGetPos()
+int CRenderContext::GUIShaderGetPos()
 {
+#if defined(HAS_GL)
+  CRenderSystemGL *renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (renderingGL != nullptr)
+    return static_cast<int>(renderingGL->ShaderGetPos());
+#elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return renderingGLES->GUIShaderGetPos();
-
-  return -1;
-}
-
-GLint CRenderContext::GUIShaderGetCoord0()
-{
-  CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
-  if (renderingGLES != nullptr)
-    return renderingGLES->GUIShaderGetCoord0();
-
-  return -1;
-}
-
-GLint CRenderContext::GUIShaderGetUniCol()
-{
-  CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
-  if (renderingGLES != nullptr)
-    return renderingGLES->GUIShaderGetUniCol();
-
-  return -1;
-}
+    return static_cast<int>(renderingGLES->GUIShaderGetPos());
 #endif
 
-#if defined(HAS_DX)
+  return -1;
+}
+
+int CRenderContext::GUIShaderGetCoord0()
+{
+#if defined(HAS_GL)
+  CRenderSystemGL *renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (renderingGL != nullptr)
+    return static_cast<int>(renderingGL->ShaderGetCoord0());
+#elif HAS_GLES >= 2
+  CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  if (renderingGLES != nullptr)
+    return static_cast<int>(renderingGLES->GUIShaderGetCoord0());
+#endif
+
+  return -1;
+}
+
+int CRenderContext::GUIShaderGetUniCol()
+{
+#if defined(HAS_GL)
+  CRenderSystemGL *renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (renderingGL != nullptr)
+    return static_cast<int>(renderingGL->ShaderGetUniCol());
+#elif HAS_GLES >= 2
+  CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  if (renderingGLES != nullptr)
+    return static_cast<int>(renderingGLES->GUIShaderGetUniCol());
+#endif
+
+  return -1;
+}
+
 CGUIShaderDX* CRenderContext::GetGUIShader()
 {
+#if defined(HAS_DX)
   CRenderSystemDX *renderingDX = dynamic_cast<CRenderSystemDX*>(m_rendering);
   if (renderingDX != nullptr)
     return renderingDX->GetGUIShader();
+#endif
 
   return nullptr;
 }
-#endif
 
 bool CRenderContext::UseLimitedColor()
 {
