@@ -36,7 +36,10 @@ CRetroPlayerAutoSave::CRetroPlayerAutoSave(GAME::CGameClient &gameClient) :
   Create(false);
 }
 
-CRetroPlayerAutoSave::~CRetroPlayerAutoSave() = default;
+CRetroPlayerAutoSave::~CRetroPlayerAutoSave()
+{
+  StopThread();
+}
 
 void CRetroPlayerAutoSave::Process()
 {

@@ -73,7 +73,7 @@ bool CGameUtils::FillInGameClient(CFileItem &item, bool bPrompt)
       }
       else
       {
-        std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(candidates, installable);
+        std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(item.GetPath(), candidates, installable);
         if (!gameClient.empty())
           item.GetGameInfoTag()->SetGameClient(gameClient);
       }
