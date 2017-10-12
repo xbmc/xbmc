@@ -54,8 +54,14 @@ public:
    */
   std::string GetDiscStubExtensions() const;
 
+  /*!
+   * @brief Returns a file folder extensions
+   */
+  std::string GetFileFolderExtensions() const;
+
 private:
   std::string GetAddonExtensions(const ADDON::TYPE &type) const;
+  std::string GetAddonFileFolderExtensions(const ADDON::TYPE &type) const;
   void SetAddonExtensions();
   void SetAddonExtensions(const ADDON::TYPE &type);
 
@@ -63,5 +69,5 @@ private:
 
   std::map<ADDON::TYPE, std::string> m_addonExtensions;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
-
+  std::map<ADDON::TYPE, std::string> m_addonFileFolderExtensions;
 };

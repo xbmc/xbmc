@@ -1009,13 +1009,17 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || IsRAR()
     || IsRSS()
     || IsAudioBook()
-    || IsType(".ogg|.oga|.nsf|.sid|.sap|.xbt|.xsp")
+    || IsType(".ogg|.oga|.xbt")
 #if defined(TARGET_ANDROID)
     || IsType(".apk")
 #endif
     )
     return true;
   }
+
+  if (CServiceBroker::IsBinaryAddonCacheUp() &&
+      IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()))
+    return true;
 
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
   {
