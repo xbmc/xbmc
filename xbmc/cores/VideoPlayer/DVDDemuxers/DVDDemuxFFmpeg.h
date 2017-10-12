@@ -168,6 +168,5 @@ protected:
   bool m_checkvideo;
   int m_displayTime = 0;
   double m_dtsAtDisplayTime;
-  bool m_seekToKeyFrame = false;
 };
 
