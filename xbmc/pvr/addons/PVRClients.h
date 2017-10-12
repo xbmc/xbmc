@@ -127,13 +127,6 @@ namespace PVR
     bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
 
     /*!
-     * @brief Remove a single client add-on.
-     * @param addon The add-on to remove.
-     * @return True if the client was found and removed, false otherwise.
-     */
-    bool RequestRemoval(ADDON::AddonPtr addon) override;
-
-    /*!
      * @brief Unload all loaded add-ons and reset all class properties.
      */
     void Unload(void);
