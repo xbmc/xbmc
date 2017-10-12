@@ -45,6 +45,9 @@ namespace PVR
     static void MarginTimeFiller(
       std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
+    // Dynamically hide or show settings.
+    static bool IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
+
   private:
     CPVRSettings(const CPVRSettings&) = delete;
     CPVRSettings& operator=(CPVRSettings const&) = delete;

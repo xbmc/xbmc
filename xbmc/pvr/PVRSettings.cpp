@@ -27,6 +27,9 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+
 using namespace PVR;
 
 CPVRSettings::CPVRSettings(const std::set<std::string> &settingNames)
@@ -126,5 +129,24 @@ void CPVRSettings::MarginTimeFiller(
     int iValue = marginTimeValues[i];
     list.push_back(
       std::make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), iValue) /* %i min */, iValue));
+  }
+}
+
+bool CPVRSettings::IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data)
+{
+  if (setting == nullptr)
+    return false;
+
+  const std::string &settingId = setting->GetId();
+
+  if (settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS)
+  {
+    // Setting is only visible if exactly one PVR client is enabeld.
+    return CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1;
+  }
+  else
+  {
+    // Show all other settings unconditionally.
+    return true;
   }
 }
