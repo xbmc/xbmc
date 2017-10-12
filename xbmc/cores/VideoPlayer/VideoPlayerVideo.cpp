@@ -653,15 +653,6 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
 
   if (decoderState == CDVDVideoCodec::VC_EOF)
   {
-    if (m_syncState == IDVDStreamPlayer::SYNC_STARTING)
-    {
-      SStartMsg msg;
-      msg.player = VideoPlayer_VIDEO;
-      msg.cachetime = DVD_MSEC_TO_TIME(50);
-      msg.cachetotal = DVD_MSEC_TO_TIME(100);
-      msg.timestamp = DVD_NOPTS_VALUE;
-      m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
-    }
     return false;
   }
 
