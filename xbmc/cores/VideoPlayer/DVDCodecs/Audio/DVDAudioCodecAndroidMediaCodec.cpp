@@ -32,7 +32,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodec.h>
@@ -578,4 +578,3 @@ void CDVDAudioCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
   if (xbmc_jnienv()->ExceptionCheck())
     xbmc_jnienv()->ExceptionClear();
 }
-

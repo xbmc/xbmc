@@ -30,7 +30,7 @@
 #include "DVDStreamInfo.h"
 #include "guilib/DispResource.h"
 #include "DVDClock.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 
 #include <linux/ipu.h>
 #include <linux/mxcfb.h>
@@ -450,4 +450,3 @@ private:
 
   std::string           m_pFormatName;       // Current decoder format name
 };
-

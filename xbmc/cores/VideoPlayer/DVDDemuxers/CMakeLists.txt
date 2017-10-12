@@ -16,7 +16,6 @@ set(HEADERS DemuxMultiSource.h
             DVDDemuxCDDA.h
             DVDDemuxClient.h
             DVDDemuxFFmpeg.h
-            DVDDemuxPacket.h
             DVDDemuxUtils.h
             DVDDemuxVobsub.h
             DVDFactoryDemuxer.h)

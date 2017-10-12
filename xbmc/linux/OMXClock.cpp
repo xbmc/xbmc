@@ -23,7 +23,7 @@
 #include "settings/Settings.h"
 
 #include "OMXClock.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/MathUtils.h"
 
 #define OMX_PRE_ROLL 200

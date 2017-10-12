@@ -19,9 +19,9 @@
  */
 
 #include "VideoPlayerTeletext.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DVDStreamInfo.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
