@@ -1251,8 +1251,8 @@ namespace PVR
     if (!CServiceBroker::GetPVRManager().IsStarted() || IsRunningChannelScan())
       return false;
 
-    PVR_CLIENT scanClient;
-    std::vector<PVR_CLIENT> possibleScanClients = CServiceBroker::GetPVRManager().Clients()->GetClientsSupportingChannelScan();
+    CPVRClientPtr scanClient;
+    std::vector<CPVRClientPtr> possibleScanClients = CServiceBroker::GetPVRManager().Clients()->GetClientsSupportingChannelScan();
     m_bChannelScanRunning = true;
 
     /* multiple clients found */
@@ -1353,7 +1353,7 @@ namespace PVR
     // get client id
     if (iClientID < 0 && menuCategory == PVR_MENUHOOK_SETTING)
     {
-      PVR_CLIENTMAP clients;
+      CPVRClientMap clients;
       CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
 
       if (clients.size() == 1)
@@ -1393,7 +1393,7 @@ namespace PVR
     if (iClientID < 0)
       iClientID = CServiceBroker::GetPVRManager().Clients()->GetPlayingClientID();
 
-    PVR_CLIENT client;
+    CPVRClientPtr client;
     if (CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(iClientID, client) && client->HasMenuHooks(menuCategory))
     {
       CGUIDialogSelect* pDialog= g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);

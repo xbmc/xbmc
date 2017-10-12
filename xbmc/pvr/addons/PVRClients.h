@@ -39,11 +39,8 @@ namespace PVR
 {
   class CPVREpg;
 
-  typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
-  typedef std::map< int, PVR_CLIENT >                 PVR_CLIENTMAP;
-  typedef std::map< int, PVR_CLIENT >::iterator       PVR_CLIENTMAP_ITR;
-  typedef std::map< int, PVR_CLIENT >::const_iterator PVR_CLIENTMAP_CITR;
-  typedef std::map< int, PVR_STREAM_PROPERTIES >      STREAMPROPS;
+  typedef std::map<int, CPVRClientPtr> CPVRClientMap;
+  typedef std::map<int, PVR_STREAM_PROPERTIES> STREAMPROPS;
 
   /**
    * Holds generic data about a backend (number of channels etc.)
@@ -101,14 +98,14 @@ namespace PVR
      * @param addon The client.
      * @return True on success, false otherwise.
      */
-    bool GetCreatedClient(int iClientId, PVR_CLIENT &addon) const;
+    bool GetCreatedClient(int iClientId, CPVRClientPtr &addon) const;
 
     /*!
      * @brief Get all created clients.
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
      */
-    int GetCreatedClients(PVR_CLIENTMAP &clients) const;
+    int GetCreatedClients(CPVRClientMap &clients) const;
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.
@@ -116,7 +113,7 @@ namespace PVR
      * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.
      * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
      */
-    PVR_ERROR GetCreatedClients(PVR_CLIENTMAP &clientsReady, std::vector<int> &clientsNotReady) const;
+    PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
 
     /*!
      * @brief Restart a single client add-on.
@@ -631,7 +628,7 @@ namespace PVR
     /*!
      * @return All clients that support channel scanning.
      */
-    std::vector<PVR_CLIENT> GetClientsSupportingChannelScan(void) const;
+    std::vector<CPVRClientPtr> GetClientsSupportingChannelScan(void) const;
 
     //@}
 
@@ -641,7 +638,7 @@ namespace PVR
     /*!
      * @return All clients that support channel settings inside addon.
      */
-    std::vector<PVR_CLIENT> GetClientsSupportingChannelSettings(bool bRadio) const;
+    std::vector<CPVRClientPtr> GetClientsSupportingChannelSettings(bool bRadio) const;
 
     /*!
      * @brief Open addon settings dialog to add a channel
@@ -682,7 +679,7 @@ namespace PVR
      */
     CPVRClientCapabilities GetClientCapabilities(int iClientId) const;
 
-    bool GetPlayingClient(PVR_CLIENT &client) const;
+    bool GetPlayingClient(CPVRClientPtr &client) const;
 
     std::string GetBackendHostnameByClientId(int iClientId) const;
 
@@ -721,7 +718,7 @@ namespace PVR
      * @param addon The client.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClient(int iClientId, PVR_CLIENT &addon) const;
+    bool GetClient(int iClientId, CPVRClientPtr &addon) const;
 
     /*!
      * @brief Check whether a client is registered.
@@ -737,7 +734,7 @@ namespace PVR
     bool                  m_bIsPlayingRecording;
     bool                  m_bIsPlayingEpgTag;
     std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
-    PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
+    CPVRClientMap         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
   };

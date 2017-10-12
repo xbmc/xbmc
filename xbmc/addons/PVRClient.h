@@ -38,7 +38,7 @@ namespace PVR
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 
   class CPVRClient;
-  typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
+  typedef std::shared_ptr<CPVRClient> CPVRClientPtr;
 
   class CPVRTimerType;
   typedef std::vector<CPVRTimerTypePtr> CPVRTimerTypes;
