@@ -127,10 +127,10 @@ namespace PVR
     /*!
      * @brief Add the group members to a group.
      * @param group The group to get the channels for.
-     * @param allChannels All channels contained in the "all channels group" matching param group's 'IsRadio' property.
+     * @param allGroup The "all channels group" matching param group's 'IsRadio' property.
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup &group, const std::map<int, CPVRChannelPtr> &allChannels);
+    int Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -188,6 +188,8 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup &group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+
+    int GetClientIdByChannelId(int iChannelId);
 
     CCriticalSection m_critSection;
   };

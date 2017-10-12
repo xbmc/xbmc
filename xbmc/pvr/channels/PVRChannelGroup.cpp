@@ -113,6 +113,8 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
   m_members                     = group.m_members;
   m_sortedMembers               = group.m_sortedMembers;
   m_iPosition                   = group.m_iPosition;
+  m_failedClientsForChannels    = group.m_failedClientsForChannels;
+  m_failedClientsForChannelGroupMembers = group.m_failedClientsForChannelGroupMembers;
   OnInit();
 }
 
@@ -182,6 +184,8 @@ void CPVRChannelGroup::Unload(void)
   CSingleLock lock(m_critSection);
   m_sortedMembers.clear();
   m_members.clear();
+  m_failedClientsForChannels.clear();
+  m_failedClientsForChannelGroupMembers.clear();
 }
 
 bool CPVRChannelGroup::Update(void)
@@ -193,6 +197,7 @@ bool CPVRChannelGroup::Update(void)
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
   PVRChannels_tmp.SetPreventSortAndRenumber();
   PVRChannels_tmp.LoadFromClients();
+  m_failedClientsForChannelGroupMembers = PVRChannels_tmp.m_failedClientsForChannelGroupMembers;
 
   return UpdateGroupEntries(PVRChannels_tmp);
 }
@@ -588,16 +593,7 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
   if (!allGroup)
     return -1;
 
-  std::map<int, CPVRChannelPtr> allChannels;
-  {
-    CSingleLock lock(allGroup->m_critSection);
-    for (const auto& groupMember : allGroup->m_members)
-    {
-      allChannels.insert(std::make_pair(groupMember.second.channel->ChannelID(), groupMember.second.channel));
-    }
-  }
-
-  database->Get(*this, allChannels);
+  database->Get(*this, *allGroup);
 
   return Size() - iChannelCount;
 }
@@ -605,7 +601,7 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroup::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this, m_failedClientsForChannelGroupMembers) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
@@ -644,6 +640,26 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
   return bReturn;
 }
 
+bool CPVRChannelGroup::IsMissingChannelsFromClient(int iClientId) const
+{
+  for (int iFailedClientID : m_failedClientsForChannels)
+  {
+    if (iFailedClientID == iClientId)
+      return true;
+  }
+  return false;
+}
+
+bool CPVRChannelGroup::IsMissingChannelGroupMembersFromClient(int iClientId) const
+{
+  for (auto iFailedClientID : m_failedClientsForChannelGroupMembers)
+  {
+    if (iFailedClientID == iClientId)
+      return true;
+  }
+  return false;
+}
+
 bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 {
   bool bReturn(false);
@@ -671,8 +687,11 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
       {
         groups->RemoveFromAllGroups((*it).channel);
 
-        /* since it was not found in the internal group, it was deleted from the backend */
-        group.channel->Delete();
+        if (!IsMissingChannelsFromClient(group.channel->ClientID()))
+        {
+          /* since it was not found in the internal group, it was deleted from the backend */
+          group.channel->Delete();
+        }
       }
 
       //our vector can have been modified during the call to RemoveFromAllGroups

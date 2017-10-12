@@ -111,6 +111,14 @@ namespace PVR
     int GetCreatedClients(PVR_CLIENTMAP &clients) const;
 
     /*!
+     * @brief Get all created clients and clients not (yet) ready to use.
+     * @param clientsReady Store the created clients in this map.
+     * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.
+     * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
+     */
+    PVR_ERROR GetCreatedClients(PVR_CLIENTMAP &clientsReady, std::vector<int> &clientsNotReady) const;
+
+    /*!
      * @brief Restart a single client add-on.
      * @param addon The add-on to restart.
      * @param bDataChanged True if the client's data changed, false otherwise (unused).
@@ -134,11 +142,6 @@ namespace PVR
      * @brief The ID of the first active client or -1 if no clients are active;
      */
     int GetFirstConnectedClientID(void);
-
-    /*!
-     * @return True when at least one client is known and enabled, false otherwise.
-     */
-    bool HasEnabledClients(void) const;
 
     /*!
      * @return The amount of enabled clients.
@@ -594,26 +597,26 @@ namespace PVR
     /*!
      * @brief Get all channels from backends.
      * @param group The container to store the channels in.
-     * @param error An error if it occured.
-     * @return The amount of channels that were added.
+     * @param failedClients in case of errors will contain the ids of the clients for which the channels could not be obtained.
+     * @return PVR_ERROR_NO_ERROR if the channels were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group);
+    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group, std::vector<int> &failedClients);
 
     /*!
      * @brief Get all channel groups from backends.
      * @param groups Store the channel groups in this container.
-     * @param error An error if it occured.
-     * @return The amount of groups that were added.
+     * @param failedClients in case of errors will contain the ids of the clients for which the channel groups could not be obtained.
+     * @return PVR_ERROR_NO_ERROR if the channel groups were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups);
+    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups, std::vector<int> &failedClients);
 
     /*!
      * @brief Get all group members of a channel group.
      * @param group The group to get the member for.
-     * @param error An error if it occured.
-     * @return The amount of channels that were added.
+     * @param failedClients in case of errors will contain the ids of the clients for which the channel group members could not be obtained.
+     * @return PVR_ERROR_NO_ERROR if the channel group members were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group);
+    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group, std::vector<int> &failedClients);
 
     //@}
 

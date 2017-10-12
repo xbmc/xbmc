@@ -325,6 +325,16 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
   return bDelete;
 }
 
+int CPVRDatabase::GetClientIdByChannelId(int iChannelId)
+{
+  const std::string strQuery = PrepareSQL("idChannel = %u", iChannelId);
+  const std::string strValue = GetSingleValue("channels", "iClientId", strQuery);
+  if (!strValue.empty())
+    return std::atoi(strValue.c_str());
+
+  return PVR_INVALID_CLIENT_ID;
+}
+
 bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 {
   bool bDelete(true);
@@ -363,13 +373,20 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
     if (GetCurrentGroupMembers(group, currentMembers))
     {
       std::vector<int> channelsToDelete;
-      for (unsigned int iChannelPtr = 0; iChannelPtr < currentMembers.size(); iChannelPtr++)
+      for (int iChannelId : currentMembers)
       {
-        if (!group.IsGroupMember(currentMembers.at(iChannelPtr)))
-          channelsToDelete.emplace_back(currentMembers.at(iChannelPtr));
+        if (!group.IsGroupMember(iChannelId))
+        {
+          int iClientId = GetClientIdByChannelId(iChannelId);
+          if (iClientId == PVR_INVALID_CLIENT_ID || !group.IsMissingChannelsFromClient(iClientId))
+          {
+            channelsToDelete.emplace_back(iChannelId);
+          }
+        }
       }
 
-      bDelete = DeleteChannelsFromGroup(group, channelsToDelete) && bDelete;
+      if (!channelsToDelete.empty())
+        bDelete = DeleteChannelsFromGroup(group, channelsToDelete) && bDelete;
     }
   }
   else
@@ -400,12 +417,33 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
     return false;
   }
 
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
-  filter.AppendWhere(PrepareSQL("bIsRadio = %u", group.IsRadio()));
-
   CSingleLock lock(m_critSection);
-  return RemoveChannelsFromGroup(group) && DeleteValues("channelgroups", filter);
+
+  bool bIgnoreChannel = false;
+  std::vector<int> currentMembers;
+  if (GetCurrentGroupMembers(group, currentMembers))
+  {
+    for (int iChannelId : currentMembers)
+    {
+      int iClientId = GetClientIdByChannelId(iChannelId);
+      if (iClientId != PVR_INVALID_CLIENT_ID && group.IsMissingChannelGroupMembersFromClient(iClientId))
+      {
+        bIgnoreChannel = true;
+        break;
+      }
+    }
+  }
+
+  if (!bIgnoreChannel)
+  {
+    Filter filter;
+    filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+    filter.AppendWhere(PrepareSQL("bIsRadio = %u", group.IsRadio()));
+
+    return RemoveChannelsFromGroup(group) && DeleteValues("channelgroups", filter);
+  }
+
+  return true;
 }
 
 bool CPVRDatabase::Get(CPVRChannelGroups &results)
@@ -442,7 +480,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
   return bReturn;
 }
 
-int CPVRDatabase::Get(CPVRChannelGroup &group, const std::map<int, CPVRChannelPtr> &allChannels)
+int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
 {
   int iReturn = -1;
 
@@ -460,29 +498,38 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const std::map<int, CPVRChannelPt
   {
     iReturn = 0;
 
+    // create a map to speedup data lookup
+    std::map<int, CPVRChannelPtr> allChannels;
+    for (const auto& groupMember : allGroup.GetMembers())
+    {
+      allChannels.insert(std::make_pair(groupMember.channel->ChannelID(), groupMember.channel));
+    }
+
     try
     {
       while (!m_pDS->eof())
       {
         int iChannelId = m_pDS->fv("idChannel").get_asInt();
-        int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
         const auto& channel = allChannels.find(iChannelId);
 
         if (channel != allChannels.end())
         {
-          PVRChannelGroupMember newMember = { channel->second, static_cast<unsigned int>(iChannelNumber) };
+          PVRChannelGroupMember newMember = { channel->second, static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()) };
           group.m_sortedMembers.emplace_back(newMember);
           group.m_members.insert(std::make_pair(channel->second->StorageId(), newMember));
           ++iReturn;
         }
         else
         {
-          // remove a channel that doesn't exist (anymore) from the table
-          Filter filter;
-          filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
-          filter.AppendWhere(PrepareSQL("idChannel = %u", iChannelId));
-
-          DeleteValues("map_channelgroups_channels", filter);
+          // remove the channel from the table if it doesn't exist on client (anymore)
+          int iClientId = GetClientIdByChannelId(iChannelId);
+          if (iClientId == PVR_INVALID_CLIENT_ID || !allGroup.IsMissingChannelsFromClient(iClientId))
+          {
+            Filter filter;
+            filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+            filter.AppendWhere(PrepareSQL("idChannel = %u", iChannelId));
+            DeleteValues("map_channelgroups_channels", filter);
+          }
         }
 
         m_pDS->next();

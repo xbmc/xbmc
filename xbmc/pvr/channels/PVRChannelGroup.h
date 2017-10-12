@@ -441,6 +441,20 @@ namespace PVR
     int GetPosition(void) const;
     void SetPosition(int iPosition);
 
+    /*!
+     * @brief Check, whether channel group member data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @param iClientId The id of the client.
+     * @return True, if data is currently missing, false otherwise.
+     */
+    bool IsMissingChannelGroupMembersFromClient(int iClientId) const;
+
+    /*!
+     * @brief Check, whether channel data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @param iClientId The id of the client.
+     * @return True, if data is currently missing, false otherwise.
+     */
+    bool IsMissingChannelsFromClient(int iClientId) const;
+
   protected:
     /*!
      * @brief Init class
@@ -467,6 +481,11 @@ namespace PVR
 
     virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
 
+    /*!
+     * @brief Remove deleted channels from this group.
+     * @param channels The new channels to use for this group.
+     * @return True if everything went well, false otherwise.
+     */
     bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
 
     /*!
@@ -506,6 +525,8 @@ namespace PVR
     PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
     PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
     CCriticalSection m_critSection;
+    std::vector<int> m_failedClientsForChannels;
+    std::vector<int> m_failedClientsForChannelGroupMembers;
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
