@@ -210,35 +210,86 @@ bool CDRMUtils::GetPreferredMode()
   return true;
 }
 
+int CDRMUtils::Open(const char* device)
+{
+  int fd;
+
+  std::vector<const char*>modules =
+  {
+    "i915",
+    "amdgpu",
+    "radeon",
+    "nouveau",
+    "vmwgfx",
+    "msm",
+    "imx-drm",
+    "rockchip",
+    "vc4",
+    "virtio_gpu",
+    "sun4i-drm",
+  };
+
+  for (auto module : modules)
+  {
+    fd = drmOpen(module, device);
+    if (fd < 0)
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to open device: %s using module: %s", __FUNCTION__, device, module);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device, module);
+      break;
+    }
+  }
+
+  if (fd < 0)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - no module found for device: %s", __FUNCTION__, device);
+    return -1;
+  }
+
+  return fd;
+}
+
 bool CDRMUtils::InitDrm(drm *drm)
 {
   m_drm = drm;
-  const char *device = "/dev/dri/card0";
 
-  m_drm->fd = open(device, O_RDWR);
+  for(int i = 0; i < 10; ++i)
+  {
+    std::string device = "/dev/dri/card";
+    device.append(std::to_string(i));
+    m_drm->fd = CDRMUtils::Open(device.c_str());
+
+    if(m_drm->fd > 0)
+    {
+      if(!GetResources())
+      {
+        continue;
+      }
+
+      if(!GetConnector())
+      {
+        continue;
+      }
+
+      if(!GetEncoder())
+      {
+        continue;
+      }
+      else
+      {
+        m_drm->crtc_id = m_drm_encoder->crtc_id;
+      }
+
+      break;
+    }
+  }
 
   if(m_drm->fd < 0)
   {
     return false;
-  }
-
-  if(!GetResources())
-  {
-    return false;
-  }
-
-  if(!GetConnector())
-  {
-    return false;
-  }
-
-  if(!GetEncoder())
-  {
-    return false;
-  }
-  else
-  {
-    m_drm->crtc_id = m_drm_encoder->crtc_id;
   }
 
   if(!GetPreferredMode())

@@ -77,6 +77,7 @@ private:
   static bool GetConnector();
   static bool GetEncoder();
   static bool GetPreferredMode();
+  static int Open(const char* device);
   static bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
 };
