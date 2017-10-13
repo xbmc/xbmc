@@ -421,11 +421,8 @@ if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
 endif()
 
 # Prepare add-on build env
-core_file_read_filtered(bindings ${CMAKE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
-foreach(header ${bindings})
-  get_filename_component(file ${header} NAME)
-  configure_file(${CMAKE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
-endforeach()
+include(${CORE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
+file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/ DESTINATION ${CORE_BUILD_DIR}/include/${APP_NAME_LC})
 file(GLOB_RECURSE ADDON_HEADERS
      RELATIVE ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
     ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/*.h)
