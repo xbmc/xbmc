@@ -35,7 +35,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "Util.h"
 #include <algorithm>
 #include <cassert>
@@ -833,7 +833,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   }
 
   omx_err = m_omx_decoder.AllocInputBuffers();
-  if(omx_err != OMX_ErrorNone) 
+  if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "COMXAudio::Initialize - Error alloc buffers 0x%08x", omx_err);
     return false;
@@ -869,7 +869,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
       m_omx_decoder.DecoderEmptyBufferDone(m_omx_decoder.GetComponent(), omx_buffer);
       return false;
     }
-  } 
+  }
 
   /* return on decoder error so m_Initialized stays false */
   if(m_omx_decoder.BadState())

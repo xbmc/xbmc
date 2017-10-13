@@ -23,7 +23,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/log.h"

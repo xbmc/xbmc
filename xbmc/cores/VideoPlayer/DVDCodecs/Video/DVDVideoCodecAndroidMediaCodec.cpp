@@ -37,7 +37,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
@@ -49,7 +49,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"

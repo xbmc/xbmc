@@ -25,9 +25,9 @@
 #include "../StreamCodec.h"
 
 #ifdef BUILD_KODI_ADDON
-#include "../DVDDemuxPacket.h"
+#include "../DemuxPacket.h"
 #else
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #endif
 
 namespace kodi { namespace addon { class CInstanceVideoCodec; } }

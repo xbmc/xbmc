@@ -30,7 +30,7 @@
 #include "xbmc/guilib/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "linux/RBP.h"
 
@@ -111,7 +111,7 @@ bool COMXVideo::SendDecoderConfig()
     memset((unsigned char *)omx_buffer->pBuffer, 0x0, omx_buffer->nAllocLen);
     memcpy((unsigned char *)omx_buffer->pBuffer, m_extradata, omx_buffer->nFilledLen);
     omx_buffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG | OMX_BUFFERFLAG_ENDOFFRAME;
-  
+
     omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
     if (omx_err != OMX_ErrorNone)
     {
@@ -135,7 +135,7 @@ bool COMXVideo::NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata
         return true;
     default: break;
   }
-  return false;    
+  return false;
 }
 
 bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
@@ -546,7 +546,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   omx_err = m_omx_decoder.SetParameter(OMX_IndexParamVideoPortFormat, &formatType);
   if(omx_err != OMX_ErrorNone)
     return false;
-  
+
   OMX_PARAM_PORTDEFINITIONTYPE portParam;
   OMX_INIT_STRUCTURE(portParam);
   portParam.nPortIndex = m_omx_decoder.GetInputPort();
@@ -832,7 +832,7 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts, bool &s
     return true;
 
   }
-  
+
   return false;
 }
 
@@ -911,20 +911,20 @@ void COMXVideo::SubmitEOS()
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(1000);
-  
+
   if(omx_buffer == NULL)
   {
     CLog::Log(LOGERROR, "%s::%s - buffer error 0x%08x", CLASSNAME, __func__, omx_err);
     m_failed_eos = true;
     return;
   }
-  
+
   omx_buffer->nOffset     = 0;
   omx_buffer->nFilledLen  = 0;
   omx_buffer->nTimeStamp  = ToOMXTime(0LL);
 
   omx_buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME | OMX_BUFFERFLAG_EOS | OMX_BUFFERFLAG_TIME_UNKNOWN;
-  
+
   omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
   if (omx_err != OMX_ErrorNone)
   {

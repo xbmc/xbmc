@@ -40,7 +40,7 @@
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 extern "C" {
 #include "libavutil/imgutils.h"

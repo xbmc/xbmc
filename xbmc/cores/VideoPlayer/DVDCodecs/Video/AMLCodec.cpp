@@ -23,7 +23,7 @@
 #include "AMLCodec.h"
 #include "DynamicDll.h"
 
-#include "cores/VideoPlayer/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
@@ -1520,7 +1520,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       // h264 in an avi file
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
-      break; 
+      break;
     case VFORMAT_REAL:
       am_private->stream_type = AM_STREAM_RM;
       am_private->vcodec.noblock = 1;
@@ -1942,7 +1942,7 @@ float CAMLCodec::GetTimeSize()
   struct buf_status bs;
   m_dll->codec_get_vbuf_state(&am_private->vcodec, &bs);
 
-  //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: buf status: s:%d dl:%d fl:%d rp:%u wp:%u",bs.size, bs.data_len, bs.free_len, bs.read_pointer, bs.write_pointer);  
+  //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: buf status: s:%d dl:%d fl:%d rp:%u wp:%u",bs.size, bs.data_len, bs.free_len, bs.read_pointer, bs.write_pointer);
   while (m_frameSizeSum >  (unsigned int)bs.data_len)
   {
     m_frameSizeSum -= m_frameSizes.front();

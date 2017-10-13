@@ -19,7 +19,7 @@
  */
 
 #include "DVDSubtitlesLibass.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

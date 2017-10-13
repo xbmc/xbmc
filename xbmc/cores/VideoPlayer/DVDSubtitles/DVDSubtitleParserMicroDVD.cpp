@@ -20,7 +20,7 @@
 
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 #include "utils/log.h"

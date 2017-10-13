@@ -46,7 +46,7 @@
 #include "settings/DisplaySettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "linux/RBP.h"
 

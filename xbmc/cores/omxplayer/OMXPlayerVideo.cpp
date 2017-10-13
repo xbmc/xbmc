@@ -41,7 +41,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "guilib/GraphicContext.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "linux/RBP.h"
 
@@ -467,7 +467,7 @@ void OMXPlayerVideo::Process()
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
       #ifdef _DEBUG
-      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts, 
+      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts,
           (int)pPacket->iSize, m_syncState, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, 0);
       #endif
       if (m_messageQueue.GetDataSize() == 0
@@ -493,7 +493,7 @@ void OMXPlayerVideo::Process()
           Sleep(10);
           continue;
         }
-  
+
         if (m_stalled)
         {
           if(m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
@@ -811,4 +811,3 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_
   OMXPlayerVideo *player = static_cast<OMXPlayerVideo*>(ctx);
   player->ResolutionUpdateCallBack(width, height, framerate, display_aspect);
 }
-

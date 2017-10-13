@@ -21,10 +21,10 @@
 #include "AddonVideoCodec.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
-#include "cores/VideoPlayer/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"
 
 using namespace kodi::addon;

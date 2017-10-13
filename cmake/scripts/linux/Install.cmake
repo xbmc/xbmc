@@ -151,8 +151,9 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kod
         COMPONENT kodi-addon-dev
         REGEX ".txt" EXCLUDE)
 
-install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
-              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h
+install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/DemuxPacket.h
+              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/DemuxCrypto.h
+              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/TimingConstants.h
               ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
               ${CMAKE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
               ${CMAKE_SOURCE_DIR}/xbmc/input/ActionIDs.h

@@ -33,7 +33,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/TimeUtils.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "linux/RBP.h"
 #include "ServiceBroker.h"
@@ -81,7 +81,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent, CPr
 
   m_messageQueue.SetMaxTimeSize(8.0);
   m_passthrough = false;
-  m_flush = false;  
+  m_flush = false;
 }
 
 
@@ -268,7 +268,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
           Sleep(10);
           continue;
         }
-        
+
         if(!bDropPacket)
         {
           ret = m_omxAudio.AddPackets(decoded, decoded_size, dts, pts, m_pAudioCodec->GetFrameSize(), settings_changed);
@@ -302,7 +302,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
         Sleep(10);
         continue;
       }
-        
+
       if(!bDropPacket)
       {
         m_omxAudio.AddPackets(pkt->pData, pkt->iSize, m_audioClock, m_audioClock, 0, settings_changed);
@@ -553,7 +553,7 @@ bool OMXPlayerAudio::OpenDecoder()
 
   m_codec_name = "";
   m_bad_state  = !bAudioRenderOpen;
-  
+
   if(!bAudioRenderOpen)
   {
     CLog::Log(LOGERROR, "OMXPlayerAudio : Error open audio output");

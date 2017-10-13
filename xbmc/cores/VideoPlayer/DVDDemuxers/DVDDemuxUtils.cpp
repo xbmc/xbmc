@@ -19,8 +19,8 @@
  */
 
 #include "DVDDemuxUtils.h"
-#include "TimingConstants.h"
-#include "DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "utils/log.h"
 #include "system.h"
 

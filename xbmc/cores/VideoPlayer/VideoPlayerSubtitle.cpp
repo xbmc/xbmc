@@ -25,8 +25,8 @@
 #include "DVDClock.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 

@@ -23,7 +23,7 @@
 #include "ServiceBroker.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
