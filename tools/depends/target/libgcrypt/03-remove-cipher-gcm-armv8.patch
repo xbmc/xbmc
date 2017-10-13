@@ -1,0 +1,10 @@
+--- cipher/Makefile.am.orig	2017-10-11 11:32:12.196210815 +0200
++++ cipher/Makefile.am	2017-10-11 11:32:54.668210405 +0200
+@@ -43,7 +43,6 @@
+ cipher.c cipher-internal.h \
+ cipher-cbc.c cipher-cfb.c cipher-ofb.c cipher-ctr.c cipher-aeswrap.c \
+ cipher-ccm.c cipher-cmac.c cipher-gcm.c cipher-gcm-intel-pclmul.c \
+-  cipher-gcm-armv8-aarch32-ce.S cipher-gcm-armv8-aarch64-ce.S \
+ cipher-poly1305.c cipher-ocb.c cipher-xts.c \
+ cipher-selftest.c cipher-selftest.h \
+ pubkey.c pubkey-internal.h pubkey-util.c \

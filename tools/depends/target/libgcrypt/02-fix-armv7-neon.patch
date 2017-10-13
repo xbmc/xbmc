@@ -1,0 +1,32 @@
+--- configure.ac.orig	2017-10-11 11:20:51.572217383 +0200
++++ configure.ac	2017-10-11 11:23:40.384215754 +0200
+@@ -2083,10 +2083,6 @@
+       arm*-*-*)
+          # Build with the assembly implementation
+          GCRYPT_CIPHERS="$GCRYPT_CIPHERS rijndael-arm.lo"
+-
+-         # Build with the ARMv8/AArch32 CE implementation
+-         GCRYPT_CIPHERS="$GCRYPT_CIPHERS rijndael-armv8-ce.lo"
+-         GCRYPT_CIPHERS="$GCRYPT_CIPHERS rijndael-armv8-aarch32-ce.lo"
+       ;;
+       aarch64-*-*)
+          # Build with the assembly implementation
+@@ -2355,10 +2351,6 @@
+          GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-avx-amd64.lo"
+          GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-avx2-bmi2-amd64.lo"
+       ;;
+-      arm*-*-*)
+-         # Build with the assembly implementation
+-         GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-armv8-aarch32-ce.lo"
+-      ;;
+       aarch64-*-*)
+          # Build with the assembly implementation
+          GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-armv8-aarch64-ce.lo"
+@@ -2448,7 +2440,6 @@
+   arm*-*-*)
+     # Build with the assembly implementation
+     GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha1-armv7-neon.lo"
+-    GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha1-armv8-aarch32-ce.lo"
+   ;;
+   aarch64-*-*)
+     # Build with the assembly implementation
