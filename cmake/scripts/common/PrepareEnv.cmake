@@ -40,13 +40,11 @@ file(COPY ${CORE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
           ${CORE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
-# copy standard add-on include files
-file(COPY ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/
-     DESTINATION ${APP_INCLUDE_DIR} REGEX ".txt" EXCLUDE)
-
 ### copy all the addon binding header files to include/kodi
 include(${CORE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
-file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/ DESTINATION ${APP_INCLUDE_DIR})
+file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/
+     DESTINATION ${APP_INCLUDE_DIR}
+     REGEX ".txt" EXCLUDE)
 
 ### processing additional tools required by the platform
 if(EXISTS ${CORE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/tools/)

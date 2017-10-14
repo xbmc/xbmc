@@ -422,14 +422,9 @@ endif()
 
 # Prepare add-on build env
 include(${CORE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
-file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/ DESTINATION ${CORE_BUILD_DIR}/include/${APP_NAME_LC})
-file(GLOB_RECURSE ADDON_HEADERS
-     RELATIVE ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
-    ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/*.h)
-foreach(header ${ADDON_HEADERS})
-  configure_file(${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/${header}
-                 ${CORE_BUILD_DIR}/include/kodi/${header} COPYONLY)
-endforeach()
+file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/
+     DESTINATION ${CORE_BUILD_DIR}/include/${APP_NAME_LC}
+     REGEX ".txt" EXCLUDE)
 
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
 set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})

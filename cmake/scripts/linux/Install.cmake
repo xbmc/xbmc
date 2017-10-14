@@ -147,7 +147,7 @@ endif()
 
 # Install kodi-addon-dev headers
 include(${CMAKE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/ ${CORE_ADDON_BINDINGS_DIRS}/
+install(DIRECTORY ${CORE_ADDON_BINDINGS_DIRS}/
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev
         REGEX ".txt" EXCLUDE)
