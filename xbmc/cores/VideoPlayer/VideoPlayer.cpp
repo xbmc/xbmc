@@ -1275,14 +1275,6 @@ void CVideoPlayer::Prepare()
 
   OpenDefaultStreams();
 
-  // look for any EDL files
-  m_Edl.Clear();
-  if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
-  {
-    float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-    m_Edl.ReadEditDecisionLists(m_item.GetPath(), fFramesPerSecond, m_CurrentVideo.hint.height);
-  }
-
   /*
    * Check to see if the demuxer should start at something other than time 0. This will be the case
    * if there was a start time specified as part of the "Start from where last stopped" (aka
@@ -3679,6 +3671,14 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
     if (!player->OpenStream(hint))
       return false;
+
+    // look for any EDL files
+    m_Edl.Clear();
+    if (hint.fpsrate > 0 && hint.fpsscale > 0)
+    {
+      float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+      m_Edl.ReadEditDecisionLists(m_item.GetPath(), fFramesPerSecond, m_CurrentVideo.hint.height);
+    }
 
     if (s.stereo_mode == "mono")
       s.stereo_mode = "";
