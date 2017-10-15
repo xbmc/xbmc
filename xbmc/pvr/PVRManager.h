@@ -125,11 +125,6 @@ namespace PVR
     void Init(void);
 
     /*!
-     * @brief Reinit PVRManager.
-     */
-    void Reinit(void);
-
-    /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
      */
     void Start();

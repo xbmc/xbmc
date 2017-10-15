@@ -47,7 +47,6 @@ CPVRGUIInfo::CPVRGUIInfo(void) :
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
 {
-  Stop();
 }
 
 void CPVRGUIInfo::ResetProperties(void)

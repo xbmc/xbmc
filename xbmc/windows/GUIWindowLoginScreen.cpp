@@ -279,7 +279,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CServiceBroker::GetServiceAddons().Stop();
 
   // stop PVR related services
-  CServiceBroker::GetPVRManager().Unload();
+  CServiceBroker::GetPVRManager().Stop();
 
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
@@ -326,7 +326,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CServiceBroker::GetContextMenuManager().Init();
 
   // restart PVR services
-  CServiceBroker::GetPVRManager().Reinit();
+  CServiceBroker::GetPVRManager().Init();
 
   CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
 
