@@ -7,6 +7,7 @@ set(SOURCES GUIGameRenderManager.cpp
             RenderContext.cpp
             RenderGeometry.cpp
             RenderSettings.cpp
+            RenderTranslator.cpp
             RenderVideoSettings.cpp
             RPRenderManager.cpp
 )
@@ -23,6 +24,7 @@ set(HEADERS GUIGameRenderManager.h
             RenderContext.h
             RenderGeometry.h
             RenderSettings.h
+            RenderTranslator.h
             RenderVideoSettings.h
             RPRenderManager.h
 )
