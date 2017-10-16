@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -6835,6 +6836,9 @@
+@@ -7038,6 +7038,9 @@
                                       $CONFIG_EXTRA      \
                                       $ALL_COMPONENTS    \
  
@@ -8,5 +8,5 @@
 +echo "#undef HAVE_UNISTD_H" >> $TMPH
 +echo "#endif" >> $TMPH
  echo "#endif /* FFMPEG_CONFIG_H */" >> $TMPH
- echo "endif # FFMPEG_CONFIG_MAK" >> config.mak
+ echo "endif # FFMPEG_CONFIG_MAK" >> ffbuild/config.mak
  
