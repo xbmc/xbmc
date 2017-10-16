@@ -80,7 +80,7 @@
 #define ACTION_CALIBRATE_SWAP_ARROWS  47 //!< select next arrow. Can b used in: settingsScreenCalibration.xml windowid=11
 #define ACTION_CALIBRATE_RESET        48 //!< reset calibration to defaults. Can b used in: `settingsScreenCalibration.xml` windowid=11/settingsUICalibration.xml windowid=10
 #define ACTION_ANALOG_MOVE            49 //!< analog thumbstick move. Can b used in: `slideshow.xml` windowid=2007/settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
-                                         //!< @note see also ACTION_ANALOG_MOVE_X, ACTION_ANALOG_MOVE_Y
+                                         //!< @note see also ACTION_ANALOG_MOVE_X_LEFT, ACTION_ANALOG_MOVE_X_RIGHT, ACTION_ANALOG_MOVE_Y_UP, ACTION_ANALOG_MOVE_Y_DOWN
 #define ACTION_ROTATE_PICTURE_CW      50 //!< rotate current picture clockwise during slideshow. Can be used in slideshow.xml window id=2007
 #define ACTION_ROTATE_PICTURE_CCW     51 //!< rotate current picture counterclockwise during slideshow. Can be used in slideshow.xml window id=2007
 
@@ -302,8 +302,10 @@
 #define ACTION_GESTURE_END            599
 
 // other, non-gesture actions
-#define ACTION_ANALOG_MOVE_X            601 //!< analog thumbstick move, horizontal axis; see ACTION_ANALOG_MOVE
-#define ACTION_ANALOG_MOVE_Y            602 //!< analog thumbstick move, vertical axis; see ACTION_ANALOG_MOVE
+#define ACTION_ANALOG_MOVE_X_LEFT       601 //!< analog thumbstick move, horizontal axis, left; see ACTION_ANALOG_MOVE
+#define ACTION_ANALOG_MOVE_X_RIGHT      602 //!< analog thumbstick move, horizontal axis, right; see ACTION_ANALOG_MOVE
+#define ACTION_ANALOG_MOVE_Y_UP         603 //!< analog thumbstick move, vertical axis, up; see ACTION_ANALOG_MOVE
+#define ACTION_ANALOG_MOVE_Y_DOWN       604 //!< analog thumbstick move, vertical axis, down; see ACTION_ANALOG_MOVE
 //@}
 
 // The NOOP action can be specified to disable an input event. This is

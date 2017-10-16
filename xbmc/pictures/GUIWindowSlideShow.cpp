@@ -878,12 +878,17 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     // this action is used and works, when CAction object provides both x and y coordinates
     Move(action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG, -action.GetAmount(1)*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
-  case ACTION_ANALOG_MOVE_X:
-    // this and following action are used and work, when CAction object provides either x of y coordinate
+  case ACTION_ANALOG_MOVE_X_LEFT:
+    Move(-action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG, 0.0f);
+    break;
+  case ACTION_ANALOG_MOVE_X_RIGHT:
     Move(action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG, 0.0f);
     break;
-  case ACTION_ANALOG_MOVE_Y:
-    Move(0.0f, action.GetAmount(0)*PICTURE_MOVE_AMOUNT_ANALOG);
+  case ACTION_ANALOG_MOVE_Y_UP:
+    Move(0.0f, -action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG);
+    break;
+  case ACTION_ANALOG_MOVE_Y_DOWN:
+    Move(0.0f, action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
 
   default:

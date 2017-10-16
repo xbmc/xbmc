@@ -239,10 +239,10 @@
       <down>ZoomOut</down>
       <left>PreviousPicture</left>
       <right>NextPicture</right>
-      <leftstick direction="left">AnalogMoveX</leftstick>
-      <leftstick direction="right">AnalogMoveX</leftstick>
-      <leftstick direction="up">AnalogMoveY</leftstick>
-      <leftstick direction="down">AnalogMoveY</leftstick>
+      <leftstick direction="left">AnalogMoveXLeft</leftstick>
+      <leftstick direction="right">AnalogMoveXRight</leftstick>
+      <leftstick direction="up">AnalogMoveYUp</leftstick>
+      <leftstick direction="down">AnalogMoveYDown</leftstick>
       <lefttrigger>ZoomOut</lefttrigger>
       <righttrigger>ZoomIn</righttrigger>
     </joystick>
