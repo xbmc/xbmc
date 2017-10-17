@@ -146,18 +146,13 @@ if(NOT WITH_TEXTUREPACKER)
 endif()
 
 # Install kodi-addon-dev headers
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/
+include(${CMAKE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
+install(DIRECTORY ${CORE_ADDON_BINDINGS_DIRS}/
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev
         REGEX ".txt" EXCLUDE)
 
-install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/DemuxPacket.h
-              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/DemuxCrypto.h
-              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/Interface/Addon/TimingConstants.h
-              ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
-              ${CMAKE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
-              ${CMAKE_SOURCE_DIR}/xbmc/input/ActionIDs.h
-              ${CMAKE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
+install(FILES ${CORE_ADDON_BINDINGS_FILES}
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 
