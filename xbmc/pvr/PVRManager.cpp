@@ -147,7 +147,9 @@ CPVRManager::CPVRManager(void) :
     m_recordings(new CPVRRecordings),
     m_timers(new CPVRTimers),
     m_addons(new CPVRClients),
+    m_guiInfo(new CPVRGUIInfo),
     m_guiActions(new CPVRGUIActions),
+    m_database(new CPVRDatabase),
     m_bFirstStart(true),
     m_bEpgsCreated(false),
     m_managerState(ManagerStateStopped),
@@ -232,6 +234,7 @@ CPVREpgContainer& CPVRManager::EpgContainer()
 void CPVRManager::Clear(void)
 {
   m_pendingUpdates.Clear();
+  m_epgContainer.Clear();
 
   CSingleLock lock(m_critSection);
 
@@ -265,14 +268,13 @@ void CPVRManager::Init()
   CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
 }
 
-void CPVRManager::Reinit()
-{
-  Init();
-}
-
 void CPVRManager::Start()
 {
   CSingleLock initLock(m_startStopMutex);
+
+  // Prevent concurrent starts
+  if (IsInitialising())
+    return;
 
   // Note: Stop() must not be called while holding pvr manager's mutex. Stop() calls
   // StopThread() which can deadlock if the worker thread tries to acquire pvr manager's
@@ -285,12 +287,8 @@ void CPVRManager::Start()
   if (!m_addons->HasCreatedClients())
     return;
 
-  ResetProperties();
+  CLog::Log(LOGNOTICE, "PVR Manager: Starting");
   SetState(ManagerStateStarting);
-
-  m_pendingUpdates.Start();
-
-  m_database->Open();
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
@@ -301,39 +299,36 @@ void CPVRManager::Stop(void)
 {
   CSingleLock initLock(m_startStopMutex);
 
-  /* check whether the pvrmanager is loaded */
+  // Prevent concurrent stops
   if (IsStopped())
     return;
 
   /* stop playback if needed */
   if (IsPlaying())
   {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
+  CLog::Log(LOGNOTICE, "PVR Manager: Stopping");
   SetState(ManagerStateStopping);
 
   m_pendingUpdates.Stop();
-
-  /* stop the EPG updater, since it might be using the pvr add-ons */
   m_epgContainer.Stop();
-
-  CLog::Log(LOGNOTICE, "PVRManager - stopping");
-
-  /* stop all update threads */
-  SetState(ManagerStateInterrupted);
+  m_guiInfo->Stop();
 
   StopThread();
 
-  if (m_guiInfo)
-    m_guiInfo->Stop();
+  SetState(ManagerStateInterrupted);
 
-  /* close database */
-  const CPVRDatabasePtr database(GetTVDatabase());
-  if (database)
-    database->Close();
+  CSingleLock lock(m_critSection);
 
+  UnloadComponents();
+  m_database->Close();
+
+  ResetProperties();
+
+  CLog::Log(LOGNOTICE, "PVR Manager: Stopped");
   SetState(ManagerStateStopped);
 }
 
@@ -342,10 +337,6 @@ void CPVRManager::Unload()
   // stop pvr manager thread and clear all pvr data
   Stop();
   Clear();
-
-  // stop epg container thread and clear all epg data
-  m_epgContainer.Stop();
-  m_epgContainer.Clear();
 }
 
 void CPVRManager::Deinit()
@@ -416,7 +407,7 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  m_epgContainer.Stop();
+  m_database->Open();
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
@@ -427,12 +418,17 @@ void CPVRManager::Process(void)
   }
 
   if (!IsInitialising())
+  {
+    CLog::Log(LOGNOTICE, "PVR Manager: Start aborted");
     return;
+  }
 
   m_guiInfo->Start();
   m_epgContainer.Start(true);
+  m_pendingUpdates.Start();
 
   SetState(ManagerStateStarted);
+  CLog::Log(LOGNOTICE, "PVR Manager: Started");
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
@@ -470,14 +466,6 @@ void CPVRManager::Process(void)
   }
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - leaving main loop", __FUNCTION__);
-
-  UnloadComponents();
-
-  if (IsStarted())
-  {
-    CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    Reinit();
-  }
 }
 
 bool CPVRManager::SetWakeupCommand(void)
