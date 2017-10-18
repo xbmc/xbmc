@@ -26,7 +26,7 @@
 #include "utils/URIUtils.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#include "settings/dialogs/GUIDialogContentSettings.h"
+#include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
@@ -263,7 +263,6 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
     return false;
 
   // Set things up for processing artist or albums
-  CContextButtons buttons;
   CONTENT_TYPE content = CONTENT_ALBUMS;
   int id = params.GetAlbumId();
   if (id == -1)
@@ -272,47 +271,30 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
     id = params.GetArtistId();
   }
 
-  // Submenu to select what range of items to change information provider for 
-  if (content == CONTENT_ARTISTS)
-  {
-    buttons.Add(CONTEXT_BUTTON_EDIT, 38064); //Set for this specifc artist
-    buttons.Add(CONTEXT_BUTTON_SETTINGS, 38065); //Set for all artists shown
-  }
-  else
-  {
-    buttons.Add(CONTEXT_BUTTON_EDIT, 38066); //Set for this specific album
-    buttons.Add(CONTEXT_BUTTON_SETTINGS, 38067); //Set for all albums shown
-  }
-  buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 38063); //Change default information provider
-
-  bool result = false;
-  int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-  if (button < 0)
-    return false;
-  
   ADDON::ScraperPtr scraper;
   // Get specific scraper and settings for current  item or use default
   if (!m_musicdatabase.GetScraper(id, content, scraper))
   {
     ADDON::AddonPtr defaultScraper;
     if (ADDON::CAddonSystemSettings::GetInstance().GetActive(
-    ADDON::ScraperTypeFromContent(content), defaultScraper))
+        ADDON::ScraperTypeFromContent(content), defaultScraper))
     {
-    scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
+      scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
     }
   }
 
   // Set Information provider and settings
-  if (CGUIDialogContentSettings::Show(scraper, content))
+  int applyto = CGUIDialogInfoProviderSettings::Show(scraper);
+  if (applyto >= 0)
   {
+    bool result = false;
     CVariant msgctxt;
-    CONTEXT_BUTTON action = static_cast<CONTEXT_BUTTON>(button);
-    switch (action)
+    switch (applyto)
     {
-    case CONTEXT_BUTTON_EDIT: // Change information provider for specific item
+    case INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_THISITEM: // Change information provider for specific item
       result = m_musicdatabase.SetScraper(id, content, scraper);
       break;
-    case CONTEXT_BUTTON_SETTINGS: // Change information provider for the filtered items shown on this node
+    case INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_ALLVIEW: // Change information provider for the filtered items shown on this node
       {
         msgctxt = 38069;
         if (content == CONTENT_ARTISTS)
@@ -338,7 +320,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
         }
       }
       break;
-    case CONTEXT_BUTTON_SET_DEFAULT: // Change information provider for all items
+    case INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_DEFAULT: // Change information provider for all items
       {
         msgctxt = 38071; 
         if (content == CONTENT_ARTISTS)
@@ -367,7 +349,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
       return false;
 
     // Refresh additional information using the new settings
-    if (action == CONTEXT_BUTTON_SETTINGS || action == CONTEXT_BUTTON_SET_DEFAULT)
+    if (applyto == INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_ALLVIEW || applyto == INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_DEFAULT)
     { 
       // Change information provider, all artists or albums
       if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38072}))
