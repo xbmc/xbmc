@@ -288,7 +288,8 @@ int CEncoderFFmpeg::Encode(int nNumBytesRead, uint8_t* pbtStream)
 
 bool CEncoderFFmpeg::WriteFrame()
 {
-  int encoded, got_output;
+  int ret = 0;
+  int got_output = 0;
   AVFrame* frame;
 
   av_init_packet(&m_Pkt);
@@ -306,12 +307,18 @@ bool CEncoderFFmpeg::WriteFrame()
   }
   else frame = m_BufferFrame;
 
-  encoded = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
+  ret = avcodec_send_frame(m_CodecCtx, frame);
+
+  if (ret >= 0)
+    ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
+
+  if (ret >= 0)
+    got_output = 1;
 
   m_BufferSize = 0;
 
-  if (encoded < 0) {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error encoding audio: %i", encoded);
+  if (ret < 0) {
+    CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error encoding audio: %i", ret);
     return false;
   }
 
