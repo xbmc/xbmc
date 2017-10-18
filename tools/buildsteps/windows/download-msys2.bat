@@ -262,9 +262,9 @@ if "%searchRes%"=="local64" GOTO installbase
         echo.%instdir%\downloads2\       /var/cache/pacman/pkg
         echo.%instdir%\win32\            /depends/win32
         echo.%instdir%\x64\              /depends/x64
-        echo.%instdir%\arm-uwp\          /depends/arm-uwp
-        echo.%instdir%\win32-uwp\        /depends/win32-uwp
-        echo.%instdir%\x64-uwp\          /depends/x64-uwp
+        echo.%instdir%\win10-arm\        /depends/win10-arm
+        echo.%instdir%\win10-win32\      /depends/win10-win32
+        echo.%instdir%\win10-x64\        /depends/win10-x64
         echo.%instdir%\..\..\            /xbmc
         )>>%instdir%\%msys2%\etc\fstab.
 

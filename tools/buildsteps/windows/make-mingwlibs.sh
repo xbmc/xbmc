@@ -51,7 +51,7 @@ if [[ $win10 = "no" ]]; then
   export _WIN32_WINNT=0x0600
   export NTDDI_VERSION=0x06000000
 elif [[ $win10 = "yes" ]]; then
-  TRIPLET=$TRIPLET-uwp
+  TRIPLET=win10-$TRIPLET
 fi
 
 export TRIPLET ARCH TOOLS
