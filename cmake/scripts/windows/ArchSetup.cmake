@@ -17,14 +17,15 @@ set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
 
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
-
 set(CMAKE_SYSTEM_NAME Windows)
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies/mingwlibs/${ARCH})
-list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies/mingwlibs/${ARCH}/bin)
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH})
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies)
-set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/include/python)
+set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
+set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/${ARCH})
+set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH})
 
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${MINGW_LIBS_DIR})
+list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${DEPENDENCIES_DIR})
+set(PYTHON_INCLUDE_DIR ${DEPENDENCIES_DIR}/include/python)
 
 # -------- Compiler options ---------
 
@@ -56,14 +57,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 
 # For #pragma comment(lib X)
 # TODO: It would certainly be better to handle these libraries via CMake modules.
-if(${ARCH} STREQUAL win32)
-  link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
-                   ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/lib
-                   ${CMAKE_SOURCE_DIR}/project/BuildDependencies/lib)
-else()
-  link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
-                   ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/lib)
-endif()
+link_directories(${DEPENDENCIES_DIR}/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib

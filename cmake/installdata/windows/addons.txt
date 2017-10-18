@@ -1,1 +1,2 @@
 addons/repository.pvr-win32.xbmc.org/*
+project/BuildDependencies/${ARCH}/addons KEEP_DIR_STRUCTURE addons
