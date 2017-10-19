@@ -14,6 +14,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml
                    COMMAND ${CMAKE_COMMAND}
                            -DCMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                            -DCORE_BINARY_DIR=${CMAKE_BINARY_DIR}
+                           -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                            -P ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAddonXml.cmake
                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                    DEPENDS ${JSON_SRCS} ${CMAKE_SOURCE_DIR}/addons/xbmc.json/addon.xml.in
