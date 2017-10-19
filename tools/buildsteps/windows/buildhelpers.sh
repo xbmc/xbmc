@@ -129,7 +129,12 @@ do_download() {
   for patch in ${patches[@]}; do
     echo "Applying patch ${patch}"
     if [[ -f $patch ]]; then
-      patch -d $LOCALSRCDIR -i $patch -N -r - || exit $?
+      patch -d $LOCALSRCDIR --dry-run --reverse --force -i $patch 2>&1 > /dev/null
+      if [ $? == 0 ]; then
+        echo "  Patch already applied - skipping."
+      else
+        patch -d $LOCALSRCDIR -i $patch -N -r - || exit $?
+      fi
     fi
   done
 }
