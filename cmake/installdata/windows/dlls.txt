@@ -1,4 +1,3 @@
-system/*.dll .
 project/BuildDependencies/${ARCH}/bin/libbluray*.jar .
 project/BuildDependencies/${ARCH}/bin/*.dll .
 project/BuildDependencies/mingwlibs/${ARCH}/bin/*.dll .
