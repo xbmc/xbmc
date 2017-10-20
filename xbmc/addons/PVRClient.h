@@ -847,6 +847,18 @@ namespace PVR
     void OnPowerSavingDeactivated();
 
     /*!
+     * @brief Get the priority of this client. Larger value means higher priority.
+     * @return The priority.
+     */
+    int GetPriority() const;
+
+    /*!
+     * @brief Set a new priority for this client.
+     * @param iPriority The new priority.
+     */
+    void SetPriority(int iPriority);
+
+    /*!
      * @brief To get the interface table used between addon and kodi
      * @todo This function becomes removed after old callback library system
      * is removed.
@@ -1061,7 +1073,9 @@ namespace PVR
     bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
-    int                    m_iClientId;            /*!< database ID of the client */
+    int                    m_iClientId;            /*!< unique ID of the client */
+    mutable int            m_iPriority;            /*!< priority of the client */
+    mutable bool           m_bPriorityFetched;
 
     /* cached data */
     std::string            m_strBackendName;       /*!< the cached backend version */

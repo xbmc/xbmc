@@ -6301,6 +6301,7 @@ msgstr ""
 #: xbmc/platform/win32/WIN32Util.cpp
 #: xbmc/pvr/addons/PVRClients.cpp
 #: xbmc/pvr/channels/PVRChannel.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRClientPriorities.cpp
 #: xbmc/pvr/PVRGUIInfo.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/PlayerController.cpp
@@ -10706,6 +10707,13 @@ msgstr ""
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19239"
 msgid "Starting background threads"
+msgstr ""
+
+#. label for pvr settings client priorities control and client priorities dialog heading.
+#: system/settings/settings.xml
+#: xbmc/pvr/dialogs/GUIDialogPVRClientPriorities.cpp
+msgctxt "#19240"
+msgid "Client priorities"
 msgstr ""
 
 #empty string with id 19240
@@ -18371,7 +18379,10 @@ msgctxt "#36209"
 msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
-#empty string with id 36210
+#: system/settings/settings.xml
+msgctxt "#36210"
+msgid "Open the client priorities dialog which allows modifying the priority for enabled PVR clients according to your personal preferences, for instance to order channels client by client. Higher value means higher priority."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"

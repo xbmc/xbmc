@@ -43,6 +43,7 @@ CPVRActionListener::CPVRActionListener()
     CSettings::SETTING_PVRPARENTAL_ENABLED,
     CSettings::SETTING_PVRMANAGER_RESETDB,
     CSettings::SETTING_EPG_RESETEPG,
+    CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES,
     CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
     CSettings::SETTING_PVRMANAGER_GROUPMANAGER,
     CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
@@ -222,6 +223,18 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
     CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(true);
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES)
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      if (dialog)
+      {
+        dialog->Open();
+        CServiceBroker::GetPVRManager().ChannelGroups()->Update();
+      }
+    }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
   {

@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 

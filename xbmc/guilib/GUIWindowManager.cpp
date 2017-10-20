@@ -128,6 +128,7 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
+#include "pvr/dialogs/GUIDialogPVRClientPriorities.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
@@ -284,6 +285,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRChannelsOSD);
   Add(new CGUIDialogPVRChannelGuide);
   Add(new CGUIDialogPVRRecordingSettings);
+  Add(new CGUIDialogPVRClientPriorities);
 
   Add(new CGUIDialogSelect);
   Add(new CGUIDialogMusicInfo);
@@ -388,6 +390,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_PVR_CHANNEL_GUIDE);
     DestroyWindow(WINDOW_DIALOG_OSD_TELETEXT);
     DestroyWindow(WINDOW_DIALOG_PVR_RECORDING_SETTING);
+    DestroyWindow(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
 
     DestroyWindow(WINDOW_DIALOG_TEXT_VIEWER);
     DestroyWindow(WINDOW_DIALOG_PLAY_EJECT);

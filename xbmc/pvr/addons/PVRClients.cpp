@@ -1086,23 +1086,21 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
       {
         int iClientId = ClientIdFromAddonId(addon->ID());
 
+        CPVRClientPtr client;
         if (IsKnownClient(addon))
         {
-          CPVRClientPtr client;
           GetClient(iClientId, client);
-          addonsToCreate.emplace_back(std::make_pair(client, iClientId));
         }
         else
         {
-          CPVRClientPtr client = std::dynamic_pointer_cast<CPVRClient>(addon);
+          client = std::dynamic_pointer_cast<CPVRClient>(addon);
           if (!client)
           {
             CLog::Log(LOGERROR, "CPVRClients - %s - severe error, incorrect add-on type", __FUNCTION__);
             continue;
           }
-
-          addonsToCreate.emplace_back(std::make_pair(client, iClientId));
         }
+        addonsToCreate.emplace_back(std::make_pair(client, iClientId));
       }
       else if (IsCreatedClient(addon))
       {

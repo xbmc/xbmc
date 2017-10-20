@@ -22,6 +22,8 @@
 
 #include "PVRChannelGroup.h"
 
+#include <algorithm>
+
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
@@ -343,14 +345,19 @@ struct sortByClientChannelNumber
 {
   bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
-    if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
+    if (channel1.iClientPriority == channel2.iClientPriority)
     {
-      if (channel1.channel->ClientSubChannelNumber() > 0 || channel2.channel->ClientSubChannelNumber() > 0)
-        return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
-      else
-        return channel1.channel->ChannelName() < channel2.channel->ChannelName();
+      if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
+      {
+        if (channel1.channel->ClientSubChannelNumber() > 0 || channel2.channel->ClientSubChannelNumber() > 0)
+          return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
+        else
+          return channel1.channel->ChannelName() < channel2.channel->ChannelName();
+      }
+      return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
     }
-    return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
+    else
+      return channel1.iClientPriority > channel2.iClientPriority;
   }
 };
 
@@ -392,6 +399,37 @@ void CPVRChannelGroup::SortByChannelNumber(void)
   CSingleLock lock(m_critSection);
   if (!PreventSortAndRenumber())
     sort(m_sortedMembers.begin(), m_sortedMembers.end(), sortByChannelNumber());
+}
+
+bool CPVRChannelGroup::UpdateClientPriorities()
+{
+  const CPVRClientsPtr clients = CServiceBroker::GetPVRManager().Clients();
+  bool bChanged = false;
+
+  CSingleLock lock(m_critSection);
+
+  for (auto& member : m_sortedMembers)
+  {
+    int iNewPriority = 0;
+
+    if (m_bUsingBackendChannelOrder)
+    {
+      CPVRClientPtr client;
+      if (!clients->GetCreatedClient(member.channel->ClientID(), client))
+        continue;
+
+      iNewPriority = client->GetPriority();
+    }
+    else
+    {
+      iNewPriority = 0;
+    }
+
+    bChanged |= (member.iClientPriority != iNewPriority);
+    member.iClientPriority = iNewPriority;
+  }
+
+  return bChanged;
 }
 
 /********** getters **********/
@@ -642,22 +680,16 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
 
 bool CPVRChannelGroup::IsMissingChannelsFromClient(int iClientId) const
 {
-  for (int iFailedClientID : m_failedClientsForChannels)
-  {
-    if (iFailedClientID == iClientId)
-      return true;
-  }
-  return false;
+  return std::find(m_failedClientsForChannels.begin(),
+                   m_failedClientsForChannels.end(),
+                   iClientId) != m_failedClientsForChannels.end();
 }
 
 bool CPVRChannelGroup::IsMissingChannelGroupMembersFromClient(int iClientId) const
 {
-  for (auto iFailedClientID : m_failedClientsForChannelGroupMembers)
-  {
-    if (iFailedClientID == iClientId)
-      return true;
-  }
-  return false;
+  return std::find(m_failedClientsForChannelGroupMembers.begin(),
+                   m_failedClientsForChannelGroupMembers.end(),
+                   iClientId) != m_failedClientsForChannelGroupMembers.end();
 }
 
 bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
@@ -700,7 +732,8 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
       {
         return  group.channel == it.channel &&
                 group.iChannelNumber == it.iChannelNumber &&
-                group.iSubChannelNumber == it.iSubChannelNumber;
+                group.iSubChannelNumber == it.iSubChannelNumber &&
+                group.iClientPriority == it.iClientPriority;
       });
 
       if (possiblyRemovedGroup != m_sortedMembers.end())
@@ -728,11 +761,13 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   bool bRemoved(false);
 
   CSingleLock lock(m_critSection);
-  /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
+  /* sort by client channel number if this is the first time or if SETTING_PVRMANAGER_BACKENDCHANNELORDER is true */
   bool bUseBackendChannelNumbers(m_members.empty() || m_bUsingBackendChannelOrder);
 
   bRemoved = RemoveDeletedChannels(channels);
   bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers) || bRemoved;
+
+  bChanged |= UpdateClientPriorities();
 
   if (bChanged)
   {
@@ -995,13 +1030,15 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER || settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS)
   {
-    CSingleLock lock(m_critSection);
     bool bUsingBackendChannelOrder   = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
     bool bUsingBackendChannelNumbers = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
-    bool bChannelNumbersChanged      = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
-    bool bChannelOrderChanged        = m_bUsingBackendChannelOrder != bUsingBackendChannelOrder;
 
-    m_bUsingBackendChannelOrder   = bUsingBackendChannelOrder;
+    CSingleLock lock(m_critSection);
+
+    bool bChannelNumbersChanged = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
+    bool bChannelOrderChanged = m_bUsingBackendChannelOrder != bUsingBackendChannelOrder;
+
+    m_bUsingBackendChannelOrder = bUsingBackendChannelOrder;
     m_bUsingBackendChannelNumbers = bUsingBackendChannelNumbers;
 
     /* check whether this channel group has to be renumbered */
@@ -1009,6 +1046,10 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     {
       CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - renumbering group '%s' to use the backend channel order and/or numbers",
           __FUNCTION__, m_strGroupName.c_str());
+
+      if (bChannelOrderChanged)
+        UpdateClientPriorities();
+
       SortAndRenumber();
       Persist();
     }

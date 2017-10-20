@@ -166,6 +166,7 @@ public:
   static const std::string SETTING_PVRMANAGER_SYNCCHANNELGROUPS;
   static const std::string SETTING_PVRMANAGER_BACKENDCHANNELORDER;
   static const std::string SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS;
+  static const std::string SETTING_PVRMANAGER_CLIENTPRIORITIES;
   static const std::string SETTING_PVRMANAGER_CHANNELMANAGER;
   static const std::string SETTING_PVRMANAGER_GROUPMANAGER;
   static const std::string SETTING_PVRMANAGER_CHANNELSCAN;

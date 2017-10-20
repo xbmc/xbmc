@@ -44,6 +44,8 @@ namespace PVR
     CPVRChannelPtr channel;
     unsigned int   iChannelNumber;
     unsigned int   iSubChannelNumber;
+    int iClientPriority;
+
   } PVRChannelGroupMember;
 
   typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
@@ -508,6 +510,11 @@ namespace PVR
      * @brief Sort the current channel list by channel number.
      */
     void SortByChannelNumber(void);
+
+    /*!
+     * @brief Update the priority for all members of all channel groups.
+     */
+    bool UpdateClientPriorities();
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */

@@ -32,6 +32,7 @@ namespace PVR
   class CPVRChannelGroup;
   class CPVRChannel;
   class CPVRChannelGroups;
+  class CPVRClient;
 
   /** The PVR database */
 
@@ -59,13 +60,43 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 31; }
+    int GetSchemaVersion() const override { return 32; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
     const char *GetBaseDBName() const override { return "TV"; }
+
+    /*! @name Client methods */
+    //@{
+
+    /*!
+     * @brief Remove all client entries from the database.
+     * @return True if all client entries were removed, false otherwise.
+     */
+    bool DeleteClients();
+
+    /*!
+     * @brief Add or update a client entry in the database
+     * @param client The client to persist.
+     * @return True when persisted, false otherwise.
+     */
+    bool Persist(const CPVRClient &client);
+
+    /*!
+     * @brief Remove a client entry from the database
+     * @param client The client to remove.
+     * @return True if the client was removed, false otherwise.
+     */
+    bool Delete(const CPVRClient &client);
+
+    /*!
+     * @brief Get the priority for a given client from the database.
+     * @param client The client.
+     * @return The priority.
+     */
+    int GetPriority(const CPVRClient &client);
 
     /*! @name Channel methods */
     //@{

@@ -39,6 +39,7 @@ extern "C" {
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -103,6 +104,7 @@ void CPVRClient::OnPostUnInstall()
 {
   CAddon::OnPostUnInstall();
   CServiceBroker::GetPVRManager().Clients()->UpdateAddons();
+  CServiceBroker::GetPVRManager().GetTVDatabase()->Delete(*this);
 }
 
 ADDON::AddonPtr CPVRClient::GetRunningInstance() const
@@ -122,6 +124,8 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_prevConnectionState   = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient          = false;
   m_iClientId             = iClientId;
+  m_iPriority             = 0;
+  m_bPriorityFetched      = false;
   m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
@@ -1728,6 +1732,31 @@ void CPVRClient::OnPowerSavingDeactivated(void)
     return;
 
   m_struct.toAddon.OnPowerSavingDeactivated();
+}
+
+void CPVRClient::SetPriority(int iPriority)
+{
+  CSingleLock lock(m_critSection);
+  if (m_iPriority != iPriority)
+  {
+    m_iPriority = iPriority;
+    if (m_iClientId > PVR_INVALID_CLIENT_ID)
+    {
+      CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
+      m_bPriorityFetched = true;
+    }
+  }
+}
+
+int CPVRClient::GetPriority() const
+{
+  CSingleLock lock(m_critSection);
+  if (!m_bPriorityFetched && m_iClientId > PVR_INVALID_CLIENT_ID)
+  {
+    m_iPriority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
+    m_bPriorityFetched = true;
+  }
+  return m_iPriority;
 }
 
 void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)

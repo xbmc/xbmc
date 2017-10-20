@@ -1508,6 +1508,10 @@ namespace PVR
 
       /* delete all channels */
       pvrDatabase->DeleteChannels();
+      pDlgProgress->SetPercentage(70);
+      pDlgProgress->Progress();
+
+      pvrDatabase->DeleteClients();
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
 

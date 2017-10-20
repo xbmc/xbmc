@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -95,6 +96,14 @@ void CPVRDatabase::CreateTables()
         "iSubChannelNumber integer"
       ")"
   );
+
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE clients ("
+        "idClient  integer primary key, "
+        "iPriority integer"
+      ")"
+  );
 }
 
 void CPVRDatabase::CreateAnalytics()
@@ -102,6 +111,7 @@ void CPVRDatabase::CreateAnalytics()
   CSingleLock lock(m_critSection);
 
   CLog::Log(LOGINFO, "%s - creating indices", __FUNCTION__);
+  m_pDS->exec("CREATE INDEX idx_clients_idClient on clients(idClient);");
   m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
   m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
   m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
@@ -148,6 +158,67 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 29)
     m_pDS->exec("ALTER TABLE channelgroups ADD iPosition integer");
+
+  if (iVersion < 32)
+    m_pDS->exec("CREATE TABLE clients (idClient integer primary key, iPriority integer)");
+}
+
+/********** Client methods **********/
+
+bool CPVRDatabase::DeleteClients()
+{
+  CLog::Log(LOGDEBUG, "PVR - %s - deleting all clients from the database", __FUNCTION__);
+
+  CSingleLock lock(m_critSection);
+  return DeleteValues("clients");
+}
+
+bool CPVRDatabase::Persist(const CPVRClient &client)
+{
+  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+    return false;
+
+  CLog::Log(LOGDEBUG, "PVR - %s - Persisting client '%s' to database", __FUNCTION__, client.ID().c_str());
+
+  CSingleLock lock(m_critSection);
+
+  const std::string strQuery = PrepareSQL("REPLACE INTO clients (idClient, iPriority) VALUES (%i, %i);",
+                                          client.GetID(), client.GetPriority());
+
+  return ExecuteQuery(strQuery);
+}
+
+bool CPVRDatabase::Delete(const CPVRClient &client)
+{
+  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+    return false;
+
+  CLog::Log(LOGDEBUG, "PVR - %s - deleting client '%s' from the database", __FUNCTION__, client.ID().c_str());
+
+  CSingleLock lock(m_critSection);
+
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idClient = '%i'", client.GetID()));
+
+  return DeleteValues("clients", filter);
+}
+
+int CPVRDatabase::GetPriority(const CPVRClient &client)
+{
+  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+    return 0;
+
+  CLog::Log(LOGDEBUG, "PVR - %s - getting priority for client '%s' from the database", __FUNCTION__, client.ID().c_str());
+
+  CSingleLock lock(m_critSection);
+
+  const std::string strWhereClause = PrepareSQL("idClient = '%i'", client.GetID());
+  const std::string strValue = GetSingleValue("clients", "iPriority", strWhereClause);
+
+  if (strValue.empty())
+    return 0;
+
+  return atoi(strValue.c_str());
 }
 
 /********** Channel methods **********/

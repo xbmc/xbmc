@@ -1251,6 +1251,13 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
+          <level>2</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.clientpriorities" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
           <level>1</level>
           <control type="button" format="action" />
