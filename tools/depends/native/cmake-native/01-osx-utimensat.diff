@@ -1,0 +1,35 @@
+--- a/Source/kwsys/kwsysPlatformTestsCXX.cxx
++++ b/Source/kwsys/kwsysPlatformTestsCXX.cxx
+@@ -265,6 +265,12 @@ int main()
+ #ifdef TEST_KWSYS_CXX_HAS_UTIMENSAT
+ #include <fcntl.h>
+ #include <sys/stat.h>
++#if defined(__APPLE__)
++#include <AvailabilityMacros.h>
++#if MAC_OS_X_VERSION_MIN_REQUIRED < 101300
++#error "utimensat not available on macOS < 10.13"
++#endif
++#endif
+ int main()
+ {
+   struct timespec times[2] = { { 0, UTIME_OMIT }, { 0, UTIME_NOW } };
+--- a/Utilities/cmlibarchive/libarchive/archive_platform.h
++++ b/Utilities/cmlibarchive/libarchive/archive_platform.h
+@@ -52,6 +52,17 @@
+ #error Oops: No config.h and no pre-built configuration in archive_platform.h.
+ #endif
+ 
++/* On macOS check for some symbols based on the deployment target version.  */
++#if defined(__APPLE__)
++# undef HAVE_FUTIMENS
++# undef HAVE_UTIMENSAT
++# include <AvailabilityMacros.h>
++# if MAC_OS_X_VERSION_MIN_REQUIRED >= 101300
++#  define HAVE_FUTIMENS 1
++#  define HAVE_UTIMENSAT 1
++# endif
++#endif
++
+ /* It should be possible to get rid of this by extending the feature-test
+  * macros to cover Windows API functions, probably along with non-trivial
+  * refactoring of code to find structures that sit more cleanly on top of
