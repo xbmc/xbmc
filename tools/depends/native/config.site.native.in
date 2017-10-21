@@ -31,5 +31,9 @@ if test "@platform_os@" = "osx" ; then
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
   ac_cv_func_getentropy=no
+  ac_cv_func_futimes=no
+  ac_cv_func_futimesat=no
+  ac_cv_func_futimens=no
+  ac_cv_func_utimensat=no
 fi
 
