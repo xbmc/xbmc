@@ -411,10 +411,23 @@ void CPVRManager::Process(void)
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
-  while (!LoadComponents(!progressTimeout.IsTimePast()) && IsInitialising())
+  CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
+  while (!LoadComponents(progressHandler) && IsInitialising())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
     Sleep(1000);
+
+    if (progressHandler && progressTimeout.IsTimePast())
+    {
+      progressHandler->DestroyProgress();
+      progressHandler = nullptr; // no delete, instance is deleting itself
+    }
+  }
+
+  if (progressHandler)
+  {
+    progressHandler->DestroyProgress();
+    progressHandler = nullptr; // no delete, instance is deleting itself
   }
 
   if (!IsInitialising())
@@ -520,7 +533,7 @@ void CPVRManager::OnWake()
   TriggerTimersUpdate();
 }
 
-bool CPVRManager::LoadComponents(bool bShowProgress)
+bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
 {
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
@@ -531,52 +544,34 @@ bool CPVRManager::LoadComponents(bool bShowProgress)
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
-  CPVRGUIProgressHandler* progressHandler = nullptr;
-
   /* load all channels and groups */
-  if (bShowProgress)
-  {
-    progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
+  if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19236), 0); // Loading channels from clients
-  }
 
   if (!m_channelGroups->Load() || !IsInitialising())
-  {
-    if (progressHandler)
-      progressHandler->DestroyProgress();
-
     return false;
-  }
 
   SetChanged();
   NotifyObservers(ObservableMessageChannelGroupsLoaded);
 
   /* get timers from the backends */
-  if (bShowProgress)
+  if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19237), 50); // Loading timers from clients
 
   m_timers->Load();
 
   /* get recordings from the backend */
-  if (bShowProgress)
+  if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
 
   m_recordings->Load();
 
   if (!IsInitialising())
-  {
-    if (progressHandler)
-      progressHandler->DestroyProgress();
-
     return false;
-  }
 
   /* start the other pvr related update threads */
-  if (bShowProgress)
-  {
+  if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19239), 85); // Starting background threads
-    progressHandler->DestroyProgress();
-  }
 
   return true;
 }

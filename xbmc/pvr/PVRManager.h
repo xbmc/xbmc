@@ -47,6 +47,7 @@ namespace PVR
 {
   class CPVRClient;
   class CPVRGUIInfo;
+  class CPVRGUIProgressHandler;
 
   class CPVRManagerJobQueue
   {
@@ -498,10 +499,10 @@ namespace PVR
 
     /*!
      * @brief Load at least one client and load all other PVR data (channelgroups, timers, recordings) after loading the client.
-     * @param bShowProgress True, to show a progress dialog for the different load stages.
+     * @param progressHandler The progress handler to use for showing the different load stages.
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
-    bool LoadComponents(bool bShowProgress);
+    bool LoadComponents(CPVRGUIProgressHandler* progressHandler);
 
     /*!
      * @brief Unload all PVR data (recordings, timers, channelgroups).
