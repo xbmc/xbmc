@@ -22,7 +22,7 @@
 #include "Job.h"
 #include "FileItem.h"
 #include "video/Bookmark.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 
 class CSaveFileStateJob : public CJob
 {

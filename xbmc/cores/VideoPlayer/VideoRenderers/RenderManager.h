@@ -27,7 +27,7 @@
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/CriticalSection.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include "DebugRenderer.h"
 #include <deque>

@@ -30,7 +30,7 @@
 #include "utils/CPUInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"

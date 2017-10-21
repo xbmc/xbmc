@@ -28,7 +28,7 @@
 #include "../RenderFlags.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"

@@ -28,7 +28,7 @@
 
 #include "FrameBufferObject.h"
 #include "guilib/Shader.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderInfo.h"
 #include "guilib/GraphicContext.h"

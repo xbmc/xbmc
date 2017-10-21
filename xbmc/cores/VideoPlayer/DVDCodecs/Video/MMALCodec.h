@@ -24,7 +24,7 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 #include "threads/Event.h"
-#include "xbmc/settings/VideoSettings.h"
+#include "xbmc/cores/VideoSettings.h"
 
 #include <queue>
 #include <semaphore.h>

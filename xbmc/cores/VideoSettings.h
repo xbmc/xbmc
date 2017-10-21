@@ -21,11 +21,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_VIDEOSETTINGS_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)
-#define AFX_VIDEOSETTINGS_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_
-
 #pragma once
-#include "cores/IPlayer.h"
+#include "IPlayer.h"
 
 class CVideoSettings
 {
@@ -63,5 +60,3 @@ public:
 
 private:
 };
-
-#endif // !defined(AFX_VIDEOSETTINGS_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

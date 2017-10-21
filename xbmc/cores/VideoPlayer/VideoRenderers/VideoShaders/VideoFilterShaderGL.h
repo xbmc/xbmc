@@ -24,7 +24,7 @@
 
 #include "system_gl.h"
 #include "guilib/Shader.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "GLSLOutput.h"
 
 namespace Shaders {
