@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 01-gcrypt-android-select.patch 02-fix-armv7-neon.patch 03-remove-cipher-gcm-armv8.patch Makefile
+DEPS= ../../Makefile.include 01-gcrypt-android-select.patch 02-fix-armv7-neon.patch 03-remove-cipher-gcm-armv8.patch 04-fix-macosx10.13-optimization.patch Makefile
 
 # lib name, version
 LIBNAME=libgcrypt
@@ -38,6 +38,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../02-fix-armv7-neon.patch
 ifneq ($(findstring arm64, $(CPU)), arm64)
 	cd $(PLATFORM); patch -p0 < ../03-remove-cipher-gcm-armv8.patch
+endif
+ifeq ($(OS),osx)
+	cd $(PLATFORM); patch -p0 < ../04-fix-macosx10.13-optimization.patch
 endif
 	# do not build the tests or docs
 	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"

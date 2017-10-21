@@ -1,0 +1,11 @@
+--- random/Makefile.am.orig	2017-10-20 09:40:33.000000000 +0200
++++ random/Makefile.am	2017-10-20 09:40:45.000000000 +0200
+@@ -55,7 +55,7 @@
+ 
+ # The rndjent module needs to be compiled without optimization.  */
+ if ENABLE_O_FLAG_MUNGING
+-o_flag_munging = sed -e 's/-O\([1-9s][1-9s]*\)/-O0/g' -e 's/-Ofast/-O0/g'
++o_flag_munging = sed -e 's/-O\([1-9sg][1-9sg]*\)/-O0/g' -e 's/-Ofast/-O0/g'
+ else
+ o_flag_munging = cat
+ endif
