@@ -64,7 +64,13 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
                                     RESOLUTION_INFO& res)
 {
-  if (!CGBMUtils::InitGbm(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
+  if(!CDRMUtils::SetMode(res))
+  {
+    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
+    return false;
+  }
+
+  if(!CGBMUtils::InitGbm(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;

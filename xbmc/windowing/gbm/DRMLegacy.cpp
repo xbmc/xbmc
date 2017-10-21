@@ -51,8 +51,6 @@ static drmEventContext m_drm_evctx;
 
 bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
 {
-  CDRMUtils::GetMode(res);
-
   gbm_surface_release_buffer(m_gbm->surface, m_bo);
 
   m_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
