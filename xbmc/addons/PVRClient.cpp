@@ -898,6 +898,9 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
 
 int CPVRClient::GetChannelsAmount(void)
 {
+  if (!m_bReadyToUse)
+    return -EINVAL;
+
   return m_struct.toAddon.GetChannelsAmount();
 }
 
@@ -921,6 +924,9 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
 
 int CPVRClient::GetRecordingsAmount(bool deleted)
 {
+  if (!m_bReadyToUse)
+    return -EINVAL;
+
   if (!m_clientCapabilities.SupportsRecordings() || (deleted && !m_clientCapabilities.SupportsRecordingsUndelete()))
     return -EINVAL;
 
