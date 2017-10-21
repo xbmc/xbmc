@@ -1,9 +1,9 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile 01-osx-utimensat.diff
 
 APPNAME=cmake
-VERSION=3.6.2
+VERSION=3.9.4
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -33,6 +33,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-osx-utimensat.diff
 	cd $(PLATFORM); $(SETENV) $(CONFIGURE)
 
 $(APP): $(PLATFORM)
