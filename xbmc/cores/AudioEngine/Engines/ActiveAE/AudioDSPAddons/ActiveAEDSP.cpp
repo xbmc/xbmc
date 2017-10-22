@@ -657,11 +657,11 @@ AE_DSP_STREAMTYPE CActiveAEDSP::LoadCurrentAudioSettings(void)
     CFileItem currentFile(g_application.CurrentFileItem());
 
     /* load the persisted audio settings and set them as current */
-    CAudioSettings loadedAudioSettings = CMediaSettings::GetInstance().GetDefaultAudioSettings();
-    m_databaseDSP.GetActiveDSPSettings(currentFile, loadedAudioSettings);
+    //CAudioSettings loadedAudioSettings = CMediaSettings::GetInstance().GetDefaultAudioSettings();
+    //m_databaseDSP.GetActiveDSPSettings(currentFile, loadedAudioSettings);
 
-    CMediaSettings::GetInstance().GetCurrentAudioSettings() = loadedAudioSettings;
-    type = (AE_DSP_STREAMTYPE) loadedAudioSettings.m_MasterStreamTypeSel;
+    // CMediaSettings::GetInstance().GetCurrentAudioSettings() = loadedAudioSettings;
+    //type = (AE_DSP_STREAMTYPE) loadedAudioSettings.m_MasterStreamTypeSel;
 
     /* settings can be saved on next audio stream change */
     m_isValidAudioDSPSettings = true;

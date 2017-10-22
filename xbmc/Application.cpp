@@ -3198,7 +3198,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
     // Switch to default options
     CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-    CMediaSettings::GetInstance().GetCurrentAudioSettings() = CMediaSettings::GetInstance().GetDefaultAudioSettings();
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1);
@@ -3647,8 +3646,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
       *m_stackFileItemToUpdate,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate,
-      CMediaSettings::GetInstance().GetCurrentVideoSettings(),
-      CMediaSettings::GetInstance().GetCurrentAudioSettings());
+      CMediaSettings::GetInstance().GetCurrentVideoSettings());
 
   if (bForeground)
   {
