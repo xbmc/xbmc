@@ -17,14 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef SAVE_FILE_STATE_H__
-#define SAVE_FILE_STATE_H__
+#pragma once
 
 #include "Job.h"
 #include "FileItem.h"
 #include "video/Bookmark.h"
 #include "settings/VideoSettings.h"
-#include "settings/AudioDSPSettings.h"
 
 class CSaveFileStateJob : public CJob
 {
@@ -33,22 +31,18 @@ class CSaveFileStateJob : public CJob
   CBookmark m_bookmark;
   bool      m_updatePlayCount;
   CVideoSettings m_videoSettings;
-  CAudioSettings m_audioSettings;
 public:
                 CSaveFileStateJob(const CFileItem& item,
                                   const CFileItem& item_discstack,
                                   const CBookmark& bookmark,
                                   bool updatePlayCount,
-                                  const CVideoSettings &videoSettings,
-                                  const CAudioSettings &audioSettings)
+                                  const CVideoSettings &videoSettings)
                   : m_item(item),
                     m_item_discstack(item_discstack),
                     m_bookmark(bookmark),
                     m_updatePlayCount(updatePlayCount),
-                    m_videoSettings(videoSettings),
-                    m_audioSettings(audioSettings) {}
+                    m_videoSettings(videoSettings) {}
         ~CSaveFileStateJob() override = default;
   bool  DoWork() override;
 };
 
-#endif // SAVE_FILE_STATE_H__

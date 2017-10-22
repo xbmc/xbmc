@@ -24,7 +24,7 @@
 #include "URL.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
+#include "AudioDSPSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
