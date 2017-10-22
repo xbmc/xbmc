@@ -585,10 +585,16 @@ public:
   bool GetVideoSettings(const std::string &filePath, CVideoSettings &settings);
 
   /*! \brief Set video settings for the specified file path
-   \param filePath filepath to set the settings for
+   \param fileItem to set the settings for
    \sa GetVideoSettings
    */
-  void SetVideoSettings(const std::string &filePath, const CVideoSettings &settings);
+  void SetVideoSettings(const CFileItem &item, const CVideoSettings &settings);
+
+  /*! \brief Set video settings for the specified file path
+   \param fileId to set the settings for
+   \sa GetVideoSettings
+   */
+  void SetVideoSettings(int idFile, const CVideoSettings &settings);
 
   /**
    * Erases settings for all files beginning with the specified path. Defaults 

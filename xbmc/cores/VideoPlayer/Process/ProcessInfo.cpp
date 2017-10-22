@@ -600,3 +600,24 @@ int64_t CProcessInfo::GetMaxTime()
   CSingleLock lock(m_stateSection);
   return m_timeMax;
 }
+
+//******************************************************************************
+// settings
+//******************************************************************************
+CVideoSettings CProcessInfo::GetVideoSettings()
+{
+  CSingleLock lock(m_settingsSection);
+  return m_videoSettings;
+}
+
+CVideoSettings& CProcessInfo::UpdateVideoSettigs()
+{
+  CSingleLock lock(m_settingsSection);
+  return m_videoSettings;
+}
+
+void CProcessInfo::SetVideoSettings(CVideoSettings &settings)
+{
+  CSingleLock lock(m_settingsSection);
+  m_videoSettings = settings;
+}

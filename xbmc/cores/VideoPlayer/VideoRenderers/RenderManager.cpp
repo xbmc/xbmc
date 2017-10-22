@@ -88,6 +88,15 @@ float CRenderManager::GetAspectRatio()
     return 1.0f;
 }
 
+void CRenderManager::SetVideoSettings(CVideoSettings settings)
+{
+  CSingleLock lock(m_statelock);
+  if (m_pRenderer)
+  {
+    m_pRenderer->SetVideoSettings(settings);
+  }
+}
+
 bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
@@ -188,6 +197,7 @@ bool CRenderManager::Configure()
       return false;
   }
 
+  m_pRenderer->SetVideoSettings(m_playerPort->GetVideoSettings());
   bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_flags, m_orientation);
   if (result)
   {

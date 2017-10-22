@@ -245,7 +245,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned fl
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   SelectRenderMethod();
@@ -644,12 +644,12 @@ void CWinRenderer::UpdateVideoFilter()
                  || m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, m_iFlags);
   cmsChanged &= m_clutLoaded;
 
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod
+  if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod
    && m_bFilterInitialized && !cmsChanged)
     return;
 
   m_bFilterInitialized = true;
-  m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
+  m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))
@@ -790,9 +790,8 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
 
   // 2. output to display
 
-  CVideoSettings settings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
   m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
-                         g_Windowing.UseLimitedColor(), settings.m_Contrast * 0.01f, settings.m_Brightness * 0.01f);
+                         g_Windowing.UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
 
 void CWinRenderer::RenderPS(CD3DTexture* target)
@@ -826,8 +825,8 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
 
   // render video frame
   m_colorShader->Render(m_sourceRect, destPoints,
-                        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
-                        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
+                        m_videoSettings.m_Contrast,
+                        m_videoSettings.m_Brightness,
                         &m_renderBuffers[m_iYV12RenderBuffer], target);
   // Restore our view port.
   g_Windowing.RestoreViewPort();
@@ -930,7 +929,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
-  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
+  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation,
+                      m_videoSettings.m_Contrast, m_videoSettings.m_Brightness);
 
   if (!m_bUseHQScaler)
   {

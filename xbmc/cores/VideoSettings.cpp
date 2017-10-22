@@ -33,7 +33,6 @@ CVideoSettings::CVideoSettings()
   m_SubtitleStream = -1;
   m_SubtitleDelay = 0.0f;
   m_SubtitleOn = true;
-  m_SubtitleCached = false;
   m_Brightness = 50.0f;
   m_Contrast = 50.0f;
   m_Gamma = 20.0f;
@@ -47,7 +46,6 @@ CVideoSettings::CVideoSettings()
   m_StereoMode = 0;
   m_StereoInvert = false;
   m_VideoStream = -1;
-
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -63,7 +61,6 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_SubtitleStream != right.m_SubtitleStream) return true;
   if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
   if (m_SubtitleOn != right.m_SubtitleOn) return true;
-  if (m_SubtitleCached != right.m_SubtitleCached) return true;
   if (m_Brightness != right.m_Brightness) return true;
   if (m_Contrast != right.m_Contrast) return true;
   if (m_Gamma != right.m_Gamma) return true;
@@ -78,4 +75,48 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_StereoInvert != right.m_StereoInvert) return true;
   if (m_VideoStream != right.m_VideoStream) return true;
   return false;
+}
+
+void CVideoSettings::SetSubtitleStream(int stream)
+{
+  m_SubtitleStream = stream;
+}
+
+void CVideoSettings::SetSubtitleVisible(bool visible)
+{
+  m_SubtitleOn = visible;
+}
+
+void CVideoSettings::SetAudioStream(int stream)
+{
+  m_AudioStream = stream;
+}
+
+void CVideoSettings::SetVideoStream(int stream)
+{
+  m_VideoStream = stream;
+}
+
+void CVideoSettings::SetAudioDelay(float delay)
+{
+  m_AudioDelay = delay;
+}
+
+void CVideoSettings::SetSubtitleDelay(float delay)
+{
+  m_SubtitleDelay = delay;
+}
+
+void CVideoSettings::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
+{
+  m_ViewMode = mode;
+  m_CustomZoomAmount = zoom;
+  m_CustomPixelRatio = par;
+  m_CustomVerticalShift = shift;
+  m_CustomNonLinStretch = stretch;
+}
+
+void CVideoSettings::SetVolumeAmplification(float amp)
+{
+  m_VolumeAmplification = amp;
 }

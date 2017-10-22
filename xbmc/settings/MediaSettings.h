@@ -53,8 +53,6 @@ public:
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
-  const CVideoSettings& GetCurrentVideoSettings() const { return m_currentVideoSettings; }
-  CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
 
   const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
   CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
@@ -107,7 +105,6 @@ protected:
 
 private:
   CVideoSettings m_defaultVideoSettings;
-  CVideoSettings m_currentVideoSettings;
 
   CGameSettings m_defaultGameSettings;
   CGameSettings m_currentGameSettings;
