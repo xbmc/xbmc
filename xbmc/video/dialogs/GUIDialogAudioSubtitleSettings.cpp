@@ -54,7 +54,6 @@
 #define SETTING_AUDIO_VOLUME_AMPLIFICATION     "audio.volumeamplification"
 #define SETTING_AUDIO_DELAY                    "audio.delay"
 #define SETTING_AUDIO_STREAM                   "audio.stream"
-#define SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS   "audio.outputtoallspeakers"
 #define SETTING_AUDIO_PASSTHROUGH           "audio.digitalanalog"
 #define SETTING_AUDIO_DSP                      "audio.dsp"
 
@@ -150,12 +149,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSe
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
   }
-  //@TODO
-//  else if (settingId == SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS)
-//  {
-//    videoSettings.m_OutputToAllSpeakers = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-//    g_application.Restart();
-//  }
   else if (settingId == SETTING_AUDIO_PASSTHROUGH)
   {
     m_passthrough = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
@@ -355,11 +348,6 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // audio stream setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
     AddAudioStreams(groupAudio, SETTING_AUDIO_STREAM);
-
-  // audio output to all speakers setting
-  //! @todo remove this setting
-  if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO) && !m_dspEnabled)
-    AddToggle(groupAudio, SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, 252, SettingLevel::Basic, videoSettings.m_OutputToAllSpeakers);
 
   // audio digital/analog setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
