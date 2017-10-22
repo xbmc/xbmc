@@ -32,6 +32,7 @@
 #include <vector>
 #include "Application.h"
 #include "VideoSyncDRM.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef HAS_GLX
 #include "VideoSyncGLX.h"
@@ -237,7 +238,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
     if (vend)
       gpuvendor = vend;
     std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-    if (gpuvendor.compare(0, 5, "intel") == 0)
+    if (gpuvendor.compare(0, 5, "intel") == 0 || g_advancedSettings.m_videoVAAPIforced)
     {
 #if defined (HAVE_LIBVA)
       EGLDisplay eglDpy = static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
