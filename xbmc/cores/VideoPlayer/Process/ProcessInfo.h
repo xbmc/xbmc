@@ -112,10 +112,10 @@ public:
   // settings
   CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings &settings);
-  CVideoSettings& UpdateVideoSettigs();
+  CVideoSettingsLocked& UpdateVideoSettigs();
 
 protected:
-  CProcessInfo() = default;
+  CProcessInfo();
   static std::map<std::string, CreateProcessControl> m_processControls;
   CDataCacheCore *m_dataCache = nullptr;
 
@@ -168,4 +168,5 @@ protected:
   // settings
   CCriticalSection m_settingsSection;
   CVideoSettings m_videoSettings;
+  std::unique_ptr<CVideoSettingsLocked> m_videoSettingsLocked;
 };

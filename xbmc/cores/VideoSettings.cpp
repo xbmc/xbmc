@@ -19,6 +19,8 @@
  */
 
 #include "VideoSettings.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
 
 CVideoSettings::CVideoSettings()
 {
@@ -75,46 +77,62 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   return false;
 }
 
-void CVideoSettings::SetSubtitleStream(int stream)
+//------------------------------------------------------------------------------
+// CVideoSettingsLocked
+//------------------------------------------------------------------------------
+CVideoSettingsLocked::CVideoSettingsLocked(CVideoSettings &vs, CCriticalSection &critSection) :
+  m_videoSettings(vs), m_critSection(critSection)
 {
-  m_SubtitleStream = stream;
 }
 
-void CVideoSettings::SetSubtitleVisible(bool visible)
+void CVideoSettingsLocked::SetSubtitleStream(int stream)
 {
-  m_SubtitleOn = visible;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_SubtitleStream = stream;
 }
 
-void CVideoSettings::SetAudioStream(int stream)
+void CVideoSettingsLocked::SetSubtitleVisible(bool visible)
 {
-  m_AudioStream = stream;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_SubtitleOn = visible;
 }
 
-void CVideoSettings::SetVideoStream(int stream)
+void CVideoSettingsLocked::SetAudioStream(int stream)
 {
-  m_VideoStream = stream;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_AudioStream = stream;
 }
 
-void CVideoSettings::SetAudioDelay(float delay)
+void CVideoSettingsLocked::SetVideoStream(int stream)
 {
-  m_AudioDelay = delay;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_VideoStream = stream;
 }
 
-void CVideoSettings::SetSubtitleDelay(float delay)
+void CVideoSettingsLocked::SetAudioDelay(float delay)
 {
-  m_SubtitleDelay = delay;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_AudioDelay = delay;
 }
 
-void CVideoSettings::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
+void CVideoSettingsLocked::SetSubtitleDelay(float delay)
 {
-  m_ViewMode = mode;
-  m_CustomZoomAmount = zoom;
-  m_CustomPixelRatio = par;
-  m_CustomVerticalShift = shift;
-  m_CustomNonLinStretch = stretch;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_SubtitleDelay = delay;
 }
 
-void CVideoSettings::SetVolumeAmplification(float amp)
+void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
-  m_VolumeAmplification = amp;
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_ViewMode = mode;
+  m_videoSettings.m_CustomZoomAmount = zoom;
+  m_videoSettings.m_CustomPixelRatio = par;
+  m_videoSettings.m_CustomVerticalShift = shift;
+  m_videoSettings.m_CustomNonLinStretch = stretch;
+}
+
+void CVideoSettingsLocked::SetVolumeAmplification(float amp)
+{
+  CSingleLock lock(m_critSection);
+  m_videoSettings.m_VolumeAmplification = amp;
 }

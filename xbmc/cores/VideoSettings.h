@@ -95,15 +95,6 @@ public:
 
   bool operator!=(const CVideoSettings &right) const;
 
-  void SetSubtitleStream(int stream);
-  void SetSubtitleVisible(bool visible);
-  void SetAudioStream(int stream);
-  void SetVideoStream(int stream);
-  void SetAudioDelay(float delay);
-  void SetSubtitleDelay(float delay);
-  void SetViewMode(int mode, float zoom, float par, float shift, bool stretch);
-  void SetVolumeAmplification(float amp);
-
   EINTERLACEMETHOD m_InterlaceMethod;
   ESCALINGMETHOD   m_ScalingMethod;
   int m_ViewMode;   // current view mode
@@ -129,4 +120,28 @@ public:
   int m_StereoMode;
   bool m_StereoInvert;
   int m_VideoStream;
+};
+
+class CCriticalSection;
+class CVideoSettingsLocked
+{
+public:
+  CVideoSettingsLocked(CVideoSettings &vs, CCriticalSection &critSection);
+  virtual ~CVideoSettingsLocked() = default;
+
+  CVideoSettingsLocked(CVideoSettingsLocked const &) = delete;
+  void operator=(CVideoSettingsLocked const &x) = delete;
+
+  void SetSubtitleStream(int stream);
+  void SetSubtitleVisible(bool visible);
+  void SetAudioStream(int stream);
+  void SetVideoStream(int stream);
+  void SetAudioDelay(float delay);
+  void SetSubtitleDelay(float delay);
+  void SetViewMode(int mode, float zoom, float par, float shift, bool stretch);
+  void SetVolumeAmplification(float amp);
+
+protected:
+  CVideoSettings &m_videoSettings;
+  CCriticalSection &m_critSection;
 };
