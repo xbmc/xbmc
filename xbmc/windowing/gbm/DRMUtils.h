@@ -67,9 +67,9 @@ public:
   static bool InitDrm(drm *drm);
   static void DestroyDrm();
   static bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
+  static bool SetMode(RESOLUTION_INFO res);
 
 protected:
-  static bool GetMode(RESOLUTION_INFO res);
   static drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:
