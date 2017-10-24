@@ -140,6 +140,7 @@ macro(winstore_append_props target)
   set(VCPROJECT_PROPS_FILE "${CMAKE_CURRENT_BINARY_DIR}/${target}.props")
   file(TO_NATIVE_PATH ${DEPENDENCIES_DIR} DEPENDENCIES_DIR_NATIVE)
   file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR} CMAKE_CURRENT_BINARY_DIR_NATIVE)
+  file(TO_NATIVE_PATH ${CMAKE_SOURCE_DIR}/project/Win32BuildSetup/BUILD_WIN32/addons BINARY_ADDONS_DIR_NATIVE)
 
   file(WRITE ${VCPROJECT_PROPS_FILE}
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -148,6 +149,7 @@ macro(winstore_append_props target)
     "  <PropertyGroup Label=\"APP_DLLS\">\n"
     "    <BinPath>${DEPENDENCIES_DIR_NATIVE}\\bin</BinPath>\n"
     "    <BuildRootPath>${CMAKE_CURRENT_BINARY_DIR_NATIVE}</BuildRootPath>\n"
+    "    <BinaryAddonsPath>${BINARY_ADDONS_DIR_NATIVE}</BinaryAddonsPath>\n"
     "  </PropertyGroup>\n"
     "${DEBUG_DLLS_LINKAGE_PROPS}"
     "${XBT_FILE_PROPS}"

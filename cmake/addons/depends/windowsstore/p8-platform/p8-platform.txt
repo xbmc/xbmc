@@ -1,0 +1,1 @@
+p8-platform https://github.com/afedchin/platform.git win10

@@ -8,6 +8,7 @@ SET install=false
 SET clean=false
 SET package=false
 SET addon=
+SET store=
 
 SETLOCAL EnableDelayedExpansion
 FOR %%b IN (%*) DO (
@@ -17,9 +18,11 @@ FOR %%b IN (%*) DO (
     SET clean=true
   ) ELSE ( IF %%b == package (
     SET package=true
+  ) ELSE ( IF %%b == win10 (
+    SET store=store
   ) ELSE (
     SET addon=!addon! %%b
-  )))
+  ))))
 )
 SETLOCAL DisableDelayedExpansion
 
@@ -30,7 +33,7 @@ POPD
 rem setup some paths that we need later
 SET CUR_PATH=%CD%
 SET BASE_PATH=%WORKDIR%\cmake
-SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
+SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows%store%
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
 SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
@@ -92,6 +95,10 @@ IF "%addon%" NEQ "" (
   SETLOCAL DisableDelayedExpansion
 )
 
+IF "%store%" NEQ "" (
+SET STORE_ARGS=-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=%UCRTVersion%
+)
+
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_BUILD_TYPE=Release ^
@@ -102,7 +109,9 @@ cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DBUILD_DIR=%ADDONS_BUILD_PATH% ^
       -DADDON_DEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
       -DPACKAGE_ZIP=ON ^
+      %STORE_ARGS% ^
       -DADDONS_TO_BUILD="%ADDONS_TO_BUILD%"
+
 IF ERRORLEVEL 1 (
   ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
   GOTO ERROR
@@ -111,7 +120,7 @@ IF ERRORLEVEL 1 (
 rem get the list of addons that can actually be built
 SET ADDONS_TO_MAKE=
 SETLOCAL EnableDelayedExpansion
-FOR /f "delims=" %%i IN ('nmake supported_addons') DO (
+FOR /f "delims=" %%i IN ('cmake --build . --target supported_addons') DO (
   SET line="%%i"
   SET addons=!line:ALL_ADDONS_BUILDING=!
   IF NOT "!addons!" == "!line!" (
@@ -123,8 +132,8 @@ SETLOCAL DisableDelayedExpansion
 rem loop over all addons to build
 FOR %%a IN (%ADDONS_TO_MAKE%) DO (
   ECHO Building %%a...
-  rem execute nmake to build the addons
-  nmake %%a
+  rem execute cmake to build the addons
+  cmake --build . --target %%a
   IF ERRORLEVEL 1 (
     ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
     ECHO %%a >> %ADDONS_FAILURE_FILE%

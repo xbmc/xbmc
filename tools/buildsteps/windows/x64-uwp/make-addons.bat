@@ -4,5 +4,5 @@ rem set Visual C++ build environment
 call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" amd64 store 10.0.14393.0
 
 PUSHD %~dp0\..
-CALL make-addons.bat %*
+CALL make-addons.bat win10 %*
 POPD
