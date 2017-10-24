@@ -230,7 +230,7 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
     }
   }
 
-  EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD interlace_method = m_processInfo.GetVideoSettings().m_InterlaceMethod;
   if (interlace_method == VS_INTERLACEMETHOD_AUTO)
     interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
 

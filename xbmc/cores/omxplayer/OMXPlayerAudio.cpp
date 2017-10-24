@@ -64,6 +64,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent, CPr
 : CThread("OMXPlayerAudio"), IDVDStreamPlayerAudio(processInfo)
 , m_messageQueue("audio")
 , m_messageParent(parent)
+, m_omxAudio(processInfo)
 {
   m_av_clock      = av_clock;
   m_pAudioCodec   = NULL;

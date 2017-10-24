@@ -686,7 +686,7 @@ void CMMALRenderer::Run()
       if (buffer->length > 0)
       {
         EINTERLACEMETHOD last_interlace_method = m_interlace_method;
-        EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+        EINTERLACEMETHOD interlace_method = m_videoSettings.m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
         {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
@@ -873,7 +873,7 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned f
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
