@@ -27,7 +27,7 @@
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/CriticalSection.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include "DebugRenderer.h"
 #include <deque>
@@ -60,6 +60,7 @@ protected:
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
   virtual void UpdateGuiRender(bool gui) = 0;
   virtual void UpdateVideoRender(bool video) = 0;
+  virtual CVideoSettings GetVideoSettings() = 0;
 };
 
 class CRenderManager
@@ -132,6 +133,8 @@ public:
 
   void SetDelay(int delay) { m_videoDelay = delay; };
   int GetDelay() { return m_videoDelay; };
+
+  void SetVideoSettings(CVideoSettings settings);
 
 protected:
 

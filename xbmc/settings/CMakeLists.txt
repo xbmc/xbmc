@@ -12,8 +12,7 @@ set(SOURCES AdvancedSettings.cpp
             Settings.cpp
             SettingsBase.cpp
             SettingUtils.cpp
-            SkinSettings.cpp
-            VideoSettings.cpp)
+            SkinSettings.cpp)
 
 set(HEADERS AdvancedSettings.h
             DiscSettings.h
@@ -30,8 +29,7 @@ set(HEADERS AdvancedSettings.h
             Settings.h
             SettingsBase.h
             SettingUtils.h
-            SkinSettings.h
-            VideoSettings.h)
+            SkinSettings.h)
 
 if(BLURAY_FOUND)
   list(APPEND SOURCES DiscSettings.cpp)

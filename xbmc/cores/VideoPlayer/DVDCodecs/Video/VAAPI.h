@@ -21,7 +21,7 @@
 
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "threads/Event.h"

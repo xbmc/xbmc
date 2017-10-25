@@ -4294,14 +4294,20 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
   return false;
 }
 
+void CVideoDatabase::SetVideoSettings(const CFileItem &item, const CVideoSettings &settings)
+{
+  SetVideoSettings(GetFileId(item), settings);
+}
+
 /// \brief Sets the settings for a particular video file
-void CVideoDatabase::SetVideoSettings(const std::string& strFilenameAndPath, const CVideoSettings &setting)
+void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
 {
   try
   {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-    int idFile = AddFile(strFilenameAndPath);
+    if (NULL == m_pDB.get())
+      return;
+    if (NULL == m_pDS.get())
+      return;
     if (idFile < 0)
       return;
     std::string strSQL = PrepareSQL("select * from settings where idFile=%i", idFile);
@@ -4345,7 +4351,7 @@ void CVideoDatabase::SetVideoSettings(const std::string& strFilenameAndPath, con
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idFile);
   }
 }
 

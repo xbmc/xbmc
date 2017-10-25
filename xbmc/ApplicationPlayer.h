@@ -80,7 +80,7 @@ public:
   void FrameMove();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   void FlushRenderer();
-  void SetRenderViewMode(int mode);
+  void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
   float GetRenderAspectRatio();
   void TriggerUpdateResolution();
   bool IsRenderingVideo();
@@ -173,6 +173,9 @@ public:
   void  SetVolume(float volume);
   void  SetSpeed(float speed);
   bool SupportsTempo();
+
+  CVideoSettings GetVideoSettings();
+  void SetVideoSettings(CVideoSettings& settings);
 
   protected:
     std::shared_ptr<IPlayer> GetInternal() const;

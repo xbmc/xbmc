@@ -47,6 +47,11 @@ CProcessInfo* CProcessInfo::CreateInstance()
   return new CProcessInfo();
 }
 
+CProcessInfo::CProcessInfo()
+{
+  m_videoSettingsLocked.reset(new CVideoSettingsLocked(m_videoSettings, m_settingsSection));
+}
+
 void CProcessInfo::SetDataCache(CDataCacheCore *cache)
 {
   m_dataCache = cache;;
@@ -599,4 +604,25 @@ int64_t CProcessInfo::GetMaxTime()
 {
   CSingleLock lock(m_stateSection);
   return m_timeMax;
+}
+
+//******************************************************************************
+// settings
+//******************************************************************************
+CVideoSettings CProcessInfo::GetVideoSettings()
+{
+  CSingleLock lock(m_settingsSection);
+  return m_videoSettings;
+}
+
+CVideoSettingsLocked& CProcessInfo::UpdateVideoSettigs()
+{
+  CSingleLock lock(m_settingsSection);
+  return *m_videoSettingsLocked.get();
+}
+
+void CProcessInfo::SetVideoSettings(CVideoSettings &settings)
+{
+  CSingleLock lock(m_settingsSection);
+  m_videoSettings = settings;
 }

@@ -28,7 +28,7 @@
 
 #include "guilib/Geometry.h"
 #include "DVDDemuxers/DVDDemux.h"
-#include "xbmc/settings/VideoSettings.h"
+#include "xbmc/cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "xbmc/rendering/RenderSystem.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"

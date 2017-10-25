@@ -35,7 +35,7 @@
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "TextureCache.h"
 #include "URL.h"
 #include "utils/log.h"

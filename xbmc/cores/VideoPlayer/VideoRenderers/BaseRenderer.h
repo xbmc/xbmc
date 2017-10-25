@@ -100,6 +100,8 @@ public:
 
   static void SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
+  void SetVideoSettings(const CVideoSettings &settings);
+
 protected:
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
                             float inputFrameRatio, float zoomAmount, float verticalShift);
@@ -133,4 +135,6 @@ protected:
   // rendering flags
   unsigned m_iFlags;
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
+
+  CVideoSettings m_videoSettings;
 };

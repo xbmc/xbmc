@@ -21,6 +21,7 @@
 
 #include "VideoBuffer.h"
 #include "cores/IPlayer.h"
+#include "cores/VideoSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "threads/CriticalSection.h"
 #include <atomic>
@@ -108,8 +109,13 @@ public:
   void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
   int64_t GetMaxTime();
 
+  // settings
+  CVideoSettings GetVideoSettings();
+  void SetVideoSettings(CVideoSettings &settings);
+  CVideoSettingsLocked& UpdateVideoSettigs();
+
 protected:
-  CProcessInfo() = default;
+  CProcessInfo();
   static std::map<std::string, CreateProcessControl> m_processControls;
   CDataCacheCore *m_dataCache = nullptr;
 
@@ -158,4 +164,9 @@ protected:
   int64_t m_time;
   int64_t m_timeMax;
   int64_t m_timeMin;
+
+  // settings
+  CCriticalSection m_settingsSection;
+  CVideoSettings m_videoSettings;
+  std::unique_ptr<CVideoSettingsLocked> m_videoSettingsLocked;
 };

@@ -250,7 +250,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
@@ -716,7 +716,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod &&
+  if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
       !nonLinStretchChanged && !cmsChanged)
     return;
   else
@@ -744,7 +744,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
+  m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))
@@ -1032,8 +1032,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
 
@@ -1201,8 +1201,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);

@@ -18,11 +18,10 @@
  *
  */
 
-#ifndef CONVOLUTIONKERNELS
-#define CONVOLUTIONKERNELS
+#pragma once
 
 #include "system.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 
 class CConvolutionKernel
 {
@@ -57,5 +56,3 @@ class CConvolutionKernel
     uint8_t* m_intfractpixels;
     uint8_t* m_uint8pixels;
 };
-
-#endif //CONVOLUTIONKERNELS

@@ -70,7 +70,7 @@ bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fp
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
 
   return true;
 }

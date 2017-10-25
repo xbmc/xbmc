@@ -370,7 +370,7 @@ static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
   delete[] stream_data.ppFutureSurfaces;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
   HRESULT hr;
   CSingleLock lock(m_section);
@@ -490,10 +490,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
   // brightness
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
-              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness, 0, 100, 50);
+              brightness, 0, 100, 50);
   // contrast
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, 
-              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast, 0, 100, 50);
+              contrast, 0, 100, 50);
   // unused filters
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);

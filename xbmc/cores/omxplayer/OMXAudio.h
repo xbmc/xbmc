@@ -25,6 +25,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "linux/PlatformDefs.h"
 #include "DVDStreamInfo.h"
 
@@ -86,7 +87,7 @@ public:
   float GetDelay();
   float GetCacheTime();
   float GetCacheTotal();
-  COMXAudio();
+  COMXAudio(CProcessInfo &processInfo);
   bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough);
   bool PortSettingsChanged();
   ~COMXAudio();
@@ -165,6 +166,7 @@ private:
   OMX_AUDIO_PARAM_DTSTYPE     m_dtsParam;
   WAVEFORMATEXTENSIBLE        m_wave_header;
   IAEStream *m_pAudioStream;
+  CProcessInfo&     m_processInfo;
 protected:
   COMXCoreComponent m_omx_render_analog;
   COMXCoreComponent m_omx_render_hdmi;

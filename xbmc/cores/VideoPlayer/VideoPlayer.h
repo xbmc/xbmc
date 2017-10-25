@@ -373,7 +373,7 @@ public:
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;
-  void SetRenderViewMode(int mode) override;
+  void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) override;
   float GetRenderAspectRatio() override;
   void TriggerUpdateResolution() override;
   bool IsRenderingVideo() override;
@@ -396,6 +396,9 @@ public:
 
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
+
+  CVideoSettings GetVideoSettings() override;
+  void SetVideoSettings(CVideoSettings& settings) override;
 
 protected:
   friend class CSelectionStreams;

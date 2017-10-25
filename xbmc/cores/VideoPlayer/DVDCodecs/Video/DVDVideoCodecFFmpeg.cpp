@@ -30,8 +30,7 @@
 #include "utils/CPUInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "settings/VideoSettings.h"
-#include "settings/MediaSettings.h"
+#include "cores/VideoSettings.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
@@ -500,7 +499,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
 void CDVDVideoCodecFFmpeg::SetFilters()
 {
   // ask codec to do deinterlacing if possible
-  EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD mInt = m_processInfo.GetVideoSettings().m_InterlaceMethod;
 
   if (!m_processInfo.Supports(mInt))
     mInt = m_processInfo.GetFallbackDeintMethod();
@@ -884,7 +883,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   buffer->SetRef(m_pFrame);
   pVideoPicture->videoBuffer = buffer;
 
-  if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
+  if (m_processInfo.GetVideoSettings().m_PostProcess)
   {
     m_postProc.SetType(g_advancedSettings.m_videoPPFFmpegPostProc, false);
     m_postProc.Process(pVideoPicture);

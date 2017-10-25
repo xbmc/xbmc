@@ -44,7 +44,7 @@
 #include <X11/Xutil.h>
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"

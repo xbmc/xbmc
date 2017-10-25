@@ -30,7 +30,6 @@
 #include "threads/SingleLock.h"
 #include "settings/Settings.h"
 #include "guilib/GraphicContext.h"
-#include "settings/MediaSettings.h"
 #include "settings/AdvancedSettings.h"
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
@@ -1914,7 +1913,7 @@ void COutput::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
