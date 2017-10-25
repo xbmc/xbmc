@@ -249,9 +249,15 @@
 		<value>$INFO[ListItem.Genre]</value>
 	</variable>
 	<variable name="VideoInfoPlayLabelVar">
+<<<<<<< HEAD
 		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$LOCALIZE[1024]</value>
 		<value>$LOCALIZE[208]</value>
 	</variable>
+=======
+ 		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$LOCALIZE[1024]</value>
+ 		<value>$LOCALIZE[208]</value>
+ 	</variable>
+>>>>>>> [Estuary] Change default button text & icon for tvshows in videoinfo dialog
 	<variable name="NowPlayingBreadcrumbsVar">
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.Title]</value>
 		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]</value>
