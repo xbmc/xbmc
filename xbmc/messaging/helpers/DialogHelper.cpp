@@ -32,13 +32,19 @@ namespace HELPERS
 {
 DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, uint32_t autoCloseTimeout)
 {
+  return ShowYesNoCustomDialog(heading, text, noLabel, yesLabel, "", autoCloseTimeout);
+}
+
+DialogResponse ShowYesNoCustomDialog(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, uint32_t autoCloseTimeout)
+{
   DialogYesNoMessage options;
   options.heading = std::move(heading);
   options.text = std::move(text);
   options.noLabel = std::move(noLabel);
   options.yesLabel = std::move(yesLabel);
+  options.customLabel = std::move(customLabel);
   options.autoclose = autoCloseTimeout;
-  
+
   switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
   {
   case -1:
@@ -47,6 +53,8 @@ DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noL
     return DialogResponse::NO;
   case 1:
     return DialogResponse::YES;
+  case 2:
+    return DialogResponse::CUSTOM;
   default:
     //If we get here someone changed the return values without updating this code
     assert(false);
@@ -56,7 +64,8 @@ DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noL
   return DialogResponse::CANCELLED;
 }
 
-DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant line1, CVariant line2, CVariant noLabel, CVariant yesLabel, uint32_t autoCloseTimeout)
+DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant line1, CVariant line2,
+  CVariant noLabel, CVariant yesLabel, uint32_t autoCloseTimeout)
 {
   DialogYesNoMessage options;
   options.heading = std::move(heading);
@@ -65,6 +74,7 @@ DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant l
   options.lines[2] = std::move(line2);
   options.noLabel = std::move(noLabel);
   options.yesLabel = std::move(yesLabel);
+  options.customLabel = "";
   options.autoclose = autoCloseTimeout;
 
   switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
@@ -75,6 +85,8 @@ DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant l
     return DialogResponse::NO;
   case 1:
     return DialogResponse::YES;
+  case 2:
+    return DialogResponse::CUSTOM;
   default:
     //If we get here someone changed the return values without updating this code
     assert(false);
