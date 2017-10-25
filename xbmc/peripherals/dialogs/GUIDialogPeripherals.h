@@ -19,19 +19,31 @@
  */
 #pragma once
 
+#include "dialogs/GUIDialogSelect.h"
+#include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+#include "FileItem.h"
 
 namespace PERIPHERALS
 {
 class CPeripherals;
 
-class CGUIDialogPeripherals : protected Observer
+class CGUIDialogPeripherals : public CGUIDialogSelect,
+                              protected Observer
 {
 public:
-  CGUIDialogPeripherals(CPeripherals &manager);
+  CGUIDialogPeripherals();
   ~CGUIDialogPeripherals() override;
 
+  void RegisterPeripheralManager(CPeripherals &manager);
+  void UnregisterPeripheralManager();
+
+  CFileItemPtr GetItem(unsigned int pos) const;
+
   static void Show(CPeripherals &manager);
+
+  // implementation of CGUIControl via CGUIDialogSelect
+  bool OnMessage(CGUIMessage& message) override;
 
   // implementation of Observer
   void Notify(const Observable &obs, const ObservableMessage msg) override;
@@ -40,6 +52,8 @@ private:
   void ShowInternal();
   void UpdatePeripherals();
 
-  CPeripherals &m_manager;
+  CPeripherals *m_manager = nullptr;
+  CFileItemList m_peripherals;
+  CCriticalSection m_peripheralsMutex;
 };
 }

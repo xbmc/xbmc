@@ -23,40 +23,56 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#include "threads/SingleLock.h"
 #include "utils/Variant.h"
 #include "FileItem.h"
 
 using namespace KODI;
-using namespace MESSAGING;
 using namespace PERIPHERALS;
 
-CGUIDialogPeripherals::CGUIDialogPeripherals(CPeripherals &manager) :
-  m_manager(manager)
+CGUIDialogPeripherals::CGUIDialogPeripherals()
 {
-  m_manager.RegisterObserver(this);
+  // Initialize CGUIControl via CGUIDialogSelect
+  SetID(WINDOW_DIALOG_PERIPHERALS);
 }
 
-CGUIDialogPeripherals::~CGUIDialogPeripherals()
+CGUIDialogPeripherals::~CGUIDialogPeripherals() = default;
+
+void CGUIDialogPeripherals::RegisterPeripheralManager(CPeripherals &manager)
 {
-  m_manager.UnregisterObserver(this);
+  m_manager = &manager;
+  m_manager->RegisterObserver(this);
+}
+
+void CGUIDialogPeripherals::UnregisterPeripheralManager()
+{
+  if (m_manager != nullptr)
+  {
+    m_manager->UnregisterObserver(this);
+    m_manager = nullptr;
+  }
+}
+
+CFileItemPtr CGUIDialogPeripherals::GetItem(unsigned int pos) const
+{
+  CFileItemPtr item;
+
+  CSingleLock lock(m_peripheralsMutex);
+
+  if (static_cast<int>(pos) < m_peripherals.Size())
+    item = m_peripherals[pos];
+
+  return item;
 }
 
 void CGUIDialogPeripherals::Show(CPeripherals &manager)
 {
-  CGUIDialogPeripherals dialog(manager);
-  dialog.ShowInternal();
-}
-
-void CGUIDialogPeripherals::ShowInternal()
-{
-  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogPeripherals* pDialog = g_windowManager.GetWindow<CGUIDialogPeripherals>(WINDOW_DIALOG_PERIPHERALS);
   if (pDialog == nullptr)
     return;
-
-  CFileItemList items;
-  m_manager.GetDirectory("peripherals://all/", items);
 
   int iPos = -1;
   do
@@ -64,21 +80,25 @@ void CGUIDialogPeripherals::ShowInternal()
     pDialog->Reset();
     pDialog->SetHeading(CVariant{ 35000 });
     pDialog->SetUseDetails(true);
-    pDialog->SetItems(items);
-    pDialog->SetSelected(iPos);
+
+    pDialog->RegisterPeripheralManager(manager);
+    pDialog->UpdatePeripherals();
+
     pDialog->Open();
+
+    pDialog->UnregisterPeripheralManager();
 
     iPos = pDialog->IsConfirmed() ? pDialog->GetSelectedItem() : -1;
 
     if (iPos >= 0)
     {
-      CFileItemPtr pItem = items.Get(iPos);
+      CFileItemPtr pItem = pDialog->GetItem(iPos);
 
       // Show an error if the peripheral doesn't have any settings
-      PeripheralPtr peripheral = m_manager.GetByPath(pItem->GetPath());
+      PeripheralPtr peripheral = manager.GetByPath(pItem->GetPath());
       if (!peripheral || peripheral->GetSettings().empty())
       {
-        HELPERS::ShowOKDialogText(CVariant{ 35000 }, CVariant{ 35004 });
+        MESSAGING::HELPERS::ShowOKDialogText(CVariant{ 35000 }, CVariant{ 35004 });
         continue;
       }
 
@@ -102,6 +122,28 @@ void CGUIDialogPeripherals::ShowInternal()
   } while (pDialog->IsConfirmed());
 }
 
+bool CGUIDialogPeripherals::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_REFRESH_LIST:
+    {
+      if (m_manager && message.GetControlId() == -1)
+      {
+        CSingleLock lock(m_peripheralsMutex);
+        m_peripherals.Clear();
+        m_manager->GetDirectory("peripherals://all/", m_peripherals);
+        SetItems(m_peripherals);
+      }
+      return true;
+    }
+    default:
+      break;
+  }
+
+  return CGUIDialogSelect::OnMessage(message);
+}
+
 void CGUIDialogPeripherals::Notify(const Observable &obs, const ObservableMessage msg)
 {
   switch (msg)
@@ -116,5 +158,6 @@ void CGUIDialogPeripherals::Notify(const Observable &obs, const ObservableMessag
 
 void CGUIDialogPeripherals::UpdatePeripherals()
 {
-  //! @todo
+  CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), -1);
+  MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(msg);
 }
