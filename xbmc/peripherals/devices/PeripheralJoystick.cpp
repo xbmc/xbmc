@@ -58,10 +58,18 @@ CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const Peripheral
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
-  m_rumbleGenerator->AbortRumble();
-  UnregisterInputHandler(m_joystickMonitor.get());
-  m_joystickMonitor.reset();
-  m_rumbleGenerator->AbortRumble();
+  if (m_rumbleGenerator)
+  {
+    m_rumbleGenerator->AbortRumble();
+    m_rumbleGenerator.reset();
+  }
+
+  if (m_joystickMonitor)
+  {
+    UnregisterInputHandler(m_joystickMonitor.get());
+    m_joystickMonitor.reset();
+  }
+
   m_appInput.reset();
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
