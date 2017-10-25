@@ -109,7 +109,7 @@ void CRenderSystemDX::OnResize()
   if (!m_bRenderCreated)
     return;
 
-  auto outputSize = m_deviceResources->GetLogicalSize();
+  auto outputSize = m_deviceResources->GetOutputSize();
 
   // set camera to center of screen
   CPoint camPoint = { outputSize.Width * 0.5f, outputSize.Height * 0.5f };

@@ -48,6 +48,12 @@ namespace DX
 		return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
 	}
 
+	inline float ConvertPixelsToDips(float pixels, float dpi)
+	{
+		static const float dipsPerInch = 96.0f;
+		return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
+	}
+
   inline float RationalToFloat(DXGI_RATIONAL rational)
   {
     return RATIONAL_TO_FLOAT(rational);
