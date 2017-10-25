@@ -51,8 +51,11 @@ CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult,
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
   m_defaultInputHandler.AbortRumble();
-  UnregisterJoystickInputHandler(m_joystickMonitor.get());
-  m_joystickMonitor.reset();
+  if (m_joystickMonitor)
+  {
+    UnregisterJoystickInputHandler(m_joystickMonitor.get());
+    m_joystickMonitor.reset();
+  }
   UnregisterJoystickInputHandler(&m_defaultInputHandler);
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
