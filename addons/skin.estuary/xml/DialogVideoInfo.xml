@@ -384,7 +384,6 @@
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
 					<include content="InfoDialogButton" condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">
-<<<<<<< HEAD
 						<param name="id" value="8" />
 						<param name="icon" value="icons/filemanager.png" />
 						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
@@ -394,18 +393,6 @@
 						<param name="icon" value="icons/infodialogs/play.png" />
 						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
 					</include>
-=======
- 						<param name="id" value="8" />
- 						<param name="icon" value="icons/filemanager.png" />
- 						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
- 					</include>
- 					<include content="InfoDialogButton" condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season)">
-  						<param name="id" value="8" />
-  						<param name="icon" value="icons/infodialogs/play.png" />
- 						<param name="label" value="$LOCALIZE[208]" />
- 						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
-  					</include>
->>>>>>> [Estuary] Change default button text & icon for tvshows in videoinfo dialog
 					<include content="InfoDialogButton">
 						<param name="id" value="11" />
 						<param name="icon" value="icons/infodialogs/trailer.png" />
