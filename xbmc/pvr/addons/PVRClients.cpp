@@ -1030,7 +1030,7 @@ bool CPVRClients::IsKnownClient(const AddonPtr &client) const
   return GetClientId(client) > 0;
 }
 
-void CPVRClients::UpdateAddons(void)
+void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
 {
   VECADDONS addons;
   CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON_PVRDLL);
@@ -1038,12 +1038,19 @@ void CPVRClients::UpdateAddons(void)
   if (addons.empty())
     return;
 
+  bool bFoundChangedAddon = changedAddonId.empty();
   std::vector<std::pair<AddonPtr, bool>> addonsWithStatus;
   for (const auto &addon : addons)
   {
     bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
     addonsWithStatus.emplace_back(std::make_pair(addon, bEnabled));
+
+    if (!bFoundChangedAddon && addon->ID() == changedAddonId)
+      bFoundChangedAddon = true;
   }
+
+  if (!bFoundChangedAddon)
+    return; // changed addon is not a known pvr client addon, so nothing to update
 
   addons.clear();
 
@@ -1516,6 +1523,6 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled))
   {
     // update addons
-    CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+    CJobManager::GetInstance().AddJob(new CPVRUpdateAddonsJob(event.id), nullptr);
   }
 }
