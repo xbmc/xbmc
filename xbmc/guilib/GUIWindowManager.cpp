@@ -430,6 +430,8 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_DIALOG_VOLUME_BAR);
 
     DestroyWindow(WINDOW_EVENT_LOG);
+
+    DestroyWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
   }
   catch (...)
   {
