@@ -364,6 +364,7 @@
 								<width>232</width>
 								<height>285</height>
 								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+								<visible>Control.HasFocus(50)</visible>
 							</control>
 						</control>
 					</focusedlayout>
@@ -382,10 +383,15 @@
 					<align>center</align>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
-					<include content="InfoDialogButton">
+					<include content="InfoDialogButton" condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">
+						<param name="id" value="8" />
+						<param name="icon" value="icons/filemanager.png" />
+						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
+					</include>
+					<include content="InfoDialogButton" condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season)">
 						<param name="id" value="8" />
 						<param name="icon" value="icons/infodialogs/play.png" />
-						<param name="label" value="$LOCALIZE[208]" />
+						<param name="label" value="$VAR[VideoInfoPlayLabelVar]" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="11" />
@@ -404,8 +410,7 @@
 					<include content="InfoDialogButton">
 						<param name="id" value="441" />
 						<param name="icon" value="icons/infodialogs/cinema.png" />
-						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
-						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
+						<param name="onclick_1" value="RunScript(script.cinemavision,dbtype=$INFO[ListItem.DBType],dbid=$INFO[ListItem.DBID])" />
 						<param name="label" value="$LOCALIZE[31003]" />
 						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
@@ -565,6 +570,5 @@
 				</control>
 			</control>
 		</control>
-		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>
