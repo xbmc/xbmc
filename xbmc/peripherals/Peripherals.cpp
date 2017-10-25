@@ -44,8 +44,6 @@
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogPeripheralSettings.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
 #include "bus/virtual/PeripheralBusApplication.h"
 #include "input/joysticks/IButtonMapper.h"
@@ -57,8 +55,8 @@
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ThreadMessage.h"
+#include "peripherals/dialogs/GUIDialogPeripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -934,55 +932,7 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_PERIPHERALS)
-  {
-    CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-
-    CFileItemList items;
-    GetDirectory("peripherals://all/", items);
-
-    int iPos = -1;
-    do
-    {
-      pDialog->Reset();
-      pDialog->SetHeading(CVariant{35000});
-      pDialog->SetUseDetails(true);
-      pDialog->SetItems(items);
-      pDialog->SetSelected(iPos);
-      pDialog->Open();
-
-      iPos = pDialog->IsConfirmed() ? pDialog->GetSelectedItem() : -1;
-
-      if (iPos >= 0)
-      {
-        CFileItemPtr pItem = items.Get(iPos);
-
-        // show an error if the peripheral doesn't have any settings
-        PeripheralPtr peripheral = GetByPath(pItem->GetPath());
-        if (!peripheral || peripheral->GetSettings().empty())
-        {
-          HELPERS::ShowOKDialogText(CVariant{35000}, CVariant{35004});
-          continue;
-        }
-
-        CGUIDialogPeripheralSettings *pSettingsDialog = g_windowManager.GetWindow<CGUIDialogPeripheralSettings>(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
-        if (pItem && pSettingsDialog)
-        {
-          // pass peripheral item properties to settings dialog so skin authors
-          // can use it to show more detailed information about the device
-          pSettingsDialog->SetProperty("vendor", pItem->GetProperty("vendor"));
-          pSettingsDialog->SetProperty("product", pItem->GetProperty("product"));
-          pSettingsDialog->SetProperty("bus", pItem->GetProperty("bus"));
-          pSettingsDialog->SetProperty("location", pItem->GetProperty("location"));
-          pSettingsDialog->SetProperty("class", pItem->GetProperty("class"));
-          pSettingsDialog->SetProperty("version", pItem->GetProperty("version"));
-
-          // open settings dialog
-          pSettingsDialog->SetFileItem(pItem.get());
-          pSettingsDialog->Open();
-        }
-      }
-    } while (pDialog->IsConfirmed());
-  }
+    CGUIDialogPeripherals::Show(*this);
   else if (settingId == CSettings::SETTING_INPUT_CONTROLLERCONFIG)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   else if (settingId == CSettings::SETTING_INPUT_TESTRUMBLE)
