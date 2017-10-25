@@ -120,7 +120,10 @@ static const translateField fields[] = {
   { "born",              FieldBorn,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21893 },
   { "bandformed",        FieldBandFormed,              CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21894 },
   { "disbanded",         FieldDisbanded,               CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21896 },
-  { "died",              FieldDied,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21897 }
+  { "died",              FieldDied,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21897 },
+  { "artisttype",        FieldArtistType,              CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 564 },
+  { "gender",            FieldGender,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 39025 },
+  { "disambiguation",    FieldDisambiguation,          CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 39026 }
 };
 
 static const size_t NUM_FIELDS = sizeof(fields) / sizeof(translateField);
@@ -344,6 +347,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldStyles);
     fields.push_back(FieldInstruments);
     fields.push_back(FieldBiography);
+    fields.push_back(FieldArtistType);
+    fields.push_back(FieldGender);
+    fields.push_back(FieldDisambiguation);
     fields.push_back(FieldBorn);
     fields.push_back(FieldBandFormed);
     fields.push_back(FieldDisbanded);

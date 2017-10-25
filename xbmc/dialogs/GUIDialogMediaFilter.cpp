@@ -98,6 +98,17 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
 
   { "artists",      FieldArtist,        557,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
   { "artists",      FieldGenre,         515,    SettingType::List,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
+  { "artists",      FieldMoods,         175,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldStyles,        176,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldInstruments, 21892,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldArtistType,    564,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
+  { "artists",      FieldGender,      39025,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
+  { "artists",      FieldDisambiguation, 39026, SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldBiography,   21887,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldBorn,        21893,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldBandFormed,  21894,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldDisbanded,   21896,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "artists",      FieldDied,        21897,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
 
   { "albums",       FieldAlbum,         556,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
 //  { "albums",       FieldArtist,        557,    SettingType::List,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },

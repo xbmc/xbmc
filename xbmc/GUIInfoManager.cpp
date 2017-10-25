@@ -1486,6 +1486,27 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  _string_,
 ///     Todo
 ///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Sortname)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Sortname
+///                  _string_,
+///     Sortname of the currently playing Artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Type)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Type
+///                  _string_,
+///     Type of the currently playing Artist - person, group, orchestra, choir etc.
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Gender)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Gender
+///                  _string_,
+///     Gender of the currently playing Artist - male, female, other
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Disambiguation)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Disambiguation
+///                  _string_,
+///     Brief description of the currently playing Artist that differentiates them
+///     from others with the same name
+///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Born)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Born
 ///                  _string_,
@@ -2689,6 +2710,27 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_AlbumArtist
 ///                  _string_,
 ///     Shows the artist of the currently selected album in a list
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Sortname)`</b>,
+///                  \anchor ListItem_Property_Artist_Sortname
+///                  _string_,
+///     Sortname of the currently selected Artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Type)`</b>,
+///                  \anchor ListItem_Property_Artist_Type
+///                  _string_,
+///     Type of the currently selected Artist - person, group, orchestra, choir etc.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Gender)`</b>,
+///                  \anchor ListItem_Property_Artist_Gender
+///                  _string_,
+///     Gender of the currently selected Artist - male, female, other
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Disambiguation)`</b>,
+///                  \anchor ListItem_Property_Artist_Disambiguation
+///                  _string_,
+///     Brief description of the currently selected Artist that differentiates them
+///     from others with the same name
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Born)`</b>,
 ///                  \anchor ListItem_Property_Artist_Born

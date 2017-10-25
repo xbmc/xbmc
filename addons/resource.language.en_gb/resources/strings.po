@@ -755,12 +755,14 @@ msgctxt "#174"
 msgid "Compiled:"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#175"
 msgid "Moods"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#176"
 msgid "Styles"
@@ -14461,16 +14463,19 @@ msgctxt "#21891"
 msgid "Artist information"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21892"
 msgid "Instruments"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21893"
 msgid "Born"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21894"
 msgid "Formed"
@@ -14481,11 +14486,13 @@ msgctxt "#21895"
 msgid "Themes"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21896"
 msgid "Disbanded"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#21897"
 msgid "Died"
@@ -21340,7 +21347,26 @@ msgctxt "#39024"
 msgid "Dependencies"
 msgstr ""
 
-#empty strings from id 39025 to 39099
+#. Artist gender - male, female, other
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39025"
+msgid "Gender"
+msgstr ""
+
+#. Brief comment to distinguish artists with the same name e.g "former bassist with Journey"
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39026"
+msgid "Disambiguation"
+msgstr ""
+
+#. Sort name of artist (e.g. Jackson, Michael)
+msgctxt "#39027"
+msgid "Sortname"
+msgstr ""
+
+#empty strings from id 39028 to 39099
 
 #: system/settings/settings.xml
 msgctxt "#39100"
