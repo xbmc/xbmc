@@ -117,6 +117,21 @@ namespace PVR
     bool DoWork() override;
   };
 
+  class CPVRUpdateAddonsJob : public CJob
+  {
+  public:
+    explicit CPVRUpdateAddonsJob(const std::string& changedAddonId) : m_changedAddonId(changedAddonId) {};
+    ~CPVRUpdateAddonsJob() override = default;
+    const char *GetType() const override { return "pvr-update-addons"; }
+
+    bool DoWork() override;
+
+  private:
+    CPVRUpdateAddonsJob() = delete;
+
+    std::string m_changedAddonId;
+  };
+
   class CPVREpgsCreateJob : public CJob
   {
   public:

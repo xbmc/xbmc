@@ -74,8 +74,9 @@ namespace PVR
 
     /*!
      * @brief Update add-ons from the AddonManager
+     * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
      */
-    void UpdateAddons(void);
+    void UpdateAddons(const std::string &changedAddonId = "");
 
     /*! @name Backend methods */
     //@{

@@ -131,6 +131,12 @@ bool CPVRStartupJob::DoWork(void)
   return true;
 }
 
+bool CPVRUpdateAddonsJob::DoWork(void)
+{
+  CServiceBroker::GetPVRManager().Clients()->UpdateAddons(m_changedAddonId);
+  return true;
+}
+
 bool CPVREpgsCreateJob::DoWork(void)
 {
   return CServiceBroker::GetPVRManager().CreateChannelEpgs();
