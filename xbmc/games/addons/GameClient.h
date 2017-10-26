@@ -20,7 +20,6 @@
 #pragma once
 
 #include "GameClientSubsystem.h"
-#include "GameClientTiming.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/GameTypes.h"
@@ -93,7 +92,7 @@ public:
   // Playback control
   bool IsPlaying() const { return m_bIsPlaying; }
   IGameClientPlayback* GetPlayback() { return m_playback.get(); }
-  const CGameClientTiming& Timing() const { return m_timing; }
+  double GetFrameRate() const { return m_framerate; }
   void RunFrame();
 
   // Audio/video callbacks
@@ -124,7 +123,6 @@ private:
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
   bool LoadGameInfo();
-  bool NormalizeAudio(IGameAudioCallback* audioCallback);
   void NotifyError(GAME_ERROR error);
   std::string GetMissingResource();
   void CreatePlayback();
@@ -171,7 +169,8 @@ private:
   IGameAudioCallback*   m_audio;               // The audio callback passed to OpenFile()
   IGameVideoCallback*   m_video;               // The video callback passed to OpenFile()
   IGameInputCallback*   m_input = nullptr;     // The input callback passed to OpenFile()
-  CGameClientTiming     m_timing;              // Class to scale playback to avoid resampling audio
+  double                m_framerate = 0.0;     // Video frame rate (fps)
+  double                m_samplerate = 0.0;    // Audio sample rate (Hz)
   std::unique_ptr<IGameClientPlayback> m_playback; // Interface to control playback
   GAME_REGION           m_region;              // Region of the loaded game
 
