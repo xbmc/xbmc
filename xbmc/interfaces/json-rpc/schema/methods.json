@@ -974,7 +974,12 @@
       { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "died", "$ref": "Optional.String" },
       { "name": "disbanded", "$ref": "Optional.String" },
-      { "name": "yearsactive", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
+      { "name": "yearsactive", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "musicbrainzartistid", "$ref": "Optional.String" },
+      { "name": "sortname", "$ref": "Optional.String" },
+      { "name": "type", "$ref": "Optional.String" },
+      { "name": "gender", "$ref": "Optional.String" },
+      { "name": "disambiguation", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
@@ -997,7 +1002,10 @@
       { "name": "rating", "$ref": "Optional.Number" },
       { "name": "year", "$ref": "Optional.Integer" },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "votes", "$ref": "Optional.Integer" }
+      { "name": "votes", "$ref": "Optional.Integer" },
+      { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
+      { "name": "musicbrainzreleasegroupid", "$ref": "Optional.String" },
+      { "name": "sortartist", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },

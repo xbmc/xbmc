@@ -111,7 +111,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldArtist) return "artistview.strArtist";
     else if (field == FieldArtistType) return "artistview.strType";
     else if (field == FieldGender) return "artistview.strGender";
-    else if (field == FieldDisambiguation) return "artistview.Disambiguation";
+    else if (field == FieldDisambiguation) return "artistview.strDisambiguation";
     else if (field == FieldGenre) return "artistview.strGenres";
     else if (field == FieldMoods) return "artistview.strMoods";
     else if (field == FieldStyles) return "artistview.strStyles";

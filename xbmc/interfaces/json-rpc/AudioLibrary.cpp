@@ -553,6 +553,16 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
     artist.strDisbanded = parameterObject["disbanded"].asString();
   if (ParameterNotNull(parameterObject, "yearsactive"))
     CopyStringArray(parameterObject["yearsactive"], artist.yearsActive);
+  if (ParameterNotNull(parameterObject, "musicbrainzartistid"))
+    artist.strMusicBrainzArtistID = parameterObject["musicbrainzartistid"].asString();
+  if (ParameterNotNull(parameterObject, "sortname"))
+    artist.strSortName = parameterObject["sortname"].asString();
+  if (ParameterNotNull(parameterObject, "type"))
+    artist.strType = parameterObject["type"].asString();
+  if (ParameterNotNull(parameterObject, "gender"))
+    artist.strGender = parameterObject["gender"].asString();
+  if (ParameterNotNull(parameterObject, "disambiguation"))
+    artist.strDisambiguation = parameterObject["disambiguation"].asString();
 
   if (!musicdatabase.UpdateArtist(artist))
     return InternalError;
@@ -601,8 +611,16 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
     album.fRating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
     album.iUserrating = parameterObject["userrating"].asInteger();
+  if (ParameterNotNull(parameterObject, "votes"))
+    album.iVotes = parameterObject["votes"].asInteger();
   if (ParameterNotNull(parameterObject, "year"))
     album.iYear = (int)parameterObject["year"].asInteger();
+  if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
+    album.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainzreleasegroupid"))
+    album.strReleaseGroupMBID = parameterObject["musicbrainzreleasegroupid"].asString();
+  if (ParameterNotNull(parameterObject, "sortartist"))
+    album.strArtistSort = parameterObject["sortartist"].asString();
 
   if (!musicdatabase.UpdateAlbum(album))
     return InternalError;

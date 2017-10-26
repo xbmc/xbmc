@@ -458,7 +458,8 @@
                 "description", "genre", "died", "disbanded",
                 "yearsactive", "musicbrainzartistid", "fanart",
                 "thumbnail", "compilationartist", "dateadded",
-                "roles", "songgenres", "isalbumartist"]
+                "roles", "songgenres", "isalbumartist", 
+                "sortname", "type", "gender", "disambiguation"]
     }
   },
   "Audio.Fields.Album": {
@@ -470,7 +471,8 @@
                 "rating", "votes", "userrating","year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "genreid", "artistid", "displayartist",
-                "compilation", "releasetype", "dateadded" ]
+                "compilation", "releasetype", "dateadded",
+                "sortartist", "musicbrainzreleasegroupid"]
     }
   },
   "Audio.Fields.Song": {
@@ -485,8 +487,8 @@
                 "lastplayed", "disc", "genreid", "artistid", "displayartist",
                 "albumartistid", "albumreleasetype", "dateadded", 
                 "votes", "userrating", "mood", "contributors",
-                "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist"
-				 ]
+                "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
+                "sortartist"]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -541,13 +543,14 @@
       "artist": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
-      "musicbrainzalbumid": { "type": "string" },
-      "musicbrainzalbumartistid": { "type": "string" },
+      "musicbrainzalbumid": { "type": "string", "description": "Only returned for albums, deprecated for songs" },
+      "musicbrainzalbumartistid": { "$ref": "Array.String" },
       "genreid": { "$ref": "Array.Integer" },
       "artistid": { "$ref": "Array.Integer" },
       "displayartist": { "type" : "string" },
       "votes": { "type": "integer" },
-      "userrating": { "type": "integer" }
+      "userrating": { "type": "integer" },
+      "sortartist": { "type" : "string" }
     }
   },
   "Audio.Details.Artist": {
@@ -568,7 +571,11 @@
       "musicbrainzartistid": { "type": "string" },
       "roles": {"$ref": "Audio.Artist.Roles"},
       "songgenres": {"$ref": "Audio.Details.Genres"},
-      "isalbumartist": { "type": "boolean" }
+      "isalbumartist": { "type": "boolean" },
+      "sortname": { "type": "string" },
+      "type": { "type": "string" },
+      "gender": { "type": "string" },
+      "disambiguation": { "type": "string" }
     }
   },
   "Audio.Details.Album": {
@@ -583,7 +590,8 @@
       "albumlabel": { "type": "string" },
       "playcount": { "type": "integer" },
       "compilation": { "type": "boolean" },
-      "releasetype": { "$ref": "Audio.Album.ReleaseType" }
+      "releasetype": { "$ref": "Audio.Album.ReleaseType" },
+      "musicbrainzreleasegroupid": { "type": "string" }
     }
   },
   "Audio.Details.Song": {
@@ -1443,7 +1451,7 @@
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
                 "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
-                "userrating" ]
+                "userrating", "votes", "sortartist", "musicbrainzreleasegroupid"]
     }
   },
   "List.Item.All": {
@@ -1473,7 +1481,7 @@
                 "disc", "tag", "art", "genreid", "displayartist", "albumartistid",
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
-                "specialsortseason", "specialsortepisode" ]
+                "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid"]
     }
   },
   "List.Item.File": {

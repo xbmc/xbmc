@@ -813,10 +813,10 @@ void CMusicInfoTag::Serialize(CVariant& value) const
 
   value["displayartist"] = GetArtistString();
   value["displayalbumartist"] = GetAlbumArtistString();
-  value["artistsort"] = GetArtistSort();
+  value["sortartist"] = GetArtistSort();
   value["album"] = m_strAlbum;
   value["albumartist"] = m_albumArtist;
-  value["albumartistsort"] = m_strAlbumArtistSort;
+  value["sortalbumartist"] = m_strAlbumArtistSort;
   value["genre"] = m_genre;
   value["duration"] = m_iDuration;
   value["track"] = GetTrackNumber();
