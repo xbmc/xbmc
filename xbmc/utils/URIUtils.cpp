@@ -218,16 +218,19 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   // everything to the right of the directory separator
   strFileName = strFileNameAndPath.substr(i+1);
 
-  // ignore options
-  i = strFileName.size() - 1;
-  while (i > 0)
+  // if actual uri, ignore options
+  if (IsURL(strFileNameAndPath))
   {
-    char ch = strFileName[i];
-    if (ch == '?') break;
-    else i--;
+    i = strFileName.size() - 1;
+    while (i > 0)
+    {
+      char ch = strFileName[i];
+      if (ch == '?') break;
+      else i--;
+    }
+    if (i > 0)
+      strFileName = strFileName.substr(0, i);
   }
-  if (i > 0)
-    strFileName = strFileName.substr(0, i);
 }
 
 std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
