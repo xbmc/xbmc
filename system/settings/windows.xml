@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="services">
+    <category id="general">
+      <group id="2">
+        <setting id="services.zeroconf">
+          <default>false</default>
+        </setting>
+      </group>
+    </category>
+    <category id="smb">
+      <visible>false</visible>
+    </category>
+  </section>
+  <section id="system">
+    <category id="audio">
+      <group id="1">
+        <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
+          <level>0</level>
+          <default>DIRECTSOUND:default</default>
+          <constraints>
+            <options>audiodevices</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
+          <level>1</level>
+          <default>DIRECTSOUND:default</default>
+          <constraints>
+            <options>audiodevicespassthrough</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="interface">
+    <category id="regional">
+      <group id="2">
+        <setting id="locale.timezonecountry">
+          <visible>false</visible>
+        </setting>
+        <setting id="locale.timezone">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
