@@ -1463,8 +1463,6 @@ namespace PVR
 
     CDateTime::ResetTimezoneBias();
 
-    CServiceBroker::GetPVRManager().EpgContainer().Stop();
-
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
     pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
     pDlgProgress->SetLine(1, CVariant{""});
@@ -1482,60 +1480,53 @@ namespace PVR
     pDlgProgress->SetPercentage(10);
     pDlgProgress->Progress();
 
-    /* reset the EPG pointers */
-    const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
-    if (database)
-      database->ResetEPG();
+    const CPVRDatabasePtr pvrDatabase(CServiceBroker::GetPVRManager().GetTVDatabase());
+    const CPVREpgDatabasePtr epgDatabase(CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase());
 
-    /* stop the thread, close database */
+    // increase db open refcounts, so they don't get closed during following pvr manager shutdown
+    pvrDatabase->Open();
+    epgDatabase->Open();
+
+    // stop pvr manager; close both pvr and epg databases
     CServiceBroker::GetPVRManager().Stop();
 
-    pDlgProgress->SetPercentage(20);
+    /* reset the EPG pointers */
+    pvrDatabase->ResetEPG();
+    pDlgProgress->SetPercentage(bResetEPGOnly ? 40 : 20);
     pDlgProgress->Progress();
 
-    if (database && database->Open())
+    /* clean the EPG database */
+    epgDatabase->DeleteEpg();
+    pDlgProgress->SetPercentage(bResetEPGOnly ? 70 : 40);
+    pDlgProgress->Progress();
+
+    if (!bResetEPGOnly)
     {
-      /* clean the EPG database */
-      CServiceBroker::GetPVRManager().EpgContainer().Reset();
-      pDlgProgress->SetPercentage(30);
+      pvrDatabase->DeleteChannelGroups();
+      pDlgProgress->SetPercentage(60);
       pDlgProgress->Progress();
 
-      if (!bResetEPGOnly)
+      /* delete all channels */
+      pvrDatabase->DeleteChannels();
+      pDlgProgress->SetPercentage(80);
+      pDlgProgress->Progress();
+
+      /* delete all channel and recording settings */
+      CVideoDatabase videoDatabase;
+
+      if (videoDatabase.Open())
       {
-        database->DeleteChannelGroups();
-        pDlgProgress->SetPercentage(50);
-        pDlgProgress->Progress();
-
-        /* delete all channels */
-        database->DeleteChannels();
-        pDlgProgress->SetPercentage(70);
-        pDlgProgress->Progress();
-
-        /* delete all channel and recording settings */
-        CVideoDatabase videoDatabase;
-
-        if (videoDatabase.Open())
-        {
-          videoDatabase.EraseVideoSettings("pvr://channels/");
-          videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
-          videoDatabase.Close();
-        }
-
-        pDlgProgress->SetPercentage(80);
-        pDlgProgress->Progress();
-
-        /* delete all client information */
-        pDlgProgress->SetPercentage(90);
-        pDlgProgress->Progress();
+        videoDatabase.EraseVideoSettings("pvr://channels/");
+        videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
+        videoDatabase.Close();
       }
-
-      database->Close();
     }
 
-    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
+    // decrease db open refcounts; this actually closes dbs because refcounts drops to zero
+    pvrDatabase->Close();
+    epgDatabase->Close();
 
-    if (database)
-      database->Open();
+    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
 
     CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - restarting the PVRManager", __FUNCTION__);
     CServiceBroker::GetPVRManager().Start();
