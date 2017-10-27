@@ -5253,11 +5253,29 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("DROP TABLE settings");
     m_pDS->exec("ALTER TABLE settingsnew RENAME TO settings");
   }
+  if (iVersion < 110)
+  {
+    m_pDS->exec("CREATE TABLE `history` (`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,`dateWatched` TEXT NOT NULL, `idFile` INTEGER NOT NULL);");
+    
+
+    m_pDS->exec("INSERT INTO history(dateWatched, idFile) SELECT lastPlayed, idFile FROM files AS f WHERE f.playCount = 1;");
+    m_pDS->exec("SELECT MAX(playCount) FROM files AS f;");
+    
+
+    // don't run for playcount == 1 as we already migrated those
+    for (auto i = m_pDS->fv(0).get_asInt(); i > 1; i--) {
+      // as we have no dates for these, we'll add them with an empty string - shouldn't be the case otherwise - ever!
+      m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT "", idFile FROM files AS f WHERE f.playCount = %i;", i));
+    }
+}
+
+  }
+
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 109;
+  return 110;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
