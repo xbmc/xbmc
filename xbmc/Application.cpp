@@ -3618,6 +3618,10 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 }
 
+void CApplication::OnAVChange()
+{
+}
+
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)
 {
   CVideoDatabase dbs;

@@ -39,6 +39,7 @@ public:
   virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) {};
   virtual void OnPlayBackSeekChapter(int iChapter) {};
   virtual void OnPlayBackSpeedChanged(int iSpeed) {};
+  virtual void OnAVChange() {};
   virtual void RequestVideoSettings(const CFileItem &fileItem) {};
   virtual void StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs) {};
 };
