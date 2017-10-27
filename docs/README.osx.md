@@ -35,6 +35,7 @@ The minimum version of OSX you need to run(!) Kodi is 10.7 atm.
 - On Yosemite (OSX 10.10.x) we recommend using Xcode 6.4.
 - On El Capitan (OSX 10.11.x) we recommend using Xcode 7.x or Xcode 8.x.
 - On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
+- On High Sierra (macOS 10.13.x) we recommend using Xcode 9.x.
 
 **ATTENTION**: You need to download and install XQuartz from <https://xquartz.macosforge.org/landing/>
 since its not part of macOS anymore since 10.8.
@@ -62,6 +63,7 @@ constellations of Xcode and macOS versions (to be updated once we know more):
 6 Xcode 7.x against OSX SDK 10.11 (EC)
 7 Xcode 8.0 against OSX SDK 10.12 (EC)
 8 Xcode 8.0 against OSX SDK 10.12 (S)
+9 Xcode 9.0 against OSX SDK 10.13 (HS)
 
 ### 3.2 Install Kodi build depends
 
