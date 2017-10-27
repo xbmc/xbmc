@@ -1115,6 +1115,9 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
     AddArtistDiscography(artist.idArtist, disc.first, disc.second);
   }
 
+  if (!artist.art.empty())
+    SetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
+
   return true;
 }
 
