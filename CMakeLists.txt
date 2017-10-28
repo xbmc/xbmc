@@ -310,7 +310,12 @@ else()
 endif()
 add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
-target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
+
+if(NOT WIN32)
+  target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
+else()
+  target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} ${DEPLIBS})
+endif()
 unset(_MAIN_LIBRARIES)
 
 if(WIN32)
