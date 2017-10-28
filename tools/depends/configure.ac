@@ -322,6 +322,7 @@ case $host in
           10.10);;
           10.11);;
           10.12);;
+          10.13);;
           *)
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
