@@ -242,7 +242,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
       m_content = static_cast<CONTENT_TYPE>(selected.second);
 
       AddonPtr scraperAddon;
-      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content), scraperAddon))
+      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content), scraperAddon) && m_content != CONTENT_NONE)
         return;
 
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
