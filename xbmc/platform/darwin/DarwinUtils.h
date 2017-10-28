@@ -40,6 +40,7 @@ public:
   static int         GetFrameworkPath(bool forPython, char* path, size_t *pathsize);
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static const char *GetAppRootFolder(void);
+  static bool        IsOsxAppBundle(void);
   static bool        IsIosSandboxed(void);
   static bool        HasVideoToolboxDecoder(void);
   static int         BatteryLevel(void);

@@ -415,6 +415,22 @@ const char* CDarwinUtils::GetAppRootFolder(void)
   return rootFolder.c_str();
 }
 
+bool CDarwinUtils::IsOsxAppBundle(void)
+{
+  static int ret = -1;
+  if (ret == -1)
+  {
+    NSString *pathname = [[NSBundle mainBundle] executablePath];
+    // enable updater
+    // only instantiate the updater when run from the app bundle
+    if ( pathname && strstr([pathname UTF8String], "Contents") )
+    {
+      ret = 1;
+    }
+  }
+  return ret == 1;
+}
+
 bool CDarwinUtils::IsIosSandboxed(void)
 {
   static int ret = -1;
