@@ -41,6 +41,7 @@
 #include "network/Network.h"
 #include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/UpdateHandler.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
 #include "weather/WeatherManager.h"
@@ -212,6 +213,9 @@ bool CServiceManager::InitStageThree()
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
+  CUpdateHandler::GetInstance().Init();
+  
+  
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*m_settings,
                                                    *m_profileManager));
@@ -229,6 +233,7 @@ void CServiceManager::DeinitStageThree()
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
   m_peripherals->Clear();
+  CUpdateHandler::GetInstance().Deinit();
 }
 
 void CServiceManager::DeinitStageTwo()
