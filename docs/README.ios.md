@@ -37,6 +37,7 @@ The minimum version of iOS you need to run(!) Kodi is 6.0 atm.
 - On Yosemite (OSX 10.10.x) we recommend using Xcode 6.4.
 - On El Capitan (OSX 10.11.x) we recommend using Xcode 7.x or Xcode 8.x.
 - On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
+- On High Sierra (macOS 10.13.x) we recommend using Xcode 9.x.
 
 ## 2 Getting the source code
 
@@ -60,8 +61,10 @@ constellations of Xcode and macOS versions (to be updated once we know more):
 5. Xcode 7.x against iOS SDK 9.x on 10.10 (Yosemite)
 6. Xcode 7.x against iOS SDK 9.x on 10.11 (El Capitan)
 7. Xcode 7.x against iOS SDK 9.x on 10.12 (Sierra)
-8. Xcode 8.x against iOS SDK 10.x (El Capitan)
-9. Xcode 8.x against iOS SDK 10.x (Sierra)
+8. Xcode 8.x against iOS SDK 10.x on 10.11 (El Capitan)
+9. Xcode 8.x against iOS SDK 10.x on 10.12 (Sierra)
+10. Xcode 9.x against iOS SDK 11.x on 10.12 (Sierra)
+11. Xcode 9.x against iOS SDK 11.x on 10.13 (High Sierra)
 
 The preferred iOS SDK Version is 8.1.
 
@@ -78,7 +81,7 @@ cores. The build machine can also be configured to do this automatically by
 adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config
 (e.g. `~/.bashrc`).
 
-#### 3.2.a Compiling as 32 bit armv7 libraries (recommended for most users)
+#### 3.2.a Compiling as 32 bit armv7 libraries - note 32 bit compiling is not supported anymore as of iOS SDK 11
 
     cd $HOME/Kodi
     cd tools/depends
@@ -86,7 +89,7 @@ adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config
     ./configure --host=arm-apple-darwin
     make
 
-#### 3.2.b Compiling as 64 bit arm64 libraries
+#### 3.2.b Compiling as 64 bit arm64 libraries (recommended for most users)
 
     cd $HOME/Kodi
     cd tools/depends
