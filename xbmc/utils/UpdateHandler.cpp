@@ -26,8 +26,11 @@
 
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/UpdaterOsx.h"
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
+// sparkle updater in that case
 #include "platform/win32/UpdaterWindows.h"
+#include <regex>
+#include "Util.h"
 #endif
 
 IUpdater *CUpdateHandler::impl = NULL;
@@ -39,8 +42,11 @@ CUpdateHandler::CUpdateHandler()
   {
 #if defined(TARGET_DARWIN_OSX)
     impl = new CUpdaterOsx();
-#elif defined(TARGET_WINDOWS)
-    impl = new CUpdaterWindows();
+#elif defined(TARGET_WINDOWS_DESKTOP)
+    // sparkle updater in that case
+    std::regex windowsApps(R"_([\/\\]WindowsApps[\/\\])_");
+    if (!std::regex_search(CUtil::ResolveExecutablePath(), windowsApps))
+      impl = new CUpdaterWindows();
 #endif
   }
 }

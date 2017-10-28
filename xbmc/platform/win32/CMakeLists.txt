@@ -4,6 +4,7 @@ set(SOURCES CharsetConverter.cpp
             dxerr.cpp
             Filesystem.cpp
             pch.cpp
+            UpdaterWindows.cpp
             WIN32Util.cpp
             WindowHelper.cpp)
 
@@ -18,6 +19,7 @@ set(HEADERS CharsetConverter.h
             PlatformDefs.h
             resource.h
             unistd.h
+            UpdaterWindows.h
             WIN32Util.h
             WindowHelper.h)
 
