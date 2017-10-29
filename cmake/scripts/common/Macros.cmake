@@ -660,6 +660,9 @@ macro(core_find_versions)
   string(REPLACE " " ";" version_list "${version_list}")
   cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_PACKAGE" "" ${version_list})
 
+  if(NOT ${APP_VERSION_CODE} MATCHES "^[0-9]+\\.[0-9][0-9]?\\.[0-9][0-9]?[0-9]?$")
+    message(FATAL_ERROR "VERSION_CODE was set to ${APP_VERSION_CODE} in version.txt, but it has to match '^\\d+\\.\\d{1,2}\\.\\d{1,3}$'")
+  endif()
   set(APP_NAME ${APP_APP_NAME}) # inconsistency but APP_APP_NAME looks weird
   string(TOLOWER ${APP_APP_NAME} APP_NAME_LC)
   string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
