@@ -339,7 +339,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL ios)
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
                                                   MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
 else()
-  set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
+  set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ${APP_BINARY_SUFFIX})
 endif()
 
 # testing
@@ -473,6 +473,8 @@ if(VERBOSE)
   message(STATUS "includedir : ${includedir}")
   message(STATUS "libdir     : ${libdir}")
   message(STATUS "datarootdir: ${datarootdir}")
+  message(STATUS "#---------------------------------------------#")
+  message(STATUS "BINARY: ${APP_NAME_LC}${APP_BINARY_SUFFIX}")
   message(STATUS "#---------------------------------------------#")
   message(STATUS "GIT_REV: ${APP_SCMID}")
   message(STATUS "#---------------------------------------------#")
