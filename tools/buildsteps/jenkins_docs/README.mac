@@ -96,3 +96,12 @@ java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/ca
 
 22. load service:
 sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist
+
+23. As of Xcode8 having multiple xcode versions installed in parallel yields a crash of the CoreSimulator service 
+    due to service version mismatch. Do the following to disable it (you need to do it for all installed xcode version by 
+    setting DEVELOPER_DIR before issuing the commands):
+sudo chmod -R g-w $(xcode-select -p)/Library/PrivateFrameworks/CoreSimulator.framework/Versions/A/XPCServices/com.apple.CoreSimulator.CoreSimulatorService.xpc 
+sudo chown -R root:wheel $(xcode-select -p)/Library/PrivateFrameworks/CoreSimulator.framework/Versions/A/XPCServices/com.apple.CoreSimulator.CoreSimulatorService.xpc 
+sudo killall -9 com.apple.CoreSimulator.CoreSimulatorService || true
+sudo launchctl remove com.apple.CoreSimulator.CoreSimulatorService || true
+
