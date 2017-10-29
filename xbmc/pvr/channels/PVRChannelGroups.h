@@ -222,5 +222,6 @@ namespace PVR
     CPVRChannelGroupPtr              m_selectedGroup;  /*!< the group that's currently selected in the UI */
     std::vector<CPVRChannelGroupPtr> m_groups;         /*!< the groups in this container */
     CCriticalSection m_critSection;
+    std::vector<int> m_failedClientsForChannelGroups;
   };
 }

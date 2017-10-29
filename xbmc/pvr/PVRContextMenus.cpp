@@ -377,7 +377,8 @@ namespace PVR
     {
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer();
+        return epg->Channel() && CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(epg->Channel()->ClientID()).SupportsTimers() &&
+               !epg->Timer();
 
       return false;
     }

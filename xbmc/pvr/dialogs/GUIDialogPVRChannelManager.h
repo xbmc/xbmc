@@ -84,7 +84,6 @@ namespace PVR
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
 
-    typedef std::vector<PVR_CLIENT>::iterator PVR_CLIENT_ITR;
-    std::vector<PVR_CLIENT> m_clientsWithSettingsList;
+    std::vector<CPVRClientPtr> m_clientsWithSettingsList;
   };
 }

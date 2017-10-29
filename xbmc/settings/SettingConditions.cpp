@@ -39,6 +39,7 @@
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRSettings.h"
 #include "settings/SettingAddon.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
@@ -380,6 +381,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gte",                           GreaterThanOrEqual));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lt",                            LessThan));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lte",                           LessThanOrEqual));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("pvrsettingvisible",             PVR::CPVRSettings::IsSettingVisible));
 }
 
 bool CSettingConditions::Check(const std::string &condition, const std::string &value /* = "" */, SettingConstPtr setting /* = NULL */)

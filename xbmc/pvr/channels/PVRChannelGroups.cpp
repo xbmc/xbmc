@@ -51,6 +51,7 @@ void CPVRChannelGroups::Clear(void)
 {
   CSingleLock lock(m_critSection);
   m_groups.clear();
+  m_failedClientsForChannelGroups.clear();
 }
 
 bool CPVRChannelGroups::GetGroupsFromClients(void)
@@ -58,7 +59,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   if (! CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
-  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(this, m_failedClientsForChannelGroups) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromClient /* = false */)

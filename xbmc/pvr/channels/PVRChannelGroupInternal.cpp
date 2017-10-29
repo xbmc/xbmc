@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -124,7 +125,9 @@ bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
   PVRChannels_tmp.SetPreventSortAndRenumber();
-  return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
+  PVRChannels_tmp.LoadFromClients();
+  m_failedClientsForChannels = PVRChannels_tmp.m_failedClientsForChannels;
+  return UpdateGroupEntries(PVRChannels_tmp);
 }
 
 bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber /* = 0 */)
@@ -237,7 +240,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroupInternal::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return CServiceBroker::GetPVRManager().Clients()->GetChannels(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannels(this, m_failedClientsForChannels) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannelPtr &channel) const
