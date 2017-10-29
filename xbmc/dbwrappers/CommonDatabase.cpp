@@ -24,8 +24,10 @@
 
 #ifdef HAS_MYSQL
 #include <odb/mysql/database.hxx>
+#include <odb/mysql/connection-factory.hxx>
 #endif
 #include <odb/sqlite/database.hxx>
+#include <odb/sqlite/connection-factory.hxx>
 
 #include <odb/transaction.hxx>
 #include <odb/session.hxx>
@@ -102,7 +104,18 @@ CCommonDatabase::CCommonDatabase()
 #ifdef HAS_MYSQL
   if (settings.type == "mysql")
   {
-    m_db = std::shared_ptr<odb::core::database>( new odb::mysql::database(settings.user, settings.pass, "common", settings.host, std::stoi(settings.port), 0, "utf8"));
+    std::auto_ptr<odb::mysql::connection_factory> mysql_pool(new odb::mysql::connection_pool_factory(20));
+    m_db = std::shared_ptr<odb::core::database>( new odb::mysql::database(settings.user,
+                                                                          settings.pass,
+                                                                          "common",
+                                                                          settings.host,
+                                                                          std::stoi(settings.port),
+                                                                          0,
+                                                                          "utf8",
+                                                                          0,
+                                                                          mysql_pool));
+    
+    
   }
 
   //use sqlite3 per default
@@ -110,8 +123,12 @@ CCommonDatabase::CCommonDatabase()
 #endif
   {
     std::string dbfolder = CSpecialProtocol::TranslatePath("special://database/");
+    std::auto_ptr<odb::sqlite::connection_factory> sqlite_pool(new odb::sqlite::connection_pool_factory(20));
     m_db = std::shared_ptr<odb::core::database>( new odb::sqlite::database(dbfolder + "/common.db",
-                                                                            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE));
+                                                                           SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+                                                                           true,
+                                                                           "",
+                                                                           sqlite_pool));
   }
   
   if (settings.tracer)
