@@ -615,7 +615,7 @@ CVideoSettings CProcessInfo::GetVideoSettings()
   return m_videoSettings;
 }
 
-CVideoSettingsLocked& CProcessInfo::UpdateVideoSettigs()
+CVideoSettingsLocked& CProcessInfo::UpdateVideoSettings()
 {
   CSingleLock lock(m_settingsSection);
   return *m_videoSettingsLocked.get();
