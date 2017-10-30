@@ -36,10 +36,12 @@ class DllLibAmCodec;
 class PosixFile;
 typedef std::shared_ptr<PosixFile> PosixFilePtr;
 
+class CProcessInfo;
+
 class CAMLCodec
 {
 public:
-  CAMLCodec();
+  CAMLCodec(CProcessInfo &processInfo);
   virtual ~CAMLCodec();
 
   bool          OpenDecoder(CDVDStreamInfo &hints);
@@ -114,4 +116,5 @@ private:
 
   static std::atomic_flag  m_pollSync;
   static int m_pollDevice;
+  CProcessInfo &m_processInfo;
 };

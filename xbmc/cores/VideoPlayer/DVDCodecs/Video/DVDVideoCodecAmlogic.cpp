@@ -267,7 +267,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
   m_aspect_ratio = m_hints.aspect;
 
-  m_Codec = std::shared_ptr<CAMLCodec>(new CAMLCodec());
+  m_Codec = std::shared_ptr<CAMLCodec>(new CAMLCodec(m_processInfo));
   if (!m_Codec)
   {
     CLog::Log(LOGERROR, "%s: Failed to create Amlogic Codec", __MODULE_NAME__);
