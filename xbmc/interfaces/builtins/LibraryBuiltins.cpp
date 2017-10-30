@@ -29,6 +29,8 @@
 #include "MediaSource.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
+#include "settings/LibExportSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -67,8 +69,8 @@ static int CleanLibrary(const std::vector<std::string>& params)
 /*! \brief Export a library.
  *  \param params The parameters.
  *  \details params[0] = "video" or "music".
- *           params[1] = "true" to export to a single file (optional).
- *           params[2] = "true" to export thumbs (optional).
+ *           params[1] = "true" to export to separate files (optional).
+ *           params[2] = "true" to export thumbs (optional) or the file path for export to singlefile.
  *           params[3] = "true" to overwrite existing files (optional).
  *           params[4] = "true" to export actor thumbs (optional).
  */
@@ -160,17 +162,89 @@ static int ExportLibrary(const std::vector<std::string>& params)
     }
     else
     {
-      if (URIUtils::HasSlashAtEnd(path))
-        path = URIUtils::AddFileToFolder(path, "musicdb.xml");
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
-      musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
-      musicdatabase.Close();
+      CLibExportSettings settings;
+      // ELIBEXPORT_SINGLEFILE, ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS by default
+      settings.m_strPath = path;
+      if (!singleFile)
+        settings.SetExportType(ELIBEXPORT_TOLIBRARYFOLDER);
+      settings.m_artwork = thumbs;
+      settings.m_overwrite = overwrite;
+      // Export music library (not showing progress dialog)
+      CMusicLibraryQueue::GetInstance().ExportLibrary(settings, false);
     }
   }
 
   return 0;
 }
+
+/*! \brief Export a library with extended parameters
+Avoiding breaking change to original ExportLibrary routine parameters
+*  \param params The parameters.
+*  \details params[0] = "video" or "music".
+*           params[1] = export type "singlefile", "separate", or "library".
+*           params[2] = path of destination folder.
+*           params[3,...] = "unscraped" to include unscraped items
+*           params[3,...] = "overwrite" to overwrite exitsing files.
+*           params[3,...] = "artwork" to include images such as thumbs and fanart.
+*           params[3,...] = "skipnfo" to not include nfo files (just art).
+*           params[3,...] = "ablums" to include albums.
+*           params[3,...] = "albumartists" to include album artists.
+*           params[3,...] = "songartists" to include song artists.
+*           params[3,...] = "otherartists" to include other artists.
+*/
+static int ExportLibrary2(const std::vector<std::string>& params)
+{
+  CLibExportSettings settings;
+  if (params.size() < 3)
+    return -1;
+  settings.m_strPath = params[2];
+  settings.SetExportType(ELIBEXPORT_SINGLEFILE);
+  if (StringUtils::EqualsNoCase(params[1], "separate"))
+    settings.SetExportType(ELIBEXPORT_SEPARATEFILES);
+  else if (StringUtils::EqualsNoCase(params[1], "library"))
+  {
+    settings.SetExportType(ELIBEXPORT_TOLIBRARYFOLDER);
+    settings.m_strPath.clear();
+  }
+  settings.ClearItems();
+
+  for (unsigned int i = 2; i < params.size(); i++)
+  {
+    if (StringUtils::EqualsNoCase(params[i], "artwork"))
+      settings.m_artwork = true;
+    else if (StringUtils::EqualsNoCase(params[i], "overwrite"))
+      settings.m_overwrite = true;
+    else if (StringUtils::EqualsNoCase(params[i], "unscraped"))
+      settings.m_unscraped = true;
+    else if (StringUtils::EqualsNoCase(params[i], "skipnfo"))
+      settings.m_skipnfo = true;
+    else if (StringUtils::EqualsNoCase(params[i], "albums"))
+      settings.AddItem(ELIBEXPORT_ALBUMS);
+    else if (StringUtils::EqualsNoCase(params[i], "albumartists"))
+      settings.AddItem(ELIBEXPORT_ALBUMARTISTS);
+    else if (StringUtils::EqualsNoCase(params[i], "songartists"))
+      settings.AddItem(ELIBEXPORT_SONGARTISTS);
+    else if (StringUtils::EqualsNoCase(params[i], "otherartists"))
+      settings.AddItem(ELIBEXPORT_OTHERARTISTS);
+    else if (StringUtils::EqualsNoCase(params[i], "actorthumbs"))
+      settings.AddItem(ELIBEXPORT_ACTORTHUMBS);
+  }
+  if (StringUtils::EqualsNoCase(params[0], "music"))
+  {
+    // Export music library (not showing progress dialog)
+    CMusicLibraryQueue::GetInstance().ExportLibrary(settings, false);
+  }
+  else
+  {
+    CVideoDatabase videodatabase;
+    videodatabase.Open();
+    videodatabase.ExportToXML(settings.m_strPath, settings.IsSingleFile(),
+      settings.m_artwork, settings.IsItemExported(ELIBEXPORT_ACTORTHUMBS), settings.m_overwrite);
+    videodatabase.Close();
+  }
+  return 0;
+}
+
 
 /*! \brief Update a library.
  *  \param params The parameters.
@@ -233,10 +307,28 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 ///     ,
 ///     Export the video/music library
 ///     @param[in] type                  "video" or "music".
-///     @param[in] exportSingleFile      Add "true" to export to a single file (optional).
+///     @param[in] exportSingleFile      Add "true" to export to separate files (optional).
 ///     @param[in] exportThumbs          Add "true" to export thumbs (optional).
 ///     @param[in] overwrite             Add "true" to overwrite existing files (optional).
 ///     @param[in] exportActorThumbs     Add "true" to export actor thumbs (optional).
+///   }
+///   \table_row2_l{
+///     <b>`exportlibrary2(library\, exportFiletype\, path [\, unscraped][\, overwrite][\, artwork][\, skipnfo]
+///     [\, albums][\, albumartists][\, songartists][\, otherartists][\, actorthumbs])`</b>
+///     ,
+///     Export the video/music library with extended parameters
+///     @param[in] library               "video" or "music".
+///     @param[in] exportFiletype        "singlefile", "separate" or "library"
+///     @param[in] path                  Path to destination folder
+///     @param[in] unscraped             Add "unscraped" to include unscraped items
+///     @param[in] overwrite             Add "overwrite" to overwrite exitsing files.
+///     @param[in] artwork               Add "artwork" to include images such as thumbs and fanart.
+///     @param[in] skipnfo               Add "skipnfo" to not include nfo files(just art).
+///     @param[in] albums                Add "ablums" to include albums.
+///     @param[in] albumartists          Add "albumartists" to include album artists.
+///     @param[in] songartists           Add "songartists" to include song artists.
+///     @param[in] otherartists          Add "otherartists" to include other artists.
+///     @param[in] actorthumbs           Add "actorthumbs" to include other actor thumbs.
 ///   }
 ///   \table_row2_l{
 ///     <b>`updatelibrary([type\, suppressDialogs])`</b>
@@ -258,6 +350,7 @@ CBuiltins::CommandMap CLibraryBuiltins::GetOperations() const
   return {
           {"cleanlibrary",        {"Clean the video/music library", 1, CleanLibrary}},
           {"exportlibrary",       {"Export the video/music library", 1, ExportLibrary}},
+          {"exportlibrary2",      {"Export the video/music library", 1, ExportLibrary2}},
           {"updatelibrary",       {"Update the selected library (music or video)", 1, UpdateLibrary}},
           {"videolibrary.search", {"Brings up a search dialog which will search the library", 0, SearchVideoLibrary}}
          };

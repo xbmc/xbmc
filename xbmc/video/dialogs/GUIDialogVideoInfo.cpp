@@ -1703,15 +1703,22 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   std::string currentThumb;
   int idArtist = -1;
   std::string artistPath;
+  std::string artistOldPath;
   std::string artType = "thumb";
   if (type == MediaTypeArtist)
   {
     CMusicDatabase musicdb;
     if (musicdb.Open())
     {
-      idArtist = musicdb.GetArtistByName(item->GetLabel());
-      if (idArtist >= 0 && musicdb.GetArtistPath(idArtist, artistPath))
+      idArtist = musicdb.GetArtistByName(item->GetLabel()); // Fails when name not unique
+      if (idArtist >= 0 )
       {
+        // Get artist paths - possible locations for thumb - while music db open
+        musicdb.GetOldArtistPath(idArtist, artistOldPath);  // Old artist path, local to music files
+        CArtist artist;
+        musicdb.GetArtist(idArtist, artist); // Need name and mbid for artist folder name
+        musicdb.GetArtistPath(artist, artistPath);  // Artist path in artist info folder      
+        
         currentThumb = musicdb.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
         if (currentThumb.empty())
           currentThumb = videodb.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
@@ -1808,9 +1815,23 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
       noneitem->SetIconImage("DefaultVideo.png");
   }
   else
-  {
-    std::string strThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
-    if (XFILE::CFile::Exists(strThumb))
+  {    
+    std::string strThumb;
+    bool existsThumb = false;
+    // First look for artist thumb in the primary location       
+    if (!artistPath.empty())
+    {
+      strThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
+      existsThumb = CFile::Exists(strThumb);
+    }
+    // If not there fall back local to music files (historic location for those album artists with a unique folder)
+    if (!existsThumb && !artistOldPath.empty())
+    {
+      strThumb = URIUtils::AddFileToFolder(artistOldPath, "folder.jpg");
+      existsThumb = CFile::Exists(strThumb);
+    }
+
+    if (existsThumb)
     {
       CFileItemPtr pItem(new CFileItem(strThumb, false));
       pItem->SetLabel(g_localizeStrings.Get(13514));

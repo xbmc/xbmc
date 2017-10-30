@@ -69,6 +69,7 @@ public:
     strDisbanded.clear();
     yearsActive.clear();
     thumbURL.Clear();
+    art.clear();
     discography.clear();
     idArtist = -1;
     strPath.clear();
@@ -103,8 +104,9 @@ public:
   std::string strDisbanded;
   std::vector<std::string> yearsActive;
   std::string strPath;
-  CScraperUrl thumbURL;
-  CFanart fanart;
+  CScraperUrl thumbURL; // Data for available thumbs
+  CFanart fanart;  // Data for available fanart, urls etc.
+  std::map<std::string, std::string> art;  // Current artwork - thumb, fanart etc.
   std::vector<std::pair<std::string,std::string> > discography;
   CDateTime dateAdded;
   bool bScrapedMBID;

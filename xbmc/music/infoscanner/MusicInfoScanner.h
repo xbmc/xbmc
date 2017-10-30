@@ -77,25 +77,29 @@ public:
    */
   static void FileItemsToAlbums(CFileItemList& items, VECALBUMS& albums, MAPSONGS* songsMap = NULL);
 
-  /*! \brief Fixup albums and songs
-   
-   If albumartist is not available in a song, we determine it from the
-   common portion of each song's artist list.
-   
-   eg the common artist for
-   Bob Dylan / Tom Petty / Roy Orbison
-   Bob Dylan / Tom Petty
-   would be "Bob Dylan / Tom Petty".
-   
-   If all songs that share an album
-   1. have a non-empty album name
-   2. have at least two different primary artists
-   3. have no album artist set
-   4. and no track numbers overlap
-   we assume it is a various artists album, and set the albumartist field accordingly.
-   
-   */
-  static void FixupAlbums(VECALBUMS &albums);
+  /*! \brief Scrape additional album information and update the music database with it.
+  Given an album, search for it using the given scraper.
+  If info is found, update the database and artwork with the new
+  information.
+  \param album [in/out] the album to update
+  \param scraper [in] the album scraper to use
+  \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
+  \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+  */
+  INFO_RET UpdateAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+
+  /*! \brief Scrape additional artist information and update the music database with it.
+  Given an artist, search for it using the given scraper.
+  If info is found, update the database and artwork with the new
+  information.
+  \param artist [in/out] the artist to update
+  \param scraper [in] the artist scraper to use
+  \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
+  \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+  */
+  INFO_RET UpdateArtistInfo(CArtist& artist, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+
+protected:
 
   /*! \brief Find art for albums
    Based on the albums in the folder, finds whether we have unique album art
@@ -114,8 +118,8 @@ public:
    */
   static void FindArtForAlbums(VECALBUMS &albums, const std::string &path);
 
-  /*! \brief Update the database information for a MusicDB album
-   Given an album, search and update its info with the given scraper.
+  /*! \brief Scrape additional album information and update the database.
+   Search for the given album using the given scraper.
    If info is found, update the database and artwork with the new
    information.
    \param album [in/out] the album to update
@@ -125,8 +129,8 @@ public:
    */
   INFO_RET UpdateDatabaseAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
  
-  /*! \brief Update the database information for a MusicDB artist
-   Given an artist, search and update its info with the given scraper.
+  /*! \brief Scrape additional artist information and update the database.
+   Search for the given artist using the given scraper.
    If info is found, update the database and artwork with the new
    information.
    \param artist [in/out] the artist to update
@@ -162,13 +166,16 @@ public:
    */
   INFO_RET DownloadArtistInfo(const CArtist& artist, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bUseScrapedMBID, CGUIDialogProgress* pDialog = NULL);
 
-  /*! \brief Search for art for an artist
-   Look for art for an artist. Checks the artist structure for thumbs, and checks
-   the artist path (if non-empty) for artist/folder tbns, etc.
+  /*! \brief Get art for an artist
+   Checks for thumb and fanart in given folder, and in parent folders back up the artist path (if non-empty).
+   If none is found there then it tries to use the first available thumb and fanart from those listed in the
+   artist structure. Images found are cached.
    \param artist [in] an artist
+   \param level [in] how many levels of folders to search in. 1 => just the folder
+   \return set of art type and file location (URL or path) pairs
    */
-  std::map<std::string, std::string> GetArtistArtwork(const CArtist& artist);
-protected:
+  std::map<std::string, std::string> GetArtistArtwork(const CArtist& artist, unsigned int level = 3);
+
   void Process() override;
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
@@ -182,6 +189,7 @@ protected:
   int RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items);
 
   void ScrapeInfoAddedAlbums();
+  void RetrieveArtistArt();
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
     Given a list of FileItems, scan in the tags for those FileItems
@@ -222,6 +230,7 @@ protected:
   CMusicDatabase m_musicDatabase;
 
   std::vector<int> m_albumsAdded;
+  std::set<int> m_artistsArt;
 
   std::set<std::string> m_pathsToScan;
   std::set<std::string> m_seenPaths;

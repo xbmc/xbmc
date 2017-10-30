@@ -50,7 +50,6 @@
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "Song.h"
 #include "storage/MediaManager.h"
@@ -58,6 +57,7 @@
 #include "TextureCache.h"
 #include "threads/SystemClock.h"
 #include "URL.h"
+#include "Util.h"
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
@@ -330,7 +330,7 @@ void CMusicDatabase::CreateViews()
               "        bCompilation, "
               "        bScrapedMBID,"
               "        lastScraped,"
-              "        (SELECT AVG(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
+              "        (SELECT ROUND(AVG(song.iTimesPlayed)) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
               "        strReleaseType, "
               "        (SELECT MAX(song.dateAdded) FROM song WHERE song.idAlbum = album.idAlbum) AS dateAdded, "
               "        (SELECT MAX(song.lastplayed) FROM song WHERE song.idAlbum = album.idAlbum) AS lastplayed "
@@ -1115,6 +1115,10 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
     AddArtistDiscography(artist.idArtist, disc.first, disc.second);
   }
 
+  // Set current artwork (held in art table)
+  if (!artist.art.empty())
+    SetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
+
   return true;
 }
 
@@ -1397,6 +1401,16 @@ bool CMusicDatabase::GetArtistExists(int idArtist)
   }
 
   return false;
+}
+
+int CMusicDatabase::GetLastArtist()
+{
+  std::string strSQL = "SELECT MAX(idArtist) FROM artist";
+  std::string lastArtist = GetSingleValue(strSQL);
+  if (lastArtist.empty())
+      return -1;
+
+  return static_cast<int>(strtol(lastArtist.c_str(), NULL, 10));
 }
 
 bool CMusicDatabase::HasArtistBeenScraped(int idArtist)
@@ -5319,34 +5333,65 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
   return 0;
 }
 
-bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string& path)
+bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string &basePath)
 {
+  std::string strSQL;
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    path.clear();
+    basePath.clear();
 
-    std::string strSQL=PrepareSQL("select strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
+    // Get the unique paths of songs on the album, providing there are no songs from 
+    // other albums with the same path. This returns 
+    // a) <album> if is contains all the songs and no others, or
+    // b) <album>/cd1, <album>/cd2 etc. for disc sets
+    // but does *not* return any path when albums are mixed together. That could be because of 
+    // deliberate file organisation, or (more likely) because of a tagging error in album name
+    // or Musicbrainzalbumid. Thus it avoids finding somme generic music path.
+    strSQL = PrepareSQL("SELECT DISTINCT strPath FROM song "
+      "JOIN path ON song.idPath = path.idPath "
+      "WHERE song.idAlbum = %ld "
+      "AND (SELECT COUNT(DISTINCT(idAlbum)) FROM song AS song2 "
+      "WHERE idPath = song.idPath) = 1", idAlbum);
+
     if (!m_pDS2->query(strSQL)) return false;
     int iRowsFound = m_pDS2->num_rows();
+    
     if (iRowsFound == 0)
     {
+      // Album does not have a unique path, files are mixed
       m_pDS2->close();
       return false;
     }
+    else if (iRowsFound == 1)
+    {
+      // Path contains all the songs and no others
+      basePath = m_pDS2->fv("strPath").get_asString();
+    }
+    else
+    {
+      // e.g. <album>/cd1, <album>/cd2 etc. for disc sets
+      // Find the common path
+      while (!m_pDS2->eof())
+      {
+        std::string path = m_pDS2->fv("strPath").get_asString();
+        if (basePath.empty())
+          basePath = path;
+        else
+          URIUtils::GetCommonPath(basePath, path);
 
-    // if this returns more than one path, we just grab the first one.  It's just for determining where to obtain + place
-    // a local thumbnail
-    path = m_pDS2->fv("strPath").get_asString();
-
-    m_pDS2->close(); // cleanup recordset data
+        m_pDS2->next();
+      }
+    }
+    // Cleanup recordset data
+    m_pDS2->close(); 
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
+   CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %s", __FUNCTION__, strSQL.c_str());
   }
 
   return false;
@@ -5366,7 +5411,11 @@ bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const std::string& strThumb)
   return true;
 }
 
-bool CMusicDatabase::GetArtistPath(int idArtist, std::string &basePath)
+// Get old "artist path" - where artist.nfo and art was located v17 and below.
+// It is the path common to all albums by an (album) artist, but ensure it is unique 
+// to that artist and not shared with other artists. Previously this caused incorrect nfo 
+// and art to be applied to multiple artists.
+bool CMusicDatabase::GetOldArtistPath(int idArtist, std::string &basePath)
 {
   basePath.clear();
   try
@@ -5375,54 +5424,183 @@ bool CMusicDatabase::GetArtistPath(int idArtist, std::string &basePath)
     if (NULL == m_pDS2.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    std::string strSQL=PrepareSQL("SELECT strPath"
-                                 "  FROM album_artist"
-                                 "  JOIN song "
-                                 "    ON album_artist.idAlbum = song.idAlbum"
-                                 "  JOIN path"
-                                 "    ON song.idPath = path.idPath"
-                                 " WHERE album_artist.idArtist = %i"
-                                 " GROUP BY song.idPath", idArtist);
+    std::string strSQL = PrepareSQL("SELECT strPath FROM album_artist "
+      "JOIN song ON album_artist.idAlbum = song.idAlbum "
+      "JOIN path ON song.idPath = path.idPath "
+      "WHERE album_artist.idArtist = %ld "
+      "GROUP BY song.idPath", 
+      idArtist);
 
     // run query
     if (!m_pDS2->query(strSQL)) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
     {
+      // Artist is not an album artist, no path to find
       m_pDS2->close();
       return false;
     }
-
-    // special case for single path - assume that we're in an artist/album/songs filesystem
-    if (iRowsFound == 1)
-    {
+    else if (iRowsFound == 1)
+    { 
+      // Special case for single path - assume that we're in an artist/album/songs filesystem
       URIUtils::GetParentPath(m_pDS2->fv("strPath").get_asString(), basePath);
       m_pDS2->close();
-      return true;
     }
-
-    // find the common path (if any) to these albums
-    while (!m_pDS2->eof())
+    else
     {
-      std::string path = m_pDS2->fv("strPath").get_asString();
-      if (basePath.empty())
-        basePath = path;
-      else
-        URIUtils::GetCommonPath(basePath,path);
+      // find the common path (if any) to these albums
+      while (!m_pDS2->eof())
+      {
+        std::string path = m_pDS2->fv("strPath").get_asString();
+        if (basePath.empty())
+          basePath = path;
+        else
+          URIUtils::GetCommonPath(basePath, path);
 
-      m_pDS2->next();
+        m_pDS2->next();
+      }
+      m_pDS2->close();
     }
 
-    // cleanup
-    m_pDS2->close();
-    return true;
-
+    // Check any path found is unique to that album artist, and do *not* return any path 
+    // that is shared with other album artists. That could be because of collaborations
+    // i.e. albums with more than one album artist, or because there are albums by the 
+    // artist on multiple music sources, or elsewhere in the folder hierarchy.    
+    // Avoid returning some generic music path.
+    if (!basePath.empty())
+    {
+      strSQL = PrepareSQL("SELECT COUNT(album_artist.idArtist) FROM album_artist "
+        "JOIN song ON album_artist.idAlbum = song.idAlbum "
+        "JOIN path ON song.idPath = path.idPath "
+        "WHERE album_artist.idArtist <> %ld "
+        "AND strPath LIKE '%s%%'",
+        idArtist, basePath.c_str());
+      std::string strValue = GetSingleValue(strSQL, m_pDS2);
+      if (!strValue.empty())
+      {
+        int countartists = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+        if (countartists == 0)
+          return true;
+      }
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+  basePath.clear();
   return false;
+}
+
+bool CMusicDatabase::GetArtistPath(const CArtist& artist, std::string &path)
+{
+   // Get path for artist in the artists folder
+  path = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
+  if (path.empty())
+    return false; // No Artists folder not set;
+  // Get unique artist folder name 
+  std::string strFolder;
+  if (GetArtistFolderName(artist, strFolder))
+  {
+      path = URIUtils::AddFileToFolder(path, strFolder);
+      return true;
+  }
+  path.clear();
+  return false;
+}
+
+bool CMusicDatabase::GetAlbumFolder(const CAlbum& album, const std::string &strAlbumPath, std::string &strFolder)
+{
+  strFolder.clear();
+
+  // First try to get a *unique* album folder name from the music file paths
+  if (!strAlbumPath.empty())
+  {  
+    // Get last folder from full path
+    std::vector<std::string> folders = URIUtils::SplitPath(strAlbumPath);
+    if (!folders.empty())
+    {
+      strFolder = folders.back();
+      // Check paths to see folder name derived this way is unique for the (first) albumartist.
+      // Could have different albums on different path with same first album artist and folder name
+      // or duplicate albums from separate music files on different paths
+      // At least one will have mbid, so append it to start of mbid to folder.
+      std::string strSQL = PrepareSQL("SELECT DISTINCT album_artist.idAlbum FROM album_artist "
+        "JOIN song ON album_artist.idAlbum = song.idAlbum "
+        "JOIN path on path.idPath = song.idPath "
+        "WHERE album_artist.iOrder = 0 "
+        "AND album_artist.idArtist = %ld "
+        "AND path.strPath LIKE '%%%s%%'",
+        album.artistCredits[0].GetArtistId(), strFolder.c_str());
+
+      if (!m_pDS2->query(strSQL)) 
+        return false;
+      int iRowsFound = m_pDS2->num_rows();
+      m_pDS2->close();
+      if (iRowsFound > 1 && !album.strMusicBrainzAlbumID.empty())
+      { // Only one of the duplicate albums can be without mbid
+        strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
+      }
+      return true;
+    }
+  }
+  else
+  {
+    // Create a valid unique folder name from album title
+    // @todo: Does UFT8 matter or need normalizing? 
+    // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
+    strFolder = CUtil::MakeLegalFileName(album.strAlbum, LEGAL_WIN32_COMPAT);
+    StringUtils::Replace(strFolder, " _ ", "_");
+
+    // Check <first albumartist name>/<albumname> is unique e.g. 2 x Bruckner Symphony No. 3
+    // To have duplicate albumartist/album names at least one will have mbid, so append start of mbid to folder.
+    // This will not handle names that only differ by reserved chars e.g. "a>album" and "a?name"
+    // will be unique in db, but produce same folder name "a_name", but that kind of album and artist naming is very unlikely
+    std::string strSQL = PrepareSQL("SELECT COUNT(album_artist.idAlbum) FROM album_artist "
+      "JOIN album ON album_artist.idAlbum = album.idAlbum "
+      "WHERE album_artist.iOrder = 0 "
+      "AND album_artist.idArtist = %ld "
+      "AND album.strAlbum LIKE '%s'  ", 
+      album.artistCredits[0].GetArtistId(), album.strAlbum.c_str());
+    std::string strValue = GetSingleValue(strSQL, m_pDS2);
+    if (strValue.empty())
+      return false;
+    int countalbum = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+    if (countalbum > 1 && !album.strMusicBrainzAlbumID.empty())
+    { // Only one of the duplicate albums can be without mbid
+      strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
+    }
+    return !strFolder.empty();
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetArtistFolderName(const CArtist &artist, std::string &strFolder)
+{
+  return GetArtistFolderName(artist.strArtist, artist.strMusicBrainzArtistID, strFolder);
+}
+
+bool CMusicDatabase::GetArtistFolderName(const std::string &strArtist, const std::string &strMusicBrainzArtistID, 
+  std::string &strFolder)
+{
+  // Create a valid unique folder name for artist
+  // @todo: Does UFT8 matter or need normalizing? 
+  // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
+  strFolder = CUtil::MakeLegalFileName(strArtist, LEGAL_WIN32_COMPAT);
+  StringUtils::Replace(strFolder, " _ ", "_");
+
+  // Ensure <artist name> is unique e.g. 2 x John Williams.
+  // To have duplicate artist names there must both have mbids, so append start of mbid to folder.
+  // This will not handle names that only differ by reserved chars e.g. "a>name" and "a?name"
+  // will be unique in db, but produce same folder name "a_name", but that kind of artist naming is very unlikely
+  std::string strSQL = PrepareSQL("SELECT COUNT(1) FROM artist WHERE strArtist LIKE '%s'", strArtist.c_str());
+  std::string strValue = GetSingleValue(strSQL, m_pDS2);
+  if (strValue.empty())
+    return false;
+  int countartist = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+  if (countartist > 1)
+    strFolder += "_" + strMusicBrainzArtistID.substr(0, 4);
+  return !strFolder.empty();
 }
 
 int CMusicDatabase::GetArtistByName(const std::string& strArtist)
@@ -5453,6 +5631,40 @@ int CMusicDatabase::GetArtistByName(const std::string& strArtist)
   return -1;
 }
 
+int CMusicDatabase::GetArtistByMatch(const CArtist& artist)
+{
+  std::string strSQL;
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get()) 
+      return false;
+    // Match on MusicBrainz ID, definitively unique
+    if (!artist.strMusicBrainzArtistID.empty())
+      strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE strMusicBrainzArtistID = '%s'",
+        artist.strMusicBrainzArtistID.c_str());
+    else
+    // No MusicBrainz ID, artist by name with no mbid
+    strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE strArtist LIKE '%s' AND strMusicBrainzArtistID IS NULL", 
+      artist.strArtist.c_str());
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      // Match on artist name, relax mbid restriction
+      return GetArtistByName(artist.strArtist);
+    }
+    int lResult = m_pDS->fv("idArtist").get_asInt();
+    m_pDS->close();
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %", __FUNCTION__, strSQL.c_str());
+  }
+  return -1;
+}
+
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::string& strArtist)
 {
   try
@@ -5464,7 +5676,7 @@ int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::strin
     if (strArtist.empty())
       strSQL=PrepareSQL("SELECT idAlbum FROM album WHERE album.strAlbum LIKE '%s'", strAlbum.c_str());
     else
-      strSQL=PrepareSQL("SELECT album.idAlbum FROM album WHERE album.strAlbum LIKE '%s' AND album.strArtistDisp LIKE '%s'", strAlbum.c_str(),strArtist.c_str());
+      strSQL=PrepareSQL("SELECT idAlbum FROM album WHERE album.strAlbum LIKE '%s' AND album.strArtistDisp LIKE '%s'", strAlbum.c_str(),strArtist.c_str());
     // run query
     if (!m_pDS->query(strSQL)) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5473,7 +5685,7 @@ int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::strin
       m_pDS->close();
       return -1;
     }
-    return m_pDS->fv("album.idAlbum").get_asInt();
+    return m_pDS->fv("idAlbum").get_asInt();
   }
   catch (...)
   {
@@ -5485,6 +5697,41 @@ int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::strin
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist)
 {
   return GetAlbumByName(strAlbum, StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator));
+}
+
+int CMusicDatabase::GetAlbumByMatch(const CAlbum &album)
+{
+  std::string strSQL;
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+    // Match on MusicBrainz ID, definitively unique
+    if (!album.strMusicBrainzAlbumID.empty())
+      strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strMusicBrainzAlbumID = '%s'", album.strMusicBrainzAlbumID.c_str());
+    else
+      // No mbid, match on album title and album artist descriptive string, ignore those with mbid
+      strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strArtistDisp LIKE '%s' AND strAlbum LIKE '%s' AND strMusicBrainzAlbumID IS NULL",
+        album.GetAlbumArtistString().c_str(),
+        album.strAlbum.c_str());
+    m_pDS->query(strSQL);
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      // Match on album title and album artist descriptive string, relax mbid restriction
+      return GetAlbumByName(album.strAlbum, album.GetAlbumArtistString());
+    }
+    int lResult = m_pDS->fv("idAlbum").get_asInt();
+    m_pDS->close();
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %", __FUNCTION__, strSQL.c_str());
+  }
+  return -1;
 }
 
 std::string CMusicDatabase::GetGenreById(int id)
@@ -6232,204 +6479,330 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
   return "";
 }
 
-void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bool images, bool overwrite)
+void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialogProgress* progressDialog /*= NULL*/)
 {
+  if (!settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS) &&
+      !settings.IsItemExported(ELIBEXPORT_SONGARTISTS) &&
+      !settings.IsItemExported(ELIBEXPORT_OTHERARTISTS) &&
+      !settings.IsItemExported(ELIBEXPORT_ALBUMS))
+    return;
+
+  if (!settings.IsSingleFile() && settings.m_skipnfo && !settings.m_artwork) 
+    return;
+  
+  std::string strFolder;
+  if (!settings.IsToLibFolders())
+  {
+    // Exporting to single file or separate files in a specified location
+    if (settings.m_strPath.empty()) 
+      return;
+
+    strFolder = settings.m_strPath;
+    if (!URIUtils::HasSlashAtEnd(strFolder))
+      URIUtils::AddSlashAtEnd(strFolder);
+    strFolder = URIUtils::GetDirectory(strFolder);
+    if (strFolder.empty()) 
+      return;
+  }
+  else
+  {
+    // Separate files with artists to library folder and albums to music folders.
+    // Without an artist information folder can not export artist NFO files or images
+    strFolder = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
+    if (!settings.IsItemExported(ELIBEXPORT_ALBUMS) && strFolder.empty()) 
+      return;
+  }
+  
   int iFailCount = 0;
-  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
     if (NULL == m_pDS2.get()) return;
-
-    // find all albums
-    std::vector<int> albumIds;
-    std::string sql = "select idAlbum FROM album WHERE lastScraped IS NOT NULL";
-    m_pDS->query(sql);
-
-    int total = m_pDS->num_rows();
-    int current = 0;
-
-    albumIds.reserve(total);
-    while (!m_pDS->eof())
-    {
-      albumIds.push_back(m_pDS->fv("idAlbum").get_asInt());
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-    if (progress)
-    {
-      progress->SetHeading(CVariant{20196});
-      progress->SetLine(0, CVariant{650});
-      progress->SetLine(1, CVariant{""});
-      progress->SetLine(2, CVariant{""});
-      progress->SetPercentage(0);
-      progress->Open();
-      progress->ShowProgressBar(true);
-    }
-
-    // create our xml document
+    
+    // Create our xml document
     CXBMCTinyXML xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlNode *pMain = NULL;
-    if (!singleFile)
+    if (!settings.IsSingleFile())
       pMain = &xmlDoc;
     else
     {
       TiXmlElement xmlMainElement("musicdb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
     }
-    for (const auto &albumId : albumIds)
+
+    if (settings.IsItemExported(ELIBEXPORT_ALBUMS))
     {
-      CAlbum album;
-      GetAlbum(albumId, album);
-      std::string strPath;
-      GetAlbumPath(albumId, strPath);
-      album.Save(pMain, "album", strPath);
-      if (!singleFile)
+      // Find albums to export
+      std::vector<int> albumIds;
+      std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strReleaseType = '%s' ",
+        CAlbum::ReleaseTypeToString(CAlbum::Album).c_str());
+      if (!settings.m_unscraped)
+        strSQL += "AND lastScraped IS NOT NULL";
+      CLog::Log(LOGDEBUG, "CMusicDatabase::%s - %s", __FUNCTION__, strSQL.c_str());
+      m_pDS->query(strSQL);
+
+      int total = m_pDS->num_rows();
+      int current = 0;
+
+      albumIds.reserve(total);
+      while (!m_pDS->eof())
       {
-        if (!CDirectory::Exists(strPath))
-          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
-        else
+        albumIds.push_back(m_pDS->fv("idAlbum").get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (const auto &albumId : albumIds)
+      {
+        CAlbum album;
+        GetAlbum(albumId, album);
+        std::string strAlbumPath;
+        std::string strPath;
+        // Get album path, empty unless all album songs are under a unique folder, and
+        // there are no songs from another album in the same folder.
+        if (!GetAlbumPath(albumId, strAlbumPath))
+          strAlbumPath.clear();
+        if (settings.IsSingleFile())
         {
-          std::string nfoFile = URIUtils::AddFileToFolder(strPath, "album.nfo");
-          if (overwrite || !CFile::Exists(nfoFile))
-          {
-            if (!xmlDoc.SaveFile(nfoFile))
+          // Save album to xml, including album path
+          album.Save(pMain, "album", strAlbumPath);
+        }
+        else
+        { // Separate files and artwork
+          bool pathfound = false;
+          if (settings.IsToLibFolders())
+          { // Save album.nfo and artwork with music files.
+            // Most albums are under a unique folder, but if songs from various albums are mixed then
+            // avoid overwriting by not allow NFO and art to be exported 
+            if (strAlbumPath.empty())
+              CLog::Log(LOGDEBUG, "CMusicDatabase::%s - Not exporting album %s as unique path not found",
+                __FUNCTION__, album.strAlbum.c_str());
+            else if (!CDirectory::Exists(strAlbumPath))
+              CLog::Log(LOGDEBUG, "CMusicDatabase::%s - Not exporting album %s as found path %s does not exist",
+                __FUNCTION__, album.strAlbum.c_str(), strAlbumPath.c_str());
+            else
             {
-              CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
-              iFailCount++;
+              strPath = strAlbumPath;
+              pathfound = true;
             }
           }
-
-          if (images)
-          {
-            std::string thumb = GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-            std::string imagePath = URIUtils::AddFileToFolder(strPath, "folder.jpg");
-            if (!thumb.empty() && (overwrite || !CFile::Exists(imagePath)))
-              CTextureCache::GetInstance().Export(thumb, imagePath);
-          }
-          xmlDoc.Clear();
-          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-          xmlDoc.InsertEndChild(decl);
-        }
-      }
-
-      if ((current % 50) == 0 && progress)
-      {
-        progress->SetLine(1, CVariant{album.strAlbum});
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          return;
-        }
-      }
-      current++;
-    }
-
-    // find all artists
-    std::vector<int> artistIds;
-    std::string artistSQL = "SELECT idArtist FROM artist where lastScraped IS NOT NULL";
-    m_pDS->query(artistSQL);
-    total = m_pDS->num_rows();
-    current = 0;
-    artistIds.reserve(total);
-    while (!m_pDS->eof())
-    {
-      artistIds.push_back(m_pDS->fv("idArtist").get_asInt());
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    for (const auto &artistId : artistIds)
-    {
-      CArtist artist;
-      GetArtist(artistId, artist);
-      std::string strPath;
-      GetArtistPath(artist.idArtist,strPath);
-      artist.Save(pMain, "artist", strPath);
-
-      std::map<std::string, std::string> artwork;
-      if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork) && singleFile)
-      { // append to the XML
-        TiXmlElement additionalNode("art");
-        for (const auto &i : artwork)
-          XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
-        pMain->LastChild()->InsertEndChild(additionalNode);
-      }
-      if (!singleFile)
-      {
-        if (!CDirectory::Exists(strPath))
-          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
-        else
-        {
-          std::string nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
-          if (overwrite || !CFile::Exists(nfoFile))
-          {
-            if (!xmlDoc.SaveFile(nfoFile))
+          else
+          { // Save album.nfo and artwork to subfolder on export path
+            // strPath = strFolder/<albumartist name>/<albumname>
+            // where <albumname> is either the same name as the album folder containing the music files (if unique)
+            // or is craeted using the album name
+            std::string strAlbumArtist;
+            pathfound = GetArtistFolderName(album.GetAlbumArtist()[0], album.GetMusicBrainzAlbumArtistID()[0], strAlbumArtist);
+            if (pathfound)
             {
-              CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
-              iFailCount++;
+              strPath = URIUtils::AddFileToFolder(strFolder, strAlbumArtist);
+              pathfound = CDirectory::Exists(strPath);
+              if (!pathfound)
+                pathfound = CDirectory::Create(strPath);
+            }
+            if (!pathfound)
+              CLog::Log(LOGDEBUG, "CMusicDatabase::%s - Not exporting album %s as could not create %s",
+                __FUNCTION__, album.strAlbum.c_str(), strPath.c_str());
+            else
+            {
+              std::string strAlbumFolder;
+              pathfound = GetAlbumFolder(album, strAlbumPath, strAlbumFolder);
+              if (pathfound)
+              {
+                strPath = URIUtils::AddFileToFolder(strPath, strAlbumFolder);
+                pathfound = CDirectory::Exists(strPath);
+                if (!pathfound)
+                  pathfound = CDirectory::Create(strPath);
+              }
+              if (!pathfound)
+                CLog::Log(LOGDEBUG, "CMusicDatabase::%s - Not exporting album %s as could not create %s",
+                  __FUNCTION__, album.strAlbum.c_str(), strPath.c_str());
             }
           }
-
-          if (images && !artwork.empty())
+          if (pathfound)
           {
-            std::string savedThumb = URIUtils::AddFileToFolder(strPath,"folder.jpg");
-            std::string savedFanart = URIUtils::AddFileToFolder(strPath,"fanart.jpg");
-            if (artwork.find("thumb") != artwork.end() && (overwrite || !CFile::Exists(savedThumb)))
-              CTextureCache::GetInstance().Export(artwork["thumb"], savedThumb);
-            if (artwork.find("fanart") != artwork.end() && (overwrite || !CFile::Exists(savedFanart)))
-              CTextureCache::GetInstance().Export(artwork["fanart"], savedFanart);
+            if (!settings.m_skipnfo)
+            {
+              // Save album to NFO, including album path
+              album.Save(pMain, "album", strAlbumPath);
+              std::string nfoFile = URIUtils::AddFileToFolder(strPath, "album.nfo");
+              if (settings.m_overwrite || !CFile::Exists(nfoFile))
+              {
+                if (!xmlDoc.SaveFile(nfoFile))
+                {
+                  CLog::Log(LOGERROR, "CMusicDatabase::%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+                  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+                  iFailCount++;
+                }
+              }
+            }
+            if (settings.m_artwork)
+            {
+              // Save art in album folder
+              // Note thumb resoluton may be lower than original when overwriting
+              std::string thumb = GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+              std::string imagePath = URIUtils::AddFileToFolder(strPath, "folder.jpg");
+              if (!thumb.empty() && (settings.m_overwrite || !CFile::Exists(imagePath)))
+                CTextureCache::GetInstance().Export(thumb, imagePath);
+            }
+            xmlDoc.Clear();
+            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+            xmlDoc.InsertEndChild(decl);
           }
-          xmlDoc.Clear();
-          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-          xmlDoc.InsertEndChild(decl);
         }
-      }
 
-      if ((current % 50) == 0 && progress)
-      {
-        progress->SetLine(1, CVariant{artist.strArtist});
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
+        if ((current % 50) == 0 && progressDialog != NULL)
         {
-          progress->Close();
-          m_pDS->close();
-          return;
+          progressDialog->SetLine(1, CVariant{ album.strAlbum });
+          progressDialog->SetPercentage(current * 100 / total);
         }
+        current++;
       }
-      current++;
     }
-
-    xmlDoc.SaveFile(xmlFile);
-
-    CVariant data;
-    if (singleFile)
+    
+    if ((settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS) || 
+         settings.IsItemExported(ELIBEXPORT_SONGARTISTS) || 
+        settings.IsItemExported(ELIBEXPORT_OTHERARTISTS)) && !strFolder.empty())
     {
-      data["file"] = xmlFile;
-      if (iFailCount > 0)
-        data["failcount"] = iFailCount;
+      // Find artists to export
+      std::vector<int> artistIds;
+      std::string sql;
+      Filter filter;
+
+      if (settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS))
+        filter.AppendWhere("EXISTS(SELECT 1 FROM album_artist WHERE album_artist.idArtist = artist.idArtist)", false);
+      if (settings.IsItemExported(ELIBEXPORT_SONGARTISTS))
+      {
+        if (settings.IsItemExported(ELIBEXPORT_OTHERARTISTS))
+          filter.AppendWhere("EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = artist.idArtist )", false);
+        else
+          filter.AppendWhere("EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = artist.idArtist AND song_artist.idRole = 1)", false);
+      }
+      else if (settings.IsItemExported(ELIBEXPORT_OTHERARTISTS))
+        filter.AppendWhere("EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = artist.idArtist AND song_artist.idRole > 1)", false);
+      
+      if (!settings.m_unscraped)
+        filter.AppendWhere("lastScraped IS NOT NULL", true);
+
+      std::string strSQL = "SELECT idArtist FROM artist";
+      BuildSQL(strSQL, filter, strSQL);
+      CLog::Log(LOGDEBUG, "CMusicDatabase::%s - %s", __FUNCTION__, strSQL.c_str());
+
+      m_pDS->query(strSQL);
+      int total = m_pDS->num_rows();
+      int current = 0;
+      artistIds.reserve(total);
+      while (!m_pDS->eof())
+      {
+        artistIds.push_back(m_pDS->fv("idArtist").get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (const auto &artistId : artistIds)
+      {
+        CArtist artist;
+        GetArtist(artistId, artist);
+        std::string strPath;
+        std::map<std::string, std::string> artwork;
+        if (settings.IsSingleFile())
+        {
+          // Save artist to xml, and old path (common to music files) if it has one
+          GetOldArtistPath(artist.idArtist, strPath);
+          artist.Save(pMain, "artist", strPath);
+
+          if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
+          { // append to the XML
+            TiXmlElement additionalNode("art");
+            for (const auto &i : artwork)
+              XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
+            pMain->LastChild()->InsertEndChild(additionalNode);
+          }
+        }
+        else
+        { // Separate files: artist.nfo and artwork in strFolder/<artist name>
+          // Get unique folder allowing for duplicate names e.g. 2 x John Williams
+          bool pathfound = GetArtistFolderName(artist, strPath);
+          if (pathfound)
+          {
+            strPath = URIUtils::AddFileToFolder(strFolder, strPath);
+            pathfound = CDirectory::Exists(strPath);
+            if (!pathfound)
+              pathfound = CDirectory::Create(strPath);
+          }
+          if (!pathfound)
+            CLog::Log(LOGDEBUG, "CMusicDatabase::%s - Not exporting artist %s as could not create %s",
+              __FUNCTION__, artist.strArtist.c_str(), strPath.c_str());
+          else
+          {
+            if (!settings.m_skipnfo)
+            {
+              artist.Save(pMain, "artist", strPath);
+              std::string nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
+              if (settings.m_overwrite || !CFile::Exists(nfoFile))
+              {
+                if (!xmlDoc.SaveFile(nfoFile))
+                {
+                  CLog::Log(LOGERROR, "CMusicDatabase::%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+                  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+                  iFailCount++;
+                }
+              }
+            }
+            if (settings.m_artwork)
+            {
+              if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
+              {
+                std::string savedThumb = URIUtils::AddFileToFolder(strPath, "folder.jpg");
+                std::string savedFanart = URIUtils::AddFileToFolder(strPath, "fanart.jpg");
+                if (artwork.find("thumb") != artwork.end() && (settings.m_overwrite || !CFile::Exists(savedThumb)))
+                  CTextureCache::GetInstance().Export(artwork["thumb"], savedThumb);
+                if (artwork.find("fanart") != artwork.end() && (settings.m_overwrite || !CFile::Exists(savedFanart)))
+                  CTextureCache::GetInstance().Export(artwork["fanart"], savedFanart);
+              }
+            }
+            xmlDoc.Clear();
+            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+            xmlDoc.InsertEndChild(decl);
+          }
+        }
+        if ((current % 50) == 0 && progressDialog != NULL)
+        {
+          progressDialog->SetLine(1, CVariant{ artist.strArtist });
+          progressDialog->SetPercentage(current * 100 / total);
+        }
+        current++;
+      }
     }
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
+
+    if (settings.IsSingleFile())
+    {
+      std::string xmlFile = URIUtils::AddFileToFolder(strFolder, "kodi_musicdb" + CDateTime::GetCurrentDateTime().GetAsDBDate() + ".xml");
+      if (!settings.m_overwrite && CFile::Exists(xmlFile))
+        xmlFile = URIUtils::AddFileToFolder(strFolder, "kodi_musicdb" + CDateTime::GetCurrentDateTime().GetAsSaveString() + ".xml");
+      xmlDoc.SaveFile(xmlFile);
+
+      CVariant data;
+      if (settings.IsSingleFile())
+      {
+        data["file"] = xmlFile;
+        if (iFailCount > 0)
+          data["failcount"] = iFailCount;
+      }
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
+    }
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "CMusicDatabase::%s failed", __FUNCTION__);
     iFailCount++;
   }
 
-  if (progress)
-    progress->Close();
+  if (progressDialog)
+    progressDialog->Close();
 
   if (iFailCount > 0)
     HELPERS::ShowOKDialogLines(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
@@ -6483,7 +6856,9 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
         CArtist importedArtist;
         importedArtist.Load(entry);
         strTitle = importedArtist.strArtist;
-        int idArtist = GetArtistByName(importedArtist.strArtist);
+
+        // Match by mbid first (that is definatively unique), then name (no mbid), finally by just name
+        int idArtist = GetArtistByMatch(importedArtist);
         if (idArtist > -1)
         {
           CArtist artist;
@@ -6491,7 +6866,8 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
           artist.MergeScrapedArtist(importedArtist, true);
           UpdateArtist(artist);
         }
-
+        else
+          CLog::Log(LOGDEBUG, "%s - Not import additional artist data as %s not found", __FUNCTION__, importedArtist.strArtist.c_str());
         current++;
       }
       else if (strnicmp(entry->Value(), "album", 5) == 0)
@@ -6499,7 +6875,8 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
         CAlbum importedAlbum;
         importedAlbum.Load(entry);
         strTitle = importedAlbum.strAlbum;
-        int idAlbum = GetAlbumByName(importedAlbum.strAlbum, importedAlbum.GetAlbumArtistString());
+        // Match by mbid first (that is definatively unique), then title and artist desc (no mbid), finally by just name and artist
+        int idAlbum = GetAlbumByMatch(importedAlbum);
         if (idAlbum > -1)
         {
           CAlbum album;
@@ -6507,6 +6884,8 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
           album.MergeScrapedAlbum(importedAlbum, true);
           UpdateAlbum(album); //Will replace song artists if present in xml
         }
+        else
+          CLog::Log(LOGDEBUG, "%s - Not import additional album data as %s not found", __FUNCTION__, importedAlbum.strAlbum.c_str());
 
         current++;
       }

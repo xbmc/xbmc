@@ -26,7 +26,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/GameSettings.h"
-#include "cores/VideoSettings.h"
+#include "settings/LibExportSettings.h"
 #include "threads/CriticalSection.h"
 
 #define VOLUME_DRC_MINIMUM 0    // 0dB
