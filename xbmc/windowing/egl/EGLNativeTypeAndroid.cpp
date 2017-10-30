@@ -258,32 +258,38 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
   if (!*nativeWindow)
     return false;
 
-  if (s_hasModeApi)
-  {
-    *res = s_res_cur_displayMode;
-    return true;
-  }
-
+  int defWidth = 0, defHeight = 0;
   if (!m_width || !m_height)
   {
     ANativeWindow_acquire(*nativeWindow);
-    res->iWidth = ANativeWindow_getWidth(*nativeWindow);
-    res->iHeight= ANativeWindow_getHeight(*nativeWindow);
+    defWidth = ANativeWindow_getWidth(*nativeWindow);
+    defHeight= ANativeWindow_getHeight(*nativeWindow);
     ANativeWindow_release(*nativeWindow);
   }
   else
   {
-    res->iWidth = m_width;
-    res->iHeight = m_height;
+    defWidth = m_width;
+    defHeight = m_height;
   }
 
-  res->strId = "-1";
-  res->fRefreshRate = currentRefreshRate();
-  res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-  res->iScreen       = 0;
-  res->bFullScreen   = true;
+  if (s_hasModeApi)
+  {
+    *res = s_res_cur_displayMode;
+    res->iWidth = defWidth;
+    res->iHeight = defHeight;
+  }
+  else
+  {
+    res->strId = "-1";
+    res->fRefreshRate = currentRefreshRate();
+    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
+    res->iScreen       = 0;
+    res->bFullScreen   = true;
+    res->iWidth = defWidth;
+    res->iHeight = defHeight;
+    res->fPixelRatio   = 1.0f;
+  }
   res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
   res->iScreenWidth  = res->iWidth;
   res->iScreenHeight = res->iHeight;
   res->strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
@@ -316,7 +322,17 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
 {
   if (s_hasModeApi)
   {
-    resolutions.insert(resolutions.end(), s_res_displayModes.begin(), s_res_displayModes.end());
+    for(RESOLUTION_INFO res : s_res_displayModes)
+    {
+      if (m_width && m_height)
+      {
+        res.iWidth = std::min(res.iWidth, m_width);
+        res.iHeight = std::min(res.iHeight, m_height);
+        res.iScreenWidth = res.iWidth;
+        res.iScreenHeight = res.iHeight;
+      }
+      resolutions.push_back(res);
+    }
     return true;
   }
 

@@ -19787,3 +19787,8 @@ msgstr ""
 msgctxt "#39010"
 msgid "Select sort method"
 msgstr ""
+
+#: system/settings/android.xml
+msgctxt "#39108"
+msgid "1080"
+msgstr ""

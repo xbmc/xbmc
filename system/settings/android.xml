@@ -22,7 +22,7 @@
             <options>
               <option label="37026">0</option>    <!-- auto -->
               <option label="37028">720</option>  <!-- 720 -->
-              <option label="37027">1080</option>  <!-- 900 -->
+              <option label="39108">1080</option>
               <option label="37030">9999</option> <!-- unlimited -->
             </options>
           </constraints>
