@@ -24,7 +24,7 @@ def compare_version(version_installed, versionlist):
     versionlist_rc = versionlist['releases']['releasecandidate']
     versionlist_beta = versionlist['releases']['beta']
     versionlist_alpha = versionlist['releases']['alpha']
-    versionlist_prealpha = versionlist['releases']['prealpha'] 
+    versionlist_prealpha = versionlist['releases']['prealpha']
     log('Version installed %s' %version_installed)
     ### Check to upgrade to newest available stable version
     # check on smaller major version. Smaller version than available always notify
@@ -56,11 +56,11 @@ def compare_version(version_installed, versionlist):
         else:
             log('Version available  %s' %versionlist_stable[0])
             log('There is no newer stable available')
-    
+
     # Already skipped a possible newer stable build. Let's continue with non stable builds.
     # Check also 'oldversion' hasn't been set to 'stable' or true by previous checks because if so,
     # those part need to be skipped
-    
+
     #check for RC builds
     if not oldversion and version_installed['tag'] in ['releasecandidate']:
         # check if you are using a RC build lower than current available RC
@@ -122,6 +122,6 @@ def compare_version(version_installed, versionlist):
                 version_available = versionlist_alpha[0]
                 oldversion = True
                 log('Version available  %s' %versionlist_alpha[0])
-                log('You are running an older non alpha version')     
+                log('You are running an older non alpha version')
     version_stable = versionlist_stable[0]
     return oldversion, version_installed, version_available, version_stable
