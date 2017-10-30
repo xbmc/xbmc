@@ -308,6 +308,10 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Prikaži obrisano"
 
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Prvo pokretanje"
+
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
 msgstr "Postoje dvije stvari koje morate znati o upravljanju s Estouchyem"
