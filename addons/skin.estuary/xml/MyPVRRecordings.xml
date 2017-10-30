@@ -13,7 +13,7 @@
 				<control type="fixedlist" id="50">
 					<left>0</left>
 					<top>list_y_offset</top>
-					<right>778</right>
+					<right>860</right>
 					<bottom>list_y_offset</bottom>
 					<onleft>9000</onleft>
 					<onright>73</onright>

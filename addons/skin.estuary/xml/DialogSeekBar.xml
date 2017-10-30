@@ -238,7 +238,7 @@
 				<align>left</align>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
-				<visible>!Player.ChannelPreviewActive</visible>
+				<visible>![Player.ChannelPreviewActive | Window.IsActive(videoosd)]</visible>
 				<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 				<include content="MediaFlag">
 					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />

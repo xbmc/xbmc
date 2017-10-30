@@ -17,16 +17,28 @@
 				<texture>frame/osdfade.png</texture>
 			</control>
 			<control type="image">
-				<left>10</left>
+				<left>15</left>
+				<top>10</top>
+				<width>300</width>
+				<height>140</height>
+				<texture>$VAR[PlayerClearLogoVar]</texture>
+				<aspectratio aligny="center" align="center">keep</aspectratio>
+			</control>
+			<control type="textbox">
+				<label>$VAR[NowPlayingBreadcrumbsVar]</label>
+				<font>font45</font>
+				<shadowcolor>text_shadow</shadowcolor>
 				<top>0</top>
-				<width>500</width>
-				<height>160</height>
-				<texture>$INFO[Player.Art(clearlogo)]</texture>
-				<aspectratio aligny="top" align="left">keep</aspectratio>
+				<height>150</height>
+				<left>330</left>
+				<right>400</right>
+				<aligny>center</aligny>
+				<visible>!String.IsEmpty(Player.Art(tvshow.clearlogo))</visible>
 			</control>
 			<control type="group">
 				<visible>!Window.IsActive(pvrosdchannels) + !Window.IsActive(pvrchannelguide)</visible>
 				<visible>String.IsEmpty(Player.Art(clearlogo))</visible>
+				<visible>String.IsEmpty(Player.Art(tvshow.clearlogo))</visible>
 				<animation effect="fade" time="150">VisibleChange</animation>
 				<left>30</left>
 				<right>400</right>

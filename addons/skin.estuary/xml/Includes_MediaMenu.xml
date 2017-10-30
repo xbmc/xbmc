@@ -370,6 +370,7 @@
 			<control type="button" id="19">
 				<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 				<include>MediaMenuItemsCommon</include>
+				<onclick>right</onclick>
 				<label>$LOCALIZE[137]</label>
 			</control>
 			<control type="button" id="199">

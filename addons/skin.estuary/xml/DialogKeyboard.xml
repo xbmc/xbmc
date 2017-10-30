@@ -525,7 +525,8 @@
 				<height>460</height>
 				<centerleft>86%</centerleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
-				<onup>95200</onup>
+				<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">95200</onup>
+				<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
 				<ondown>95200</ondown>
 				<onleft>78500</onleft>
 				<onright>140</onright>
@@ -543,7 +544,6 @@
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="309" />
-					<param name="label" value="Layout" />
 					<param name="width" value="350" />
 				</include>
 				<include content="DefaultDialogButton">
