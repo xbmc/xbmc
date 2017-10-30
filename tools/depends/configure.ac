@@ -14,9 +14,6 @@ passed_cxxflags="$CXXFLAGS"
 
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
-AX_CXX_COMPILE_STDCXX_11(,[mandatory])
-c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
-cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -99,6 +96,16 @@ AC_ARG_ENABLE([wayland],
   [build libraries needed for Wayland. default is no])],
   [enable_wayland=$enableval],
   [enable_wayland=no])
+
+
+OLD_PATH="${PATH}"
+if test -n "$use_toolchain"; then
+  PATH="${use_toolchain}/bin:${use_toolchain}/usr/bin:$PATH"
+fi
+AX_CXX_COMPILE_STDCXX_11(,[mandatory])
+c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
+cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
+PATH="${OLD_PATH}"
 
 if test "$use_ccache" = "yes"; then
   AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
@@ -637,6 +644,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR(unable to create $prefix/$deps_dir/lib/$use_sdk. verify that the path and permissions are correct.)
   fi
 fi
+
 
 # remove unwanted optimization flags
 tmp_cflags=$(echo $c11_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
