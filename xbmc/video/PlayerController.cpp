@@ -179,7 +179,7 @@ bool CPlayerController::OnAction(const CAction &action)
         CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
         vs.m_AudioDelay -= 0.025f;
         if (vs.m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
-          vs.m_SubtitleDelay = -g_advancedSettings.m_videoAudioDelayRange;
+          vs.m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
         g_application.m_pPlayer->SetAVDelay(vs.m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, g_application.m_pPlayer->GetVideoSettings().m_AudioDelay,
