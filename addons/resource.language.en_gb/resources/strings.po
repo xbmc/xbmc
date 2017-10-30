@@ -4714,8 +4714,6 @@ msgstr ""
 
 #empty strings from id 2105 to 9999
 
-# ID's from 10000 to 10999 reserved for window names
-
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"
 msgid "Home"
@@ -4758,7 +4756,6 @@ msgid "Settings - Test patterns"
 msgstr ""
 
 #empty strings from id 10009 to 10010
-msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"
@@ -4962,7 +4959,7 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr ""
 
-#empty strings from id 10102 to 10102
+#empty string with id 10102
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10103"
@@ -5279,13 +5276,13 @@ msgctxt "#10524"
 msgid "Movie information"
 msgstr ""
 
-#empty strings from id 10525 to 11549
+#empty strings from id 10525 to 10549
 
 msgctxt "#10550"
 msgid "Teletext"
 msgstr ""
 
-#empty strings from id 10551 to 11599
+#empty strings from id 10551 to 10599
 
 msgctxt "#10600"
 msgid "PVR guide info"
@@ -5335,7 +5332,7 @@ msgctxt "#10611"
 msgid "PVR recording setting"
 msgstr ""
 
-#empty strings from id 10612 to 11699
+#empty strings from id 10612 to 10699
 
 msgctxt "#10700"
 msgid "TV channels"
@@ -5385,7 +5382,7 @@ msgctxt "#10711"
 msgid "Radio timer rules"
 msgstr ""
 
-#empty strings from id 10712 to 11799
+#empty strings from id 10712 to 10799
 
 msgctxt "#10800"
 msgid "Fullscreen live TV"
@@ -5395,7 +5392,7 @@ msgctxt "#10801"
 msgid "Fullscreen radio"
 msgstr ""
 
-#empty strings from id 10802 to 11819
+#empty strings from id 10802 to 10819
 
 msgctxt "#10820"
 msgid "Game video filter"
@@ -5418,8 +5415,6 @@ msgid "Game video settings"
 msgstr ""
 
 #empty strings from id 10825 to 11999
-
-# ID's from 12000 to 12999 reserved for window names
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
@@ -10728,8 +10723,6 @@ msgstr ""
 msgctxt "#19240"
 msgid "Client priorities"
 msgstr ""
-
-#empty string with id 19240
 
 #. Label for context menu entry to open settings dialog for a timer (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -21058,7 +21051,7 @@ msgctxt "#38305"
 msgid "Destination folder"
 msgstr ""
 
-#. Section of music items to export - albums, album artists, song artists etc. 
+#. Section of music items to export - albums, album artists, song artists etc.
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38306"
 msgid "Items to export"
@@ -21084,7 +21077,7 @@ msgctxt "#38310"
 msgid "Overwrite existing files"
 msgstr ""
 
-#empty string id 38311
+#empty string with id 38311
 
 #. Music item to export output, see #38093
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
