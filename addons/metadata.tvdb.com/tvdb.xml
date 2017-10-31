@@ -2,36 +2,36 @@
 <!-- should be self-explanatory -->
 <scraper framework="1.1" date="2013-04-04">
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
-			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
+		<RegExp input="$$1" output="&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
+			<expression>https://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;https://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
 			<expression>imdb....?/title/tt([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;https://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
 			<expression>imdb....?/Title\?([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
 
 	<GetTVDBId dest="3">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;</expression>
 		</RegExp>
 	</GetTVDBId>
 
 	<EpisodeGuideUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
-			<expression>(.*?http://www.thetvdb.com.*)</expression>
+			<expression>(.*?https://www.thetvdb.com.*)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="\1" dest="3">
-			<expression>(.*?http://thetvdb.com.*)</expression>
+			<expression>(.*?https://thetvdb.com.*)</expression>
 		</RegExp>
 	</EpisodeGuideUrl>
 
 	<!-- input:	$1=query string -->
 	<!-- returns:	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;cache-\1$$4-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/GetSeries.php?seriesname=\1$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url cache=&quot;cache-\1$$4-$INFO[language].xml&quot;&gt;https://thetvdb.com/api/GetSeries.php?seriesname=\1$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>
@@ -43,7 +43,7 @@
 	<!-- returns:	results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -119,7 +119,7 @@
 				<expression>([^\|,]+)$</expression>
 			</RegExp>
 			<!-- actors with thumbs -->
-			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;&lt;/actor&gt;" dest="4+">
+			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;&lt;/actor&gt;" dest="4+">
 				<expression repeat="yes" noclean="1,2,3">&lt;Actor&gt;.*?&lt;Image&gt;([^&lt;]+)&lt;/Image&gt;.*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;.*?&lt;Role&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<!-- actors without thumbs -->
@@ -141,7 +141,7 @@
 
 	<GetArt dest="3">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseArt&quot; cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/banners.xml&lt;/url&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseArt&quot; cache=&quot;\1-$INFO[language].xml&quot;&gt;https://thetvdb.com/api/439DFEBA9D3059C6/series/\1/banners.xml&lt;/url&gt;" dest="4">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -149,40 +149,40 @@
 	</GetArt>
 	<ParseArt dest="3">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;graphical&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;graphical&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;text&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;text&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;blank&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;&lt;/Language&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;season&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;season&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;seasonwide&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;seasonwide&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;-1&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;-1&quot;&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$5" output="&lt;fanart url=&quot;http://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
+			<RegExp conditional="fanart" input="$$5" output="&lt;fanart url=&quot;https://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
 				<RegExp input="$$1" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot; preview=&quot;_cache/\1&quot;&gt;\1&lt;/thumb&gt;" dest="5">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 				</RegExp>
@@ -201,7 +201,7 @@
 	<GetEpisodeList dest="3">
 		<RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
 			<RegExp input="$$2" output="\2-\3" dest="10">
-				<expression>http://(?:www\.)?thetvdb.com/api/(.+)/series/([0-9]*)/all/(.+).zip</expression>
+				<expression>https://(?:www\.)?thetvdb.com/api/(.+)/series/([0-9]*)/all/(.+).zip</expression>
 			</RegExp>
 			<RegExp conditional="!dvdorder">
 				<!-- Regular episodes (Absolute order) -->
@@ -304,7 +304,7 @@
 				</RegExp>
 				<expression/>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+			<RegExp input="$$8" output="&lt;thumb&gt;https://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>
 			</RegExp>
 			<RegExp input="$$8" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="4+">

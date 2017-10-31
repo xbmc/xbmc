@@ -14,7 +14,7 @@
     <platform>all</platform>
     <language>en</language>
     <source>https://github.com/xbmc/chorus2</source>
-    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+    <forum>https://forum.xbmc.org/showthread.php?tid=183451</forum>
     <assets>
       <icon>icon.png</icon>
       <fanart>images/turntable.jpg</fanart>

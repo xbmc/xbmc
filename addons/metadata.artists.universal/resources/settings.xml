@@ -33,9 +33,9 @@
     <setting label="30004" type="bool" id="fanarttvfanart" default="true"/>
     <setting label="30023" type="bool" id="tadbfanart" default="true"/>
   </category>
-  
+
   <category label="30025">
-      <setting label="30026" type="text" id="mbsite" default="http://musicbrainz.org"/>
+      <setting label="30026" type="text" id="mbsite" default="https://musicbrainz.org"/>
   </category>
 
 </settings>

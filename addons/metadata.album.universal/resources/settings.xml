@@ -19,6 +19,6 @@
   </category>
 
   <category label="30011">
-      <setting label="30012" type="text" id="mbsite" default="http://musicbrainz.org"/>
+      <setting label="30012" type="text" id="mbsite" default="https://musicbrainz.org"/>
   </category>
 </settings>

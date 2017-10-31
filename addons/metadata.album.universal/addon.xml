@@ -113,7 +113,7 @@
     <description lang="zh_TW">本搜刮器支援從以下網站取得資訊：MusicBrainz、last.fm、allmusic.com和amazon.de，並從以下網站取得專輯照片：fanart.tv、last.fm和allmusic.com。您並可以指定每一項內容的來源網站。&#10;&#10;初始搜尋結果總是先從MusicBrainz取得。如果MusicBrainz網站沒有加入到allmusic和/或amazon.de的外部連結，則無法取得allmusic.com的/或amazon.de的信息(當然您能很輕易地加入遺失的連結)。</description>
     <platform>all</platform>
     <license>GPL v2.0</license>
-    <forum>http://forum.xbmc.org/showthread.php?tid=133547</forum>
+    <forum>https://forum.xbmc.org/showthread.php?tid=133547</forum>
     <website></website>
     <email></email>
     <source></source>

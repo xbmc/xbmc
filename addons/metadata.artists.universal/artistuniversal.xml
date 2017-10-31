@@ -2,7 +2,7 @@
 <scraper framework="1.1" date="2013-05-29">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;$INFO[mbsite]/ws/2/artist/\1?inc=url-rels&lt;/url&gt;" dest="3">
-			<expression>http://musicbrainz.org/artist/(.+)</expression>
+			<expression>https://musicbrainz.org/artist/(.+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<ResolveIDToUrl dest="3">
@@ -56,7 +56,7 @@
 			</RegExp>
 			<!--AMGID - Artist-->
 			<RegExp input="$$1" output="\2" dest="9">
-				<expression noclean="1">&gt;http://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
+				<expression noclean="1">&gt;https://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;musicBrainzArtistID&gt;$$8&lt;/musicBrainzArtistID&gt;&lt;name&gt;\2&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;artist(.*?)&lt;name&gt;([^&lt;]*)</expression>
