@@ -111,8 +111,8 @@
         <disclaimer lang="zh">可放心使用此脚本，更多信息访问 kodi.tv</disclaimer>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-        <forum>http://forum.xbmc.org/showthread.php?tid=160228</forum>
-        <website>http://xbmc.org</website>
+        <forum>https://forum.xbmc.org/showthread.php?tid=160228</forum>
+        <website>https://xbmc.org</website>
         <email></email>
         <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
     </extension>
