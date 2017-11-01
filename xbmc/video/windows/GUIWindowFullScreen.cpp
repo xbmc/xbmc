@@ -189,11 +189,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::ClearBackground()
 {
   if (g_application.m_pPlayer->IsRenderingVideoLayer())
-#ifdef HAS_IMXVPU
-    g_graphicsContext.Clear((16 << 16)|(8 << 8)|16);
-#else
     g_graphicsContext.Clear(0);
-#endif
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()

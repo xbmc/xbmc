@@ -290,7 +290,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
   const CVideoSettings videoSettings = g_application.m_pPlayer->GetVideoSettings();
-  
+
   TranslatableIntegerSettingOptions entries;
 
   entries.clear();
@@ -313,9 +313,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16331, VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF));
   entries.push_back(std::make_pair(16332, VS_INTERLACEMETHOD_MMAL_BOB));
   entries.push_back(std::make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
-  entries.push_back(std::make_pair(16334, VS_INTERLACEMETHOD_IMX_FASTMOTION));
-  entries.push_back(std::make_pair(16335, VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF));
-  entries.push_back(std::make_pair(16336, VS_INTERLACEMETHOD_IMX_ADVMOTION));
   entries.push_back(std::make_pair(16320, VS_INTERLACEMETHOD_DXVA_AUTO));
 
   /* remove unsupported methods */
@@ -441,7 +438,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
         strItem = info.name;
     }
     else if (!strLanguage.empty())
-    {      
+    {
         strItem = strLanguage;
     }
 
