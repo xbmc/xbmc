@@ -125,7 +125,6 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     // codecs which require extradata
     if (hint.codec == AV_CODEC_ID_MPEG1VIDEO ||
         hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
-        hint.codec == AV_CODEC_ID_MPEG2VIDEO_XVMC ||
         hint.codec == AV_CODEC_ID_H264 ||
         hint.codec == AV_CODEC_ID_HEVC ||
         hint.codec == AV_CODEC_ID_MPEG4 ||

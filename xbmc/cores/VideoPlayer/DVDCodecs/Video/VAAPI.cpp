@@ -2801,8 +2801,8 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     return false;
   }
 
-  AVFilter* srcFilter = avfilter_get_by_name("buffer");
-  AVFilter* outFilter = avfilter_get_by_name("buffersink");
+  const AVFilter* srcFilter = avfilter_get_by_name("buffer");
+  const AVFilter* outFilter = avfilter_get_by_name("buffersink");
 
   std::string args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_config.vidWidth,
