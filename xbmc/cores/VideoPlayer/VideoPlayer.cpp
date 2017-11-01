@@ -742,8 +742,11 @@ bool CVideoPlayer::CloseFile(bool reopen)
 {
   CLog::Log(LOGNOTICE, "CVideoPlayer::CloseFile()");
 
-  CJobManager::GetInstance().Submit([&]() {
-    m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettings());
+  IPlayerCallback *cb = &m_callback;
+  CFileItem fileItem(m_item);
+  CVideoSettings vs = m_processInfo->GetVideoSettings();
+  CJobManager::GetInstance().Submit([=]() {
+    cb->StoreVideoSettings(fileItem, vs);
   }, CJob::PRIORITY_NORMAL);
 
   // set the abort request so that other threads can finish up
@@ -2502,8 +2505,11 @@ void CVideoPlayer::HandleMessages()
     {
       CDVDMsgOpenFile &msg(*static_cast<CDVDMsgOpenFile*>(pMsg));
 
-      CJobManager::GetInstance().Submit([&]() {
-        m_callback.StoreVideoSettings(m_item, m_processInfo->GetVideoSettings());
+      IPlayerCallback *cb = &m_callback;
+      CFileItem fileItem(m_item);
+      CVideoSettings vs = m_processInfo->GetVideoSettings();
+      CJobManager::GetInstance().Submit([=]() {
+        cb->StoreVideoSettings(fileItem, vs);
       }, CJob::PRIORITY_NORMAL);
 
       m_item = msg.GetItem();
