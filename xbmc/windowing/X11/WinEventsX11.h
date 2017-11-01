@@ -23,6 +23,8 @@
 #include "xbmc/windowing/WinEvents.h"
 #include <X11/Xlib.h>
 #include "threads/SystemClock.h"
+
+#include <clocale>
 #include <map>
 
 class CWinEventsX11 : public IWinEvents
