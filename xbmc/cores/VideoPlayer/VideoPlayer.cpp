@@ -1565,8 +1565,8 @@ void CVideoPlayer::Process()
       SetCaching(CACHESTATE_DONE);
 
       // while players are still playing, keep going to allow seekbacks
-      if(m_VideoPlayerAudio->HasData()
-      || m_VideoPlayerVideo->HasData())
+      if (m_VideoPlayerAudio->HasData() ||
+          m_VideoPlayerVideo->HasData())
       {
         Sleep(100);
         continue;

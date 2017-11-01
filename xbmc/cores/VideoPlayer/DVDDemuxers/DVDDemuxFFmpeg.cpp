@@ -213,6 +213,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   m_currentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_program = UINT_MAX;
+  m_seekToKeyFrame = false;
 
   const AVIOInterruptCB int_cb = { interrupt_cb, this };
 
@@ -626,6 +627,7 @@ void CDVDDemuxFFmpeg::Flush()
 
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
+  m_seekToKeyFrame = false;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -904,6 +906,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       // timeout, probably no real error, return empty packet
       bReturnEmpty = true;
     }
+    else if (m_pkt.result == AVERROR_EOF)
+    {
+    }
     else if (m_pkt.result < 0)
     {
       Flush();
@@ -986,6 +991,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
         pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
         pPacket->duration =  DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num / stream->time_base.den);
+        pPacket->recoveryPoint = m_seekToKeyFrame;
 
         CDVDInputStream::IDisplayTime *inputStream = m_pInput->GetIDisplayTime();
         if (inputStream)
@@ -1152,7 +1158,12 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
       ret = 0;
 
     if (ret >= 0)
+    {
+      if (m_pFormatContext->iformat->read_seek)
+        m_seekToKeyFrame = true;
+
       UpdateCurrentPTS();
+    }
   }
 
   if(m_currentPts == DVD_NOPTS_VALUE)
