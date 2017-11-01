@@ -2999,7 +2999,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   int fileSize = sound->GetFileSize();
 
   fmt_ctx = avformat_alloc_context();
-  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+FF_INPUT_BUFFER_PADDING_SIZE);
+  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+AV_INPUT_BUFFER_PADDING_SIZE);
   io_ctx = avio_alloc_context(buffer, SOUNDBUFFER_SIZE, 0,
                                             sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
   io_ctx->max_packet_size = sound->GetChunkSize();

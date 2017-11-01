@@ -71,6 +71,7 @@ public:
   int8_t* qp_table;                //< Quantization parameters, primarily used by filters
   int qstride;
   int qscale_type;
+  int pict_type;
 
   unsigned int iWidth;
   unsigned int iHeight;

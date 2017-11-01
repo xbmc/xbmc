@@ -79,7 +79,7 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
   {}
 };
 
-#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
+#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
 std::string CDemuxStreamAudioFFmpeg::GetStreamName()
 {
@@ -1935,13 +1935,13 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       int i = parser->second->m_parserCtx->parser->split(parser->second->m_codecCtx, pkt->data, pkt->size);
       if (i > 0 && i < FF_MAX_EXTRADATA_SIZE)
       {
-        st->codecpar->extradata = (uint8_t*)av_malloc(i + FF_INPUT_BUFFER_PADDING_SIZE);
+        st->codecpar->extradata = (uint8_t*)av_malloc(i + AV_INPUT_BUFFER_PADDING_SIZE);
         if (st->codecpar->extradata)
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::ParsePacket() fetching extradata, extradata_size(%d)", i);
           st->codecpar->extradata_size = i;
           memcpy(st->codecpar->extradata, pkt->data, i);
-          memset(st->codecpar->extradata + i, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+          memset(st->codecpar->extradata + i, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
           if (parser->second->m_parserCtx->parser->parser_parse)
           {

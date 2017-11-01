@@ -93,8 +93,8 @@ bool CActiveAEFilter::CreateFilterGraph()
     return false;
   }
 
-  AVFilter* srcFilter = avfilter_get_by_name("abuffer");
-  AVFilter* outFilter = avfilter_get_by_name("abuffersink");
+  const AVFilter* srcFilter = avfilter_get_by_name("abuffer");
+  const AVFilter* outFilter = avfilter_get_by_name("abuffersink");
 
   std::string args = StringUtils::Format("time_base=1/%d:sample_rate=%d:sample_fmt=%s:channel_layout=0x%" PRIx64,
                                          m_sampleRate,
@@ -123,7 +123,7 @@ bool CActiveAEFilter::CreateFilterGraph()
 
 bool CActiveAEFilter::CreateAtempoFilter()
 {
-  AVFilter *atempo;
+  const AVFilter *atempo;
 
   atempo = avfilter_get_by_name("atempo");
   m_pFilterCtxAtempo = avfilter_graph_alloc_filter(m_pFilterGraph, atempo, "atempo");

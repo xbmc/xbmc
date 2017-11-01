@@ -281,7 +281,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
     ctx->SetHardware(nullptr);
     avctx->get_buffer2 = avcodec_default_get_buffer2;
     avctx->slice_flags = 0;
-    avctx->hwaccel_context = 0;
+    av_buffer_unref(&avctx->hw_frames_ctx);
   }
 
   const AVPixelFormat * cur = fmt;
@@ -405,16 +405,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   else
     m_decoderState = STATE_SW_SINGLE;
 
-#if defined(TARGET_DARWIN_IOS)
-  // ffmpeg with enabled neon will crash and burn if this is enabled
-  m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
-#else
-  if (pCodec->id != AV_CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
-      && pCodec->id != AV_CODEC_ID_VP8
-     )
-    m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
-#endif
-
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->coded_width = hints.width;
@@ -423,7 +413,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
@@ -905,6 +895,7 @@ void CDVDVideoCodecFFmpeg::Reset()
   m_eof = false;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   avcodec_flush_buffers(m_pCodecContext);
+  av_frame_unref(m_pFrame);
 
   if (m_pHardware)
     m_pHardware->Reset();
@@ -999,22 +990,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->color_range = 0;
 
   int qscale_type;
-  pVideoPicture->qp_table = av_frame_get_qp_table(m_pFrame, &pVideoPicture->qstride, &qscale_type);
-
-  switch (qscale_type)
-  {
-  case FF_QSCALE_TYPE_MPEG1:
-    pVideoPicture->qscale_type = DVP_QSCALE_MPEG1;
-    break;
-  case FF_QSCALE_TYPE_MPEG2:
-    pVideoPicture->qscale_type = DVP_QSCALE_MPEG2;
-    break;
-  case FF_QSCALE_TYPE_H264:
-    pVideoPicture->qscale_type = DVP_QSCALE_H264;
-    break;
-  default:
-    pVideoPicture->qscale_type = DVP_QSCALE_UNKNOWN;
-  }
+  pVideoPicture->qp_table = av_frame_get_qp_table(m_pFrame,
+                                                  &pVideoPicture->qstride,
+                                                  &pVideoPicture->qscale_type);
+  pVideoPicture->pict_type = m_pFrame->pict_type;
 
   if (pVideoPicture->iRepeatPicture)
     pVideoPicture->dts = DVD_NOPTS_VALUE;
@@ -1074,8 +1053,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return -1;
   }
 
-  AVFilter* srcFilter = avfilter_get_by_name("buffer");
-  AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
+  const AVFilter* srcFilter = avfilter_get_by_name("buffer");
+  const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
   std::string args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_pCodecContext->width,

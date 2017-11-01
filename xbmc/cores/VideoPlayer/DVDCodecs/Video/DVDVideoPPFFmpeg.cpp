@@ -113,9 +113,6 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
     return;
   }
 
-  int pict_type = (pSource->qscale_type != DVP_QSCALE_MPEG1) ?
-                   PP_PICT_TYPE_QP2 : 0;
-
   uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
   int srcStrides[YuvImage::MAX_PLANES];
   pSource->videoBuffer->GetPlanes(srcPlanes);
@@ -127,7 +124,7 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
                  pSource->iWidth, pSource->iHeight,
                  pSource->qp_table, pSource->qstride,
                  m_pMode, m_pContext,
-                 pict_type); //m_pSource->iFrameType);
+                 pSource->pict_type | pSource->qscale_type ? PP_PICT_TYPE_QP2 : 0);
 
 
   pPicture->SetParams(*pSource);

@@ -25,7 +25,7 @@
 #include "settings/Settings.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
-#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
+#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
 
 class CDemuxStreamClientInternal
@@ -181,9 +181,9 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;
-      st->ExtraData = new uint8_t[len+FF_INPUT_BUFFER_PADDING_SIZE];
+      st->ExtraData = new uint8_t[len+AV_INPUT_BUFFER_PADDING_SIZE];
       memcpy(st->ExtraData, pkt->pData, len);
-      memset((uint8_t*)st->ExtraData + len, 0 , FF_INPUT_BUFFER_PADDING_SIZE);
+      memset((uint8_t*)st->ExtraData + len, 0 , AV_INPUT_BUFFER_PADDING_SIZE);
       stream->m_parser_split = false;
       change = true;
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - split extradata");
