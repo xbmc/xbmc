@@ -133,6 +133,12 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  if(!CDRMUtils::SetMode(res))
+  {
+    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
+    return false;
+  }
+
   auto ret = m_DRM.SetVideoMode(res);
   if (!ret)
   {
