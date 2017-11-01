@@ -2937,6 +2937,10 @@ void CVideoPlayer::HandleMessages()
     {
       CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
       CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+      IPlayerCallback *cb = &m_callback;
+      CJobManager::GetInstance().Submit([=]() {
+        cb->OnAVChange();
+      }, CJob::PRIORITY_NORMAL);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_ABORT))
     {
