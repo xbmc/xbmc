@@ -1081,7 +1081,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         // content has changed
         stream = AddStream(pPacket->iStreamId);
       }
-      pPacket->recoveryPoint = m_seekToKeyFrame;
+      if (stream->codec == AV_CODEC_ID_H264)
+        pPacket->recoveryPoint = m_seekToKeyFrame;
       m_seekToKeyFrame = false;
     }
     if (!stream)
