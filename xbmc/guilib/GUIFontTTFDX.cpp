@@ -28,6 +28,10 @@
 // stuff for freetype
 #include <ft2build.h>
 
+#ifdef TARGET_WINDOWS_STORE
+#define generic GenericFromFreeTypeLibrary
+#endif
+
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 

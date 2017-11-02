@@ -56,7 +56,7 @@ public:
   static std::vector<std::string> GetDiskUsage();
   static std::string GetResInfoString();
   static int GetDesktopColorDepth();
-  static std::string GetSpecialFolder(int csidl);
+
   static std::string GetSystemPath();
   static std::string GetProfilePath();
   static std::string UncToSmb(const std::string &strPath);
@@ -81,19 +81,22 @@ public:
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
   static std::string GetFirstOpticalDrive();
 
+#ifdef TARGET_WINDOWS_DESKTOP
+  static std::string GetSpecialFolder(int csidl);
   static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
-
   static bool GetFocussedProcess(std::string &strProcessFile);
+#endif // TARGET_WINDOWS_DESKTOP
   static void CropSource(CRect& src, CRect& dst, CRect target, UINT rotation = 0);
 
   static bool IsUsbDevice(const std::wstring &strWdrive);
 
   static std::string WUSysMsg(DWORD dwError);
-
   static bool SetThreadLocalLocale(bool enable = true);
 private:
+#ifdef TARGET_WINDOWS_DESKTOP
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+#endif
 };
 
 

@@ -38,18 +38,31 @@
 #include "utils/SystemInfo.h"
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
+#ifdef TARGET_WINDOWS_DESKTOP
 #include "platform/win32/crts_caller.h"
+#endif
 #include "CompileInfo.h"
 #include "platform/win32/CharsetConverter.h"
 
+#ifdef TARGET_WINDOWS_DESKTOP
 #include <cassert>
-
-
+#endif
 #include <locale.h>
 
+#ifdef TARGET_WINDOWS_DESKTOP
 extern HWND g_hWnd;
+#endif
 
 using namespace MEDIA_DETECT;
+
+#ifdef TARGET_WINDOWS_STORE
+#include <collection.h>
+#include <ppltasks.h>
+using namespace Windows::Devices::Power;
+using namespace Windows::Graphics::Display;
+using namespace Windows::Foundation::Collections;
+using namespace Windows::Storage;
+#endif
 
 CWIN32Util::CWIN32Util(void)
 {
@@ -61,6 +74,11 @@ CWIN32Util::~CWIN32Util(void)
 
 int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
+  return -1;
+#else
   using KODI::PLATFORM::WINDOWS::ToW;
 
   auto strPathW = ToW(strPath);
@@ -175,6 +193,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   }
   CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
   return -1;
+#endif
 }
 
 char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
@@ -191,6 +210,9 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 bool CWIN32Util::PowerManagement(PowerState State)
 {
   static bool gotShutdownPrivileges = false;
+#ifdef TARGET_WINDOWS_STORE
+  return false;
+#else
   if (!gotShutdownPrivileges)
   {
     HANDLE hToken;
@@ -245,20 +267,40 @@ bool CWIN32Util::PowerManagement(PowerState State)
     return false;
     break;
   }
+#endif
 }
 
 int CWIN32Util::BatteryLevel()
 {
+  int result = 0;
+#ifdef TARGET_WINDOWS_STORE
+  auto aggBattery = Battery::AggregateBattery;
+  auto report = aggBattery->GetReport();
+
+  int remaining = report->RemainingCapacityInMilliwattHours->Value;
+  int full = report->FullChargeCapacityInMilliwattHours->Value;
+
+  if (full != 0 && remaining != 0)
+  {
+    float percent = static_cast<float>(remaining) / static_cast<float>(full);
+    result = static_cast<int> (percent * 100.0f);
+  }
+#else
   SYSTEM_POWER_STATUS SystemPowerStatus;
 
   if (GetSystemPowerStatus(&SystemPowerStatus) && SystemPowerStatus.BatteryLifePercent != 255)
       return SystemPowerStatus.BatteryLifePercent;
 
-  return 0;
+#endif
+  return result;
 }
 
 bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  return false;
+#else
   std::string strCommand = strPath;
   std::string strExe = strPath;
   std::string strParams;
@@ -328,11 +370,26 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   }
 
   return ret;
+#endif
 }
 
 std::vector<std::string> CWIN32Util::GetDiskUsage()
 {
   std::vector<std::string> result;
+#ifdef TARGET_WINDOWS_STORE
+  auto propertyKeys = ref new Platform::Collections::Vector<Platform::String^>();
+  propertyKeys->Append("System.FreeSpace");
+
+  // gets free space for drive where app is installed
+  StorageFolder^ localFolder = ApplicationData::Current->LocalFolder;
+  Concurrency::create_task(localFolder->Properties->RetrievePropertiesAsync(propertyKeys))
+    .then([&result](IMap<Platform::String^, Platform::Object^>^ retrivied)
+  {
+    auto freeSpace = (uint64_t)retrivied->Lookup("System.FreeSpace");
+    auto strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%d MB %s", int(freeSpace / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
+    result.push_back(strRet);
+  }).wait();
+#else
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
@@ -358,27 +415,43 @@ std::vector<std::string> CWIN32Util::GetDiskUsage()
       iPos += (wcslen( pcBuffer.get() + iPos) + 1 );
     }while( wcslen( pcBuffer.get() + iPos ) > 0 );
   }
+#endif
   return result;
 }
 
 std::string CWIN32Util::GetResInfoString()
 {
+#ifdef TARGET_WINDOWS_STORE
+  auto displayInfo = DisplayInformation::GetForCurrentView();
+
+  return StringUtils::Format("Desktop Resolution: %dx%d"
+    , displayInfo->ScreenWidthInRawPixels
+    , displayInfo->ScreenHeightInRawPixels
+  );
+#else
   DEVMODE devmode;
   ZeroMemory(&devmode, sizeof(devmode));
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
   return StringUtils::Format("Desktop Resolution: %dx%d %dBit at %dHz",devmode.dmPelsWidth,devmode.dmPelsHeight,devmode.dmBitsPerPel,devmode.dmDisplayFrequency);
+#endif
 }
 
 int CWIN32Util::GetDesktopColorDepth()
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  return 32;
+#else
   DEVMODE devmode;
   ZeroMemory(&devmode, sizeof(devmode));
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
   return (int)devmode.dmBitsPerPel;
+#endif
 }
 
+#ifdef TARGET_WINDOWS_DESKTOP
 std::string CWIN32Util::GetSpecialFolder(int csidl)
 {
   std::string strProfilePath;
@@ -397,15 +470,25 @@ std::string CWIN32Util::GetSpecialFolder(int csidl)
   delete[] buf;
   return strProfilePath;
 }
+#endif
 
 std::string CWIN32Util::GetSystemPath()
 {
+#ifdef TARGET_WINDOWS_STORE
+  // access to system folder is not allowed in a UWP app
+  return "";
+#else
   return GetSpecialFolder(CSIDL_SYSTEM);
+#endif
 }
 
 std::string CWIN32Util::GetProfilePath()
 {
   std::string strProfilePath;
+#ifdef TARGET_WINDOWS_STORE
+  auto localFolder = ApplicationData::Current->LocalFolder;
+  strProfilePath = KODI::PLATFORM::WINDOWS::FromW(std::wstring(localFolder->Path->Data()));
+#else
   std::string strHomePath = CUtil::GetHomePath();
 
   if(g_application.PlatformDirectoriesEnabled())
@@ -417,7 +500,7 @@ std::string CWIN32Util::GetProfilePath()
     strProfilePath = strHomePath;
 
   URIUtils::AddSlashAtEnd(strProfilePath);
-
+#endif
   return strProfilePath;
 }
 
@@ -555,9 +638,12 @@ __time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
   return fileTimeToTimeT(__int64(ftimeli.QuadPart));
 }
 
-
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  return false;
+#else
   using namespace KODI::PLATFORM::WINDOWS;
   BOOL bRet= FALSE;
   DWORD dwReq = 0;
@@ -592,6 +678,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   }
   CloseHandle(hDrive);
   return bRet? S_OK : S_FALSE;
+#endif
 }
 
 HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
@@ -636,6 +723,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
 // http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
 // http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
 
+#ifdef TARGET_WINDOWS_DESKTOP
 DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 {
 
@@ -711,9 +799,14 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
   SetupDiDestroyDeviceInfoList(hDevInfo);
   return 0;
 }
+#endif
 
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  return false;
+#else
   using KODI::PLATFORM::WINDOWS::ToW;
 
   if( !cDriveLetter )
@@ -759,10 +852,15 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   }
 
   return bSuccess;
+#endif
 }
 
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {
+#ifdef TARGET_WINDOWS_STORE
+  // UWP apps never run as admin
+  return false;
+#else
   BOOL b;
   SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
   PSID AdministratorsGroup;
@@ -783,10 +881,14 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
   }
 
   return(b);
+#endif
 }
 
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType, bool bonlywithmedia)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+#else
   WCHAR* pcBuffer= NULL;
   DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
   if( dwStrLength != 0 )
@@ -885,6 +987,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     } while( wcslen( pcBuffer + iPos ) > 0 );
     delete[] pcBuffer;
   }
+#endif
 }
 
 std::string CWIN32Util::GetFirstOpticalDrive()
@@ -1308,7 +1411,7 @@ extern "C" {
   }
 }
 
-
+#ifdef TARGET_WINDOWS_DESKTOP
 LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd )
 {
   using KODI::PLATFORM::WINDOWS::ToW;
@@ -1387,6 +1490,7 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
 
   return true;
 }
+#endif
 
 // Adjust the src rectangle so that the dst is always contained in the target rectangle.
 void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target, UINT rotation /* = 0 */)
@@ -1483,8 +1587,10 @@ void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target, UINT rotation 
 
 void CWinIdleTimer::StartZero()
 {
+#ifdef TARGET_WINDOWS_DESKTOP
   if (!g_application.IsDPMSActive())
     SetThreadExecutionState(ES_SYSTEM_REQUIRED|ES_DISPLAY_REQUIRED);
+#endif
   CStopWatch::StartZero();
 }
 
@@ -1522,6 +1628,27 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   if (strWdrive.size() < 2)
     return false;
 
+#ifdef TARGET_WINDOWS_STORE
+  bool result = false;
+
+  auto removables = Windows::Storage::KnownFolders::RemovableDevices;
+  Concurrency::create_task(removables->GetFoldersAsync())
+    .then([&strWdrive, &result](Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFolder^>^ vector)
+    {
+      auto strdrive = KODI::PLATFORM::WINDOWS::FromW(strWdrive);
+      for (auto device : vector)
+      {
+        auto path = KODI::PLATFORM::WINDOWS::FromW(device->Path->Data());
+        if (StringUtils::StartsWith(path, strdrive))
+        {
+          // looks like drive is removable
+          result = true;
+        }
+      }
+    }).wait();
+
+  return false;
+#else
   std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
 
   HANDLE deviceHandle = CreateFileW(
@@ -1560,7 +1687,8 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   CloseHandle(deviceHandle);
 
   return BusTypeUsb == busType;
- }
+#endif
+}
 
 std::string CWIN32Util::WUSysMsg(DWORD dwError)
 {
@@ -1576,7 +1704,12 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
 
 bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
 {
+#ifdef TARGET_WINDOWS_STORE
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+	return false;
+#else
   const int param = enable ? _ENABLE_PER_THREAD_LOCALE : _DISABLE_PER_THREAD_LOCALE;
   return CALL_IN_CRTS(_configthreadlocale, param) != -1;
+#endif
 }
 

@@ -19,7 +19,7 @@ set(HEADERS coff.h
             dll_util.h
             LibraryLoader.h)
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES mmap_anon.c
                       SoLoader.cpp)
   list(APPEND HEADERS mmap_anon.h

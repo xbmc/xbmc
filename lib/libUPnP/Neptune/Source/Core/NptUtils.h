@@ -54,6 +54,9 @@
 #include <stdarg.h>
 #endif
 
+#if defined(TARGET_WINDOWS_STORE)
+#include <string>
+#endif
 /*----------------------------------------------------------------------
 |   macros
 +---------------------------------------------------------------------*/
@@ -223,6 +226,10 @@ extern void NPT_SetMemory(void* dest, int c, NPT_Size size);
 #define NPT_MemoryEqual(s1, s2, n) (memcmp((s1), (s2), (n)) == 0) 
 #else 
 extern int NPT_MemoryEqual(const void* s1, const void* s2, unsigned long n); 
+#endif
+
+#if defined(TARGET_WINDOWS_STORE)
+std::wstring win32ConvertUtf8ToW(const std::string &text);
 #endif
 
 #endif // _NPT_UTILS_H_

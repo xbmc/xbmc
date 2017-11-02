@@ -97,7 +97,11 @@ NPT_DynamicLibrary::Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*&
 
     // load the lib
     NPT_LOG_FINE_2("loading library %s, flags=%x", name, flags);
+#ifdef TARGET_WINDOWS_STORE
+    HMODULE handle = LoadPackagedLibrary(NPT_WIN32_A2W(name), NULL);
+#else
     HMODULE handle = LoadLibraryW(NPT_WIN32_A2W(name));
+#endif
     if (handle == NULL) {
         NPT_LOG_FINE("library not found");
         return NPT_FAILURE;

@@ -157,6 +157,10 @@ bool CThread::WaitForThreadExit(unsigned int milliseconds)
 
 int64_t CThread::GetAbsoluteUsage()
 {
+#ifdef TARGET_WINDOWS_STORE
+  // GetThreadTimes is available since 10.0.15063 only
+  return 0;
+#else
   CSingleLock lock(m_CriticalSection);
 
   if (!m_ThreadOpaque.handle)
@@ -170,6 +174,7 @@ int64_t CThread::GetAbsoluteUsage()
     time += (((uint64_t)KernelTime.dwHighDateTime) << 32) + ((uint64_t)KernelTime.dwLowDateTime);
   }
   return time;
+#endif
 }
 
 float CThread::GetRelativeUsage()

@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "CPUInfo.h"
+#include "utils/log.h"
 #include "utils/Temperature.h"
 #include <string>
 #include <string.h>
@@ -61,7 +62,10 @@
 #include <intrin.h>
 #include <Pdh.h>
 #include <PdhMsg.h>
+
+#ifdef TARGET_WINDOWS_DESKTOP
 #pragma comment(lib, "Pdh.lib")
+#endif
 
 // Defines to help with calls to CPUID
 #define CPUID_INFOTYPE_STANDARD 0x00000001
@@ -152,8 +156,9 @@ CCPUInfo::CCPUInfo(void)
     core.m_strVendor = cpuVendor;
     m_cores[core.m_id] = core;
   }
-
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_STORE)
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+#elif defined(TARGET_WINDOWS_DESKTOP)
   using KODI::PLATFORM::WINDOWS::FromW;
 
   HKEY hKeyCpuRoot;
@@ -481,7 +486,7 @@ CCPUInfo::~CCPUInfo()
 
   if (m_fCPUFreq != NULL)
     fclose(m_fCPUFreq);
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
   if (m_cpuQueryFreq)
     PdhCloseQuery(m_cpuQueryFreq);
 
@@ -542,7 +547,10 @@ float CCPUInfo::getCPUFrequency()
   if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
     return 0.f;
   return hz / 1000000.0;
-#elif defined TARGET_WINDOWS
+#elif defined(TARGET_WINDOWS_STORE) 
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  return 0.f;
+#elif defined(TARGET_WINDOWS_DESKTOP) 
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
   {
     PDH_RAW_COUNTER cnt;
@@ -680,8 +688,18 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle, unsigned long long& io)
 {
-
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS_STORE)
+  // introduced in 10.0.15063.0
+  // auto diagnostic = Windows::System::Diagnostics::SystemDiagnosticInfo::GetForCurrentSystem();
+  // auto usage = diagnostic->CpuUsage;
+ 
+  // user = report->UserTime.Duration;
+  // system = report->KernelTime.Duration;
+  // idle = report->IdleTime.Duration;
+  nice = 0;
+  io = 0;
+  return false;
+#elif defined (TARGET_WINDOWS_DESKTOP) 
   FILETIME idleTime;
   FILETIME kernelTime;
   FILETIME userTime;
@@ -862,7 +880,7 @@ std::string CCPUInfo::GetCoresUsageString() const
 void CCPUInfo::ReadCPUFeatures()
 {
 #ifdef TARGET_WINDOWS
-
+#ifndef _M_ARM
   int CPUInfo[4]; // receives EAX, EBX, ECD and EDX in that order
 
   __cpuid(CPUInfo, 0);
@@ -903,7 +921,7 @@ void CCPUInfo::ReadCPUFeatures()
     if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
   }
-
+#endif // ! _M_ARM
 #elif defined(TARGET_DARWIN)
   #if defined(__ppc__)
     m_cpuFeatures |= CPU_FEATURE_ALTIVEC;

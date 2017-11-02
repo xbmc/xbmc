@@ -63,7 +63,7 @@ public:
   std::string GetPlayerState() override;
   bool SetPlayerState(const std::string& state) override;
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   bool ExecuteAppW32(const char* strPath, const char* strSwitches);
   //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #elif defined(TARGET_ANDROID)
@@ -86,7 +86,7 @@ private:
   int m_time;
   std::string m_launchFilename;
   HWND m_hwndXbmc;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   POINT m_ptCursorpos;
   PROCESS_INFORMATION m_processInfo;
 #endif

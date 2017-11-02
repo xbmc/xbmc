@@ -12,7 +12,7 @@ if(APPLE)
   set_target_properties(wrapper PROPERTIES FOLDER "Build Utilities")
   set_target_properties(wrapper.def PROPERTIES FOLDER "Build Utilities")
   add_dependencies(wrapper.def wrapper)
-elseif(NOT CORE_SYSTEM_NAME STREQUAL windows)
+elseif(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   add_options(C ALL_BUILDS "-fPIC")
   add_library(wrapper OBJECT wrapper.c)
 

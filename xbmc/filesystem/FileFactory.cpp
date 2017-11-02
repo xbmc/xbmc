@@ -75,6 +75,9 @@
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "win10/WinLibraryFile.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;
@@ -119,7 +122,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef TARGET_POSIX
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
 #elif defined(TARGET_WINDOWS)
-  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CWin32File();
+  else if (url.IsProtocol("file") || url.GetProtocol().empty())
+  {
+#ifdef TARGET_WINDOWS_STORE
+    if (CWinLibraryFile::IsInAccessList(url))
+      return new CWinLibraryFile();
+#endif
+    return new CWin32File();
+  }
 #endif // TARGET_WINDOWS 
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
@@ -160,6 +170,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
+#endif
+#ifdef TARGET_WINDOWS_STORE
+    else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
   }
 

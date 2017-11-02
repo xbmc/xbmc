@@ -6,7 +6,7 @@ set(HEADERS ConvolutionKernels.h
             dither.h
             ShaderFormats.h)
 
-if(CORE_SYSTEM_NAME STREQUAL windows)
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES WinVideoFilter.cpp)
   list(APPEND HEADERS WinVideoFilter.h)
 endif()

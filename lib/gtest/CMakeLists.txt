@@ -91,6 +91,10 @@ cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
 target_link_libraries(gtest_main gtest)
 
+if(CORE_SYSTEM_NAME STREQUAL windowsstore)
+  set_target_properties(gtest PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
+endif()
+
 # If the CMake version supports it, attach header directory information
 # to the targets for when we are part of a parent build (ie being pulled
 # in via add_subdirectory() rather than being a standalone build).

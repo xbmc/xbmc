@@ -25,7 +25,7 @@
 #include "linux/RBP.h"
 #endif
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
 #include <mmdeviceapi.h>
 #include "platform/win32/IMMNotificationClient.h"
 #endif
@@ -71,7 +71,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
     return status;
   }
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
   IMMDeviceEnumerator *pEnumerator = nullptr;
   CMMNotificationClient cMMNC;
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
@@ -101,7 +101,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
     status = -1;
   }
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
   // the end
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
                         reinterpret_cast<void**>(&pEnumerator));

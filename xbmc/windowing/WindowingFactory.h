@@ -23,8 +23,11 @@
 
 #include "system.h"
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
 #include "windows/WinSystemWin32DX.h"
+
+#elif defined(TARGET_WINDOWS_STORE)
+#include "win10/WinSystemWin10DX.h"
 
 #elif defined(TARGET_RASPBERRY_PI) && defined(HAS_GLES)
 #include "rpi/WinSystemRpiGLESContext.h"

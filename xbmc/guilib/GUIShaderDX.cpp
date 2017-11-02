@@ -289,7 +289,11 @@ void CGUIShaderDX::SetViewPort(D3D11_VIEWPORT viewPort)
 
 void CGUIShaderDX::Project(float &x, float &y, float &z)
 {
+#if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
   XMVECTOR vLocation = { x, y, z };
+#elif defined(_XM_ARM_NEON_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
+  XMVECTOR vLocation = { x, y };
+#endif
   XMVECTOR vScreenCoord = XMVector3Project(vLocation, m_cbViewPort.TopLeftX, m_cbViewPort.TopLeftY, 
                                            m_cbViewPort.Width, m_cbViewPort.Height, 0, 1, 
                                            m_cbWorldViewProj.projection, m_cbWorldViewProj.view, m_cbWorldViewProj.world);

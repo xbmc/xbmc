@@ -44,7 +44,13 @@
 class CGUIDialog;
 class CGUIMediaWindow;
 
+#ifdef TARGET_WINDOWS_STORE
+#pragma pack(push, 8)
+#endif
 enum class DialogModalityType;
+#ifdef TARGET_WINDOWS_STORE
+#pragma pack(pop)
+#endif
 
 namespace KODI
 {

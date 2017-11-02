@@ -90,6 +90,9 @@
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "filesystem/win10/WinLibraryDirectory.h"
+#endif
 
 using namespace ADDON;
 
@@ -176,6 +179,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_NFS
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
+#endif
+#ifdef TARGET_WINDOWS_STORE
+    if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
 #endif
   }
 

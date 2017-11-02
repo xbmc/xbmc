@@ -98,6 +98,7 @@ set WORKSPACE=%base_dir%\kodi-build
   POPD
   ECHO Done!
   ECHO ------------------------------------------------------------
+  IF "%cmakeProps%" NEQ "" GOTO MAKE_APPX
   GOTO MAKE_BUILD_EXE
 
 
@@ -262,6 +263,8 @@ set WORKSPACE=%base_dir%\kodi-build
   ECHO ------------------------------------------------------------
   GOTO END
 
+:MAKE_APPX
+:: todo copy appx to BUILD_WIN32
 :END
   IF %promptlevel% NEQ noprompt (
     ECHO Press any key to exit...

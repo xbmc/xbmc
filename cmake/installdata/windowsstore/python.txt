@@ -1,0 +1,1 @@
+project/BuildDependencies/win10-${ARCH}/bin/Python KEEP_DIR_STRUCTURE system

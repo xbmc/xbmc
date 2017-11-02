@@ -40,24 +40,6 @@ using namespace concurrency;
 #define CHECK_ERR() if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return; }
 #define RETURN_ERR(ret) if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return (##ret); }
 
-namespace DisplayMetrics
-{
-  // High resolution displays can require a lot of GPU and battery power to render.
-  // High resolution phones, for example, may suffer from poor battery life if
-  // games attempt to render at 60 frames per second at full fidelity.
-  // The decision to render at full fidelity across all platforms and form factors
-  // should be deliberate.
-  static const bool SupportHighResolutions = false;
-
-  // The default thresholds that define a "high resolution" display. If the thresholds
-  // are exceeded and SupportHighResolutions is false, the dimensions will be scaled
-  // by 50%.
-  static const float Dpi100 = 96.0f;    // 100% of standard desktop display.
-  static const float DpiThreshold = 192.0f;    // 200% of standard desktop display.
-  static const float WidthThreshold = 1920.0f;  // 1080p width.
-  static const float HeightThreshold = 1080.0f;  // 1080p height.
-};
-
 bool DX::DeviceResources::CBackBuffer::Acquire(ID3D11Texture2D* pTexture)
 {
   if (!pTexture)
@@ -180,8 +162,8 @@ void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
   {
     viewPort.TopLeftX,
     viewPort.TopLeftY,
-    ConvertDipsToPixels(viewPort.Width, m_dpi),
-    ConvertDipsToPixels(viewPort.Height, m_dpi),
+    viewPort.Width,
+    viewPort.Height,
     viewPort.MinDepth,
     viewPort.MinDepth
   };
@@ -514,7 +496,7 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
     swapChainDesc.Flags = 0;
-    swapChainDesc.Scaling = scaling;
+    swapChainDesc.Scaling = DXGI_SCALING_NONE;
     swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;

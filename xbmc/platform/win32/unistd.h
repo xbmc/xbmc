@@ -19,4 +19,6 @@
  *
  */
 #include <inttypes.h>
+#ifdef TARGET_WINDOWS_DESKTOP
 #include <io.h>
+#endif

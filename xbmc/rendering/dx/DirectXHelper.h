@@ -34,7 +34,7 @@ namespace DX
     if (FAILED(hr))
     {
       // Set a breakpoint on this line to catch Win32 API errors.
-#if _DEBUG
+#if _DEBUG && !defined(TARGET_WINDOWS_STORE)
       DebugBreak();
 #endif
       throw new XbmcCommons::UncheckedException(__FUNCTION__, "Unhandled error");
@@ -46,6 +46,12 @@ namespace DX
 	{
 		static const float dipsPerInch = 96.0f;
 		return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
+	}
+
+	inline float ConvertPixelsToDips(float pixels, float dpi)
+	{
+		static const float dipsPerInch = 96.0f;
+		return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
 	}
 
   inline float RationalToFloat(DXGI_RATIONAL rational)
@@ -133,7 +139,7 @@ namespace DX
 #endif
 }
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
 namespace Windows
 {
   namespace Foundation

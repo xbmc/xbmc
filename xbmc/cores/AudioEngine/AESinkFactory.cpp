@@ -20,9 +20,11 @@
 
 #include "AESinkFactory.h"
 #include "Interfaces/AESink.h"
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
+#elif defined(TARGET_WINDOWS_STORE)
+  #include "Sinks/AESinkWASAPIWin10.h"
 #elif defined(TARGET_ANDROID)
   #include "Sinks/AESinkAUDIOTRACK.h"
 #elif defined(TARGET_RASPBERRY_PI)
@@ -65,9 +67,11 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
     // check that it is a valid driver name
     if (
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
         driver == "WASAPI"      ||
         driver == "DIRECTSOUND" ||
+#elif defined(TARGET_WINDOWS_STORE)
+        driver == "WASAPI"      ||
 #elif defined(TARGET_ANDROID)
         driver == "AUDIOTRACK"  ||
 #elif defined(TARGET_RASPBERRY_PI)
@@ -110,11 +114,13 @@ IAESink *CAESinkFactory::TrySink(const std::string &driver, std::string &device,
     sink = new CAESinkNULL();
   else
   {
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
     if (driver == "WASAPI")
       sink = new CAESinkWASAPI();
     else if (driver == "DIRECTSOUND")
       sink = new CAESinkDirectSound();
+#elif defined(TARGET_WINDOWS_STORE)
+    sink = new CAESinkWASAPIWin10();
 #elif defined(TARGET_ANDROID)
     sink = new CAESinkAUDIOTRACK();
 #elif defined(TARGET_RASPBERRY_PI)
@@ -191,7 +197,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
 {
   AESinkInfo info;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
 
   info.m_deviceInfoList.clear();
   info.m_sinkName = "DIRECTSOUND";
@@ -205,6 +211,13 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   if(!info.m_deviceInfoList.empty())
     list.push_back(info);
 
+#elif defined(TARGET_WINDOWS_STORE)
+
+  info.m_deviceInfoList.clear();
+  info.m_sinkName = "WASAPI";
+  CAESinkWASAPIWin10::EnumerateDevicesEx(info.m_deviceInfoList, force);
+  if (!info.m_deviceInfoList.empty())
+    list.push_back(info);
 #elif defined(TARGET_ANDROID)
 
   info.m_deviceInfoList.clear();
