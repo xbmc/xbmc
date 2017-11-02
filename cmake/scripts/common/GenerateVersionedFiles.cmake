@@ -11,14 +11,12 @@ function(generate_versioned_file _SRC _DEST)
   file(WRITE ${CMAKE_BINARY_DIR}/${_DEST} "${file_content}")
 endfunction()
 
+# workaround for xbmc.json
+file(STRINGS ${CORE_SOURCE_DIR}/xbmc/interfaces/json-rpc/schema/version.txt jsonrpc_version)
+
 # add-on xml's
 file(GLOB ADDON_XML_IN_FILE ${CORE_SOURCE_DIR}/addons/*/addon.xml.in)
 foreach(loop_var ${ADDON_XML_IN_FILE})
-  # prevent 'xbmc.json'; will be obtained from 'xbmc/interfaces/json-rpc/schema/CMakeLists.txt'.
-  if(loop_var MATCHES "xbmc.json")
-    continue()
-  endif()
-
   list(GET loop_var 0 xml_name)
 
   string(REPLACE "/addon.xml.in" "" source_dir ${xml_name})
