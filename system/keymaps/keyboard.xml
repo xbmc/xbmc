@@ -386,25 +386,19 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
-      <period>StepForward</period>
-      <comma>StepBack</comma>
-      <backspace>Fullscreen</backspace>
+      <backspace>OSD</backspace>
       <backspace mod="longpress">Stop</backspace>
-      <browser_back>Fullscreen</browser_back>
+      <browser_back>OSD</browser_back>
       <browser_back mod="longpress">Stop</browser_back>
       <return>OSD</return>
       <enter>OSD</enter>
-      <return mod="longpress">PlayPause</return>
-      <enter mod="longpress">PlayPause</enter>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
-      <left>StepBack</left>
-      <right>StepForward</right>
-      <escape>Fullscreen</escape>
+      <escape>OSD</escape>
     </keyboard>
   </FullscreenGame>
   <GameOSD>
