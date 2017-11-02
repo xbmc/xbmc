@@ -19,6 +19,7 @@
  *
  */
 
+#include <map>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -43,6 +44,8 @@ namespace PVR
     CPVRChannelPtr channel;
     unsigned int   iChannelNumber;
     unsigned int   iSubChannelNumber;
+    int iClientPriority;
+
   } PVRChannelGroupMember;
 
   typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
@@ -440,6 +443,20 @@ namespace PVR
     int GetPosition(void) const;
     void SetPosition(int iPosition);
 
+    /*!
+     * @brief Check, whether channel group member data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @param iClientId The id of the client.
+     * @return True, if data is currently missing, false otherwise.
+     */
+    bool IsMissingChannelGroupMembersFromClient(int iClientId) const;
+
+    /*!
+     * @brief Check, whether channel data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @param iClientId The id of the client.
+     * @return True, if data is currently missing, false otherwise.
+     */
+    bool IsMissingChannelsFromClient(int iClientId) const;
+
   protected:
     /*!
      * @brief Init class
@@ -466,6 +483,11 @@ namespace PVR
 
     virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
 
+    /*!
+     * @brief Remove deleted channels from this group.
+     * @param channels The new channels to use for this group.
+     * @return True if everything went well, false otherwise.
+     */
     bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
 
     /*!
@@ -489,6 +511,11 @@ namespace PVR
      */
     void SortByChannelNumber(void);
 
+    /*!
+     * @brief Update the priority for all members of all channel groups.
+     */
+    bool UpdateClientPriorities();
+
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
@@ -505,6 +532,8 @@ namespace PVR
     PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
     PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
     CCriticalSection m_critSection;
+    std::vector<int> m_failedClientsForChannels;
+    std::vector<int> m_failedClientsForChannelGroupMembers;
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;

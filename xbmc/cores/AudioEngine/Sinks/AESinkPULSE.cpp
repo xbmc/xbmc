@@ -570,6 +570,14 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   else
   {
+    // version 11 got the new option "remixing-use-all-sink-channels" which
+    // can be set to "no". Therefore we give the choice back to user and let
+    // him configure the soundserver the way he likes - this makes the pre 11
+    // workaround obsolete
+#if PA_CHECK_VERSION(11,0,0)
+    use_pa_mixing = true;
+    map = AEChannelMapToPAChannel(format.m_channelLayout);
+#else
     // as we mix for PA now to avoid default upmixing, we need to care for
     // channel resolving
     CAEChannelInfo target_layout = format.m_channelLayout;
@@ -587,6 +595,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
       // use our layout to update AE
       map = AEChannelMapToPAChannel(target_layout);
     }
+#endif
     format.m_channelLayout = PAChannelToAEChannelMap(map);
   }
   m_Channels = format.m_channelLayout.Count();

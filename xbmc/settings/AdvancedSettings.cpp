@@ -25,11 +25,6 @@
 #include <string>
 #include <vector>
 
-#include "addons/AudioDecoder.h"
-#include "addons/BinaryAddonCache.h"
-#include "addons/IAddon.h"
-#include "addons/ImageDecoder.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -278,7 +273,6 @@ void CAdvancedSettings::Initialize()
 
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryCleanOnUpdate = false;
-  m_bMusicLibraryPromptFullTagScan = false;
   m_bMusicLibraryArtistSortOnUpdate = false;
   m_iMusicLibraryRecentlyAddedItems = 25;
   m_strMusicLibraryAlbumFormat = "";
@@ -730,7 +724,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bMusicLibraryCleanOnUpdate);
-    XMLUtils::GetBoolean(pElement, "promptfulltagscan", m_bMusicLibraryPromptFullTagScan);
     XMLUtils::GetBoolean(pElement, "artistsortonupdate", m_bMusicLibraryArtistSortOnUpdate);
     XMLUtils::GetBoolean(pElement, "useartistsortname", m_musicUseArtistSortName);
     XMLUtils::GetString(pElement, "albumformat", m_strMusicLibraryAlbumFormat);
@@ -1422,34 +1415,4 @@ void CAdvancedSettings::setExtraLogLevel(const std::vector<CVariant> &components
 
     m_extraLogLevels |= static_cast<int>(it->asInteger());
   }
-}
-
-std::string CAdvancedSettings::GetMusicExtensions() const
-{
-  std::string result(m_musicExtensions);
-
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
-  for (const auto& addonInfo : addonInfos)
-  {
-    result += '|';
-    result += CAudioDecoder::GetExtensions(addonInfo);
-  }
-
-  return result;
-}
-
-std::string CAdvancedSettings::GetPictureExtensions() const
-{
-  std::string result(m_pictureExtensions);
-
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER);
-  for (auto addonInfo : addonInfos)
-  {
-    result += '|';
-    result += addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@extension").asString();
-  }
-
-  return result;
 }

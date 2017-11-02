@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <default>true</default>
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.blankdisplays">
+          <default>false</default>
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="pvr" >
+    <category id="pvrpowermanagement">
+        <setting id="pvrpowermanagement.setwakeupcmd">
+          <default></default>
+          <visible>false</visible>
+        </setting>
+    </category>
+  </section>
+</settings>

@@ -279,7 +279,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CServiceBroker::GetServiceAddons().Stop();
 
   // stop PVR related services
-  CServiceBroker::GetPVRManager().Unload();
+  CServiceBroker::GetPVRManager().Stop();
 
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
@@ -305,7 +305,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
-  ADDON::CAddonMgr::GetInstance().ReInit();
+  CServiceBroker::GetAddonMgr().ReInit();
 
   // let CApplication know that we are logging into a new profile
   g_application.SetLoggingIn(true);
@@ -326,7 +326,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CServiceBroker::GetContextMenuManager().Init();
 
   // restart PVR services
-  CServiceBroker::GetPVRManager().Reinit();
+  CServiceBroker::GetPVRManager().Init();
 
   CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
 

@@ -59,14 +59,13 @@ namespace PVR
     void ShowInfo(int item);
     void Clear();
     void Update();
-    CPVRChannelGroupPtr GetPlayingGroup();
+    void SaveSelectedItemPath(int iGroupID);
+    std::string GetLastSelectedItemPath(int iGroupID) const;
 
     CFileItemList *m_vecItems;
     CGUIViewControl m_viewControl;
     CPVRChannelGroupPtr m_group;
     std::map<int, std::string> m_groupSelectedItemPaths;
-    void SaveSelectedItemPath(int iGroupID);
-    std::string GetLastSelectedItemPath(int iGroupID) const;
     XbmcThreads::EndTime m_refreshTimeout;
   };
 }

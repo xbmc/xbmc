@@ -1,0 +1,16 @@
+xbmc/platform/win10          platform_win10
+xbmc/input/windows           input/windows
+xbmc/input/touch             input/touch
+xbmc/input/touch/generic     input/touch/generic
+xbmc/network/win10           network/win10
+xbmc/network/mdns            network/mdns
+xbmc/peripherals/bus/win10   peripherals/bus/win10
+xbmc/powermanagement/windows powermanagement/windows
+xbmc/storage/windows         storage/windows
+xbmc/filesystem/win32        filesystem/win32
+xbmc/filesystem/win10        filesystem/win10
+xbmc/utils/win32             utils_win32
+xbmc/rendering/dx            rendering_dx
+xbmc/threads/platform/win    threads_win
+xbmc/windowing/win10         windowing/win10
+xbmc/cores/VideoPlayer/Process/windows cores/VideoPlayer/Process/windows

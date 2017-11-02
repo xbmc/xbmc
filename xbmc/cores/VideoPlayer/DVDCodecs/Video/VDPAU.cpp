@@ -27,10 +27,9 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
@@ -66,7 +65,7 @@ static struct SInterlaceMapping
 {
   const EINTERLACEMETHOD     method;
   const VdpVideoMixerFeature feature;
-} g_interlace_mapping[] = 
+} g_interlace_mapping[] =
 { {VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
 , {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
 , {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
@@ -191,10 +190,13 @@ bool CVDPAUContext::CreateContext()
 
   int mScreen;
   { CSingleLock lock(g_graphicsContext);
+
     if (!m_display)
       m_display = XOpenDisplay(NULL);
-      if (!m_display)
-        return false;
+
+    if (!m_display)
+      return false;
+
     mScreen = g_Windowing.GetCurrentScreen();
   }
 
@@ -567,7 +569,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
       if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
         CLog::Log(LOGWARNING,"VDPAU::Open width %i might not be supported because of hardware bug", avctx->width);
-   
+
       // attempt to create a decoder with this width/height, some sizes are not supported by hw
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
 
@@ -804,7 +806,7 @@ void CDecoder::FiniVDPAUOutput()
   if (CheckStatus(vdp_st, __LINE__))
     return;
   m_vdpauConfig.vdpDecoder = VDP_INVALID_HANDLE;
-  
+
   CLog::Log(LOGDEBUG, LOGVIDEO, "CVDPAU::FiniVDPAUOutput destroying %d video surfaces", m_videoSurfaces.Size());
 
   VdpVideoSurface surf;
@@ -1872,28 +1874,28 @@ void CMixer::CheckFeatures()
     SetHWUpscaling();
     m_Upscale = m_config.upscale;
   }
-  if (m_Brightness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness ||
-      m_Contrast   != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast ||
+  if (m_Brightness != m_config.processInfo->GetVideoSettings().m_Brightness ||
+      m_Contrast   != m_config.processInfo->GetVideoSettings().m_Contrast ||
       m_ColorMatrix != m_mixerInput[1].DVDPic.color_matrix)
   {
     SetColor();
-    m_Brightness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness;
-    m_Contrast = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast;
+    m_Brightness = m_config.processInfo->GetVideoSettings().m_Brightness;
+    m_Contrast = m_config.processInfo->GetVideoSettings().m_Contrast;
     m_ColorMatrix = m_mixerInput[1].DVDPic.color_matrix;
   }
-  if (m_NoiseReduction != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction)
+  if (m_NoiseReduction != m_config.processInfo->GetVideoSettings().m_NoiseReduction)
   {
-    m_NoiseReduction = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction;
+    m_NoiseReduction = m_config.processInfo->GetVideoSettings().m_NoiseReduction;
     SetNoiseReduction();
   }
-  if (m_Sharpness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness)
+  if (m_Sharpness != m_config.processInfo->GetVideoSettings().m_Sharpness)
   {
-    m_Sharpness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness;
+    m_Sharpness = m_config.processInfo->GetVideoSettings().m_Sharpness;
     SetSharpness();
   }
-  if (m_Deint != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)
+  if (m_Deint != m_config.processInfo->GetVideoSettings().m_InterlaceMethod)
   {
-    m_Deint     = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+    m_Deint = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
     SetDeinterlacing();
   }
 }
@@ -2022,10 +2024,10 @@ void CMixer::SetColor()
 {
   VdpStatus vdp_st;
 
-  if (m_Brightness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness)
-    m_Procamp.brightness = (float)((CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness)-50) / 100;
-  if (m_Contrast != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast)
-    m_Procamp.contrast = (float)((CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast)+50) / 100;
+  if (m_Brightness != m_config.processInfo->GetVideoSettings().m_Brightness)
+    m_Procamp.brightness = (float)((m_config.processInfo->GetVideoSettings().m_Brightness)-50) / 100;
+  if (m_Contrast != m_config.processInfo->GetVideoSettings().m_Contrast)
+    m_Procamp.contrast = (float)((m_config.processInfo->GetVideoSettings().m_Contrast)+50) / 100;
 
   VdpColorStandard colorStandard;
   switch(m_mixerInput[1].DVDPic.color_matrix)
@@ -2080,7 +2082,7 @@ void CMixer::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction)
+  if (!m_config.processInfo->GetVideoSettings().m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
@@ -2090,8 +2092,9 @@ void CMixer::SetNoiseReduction()
   VdpBool enabled[]={1};
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* nr[] = { &CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction);
+  float noiseReduction = m_config.processInfo->GetVideoSettings().m_NoiseReduction;
+  void* nr[] = { &noiseReduction };
+  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f", m_config.processInfo->GetVideoSettings().m_NoiseReduction);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2105,7 +2108,7 @@ void CMixer::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness)
+  if (!m_config.processInfo->GetVideoSettings().m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
@@ -2115,8 +2118,9 @@ void CMixer::SetSharpness()
   VdpBool enabled[]={1};
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* sh[] = { &CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness);
+  float sharpness = m_config.processInfo->GetVideoSettings().m_Sharpness;
+  void* sh[] = { &sharpness };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f", m_config.processInfo->GetVideoSettings().m_Sharpness);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2128,7 +2132,7 @@ void CMixer::SetDeinterlacing()
   if (m_videoMixer == VDP_INVALID_HANDLE)
     return;
 
-  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
@@ -2470,7 +2474,7 @@ void CMixer::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_INTERLACED;
   m_SeenInterlaceFlag |= interlaced;
 
@@ -3339,4 +3343,3 @@ bool COutput::CheckStatus(VdpStatus vdp_st, int line)
   }
   return false;
 }
-

@@ -21,8 +21,8 @@
 #include "DVDOverlayCodecFFmpeg.h"
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
-#include "TimingConstants.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 #include "guilib/GraphicContext.h"
@@ -73,7 +73,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
 
     // start parsing of extra data - create a copy to be safe and make it zero-terminating to avoid access violations!

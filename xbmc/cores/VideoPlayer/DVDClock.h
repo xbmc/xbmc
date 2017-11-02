@@ -65,6 +65,7 @@ public:
   double GetVsyncAdjust();
 
   void Pause(bool pause);
+  void Advance(double time);
 
 protected:
   double SystemToAbsolute(int64_t system);

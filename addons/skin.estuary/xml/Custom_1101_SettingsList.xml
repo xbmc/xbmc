@@ -160,6 +160,14 @@
 						<label>$LOCALIZE[629]</label>
 						<onclick>ActivateWindow(GameViewMode)</onclick>
 					</control>
+					<control type="button" id="14104">
+						<description>Volume button</description>
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[13376]</label>
+						<label2>[COLOR grey]Select + Right Stick[/COLOR]</label2>
+						<onclick>ActivateWindow(GameVolume)</onclick>
+					</control>
 					<control type="button" id="14103">
 						<description>Input settings button</description>
 						<width>700</width>

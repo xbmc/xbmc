@@ -7,6 +7,10 @@ function(add_addon_depends addon searchpath)
   set(OUTPUT_DIR ${ADDON_DEPENDS_PATH})
   # look for platform-specific dependencies
   file(GLOB_RECURSE cmake_input_files ${searchpath}/${CORE_SYSTEM_NAME}/*.txt)
+  # backward compatibility
+  if(NOT cmake_input_files AND CORE_SYSTEM_NAME STREQUAL windowsstore)
+    file(GLOB_RECURSE cmake_input_files ${searchpath}/windows/*.txt)
+  endif()
   file(GLOB_RECURSE cmake_input_files2 ${searchpath}/common/*.txt)
   list(APPEND cmake_input_files ${cmake_input_files2})
 
@@ -67,6 +71,11 @@ function(add_addon_depends addon searchpath)
                        -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
+        # windows store args
+        if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
+                                 -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
+        endif()
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
         if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
           # make sure we create strings, not lists
@@ -146,6 +155,10 @@ function(add_addon_depends addon searchpath)
         # check if there's a platform-specific or generic deps.txt containing dependencies on other libraries
         if(EXISTS ${dir}/${CORE_SYSTEM_NAME}-deps.txt)
           file(STRINGS ${dir}/${CORE_SYSTEM_NAME}-deps.txt deps)
+          message(STATUS "${id} depends: ${deps}")
+        # backward compatibility
+        elseif(CORE_SYSTEM_NAME STREQUAL windowsstore AND EXISTS ${dir}/windows-deps.txt)
+          file(STRINGS ${dir}/windows-deps.txt deps)
           message(STATUS "${id} depends: ${deps}")
         elseif(EXISTS ${dir}/deps.txt)
           set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/deps.txt)

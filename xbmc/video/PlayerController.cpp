@@ -132,12 +132,13 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_DELAY_MIN:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay -= 0.1f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
-        g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_SubtitleDelay -= 0.1f;
+        if (vs.m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
+          vs.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
+        g_application.m_pPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
-        ShowSlider(action.GetID(), 22006, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, g_application.m_pPlayer->GetVideoSettings().m_SubtitleDelay,
                                           -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                            g_advancedSettings.m_videoSubsDelayRange);
         return true;
@@ -145,12 +146,13 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_DELAY_PLUS:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay += 0.1f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
-        g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_SubtitleDelay += 0.1f;
+        if (vs.m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
+          vs.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
+        g_application.m_pPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
-        ShowSlider(action.GetID(), 22006, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, g_application.m_pPlayer->GetVideoSettings().m_SubtitleDelay,
                                           -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                            g_advancedSettings.m_videoSubsDelayRange);
         return true;
@@ -158,7 +160,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_DELAY:
       {
-        ShowSlider(action.GetID(), 22006, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, g_application.m_pPlayer->GetVideoSettings().m_SubtitleDelay,
                                           -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                            g_advancedSettings.m_videoSubsDelayRange, true);
         return true;
@@ -166,7 +168,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_AUDIO_DELAY:
       {
-        ShowSlider(action.GetID(), 297, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, g_application.m_pPlayer->GetVideoSettings().m_AudioDelay,
                                         -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                          g_advancedSettings.m_videoAudioDelayRange, true);
         return true;
@@ -174,12 +176,13 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_AUDIO_DELAY_MIN:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay -= 0.025f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
-        g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_AudioDelay -= 0.025f;
+        if (vs.m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
+          vs.m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
+        g_application.m_pPlayer->SetAVDelay(vs.m_AudioDelay);
 
-        ShowSlider(action.GetID(), 297, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, g_application.m_pPlayer->GetVideoSettings().m_AudioDelay,
                                         -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                          g_advancedSettings.m_videoAudioDelayRange);
         return true;
@@ -187,12 +190,13 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_AUDIO_DELAY_PLUS:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay += 0.025f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay > g_advancedSettings.m_videoAudioDelayRange)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
-        g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_AudioDelay += 0.025f;
+        if (vs.m_AudioDelay > g_advancedSettings.m_videoAudioDelayRange)
+          vs.m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
+        g_application.m_pPlayer->SetAVDelay(vs.m_AudioDelay);
 
-        ShowSlider(action.GetID(), 297, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, g_application.m_pPlayer->GetVideoSettings().m_AudioDelay,
                                         -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                          g_advancedSettings.m_videoAudioDelayRange);
         return true;
@@ -224,67 +228,85 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_ZOOM_IN:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount += 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount > 2.f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 2.f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 216, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomZoomAmount += 0.01f;
+        if (vs.m_CustomZoomAmount > 2.f)
+          vs.m_CustomZoomAmount = 2.f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_ZOOM_OUT:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount -= 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount < 0.5f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 0.5f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 216, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomZoomAmount -= 0.01f;
+        if (vs.m_CustomZoomAmount < 0.5f)
+          vs.m_CustomZoomAmount = 0.5f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_INCREASE_PAR:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio += 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio > 2.f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio = 2.f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 217, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomPixelRatio += 0.01f;
+        if (vs.m_CustomPixelRatio > 2.f)
+          vs.m_CustomPixelRatio = 2.f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_DECREASE_PAR:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio -= 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio < 0.5f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio = 0.5f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 217, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomPixelRatio -= 0.01f;
+        if (vs.m_CustomPixelRatio < 0.5f)
+          vs.m_CustomPixelRatio = 0.5f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_VSHIFT_UP:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift -= 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift < -2.0f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift = -2.0f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 225, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomVerticalShift -= 0.01f;
+        if (vs.m_CustomVerticalShift < -2.0f)
+          vs.m_CustomVerticalShift = -2.0f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_VSHIFT_DOWN:
       {
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift += 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift > 2.0f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift = 2.0f;
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
-        ShowSlider(action.GetID(), 225, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_CustomVerticalShift += 0.01f;
+        if (vs.m_CustomVerticalShift > 2.0f)
+          vs.m_CustomVerticalShift = 2.0f;
+        vs.m_ViewMode = ViewModeCustom;
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
+        ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }
 
@@ -378,17 +400,18 @@ bool CPlayerController::OnAction(const CAction &action)
         float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
         float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
 
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
         if (action.GetID() == ACTION_VOLAMP_UP)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification += 1.0f;
+          vs.m_VolumeAmplification += 1.0f;
         else
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification -= 1.0f;
+          vs.m_VolumeAmplification -= 1.0f;
 
-        CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification =
-          std::max(std::min(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification, sliderMax), sliderMin);
+        vs.m_VolumeAmplification =
+          std::max(std::min(vs.m_VolumeAmplification, sliderMax), sliderMin);
 
-        g_application.m_pPlayer->SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
+        g_application.m_pPlayer->SetDynamicRangeCompression((long)(vs.m_VolumeAmplification * 100));
 
-        ShowSlider(action.GetID(), 660, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification, sliderMin, 1.0f, sliderMax);
+        ShowSlider(action.GetID(), 660, vs.m_VolumeAmplification, sliderMin, 1.0f, sliderMax);
         return true;
       }
 
@@ -397,7 +420,7 @@ bool CPlayerController::OnAction(const CAction &action)
         float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
         float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
         ShowSlider(action.GetID(), 660,
-                   CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification,
+                   g_application.m_pPlayer->GetVideoSettings().m_VolumeAmplification,
                    sliderMin, 1.0f, sliderMax, true);
         return true;
       }
@@ -442,18 +465,15 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
   {
     if (m_sliderAction == ACTION_AUDIO_DELAY)
     {
-      CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay = slider->GetFloatValue();
-      g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
+      g_application.m_pPlayer->SetAVDelay(slider->GetFloatValue());
     }
     else if (m_sliderAction == ACTION_SUBTITLE_DELAY)
     {
-      CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay = slider->GetFloatValue();
-      g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
+      g_application.m_pPlayer->SetSubTitleDelay(slider->GetFloatValue());
     }
     else if (m_sliderAction == ACTION_VOLAMP)
     {
-      CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification = slider->GetFloatValue();
-      g_application.m_pPlayer->SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
+      g_application.m_pPlayer->SetDynamicRangeCompression((long)(slider->GetFloatValue() * 100));
     }
   }
 }

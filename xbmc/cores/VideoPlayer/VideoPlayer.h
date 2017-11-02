@@ -30,7 +30,7 @@
 #include "IVideoPlayer.h"
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "VideoPlayerVideo.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
@@ -359,6 +359,7 @@ public:
   void SetSpeed(float speed) override;
   void SetTempo(float tempo) override;
   bool SupportsTempo() override;
+  void FrameAdvance(int frames) override;
   bool OnAction(const CAction &action) override;
 
   int GetSourceBitrate() override;
@@ -372,7 +373,7 @@ public:
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;
-  void SetRenderViewMode(int mode) override;
+  void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) override;
   float GetRenderAspectRatio() override;
   void TriggerUpdateResolution() override;
   bool IsRenderingVideo() override;
@@ -395,6 +396,9 @@ public:
 
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
+
+  CVideoSettings GetVideoSettings() override;
+  void SetVideoSettings(CVideoSettings& settings) override;
 
 protected:
   friend class CSelectionStreams;

@@ -102,8 +102,6 @@ cmake_install.cmake
 /addons/skin.estouchy/media/Makefile
 /addons/skin.estouchy/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
-/addons/script.module.pil/
-/addons/script.module.pycryptodome/
 /addons/audioencoder.*
 /addons/pvr.*
 /addons/adsp.*
@@ -234,11 +232,8 @@ lib/cpluff/stamp-h1
 /project/Win32BuildSetup/dependencies/
 
 # /project/BuildDependencies
-/project/BuildDependencies/arm-uwp
 /project/BuildDependencies/downloads
 /project/BuildDependencies/downloads2
-/project/BuildDependencies/include
-/project/BuildDependencies/lib
 /project/BuildDependencies/msys32
 /project/BuildDependencies/msys64
 /project/BuildDependencies/locals
@@ -250,33 +245,10 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/mingwlibs
 /project/BuildDependencies/x64
-/project/BuildDependencies/x64-uwp
+/project/BuildDependencies/win10-arm
+/project/BuildDependencies/win10-x64
+/project/BuildDependencies/win10-win32
 /project/BuildDependencies/win32
-/project/BuildDependencies/win32-uwp
-
-# /system
-/system/cpluff.dll
-/system/EasyHook32.dll
-/system/EasyHook64.dll
-/system/libcurl.dll
-/system/libeay32.dll
-/system/ssh.dll
-/system/sqlite3.dll
-/system/libnfs.dll
-/system/dnssd.dll
-/system/cec.dll
-/system/libxslt.dll
-/system/ssleay32.dll
-/system/libxml2.dll
-/system/libass.dll
-/system/libbluray*
-/system/libcdio.dll
-/system/libplist.dll
-/system/shairplay.dll
-/system/libmysql.dll
-/system/python27.dll
-/system/zlib.dll
-/system/lcms2.dll
 
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*

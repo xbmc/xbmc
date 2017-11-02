@@ -77,6 +77,7 @@ namespace ADDON
   private:
     const AEChannel* m_channel;
     AddonInstance_AudioDecoder m_struct;
+    bool m_hasTags;
   };
 
 } /*namespace ADDON*/

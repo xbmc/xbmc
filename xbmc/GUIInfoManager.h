@@ -151,7 +151,7 @@ public:
   /*! \brief Set currently playing file item
    \param blocking whether to run in current thread (true) or background thread (false)
    */
-  void SetCurrentItem(const CFileItemPtr item);
+  void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
@@ -173,6 +173,7 @@ public:
   std::string GetMusicLabel(int item);
   std::string GetMusicTagLabel(int info, const CFileItem *item);
   std::string GetVideoLabel(int item);
+  std::string GetGameLabel(int item);
   std::string GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   std::string GetMusicPartyModeLabel(int item);
   const std::string GetMusicPlaylistInfo(const GUIInfo& info);

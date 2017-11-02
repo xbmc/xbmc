@@ -19,16 +19,14 @@
  */
 
 #include "system.h"
-#if defined(HAS_GL)
 #include "GUITextureGL.h"
-#endif
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/Geometry.h"
 #include "windowing/WindowingFactory.h"
 
-#if defined(HAS_GL)
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
@@ -38,142 +36,215 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 
 void CGUITextureGL::Begin(color_t color)
 {
-  int range, unit = 0;
-  if(g_Windowing.UseLimitedColor())
-    range = 235 - 16;
-  else
-    range = 255 -  0;
-
-  m_col[0] = GET_R(color) * range / 255;
-  m_col[1] = GET_G(color) * range / 255;
-  m_col[2] = GET_B(color) * range / 255;
-  m_col[3] = GET_A(color);
-
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  texture->BindToUnit(unit++);
+  texture->BindToUnit(0);
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  // Setup Colors
+  m_col[0] = (GLubyte)GET_R(color);
+  m_col[1] = (GLubyte)GET_G(color);
+  m_col[2] = (GLubyte)GET_B(color);
+  m_col[3] = (GLubyte)GET_A(color);
 
-  // diffuse coloring
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  if (g_Windowing.UseLimitedColor())
+  {
+    m_col[0] = (235 - 16) * m_col[0] / 255 + 16.0f / 255.0f;
+    m_col[1] = (235 - 16) * m_col[1] / 255 + 16.0f / 255.0f;
+    m_col[2] = (235 - 16) * m_col[2] / 255 + 16.0f / 255.0f;
+  }
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-  VerifyGLState();
+  bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
 
   if (m_diffuse.size())
   {
-    m_diffuse.m_textures[0]->BindToUnit(unit++);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
+    {
+      g_Windowing.EnableShader(SM_MULTI);
+    }
+    else
+    {
+      g_Windowing.EnableShader(SM_MULTI_BLENDCOLOR);
+    }
 
-    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-    VerifyGLState();
+    hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
+
+    m_diffuse.m_textures[0]->BindToUnit(1);
   }
-
-  if(g_Windowing.UseLimitedColor())
+  else
   {
-    texture->BindToUnit(unit++); // dummy bind
-    const GLfloat rgba[4] = {16.0f / 255.0f, 16.0f / 255.0f, 16.0f / 255.0f, 0.0f};
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE , GL_COMBINE);
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, rgba);
-    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB      , GL_ADD);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB      , GL_PREVIOUS);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB      , GL_CONSTANT);
-    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND0_RGB     , GL_SRC_COLOR);
-    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND1_RGB     , GL_SRC_COLOR);
-
-    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA    , GL_REPLACE);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA    , GL_PREVIOUS);
-    VerifyGLState();
+    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
+    {
+      g_Windowing.EnableShader(SM_TEXTURE_NOBLEND);
+    }
+    else
+    {
+      g_Windowing.EnableShader(SM_TEXTURE);
+    }
   }
 
-  //glDisable(GL_TEXTURE_2D); // uncomment these 2 lines to switch to wireframe rendering
-  //glBegin(GL_LINE_LOOP);
-  glBegin(GL_QUADS);
+  if (hasAlpha)
+  {
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);
+  }
+  else
+  {
+    glDisable(GL_BLEND);
+  }
+  m_packedVertices.clear();
+  m_idx.clear();
 }
 
 void CGUITextureGL::End()
 {
-  glEnd();
-  glActiveTexture(GL_TEXTURE2_ARB);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
-  glActiveTexture(GL_TEXTURE1_ARB);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
-  glActiveTexture(GL_TEXTURE0_ARB);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
+  if (m_packedVertices.size())
+  {
+    GLint posLoc  = g_Windowing.ShaderGetPos();
+    GLint tex0Loc = g_Windowing.ShaderGetCoord0();
+    GLint tex1Loc = g_Windowing.ShaderGetCoord1();
+    GLint uniColLoc = g_Windowing.ShaderGetUniCol();
+
+    GLuint VertexVBO;
+    GLuint IndexVBO;
+
+    glGenBuffers(1, &VertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*m_packedVertices.size(), &m_packedVertices[0], GL_STATIC_DRAW);
+
+    if (uniColLoc >= 0)
+    {
+      glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
+    }
+
+    if (m_diffuse.size())
+    {
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+      glEnableVertexAttribArray(tex1Loc);
+    }
+
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+    glEnableVertexAttribArray(posLoc);
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+    glEnableVertexAttribArray(tex0Loc);
+
+    glGenBuffers(1, &IndexVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*m_idx.size(), m_idx.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, 0);
+
+    if (m_diffuse.size())
+      glDisableVertexAttribArray(tex1Loc);
+
+    glDisableVertexAttribArray(posLoc);
+    glDisableVertexAttribArray(tex0Loc);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &VertexVBO);
+    glDeleteBuffers(1, &IndexVBO);
+  }
+
+  if (m_diffuse.size())
+    glActiveTexture(GL_TEXTURE0);
+  glEnable(GL_BLEND);
+
+  g_Windowing.DisableShader();
 }
 
 void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
-  // Top-left vertex (corner)
-  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
-  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y1);
-  if (m_diffuse.size())
-    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
-  glVertex3f(x[0], y[0], z[0]);
+  PackedVertex vertices[4];
 
-  // Top-right vertex (corner)
-  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
+  // Setup texture coordinates
+  // TopLeft
+  vertices[0].u1 = texture.x1;
+  vertices[0].v1 = texture.y1;
+
+  // TopRight
   if (orientation & 4)
-    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
+  {
+    vertices[1].u1 = texture.x1;
+    vertices[1].v1 = texture.y2;
+  }
   else
-    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
+  {
+    vertices[1].u1 = texture.x2;
+    vertices[1].v1 = texture.y1;
+  }
+
+  // BottomRight
+  vertices[2].u1 = texture.x2;
+  vertices[2].v1 = texture.y2;
+
+  // BottomLeft
+  if (orientation & 4)
+  {
+    vertices[3].u1 = texture.x2;
+    vertices[3].v1 = texture.y1;
+  }
+  else
+  {
+    vertices[3].u1 = texture.x1;
+    vertices[3].v1 = texture.y2;
+  }
+
   if (m_diffuse.size())
   {
+    // TopLeft
+    vertices[0].u2 = diffuse.x1;
+    vertices[0].v2 = diffuse.y1;
+
+    // TopRight
     if (m_info.orientation & 4)
-      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+    {
+      vertices[1].u2 = diffuse.x1;
+      vertices[1].v2 = diffuse.y2;
+    }
     else
-      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
+    {
+      vertices[1].u2 = diffuse.x2;
+      vertices[1].v2 = diffuse.y1;
+    }
+
+    // BottomRight
+    vertices[2].u2 = diffuse.x2;
+    vertices[2].v2 = diffuse.y2;
+
+    // BottomLeft
+    if (m_info.orientation & 4)
+    {
+      vertices[3].u2 = diffuse.x2;
+      vertices[3].v2 = diffuse.y1;
+    }
+    else
+    {
+      vertices[3].u2 = diffuse.x1;
+      vertices[3].v2 = diffuse.y2;
+    }
   }
-  glVertex3f(x[1], y[1], z[1]);
 
-  // Bottom-right vertex (corner)
-  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
-  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y2);
-  if (m_diffuse.size())
-    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
-  glVertex3f(x[2], y[2], z[2]);
-
-  // Bottom-left vertex (corner)
-  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
-  if (orientation & 4)
-    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
-  else
-    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
-  if (m_diffuse.size())
+  for (int i=0; i<4; i++)
   {
-    if (m_info.orientation & 4)
-      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
-    else
-      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+    vertices[i].x = x[i];
+    vertices[i].y = y[i];
+    vertices[i].z = z[i];
+    m_packedVertices.push_back(vertices[i]);
   }
-  glVertex3f(x[3], y[3], z[3]);
+
+  if ((m_packedVertices.size() / 4) > (m_idx.size() / 6))
+  {
+    size_t i = m_packedVertices.size() - 4;
+    m_idx.push_back(i+0);
+    m_idx.push_back(i+1);
+    m_idx.push_back(i+2);
+    m_idx.push_back(i+2);
+    m_idx.push_back(i+3);
+    m_idx.push_back(i+0);
+  }
 }
 
 void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
@@ -182,46 +253,98 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
   {
     texture->LoadToGPU();
     texture->BindToUnit(0);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   }
-  else
-  glDisable(GL_TEXTURE_2D);
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  // diffuse coloring
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   VerifyGLState();
 
-  glBegin(GL_QUADS);
+  GLubyte col[4];
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
 
-  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  }vertex[4];
 
-  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
-  glTexCoord2f(coords.x1, coords.y1);
-  glVertex3f(rect.x1, rect.y1, 0);
-  glTexCoord2f(coords.x2, coords.y1);
-  glVertex3f(rect.x2, rect.y1, 0);
-  glTexCoord2f(coords.x2, coords.y2);
-  glVertex3f(rect.x2, rect.y2, 0);
-  glTexCoord2f(coords.x1, coords.y2);
-  glVertex3f(rect.x1, rect.y2, 0);
-
-  glEnd();
   if (texture)
-    glDisable(GL_TEXTURE_2D);
+    g_Windowing.EnableShader(SM_TEXTURE);
+  else
+    g_Windowing.EnableShader(SM_DEFAULT);
+
+  GLint posLoc = g_Windowing.ShaderGetPos();
+  GLint tex0Loc = g_Windowing.ShaderGetCoord0();
+  GLint uniColLoc = g_Windowing.ShaderGetUniCol();
+
+  // Setup Colors
+  col[0] = (GLubyte)GET_R(color);
+  col[1] = (GLubyte)GET_G(color);
+  col[2] = (GLubyte)GET_B(color);
+  col[3] = (GLubyte)GET_A(color);
+
+  glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
+
+  // bottom left
+  vertex[0].x = rect.x1;
+  vertex[0].y = rect.y1;
+  vertex[0].z = 0;
+
+  // bottom right
+  vertex[1].x = rect.x2;
+  vertex[1].y = rect.y1;
+  vertex[1].z = 0;
+
+  // top right
+  vertex[2].x = rect.x2;
+  vertex[2].y = rect.y2;
+  vertex[2].z = 0;
+
+  // top left
+  vertex[3].x = rect.x1;
+  vertex[3].y = rect.y2;
+  vertex[3].z = 0;
+
+  if (texture)
+  {
+    CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+    vertex[0].u1 = vertex[3].u1 = coords.x1;
+    vertex[0].v1 = vertex[1].v1 = coords.y1;
+    vertex[1].u1 = vertex[2].u1 = coords.x2;
+    vertex[2].v1 = vertex[3].v1 = coords.y2;
+  }
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glEnableVertexAttribArray(posLoc);
+
+  if (texture)
+  {
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+    glEnableVertexAttribArray(tex0Loc);
+  }
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+  glDisableVertexAttribArray(posLoc);
+  if (texture)
+    glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
+
+  g_Windowing.DisableShader();
 }
 
-#endif

@@ -3,7 +3,7 @@ function(generate_file file)
                 ${GROOVY_DIR}/commons-lang-${COMMONS_VER}.jar
                 ${CMAKE_SOURCE_DIR}/tools/codegenerator
                 ${CMAKE_CURRENT_SOURCE_DIR}/../python)
-  if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+  if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
     set(devnull "/dev/null")
     string(REPLACE ";" ":" classpath "${classpath}")
   else()
@@ -44,3 +44,7 @@ add_library(python_binding STATIC ${SOURCES})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
 set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
+
+if(CORE_SYSTEM_NAME STREQUAL windowsstore)
+  set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
+endif()

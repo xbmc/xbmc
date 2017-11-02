@@ -20,11 +20,15 @@
 #pragma once
 
 #include "cores/IPlayer.h"
+#include "utils/Observer.h"
 
-class CGameSettings
+class CGameSettings : public Observable
 {
 public:
   CGameSettings() { Reset(); }
+  CGameSettings(const CGameSettings &other) { *this = other; }
+
+  CGameSettings &operator=(const CGameSettings &rhs);
 
   // Restore game settings to default
   void Reset();
@@ -33,10 +37,10 @@ public:
   bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
 
   ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod) { m_scalingMethod = scalingMethod; }
-  
+  void SetScalingMethod(ESCALINGMETHOD scalingMethod);
+
   enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode) { m_viewMode = viewMode; }
+  void SetViewMode(enum ViewMode viewMode);
 
 private:
   // Video settings

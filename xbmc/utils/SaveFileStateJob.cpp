@@ -123,11 +123,6 @@ bool CSaveFileStateJob::DoWork()
           }
         }
 
-        if (m_videoSettings != CMediaSettings::GetInstance().GetDefaultVideoSettings())
-        {
-          videodatabase.SetVideoSettings(progressTrackingFile, m_videoSettings);
-        }
-
         if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->HasStreamDetails())
         {
           CFileItem dbItem(m_item);

@@ -24,6 +24,7 @@
 #include "AddonSettings.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/settings/SettingUrlEncodedString.h"
@@ -42,6 +43,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -844,9 +846,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
     setting->SetSources({ source });
 
   // setup masking
-  const auto audioMask = g_advancedSettings.GetMusicExtensions();
-  const auto videoMask = g_advancedSettings.m_videoExtensions;
-  const auto imageMask = g_advancedSettings.GetPictureExtensions();
+  const auto audioMask = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
+  const auto videoMask = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
+  const auto imageMask = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
   auto execMask = "";
 #if defined(TARGET_WINDOWS)
   execMask = ".exe|.bat|.cmd|.py";

@@ -1,0 +1,19 @@
+KODI WIN32 ADDON DEPENDENCIES
+=============================
+This directory contains the cmake-based buildsystem for dependencies (currently
+only prebuilt) used by one or multiple addons. The buildsystem looks into the
+"prebuilt" sub-directory, downloads all the specified dependencies, extracts
+them and places them into the "depends" sub-directory.
+
+To trigger the cmake-based buildsystem the following command must be executed
+with <path> being the path to this directory (absolute or relative, allowing for
+in-source and out-of-source builds).
+
+  cmake <path> [-G <generator>]
+
+cmake supports multiple generators, see
+http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators for a list.
+For win32 builds one of the "Visual Studio XX" or the "NMake Makefiles"
+generators is preferred. For the "NMake Makefiles" generator to work the above
+command must be called from an environment prepared for VC++ builds (see
+http://msdn.microsoft.com/en-us/library/f2ccy3wt.aspx).

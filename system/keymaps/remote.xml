@@ -196,7 +196,7 @@
       <select>OSD</select>
       <title>PlayerProcessInfo</title>
       <info>Info</info>
-      <guide>ActivateWindow(PVRChannelGuide)</guide>
+      <guide>ActivateWindow(TVGuide)</guide>
       <teletext>ActivateWindow(Teletext)</teletext>
       <subtitle>NextSubtitle</subtitle>
       <star>NextSubtitle</star>
@@ -259,7 +259,7 @@
       <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <info>Info</info>
-      <guide>ActivateWindow(PVRChannelGuide)</guide>
+      <guide>ActivateWindow(TVGuide)</guide>
       <playlist>ActivateWindow(PVROSDChannels)</playlist>
       <zero>Number0</zero>
       <one>Number1</one>

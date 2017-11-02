@@ -18,8 +18,8 @@
  *
  */
 #include "DVDOverlayCodec.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
-#include "cores/VideoPlayer/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 void CDVDOverlayCodec::GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset/* = 0.0*/)
 {

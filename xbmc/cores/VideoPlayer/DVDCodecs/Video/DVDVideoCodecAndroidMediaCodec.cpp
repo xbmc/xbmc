@@ -37,7 +37,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
@@ -49,7 +49,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
@@ -77,7 +77,8 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_FLUSHED,
   MEDIACODEC_STATE_RUNNING,
   MEDIACODEC_STATE_ENDOFSTREAM,
-  MEDIACODEC_STATE_ERROR
+  MEDIACODEC_STATE_ERROR,
+  MEDIACODEC_STATE_STOPPED
 };
 
 static bool IsBlacklisted(const std::string &name)
@@ -602,14 +603,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView creation failed!!");
       goto FAIL;
     }
-
-    m_jnivideosurface = m_jnivideoview->getSurface();
-    if (!m_jnivideosurface)
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView getSurface failed!!");
-      goto FAIL;
-    }
-    m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnivideosurface.get_raw());
   }
 
   m_codec = nullptr;
@@ -626,7 +619,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (IsBlacklisted(m_codecname))
       continue;
 
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Testing codex:%s", m_codecname.c_str());
+    CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s", m_codecname.c_str());
 
     bool codecIsSecure(m_codecname.find(".secure") != std::string::npos);
     if (needSecureDecoder)
@@ -752,9 +745,9 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
   if (m_codec->codec())
   {
-    m_state = MEDIACODEC_STATE_UNINITIALIZED;
     AMediaCodec_stop(m_codec->codec());
     m_codec = nullptr;
+    m_state = MEDIACODEC_STATE_STOPPED;
   }
   ReleaseSurfaceTexture();
 
@@ -776,7 +769,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
 bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 {
-  if (!m_opened)
+  if (!m_opened || m_state == MEDIACODEC_STATE_STOPPED)
     return false;
 
   double pts(packet.pts), dts(packet.dts);
@@ -830,7 +823,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       }
       size_t out_size;
       uint8_t* dst_ptr = AMediaCodec_getInputBuffer(m_codec->codec(), m_indexInputBuffer, &out_size);
-      if (iSize > out_size)
+      if ((size_t)iSize > out_size)
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode, iSize(%d) > size(%d)", iSize, out_size);
         iSize = out_size;
@@ -1053,8 +1046,22 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     AMediaFormat_setBuffer(mediaformat, "csd-0", src_ptr, size);
   }
 
-  if (!m_render_surface)
-    InitSurfaceTexture();
+  if (m_render_surface)
+  {
+    m_jnivideosurface = m_jnivideoview->getSurface();
+    if (!m_jnivideosurface)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView getSurface failed!!");
+      m_jnivideoview->release();
+      m_jnivideoview.reset();
+      return false;
+    }
+    m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnivideosurface.get_raw());
+
+    m_formatname += "(S)";
+  }
+  else
+      InitSurfaceTexture();
 
   // configure and start the codec.
   // use the MediaFormat that we have setup.
@@ -1309,8 +1316,19 @@ void CDVDVideoCodecAndroidMediaCodec::surfaceChanged(CJNISurfaceHolder holder, i
 
 void CDVDVideoCodecAndroidMediaCodec::surfaceCreated(CJNISurfaceHolder holder)
 {
+  if (m_state == MEDIACODEC_STATE_STOPPED)
+  {
+    ConfigureMediaCodec();
+  }
 }
 
 void CDVDVideoCodecAndroidMediaCodec::surfaceDestroyed(CJNISurfaceHolder holder)
 {
+  if (m_state != MEDIACODEC_STATE_STOPPED && m_state != MEDIACODEC_STATE_UNINITIALIZED)
+  {
+    m_state = MEDIACODEC_STATE_STOPPED;
+    if(m_surface)
+      ANativeWindow_release(m_surface);
+    AMediaCodec_stop(m_codec->codec());
+  }
 }

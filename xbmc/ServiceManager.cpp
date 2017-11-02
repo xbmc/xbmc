@@ -25,6 +25,7 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"
@@ -38,6 +39,7 @@
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "utils/FileExtensionProvider.h"
 
 using namespace KODI;
 
@@ -108,6 +110,10 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager));
 
+  m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
+
+  m_fileExtensionProvider.reset(new CFileExtensionProvider());
+
   init_level = 2;
   return true;
 }
@@ -147,7 +153,9 @@ bool CServiceManager::InitStageThree()
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_peripherals));
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
+    *m_gameRenderManager,
+    *m_peripherals));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
@@ -158,16 +166,20 @@ bool CServiceManager::InitStageThree()
 
 void CServiceManager::DeinitStageThree()
 {
+  init_level = 2;
+
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
   m_peripherals->Clear();
-
-  init_level = 2;
 }
 
 void CServiceManager::DeinitStageTwo()
 {
+  init_level = 1;
+
+  m_fileExtensionProvider.reset();
+  m_gameRenderManager.reset();
   m_peripherals.reset();
   m_inputManager.reset();
   m_gameControllerManager.reset();
@@ -182,12 +194,12 @@ void CServiceManager::DeinitStageTwo()
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
   m_Platform.reset();
-
-  init_level = 1;
 }
 
 void CServiceManager::DeinitStageOne()
 {
+  init_level = 0;
+
   m_settings.reset();
   m_playlistPlayer.reset();
 #ifdef HAS_PYTHON
@@ -195,8 +207,6 @@ void CServiceManager::DeinitStageOne()
   m_XBPython.reset();
 #endif
   m_announcementManager.reset();
-
-  init_level = 0;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -287,6 +297,11 @@ GAME::CGameServices& CServiceManager::GetGameServices()
   return *m_gameServices;
 }
 
+KODI::RETRO::CGUIGameRenderManager& CServiceManager::GetGameRenderManager()
+{
+  return *m_gameRenderManager;
+}
+
 PERIPHERALS::CPeripherals& CServiceManager::GetPeripherals()
 {
   return *m_peripherals;
@@ -300,6 +315,11 @@ CFavouritesService& CServiceManager::GetFavouritesService()
 CInputManager& CServiceManager::GetInputManager()
 {
   return *m_inputManager;
+}
+
+CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
+{
+  return *m_fileExtensionProvider;
 }
 
 // deleters for unique_ptr

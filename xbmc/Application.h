@@ -176,6 +176,9 @@ public:
   void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) override;
   void OnPlayBackSeekChapter(int iChapter) override;
   void OnPlayBackSpeedChanged(int iSpeed) override;
+  void OnAVChange() override;
+  void RequestVideoSettings(const CFileItem &fileItem) override;
+  void StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs) override;
 
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -185,7 +188,6 @@ public:
   PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
-  void LoadVideoSettings(const CFileItem& item);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();

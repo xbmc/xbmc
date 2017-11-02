@@ -27,6 +27,7 @@
 #include <limits.h>
 
 #include "GUIDialogContentSettings.h"
+#include "ServiceBroker.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
@@ -104,7 +105,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     dialog->SetContent(content != CONTENT_NONE ? content : scraper->Content());
     dialog->SetScraper(scraper);
     // toast selected but disabled scrapers
-    if (CAddonMgr::GetInstance().IsAddonDisabled(scraper->ID()))
+    if (CServiceBroker::GetAddonMgr().IsAddonDisabled(scraper->ID()))
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24024), scraper->Name(), 2000, true);
   }
 
@@ -241,7 +242,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
       m_content = static_cast<CONTENT_TYPE>(selected.second);
 
       AddonPtr scraperAddon;
-      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content), scraperAddon))
+      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content), scraperAddon) && m_content != CONTENT_NONE)
         return;
 
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
@@ -262,7 +263,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CAddonMgr::GetInstance().GetAddon(selectedAddonId, scraperAddon);
+      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon);
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();
@@ -297,7 +298,7 @@ void CGUIDialogContentSettings::SetupView()
   else
   {
     ToggleState(SETTING_SCRAPER_LIST, true);
-    if (m_scraper != NULL && !CAddonMgr::GetInstance().IsAddonDisabled(m_scraper->ID()))
+    if (m_scraper != NULL && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
     {
       SetLabel2(SETTING_SCRAPER_LIST, m_scraper->Name());
       if (m_scraper && m_scraper->Supports(m_content) && m_scraper->HasSettings())
@@ -319,7 +320,7 @@ void CGUIDialogContentSettings::InitializeSettings()
 
   if (m_content == CONTENT_NONE)
     m_showScanSettings = false;
-  else if (m_scraper != NULL && !CAddonMgr::GetInstance().IsAddonDisabled(m_scraper->ID()))
+  else if (m_scraper != NULL && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
     m_showScanSettings = true;
 
   std::shared_ptr<CSettingCategory> category = AddCategory("contentsettings", -1);

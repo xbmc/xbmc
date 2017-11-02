@@ -30,6 +30,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/addons/playback/GameClientRealtimePlayback.h"
 #include "games/addons/playback/GameClientReversiblePlayback.h"
@@ -111,7 +112,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonI
 
   for (const auto& property : properties)
   {
-    std::string strProperty = CAddonMgr::GetInstance().GetExtValue(ext->configuration, property.c_str());
+    std::string strProperty = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, property.c_str());
     if (!strProperty.empty())
       addonInfo.AddExtraInfo(property, strProperty);
   }
@@ -261,6 +262,16 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
   // Check if we should open in standalone mode
   if (file.GetPath().empty())
     return false;
+
+  // Some cores "succeed" to load the file even if it doesn't exist
+  if (!XFILE::CFile::Exists(file.GetPath()))
+  {
+
+    // Failed to play game
+    // The required files can't be found.
+    HELPERS::ShowOKDialogText(CVariant{ 35210 }, CVariant{ g_localizeStrings.Get(35219) });
+    return false;
+  }
 
   // Resolve special:// URLs
   CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
@@ -452,7 +463,7 @@ std::string CGameClient::GetMissingResource()
     if (StringUtils::StartsWith(strDependencyId, "resource.games"))
     {
       AddonPtr addon;
-      const bool bInstalled = CAddonMgr::GetInstance().GetAddon(strDependencyId, addon);
+      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(strDependencyId, addon);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;
@@ -585,7 +596,7 @@ bool CGameClient::OpenPixelStream(GAME_PIXEL_FORMAT format, unsigned int width, 
     break;
   }
 
-  return m_video->OpenPixelStream(pixelFormat, width, height, m_timing.GetFrameRate(), orientation);
+  return m_video->OpenPixelStream(pixelFormat, width, height, orientation);
 }
 
 bool CGameClient::OpenVideoStream(GAME_VIDEO_CODEC codec)

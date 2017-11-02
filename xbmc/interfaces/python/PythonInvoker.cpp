@@ -212,7 +212,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         "modules installed to python path as fallback. This behaviour will be removed in future "
         "version.", GetId());
     ADDON::VECADDONS addons;
-    ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
+    CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
     for (unsigned int i = 0; i < addons.size(); ++i)
       addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
   }
@@ -230,6 +230,15 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
       if (e != NULL && PyString_Check(e))
         addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
+#ifdef TARGET_WINDOWS_STORE
+      // uwp python operates unicodes
+      else if (e != NULL && PyUnicode_Check(e))
+      {
+        PyObject *utf8 = PyUnicode_AsUTF8String(e);
+        addNativePath(PyString_AsString(utf8));
+        Py_DECREF(utf8);
+      }
+#endif
     }
   }
   else
@@ -640,7 +649,7 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
   {
     //Check if dependency is a module addon
     ADDON::AddonPtr dependency;
-    if (ADDON::CAddonMgr::GetInstance().GetAddon(it->first, dependency, ADDON::ADDON_SCRIPT_MODULE))
+    if (CServiceBroker::GetAddonMgr().GetAddon(it->first, dependency, ADDON::ADDON_SCRIPT_MODULE))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
       if (paths.find(path) == paths.end())

@@ -18,15 +18,7 @@
  *
  */
 
-/*!
-\file GUIFont.h
-\brief
-*/
-
-#ifndef CGUILIB_GUIFONTTTF_GL_H
-#define CGUILIB_GUIFONTTTF_GL_H
 #pragma once
-
 
 #include <string>
 #include <vector>
@@ -35,11 +27,6 @@
 #include "system.h"
 #include "system_gl.h"
 
-
-/*!
- \ingroup textures
- \brief
- */
 class CGUIFontTTFGL : public CGUIFontTTFBase
 {
 public:
@@ -48,23 +35,18 @@ public:
 
   bool FirstBegin() override;
   void LastEnd() override;
-#if HAS_GLES
+
   CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const override;
   void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const override;
   static void CreateStaticVertexBuffers(void);
   static void DestroyStaticVertexBuffers(void);
-#endif
 
 protected:
   CBaseTexture* ReallocTexture(unsigned int& newHeight) override;
   bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
   void DeleteHardwareTexture() override;
 
-#if HAS_GLES
-#define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
-
   static GLuint m_elementArrayHandle;
-#endif
 
 private:
   unsigned int m_updateY1;
@@ -80,9 +62,6 @@ private:
   
   TextureStatus m_textureStatus;
 
-#if HAS_GLES
   static bool m_staticVertexBufferCreated;
-#endif
 };
 
-#endif

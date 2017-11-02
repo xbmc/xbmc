@@ -9,10 +9,10 @@ STRIP="${STRIP:-@STRIP_FOR_BUILD@}"
 READELF="${READELF:-@READELF_FOR_BUILD@}"
 OBJDUMP="${OBJDUMP:-@OBJDUMP_FOR_BUILD@}"
 
-CFLAGS="-I@prefix@/@tool_dir@/include $CFLAGS"
-LDFLAGS="-L@prefix@/@tool_dir@/lib $LDFLAGS"
-CPPFLAGS="-I@prefix@/@tool_dir@/include $CPPFLAGS"
-CXXFLAGS="-I@prefix@/@tool_dir@/include $CXXFLAGS"
+CFLAGS="@native_platform_min_version@ -I@prefix@/@tool_dir@/include $CFLAGS"
+LDFLAGS="@native_platform_min_version@ -L@prefix@/@tool_dir@/lib $LDFLAGS"
+CPPFLAGS="@native_platform_min_version@ -I@prefix@/@tool_dir@/include $CPPFLAGS"
+CXXFLAGS="@native_platform_min_version@ -I@prefix@/@tool_dir@/include $CXXFLAGS"
 
 PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
 export PKG_CONFIG_LIBDIR=@prefix@/@tool_dir@/lib/pkgconfig
@@ -31,5 +31,9 @@ if test "@platform_os@" = "osx" ; then
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
   ac_cv_func_getentropy=no
+  ac_cv_func_futimes=no
+  ac_cv_func_futimesat=no
+  ac_cv_func_futimens=no
+  ac_cv_func_utimensat=no
 fi
 

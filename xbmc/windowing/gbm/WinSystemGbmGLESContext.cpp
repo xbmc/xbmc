@@ -24,6 +24,8 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
 #endif
 
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
@@ -31,9 +33,12 @@
 #include "WinSystemGbmGLESContext.h"
 #include "utils/log.h"
 
+using namespace KODI;
+
 bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
   CLinuxRendererGLES::Register();
+  RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
   if (!CWinSystemGbm::InitWindowSystem())
   {
@@ -114,8 +119,8 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  if (res.iWidth != m_drm->mode->hdisplay ||
-      res.iHeight != m_drm->mode->vdisplay)
+  if (res.iWidth != m_drm.mode->hdisplay ||
+      res.iHeight != m_drm.mode->vdisplay)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - resolution changed, creating a new window", __FUNCTION__);
     CreateNewWindow("", fullScreen, res);
@@ -134,7 +139,7 @@ void CWinSystemGbmGLESContext::PresentRenderImpl(bool rendered)
   if (rendered)
   {
     m_pGLContext.SwapBuffers();
-    CGBMUtils::FlipPage();
+    CWinSystemGbm::FlipPage(&m_pGLContext);
   }
 }
 

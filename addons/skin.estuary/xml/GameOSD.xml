@@ -152,7 +152,7 @@
 						</item>
 						<item id="102">
 							<description>Reset button</description>
-							<label>$LOCALIZE[10035]</label>
+							<label>$LOCALIZE[13007]</label>
 							<label2>Select + B</label2>
 							<icon>osd/fullscreen/buttons/reset.png</icon>
 							<onclick>PlayerControl(Reset)</onclick>

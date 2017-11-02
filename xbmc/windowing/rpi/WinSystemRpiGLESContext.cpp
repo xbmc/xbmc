@@ -23,11 +23,16 @@
 #include "WinSystemRpiGLESContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "cores/RetroPlayer/process/rbpi/RPProcessInfoPi.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererMMAL.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/Process/rbpi/ProcessInfoPi.h"
+
+using namespace KODI;
 
 bool CWinSystemRpiGLESContext::InitWindowSystem()
 {
@@ -43,6 +48,9 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
     return false;
   }
   CProcessInfoPi::Register();
+  RETRO::CRPProcessInfoPi::Register();
+  //RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryMMAL); //! @todo
+  RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
   CDVDFactoryCodec::ClearHWAccels();
   MMAL::CDecoder::Register();
   CDVDFactoryCodec::ClearHWVideoCodecs();

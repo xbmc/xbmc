@@ -25,7 +25,8 @@
 
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
-#include "GBMUtils.h"
+#include "DRM.h"
+#include "GLContextEGL.h"
 
 class IDispResource;
 
@@ -47,6 +48,8 @@ public:
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
+  void FlipPage(CGLContextEGL *m_pGLContext);
+
   void UpdateResolutions() override;
 
   void* GetVaDisplay();
@@ -57,9 +60,14 @@ public:
   virtual void Unregister(IDispResource *resource);
 
 protected:
-  gbm* m_gbm;
-  drm* m_drm;
+  CDRM m_DRM;
+
+  gbm m_gbm;
+  drm m_drm;
 
   EGLDisplay m_nativeDisplay;
   EGLNativeWindowType m_nativeWindow;
+
+  CCriticalSection m_resourceSection;
+  std::vector<IDispResource*>  m_resources;
 };

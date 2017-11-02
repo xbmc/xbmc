@@ -23,7 +23,7 @@
 				<visible>Container.Content(tvshows)</visible>
 				<itemlayout height="220" width="900">
 					<control type="group">
-						<posy>100</posy>
+						<top>100</top>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -60,7 +60,7 @@
 						<animation type="Unfocus">
 							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="450,180" />
 						</animation>
-						<posy>100</posy>
+						<top>100</top>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>

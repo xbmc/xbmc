@@ -19,14 +19,14 @@
  */
 
 #include "InputStreamAddon.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

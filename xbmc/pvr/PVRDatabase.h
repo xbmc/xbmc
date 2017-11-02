@@ -19,19 +19,20 @@
  *
  */
 
+#include <map>
 #include <vector>
 
 #include "dbwrappers/Database.h"
-#include "utils/log.h"
+#include "threads/CriticalSection.h"
 
-#include "pvr/PVRManager.h"
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
   class CPVRChannelGroup;
-  class CPVRChannelGroupInternal;
   class CPVRChannel;
   class CPVRChannelGroups;
+  class CPVRClient;
 
   /** The PVR database */
 
@@ -51,16 +52,51 @@ namespace PVR
     bool Open() override;
 
     /*!
+     * @brief Close the database.
+     */
+    void Close() override;
+
+    /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 31; }
+    int GetSchemaVersion() const override { return 32; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
     const char *GetBaseDBName() const override { return "TV"; }
+
+    /*! @name Client methods */
+    //@{
+
+    /*!
+     * @brief Remove all client entries from the database.
+     * @return True if all client entries were removed, false otherwise.
+     */
+    bool DeleteClients();
+
+    /*!
+     * @brief Add or update a client entry in the database
+     * @param client The client to persist.
+     * @return True when persisted, false otherwise.
+     */
+    bool Persist(const CPVRClient &client);
+
+    /*!
+     * @brief Remove a client entry from the database
+     * @param client The client to remove.
+     * @return True if the client was removed, false otherwise.
+     */
+    bool Delete(const CPVRClient &client);
+
+    /*!
+     * @brief Get the priority for a given client from the database.
+     * @param client The client.
+     * @return The priority.
+     */
+    int GetPriority(const CPVRClient &client);
 
     /*! @name Channel methods */
     //@{
@@ -74,9 +110,10 @@ namespace PVR
     /*!
      * @brief Add or update a channel entry in the database
      * @param channel The channel to persist.
+     * @param bCommit queue only or queue and commit
      * @return True when persisted or queued, false otherwise.
      */
-    bool Persist(CPVRChannel &channel);
+    bool Persist(CPVRChannel &channel, bool bCommit);
 
     /*!
      * @brief Remove a channel entry from the database
@@ -88,9 +125,10 @@ namespace PVR
     /*!
      * @brief Get the list of channels from the database
      * @param results The channel group to store the results in.
+     * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroupInternal &results);
+    int Get(CPVRChannelGroup &results, bool bCompressDB);
 
     //@}
 
@@ -120,9 +158,10 @@ namespace PVR
     /*!
      * @brief Add the group members to a group.
      * @param group The group to get the channels for.
+     * @param allGroup The "all channels group" matching param group's 'IsRadio' property.
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup &group);
+    int Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -180,5 +219,9 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup &group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+
+    int GetClientIdByChannelId(int iChannelId);
+
+    CCriticalSection m_critSection;
   };
 }

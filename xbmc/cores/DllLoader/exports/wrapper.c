@@ -406,6 +406,11 @@ int __wrap_stat(const char *path, struct _stat *buffer)
   return dll_stat(path, buffer);
 }
 
+int __wrap___xstat(int __ver, const char *__filename, struct stat *__stat_buf)
+{
+  return dll_stat(__filename, __stat_buf);
+}
+
 int __wrap___xstat64(int __ver, const char *__filename, struct stat64 *__stat_buf)
 {
   return dll_stat64(__filename, __stat_buf);
@@ -434,6 +439,11 @@ void __wrap_funlockfile(FILE *file)
 int __wrap___fxstat64(int ver, int fd, struct stat64 *buf)
 {
   return dll_fstat64(fd, buf);
+}
+
+int __wrap___fxstat(int ver, int fd, struct stat *buf)
+{
+  return dll_fstat(fd, buf);
 }
 
 int __wrap_fstat(int fd, struct _stat *buf)

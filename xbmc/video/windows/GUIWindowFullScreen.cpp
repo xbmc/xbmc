@@ -148,7 +148,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     { // toggle the aspect ratio mode (only if the info is onscreen)
       if (m_dwShowViewModeTimeout)
       {
-        g_application.m_pPlayer->SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
+        CVideoSettings vs = g_application.m_pPlayer->GetVideoSettings();
+        vs.m_ViewMode = CViewModeSettings::GetNextQuickCycleViewMode(vs.m_ViewMode);
+        g_application.m_pPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomZoomAmount,
+                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                                   vs.m_CustomNonLinStretch);
       }
       else
         m_viewModeChanged = true;
@@ -323,8 +327,8 @@ void CGUIWindowFullScreen::FrameMove()
     {
       // get the "View Mode" string
       std::string strTitle = g_localizeStrings.Get(629);
-      const auto& settings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
-      int sId = CViewModeSettings::GetViewModeStringIndex(settings.m_ViewMode);
+      const auto& vs = g_application.m_pPlayer->GetVideoSettings();
+      int sId = CViewModeSettings::GetViewModeStringIndex(vs.m_ViewMode);
       std::string strMode = g_localizeStrings.Get(sId);
       std::string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);

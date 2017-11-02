@@ -30,7 +30,7 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IRenderSettingsCallback;
+  class CGUIGameVideoHandle;
 }
 
 namespace GAME
@@ -39,9 +39,6 @@ namespace GAME
   {
   public:
     ~CDialogGameVideoSelect() override;
-
-    void RegisterCallback(RETRO::IRenderSettingsCallback *callback);
-    void UnregisterCallback();
 
     // implementation of CGUIControl via CGUIDialog
     bool OnMessage(CGUIMessage &message) override;
@@ -59,13 +56,16 @@ namespace GAME
     void OnInitWindow() override;
 
     // Video select interface
+    virtual std::string GetHeading() = 0;
     virtual void PreInit() = 0;
     virtual void GetItems(CFileItemList &items) = 0;
     virtual void OnItemFocus(unsigned int index) = 0;
     virtual unsigned int GetFocusedItem() const = 0;
     virtual void PostExit() = 0;
 
-    RETRO::IRenderSettingsCallback *m_callback = nullptr;
+    void OnDescriptionChange(const std::string &description);
+
+    std::shared_ptr<RETRO::CGUIGameVideoHandle> m_gameVideoHandle;
 
   private:
     void Update();
@@ -74,6 +74,9 @@ namespace GAME
     void OnRefreshList();
 
     void SaveSettings();
+
+    void RegisterDialog();
+    void UnregisterDialog();
 
     std::unique_ptr<CGUIViewControl> m_viewControl;
     std::unique_ptr<CFileItemList> m_vecItems;

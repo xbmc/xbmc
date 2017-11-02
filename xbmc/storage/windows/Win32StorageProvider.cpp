@@ -25,6 +25,9 @@
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "filesystem/win10/WinLibraryDirectory.h"
+#endif
 
 #include <ShlObj.h>
 
@@ -52,6 +55,7 @@ void CWin32StorageProvider::Initialize()
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
+#ifndef TARGET_WINDOWS_STORE
   using namespace KODI::PLATFORM::WINDOWS;
   CMediaSource share;
   wchar_t profilePath[MAX_PATH];
@@ -66,6 +70,14 @@ void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 
   CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
+#else
+  CMediaSource share;
+  XFILE::CWinLibraryDirectory::GetStoragePath("documents", share.strPath);
+  share.strName = g_localizeStrings.Get(20249);
+  share.m_ignore = true;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  localDrives.push_back(share);
+#endif
 }
 
 void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)

@@ -177,7 +177,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
 {
   int bufferSize = 4096;
-  uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + FF_INPUT_BUFFER_PADDING_SIZE);
+  uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + AV_INPUT_BUFFER_PADDING_SIZE);
   if (!fbuffer)
   {
     CLog::LogF(LOGERROR, "Could not allocate buffer");
@@ -598,7 +598,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.avOutctx->time_base.num = 1;
   tdm.avOutctx->time_base.den = 1;
   tdm.avOutctx->pix_fmt = jpg_output ? AV_PIX_FMT_YUVJ420P : AV_PIX_FMT_RGBA;
-  tdm.avOutctx->flags = CODEC_FLAG_QSCALE;
+  tdm.avOutctx->flags = AV_CODEC_FLAG_QSCALE;
   tdm.avOutctx->mb_lmin = tdm.avOutctx->qmin * FF_QP2LAMBDA;
   tdm.avOutctx->mb_lmax = tdm.avOutctx->qmax * FF_QP2LAMBDA;
   tdm.avOutctx->global_quality = tdm.avOutctx->qmin * FF_QP2LAMBDA;

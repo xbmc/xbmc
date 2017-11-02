@@ -20,7 +20,7 @@
  *
  */
 
-#include "DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 
 class CDVDDemuxUtils
 {

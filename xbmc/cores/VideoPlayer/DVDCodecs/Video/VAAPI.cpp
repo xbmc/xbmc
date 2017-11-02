@@ -23,14 +23,13 @@
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "settings/Settings.h"
 #include "guilib/GraphicContext.h"
-#include "settings/MediaSettings.h"
 #include "settings/AdvancedSettings.h"
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
@@ -601,15 +600,17 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         return false;
       break;
     }
-#if VA_CHECK_VERSION(0,38,1)
     case AV_CODEC_ID_VP9:
     {
-      profile = VAProfileVP9Profile0;
+      // VAAPI currently only supports Profile 0
+      if (avctx->profile == FF_PROFILE_VP9_0)
+        profile = VAProfileVP9Profile0;
+      else
+        profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
         return false;
       break;
     }
-#endif
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -1912,7 +1913,7 @@ void COutput::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
@@ -2800,8 +2801,8 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     return false;
   }
 
-  AVFilter* srcFilter = avfilter_get_by_name("buffer");
-  AVFilter* outFilter = avfilter_get_by_name("buffersink");
+  const AVFilter* srcFilter = avfilter_get_by_name("buffer");
+  const AVFilter* outFilter = avfilter_get_by_name("buffersink");
 
   std::string args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_config.vidWidth,

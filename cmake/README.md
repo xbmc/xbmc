@@ -119,12 +119,30 @@ cmake -G "Visual Studio 14" <KODI_SRC>
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
 Debug\kodi.exe
 ```
+
+Building on a x64 cpu can be improved, if you're on a cmake version > 3.8:
+```
+cmake -G "Visual Studio 14" -T host=x64 <KODI_SRC>
+cmake --build . --config "Debug"  # or: Build solution with Visual Studio
+Debug\kodi.exe
+```
+This will choose the x64 toolset, as windows uses the x32 toolset by default.
+
 #### Build for x64
 ```
 cmake -G "Visual Studio 14 Win64" <KODI_SRC>
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
 Debug\kodi.exe
 ```
+
+Building on a x64 cpu can be improved, if you're on a cmake version > 3.8:
+```
+cmake -G "Visual Studio 14 Win64" -T host=x64 <KODI_SRC>
+cmake --build . --config "Debug"  # or: Build solution with Visual Studio
+Debug\kodi.exe
+```
+This will choose the x64 toolset, as windows uses the x32 toolset by default.
+
 You can always check ``cmake --help` to see which generators are available and how to call those.
 
 #### Windows installer generation

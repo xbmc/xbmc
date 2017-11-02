@@ -22,6 +22,7 @@
 #include "Savestate.h"
 #include "SavestateDefines.h"
 #include "SavestateUtils.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "games/GameTypes.h"
 #include "games/tags/GameInfoTag.h"
@@ -82,7 +83,7 @@ CFileItem* CSavestateDatabase::CreateFileItem(const CVariant& object) const
   else
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(save.GameClient(), addon, ADDON_GAMEDLL))
+    if (CServiceBroker::GetAddonMgr().GetAddon(save.GameClient(), addon, ADDON_GAMEDLL))
       item->SetArt("thumb", addon->Icon());
   }
 

@@ -62,7 +62,6 @@ set(SOURCES DDSImage.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
             Resolution.cpp
-            Shader.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
@@ -149,7 +148,6 @@ set(HEADERS DDSImage.h
             IWindowManagerCallback.h
             LocalizeStrings.h
             Resolution.h
-            Shader.h
             StereoscopicsManager.h
             Texture.h
             TextureBundle.h
@@ -166,10 +164,12 @@ if(OPENGL_FOUND)
   list(APPEND SOURCES GUIFontTTFGL.cpp
                       GUITextureGL.cpp
                       MatrixGLES.cpp
+                      Shader.cpp
                       TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
                       GUITextureGL.h
                       MatrixGLES.h
+                      Shader.h
                       TextureGL.h)
 endif()
 
@@ -178,11 +178,13 @@ if(OPENGLES_FOUND)
                       GUIShader.cpp
                       GUITextureGLES.cpp
                       MatrixGLES.cpp
+                      Shader.cpp
                       TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
                       GUIShader.h
                       GUITextureGLES.h
                       MatrixGLES.h
+                      Shader.h
                       TextureGL.h)
 endif()
 
@@ -191,7 +193,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
   list(APPEND HEADERS TexturePi.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL windows)
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES D3DResource.cpp
                       DirectXGraphics.cpp
                       GUIFontTTFDX.cpp
@@ -208,7 +210,7 @@ endif()
 
 core_add_library(guilib)
 
-if(CORE_SYSTEM_NAME STREQUAL windows)
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   set(SHADERS_VERTEX guishader_vert.hlsl)
   set(SHADERS_PIXEL guishader_checkerboard_right.hlsl
                     guishader_checkerboard_left.hlsl

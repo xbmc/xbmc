@@ -83,8 +83,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
 
-  if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
-    m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
+  if (pCodec->capabilities & AV_CODEC_CAP_TRUNCATED)
+    m_pCodecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
 
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_channels = 0;
@@ -99,7 +99,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if( hints.extradata && hints.extrasize > 0 )
   {
-    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE);
     if(m_pCodecContext->extradata)
     {
       m_pCodecContext->extradata_size = hints.extrasize;

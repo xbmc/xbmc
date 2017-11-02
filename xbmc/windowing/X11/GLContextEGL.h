@@ -35,7 +35,6 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
-  XVisualInfo* GetVisual();
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;
   EGLContext m_eglContext;

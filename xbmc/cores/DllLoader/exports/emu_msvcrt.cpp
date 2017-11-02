@@ -115,11 +115,11 @@ extern "C" void __stdcall init_emu_environ()
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   using KODI::PLATFORM::WINDOWS::FromW;
   // fill our array with the windows system vars
   LPTSTR lpszVariable;
-  LPTCH lpvEnv;
+  LPTCH lpvEnv = NULL;
   lpvEnv = GetEnvironmentStrings();
   if (lpvEnv != NULL)
   {
@@ -132,6 +132,8 @@ extern "C" void __stdcall init_emu_environ()
     FreeEnvironmentStrings(lpvEnv);
   }
   dll_putenv("OS=win32");
+#elif defined(TARGET_WINDOWS_STORE)
+  dll_putenv("OS=win10");
 #elif defined(TARGET_DARWIN)
   dll_putenv("OS=darwin");
 #elif defined(TARGET_POSIX)

@@ -30,6 +30,7 @@
 
 #include "Application.h"
 #include "Connection.h"
+#include "cores/RetroPlayer/process/wayland/RPProcessInfoWayland.h"
 #include "cores/VideoPlayer/Process/wayland/ProcessInfoWayland.h"
 #include "guilib/DispResource.h"
 #include "guilib/LocalizeStrings.h"
@@ -162,6 +163,7 @@ bool CWinSystemWayland::InitWindowSystem()
   });
 
   VIDEOPLAYER::CProcessInfoWayland::Register();
+  RETRO::CRPProcessInfoWayland::Register();
 
   CLog::LogF(LOGINFO, "Connecting to Wayland server");
   m_connection.reset(new CConnection);

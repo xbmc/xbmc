@@ -112,7 +112,7 @@
 					</include>
 				</control>
 				<control type="scrollbar" id="73">
-					<left>305</left>
+					<left>340</left>
 					<top>75</top>
 					<width>12</width>
 					<height>700</height>

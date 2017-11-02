@@ -63,7 +63,7 @@ public:
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
 
-  void SetViewPort(CRect& viewPort) override;
+  void SetViewPort(const CRect& viewPort) override;
   void GetViewPort(CRect& viewPort) override;
 
   bool ScissorsCanEffectClipping() override;

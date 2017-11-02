@@ -100,6 +100,17 @@ public:
    */
   static bool ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime);
 
+  /*! \brief Show a yes-no dialog with 3rd custom button, then wait for user to dismiss it.
+  \param heading Localized label id or string for the heading of the dialog
+  \param text Localized label id or string for the dialog message
+  \param noLabel Localized label id or string for the no button
+  \param yesLabel Localized label id or string for the yes button
+  \param customLabel Localized label id or string for the custom button
+  \param autoCloseTime Time in ms before the dialog becomes automatically closed
+  \return -1 for cancelled, 0 for No, 1 for Yes and 2 for custom button
+  */
+  static int ShowAndGetInput(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, unsigned int autoCloseTime);
+
   /*!
     \brief Open a Yes/No dialog and wait for input
 
@@ -116,4 +127,5 @@ protected:
   int GetDefaultLabelID(int controlId) const override;
 
   bool m_bCanceled;
+  bool m_bCustom;
 };

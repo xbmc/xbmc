@@ -28,6 +28,7 @@ CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
 {
   m_bConfirmed = false;
   m_bCanceled = false;
+  m_bCustom = false;
 }
 
 CGUIDialogYesNo::~CGUIDialogYesNo() = default;
@@ -54,6 +55,13 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
           Close();
           return true;
         }
+        if (iControl == CONTROL_CUSTOM_BUTTON)
+        {
+          m_bConfirmed = false;
+          m_bCustom = true;
+          Close();
+          return true;
+        }
       }
     }
     break;
@@ -65,12 +73,16 @@ bool CGUIDialogYesNo::OnBack(int actionID)
 {
   m_bCanceled = true;
   m_bConfirmed = false;
+  m_bCustom = false;
   return CGUIDialogBoxBase::OnBack(actionID);
 }
 
 void CGUIDialogYesNo::OnInitWindow()
 {
-  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
+  if (!m_strChoices[2].empty())
+    SET_CONTROL_VISIBLE(CONTROL_CUSTOM_BUTTON);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
   SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
   SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
 
@@ -102,6 +114,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant
     dialog->SetAutoClose(autoCloseTime);
   dialog->SetChoice(0, !noLabel.empty() ? noLabel : 106);
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
+  dialog->SetChoice(2, "");
   dialog->m_bCanceled = false;
   dialog->Open();
 
@@ -117,6 +130,14 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text)
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel /* = "" */, CVariant yesLabel /* = "" */, unsigned int autoCloseTime)
 {
+  int result = ShowAndGetInput(heading, text, noLabel, yesLabel, "", autoCloseTime);
+
+  bCanceled = result == -1;
+  return result == 1;
+}
+
+int CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, unsigned int autoCloseTime)
+{
   CGUIDialogYesNo *dialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!dialog)
     return false;
@@ -126,12 +147,21 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCa
   if (autoCloseTime)
     dialog->SetAutoClose(autoCloseTime);
   dialog->m_bCanceled = false;
+  dialog->m_bCustom = false;
   dialog->SetChoice(0, !noLabel.empty() ? noLabel : 106);
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
+  dialog->SetChoice(2, customLabel);  // Button only visible when label is not empty
+
   dialog->Open();
 
-  bCanceled = dialog->m_bCanceled;
-  return (dialog->IsConfirmed()) ? true : false;
+  if (dialog->m_bCanceled)
+    return -1;
+  else if (dialog->m_bCustom)
+    return 2;
+  else if (dialog->IsConfirmed())
+    return 1;
+  else
+    return 0;
 }
 
 int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options)
@@ -140,6 +170,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
   //by the caller
   SetChoice(0, 106);
   SetChoice(1, 107);
+  SetChoice(2, "");
   if (!options.heading.isNull())
     SetHeading(options.heading);
   if (!options.text.isNull())
@@ -148,9 +179,12 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
     SetChoice(0, options.noLabel);
   if (!options.yesLabel.isNull())
     SetChoice(1, options.yesLabel);
+  if (!options.customLabel.isNull())
+    SetChoice(2, options.customLabel);
   if (options.autoclose > 0)
     SetAutoClose(options.autoclose);
   m_bCanceled = false;
+  m_bCustom = false;
   
   for (size_t i = 0; i < 3; ++i)
   {
@@ -159,10 +193,15 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
   }
 
   Open();
+
   if (m_bCanceled)
     return -1;
-  
-  return IsConfirmed() ? 1 : 0;
+  else if (m_bCustom)
+    return 2;
+  else if (IsConfirmed())
+    return 1;
+  else
+    return 0;
 }
 
 int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const
@@ -171,5 +210,7 @@ int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const
     return 106;
   else if (controlId == CONTROL_YES_BUTTON)
     return 107;
+  else if (controlId == CONTROL_CUSTOM_BUTTON)
+    return -1;
   return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }

@@ -190,7 +190,8 @@ public:
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream);
   void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream);
   float GetCacheTime(CActiveAEStream *stream);
-  float GetCacheTotal(CActiveAEStream *stream);
+  float GetCacheTotal();
+  float GetMaxDelay();
   float GetWaterLevel();
   void SetSuspended(bool state);
   void SetDSP(bool state);
@@ -285,7 +286,8 @@ protected:
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) { m_stats.GetDelay(status, stream); }
   void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) { m_stats.GetSyncInfo(info, stream); }
   float GetCacheTime(CActiveAEStream *stream) { return m_stats.GetCacheTime(stream); }
-  float GetCacheTotal(CActiveAEStream *stream) { return m_stats.GetCacheTotal(stream); }
+  float GetCacheTotal() { return m_stats.GetCacheTotal(); }
+  float GetMaxDelay() { return m_stats.GetMaxDelay(); }
   void FlushStream(CActiveAEStream *stream);
   void PauseStream(CActiveAEStream *stream, bool pause);
   void StopSound(CActiveAESound *sound);

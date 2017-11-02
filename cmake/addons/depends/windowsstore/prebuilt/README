@@ -1,0 +1,21 @@
+KODI WIN32 PREBUILT ADDON DEPENDENCIES
+======================================
+This directory contains a file or sub-directory for every prebuilt dependency
+used by one of the addons being built. There are two different modes supported.
+Both include a file named <library-id>.txt which must follow the defined format
+  <library-id> <download-url>
+
+If the archive, which the <download-url> points at, contains
+ * only the necessary files and in the proper directory structure (i.e. an
+   "include" and a "lib" directory) then the file must be put into this
+   directory and nothing else is needed.
+ * unnecessary files and/or does not follow the defined directory structure
+   (i.e. an "include" and a "lib" directory) then the file must be put into a
+   sub-directory named <library-id>. Furthermore an additional file called
+   "install.txt" must be placed in that sub-directory. install.txt contains a
+   line for every path/directory/file with a destination where it must be copied
+   to. It must follow the defined format
+     <source> <destination> [<copy-destination>]
+   where <source> must be an existing file, directory or a path containing
+   wildcards, <destination> and the optional <copy-destination> must be existing
+   directories.

@@ -79,7 +79,7 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
     return false;
 
   // initialize our sys.argv variables
@@ -421,7 +421,7 @@ void CWeather::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);
       Refresh();

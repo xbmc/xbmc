@@ -56,9 +56,9 @@
 			</control>
 			<control type="gamecontroller" id="31">
 				<left>400</left>
-				<top>210</top>
+				<top>108</top>
 				<width>547</width>
-				<height>343</height>
+				<height>547</height>
 			</control>
 			<control type="group">
 				<left>1000</left>
@@ -147,7 +147,7 @@
 				<include content="DefaultDialogButton">
 					<param name="width" value="350" />
 					<param name="id" value="19" />
-					<param name="label" value="$LOCALIZE[10035]" />
+					<param name="label" value="$LOCALIZE[13007]" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="width" value="350" />

@@ -23,6 +23,8 @@
 
 #include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
+#include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/ios/ProcessInfoIOS.h"
@@ -60,7 +62,8 @@
 - (void) runDisplayLink;
 @end
 
-using namespace KODI::MESSAGING;
+using namespace KODI;
+using namespace MESSAGING;
 
 struct CADisplayLinkWrapper
 {
@@ -125,6 +128,8 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
   CLinuxRendererGLES::Register();
   CRendererVTB::Register();
   VIDEOPLAYER::CProcessInfoIOS::Register();
+  RETRO::CRPProcessInfoIOS::Register();
+  RETRO::CRPProcessInfoIOS::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
   return true;
 }

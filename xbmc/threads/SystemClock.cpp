@@ -40,7 +40,7 @@ namespace XbmcThreads
 #if defined(TARGET_DARWIN)
     now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
 #elif defined(TARGET_WINDOWS)
-    now_time = (uint64_t)timeGetTime();
+    now_time = GetTickCount64();
 #else
     struct timespec ts = {};
 #ifdef CLOCK_MONOTONIC_RAW

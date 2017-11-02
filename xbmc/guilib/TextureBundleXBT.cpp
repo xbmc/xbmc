@@ -34,7 +34,7 @@
 #include "XBTFReader.h"
 #include <lzo/lzo1x.h>
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
 #ifdef NDEBUG
 #pragma comment(lib,"lzo2.lib")
 #elif defined _WIN64

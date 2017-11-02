@@ -178,7 +178,7 @@ public:
   iso9660( );
   virtual ~iso9660( );
 
-  HANDLE FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
+  HANDLE FindFirstFile9660( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
   int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
   bool FindClose( HANDLE szLocalFolder );
   DWORD SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod );

@@ -20,7 +20,7 @@ endif()
 
 find_path(CURL_INCLUDE_DIR NAMES curl/curl.h
                            PATHS ${PC_CURL_INCLUDEDIR})
-find_library(CURL_LIBRARY NAMES curl libcurl
+find_library(CURL_LIBRARY NAMES curl libcurl libcurl_imp
                           PATHS ${PC_CURL_LIBDIR})
 
 set(CURL_VERSION ${PC_CURL_VERSION})

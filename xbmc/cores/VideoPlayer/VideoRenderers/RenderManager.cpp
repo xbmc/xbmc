@@ -22,7 +22,7 @@
 #include "RenderManager.h"
 #include "RenderFlags.h"
 #include "RenderFactory.h"
-#include "cores/VideoPlayer/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "guilib/GraphicContext.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -50,12 +50,6 @@
 #include "../VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 
 using namespace KODI::MESSAGING;
-
-static void requeue(std::deque<int> &trg, std::deque<int> &src)
-{
-  trg.push_back(src.front());
-  src.pop_front();
-}
 
 void CRenderManager::CClockSync::Reset()
 {
@@ -92,6 +86,15 @@ float CRenderManager::GetAspectRatio()
     return m_pRenderer->GetAspectRatio();
   else
     return 1.0f;
+}
+
+void CRenderManager::SetVideoSettings(CVideoSettings settings)
+{
+  CSingleLock lock(m_statelock);
+  if (m_pRenderer)
+  {
+    m_pRenderer->SetVideoSettings(settings);
+  }
 }
 
 bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
@@ -194,6 +197,7 @@ bool CRenderManager::Configure()
       return false;
   }
 
+  m_pRenderer->SetVideoSettings(m_playerPort->GetVideoSettings());
   bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_flags, m_orientation);
   if (result)
   {
@@ -220,6 +224,7 @@ bool CRenderManager::Configure()
     m_discard.clear();
     m_free.clear();
     m_presentsource = 0;
+    m_presentsourcePast = -1;
     for (int i=1; i < m_QueueSize; i++)
       m_free.push_back(i);
 
@@ -279,6 +284,7 @@ bool CRenderManager::IsPresenting()
 
 void CRenderManager::FrameMove()
 {
+  bool firstFrame = false;
   UpdateResolution();
 
   {
@@ -292,6 +298,7 @@ void CRenderManager::FrameMove()
       if (!Configure())
         return;
 
+      firstFrame = true;
       FrameWait(50);
 
       if (m_flags & CONF_FLAGS_FULLSCREEN)
@@ -342,7 +349,7 @@ void CRenderManager::FrameMove()
     m_bRenderGUI = true;
   }
 
-  m_playerPort->UpdateGuiRender(IsGuiLayer());
+  m_playerPort->UpdateGuiRender(IsGuiLayer() || firstFrame);
 
   ManageCaptures();
 }
@@ -351,8 +358,12 @@ void CRenderManager::PreInit()
 {
   if (!g_application.IsCurrentThread())
   {
-    CLog::Log(LOGERROR, "CRenderManager::PreInit - not called from render thread");
-    return;
+    m_initEvent.Reset();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_PREINIT);
+    if (!m_initEvent.WaitMSec(2000))
+    {
+      CLog::Log(LOGERROR, "%s - timed out waiting for renderer to preinit", __FUNCTION__);
+    }
   }
 
   CSingleLock lock(m_statelock);
@@ -367,14 +378,20 @@ void CRenderManager::PreInit()
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
   m_presentstep = PRESENT_IDLE;
+
+  m_initEvent.Set();
 }
 
 void CRenderManager::UnInit()
 {
   if (!g_application.IsCurrentThread())
   {
-    CLog::Log(LOGERROR, "CRenderManager::UnInit - not called from render thread");
-    return;
+    m_initEvent.Reset();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_UNINIT);
+    if (!m_initEvent.WaitMSec(2000))
+    {
+      CLog::Log(LOGERROR, "%s - timed out waiting for renderer to uninit", __FUNCTION__);
+    }
   }
 
   CSingleLock lock(m_statelock);
@@ -388,6 +405,8 @@ void CRenderManager::UnInit()
   m_width = 0;
   m_height = 0;
   RemoveCaptures();
+
+  m_initEvent.Set();
 }
 
 bool CRenderManager::Flush(bool wait)
@@ -415,6 +434,7 @@ bool CRenderManager::Flush(bool wait)
       m_discard.clear();
       m_free.clear();
       m_presentsource = 0;
+      m_presentsourcePast = -1;
       m_presentstep = PRESENT_IDLE;
       for (int i = 1; i < m_QueueSize; i++)
         m_free.push_back(i);
@@ -683,8 +703,6 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
     if( m.presentmethod == PRESENT_METHOD_BOB )
       PresentFields(clear, flags, alpha);
-    else if( m.presentmethod == PRESENT_METHOD_WEAVE )
-      PresentFields(clear, flags | RENDER_FLAG_WEAVE, alpha);
     else if( m.presentmethod == PRESENT_METHOD_BLEND )
       PresentBlend(clear, flags, alpha);
     else
@@ -734,8 +752,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
     if (m_presentstep == PRESENT_FRAME)
     {
-      if (m.presentmethod == PRESENT_METHOD_BOB ||
-          m.presentmethod == PRESENT_METHOD_WEAVE)
+      if (m.presentmethod == PRESENT_METHOD_BOB)
         m_presentstep = PRESENT_FRAME2;
       else
         m_presentstep = PRESENT_IDLE;
@@ -789,11 +806,11 @@ void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
   SPresent& m = m_Queue[m_presentsource];
 
   if (m.presentfield == FS_BOT)
-    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_BOT, alpha);
   else if (m.presentfield == FS_TOP)
-    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_TOP, alpha);
   else
-    m_pRenderer->RenderUpdate(m_presentsource, clear, flags, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags, alpha);
 }
 
 /* new simpler method of handling interlaced material, *
@@ -805,16 +822,16 @@ void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
   if(m_presentstep == PRESENT_FRAME)
   {
     if( m.presentfield == FS_BOT)
-      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
-      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
   }
   else
   {
     if( m.presentfield == FS_TOP)
-      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
-      m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
+      m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
   }
 }
 
@@ -824,13 +841,13 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 
   if( m.presentfield == FS_BOT )
   {
-    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
-    m_pRenderer->RenderUpdate(m_presentsource, false, flags | RENDER_FLAG_TOP, alpha / 2);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, false, flags | RENDER_FLAG_TOP, alpha / 2);
   }
   else
   {
-    m_pRenderer->RenderUpdate(m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
-    m_pRenderer->RenderUpdate(m_presentsource, false, flags | RENDER_FLAG_BOT, alpha / 2);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(m_presentsource, m_presentsourcePast, false, flags | RENDER_FLAG_BOT, alpha / 2);
   }
 }
 
@@ -923,8 +940,6 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     {
       if (deintMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
         presentmethod = PRESENT_METHOD_BLEND;
-      else if (deintMethod == VS_INTERLACEMETHOD_RENDER_WEAVE)
-        presentmethod = PRESENT_METHOD_WEAVE;
       else if (deintMethod == VS_INTERLACEMETHOD_RENDER_BOB)
         presentmethod = PRESENT_METHOD_BOB;
       else
@@ -942,7 +957,8 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   m.presentfield = displayField;
   m.presentmethod = presentmethod;
   m.pts = picture.pts;
-  requeue(m_queued, m_free);
+  m_queued.push_back(m_free.front());
+  m_free.pop_front();
   m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
 
   // signal to any waiters to check state
@@ -1097,6 +1113,14 @@ void CRenderManager::PrepareNextRender()
 
   CLog::LogF(LOGDEBUG, LOGAVTIMING, "frameOnScreen: %f renderPts: %f nextFramePts: %f -> diff: %f  render: %u forceNext: %u", frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts), renderPts >= nextFramePts, m_forceNext);
 
+  bool combined = false;
+  if (m_presentsourcePast >= 0)
+  {
+    m_discard.push_back(m_presentsourcePast);
+    m_presentsourcePast = -1;
+    combined = true;
+  }
+
   if (renderPts >= nextFramePts || m_forceNext)
   {
     // see if any future queued frames are already due
@@ -1119,8 +1143,13 @@ void CRenderManager::PrepareNextRender()
     // skip late frames
     while (m_queued.front() != idx)
     {
-      requeue(m_discard, m_queued);
-      m_QueueSkip++;
+      if (m_presentsourcePast >= 0)
+      {
+        m_discard.push_back(m_presentsourcePast);
+        m_QueueSkip++;
+      }
+      m_presentsourcePast = m_queued.front();
+      m_queued.pop_front();
     }
 
     int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE);
@@ -1138,6 +1167,16 @@ void CRenderManager::PrepareNextRender()
 
     m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
+  else if (!combined && renderPts > (nextFramePts - frametime))
+  {
+    m_lateframes = 0;
+    m_presentstep = PRESENT_FLIP;
+    m_presentsourcePast = m_presentsource;
+    m_presentsource = m_queued.front();
+    m_queued.pop_front();
+    m_presentpts = m_Queue[m_presentsource].pts - m_displayLatency - frametime / 2;
+    m_presentevent.notifyAll();
+  }
 }
 
 void CRenderManager::DiscardBuffer()
@@ -1145,7 +1184,10 @@ void CRenderManager::DiscardBuffer()
   CSingleLock lock2(m_presentlock);
 
   while(!m_queued.empty())
-    requeue(m_discard, m_queued);
+  {
+    m_discard.push_back(m_queued.front());
+    m_queued.pop_front();
+  }
 
   if(m_presentstep == PRESENT_READY)
     m_presentstep = PRESENT_IDLE;

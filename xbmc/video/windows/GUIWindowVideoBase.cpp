@@ -53,6 +53,7 @@
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
@@ -221,7 +222,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items, g_advancedSettings.m_videoExtensions);
+      CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
       items.Stack();
 
       // check for media files
@@ -394,10 +395,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
     return false;
   }
-  
-  // If the scraper failed above and no videoinfotag was created, return
-  if (!item->HasVideoInfoTag())
-    return false;
 
   bool listNeedsUpdating = false;
   // 3. Run a loop so that if we Refresh we re-run this block

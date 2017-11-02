@@ -27,6 +27,8 @@
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
 #endif
+#include <wrl.h>
+#include <wrl/client.h>
 #include <windows.h>
 #include <mmsystem.h>
 #include <TCHAR.H>

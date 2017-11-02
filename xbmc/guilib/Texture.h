@@ -36,6 +36,12 @@ class CGLTexture;
 class CPiTexture;
 class CDXTexture;
 
+enum class TEXTURE_SCALING
+{
+  LINEAR,
+  NEAREST,
+};
+
 /*!
 \ingroup textures
 \brief Base texture class, subclasses of which depend on the render spec (DX, GL etc.)
@@ -80,6 +86,10 @@ public:
 
   void SetMipmapping();
   bool IsMipmapped() const;
+  void SetScalingMethod(TEXTURE_SCALING scalingMethod) { m_scalingMethod = scalingMethod; }
+  TEXTURE_SCALING GetScalingMethod() const { return m_scalingMethod; }
+  void SetCacheMemory(bool bCacheMemory) { m_bCacheMemory = bCacheMemory; }
+  bool GetCacheMemory() const { return m_bCacheMemory; }
 
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
@@ -110,7 +120,7 @@ public:
 
 private:
   // no copy constructor
-  CBaseTexture(const CBaseTexture &copy);
+  CBaseTexture(const CBaseTexture &copy) = delete;
 
 protected:
   bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
@@ -135,6 +145,8 @@ protected:
   int m_orientation;
   bool m_hasAlpha;
   bool m_mipmapping;
+  TEXTURE_SCALING m_scalingMethod = TEXTURE_SCALING::LINEAR;
+  bool m_bCacheMemory = false;
 };
 
 #if defined(TARGET_RASPBERRY_PI)

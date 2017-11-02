@@ -86,6 +86,32 @@ REM Remove any non-dir files in extracted ".\packagename\"
 FOR /F %%f IN ('dir /B /A:-D "%~n1\*.*"') DO (del "%~n1\%%f" /F /Q || (ECHO %1^|Failed to pre-clean %~n1\%%f >> %FORMED_FAILED_LIST% && EXIT /B 4))
 )
 
+CALL :setSubStageName Re-arrange old-formed package %1 if necessary...
+:: move project\BuildDependencies\*.* to root
+dir /A:D "%~n1\project" >NUL 2>NUL && (
+ROBOCOPY "%~n1\project\BuildDependencies\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+dir /:D "%~n1\project\BuildDependencies" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+RD "%~n1\project" /S /Q
+)
+
+:: move system\*.* to bin
+dir /A:D "%~n1\system" >NUL 2>NUL && (
+ROBOCOPY "%~n1\system\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+dir /A:D "%~n1\system" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+)
+
+:: move Win32\*.* to root
+dir /A:D "%~n1\Win32" >NUL 2>NUL && (
+ROBOCOPY "%~n1\Win32\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+dir /A:D "%~n1\Win32" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+)
+
+:: move x64\*.* to root
+dir /A:D "%~n1\x64" >NUL 2>NUL && (
+ROBOCOPY "%~n1\x64\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+dir /A:D "%~n1\x64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+)
+
 CALL :setSubStageName Copying %1 to build tree...
 REM Copy only content of extracted ".\packagename\"
 XCOPY "%~n1\*" "%APP_PATH%\" /E /I /Y /F /R /H /K || (ECHO %1^|Failed to copy package contents to build tree >> %FORMED_FAILED_LIST% && EXIT /B 5)

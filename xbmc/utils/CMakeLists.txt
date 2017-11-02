@@ -16,6 +16,7 @@ set(SOURCES ActorProtocol.cpp
             DatabaseUtils.cpp
             EndianSwap.cpp
             Environment.cpp
+            FileExtensionProvider.cpp
             Fanart.cpp
             FileOperationJob.cpp
             FileUtils.cpp
@@ -96,6 +97,7 @@ set(HEADERS ActorProtocol.h
             Environment.h
             EventStream.h
             EventStreamDetail.h
+            FileExtensionProvider.h
             Fanart.h
             FileOperationJob.h
             FileUtils.h
@@ -181,7 +183,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
   set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES CryptThreading.cpp
                       GLUtils.cpp)
   list(APPEND HEADERS CryptThreading.h
@@ -197,7 +199,7 @@ endif()
 
 core_add_library(utils)
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   if(HAVE_SSE2)
     target_compile_options(${CORE_LIBRARY} PRIVATE -msse2)
   endif()

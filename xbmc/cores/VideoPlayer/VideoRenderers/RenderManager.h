@@ -27,7 +27,7 @@
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/CriticalSection.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include "DebugRenderer.h"
 #include <deque>
@@ -60,6 +60,7 @@ protected:
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
   virtual void UpdateGuiRender(bool gui) = 0;
   virtual void UpdateVideoRender(bool video) = 0;
+  virtual CVideoSettings GetVideoSettings() = 0;
 };
 
 class CRenderManager
@@ -133,6 +134,8 @@ public:
   void SetDelay(int delay) { m_videoDelay = delay; };
   int GetDelay() { return m_videoDelay; };
 
+  void SetVideoSettings(CVideoSettings settings);
+
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
@@ -178,7 +181,6 @@ protected:
   {
     PRESENT_METHOD_SINGLE = 0,
     PRESENT_METHOD_BLEND,
-    PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
   };
 
@@ -188,7 +190,7 @@ protected:
     STATE_CONFIGURING,
     STATE_CONFIGURED,
   };
-  ERENDERSTATE m_renderState;
+  ERENDERSTATE m_renderState = STATE_UNCONFIGURED;
   CEvent m_stateEvent;
 
   /// Display latency tweak value from AdvancedSettings for the current refresh rate
@@ -228,8 +230,10 @@ protected:
   XbmcThreads::EndTime m_presentTimer;
   bool m_forceNext = false;
   int m_presentsource = 0;
+  int m_presentsourcePast = -1;
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
+  CEvent m_initEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
 

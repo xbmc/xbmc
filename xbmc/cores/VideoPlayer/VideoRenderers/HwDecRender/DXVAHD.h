@@ -50,15 +50,13 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation);
+  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t Size() const { return m_pVideoProcessor ? m_size : 0; }
   uint8_t PastRefs() const { return m_max_back_refs; }
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool fatal) override { CSingleLock lock(m_section); UnInit(); }
-  void OnLostDevice() override    { CSingleLock lock(m_section); UnInit(); }
-  void OnResetDevice() override   { CSingleLock lock(m_section); Close();  }
 
 protected:
   bool ReInit();

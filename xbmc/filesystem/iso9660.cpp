@@ -631,7 +631,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
 }
 
 //******************************************************************************************************************
-HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
+HANDLE iso9660::FindFirstFile9660(char *szLocalFolder, WIN32_FIND_DATA *wfdFile)
 {
   if (m_info.ISO_HANDLE == nullptr) return static_cast<HANDLE>(nullptr);
   memset( wfdFile, 0, sizeof(WIN32_FIND_DATA));
@@ -749,7 +749,7 @@ HANDLE iso9660::OpenFile(const char *filename)
 
   *(pointer2 + 1) = 0;
 
-  intptr_t loop = (intptr_t)FindFirstFile( work, &fileinfo );
+  intptr_t loop = (intptr_t)FindFirstFile9660( work, &fileinfo );
 
 #ifdef TARGET_WINDOWS
   auto wpointer = KODI::PLATFORM::WINDOWS::ToW(pointer);

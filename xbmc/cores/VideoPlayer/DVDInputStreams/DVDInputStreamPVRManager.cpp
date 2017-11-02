@@ -20,7 +20,7 @@
 
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStreamPVRManager.h"
-#include "DVDDemuxers/DVDDemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
@@ -295,7 +295,7 @@ inline CDVDInputStream::IDemux* CDVDInputStreamPVRManager::GetIDemux()
 
 bool CDVDInputStreamPVRManager::OpenDemux()
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (!CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     return false;
@@ -308,7 +308,7 @@ bool CDVDInputStreamPVRManager::OpenDemux()
 
 DemuxPacket* CDVDInputStreamPVRManager::ReadDemux()
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (!CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     return nullptr;
@@ -363,7 +363,7 @@ int CDVDInputStreamPVRManager::GetNrOfStreams() const
 
 void CDVDInputStreamPVRManager::SetSpeed(int Speed)
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     client->SetSpeed(Speed);
@@ -372,7 +372,7 @@ void CDVDInputStreamPVRManager::SetSpeed(int Speed)
 
 bool CDVDInputStreamPVRManager::SeekTime(double timems, bool backwards, double *startpts)
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     return client->SeekTime(timems, backwards, startpts);
@@ -382,7 +382,7 @@ bool CDVDInputStreamPVRManager::SeekTime(double timems, bool backwards, double *
 
 void CDVDInputStreamPVRManager::AbortDemux()
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     client->DemuxAbort();
@@ -391,7 +391,7 @@ void CDVDInputStreamPVRManager::AbortDemux()
 
 void CDVDInputStreamPVRManager::FlushDemux()
 {
-  PVR_CLIENT client;
+  CPVRClientPtr client;
   if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
     client->DemuxFlush();

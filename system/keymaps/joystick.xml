@@ -308,6 +308,8 @@
       <leftthumb>Enter</leftthumb>
       <lefttrigger>CursorLeft</lefttrigger>
       <righttrigger>CursorRight</righttrigger>
+      <x>VoiceRecognizer</x>
+      <start>VoiceRecognizer</start>
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>

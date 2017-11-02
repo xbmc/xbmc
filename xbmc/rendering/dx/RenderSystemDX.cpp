@@ -20,6 +20,10 @@
 #include <DirectXPackedVector.h>
 
 #include "Application.h"
+#if defined(TARGET_WINDOWS_DESKTOP)
+#include "cores/RetroPlayer/process/windows/RPProcessInfoWin.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPWinRenderer.h"
+#endif
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DXVA.h"
 #if defined(TARGET_WINDOWS_STORE)
@@ -44,6 +48,7 @@ extern "C" {
 #include "libavutil/pixfmt.h"
 }
 
+using namespace KODI;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
@@ -84,7 +89,10 @@ bool CRenderSystemDX::InitRenderSystem()
   DXVA::CDecoder::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CWinRenderer::Register();
-
+#if defined(TARGET_WINDOWS_DESKTOP)
+  RETRO::CRPProcessInfoWin::Register();
+  RETRO::CRPProcessInfoWin::RegisterRendererFactory(new RETRO::CWinRendererFactory);
+#endif
   m_viewPort = m_deviceResources->GetScreenViewport();
   RestoreViewPort();
 
@@ -101,7 +109,7 @@ void CRenderSystemDX::OnResize()
   if (!m_bRenderCreated)
     return;
 
-  auto outputSize = m_deviceResources->GetLogicalSize();
+  auto outputSize = m_deviceResources->GetOutputSize();
 
   // set camera to center of screen
   CPoint camPoint = { outputSize.Width * 0.5f, outputSize.Height * 0.5f };
@@ -472,7 +480,7 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   viewPort.y2 = m_viewPort.TopLeftY + m_viewPort.Height;
 }
 
-void CRenderSystemDX::SetViewPort(CRect& viewPort)
+void CRenderSystemDX::SetViewPort(const CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

@@ -46,7 +46,6 @@ enum EFIELDSYNC
 enum RenderMethods
 {
   RENDER_METHOD_AUTO     = 0,
-  RENDER_METHOD_ARB,
   RENDER_METHOD_GLSL,
   RENDER_METHOD_SOFTWARE,
   RENDER_METHOD_D3D_PS,
@@ -78,7 +77,7 @@ public:
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
-  virtual void RenderUpdate(int index, bool clear, unsigned int flags, unsigned int alpha) = 0;
+  virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
@@ -100,6 +99,8 @@ public:
   float GetAspectRatio() const;
 
   static void SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+
+  void SetVideoSettings(const CVideoSettings &settings);
 
 protected:
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
@@ -134,4 +135,6 @@ protected:
   // rendering flags
   unsigned m_iFlags;
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
+
+  CVideoSettings m_videoSettings;
 };

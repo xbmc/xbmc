@@ -22,6 +22,8 @@
 
 #include <EGL/egl.h>
 
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "utils/log.h"
 
@@ -40,6 +42,7 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   }
 
   CLinuxRendererGL::Register();
+  RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
 #if defined(HAVE_LIBVA)
   bool general, hevc;

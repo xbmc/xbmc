@@ -1,0 +1,2 @@
+project/BuildDependencies/win10-${ARCH}/bin/*.dll dlls
+project/BuildDependencies/mingwlibs/win10-${ARCH}/bin/*.dll dlls

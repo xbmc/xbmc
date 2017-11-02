@@ -28,13 +28,15 @@ set(HEADERS AudioSinkAE.h
             Edl.h
             IVideoPlayer.h
             PTSTracker.h
-            TimingConstants.h
             VideoPlayer.h
             VideoPlayerAudio.h
             VideoPlayerRadioRDS.h
             VideoPlayerSubtitle.h
             VideoPlayerTeletext.h
             VideoPlayerVideo.h
-            VideoReferenceClock.h)
+            VideoReferenceClock.h
+            Interface/Addon/DemuxPacket.h
+            Interface/Addon/DemuxCrypto.h
+            Interface/Addon/TimingConstants.h)
 
 core_add_library(VideoPlayer)

@@ -213,7 +213,12 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   return delay;
 }
 
-float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
+float CEngineStats::GetCacheTotal()
+{
+  return MAX_CACHE_LEVEL;
+}
+
+float CEngineStats::GetMaxDelay()
 {
   return MAX_CACHE_LEVEL + MAX_WATER_LEVEL + m_sinkCacheTotal;
 }
@@ -1478,6 +1483,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_paused = false;
   stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
   stream->m_syncError.Flush();
+  stream->ResetFreeBuffers();
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
@@ -2424,7 +2430,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       }
       else
       {
-        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample / buf->pkt->planes;
+        int bytesToSkip = framesToSkip * buf->pkt->bytes_per_sample *
+                                  buf->pkt->config.channels / buf->pkt->planes;
         for (int i=0; i<buf->pkt->planes; i++)
         {
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
@@ -2992,7 +2999,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   int fileSize = sound->GetFileSize();
 
   fmt_ctx = avformat_alloc_context();
-  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+FF_INPUT_BUFFER_PADDING_SIZE);
+  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+AV_INPUT_BUFFER_PADDING_SIZE);
   io_ctx = avio_alloc_context(buffer, SOUNDBUFFER_SIZE, 0,
                                             sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
   io_ctx->max_packet_size = sound->GetChunkSize();

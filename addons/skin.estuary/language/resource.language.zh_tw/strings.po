@@ -330,7 +330,7 @@ msgstr "圖示牆"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "轉換"
+msgstr "橫列海報"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -338,7 +338,7 @@ msgstr "資訊牆"
 
 msgctxt "#31102"
 msgid "Wall"
-msgstr "牆"
+msgstr "海報牆"
 
 msgctxt "#31103"
 msgid "Enter text here..."

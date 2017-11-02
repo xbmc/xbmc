@@ -78,14 +78,15 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
 
 bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
 {
-  bool bHandled = false;
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(bPressed);
 
   if (m_inputType == INPUT_TYPE::DIGITAL)
-    bHandled = OnDigitalMotion(bPressed);
+    bHandled &= OnDigitalMotion(bPressed);
   else if (m_inputType == INPUT_TYPE::ANALOG)
-    bHandled = OnAnalogMotion(bPressed ? 1.0f : 0.0f);
+    bHandled &= OnAnalogMotion(bPressed ? 1.0f : 0.0f);
 
-  return bHandled && AcceptsInput(bPressed);
+  return bHandled;
 }
 
 bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
@@ -98,14 +99,15 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   if (magnitude != 0.0f && magnitude != 1.0f)
     m_bDiscrete = false;
 
-  bool bHandled = false;
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(magnitude > 0.0f);
 
   if (m_inputType == INPUT_TYPE::DIGITAL)
-    bHandled = OnDigitalMotion(magnitude >= ANALOG_DIGITAL_THRESHOLD);
+    bHandled &= OnDigitalMotion(magnitude >= ANALOG_DIGITAL_THRESHOLD);
   else if (m_inputType == INPUT_TYPE::ANALOG)
-    bHandled = OnAnalogMotion(magnitude);
+    bHandled &= OnAnalogMotion(magnitude);
 
-  return bHandled && AcceptsInput(magnitude > 0.0f);
+  return bHandled;
 }
 
 void CScalarFeature::ProcessMotions(void)
@@ -118,18 +120,27 @@ void CScalarFeature::ProcessMotions(void)
 
 bool CScalarFeature::OnDigitalMotion(bool bPressed)
 {
+  bool bHandled = false;
+
   if (m_bDigitalState != bPressed)
   {
     m_bDigitalState = bPressed;
     m_motionStartTimeMs = 0; // This is set in ProcessMotions()
 
-    CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
-              bPressed ? "pressed" : "released");
+    bHandled = m_bInitialPressHandled = m_handler->OnButtonPress(m_name, bPressed);
 
-    return m_handler->OnButtonPress(m_name, bPressed);
+    if (m_bDigitalState)
+      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s pressed (%s)", m_name.c_str(), m_handler->ControllerID().c_str(),
+        bHandled ? "handled" : "ignored");
+    else
+      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s released", m_name.c_str(), m_handler->ControllerID().c_str());
+  }
+  else if (m_bDigitalState)
+  {
+    bHandled = m_bInitialPressHandled;
   }
 
-  return false;
+  return bHandled;
 }
 
 bool CScalarFeature::OnAnalogMotion(float magnitude)
@@ -231,25 +242,22 @@ bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitud
     }
   }
 
-  bool bHandled = false;
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(magnitude > 0.0f);
 
   switch (direction)
   {
   case ANALOG_STICK_DIRECTION::UP:
     m_vertAxis.SetPositiveDistance(magnitude);
-    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::DOWN:
     m_vertAxis.SetNegativeDistance(magnitude);
-    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::RIGHT:
     m_horizAxis.SetPositiveDistance(magnitude);
-    bHandled = true;
     break;
   case ANALOG_STICK_DIRECTION::LEFT:
     m_horizAxis.SetNegativeDistance(magnitude);
-    bHandled = true;
     break;
   default:
     // Just in case, avoid sticking
@@ -258,7 +266,7 @@ bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitud
     break;
   }
 
-  return bHandled && AcceptsInput(magnitude != 0.0f);
+  return bHandled;
 }
 
 void CAnalogStick::ProcessMotions(void)
@@ -319,7 +327,8 @@ bool CAccelerometer::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
 
 bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 {
-  bool bHandled = false;
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(true);
 
   CDriverPrimitive positiveX;
   CDriverPrimitive positiveY;
@@ -330,17 +339,14 @@ bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   if (source == positiveX)
   {
     m_xAxis.SetPositiveDistance(magnitude);
-    bHandled = true;
   }
   else if (source == positiveY)
   {
     m_yAxis.SetPositiveDistance(magnitude);
-    bHandled = true;
   }
   else if (source == positiveZ)
   {
     m_zAxis.SetPositiveDistance(magnitude);
-    bHandled = true;
   }
   else
   {
@@ -350,7 +356,7 @@ bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnit
     m_yAxis.Reset();
   }
 
-  return bHandled && AcceptsInput(true);
+  return bHandled;
 }
 
 void CAccelerometer::ProcessMotions(void)

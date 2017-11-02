@@ -4,7 +4,8 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD</depth>
 	<controls>
-		<include condition="Window.IsActive(gameviewmode) | Window.IsActive(gamevideofilter)">GameDialogSelectLayout</include>
 		<include condition="![Window.IsActive(gameviewmode) | Window.IsActive(gamevideofilter)]">DefaultDialogSelectLayout</include>
+		<include condition="Window.IsActive(gamevideofilter)">GameDialogSelectFilterLayout</include>
+		<include condition="Window.IsActive(gameviewmode)">GameDialogSelectViewLayout</include>
 	</controls>
 </window>

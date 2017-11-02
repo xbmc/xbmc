@@ -28,7 +28,7 @@
 
 #include "FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderInfo.h"
 #include "guilib/GraphicContext.h"
@@ -121,7 +121,7 @@ public:
   virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   virtual bool IsGuiLayer() override;
   virtual void ReleaseBuffer(int idx) override;
-  virtual void RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha) override;
+  virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   virtual void Update() override;
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual CRenderInfo GetRenderInfo() override;

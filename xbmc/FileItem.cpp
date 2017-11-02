@@ -59,6 +59,7 @@
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -822,7 +823,7 @@ bool CFileItem::IsVideo() const
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is video.
 
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_videoExtensions);
+  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
 }
 
 bool CFileItem::IsEPG() const
@@ -873,7 +874,7 @@ bool CFileItem::IsDiscStub() const
     return dbItem.IsDiscStub();
   }
 
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_discStubExtensions);
+  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
 }
 
 bool CFileItem::IsAudio() const
@@ -909,7 +910,7 @@ bool CFileItem::IsAudio() const
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is audio
 
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
+  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
 }
 
 bool CFileItem::IsDeleted() const
@@ -975,7 +976,7 @@ bool CFileItem::IsLyrics() const
 
 bool CFileItem::IsSubtitle() const
 {
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_subtitlesExtensions);
+  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
 }
 
 bool CFileItem::IsCUESheet() const
@@ -1008,13 +1009,17 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || IsRAR()
     || IsRSS()
     || IsAudioBook()
-    || IsType(".ogg|.oga|.nsf|.sid|.sap|.xbt|.xsp")
+    || IsType(".ogg|.oga|.xbt")
 #if defined(TARGET_ANDROID)
     || IsType(".apk")
 #endif
     )
     return true;
   }
+
+  if (CServiceBroker::IsBinaryAddonCacheUp() &&
+      IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()))
+    return true;
 
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
   {
@@ -2493,7 +2498,7 @@ void CFileItemList::FilterCueItems()
                 }
                 else
                 { // try replacing the extension with one of our allowed ones.
-                  std::vector<std::string> extensions = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
+                  std::vector<std::string> extensions = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
                   for (std::vector<std::string>::const_iterator i = extensions.begin(); i != extensions.end(); ++i)
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
@@ -2623,7 +2628,7 @@ void CFileItemList::StackFolders()
           if (bMatch)
           {
             CFileItemList items;
-            CDirectory::GetDirectory(item->GetPath(),items,g_advancedSettings.m_videoExtensions);
+            CDirectory::GetDirectory(item->GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
             // optimized to only traverse listing once by checking for filecount
             // and recording last file item for later use
             int nFiles = 0;
@@ -3247,11 +3252,11 @@ std::string CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_advancedSettings.GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  CDirectory::GetDirectory(strDir, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (IsOpticalMediaFile())
   { // grab from the optical media parent folder as well
     CFileItemList moreItems;
-    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_advancedSettings.GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
   }
 
@@ -3514,7 +3519,7 @@ std::string CFileItem::FindTrailer() const
 
   std::string strDir = URIUtils::GetDirectory(strFile);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_advancedSettings.m_videoExtensions, DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO | DIR_FLAG_NO_FILE_DIRS);
+  CDirectory::GetDirectory(strDir, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO | DIR_FLAG_NO_FILE_DIRS);
   URIUtils::RemoveExtension(strFile);
   strFile += "-trailer";
   std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");

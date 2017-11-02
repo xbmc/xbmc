@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
   // as the whole ProcessSerialNumber approach is deprecated
   // in that case assume finder launch - else
   // we wouldn't handle documents/movies someone dragged on the app icon
-  if (CDarwinUtils::IsMavericks())
+  if (CDarwinUtils::IsMavericksOrHigher())
     gFinderLaunch = TRUE;
 
   // Ensure the application object is initialised

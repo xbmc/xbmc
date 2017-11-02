@@ -34,6 +34,7 @@ class CZeroconfBrowserAndroidDiscover : public jni::CJNIXBMCNsdManagerDiscoveryL
 {
 public:
   explicit CZeroconfBrowserAndroidDiscover(CZeroconfBrowserAndroid* browser);
+  bool IsActive() { return m_isActive; }
   
   // CJNINsdManagerDiscoveryListener interface
 public:
@@ -46,6 +47,7 @@ public:
   
 protected:
   CZeroconfBrowserAndroid* m_browser;
+  bool m_isActive;
 };
 
 class CZeroconfBrowserAndroidResolve : public jni::CJNIXBMCNsdManagerResolveListener

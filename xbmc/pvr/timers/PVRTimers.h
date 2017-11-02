@@ -84,10 +84,15 @@ namespace PVR
     ~CPVRTimers(void) override;
 
     /**
-     * (re)load the timers from the clients.
-     * True when loaded, false otherwise.
+     * @brief (re)load the timers from the clients.
+     * @return True if loaded successfully, false otherwise.
      */
     bool Load(void);
+
+    /**
+     * @brief unload all timers.
+     */
+    void Unload();
 
     /**
      * @brief refresh the channel list from the clients.
@@ -286,7 +291,6 @@ namespace PVR
     CPVRTimerInfoTagPtr GetById(unsigned int iTimerId) const;
 
   private:
-    void Unload(void);
     bool UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients);
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;

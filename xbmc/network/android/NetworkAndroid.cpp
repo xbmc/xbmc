@@ -270,6 +270,26 @@ void CNetworkInterfaceAndroid::SetSettings(NetworkAssignment& assignment, std::s
   // Not implemented
 }
 
+std::string CNetworkInterfaceAndroid::GetHostName()
+{
+  CJNIList<CJNILinkAddress> lla = m_lp.getLinkAddresses();
+  if (lla.size() == 0)
+    return "";
+
+  int i = 0;
+  for (;i < lla.size(); ++i)
+  {
+    if (lla.get(i).getAddress().getAddress().size() > 4)  // IPV4 only
+      continue;
+    break;
+  }
+  if (i == lla.size())
+    return "";
+
+  CJNILinkAddress la = lla.get(i);
+  return la.getAddress().getHostName();
+}
+
 
 /*************************/
 
@@ -288,8 +308,13 @@ CNetworkAndroid::~CNetworkAndroid()
 
 bool CNetworkAndroid::GetHostName(std::string& hostname)
 {
-  hostname = CJNIInetAddress::getLocalHost().getHostName();
-  return true;
+  CNetworkInterfaceAndroid* intf = dynamic_cast<CNetworkInterfaceAndroid*>(GetFirstConnectedInterface());
+  if (intf)
+  {
+    hostname = intf->GetHostName();
+    return true;
+  }
+  return false;
 }
 
 std::vector<CNetworkInterface*>& CNetworkAndroid::GetInterfaceList()

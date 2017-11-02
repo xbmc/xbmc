@@ -1,36 +1,42 @@
 /*
-*      Copyright (C) 2005-2015 Team Kodi
-*      http://kodi.tv
-*
-*  This library is free software; you can redistribute it and/or
-*  modify it under the terms of the GNU Lesser General Public
-*  License as published by the Free Software Foundation; either
-*  version 2.1 of the License, or (at your option) any later version.
-*
-*  This library is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*  Lesser General Public License for more details.
-*
-*  You should have received a copy of the GNU Lesser General Public
-*  License along with this library; if not, write to the Free Software
-*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*
-*/
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
 
 #pragma once
+#if defined(HAVE_SSE2)
 #include <emmintrin.h>
+#endif
 
 inline void* memcpy_aligned(void* dst, const void* src, size_t size, uint8_t bpp = 0)
 {
   const uint8_t shift = 16 - bpp;
+#if defined(HAVE_SSE2)
   __m128i xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 #ifdef _M_X64
   __m128i xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, xmm16;
 #endif
+#endif
 
+#if defined(HAVE_SSE2)
   // if memory is not aligned, use memcpy
   if ((((size_t)(src) | (size_t)(dst)) & 0xF))
+#endif
   {
     if (bpp == 0 || bpp == 16)
       return memcpy(dst, src, size);
@@ -45,7 +51,7 @@ inline void* memcpy_aligned(void* dst, const void* src, size_t size, uint8_t bpp
       return dst;
     }
   }
-
+#if defined(HAVE_SSE2)
   static const size_t regsInLoop = sizeof(size_t) * 2; // 8 or 16
   size_t reminder = size & (regsInLoop * sizeof(xmm1) - 1); // Copy 128 or 256 bytes every loop
   size_t end = 0;
@@ -147,11 +153,14 @@ inline void* memcpy_aligned(void* dst, const void* src, size_t size, uint8_t bpp
     }
   }
   return dst;
+#endif
 }
 
 inline void copy_plane(uint8_t *const src, const int srcStride, int height, int width, uint8_t *const dst, const int dstStride, uint8_t bpp = 0)
 {
+#if defined(HAVE_SSE2)
   _mm_sfence();
+#endif
 
   if (srcStride == dstStride)
     memcpy_aligned(dst, src, srcStride * height, bpp);
@@ -168,8 +177,10 @@ inline void copy_plane(uint8_t *const src, const int srcStride, int height, int 
 
 inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const dst, const int dstStride)
 {
+#if defined(HAVE_SSE2)
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
   _mm_sfence();
+#endif
 
   const size_t chroma_width = (width + 1) >> 1;
   const size_t chromaHeight = height >> 1;
@@ -182,7 +193,9 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride
     uint8_t * d = dst + line * dstStride;
 
     // if memory is not aligned use memcpy
+#if defined(HAVE_SSE2)
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
+#endif
     {
       for (i = 0; i < chroma_width; ++i)
       {
@@ -190,6 +203,7 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride
         *d++ = *v++;
       }
     }
+#if defined(HAVE_SSE2)
     else
     {
       for (i = 0; i < (chroma_width - 31); i += 32)
@@ -235,14 +249,17 @@ inline void convert_yuv420_nv12_chrome(uint8_t *const *src, const int *srcStride
         _mm_stream_si128((__m128i *)(d + (i << 1) + 16), xmm2);
       }
     }
+#endif
   }
 }
 
 inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride, int height, int width, uint8_t *const dst, const int dstStride, uint8_t bpp)
 {
   const uint8_t shift = 16 - bpp;
+#if defined(HAVE_SSE2)
   __m128i xmm0, xmm1, xmm2, xmm3, xmm4;
   _mm_sfence();
+#endif
 
   // Convert to P01x - Chroma
   const size_t chromaWidth = (width + 1) >> 1;
@@ -256,7 +273,9 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride
     uint16_t * d = (uint16_t*)(dst + line * dstStride);
 
     // if memory is not aligned use memcpy
+#if defined(HAVE_SSE2)
     if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
+#endif
     {
       for (i = 0; i < chromaWidth; ++i)
       {
@@ -264,6 +283,7 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride
         *d++ = *v++ << shift;
       }
     }
+#if defined(HAVE_SSE2)
     else
     {
       for (i = 0; i < chromaWidth; i += 16)
@@ -292,8 +312,8 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride
         _mm_stream_si128((__m128i *)(d + (i << 1) + 24), xmm1);
       }
     }
+#endif
   }
-
 }
 
 inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int height, int width, uint8_t *const dst[], const int dstStride[])

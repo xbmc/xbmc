@@ -29,6 +29,7 @@
 #include "Album.h"
 #include "dbwrappers/Database.h"
 #include "MusicDbUrl.h"
+#include "settings/LibExportSettings.h"
 #include "utils/SortUtils.h"
 
 class CArtist;
@@ -245,7 +246,6 @@ public:
    \return true if the album is retrieved, false otherwise.
    */
   bool GetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
-  int  UpdateAlbum(int idAlbum, const CAlbum &album);
   int  UpdateAlbum(int idAlbum,
                    const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                    const std::string& strReleaseGroupMBID,
@@ -278,6 +278,7 @@ public:
   bool GetAlbumFromSong(int idSong, CAlbum &album);
   int  GetAlbumByName(const std::string& strAlbum, const std::string& strArtist="");
   int  GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist);
+  int  GetAlbumByMatch(const CAlbum &album);
   std::string GetAlbumById(int id);
   bool SetAlbumUserrating(const int idAlbum, int userrating);
 
@@ -290,6 +291,7 @@ public:
   int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, bool bScrapedMBID = false);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
   bool GetArtistExists(int idArtist);
+  int GetLastArtist();
   int  UpdateArtist(int idArtist,
                     const std::string& strArtist, const std::string& strSortName,
                     const std::string& strMusicBrainzArtistID, bool bScrapedMBID,
@@ -309,6 +311,7 @@ public:
 
   std::string GetArtistById(int id);
   int GetArtistByName(const std::string& strArtist);
+  int GetArtistByMatch(const CArtist& artist);
   std::string GetRoleById(int id);
 
   /*! \brief Propagate artist sort name into the concatenated artist sort name strings
@@ -325,8 +328,12 @@ public:
   bool GetPaths(std::set<std::string> &paths);
   bool SetPathHash(const std::string &path, const std::string &hash);
   bool GetPathHash(const std::string &path, std::string &hash);
-  bool GetAlbumPath(int idAlbum, std::string &path);
-  bool GetArtistPath(int idArtist, std::string &path);
+  bool GetAlbumPath(int idAlbum, std::string &basePath);
+  bool GetOldArtistPath(int idArtist, std::string &path);
+  bool GetArtistPath(const CArtist& artist, std::string &path);
+  bool GetAlbumFolder(const CAlbum& album, const std::string &strAlbumPath, std::string &strFolder);
+  bool GetArtistFolderName(const CArtist& artist, std::string &strFolder);
+  bool GetArtistFolderName(const std::string &strArtist, const std::string &strMusicBrainzArtistID, std::string &strFolder);
 
   /////////////////////////////////////////////////
   // Genres
@@ -445,7 +452,7 @@ public:
   /////////////////////////////////////////////////
   // XML
   /////////////////////////////////////////////////
-  void ExportToXML(const std::string &xmlFile, bool singleFile = false, bool images=false, bool overwrite=false);
+  void ExportToXML(const CLibExportSettings& settings, CGUIDialogProgress* progressDialog = NULL);
   void ImportFromXML(const std::string &xmlFile);
 
   /////////////////////////////////////////////////

@@ -46,7 +46,6 @@ protected:
   
   CCriticalSection m_critSection;
   std::multimap<TYPE, VECADDONS> m_addons;
-  std::vector<TYPE> m_addonsToCache;
 };
 
 }

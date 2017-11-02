@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 
 ifeq ($(NATIVE_OS),osx)
 # https://openradar.appspot.com/radar?id=6160634819379200
-PLATFORM_CONFIGURE="gl_cv_func_getcwd_abort_bug=no"
+PLATFORM_CONFIGURE=gl_cv_func_getcwd_abort_bug=no ac_cv_func_futimens=no ac_cv_func_utimensat=no
 endif
 
 export LIBTOOL=builds/unix/libtool

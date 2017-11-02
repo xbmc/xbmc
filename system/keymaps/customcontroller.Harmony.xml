@@ -39,12 +39,12 @@
   <global>
     <customcontroller name="Harmony">
       <!-- up       	-->      <button id="101">Up</button>
-      <!-- minus      	-->      <button id="102">Down</button>
+      <!-- down      	-->      <button id="102">Down</button>
       <!-- left       	-->      <button id="103">Left</button>
       <!-- right      	-->      <button id="104">Right</button>
       <!-- OK		-->      <button id="105">Select</button>
       <!-- menu       	-->      <button id="106">ContextMenu</button>
-      <!-- hold play  	-->      <button id="107">Fullscreen</button>
+      <!-- hold play  	-->      <button id="107">FullScreen</button>
       <!-- hold menu  	-->      <button id="108">ContextMenu</button>
       <!-- hold right 	-->      <button id="109">Right</button>
       <!-- hold left  	-->      <button id="110">Left</button>
@@ -105,13 +105,13 @@
       <!-- Sleep	-->      <button id="146">Suspend()</button>
       <!-- Red		-->      <button id="183">PlayerProcessInfo</button>
       <!-- Green	-->      <button id="184">ActivateWindow(Settings)</button>
-      <!-- Yellow	-->      <button id="185">xbmc.ActivateWindow(SystemSettings)</button>
+      <!-- Yellow	-->      <button id="185">ActivateWindow(SystemSettings)</button>
       <!-- Blue		-->      <button id="186">ActivateWindow(SystemInfo)</button>
     </customcontroller>
   </global>
   <Home>
     <customcontroller name="Harmony">
-      <!-- menu       	-->      <button id="16">ActivateWindow(PlayerControls)</button>
+      <!-- menu       	-->      <button id="106">ActivateWindow(PlayerControls)</button>
       <!-- Info  	-->      <button id="131">ActivateWindow(Settings)</button>
       <!-- Exit 	-->      <button id="151">ActivateWindow(ShutdownMenu)</button>
       <!-- #enter	-->      <button id="136">ActivateWindow(SystemInfo)</button>
@@ -154,9 +154,6 @@
       <!-- right      	-->      <button id="104">StepForward</button>
       <!-- menu       	-->      <button id="106">OSD</button>
       <!-- Prev		-->      <button id="132">SmallStepBack</button>
-      <!-- Info  	-->      <button id="131">Info</button>
-      <!-- F7		-->      <button id="195">NextSubtitle</button>
-      <!-- F6		-->      <button id="194">ShowSubtitles</button>
     </customcontroller>
   </FullscreenVideo>
   <FullscreenLiveTV>
@@ -193,7 +190,6 @@
       <!-- right      	-->      <button id="104">NextPreset</button>
       <!-- menu       	-->      <button id="106">OSD</button>
       <!-- Prev		-->      <button id="132">LockPreset</button>
-      <!-- Info  	-->      <button id="131">Info</button>
       <!-- F8		-->      <button id="196">ActivateWindow(VisualisationPresetList)</button>
       <!-- F9		-->      <button id="173">ActivateWindow(AddonSettings)</button>
     </customcontroller>
@@ -228,7 +224,6 @@
       <!-- 0 		-->      <button id="144">ZoomNormal</button>
       <!-- Skip      	-->      <button id="192">NextPicture</button>
       <!-- Replay       -->      <button id="191">PreviousPicture</button>
-      <!-- Info  	-->      <button id="131">Info</button>
       <!-- OK		-->      <button id="105">Rotate</button>
     </customcontroller>
   </SlideShow>
@@ -238,13 +233,6 @@
       <!-- 0 		-->      <button id="144">ResetCalibration</button>
       <!-- # enter 	-->      <button id="136">NextCalibration</button>
       <!-- Guide  	-->      <button id="165">NextResolution</button>
-    </customcontroller>
-  </ScreenCalibration>
-  <ScreenCalibration>
-    <customcontroller name="Harmony">
-      <!-- OK		-->      <button id="105">NextCalibration</button>
-      <!-- 0 		-->      <button id="144">ResetCalibration</button>
-      <!-- # enter 	-->      <button id="136">NextCalibration</button>
     </customcontroller>
   </ScreenCalibration>
   <VideoOSD>
@@ -301,16 +289,6 @@
       <!-- Prev		-->      <button id="132">BackSpace</button>
       <!-- * clear 	-->      <button id="145">Shift</button>
       <!-- # enter 	-->      <button id="136">Symbols</button>
-      <!-- 1 		-->      <button id="111">Number1</button>
-      <!-- 2 		-->      <button id="112">Number2</button>
-      <!-- 3 		-->      <button id="113">Number3</button>
-      <!-- 4 		-->      <button id="114">Number4</button>
-      <!-- 5 		-->      <button id="123">Number5</button>
-      <!-- 6 		-->      <button id="124">Number6</button>
-      <!-- 7 		-->      <button id="133">Number7</button>
-      <!-- 8 		-->      <button id="134">Number8</button>
-      <!-- 9 		-->      <button id="143">Number9</button>
-      <!-- 0 		-->      <button id="144">Number0</button>
       <!-- Rew       	-->      <button id="141">CursorLeft</button>
       <!-- Fwd  	-->      <button id="142">CursorRight</button>
     </customcontroller>

@@ -37,7 +37,8 @@
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 
-#if defined(HAS_GL) || defined(HAS_GLES)
+#define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
@@ -58,6 +59,12 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 bool CGUIFontTTFGL::FirstBegin()
 {
+#if defined(HAS_GL)
+  GLenum pixformat = GL_RED;
+#else
+  GLenum pixformat = GL_ALPHA; // deprecated
+#endif
+
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
     if (glIsTexture(m_nTexture))
@@ -72,16 +79,14 @@ bool CGUIFontTTFGL::FirstBegin()
 
     // Bind the texture object
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
-#ifdef HAS_GL
-    glEnable(GL_TEXTURE_2D);
-#endif
+
     // Set the texture's stretching properties
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-        GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, pixformat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+        pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -90,9 +95,8 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_UPDATED)
   {
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, GL_ALPHA, GL_UNSIGNED_BYTE,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
         m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
-    glDisable(GL_TEXTURE_2D);
 
     m_updateY1 = m_updateY2 = 0;
     m_textureStatus = TEXTURE_READY;
@@ -101,77 +105,73 @@ bool CGUIFontTTFGL::FirstBegin()
   // Turn Blending On
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
   glEnable(GL_BLEND);
-#ifdef HAS_GL
-  glEnable(GL_TEXTURE_2D);
-#endif
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_nTexture);
-
-#ifdef HAS_GL
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-  glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  VerifyGLState();
-
-  if(g_Windowing.UseLimitedColor())
-  {
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_nTexture); // dummy bind
-    glEnable(GL_TEXTURE_2D);
-
-    const GLfloat rgba[4] = {16.0f / 255.0f, 16.0f / 255.0f, 16.0f / 255.0f, 0.0f};
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE , GL_COMBINE);
-    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, rgba);
-    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB      , GL_ADD);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB      , GL_PREVIOUS);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB      , GL_CONSTANT);
-    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND0_RGB     , GL_SRC_COLOR);
-    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND1_RGB     , GL_SRC_COLOR);
-    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA    , GL_REPLACE);
-    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA    , GL_PREVIOUS);
-    VerifyGLState();
-  }
-
-#endif
   return true;
 }
 
 void CGUIFontTTFGL::LastEnd()
 {
 #ifdef HAS_GL
-  glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+  g_Windowing.EnableShader(SM_FONTS);
 
-  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, r));
-  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, x));
-  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, u));
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDrawArrays(GL_QUADS, 0, m_vertex.size());
-  glPopClientAttrib();
+  GLint posLoc = g_Windowing.ShaderGetPos();
+  GLint colLoc = g_Windowing.ShaderGetCol();
+  GLint tex0Loc = g_Windowing.ShaderGetCoord0();
+  GLint modelLoc = g_Windowing.ShaderGetModel();
 
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
+  CreateStaticVertexBuffers();
+
+  // Enable the attributes used by this shader
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  if (!m_vertex.empty())
+  {
+
+    // Deal with vertices that had to use software clipping
+    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
+    SVertex *vertices = &vecVertices[0];
+    for (size_t i=0; i<m_vertex.size(); i+=4)
+    {
+      *vertices++ = m_vertex[i];
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+2];
+
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+3];
+      *vertices++ = m_vertex[i+2];
+    }
+    vertices = &vecVertices[0];
+
+    GLuint VertexVBO;
+
+    glGenBuffers(1, &VertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, x)));
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, r)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, u)));
+
+    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &VertexVBO);
+  }
+
 #else
   // GLES 2.0 version.
   g_Windowing.EnableGUIShader(SM_FONTS);
-
-  CreateStaticVertexBuffers();
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
   GLint modelLoc = g_Windowing.GUIShaderGetModel();
+
+
+  CreateStaticVertexBuffers();
 
   // Enable the attributes used by this shader
   glEnableVertexAttribArray(posLoc);
@@ -197,13 +197,14 @@ void CGUIFontTTFGL::LastEnd()
 
     vertices = &vecVertices[0];
 
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-    // Normalize color values. Does not affect Performance at all.
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
     glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
   }
+#endif
+
   if (!m_vertexTrans.empty())
   {
     // Deal with the vertices that can be hardware clipped and therefore translated
@@ -267,11 +268,13 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
+#ifdef HAS_GL
+  g_Windowing.DisableShader();
+#else
   g_Windowing.DisableGUIShader();
 #endif
 }
 
-#if HAS_GLES
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
 {
   // Generate a unique buffer object name and put it in bufferHandle
@@ -298,7 +301,6 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
     buffer.bufferHandle = 0;
   }
 }
-#endif
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
@@ -388,7 +390,6 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   return TRUE;
 }
 
-
 void CGUIFontTTFGL::DeleteHardwareTexture()
 {
   if (m_textureStatus != TEXTURE_VOID)
@@ -401,11 +402,11 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   }
 }
 
-#if HAS_GLES
 void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
 {
   if (m_staticVertexBufferCreated)
     return;
+
   // Bind a new buffer to the OpenGL context's GL_ELEMENT_ARRAY_BUFFER binding point
   glGenBuffers(1, &m_elementArrayHandle);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
@@ -435,6 +436,4 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
 
 GLuint CGUIFontTTFGL::m_elementArrayHandle;
 bool CGUIFontTTFGL::m_staticVertexBufferCreated;
-#endif
 
-#endif

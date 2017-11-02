@@ -893,12 +893,12 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(Tag *generic, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(Tag *genericTag, EmbeddedArt *art, CMusicInfoTag& tag)
 {
-  if (!generic)
+  if (!genericTag)
     return false;
 
-  PropertyMap properties = generic->properties();
+  PropertyMap properties = genericTag->properties();
   for (PropertyMap::ConstIterator it = properties.begin(); it != properties.end(); ++it)
   {
     if (it->first == "ARTIST")
@@ -1217,7 +1217,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   ID3v1::Tag *id3v1 = nullptr;
   ID3v2::Tag *id3v2 = nullptr;
   Ogg::XiphComment *xiph = nullptr;
-  Tag *generic = nullptr;
+  Tag *genericTag = nullptr;
 
   if (apeFile)
     ape = apeFile->APETag(false);
@@ -1257,7 +1257,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   else if (mpcFile)
     ape = mpcFile->APETag(false);
   else    // This is a catch all to get generic information for other files types (s3m, xm, it, mod, etc)
-    generic = file->tag();
+    genericTag = file->tag();
 
   if (file->audioProperties())
     tag.SetDuration(file->audioProperties()->length());
@@ -1268,8 +1268,8 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     ParseTag(id3v1, art, tag);
   if (id3v2)
     ParseTag(id3v2, art, tag);
-  if (generic)
-    ParseTag(generic, art, tag);
+  if (genericTag)
+    ParseTag(genericTag, art, tag);
   if (mp4)
     ParseTag(mp4, art, tag);
   if (xiph) // xiph tags override id3v2 tags in badly tagged FLACs

@@ -19,12 +19,14 @@
  */
 
 #include "DialogGameVideoSelect.h"
+#include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
+#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "input/Action.h"
 #include "input/ActionIDs.h"
-#include "messaging/ApplicationMessenger.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -38,7 +40,9 @@
 using namespace KODI;
 using namespace GAME;
 
+#define CONTROL_HEADING               1
 #define CONTROL_THUMBS                11
+#define CONTROL_DESCRIPTION           12
 
 CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
   CGUIDialog(windowId, "DialogSelect.xml"),
@@ -51,25 +55,24 @@ CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId) :
 
 CDialogGameVideoSelect::~CDialogGameVideoSelect() = default;
 
-void CDialogGameVideoSelect::RegisterCallback(RETRO::IRenderSettingsCallback *callback)
-{
-  m_callback = callback;
-}
-
-void CDialogGameVideoSelect::UnregisterCallback()
-{
-  m_callback = nullptr;
-}
-
 bool CDialogGameVideoSelect::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
     {
+      RegisterDialog();
+
       // Don't init this dialog if we aren't playing a game
-      if (m_callback == nullptr)
+      if (!m_gameVideoHandle || !m_gameVideoHandle->IsPlayingGame())
         return false;
+
+      break;
+    }
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      UnregisterDialog();
+
       break;
     }
     case GUI_MSG_SETFOCUS:
@@ -92,9 +95,8 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage &message)
         {
           using namespace MESSAGING;
 
-          // Send OSD command to resume gameplay
-          CAction *action = new CAction(ACTION_SHOW_OSD);
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+          // Changed from sending ACTION_SHOW_OSD to closing the dialog
+          Close();
 
           return true;
         }
@@ -147,6 +149,11 @@ void CDialogGameVideoSelect::OnInitWindow()
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_THUMBS);
   OnMessage(msg);
+
+  std::string heading = GetHeading();
+  SET_CONTROL_LABEL(CONTROL_HEADING, heading);
+
+  FrameMove();
 }
 
 void CDialogGameVideoSelect::OnDeinitWindow(int nextWindowID)
@@ -189,7 +196,10 @@ void CDialogGameVideoSelect::OnRefreshList()
   GetItems(*m_vecItems);
 
   m_viewControl->SetItems(*m_vecItems);
-  m_viewControl->SetSelectedItem(GetFocusedItem());
+
+  auto focusedIndex = GetFocusedItem();
+  m_viewControl->SetSelectedItem(focusedIndex);
+  OnItemFocus(focusedIndex);
 }
 
 void CDialogGameVideoSelect::SaveSettings()
@@ -202,4 +212,21 @@ void CDialogGameVideoSelect::SaveSettings()
     defaultSettings = currentSettings;
     CServiceBroker::GetSettings().Save();
   }
+}
+
+void CDialogGameVideoSelect::OnDescriptionChange(const std::string &description)
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_DESCRIPTION);
+  msg.SetLabel(description);
+  g_windowManager.SendThreadMessage(msg, GetID());
+}
+
+void CDialogGameVideoSelect::RegisterDialog()
+{
+  m_gameVideoHandle = CServiceBroker::GetGameRenderManager().RegisterDialog(*this);
+}
+
+void CDialogGameVideoSelect::UnregisterDialog()
+{
+  m_gameVideoHandle.reset();
 }

@@ -41,7 +41,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "guilib/GraphicContext.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "linux/RBP.h"
 
@@ -263,18 +263,25 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
 
 std::string OMXPlayerVideo::GetStereoMode()
 {
-  std::string  stereo_mode;
+  std::string  stereoMode;
 
-  switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
+  switch(m_processInfo.GetVideoSettings().m_StereoMode)
   {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
-    default:                                  stereo_mode = m_hints.stereo_mode; break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      stereoMode = "left_right";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      stereoMode = "top_bottom";
+      break;
+    default:
+      stereoMode = m_processInfo.GetVideoStereoMode();
+      break;
   }
 
-  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
-    stereo_mode = GetStereoModeInvert(stereo_mode);
-  return stereo_mode;
+  if (m_processInfo.GetVideoSettings().m_StereoInvert)
+    stereoMode = GetStereoModeInvert(stereoMode);
+
+  return stereoMode;
 }
 
 void OMXPlayerVideo::Output(double pts, bool bDropPacket)
@@ -460,7 +467,7 @@ void OMXPlayerVideo::Process()
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
       #ifdef _DEBUG
-      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts, 
+      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts,
           (int)pPacket->iSize, m_syncState, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, 0);
       #endif
       if (m_messageQueue.GetDataSize() == 0
@@ -486,7 +493,7 @@ void OMXPlayerVideo::Process()
           Sleep(10);
           continue;
         }
-  
+
         if (m_stalled)
         {
           if(m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
@@ -710,7 +717,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
   CLog::Log(LOGDEBUG, "OMXPlayerVideo::%s %d,%d,%d,%d -> %d,%d,%d,%d (%d,%d,%d,%d,%s)", __func__,
       (int)SrcRect.x1, (int)SrcRect.y1, (int)SrcRect.x2, (int)SrcRect.y2,
       (int)DestRect.x1, (int)DestRect.y1, (int)DestRect.x2, (int)DestRect.y2,
-      video_stereo_mode, display_stereo_mode, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert, g_graphicsContext.GetStereoView(), OMXPlayerVideo::GetStereoMode().c_str());
+      video_stereo_mode, display_stereo_mode, m_processInfo.GetVideoSettings().m_StereoInvert, g_graphicsContext.GetStereoView(), OMXPlayerVideo::GetStereoMode().c_str());
 
   m_src_rect = SrcRect;
   m_dst_rect = DestRect;
@@ -754,6 +761,8 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
   uint32_t video_width   = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth;
   uint32_t video_height  = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight;
+
+  m_processInfo.SetVideoStereoMode(m_hints.stereo_mode);
 
   /* figure out stereomode expected based on user settings and hints */
   unsigned flags = GetStereoModeFlags(GetStereoMode());
@@ -802,4 +811,3 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_
   OMXPlayerVideo *player = static_cast<OMXPlayerVideo*>(ctx);
   player->ResolutionUpdateCallBack(width, height, framerate, display_aspect);
 }
-

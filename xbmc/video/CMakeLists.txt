@@ -25,6 +25,7 @@ set(HEADERS Bookmark.h
             VideoInfoScanner.h
             VideoInfoTag.h
             VideoLibraryQueue.h
-            VideoThumbLoader.h)
+            VideoThumbLoader.h
+            ViewModeSettings.h)
 
 core_add_library(video)

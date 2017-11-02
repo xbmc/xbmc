@@ -69,7 +69,6 @@ protected:
   void UpdateName();
   bool SetPictureParams(VideoPicture* pVideoPicture);
 
-  IHardwareDecoder* CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo);
   bool HasHardware() { return m_pHardware != nullptr; };
   void SetHardware(IHardwareDecoder *hardware);
 
@@ -101,7 +100,7 @@ protected:
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
-  bool   m_started;
+  bool m_started = false;
   std::vector<AVPixelFormat> m_formats;
   double m_decoderPts;
   int    m_skippedDeint;

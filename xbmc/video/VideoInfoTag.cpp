@@ -1375,19 +1375,22 @@ void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
 
 void CVideoInfoTag::SetPremiered(CDateTime premiered)
 {
-  m_premiered = premiered;
+  m_premiered = std::move(premiered);
   m_bHasPremiered = premiered.IsValid();
 }
 
 void CVideoInfoTag::SetPremieredFromDBDate(std::string premieredString)
 {
   CDateTime premiered;
-  premiered.SetFromDBDate(premieredString);
+  premiered.SetFromDBDate(std::move(premieredString));
   SetPremiered(premiered);
 }
 
 void CVideoInfoTag::SetYear(int year)
 {
+  if (year <= 0)
+    return;
+
   if (m_bHasPremiered)
     m_premiered.SetDate(year, m_premiered.GetMonth(), m_premiered.GetDay());
   else

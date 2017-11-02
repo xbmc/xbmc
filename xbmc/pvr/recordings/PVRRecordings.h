@@ -37,8 +37,17 @@ namespace PVR
     CPVRRecordings(void);
     virtual ~CPVRRecordings(void);
 
+    /**
+     * @brief (re)load the recordings from the clients.
+     * @return the number of recordings loaded.
+     */
     int Load();
-    void Clear();
+
+    /**
+     * @brief unload all recordings.
+     */
+    void Unload();
+
     void UpdateFromClient(const CPVRRecordingPtr &tag);
 
     /**

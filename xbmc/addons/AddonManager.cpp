@@ -95,9 +95,9 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
       builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
       builder.SetExtPoint(ext);
 
-      auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
+      auto libname = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@library");
       if (libname.empty())
-        libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
+        libname = CServiceBroker::GetAddonMgr().GetPlatformLibraryName(ext->configuration);
       builder.SetLibName(libname);
     }
   }
@@ -139,15 +139,15 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetDependencies(std::move(dependencies));
   }
 
-  auto metadata = CAddonMgr::GetInstance().GetExtension(plugin, "xbmc.addon.metadata");
+  auto metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "xbmc.addon.metadata");
   if (!metadata)
-    metadata = CAddonMgr::GetInstance().GetExtension(plugin, "kodi.addon.metadata");
+    metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "kodi.addon.metadata");
 
   if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
   {
     //backwards compatibility
-    std::string icon = metadata && CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "noicon") == "true" ? "" : "icon.png";
-    std::string fanart = metadata && CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "nofanart") == "true" ? "" : "fanart.jpg";
+    std::string icon = metadata && CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "noicon") == "true" ? "" : "icon.png";
+    std::string fanart = metadata && CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "nofanart") == "true" ? "" : "fanart.jpg";
     if (!icon.empty())
       builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
     if (!fanart.empty())
@@ -156,14 +156,14 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
 
   if (metadata)
   {
-    builder.SetSummary(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "summary"));
-    builder.SetDescription(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "description"));
-    builder.SetDisclaimer(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "disclaimer"));
-    builder.SetChangelog(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "news"));
-    builder.SetLicense(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "license"));
-    builder.SetPackageSize(StringUtils::ToUint64(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "size"), 0));
+    builder.SetSummary(CServiceBroker::GetAddonMgr().GetTranslatedString(metadata->configuration, "summary"));
+    builder.SetDescription(CServiceBroker::GetAddonMgr().GetTranslatedString(metadata->configuration, "description"));
+    builder.SetDisclaimer(CServiceBroker::GetAddonMgr().GetTranslatedString(metadata->configuration, "disclaimer"));
+    builder.SetChangelog(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "news"));
+    builder.SetLicense(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "license"));
+    builder.SetPackageSize(StringUtils::ToUint64(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "size"), 0));
 
-    std::string language = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "language");
+    std::string language = CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "language");
     if (!language.empty())
     {
       InfoMap extrainfo;
@@ -171,16 +171,16 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
       builder.SetExtrainfo(std::move(extrainfo));
     }
 
-    builder.SetBroken(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "broken"));
+    builder.SetBroken(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "broken"));
 
     if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
     {
-      auto assets = CAddonMgr::GetInstance().GetExtElement(metadata->configuration, "assets");
+      auto assets = CServiceBroker::GetAddonMgr().GetExtElement(metadata->configuration, "assets");
       if (assets)
       {
         builder.SetIcon("");
         builder.SetArt("fanart", "");
-        std::string icon = CAddonMgr::GetInstance().GetExtValue(assets, "icon");
+        std::string icon = CServiceBroker::GetAddonMgr().GetExtValue(assets, "icon");
         if (!icon.empty())
           icon = URIUtils::AddFileToFolder(plugin->plugin_path, icon);
         builder.SetIcon(icon);
@@ -189,7 +189,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
         std::array<std::string, 3> artTypes{{"fanart", "banner", "clearlogo"}};
         for (auto type : artTypes)
         {
-          auto value = CAddonMgr::GetInstance().GetExtValue(assets, type.c_str());
+          auto value = CServiceBroker::GetAddonMgr().GetExtValue(assets, type.c_str());
           if (!value.empty())
           {
             value = URIUtils::AddFileToFolder(plugin->plugin_path, value);
@@ -199,7 +199,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
 
         std::vector<std::string> screenshots;
         ELEMENTS elements;
-        if (CAddonMgr::GetInstance().GetExtElements(assets, "screenshot", elements))
+        if (CServiceBroker::GetAddonMgr().GetExtElements(assets, "screenshot", elements))
         {
           for (const auto& elem : elements)
           {
@@ -252,11 +252,6 @@ CAddonMgr::CAddonMgr()
 CAddonMgr::~CAddonMgr()
 {
   DeInit();
-}
-
-CAddonMgr &CAddonMgr::GetInstance()
-{
-  return CServiceBroker::GetAddonMgr();
 }
 
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
@@ -659,6 +654,12 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   return false;
 }
 
+bool CAddonMgr::HasType(const std::string &id, const TYPE &type)
+{
+  AddonPtr addon;
+  return GetAddon(id, addon, type, false);
+}
+
 bool CAddonMgr::FindAddons()
 {
   bool result = false;
@@ -691,41 +692,44 @@ bool CAddonMgr::FindAddons()
     tmp.clear();
     m_database.GetBlacklisted(tmp);
     m_updateBlacklist = std::move(tmp);
-
-    m_events.Publish(AddonEvents::InstalledChanged());
   }
 
   return result;
 }
 
-bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
+bool CAddonMgr::UnloadAddon(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
+
+  if (!IsAddonInstalled(addonId))
+    return true;
+
   if (m_cpluff && m_cp_context)
   {
-    if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
+    if (m_cpluff->uninstall_plugin(m_cp_context, addonId.c_str()) == CP_OK)
     {
-      CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addon->ID().c_str());
-      m_events.Publish(AddonEvents::InstalledChanged());
-      m_events.Publish(AddonEvents::UnInstalled(addon->ID()));
+      CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addonId.c_str());
+
+      lock.Leave();
+      AddonEvents::Unload event(addonId);
+      m_unloadEvents.HandleEvent(event);
       return true;
     }
   }
-  CLog::Log(LOGERROR, "CAddonMgr: failed to unload %s", addon->ID().c_str());
+  CLog::Log(LOGERROR, "CAddonMgr: failed to unload %s", addonId.c_str());
   return false;
 }
 
-bool CAddonMgr::ReloadAddon(AddonPtr& addon)
+bool CAddonMgr::LoadAddon(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
-  if (!addon ||!m_cpluff || !m_cp_context)
+  if (!m_cpluff || !m_cp_context)
     return false;
 
-  AddonPtr tmp;
-  bool isReinstall = GetAddon(addon->ID(), tmp, ADDON_UNKNOWN, false);
-  if (isReinstall)
+  AddonPtr addon;
+  if (GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
-    m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
+    return true;
   }
 
   if (!FindAddons())
@@ -734,22 +738,25 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
     return false;
   }
 
-  if (!GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false))
+  if (!GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonMgr: could not load add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
     return false;
   }
 
-  if (isReinstall)
-    m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
+  lock.Leave();
 
-  if (!EnableAddon(addon->ID()))
+  AddonEvents::Load event(addon->ID());
+  m_unloadEvents.HandleEvent(event);
+
+  if (IsAddonDisabled(addon->ID()))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: '%s' was installed but could not be enabled", addon->ID().c_str());
-    return false;
+    EnableAddon(addon->ID());
+    return true;
   }
 
-  CLog::Log(LOGDEBUG, "CAddonMgr: %s reloaded", addon->ID().c_str());
+  m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
+  CLog::Log(LOGDEBUG, "CAddonMgr: %s successfully loaded", addon->ID().c_str());
   return true;
 }
 
@@ -758,6 +765,7 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
   CSingleLock lock(m_critSection);
   m_disabled.erase(id);
   m_updateBlacklist.erase(id);
+  m_events.Publish(AddonEvents::UnInstalled(id));
 }
 
 bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
@@ -800,7 +808,7 @@ static void ResolveDependencies(const std::string& addonId, std::vector<std::str
     return;
 
   AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
     missing.push_back(addonId);
   else
   {
@@ -828,7 +836,6 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
   {
-    ADDON::OnDisabled(addon);
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
   }
 
@@ -857,7 +864,6 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!m_database.DisableAddon(id, false))
     return false;
   m_disabled.erase(id);
-  ADDON::OnEnabled(addon);
 
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
@@ -982,16 +988,16 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
 
 bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
 {
-  auto *metadata = CAddonMgr::GetInstance().GetExtension(plugin, "xbmc.addon.metadata");
+  auto *metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "xbmc.addon.metadata");
   if (!metadata)
-    metadata = CAddonMgr::GetInstance().GetExtension(plugin, "kodi.addon.metadata");
+    metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "kodi.addon.metadata");
 
   // if platforms are not specified, assume supported
   if (!metadata)
     return true;
 
   std::vector<std::string> platforms;
-  if (!CAddonMgr::GetInstance().GetExtList(metadata->configuration, "platform", platforms))
+  if (!CServiceBroker::GetAddonMgr().GetExtList(metadata->configuration, "platform", platforms))
     return true;
 
   if (platforms.empty())
@@ -1006,9 +1012,11 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
     "linux",
 #elif defined(TARGET_LINUX)
     "linux",
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
     "windx",
     "windows",
+#elif defined(TARGET_WINDOWS_STORE)
+    "windowsstore",
 #elif defined(TARGET_DARWIN_IOS)
     "ios",
 #elif defined(TARGET_DARWIN_OSX)
@@ -1092,10 +1100,12 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
   if (libraryName.empty())
 #endif
   libraryName = GetExtValue(base, "@library_linux");
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
   libraryName = GetExtValue(base, "@library_windx");
   if (libraryName.empty())
     libraryName = GetExtValue(base, "@library_windows");
+#elif defined(TARGET_WINDOWS_STORE)
+  libraryName = GetExtValue(base, "@library_windowsstore");
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
   libraryName = GetExtValue(base, "@library_ios");

@@ -83,8 +83,6 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   if (m_pAudioStream->HasDSP())
     m_pAudioStream->SetFFmpegInfo(audioframe.profile, audioframe.matrix_encoding, audioframe.audio_service_type);
 
-  SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
-
   return true;
 }
 
@@ -109,7 +107,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 
   CSingleLock lock (m_critSection);
 
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0;
 
   CAESyncInfo info = m_pAudioStream->GetSyncInfo();
@@ -252,7 +250,7 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
 double CAudioSinkAE::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
 
   double delay = 0.0;
@@ -265,9 +263,17 @@ double CAudioSinkAE::GetCacheTime()
 double CAudioSinkAE::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return 0.0;
   return m_pAudioStream->GetCacheTotal();
+}
+
+double CAudioSinkAE::GetMaxDelay()
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pAudioStream)
+    return 0.0;
+  return m_pAudioStream->GetMaxDelay();
 }
 
 double CAudioSinkAE::GetPlayingPts()

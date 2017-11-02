@@ -111,7 +111,7 @@ void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage ms
   if (msg == ObservableMessageManagerStopped)
     ClearData();
 
-  if (IsActive())
+  if (m_active)
   {
     CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
     CApplicationMessenger::GetInstance().SendGUIMessage(m);
@@ -253,7 +253,7 @@ void CGUIWindowPVRBase::SetInvalid()
 bool CGUIWindowPVRBase::CanBeActivated() const
 {
   // check if there is at least one enabled PVR add-on
-  if (!ADDON::CAddonMgr::GetInstance().HasAddons(ADDON::ADDON_PVRDLL))
+  if (!CServiceBroker::GetAddonMgr().HasAddons(ADDON::ADDON_PVRDLL))
   {
     HELPERS::ShowOKDialogText(CVariant{19296}, CVariant{19272}); // No PVR add-on enabled, You need a tuner, backend software...
     return false;

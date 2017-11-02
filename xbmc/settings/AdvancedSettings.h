@@ -255,7 +255,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
-    bool m_bMusicLibraryPromptFullTagScan;
     bool m_bMusicLibraryArtistSortOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
     bool m_prioritiseAPEv2tags;
@@ -358,12 +357,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float GetLatencyTweak(float refreshrate);
     bool m_initialized;
 
-    //! \brief Returns a list of picture extension for filtering in the GUI
-    std::string GetPictureExtensions() const;
-
-    //! \brief Returns a list of music extension for filtering in the GUI
-    std::string GetMusicExtensions() const;
-
     void SetDebugMode(bool debug);
 
     //! \brief Toggles dirty-region visualization
@@ -373,6 +366,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_videoExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
+    std::string m_musicExtensions;
+    std::string m_pictureExtensions;
 
     std::string m_stereoscopicregex_3d;
     std::string m_stereoscopicregex_sbs;
@@ -388,8 +383,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_userAgent;
 
   private:
-    std::string m_musicExtensions;
-    std::string m_pictureExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 

@@ -106,6 +106,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS },
     { "locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS },
     { "contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS },
+    { "libexportsettings"        , WINDOW_DIALOG_LIBEXPORT_SETTINGS },
     { "songinformation"          , WINDOW_DIALOG_SONG_INFO },
     { "smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR },
     { "smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE },
@@ -147,6 +148,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "gameosd"                  , WINDOW_DIALOG_GAME_OSD },
     { "gamevideofilter"          , WINDOW_DIALOG_GAME_VIDEO_FILTER },
     { "gameviewmode"             , WINDOW_DIALOG_GAME_VIEW_MODE },
+    { "gamevolume"               , WINDOW_DIALOG_GAME_VOLUME },
 };
 
 namespace
@@ -161,7 +163,6 @@ static const std::vector<FallbackWindowMapping> FallbackWindows =
 {
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
     { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION },
-    { WINDOW_FULLSCREEN_GAME     , WINDOW_FULLSCREEN_VIDEO }
 };
 } // anonymous namespace
 

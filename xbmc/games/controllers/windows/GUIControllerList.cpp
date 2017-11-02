@@ -67,7 +67,7 @@ bool CGUIControllerList::Initialize(void)
   if (m_controllerButton)
     m_controllerButton->SetVisible(false);
 
-  CAddonMgr::GetInstance().Events().Subscribe(this, &CGUIControllerList::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerList::OnEvent);
   Refresh();
 
   return m_controllerList != nullptr &&
@@ -76,7 +76,7 @@ bool CGUIControllerList::Initialize(void)
 
 void CGUIControllerList::Deinitialize(void)
 {
-  CAddonMgr::GetInstance().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   CleanupButtons();
 
@@ -150,7 +150,8 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
+  if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);

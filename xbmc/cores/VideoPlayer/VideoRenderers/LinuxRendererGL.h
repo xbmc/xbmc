@@ -28,7 +28,7 @@
 
 #include "FrameBufferObject.h"
 #include "guilib/Shader.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderInfo.h"
 #include "guilib/GraphicContext.h"
@@ -40,7 +40,7 @@
 class CRenderCapture;
 
 class CBaseTexture;
-namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
 struct DRAWRECT
@@ -68,9 +68,7 @@ struct YUVCOEF
 enum RenderMethod
 {
   RENDER_GLSL=0x01,
-  RENDER_ARB=0x02,
-  RENDER_POT=0x04,
-  RENDER_CUSTOM=0x08
+  RENDER_CUSTOM=0x02
 };
 
 enum RenderQuality
@@ -113,7 +111,7 @@ public:
   void Flush() override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
-  void RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
   bool RenderCapture(CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
@@ -158,7 +156,6 @@ protected:
   void RenderToFBO(int renderBuffer, int field, bool weave = false);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
@@ -175,7 +172,6 @@ protected:
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
-  int m_iLastRenderBuffer;
 
   bool m_bConfigured;
   bool m_bValidated;
@@ -228,7 +224,7 @@ protected:
 
   void GetPlaneTextureSize(YUVPLANE& plane);
 
-  Shaders::BaseYUV2RGBShader *m_pYUVShader;
+  Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
@@ -260,41 +256,4 @@ protected:
   void DeleteCLUT();
 };
 
-
-inline int NP2( unsigned x ) {
-#if defined(TARGET_POSIX) && \
-    !defined(__POWERPC__) && \
-    !defined(__PPC__) && \
-    !defined(__arm__) && \
-    !defined(__aarch64__) && \
-    !defined(__mips__) && \
-    !defined(__SH4__) && \
-    !defined(__sparc__) && \
-    !defined(__arc__) && \
-    !defined(__xtensa__)
-  // If there are any issues compiling this, just append a ' && 0'
-  // to the above to make it '#if defined(TARGET_POSIX) && 0'
-
-  // Linux assembly is AT&T Unix style, not Intel style
-  unsigned y;
-  __asm__("dec %%ecx \n"
-          "movl $1, %%eax \n"
-          "bsr %%ecx,%%ecx \n"
-          "inc %%ecx \n"
-          "shl %%cl, %%eax \n"
-          "movl %%eax, %0 \n"
-          :"=r"(y)
-          :"c"(x)
-          :"%eax");
-  return y;
-#else
-    --x;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    return ++x;
-#endif
-}
 

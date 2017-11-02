@@ -47,12 +47,17 @@ CProcessInfo* CProcessInfo::CreateInstance()
   return new CProcessInfo();
 }
 
+CProcessInfo::CProcessInfo()
+{
+  m_videoSettingsLocked.reset(new CVideoSettingsLocked(m_videoSettings, m_settingsSection));
+}
+
 void CProcessInfo::SetDataCache(CDataCacheCore *cache)
 {
   m_dataCache = cache;;
 
   ResetVideoCodecInfo();
-  m_renderGuiLayer = true;
+  m_renderGuiLayer = false;
   m_renderVideoLayer = false;
   m_dataCache->SetGuiRender(m_renderGuiLayer);
   m_dataCache->SetVideoRender(m_renderVideoLayer);
@@ -69,6 +74,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoDecoderName = "unknown";
   m_videoDeintMethod = "unknown";
   m_videoPixelFormat = "unknown";
+  m_videoStereoMode = "mono";
   m_videoWidth = 0;
   m_videoHeight = 0;
   m_videoFPS = 0.0;
@@ -147,6 +153,23 @@ std::string CProcessInfo::GetVideoPixelFormat()
   CSingleLock lock(m_videoCodecSection);
 
   return m_videoPixelFormat;
+}
+
+void CProcessInfo::SetVideoStereoMode(const std::string &mode)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_videoStereoMode = mode;
+
+  if (m_dataCache)
+    m_dataCache->SetVideoStereoMode(m_videoStereoMode);
+}
+
+std::string CProcessInfo::GetVideoStereoMode()
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  return m_videoStereoMode;
 }
 
 void CProcessInfo::SetVideoDimensions(int width, int height)
@@ -581,4 +604,25 @@ int64_t CProcessInfo::GetMaxTime()
 {
   CSingleLock lock(m_stateSection);
   return m_timeMax;
+}
+
+//******************************************************************************
+// settings
+//******************************************************************************
+CVideoSettings CProcessInfo::GetVideoSettings()
+{
+  CSingleLock lock(m_settingsSection);
+  return m_videoSettings;
+}
+
+CVideoSettingsLocked& CProcessInfo::UpdateVideoSettings()
+{
+  CSingleLock lock(m_settingsSection);
+  return *m_videoSettingsLocked.get();
+}
+
+void CProcessInfo::SetVideoSettings(CVideoSettings &settings)
+{
+  CSingleLock lock(m_settingsSection);
+  m_videoSettings = settings;
 }

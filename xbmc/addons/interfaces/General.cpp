@@ -137,7 +137,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), addonInfo))
+  if (CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
   {
     CLog::Log(LOGERROR, "Interface_General::%s - Could not get addon information for '%s'", __FUNCTION__, addon->ID().c_str());
     return false;
@@ -312,9 +312,9 @@ char* Interface_General::get_temp_path(void* kodiBase)
     return nullptr;
   }
 
-  const std::string tempPath = URIUtils::AddFileToFolder(CServiceBroker::GetBinaryAddonManager().GetTempAddonBasePath(), addon->ID());
-  if (!XFILE::CDirectory::Exists(tempPath))
-    XFILE::CDirectory::Create(tempPath);
+  std::string tempPath = URIUtils::AddFileToFolder(CServiceBroker::GetBinaryAddonManager().GetTempAddonBasePath(), addon->ID());
+  tempPath += "-temp";
+  XFILE::CDirectory::Create(tempPath);
 
   return strdup(CSpecialProtocol::TranslatePath(tempPath).c_str());
 }

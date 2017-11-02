@@ -26,6 +26,8 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
+#include "cores/RetroPlayer/process/osx/RPProcessInfoOSX.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/osx/ProcessInfoOSX.h"
@@ -61,8 +63,9 @@
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-using namespace KODI::MESSAGING;
-using namespace KODI::WINDOWING;
+using namespace KODI;
+using namespace MESSAGING;
+using namespace WINDOWING;
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
@@ -787,6 +790,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   CLinuxRendererGL::Register();
   CRendererVTB::Register();
   VIDEOPLAYER::CProcessInfoOSX::Register();
+  RETRO::CRPProcessInfoOSX::Register();
+  RETRO::CRPProcessInfoOSX::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
   return true;
 }
@@ -801,7 +806,7 @@ bool CWinSystemOSX::ResizeWindowInternal(int newWidth, int newHeight, int newLef
 {
   bool ret = ResizeWindow(newWidth, newHeight, newLeft, newTop);
 
-  if( CDarwinUtils::IsMavericks() )
+  if( CDarwinUtils::IsMavericksOrHigher() )
   {
     NSView * last_view = (NSView *)additional;
     if (last_view && [last_view window])
@@ -978,7 +983,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [newContext setView:blankView];
 
       // Hide the menu bar.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericksOrHigher() )
         SetMenuBarVisible(false);
 
       // Blank other displays if requested.
@@ -1012,7 +1017,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
         CGDisplayCapture(GetDisplayID(res.iScreen));
 
       // If we don't hide menu bar, it will get events and interrupt the program.
-      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericksOrHigher() )
         SetMenuBarVisible(false);
     }
 
@@ -1040,7 +1045,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [NSCursor unhide];
 
     // Show menubar.
-    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay || CDarwinUtils::IsMavericksOrHigher() )
       SetMenuBarVisible(true);
 
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
@@ -1200,17 +1205,28 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
 {
   NSOpenGLContext* newContext = NULL;
 
+  NSOpenGLPixelFormatAttribute wattrs_gl3[] =
+  {
+    NSOpenGLPFADoubleBuffer,
+    NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+    NSOpenGLPFANoRecovery,
+    NSOpenGLPFAAccelerated,
+    NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)24,
+    (NSOpenGLPixelFormatAttribute)0
+  };
+
   NSOpenGLPixelFormatAttribute wattrs[] =
   {
     NSOpenGLPFADoubleBuffer,
-    NSOpenGLPFAWindow,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
     NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)8,
     (NSOpenGLPixelFormatAttribute)0
   };
 
-  NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
+  NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs_gl3];
+  if (!getenv("KODI_GL_PROFILE_3_2"))
+    pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
 
   newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];
@@ -1222,7 +1238,6 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
     NSOpenGLPixelFormatAttribute wattrs2[] =
     {
       NSOpenGLPFADoubleBuffer,
-      NSOpenGLPFAWindow,
       NSOpenGLPFANoRecovery,
       NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)8,
       (NSOpenGLPixelFormatAttribute)0
@@ -1247,10 +1262,20 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
   CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
   displayID = displayArray[screen_index];
 
+  NSOpenGLPixelFormatAttribute fsattrs_gl3[] =
+  {
+    NSOpenGLPFADoubleBuffer,
+    NSOpenGLPFANoRecovery,
+    NSOpenGLPFAAccelerated,
+    NSOpenGLPFADepthSize,  (NSOpenGLPixelFormatAttribute)24,
+    NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+    NSOpenGLPFAScreenMask, (NSOpenGLPixelFormatAttribute)CGDisplayIDToOpenGLDisplayMask(displayID),
+    (NSOpenGLPixelFormatAttribute)0
+  };
+
   NSOpenGLPixelFormatAttribute fsattrs[] =
   {
     NSOpenGLPFADoubleBuffer,
-    NSOpenGLPFAFullScreen,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
     NSOpenGLPFADepthSize,  (NSOpenGLPixelFormatAttribute)8,
@@ -1258,7 +1283,10 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
     (NSOpenGLPixelFormatAttribute)0
   };
 
-  NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
+  NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs_gl3];
+  if (!getenv("KODI_GL_PROFILE_3_2"))
+    pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
+
   if (!pixFmt)
     return nil;
 
@@ -1614,7 +1642,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
           // find the screenID
           NSDictionary* screenInfo = [[window screen] deviceDescription];
           NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || CDarwinUtils::IsMavericks() )
+          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay || CDarwinUtils::IsMavericksOrHigher() )
           {
             SetMenuBarVisible(false);
           }

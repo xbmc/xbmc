@@ -55,6 +55,7 @@ class CSettings;
 class IAE;
 class CFavouritesService;
 class CInputManager;
+class CFileExtensionProvider;
 
 namespace KODI
 {
@@ -62,6 +63,11 @@ namespace GAME
 {
   class CControllerManager;
   class CGameServices;
+}
+
+namespace RETRO
+{
+  class CGUIGameRenderManager;
 }
 }
 
@@ -87,10 +93,12 @@ public:
   static CSettings& GetSettings();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
+  static KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
   static ADDON::CServiceAddonManager& GetServiceAddons();
   static ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   static CInputManager& GetInputManager();
+  static CFileExtensionProvider &GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
 };

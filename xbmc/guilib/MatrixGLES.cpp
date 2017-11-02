@@ -32,15 +32,9 @@
 #endif
 
 
-#ifdef HAS_GL
-CMatrixGLStack glMatrixModview(GL_MODELVIEW);
-CMatrixGLStack glMatrixProject(GL_PROJECTION);
-CMatrixGLStack glMatrixTexture(GL_TEXTURE);
-#else
-CMatrixGLStack glMatrixModview(0);
-CMatrixGLStack glMatrixProject(0);
-CMatrixGLStack glMatrixTexture(0);
-#endif
+CMatrixGLStack glMatrixModview = CMatrixGLStack();
+CMatrixGLStack glMatrixProject = CMatrixGLStack();
+CMatrixGLStack glMatrixTexture = CMatrixGLStack();
 
 void CMatrixGL::LoadIdentity()
 {
@@ -326,10 +320,7 @@ void CMatrixGL::PrintMatrix(void)
 
 void CMatrixGLStack::Load()
 {
-#ifdef HAS_GL
-  glMatrixMode(m_type);
-  glLoadMatrixf(m_current);
-#endif
+
 }
 
 #endif

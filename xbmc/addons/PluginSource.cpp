@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "AddonManager.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
 namespace ADDON
@@ -30,7 +31,7 @@ namespace ADDON
 
 std::unique_ptr<CPluginSource> CPluginSource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  std::string provides = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "provides");
+  std::string provides = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "provides");
   if (!provides.empty())
     addonInfo.AddExtraInfo("provides", provides);
   return std::unique_ptr<CPluginSource>(new CPluginSource(std::move(addonInfo), provides));

@@ -1,0 +1,3 @@
+addons/repository.pvr-win32.xbmc.org/*
+project/BuildDependencies/win10-${ARCH}/addons/*
+system/addon-manifest-uwp.xml

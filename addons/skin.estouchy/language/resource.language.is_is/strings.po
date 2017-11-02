@@ -182,7 +182,7 @@ msgstr "Myndefnisvalmynd"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Niðurhala þýðingartextum"
+msgstr "Sækja skjátexta"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -270,7 +270,7 @@ msgstr "Skilgreina stillingar sjónvarps - Breyta upplýsingum á fullum skjá. 
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Sjónvarp bein útsending"
+msgstr "Bein sjónvarpsútsending"
 
 msgctxt "#31557"
 msgid "Hide video background"

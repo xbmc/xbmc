@@ -55,6 +55,7 @@
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
@@ -73,6 +74,7 @@
 #include <memory>
 #include <math.h>
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "messaging/ApplicationMessenger.h"
 
@@ -117,6 +119,7 @@
 
 #define SYSHEATUPDATEINTERVAL 60000
 
+using namespace KODI;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
@@ -127,7 +130,8 @@ class CSetCurrentItemJob : public CJob
 {
   CFileItemPtr m_itemCurrentFile;
 public:
-  explicit CSetCurrentItemJob(const CFileItemPtr& item) : m_itemCurrentFile(item) { }
+  explicit CSetCurrentItemJob(const CFileItem& item) : m_itemCurrentFile(std::make_shared<CFileItem>(item)) { }
+
   ~CSetCurrentItemJob(void) override = default;
 
   bool DoWork(void) override
@@ -822,10 +826,15 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     Returns true if colour management is supported from Kodi
 ///     \note currently only supported for OpenGL
 ///   }
-///   \table_row3{   <b>`System.HasModalDialog`</b>,
-///                  \anchor System_HasModalDialog
+///   \table_row3{   <b>`System.HasActiveModalDialog`</b>,
+///                  \anchor System_HasActiveModalDialog
 ///                  _boolean_,
-///     Returns true true if a modal dialog is visible
+///     Returns true if a modal dialog is active
+///   }
+///   \table_row3{   <b>`System.HasVisibleModalDialog`</b>,
+///                  \anchor System_HasVisibleModalDialog
+///                  _boolean_,
+///     Returns true if a modal dialog is visible
 ///   }
 ///   \table_row3{   <b>`System.Time(startTime\,endTime)`</b>,
 ///                  \anchor System_Time
@@ -2173,6 +2182,29 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME },
                                   { "dbid", VIDEOPLAYER_DBID }
+};
+
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_RetroPlayer RetroPlayer
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`ViewMode`</b>,
+///                  \anchor RetroPlayer_ViewMode
+///                  _string_,
+///     Returns the view mode of the currently-playing game.\n
+///     The following values are possible:
+///     - normal
+///     - 4:3
+///     - 16:9
+///     - nonlinear
+///     - original
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
+const infomap retroplayer[] =  {{ "viewmode",            RETROPLAYER_VIEWMODE},
 };
 
 const infomap player_process[] =
@@ -5544,6 +5576,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return videoplayer[i].val;
       }
     }
+    else if (cat.name == "retroplayer")
+    {
+      for (size_t i = 0; i < sizeof(retroplayer) / sizeof(infomap); i++)
+      {
+        if (prop.name == retroplayer[i].str)
+          return retroplayer[i].val;
+      }
+    }
     else if (cat.name == "slideshow")
     {
       for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); i++)
@@ -6002,10 +6042,10 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
     break;
   case PLAYER_SUBTITLE_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
+    strLabel = StringUtils::Format("%2.3f s", g_application.m_pPlayer->GetVideoSettings().m_SubtitleDelay);
     break;
   case PLAYER_AUDIO_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
+    strLabel = StringUtils::Format("%2.3f s", g_application.m_pPlayer->GetVideoSettings().m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
     if(g_application.m_pPlayer->IsPlaying())
@@ -6186,6 +6226,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_EPISODENAME:
     strLabel = GetVideoLabel(info);
   break;
+  case RETROPLAYER_VIEWMODE:
+    strLabel = GetGameLabel(info);
+    break;
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
@@ -6705,7 +6748,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       AddonPtr addon;
       strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CAddonMgr::GetInstance().GetAddon(strLabel,addon) && addon)
+      if (CServiceBroker::GetAddonMgr().GetAddon(strLabel,addon) && addon)
         strLabel = addon->Name();
     }
     break;
@@ -7672,7 +7715,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SYSTEM_HAS_ADDON:
       {
         AddonPtr addon;
-        bReturn = CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        bReturn = CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
         break;
       }
       case CONTAINER_SCROLL_PREVIOUS:
@@ -8136,9 +8179,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     // in the future.
     AddonPtr addon;
     if (info.GetData2() == 0)
-      CAddonMgr::GetInstance().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
+      CServiceBroker::GetAddonMgr().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
     else
-      CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
+      CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
@@ -8922,6 +8965,24 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
+std::string CGUIInfoManager::GetGameLabel(int item)
+{
+  if (!g_application.m_pPlayer->IsPlaying())
+    return "";
+
+  switch (item)
+  {
+    case RETROPLAYER_VIEWMODE:
+    {
+      ViewMode viewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
+      return RETRO::CRetroPlayerUtils::ViewModeToDescription(viewMode);
+    }
+    default:
+      break;
+  }
+  return "";
+}
+
 int64_t CGUIInfoManager::GetPlayTime() const
 {
   int64_t ret = lrint(g_application.GetTime() * 1000);
@@ -8990,7 +9051,7 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
-void CGUIInfoManager::SetCurrentItem(const CFileItemPtr item)
+void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
   CJobManager::GetInstance().AddJob(job, NULL);
@@ -9180,6 +9241,8 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 #if defined(TARGET_DARWIN_OSX)
   value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
   return CTemperature::CreateFromCelsius(value);
+#elif defined(TARGET_WINDOWS_STORE)
+  return CTemperature::CreateFromCelsius(0);
 #else
   std::string  cmd   = g_advancedSettings.m_gpuTempCmd;
   int         ret   = 0;
@@ -10432,7 +10495,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
         return g_localizeStrings.Get(24992);
       AddonPtr origin;
-      if (CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON_UNKNOWN, false))
+      if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON_UNKNOWN, false))
         return origin->Name();
       return g_localizeStrings.Get(13205);
     }
@@ -11030,13 +11093,12 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     if (!item)
       return;
 
-    CFileItemPtr itemptr(item);
     if (pMsg->param1 == 1 && item->HasMusicInfoTag()) // only grab music tag
       SetCurrentSongTag(*item->GetMusicInfoTag());
     else if (pMsg->param1 == 2 && item->HasVideoInfoTag()) // only grab video tag
       SetCurrentVideoTag(*item->GetVideoInfoTag());
     else
-      SetCurrentItem(itemptr);
+      SetCurrentItem(*item);
   }
   break;
 

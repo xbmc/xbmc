@@ -709,13 +709,13 @@ bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_ext
     unit_size = extradata[0] << 8 | extradata[1];
     total_size += unit_size + 4;
 
-    if (total_size > INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE ||
+    if (total_size > INT_MAX - AV_INPUT_BUFFER_PADDING_SIZE ||
       (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize))
     {
       av_free(out);
       return false;
     }
-    tmp = av_realloc(out, total_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    tmp = av_realloc(out, total_size + AV_INPUT_BUFFER_PADDING_SIZE);
     if (!tmp)
     {
       av_free(out);
@@ -736,7 +736,7 @@ pps:
   }
 
   if (out)
-    memset(out + total_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    memset(out + total_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
   if (!sps_seen)
       CLog::Log(LOGDEBUG, "SPS NALU missing or invalid. The resulting stream may not play");
@@ -799,13 +799,13 @@ bool CBitstreamConverter::BitstreamConvertInitHEVC(void *in_extradata, int in_ex
       }
       total_size += unit_size + 4;
 
-      if (total_size > INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE ||
+      if (total_size > INT_MAX - AV_INPUT_BUFFER_PADDING_SIZE ||
         (extradata + unit_size) > ((uint8_t*)in_extradata + in_extrasize))
       {
         av_free(out);
         return false;
       }
-      tmp = av_realloc(out, total_size + FF_INPUT_BUFFER_PADDING_SIZE);
+      tmp = av_realloc(out, total_size + AV_INPUT_BUFFER_PADDING_SIZE);
       if (!tmp)
       {
         av_free(out);
@@ -819,7 +819,7 @@ bool CBitstreamConverter::BitstreamConvertInitHEVC(void *in_extradata, int in_ex
   }
 
   if (out)
-    memset(out + total_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    memset(out + total_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
   if (!sps_seen)
       CLog::Log(LOGDEBUG, "SPS NALU missing or invalid. The resulting stream may not play");

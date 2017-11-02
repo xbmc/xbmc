@@ -1,10 +1,12 @@
 set(SOURCES DataCacheCore.cpp
-            FFmpeg.cpp)
+            FFmpeg.cpp
+            VideoSettings.cpp)
 
 set(HEADERS DataCacheCore.h
             FFmpeg.h
             IPlayer.h
-            IPlayerCallback.h)
+            IPlayerCallback.h
+            VideoSettings.h)
 
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
   add_subdirectory(omxplayer)

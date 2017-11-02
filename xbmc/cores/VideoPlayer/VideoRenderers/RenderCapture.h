@@ -211,7 +211,6 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
     void ReadOut();
 
     void OnDestroyDevice(bool fatal) override;
-    void OnLostDevice() override;
     void OnCreateDevice() override {};
     CD3DTexture* GetTarget() { return &m_renderTex; }
 

@@ -503,7 +503,7 @@
 				<textcolor>99FFFFFF</textcolor>
 				<shadowcolor>text_shadow</shadowcolor>
 				<haspath>true</haspath>
-				<label>$INFO[ListItem.FileNameANdPath]</label>
+				<label>$VAR[VideoInfoBottomLabelVar]</label>
 				<visible>Control.HasFocus(6)</visible>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>

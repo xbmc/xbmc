@@ -196,6 +196,9 @@
       <play_pause mod="longpress">Enter</play_pause>
       <browser_search>VoiceRecognizer</browser_search>
       <menu>VoiceRecognizer</menu>
+      <return mod="longpress">VoiceRecognizer</return>
+      <enter mod="longpress">VoiceRecognizer</enter>
+      <play_pause>VoiceRecognizer</play_pause>
     </keyboard>
   </VirtualKeyboard>
   <TVChannels>
@@ -404,6 +407,12 @@
       <escape>Fullscreen</escape>
     </keyboard>
   </FullscreenGame>
+  <GameOSD>
+    <keyboard>
+      <m>OSD</m>
+      <menu>OSD</menu>
+    </keyboard>
+  </GameOSD>
   <VideoTimeSeek>
     <keyboard>
       <return>Select</return>

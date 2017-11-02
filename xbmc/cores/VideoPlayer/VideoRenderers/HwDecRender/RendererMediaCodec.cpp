@@ -147,9 +147,9 @@ bool CRendererMediaCodec::RenderHook(int index)
     g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
 
   GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
   GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  glUniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
 
   glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 

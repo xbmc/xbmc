@@ -5,6 +5,7 @@ set(SOURCES Album.cpp
             MusicDatabase.cpp
             MusicDbUrl.cpp
             MusicInfoLoader.cpp
+            MusicLibraryQueue.cpp
             MusicThumbLoader.cpp
             Song.cpp)
 
@@ -16,6 +17,7 @@ set(HEADERS Album.h
             MusicDatabase.h
             MusicDbUrl.h
             MusicInfoLoader.h
+            MusicLibraryQueue.h
             MusicThumbLoader.h
             Song.h)
 

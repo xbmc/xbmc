@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewStateSettings.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
 
 using namespace XFILE;
@@ -43,7 +44,7 @@ std::string CGUIViewStateWindowVideo::GetLockType()
 
 std::string CGUIViewStateWindowVideo::GetExtensions()
 {
-  return g_advancedSettings.m_videoExtensions;
+  return CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
 }
 
 int CGUIViewStateWindowVideo::GetPlaylist()

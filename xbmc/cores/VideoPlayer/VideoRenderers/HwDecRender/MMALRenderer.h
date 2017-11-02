@@ -28,7 +28,7 @@
 #include "../RenderFlags.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
@@ -163,7 +163,7 @@ public:
   virtual bool         Supports(ERENDERFEATURE feature) override;
   virtual bool         Supports(ESCALINGMETHOD method) override;
 
-  virtual void         RenderUpdate(int source, bool clear, unsigned int flags, unsigned int alpha) override;
+  virtual void         RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
 
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
   virtual bool         IsGuiLayer() override { return false; }

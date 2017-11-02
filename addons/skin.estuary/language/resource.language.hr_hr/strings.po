@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nepogledani filmovi"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Omogući widget kategorija"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Preuzmi ikone"
@@ -107,6 +111,10 @@ msgstr "Razvrstaj po"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Vrsta prikaza"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Odaberi prikaz ocjena za medijske stavke"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Prikaži medijske oznake"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Brojčana tipkovnica"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Igrajte svoje igre ili preuzmite jednu od mnogih dodataka igra iz službenog repozitorija."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Prikaži poster obožavatelja kao pozadinu"

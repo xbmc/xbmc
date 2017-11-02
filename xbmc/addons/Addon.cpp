@@ -203,7 +203,7 @@ void CAddon::SaveSettings(void)
   m_hasUserSettings = true;
   
   //push the settings changes to the running addon instance
-  CAddonMgr::GetInstance().ReloadSettings(ID());
+  CServiceBroker::GetAddonMgr().ReloadSettings(ID());
 #ifdef HAS_PYTHON
   g_pythonParser.OnSettingsChanged(ID());
 #endif
@@ -391,16 +391,6 @@ AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
   if (it != deps.end())
     return it->second.first;
   return AddonVersion("0.0.0");
-}
-
-void OnEnabled(const AddonPtr& addon)
-{
-  addon->OnEnabled();
-}
-
-void OnDisabled(const AddonPtr& addon)
-{
-  addon->OnDisabled();
 }
 
 void OnPreInstall(const AddonPtr& addon)

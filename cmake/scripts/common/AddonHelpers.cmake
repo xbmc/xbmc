@@ -353,6 +353,12 @@ macro (build_addon target prefix libs)
                        COMMAND ${CMAKE_COMMAND} -E copy
                                    ${LIBRARY_LOCATION}
                                    ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/${LIBRARY_FILENAME})
+    if(${prefix}_ADDITIONAL_BINARY)
+        add_custom_command(TARGET ${target} POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy
+                                   ${${prefix}_ADDITIONAL_BINARY}
+                                   ${${APP_NAME_UC}_BUILD_DIR}/addons/${target})
+    endif()
   endif()
 endmacro()
 

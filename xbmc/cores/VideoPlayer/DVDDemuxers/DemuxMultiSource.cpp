@@ -18,7 +18,7 @@
  *
  */
 
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DemuxMultiSource.h"
 #include "DVDDemuxUtils.h"
 #include "DVDFactoryDemuxer.h"

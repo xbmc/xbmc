@@ -171,7 +171,7 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
@@ -361,7 +361,7 @@ void CLinuxRendererGLES::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGLES::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   m_iYV12RenderBuffer = index;
 
@@ -430,9 +430,9 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGLES::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod)
+  if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod)
     return;
-  m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
+  m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -751,8 +751,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   else
     pYUVShader = m_pYUVProgShader;
 
-  pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   if     (field == FIELD_TOP)
@@ -882,8 +882,8 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetNonLinStretch(1.0);
@@ -1001,7 +1001,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
 
 void CLinuxRendererGLES::RenderFromFBO()
 {
-  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_fbo.fbo.Texture());
   VerifyGLState();

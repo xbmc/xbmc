@@ -22,7 +22,7 @@
 NPT_Result 
 NPT_Environment::Get(const char* name, NPT_String& value)
 {
-    char* env;
+    char* env = nullptr;
 
     /* default value */
     value.SetLength(0);

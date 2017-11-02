@@ -93,6 +93,7 @@
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/SeekHandler.h"
 #include "ServiceBroker.h"
@@ -144,6 +145,7 @@
 #include "dialogs/GUIDialogSubMenu.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
+#include "dialogs/GUIDialogVolumeBar.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 
 // PVR related include Files
@@ -285,7 +287,7 @@ CApplication::CApplication(void)
 {
   TiXmlBase::SetCondenseWhiteSpace(false);
 
-#ifdef HAS_GLX
+#ifdef HAVE_X11
   XInitThreads();
 #endif
 }
@@ -396,6 +398,8 @@ bool CApplication::SetupNetwork()
   m_network = new CNetworkLinux();
 #elif defined(HAS_WIN32_NETWORK)
   m_network = new CNetworkWin32();
+#elif defined(HAS_WIN10_NETWORK)
+  m_network = new CNetworkWin10();
 #else
   m_network = new CNetwork();
 #endif
@@ -1410,13 +1414,13 @@ void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
@@ -1561,7 +1565,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   SkinPtr skin;
   {
     AddonPtr addon;
-    if (!CAddonMgr::GetInstance().GetAddon(skinID, addon, ADDON_SKIN))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
@@ -2544,7 +2548,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
       else
         pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
 
-      CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.GetPictureExtensions(), XFILE::DIR_FLAG_NO_FILE_DIRS);
+      CUtil::GetRecursiveListing(pathToUrl.Get(), items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), XFILE::DIR_FLAG_NO_FILE_DIRS);
       if (items.Size() > 0)
       {
         pSlideShow->Reset();
@@ -2579,7 +2583,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
     CFileItemList items;
     std::string strPath = pMsg->strParam;
-    std::string extensions = g_advancedSettings.GetPictureExtensions();
+    std::string extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
     if (pMsg->param1)
       extensions += "|.tbn";
     CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -3016,7 +3020,7 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false) == PLAYBACK_OK;
@@ -3094,8 +3098,6 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   // case 2: all other stacks
   else
   {
-    LoadVideoSettings(item);
-
     // see if we have the info in the database
     //! @todo If user changes the time speed (FPS via framerate conversion stuff)
     //!       then these times will be wrong.
@@ -3194,11 +3196,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   {
     SaveFileState(true);
 
-    // Switch to default options
-    CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-    CMediaSettings::GetInstance().GetCurrentAudioSettings() = CMediaSettings::GetInstance().GetDefaultAudioSettings();
-    // see if we have saved options in the database
-
     m_pPlayer->SetPlaySpeed(1);
 
     m_itemCurrentFile.reset(new CFileItem(item));
@@ -3279,7 +3276,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   else
   {
     options.starttime = item.m_lStartOffset / 75.0;
-    LoadVideoSettings(item);
 
     if (item.IsVideo())
     {
@@ -3624,6 +3620,41 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 }
 
+void CApplication::OnAVChange()
+{
+}
+
+void CApplication::RequestVideoSettings(const CFileItem &fileItem)
+{
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    CLog::Log(LOGDEBUG, "Loading settings for %s", CURL::GetRedacted(fileItem.GetPath()).c_str());
+
+    // Load stored settings if they exist, otherwise use default
+    CVideoSettings vs;
+    if (!dbs.GetVideoSettings(fileItem, vs))
+      vs = CMediaSettings::GetInstance().GetDefaultVideoSettings();
+
+    m_pPlayer->SetVideoSettings(vs);
+
+    dbs.Close();
+  }
+}
+
+void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs)
+{
+  if (vs != CMediaSettings::GetInstance().GetDefaultVideoSettings())
+  {
+    CVideoDatabase dbs;
+    if (dbs.Open())
+    {
+      dbs.SetVideoSettings(fileItem, vs);
+      dbs.Close();
+    }
+  }
+}
+
 bool CApplication::IsPlayingFullScreenVideo() const
 {
   return m_pPlayer->IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
@@ -3642,11 +3673,9 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
     return;
 
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
-      *m_stackFileItemToUpdate,
-      m_progressTrackingVideoResumeBookmark,
-      m_progressTrackingPlayCountUpdate,
-      CMediaSettings::GetInstance().GetCurrentVideoSettings(),
-      CMediaSettings::GetInstance().GetCurrentAudioSettings());
+                                    *m_stackFileItemToUpdate,
+                                    m_progressTrackingVideoResumeBookmark,
+                                    m_progressTrackingPlayCountUpdate);
 
   if (bForeground)
   {
@@ -3734,21 +3763,6 @@ void CApplication::UpdateFileState()
           m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
       }
     }
-  }
-}
-
-void CApplication::LoadVideoSettings(const CFileItem& item)
-{
-  CVideoDatabase dbs;
-  if (dbs.Open())
-  {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", CURL::GetRedacted(item.GetPath()).c_str());
-
-    // Load stored settings if they exist, otherwise use default
-    if (!dbs.GetVideoSettings(item, CMediaSettings::GetInstance().GetCurrentVideoSettings()))
-      CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-
-    dbs.Close();
   }
 }
 
@@ -4054,7 +4068,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
   else if (m_screensaverIdInUse.empty())
     return;
-  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
+  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
@@ -4178,7 +4192,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CServiceBroker::GetPlaylistPlayer().SetCurrentSong(m_nextPlaylistItem);
         m_itemCurrentFile.reset(new CFileItem(*item));
       }
-      g_infoManager.SetCurrentItem(m_itemCurrentFile);
+      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
       CVariant param;
@@ -4660,8 +4674,8 @@ CFileItem& CApplication::CurrentUnstackedItem()
 
 void CApplication::ShowVolumeBar(const CAction *action)
 {
-  CGUIDialog *volumeBar = g_windowManager.GetDialog(WINDOW_DIALOG_VOLUME_BAR);
-  if (volumeBar)
+  CGUIDialogVolumeBar *volumeBar = g_windowManager.GetWindow<CGUIDialogVolumeBar>(WINDOW_DIALOG_VOLUME_BAR);
+  if (volumeBar != nullptr && volumeBar->IsVolumeBarEnabled())
   {
     volumeBar->Open();
     if (action)
@@ -4758,13 +4772,13 @@ void CApplication::VolumeChanged() const
 int CApplication::GetSubtitleDelay() const
 {
   // converts subtitle delay to a percentage
-  return int(((float)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+  return int(((float)(m_pPlayer->GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay() const
 {
   // converts audio delay to a percentage
-  return int(((float)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+  return int(((float)(m_pPlayer->GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 // Returns the total time in seconds of the current media.  Fractional
@@ -5039,18 +5053,15 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
   if (m_musicInfoScanner->IsScanning())
     return;
 
+  // Setup default flags
   if (!flags)
-  { // setup default flags
+  { // Online scraping of additional info during scanning
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
       flags |= CMusicInfoScanner::SCAN_ONLINE;
-    if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
-      flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-    // Ask for full rescan of music files
-    //! @todo replace with a music library setting in UI
-    if (g_advancedSettings.m_bMusicLibraryPromptFullTagScan)
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 799 }, CVariant{ 38062 }))
-        flags |= CMusicInfoScanner::SCAN_RESCAN;
   }
+  if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
+    flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+
 
   if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
     m_musicInfoScanner->ShowDialog(true);

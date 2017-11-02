@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings version="1">
   <section id="system">
-    <category id="display">
-      <group id="1">
-        <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
-          <requirement>OsxIsSnowLeopard</requirement>
-        </setting>
-      </group>
-    </category>
     <category id="input">
       <group id="3">
         <setting id="input.appleremotealwayson">

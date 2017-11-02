@@ -494,7 +494,9 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
 
 std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
 {
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_STORE
+  return ""; // GetVolumeInformationW nut support in UWP app
+#elif defined(TARGET_WINDOWS)
   if(!m_bhasoptical)
     return "";
 

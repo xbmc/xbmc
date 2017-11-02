@@ -459,8 +459,7 @@ void CRenderSystemGLES::GetViewPort(CRect& viewPort)
   viewPort.y2 = viewPort.y1 + m_viewPort[3];
 }
 
-// FIXME make me const so that I can accept temporary objects
-void CRenderSystemGLES::SetViewPort(CRect& viewPort)
+void CRenderSystemGLES::SetViewPort(const CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

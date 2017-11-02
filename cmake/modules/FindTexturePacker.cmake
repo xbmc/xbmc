@@ -19,7 +19,7 @@ if(NOT TARGET TexturePacker::TexturePacker)
   elseif(WIN32)
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
-                                                       IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/tools/TexturePacker/TexturePacker.exe")
+                                                       IMPORTED_LOCATION "${DEPENDENCIES_DIR}/tools/TexturePacker/TexturePacker.exe")
   else()
     if(WITH_TEXTUREPACKER)
       get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)

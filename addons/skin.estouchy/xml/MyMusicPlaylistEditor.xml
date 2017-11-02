@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol allways="true">6</defaultcontrol>
+	<views>50</views>
 	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>

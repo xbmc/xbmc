@@ -485,7 +485,7 @@ public class Splash extends Activity {
     sPackagePath = getPackageResourcePath();
     fPackagePath = new File(sPackagePath);
     String obbfn = "";
-    if (fPackagePath.length() < 40 * 1024 * 1024)
+    if (fPackagePath.length() < 50 * 1024 * 1024)
     {
       sPackagePath = XBMCProperties.getStringProperty("@APP_NAME_LC@.obb", "");
       if (sPackagePath.equals(""))

@@ -90,6 +90,7 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
+#include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogKeyboardTouch.h"
@@ -128,6 +129,7 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
+#include "pvr/dialogs/GUIDialogPVRClientPriorities.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
@@ -153,6 +155,7 @@
 #include "games/dialogs/osd/DialogGameOSD.h"
 #include "games/dialogs/osd/DialogGameVideoFilter.h"
 #include "games/dialogs/osd/DialogGameViewMode.h"
+#include "games/dialogs/osd/DialogGameVolume.h"
 
 using namespace KODI;
 using namespace PVR;
@@ -247,6 +250,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogLockSettings);
 
   Add(new CGUIDialogContentSettings);
+  
+  Add(new CGUIDialogLibExportSettings);
 
   Add(new CGUIDialogPlayEject);
 
@@ -283,6 +288,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRChannelsOSD);
   Add(new CGUIDialogPVRChannelGuide);
   Add(new CGUIDialogPVRRecordingSettings);
+  Add(new CGUIDialogPVRClientPriorities);
 
   Add(new CGUIDialogSelect);
   Add(new CGUIDialogMusicInfo);
@@ -306,6 +312,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CDialogGameOSD);
   Add(new GAME::CDialogGameVideoFilter);
   Add(new GAME::CDialogGameViewMode);
+  Add(new GAME::CDialogGameVolume);
   Add(new RETRO::CGameWindowFullScreen);
 }
 
@@ -347,6 +354,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
     DestroyWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     DestroyWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
+    DestroyWindow(WINDOW_DIALOG_LIBEXPORT_SETTINGS);
     DestroyWindow(WINDOW_DIALOG_FAVOURITES);
     DestroyWindow(WINDOW_DIALOG_SONG_INFO);
     DestroyWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
@@ -386,6 +394,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_PVR_CHANNEL_GUIDE);
     DestroyWindow(WINDOW_DIALOG_OSD_TELETEXT);
     DestroyWindow(WINDOW_DIALOG_PVR_RECORDING_SETTING);
+    DestroyWindow(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
 
     DestroyWindow(WINDOW_DIALOG_TEXT_VIEWER);
     DestroyWindow(WINDOW_DIALOG_PLAY_EJECT);
@@ -412,6 +421,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_GAME_OSD);
     DestroyWindow(WINDOW_DIALOG_GAME_VIDEO_FILTER);
     DestroyWindow(WINDOW_DIALOG_GAME_VIEW_MODE);
+    DestroyWindow(WINDOW_DIALOG_GAME_VOLUME);
     DestroyWindow(WINDOW_FULLSCREEN_GAME);
 
     Remove(WINDOW_SETTINGS_SERVICE);

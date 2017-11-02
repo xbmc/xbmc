@@ -21,6 +21,7 @@
 
 #include "DialogGameVideoSelect.h"
 #include "cores/IPlayer.h"
+#include "FileItem.h"
 
 namespace KODI
 {
@@ -34,6 +35,7 @@ namespace GAME
 
   protected:
     // implementation of CDialogGameVideoSelect
+    std::string GetHeading() override;
     void PreInit() override;
     void GetItems(CFileItemList &items) override;
     void OnItemFocus(unsigned int index) override;
@@ -41,15 +43,14 @@ namespace GAME
     void PostExit() override;
 
   private:
-    struct VideoFilterProperties
-    {
-      int stringIndex;
-      ESCALINGMETHOD scalingMethod;
-    };
+    void InitScalingMethods();
 
-    std::vector<VideoFilterProperties> m_videoFilters;
+    static void GetProperties(const CFileItem &item, ESCALINGMETHOD &scalingMethod, std::string &description);
 
-    static const std::vector<VideoFilterProperties> m_allVideoFilters;
+    CFileItemList m_items;
+
+    //! \brief Set to true when a description has first been set
+    bool m_bHasDescription = false;
   };
 }
 }

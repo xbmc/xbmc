@@ -19,6 +19,7 @@
  */
 #include "Service.h"
 #include "AddonManager.h"
+#include "ServiceBroker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "system.h"
 #include "utils/log.h"
@@ -31,7 +32,7 @@ namespace ADDON
 std::unique_ptr<CService> CService::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   START_OPTION startOption(START_OPTION::LOGIN);
-  std::string start = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@start");
+  std::string start = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@start");
   if (start == "startup")
     startOption = START_OPTION::STARTUP;
   return std::unique_ptr<CService>(new CService(std::move(addonInfo), startOption));
@@ -54,22 +55,19 @@ CServiceAddonManager::~CServiceAddonManager()
 
 void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
   {
-    Start(enableEvent->id);
+    Start(event.id);
   }
-  else if (auto disableEvent = dynamic_cast<const AddonEvents::Disabled*>(&event))
+  else if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    Stop(disableEvent->id);
+    Stop(event.id);
+    Start(event.id);
   }
-  else if (auto uninstallEvent = dynamic_cast<const AddonEvents::UnInstalled*>(&event))
+  else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+           typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    Stop(uninstallEvent->id);
-  }
-  else if (auto reinstallEvent = dynamic_cast<const AddonEvents::ReInstalled*>(&event))
-  {
-    Stop(reinstallEvent->id);
-    Start(reinstallEvent->id);
+    Stop(event.id);
   }
 }
 

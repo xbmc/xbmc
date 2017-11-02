@@ -31,11 +31,16 @@ ADDONPATH    = lib.common.ADDONPATH
 ICON         = lib.common.ICON
 oldversion = False
 
+monitor = xbmc.Monitor()
+
 class Main:
     def __init__(self):
         linux = False
         packages = []
-        xbmc.sleep(5000)
+
+        if monitor.waitForAbort(5):
+            sys.exit(0)
+
         if xbmc.getCondVisibility('System.Platform.Linux') and ADDON.getSetting("upgrade_apt") == 'true':
             packages = ['kodi']
             _versionchecklinux(packages)
@@ -62,9 +67,9 @@ def _versionchecklinux(packages):
         handler = False
         result = False
         try:
-            # try aptdeamon first
-            from lib.aptdeamonhandler import AptdeamonHandler
-            handler = AptdeamonHandler()
+            # try aptdaemon first
+            from lib.aptdaemonhandler import AptdaemonHandler
+            handler = AptdaemonHandler()
         except:
             # fallback to shell
             # since we need the user password, ask to check for new version first
@@ -100,5 +105,8 @@ def _versionchecklinux(packages):
 
 
 if (__name__ == "__main__"):
-    log('Version %s started' % ADDONVERSION)
-    Main()
+    if ADDON.getSetting("versioncheck_enable") == "false":
+        log("Disabled")
+    else:
+        log('Version %s started' % ADDONVERSION)
+        Main()

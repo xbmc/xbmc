@@ -52,8 +52,10 @@ typedef intptr_t      ssize_t;
 #define strncasecmp strnicmp
 #endif
 
+#if defined TARGET_WINDOWS_DESKTOP
 #define popen   _popen
 #define pclose  _pclose
+#endif
 
 #if 0
 // big endian

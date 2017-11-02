@@ -380,17 +380,39 @@ void CGUIDialogMusicInfo::OnGetThumb()
 
   // local thumb
   std::string localThumb;
+  bool existsThumb = false;
   if (m_bArtistInfo)
   {
     CMusicDatabase database;
     database.Open();
-    std::string strArtistPath;
-    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+    // First look for thumb in the artists folder, the primary location
+    std::string strArtistPath = m_artist.strPath;
+    // Get path when don't already have it.
+    bool artistpathfound = !strArtistPath.empty();
+    if (!artistpathfound)
+      artistpathfound = database.GetArtistPath(m_artist, strArtistPath);
+    if (artistpathfound)
+    {
       localThumb = URIUtils::AddFileToFolder(strArtistPath, "folder.jpg");
+      existsThumb = CFile::Exists(localThumb);
+    }
+    // If not there fall back local to music files (historic location for those album artists with a unique folder)
+    if (!existsThumb)
+    {
+      artistpathfound = database.GetOldArtistPath(m_artist.idArtist, strArtistPath);
+      if (artistpathfound)
+      {
+        localThumb = URIUtils::AddFileToFolder(strArtistPath, "folder.jpg");
+        existsThumb = CFile::Exists(localThumb);
+      }
+    }
   }
   else
+  {
     localThumb = m_albumItem->GetUserMusicThumb();
-  if (CFile::Exists(localThumb))
+    existsThumb = CFile::Exists(localThumb);
+  }
+  if (existsThumb)
   {
     CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetArt("thumb", localThumb);
@@ -478,13 +500,32 @@ void CGUIDialogMusicInfo::OnGetFanart()
     items.Add(item);
   }
 
-  // Grab a local thumb
+  // Grab a local fanart 
+  std::string strLocal;
   CMusicDatabase database;
   database.Open();
-  std::string strArtistPath;
-  database.GetArtistPath(m_artist.idArtist,strArtistPath);
-  CFileItem item(strArtistPath,true);
-  std::string strLocal = item.GetLocalFanart();
+  // First look for fanart in the artists folder, the primary location
+  std::string strArtistPath = m_artist.strPath;
+  // Get path when don't already have it.
+  bool artistpathfound = !strArtistPath.empty();
+  if (!artistpathfound)
+    artistpathfound = database.GetArtistPath(m_artist, strArtistPath);
+  if (artistpathfound)
+  {
+    CFileItem item(strArtistPath, true);
+    strLocal = item.GetLocalFanart();
+  }
+  // If not there fall back local to music files (historic location for those album artists with a unique folder)
+  if (strLocal.empty())
+  {
+    artistpathfound = database.GetOldArtistPath(m_artist.idArtist, strArtistPath);
+    if (artistpathfound)
+    {
+      CFileItem item(strArtistPath, true);
+      strLocal = item.GetLocalFanart();
+    }
+  }
+
   if (!strLocal.empty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));

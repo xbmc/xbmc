@@ -34,6 +34,7 @@ namespace GAME
 
   protected:
     // implementation of CDialogGameVideoSelect
+    std::string GetHeading() override;
     void PreInit() override;
     void GetItems(CFileItemList &items) override;
     void OnItemFocus(unsigned int index) override;

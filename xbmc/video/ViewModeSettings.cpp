@@ -22,7 +22,7 @@
 
 #include "cores/IPlayer.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/VideoSettings.h"
+#include "cores/VideoSettings.h"
 
 struct ViewModeProperties
 {

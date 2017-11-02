@@ -1,5 +1,5 @@
 @ECHO OFF
 
 PUSHD %~dp0\..
-CALL download-dependencies.bat x64-uwp
+CALL download-dependencies.bat win10-x64
 POPD

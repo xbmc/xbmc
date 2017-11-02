@@ -25,9 +25,8 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
-#include "settings/AudioDSPSettings.h"
 #include "settings/GameSettings.h"
-#include "settings/VideoSettings.h"
+#include "settings/LibExportSettings.h"
 #include "threads/CriticalSection.h"
 
 #define VOLUME_DRC_MINIMUM 0    // 0dB
@@ -54,13 +53,6 @@ public:
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
-  const CVideoSettings& GetCurrentVideoSettings() const { return m_currentVideoSettings; }
-  CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
-
-  const CAudioSettings& GetDefaultAudioSettings() const { return m_defaultAudioSettings; }
-  CAudioSettings& GetDefaultAudioSettings() { return m_defaultAudioSettings; }
-  const CAudioSettings& GetCurrentAudioSettings() const { return m_currentAudioSettings; }
-  CAudioSettings& GetCurrentAudioSettings() { return m_currentAudioSettings; }
 
   const CGameSettings& GetDefaultGameSettings() const { return m_defaultGameSettings; }
   CGameSettings& GetDefaultGameSettings() { return m_defaultGameSettings; }
@@ -113,10 +105,6 @@ protected:
 
 private:
   CVideoSettings m_defaultVideoSettings;
-  CVideoSettings m_currentVideoSettings;
-
-  CAudioSettings m_defaultAudioSettings;
-  CAudioSettings m_currentAudioSettings;
 
   CGameSettings m_defaultGameSettings;
   CGameSettings m_currentGameSettings;

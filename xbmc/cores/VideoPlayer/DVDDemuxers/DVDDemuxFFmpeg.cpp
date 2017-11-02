@@ -25,7 +25,7 @@
 
 #include "commons/Exception.h"
 #include "cores/FFmpeg.h"
-#include "TimingConstants.h" // for DVD_TIME_BASE
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h" // for DVD_TIME_BASE
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
@@ -79,7 +79,7 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
   {}
 };
 
-#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
+#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
 std::string CDemuxStreamAudioFFmpeg::GetStreamName()
 {
@@ -213,6 +213,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   m_currentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_program = UINT_MAX;
+  m_seekToKeyFrame = false;
 
   const AVIOInterruptCB int_cb = { interrupt_cb, this };
 
@@ -626,6 +627,7 @@ void CDVDDemuxFFmpeg::Flush()
 
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
+  m_seekToKeyFrame = false;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -904,6 +906,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       // timeout, probably no real error, return empty packet
       bReturnEmpty = true;
     }
+    else if (m_pkt.result == AVERROR_EOF)
+    {
+    }
     else if (m_pkt.result < 0)
     {
       Flush();
@@ -1076,6 +1081,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         // content has changed
         stream = AddStream(pPacket->iStreamId);
       }
+      if (stream->codec == AV_CODEC_ID_H264)
+        pPacket->recoveryPoint = m_seekToKeyFrame;
+      m_seekToKeyFrame = false;
     }
     if (!stream)
     {
@@ -1152,7 +1160,12 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
       ret = 0;
 
     if (ret >= 0)
+    {
+      if (m_pFormatContext->iformat->read_seek)
+        m_seekToKeyFrame = true;
+
       UpdateCurrentPTS();
+    }
   }
 
   if(m_currentPts == DVD_NOPTS_VALUE)
@@ -1924,13 +1937,13 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
       int i = parser->second->m_parserCtx->parser->split(parser->second->m_codecCtx, pkt->data, pkt->size);
       if (i > 0 && i < FF_MAX_EXTRADATA_SIZE)
       {
-        st->codecpar->extradata = (uint8_t*)av_malloc(i + FF_INPUT_BUFFER_PADDING_SIZE);
+        st->codecpar->extradata = (uint8_t*)av_malloc(i + AV_INPUT_BUFFER_PADDING_SIZE);
         if (st->codecpar->extradata)
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::ParsePacket() fetching extradata, extradata_size(%d)", i);
           st->codecpar->extradata_size = i;
           memcpy(st->codecpar->extradata, pkt->data, i);
-          memset(st->codecpar->extradata + i, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+          memset(st->codecpar->extradata + i, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
           if (parser->second->m_parserCtx->parser->parser_parse)
           {

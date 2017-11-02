@@ -30,11 +30,11 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Visualisatie Opties"
+msgstr "Visualisatie-opties"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Visualisatie voorinstellingen"
+msgstr "Visualisatievoorinstellingen"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -110,7 +110,7 @@ msgstr "Afspeelsnelheid"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Eind tijd"
+msgstr "Eindtijd"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -238,11 +238,11 @@ msgstr "Kies je Kodi gebruikersprofiel[CR]om in te loggen en door te gaan"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Begin menu"
+msgstr "Beginmenu"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Begin Add-ons"
+msgstr "Begin add-ons"
 
 msgctxt "#31550"
 msgid "Backgrounds"

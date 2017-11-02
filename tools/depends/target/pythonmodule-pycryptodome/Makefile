@@ -38,6 +38,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../02-android-dlopen.patch
 endif
+	cd $(PLATFORM); patch -p0 < ../03-obey-crosscompileflags.patch
 
 $(LIBDYLIB): $(PLATFORM)
 	mkdir -p $(PLATFORM)/output

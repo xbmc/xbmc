@@ -12,7 +12,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
     add_executable(JsonSchemaBuilder::JsonSchemaBuilder IMPORTED GLOBAL)
     if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
       set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
-                                                                 IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/project/BuildDependencies/bin/json-rpc/JsonSchemaBuilder")
+                                                                 IMPORTED_LOCATION "${DEPENDENCIES_DIR}/bin/json-rpc/JsonSchemaBuilder")
     else()
       set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
                                                                  IMPORTED_LOCATION "${NATIVEPREFIX}/bin/JsonSchemaBuilder")

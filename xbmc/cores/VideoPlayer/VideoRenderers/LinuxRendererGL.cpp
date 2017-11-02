@@ -60,6 +60,8 @@
 //! is a multiple of 128 and deinterlacing is on
 #define PBO_OFFSET 16
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
@@ -132,8 +134,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_iYV12RenderBuffer = 0;
   m_currentField = FIELD_FULL;
   m_reloadShaders = 0;
-  m_pYUVShader = NULL;
-  m_pVideoFilterShader = NULL;
+  m_pYUVShader = nullptr;
+  m_pVideoFilterShader = nullptr;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
@@ -143,7 +145,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
   m_NumYV12Buffers = 0;
-  m_iLastRenderBuffer = 0;
   m_bConfigured = false;
   m_bValidated = false;
   m_clearColour = 0.0f;
@@ -169,14 +170,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
   {
     m_pYUVShader->Free();
     delete m_pYUVShader;
-    m_pYUVShader = NULL;
+    m_pYUVShader = nullptr;
   }
 
   if (m_pVideoFilterShader)
   {
-    m_pVideoFilterShader->Free();
     delete m_pVideoFilterShader;
-    m_pVideoFilterShader = NULL;
+    m_pVideoFilterShader = nullptr;
   }
 }
 
@@ -224,9 +224,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       return false;
 
     if (m_textureTarget == GL_TEXTURE_RECTANGLE_ARB)
-      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
+      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_RECTANGLE_ARB");
     else
-      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
+      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_2D");
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateTexture(i);
@@ -250,7 +250,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
@@ -259,8 +259,6 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
-
-  m_iLastRenderBuffer = -1;
 
   m_nonLinStretch    = false;
   m_nonLinStretchGui = false;
@@ -275,7 +273,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // on osx 10.9 mavericks we get a strange ripple
   // effect when rendering with pbo
   // when used on intel gpu - we have to quirk it here
-  if (CDarwinUtils::IsMavericks())
+  if (CDarwinUtils::IsMavericksOrHigher())
   {
     std::string rendervendor = g_Windowing.GetRenderVendor();
     StringUtils::ToLower(rendervendor);
@@ -494,10 +492,12 @@ void CLinuxRendererGL::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGL::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  m_iLastRenderBuffer = m_iYV12RenderBuffer;
-  m_iYV12RenderBuffer = index;
+  if (index2 >= 0)
+    m_iYV12RenderBuffer = index2;
+  else
+    m_iYV12RenderBuffer = index;
 
   if (!ValidateRenderer())
   {
@@ -518,43 +518,31 @@ void CLinuxRendererGL::RenderUpdate(int index, bool clear, DWORD flags, DWORD al
       ClearBackBuffer();
   }
 
-  if (alpha<255)
+  if (alpha < 255)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0f, 1.0f, 1.0f, alpha / 255.0f);
   }
   else
   {
     glDisable(GL_BLEND);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
 
-  if(flags & RENDER_FLAG_WEAVE)
+  if (m_pYUVShader)
+    m_pYUVShader->SetAlpha(alpha/255);
+  if (m_pVideoFilterShader)
+    m_pVideoFilterShader->SetAlpha(alpha/255);
+
+  if (!Render(flags, m_iYV12RenderBuffer) && clear)
+    ClearBackBuffer();
+
+  if (index2 >= 0)
   {
-    int top_index = index;
-    int bot_index = index;
-
-    if((flags & RENDER_FLAG_FIELD0) && m_iLastRenderBuffer > -1)
-    {
-      if(flags & RENDER_FLAG_TOP)
-        bot_index = m_iLastRenderBuffer;
-      else
-        top_index = m_iLastRenderBuffer;
-    }
-
-    glEnable(GL_POLYGON_STIPPLE);
-    glPolygonStipple(stipple_weave);
-    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_TOP, top_index);
-    glPolygonStipple(stipple_weave+4);
-    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_BOT, bot_index);
-    glDisable(GL_POLYGON_STIPPLE);
-
-  }
-  else
-  {
-    if (!Render(flags, index) && clear)
-      ClearBackBuffer();
+    m_iYV12RenderBuffer = index;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+    Render(flags, m_iYV12RenderBuffer);
   }
 
   VerifyGLState();
@@ -574,61 +562,146 @@ void CLinuxRendererGL::ClearBackBuffer()
 //since it only sets pixels to black that aren't going to be overwritten by the video
 void CLinuxRendererGL::DrawBlackBars()
 {
-  glColor4f(m_clearColour, m_clearColour, m_clearColour, 1.0f);
   glDisable(GL_BLEND);
-  glBegin(GL_QUADS);
+
+  struct Svertex
+  {
+    float x,y,z;
+  };
+  Svertex vertices[24];
+  GLubyte count = 0;
+
+  g_Windowing.EnableShader(SM_DEFAULT);
+  GLint posLoc = g_Windowing.ShaderGetPos();
+  GLint uniCol = g_Windowing.ShaderGetUniCol();
+
+  glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
   //top quad
   if (m_rotatedDestCoords[0].y > 0.0)
   {
-    glVertex4f(0.0,                          0.0,                      0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), 0.0,                      0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[0].y, 0.0, 1.0);
-    glVertex4f(0.0,                          m_rotatedDestCoords[0].y, 0.0, 1.0);
+    GLubyte quad = count;
+    vertices[quad].x = 0.0;
+    vertices[quad].y = 0.0;
+    vertices[quad].z = 0;
+    vertices[quad+1].x = g_graphicsContext.GetWidth();
+    vertices[quad+1].y = 0;
+    vertices[quad+1].z = 0;
+    vertices[quad+2].x = g_graphicsContext.GetWidth();
+    vertices[quad+2].y = m_rotatedDestCoords[0].y;
+    vertices[quad+2].z = 0;
+    vertices[quad+3] = vertices[quad+2];
+    vertices[quad+4].x = 0;
+    vertices[quad+4].y = m_rotatedDestCoords[0].y;
+    vertices[quad+4].z = 0;
+    vertices[quad+5] = vertices[quad];
+    count += 6;
   }
 
   //bottom quad
   if (m_rotatedDestCoords[2].y < g_graphicsContext.GetHeight())
   {
-    glVertex4f(0.0,                          m_rotatedDestCoords[2].y,      0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[2].y,      0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0, 1.0);
-    glVertex4f(0.0,                          g_graphicsContext.GetHeight(), 0.0, 1.0);
+    GLubyte quad = count;
+    vertices[quad].x = 0.0;
+    vertices[quad].y = m_rotatedDestCoords[2].y;
+    vertices[quad].z = 0;
+    vertices[quad+1].x = g_graphicsContext.GetWidth();
+    vertices[quad+1].y = m_rotatedDestCoords[2].y;
+    vertices[quad+1].z = 0;
+    vertices[quad+2].x = g_graphicsContext.GetWidth();
+    vertices[quad+2].y = g_graphicsContext.GetHeight();
+    vertices[quad+2].z = 0;
+    vertices[quad+3] = vertices[quad+2];
+    vertices[quad+4].x = 0;
+    vertices[quad+4].y = g_graphicsContext.GetHeight();
+    vertices[quad+4].z = 0;
+    vertices[quad+5] = vertices[quad];
+    count += 6;
   }
 
   //left quad
   if (m_rotatedDestCoords[0].x > 0.0)
   {
-    glVertex4f(0.0,                      m_rotatedDestCoords[0].y, 0.0, 1.0);
-    glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0, 1.0);
-    glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[2].y, 0.0, 1.0);
-    glVertex4f(0.0,                      m_rotatedDestCoords[2].y, 0.0, 1.0);
+    GLubyte quad = count;
+    vertices[quad].x = 0.0;
+    vertices[quad].y = m_rotatedDestCoords[0].y;
+    vertices[quad].z = 0;
+    vertices[quad+1].x = m_rotatedDestCoords[0].x;
+    vertices[quad+1].y = m_rotatedDestCoords[0].y;
+    vertices[quad+1].z = 0;
+    vertices[quad+2].x = m_rotatedDestCoords[3].x;
+    vertices[quad+2].y = m_rotatedDestCoords[3].y;
+    vertices[quad+2].z = 0;
+    vertices[quad+3] = vertices[quad+2];
+    vertices[quad+4].x = 0;
+    vertices[quad+4].y = m_rotatedDestCoords[3].y;
+    vertices[quad+4].z = 0;
+    vertices[quad+5] = vertices[quad];
+    count += 6;
   }
 
   //right quad
   if (m_rotatedDestCoords[2].x < g_graphicsContext.GetWidth())
   {
-    glVertex4f(m_rotatedDestCoords[2].x,     m_rotatedDestCoords[0].y, 0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[0].y, 0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[2].y, 0.0, 1.0);
-    glVertex4f(m_rotatedDestCoords[2].x,     m_rotatedDestCoords[2].y, 0.0, 1.0);
+    GLubyte quad = count;
+    vertices[quad].x = m_rotatedDestCoords[1].x;
+    vertices[quad].y = m_rotatedDestCoords[1].y;
+    vertices[quad].z = 0;
+    vertices[quad+1].x = g_graphicsContext.GetWidth();
+    vertices[quad+1].y = m_rotatedDestCoords[1].y;
+    vertices[quad+1].z = 0;
+    vertices[quad+2].x = g_graphicsContext.GetWidth();
+    vertices[quad+2].y = m_rotatedDestCoords[2].y;
+    vertices[quad+2].z = 0;
+    vertices[quad+3] = vertices[quad+2];
+    vertices[quad+4].x = m_rotatedDestCoords[1].x;
+    vertices[quad+4].y = m_rotatedDestCoords[2].y;
+    vertices[quad+4].z = 0;
+    vertices[quad+5] = vertices[quad];
+    count += 6;
   }
 
-  glEnd();
+  GLuint vertexVBO;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex)*count, &vertices[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
+  glEnableVertexAttribArray(posLoc);
+
+  glDrawArrays(GL_TRIANGLES, 0, count);
+
+  glDisableVertexAttribArray(posLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+
+  g_Windowing.DisableShader();
 }
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  bool pixelRatioChanged    = (CDisplaySettings::GetInstance().GetPixelRatio() > 1.001f || CDisplaySettings::GetInstance().GetPixelRatio() < 0.999f) !=
-                              (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+  if (!m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader = new DefaultFilterShader();
+    if (!m_pVideoFilterShader->CompileAndLink())
+    {
+      CLog::Log(LOGERROR, "CLinuxRendererGL::UpdateVideoFilter: Error compiling and linking video filter shader");
+      return;
+    }
+  }
+
+  bool pixelRatioChanged = (CDisplaySettings::GetInstance().GetPixelRatio() > 1.001f ||
+                            CDisplaySettings::GetInstance().GetPixelRatio() < 0.999f) !=
+                            (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
   bool nonLinStretchChanged = false;
-  bool cmsChanged           = (m_cmsOn != m_ColorManager->IsEnabled())
-                              || (m_cmsOn && !m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags));
+  bool cmsChanged = (m_cmsOn != m_ColorManager->IsEnabled()) ||
+                    (m_cmsOn && !m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags));
   if (m_nonLinStretchGui != CDisplaySettings::GetInstance().IsNonLinearStretched() || pixelRatioChanged)
   {
-    m_nonLinStretchGui   = CDisplaySettings::GetInstance().IsNonLinearStretched();
-    m_pixelRatio         = CDisplaySettings::GetInstance().GetPixelRatio();
-    m_reloadShaders      = 1;
+    m_nonLinStretchGui = CDisplaySettings::GetInstance().IsNonLinearStretched();
+    m_pixelRatio = CDisplaySettings::GetInstance().GetPixelRatio();
+    m_reloadShaders = 1;
     nonLinStretchChanged = true;
 
     if (m_nonLinStretchGui && (m_pixelRatio < 0.999f || m_pixelRatio > 1.001f) && Supports(RENDERFEATURE_NONLINSTRETCH))
@@ -643,7 +716,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged && !cmsChanged)
+  if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
+      !nonLinStretchChanged && !cmsChanged)
     return;
   else
     m_reloadShaders = 1;
@@ -670,10 +744,10 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
-  m_scalingMethod    = m_scalingMethodGui;
+  m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
+  m_scalingMethod = m_scalingMethodGui;
 
-  if(!Supports(m_scalingMethod))
+  if (!Supports(m_scalingMethod))
   {
     CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
@@ -681,9 +755,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   if (m_pVideoFilterShader)
   {
-    m_pVideoFilterShader->Free();
     delete m_pVideoFilterShader;
-    m_pVideoFilterShader = NULL;
+    m_pVideoFilterShader = nullptr;
   }
   m_fbo.fbo.Cleanup();
 
@@ -781,11 +854,16 @@ void CLinuxRendererGL::UpdateVideoFilter()
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
-    m_pVideoFilterShader->Free();
     delete m_pVideoFilterShader;
-    m_pVideoFilterShader = NULL;
+    m_pVideoFilterShader = nullptr;
   }
   m_fbo.fbo.Cleanup();
+
+  m_pVideoFilterShader = new DefaultFilterShader();
+  if (!m_pVideoFilterShader->CompileAndLink())
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UpdateVideoFilter: Error compiling and linking defauilt video filter shader");
+  }
 
   SetTextureFilter(GL_LINEAR);
   m_renderQuality = RQ_SINGLEPASS;
@@ -807,89 +885,33 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
-    bool tryGlsl = true;
-    switch(requestedMethod)
+    // create regular progressive scan shader
+    // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
+    GLSLOutput *out = nullptr;
+    if (m_renderQuality == RQ_SINGLEPASS)
     {
-      case RENDER_METHOD_AUTO:
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-       //with render method set to auto, don't try glsl on ati if we're on linux
-       //it seems to be broken in a random way with every new driver release
-       tryGlsl = !StringUtils::StartsWithNoCase(g_Windowing.GetRenderVendor(), "ati");
-#endif
-      
-      case RENDER_METHOD_GLSL:
-      // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (tryGlsl)
-      {
-        // create regular progressive scan shader
-        // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
-        GLSLOutput *out = nullptr;
-        if (m_renderQuality == RQ_SINGLEPASS)
-        {
-          out = new GLSLOutput(3, m_useDithering, m_ditherDepth,
-                               m_cmsOn ? m_fullRange : false,
-                               m_cmsOn ? m_tCLUTTex : 0,
-                               m_CLUTsize);
-        }
-        EShaderFormat shaderFormat = GetShaderFormat();
-        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
-                                                    m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                    out);
-        if (!m_cmsOn)
-          m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+      out = new GLSLOutput(3, m_useDithering, m_ditherDepth,
+                           m_cmsOn ? m_fullRange : false,
+                           m_cmsOn ? m_tCLUTTex : 0,
+                           m_CLUTsize);
+    }
+    EShaderFormat shaderFormat = GetShaderFormat();
+    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
+                                                m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
+                                                out);
+    if (!m_cmsOn)
+      m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+    CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
 
-        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-        {
-          m_renderMethod = RENDER_GLSL;
-          UpdateVideoFilter();
-          break;
-        }
-        else if (m_pYUVShader)
-        {
-          m_pYUVShader->Free();
-          delete m_pYUVShader;
-          m_pYUVShader = NULL;
-        }
-        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
-        // drop through and try ARB
-      }
-      case RENDER_METHOD_ARB:
-      // Try ARB shaders if supported and user requested it or GLSL shaders failed.
-      if (g_Windowing.IsExtSupported("GL_ARB_fragment_program"))
-      {
-        CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
-        m_renderMethod = RENDER_ARB ;
-
-        // create regular progressive scan shader
-        EShaderFormat shaderFormat = GetShaderFormat();
-        m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat);
-        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
-        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
-
-        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-        {
-          m_renderMethod = RENDER_ARB;
-          UpdateVideoFilter();
-          break;
-        }
-        else if (m_pYUVShader)
-        {
-          m_pYUVShader->Free();
-          delete m_pYUVShader;
-          m_pYUVShader = NULL;
-        }
-        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
-        m_renderMethod = -1;
-        break;
-      }
-      default:
-      {
-        m_renderMethod = -1;
-        CLog::Log(LOGERROR, "GL: Shaders support not present");
-        break;
-      }
+    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+    {
+      m_renderMethod = RENDER_GLSL;
+      UpdateVideoFilter();
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
     }
   }
 
@@ -898,9 +920,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   {
     if (!g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
     {
-      CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
-      CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");
-      m_renderMethod |= RENDER_POT;
+      CLog::Log(LOGWARNING, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
     }
     else
       CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
@@ -977,14 +997,9 @@ bool CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
       break;
     }
   }
-  else if (m_renderMethod & RENDER_ARB)
-  {
-    RenderSinglePass(renderBuffer, m_currentField);
-  }
   else
   {
-    RenderSoftware(renderBuffer, m_currentField);
-    VerifyGLState();
+    return false;
   }
 
   AfterRenderHook(renderBuffer);
@@ -1004,24 +1019,21 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   // Y
   glActiveTextureARB(GL_TEXTURE0);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[0].id);
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[1].id);
 
   // V
   glActiveTextureARB(GL_TEXTURE2);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[2].id);
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
 
@@ -1032,51 +1044,104 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   else
     m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
 
-  if     (field == FIELD_TOP)
+  if (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
+  m_pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
   m_pYUVShader->Enable();
 
-  glBegin(GL_QUADS);
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y1);
-  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );//top left
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+    float u3, v3;
+  }vertex[4];
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y1);
-  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f );//top right
+  GLint vertLoc = m_pYUVShader->GetVertexLoc();
+  GLint Yloc = m_pYUVShader->GetYcoordLoc();
+  GLint Uloc = m_pYUVShader->GetUcoordLoc();
+  GLint Vloc = m_pYUVShader->GetVcoordLoc();
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y2);
-  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f );//bottom right
+  // Setup vertex position values
+  for(int i = 0; i < 4; i++)
+  {
+    vertex[i].x = m_rotatedDestCoords[i].x;
+    vertex[i].y = m_rotatedDestCoords[i].y;
+    vertex[i].z = 0.0f;// set z to 0
+  }
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y2);
-  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f );//bottom left
+  // bottom left
+  vertex[0].u1 = planes[0].rect.x1;
+  vertex[0].v1 = planes[0].rect.y1;
+  vertex[0].u2 = planes[1].rect.x1;
+  vertex[0].v2 = planes[1].rect.y1;
+  vertex[0].u3 = planes[2].rect.x1;
+  vertex[0].v3 = planes[2].rect.y1;
 
-  glEnd();
+  // bottom right
+  vertex[1].u1 = planes[0].rect.x2;
+  vertex[1].v1 = planes[0].rect.y1;
+  vertex[1].u2 = planes[1].rect.x2;
+  vertex[1].v2 = planes[1].rect.y1;
+  vertex[1].u3 = planes[2].rect.x2;
+  vertex[1].v3 = planes[2].rect.y1;
+
+  // top right
+  vertex[2].u1 = planes[0].rect.x2;
+  vertex[2].v1 = planes[0].rect.y2;
+  vertex[2].u2 = planes[1].rect.x2;
+  vertex[2].v2 = planes[1].rect.y2;
+  vertex[2].u3 = planes[2].rect.x2;
+  vertex[2].v3 = planes[2].rect.y2;
+
+  // top left
+  vertex[3].u1 = planes[0].rect.x1;
+  vertex[3].v1 = planes[0].rect.y2;
+  vertex[3].u2 = planes[1].rect.x1;
+  vertex[3].v2 = planes[1].rect.y2;
+  vertex[3].u3 = planes[2].rect.x1;
+  vertex[3].v3 = planes[2].rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   m_pYUVShader->Disable();
   VerifyGLState();
-
-  glActiveTextureARB(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-
-  glActiveTextureARB(GL_TEXTURE2);
-  glDisable(m_textureTarget);
-
-  glActiveTextureARB(GL_TEXTURE0);
-  glDisable(m_textureTarget);
-
-  glMatrixMode(GL_MODELVIEW);
 
   VerifyGLState();
 }
@@ -1099,7 +1164,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
       return;
     }
 
-    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA16, GL_SHORT))
+    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA, GL_SHORT))
     {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
       return;
@@ -1109,20 +1174,17 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glDisable(GL_DEPTH_TEST);
 
   // Y
-  glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
   VerifyGLState();
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[1].id);
   VerifyGLState();
 
   // V
   glActiveTextureARB(GL_TEXTURE2);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[2].id);
   VerifyGLState();
 
@@ -1139,20 +1201,18 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
-  if     (field == FIELD_TOP)
+
+  if (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
-  else if(field == FIELD_BOT)
+  else if (field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
   VerifyGLState();
-
-  glPushAttrib(GL_VIEWPORT_BIT);
-  glPushAttrib(GL_SCISSOR_BIT);
 
   glMatrixModview.Push();
   glMatrixModview->LoadIdentity();
@@ -1163,16 +1223,20 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glMatrixProject->Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
   glMatrixProject.Load();
 
+  CRect viewport;
+  g_Windowing.GetViewPort(viewport);
   glViewport(0, 0, m_sourceWidth, m_sourceHeight);
   glScissor (0, 0, m_sourceWidth, m_sourceHeight);
 
+  m_pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
   if (!m_pYUVShader->Enable())
   {
     CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
   }
 
-  m_fbo.width  = planes[0].rect.x2 - planes[0].rect.x1;
+  m_fbo.width = planes[0].rect.x2 - planes[0].rect.x1;
   m_fbo.height = planes[0].rect.y2 - planes[0].rect.y1;
+
   if (m_textureTarget == GL_TEXTURE_2D)
   {
     m_fbo.width  *= planes[0].texwidth;
@@ -1184,117 +1248,218 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
     m_fbo.height *= 2;
 
   // 1st Pass to video frame size
-  glBegin(GL_QUADS);
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+    float u3, v3;
+  } vertex[4];
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y1);
-  glVertex2f(0.0f    , 0.0f);
+  GLint vertLoc = m_pYUVShader->GetVertexLoc();
+  GLint Yloc = m_pYUVShader->GetYcoordLoc();
+  GLint Uloc = m_pYUVShader->GetUcoordLoc();
+  GLint Vloc = m_pYUVShader->GetVcoordLoc();
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y1);
-  glVertex2f(m_fbo.width, 0.0f);
+  // top left
+  vertex[0].x = 0.0f;
+  vertex[0].y = 0.0f;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = planes[0].rect.x1;
+  vertex[0].v1 = planes[0].rect.y1;
+  vertex[0].u2 = planes[1].rect.x1;
+  vertex[0].v2 = planes[1].rect.y1;
+  vertex[0].u3 = planes[2].rect.x1;
+  vertex[0].v3 = planes[2].rect.y1;
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y2);
-  glVertex2f(m_fbo.width, m_fbo.height);
+  // top right
+  vertex[1].x = m_fbo.width;
+  vertex[1].y = 0.0f;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = planes[0].rect.x2;
+  vertex[1].v1 = planes[0].rect.y1;
+  vertex[1].u2 = planes[1].rect.x2;
+  vertex[1].v2 = planes[1].rect.y1;
+  vertex[1].u3 = planes[2].rect.x2;
+  vertex[1].v3 = planes[2].rect.y1;
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y2);
-  glVertex2f(0.0f    , m_fbo.height);
+  // bottom right
+  vertex[2].x = m_fbo.width;
+  vertex[2].y = m_fbo.height;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = planes[0].rect.x2;
+  vertex[2].v1 = planes[0].rect.y2;
+  vertex[2].u2 = planes[1].rect.x2;
+  vertex[2].v2 = planes[1].rect.y2;
+  vertex[2].u3 = planes[2].rect.x2;
+  vertex[2].v3 = planes[2].rect.y2;
 
-  glEnd();
+  // bottom left
+  vertex[3].x = 0.0f;
+  vertex[3].y = m_fbo.height;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = planes[0].rect.x1;
+  vertex[3].v1 = planes[0].rect.y2;
+  vertex[3].u2 = planes[1].rect.x1;
+  vertex[3].v2 = planes[1].rect.y2;
+  vertex[3].u3 = planes[2].rect.x1;
+  vertex[3].v3 = planes[2].rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  glDisableVertexAttribArray(Vloc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   m_pYUVShader->Disable();
 
   glMatrixModview.PopLoad();
   glMatrixProject.PopLoad();
 
-  glPopAttrib(); // pop scissor
-  glPopAttrib(); // pop viewport
-  VerifyGLState();
+  g_Windowing.SetViewPort(viewport);
 
   m_fbo.fbo.EndRender();
 
-  glActiveTextureARB(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-  glActiveTextureARB(GL_TEXTURE2);
-  glDisable(m_textureTarget);
-  glActiveTextureARB(GL_TEXTURE0);
-  glDisable(m_textureTarget);
+  VerifyGLState();
 }
 
 void CLinuxRendererGL::RenderFromFBO()
 {
-  glEnable(GL_TEXTURE_2D);
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
   // Use regular normalized texture coordinates
-
   // 2nd Pass to screen size with optional video filter
 
-  if (m_pVideoFilterShader)
+  if (!m_pVideoFilterShader)
   {
-    GLint filter;
-    if (!m_pVideoFilterShader->GetTextureFilter(filter))
-      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-
-    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
-    m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_sourceWidth);
-    m_pVideoFilterShader->SetHeight(m_sourceHeight);
-
-    //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
-    //having non-linear stretch on breaks the alignment
-    if (g_application.m_pPlayer->IsInMenu())
-      m_pVideoFilterShader->SetNonLinStretch(1.0);
-    else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
-
-    m_pVideoFilterShader->Enable();
+    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderFromFBO - no videofilter shader");
+    return;
   }
+
+  GLint filter;
+  if (!m_pVideoFilterShader->GetTextureFilter(filter))
+    filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+  m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
+  m_pVideoFilterShader->SetSourceTexture(0);
+  m_pVideoFilterShader->SetWidth(m_sourceWidth);
+  m_pVideoFilterShader->SetHeight(m_sourceHeight);
+
+  //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
+  //having non-linear stretch on breaks the alignment
+  if (g_application.m_pPlayer->IsInMenu())
+    m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
-  {
-    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  }
+    m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+
+  m_pVideoFilterShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  m_pVideoFilterShader->Enable();
 
   VerifyGLState();
 
   float imgwidth = m_fbo.width / m_sourceWidth;
   float imgheight = m_fbo.height / m_sourceHeight;
 
-  glBegin(GL_QUADS);
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f, 0.0f);
-  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );
+  GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
+  GLint loc = m_pVideoFilterShader->GetCoordLoc();
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, 0.0f);
-  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f );
+  // Setup vertex position values
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = 0.0;
+  vertex[0].v1 = 0.0;
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, imgheight);
-  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f );
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = imgwidth;
+  vertex[1].v1 = 0.0f;
+
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = imgwidth;
+  vertex[2].v1 = imgheight;
+
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = 0.0f;
+  vertex[3].v1 = imgheight;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
   
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f, imgheight);
-  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f );
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
-  glEnd();
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(loc);
 
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
 
-  if (m_pVideoFilterShader)
-    m_pVideoFilterShader->Disable();
+  glDisableVertexAttribArray(loc);
+  glDisableVertexAttribArray(vertLoc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
+
+  m_pVideoFilterShader->Disable();
 
   VerifyGLState();
 
   glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
   VerifyGLState();
 }
 
@@ -1328,7 +1493,6 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 {
   YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
 
-  glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
 
   glBindTexture(m_textureTarget, plane.id);
@@ -1336,97 +1500,99 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
   // make sure we know the correct texture size
   GetPlaneTextureSize(plane);
 
-  // Try some clamping or wrapping
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  if (m_pVideoFilterShader)
+  if (!m_pVideoFilterShader)
   {
-    GLint filter;
-    if (!m_pVideoFilterShader->GetTextureFilter(filter))
-      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-    m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_sourceWidth);
-    m_pVideoFilterShader->SetHeight(m_sourceHeight);
-
-    //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
-    //having non-linear stretch on breaks the alignment
-    if (g_application.m_pPlayer->IsInMenu())
-      m_pVideoFilterShader->SetNonLinStretch(1.0);
-    else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
-
-    m_pVideoFilterShader->Enable();
+    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderRGB - no videofilter shader");
+    return;
   }
+
+  GLint filter;
+  if (!m_pVideoFilterShader->GetTextureFilter(filter))
+    filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+  m_pVideoFilterShader->SetSourceTexture(0);
+  m_pVideoFilterShader->SetWidth(m_sourceWidth);
+  m_pVideoFilterShader->SetHeight(m_sourceHeight);
+
+  //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
+  //having non-linear stretch on breaks the alignment
+  if (g_application.m_pPlayer->IsInMenu())
+    m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
+    m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+
+  m_pVideoFilterShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  m_pVideoFilterShader->Enable();
+
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
   {
-    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-  }
+    float x, y, z;
+    float u1, v1;
+  } vertex[4];
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  VerifyGLState();
+  GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
+  GLint loc = m_pVideoFilterShader->GetCoordLoc();
 
-  glBegin(GL_QUADS);
-  if (m_textureTarget==GL_TEXTURE_2D)
-  {
-    glTexCoord2f(plane.rect.x1, plane.rect.y1);  glVertex2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y);
-    glTexCoord2f(plane.rect.x2, plane.rect.y1);  glVertex2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y);
-    glTexCoord2f(plane.rect.x2, plane.rect.y2);  glVertex2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y);
-    glTexCoord2f(plane.rect.x1, plane.rect.y2);  glVertex2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y);
-  }
-  else
-  {
-    glTexCoord2f(plane.rect.x1, plane.rect.y1); glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0f, 0.0f);
-    glTexCoord2f(plane.rect.x2, plane.rect.y1); glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 1.0f, 0.0f);
-    glTexCoord2f(plane.rect.x2, plane.rect.y2); glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 1.0f, 1.0f);
-    glTexCoord2f(plane.rect.x1, plane.rect.y2); glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0.0f, 1.0f);
-  }
-  glEnd();
-  VerifyGLState();
+  // Setup vertex position values
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = plane.rect.x1;
+  vertex[0].v1 = plane.rect.y1;
 
-  if (m_pVideoFilterShader)
-    m_pVideoFilterShader->Disable();
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = plane.rect.x2;
+  vertex[1].v1 = plane.rect.y1;
 
-  glBindTexture (m_textureTarget, 0);
-  glDisable(m_textureTarget);
-}
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = plane.rect.x2;
+  vertex[2].v1 = plane.rect.y2;
 
-void CLinuxRendererGL::RenderSoftware(int index, int field)
-{
-  // used for textures uploaded from rgba or CVPixelBuffers.
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = plane.rect.x1;
+  vertex[3].v1 = plane.rect.y2;
 
-  glDisable(GL_DEPTH_TEST);
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
-  glEnable(m_textureTarget);
-  glActiveTextureARB(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, planes[0].id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
-  glBegin(GL_QUADS);
-  glTexCoord2f(planes[0].rect.x1, planes[0].rect.y1);
-  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(loc);
 
-  glTexCoord2f(planes[0].rect.x2, planes[0].rect.y1);
-  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f);
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  glTexCoord2f(planes[0].rect.x2, planes[0].rect.y2);
-  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glTexCoord2f(planes[0].rect.x1, planes[0].rect.y2);
-  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f);
-
-  glEnd();
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   VerifyGLState();
 
-  glDisable(m_textureTarget);
-  VerifyGLState();
+  m_pVideoFilterShader->Disable();
+
+  glBindTexture(m_textureTarget, 0);
 }
 
 bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
@@ -1475,17 +1641,16 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
 static GLint GetInternalFormat(GLint format, int bpp)
 {
-  if(bpp == 2)
+  if (bpp == 2)
   {
     switch (format)
     {
-#ifdef GL_ALPHA16
-      case GL_ALPHA:     return GL_ALPHA16;
+#ifdef GL_R16
+      case GL_RED:
+        return GL_R16;
 #endif
-#ifdef GL_LUMINANCE16
-      case GL_LUMINANCE: return GL_LUMINANCE16;
-#endif
-      default:           return format;
+      default:
+        return format;
     }
   }
   else
@@ -1643,7 +1808,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       im.plane[i] = new uint8_t[im.planesize[i]];
   }
 
-  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(p = 0;p<YuvImage::MAX_PLANES;p++)
@@ -1677,30 +1841,16 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       planes[p].pixpertex_y = 1;
     }
 
-    if(m_renderMethod & RENDER_POT)
-    {
-      for(int p = 0; p < 3; p++)
-      {
-        planes[p].texwidth  = NP2(planes[p].texwidth);
-        planes[p].texheight = NP2(planes[p].texheight);
-      }
-    }
-
-    for(int p = 0; p < 3; p++)
+    for (int p = 0; p < 3; p++)
     {
       YUVPLANE &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
         continue;
 
       glBindTexture(m_textureTarget, plane.id);
-      GLenum format;
       GLint internalformat;
-      if (p == 2) //V plane needs an alpha texture
-        format = GL_ALPHA;
-      else
-        format = GL_LUMINANCE;
-      internalformat = GetInternalFormat(format, im.bpp);
-      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
+      internalformat = GetInternalFormat(GL_RED, im.bpp);
+      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1709,7 +1859,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       VerifyGLState();
     }
   }
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1724,7 +1873,6 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
   else
     deinterlacing = true;
 
-  glEnable(m_textureTarget);
   VerifyGLState();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -1732,47 +1880,47 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
   if (deinterlacing)
   {
     // Load Even Y Field
-    LoadPlane(buf.fields[FIELD_TOP][0] , GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][0] , GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] );
 
     //load Odd Y Field
-    LoadPlane(buf.fields[FIELD_BOT][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][0], GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]);
 
     // Load Even U & V Fields
-    LoadPlane(buf.fields[FIELD_TOP][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][1], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1]);
 
-    LoadPlane(buf.fields[FIELD_TOP][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_TOP][2], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[2]*2, im->bpp, im->plane[2]);
 
     // Load Odd U & V Fields
-    LoadPlane(buf.fields[FIELD_BOT][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][1], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1]);
 
-    LoadPlane(buf.fields[FIELD_BOT][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_BOT][2], GL_RED,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2]);
   }
   else
   {
     //Load Y plane
-    LoadPlane(buf.fields[FIELD_FULL][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_FULL][0], GL_RED,
               im->width, im->height,
               im->stride[0], im->bpp, im->plane[0]);
 
     //load U plane
-    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_RED,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[1], im->bpp, im->plane[1]);
 
     //load V plane
-    LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA,
+    LoadPlane(buf.fields[FIELD_FULL][2], GL_RED,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[2], im->bpp, im->plane[2]);
   }
@@ -1781,7 +1929,6 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
 
   CalculateTextureSourceRects(source, 3);
 
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1846,7 +1993,6 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   else
     deinterlacing = true;
 
-  glEnable(m_textureTarget);
   VerifyGLState();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, im->bpp);
@@ -1854,22 +2000,22 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   if (deinterlacing)
   {
     // Load Odd Y field
-    LoadPlane(buf.fields[FIELD_TOP][0] , GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_TOP][0] , GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0]);
 
     // Load Even Y field
-    LoadPlane(buf.fields[FIELD_BOT][0], GL_LUMINANCE,
+    LoadPlane(buf.fields[FIELD_BOT][0], GL_RED,
               im->width, im->height >> 1,
               im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
 
     // Load Odd UV Fields
-    LoadPlane(buf.fields[FIELD_TOP][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_TOP][1], GL_RG,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1]);
 
     // Load Even UV Fields
-    LoadPlane(buf.fields[FIELD_BOT][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_BOT][1], GL_RG,
               im->width >> im->cshift_x, im->height >> (im->cshift_y + 1),
               im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1]);
 
@@ -1877,12 +2023,12 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   else
   {
     // Load Y plane
-    LoadPlane(buf. fields[FIELD_FULL][0], GL_LUMINANCE,
+    LoadPlane(buf. fields[FIELD_FULL][0], GL_RED,
               im->width, im->height,
               im->stride[0], im->bpp, im->plane[0]);
 
     // Load UV plane
-    LoadPlane(buf.fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA,
+    LoadPlane(buf.fields[FIELD_FULL][1], GL_RG,
               im->width >> im->cshift_x, im->height >> im->cshift_y,
               im->stride[1], im->bpp, im->plane[1]);
   }
@@ -1891,7 +2037,6 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
 
   CalculateTextureSourceRects(source, 3);
 
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1970,7 +2115,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
       im.plane[i] = new uint8_t[im.planesize[i]];
   }
 
-  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<2;p++)
@@ -2005,15 +2149,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
       planes[p].pixpertex_y = 1;
     }
 
-    if(m_renderMethod & RENDER_POT)
-    {
-      for(int p = 0; p < 3; p++)
-      {
-        planes[p].texwidth  = NP2(planes[p].texwidth);
-        planes[p].texheight = NP2(planes[p].texheight);
-      }
-    }
-
     for(int p = 0; p < 2; p++)
     {
       YUVPLANE &plane = planes[p];
@@ -2022,9 +2157,9 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
       glBindTexture(m_textureTarget, plane.id);
       if (p == 1)
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, GL_RG, plane.texwidth, plane.texheight, 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
       else
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, GL_RED, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -2033,7 +2168,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
       VerifyGLState();
     }
   }
-  glDisable(m_textureTarget);
 
   return true;
 }
@@ -2100,7 +2234,6 @@ bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
   else
     deinterlacing = true;
 
-  glEnable(m_textureTarget);
   VerifyGLState();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -2128,7 +2261,6 @@ bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 
   CalculateTextureSourceRects(source, 3);
 
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -2245,7 +2377,6 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
     im.plane[0] = new uint8_t[im.planesize[0]];
   }
 
-  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     if (!glIsTexture(buf.fields[f][0].id))
@@ -2277,15 +2408,6 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
       planes[p].pixpertex_y = 1;
     }
 
-    if(m_renderMethod & RENDER_POT)
-    {
-      for(int p = 0; p < 3; p++)
-      {
-        planes[p].texwidth  = NP2(planes[p].texwidth);
-        planes[p].texheight = NP2(planes[p].texheight);
-      }
-    }
-
     YUVPLANE &plane = planes[0];
     if (plane.texwidth * plane.texheight == 0)
       continue;
@@ -2300,7 +2422,6 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     VerifyGLState();
   }
-  glDisable(m_textureTarget);
 
   return true;
 }
@@ -2331,14 +2452,12 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
   {
-    return (m_renderMethod & RENDER_GLSL) ||
-           (m_renderMethod & RENDER_ARB);
+    return (m_renderMethod & RENDER_GLSL);
   }
   
   if(feature == RENDERFEATURE_CONTRAST)
   {
-    return (m_renderMethod & RENDER_GLSL) ||
-           (m_renderMethod & RENDER_ARB);
+    return (m_renderMethod & RENDER_GLSL);
   }
 
   if(feature == RENDERFEATURE_GAMMA)
@@ -2354,7 +2473,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_NONLINSTRETCH)
   {
-    if ((m_renderMethod & RENDER_GLSL) && !(m_renderMethod & RENDER_POT))
+    if (m_renderMethod & RENDER_GLSL)
       return true;
   }
 
@@ -2382,16 +2501,16 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
       m_format != AV_PIX_FMT_UYVY422)
     return true;
 
-  if(method == VS_SCALINGMETHOD_LINEAR
-  || method == VS_SCALINGMETHOD_AUTO)
+  if (method == VS_SCALINGMETHOD_LINEAR ||
+      method == VS_SCALINGMETHOD_AUTO)
     return true;
 
-  if(method == VS_SCALINGMETHOD_CUBIC
-  || method == VS_SCALINGMETHOD_LANCZOS2
-  || method == VS_SCALINGMETHOD_SPLINE36_FAST
-  || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-  || method == VS_SCALINGMETHOD_SPLINE36
-  || method == VS_SCALINGMETHOD_LANCZOS3)
+  if (method == VS_SCALINGMETHOD_CUBIC ||
+      method == VS_SCALINGMETHOD_LANCZOS2 ||
+      method == VS_SCALINGMETHOD_SPLINE36_FAST ||
+      method == VS_SCALINGMETHOD_LANCZOS3_FAST ||
+      method == VS_SCALINGMETHOD_SPLINE36 ||
+      method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
@@ -2400,7 +2519,15 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
-    if (g_Windowing.IsExtSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+    bool hasFramebuffer = false;
+    unsigned int major, minor;
+    g_Windowing.GetRenderVersion(major, minor);
+    if (major > 3 ||
+        (major == 3 && minor >= 2))
+      hasFramebuffer = true;
+    if (g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
+      hasFramebuffer = true;
+    if (hasFramebuffer  && (m_renderMethod & RENDER_GLSL))
     {
       // spline36 and lanczos3 are only allowed through advancedsettings.xml
       if(method != VS_SCALINGMETHOD_SPLINE36
@@ -2498,7 +2625,7 @@ bool CLinuxRendererGL::LoadCLUT()
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
   // load 3DLUT data
-  glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_CLUTsize, m_CLUTsize, m_CLUTsize, 0, GL_RGB, GL_UNSIGNED_SHORT, m_CLUT);
+  glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_CLUTsize, m_CLUTsize, m_CLUTsize, 0, GL_RGB16, GL_UNSIGNED_SHORT, m_CLUT);
   free(m_CLUT);
   glActiveTexture(GL_TEXTURE0);
   return true;

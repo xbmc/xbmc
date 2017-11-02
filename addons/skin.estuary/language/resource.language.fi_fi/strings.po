@@ -222,11 +222,11 @@ msgstr "Avaa toistolista"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Näytä kirjautumisruutu käynnistyksessä"
+msgstr "Näytä kirjautumisruutu käynnistyksen yhteydessä"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automaattinen kirjautuminen käynnistyksessä"
+msgstr "Automaattinen kirjautuminen"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -322,7 +322,7 @@ msgstr "Kanavan asetukset"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]ja kirjaudu sisään"
 
 msgctxt "#31099"
 msgid "IconWall"

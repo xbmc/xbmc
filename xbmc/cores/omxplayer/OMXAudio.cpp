@@ -35,7 +35,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "TimingConstants.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "Util.h"
 #include <algorithm>
 #include <cassert>
@@ -61,7 +61,7 @@ static const GUID KSDATAFORMAT_SUBTYPE_PCM = {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-COMXAudio::COMXAudio() :
+COMXAudio::COMXAudio(CProcessInfo &processInfo) :
   m_Initialized     (false  ),
   m_CurrentVolume   (0      ),
   m_Mute            (false  ),
@@ -89,7 +89,8 @@ COMXAudio::COMXAudio() :
   m_last_pts        (DVD_NOPTS_VALUE),
   m_submitted_eos   (false  ),
   m_failed_eos      (false  ),
-  m_output          (AESINKPI_UNKNOWN)
+  m_output          (AESINKPI_UNKNOWN),
+  m_processInfo(processInfo)
 {
   // magic value used when omxplayer is playing - want sink to be disabled
   AEAudioFormat m_format;
@@ -143,7 +144,7 @@ bool COMXAudio::PortSettingsChanged()
       return false;
   }
 
-  SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
+  SetDynamicRangeCompression((long)(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
   UpdateAttenuation();
 
   if( m_omx_mixer.IsInitialized() )
@@ -833,7 +834,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   }
 
   omx_err = m_omx_decoder.AllocInputBuffers();
-  if(omx_err != OMX_ErrorNone) 
+  if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "COMXAudio::Initialize - Error alloc buffers 0x%08x", omx_err);
     return false;
@@ -869,7 +870,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
       m_omx_decoder.DecoderEmptyBufferDone(m_omx_decoder.GetComponent(), omx_buffer);
       return false;
     }
-  } 
+  }
 
   /* return on decoder error so m_Initialized stays false */
   if(m_omx_decoder.BadState())

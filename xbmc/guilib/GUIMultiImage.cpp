@@ -19,6 +19,7 @@
  */
 
 #include "GUIMultiImage.h"
+#include "ServiceBroker.h"
 #include "TextureManager.h"
 #include "filesystem/Directory.h"
 #include "utils/URIUtils.h"
@@ -28,6 +29,7 @@
 #include "input/Key.h"
 #include "TextureCache.h"
 #include "WindowIDs.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 
@@ -315,7 +317,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
 
     URIUtils::AddSlashAtEnd(realPath);
     CFileItemList items;
-    CDirectory::GetDirectory(realPath, items, g_advancedSettings.GetPictureExtensions()+ "|.tbn|.dds", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+    CDirectory::GetDirectory(realPath, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions()+ "|.tbn|.dds", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     for (int i=0; i < items.Size(); i++)
     {
       CFileItem* pItem = items[i].get();

@@ -40,7 +40,7 @@
  *        and the add-on should set bHandlesDemuxing to true.
  */
 #ifdef USE_DEMUX
-#include "DVDDemuxPacket.h"
+#include "DemuxPacket.h"
 #else
 struct DemuxPacket;
 #endif

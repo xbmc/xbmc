@@ -19,6 +19,7 @@
 */
 #include "ImageResource.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "filesystem/XbtManager.h"
@@ -30,7 +31,7 @@ namespace ADDON
 
 std::unique_ptr<CImageResource> CImageResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  std::string type = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
+  std::string type = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@type");
   return std::unique_ptr<CImageResource>(new CImageResource(std::move(addonInfo), std::move(type)));
 }
 

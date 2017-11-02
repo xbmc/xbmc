@@ -68,7 +68,7 @@ bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned fl
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
   m_bConfigured = true;
@@ -150,7 +150,7 @@ void CRendererAML::Reset()
   }
 }
 
-void CRendererAML::RenderUpdate(int index, bool clear, DWORD flags, DWORD alpha)
+void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   ManageRenderArea();
 

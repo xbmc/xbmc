@@ -372,7 +372,12 @@ double CActiveAEStream::GetCacheTime()
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return m_activeAE->GetCacheTotal(this);
+  return m_activeAE->GetCacheTotal();
+}
+
+double CActiveAEStream::GetMaxDelay()
+{
+  return m_activeAE->GetMaxDelay();
 }
 
 void CActiveAEStream::Pause()
@@ -463,7 +468,6 @@ void CActiveAEStream::Flush()
     m_currentBuffer = NULL;
     m_leftoverBytes = 0;
     m_activeAE->FlushStream(this);
-    ResetFreeBuffers();
     m_streamIsFlushed = true;
   }
 }

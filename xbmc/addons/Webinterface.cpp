@@ -19,6 +19,7 @@
  */
 
 #include "Webinterface.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -30,7 +31,7 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(CAddonInfo addonInfo
 {
   // determine the type of the webinterface
   WebinterfaceType type(WebinterfaceTypeStatic);
-  std::string webinterfaceType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
+  std::string webinterfaceType = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@type");
   if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
     type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
@@ -38,7 +39,7 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(CAddonInfo addonInfo
 
   // determine the entry point of the webinterface
   std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);
-  std::string entry = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@entry");
+  std::string entry = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@entry");
   if (!entry.empty())
     entryPoint = entry;
 
