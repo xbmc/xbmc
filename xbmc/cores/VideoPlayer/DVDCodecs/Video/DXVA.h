@@ -162,10 +162,8 @@ protected:
   explicit CDecoder(CProcessInfo& processInfo);
 
   // ID3DResource overrides
-  void OnCreateDevice() override  {}
+  void OnCreateDevice() override  { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set(); }
   void OnDestroyDevice(bool fatal) override { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  void OnLostDevice() override    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  void OnResetDevice() override   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
   int m_refs;
   HANDLE m_device;

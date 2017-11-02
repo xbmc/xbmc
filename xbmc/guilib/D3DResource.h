@@ -50,9 +50,6 @@ public:
 
   virtual void OnDestroyDevice(bool fatal)=0;
   virtual void OnCreateDevice()=0;
-  virtual void OnLostDevice() {};
-  virtual void OnResetDevice() {};
-  virtual void OnDestroyDevice() { OnDestroyDevice(false); }
 };
 
 class CD3DHelper

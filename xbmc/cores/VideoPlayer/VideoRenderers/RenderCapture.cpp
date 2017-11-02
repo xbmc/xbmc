@@ -476,12 +476,6 @@ void CRenderCaptureDX::SurfaceToBuffer()
   }
 }
 
-void CRenderCaptureDX::OnLostDevice()
-{
-  CleanupDX();
-  SetState(CAPTURESTATE_FAILED);
-}
-
 void CRenderCaptureDX::OnDestroyDevice(bool fatal)
 {
   CleanupDX();
