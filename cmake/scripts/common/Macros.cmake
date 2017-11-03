@@ -651,6 +651,7 @@ endfunction()
 #   APP_VERSION - the app version (${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG})
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
+#   JSONRPC_VERSION - the json api version in the form of 8.3.0
 #
 # Set various variables defined in "versions.h"
 macro(core_find_versions)
@@ -665,8 +666,9 @@ macro(core_find_versions)
 
   include(CMakeParseArguments)
   core_file_read_filtered(version_list ${CORE_SOURCE_DIR}/version.txt)
-  string(REPLACE " " ";" version_list "${version_list}")
-  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_PACKAGE" "" ${version_list})
+  core_file_read_filtered(json_version ${CORE_SOURCE_DIR}/xbmc/interfaces/json-rpc/schema/version.txt)
+  string(REPLACE " " ";" version_list "${version_list} ${json_version}")
+  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_PACKAGE;JSONRPC_VERSION" "" ${version_list})
 
   if(NOT ${APP_VERSION_CODE} MATCHES "^[0-9]+\\.[0-9][0-9]?\\.[0-9][0-9]?[0-9]?$")
     message(FATAL_ERROR "VERSION_CODE was set to ${APP_VERSION_CODE} in version.txt, but it has to match '^\\d+\\.\\d{1,2}\\.\\d{1,3}$'")
@@ -682,6 +684,7 @@ macro(core_find_versions)
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
+  set(JSONRPC_VERSION ${APP_JSONRPC_VERSION})
 
   # Set defines used in addon.xml.in and read from versions.h to set add-on
   # version parts automatically
@@ -705,6 +708,9 @@ macro(core_find_versions)
   # bail if we can't parse version.txt
   if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
     message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
+  endif()
+  if(NOT DEFINED JSONRPC_VERSION)
+    message(FATAL_ERROR "Could not determine json-rpc version! Make sure that ${CORE_SOURCE_DIR}/xbmc/interfaces/json-rpc/schema/version.txt exists")
   endif()
 endmacro()
 
