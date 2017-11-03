@@ -72,7 +72,6 @@ enum RenderMethod
   RENDER_CVREF  = 0x080,
   RENDER_MEDIACODEC = 0x400,
   RENDER_MEDIACODECSURFACE = 0x800,
-  RENDER_IMXMAP = 0x1000
 };
 
 enum RenderQuality

@@ -42,11 +42,6 @@ if(AML_FOUND)
   list(APPEND HEADERS RendererAML.h)
 endif()
 
-if(IMX_FOUND)
-  list(APPEND SOURCES RendererIMX.cpp)
-  list(APPEND HEADERS RendererIMX.h)
-endif()
-
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND SOURCES RendererMediaCodec.cpp
                       RendererMediaCodecSurface.cpp)

@@ -243,11 +243,7 @@ void CRPRenderManager::RenderControl(bool bClear, bool bUseAlpha, const CRect &r
 
 void CRPRenderManager::ClearBackground()
 {
-#ifdef HAS_IMXVPU
-  m_renderContext.Clear((16 << 16) | (8 << 8) | 16);
-#else
   m_renderContext.Clear(0);
-#endif
 }
 
 bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const

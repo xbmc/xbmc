@@ -46,11 +46,6 @@ if(MMAL_FOUND)
   list(APPEND HEADERS MMALFFmpeg.h)
 endif()
 
-if(IMX_FOUND)
-  list(APPEND SOURCES DVDVideoCodecIMX.cpp)
-  list(APPEND HEADERS DVDVideoCodecIMX.h)
-endif()
-
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND SOURCES DVDVideoCodecAndroidMediaCodec.cpp)
   list(APPEND HEADERS DVDVideoCodecAndroidMediaCodec.h)

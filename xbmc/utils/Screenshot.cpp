@@ -35,11 +35,6 @@
 #include "xbmc/linux/RBP.h"
 #endif
 
-#ifdef HAS_IMXVPU
-// This has to go into another header file
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
-#endif
-
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
@@ -174,16 +169,10 @@ bool CScreenshotSurface::capture()
   }
 
   delete [] surface;
-  
+
 #if defined(HAS_LIBAMCODEC)
   // Captures the current visible videobuffer and blend it into m_buffer (captured overlay)
   CScreenshotAML::CaptureVideoFrame(m_buffer, m_width, m_height);
-#endif
-
-#ifdef HAS_IMXVPU
-  // Captures the current visible framebuffer page and blends it into the
-  // captured GL overlay
-  g_IMXContext.CaptureDisplay(m_buffer, m_width, m_height, true);
 #endif
 
 #else

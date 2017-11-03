@@ -58,43 +58,7 @@ bool CRenderCaptureBase::UseOcclusionQuery()
     return true;
 }
 
-
-#if defined(HAS_IMXVPU)
-CRenderCaptureIMX::CRenderCaptureIMX()
-{
-}
-
-CRenderCaptureIMX::~CRenderCaptureIMX()
-{
-}
-
-int CRenderCaptureIMX::GetCaptureFormat()
-{
-  return CAPTUREFORMAT_BGRA;
-}
-
-void CRenderCaptureIMX::BeginRender()
-{
-}
-
-void CRenderCaptureIMX::EndRender()
-{
-  if (g_IMXContext.CaptureDisplay(m_pixels, m_width, m_height))
-    SetState(CAPTURESTATE_DONE);
-  else
-    SetState(CAPTURESTATE_FAILED);
-}
-
-void* CRenderCaptureIMX::GetRenderBuffer()
-{
-  return m_pixels;
-}
-
-void CRenderCaptureIMX::ReadOut()
-{
-}
-
-#elif defined(TARGET_RASPBERRY_PI)
+#if defined(TARGET_RASPBERRY_PI)
 
 CRenderCaptureDispmanX::CRenderCaptureDispmanX()
 {
