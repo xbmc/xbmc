@@ -29,8 +29,6 @@
 #include "windowing/WindowingFactory.h"
 #include "WinEventsWin10.h"
 
-#include <ppltasks.h>
-
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
 using namespace Windows::Devices::Input;
@@ -107,9 +105,7 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   window->PointerExited += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerExited);
   window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerWheelChanged);
   // keyboard
-  window->KeyDown += ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(CWinEventsWin10::OnKeyDown);
-  window->KeyUp += ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(CWinEventsWin10::OnKeyUp);
-  window->CharacterReceived += ref new TypedEventHandler<CoreWindow^, CharacterReceivedEventArgs^>(CWinEventsWin10::OnCharacterReceived);
+  window->Dispatcher->AcceleratorKeyActivated += ref new TypedEventHandler<CoreDispatcher^, AcceleratorKeyEventArgs^>(CWinEventsWin10::OnAcceleratorKeyActivated);
   // display
   DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
   currentDisplayInformation->DpiChanged += ref new TypedEventHandler<DisplayInformation^, Platform::Object^>(CWinEventsWin10::OnDpiChanged);
@@ -298,139 +294,119 @@ void CWinEventsWin10::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs
   CWinEvents::MessagePush(&newEvent);
 }
 
-static void TranslateKey(CoreWindow^ window, XBMC_keysym &keysym, VirtualKey vkey, unsigned scancode, unsigned keycode)
+static void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
 {
-  switch (vkey)
-  {
-  case Windows::System::VirtualKey::GamepadA:
-  case Windows::System::VirtualKey::GamepadLeftThumbstickButton:
-  case Windows::System::VirtualKey::GamepadRightThumbstickButton:
-    keysym.sym = XBMCK_RETURN;
-    break;
-  case Windows::System::VirtualKey::GamepadB:
-    keysym.sym = XBMCK_BACKSPACE;
-    break;
-  case Windows::System::VirtualKey::GamepadDPadUp:
-  case Windows::System::VirtualKey::GamepadLeftThumbstickUp:
-  case Windows::System::VirtualKey::GamepadRightThumbstickUp:
-  case Windows::System::VirtualKey::NavigationUp:
-    keysym.sym = XBMCK_UP;
-    break;
-  case Windows::System::VirtualKey::GamepadDPadDown:
-  case Windows::System::VirtualKey::GamepadLeftThumbstickDown:
-  case Windows::System::VirtualKey::GamepadRightThumbstickDown:
-  case Windows::System::VirtualKey::NavigationDown:
-    keysym.sym = XBMCK_DOWN;
-    break;
-  case Windows::System::VirtualKey::GamepadDPadLeft:
-  case Windows::System::VirtualKey::GamepadLeftThumbstickLeft:
-  case Windows::System::VirtualKey::GamepadRightThumbstickLeft:
-  case Windows::System::VirtualKey::NavigationLeft:
-    keysym.sym = XBMCK_LEFT;
-    break;
-  case Windows::System::VirtualKey::GamepadDPadRight:
-  case Windows::System::VirtualKey::GamepadLeftThumbstickRight:
-  case Windows::System::VirtualKey::GamepadRightThumbstickRight:
-  case Windows::System::VirtualKey::NavigationRight:
-    keysym.sym = XBMCK_RIGHT;
-    break;
-  default:
-    keysym.sym = KODI::WINDOWING::WINDOWS::VK_keymap[static_cast<UINT>(vkey)];
-    break;
-  }
-  keysym.unicode = 0;
-  keysym.scancode = scancode;
+  static auto downState = CoreVirtualKeyStates::Down;
 
-  if (window->GetKeyState(VirtualKey::NumberKeyLock) == CoreVirtualKeyStates::Locked
-    && vkey >= VirtualKey::NumberPad0 && vkey <= VirtualKey::NumberPad9)
-  {
-    keysym.unicode = static_cast<UINT>(vkey - VirtualKey::NumberPad0) + '0';
-  }
-  else
-  {
-    keysym.unicode = keycode;
-  }
+  XBMC_keysym keysym;
+  memset(&keysym, 0, sizeof(keysym));
+  keysym.scancode = scancode;
+  keysym.sym = KODI::WINDOWING::WINDOWS::VK_keymap[vkey];
+  keysym.unicode = keycode;
+
+  auto window = CoreWindow::GetForCurrentThread();
 
   uint16_t mod = (uint16_t)XBMCKMOD_NONE;
-
   // If left control and right alt are down this usually means that AltGr is down
-  if (window->GetKeyState(VirtualKey::LeftControl) == CoreVirtualKeyStates::Down
-    && window->GetKeyState(VirtualKey::RightMenu) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::LeftControl) & downState) == downState
+    && (window->GetKeyState(VirtualKey::RightMenu) & downState) == downState)
   {
     mod |= XBMCKMOD_MODE;
     mod |= XBMCKMOD_MODE;
   }
   else
   {
-    if (window->GetKeyState(VirtualKey::LeftControl) == CoreVirtualKeyStates::Down)
+    if ((window->GetKeyState(VirtualKey::LeftControl) & downState) == downState)
       mod |= XBMCKMOD_LCTRL;
-    if (window->GetKeyState(VirtualKey::RightMenu) == CoreVirtualKeyStates::Down)
+    if ((window->GetKeyState(VirtualKey::RightMenu) & downState) == downState)
       mod |= XBMCKMOD_RALT;
   }
 
   // Check the remaining modifiers
-  if (window->GetKeyState(VirtualKey::LeftShift) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::LeftShift) & downState) == downState)
     mod |= XBMCKMOD_LSHIFT;
-  if (window->GetKeyState(VirtualKey::RightShift) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::RightShift) & downState) == downState)
     mod |= XBMCKMOD_RSHIFT;
-  if (window->GetKeyState(VirtualKey::RightControl) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::RightControl) & downState) == downState)
     mod |= XBMCKMOD_RCTRL;
-  if (window->GetKeyState(VirtualKey::LeftMenu) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::LeftMenu) & downState) == downState)
     mod |= XBMCKMOD_LALT;
-  if (window->GetKeyState(VirtualKey::LeftWindows) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::LeftWindows) & downState) == downState)
     mod |= XBMCKMOD_LSUPER;
-  if (window->GetKeyState(VirtualKey::RightWindows) == CoreVirtualKeyStates::Down)
+  if ((window->GetKeyState(VirtualKey::RightWindows) & downState) == downState)
     mod |= XBMCKMOD_LSUPER;
+
   keysym.mod = (XBMCMod)mod;
+
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+  newEvent.type = isDown ? XBMC_KEYDOWN : XBMC_KEYUP;
+  newEvent.key.keysym = keysym;
+  CWinEvents::MessagePush(&newEvent);
 }
 
-VirtualKey keyDown = VirtualKey::None;
-
-void CWinEventsWin10::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
+void CWinEventsWin10::OnAcceleratorKeyActivated(CoreDispatcher^ sender, AcceleratorKeyEventArgs^ args)
 {
-  if (!args->KeyStatus.IsExtendedKey)
+  static auto lockedState = CoreVirtualKeyStates::Locked;
+  static VirtualKey keyStore = VirtualKey::None;
+
+  bool isDown = false;
+  unsigned keyCode = 0;
+  unsigned vk = static_cast<unsigned>(args->VirtualKey);
+
+  auto window = CoreWindow::GetForCurrentThread();
+  bool numLockLocked = ((window->GetKeyState(VirtualKey::NumberKeyLock) & lockedState) == lockedState);
+
+  switch (args->EventType)
   {
-    // fix F1-F24 keys
-    if (args->VirtualKey < VirtualKey::F1 || args->VirtualKey > VirtualKey::F24)
+  case CoreAcceleratorKeyEventType::KeyDown:
+  case CoreAcceleratorKeyEventType::SystemKeyDown:
+  {
+    if ( (vk == 0x08) // VK_BACK
+      || (vk == 0x09) // VK_TAB
+      || (vk == 0x0C) // VK_CLEAR
+      || (vk == 0x0D) // VK_RETURN
+      || (vk == 0x1B) // VK_ESCAPE
+      || (vk == 0x20) // VK_SPACE
+      || (vk >= 0x30 && vk <= 0x39) // numeric keys
+      || (vk >= 0x41 && vk <= 0x5A) // alphabetic keys
+      || (vk >= 0x60 && vk <= 0x69 && numLockLocked) // keypad numeric (if numlock is on)
+      || (vk >= 0x6A && vk <= 0x6F) // keypad keys except numeric
+      || (vk >= 0x92 && vk <= 0x96) // OEM specific
+      || (vk >= 0xBA && vk <= 0xC0) // OEM specific
+      || (vk >= 0xDB && vk <= 0xDF) // OEM specific
+      || (vk >= 0xE1 && vk <= 0xF5 && vk != 0xE5 && vk != 0xE7 && vk != 0xE8) // OEM specific
+      )
     {
-      // it will be handled in OnCharacterReceived
-      // store VirtualKey for future processing
-      keyDown = args->VirtualKey;
+      // store this for character events, because VirtualKey is key code on character event.
+      keyStore = args->VirtualKey;
       return;
     }
+    isDown = true;
+    break;
   }
-  XBMC_keysym keysym;
-  TranslateKey(sender, keysym, args->VirtualKey, args->KeyStatus.ScanCode, 0);
+  case CoreAcceleratorKeyEventType::KeyUp:
+  case CoreAcceleratorKeyEventType::SystemKeyUp:
+    break;
+  case CoreAcceleratorKeyEventType::Character:
+  case CoreAcceleratorKeyEventType::SystemCharacter:
+  case CoreAcceleratorKeyEventType::UnicodeCharacter:
+  case CoreAcceleratorKeyEventType::DeadCharacter:
+  case CoreAcceleratorKeyEventType::SystemDeadCharacter:
+  {
+    // VirtualKey is KeyCode
+    keyCode = static_cast<unsigned>(args->VirtualKey);
+    // rewrite vk with stored value
+    vk = static_cast<unsigned>(keyStore);
+    // reset stored value
+    keyStore = VirtualKey::None;
+    isDown = true;
+  }
+  default:
+    break;
+  }
 
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  newEvent.type = XBMC_KEYDOWN;
-  newEvent.key.keysym = keysym;
-  CWinEvents::MessagePush(&newEvent);
-}
-
-void CWinEventsWin10::OnKeyUp(CoreWindow^ sender, KeyEventArgs^ args)
-{
-  XBMC_keysym keysym;
-  TranslateKey(sender, keysym, args->VirtualKey, args->KeyStatus.ScanCode, 0);
-
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  newEvent.type = XBMC_KEYUP;
-  newEvent.key.keysym = keysym;
-  CWinEvents::MessagePush(&newEvent);
-}
-
-void CWinEventsWin10::OnCharacterReceived(CoreWindow^ sender, CharacterReceivedEventArgs^ args)
-{
-  XBMC_keysym keysym;
-  TranslateKey(sender, keysym, keyDown, args->KeyStatus.ScanCode, args->KeyCode);
-
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  newEvent.key.keysym = keysym;
-  newEvent.type = XBMC_KEYDOWN;
-  CWinEvents::MessagePush(&newEvent);
+  Kodi_KeyEvent(vk, args->KeyStatus.ScanCode, keyCode, isDown);
 }
 
 // DisplayInformation event handlers.
@@ -475,4 +451,6 @@ void CWinEventsWin10::OnBackRequested(Platform::Object^ sender, Windows::UI::Cor
 
   newEvent.type = XBMC_KEYUP;
   CWinEvents::MessagePush(&newEvent);
+
+  args->Handled = true;
 }
