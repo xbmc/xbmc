@@ -1,1 +1,1 @@
-set(PLATFORM_REQUIRED_DEPS zlib iconv)
+set(PLATFORM_REQUIRED_DEPS zlib)

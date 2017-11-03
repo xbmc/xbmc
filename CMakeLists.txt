@@ -112,6 +112,7 @@ set(required_deps Cdio
                   Fmt
                   FreeType
                   FriBidi
+                  Iconv
                   LibDvd
                   Lzo2
                   PCRE
