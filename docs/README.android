@@ -129,7 +129,7 @@ install some android packages using the Android SDK Manager:
 As of newest SDKs the android tool is deprecated. Use sdkmanager instead:
     $ cd <android-sdk>/tools/bin
     $ ./sdkmanager  platform-tools
-    $ ./sdkmanager "platforms;android-21"
+    $ ./sdkmanager "platforms;android-24"
     $ ./sdkmanager "build-tools;20.0.0"
 
 --------------------------------------------------------------------
