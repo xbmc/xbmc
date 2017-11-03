@@ -309,6 +309,13 @@ private:
    */
   void OnKeyUp(const CKey& key);
 
+  /*! \brief Handle keypress
+   *
+   * \param CKey keypress details
+   * \return true on successfully handled event
+   */
+  bool HandleKey(const CKey& key);
+
   /*! \brief Determine if an action should be processed or just
   *   cancel the screensaver
   *
