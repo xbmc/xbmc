@@ -22,7 +22,6 @@
 #include <errno.h>
 #include "filesystem/SpecialProtocol.h"
 #include <iphlpapi.h>
-#include <IcmpAPI.h>
 #include <string.h>
 #include "PlatformDefs.h"
 #include "platform/win32/WIN32Util.h"
