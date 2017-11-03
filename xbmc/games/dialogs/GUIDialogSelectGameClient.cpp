@@ -70,6 +70,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(candidate, candidate->ID()));
       item->SetLabel2(g_localizeStrings.Get(35257)); // "Installed"
+      if (item->GetPath() == selected)
+        item->SetLabel2(item->GetLabel2() + ", " + g_localizeStrings.Get(35259)); // "Saved"
       items.Add(std::move(item));
     }
     for (const auto &addon : installable)
