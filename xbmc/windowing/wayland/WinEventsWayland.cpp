@@ -187,6 +187,13 @@ private:
           m_display.roundtrip_queue(*roundtripQueue);
           m_roundtripQueueEvent.Set();
         }
+        if (cancelPoll.revents & POLLIN)
+        {
+          // Read away the char so we don't get another notification
+          // Indepentent from m_roundtripQueue so there are no races
+          char c;
+          read(m_pipeRead, &c, 1); 
+        }
       }
 
       CLog::Log(LOGDEBUG, "Wayland message pump stopped");
