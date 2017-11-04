@@ -21357,3 +21357,14 @@ msgstr ""
 msgctxt "#39102"
 msgid "Play Radio"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39200"
+msgid "No powersave while playing audio"
+msgstr ""
+
+#. Description of setting with label #39200 "No powersave while playing audio"
+#: system/settings/settings.xml
+msgctxt "#39201"
+msgid "Keep the display on while playing audio. Useful when the display link embeds the audio stream (e.g. HDMI)."
+msgstr ""

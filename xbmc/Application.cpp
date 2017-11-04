@@ -4000,6 +4000,13 @@ void CApplication::CheckScreenSaverAndDPMS()
     return;
   }
 
+  // Are we playing audio and the user do not want DPMS in that case?
+  if (maybeDPMS && m_pPlayer->IsPlayingAudio() && !m_pPlayer->IsPaused()
+      && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_POWERMANAGEMENT_NODPMSWHILEPLAYINGAUDIO))
+  {
+    maybeDPMS = false;
+  }
+
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
 
   // See if we need to reset timer.
