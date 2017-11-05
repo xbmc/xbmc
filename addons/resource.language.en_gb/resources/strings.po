@@ -21357,3 +21357,8 @@ msgstr ""
 msgctxt "#39102"
 msgid "Play Radio"
 msgstr ""
+
+#: xbmc/network/GUIDialogNetworkSetup.cpp
+msgctxt "#39103"
+msgid "Unable to configure network location. Invalid path given."
+msgstr ""
