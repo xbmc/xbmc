@@ -36,13 +36,17 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {
   if (pPacket)
   {
-    try {
-      if (pPacket->pData) _aligned_free(pPacket->pData);
-      delete pPacket;
+    if (pPacket->pData)
+      _aligned_free(pPacket->pData);
+    if (pPacket->iSideDataElems)
+    {
+      AVPacket avPkt;
+      av_init_packet(&avPkt);
+      avPkt.side_data = static_cast<AVPacketSideData*>(pPacket->pSideData);
+      avPkt.side_data_elems = pPacket->iSideDataElems;
+      av_packet_free_side_data(&avPkt);
     }
-    catch(...) {
-      CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
-    }
+    delete pPacket;
   }
 }
 
@@ -81,4 +85,13 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(unsigned int iDataSize, unsigne
   if (ret && encryptedSubsampleCount > 0)
     ret->cryptoInfo = std::shared_ptr<DemuxCryptoInfo>(new DemuxCryptoInfo(encryptedSubsampleCount));
   return ret;
+}
+
+void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
+{
+  AVPacket avPkt;
+  av_init_packet(&avPkt);
+  av_packet_copy_props(&avPkt, src);
+  pkt->pSideData = avPkt.side_data;
+  pkt->iSideDataElems = avPkt.side_data_elems;
 }

@@ -33,11 +33,14 @@ typedef struct DemuxPacket
 {
   DemuxPacket() = default;
 
-  unsigned char *pData = nullptr;
+  uint8_t *pData = nullptr;
   int iSize = 0;
   int iStreamId = -1;
   int64_t demuxerId; // id of the demuxer that created the packet
   int iGroupId = -1; // the group this data belongs to, used to group data from different streams together
+
+  void *pSideData = nullptr;
+  int iSideDataElems = 0;
 
   double pts = DVD_NOPTS_VALUE;
   double dts = DVD_NOPTS_VALUE;

@@ -508,6 +508,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   // print some extra information
   av_dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
 
+  // deprecated, will be always set in future versions
+  m_pFormatContext->flags |= AVFMT_FLAG_KEEP_SIDE_DATA;
+
   UpdateCurrentPTS();
 
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
@@ -991,6 +994,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
         pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
         pPacket->duration =  DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num / stream->time_base.den);
+
+        CDVDDemuxUtils::StoreSideData(pPacket, &m_pkt.pkt);
 
         CDVDInputStream::IDisplayTime *inputStream = m_pInput->GetIDisplayTime();
         if (inputStream)
