@@ -1828,15 +1828,6 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
 
 void CGUIMediaWindow::OnFilterItems(const std::string &filter)
 {
-  CFileItemPtr currentItem;
-  std::string currentItemPath;
-  int item = m_viewControl.GetSelectedItem();
-  if (item >= 0 && item < m_vecItems->Size())
-  {
-    currentItem = m_vecItems->Get(item);
-    currentItemPath = currentItem->GetPath();
-  }
-  
   m_viewControl.Clear();
   
   CFileItemList items;
@@ -1864,6 +1855,15 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   
   GetGroupedItems(*m_vecItems);
   FormatAndSort(*m_vecItems);
+
+  CFileItemPtr currentItem;
+  std::string currentItemPath;
+  int item = m_viewControl.GetSelectedItem();
+  if (item >= 0 && item < m_vecItems->Size())
+  {
+    currentItem = m_vecItems->Get(item);
+    currentItemPath = currentItem->GetPath();
+  }
 
   // get the "filter" option
   std::string filterOption;
