@@ -271,14 +271,14 @@ int CPVREpgDatabase::Get(CPVREpg &epg)
         newTag->m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
         newTag->m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
         newTag->m_strOriginalTitle   = m_pDS->fv("sOriginalTitle").get_asString().c_str();
-        newTag->m_strCast            = m_pDS->fv("sCast").get_asString().c_str();
-        newTag->m_strDirector        = m_pDS->fv("sDirector").get_asString().c_str();
-        newTag->m_strWriter          = m_pDS->fv("sWriter").get_asString().c_str();
+        newTag->m_cast               = newTag->Tokenize(m_pDS->fv("sCast").get_asString());
+        newTag->m_directors          = newTag->Tokenize(m_pDS->fv("sDirector").get_asString());
+        newTag->m_writers            = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
         newTag->m_iYear              = m_pDS->fv("iYear").get_asInt();
         newTag->m_strIMDBNumber      = m_pDS->fv("sIMDBNumber").get_asString().c_str();
         newTag->m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
         newTag->m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
-        newTag->m_genre              = StringUtils::Split(m_pDS->fv("sGenre").get_asString().c_str(), g_advancedSettings.m_videoItemSeparator);
+        newTag->m_genre              = newTag->Tokenize(m_pDS->fv("sGenre").get_asString());
         newTag->m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag->m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag->m_bNotify            = m_pDS->fv("bNotify").get_asBool();
@@ -380,7 +380,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
   std::string strQuery;
 
   /* Only store the genre string when needed */
-  std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
+  std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? tag.DeTokenize(tag.Genre()) : "";
 
   CSingleLock lock(m_critSection);
 
@@ -393,7 +393,8 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
-        tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.OriginalTitle(true).c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
+        tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),
@@ -408,7 +409,8 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i, %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
-        tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.OriginalTitle(true).c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
+        tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),

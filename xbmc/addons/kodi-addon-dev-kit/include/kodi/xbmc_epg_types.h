@@ -61,6 +61,9 @@
 /* Set EPGTAG.iGenreType to EPG_GENRE_USE_STRING to transfer genre strings to XBMC */
 #define EPG_GENRE_USE_STRING                           0x100
 
+/* Separator to use in strings containing different tokens, for example writers, directors, actors of an event. */
+#define EPG_STRING_TOKEN_SEPARATOR ","
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -98,15 +101,15 @@ extern "C" {
     const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
     const char *  strPlot;             /*!< @brief (optional) plot */
     const char *  strOriginalTitle;    /*!< @brief (optional) originaltitle */
-    const char *  strCast;             /*!< @brief (optional) cast */
-    const char *  strDirector;         /*!< @brief (optional) director */
-    const char *  strWriter;           /*!< @brief (optional) writer */
+    const char *  strCast;             /*!< @brief (optional) cast. Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
+    const char *  strDirector;         /*!< @brief (optional) director(s). Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
+    const char *  strWriter;           /*!< @brief (optional) writer(s). Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
     int           iYear;               /*!< @brief (optional) year */
     const char *  strIMDBNumber;       /*!< @brief (optional) IMDBNumber */
     const char *  strIconPath;         /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
-    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
+    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */

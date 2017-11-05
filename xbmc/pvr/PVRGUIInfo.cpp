@@ -656,7 +656,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
       }
       case VIDEOPLAYER_GENRE:
       {
-        GET_CURRENT_VIDEO_LABEL(StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator));
+        GET_CURRENT_VIDEO_LABEL(epgTag->GetGenresLabel());
       }
       case VIDEOPLAYER_PLOT:
       {
@@ -714,15 +714,15 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
       }
       case VIDEOPLAYER_CAST:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->Cast());
+        GET_CURRENT_VIDEO_LABEL(epgTag->GetCastLabel());
       }
       case VIDEOPLAYER_DIRECTOR:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->Director());
+        GET_CURRENT_VIDEO_LABEL(epgTag->GetDirectorsLabel());
       }
       case VIDEOPLAYER_WRITER:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->Writer());
+        GET_CURRENT_VIDEO_LABEL(epgTag->GetWritersLabel());
       }
       case VIDEOPLAYER_PARENTAL_RATING:
       {
@@ -739,7 +739,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
       }
       case VIDEOPLAYER_NEXT_GENRE:
       {
-        GET_NEXT_VIDEO_LABEL(StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator));
+        GET_NEXT_VIDEO_LABEL(epgTag->GetGenresLabel());
       }
       case VIDEOPLAYER_NEXT_PLOT:
       {

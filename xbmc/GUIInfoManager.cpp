@@ -9634,15 +9634,15 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
       if (tag)
-        return tag->Director();
+        return tag->GetDirectorsLabel();
     }
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Director();
+      return item->GetEPGInfoTag()->GetDirectorsLabel();
     if (item->HasPVRTimerInfoTag())
     {
       const CPVREpgInfoTagPtr epgTag(item->GetPVRTimerInfoTag()->GetEpgInfoTag());
       if (epgTag)
-        return epgTag->Director();
+        return epgTag->GetDirectorsLabel();
     }
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
@@ -9698,15 +9698,15 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       CPVREpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
+      return epgTag ? epgTag->GetGenresLabel() : "";
     }
     if (item->HasEPGInfoTag())
-      return StringUtils::Join(item->GetEPGInfoTag()->Genre(), g_advancedSettings.m_videoItemSeparator);
+      return item->GetEPGInfoTag()->GetGenresLabel();
     if (item->HasPVRTimerInfoTag())
     {
       const CPVREpgInfoTagPtr epgTag(item->GetPVRTimerInfoTag()->GetEpgInfoTag());
       if (epgTag)
-        return StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator);
+        return epgTag->GetGenresLabel();
     }
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
@@ -10049,7 +10049,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast();
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Cast();
+      return item->GetEPGInfoTag()->GetCastLabel();
     break;
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
@@ -10059,7 +10059,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Writer();
+      return item->GetEPGInfoTag()->GetWritersLabel();
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
@@ -10334,7 +10334,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNext());
       if (tag)
-        return StringUtils::Join(tag->Genre(), g_advancedSettings.m_videoItemSeparator);
+        return tag->GetGenresLabel();
     }
     return "";
   case LISTITEM_NEXT_TITLE:
