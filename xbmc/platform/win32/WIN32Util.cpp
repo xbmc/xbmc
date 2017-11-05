@@ -277,8 +277,12 @@ int CWIN32Util::BatteryLevel()
   auto aggBattery = Battery::AggregateBattery;
   auto report = aggBattery->GetReport();
 
-  int remaining = report->RemainingCapacityInMilliwattHours->Value;
-  int full = report->FullChargeCapacityInMilliwattHours->Value;
+  int remaining = 0;
+  if (report->RemainingCapacityInMilliwattHours)
+    remaining = report->RemainingCapacityInMilliwattHours->Value;
+  int full = 0;
+  if (report->FullChargeCapacityInMilliwattHours)
+    full = report->FullChargeCapacityInMilliwattHours->Value;
 
   if (full != 0 && remaining != 0)
   {
