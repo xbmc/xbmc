@@ -21199,11 +21199,13 @@ msgstr ""
 #: xbmc/music/dialogs/GUIDialogInfoProviderSettings.cpp
 msgctxt "#38338"
 msgid "Choose how to apply settings"
+msgstr ""
 
 #. Heading when selecting from list for #38338
 #: xbmc/music/dialogs/GUIDialogInfoProviderSettings.cpp
 msgctxt "#38339"
 msgid "How to apply information provider settings"
+msgstr ""
 
 #empty strings from id 38340 to 38999
 
