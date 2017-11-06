@@ -209,8 +209,8 @@ namespace PVR
     std::string Plot(bool bOverrideParental = false) const;
 
     /*!
-     * @brief Get the originaltitle of this event.
-     * @return The originaltitle.
+     * @brief Get the original title of this event.
+     * @return The original title.
      */
     std::string OriginalTitle(bool bOverrideParental = false) const;
 
@@ -218,19 +218,43 @@ namespace PVR
      * @brief Get the cast of this event.
      * @return The cast.
      */
-    std::string Cast() const;
+    const std::vector<std::string> Cast() const;
 
     /*!
-     * @brief Get the director of this event.
-     * @return The director.
+     * @brief Get the director(s) of this event.
+     * @return The director(s).
      */
-    std::string Director() const;
+    const std::vector<std::string> Directors() const;
 
     /*!
-     * @brief Get the writer of this event.
-     * @return The writer.
+     * @brief Get the writer(s) of this event.
+     * @return The writer(s).
      */
-    std::string Writer() const;
+    const std::vector<std::string> Writers() const;
+
+    /*!
+     * @brief Get the cast of this event as formatted string.
+     * @return The cast label.
+     */
+    const std::string GetCastLabel() const;
+
+    /*!
+     * @brief Get the director(s) of this event as formatted string.
+     * @return The directors label.
+     */
+    const std::string GetDirectorsLabel() const;
+
+    /*!
+     * @brief Get the writer(s) of this event as formatted string.
+     * @return The writers label.
+     */
+    const std::string GetWritersLabel() const;
+
+    /*!
+     * @brief Get the genre(s) of this event as formatted string.
+     * @return The genres label.
+     */
+    const std::string GetGenresLabel() const;
 
     /*!
      * @brief Get the year of this event.
@@ -440,8 +464,21 @@ namespace PVR
      */
     unsigned int Flags() const { return m_iFlags; }
 
-  private:
+    /*!
+     * @brief Split the given string into tokens. Interpretes occurences of EPG_STRING_TOKEN_SEPARATOR in the string as separator.
+     * @param str The string to tokenize.
+     * @return the tokens.
+     */
+    const std::vector<std::string> Tokenize(const std::string &str) const;
 
+    /*!
+     * @brief Combine the given strings to a single string. Inserts EPG_STRING_TOKEN_SEPARATOR as separator.
+     * @param tokens The tokens.
+     * @return the combined string.
+     */
+    const std::string DeTokenize(const std::vector<std::string> &tokens) const;
+
+  private:
     /*!
      * @brief Change the genre of this event.
      * @param iGenreType The genre type ID.
@@ -475,9 +512,9 @@ namespace PVR
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */
     std::string              m_strOriginalTitle;   /*!< original title */
-    std::string              m_strCast;            /*!< cast */
-    std::string              m_strDirector;        /*!< director */
-    std::string              m_strWriter;          /*!< writer */
+    std::vector<std::string> m_cast;               /*!< cast */
+    std::vector<std::string> m_directors;          /*!< director(s) */
+    std::vector<std::string> m_writers;            /*!< writer(s) */
     int                      m_iYear;              /*!< year */
     std::string              m_strIMDBNumber;      /*!< imdb number */
     std::vector<std::string> m_genre;              /*!< genre */
