@@ -619,6 +619,24 @@ namespace XBMCAddon
 #else
       int getTrack();
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getDuration() }
+      ///-----------------------------------------------------------------------
+      /// To get the duration
+      ///
+      /// @return [unsigned int] Duration
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      getDuration();
+#else
+      unsigned int getDuration();
+#endif
     };
   }
 }

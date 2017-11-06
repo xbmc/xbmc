@@ -191,5 +191,10 @@ namespace XBMCAddon
     {
       return infoTag->m_iTrack;
     }
+
+    unsigned int InfoTagVideo::getDuration()
+    {
+      return infoTag->GetDuration();
+    }
   }
 }
