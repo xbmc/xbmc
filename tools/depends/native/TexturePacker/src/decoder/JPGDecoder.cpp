@@ -72,7 +72,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   
-  char *linha;
   int ImageSize;
   
   cinfo.err = jpeg_std_error(&jerr);
@@ -89,7 +88,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   DecodedFrame frame;
   
   frame.rgbaImage.pixels = (char *)new char[ImageSize];
-  linha = (char *)frame.rgbaImage.pixels;
   
   unsigned char *scanlinebuff = new unsigned char[3 * cinfo.image_width];
   unsigned char *dst = (unsigned char *)frame.rgbaImage.pixels;
