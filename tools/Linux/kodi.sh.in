@@ -68,6 +68,9 @@ if [ "$WINDOWING" = "auto" ]; then
     # GBM/DRM
     elif [ -z $DISPLAY ] && [ -z $WAYLAND_DISPLAY ] && [ -x $LIBDIR/${bin_name}/${bin_name}-gbm ]; then
         KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-gbm
+    # Default kodi.bin
+    else
+        KODI_BINARY=${APP_BINARY}
     fi
 elif [ -n $WINDOWING ]; then
     KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-${WINDOWING}
