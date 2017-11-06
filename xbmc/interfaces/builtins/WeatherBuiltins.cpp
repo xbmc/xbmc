@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "WeatherBuiltins.h"
 
 #include "guilib/GUIWindowManager.h"
