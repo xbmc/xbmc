@@ -181,5 +181,10 @@ namespace XBMCAddon
     {
       return infoTag->m_artist;
     }
+
+    String InfoTagVideo::getAlbum()
+    {
+      return infoTag->m_strAlbum;
+    }
   }
 }

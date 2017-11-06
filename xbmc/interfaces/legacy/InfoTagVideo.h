@@ -583,6 +583,24 @@ namespace XBMCAddon
 #else
       std::vector<std::string> getArtist();
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getAlbum() }
+      ///-----------------------------------------------------------------------
+      /// To get the album name (for musicvideos)
+      ///
+      /// @return [string] Album name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      getAlbum();
+#else
+      String getAlbum();
+#endif
     };
   }
 }
