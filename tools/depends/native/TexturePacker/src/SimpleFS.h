@@ -20,9 +20,9 @@
  *
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 
 class CFile
 {

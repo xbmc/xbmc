@@ -20,7 +20,7 @@
 
 #include "GifHelper.h"
 #include <algorithm>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
 
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))

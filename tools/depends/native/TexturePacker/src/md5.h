@@ -23,8 +23,8 @@
 #ifndef MD5_H
 #define MD5_H
 
-#include <string.h>		/* for memcpy() */
-#include <stdint.h>
+#include <cstring>		/* for memcpy() */
+#include <cstdint>
 
 struct MD5Context 
 {
