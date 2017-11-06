@@ -1,3 +1,4 @@
+xbmc/cores/RetroPlayer/process/android  cores/RetroPlayer/process/android
 xbmc/linux                              linuxsupport
 xbmc/input/touch                        input/touch
 xbmc/input/touch/generic                input/touch/generic
