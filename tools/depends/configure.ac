@@ -651,11 +651,17 @@ tmp_cflags=$(echo $c11_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g
 tmp_cxxflags=$(echo $cxx11_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
 
 release_cflags="-DNDEBUG=1"
-CFLAGS="$tmp_cflags -Og -g -D_DEBUG"
-AC_COMPILE_IFELSE(
-  [AC_LANG_SOURCE([int foo;])],
-  [debug_cflags="-Og -g -D_DEBUG"],
-  [debug_cflags="-g -D_DEBUG"])
+
+# newer xcode version accept -Og flag, but debugging doesn't work with it
+if test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+  debug_cflags="-g -D_DEBUG"
+else
+  CFLAGS="$tmp_cflags -Og -g -D_DEBUG"
+  AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([int foo;])],
+    [debug_cflags="-Og -g -D_DEBUG"],
+    [debug_cflags="-g -D_DEBUG"])
+fi
 
 # add user supplied flags to the end, so they override our defaults
 platform_cflags_release="$tmp_cflags $relase_cflags $optimize_flags $passed_cflags"
