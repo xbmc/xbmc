@@ -1,19 +1,22 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 0001-dontbuildswig.patch Makefile
+DEPS= ../../Makefile.include Makefile 01-disable-tools-tests.patch
 
 # lib name, version
 LIBNAME=libplist
-VERSION=1.6
+VERSION=2.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
 ifeq (darwin, $(findstring darwin, $(HOST)))
-LIBDYLIB=$(PLATFORM)/build/src/libplist++.dylib
+LIBDYLIB=$(PLATFORM)/src/.libs/libplist++.dylib
 else
-LIBDYLIB=$(PLATFORM)/build/src/libplist++.so
+LIBDYLIB=$(PLATFORM)/src/.libs/libplist++.so
 endif
 CFLAGS+=-fvisibility=default
 all: .installed-$(PLATFORM)
+
+# configuration settings
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) --without-cython
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -21,18 +24,15 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../0001-dontbuildswig.patch
-	cd $(PLATFORM); patch -p1 < ../0002-fixclang.diff
-	cd $(PLATFORM); patch -p1 < ../0003-fixc++1.patch
-	cd $(PLATFORM); sed -ie 's/TARGET_LINK_LIBRARIES( plist \(.*\))/TARGET_LINK_LIBRARIES( plist \1 z m)  /' src/CMakeLists.txt
-	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM)/build; $(CMAKE) VERBOSE=1 -DCMAKE_C_FLAGS="$(CFLAGS)" -DCMAKE_LD_FLAGS="$(LDFLAGS)" ..
+	cd $(PLATFORM); patch -p1 -i ../01-disable-tools-tests.patch
+	cd $(PLATFORM); $(AUTORECONF) -vif
+	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -j 1 -C $(PLATFORM)/build VERBOSE=1
+	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/build install
+	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
 clean:
