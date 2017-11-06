@@ -647,7 +647,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     builder.SetVersion(AddonVersion(m_pDS2->fv(3).get_asString()));
     builder.SetName(m_pDS2->fv(4).get_asString());
     builder.SetSummary(m_pDS2->fv(5).get_asString());
-    builder.SetDescription(m_pDS2->fv(6).get_asString());
+    builder.SetDescription(m_pDS2->fv("description").get_asString());
     DeserializeMetadata(m_pDS2->fv(1).get_asString(), builder);
     addon = builder.Build();
     return addon != nullptr;
@@ -732,7 +732,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetVersion(version);
       builder.SetName(m_pDS->fv(4).get_asString());
       builder.SetSummary(m_pDS->fv(5).get_asString());
-      builder.SetDescription(m_pDS->fv(6).get_asString());
+      builder.SetDescription(m_pDS->fv("description").get_asString());
       DeserializeMetadata(m_pDS->fv(1).get_asString(), builder);
 
       auto addon = builder.Build();
