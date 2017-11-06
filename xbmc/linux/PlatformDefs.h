@@ -53,7 +53,6 @@
 #elif defined(TARGET_FREEBSD)
 #include <stdio.h>
 #include <sys/sysctl.h>
-#include <sys/types.h>
 #else
 #include <sys/sysinfo.h>
 #endif

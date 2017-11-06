@@ -26,7 +26,7 @@
 // For HAS_SDL
 #include "system.h"
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
   #include "Util.h"
   // SDL redefines main as SDL_main 
   #ifdef HAS_SDL
