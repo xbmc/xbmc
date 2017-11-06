@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.37"
+       version="1.0.38"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -122,7 +122,7 @@
     <description lang="uk_UA">Ця заставка затемняє екран (зменшує яскравість) на встановлене значення в межах від 20% до 100%.</description>
     <description lang="vi_VN">Trình bảo vệ Dim là trình bảo vệ đơn giản để làm tối (mờ dần) màn hình của bạn theo giá trị được sắp đặt từ 20 cho đến 100%.</description>
     <description lang="zh_CN">淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。</description>
-    <description lang="zh_TW">Dim </description>
+    <description lang="zh_TW">暗化螢幕保護程式單純將螢幕變暗，暗化值可設定在20%至100%之間。</description>
     <platform>all</platform>
   </extension>
 </addon>
