@@ -186,5 +186,10 @@ namespace XBMCAddon
     {
       return infoTag->m_strAlbum;
     }
+
+    int InfoTagVideo::getTrack()
+    {
+      return infoTag->m_iTrack;
+    }
   }
 }

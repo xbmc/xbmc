@@ -601,6 +601,24 @@ namespace XBMCAddon
 #else
       String getAlbum();
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getTrack() }
+      ///-----------------------------------------------------------------------
+      /// To get the track number (for musicvideos)
+      ///
+      /// @return [int] Track number
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      getTrack();
+#else
+      int getTrack();
+#endif
     };
   }
 }
