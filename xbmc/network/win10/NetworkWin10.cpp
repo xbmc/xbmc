@@ -32,7 +32,6 @@
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 
-
 #pragma pack(push, 8)
 
 using namespace Windows::Networking;
@@ -40,9 +39,9 @@ using namespace Windows::Networking::Connectivity;
 
 CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10* network, Windows::Networking::Connectivity::ConnectionProfile^ profile)
 {
-   m_network = network;
-   m_adapter = profile;
-   g_charsetConverter.wToUTF8(std::wstring(profile->ProfileName->Data()), m_adaptername, false);
+  m_network = network;
+  m_adapter = profile;
+  g_charsetConverter.wToUTF8(std::wstring(profile->ProfileName->Data()), m_adaptername, false);
 }
 
 CNetworkInterfaceWin10::~CNetworkInterfaceWin10(void)
@@ -73,39 +72,31 @@ bool CNetworkInterfaceWin10::IsConnected()
 
 std::string CNetworkInterfaceWin10::GetMacAddress()
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
-  std::string result;
-  return result;
+  return "Unknown";
 }
 
 bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& mac)
 {
   mac = "";
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
   return false;
 }
 
 void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
 }
 
 void CNetworkInterfaceWin10::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin10::GetAccessPoints(void)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
   std::vector<NetworkAccessPoint> accessPoints;
   return accessPoints;
 }
 
-
 void CNetworkInterfaceWin10::GetMacAddressRaw(char rawMac[6])
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
 }
 
 std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void)
@@ -113,7 +104,7 @@ std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void)
   Platform::String^ ipAddress = L"0.0.0.0";
   std::string result;
 
-  /*if (m_adapter->NetworkAdapter != nullptr)
+  if (m_adapter->NetworkAdapter != nullptr)
   {
     auto  hostnames = NetworkInformation::GetHostNames();
     for (unsigned int i = 0; i < hostnames->Size; ++i)
@@ -135,35 +126,29 @@ std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void)
     }
   }
 
-  g_charsetConverter.wToUTF8(std::wstring(ipAddress->Data()), result, false);*/
+  g_charsetConverter.wToUTF8(std::wstring(ipAddress->Data()), result, false);
 
   return result;
 }
 
 std::string CNetworkInterfaceWin10::GetCurrentNetmask(void)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
   return "";
 }
 
 std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void)
 {
   std::string result = "";
-
   if (!IsWireless())
-  {
     return result;
-  }
 
   auto ssid = m_adapter->WlanConnectionProfileDetails->GetConnectedSsid();
-
   g_charsetConverter.wToUTF8(std::wstring(ssid->Data()), result, false);
   return result;
 }
 
 std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
   return "";
 }
 
@@ -175,6 +160,7 @@ CNetworkWin10::CNetworkWin10(void)
 CNetworkWin10::~CNetworkWin10(void)
 {
   CleanInterfaceList();
+  m_netrefreshTimer.Stop();
 }
 
 void CNetworkWin10::CleanInterfaceList()
@@ -191,7 +177,8 @@ void CNetworkWin10::CleanInterfaceList()
 std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
 {
   CSingleLock lock (m_critSection);
-  queryInterfaceList();
+  if (m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
+    queryInterfaceList();
 
   return m_interfaces;
 }
@@ -199,6 +186,7 @@ std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
 void CNetworkWin10::queryInterfaceList()
 {
   CleanInterfaceList();
+  m_netrefreshTimer.StartZero();
 
   auto connectionProfiles = NetworkInformation::GetConnectionProfiles();
   std::for_each(begin(connectionProfiles), end(connectionProfiles), [this](ConnectionProfile^ connectionProfile)
@@ -212,24 +200,17 @@ void CNetworkWin10::queryInterfaceList()
 
 std::vector<std::string> CNetworkWin10::GetNameServers(void)
 {
-  std::vector<std::string> result;
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
-  return result;
+  return std::vector<std::string>();
 }
 
 void CNetworkWin10::SetNameServers(const std::vector<std::string>& nameServers)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
   return;
 }
 
 bool CNetworkWin10::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
 {
-  char SendData[]    = "poke";
-
   return false;
 }
 
 #pragma pack(pop)
-
-

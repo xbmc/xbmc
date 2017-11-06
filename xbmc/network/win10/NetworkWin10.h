@@ -90,6 +90,7 @@ private:
     void CleanInterfaceList();
     std::vector<CNetworkInterface*> m_interfaces;
     int m_sock;
+    CStopWatch m_netrefreshTimer;
     CCriticalSection m_critSection;
 };
 #endif
