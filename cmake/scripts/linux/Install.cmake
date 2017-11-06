@@ -15,6 +15,7 @@ else()
 endif()
 
 # CMake config
+set(APP_BINARY ${APP_NAME_LC}${APP_BINARY_SUFFIX})
 set(APP_PREFIX ${prefix})
 set(APP_LIB_DIR ${libdir}/${APP_NAME_LC})
 set(APP_DATA_DIR ${datarootdir}/${APP_NAME_LC})
