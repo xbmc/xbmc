@@ -22,7 +22,11 @@
 
 #include <algorithm>
 
+#ifndef TARGET_FREEBSD
 #include <iconv.h>
+#elif TARGET_FREEBSD
+#include "/usr/include/iconv.h"
+#endif
 #include <fribidi/fribidi.h>
 
 #include "guilib/LocalizeStrings.h"
@@ -57,6 +61,12 @@
 #else
   #pragma comment(lib, "libiconv.lib")
 #endif
+#elif defined(TARGET_FREEBSD)
+  #define WCHAR_IS_UCS_4 1
+  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
+  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
+  #define UTF8_SOURCE "UTF-8"
+  #define WCHAR_CHARSET UTF32_CHARSET
 #elif defined(TARGET_ANDROID)
   #define WCHAR_IS_UCS_4 1
   #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX

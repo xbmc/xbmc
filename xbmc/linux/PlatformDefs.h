@@ -50,13 +50,14 @@
 #if defined(TARGET_DARWIN_OSX)
 #include <libkern/OSTypes.h>
 #endif
+
 #elif defined(TARGET_FREEBSD)
 #include <stdio.h>
 #include <sys/sysctl.h>
-#include <sys/types.h>
 #else
 #include <sys/sysinfo.h>
 #endif
+
 #include <sys/time.h>
 #include <time.h>
 #endif
