@@ -226,6 +226,9 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   m_protocols.emplace_back(Protocol{true, true, true, true, false, 22, "sftp", 20260});
 #endif
 
+  for (size_t idx = 0; idx < m_protocols.size(); ++idx)
+    labels.push_back(std::make_pair(m_protocols[idx].label, idx));
+
   AddSpinner(group, SETTING_PROTOCOL, 1008, SettingLevel::Basic, m_protocol, labels);
   AddEdit(group, SETTING_SERVER_ADDRESS, 1010, SettingLevel::Basic, m_server, true);
   std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, SettingLevel::Basic, "", false);
