@@ -33,6 +33,11 @@ SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
 FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list %SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
   CALL :processFile %%f
+  REM Apparently there's a quirk in cmd so this means if error level => 1
+  IF ERRORLEVEL 1 (
+    ECHO One ore more packages failed to download
+    EXIT /B 7
+  )
 )
 
 REM Report any errors
@@ -59,14 +64,20 @@ IF EXIST %1 (
 ) ELSE (
   CALL :setSubStageName Downloading %1...
   SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
-  %WGET% --tries=5 --retry-connrefused --waitretry=2 "!DOWNLOAD_URL!" 2>&1 || ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% && EXIT /B 7
+  %WGET% --quiet --tries=5 --retry-connrefused --waitretry=2 --show-progress "!DOWNLOAD_URL!" 2>&1
+  REM Apparently there's a quirk in cmd so this means if error level => 1
+  IF ERRORLEVEL 1 (
+    ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% 
+    ECHO %1^|Download of !DOWNLOAD_URL! failed
+    EXIT /B 7
+  )
   TITLE Getting %1
 )
 
 CALL :setSubStageName Extracting %1...
-copy /b "%1" "%TMP_PATH%" || EXIT /B 5
+copy /b "%1" "%TMP_PATH%" >NUL 2>NUL || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 || (
+%ZIP% x %1 >NUL 2>NUL || (
   IF %RetryDownload%==YES (
     POPD || EXIT /B 5
     ECHO WARNING! Can't extract files from archive %1!
@@ -89,40 +100,39 @@ FOR /F %%f IN ('dir /B /A:-D "%~n1\*.*"') DO (del "%~n1\%%f" /F /Q || (ECHO %1^|
 CALL :setSubStageName Re-arrange old-formed package %1 if necessary...
 :: move project\BuildDependencies\*.* to root
 dir /A:D "%~n1\project" >NUL 2>NUL && (
-ROBOCOPY "%~n1\project\BuildDependencies\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+ROBOCOPY "%~n1\project\BuildDependencies\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /:D "%~n1\project\BuildDependencies" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 RD "%~n1\project" /S /Q
 )
 
 :: move system\*.* to bin
 dir /A:D "%~n1\system" >NUL 2>NUL && (
-ROBOCOPY "%~n1\system\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+ROBOCOPY "%~n1\system\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /A:D "%~n1\system" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 )
 
 :: move Win32\*.* to root
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (
-ROBOCOPY "%~n1\Win32\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+ROBOCOPY "%~n1\Win32\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 )
 
 :: move x64\*.* to root
 dir /A:D "%~n1\x64" >NUL 2>NUL && (
-ROBOCOPY "%~n1\x64\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl
+ROBOCOPY "%~n1\x64\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /A:D "%~n1\x64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 )
 
 CALL :setSubStageName Copying %1 to build tree...
 REM Copy only content of extracted ".\packagename\"
-XCOPY "%~n1\*" "%APP_PATH%\" /E /I /Y /F /R /H /K || (ECHO %1^|Failed to copy package contents to build tree >> %FORMED_FAILED_LIST% && EXIT /B 5)
+XCOPY "%~n1\*" "%APP_PATH%\" /E /I /Y /F /R /H /K  >NUL 2>NUL|| (ECHO %1^|Failed to copy package contents to build tree >> %FORMED_FAILED_LIST% && EXIT /B 5)
 
 dir /A:-D * >NUL 2>NUL && (
 CALL :setSubStageName Post-Cleaning %1...
 REM Delete package archive and possible garbage
-FOR /F %%f IN ('dir /B /A:-D') DO (del %%f /F /Q || (ECHO %1^|Failed to post-clean %%f >> %FORMED_FAILED_LIST% && EXIT /B 4))
+FOR /F %%f IN ('dir /B /A:-D') DO (del %%f /F /Q  >NUL 2>NUL|| (ECHO %1^|Failed to post-clean %%f >> %FORMED_FAILED_LIST% && EXIT /B 4))
 )
 
-ECHO.
 ECHO Done %1.
 POPD || EXIT /B 10
 
@@ -133,13 +143,9 @@ REM end of :processFile
 ECHO.
 ECHO ==================================================
 ECHO %*
-ECHO.
 TITLE %*
 EXIT /B 0
 
 :setSubStageName
-ECHO.
-ECHO --------------------------------------------------
 ECHO %*
-ECHO.
 EXIT /B 0
