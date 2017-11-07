@@ -176,7 +176,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
       // Offset from key codes back to button number
       int iChannelNumber = static_cast<int>(action.GetAmount());
       const CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
-      const CFileItemPtr item(CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup()->GetByChannelNumber(iChannelNumber));
+      const CFileItemPtr item(CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup()->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, 0)));
       CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
 
       return true;

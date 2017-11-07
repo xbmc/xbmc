@@ -565,7 +565,7 @@ void CGUIWindowPVRGuideBase::OnInputDone()
     for (const CFileItemPtr event : m_vecItems->GetList())
     {
       const CPVREpgInfoTagPtr tag(event->GetEPGInfoTag());
-      if (tag->HasChannel() && tag->ChannelNumber() == iChannelNumber)
+      if (tag->HasChannel() && tag->Channel()->ChannelNumber().GetChannelNumber() == iChannelNumber)
       {
         CGUIEPGGridContainer* epgGridContainer = GetGridControl();
         if (epgGridContainer)

@@ -59,8 +59,6 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsLocked               = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
-  m_iCachedChannelNumber    = 0;
-  m_iCachedSubChannelNumber = 0;
 
   m_iEpgId                  = -1;
   m_bEPGCreated             = false;
@@ -69,13 +67,12 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
 
   m_iUniqueId               = -1;
   m_iClientId               = -1;
-  m_iClientChannelNumber.channel    = 0;
-  m_iClientChannelNumber.subchannel = 0;
   m_iClientEncryptionSystem = -1;
   UpdateEncryptionName();
 }
 
 CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
+: m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber)
 {
   m_iChannelId              = -1;
   m_bIsRadio                = channel.bIsRadio;
@@ -86,13 +83,9 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strIconPath             = channel.strIconPath;
   m_strChannelName          = channel.strChannelName;
   m_iUniqueId               = channel.iUniqueId;
-  m_iClientChannelNumber.channel    = channel.iChannelNumber;
-  m_iClientChannelNumber.subchannel = channel.iSubChannelNumber;
   m_strClientChannelName    = channel.strChannelName;
   m_strInputFormat          = channel.strInputFormat;
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
-  m_iCachedChannelNumber    = 0;
-  m_iCachedSubChannelNumber = 0;
   m_iClientId               = iClientId;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = !channel.bIsHidden;
@@ -118,8 +111,8 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["uniqueid"]  = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
-  value["channelnumber"] = m_iCachedChannelNumber;
-  value["subchannelnumber"] = m_iCachedSubChannelNumber;
+  value["channelnumber"] = m_channelNumber.GetChannelNumber();
+  value["subchannelnumber"] = m_channelNumber.GetSubChannelNumber();
 
   CPVREpgInfoTagPtr epg(GetEPGNow());
   if (epg)
@@ -199,17 +192,15 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
 
   CSingleLock lock(m_critSection);
 
-  if (m_iClientChannelNumber.channel    != channel->ClientChannelNumber() ||
-      m_iClientChannelNumber.subchannel != channel->ClientSubChannelNumber() ||
-      m_strInputFormat                  != channel->InputFormat() ||
-      m_iClientEncryptionSystem         != channel->EncryptionSystem() ||
-      m_strClientChannelName            != channel->ClientChannelName())
+  if (m_clientChannelNumber     != channel->m_clientChannelNumber ||
+      m_strInputFormat          != channel->InputFormat() ||
+      m_iClientEncryptionSystem != channel->EncryptionSystem() ||
+      m_strClientChannelName    != channel->ClientChannelName())
   {
-    m_iClientChannelNumber.channel    = channel->ClientChannelNumber();
-    m_iClientChannelNumber.subchannel = channel->ClientSubChannelNumber();
-    m_strInputFormat                  = channel->InputFormat();
-    m_iClientEncryptionSystem         = channel->EncryptionSystem();
-    m_strClientChannelName            = channel->ClientChannelName();
+    m_clientChannelNumber     = channel->m_clientChannelNumber;
+    m_strInputFormat          = channel->InputFormat();
+    m_iClientEncryptionSystem = channel->EncryptionSystem();
+    m_strClientChannelName    = channel->ClientChannelName();
 
     UpdateEncryptionName();
     SetChanged();
@@ -261,16 +252,10 @@ bool CPVRChannel::SetChannelID(int iChannelId)
   return false;
 }
 
-int CPVRChannel::ChannelNumber(void) const
+const CPVRChannelNumber& CPVRChannel::ChannelNumber() const
 {
   CSingleLock lock(m_critSection);
-  return m_iCachedChannelNumber;
-}
-
-int CPVRChannel::SubChannelNumber(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_iCachedSubChannelNumber;
+  return m_channelNumber;
 }
 
 bool CPVRChannel::SetHidden(bool bIsHidden)
@@ -350,7 +335,7 @@ bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUser
   std::string strName(strChannelName);
 
   if (strName.empty())
-    strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), ClientChannelNumber());
+    strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), m_clientChannelNumber.FormattedChannelNumber().c_str());
 
   CSingleLock lock(m_critSection);
   if (m_strChannelName != strName)
@@ -632,16 +617,10 @@ bool CPVRChannel::SetEPGScraper(const std::string &strScraper)
   return false;
 }
 
-void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
+void CPVRChannel::SetChannelNumber(const CPVRChannelNumber& channelNumber)
 {
   CSingleLock lock(m_critSection);
-  m_iCachedChannelNumber = iChannelNumber;
-}
-
-void CPVRChannel::SetCachedSubChannelNumber(unsigned int iSubChannelNumber)
-{
-  CSingleLock lock(m_critSection);
-  m_iCachedSubChannelNumber = iSubChannelNumber;
+  m_channelNumber = channelNumber;
 }
 
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
@@ -650,7 +629,7 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
   if (field == FieldChannelName)
     sortable[FieldChannelName] = m_strChannelName;
   else if (field == FieldChannelNumber)
-    sortable[FieldChannelNumber] = m_iCachedChannelNumber;
+    sortable[FieldChannelNumber] = m_channelNumber.GetChannelNumber();
   else if (field == FieldLastPlayed)
   {
     const CDateTime lastWatched(m_iLastWatched);
@@ -674,18 +653,6 @@ bool CPVRChannel::IsHidden(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsHidden;
-}
-
-bool CPVRChannel::IsSubChannel(void) const
-{
-  return SubChannelNumber() > 0;
-}
-
-std::string CPVRChannel::FormattedChannelNumber(void) const
-{
-  return !IsSubChannel() ?
-      StringUtils::Format("%i", ChannelNumber()) :
-      StringUtils::Format("%i.%i", ChannelNumber(), SubChannelNumber());
 }
 
 bool CPVRChannel::IsLocked(void) const
@@ -753,16 +720,10 @@ int CPVRChannel::ClientID(void) const
   return m_iClientId;
 }
 
-unsigned int CPVRChannel::ClientChannelNumber(void) const
+const CPVRChannelNumber& CPVRChannel::ClientChannelNumber() const
 {
   CSingleLock lock(m_critSection);
-  return m_iClientChannelNumber.channel;
-}
-
-unsigned int CPVRChannel::ClientSubChannelNumber(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_iClientChannelNumber.subchannel;
+  return m_clientChannelNumber;
 }
 
 std::string CPVRChannel::ClientChannelName(void) const

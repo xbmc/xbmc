@@ -90,7 +90,6 @@ namespace PVR
      */
     CPVREpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
 
-    int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;
 

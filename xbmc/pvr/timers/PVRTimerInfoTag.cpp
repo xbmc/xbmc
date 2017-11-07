@@ -681,12 +681,6 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
     HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
 }
 
-int CPVRTimerInfoTag::ChannelNumber() const
-{
-  CPVRChannelPtr channeltag = Channel();
-  return channeltag ? channeltag->ChannelNumber() : 0;
-}
-
 std::string CPVRTimerInfoTag::ChannelName() const
 {
   std::string strReturn;

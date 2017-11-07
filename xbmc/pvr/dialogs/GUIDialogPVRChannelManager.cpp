@@ -688,7 +688,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Icon", channel->IconPath());
     channelFile->SetProperty("EPGSource", (int)0);
     channelFile->SetProperty("ParentalLocked", channel->IsLocked());
-    channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber()));
+    channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber().GetChannelNumber()));
 
     std::string clientName;
     CServiceBroker::GetPVRManager().Clients()->GetClientFriendlyName(channel->ClientID(), clientName);

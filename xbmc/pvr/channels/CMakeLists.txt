@@ -3,6 +3,7 @@ set(SOURCES PVRChannel.cpp
             PVRChannelGroupInternal.cpp
             PVRChannelGroups.cpp
             PVRChannelGroupsContainer.cpp
+            PVRChannelNumber.cpp
             PVRRadioRDSInfoTag.cpp)
 
 set(HEADERS PVRChannel.h
@@ -10,6 +11,7 @@ set(HEADERS PVRChannel.h
             PVRChannelGroupInternal.h
             PVRChannelGroups.h
             PVRChannelGroupsContainer.h
+            PVRChannelNumber.h
             PVRRadioRDSInfoTag.h)
 
 core_add_library(pvr_channels)

@@ -1225,7 +1225,7 @@ namespace PVR
     const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
     /* check if the channel tag is valid */
-    if (!channel || channel->ChannelNumber() <= 0)
+    if (!channel || !channel->ChannelNumber().IsValid())
       return false;
 
     if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19054}, // "Hide channel"
@@ -1613,10 +1613,10 @@ namespace PVR
       const CPVRChannelPtr playingChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
       if (playingChannel)
       {
-        if (iChannelNumber != playingChannel->ChannelNumber())
+        if (iChannelNumber != playingChannel->ChannelNumber().GetChannelNumber())
         {
           const CPVRChannelGroupPtr selectedGroup(CServiceBroker::GetPVRManager().GetPlayingGroup(playingChannel->IsRadio()));
-          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(iChannelNumber));
+          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, 0)));
           if (channel && channel->HasPVRChannelInfoTag())
           {
             CApplicationMessenger::GetInstance().PostMsg(
@@ -1644,7 +1644,8 @@ namespace PVR
           {
             CApplicationMessenger::GetInstance().SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(channel->GetPVRChannelInfoTag()->ChannelNumber()))));
+              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
+                                             static_cast<float>(channel->GetPVRChannelInfoTag()->ChannelNumber().GetChannelNumber()))));
           }
         }
       }

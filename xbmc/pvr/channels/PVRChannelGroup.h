@@ -39,14 +39,18 @@ namespace PVR
 #define PVR_GROUP_TYPE_INTERNAL     1
 #define PVR_GROUP_TYPE_USER_DEFINED 2
 
-  typedef struct
+  struct PVRChannelGroupMember
   {
-    CPVRChannelPtr channel;
-    unsigned int   iChannelNumber;
-    unsigned int   iSubChannelNumber;
-    int iClientPriority;
+    PVRChannelGroupMember()
+    : iClientPriority(0) {}
 
-  } PVRChannelGroupMember;
+    PVRChannelGroupMember(const CPVRChannelPtr _channel, const CPVRChannelNumber &_channelNumber, int _iClientPriority)
+    : channel(_channel), channelNumber(_channelNumber), iClientPriority(_iClientPriority) {}
+
+    CPVRChannelPtr channel;
+    CPVRChannelNumber channelNumber; // the number this channel has in the group
+    int iClientPriority;
+  };
 
   typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
   typedef std::map<std::pair<int, int>, PVRChannelGroupMember> PVR_CHANNEL_GROUP_MEMBERS;
@@ -116,10 +120,9 @@ namespace PVR
     /*!
      * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager. Call SortByChannelNumber() and Renumber() after all changes are done.
      * @param channel The channel to change the channel number for.
-     * @param iChannelNumber The new channel number.
-     * @param iSubChannelNumber The new sub channel number.
+     * @param channelNumber The new channel number.
      */
-    bool SetChannelNumber(const CPVRChannelPtr &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0);
+    bool SetChannelNumber(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
 
     /*!
      * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -146,10 +149,10 @@ namespace PVR
     /*!
      * @brief Add a channel to this container.
      * @param channel The channel to add.
-     * @param iChannelNumber The channel number of the channel number to add. Use -1 to add it at the end.
+     * @param channelNumber The channel number of the channel to add. Use empty channel number to add it at the end.
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber = 0);
+    virtual bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
 
     /*!
      * @brief Change the name of this group.
@@ -286,11 +289,10 @@ namespace PVR
 
     /*!
      * @brief Get a channel given it's channel number.
-     * @param iChannelNumber The channel number.
-     * * @param iSubChannelNumber The sub channel number.
+     * @param channelNumber The channel number.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0) const;
+    CFileItemPtr GetByChannelNumber(const CPVRChannelNumber &channelNumber) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.

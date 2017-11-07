@@ -312,7 +312,7 @@ void CGUIDialogPVRChannelsOSD::OnInputDone()
     int itemIndex = 0;
     for (const CFileItemPtr channel : m_vecItems->GetList())
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber)
+      if (channel->GetPVRChannelInfoTag()->ChannelNumber().GetChannelNumber() == iChannelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

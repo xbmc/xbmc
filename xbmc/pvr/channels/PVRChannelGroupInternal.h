@@ -48,9 +48,10 @@ namespace PVR
     /*!
      * @brief Callback for add-ons to update a channel.
      * @param channel The updated channel.
+     * @param channelNumber A new channel number for the channel.
      * @return The new/updated channel.
      */
-    CPVRChannelPtr UpdateFromClient(const CPVRChannelPtr &channel, unsigned int iChannelNumber = 0);
+    CPVRChannelPtr UpdateFromClient(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
@@ -60,7 +61,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber = 0) override;
+    bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber) override;
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup

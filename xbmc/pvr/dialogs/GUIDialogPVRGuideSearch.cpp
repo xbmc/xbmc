@@ -83,7 +83,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   for (std::vector<PVRChannelGroupMember>::const_iterator it = groupMembers.begin(); it != groupMembers.end(); ++it)
   {
     if ((*it).channel)
-      labels.push_back(std::make_pair((*it).channel->ChannelName(), (*it).iChannelNumber));
+      labels.push_back(std::make_pair((*it).channel->ChannelName(), (*it).channelNumber.GetChannelNumber()));
   }
 
   SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, m_searchFilter->GetChannelNumber(), &labels);

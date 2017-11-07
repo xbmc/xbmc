@@ -283,7 +283,8 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
         channel->m_iEpgId                  = bIgnoreEpgDB ? -1 : m_pDS->fv("idEpg").get_asInt();
         channel->UpdateEncryptionName();
 
-        PVRChannelGroupMember newMember = { channel, static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()) };
+        // FIXME: iSubChannelNumber is persisted but never read from db
+        PVRChannelGroupMember newMember(channel, CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()), 0), 0);
         results.m_sortedMembers.emplace_back(newMember);
         results.m_members.insert(std::make_pair(channel->StorageId(), newMember));
 
@@ -585,7 +586,8 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
 
         if (channel != allChannels.end())
         {
-          PVRChannelGroupMember newMember = { channel->second, static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()) };
+          // FIXME: iSubChannelNumber is persisted but never read from db
+          PVRChannelGroupMember newMember(channel->second, CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()), 0), 0);
           group.m_sortedMembers.emplace_back(newMember);
           group.m_members.insert(std::make_pair(channel->second->StorageId(), newMember));
           ++iReturn;
@@ -668,7 +670,7 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup &group)
     for (const auto& groupMember : group.m_sortedMembers)
     {
       const std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND iSubChannelNumber = %u",
-          groupMember.channel->ChannelID(), group.GroupID(), groupMember.iChannelNumber, groupMember.iSubChannelNumber);
+          groupMember.channel->ChannelID(), group.GroupID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber());
 
       const std::string strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
       if (strValue.empty())
@@ -676,7 +678,7 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup &group)
         strQuery = PrepareSQL("REPLACE INTO map_channelgroups_channels ("
             "idGroup, idChannel, iChannelNumber, iSubChannelNumber) "
             "VALUES (%i, %i, %i, %i);",
-            group.GroupID(), groupMember.channel->ChannelID(), groupMember.iChannelNumber, groupMember.iSubChannelNumber);
+            group.GroupID(), groupMember.channel->ChannelID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber());
         QueueInsertQuery(strQuery);
       }
     }

@@ -611,7 +611,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
         const CPVRChannelPtr channel = recording->Channel();
         if (channel)
         {
-          strValue = StringUtils::Format("%i", channel->SubChannelNumber());
+          strValue = StringUtils::Format("%i", channel->ChannelNumber().GetSubChannelNumber());
           return true;
         }
         break;
@@ -621,7 +621,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
         const CPVRChannelPtr channel = recording->Channel();
         if (channel)
         {
-          strValue = channel->FormattedChannelNumber();
+          strValue = channel->ChannelNumber().FormattedChannelNumber();
           return true;
         }
         break;
@@ -782,7 +782,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
 
         if (channel)
         {
-          strValue = StringUtils::Format("%i", channel->ChannelNumber());
+          strValue = StringUtils::Format("%i", channel->ChannelNumber().GetChannelNumber());
           return true;
         }
         break;
@@ -794,7 +794,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
 
         if (channel)
         {
-          strValue = StringUtils::Format("%i", channel->SubChannelNumber());
+          strValue = StringUtils::Format("%i", channel->ChannelNumber().GetSubChannelNumber());
           return true;
         }
         break;
@@ -806,7 +806,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
 
         if (channel)
         {
-          strValue = channel->FormattedChannelNumber();
+          strValue = channel->ChannelNumber().FormattedChannelNumber();
           return true;
         }
         break;
