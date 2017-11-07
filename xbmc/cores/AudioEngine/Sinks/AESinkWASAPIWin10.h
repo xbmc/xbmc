@@ -26,6 +26,7 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include <wrl/implements.h>
 #include <ppltasks.h>
+#include <string>
 
 #ifndef _WAVEFORMATEXTENSIBLE_IEC61937_
 #define _WAVEFORMATEXTENSIBLE_IEC61937_
@@ -37,6 +38,17 @@ typedef struct _WAVEFORMATEXTENSIBLE_IEC61937
   uint32_t                dwAverageBytesPerSec;
 } WAVEFORMATEXTENSIBLE_IEC61937, *PWAVEFORMATEXTENSIBLE_IEC61937;
 #endif /* _WAVEFORMATEXTENSIBLE_IEC61937_ */
+
+// Static functions
+struct RendererDetail
+{
+  std::string strDeviceId;
+  std::string strDescription;
+  std::string strWinDevType;
+  AEDeviceType eDeviceType;
+  unsigned int nChannels;
+  bool bDefault;
+};
 
 using namespace Microsoft::WRL;
 

@@ -13,6 +13,20 @@
         </setting>
       </group>
     </category>
+    <category id="audio">
+      <group id="1">
+        <setting id="audiooutput.audiodevice">
+          <level>0</level>
+          <default>XAUDIO:default</default>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.passthroughdevice">
+          <level>1</level>
+          <default>XAUDIO:default</default>
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="pvr" >
     <category id="pvrpowermanagement">

@@ -87,8 +87,10 @@ if(FFMPEG_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES Sinks/AESinkWASAPIWin10.cpp)
-  list(APPEND HEADERS Sinks/AESinkWASAPIWin10.h)
+  list(APPEND SOURCES Sinks/AESinkWASAPIWin10.cpp
+                      Sinks/AESinkXAudioWin10.cpp)
+  list(APPEND HEADERS Sinks/AESinkWASAPIWin10.h
+                      Sinks/AESinkXAudioWin10.h)
 elseif(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES Sinks/AESinkDirectSound.cpp
                       Sinks/AESinkWASAPI.cpp)
