@@ -569,7 +569,6 @@ void CGUIDialogPVRTimerSettings::Save()
     m_timerInfoTag->m_iClientChannelUid = channel->UniqueID();
     m_timerInfoTag->m_iClientId         = channel->ClientID();
     m_timerInfoTag->m_bIsRadio          = channel->IsRadio();
-    m_timerInfoTag->m_iChannelNumber    = channel->ChannelNumber();
 
     m_timerInfoTag->UpdateChannel();
   }
