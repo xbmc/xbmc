@@ -340,7 +340,7 @@ public:
   /////////////////////////////////////////////////
   // Genres
   /////////////////////////////////////////////////
-  int AddGenre(const std::string& strGenre);
+  int AddGenre(std::string& strGenre);
   std::string GetGenreById(int id);
   int GetGenreByName(const std::string& strGenre);
 
@@ -363,12 +363,10 @@ public:
   bool GetArtistsBySong(int idSong, std::vector<int>& artists);
   bool DeleteSongArtistsBySong(int idSong);
 
-  bool AddSongGenre(int idGenre, int idSong, int iOrder);
+  bool AddSongGenres(int idSong, const std::vector<std::string>& genres);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
 
-  bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
-  bool DeleteAlbumGenresByAlbum(int idAlbum);
 
   bool GetGenresByArtist(int idArtist, CFileItem* item);
   bool GetIsAlbumArtist(int idArtist, CFileItem* item);

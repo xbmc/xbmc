@@ -108,8 +108,8 @@ public:
   void SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc = false);
   void SetAlbumArtistDesc(const std::string& strAlbumArtistDesc);
   void SetAlbumArtistSort(const std::string& strAlbumArtistSort);
-  void SetGenre(const std::string& strGenre);
-  void SetGenre(const std::vector<std::string>& genres);
+  void SetGenre(const std::string& strGenre, bool bTrim = false);
+  void SetGenre(const std::vector<std::string>& genres, bool bTrim = false);
   void SetYear(int year);
   void SetDatabaseId(long id, const std::string &type);
   void SetReleaseDate(SYSTEMTIME& dateTime);

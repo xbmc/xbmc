@@ -165,8 +165,6 @@ void CMusicDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create album_artist table");
   m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, iOrder integer, strArtist text)");
-  CLog::Log(LOGINFO, "create album_genre table");
-  m_pDS->exec("CREATE TABLE album_genre (idGenre integer, idAlbum integer, iOrder integer)");
 
   CLog::Log(LOGINFO, "create genre table");
   m_pDS->exec("CREATE TABLE genre (idGenre integer primary key, strGenre varchar(256))");
@@ -217,9 +215,6 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )");
   m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )");
 
-  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )");
-  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )");
-
   m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
 
   m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
@@ -254,7 +249,6 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
               "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
               "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
-              "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
               "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
               " END");
   m_pDS->exec("CREATE TRIGGER tgrDeleteArtist AFTER delete ON artist FOR EACH ROW BEGIN"
@@ -518,6 +512,8 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
         song.userrating,
         song.votes,
         song.replayGain);
+      // Replace Song genres and update genre string using the standardised genre names
+      AddSongGenres(song.idSong, song.genre);
       //Replace song artists and contributors
       DeleteSongArtistsBySong(song.idSong);
       if (song.artistCredits.empty())
@@ -590,16 +586,15 @@ int CMusicDatabase::AddSong(const int idAlbum,
     {
       m_pDS->close();
       strSQL=PrepareSQL("INSERT INTO song ("
-                                          "idSong,idAlbum,idPath,strArtistDisp,strGenres,"
+                                          "idSong,idAlbum,idPath,strArtistDisp,"
                                           "strTitle,iTrack,iDuration,iYear,strFileName,"
                                           "strMusicBrainzTrackID, strArtistSort, "
                                           "iTimesPlayed,iStartOffset, "
                                           "iEndOffset,lastplayed,rating,userrating,votes,comment,mood,strReplayGain"
-                        ") values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%s'",
+                        ") values (NULL, %i, %i, '%s', '%s', %i, %i, %i, '%s'",
                     idAlbum,
                     idPath,
                     artistDisp.c_str(),
-                    StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
                     strTitle.c_str(),
                     iTrack, iDuration, iYear,
                     strFileName.c_str());
@@ -635,15 +630,8 @@ int CMusicDatabase::AddSong(const int idAlbum,
     if (!strThumb.empty())
       SetArtForItem(idSong, MediaTypeSong, "thumb", strThumb);
 
-    unsigned int index = 0;
-    for (const auto &i : genres)
-    {
-      // index will be wrong for albums, but ordering is not all that relevant
-      // for genres anyway
-      int idGenre = AddGenre(i);
-      AddSongGenre(idGenre, idSong, index);
-      AddAlbumGenre(idGenre, idAlbum, index++);
-    }
+    // Song genres added, and genre string updated to use the standardised genre names
+    AddSongGenres(idSong, genres);
 
     UpdateFileDateAdded(idSong, strPathAndFileName);
 
@@ -706,7 +694,7 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
 
 int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
 {
-  return UpdateSong(idSong,
+  int result = UpdateSong(idSong,
                     song.strTitle,
                     song.strMusicBrainzTrackID,
                     song.strFileName,
@@ -727,6 +715,11 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
                     song.userrating,
                     song.votes,
                     song.replayGain);
+  if (result > 0)
+    // Replace Song genres and update genre string using the standardised genre names
+    AddSongGenres(song.idSong, song.genre);
+
+  return result;
 }
 
 int CMusicDatabase::UpdateSong(int idSong,
@@ -811,7 +804,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
       // doesnt exists, add it
       strSQL = PrepareSQL("INSERT INTO album (idAlbum, strAlbum, strArtistDisp, strGenres, iYear, "
         "strLabel, strType, bCompilation, strReleaseType, strMusicBrainzAlbumID, strReleaseGroupMBID, strArtistSort) "
-        "values( NULL, '%s', '%s', '%s', %i, '%s', '%s', %i, '%s'",
+        "values(NULL, '%s', '%s', '%s', %i, '%s', '%s', %i, '%s'",
         strAlbum.c_str(),
         strArtist.c_str(),
         strGenre.c_str(),
@@ -875,7 +868,6 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
         idAlbum);
       m_pDS->exec(strSQL);
       DeleteAlbumArtistsByAlbum(idAlbum);
-      DeleteAlbumGenresByAlbum(idAlbum);
       return idAlbum;
     }
   }
@@ -1047,12 +1039,11 @@ bool CMusicDatabase::HasAlbumBeenScraped(int idAlbum)
   return GetSingleValue(strSQL).empty();
 }
 
-int CMusicDatabase::AddGenre(const std::string& strGenre1)
+int CMusicDatabase::AddGenre(std::string& strGenre)
 {
   std::string strSQL;
   try
   {
-    std::string strGenre = strGenre1;
     StringUtils::Trim(strGenre);
 
     if (strGenre.empty())
@@ -1066,23 +1057,24 @@ int CMusicDatabase::AddGenre(const std::string& strGenre1)
       return it->second;
 
 
-    strSQL=PrepareSQL("select * from genre where strGenre like '%s'", strGenre.c_str());
+    strSQL=PrepareSQL("SELECT idGenre, strGenre FROM genre WHERE strGenre LIKE '%s'", strGenre.c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into genre (idGenre, strGenre) values( NULL, '%s' )", strGenre.c_str());
+      strSQL=PrepareSQL("INSERT INTO genre (idGenre, strGenre) values( NULL, '%s' )", strGenre.c_str());
       m_pDS->exec(strSQL);
 
       int idGenre = (int)m_pDS->lastinsertid();
-      m_genreCache.insert(std::pair<std::string, int>(strGenre1, idGenre));
+      m_genreCache.insert(std::pair<std::string, int>(strGenre, idGenre));
       return idGenre;
     }
     else
     {
       int idGenre = m_pDS->fv("idGenre").get_asInt();
-      m_genreCache.insert(std::pair<std::string, int>(strGenre1, idGenre));
+      strGenre = m_pDS->fv("strGenre").get_asString();
+      m_genreCache.insert(std::pair<std::string, int>(strGenre, idGenre));
       m_pDS->close();
       return idGenre;
     }
@@ -1633,31 +1625,41 @@ bool CMusicDatabase::DeleteAlbumArtistsByAlbum(int idAlbum)
   return ExecuteQuery(PrepareSQL("DELETE FROM album_artist WHERE idAlbum = %i", idAlbum));
 }
 
-bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
+bool CMusicDatabase::AddSongGenres(int idSong, const std::vector<std::string>& genres)
 {
-  if (idGenre == -1 || idSong == -1)
+  if (idSong == -1)
     return true;
 
   std::string strSQL;
-  strSQL=PrepareSQL("replace into song_genre (idGenre, idSong, iOrder) values(%i,%i,%i)",
-                    idGenre, idSong, iOrder);
-  return ExecuteQuery(strSQL);
-};
+  try
+  {
+    // Clear current entries for song
+    strSQL = PrepareSQL("DELETE FROM song_genre WHERE idSong = %i", idSong);
+    if (!ExecuteQuery(strSQL))
+      return false;
+    unsigned int index = 0;
+    std::vector<std::string> modgenres = genres;
+    for (auto &strGenre : modgenres)
+    {
+      int idGenre = AddGenre(strGenre); // Genre string trimed and matched case insensitively
+      strSQL = PrepareSQL("INSERT INTO song_genre (idGenre, idSong, iOrder) VALUES(%i,%i,%i)",
+        idGenre, idSong, index++);
+      if (!ExecuteQuery(strSQL))
+        return false;
+    }
+    // Update concatenated genre string from the standardised genre values
+    std::string strGenres = StringUtils::Join(modgenres, g_advancedSettings.m_musicItemSeparator);
+    strSQL = PrepareSQL("UPDATE song SET strGenres = '%s' WHERE idSong = %i", strGenres.c_str(), idSong);
+    if (!ExecuteQuery(strSQL))
+      return false;
 
-bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
-{
-  if (idGenre == -1 || idAlbum == -1)
     return true;
-  
-  std::string strSQL;
-  strSQL=PrepareSQL("replace into album_genre (idGenre, idAlbum, iOrder) values(%i,%i,%i)",
-                    idGenre, idAlbum, iOrder);
-  return ExecuteQuery(strSQL);
-};
-
-bool CMusicDatabase::DeleteAlbumGenresByAlbum(int idAlbum)
-{
-  return ExecuteQuery(PrepareSQL("DELETE FROM album_genre WHERE idAlbum = %i", idAlbum));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) %s failed", __FUNCTION__, idSong, strSQL.c_str());
+  }
+  return false;
 }
 
 bool CMusicDatabase::GetAlbumsByArtist(int idArtist, std::vector<int> &albums)
@@ -1818,8 +1820,7 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
       // Check via songs artist to fetch song genres from compilations or where they are guest artist
       m_pDS->close();
       strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
-        "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
-        "song_genre ON song.idSong = song_genre.idSong "
+        "song_artist JOIN song_genre ON song_artist.idSong = song_genre.idSong "
         "JOIN genre ON song_genre.idGenre = genre.idGenre "
         "WHERE song_artist.idArtist = %i "
         "ORDER BY song_genre.idGenre", idArtist);
@@ -1859,7 +1860,9 @@ bool CMusicDatabase::GetGenresByAlbum(int idAlbum, std::vector<int>& genres)
 {
   try
   {
-    std::string strSQL = PrepareSQL("select idGenre from album_genre where idAlbum = %i ORDER BY iOrder ASC", idAlbum);
+    std::string strSQL = PrepareSQL("SELECT DISTINCT idGenre FROM song "
+      "JOIN song_genre ON song_genre.idSong = song.idSong "
+      "WHERE song.idAlbum = %i ORDER BY song_genre.idSong, iOrder ASC", idAlbum);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
@@ -3141,11 +3144,10 @@ bool CMusicDatabase::CleanupGenres()
 {
   try
   {
-    // Cleanup orphaned genres (ie those that don't belong to a song or an album entry)
+    // Cleanup orphaned song genres (ie those that don't belong to a song entry)
     // (nested queries by Bobbin007)
-    // Must be executed AFTER the song, song_genre, album and album_genre tables have been cleaned.
-    std::string strSQL = "delete from genre where idGenre not in (select idGenre from song_genre) and";
-    strSQL += " idGenre not in (select idGenre from album_genre)";
+    // Must be executed AFTER the song, and song_genre have been cleaned.
+    std::string strSQL = "DELETE FROM genre WHERE idGenre NOT IN (SELECT idGenre FROM song_genre)";
     m_pDS->exec(strSQL);
     return true;
   }
@@ -3563,8 +3565,6 @@ bool CMusicDatabase::GetGenresNav(const std::string& strBaseDir, CFileItemList& 
                              "JOIN song_artist ON song_artist.idSong = songview.idSong JOIN artistview ON artistview.idArtist = song_artist.idArtist");
       else if (extFilter.where.find("songview") != std::string::npos)
         extFilter.AppendJoin("JOIN song_genre ON song_genre.idGenre = genre.idGenre JOIN songview ON songview.idSong = song_genre.idSong");
-      else if (extFilter.where.find("albumview") != std::string::npos)
-        extFilter.AppendJoin("JOIN album_genre ON album_genre.idGenre = genre.idGenre JOIN albumview ON albumview.idAlbum = album_genre.idAlbum");
 
       extFilter.AppendGroup("genre.idGenre");
     }
@@ -5220,6 +5220,11 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE artist ADD strGender TEXT \n");
     m_pDS->exec("ALTER TABLE artist ADD strDisambiguation TEXT \n");
   }
+  if (version < 69)
+  {
+    // Remove album_genre table
+    m_pDS->exec("DROP TABLE album_genre");
+  }    
 
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
@@ -5240,7 +5245,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 68;
+  return 69;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
