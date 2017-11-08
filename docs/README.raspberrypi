@@ -25,24 +25,18 @@ build for the first Raspberry Pi, the commands have to be adapted to use
 
     $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre
 
+    $ RPI_DEV=$PWD
     $ git clone https://github.com/raspberrypi/tools
-    $ sudo cp -r tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf /opt
-
     $ git clone https://github.com/raspberrypi/firmware
-    $ sudo mkdir -p /opt/bcm-rootfs/opt
-    $ sudo cp -r firmware/opt/vc /opt/bcm-rootfs/opt
-
-    $ sudo mkdir -p /opt/kodi-bcm
-    $ sudo chmod 777 /opt/kodi-bcm
-
     $ git clone https://github.com/xbmc/xbmc
 
+    $ mkdir kodi-bcm
     $ cd xbmc/tools/depends
     $ ./bootstrap
     $ ./configure --host=arm-linux-gnueabihf \
-       --prefix=/opt/kodi-bcm/kodi-dbg \
-       --with-toolchain=/opt/arm-rpi-4.9.3-linux-gnueabihf \
-       --with-firmware=/opt/bcm-rootfs \
+       --prefix=$RPI_DEV/kodi-bcm \
+       --with-toolchain=$RPI_DEV/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf \
+       --with-firmware=$RPI_DEV/firmware \
        --with-platform=raspberry-pi2 \
        --build=i686-linux
 
@@ -52,7 +46,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
     $ make -C tools/depends/target/cmakebuildsys
     $ cd build
     $ make
-    $ sudo make install
+    $ make install
 
 -----------------------------------------------------------------------------
 3. Building Kodi using buildroot environment
