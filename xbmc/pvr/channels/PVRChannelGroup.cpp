@@ -198,10 +198,11 @@ bool CPVRChannelGroup::Update(void)
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
   PVRChannels_tmp.SetPreventSortAndRenumber();
-  PVRChannels_tmp.LoadFromClients();
+
+  bool bSuccess = PVRChannels_tmp.LoadFromClients();
   m_failedClientsForChannelGroupMembers = PVRChannels_tmp.m_failedClientsForChannelGroupMembers;
 
-  return UpdateGroupEntries(PVRChannels_tmp);
+  return bSuccess && UpdateGroupEntries(PVRChannels_tmp);
 }
 
 bool CPVRChannelGroup::SetChannelNumber(const CPVRChannelPtr &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber /* = 0 */)
