@@ -50,6 +50,9 @@ void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true 
   if ((override && !source.strSortName.empty()) || strSortName.empty())
     strSortName = source.strSortName;
 
+  strType = source.strType;
+  strGender = source.strGender;
+  strDisambiguation = source.strDisambiguation;
   genre = source.genre;
   strBiography = source.strBiography;
   styles = source.styles;
@@ -80,6 +83,9 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   XMLUtils::GetString(artist,                "name", strArtist);
   XMLUtils::GetString(artist, "musicBrainzArtistID", strMusicBrainzArtistID);
   XMLUtils::GetString(artist,            "sortname", strSortName);
+  XMLUtils::GetString(artist, "type", strType);
+  XMLUtils::GetString(artist, "gender", strGender);
+  XMLUtils::GetString(artist, "disambiguation", strDisambiguation);
   XMLUtils::GetStringArray(artist,       "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(artist,       "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(artist,        "mood", moods, prioritise, g_advancedSettings.m_musicItemSeparator);
@@ -178,6 +184,9 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   XMLUtils::SetString(artist,                      "name", strArtist);
   XMLUtils::SetString(artist,       "musicBrainzArtistID", strMusicBrainzArtistID);
   XMLUtils::SetString(artist,                  "sortname", strSortName);
+  XMLUtils::SetString(artist,                      "type", strType);
+  XMLUtils::SetString(artist,                    "gender", strGender);
+  XMLUtils::SetString(artist,            "disambiguation", strDisambiguation);
   XMLUtils::SetStringArray(artist,                "genre", genre);
   XMLUtils::SetStringArray(artist,                "style", styles);
   XMLUtils::SetStringArray(artist,                 "mood", moods);

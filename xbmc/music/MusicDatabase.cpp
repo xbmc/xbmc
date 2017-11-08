@@ -124,6 +124,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, "
               " strArtist varchar(256), strMusicBrainzArtistID text, "
               " strSortName text, "
+              " strType text, strGender text, strDisambiguation text, "
               " strBorn text, strFormed text, strGenres text, strMoods text, "
               " strStyles text, strInstruments text, strBiography text, "
               " strDied text, strDisbanded text, strYearsActive text, "
@@ -341,6 +342,7 @@ void CMusicDatabase::CreateViews()
   m_pDS->exec("CREATE VIEW artistview AS SELECT"
               "  idArtist, strArtist, strSortName, "
               "  strMusicBrainzArtistID, "
+              "  strType, strGender, strDisambiguation, "
               "  strBorn, strFormed, strGenres,"
               "  strMoods, strStyles, strInstruments, "
               "  strBiography, strDied, strDisbanded, "
@@ -1098,6 +1100,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
   UpdateArtist(artist.idArtist,
                artist.strArtist, artist.strSortName,
                artist.strMusicBrainzArtistID, artist.bScrapedMBID,
+               artist.strType, artist.strGender, artist.strDisambiguation,
                artist.strBorn, artist.strFormed,
                StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator),
                StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator),
@@ -1263,6 +1266,8 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
 int  CMusicDatabase::UpdateArtist(int idArtist,
                                   const std::string& strArtist, const std::string& strSortName,
                                   const std::string& strMusicBrainzArtistID, const bool bScrapedMBID,
+                                  const std::string& strType, const std::string& strGender, 
+                                  const std::string& strDisambiguation,
                                   const std::string& strBorn, const std::string& strFormed,
                                   const std::string& strGenres, const std::string& strMoods,
                                   const std::string& strStyles, const std::string& strInstruments,
@@ -1278,6 +1283,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
   std::string strSQL;
   strSQL = PrepareSQL("UPDATE artist SET "
                       " strArtist = '%s', "
+                      " strType = '%s', strGender = '%s', strDisambiguation = '%s', "
                       " strBorn = '%s', strFormed = '%s', strGenres = '%s', "
                       " strMoods = '%s', strStyles = '%s', strInstruments = '%s', "
                       " strBiography = '%s', strDied = '%s', strDisbanded = '%s', "
@@ -1286,6 +1292,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strArtist.c_str(), 
                       /* strSortName.c_str(),*/
                       /* strMusicBrainzArtistID.c_str(), */
+                      strType.c_str(), strGender.c_str(), strDisambiguation.c_str(), 
                       strBorn.c_str(), strFormed.c_str(), strGenres.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
@@ -2179,6 +2186,9 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
     artist.strArtist = record->at(offset + artist_strArtist).get_asString();
   artist.strSortName = record->at(offset + artist_strSortName).get_asString();
   artist.strMusicBrainzArtistID = record->at(offset + artist_strMusicBrainzArtistID).get_asString();
+  artist.strType = record->at(offset + artist_strType).get_asString();
+  artist.strGender = record->at(offset + artist_strGender).get_asString();
+  artist.strDisambiguation = record->at(offset + artist_strDisambiguation).get_asString();
   artist.genre = StringUtils::Split(record->at(offset + artist_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.strBiography = record->at(offset + artist_strBiography).get_asString();
   artist.styles = StringUtils::Split(record->at(offset + artist_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -5203,6 +5213,14 @@ void CMusicDatabase::UpdateTables(int version)
     // Remove albuminfosong table
     m_pDS->exec("DROP TABLE albuminfosong");
   }
+  if (version < 68)
+  {    
+    // Add a new columns strType, strGender, strDisambiguation for artists
+    m_pDS->exec("ALTER TABLE artist ADD strType TEXT \n");
+    m_pDS->exec("ALTER TABLE artist ADD strGender TEXT \n");
+    m_pDS->exec("ALTER TABLE artist ADD strDisambiguation TEXT \n");
+  }
+
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
   // that needs this. Forced rescanning (of music files that have not changed since they were 
@@ -5222,7 +5240,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 67;
+  return 68;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -6918,6 +6936,10 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
 
 void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
 {
+  item.SetProperty("artist_sortname", artist.strSortName);
+  item.SetProperty("artist_type", artist.strType);
+  item.SetProperty("artist_gender", artist.strGender);
+  item.SetProperty("artist_disambiguation", artist.strDisambiguation);
   item.SetProperty("artist_instrument", StringUtils::Join(artist.instruments, g_advancedSettings.m_musicItemSeparator));
   item.SetProperty("artist_instrument_array", artist.instruments);
   item.SetProperty("artist_style", StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator));

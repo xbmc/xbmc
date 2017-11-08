@@ -58,6 +58,9 @@ public:
   {
     strArtist.clear();
     strSortName.clear();
+    strType.clear();
+    strGender.clear();
+    strDisambiguation.clear();
     genre.clear();
     strBiography.clear();
     styles.clear();
@@ -93,6 +96,9 @@ public:
   std::string strArtist;
   std::string strSortName;
   std::string strMusicBrainzArtistID;
+  std::string strType;
+  std::string strGender;
+  std::string strDisambiguation;
   std::vector<std::string> genre;
   std::string strBiography;
   std::vector<std::string> styles;

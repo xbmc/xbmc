@@ -109,6 +109,9 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     if (field == FieldId) return "artistview.idArtist";
     else if (field == FieldArtistSort) return "artistview.strSortName";
     else if (field == FieldArtist) return "artistview.strArtist";
+    else if (field == FieldArtistType) return "artistview.strType";
+    else if (field == FieldGender) return "artistview.strGender";
+    else if (field == FieldDisambiguation) return "artistview.strDisambiguation";
     else if (field == FieldGenre) return "artistview.strGenres";
     else if (field == FieldMoods) return "artistview.strMoods";
     else if (field == FieldStyles) return "artistview.strStyles";
@@ -529,6 +532,9 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     if (field == FieldId) return CMusicDatabase::artist_idArtist;
     else if (field == FieldArtist) return CMusicDatabase::artist_strArtist;
     else if (field == FieldArtistSort) return CMusicDatabase::artist_strSortName;
+    else if (field == FieldArtistType) return CMusicDatabase::artist_strType;
+    else if (field == FieldGender) return CMusicDatabase::artist_strGender;
+    else if (field == FieldDisambiguation) return CMusicDatabase::artist_strDisambiguation;
     else if (field == FieldGenre) return CMusicDatabase::artist_strGenres;
     else if (field == FieldMoods) return CMusicDatabase::artist_strMoods;
     else if (field == FieldStyles) return CMusicDatabase::artist_strStyles;
