@@ -857,7 +857,6 @@ void CGUIBaseContainer::AllocResources()
   if (m_listProvider)
   {
     UpdateListProvider(true);
-    SelectItem(m_listProvider->GetDefaultItem());
   }
 }
 
