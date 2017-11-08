@@ -388,17 +388,28 @@ VirtualKey keyDown = VirtualKey::None;
 
 void CWinEventsWin10::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 {
-  if (!args->KeyStatus.IsExtendedKey)
+  int vk = static_cast<unsigned>(args->VirtualKey);
+  if ((vk == 0x08) // VK_BACK
+    || (vk == 0x09) // VK_TAB
+    || (vk == 0x0C) // VK_CLEAR
+    || (vk == 0x0D) // VK_RETURN
+    || (vk == 0x1B) // VK_ESCAPE
+    || (vk == 0x20) // VK_SPACE
+    || (vk >= 0x30 && vk <= 0x39) // numeric keys
+    || (vk >= 0x41 && vk <= 0x5A) // alphabetic keys
+    || (vk >= 0x60 && vk <= 0x6F) // keypad keys
+    || (vk >= 0x92 && vk <= 0x96) // OEM specific
+    || (vk >= 0xBA && vk <= 0xC0) // OEM specific
+    || (vk >= 0xDB && vk <= 0xDF) // OEM specific
+    || (vk >= 0xE1 && vk <= 0xF5 && vk != 0xE5 && vk != 0xE7 && vk != 0xE8) // OEM specific
+    )
   {
-    // fix F1-F24 keys
-    if (args->VirtualKey < VirtualKey::F1 || args->VirtualKey > VirtualKey::F24)
-    {
-      // it will be handled in OnCharacterReceived
-      // store VirtualKey for future processing
-      keyDown = args->VirtualKey;
-      return;
-    }
+    // Those will be handled in OnCharacterReceived
+    // store VirtualKey for future processing
+    keyDown = args->VirtualKey;
+    return;
   }
+
   XBMC_keysym keysym;
   TranslateKey(sender, keysym, args->VirtualKey, args->KeyStatus.ScanCode, 0);
 
@@ -475,4 +486,6 @@ void CWinEventsWin10::OnBackRequested(Platform::Object^ sender, Windows::UI::Cor
 
   newEvent.type = XBMC_KEYUP;
   CWinEvents::MessagePush(&newEvent);
+
+  args->Handled = true;
 }
