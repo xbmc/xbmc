@@ -15,11 +15,19 @@
 
 find_path(ICONV_INCLUDE_DIR NAMES iconv.h)
 
-find_library(ICONV_LIBRARY NAMES iconv libiconv)
+find_library(ICONV_LIBRARY NAMES iconv libiconv c)
+
+set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARY})
+check_function_exists(iconv HAVE_ICONV_FUNCTION)
+if(NOT HAVE_ICONV_FUNCTION)
+  check_function_exists(libiconv HAVE_LIBICONV_FUNCTION2)
+  set(HAVE_ICONV_FUNCTION ${HAVE_LIBICONV_FUNCTION2})
+  unset(HAVE_LIBICONV_FUNCTION2)
+endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(iconv
-                                  REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR)
+find_package_handle_standard_args(Iconv
+                                  REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR HAVE_ICONV_FUNCTION)
 
 if(ICONV_FOUND)
   set(ICONV_LIBRARIES ${ICONV_LIBRARY})
@@ -33,4 +41,4 @@ if(ICONV_FOUND)
   endif()
 endif()
 
-mark_as_advanced(ICONV_INCLUDE_DIR ICONV_LIBRARY)
+mark_as_advanced(ICONV_INCLUDE_DIR ICONV_LIBRARY HAVE_ICONV_FUNCTION)
