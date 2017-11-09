@@ -93,32 +93,32 @@ public:
   ~CInputManager() override;
 
   /*! \brief decode an input event from remote controls.
-
-   \param windowId Currently active window
-   \return true if event is handled, false otherwise
-  */
+   *
+   * \param windowId Currently active window
+   * \return true if event is handled, false otherwise
+   */
   bool ProcessRemote(int windowId);
 
   /*! \brief decode a mouse event and reset idle timers.
-
-  \param windowId Currently active window
-  \return true if event is handled, false otherwise
-  */
+   *
+   * \param windowId Currently active window
+   * \return true if event is handled, false otherwise
+   */
   bool ProcessMouse(int windowId);
 
   /*! \brief decode an event from the event service, this can be mouse, key, joystick, reset idle timers.
-
-  \param windowId Currently active window
-  \param frameTime Time in seconds since last call
-  \return true if event is handled, false otherwise
-  */
+   *
+   * \param windowId Currently active window
+   * \param frameTime Time in seconds since last call
+   * \return true if event is handled, false otherwise
+   */
   bool ProcessEventServer(int windowId, float frameTime);
 
   /*! \brief decode an event from peripherals.
-
-  \param frameTime Time in seconds since last call
-  \return true if event is handled, false otherwise
-  */
+   *
+   * \param frameTime Time in seconds since last call
+   * \return true if event is handled, false otherwise
+   */
   bool ProcessPeripherals(float frameTime);
 
   /*! \brief Process all inputs
@@ -230,8 +230,9 @@ public:
    */
   void SetRemoteControlName(const std::string& name);
 
-  /*! \brief Returns whether or not we can handle a given built-in command. */
-
+  /*! \brief Returns whether or not we can handle a given built-in command.
+   *
+   */
   bool HasBuiltin(const std::string& command);
 
   /*! \brief Parse a builtin command and execute any input action
@@ -295,36 +296,43 @@ public:
 private:
 
   /*! \brief Process keyboard event and translate into an action
-  *
-  * \param CKey keypress details
-  * \return true on successfully handled event
-  * \sa CKey
-  */
+   *
+   * \param key keypress details
+   * \return true on successfully handled event
+   * \sa CKey
+   */
   bool OnKey(const CKey& key);
 
   /*! \brief Process key up event
    *
-   * \param CKey details of released key
+   * \param key details of released key
    * \sa CKey
    */
   void OnKeyUp(const CKey& key);
 
+  /*! \brief Handle keypress
+   *
+   * \param key keypress details
+   * \return true on successfully handled event
+   */
+  bool HandleKey(const CKey& key);
+
   /*! \brief Determine if an action should be processed or just
-  *   cancel the screensaver
-  *
-  * \param action Action that is about to be processed
-  * \return true on any poweractions such as shutdown/reboot/sleep/suspend, false otherwise
-  * \sa CAction
-  */
+   *   cancel the screensaver
+   *
+   * \param action Action that is about to be processed
+   * \return true on any poweractions such as shutdown/reboot/sleep/suspend, false otherwise
+   * \sa CAction
+   */
   bool AlwaysProcess(const CAction& action);
 
   /*! \brief Send the Action to CApplication for further handling,
-  *   play a sound before or after sending the action.
-  *
-  * \param action Action to send to CApplication
-  * \return result from CApplication::OnAction
-  * \sa CAction
-  */
+   *   play a sound before or after sending the action.
+   *
+   * \param action Action to send to CApplication
+   * \return result from CApplication::OnAction
+   * \sa CAction
+   */
   bool ExecuteInputAction(const CAction &action);
 
   /*! \brief Dispatch actions queued since the last call to Process()

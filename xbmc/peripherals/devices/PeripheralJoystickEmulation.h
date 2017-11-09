@@ -23,6 +23,8 @@
 #include "input/keyboard/IKeyboardHandler.h"
 #include "threads/CriticalSection.h"
 
+#include <vector>
+
 namespace PERIPHERALS
 {
   class CPeripheralJoystickEmulation : public CPeripheral,
@@ -50,11 +52,12 @@ namespace PERIPHERALS
   private:
     struct KeyboardHandle
     {
+      KODI::JOYSTICK::IDriverHandler* joystickHandler;
       KODI::KEYBOARD::IKeyboardHandler* handler;
       bool bPromiscuous;
     };
 
-    typedef std::map<KODI::JOYSTICK::IDriverHandler*, KeyboardHandle> KeyboardHandlers;
+    using KeyboardHandlers = std::vector<KeyboardHandle>;
 
     KeyboardHandlers m_keyboardHandlers;
     CCriticalSection m_mutex;

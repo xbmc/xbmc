@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "ServiceBroker.h"
 
+#include <algorithm>
 #include <sstream>
 
 using namespace KODI;
@@ -62,18 +63,23 @@ void CPeripheralJoystickEmulation::RegisterJoystickDriverHandler(JOYSTICK::IDriv
 
   CSingleLock lock(m_mutex);
 
-  if (m_keyboardHandlers.find(handler) == m_keyboardHandlers.end())
-    m_keyboardHandlers[handler] = KeyboardHandle{ new CJoystickEmulation(handler), bPromiscuous };
+  KeyboardHandle handle{ handler, new CJoystickEmulation(handler), bPromiscuous };
+  m_keyboardHandlers.insert(m_keyboardHandlers.begin(), std::move(handle));
 }
 
 void CPeripheralJoystickEmulation::UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler)
 {
   CSingleLock lock(m_mutex);
 
-  KeyboardHandlers::iterator it = m_keyboardHandlers.find(handler);
+  KeyboardHandlers::iterator it = std::find_if(m_keyboardHandlers.begin(), m_keyboardHandlers.end(),
+    [handler](const KeyboardHandle &handle)
+    {
+      return handle.joystickHandler == handler;
+    });
+
   if (it != m_keyboardHandlers.end())
   {
-    delete it->second.handler;
+    delete it->handler;
     m_keyboardHandlers.erase(it);
   }
 }
@@ -87,16 +93,16 @@ bool CPeripheralJoystickEmulation::OnKeyPress(const CKey& key)
   // Process promiscuous handlers
   for (KeyboardHandlers::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
   {
-    if (it->second.bPromiscuous)
-      it->second.handler->OnKeyPress(key);
+    if (it->bPromiscuous)
+      it->handler->OnKeyPress(key);
   }
 
   // Process handlers until one is handled
   for (KeyboardHandlers::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
   {
-    if (!it->second.bPromiscuous)
+    if (!it->bPromiscuous)
     {
-      bHandled = it->second.handler->OnKeyPress(key);
+      bHandled = it->handler->OnKeyPress(key);
       if (bHandled)
         break;
     }
@@ -110,7 +116,7 @@ void CPeripheralJoystickEmulation::OnKeyRelease(const CKey& key)
   CSingleLock lock(m_mutex);
 
   for (KeyboardHandlers::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
-    it->second.handler->OnKeyRelease(key);
+    it->handler->OnKeyRelease(key);
 }
 
 unsigned int CPeripheralJoystickEmulation::ControllerNumber(void) const
