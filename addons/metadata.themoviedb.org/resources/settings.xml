@@ -6,5 +6,6 @@
     <setting label="30002" type="select" values="bg|cs|da|de|el|en|es|fa|fa-ir|fi|fr|he|hr|hu|it|ja|ko|nb|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|th|tr|uk|zh" id="language" default="en"/>
     <setting label="30006" type="select" values="au|bg|cs|da|de|el|es|fi|fr|gb|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|th|tr|us|zh" id="tmdbcertcountry" default="us"/>
     <setting label="30003" type="labelenum" values="TMDb|IMDb" id="RatingS" default="TMDb"/>
+	<setting label="30007" type="bool" id="imdbanyway" visible="eq(-1,0)" default="false"/>
     <setting label="certprefix" type="text" id="certprefix" default="Rated " visible="false"/>
 </settings>

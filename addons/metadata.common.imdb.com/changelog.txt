@@ -1,3 +1,10 @@
+[B]2.9.1[/B]
+- changed: improved USA rating detection
+
+[B]2.9.0[/B]
+- added: multiple ratings and uniqueid support (requires Kodi v17)
+- fixed: another attempt to fix IMDb outline
+
 [B]2.8.8[/B]
 - fixed: potential issue with IMDb outline (thanks scudlee)
 

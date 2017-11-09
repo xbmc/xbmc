@@ -1,3 +1,25 @@
+[B]2.0.4[/B]
+- Fixed: Moved IMDb ratings to prevent clearing buffers before GetActors
+
+[B]2.0.3[/B]
+- Fixed: IMDb series ratings
+- Changed: Added the www back to the artwork URLs
+- Changed: Turn fallback language on by default
+
+[B]2.0.2[/B]
+- Fixed: Special episode placement
+- Fixed: Episode thumbnails only when available
+- Added: Use fallback language for artwork lookup
+
+[B]2.0.1[/B]
+- Fixed: Backwards-compatibility code
+
+[B]2.0.0[/B]
+- Updated: Complete rewrite for TVDB API 2.0
+- Added: Language fallback options
+- Added: Merged DVD order split-episodes
+- Added: Pseudo-absolute order for when not specified by TVDB
+
 [B]1.8.4[/B]
 - Added: Runtime for tvshows - needs Krypton or newer
 
