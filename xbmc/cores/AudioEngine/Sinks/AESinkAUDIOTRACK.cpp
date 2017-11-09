@@ -230,7 +230,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
   }
   else
   {
-    if (m_charbuf.size() != (sizeInBytes - offsetInBytes))
+    if (static_cast<int>(m_charbuf.size()) != (sizeInBytes - offsetInBytes))
       m_charbuf.resize(sizeInBytes - offsetInBytes);
     memcpy(m_charbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
     if (CJNIBase::GetSDKVersion() >= 23)
