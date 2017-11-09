@@ -573,7 +573,9 @@ std::string CSysInfo::GetKernelVersionFull(void)
   unsigned long long  v = wcstoull(sv->Data(), &end, 10);
   unsigned long long v1 = (v & 0xFFFF000000000000L) >> 48;
   unsigned long long v2 = (v & 0x0000FFFF00000000L) >> 32;
-  kernelVersionFull = StringUtils::Format("%lld.%lld", v1, v2);
+  unsigned long long v3 = (v & 0x00000000FFFF0000L) >> 16;
+  unsigned long long v4 = (v & 0x000000000000FFFFL);
+  kernelVersionFull = StringUtils::Format("%lld.%lld.%lld.%lld", v1, v2, v3, v4);
 
 #elif defined(TARGET_POSIX)
   struct utsname un;
