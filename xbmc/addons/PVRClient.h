@@ -19,7 +19,7 @@
  *
  */
 
-#include <exception>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -920,11 +920,17 @@ namespace PVR
     void StopRunningInstance();
 
     /*!
-     * @brief Write an error to the error log.
-     * @param error The error code.
-     * @param strMethod The name of the (member) function that produced the error.
+     * @brief Wraps an addon function call in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must not take any parameters.
+     * @param bIsImplemented If false, this method will return PVR_ERROR_NOT_IMPLEMENTED.
+     * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
+     * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    bool LogError(PVR_ERROR error, const char *strMethod) const;
+    PVR_ERROR DoAddonCall(const char* strFunctionName,
+                          std::function<PVR_ERROR()> function,
+                          bool bIsImplemented = true,
+                          bool bCheckReadyToUse = true) const;
 
     /*!
      * @brief Callback functions from addon to kodi
