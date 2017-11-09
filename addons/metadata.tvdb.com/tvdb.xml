@@ -1,355 +1,1090 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- should be self-explanatory -->
 <scraper framework="1.1" date="2013-04-04">
-	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
-			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
+
+	<!-- input : $$1=nfo file -->
+	<!-- output: <url>*</url><id>*</id> -->
+	<NfoUrl dest="3" clearbuffers="no">
+		<RegExp input="$$1" output="tt\1" dest="7">
+			<expression clear="yes">imdb\....?/title/tt([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
-			<expression>imdb....?/title/tt([0-9]*)</expression>
+		<RegExp input="$$1" output="tt\1" dest="7">
+			<expression>imdb\....?/title\?([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tt\1.xml&quot; function=&quot;GetTVDBId&quot;&gt;http://thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
-			<expression>imdb....?/Title\?([0-9]*)</expression>
+		<RegExp input="$$7" output="&lt;details&gt;&lt;url function=&quot;GetTVDBId&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<expression>(?!^$)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="\1" dest="6">
+			<expression clear="yes">https?://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
+		</RegExp>
+		<RegExp input="$$6" output="&lt;details&gt;&lt;url function=&quot;NfoUrlAuth&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<expression>(?!^$)</expression>>
 		</RegExp>
 	</NfoUrl>
-
-	<GetTVDBId dest="3">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
-			<expression>&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;</expression>
+	<NfoUrlAuth dest="3" clearbuffers="no">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url cache=&quot;$$6-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/$$6|Authorization=Bearer%20\1&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;id&gt;$$6&lt;/id&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token": "(.*)"</expression>
+			</RegExp>
+		<expression noclean="1"/>
+		</RegExp>
+	</NfoUrlAuth>
+	<GetTVDBId dest="3" clearbuffers="no">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdAuth&quot; cache=&quot;search-$$7-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?imdbId=$$7|Authorization=Bearer%20\1&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token": "(.*)"</expression>
+			</RegExp>
+		<expression noclean="1"/>
 		</RegExp>
 	</GetTVDBId>
-
-	<EpisodeGuideUrl dest="3">
-		<RegExp input="$$1" output="\1" dest="3">
-			<expression>(.*?http://www.thetvdb.com.*)</expression>
+	<GetTVDBIdAuth dest="3" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/\1|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
+			<expression>"id": (\d+),</expression>
 		</RegExp>
-		<RegExp input="$$1" output="\1" dest="3">
-			<expression>(.*?http://thetvdb.com.*)</expression>
-		</RegExp>
-	</EpisodeGuideUrl>
+	</GetTVDBIdAuth>
 
-	<!-- input:	$1=query string -->
-	<!-- returns:	the url we should use to do the search -->
-	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url cache=&quot;cache-\1$$4-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/GetSeries.php?seriesname=\1$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
-			<RegExp input="$$2" output="%20(\1)" dest="4">
-				<expression clear="yes">(.+)</expression>
-			</RegExp>
+	<!-- input : $$1=query string -->
+	<!-- output: <url>*</url> -->
+	<CreateSearchUrl dest="3" clearbuffers="no">
+		<RegExp input="" output="&lt;url post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;" dest="3">
 			<expression/>
 		</RegExp>
+		<RegExp input="$$1" output="\1" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
 	</CreateSearchUrl>
-
-	<!-- input:	$1=html $2=search query -->
-	<!-- returns:	results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
-	<GetSearchResults dest="1">
-		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
-				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
+	<GetSearchResults dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token": "(.*)"</expression>
+			</RegExp>
+			<RegExp input="$INFO[language]" output="\1" dest="16">
+				<expression/>
+			</RegExp>
+			<RegExp input="" output="&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="4">
+				<expression noclean="1"/>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$INFO[language]" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;$INFO[fallbacklanguage]&lt;/chain&gt;&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="4+">
+				<expression>^(?!\Q$INFO[fallbacklanguage]\E$)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
 
-	<!-- input:	$1..#urls=html -->
-	<!-- input:	$(#urls+1): extra !-->
-	<!-- returns:	results in xml format <details><plot>*</plot><director>*</director><premiered>*</premiered><episodeguide>*</episodeguide></details> -->
-	<GetDetails dest="7">
-		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
-			<RegExp input="$$1" output="\1" dest="5">
-				<expression noclean="1">&lt;Series&gt;.*?&lt;id&gt;$$2&lt;/id&gt;(.*)</expression>
-			</RegExp>
-			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
-				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
-			</RegExp>
-			<RegExp input="$$2" output="&lt;id&gt;\1&lt;/id&gt;" dest="4+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="4+">
-				<expression>&lt;ContentRating&gt;([^&lt;]*)&lt;/ContentRating&gt;</expression>
-			</RegExp>
-			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
-				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
-			</RegExp>
-			<RegExp input="$$5" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+"> 
-				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression> 
-			</RegExp>
-			<RegExp input="$INFO[RatingS]" output="$$12" dest="4+">
-				<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="12+">
-					<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
-				</RegExp>
-				<RegExp input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="12+">
-					<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
-				</RegExp>
-				<expression>TheTVDB</expression>
-			</RegExp>
-			<RegExp input="$INFO[RatingS]" output="$$13" dest="4+">
-				<RegExp input="$$5" output="\1" dest="11">
-					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
-				</RegExp>
-				<RegExp input="$$11" output="\1" dest="13">
-					<RegExp conditional="fallback" input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
-						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
-					</RegExp>
-					<RegExp conditional="fallback" input="$$5" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="13+">
-						<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
-					</RegExp>
-					<expression>^$</expression>
-				</RegExp>
-				<RegExp input="$$11" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$11&lt;/chain&gt;" dest="13">
-					<expression>(.+)</expression>
-				</RegExp>
-				<expression>IMDb</expression>
-			</RegExp>			
-			<RegExp input="$$5" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
-				<expression>&lt;Network&gt;([^&lt;]*)&lt;/Network&gt;</expression>
-			</RegExp>
-			<RegExp input="$$5" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
-				<expression>&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
-			</RegExp>
-			<RegExp input="$$5" output="\1" dest="10">
-				<expression noclean="1">&lt;Genre&gt;([^&lt;]*)&lt;/Genre&gt;</expression>
-			</RegExp>
-			<RegExp input="$$10" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
-				<expression repeat="yes">([^\|]*)\|</expression>
-			</RegExp>
-			<RegExp input="$$10" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
-				<expression repeat="yes">([^,]*),</expression>
-			</RegExp>
-			<RegExp input="$$10" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
-				<expression>([^\|,]+)$</expression>
-			</RegExp>
-			<!-- actors with thumbs -->
-			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes" noclean="1,2,3">&lt;Actor&gt;.*?&lt;Image&gt;([^&lt;]+)&lt;/Image&gt;.*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;.*?&lt;Role&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<!-- actors without thumbs -->
-			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes" noclean="1,2,3">&lt;Actor&gt;.*?&lt;Image&gt;([^&lt;]*)&lt;/Image&gt;.*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;.*?&lt;Role&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<RegExp input="$$2" output="&lt;chain function=&quot;GetArt&quot;&gt;\1&lt;/chain&gt;" dest="4+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$3" output="\1" dest="6">
-				<expression>.*/(.*).zip</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;episodeguide&gt;&lt;url cache=&quot;$$2-$$6.xml&quot;&gt;\1&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+	<SwitchLanguage dest="3" clearbuffers="no">
+		<RegExp input="" output="&lt;details&gt;&lt;!-- $$1 --&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="16">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
-	</GetDetails>
+	</SwitchLanguage>
 
-	<GetArt dest="3">
+	<!-- input : $$1=search html -->
+	<!-- input : $$2=search url -->
+	<!-- output: <results><entity><title>*</title><year>*</year><language>*</language><url>*</url><id>*</id></entity>*</results> -->
+	<GetSearchResultsAuth dest="6" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;series&gt;&lt;id&gt;\3&lt;/id&gt;&lt;seriesName&gt;\4&lt;/seriesName&gt;&lt;aliases&gt;\1&lt;/aliases&gt;&lt;firstAired&gt;\2&lt;/firstAired&gt;&lt;/series&gt;" dest="4">
+			<expression repeat="yes" fixchars="1,4">"aliases": \[([^]]*)\],\s+"banner": "[^"]*",\s+"firstAired": "([^"]*)",\s+"id": (\d+),\s+"network": "[^"]*",\s+"overview": (?:"[^}]*"|null),\s+"seriesName": "([^}]*)",</expression>
+		</RegExp>
+		<RegExp input="" output="" dest="6">
+			<expression/>
+		</RegExp>
+		<XSLT input="&lt;data&gt;$$4&lt;/data&gt;" output="\1" dest="6">
+			<xsl:stylesheet version = "1.0"
+					xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:output encoding="UTF-8" indent="yes"/>
+
+				<xsl:variable name="notAllowedId">313081</xsl:variable>
+
+				<xsl:template match="data">
+					<results>
+						<xsl:apply-templates select="series[id!=$notAllowedId]"/>
+						<xsl:apply-templates select="series[id!=$notAllowedId]" mode="alias"/>
+					</results>
+				</xsl:template>
+
+				<xsl:template match="series">
+					<xsl:call-template name="entity">
+						<xsl:with-param name="title" select="normalize-space(seriesName)"/>
+					</xsl:call-template>
+				</xsl:template>
+
+				<xsl:template match="series" mode="alias">
+					<xsl:call-template name="split-aliases">
+						<xsl:with-param name="title-list" select="concat(normalize-space(aliases),', ')"/>
+					</xsl:call-template>
+				</xsl:template>
+
+				<xsl:template name="split-aliases">
+					<xsl:param name="title-list"/>
+					<xsl:variable name="first" select="substring-after(substring-before($title-list, '&quot;, '), '&quot;')" />
+					<xsl:variable name="remaining" select="substring-after($title-list, '&quot;, ')" />
+					<xsl:if test="$first!=''">
+						<xsl:call-template name="entity">
+							<xsl:with-param name="title" select="$first"/>
+						</xsl:call-template>
+					</xsl:if>
+					<xsl:if test="$remaining!=''">
+						<xsl:call-template name="split-aliases">
+							<xsl:with-param name="title-list" select="$remaining" />
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:template>
+
+				<xsl:template name="entity">
+					<xsl:param name="title"/>					
+					<entity>
+						<title><xsl:value-of select="$title"/></title>
+						<year><xsl:value-of select="substring(firstAired,1,4)"/></year>
+						<language>$$16</language>
+						<url><xsl:attribute name="cache"><xsl:value-of select="id"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/<xsl:value-of select="id"/>|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]</url>
+						<id><xsl:value-of select="id"/></id>
+					</entity>
+				</xsl:template>
+
+			</xsl:stylesheet>
+		</XSLT>
+	</GetSearchResultsAuth>
+
+	<!-- input : $$1=series html -->
+	<!-- input : $$2=id -->
+	<!-- input : $$3=series url -->
+	<!-- output: <details><title>*</title><plot>*</plot><id>*</id>...etc...<episodeguide>*</episodeguide></details> -->
+	<GetDetails dest="7" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
+			<RegExp input="$$3" output="\1" dest="19">
+				<expression>Authorization=Bearer%20(.+)&amp;Accept-Language</expression>
+			</RegExp>
+			<RegExp input="" output="" dest="14">
+				<expression clear="yes"/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="4">
+				<expression clear="yes">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
+				<expression fixchars="1">"seriesName": "(.*)",\s+"aliases"</expression>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$$1" output="missingtitle|" dest="14">
+				<expression clear="yes">"seriesName": null,\s+"aliases"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
+				<expression>"firstAired": "([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
+				<expression>"runtime": "([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
+				<expression fixchars="1">"network": "([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4+">
+				<RegExp input="$$6\r" output="\1\n" dest="7">
+					<RegExp input="$$1" output="\1" dest="6">
+						<expression clear="yes" noclean="1">"overview": "(.*)",\s+"lastUpdated"</expression>
+					</RegExp>
+					<expression clear="yes" repeat="yes" fixchars="1">(.*?)\\r</expression>
+				</RegExp>
+				<expression noclean="1">(?!^$)(.*)</expression>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$$1" output="missingplot|" dest="14+">
+				<expression>"overview": null,\s+"lastUpdated"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="4+">
+				<expression>"rating": "([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression clear="yes">"genre": \[([^]]*)\]</expression>
+				</RegExp>
+				<expression noclean="1" repeat="yes">"([^"]+)"</expression>
+			</RegExp>
+			<RegExp input="$INFO[language]" output="$$5" dest="4+">
+				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackDetails&quot; cache=&quot;$$2-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$2|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5">
+					<expression clear="yes">(?!^$)</expression>
+				</RegExp>
+				<expression>(?!^\Q$INFO[fallbacklanguage]\E$)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;chain function=&quot;GetActors&quot;&gt;\1&lt;/chain&gt;" dest="4+">
+				<expression noclean="1">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;chain function=&quot;GetArt&quot;&gt;\1&lt;/chain&gt;" dest="4+">
+				<expression noclean="1">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$5" output="\1" dest="4+">
+				<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5">
+					<expression clear="yes">"siteRating": (?:(\d+(?:\.\d)?)|null)</expression>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+					<expression>"siteRatingCount": (?:(\d+)|null)\s+}</expression>
+				</RegExp>
+				<RegExp input="$INFO[RatingS]" output="$$6" dest="5">
+					<RegExp input="$$7" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$7&lt;/chain&gt;" dest="6">
+						<RegExp input="$$1" output="\1" dest="7">
+							<expression clear="yes">"imdbId": "(tt\d+)",</expression>
+						</RegExp>
+						<expression clear="yes">(?!^$)</expression>
+					</RegExp>
+					<RegExp conditional="fallback" input="$$7" output="$$5" dest="6">
+						<expression>^$</expression>
+					</RegExp>
+					<expression>IMDb</expression>
+				</RegExp>
+				<expression noclean="1"/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;episodeguide&gt;&lt;url post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+				<expression noclean="1">"id": (\d+),</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>
+	<GetFallbackDetails dest="3" clearbuffers="no">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseArt&quot; cache=&quot;\1-$INFO[language].xml&quot;&gt;http://thetvdb.com/api/439DFEBA9D3059C6/series/\1/banners.xml&lt;/url&gt;" dest="4">
+			<RegExp input="$$14" output="$$5" dest="4">
+				<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+					<expression clear="yes" fixchars="1">"seriesName": "(.*)",\s+"aliases"</expression>
+				</RegExp>
+				<expression clear="yes">missingtitle</expression>
+			</RegExp>
+			<RegExp input="$$14" output="$$5" dest="4+">
+				<RegExp input="$$7" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5">
+					<RegExp input="$$6\r" output="\1\n" dest="7">
+						<RegExp input="$$1" output="\1" dest="6">
+							<expression clear="yes" noclean="1">"overview": "(.*)",\s+"lastUpdated"</expression>
+						</RegExp>
+						<expression repeat="yes" fixchars="1">(.*?)\\r</expression>
+					</RegExp>
+					<expression noclean="1"/>
+				</RegExp>
+				<expression>missingplot</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetFallbackDetails>
+	<GetActors dest="3" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseActors&quot; cache=&quot;\1-actors.json&quot;&gt;https://api.thetvdb.com/series/\1/actors|Authorization=Bearer%20$$19&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetActors>
+	<ParseActors dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;thumb&gt;http://www.thetvdb.com/banners/\4&lt;/thumb&gt;&lt;/actor&gt;" dest="5">
+				<expression repeat="yes" fixchars="1,2">"name": "([^}]+)",\s+"role": "([^}]+)",\s+"sortOrder": (\d+),\s+"image": "([^"]+)",</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes" fixchars="1,2">"name": "([^}]+)",\s+"role": "([^}]+)",\s+"sortOrder": (\d+),\s+"image": (?:""|null),</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseActors>
+	<GetArt dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetArtAuth&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json" dest="4">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="18">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetArt>
-	<ParseArt dest="3">
+	<GetArtAuth dest="3" clearbuffers="no">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;graphical&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token": "(.*)"</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;graphical&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;</expression>
+			<RegExp input="" output="" dest="10">
+				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;text&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
+			<RegExp input="" output="&lt;url function=&quot;GetArtParams&quot; cache=&quot;$$18-art-params.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query/params|Authorization=Bearer%20$$19&lt;/url&gt;" dest="4">
+				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;text&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;blank&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;&lt;/Language&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;season&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;season&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\2&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;seasonwide&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;seasonwide&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;[^&lt;]*[^S]*Season&gt;([0-9]+)&lt;/Season&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;-1&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
-			</RegExp>
-			<RegExp conditional="fanart" input="$$5" output="&lt;fanart url=&quot;http://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
-				<RegExp input="$$1" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot; preview=&quot;_cache/\1&quot;&gt;\1&lt;/thumb&gt;" dest="5">
-					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
-				</RegExp>
-				<RegExp input="$$1" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot; preview=&quot;_cache/\1&quot;&gt;\1&lt;/thumb&gt;" dest="5+">
-					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;((?!$INFO[language])[a-z])*&lt;/Language&gt;</expression>
-				</RegExp>
-				<expression noclean="1"/>
+			<RegExp input="" output="&lt;chain function=&quot;ParseArt&quot;&gt;&lt;/chain&gt;" dest="4+">
+				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
+	</GetArtAuth>
+	<GetArtParams dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$INFO[language]" output="\1" dest="16">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$$16.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=$$16&lt;/url&gt;" dest="4">
+				<expression clear="yes" repeat="yes">"keyType": "([^"]+)"</expression>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$INFO[fallbacklanguage]" output="$$5" dest="4+">
+				<RegExp input="" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;$INFO[fallbacklanguage]&lt;/chain&gt;" dest="5">
+					<expression noclean="1"/>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5+">
+					<expression repeat="yes">"keyType": "([^"]+)"</expression>
+				</RegExp>
+				<expression>^(?!\Q$$16\E$|en$)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="$$5" dest="4+">
+				<RegExp input="" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;en&lt;/chain&gt;" dest="5">
+					<expression noclean="1"/>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-en.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=en&lt;/url&gt;" dest="5+">
+					<expression repeat="yes">"keyType": "([^"]+)"</expression>
+				</RegExp>
+				<expression>^(?!en)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtParams>
+	<LoadArt dest="3" clearbuffers="no">		
+		<RegExp input="$$1" output="&lt;details&gt;&lt;!-- $$16 \1 loaded --&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;Banner&gt;&lt;id&gt;\1&lt;/id&gt;&lt;keyType&gt;\2&lt;/keyType&gt;&lt;subKey&gt;\3&lt;/subKey&gt;&lt;fileName&gt;\4&lt;/fileName&gt;&lt;resolution&gt;\5&lt;/resolution&gt;&lt;average&gt;\6&lt;/average&gt;&lt;thumbnail&gt;\7&lt;/thumbnail&gt;&lt;language&gt;$$16&lt;/language&gt;&lt;/Banner&gt;" dest="10+">
+				<expression repeat="yes">"id": (\d+),\s+"keyType": "([^"]+)",\s+"subKey": "([^"]*)",\s+"fileName": "([^"]+)",\s+"resolution": "([^"]*)",\s+"ratingsInfo": {\s+"average": (?:([\d\.]+)|null),\s+"count": \d+\s+},\s+"thumbnail": "([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1">"keyType": "([^"]+)",</expression>
+		</RegExp>
+	</LoadArt>
+	<ParseArt dest="4" clearbuffers="no">
+		<RegExp input="" output="" dest="4">
+			<expression/>
+		</RegExp>
+		<XSLT input="&lt;Banners&gt;$$10&lt;/Banners&gt;" output="\1" dest="4">
+			<xsl:stylesheet version = "1.0"
+					xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:output omit-xml-declaration="yes" indent="yes"/>
+				<xsl:strip-space elements="*"/>
+				<xsl:key name="BannersById" match="Banner" use="id"/>
+
+				<xsl:template match="Banners">
+					<details>
+						<fanart url="http://www.thetvdb.com/banners/">
+							<xsl:apply-templates select="Banner[(keyType='fanart') and (generate-id()=generate-id(key('BannersById', id)[1]))]">
+								<xsl:sort data-type="number" order="descending" select="average"/>
+							</xsl:apply-templates>
+						</fanart>
+						<xsl:apply-templates select="Banner[(keyType!='fanart') and (generate-id()=generate-id(key('BannersById', id)[1]))]">
+							<xsl:sort data-type="number" order="ascending" select="(1 * number(keyType='poster'))
+																				+  (2 * number(keyType='series'))
+																				+  (3 * number(keyType='season'))
+																				+  (4 * number(keyType='seasonwide'))"/>
+							<xsl:sort data-type="number" order="ascending" select="(1 * number(subKey='graphical'))
+																				+  (2 * number(subKey='text'))
+																				+  (3 * number(subKey='blank'))
+																				+  (4 * number(subKey))"/>
+							<xsl:sort data-type="number" order="ascending" select="(1 * number(language='$INFO[language]'))
+																				+  (2 * number((language='$INFO[fallbacklanguage]') and ('$INFO[language]'!='$INFO[fallbacklanguage]')))
+																				+  (3 * number((language!='$INFO[language]') and (language!='$INFO[fallbacklanguage]')))"/>
+							<xsl:sort data-type="number" order="descending" select="average"/>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="Banner[((keyType='poster') or (keyType='series')) and (generate-id()=generate-id(key('BannersById', id)[1]))]" mode="allseasons"/>
+					</details>
+				</xsl:template>
+
+				<xsl:template match="Banner[keyType='fanart']">
+					<thumb>
+						<xsl:attribute name="dim"><xsl:value-of select="resolution"/></xsl:attribute>
+						<xsl:attribute name="preview"><xsl:value-of select="thumbnail"/></xsl:attribute>
+						<xsl:value-of select="fileName"/>
+					</thumb>
+				</xsl:template>
+
+				<xsl:template match="Banner">
+					<thumb>
+						<xsl:attribute name="aspect">
+							<xsl:choose>
+								<xsl:when test="(keyType='poster') or (keyType='season')">poster</xsl:when>
+								<xsl:otherwise>banner</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:if test="(keyType='season') or (keyType='seasonwide')">
+							<xsl:attribute name="type">season</xsl:attribute>
+							<xsl:attribute name="season"><xsl:value-of select="subKey"/></xsl:attribute>
+						</xsl:if>
+						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>http://www.thetvdb.com/banners/<xsl:value-of select="fileName"/>
+					</thumb>
+				</xsl:template>
+
+				<xsl:template match="Banner" mode="allseasons">
+					<thumb>
+						<xsl:attribute name="aspect">
+							<xsl:choose>
+								<xsl:when test="(keyType='poster')">poster</xsl:when>
+								<xsl:otherwise>banner</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:attribute name="type">season</xsl:attribute>
+						<xsl:attribute name="season">-1</xsl:attribute>
+						<xsl:attribute name="language"><xsl:value-of select="language"/></xsl:attribute>http://www.thetvdb.com/banners/<xsl:value-of select="fileName"/></thumb>
+				</xsl:template>
+
+			</xsl:stylesheet>
+		</XSLT>
 	</ParseArt>
 
-	<!-- input:	$1=html !-->
-	<!-- input:	$2=series url !-->
-	<!-- returns:	results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id><aired>*</aired></episode>*</episodeguide> !-->
-	<GetEpisodeList dest="3">
-		<RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
-			<RegExp input="$$2" output="\2-\3" dest="10">
-				<expression>http://(?:www\.)?thetvdb.com/api/(.+)/series/([0-9]*)/all/(.+).zip</expression>
+	<!-- input : $$1=episodeguide html -->
+	<!-- input : $$2=episodeguide url -->
+	<!-- output: <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id><aired>*</aired></episode>*</episodeguide> !-->
+	<GetEpisodeList dest="3" clearbuffers="no">
+		<RegExp input="$$5" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression clear="yes">"token": "(.*)"</expression>
 			</RegExp>
-			<RegExp conditional="!dvdorder">
-				<!-- Regular episodes (Absolute order) -->
-				<RegExp conditional="absolutenumber" input="$$1" output="&lt;episode&gt;&lt;id&gt;\1&lt;/id&gt;&lt;title&gt;\2&lt;/title&gt;&lt;aired&gt;\3&lt;/aired&gt;&lt;epnum&gt;\4&lt;/epnum&gt;&lt;season&gt;1&lt;/season&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;/episode&gt;" dest="4+">
-					<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]*).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*).*?&lt;absolute_number&gt;([0-9]*).*?&lt;/Episode&gt;</expression>
-				</RegExp> 
-				<!-- Specials (Absolute order) -->
-				<RegExp conditional="absolutenumber" input="$$1" output="&lt;episode&gt;&lt;id&gt;\1&lt;/id&gt;&lt;title&gt;\2&lt;/title&gt;&lt;aired&gt;\4&lt;/aired&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;0&lt;/season&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;/episode&gt;" dest="4+">
-					<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]*).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;EpisodeNumber&gt;([0-9]*).*?&lt;FirstAired&gt;([^&lt;]*).*?&lt;SeasonNumber&gt;0&lt;/SeasonNumber&gt;.*?&lt;/Episode&gt;</expression>
-				</RegExp>
-				<!-- Normal episodes -->
-				<RegExp conditional="!absolutenumber" input="$$1" output="&lt;episode&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\5&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;aired&gt;\4&lt;/aired&gt;&lt;/episode&gt;" dest="4">
-					<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;EpisodeNumber&gt;([0-9]+)[^&lt;]*.*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;SeasonNumber&gt;([0-9]+)[^&lt;]*.*?&lt;/Episode&gt;</expression>
-				</RegExp>
+			<RegExp input="$$2" output="\1" dest="18">
+				<expression>"id":(\d+)}</expression>
 			</RegExp>
-			<!-- DVD order -->
-			<RegExp conditional="dvdorder" input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\3&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;aired&gt;\5&lt;/aired&gt;&lt;/episode&gt;" dest="4">
-				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([^&lt;]*).*?&lt;Combined_season&gt;([^&lt;]*).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;/Episode&gt;</expression>
+			<RegExp input="$$19" output="&lt;url function=&quot;GetEpisodeListAuth&quot; cache=&quot;episodes-$$18-1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/series/$$18/episodes|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="5">
+				<expression clear="yes">(?!^$)</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			
+			<!-- Backwards-compatibility code.  Scraper will still fail if/when the old URLs 404 (or similar), as this function just won't be run. -->
+			<RegExp input="$$2" output="&lt;url function=&quot;GetEpisodeList&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json&lt;/url&gt;" dest="5">
+				<expression>http://(?:www\.)?thetvdb\.com/api/.+/series/(\d+)/all/</expression>
+			</RegExp>
+			<RegExp input="$$2" output="https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json" dest="2">
+				<expression>http://(?:www\.)?thetvdb\.com/api/.+/series/(\d+)/all/</expression>
+			</RegExp>
+		<expression noclean="1"/>
 		</RegExp>
 	</GetEpisodeList>
+	<GetEpisodeListAuth dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;Data&gt;&lt;last&gt;\1&lt;/last&gt;&lt;/Data&gt;" dest="5">
+				<expression>"last": (\d+),</expression>
+			</RegExp>
+			<RegExp input="" output="" dest="4">
+				<expression/>
+			</RegExp>
+			<RegExp input="" output="" dest="11">
+				<expression/>
+			</RegExp>
+			<XSLT input="$$5" output="\1" dest="4">
+				<xsl:stylesheet version = "1.0"
+						xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output omit-xml-declaration="yes" indent="yes"/>
+					<xsl:strip-space elements="*"/>
+					<xsl:template match="Data">
+						<xsl:call-template name="generatelinks">
+							<xsl:with-param name="current" select="'1'"/>
+							<xsl:with-param name="last" select="last"/>
+						</xsl:call-template>
+						<chain function="ParseEpisodeList"></chain>
+					</xsl:template>
+					<xsl:template name="generatelinks">
+						<xsl:param name="current"/>
+						<xsl:param name="last"/>
+						<xsl:if test="$last&gt;=$current">
+							<url><xsl:attribute name="function">LoadEpisodeList</xsl:attribute><xsl:attribute name="cache">episodes-$$18-<xsl:value-of select="$current"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/$$18/episodes?page=<xsl:value-of select="$current"/>|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]</url>
+							<xsl:call-template name="generatelinks">
+								<xsl:with-param name="current" select="$current+1"/>
+								<xsl:with-param name="last" select="last"/>
+							</xsl:call-template>
+						</xsl:if>
+					</xsl:template>
 
-	<!-- input:	$1=html -->
-	<!-- returns:	results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
-	<GetEpisodeDetails dest="3">
-		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="\1" dest="8">
-				<expression noclean="1">&lt;Episode&gt;.*?&lt;id&gt;$$2&lt;/id&gt;(.*?)&lt;/Episode&gt;</expression>
+				</xsl:stylesheet>
+			</XSLT>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetEpisodeListAuth>
+	<LoadEpisodeList dest="4" clearbuffers="no">
+		<RegExp input="" output="&lt;episodeguide&gt;&lt;/episodeguide&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;Episode&gt;&lt;absolute_number&gt;\1&lt;/absolute_number&gt;&lt;EpisodeNumber&gt;\2&lt;/EpisodeNumber&gt;&lt;SeasonNumber&gt;\3&lt;/SeasonNumber&gt;&lt;DVD_episodenumber&gt;\4&lt;/DVD_episodenumber&gt;&lt;DVD_season&gt;\5&lt;/DVD_season&gt;&lt;EpisodeName&gt;\6&lt;/EpisodeName&gt;&lt;FirstAired&gt;\7&lt;/FirstAired&gt;&lt;id&gt;\8&lt;/id&gt;&lt;Overview&gt;\9&lt;/Overview&gt;&lt;filename&gt;episodes/$$18/\8.jpg&lt;/filename&gt;&lt;/Episode&gt;" dest="11+">
+				<expression fixchars="6,9" repeat="yes">"absoluteNumber": (?:(\d+)|null),\s+"airedEpisodeNumber": (\d+),\s+"airedSeason": (\d+),\s+"airedSeasonID": \d+,\s+"dvdEpisodeNumber": (?:([\d\.]+)|null),\s+"dvdSeason": (?:(\d+)|null),\s+"episodeName": (?:"([^}]*)"|null),\s+"firstAired": (?:"([^"]*)"|null),\s+"id": (\d+),\s+"language": {[^}]+},\s+"lastUpdated": \d+,\s+"overview": (?:"([^}]*)"|null)\s+}</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;uniqueid&gt;$$2&lt;/uniqueid&gt;" dest="4">
-				<expression/>
+			<RegExp input="$$11" output="yes" dest="20">
+				<expression clear="yes">(?!^$)</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4+">
-				<expression>&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
+			<expression/>
+		</RegExp>
+	</LoadEpisodeList>
+
+	<ParseEpisodeList dest="4" clearbuffers="no">
+		<RegExp input="" output="" dest="4">
+			<expression clear="yes"/>
+		</RegExp>
+		<RegExp input="" output="" dest="12">
+			<expression clear="yes"/>
+		</RegExp>
+		<XSLT input="&lt;Data&gt;$$11&lt;/Data&gt;" output="\1" dest="12">
+			<xsl:stylesheet version = "1.0"
+					xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:output omit-xml-declaration="yes" indent="yes"/>
+				<xsl:strip-space elements="*"/>
+				<xsl:key name="EpisodesBySeason" match="Episode" use="SeasonNumber"/>
+				<xsl:template match="Data">
+					<xsl:if test="'$INFO[absolutenumber]'='true'">
+						<xsl:variable name="season-list">
+							<xsl:for-each select="//Episode[(SeasonNumber&gt;0) and (generate-id() = generate-id(key('EpisodesBySeason', SeasonNumber)[1]))]"><xsl:sort select="SeasonNumber" data-type="number"/><xsl:value-of select="SeasonNumber"/>|</xsl:for-each>
+						</xsl:variable>
+						<xsl:call-template name="count-episodes">
+							<xsl:with-param name="season-list" select="$season-list"/>
+							<xsl:with-param name="count-list" select="'|S1|0'"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:template>
+				<xsl:template name="count-episodes">
+					<xsl:param name="season-list"/>
+					<xsl:param name="count-list"/>
+					<xsl:variable name="first" select="substring-before($season-list,'|')"/>
+					<xsl:variable name="remaining" select="substring-after($season-list,'|')"/>
+					<xsl:variable name="currList" select="concat($count-list, '|S', string($first+1), '|', string(count(//Episode[SeasonNumber=$first])+substring-after($count-list,concat('|S',$first,'|'))))"/>
+					<xsl:choose>
+						<xsl:when test="substring-after($remaining,'|')!=''">
+							<xsl:call-template name="count-episodes">
+								<xsl:with-param name="season-list" select="$remaining"/>
+								<xsl:with-param name="count-list" select="$currList"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$currList"/>|</xsl:otherwise>
+					</xsl:choose>
+				</xsl:template>
+			</xsl:stylesheet>
+		</XSLT>
+		<XSLT input="&lt;Data&gt;$$11&lt;/Data&gt;" output="\1" dest="4">
+			<xsl:stylesheet version = "1.0"
+					xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:output omit-xml-declaration="yes" indent="yes"/>
+				<xsl:strip-space elements="*"/>
+				<xsl:key name="EpisodesByDVDnumber" match="Episode" use="concat(DVD_season,',',substring-before(DVD_episodenumber,'.'))"/>
+				<xsl:key name="EpisodesBySeason" match="Episode" use="SeasonNumber"/>
+				<xsl:variable name="title-divider" select="' / '"/>
+
+				<xsl:variable name="SeasonCounts">
+					<xsl:if test="'$INFO[absolutenumber]'='true'">$$12</xsl:if>
+				</xsl:variable>
+
+				<xsl:template match="Data">
+					<episodeguide>
+						<xsl:comment> Episode order: <xsl:choose><xsl:when test="'$INFO[dvdorder]'='true'">DVD </xsl:when><xsl:when test="'$INFO[absolutenumber]'='true'">Absolute </xsl:when><xsl:otherwise>Aired </xsl:otherwise></xsl:choose></xsl:comment>
+						<xsl:apply-templates select="Episode"/>
+						<xsl:if test="'$INFO[dvdorder]'='true'">
+							<xsl:apply-templates select="Episode[(substring-after(DVD_episodenumber,'.')&gt;0) and (generate-id() = generate-id(key('EpisodesByDVDnumber', concat(DVD_season,',',substring-before(DVD_episodenumber,'.')))[1]))]" mode="dvdmergedep"/>
+						</xsl:if>
+					</episodeguide>
+				</xsl:template>
+
+				<xsl:template match="Episode">
+					<episode>
+						<id><xsl:value-of select="id"/></id>
+						<title><xsl:value-of select="EpisodeName"/></title>
+						<aired><xsl:value-of select="FirstAired"/></aired>
+						<xsl:choose>
+							<xsl:when test="'$INFO[dvdorder]'!='true'">
+								<xsl:choose>
+									<xsl:when test="('$INFO[absolutenumber]'='true') and ((SeasonNumber&gt;0) or (absolute_number!=''))">
+										<epnum>
+											<xsl:choose>
+												<xsl:when test="absolute_number!=''"><xsl:value-of select="absolute_number"/></xsl:when>
+												<xsl:otherwise><xsl:value-of select="substring-before(substring-after($SeasonCounts, concat('|S', SeasonNumber, '|')), '|') + EpisodeNumber"/></xsl:otherwise>
+											</xsl:choose>
+										</epnum>
+										<season>1</season>
+									</xsl:when>
+									<xsl:when test="('$INFO[absolutenumber]'='true') and (SeasonNumber=0)"><epnum><xsl:value-of select="EpisodeNumber"/></epnum><season>0</season></xsl:when>
+									<xsl:otherwise><epnum><xsl:value-of select="EpisodeNumber"/></epnum><season><xsl:value-of select="SeasonNumber"/></season></xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:choose>
+									<xsl:when test="(DVD_episodenumber!='') and (DVD_season!='')">
+										<epnum><xsl:value-of select="DVD_episodenumber"/></epnum>
+										<season><xsl:value-of select="DVD_season"/></season>
+									</xsl:when>
+									<xsl:otherwise>
+										<epnum><xsl:value-of select="EpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))[(DVD_episodenumber!='') and (substring-after(DVD_episodenumber,'.')!='0')])+1"/></xsl:if></epnum>
+										<season><xsl:value-of select="SeasonNumber"/></season>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:otherwise>
+						</xsl:choose>
+						<url post="yes" cache="auth.json">https://api.thetvdb.com/login?{"apikey":"439DFEBA9D3059C6","id":<xsl:value-of select="id"/>}|Content-Type=application/json&amp;Accept-Language=$INFO[language]</url>
+					</episode>
+				</xsl:template>
+
+				<xsl:template match="Episode" mode="dvdmergedep">
+					<xsl:variable name="mergedid"><xsl:for-each select="key('EpisodesByDVDnumber', concat(DVD_season,',',substring-before(DVD_episodenumber,'.')))"><xsl:sort select="substring-after(DVD_episodenumber,'.')" data-type="number"/><xsl:value-of select="id"/>|</xsl:for-each></xsl:variable>
+					<xsl:variable name="title"><xsl:for-each select="key('EpisodesByDVDnumber', concat(DVD_season,',',substring-before(DVD_episodenumber,'.')))"><xsl:sort select="substring-after(DVD_episodenumber,'.')" data-type="number"/><xsl:value-of select="concat(normalize-space(EpisodeName),$title-divider)"/></xsl:for-each></xsl:variable>
+					<xsl:variable name="mergedtitle">
+						<xsl:call-template name="shrink-title">
+							<xsl:with-param name="full-title" select="$title" />
+							<xsl:with-param name="title-list" select="substring-after($title,$title-divider)" />
+							<xsl:with-param name="test-title" select="substring(substring-before($title,$title-divider),1,string-length(substring-before($title,$title-divider))-4)" />
+						</xsl:call-template>
+					</xsl:variable>
+					<episode>
+						<id><xsl:value-of select="substring($mergedid,1,string-length($mergedid)-1)"/></id>
+						<title><xsl:value-of select="$mergedtitle"/></title>
+						<aired><xsl:value-of select="FirstAired"/></aired>
+						<epnum><xsl:value-of select="substring-before(DVD_episodenumber,'.')"/></epnum>
+						<season><xsl:value-of select="DVD_season"/></season>
+						<url post="yes" cache="auth.json">https://api.thetvdb.com/login?{"apikey":"439DFEBA9D3059C6","id":<xsl:value-of select="$mergedid"/>}|Content-Type=application/json</url>
+					</episode>
+				</xsl:template>
+
+				<xsl:template name="shrink-title">
+					<xsl:param name="full-title"/>
+					<xsl:param name="title-list"/>
+					<xsl:param name="test-title"/>
+					<xsl:variable name="first" select="substring-before($title-list,$title-divider)"/>
+					<xsl:variable name="remaining" select="substring-after($title-list,$title-divider)"/>
+					<xsl:choose>
+						<xsl:when test="$test-title!=substring($first,1,string-length($first)-4)"><xsl:value-of select="substring($full-title,1,string-length($full-title)-string-length($title-divider))"/></xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="$remaining=''"><xsl:value-of select="$test-title"/></xsl:when>
+								<xsl:otherwise>
+									<xsl:call-template name="shrink-title">
+										<xsl:with-param name="full-title" select="$full-title" />
+										<xsl:with-param name="title-list" select="$remaining" />
+										<xsl:with-param name="test-title" select="$test-title" />
+									</xsl:call-template>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:template>
+
+			</xsl:stylesheet>
+		</XSLT>
+	</ParseEpisodeList>
+
+	<!-- input : $$1=episode html -->
+	<!-- input : $$2=id -->
+	<!-- input : $$3=episode url -->
+	<!-- output: <details><title>*</title><plot>*</plot><uniqueid>*</uniqueid><aired>*</aired><episode>*</episode><season>*</season></details> -->
+	<GetEpisodeDetails dest="4" clearbuffers="no">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;chain function=&quot;ParseEpisodeDetails&quot;&gt;&lt;/chain&gt;&lt;/details&gt;" dest="4">
+			<RegExp input="$$3" output="\1" dest="18">
+				<expression>"id":(\d+)}</expression>
 			</RegExp>
-			<RegExp input="$$8" output="\1" dest="6">
-				<expression noclean="1">&lt;Writer&gt;([^&lt;]*)&lt;/Writer&gt;</expression>
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token": "(.*)"</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
-				<expression repeat="yes">([^\|]*)\|</expression>
+			<RegExp input="$$2|" output="&lt;url function=&quot;GetEpisodeDetailsAuth&quot; cache=&quot;episode-\1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/episodes/\1|Authorization=Bearer%20$$19&amp;amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="5">
+				<expression noclean="1" repeat="yes">(\d+)\|</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
-				<expression repeat="yes">([^,]*),</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
-				<expression>([^\|,]+)$</expression>
-			</RegExp>
-			<RegExp input="$$8" output="\1" dest="6">
-				<expression noclean="1">&lt;Director&gt;([^&lt;]*)&lt;/Director&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
-				<expression repeat="yes">([^\|]*)\|</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
-				<expression repeat="yes">([^,]*),</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
-				<expression>([^\|,]+)$</expression>
-			</RegExp>
-			<RegExp input="$$8" output="\1" dest="6">
-				<expression noclean="1">&lt;GuestStars&gt;([^&lt;]*)&lt;/GuestStars&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes">([^\|]*)\|</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes">([^,]*),</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
-				<expression>([^\|,]+)$</expression>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
-				<expression>&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
-			</RegExp>
-			<!-- Regular Episodes - Absolute Order -->
-			<RegExp conditional="absolutenumber" input="$$8" output="&lt;season&gt;1&lt;/season&gt;&lt;episode&gt;\2&lt;/episode&gt;" dest="4+">
-				<expression>&lt;SeasonNumber&gt;([1-9]*)&lt;/SeasonNumber&gt;.*?&lt;absolute_number&gt;([0-9]*)&lt;/absolute_number&gt;</expression>
-			</RegExp>
-			<!-- Specials - Absolute Order -->
-			<RegExp conditional="absolutenumber" input="$$8" output="&lt;season&gt;0&lt;/season&gt;&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
-				<expression>&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;.*?&lt;SeasonNumber&gt;0&lt;/SeasonNumber&gt;</expression>
-			</RegExp>
-			<!-- Normal Season/Episodes -->
-			<RegExp conditional="!absolutenumber" input="$$9" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
-				<RegExp conditional="!dvdorder" input="$$8" output="\1" dest="9">
-					<expression clear="yes">&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
-				</RegExp>
-				<RegExp conditional="dvdorder" input="$$8" output="\1" dest="9">
-					<expression>&lt;Combined_season&gt;([^&lt;]*)&lt;/Combined_season&gt;</expression>
-				</RegExp>
-				<expression/>
-			</RegExp>
-			<RegExp conditional="!absolutenumber" input="$$9" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
-				<RegExp conditional="!dvdorder" input="$$8" output="\1" dest="9">
-					<expression clear="yes">&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
-				</RegExp>
-				<RegExp conditional="dvdorder" input="$$8" output="\1" dest="9">
-					<expression>&lt;Combined_episodenumber&gt;([^&lt;]*)&lt;/Combined_episodenumber&gt;</expression>
-				</RegExp>
-				<expression/>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="4+">
-				<expression>&lt;FirstAired&gt;([^&lt;]+)&lt;/FirstAired&gt;</expression>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;displayseason&gt;\1&lt;/displayseason&gt;" dest="4+">
-				<expression>&lt;airsbefore_season&gt;([^&lt;]+)&lt;/airsbefore_season&gt;</expression>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;displayepisode&gt;\1&lt;/displayepisode&gt;" dest="4+">
-				<expression>&lt;airsbefore_episode&gt;([^&lt;]+)&lt;/airsbefore_episode&gt;</expression>
-			</RegExp>
-			<RegExp input="$$8" output="&lt;displayafterseason&gt;\1&lt;/displayafterseason&gt;" dest="4+">
-				<expression>&lt;airsafter_season&gt;([^&lt;]+)&lt;/airsafter_season&gt;</expression>
-			</RegExp>
-			<RegExp input="$INFO[RatingS]" output="$$12" dest="4+">
-				<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="12+">
-					<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
-				</RegExp>
-				<RegExp input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="12+">
-					<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
-				</RegExp>
-				<expression>TheTVDB</expression>
-			</RegExp>
-			<RegExp input="$INFO[RatingS]" output="$$13" dest="4+">
-				<RegExp input="$$8" output="\1" dest="11">
-					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
-				</RegExp>
-				<RegExp input="$$11" output="\1" dest="13">
-					<RegExp conditional="fallback" input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
-						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
-					</RegExp>
-					<RegExp conditional="fallback" input="$$8" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="13+">
-						<expression>&lt;RatingCount&gt;([^&lt;]+)&lt;/RatingCount&gt;</expression>
-					</RegExp>
-					<expression>^$</expression>
-				</RegExp>
-				<RegExp input="$$11" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$11&lt;/chain&gt;" dest="13">
-					<expression>(.+)</expression>
-				</RegExp>
-				<expression>IMDb</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
-				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression>
+			<RegExp input="$$1" output="" dest="13">
+				<expression clear="yes"/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetEpisodeDetails>
+	<GetEpisodeDetailsAuth dest="4" clearbuffers="no">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="" output="" dest="14">
+				<expression clear="yes"/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="10">
+				<expression clear="yes">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="17">
+				<expression clear="yes">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;airedSeason&gt;\1&lt;/airedSeason&gt;" dest="10+">
+				<expression>"airedSeason": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;airedEpisodeNumber&gt;\1&lt;/airedEpisodeNumber&gt;" dest="10+">
+				<expression>"airedEpisodeNumber": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;episodeName&gt;\1&lt;/episodeName&gt;" dest="10+">
+				<expression fixchars="1">"episodeName": "(.*)",\s+"firstAired"</expression>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$$1" output="missingtitle|" dest="14">
+				<expression clear="yes">"episodeName": null,\s+"firstAired"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;firstAired&gt;\1&lt;/firstAired&gt;" dest="10+">
+				<expression>"firstAired": (?:"([^"]*)"|null),</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;overview&gt;\1&lt;/overview&gt;" dest="10+">
+				<RegExp input="$$6\r" output="\1\n" dest="7">
+					<RegExp input="$$1" output="\1" dest="6">
+						<expression clear="yes" noclean="1">"overview": "(.*)",\s+"language"</expression>
+					</RegExp>
+					<expression clear="yes" repeat="yes" fixchars="1">(.*?)\\r</expression>
+				</RegExp>
+				<expression noclean="1">(?!^$)(.*)</expression>
+			</RegExp>
+			<RegExp conditional="usefallbacklanguage1" input="$$1" output="missingplot|" dest="14+">
+				<expression fixchars="1">"overview": null,\s+"language"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;dvdSeason&gt;\1&lt;/dvdSeason&gt;" dest="10+">
+				<expression>"dvdSeason": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;dvdEpisodeNumber&gt;\1&lt;/dvdEpisodeNumber&gt;" dest="10+">
+				<expression>"dvdEpisodeNumber": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;absoluteNumber&gt;\1&lt;/absoluteNumber&gt;" dest="10+">
+				<expression>"absoluteNumber": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;airsAfterSeason&gt;\1&lt;/airsAfterSeason&gt;" dest="10+">
+				<expression>"airsAfterSeason": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;airsBeforeSeason&gt;\1&lt;/airsBeforeSeason&gt;" dest="10+">
+				<expression>"airsBeforeSeason": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;airsBeforeEpisode&gt;\1&lt;/airsBeforeEpisode&gt;" dest="10+">
+				<expression>"airsBeforeEpisode": (?:(\d+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;siteRating&gt;\1&lt;/siteRating&gt;" dest="10+">
+				<expression>"siteRating": (?:([\d\.]+)|null),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;siteRatingCount&gt;\1&lt;/siteRatingCount&gt;" dest="10+">
+				<expression>"siteRatingCount": (?:(\d+)|null)\s+}</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;imdbId&gt;\1&lt;/imdbId&gt;" dest="10+">
+				<expression fixchars="1">"imdbId": "(tt\d+)",</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;filename&gt;\1&lt;/filename&gt;" dest="10+">
+				<expression>"filename": (?:"([^"]*)"|null),</expression>
+			</RegExp>
+			<RegExp input="$$9," output="&lt;credits&gt;\1&lt;/credits&gt;" dest="10+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression>"writers": \[([^]]*)\],</expression>
+				</RegExp>
+				<expression fixchars="1" repeat="yes">"([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$9," output="&lt;director&gt;\1&lt;/director&gt;" dest="10+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression>"directors": \[([^]]*)\],</expression>
+				</RegExp>
+				<expression fixchars="1" repeat="yes">"([^"]*)",</expression>
+			</RegExp>
+			<RegExp input="$$9," output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="10+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression>"guestStars": \[\s+"([^]]*)"\s+\],</expression>
+				</RegExp>
+				<expression fixchars="1" repeat="yes">([^,"]+)[,"\s]+</expression>
+			</RegExp>
+			<RegExp input="$$9" output="\1" dest="13+">
+				<RegExp input="$$14" output="&lt;Episode&gt;$$10&lt;/Episode&gt;" dest="9">
+					<expression clear="yes">^$</expression>
+				</RegExp>
+				<RegExp input="$INFO[language]" output="&lt;Episode&gt;$$10&lt;/Episode&gt;" dest="9">
+					<expression>^\Q$INFO[fallbacklanguage]\E$</expression>
+				</RegExp>
+				<expression noclean="1"/>
+			</RegExp>
+			<RegExp input="$INFO[language]" output="$$6" dest="5">
+				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackEpisodeDetails&quot; cache=&quot;episode-$$17-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/episodes/$$17|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="6">
+					<expression clear="yes">(?!^$)</expression>
+				</RegExp>
+				<expression>(?!^\Q$INFO[fallbacklanguage]\E$)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetEpisodeDetailsAuth>
+	<GetFallbackEpisodeDetails dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$14" output="$$5" dest="10+">
+				<RegExp input="$$1" output="&lt;episodeName&gt;\1&lt;/episodeName&gt;" dest="5">
+					<expression clear="yes" fixchars="1">"episodeName": "(.*)",\s+"firstAired"</expression>
+				</RegExp>
+				<expression>missingtitle</expression>
+			</RegExp>
+			<RegExp input="$$14" output="$$5" dest="10+">
+				<RegExp input="$$7" output="&lt;overview&gt;\1&lt;/overview&gt;" dest="5">
+					<RegExp input="$$6\r" output="\1\n" dest="7">
+						<RegExp input="$$1" output="\1" dest="6">
+							<expression clear="yes" noclean="1">"overview": "(.*)",\s+"language"</expression>
+						</RegExp>
+						<expression repeat="yes" fixchars="1">(.*?)\\r</expression>
+					</RegExp>
+					<expression noclean="1"/>
+				</RegExp>
+				<expression>missingplot</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;Episode&gt;\1&lt;/Episode&gt;" dest="13+">
+				<expression noclean="1"/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetFallbackEpisodeDetails>
+	<ParseEpisodeDetails dest="4" clearbuffers="no">		
+		<RegExp input="$$5" output="\1" dest="4">
+			<RegExp input="$$1" output="" dest="5">
+				<expression clear="yes"/>
+			</RegExp>
+			<XSLT input="&lt;Data&gt;&lt;current&gt;$$13&lt;/current&gt;&lt;all&gt;$$11&lt;/all&gt;&lt;/Data&gt;" output="\1" dest="5">
+				<xsl:stylesheet version = "1.0"
+						xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output indent="yes"/>
+					<xsl:strip-space elements="*"/>
+					<xsl:key name="EpisodesByDVDnumber" match="current/Episode" use="concat(dvdSeason,',',substring-before(dvdEpisodeNumber,'.'))"/>
+					<xsl:variable name="SeasonCounts">
+						<xsl:if test="'$INFO[absolutenumber]'='true'">$$12</xsl:if>
+					</xsl:variable>
+
+					<xsl:variable name="episode-list" select="concat('$$2','|')" />
+					<xsl:variable name="FirstEpisode" select="Data/current/Episode[id=substring-before($episode-list,'|')]" />
+					<xsl:variable name="single-episode" select="substring-after($episode-list,'|')=''" />
+					<xsl:variable name="AirsBeforeEpisode" select="Data/all/Episode[(SeasonNumber=$FirstEpisode/airsBeforeSeason) and (EpisodeNumber=$FirstEpisode/airsBeforeEpisode)]"/>
+					<xsl:variable name="AirsAfterEpisode" select="Data/all/Episode[(SeasonNumber=$FirstEpisode/airsAfterSeason + 1) and (EpisodeNumber=1)]"/>
+					<xsl:variable name="AfterSeasonCount" select="substring-before(substring-after($SeasonCounts, concat('|S', $FirstEpisode/airsAfterSeason + 1, '|')), '|')"/>
+
+					<xsl:variable name="title-divider" select="' / '"/>
+					<xsl:variable name="plot-divider" select="'&#10;----&#10;&#10;'" />
+
+					<xsl:template match="*"/>
+
+					<xsl:template match="Episode"/>
+
+					<xsl:template match="Data">
+						<xsl:apply-templates select="current"/>
+					</xsl:template>
+
+					<xsl:template match="current">
+						<details>
+							<title>
+								<xsl:choose>
+									<xsl:when test="$single-episode"><xsl:value-of select="$FirstEpisode/episodeName"/></xsl:when>
+									<xsl:otherwise>
+										<xsl:variable name="title">
+											<xsl:call-template name="merge-details">
+												<xsl:with-param name="list" select="$episode-list" />
+												<xsl:with-param name="element" select="'episodeName'" />
+												<xsl:with-param name="divider" select="$title-divider" />
+											</xsl:call-template>
+										</xsl:variable>
+										<xsl:call-template name="shrink-title">
+											<xsl:with-param name="full-title" select="$title" />
+											<xsl:with-param name="title-list" select="substring-after(concat($title,$title-divider),$title-divider)" />
+											<xsl:with-param name="test-title" select="substring(substring-before($title,$title-divider),1,string-length(substring-before($title,$title-divider))-4)" />
+										</xsl:call-template>
+									</xsl:otherwise>
+								</xsl:choose>
+							</title>
+							<plot>
+								<xsl:choose>
+									<xsl:when test="$single-episode"><xsl:value-of select="$FirstEpisode/overview"/></xsl:when>
+									<xsl:otherwise>
+										<xsl:call-template name="merge-details">
+											<xsl:with-param name="list" select="$episode-list" />
+											<xsl:with-param name="element" select="'overview'" />
+											<xsl:with-param name="divider" select="$plot-divider" />
+										</xsl:call-template>
+									</xsl:otherwise>
+								</xsl:choose>
+							</plot>
+							<uniqueid><xsl:value-of select="$FirstEpisode/id"/></uniqueid>
+							<aired><xsl:value-of select="$FirstEpisode/firstAired"/></aired>
+							<xsl:choose>
+								<xsl:when test="'$INFO[dvdorder]'!='true'">
+									<xsl:choose>
+										<xsl:when test="('$INFO[absolutenumber]'='true') and (($FirstEpisode/airedSeason&gt;0) or ($FirstEpisode/absoluteNumber!=''))">
+											<episode>
+												<xsl:choose>
+													<xsl:when test="$FirstEpisode/absoluteNumber!=''"><xsl:value-of select="$FirstEpisode/absoluteNumber"/></xsl:when>
+													<xsl:otherwise><xsl:value-of select="substring-before(substring-after($SeasonCounts, concat('|S', $FirstEpisode/airedSeason, '|')), '|') + $FirstEpisode/airedEpisodeNumber"/></xsl:otherwise>
+												</xsl:choose>
+											</episode>
+											<season>1</season>
+										</xsl:when>
+										<xsl:when test="('$INFO[absolutenumber]'='true') and ($FirstEpisode/airedSeason=0)">
+											<episode><xsl:value-of select="$FirstEpisode/airedEpisodeNumber"/></episode>
+											<season>0</season>
+										</xsl:when>
+										<xsl:otherwise>
+											<episode><xsl:value-of select="$FirstEpisode/airedEpisodeNumber"/></episode>
+											<season><xsl:value-of select="$FirstEpisode/airedSeason"/></season>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:choose>
+										<xsl:when test="($FirstEpisode/dvdEpisodeNumber='') or ($FirstEpisode/dvdSeason='')">
+											<episode><xsl:value-of select="$FirstEpisode/airedEpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))[(dvdEpisodeNumber!='') and (substring-after(dvdEpisodeNumber,'.')!='0')])+1"/></xsl:if></episode>
+											<season><xsl:value-of select="$FirstEpisode/airedSeason"/></season>
+										</xsl:when>
+										<xsl:otherwise>
+											<episode>
+												<xsl:choose>
+													<xsl:when test="$single-episode"><xsl:value-of select="$FirstEpisode/dvdEpisodeNumber"/></xsl:when>
+													<xsl:otherwise><xsl:value-of select="substring-before($FirstEpisode/dvdEpisodeNumber,'.')"/></xsl:otherwise>
+												</xsl:choose>
+											</episode>
+											<season><xsl:value-of select="$FirstEpisode/dvdSeason"/></season>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:if test="$FirstEpisode/airedSeason=0">
+								<xsl:choose>
+									<xsl:when test="'$INFO[dvdorder]'!='true'">
+										<xsl:choose>
+											<xsl:when test="'$INFO[absolutenumber]'='true'">
+												<xsl:if test="($FirstEpisode/airsBeforeSeason!='') or ($FirstEpisode/airsBeforeEpisode!='')">
+													<displayepisode>
+														<xsl:choose>
+															<xsl:when test="$AirsBeforeEpisode and ($AirsBeforeEpisode/absoluteNumber!='')"><xsl:value-of select="$AirsBeforeEpisode/absoluteNumber"/></xsl:when>
+															<xsl:otherwise><xsl:value-of select="substring-before(substring-after($SeasonCounts, concat('|S', $AirsBeforeEpisode/SeasonNumber, '|')), '|') + $FirstEpisode/airsBeforeEpisode"/></xsl:otherwise>
+														</xsl:choose>
+													</displayepisode>
+													<displayseason>1</displayseason>
+												</xsl:if>
+												<xsl:if test="($FirstEpisode/airsAfterSeason!='') and ($AfterSeasonCount!='')">
+													<displayepisode>
+														<xsl:choose>
+															<xsl:when test="$AirsAfterEpisode and ($AirsAfterEpisode/absoluteNumber!='')"><xsl:value-of select="$AirsAfterEpisode/absoluteNumber"/></xsl:when>
+															<xsl:otherwise><xsl:value-of select="$AfterSeasonCount + 1"/></xsl:otherwise>
+														</xsl:choose>
+													</displayepisode>
+													<displayseason>1</displayseason>
+												</xsl:if>
+												<xsl:if test="($FirstEpisode/airsAfterSeason!='') and ($AfterSeasonCount='')">
+													<displayafterseason>1</displayafterseason>
+												</xsl:if>
+											</xsl:when>
+											<xsl:otherwise>
+												<displayepisode><xsl:value-of select="$FirstEpisode/airsBeforeEpisode"/></displayepisode>
+												<displayseason><xsl:value-of select="$FirstEpisode/airsBeforeSeason"/></displayseason>
+												<displayafterseason><xsl:value-of select="$FirstEpisode/airsAfterSeason"/></displayafterseason>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:choose>
+											<xsl:when test="$AirsBeforeEpisode and ($AirsBeforeEpisode/dvdEpisodeNumber!='') and ($AirsBeforeEpisode/dvdSeason!='')">
+												<displayepisode><xsl:value-of select="$AirsBeforeEpisode/dvdEpisodeNumber"/></displayepisode>
+												<displayseason><xsl:value-of select="$AirsBeforeEpisode/dvdSeason"/></displayseason>
+											</xsl:when>
+											<xsl:otherwise>
+												<displayepisode><xsl:value-of select="$FirstEpisode/airsBeforeEpisode"/></displayepisode>
+												<displayseason><xsl:value-of select="$FirstEpisode/airsBeforeSeason"/></displayseason>
+											</xsl:otherwise>
+										</xsl:choose>
+										<displayafterseason><xsl:value-of select="$FirstEpisode/airsAfterSeason"/></displayafterseason>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
+							<xsl:choose>
+								<xsl:when test="('$INFO[RatingS]'='IMDb') and (($FirstEpisode/imdbId!='') or ('$INFO[fallback]'='false'))">
+									<xsl:if test="$FirstEpisode/imdbId!=''"><chain function="GetIMDBRatingById"><xsl:value-of select="$FirstEpisode/imdbId"/></chain></xsl:if>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:choose>
+										<xsl:when test="$single-episode">
+											<rating><xsl:value-of select="$FirstEpisode/siteRating"/></rating>
+											<votes><xsl:value-of select="$FirstEpisode/siteRatingCount"/></votes>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:call-template name="merge-rating">
+												<xsl:with-param name="list" select="$episode-list" />
+												<xsl:with-param name="rating" select="'0'" />
+												<xsl:with-param name="votes" select="'0'" />
+											</xsl:call-template>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:call-template name="split-details">
+								<xsl:with-param name="list" select="$episode-list"/>
+							</xsl:call-template>
+						</details>
+					</xsl:template>
+
+					<xsl:template name="merge-details">
+						<xsl:param name="list"/>
+						<xsl:param name="element"/>
+						<xsl:param name="divider"/>
+						<xsl:variable name="first" select="substring-before($list, '|')" />
+						<xsl:variable name="remaining" select="substring-after($list, '|')" />
+						<xsl:if test="$first!=''"><xsl:value-of select="//Episode[id=$first]/child::*[name()=$element]"/><xsl:if test="$remaining!=''"><xsl:value-of select="$divider"/></xsl:if></xsl:if>
+						<xsl:if test="$remaining!=''">
+							<xsl:call-template name="merge-details">
+								<xsl:with-param name="list" select="$remaining" />
+								<xsl:with-param name="element" select="$element" />
+								<xsl:with-param name="divider" select="$divider" />
+							</xsl:call-template>
+						</xsl:if>
+					</xsl:template>
+
+					<xsl:template name="shrink-title">
+						<xsl:param name="full-title"/>
+						<xsl:param name="title-list"/>
+						<xsl:param name="test-title"/>
+						<xsl:variable name="first" select="substring-before($title-list,$title-divider)"/>
+						<xsl:variable name="remaining" select="substring-after($title-list,$title-divider)"/>
+						<xsl:choose>
+							<xsl:when test="$test-title!=substring($first,1,string-length($first)-4)"><xsl:value-of select="$full-title"/></xsl:when>
+							<xsl:otherwise>
+								<xsl:choose>
+									<xsl:when test="$remaining=''"><xsl:value-of select="$test-title"/></xsl:when>
+									<xsl:otherwise>
+										<xsl:call-template name="shrink-title">
+											<xsl:with-param name="full-title" select="$full-title" />
+											<xsl:with-param name="title-list" select="$remaining" />
+											<xsl:with-param name="test-title" select="$test-title" />
+										</xsl:call-template>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:template>
+
+					<xsl:template name="merge-rating">
+						<xsl:param name="list"/>
+						<xsl:param name="rating"/>
+						<xsl:param name="votes"/>
+						<xsl:variable name="first" select="substring-before($list, '|')" />
+						<xsl:variable name="remaining" select="substring-after($list, '|')" />
+						<xsl:variable name="currVotes" select="$votes + Episode[id=$first]/siteRatingCount" />
+						<xsl:variable name="firstRating">
+							<xsl:choose>
+								<xsl:when test="Episode[id=$first]/siteRating!=''"><xsl:value-of select="Episode[id=$first]/siteRating"/></xsl:when>
+								<xsl:otherwise>1</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="currRating" select="$rating + ($firstRating * Episode[id=$first]/siteRatingCount)" />
+						<xsl:choose>
+							<xsl:when test="$remaining!=''">
+								<xsl:call-template name="merge-rating">
+									<xsl:with-param name="list" select="$remaining" />
+									<xsl:with-param name="rating" select="$currRating" />
+									<xsl:with-param name="votes" select="$currVotes" />
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="$currVotes&gt;0">
+									<rating><xsl:value-of select="format-number($currRating div $currVotes,'#.#')"/></rating>
+								</xsl:if>
+								<votes><xsl:value-of select="$currVotes"/></votes>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:template>
+
+					<xsl:template name="split-details">
+						<xsl:param name="list"/>
+						<xsl:variable name="first" select="substring-before(normalize-space($list), '|')" />
+						<xsl:variable name="remaining" select="substring-after(normalize-space($list), '|')" />
+						<xsl:if test="$first!=''"><xsl:apply-templates select="Episode[id=$first]" mode="match"/></xsl:if>
+						<xsl:if test="$remaining!='' and $remaining!='|'">
+							<xsl:call-template name="split-details">
+								<xsl:with-param name="list" select="$remaining" />
+							</xsl:call-template>
+						</xsl:if>
+					</xsl:template>
+
+					<xsl:template match="Episode" mode="match">
+						<xsl:if test="filename!=''"><thumb>http://www.thetvdb.com/banners/<xsl:value-of select="filename"/></thumb></xsl:if>
+						<xsl:for-each select="credits|director|actor">
+							<xsl:copy-of select="."/>
+						</xsl:for-each>
+					</xsl:template>
+
+					<xsl:template name="split">
+						<xsl:param name="list"/>
+						<xsl:param name="element"/>
+						<xsl:variable name="first" select="substring-before(normalize-space($list), '|')" />
+						<xsl:variable name="remaining" select="substring-after(normalize-space($list), '|')" />
+						<xsl:if test="$first!=''"><xsl:element name="{$element}"><xsl:value-of select="$first"/></xsl:element></xsl:if>
+						<xsl:if test="$remaining!='' and $remaining!='|'">
+							<xsl:call-template name="split">
+								<xsl:with-param name="list" select="$remaining" />
+								<xsl:with-param name="element" select="$element" />
+							</xsl:call-template>
+						</xsl:if>
+					</xsl:template>
+
+				</xsl:stylesheet>
+			</XSLT>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseEpisodeDetails>
 </scraper>
