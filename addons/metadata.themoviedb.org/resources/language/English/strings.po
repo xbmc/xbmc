@@ -29,7 +29,7 @@ msgid "Preferred Language"
 msgstr ""
 
 msgctxt "#30003"
-msgid "Get Rating from"
+msgid "Default Rating from"
 msgstr ""
 
 msgctxt "#30004"
@@ -42,4 +42,8 @@ msgstr ""
 
 msgctxt "#30006"
 msgid "Preferred Certification Country"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
 msgstr ""
