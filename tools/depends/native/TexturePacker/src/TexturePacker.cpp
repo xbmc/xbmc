@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+#include <cinttypes>
 #define platform_stricmp _stricmp
 #else
 #define platform_stricmp stricmp
