@@ -622,6 +622,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     g_infoManager.SetCurrentSlide(*m_slides.at(m_iCurrentSlide));
 
   RenderPause();
+  if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
+      g_application.m_pPlayer->IsRenderingGuiLayer())
+  {
+    MarkDirtyRegion();
+  }
   CGUIWindow::Process(currentTime, regions);
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
