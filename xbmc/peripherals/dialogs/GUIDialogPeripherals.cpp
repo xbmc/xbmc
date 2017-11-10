@@ -41,6 +41,12 @@ CGUIDialogPeripherals::CGUIDialogPeripherals()
 
 CGUIDialogPeripherals::~CGUIDialogPeripherals() = default;
 
+void CGUIDialogPeripherals::OnInitWindow()
+{
+  UpdatePeripheralsSync();
+  CGUIDialogSelect::OnInitWindow();
+}
+
 void CGUIDialogPeripherals::RegisterPeripheralManager(CPeripherals &manager)
 {
   m_manager = &manager;
@@ -74,15 +80,15 @@ void CGUIDialogPeripherals::Show(CPeripherals &manager)
   if (pDialog == nullptr)
     return;
 
+  pDialog->Reset();
+
   int iPos = -1;
   do
   {
-    pDialog->Reset();
     pDialog->SetHeading(CVariant{ 35000 });
     pDialog->SetUseDetails(true);
 
     pDialog->RegisterPeripheralManager(manager);
-    pDialog->UpdatePeripherals();
 
     pDialog->Open();
 
@@ -129,12 +135,7 @@ bool CGUIDialogPeripherals::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_LIST:
     {
       if (m_manager && message.GetControlId() == -1)
-      {
-        CSingleLock lock(m_peripheralsMutex);
-        m_peripherals.Clear();
-        m_manager->GetDirectory("peripherals://all/", m_peripherals);
-        SetItems(m_peripherals);
-      }
+        UpdatePeripheralsSync();
       return true;
     }
     default:
@@ -149,15 +150,39 @@ void CGUIDialogPeripherals::Notify(const Observable &obs, const ObservableMessag
   switch (msg)
   {
   case ObservableMessagePeripheralsChanged:
-    UpdatePeripherals();
+    UpdatePeripheralsAsync();
     break;
   default:
     break;
   }
 }
 
-void CGUIDialogPeripherals::UpdatePeripherals()
+void CGUIDialogPeripherals::UpdatePeripheralsAsync()
 {
   CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), -1);
   MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(msg);
+}
+
+void CGUIDialogPeripherals::UpdatePeripheralsSync()
+{
+  int iPos = GetSelectedItem();
+
+  CSingleLock lock(m_peripheralsMutex);
+
+  CFileItemPtr selectedItem;
+  if (iPos > 0)
+    selectedItem = GetItem(iPos);
+
+  m_peripherals.Clear();
+  m_manager->GetDirectory("peripherals://all/", m_peripherals);
+  SetItems(m_peripherals);
+
+  if (selectedItem)
+  {
+    for (int i = 0; i < m_peripherals.Size(); i++)
+    {
+      if (m_peripherals[i]->GetPath() == selectedItem->GetPath())
+        SetSelected(i);
+    }
+  }
 }

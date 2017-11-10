@@ -49,8 +49,12 @@ public:
   void Notify(const Observable &obs, const ObservableMessage msg) override;
 
 private:
+  // implementation of CGUIWindow via CGUIDialogSelect
+  void OnInitWindow() override;
+
   void ShowInternal();
-  void UpdatePeripherals();
+  void UpdatePeripheralsAsync();
+  void UpdatePeripheralsSync();
 
   CPeripherals *m_manager = nullptr;
   CFileItemList m_peripherals;
