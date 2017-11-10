@@ -392,11 +392,11 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
     while (!m_pDS->eof())
     {
       auto it = addons.emplace(addons.end());
-      it->SetId(m_pDS->fv(1).get_asString());
-      it->SetInstallDate(CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()));
-      it->SetLastUpdated(CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()));
-      it->SetLastUsed(CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()));
-      it->SetOrigin(m_pDS->fv(6).get_asString());
+      it->SetId(m_pDS->fv("addonID").get_asString());
+      it->SetInstallDate(CDateTime::FromDBDateTime(m_pDS->fv("installDate").get_asString()));
+      it->SetLastUpdated(CDateTime::FromDBDateTime(m_pDS->fv("lastUpdated").get_asString()));
+      it->SetLastUsed(CDateTime::FromDBDateTime(m_pDS->fv("lastUsed").get_asString()));
+      it->SetOrigin(m_pDS->fv("origin").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -643,12 +643,12 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
       return false;
 
     CAddonBuilder builder;
-    builder.SetId(m_pDS2->fv(2).get_asString());
-    builder.SetVersion(AddonVersion(m_pDS2->fv(3).get_asString()));
-    builder.SetName(m_pDS2->fv(4).get_asString());
-    builder.SetSummary(m_pDS2->fv(5).get_asString());
-    builder.SetDescription(m_pDS2->fv(6).get_asString());
-    DeserializeMetadata(m_pDS2->fv(1).get_asString(), builder);
+    builder.SetId(m_pDS2->fv("addonID").get_asString());
+    builder.SetVersion(AddonVersion(m_pDS2->fv("version").get_asString()));
+    builder.SetName(m_pDS2->fv("name").get_asString());
+    builder.SetSummary(m_pDS2->fv("summary").get_asString());
+    builder.SetDescription(m_pDS2->fv("description").get_asString());
+    DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
     addon = builder.Build();
     return addon != nullptr;
   }
@@ -717,8 +717,8 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
     VECADDONS result;
     while (!m_pDS->eof())
     {
-      std::string addonId = m_pDS->fv(2).get_asString();
-      AddonVersion version(m_pDS->fv(3).get_asString());
+      std::string addonId = m_pDS->fv("addonID").get_asString();
+      AddonVersion version(m_pDS->fv("version").get_asString());
 
       if (!result.empty() && result.back()->ID() == addonId && result.back()->Version() >= version)
       {
@@ -730,10 +730,10 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       CAddonBuilder builder;
       builder.SetId(addonId);
       builder.SetVersion(version);
-      builder.SetName(m_pDS->fv(4).get_asString());
-      builder.SetSummary(m_pDS->fv(5).get_asString());
-      builder.SetDescription(m_pDS->fv(6).get_asString());
-      DeserializeMetadata(m_pDS->fv(1).get_asString(), builder);
+      builder.SetName(m_pDS->fv("name").get_asString());
+      builder.SetSummary(m_pDS->fv("summary").get_asString());
+      builder.SetDescription(m_pDS->fv("description").get_asString());
+      DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
       auto addon = builder.Build();
       if (addon)
