@@ -22,6 +22,7 @@
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "ServiceBroker.h"
+#include "network/ZeroconfBrowser.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -72,6 +73,14 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
 
 void CVFSAddonCache::OnEvent(const AddonEvent& event)
 {
+  if (typeid(event) == typeid(AddonEvents::Disabled))
+  {
+    for (const auto& vfs : m_addonsInstances)
+    {
+      if (vfs->ID() == event.id && !vfs->GetZeroconfType().empty())
+        CZeroconfBrowser::GetInstance()->RemoveServiceType(vfs->GetZeroconfType());
+    }
+  }
   if (typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::Unload) ||
       typeid(event) == typeid(AddonEvents::Enabled) ||
@@ -94,6 +103,8 @@ void CVFSAddonCache::Update()
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
     addonmap.push_back(vfs);
+    if (!vfs->GetZeroconfType().empty())
+      CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
   }
 
   {
@@ -138,6 +149,7 @@ CVFSEntry::CVFSEntry(BinaryAddonBasePtr addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_VFS, addonInfo),
     m_protocols(addonInfo->Type(ADDON_VFS)->GetValue("@protocols").asString()),
     m_extensions(addonInfo->Type(ADDON_VFS)->GetValue("@extensions").asString()),
+    m_zeroconf(addonInfo->Type(ADDON_VFS)->GetValue("@zeroconf").asString()),
     m_files(addonInfo->Type(ADDON_VFS)->GetValue("@files").asBoolean()),
     m_directories(addonInfo->Type(ADDON_VFS)->GetValue("@directories").asBoolean()),
     m_filedirectories(addonInfo->Type(ADDON_VFS)->GetValue("@filedirectories").asBoolean())
