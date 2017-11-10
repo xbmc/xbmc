@@ -23,6 +23,7 @@
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
+#include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
 
@@ -44,16 +45,11 @@ public:
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
-    void         AEChannelsFromSpeakerMask(DWORD speakers);
-    static DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-    static void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
     static void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
     bool IsUSBDevice();
 
-    static const char  *WASAPIErrToStr(HRESULT err);
-
     HANDLE              m_needDataEvent;
-    IMMDevice          *m_pDevice;
+    IAEWASAPIDevice    *m_pDevice;
     IAudioClient       *m_pAudioClient;
     IAudioRenderClient *m_pRenderClient;
     IAudioClock        *m_pAudioClock;

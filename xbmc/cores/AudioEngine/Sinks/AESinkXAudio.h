@@ -70,13 +70,13 @@ struct VoiceCallback : public IXAudio2VoiceCallback
   std::unique_ptr<void, handle_closer> mBufferEnd;
 };
 
-class CAESinkXAudioWin10 : public IAESink
+class CAESinkXAudio : public IAESink
 {
 public:
     virtual const char *GetName() { return "XAudio"; }
 
-    CAESinkXAudioWin10();
-    virtual ~CAESinkXAudioWin10();
+    CAESinkXAudio();
+    virtual ~CAESinkXAudio();
 
     bool Initialize (AEAudioFormat &format, std::string &device) override;
     void Deinitialize() override;
@@ -90,13 +90,8 @@ public:
     static void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
 
 private:
-    bool InitializeExclusive(std::string deviceId, AEAudioFormat &format);
-    void AEChannelsFromSpeakerMask(DWORD speakers);
-    static DWORD SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-    static void BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
-
+    bool InitializeInternal(std::string deviceId, AEAudioFormat &format);
     bool IsUSBDevice();
-    static const char *WASAPIErrToStr(HRESULT err);
 
     Microsoft::WRL::ComPtr<IXAudio2> m_xAudio2;
     IXAudio2MasteringVoice* m_masterVoice;

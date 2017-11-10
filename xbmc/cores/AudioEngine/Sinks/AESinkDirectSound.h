@@ -51,8 +51,6 @@ private:
   unsigned int  GetSpace();
   const char    *dserr2str(int err);
 
-  static const char  *WASAPIErrToStr(HRESULT err);
-
   LPDIRECTSOUNDBUFFER m_pBuffer;
   LPDIRECTSOUND8      m_pDSound;
 
