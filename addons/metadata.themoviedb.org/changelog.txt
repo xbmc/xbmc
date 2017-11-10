@@ -1,3 +1,10 @@
+[B]4.0.1[/B]
+-switched API queries to https
+
+[B]4.0.0[/B]
+- added: multiple ratings and uniqueid support (requires Kodi v17) -thanks phate89
+- added: premiered date -thanks phate89
+
 [B]3.9.4[/B]
 - Fixed after API layout changes
 

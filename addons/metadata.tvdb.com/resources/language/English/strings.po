@@ -43,3 +43,12 @@ msgstr ""
 msgctxt "#30006"
 msgid "Use TheTVDB Ratings in case IMDb is missing"
 msgstr ""
+
+msgctxt "#30007"
+msgid "Use a fallback language for search and details"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Fallback language"
+msgstr ""
+
