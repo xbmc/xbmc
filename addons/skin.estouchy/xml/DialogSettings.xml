@@ -38,13 +38,31 @@
 		<control type="grouplist" id="5">
 			<posx>0</posx>
 			<posy>60</posy>
-			<width>800</width>
+			<width>750</width>
 			<height>630</height>
 			<itemgap>-1</itemgap>
-			<onleft>9000</onleft>
-			<onright>9000</onright>
+			<pagecontrol>60</pagecontrol>
+			<onleft>60</onleft>
+			<onright>60</onright>
 			<onup>5</onup>
-			<ondown>5</ondown>
+			<ondown>9000</ondown>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>762</posx>
+			<posy>90</posy>
+			<width>26</width>
+			<height>570</height>
+			<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
+			<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>
+			<texturesliderbarfocus colordiffuse="blue">white.png</texturesliderbarfocus>
+			<textureslidernib>blank.png</textureslidernib>
+			<textureslidernibfocus>blank.png</textureslidernibfocus>
+			<onleft>5</onleft>
+			<onright>5</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<animation effect="fade" time="150">Visible</animation>
+			<animation effect="fade" time="150">Hidden</animation>
 		</control>
 		<control type="button" id="7">
 			<posx>0</posx>
