@@ -77,6 +77,24 @@ void CPVRClients::Start(void)
   UpdateAddons();
 }
 
+void CPVRClients::Stop()
+{
+  CSingleLock lock(m_critSection);
+  for (const auto &client : m_clientMap)
+  {
+    client.second->Stop();
+  }
+}
+
+void CPVRClients::Continue()
+{
+  CSingleLock lock(m_critSection);
+  for (const auto &client : m_clientMap)
+  {
+    client.second->Continue();
+  }
+}
+
 bool CPVRClients::IsCreatedClient(int iClientId) const
 {
   CPVRClientPtr client;

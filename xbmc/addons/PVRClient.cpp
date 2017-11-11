@@ -120,6 +120,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strUserPath           = CSpecialProtocol::TranslatePath(Profile());
   m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
   m_bReadyToUse           = false;
+  m_bBlockAddonCalls      = false;
   m_connectionState       = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState   = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient          = false;
@@ -192,6 +193,7 @@ void CPVRClient::Destroy(void)
 {
   if (!m_bReadyToUse)
     return;
+
   m_bReadyToUse = false;
 
   /* reset 'ready to use' to false */
@@ -202,6 +204,16 @@ void CPVRClient::Destroy(void)
 
   /* reset all properties to defaults */
   ResetProperties();
+}
+
+void CPVRClient::Stop()
+{
+  m_bBlockAddonCalls = true;
+}
+
+void CPVRClient::Continue()
+{
+  m_bBlockAddonCalls = false;
 }
 
 void CPVRClient::ReCreate(void)
@@ -1277,6 +1289,9 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName, std::function<PVR
   // Check preconditions.
   if (!bIsImplemented)
     return PVR_ERROR_NOT_IMPLEMENTED;
+
+  if (m_bBlockAddonCalls)
+    return PVR_ERROR_SERVER_ERROR;
 
   if (!m_bReadyToUse && bCheckReadyToUse)
     return PVR_ERROR_SERVER_ERROR;

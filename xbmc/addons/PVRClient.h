@@ -19,6 +19,7 @@
  *
  */
 
+#include <atomic>
 #include <functional>
 #include <memory>
 #include <string>
@@ -230,6 +231,16 @@ namespace PVR
      * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
      */
     bool DllLoaded(void) const;
+
+    /*!
+     * @brief Stop this add-on instance. No more client add-on access after this call.
+     */
+    void Stop();
+
+    /*!
+     * @brief Continue this add-on instance. Client add-on access is okay again after this call.
+     */
+    void Continue();
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -1073,7 +1084,8 @@ namespace PVR
     static xbmc_codec_t cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
     //@}
 
-    bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    std::atomic<bool>      m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    std::atomic<bool>      m_bBlockAddonCalls;     /*!< true if no add-on API calls are allowed */
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
     PVR_CONNECTION_STATE   m_prevConnectionState;  /*!< the previous backend connection state */
     bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
