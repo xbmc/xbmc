@@ -772,13 +772,32 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
      */
     for (std::map<std::string, std::vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
     {
-      // find the common artist for these songs
+      /*
+       Find the common artist(s) for these songs. Take from albumartist tag when present, or use artist tag.
+       When from albumartist tag also check albumartistsort tag and take first non-empty value
+      */
       std::vector<CSong *> &artistSongs = j->second;
-      std::vector<std::string> common = artistSongs.front()->GetAlbumArtist().empty() ? artistSongs.front()->GetArtist() : artistSongs.front()->GetAlbumArtist();
+      std::vector<std::string> common;
+      std::string albumartistsort;
+      if (artistSongs.front()->GetAlbumArtist().empty())
+        common = artistSongs.front()->GetArtist();
+      else
+      {
+        common = artistSongs.front()->GetAlbumArtist();
+        albumartistsort = artistSongs.front()->GetAlbumArtistSort();
+      }
       for (std::vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
-        std::vector<std::string> compare = (*k)->GetAlbumArtist().empty() ? (*k)->GetArtist() : (*k)->GetAlbumArtist();
+        std::vector<std::string> compare;
+        if ((*k)->GetAlbumArtist().empty())
+          compare = (*k)->GetArtist();
+        else
+        {
+          compare = (*k)->GetAlbumArtist();
+          if (albumartistsort.empty())
+            albumartistsort = (*k)->GetAlbumArtistSort();
+        }
         for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
@@ -793,9 +812,20 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName->first;
-      for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
+
+      //Split the albumartist sort string to try and get sort names for individual artists
+      std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, g_advancedSettings.m_musicItemSeparator);
+      if (sortnames.size() != common.size())
+          // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
+        sortnames = StringUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
+      
+      for (size_t i = 0; i < common.size(); i++)
       {
-        album.artistCredits.emplace_back(StringUtils::Trim(*it));
+        album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
+        // Set artist sort name providing we have as many as we have artists, 
+        // otherwise something is wrong with them so ignore rather than guess.
+        if (sortnames.size() == common.size())
+          album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
       }
       album.bCompilation = compilation;
       for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
