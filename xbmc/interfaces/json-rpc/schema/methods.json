@@ -1005,7 +1005,9 @@
       { "name": "votes", "$ref": "Optional.Integer" },
       { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
       { "name": "musicbrainzreleasegroupid", "$ref": "Optional.String" },
-      { "name": "sortartist", "$ref": "Optional.String" }
+      { "name": "sortartist", "$ref": "Optional.String" },
+      { "name": "displayartist", "$ref": "Optional.String" },
+      { "name": "musicbrainzalbumartistid", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1018,23 +1020,22 @@
       { "name": "songid", "$ref": "Library.Id", "required": true },
       { "name": "title", "$ref": "Optional.String" },
       { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "albumartist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "year", "$ref": "Optional.Integer" },
       { "name": "rating", "$ref": "Optional.Number" },
-      { "name": "album", "$ref": "Optional.String" },
       { "name": "track", "$ref": "Optional.Integer" },
       { "name": "disc", "$ref": "Optional.Integer" },
       { "name": "duration", "$ref": "Optional.Integer" },
       { "name": "comment", "$ref": "Optional.String" },
       { "name": "musicbrainztrackid", "$ref": "Optional.String" },
       { "name": "musicbrainzartistid", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" },
       { "name": "playcount", "$ref": "Optional.Integer" },
       { "name": "lastplayed", "$ref": "Optional.String" },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "votes", "$ref": "Optional.Integer" }
+      { "name": "votes", "$ref": "Optional.Integer" },
+      { "name": "displayartist", "$ref": "Optional.String" },
+      { "name": "sortartist", "$ref": "Optional.String" },
+      { "name": "mood", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },

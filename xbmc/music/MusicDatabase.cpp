@@ -475,7 +475,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
   }
   else
   {
-    // Replace the album artists with those scraped
+    // Replace the album artists with those scraped or set by JSON
     DeleteAlbumArtistsByAlbum(album.idAlbum);
     if (album.artistCredits.empty())
       AddAlbumArtist(BLANKARTIST_ID, album.idAlbum, BLANKARTIST_NAME, 0); // Album must have at least one artist so set artist to [Missing]
@@ -488,50 +488,12 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
         artistCredit->GetArtist(),
         std::distance(album.artistCredits.begin(), artistCredit));
     }
-    // Replace the songs with those scraped
+    /* Replace the songs with those scraped or imported, but if new songs is empty
+       (such as when called from JSON) do not remove the original ones
+       Also updates nested data e.g. song artists, song genres and contributors
+    */
     for (auto &song : album.songs)
-    {
-      UpdateSong(song.idSong,
-        song.strTitle,
-        song.strMusicBrainzTrackID,
-        song.strFileName,
-        song.strComment,
-        song.strMood,
-        song.strThumb,
-        song.GetArtistString(),
-        song.GetArtistSort(),
-        song.genre,
-        song.iTrack,
-        song.iDuration,
-        song.iYear,
-        song.iTimesPlayed,
-        song.iStartOffset,
-        song.iEndOffset,
-        song.lastPlayed,
-        song.rating,
-        song.userrating,
-        song.votes,
-        song.replayGain);
-      // Replace Song genres and update genre string using the standardised genre names
-      AddSongGenres(song.idSong, song.genre);
-      //Replace song artists and contributors
-      DeleteSongArtistsBySong(song.idSong);
-      if (song.artistCredits.empty())
-        AddSongArtist(BLANKARTIST_ID, song.idSong, ROLE_ARTIST, BLANKARTIST_NAME, 0); // Song must have at least one artist so set artist to [Missing]
-      for (auto artistCredit = song.artistCredits.begin(); artistCredit != song.artistCredits.end(); ++artistCredit)
-      {
-        artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
-          artistCredit->GetMusicBrainzArtistID(), artistCredit->GetSortName());
-        AddSongArtist(artistCredit->idArtist,
-          song.idSong,
-          ROLE_ARTIST,
-          artistCredit->GetArtist(),
-          std::distance(song.artistCredits.begin(), artistCredit));
-      }
-      // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
-      // and use COMPOSERSORT tag data to provide sort names for artists that are composers
-      AddSongContributors(song.idSong, song.GetContributors(), song.GetComposerSort());
-    }
+      UpdateSong(song);
   }
 
   if (!album.art.empty())
@@ -692,16 +654,16 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
   return false;
 }
 
-int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
+bool CMusicDatabase::UpdateSong(CSong& song, bool bArtists /*= true*/)
 {
-  int result = UpdateSong(idSong,
+  int result = UpdateSong(song.idSong,
                     song.strTitle,
                     song.strMusicBrainzTrackID,
                     song.strFileName,
                     song.strComment,
                     song.strMood,
                     song.strThumb,
-                    song.GetArtistString(), // NOTE: Don't call this function internally!!!
+                    song.GetArtistString(),
                     song.GetArtistSort(),
                     song.genre,
                     song.iTrack,
@@ -715,11 +677,33 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
                     song.userrating,
                     song.votes,
                     song.replayGain);
-  if (result > 0)
-    // Replace Song genres and update genre string using the standardised genre names
-    AddSongGenres(song.idSong, song.genre);
+  if (result < 0)
+    return false;
+  
+  // Replace Song genres and update genre string using the standardised genre names
+  AddSongGenres(song.idSong, song.genre);
+  if (bArtists)
+  {
+    //Replace song artists and contributors
+    DeleteSongArtistsBySong(song.idSong);
+    if (song.artistCredits.empty())
+      AddSongArtist(BLANKARTIST_ID, song.idSong, ROLE_ARTIST, BLANKARTIST_NAME, 0); // Song must have at least one artist so set artist to [Missing]
+    for (auto artistCredit = song.artistCredits.begin(); artistCredit != song.artistCredits.end(); ++artistCredit)
+    {
+      artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
+        artistCredit->GetMusicBrainzArtistID(), artistCredit->GetSortName());
+      AddSongArtist(artistCredit->idArtist,
+        song.idSong,
+        ROLE_ARTIST,
+        artistCredit->GetArtist(),
+        std::distance(song.artistCredits.begin(), artistCredit));
+    }
+    // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
+    // and use COMPOSERSORT tag data to provide sort names for artists that are composers
+    AddSongContributors(song.idSong, song.GetContributors(), song.GetComposerSort());
+  }
 
-  return result;
+  return true;
 }
 
 int CMusicDatabase::UpdateSong(int idSong,
@@ -1856,28 +1840,38 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
   return false;
 }
 
-bool CMusicDatabase::GetGenresByAlbum(int idAlbum, std::vector<int>& genres)
+bool CMusicDatabase::GetGenresByAlbum(int idAlbum, CFileItem* item)
 {
   try
   {
-    std::string strSQL = PrepareSQL("SELECT DISTINCT idGenre FROM song "
-      "JOIN song_genre ON song_genre.idSong = song.idSong "
-      "WHERE song.idAlbum = %i ORDER BY song_genre.idSong, iOrder ASC", idAlbum);
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
+      "song JOIN song_genre ON song.idSong = song_genre.idSong "
+      "JOIN genre ON song_genre.idGenre = genre.idGenre "
+      "WHERE song.idAlbum = %i "
+      "ORDER BY song_genre.idSong, song_genre.iOrder,", idAlbum);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
     {
+      //No song genres, but query sucessfull
       m_pDS->close();
       return true;
     }
 
+    CVariant albumSongGenres(CVariant::VariantTypeArray);
+
     while (!m_pDS->eof())
     {
-      genres.push_back(m_pDS->fv("idGenre").get_asInt());
+      CVariant genreObj;
+      genreObj["title"] = m_pDS->fv("strGenre").get_asString();
+      genreObj["genreid"] = m_pDS->fv("idGenre").get_asInt();
+      albumSongGenres.push_back(genreObj);
       m_pDS->next();
     }
     m_pDS->close();
 
+    item->SetProperty("songgenres", albumSongGenres);
     return true;
   }
   catch (...)

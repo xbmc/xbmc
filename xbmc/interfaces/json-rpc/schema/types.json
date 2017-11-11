@@ -465,14 +465,14 @@
   "Audio.Fields.Album": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the genreid and/or artistid field will result in increased response times",
+      "description": "Requesting the songgenres and/or artistid field will result in increased response times",
       "enum": [ "title", "description", "artist", "genre",
                 "theme", "mood", "style", "type", "albumlabel",
                 "rating", "votes", "userrating","year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
-                "playcount", "genreid", "artistid", "displayartist",
+                "playcount", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded",
-                "sortartist", "musicbrainzreleasegroupid"]
+                "sortartist", "musicbrainzreleasegroupid", "songgenres"]
     }
   },
   "Audio.Fields.Song": {
@@ -543,9 +543,7 @@
       "artist": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
-      "musicbrainzalbumid": { "type": "string", "description": "Only returned for albums, deprecated for songs" },
       "musicbrainzalbumartistid": { "$ref": "Array.String" },
-      "genreid": { "$ref": "Array.Integer" },
       "artistid": { "$ref": "Array.Integer" },
       "displayartist": { "type" : "string" },
       "votes": { "type": "integer" },
@@ -568,7 +566,7 @@
       "disbanded": { "type": "string" },
       "yearsactive": { "$ref": "Array.String" },
       "compilationartist": { "type": "boolean" },
-      "musicbrainzartistid": { "type": "string" },
+      "musicbrainzartistid": { "$ref": "Array.String" },
       "roles": {"$ref": "Audio.Artist.Roles"},
       "songgenres": {"$ref": "Audio.Details.Genres"},
       "isalbumartist": { "type": "boolean" },
@@ -591,7 +589,9 @@
       "playcount": { "type": "integer" },
       "compilation": { "type": "boolean" },
       "releasetype": { "$ref": "Audio.Album.ReleaseType" },
-      "musicbrainzreleasegroupid": { "type": "string" }
+      "musicbrainzreleasegroupid": { "type": "string" },
+      "musicbrainzalbumid": { "type": "string" },
+      "songgenres": {"$ref": "Audio.Details.Genres"}
     }
   },
   "Audio.Details.Song": {
@@ -607,7 +607,7 @@
       "lyrics": { "type": "string" },
       "playcount": { "type": "integer" },
       "musicbrainztrackid": { "type": "string" },
-      "musicbrainzartistid": { "type": "string" },
+      "musicbrainzartistid": { "$ref": "Array.String" },
       "albumid": { "$ref": "Library.Id" },
       "lastplayed": { "type": "string" },
       "disc": { "type": "integer" },
@@ -618,7 +618,8 @@
       "displaycomposer": { "type": "string"},
       "displayconductor": { "type": "string"},
       "displayorchestra": { "type": "string"},
-      "displaylyricist": { "type": "string"}
+      "displaylyricist": { "type": "string"},
+      "genreid": { "$ref": "Array.Integer"}
     }
   },
   "Audio.Property.Name": {
@@ -1385,7 +1386,7 @@
       "comment": { "type": "string" },
       "lyrics": { "type": "string" },
       "musicbrainztrackid": { "type": "string" },
-      "musicbrainzartistid": { "type": "string" },
+      "musicbrainzartistid": { "$ref": "Array.String" },
       "trailer": { "type": "string" },
       "tagline": { "type": "string" },
       "plotoutline": { "type": "string" },
