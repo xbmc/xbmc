@@ -24,6 +24,9 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
 #endif
 
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
+
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -61,6 +64,9 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     VAAPI::CDecoder::Register(hevc);
   }
 #endif
+
+  CRendererDRMPRIME::Register();
+  CDVDVideoCodecDRMPRIME::Register();
 
   return true;
 }
