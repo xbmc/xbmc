@@ -65,9 +65,19 @@ namespace PVR
     ~CPVRClients(void) override;
 
     /*!
-     * @brief Start the backend.
+     * @brief Start all clients.
      */
     void Start(void);
+
+    /*!
+     * @brief Stop all clients.
+     */
+    void Stop();
+
+    /*!
+     * @brief Continue all clients.
+     */
+    void Continue();
 
     /*!
      * @brief Update add-ons from the AddonManager

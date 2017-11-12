@@ -313,6 +313,7 @@ void CPVRManager::Stop(void)
   CLog::Log(LOGNOTICE, "PVR Manager: Stopping");
   SetState(ManagerStateStopping);
 
+  m_addons->Stop();
   m_pendingUpdates.Stop();
   m_epgContainer.Stop();
   m_guiInfo->Stop();
@@ -407,6 +408,7 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
+  m_addons->Continue();
   m_database->Open();
 
   /* load the pvr data from the db and clients if it's not already loaded */

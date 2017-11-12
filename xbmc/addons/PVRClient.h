@@ -19,7 +19,8 @@
  *
  */
 
-#include <exception>
+#include <atomic>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -230,6 +231,16 @@ namespace PVR
      * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
      */
     bool DllLoaded(void) const;
+
+    /*!
+     * @brief Stop this add-on instance. No more client add-on access after this call.
+     */
+    void Stop();
+
+    /*!
+     * @brief Continue this add-on instance. Client add-on access is okay again after this call.
+     */
+    void Continue();
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -920,11 +931,17 @@ namespace PVR
     void StopRunningInstance();
 
     /*!
-     * @brief Write an error to the error log.
-     * @param error The error code.
-     * @param strMethod The name of the (member) function that produced the error.
+     * @brief Wraps an addon function call in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must not take any parameters.
+     * @param bIsImplemented If false, this method will return PVR_ERROR_NOT_IMPLEMENTED.
+     * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
+     * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    bool LogError(PVR_ERROR error, const char *strMethod) const;
+    PVR_ERROR DoAddonCall(const char* strFunctionName,
+                          std::function<PVR_ERROR()> function,
+                          bool bIsImplemented = true,
+                          bool bCheckReadyToUse = true) const;
 
     /*!
      * @brief Callback functions from addon to kodi
@@ -1067,7 +1084,8 @@ namespace PVR
     static xbmc_codec_t cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
     //@}
 
-    bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    std::atomic<bool>      m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    std::atomic<bool>      m_bBlockAddonCalls;     /*!< true if no add-on API calls are allowed */
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
     PVR_CONNECTION_STATE   m_prevConnectionState;  /*!< the previous backend connection state */
     bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
