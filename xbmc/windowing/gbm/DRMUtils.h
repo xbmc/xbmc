@@ -53,6 +53,7 @@ struct drm
   drmModeModeInfo *mode;
   uint32_t crtc_id;
   uint32_t connector_id;
+  uint32_t video_plane_id;
 };
 
 struct drm_fb
