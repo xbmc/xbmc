@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <drm/drm_fourcc.h>
-#include <drm/drm_mode.h>
+#include <drm_fourcc.h>
+#include <drm_mode.h>
 #include <EGL/egl.h>
 #include <unistd.h>
 
