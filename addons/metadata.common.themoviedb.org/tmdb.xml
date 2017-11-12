@@ -45,8 +45,8 @@
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="2">
 				<expression fixchars="1">&quot;title&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$INFO[tmdbtitlelanguage]" output="$$2" dest="2">
-				<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="2">
+			<RegExp input="$INFO[tmdbtitlelanguage]" output="$$3" dest="2">
+				<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="3">
 					<expression fixchars="1">&quot;original_title&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<expression>Keep Original</expression>

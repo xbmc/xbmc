@@ -22,7 +22,7 @@
 		</RegExp>
 	</NfoUrl>
 	<NfoUrlAuth dest="3" clearbuffers="no">
-		<RegExp input="$$19" output="&lt;details&gt;&lt;url cache=&quot;$$6-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/$$6|Authorization=Bearer%20\1&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;id&gt;$$6&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url cache=&quot;$$6-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/$$6|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;$$6&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="19">
 				<expression>"token": "(.*)"</expression>
 			</RegExp>
@@ -30,7 +30,7 @@
 		</RegExp>
 	</NfoUrlAuth>
 	<GetTVDBId dest="3" clearbuffers="no">
-		<RegExp input="$$19" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdAuth&quot; cache=&quot;search-$$7-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?imdbId=$$7|Authorization=Bearer%20\1&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdAuth&quot; cache=&quot;search-$$7-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?imdbId=$$7|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="19">
 				<expression>"token": "(.*)"</expression>
 			</RegExp>
@@ -38,7 +38,7 @@
 		</RegExp>
 	</GetTVDBId>
 	<GetTVDBIdAuth dest="3" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/\1|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/\1|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>"id": (\d+),</expression>
 		</RegExp>
 	</GetTVDBIdAuth>
@@ -61,10 +61,10 @@
 			<RegExp input="$INFO[language]" output="\1" dest="16">
 				<expression/>
 			</RegExp>
-			<RegExp input="" output="&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="4">
+			<RegExp input="" output="&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]&lt;/url&gt;" dest="4">
 				<expression noclean="1"/>
 			</RegExp>
-			<RegExp conditional="usefallbacklanguage1" input="$INFO[language]" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;$INFO[fallbacklanguage]&lt;/chain&gt;&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="4+">
+			<RegExp conditional="usefallbacklanguage1" input="$INFO[language]" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;$INFO[fallbacklanguage]&lt;/chain&gt;&lt;url function=&quot;GetSearchResultsAuth&quot; cache=&quot;search-$$5-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/search/series?name=$$5|Authorization=Bearer%20$$19&amp;accept-language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="4+">
 				<expression>^(?!\Q$INFO[fallbacklanguage]\E$)</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -138,7 +138,7 @@
 						<title><xsl:value-of select="$title"/></title>
 						<year><xsl:value-of select="substring(firstAired,1,4)"/></year>
 						<language>$$16</language>
-						<url><xsl:attribute name="cache"><xsl:value-of select="id"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/<xsl:value-of select="id"/>|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]</url>
+						<url><xsl:attribute name="cache"><xsl:value-of select="id"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/<xsl:value-of select="id"/>|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]</url>
 						<id><xsl:value-of select="id"/></id>
 					</entity>
 				</xsl:template>
@@ -154,7 +154,7 @@
 	<GetDetails dest="7" clearbuffers="no">
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$3" output="\1" dest="19">
-				<expression>Authorization=Bearer%20(.+)&amp;Accept-Language</expression>
+				<expression>Authorization=Bearer%20(.+)&amp;accept-language</expression>
 			</RegExp>
 			<RegExp input="" output="" dest="14">
 				<expression clear="yes"/>
@@ -199,7 +199,7 @@
 				<expression noclean="1" repeat="yes">"([^"]+)"</expression>
 			</RegExp>
 			<RegExp input="$INFO[language]" output="$$5" dest="4+">
-				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackDetails&quot; cache=&quot;$$2-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$2|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5">
+				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackDetails&quot; cache=&quot;$$2-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$2|Authorization=Bearer%20$$19&amp;accept-language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5">
 					<expression clear="yes">(?!^$)</expression>
 				</RegExp>
 				<expression>(?!^\Q$INFO[fallbacklanguage]\E$)</expression>
@@ -309,14 +309,14 @@
 			<RegExp input="$INFO[language]" output="\1" dest="16">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$$16.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=$$16&lt;/url&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$$16.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;accept-language=$$16&lt;/url&gt;" dest="4">
 				<expression clear="yes" repeat="yes">"keyType": "([^"]+)"</expression>
 			</RegExp>
 			<RegExp conditional="usefallbacklanguage1" input="$INFO[fallbacklanguage]" output="$$5" dest="4+">
 				<RegExp input="" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;$INFO[fallbacklanguage]&lt;/chain&gt;" dest="5">
 					<expression noclean="1"/>
 				</RegExp>
-				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5+">
+				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;accept-language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="5+">
 					<expression repeat="yes">"keyType": "([^"]+)"</expression>
 				</RegExp>
 				<expression>^(?!\Q$$16\E$|en$)</expression>
@@ -325,7 +325,7 @@
 				<RegExp input="" output="&lt;chain function=&quot;SwitchLanguage&quot;&gt;en&lt;/chain&gt;" dest="5">
 					<expression noclean="1"/>
 				</RegExp>
-				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-en.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;Accept-Language=en&lt;/url&gt;" dest="5+">
+				<RegExp input="$$1" output="&lt;url function=&quot;LoadArt&quot; cache=&quot;$$18-art-\1-en.json&quot;&gt;https://api.thetvdb.com/series/$$18/images/query?keyType=\1|Authorization=Bearer%20$$19&amp;accept-language=en&lt;/url&gt;" dest="5+">
 					<expression repeat="yes">"keyType": "([^"]+)"</expression>
 				</RegExp>
 				<expression>^(?!en)</expression>
@@ -429,7 +429,7 @@
 			<RegExp input="$$2" output="\1" dest="18">
 				<expression>"id":(\d+)}</expression>
 			</RegExp>
-			<RegExp input="$$19" output="&lt;url function=&quot;GetEpisodeListAuth&quot; cache=&quot;episodes-$$18-1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/series/$$18/episodes|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="5">
+			<RegExp input="$$19" output="&lt;url function=&quot;GetEpisodeListAuth&quot; cache=&quot;episodes-$$18-1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/series/$$18/episodes|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]&lt;/url&gt;" dest="5">
 				<expression clear="yes">(?!^$)</expression>
 			</RegExp>
 			
@@ -470,7 +470,7 @@
 						<xsl:param name="current"/>
 						<xsl:param name="last"/>
 						<xsl:if test="$last&gt;=$current">
-							<url><xsl:attribute name="function">LoadEpisodeList</xsl:attribute><xsl:attribute name="cache">episodes-$$18-<xsl:value-of select="$current"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/$$18/episodes?page=<xsl:value-of select="$current"/>|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[language]</url>
+							<url><xsl:attribute name="function">LoadEpisodeList</xsl:attribute><xsl:attribute name="cache">episodes-$$18-<xsl:value-of select="$current"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/$$18/episodes?page=<xsl:value-of select="$current"/>|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]</url>
 							<xsl:call-template name="generatelinks">
 								<xsl:with-param name="current" select="$current+1"/>
 								<xsl:with-param name="last" select="last"/>
@@ -594,7 +594,7 @@
 								</xsl:choose>
 							</xsl:otherwise>
 						</xsl:choose>
-						<url post="yes" cache="auth.json">https://api.thetvdb.com/login?{"apikey":"439DFEBA9D3059C6","id":<xsl:value-of select="id"/>}|Content-Type=application/json&amp;Accept-Language=$INFO[language]</url>
+						<url post="yes" cache="auth.json">https://api.thetvdb.com/login?{"apikey":"439DFEBA9D3059C6","id":<xsl:value-of select="id"/>}|Content-Type=application/json&amp;accept-language=$INFO[language]</url>
 					</episode>
 				</xsl:template>
 
@@ -657,7 +657,7 @@
 			<RegExp input="$$1" output="\1" dest="19">
 				<expression>"token": "(.*)"</expression>
 			</RegExp>
-			<RegExp input="$$2|" output="&lt;url function=&quot;GetEpisodeDetailsAuth&quot; cache=&quot;episode-\1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/episodes/\1|Authorization=Bearer%20$$19&amp;amp;Accept-Language=$INFO[language]&lt;/url&gt;" dest="5">
+			<RegExp input="$$2|" output="&lt;url function=&quot;GetEpisodeDetailsAuth&quot; cache=&quot;episode-\1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/episodes/\1|Authorization=Bearer%20$$19&amp;amp;accept-language=$INFO[language]&lt;/url&gt;" dest="5">
 				<expression noclean="1" repeat="yes">(\d+)\|</expression>
 			</RegExp>
 			<RegExp input="$$1" output="" dest="13">
@@ -762,7 +762,7 @@
 				<expression noclean="1"/>
 			</RegExp>
 			<RegExp input="$INFO[language]" output="$$6" dest="5">
-				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackEpisodeDetails&quot; cache=&quot;episode-$$17-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/episodes/$$17|Authorization=Bearer%20$$19&amp;Accept-Language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="6">
+				<RegExp input="$$14" output="&lt;url function=&quot;GetFallbackEpisodeDetails&quot; cache=&quot;episode-$$17-$INFO[fallbacklanguage].json&quot;&gt;https://api.thetvdb.com/episodes/$$17|Authorization=Bearer%20$$19&amp;accept-language=$INFO[fallbacklanguage]&lt;/url&gt;" dest="6">
 					<expression clear="yes">(?!^$)</expression>
 				</RegExp>
 				<expression>(?!^\Q$INFO[fallbacklanguage]\E$)</expression>
