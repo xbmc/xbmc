@@ -1591,37 +1591,40 @@ namespace PVR
 
   void CPVRChannelSwitchingInputHandler::OnInputDone()
   {
-    int iChannelNumber;
+    CPVRChannelNumber channelNumber;
     bool bSwitchToPreviousChannel;
+
     {
       CSingleLock lock(m_mutex);
-      iChannelNumber = GetChannelNumber();
+      channelNumber = GetChannelNumber();
       // special case. if only a single zero was typed in, switch to previously played channel.
-      bSwitchToPreviousChannel = (iChannelNumber == 0 && GetCurrentDigitCount() == 1);
+      bSwitchToPreviousChannel = (channelNumber.GetChannelNumber() == 0 && GetCurrentDigitCount() == 1);
     }
 
-    if (iChannelNumber > 0)
-      SwitchToChannel(iChannelNumber);
+    if (channelNumber.GetChannelNumber())
+      SwitchToChannel(channelNumber);
     else if (bSwitchToPreviousChannel)
       SwitchToPreviousChannel();
   }
 
-  void CPVRChannelSwitchingInputHandler::SwitchToChannel(int iChannelNumber)
+  void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber)
   {
-    if (iChannelNumber > 0 && CServiceBroker::GetPVRManager().IsPlaying())
+    if (channelNumber.IsValid() && CServiceBroker::GetPVRManager().IsPlaying())
     {
       const CPVRChannelPtr playingChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
       if (playingChannel)
       {
-        if (iChannelNumber != playingChannel->ChannelNumber().GetChannelNumber())
+        if (channelNumber != playingChannel->ChannelNumber())
         {
           const CPVRChannelGroupPtr selectedGroup(CServiceBroker::GetPVRManager().GetPlayingGroup(playingChannel->IsRadio()));
-          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, 0)));
+          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(channelNumber));
           if (channel && channel->HasPVRChannelInfoTag())
           {
             CApplicationMessenger::GetInstance().PostMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
+              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
+                                             static_cast<float>(channelNumber.GetChannelNumber()),
+                                             static_cast<float>(channelNumber.GetSubChannelNumber()))));
           }
         }
       }
@@ -1642,10 +1645,12 @@ namespace PVR
           const CFileItemPtr channel(group->GetLastPlayedChannel(playingChannel->ChannelID()));
           if (channel && channel->HasPVRChannelInfoTag())
           {
+            const CPVRChannelNumber channelNumber = channel->GetPVRChannelInfoTag()->ChannelNumber();
             CApplicationMessenger::GetInstance().SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
-                                             static_cast<float>(channel->GetPVRChannelInfoTag()->ChannelNumber().GetChannelNumber()))));
+                                             static_cast<float>(channelNumber.GetChannelNumber()),
+                                             static_cast<float>(channelNumber.GetSubChannelNumber()))));
           }
         }
       }

@@ -46,7 +46,6 @@ using namespace PVR;
 
 CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
-  CPVRChannelNumberInputHandler(1000),
   m_bShowHiddenChannels(false)
 {
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
@@ -122,7 +121,11 @@ bool CGUIWindowPVRChannelsBase::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      AppendChannelNumberDigit(action.GetID() - REMOTE_0);
+      AppendChannelNumberCharacter((action.GetID() - REMOTE_0) + '0');
+      return true;
+
+    case ACTION_CHANNEL_NUMBER_SEP:
+      AppendChannelNumberCharacter(CPVRChannelNumber::SEPARATOR);
       return true;
   }
 
@@ -307,13 +310,13 @@ void CGUIWindowPVRChannelsBase::ShowGroupManager(void)
 
 void CGUIWindowPVRChannelsBase::OnInputDone()
 {
-  const int iChannelNumber = GetChannelNumber();
-  if (iChannelNumber >= 0)
+  const CPVRChannelNumber channelNumber = GetChannelNumber();
+  if (channelNumber.IsValid())
   {
     int itemIndex = 0;
     for (const CFileItemPtr channel : m_vecItems->GetList())
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber().GetChannelNumber() == iChannelNumber)
+      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

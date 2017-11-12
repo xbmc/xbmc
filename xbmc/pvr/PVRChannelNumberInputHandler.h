@@ -19,11 +19,12 @@
  *
  */
 
-#include <deque>
 #include <string>
 
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+
+#include "pvr/channels/PVRChannelNumber.h"
 
 namespace PVR
 {
@@ -31,7 +32,7 @@ namespace PVR
 class CPVRChannelNumberInputHandler : private ITimerCallback
 {
 public:
-  static const int CHANNEL_NUMBER_INPUT_MAX_DIGITS = 4;
+  static const int CHANNEL_NUMBER_INPUT_MAX_DIGITS = 5;
 
   CPVRChannelNumberInputHandler();
 
@@ -53,10 +54,10 @@ public:
   virtual void OnInputDone() = 0;
 
   /*!
-   * @brief Appends a channel digit.
-   * @param iDigit the digit to append. value must be in range of 0 to 9.
+   * @brief Appends a channel number character.
+   * @param cCharacter The character to append. value must be CPVRChannelNumber::SEPARATOR ('.') or any char in the range from '0' to '9'.
    */
-  void AppendChannelNumberDigit(int iDigit);
+  void AppendChannelNumberCharacter(char cCharacter);
 
   /*!
    * @brief Get the currently entered channel number as a formatted string. Format is n digits with leading zeros, where n is the number of digits specified when calling the ctor.
@@ -69,21 +70,20 @@ protected:
    * @brief Get the currently entered channel number.
    * @return the channel number.
    */
-  int GetChannelNumber() const;
+  CPVRChannelNumber GetChannelNumber() const;
 
   /*!
    * @brief Get the currently entered number of digits.
    * @return the number of digits.
    */
-  int GetCurrentDigitCount() const { return m_digits.size(); }
+  int GetCurrentDigitCount() const { return m_inputBuffer.size(); }
 
   CCriticalSection m_mutex;
 
 private:
   const int m_iDelay;
   const int m_iMaxDigits;
-  std::deque<int> m_digits;
-  std::string m_strChannel;
+  std::string m_inputBuffer;
   CTimer m_timer;
 };
 

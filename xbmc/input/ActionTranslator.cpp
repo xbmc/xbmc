@@ -219,6 +219,7 @@ static const std::map<ActionName, ActionID> ActionMappings =
     { "record"                   , ACTION_RECORD },
     { "togglecommskip"           , ACTION_TOGGLE_COMMSKIP },
     { "showtimerrule"            , ACTION_PVR_SHOW_TIMER_RULE },
+    { "channelnumberseparator"   , ACTION_CHANNEL_NUMBER_SEP },
 
     // Mouse actions
     { "leftclick"                , ACTION_MOUSE_LEFT_CLICK },

@@ -120,6 +120,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
+    case ACTION_CHANNEL_NUMBER_SEP:
     {
       if (!bIsPlayingPVR)
         return false;
@@ -131,12 +132,22 @@ bool CPVRActionListener::OnAction(const CAction &action)
         if (g_windowManager.IsPythonWindow(g_windowManager.GetTopMostModalDialogID()))
           return false;
 
-        int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
+        char cCharacter;
+        if (action.GetID() == ACTION_CHANNEL_NUMBER_SEP)
+        {
+          cCharacter = CPVRChannelNumber::SEPARATOR;
+        }
+        else
+        {
+          int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
+          cCharacter = (iRemote - REMOTE_0) + '0';
+        }
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberCharacter(cCharacter);
         return true;
       }
       return false;
     }
+
     case ACTION_SHOW_INFO:
     {
       if (!bIsPlayingPVR)
@@ -173,12 +184,14 @@ bool CPVRActionListener::OnAction(const CAction &action)
       if (!bIsPlayingPVR)
         return false;
 
-      // Offset from key codes back to button number
-      int iChannelNumber = static_cast<int>(action.GetAmount());
-      const CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
-      const CFileItemPtr item(CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup()->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, 0)));
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
+      int iChannelNumber = static_cast<int>(action.GetAmount(0));
+      int iSubChannelNumber = static_cast<int>(action.GetAmount(1));
 
+      const CPVRChannelPtr currentChannel = CServiceBroker::GetPVRManager().GetCurrentChannel();
+      const CPVRChannelGroupPtr selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
+      const CFileItemPtr item(selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber)));
+
+      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
       return true;
     }
   }
