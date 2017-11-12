@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "windowing/gbm/DRMUtils.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -52,6 +53,24 @@ void CVideoBufferDRMPRIME::SetRef(AVFrame* frame)
 
 void CVideoBufferDRMPRIME::Unref()
 {
+  struct drm* drm = CDRMUtils::GetDrm();
+
+  if (m_fb_id)
+  {
+    drmModeRmFB(drm->fd, m_fb_id);
+    m_fb_id = 0;
+  }
+
+  for (int i = 0; i < AV_DRM_MAX_PLANES; i++)
+  {
+    if (m_handles[i])
+    {
+      struct drm_gem_close gem_close = { .handle = m_handles[i] };
+      drmIoctl(drm->fd, DRM_IOCTL_GEM_CLOSE, &gem_close);
+      m_handles[i] = 0;
+    }
+  }
+
   av_frame_unref(m_pFrame);
 }
 

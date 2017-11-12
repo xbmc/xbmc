@@ -70,6 +70,7 @@ public:
   static bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
   static bool SetMode(RESOLUTION_INFO res);
   static void WaitVBlank();
+  static struct drm *GetDrm();
 
 protected:
   static drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);

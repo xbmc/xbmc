@@ -41,6 +41,9 @@ public:
   void SetRef(AVFrame* frame);
   void Unref();
 
+  uint32_t m_fb_id = 0;
+  uint32_t m_handles[AV_DRM_MAX_PLANES] = {0};
+
   AVDRMFrameDescriptor* GetDescriptor() const { return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]); }
   uint32_t GetWidth() const { return m_pFrame->width; }
   uint32_t GetHeight() const { return m_pFrame->height; }

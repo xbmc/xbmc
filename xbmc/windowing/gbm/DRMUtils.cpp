@@ -43,6 +43,11 @@ static drmModeConnectorPtr m_drm_connector = nullptr;
 static drmModeEncoderPtr m_drm_encoder = nullptr;
 static drmModeCrtcPtr m_orig_crtc = nullptr;
 
+struct drm *CDRMUtils::GetDrm()
+{
+  return m_drm;
+}
+
 void CDRMUtils::WaitVBlank()
 {
   drmVBlank vbl;

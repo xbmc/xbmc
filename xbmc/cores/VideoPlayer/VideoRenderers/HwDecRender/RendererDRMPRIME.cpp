@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "utils/log.h"
+#include "windowing/gbm/DRMUtils.h"
 
 CRendererDRMPRIME::CRendererDRMPRIME()
 {
@@ -161,5 +162,64 @@ bool CRendererDRMPRIME::Supports(ESCALINGMETHOD method)
 
 void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
 {
-  // TODO: implement
+  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
+  if (descriptor && descriptor->nb_layers)
+  {
+    uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0};
+    struct drm* drm = CDRMUtils::GetDrm();
+    int ret;
+
+    // convert Prime FD to GEM handle
+    for (int object = 0; object < descriptor->nb_objects; object++)
+    {
+      ret = drmPrimeFDToHandle(drm->fd, descriptor->objects[object].fd, &buffer->m_handles[object]);
+      if (ret < 0)
+      {
+        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to retrieve the GEM handle from prime fd %d, ret = %d", __FUNCTION__, descriptor->objects[object].fd, ret);
+        return;
+      }
+    }
+
+    AVDRMLayerDescriptor* layer = &descriptor->layers[0];
+
+    for (int plane = 0; plane < layer->nb_planes; plane++)
+    {
+      uint32_t handle = buffer->m_handles[layer->planes[plane].object_index];
+      if (handle && layer->planes[plane].pitch)
+      {
+        handles[plane] = handle;
+        pitches[plane] = layer->planes[plane].pitch;
+        offsets[plane] = layer->planes[plane].offset;
+      }
+    }
+
+    // add the video frame FB
+    ret = drmModeAddFB2(drm->fd, buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, &buffer->m_fb_id, 0);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to add drm layer %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
+      return;
+    }
+
+    int32_t crtc_x = (int32_t)m_destRect.x1;
+    int32_t crtc_y = (int32_t)m_destRect.y1;
+    uint32_t crtc_w = (uint32_t)m_destRect.Width();
+    uint32_t crtc_h = (uint32_t)m_destRect.Height();
+    uint32_t src_x = 0;
+    uint32_t src_y = 0;
+    uint32_t src_w = buffer->GetWidth() << 16;
+    uint32_t src_h = buffer->GetHeight() << 16;
+
+    // TODO: use atomic or legacy api
+
+    // show the video frame FB on the video plane
+    ret = drmModeSetPlane(drm->fd, drm->video_plane_id, drm->crtc_id, buffer->m_fb_id, 0,
+                          crtc_x, crtc_y, crtc_w, crtc_h,
+                          src_x, src_y, src_w, src_h);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, drm->video_plane_id, buffer->m_fb_id, ret);
+      return;
+    }
+  }
 }
