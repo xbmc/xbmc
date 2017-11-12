@@ -430,10 +430,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
 
-  // If non-zero, the decoded audio and video frames returned from avcodec_decode_video2() are reference-counted and are valid indefinitely.
-  // Without this frames will get (deep) copied when deinterlace is set to automatic, but file is not deinterlaced.
-  m_pCodecContext->refcounted_frames = 1;
-
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
