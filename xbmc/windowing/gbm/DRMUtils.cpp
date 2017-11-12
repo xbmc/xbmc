@@ -391,7 +391,10 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     res.iHeight = m_drm_connector->modes[i].vdisplay;
     res.iScreenWidth = m_drm_connector->modes[i].hdisplay;
     res.iScreenHeight = m_drm_connector->modes[i].vdisplay;
-    res.fRefreshRate = m_drm_connector->modes[i].vrefresh;
+    if (m_drm_connector->modes[i].clock % 10 != 0)
+      res.fRefreshRate = (float)m_drm_connector->modes[i].vrefresh * (1000.0f/1001.0f);
+    else
+      res.fRefreshRate = m_drm_connector->modes[i].vrefresh;
     res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
     res.fPixelRatio = 1.0f;
     res.bFullScreen = true;
