@@ -706,6 +706,7 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append("Server 2012 R2");
       break;
     case WindowsVersionWin10:
+    case WindowsVersionWin10_FCU:
       if (osvi.wProductType == VER_NT_WORKSTATION)
         osNameVer.append("10");
       else
