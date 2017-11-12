@@ -38,7 +38,7 @@
 #include <tpcshrd.h>
 #include "guilib/GraphicContext.h"
 
-CWinSystemWin32::CWinSystemWin32() 
+CWinSystemWin32::CWinSystemWin32()
   : CWinSystemBase()
   , PtrGetGestureInfo(nullptr)
   , PtrSetGestureConfig(nullptr)
@@ -60,6 +60,7 @@ CWinSystemWin32::CWinSystemWin32()
   , m_bMinimized(false)
 {
   m_eWindowSystem = WINDOW_SYSTEM_WIN32;
+  m_winEvents.reset(new CWinEventsWin32());
 }
 
 CWinSystemWin32::~CWinSystemWin32()
@@ -358,7 +359,7 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
   RECT wr = wi.rcWindow;
 
   if ( wr.bottom - wr.top == rc.bottom - rc.top
-    && wr.right - wr.left == rc.right - rc.left 
+    && wr.right - wr.left == rc.right - rc.left
     && (wi.dwStyle & WS_CAPTION) == (m_windowStyle & WS_CAPTION)
     && !forceResize)
   {
@@ -421,9 +422,9 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   bool changeScreen = false;   // display is changed
   bool stereoChange = IsStereoEnabled() != (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
-  if ( m_nWidth != res.iWidth 
-    || m_nHeight != res.iHeight 
-    || m_fRefreshRate != res.fRefreshRate 
+  if ( m_nWidth != res.iWidth
+    || m_nHeight != res.iHeight
+    || m_fRefreshRate != res.fRefreshRate
     || m_nScreen != res.iScreen
     || stereoChange)
   {
@@ -653,7 +654,7 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
       sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
       sDevMode.dmDisplayFrequency != static_cast<int>(res.fRefreshRate) ||
       ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
-      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) 
+      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED))
       || forceChange)
   {
     ZeroMemory(&sDevMode, sizeof(sDevMode));
@@ -716,8 +717,8 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
       else
         CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx failed with %d", __FUNCTION__, rc);
     }
-    
-    if (bResChanged) 
+
+    if (bResChanged)
       ResolutionChanged();
 
     return bResChanged;
@@ -945,7 +946,7 @@ bool CWinSystemWin32::Show(bool raise)
 
   SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
   UpdateWindow(m_hWnd);
-  
+
   if (raise)
   {
     SetForegroundWindow(m_hWnd);

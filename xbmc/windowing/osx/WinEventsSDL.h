@@ -19,9 +19,6 @@
  */
 #pragma once
 
-#ifndef WINDOW_EVENTS_SDL_H
-#define WINDOW_EVENTS_SDL_H
-
 #include "system.h"
 
 #ifdef HAS_SDL
@@ -32,7 +29,7 @@
 class CWinEventsSDL : public IWinEvents
 {
 public:
-  virtual bool MessagePump();
+  bool MessagePump() override;
 
 private:
 #ifdef TARGET_DARWIN
@@ -43,4 +40,4 @@ private:
 };
 
 #endif
-#endif // WINDOW_EVENTS_SDL_H
+

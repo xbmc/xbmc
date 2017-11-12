@@ -214,11 +214,6 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 }
 
 
-void CWinEventsWin32::MessagePush(XBMC_Event *newEvent)
-{
-  g_application.OnEvent(*newEvent);
-}
-
 bool CWinEventsWin32::MessagePump()
 {
   MSG  msg;

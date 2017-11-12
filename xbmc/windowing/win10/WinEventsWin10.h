@@ -30,7 +30,7 @@ class CWinEventsWin10 : public IWinEvents
 {
 public:
   void MessagePush(XBMC_Event *newEvent);
-  bool MessagePump();
+  bool MessagePump() override;
   virtual size_t GetQueueSize();
 
   // initialization 

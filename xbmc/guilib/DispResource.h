@@ -20,12 +20,21 @@
 
 #pragma once
 
+// interface for registering into windowing
+// to get notified about display events
+// interface only, does not control lifetime of the object
 class IDispResource
 {
 public:
-  virtual ~IDispResource() = default;
   virtual void OnLostDisplay() {};
   virtual void OnResetDisplay() {};
   virtual void OnAppFocusChange(bool focus) {};
 };
 
+// interface used by clients to register into render loop
+// interface only, does not control lifetime of the object
+class IRenderLoop
+{
+public:
+  virtual void FrameMove() = 0;
+};

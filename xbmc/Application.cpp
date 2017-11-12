@@ -303,48 +303,58 @@ CApplication::~CApplication(void)
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
-  switch(newEvent.type)
+  m_winEvents.push_back(newEvent);
+  return true;
+}
+
+void CApplication::CApplication::HandleWinEvents()
+{
+  while (!m_winEvents.empty())
   {
-    case XBMC_QUIT:
-      if (!g_application.m_bStop)
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
-      break;
-    case XBMC_VIDEORESIZE:
-      if (g_windowManager.Initialized())
-      {
-        if (!g_advancedSettings.m_fullScreen)
+    auto newEvent = m_winEvents.front();
+    m_winEvents.pop_front();
+    switch(newEvent.type)
+    {
+      case XBMC_QUIT:
+        if (!g_application.m_bStop)
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+        break;
+      case XBMC_VIDEORESIZE:
+        if (g_windowManager.Initialized())
         {
-          g_graphicsContext.ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
-          CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
-          CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
-          CServiceBroker::GetSettings().Save();
+          if (!g_advancedSettings.m_fullScreen)
+          {
+            g_graphicsContext.ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
+            CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
+            CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
+            CServiceBroker::GetSettings().Save();
+          }
         }
-      }
-      break;
-    case XBMC_VIDEOMOVE:
+        break;
+      case XBMC_VIDEOMOVE:
       {
         g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
       }
-      break;
-    case XBMC_MODECHANGE:
-      g_graphicsContext.ApplyModeChange(newEvent.mode.res);
-      break;
-    case XBMC_USEREVENT:
-      CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
-      break;
-    case XBMC_APPCOMMAND:
-      return g_application.OnAppCommand(newEvent.appcommand.action);
-    case XBMC_SETFOCUS:
-      // Reset the screensaver
-      g_application.ResetScreenSaver();
-      g_application.WakeUpScreenSaverAndDPMS();
-      // Send a mouse motion event with no dx,dy for getting the current guiitem selected
-      g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
-      break;
-    default:
-      return CServiceBroker::GetInputManager().OnEvent(newEvent);
+        break;
+      case XBMC_MODECHANGE:
+        g_graphicsContext.ApplyModeChange(newEvent.mode.res);
+        break;
+      case XBMC_USEREVENT:
+        CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
+        break;
+      case XBMC_APPCOMMAND:
+        g_application.OnAppCommand(newEvent.appcommand.action);
+      case XBMC_SETFOCUS:
+        // Reset the screensaver
+        g_application.ResetScreenSaver();
+        g_application.WakeUpScreenSaverAndDPMS();
+        // Send a mouse motion event with no dx,dy for getting the current guiitem selected
+        g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
+        break;
+      default:
+        CServiceBroker::GetInputManager().OnEvent(newEvent);
+    }
   }
-  return true;
 }
 
 extern "C" void __stdcall init_emu_environ();
@@ -2675,7 +2685,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     float frameTime = m_frameTime.GetElapsedSeconds();
     m_frameTime.StartZero();
     // never set a frametime less than 2 fps to avoid problems when debugging and on breaks
-    if( frameTime > 0.5 ) frameTime = 0.5;
+    if( frameTime > 0.5 )
+      frameTime = 0.5;
 
     if (processGUI && m_renderGUI)
     {
@@ -2691,8 +2702,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       }
       g_graphicsContext.Unlock();
     }
-    CWinEvents::MessagePump();
 
+    HandleWinEvents();
     CServiceBroker::GetInputManager().Process(g_windowManager.GetActiveWindowID(), frameTime);
 
     if (processGUI && m_renderGUI)
@@ -2745,6 +2756,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   }
 
   m_pPlayer->FrameMove();
+
+  // this will go away when render systems gets its own thread
+  g_Windowing.DriveRenderLoop();
 }
 
 

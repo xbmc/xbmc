@@ -22,6 +22,7 @@
 #include "system.h"
 
 #include "VideoSyncIos.h"
+#include "WinEventsIOS.h"
 #include "WinSystemIOS.h"
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
@@ -79,7 +80,7 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
   m_bIsBackgrounded = false;
   m_pDisplayLink = new CADisplayLinkWrapper;
   m_pDisplayLink->callbackClass = [[IOSDisplayLinkCallback alloc] init];
-
+  m_winEvents.reset(new CWinEventsIOS());
 }
 
 CWinSystemIOS::~CWinSystemIOS()

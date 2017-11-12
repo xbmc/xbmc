@@ -138,7 +138,7 @@ void CWinEventsWin10::UpdateWindowSize()
   newEvent.resize.w = size.Width;
   newEvent.resize.h = size.Height;
   if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-    CWinEvents::MessagePush(&newEvent);
+    MessagePush(&newEvent);
 }
 
 // Window event handlers.
@@ -182,7 +182,7 @@ void CWinEventsWin10::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ ar
     XBMC_Event newEvent;
     memset(&newEvent, 0, sizeof(newEvent));
     newEvent.type = XBMC_QUIT;
-    CWinEvents::MessagePush(&newEvent);
+    MessagePush(&newEvent);
   }
 }
 
@@ -219,7 +219,7 @@ void CWinEventsWin10::OnPointerPressed(CoreWindow ^ sender, PointerEventArgs ^ a
       // TODO
     }
   }
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
 }
 
 void CWinEventsWin10::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
@@ -242,7 +242,7 @@ void CWinEventsWin10::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
   newEvent.type = XBMC_MOUSEMOTION;
   newEvent.motion.x = position.X;
   newEvent.motion.y = position.Y;
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
 }
 
 void CWinEventsWin10::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ args)
@@ -269,7 +269,7 @@ void CWinEventsWin10::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ ar
   else if (point->Properties->PointerUpdateKind == Windows::UI::Input::PointerUpdateKind::RightButtonReleased)
     newEvent.button.button = XBMC_BUTTON_RIGHT;
 
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
 }
 
 void CWinEventsWin10::OnPointerExited(CoreWindow^ sender, PointerEventArgs^ args)
@@ -292,9 +292,9 @@ void CWinEventsWin10::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs
   newEvent.button.x = args->CurrentPoint->Position.X;
   newEvent.button.y = args->CurrentPoint->Position.Y;
   newEvent.button.button = args->CurrentPoint->Properties->MouseWheelDelta > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
   newEvent.type = XBMC_MOUSEBUTTONUP;
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
 }
 
 static void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
@@ -345,7 +345,7 @@ static void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode
   memset(&newEvent, 0, sizeof(newEvent));
   newEvent.type = isDown ? XBMC_KEYDOWN : XBMC_KEYUP;
   newEvent.key.keysym = keysym;
-  CWinEvents::MessagePush(&newEvent);
+  MessagePush(&newEvent);
 }
 
 void CWinEventsWin10::OnAcceleratorKeyActivated(CoreDispatcher^ sender, AcceleratorKeyEventArgs^ args)

@@ -1,5 +1,4 @@
 set(SOURCES OSScreenSaver.cpp
-            WinEvents.cpp
             WinSystem.cpp)
 
 set(HEADERS OSScreenSaver.h
@@ -9,7 +8,7 @@ set(HEADERS OSScreenSaver.h
             XBMC_events.h
             VideoSync.h)
 
-if(CORE_SYSTEM_NAME STREQUAL linux AND NOT MIR_FOUND)
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi OR CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES WinEventsLinux.cpp)
   list(APPEND HEADERS WinEventsLinux.h)
 endif()

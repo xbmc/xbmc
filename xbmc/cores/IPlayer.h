@@ -268,7 +268,6 @@ public:
   /*!
    \brief hook into render loop of render thread
    */
-  virtual void FrameMove() {};
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
   virtual void FlushRenderer() {};
   virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {};

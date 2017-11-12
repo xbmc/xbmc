@@ -52,6 +52,9 @@ public:
   bool Show(bool raise = true) override;
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
+
+  void MessagePush(XBMC_Event *newEvent);
+
 protected:
   CAndroidUtils *m_android;
 

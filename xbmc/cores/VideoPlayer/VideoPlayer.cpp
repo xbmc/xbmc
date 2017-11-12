@@ -1378,6 +1378,8 @@ void CVideoPlayer::Prepare()
 
 void CVideoPlayer::Process()
 {
+  g_Windowing.RegisterRenderLoop(this);
+
   Prepare();
 
   while (!m_bAbortRequest)
@@ -1643,6 +1645,8 @@ void CVideoPlayer::Process()
     // process the packet
     ProcessPacket(pStream, pPacket);
   }
+
+  g_Windowing.UnregisterRenderLoop(this);
 }
 
 bool CVideoPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg)

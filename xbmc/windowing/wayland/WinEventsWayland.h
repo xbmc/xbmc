@@ -40,8 +40,8 @@ namespace WAYLAND
 class CWinEventsWayland : public IWinEvents
 {
 public:
-  virtual bool MessagePump() override;
-  virtual void MessagePush(XBMC_Event* ev) override;
+  bool MessagePump() override;
+  void MessagePush(XBMC_Event* ev);
   /// Write buffered messages to the compositor
   static void Flush();
   /// Do a roundtrip on the specified queue from the event processing thread

@@ -22,10 +22,10 @@
 
 #include <cmath>
 
+#include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "windowing/WinEvents.h"
 
 using namespace KODI::MESSAGING;
 
@@ -179,7 +179,7 @@ void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float
   newEvent.touch.y3 = y3;
   newEvent.touch.pointers = pointers;
 
-  CWinEvents::MessagePush(&newEvent);
+  g_application.OnEvent(newEvent);
 }
 
 void CGenericTouchActionHandler::focusControl(float x, float y)
@@ -189,5 +189,5 @@ void CGenericTouchActionHandler::focusControl(float x, float y)
   newEvent.focus.x = static_cast<int> (std::round(x));
   newEvent.focus.y = static_cast<int> (std::round(y));
 
-  CWinEvents::MessagePush(&newEvent);
+  g_application.OnEvent(newEvent);
 }

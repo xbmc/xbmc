@@ -42,7 +42,7 @@ namespace RETRO
   class CRPProcessInfo;
   class CRPRenderManager;
 
-  class CRetroPlayer : public IPlayer
+  class CRetroPlayer : public IPlayer, public IRenderLoop
   {
   public:
     explicit CRetroPlayer(IPlayerCallback& callback);
