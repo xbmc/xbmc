@@ -49,6 +49,7 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   void FlipPage(CGLContextEGL *m_pGLContext);
+  void WaitVBlank();
 
   void UpdateResolutions() override;
 
