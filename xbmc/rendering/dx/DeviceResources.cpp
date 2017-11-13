@@ -485,7 +485,6 @@ void DX::DeviceResources::ResizeBuffers()
   else
   {
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-    DXGI_SCALING scaling = DisplayMetrics::SupportHighResolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 
     swapChainDesc.Width = lround(m_outputSize.Width);
@@ -496,7 +495,6 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
     swapChainDesc.Flags = 0;
-    swapChainDesc.Scaling = DXGI_SCALING_NONE;
     swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;
