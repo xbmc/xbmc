@@ -20,9 +20,12 @@
 
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/Action.h"
+#include "input/ActionIDs.h"
 #include "input/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "messaging/ApplicationMessenger.h"
 #include "rendering/dx/DeviceResources.h"
 #include "utils/log.h"
 #include "windowing/windows/WinKeyMap.h"
@@ -439,18 +442,6 @@ void CWinEventsWin10::OnDisplayContentsInvalidated(DisplayInformation^ sender, P
 
 void CWinEventsWin10::OnBackRequested(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args)
 {
-  XBMC_keysym keysym;
-  keysym.sym = XBMCK_BACKSPACE;
-
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  newEvent.key.keysym = keysym;
-
-  newEvent.type = XBMC_KEYDOWN;
-  CWinEvents::MessagePush(&newEvent);
-
-  newEvent.type = XBMC_KEYUP;
-  CWinEvents::MessagePush(&newEvent);
-
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NAV_BACK)));
   args->Handled = true;
 }
