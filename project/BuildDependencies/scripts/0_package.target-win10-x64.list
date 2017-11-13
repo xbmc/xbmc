@@ -29,9 +29,9 @@ lzo2-2.09-win10-x64-v140.7z
 mini_wdk-10.0.14393.0-win32.7z
 openssl-1.0.2k-win10-x64-v140.7z
 pcre-8.40-win10-x64-v140.7z
-pillow-4.2.1-win10-x64-v140.7z
-pycryptodome-3.4.7-win10-x64-v140.7z
-python-2.7.13-win10-x64-v140.7z
+pillow-4.2.1-v1-win10-x64-v140.7z
+pycryptodome-3.4.7-v1-win10-x64-v140.7z
+python-2.7.13-v1-win10-x64-v140.7z
 rapidjson-1.1.0-win32.7z
 shairplay-ce80e00-win10-x64-v140.7z
 sqlite-3170000-win10-x64-v140.7z

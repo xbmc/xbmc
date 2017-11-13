@@ -84,6 +84,10 @@ TResult Wait(Windows::Foundation::IAsyncOperation<TResult>^ asyncOp)
 template <typename TResult> inline
 TResult Wait(Concurrency::task<TResult> &asyncOp)
 {
+  auto dispatcher = Windows::UI::Core::CoreWindow::GetForCurrentThread()->Dispatcher;
+  if (!dispatcher->HasThreadAccess)
+    return asyncOp.get();
+
   auto _sync = std::make_shared<Concurrency::event>();
 
   auto workItem = ref new Windows::System::Threading::WorkItemHandler(

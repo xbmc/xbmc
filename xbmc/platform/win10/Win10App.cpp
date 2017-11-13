@@ -65,6 +65,9 @@ void App::Initialize(CoreApplicationView^ applicationView)
   // TODO 
   // CoreApplication::UnhandledErrorDetected += ref new EventHandler<UnhandledErrorDetectedEventArgs^>(this, &App::OnUnhandledErrorDetected);
 
+  //Initialize COM
+  CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
   // At this point we have access to the device. 
   // We can create the device-dependent resources.
   CWinEventsWin10::InitOSKeymap();
@@ -91,19 +94,24 @@ void App::Load(Platform::String^ entryPoint)
 // This method is called after the window becomes active.
 void App::Run()
 {
-  XBMC::Context context;
-  // Initialize before CAppParamParser so it can set the log level
-  g_advancedSettings.Initialize();
-  // fix the case then window opened in FS, but current setting is RES_WINDOW
-  // the proper way is make window params related to setting, but in this setting isn't loaded yet
-  // perhaps we should observe setting changes and change window's Preffered props 
-  bool fullscreen = ApplicationView::GetForCurrentView()->IsFullScreenMode;
-  g_advancedSettings.m_startFullScreen = fullscreen;
+  {
+    XBMC::Context context;
+    // Initialize before CAppParamParser so it can set the log level
+    g_advancedSettings.Initialize();
+    // fix the case then window opened in FS, but current setting is RES_WINDOW
+    // the proper way is make window params related to setting, but in this setting isn't loaded yet
+    // perhaps we should observe setting changes and change window's Preffered props 
+    bool fullscreen = ApplicationView::GetForCurrentView()->IsFullScreenMode;
+    g_advancedSettings.m_startFullScreen = fullscreen;
 
-  CAppParamParser appParamParser;
-  appParamParser.Parse(m_argv.data(), m_argv.size());
-  // Create and run the app
-  XBMC_Run(true, appParamParser);
+    CAppParamParser appParamParser;
+    appParamParser.Parse(m_argv.data(), m_argv.size());
+    // Create and run the app
+    XBMC_Run(true, appParamParser);
+  }
+
+  WSACleanup();
+  CoUninitialize();
 }
 
 // Required for IFrameworkView.
@@ -145,10 +153,11 @@ void App::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^
       using KODI::PLATFORM::WINDOWS::FromW;
       for (auto file : fileArgs->Files)
       {
-        // add file to FAL to get access to it later
-        StorageApplicationPermissions::FutureAccessList->Clear();
-        StorageApplicationPermissions::FutureAccessList->Add(file, file->Path);
-
+        if (!StorageApplicationPermissions::FutureAccessList->CheckAccess(file))
+        {
+          // add file to FAL to get access to it later
+          StorageApplicationPermissions::FutureAccessList->Add(file, file->Path);
+        }
         std::string filePath = FromW(file->Path->Data(), file->Path->Length());
         push_back(m_argv, filePath);
       }

@@ -58,6 +58,7 @@ using namespace MEDIA_DETECT;
 #ifdef TARGET_WINDOWS_STORE
 #include <collection.h>
 #include <ppltasks.h>
+#include "platform/win10/AsyncHelpers.h"
 using namespace Windows::Devices::Power;
 using namespace Windows::Graphics::Display;
 using namespace Windows::Foundation::Collections;
@@ -380,23 +381,19 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
 std::vector<std::string> CWIN32Util::GetDiskUsage()
 {
   std::vector<std::string> result;
+  ULARGE_INTEGER ULTotal = { { 0 } };
+  ULARGE_INTEGER ULTotalFree = { { 0 } };
+
 #ifdef TARGET_WINDOWS_STORE
-  auto propertyKeys = ref new Platform::Collections::Vector<Platform::String^>();
-  propertyKeys->Append("System.FreeSpace");
+  std::string strRet;
 
-  // gets free space for drive where app is installed
-  StorageFolder^ localFolder = ApplicationData::Current->LocalFolder;
-  Concurrency::create_task(localFolder->Properties->RetrievePropertiesAsync(propertyKeys))
-    .then([&result](IMap<Platform::String^, Platform::Object^>^ retrivied)
-  {
-    auto freeSpace = (uint64_t)retrivied->Lookup("System.FreeSpace");
-    auto strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%d MB %s", int(freeSpace / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
-    result.push_back(strRet);
-  }).wait();
+  Platform::String^ localfolder = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+  std::wstring folderNameW(localfolder->Data());
+
+  GetDiskFreeSpaceExW(folderNameW.c_str(), nullptr, &ULTotal, &ULTotalFree);
+  strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%d MB %s", (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
+  result.push_back(strRet);
 #else
-  ULARGE_INTEGER ULTotal= { { 0 } };
-  ULARGE_INTEGER ULTotalFree= { { 0 } };
-
   std::unique_ptr<wchar_t> pcBuffer;
   DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer.get() );
   if( dwStrLength != 0 )
@@ -1636,21 +1633,17 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   bool result = false;
 
   auto removables = Windows::Storage::KnownFolders::RemovableDevices;
-  Concurrency::create_task(removables->GetFoldersAsync())
-    .then([&strWdrive, &result](Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFolder^>^ vector)
+  auto vector = Wait(removables->GetFoldersAsync());
+  auto strdrive = KODI::PLATFORM::WINDOWS::FromW(strWdrive);
+  for (auto device : vector)
+  {
+    auto path = KODI::PLATFORM::WINDOWS::FromW(device->Path->Data());
+    if (StringUtils::StartsWith(path, strdrive))
     {
-      auto strdrive = KODI::PLATFORM::WINDOWS::FromW(strWdrive);
-      for (auto device : vector)
-      {
-        auto path = KODI::PLATFORM::WINDOWS::FromW(device->Path->Data());
-        if (StringUtils::StartsWith(path, strdrive))
-        {
-          // looks like drive is removable
-          result = true;
-        }
-      }
-    }).wait();
-
+      // looks like drive is removable
+      result = true;
+    }
+  }
   return false;
 #else
   std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());

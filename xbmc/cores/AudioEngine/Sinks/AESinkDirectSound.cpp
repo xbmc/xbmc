@@ -20,78 +20,44 @@
 
 #define INITGUID
 
-#include <algorithm>
 
 #include "AESinkDirectSound.h"
-#include "utils/log.h"
-#include <initguid.h>
-#include <list>
+#include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "platform/win32/CharsetConverter.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+
+#include <algorithm>
 #include <Audioclient.h>
+#include <initguid.h>
+#include <list>
 #include <Mmreg.h>
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
 #include <Rpc.h>
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/StringUtils.h"
-#include "platform/win32/CharsetConverter.h"
-#pragma comment(lib, "Rpcrt4.lib")
 
+#pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
+extern const char *WASAPIErrToStr(HRESULT err);
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
-
-#define ERRTOSTR(err) case err: return #err
 
 #define DS_SPEAKER_COUNT 8
 static const unsigned int DSChannelOrder[] = {SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT};
-static const enum AEChannel AEChannelNames[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
-
-static enum AEChannel layoutsByChCount[9][9] = {
-    {AE_CH_NULL},
-    {AE_CH_FC, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_BC, AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_LFE, AE_CH_NULL}};
+static const enum AEChannel AEChannelNamesDS[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
 struct DSDevice
 {
   std::string name;
   LPGUID     lpGuid;
 };
-
-struct winEndpointsToAEDeviceType
-{
-  std::string winEndpointType;
-  AEDeviceType aeDeviceType;
-};
-
-static const winEndpointsToAEDeviceType winEndpoints[EndpointFormFactor_enum_count] =
-{
-  {"Network Device - ",         AE_DEVTYPE_PCM},
-  {"Speakers - ",               AE_DEVTYPE_PCM},
-  {"LineLevel - ",              AE_DEVTYPE_PCM},
-  {"Headphones - ",             AE_DEVTYPE_PCM},
-  {"Microphone - ",             AE_DEVTYPE_PCM},
-  {"Headset - ",                AE_DEVTYPE_PCM},
-  {"Handset - ",                AE_DEVTYPE_PCM},
-  {"Digital Passthrough - ", AE_DEVTYPE_IEC958},
-  {"SPDIF - ",               AE_DEVTYPE_IEC958},
-  {"HDMI - ",                  AE_DEVTYPE_HDMI},
-  {"Unknown - ",                AE_DEVTYPE_PCM},
-};
-
-// implemented in AESinkWASAPI.cpp
-extern std::string localWideToUtf(LPCWSTR wstr);
 
 static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
 {
@@ -508,7 +474,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       goto failed;
     }
 
-    std::string strFriendlyName = localWideToUtf(varName.pwszVal);
+    std::string strFriendlyName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
@@ -520,7 +486,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       goto failed;
     }
 
-    std::string strDevName = localWideToUtf(varName.pwszVal);
+    std::string strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
@@ -706,7 +672,7 @@ void CAESinkDirectSound::AEChannelsFromSpeakerMask(DWORD speakers)
   for (int i = 0; i < DS_SPEAKER_COUNT; i++)
   {
     if (speakers & DSChannelOrder[i])
-      m_channelLayout += AEChannelNames[i];
+      m_channelLayout += AEChannelNamesDS[i];
   }
 }
 
@@ -717,7 +683,7 @@ DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo &channe
   for (unsigned int i = 0; i < channels.Count(); i++)
   {
     for (unsigned int j = 0; j < DS_SPEAKER_COUNT; j++)
-      if (channels[i] == AEChannelNames[j])
+      if (channels[i] == AEChannelNamesDS[j])
         mask |= DSChannelOrder[j];
   }
 
@@ -755,43 +721,6 @@ const char *CAESinkDirectSound::dserr2str(int err)
     case DSERR_FXUNAVAILABLE: return "DSERR_FXUNAVAILABLE";
     default: return "unknown";
   }
-}
-
-const char *CAESinkDirectSound::WASAPIErrToStr(HRESULT err)
-{
-  switch(err)
-  {
-    ERRTOSTR(AUDCLNT_E_NOT_INITIALIZED);
-    ERRTOSTR(AUDCLNT_E_ALREADY_INITIALIZED);
-    ERRTOSTR(AUDCLNT_E_WRONG_ENDPOINT_TYPE);
-    ERRTOSTR(AUDCLNT_E_DEVICE_INVALIDATED);
-    ERRTOSTR(AUDCLNT_E_NOT_STOPPED);
-    ERRTOSTR(AUDCLNT_E_BUFFER_TOO_LARGE);
-    ERRTOSTR(AUDCLNT_E_OUT_OF_ORDER);
-    ERRTOSTR(AUDCLNT_E_UNSUPPORTED_FORMAT);
-    ERRTOSTR(AUDCLNT_E_INVALID_SIZE);
-    ERRTOSTR(AUDCLNT_E_DEVICE_IN_USE);
-    ERRTOSTR(AUDCLNT_E_BUFFER_OPERATION_PENDING);
-    ERRTOSTR(AUDCLNT_E_THREAD_NOT_REGISTERED);
-    ERRTOSTR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED);
-    ERRTOSTR(AUDCLNT_E_ENDPOINT_CREATE_FAILED);
-    ERRTOSTR(AUDCLNT_E_SERVICE_NOT_RUNNING);
-    ERRTOSTR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED);
-    ERRTOSTR(AUDCLNT_E_EXCLUSIVE_MODE_ONLY);
-    ERRTOSTR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL);
-    ERRTOSTR(AUDCLNT_E_EVENTHANDLE_NOT_SET);
-    ERRTOSTR(AUDCLNT_E_INCORRECT_BUFFER_SIZE);
-    ERRTOSTR(AUDCLNT_E_BUFFER_SIZE_ERROR);
-    ERRTOSTR(AUDCLNT_E_CPUUSAGE_EXCEEDED);
-    ERRTOSTR(AUDCLNT_E_BUFFER_ERROR);
-    ERRTOSTR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED);
-    ERRTOSTR(AUDCLNT_E_INVALID_DEVICE_PERIOD);
-    ERRTOSTR(E_POINTER);
-    ERRTOSTR(E_INVALIDARG);
-    ERRTOSTR(E_OUTOFMEMORY);
-    default: break;
-  }
-  return NULL;
 }
 
 std::string CAESinkDirectSound::GetDefaultDevice()
@@ -841,7 +770,7 @@ std::string CAESinkDirectSound::GetDefaultDevice()
     goto failed;
   }
 
-  strDevName = localWideToUtf(varName.pwszVal);
+  strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
   PropVariantClear(&varName);
 
 failed:
