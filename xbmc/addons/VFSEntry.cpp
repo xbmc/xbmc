@@ -145,6 +145,18 @@ class CVFSURLWrapper
     std::vector<std::string> m_strings;
 };
 
+CVFSEntry::ProtocolInfo::ProtocolInfo(BinaryAddonBasePtr addonInfo)
+  : supportPath(addonInfo->Type(ADDON_VFS)->GetValue("@supportPath").asBoolean()),
+    supportUsername(addonInfo->Type(ADDON_VFS)->GetValue("@supportUsername").asBoolean()),
+    supportPassword(addonInfo->Type(ADDON_VFS)->GetValue("@supportPassword").asBoolean()),
+    supportPort(addonInfo->Type(ADDON_VFS)->GetValue("@supportPort").asBoolean()),
+    supportBrowsing(addonInfo->Type(ADDON_VFS)->GetValue("@supportBrowsing").asBoolean()),
+    defaultPort(addonInfo->Type(ADDON_VFS)->GetValue("@defaultPort").asInteger()),
+    type(addonInfo->Type(ADDON_VFS)->GetValue("@protocols").asString()),
+    label(addonInfo->Type(ADDON_VFS)->GetValue("@label").asInteger())
+{
+}
+
 CVFSEntry::CVFSEntry(BinaryAddonBasePtr addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_VFS, addonInfo),
     m_protocols(addonInfo->Type(ADDON_VFS)->GetValue("@protocols").asString()),
@@ -152,9 +164,12 @@ CVFSEntry::CVFSEntry(BinaryAddonBasePtr addonInfo)
     m_zeroconf(addonInfo->Type(ADDON_VFS)->GetValue("@zeroconf").asString()),
     m_files(addonInfo->Type(ADDON_VFS)->GetValue("@files").asBoolean()),
     m_directories(addonInfo->Type(ADDON_VFS)->GetValue("@directories").asBoolean()),
-    m_filedirectories(addonInfo->Type(ADDON_VFS)->GetValue("@filedirectories").asBoolean())
-
+    m_filedirectories(addonInfo->Type(ADDON_VFS)->GetValue("@filedirectories").asBoolean()),
+    m_protocolInfo(addonInfo)
 {
+  if (!addonInfo->Type(ADDON_VFS)->GetValue("@supportDialog").asBoolean())
+    m_protocolInfo.type.clear();
+
   m_struct = {{ 0 }};
   m_struct.toKodi.kodiInstance = this;
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK)

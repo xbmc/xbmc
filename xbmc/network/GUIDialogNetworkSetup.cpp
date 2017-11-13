@@ -226,6 +226,19 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   m_protocols.emplace_back(Protocol{true, true, true, true, false, 22, "sftp", 20260});
 #endif
 
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+  {
+    for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+    {
+      const auto& info = addon->GetProtocolInfo();
+      if (!addon->GetProtocolInfo().type.empty())
+        m_protocols.emplace_back(Protocol{info.supportPath, info.supportUsername,
+                                          info.supportPassword, info.supportPort,
+                                          info.supportBrowsing, info.defaultPort,
+                                          info.type, info.label});
+    }
+  }
+
   for (size_t idx = 0; idx < m_protocols.size(); ++idx)
     labels.push_back(std::make_pair(m_protocols[idx].label, idx));
 
