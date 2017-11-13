@@ -88,9 +88,11 @@ namespace ADDON
     bool HasFiles() const { return m_files; }
     bool HasDirectories() const { return m_directories; }
     bool HasFileDirectories() const { return m_filedirectories; }
+    const std::string& GetZeroconfType() const { return m_zeroconf; }
   protected:
-    std::string m_protocols; //!< Protocols for VFS entry.
+    std::string m_protocols;  //!< Protocols for VFS entry.
     std::string m_extensions; //!< Extensions for VFS entry.
+    std::string m_zeroconf;   //!< Zero conf announce string for VFS protocol.
     bool m_files;             //!< Vfs entry can read files.
     bool m_directories;       //!< VFS entry can list directories.
     bool m_filedirectories;   //!< VFS entry contains file directories.
