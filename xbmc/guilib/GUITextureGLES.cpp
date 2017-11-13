@@ -19,24 +19,23 @@
  */
 
 #include "system.h"
-#if defined(HAS_GLES)
+
 #include "GUITextureGLES.h"
-#endif
 #include "Texture.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "guilib/GraphicContext.h"
 
 #include <cstddef>
-
-#if defined(HAS_GLES)
 
 
 CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
+  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(&CServiceBroker::GetRenderSystem());
 }
 
 void CGUITextureGLES::Begin(color_t color)
@@ -60,11 +59,11 @@ void CGUITextureGLES::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
-      g_Windowing.EnableGUIShader(SM_MULTI);
+      m_renderSystem->EnableGUIShader(SM_MULTI);
     }
     else
     {
-      g_Windowing.EnableGUIShader(SM_MULTI_BLENDCOLOR);
+      m_renderSystem->EnableGUIShader(SM_MULTI_BLENDCOLOR);
     }
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
@@ -76,11 +75,11 @@ void CGUITextureGLES::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
-      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
+      m_renderSystem->EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
     else
     {
-      g_Windowing.EnableGUIShader(SM_TEXTURE);
+      m_renderSystem->EnableGUIShader(SM_TEXTURE);
     }
   }
 
@@ -100,10 +99,10 @@ void CGUITextureGLES::End()
 {
   if (m_packedVertices.size())
   {
-    GLint posLoc  = g_Windowing.GUIShaderGetPos();
-    GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
-    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
-    GLint uniColLoc = g_Windowing.GUIShaderGetUniCol();
+    GLint posLoc  = m_renderSystem->GUIShaderGetPos();
+    GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
+    GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
+    GLint uniColLoc = m_renderSystem->GUIShaderGetUniCol();
 
     if(uniColLoc >= 0)
     {
@@ -132,7 +131,7 @@ void CGUITextureGLES::End()
   if (m_diffuse.size())
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
-  g_Windowing.DisableGUIShader();
+  m_renderSystem->DisableGUIShader();
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
@@ -223,6 +222,7 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
+  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(&CServiceBroker::GetRenderSystem());
   if (texture)
   {
     texture->LoadToGPU();
@@ -240,13 +240,13 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   if (texture)
-    g_Windowing.EnableGUIShader(SM_TEXTURE);
+    renderSystem->EnableGUIShader(SM_TEXTURE);
   else
-    g_Windowing.EnableGUIShader(SM_DEFAULT);
+    renderSystem->EnableGUIShader(SM_DEFAULT);
 
-  GLint posLoc   = g_Windowing.GUIShaderGetPos();
-  GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
-  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
+  GLint posLoc   = renderSystem->GUIShaderGetPos();
+  GLint tex0Loc  = renderSystem->GUIShaderGetCoord0();
+  GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   if (texture)
@@ -285,7 +285,6 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
 
-  g_Windowing.DisableGUIShader();
+  renderSystem->DisableGUIShader();
 }
 
-#endif

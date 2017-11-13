@@ -72,10 +72,14 @@ struct CADisplayLinkWrapper
   IOSDisplayLinkCallback *callbackClass;
 };
 
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemIOS());
+  return winSystem;
+}
+
 CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_IOS;
-
   m_iVSyncErrors = 0;
   m_bIsBackgrounded = false;
   m_pDisplayLink = new CADisplayLinkWrapper;
@@ -502,6 +506,6 @@ void* CWinSystemIOS::GetEAGLContextObj()
 
 std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
 {
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock));
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock, *this));
   return pVSync;
 }

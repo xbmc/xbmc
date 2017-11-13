@@ -19,7 +19,7 @@
  */
 
 #include "Texture.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DDSImage.h"
@@ -38,6 +38,7 @@
 #ifdef TARGET_POSIX
 #include "linux/XMemUtils.h"
 #endif
+#include "rendering/RenderSystem.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -68,10 +69,10 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   m_textureHeight = m_imageHeight;
 
   if (m_format & XB_FMT_DXT_MASK)
-    while (GetPitch() < g_Windowing.GetMinDXTPitch())
+    while (GetPitch() < CServiceBroker::GetRenderSystem().GetMinDXTPitch())
       m_textureWidth += GetBlockSize();
 
-  if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
+  if (!CServiceBroker::GetRenderSystem().SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
     m_textureWidth = PadPow2(m_textureWidth);
     m_textureHeight = PadPow2(m_textureHeight);
@@ -98,8 +99,8 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
 
   // check for max texture size
   #define CLAMP(x, y) { if (x > y) x = y; }
-  CLAMP(m_textureWidth, g_Windowing.GetMaxTextureSize());
-  CLAMP(m_textureHeight, g_Windowing.GetMaxTextureSize());
+  CLAMP(m_textureWidth, CServiceBroker::GetRenderSystem().GetMaxTextureSize());
+  CLAMP(m_textureHeight, CServiceBroker::GetRenderSystem().GetMaxTextureSize());
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
 
@@ -240,8 +241,10 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
     return false;
   }
 
-  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
-  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int width = maxWidth ? std::min(maxWidth, CServiceBroker::GetRenderSystem().GetMaxTextureSize()) :
+                                  CServiceBroker::GetRenderSystem().GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, CServiceBroker::GetRenderSystem().GetMaxTextureSize()) :
+                                    CServiceBroker::GetRenderSystem().GetMaxTextureSize();
 
   // Read image into memory to use our vfs
   XFILE::CFile file;
@@ -293,8 +296,10 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   if (!buffer || !size)
     return false;
 
-  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
-  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int width = maxWidth ? std::min(maxWidth, CServiceBroker::GetRenderSystem().GetMaxTextureSize()) :
+                                  CServiceBroker::GetRenderSystem().GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, CServiceBroker::GetRenderSystem().GetMaxTextureSize()) :
+                                    CServiceBroker::GetRenderSystem().GetMaxTextureSize();
 
   IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
   if(!LoadIImage(pImage, buffer, size, width, height))

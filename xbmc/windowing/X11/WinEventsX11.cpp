@@ -21,15 +21,13 @@
 
 #include "system.h"
 
-#ifdef HAS_X11_WIN_EVENTS
-
 #include "xbmc/windowing/WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
-#include "xbmc/windowing/WindowingFactory.h"
+#include "xbmc/windowing/X11/WinSystemX11.h"
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
 #include "utils/log.h"
@@ -40,8 +38,6 @@
 #include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
-
-CWinEventsX11Imp* CWinEventsX11Imp::WinEvents = 0;
 
 static uint32_t SymMappingsX11[][2] =
 {
@@ -154,54 +150,28 @@ static uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioForward, XBMCK_FASTFORWARD}
 };
 
-bool CWinEventsX11::MessagePump()
+CWinEventsX11::CWinEventsX11(CWinSystemX11& winSystem) : m_winSystem(winSystem)
 {
-  return CWinEventsX11Imp::MessagePump();
 }
 
-CWinEventsX11Imp::CWinEventsX11Imp()
+CWinEventsX11::~CWinEventsX11()
 {
-  m_display = 0;
-  m_window = 0;
-  m_keybuf = 0;
-  m_keybuf_len = 0;
+  Quit();
 }
 
-CWinEventsX11Imp::~CWinEventsX11Imp()
+bool CWinEventsX11::Init(Display *dpy, Window win)
 {
-  free(m_keybuf);
-  m_keybuf = 0;
-
-  if (m_xic)
-  {
-    XUnsetICFocus(m_xic);
-    XDestroyIC(m_xic);
-    m_xic = 0;
-  }
-
-  if (m_xim)
-  {
-    XCloseIM(m_xim);
-    m_xim = 0;
-  }
-
-  m_symLookupTable.clear();
-}
-
-bool CWinEventsX11Imp::Init(Display *dpy, Window win)
-{
-  if (WinEvents)
+  if (m_display)
     return true;
 
-  WinEvents = new CWinEventsX11Imp();
-  WinEvents->m_display = dpy;
-  WinEvents->m_window = win;
-  WinEvents->m_keybuf_len = 32*sizeof(char);
-  WinEvents->m_keybuf = (char*)malloc(WinEvents->m_keybuf_len);
-  WinEvents->m_keymodState = 0;
-  WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-  WinEvents->m_structureChanged = false;
-  WinEvents->m_xrrEventPending = false;
+  m_display = dpy;
+  m_window = win;
+  m_keybuf_len = 32*sizeof(char);
+  m_keybuf = (char*)malloc(m_keybuf_len);
+  m_keymodState = 0;
+  m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+  m_structureChanged = false;
+  m_xrrEventPending = false;
 
   // open input method
   char *old_locale = NULL, *old_modifiers = NULL;
@@ -228,7 +198,7 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   // set users preferences and open input method
   p = setlocale(LC_ALL, "");
   XSetLocaleModifiers("");
-  WinEvents->m_xim = XOpenIM(WinEvents->m_display, NULL, res_name, res_name);
+  m_xim = XOpenIM(m_display, NULL, res_name, res_name);
 
   // restore old locale
   if (old_locale)
@@ -242,100 +212,114 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
     free(old_modifiers);
   }
 
-  WinEvents->m_xic = NULL;
-  if (WinEvents->m_xim)
+  m_xic = NULL;
+  if (m_xim)
   {
-    WinEvents->m_xic = XCreateIC(WinEvents->m_xim,
-                                 XNClientWindow, WinEvents->m_window,
-                                 XNFocusWindow, WinEvents->m_window,
-                                 XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-                                 XNResourceName, res_name,
-                                 XNResourceClass, res_name,
-                                 NULL);
+    m_xic = XCreateIC(m_xim,
+                      XNClientWindow, m_window,
+                      XNFocusWindow, m_window,
+                      XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
+                      XNResourceName, res_name,
+                      XNResourceClass, res_name,
+                      nullptr);
   }
 
-  if (!WinEvents->m_xic)
+  if (!m_xic)
     CLog::Log(LOGWARNING,"CWinEventsX11::Init - no input method found");
 
   // build Keysym lookup table
   for (unsigned int i = 0; i < sizeof(SymMappingsX11)/(2*sizeof(uint32_t)); ++i)
   {
-    WinEvents->m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
+    m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
   }
 
   // register for xrandr events
   int iReturn;
-  XRRQueryExtension(WinEvents->m_display, &WinEvents->m_RREventBase, &iReturn);
-  int numScreens = XScreenCount(WinEvents->m_display);
+  XRRQueryExtension(m_display, &m_RREventBase, &iReturn);
+  int numScreens = XScreenCount(m_display);
   for (int i = 0; i < numScreens; i++)
   {
-    XRRSelectInput(WinEvents->m_display, RootWindow(WinEvents->m_display, i), RRScreenChangeNotifyMask | RRCrtcChangeNotifyMask | RROutputChangeNotifyMask | RROutputPropertyNotifyMask);
+    XRRSelectInput(m_display, RootWindow(m_display, i), RRScreenChangeNotifyMask | RRCrtcChangeNotifyMask | RROutputChangeNotifyMask | RROutputPropertyNotifyMask);
   }
 
   return true;
 }
 
-void CWinEventsX11Imp::Quit()
+void CWinEventsX11::Quit()
 {
-  if (!WinEvents)
-    return;
+  free(m_keybuf);
+  m_keybuf = nullptr;
 
-  delete WinEvents;
-  WinEvents = 0;
+  if (m_xic)
+  {
+    XUnsetICFocus(m_xic);
+    XDestroyIC(m_xic);
+    m_xic = nullptr;
+  }
+
+  if (m_xim)
+  {
+    XCloseIM(m_xim);
+    m_xim = nullptr;
+  }
+
+  m_symLookupTable.clear();
+
+  m_display = nullptr;
 }
 
-bool CWinEventsX11Imp::HasStructureChanged()
+bool CWinEventsX11::HasStructureChanged()
 {
-  if (!WinEvents)
+  if (!m_display)
     return false;
 
-  bool ret = WinEvents->m_structureChanged;
-  WinEvents->m_structureChanged = false;
+  bool ret = m_structureChanged;
+  m_structureChanged = false;
   return ret;
 }
 
-void CWinEventsX11Imp::SetXRRFailSafeTimer(int millis)
+void CWinEventsX11::SetXRRFailSafeTimer(int millis)
 {
-  if (!WinEvents)
+  if (!m_display)
     return;
 
-  WinEvents->m_xrrFailSafeTimer.Set(millis);
-  WinEvents->m_xrrEventPending = true;
+  m_xrrFailSafeTimer.Set(millis);
+  m_xrrEventPending = true;
 }
 
-bool CWinEventsX11Imp::MessagePump()
+bool CWinEventsX11::MessagePump()
 {
-  if (!WinEvents)
+  if (!m_display)
     return false;
 
   bool ret = false;
   XEvent xevent;
   unsigned long serial = 0;
 
-  while (WinEvents && XPending(WinEvents->m_display))
+  while (m_display && XPending(m_display))
   {
     memset(&xevent, 0, sizeof (XEvent));
-    XNextEvent(WinEvents->m_display, &xevent);
+    XNextEvent(m_display, &xevent);
 
-    if (WinEvents && (xevent.type == WinEvents->m_RREventBase + RRScreenChangeNotify))
+    if (m_display && (xevent.type == m_RREventBase + RRScreenChangeNotify))
     {
       XRRUpdateConfiguration(&xevent);
       if (xevent.xgeneric.serial != serial)
-        g_Windowing.NotifyXRREvent();
-      WinEvents->m_xrrEventPending = false;
+        m_winSystem.NotifyXRREvent();
+      m_xrrEventPending = false;
       serial = xevent.xgeneric.serial;
       continue;
     }
-    else if (WinEvents && (xevent.type == WinEvents->m_RREventBase + RRNotify))
+    else if (m_display && (xevent.type == m_RREventBase + RRNotify))
     {
       if (xevent.xgeneric.serial != serial)
-        g_Windowing.NotifyXRREvent();
-      WinEvents->m_xrrEventPending = false;
+        m_winSystem.NotifyXRREvent();
+      m_xrrEventPending = false;
       serial = xevent.xgeneric.serial;
       continue;
     }
 
-    if (XFilterEvent(&xevent, WinEvents->m_window))
+    if (XFilterEvent(&xevent, m_window))
       continue;
 
     switch (xevent.type)
@@ -354,22 +338,22 @@ bool CWinEventsX11Imp::MessagePump()
 
       case FocusIn:
       {
-        if (WinEvents->m_xic)
-          XSetICFocus(WinEvents->m_xic);
+        if (m_xic)
+          XSetICFocus(m_xic);
         g_application.m_AppFocused = true;
-        WinEvents->m_keymodState = 0;
+        m_keymodState = 0;
         if (serial == xevent.xfocus.serial)
           break;
-        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+        m_winSystem.NotifyAppFocusChange(g_application.m_AppFocused);
         break;
       }
 
       case FocusOut:
       {
-        if (WinEvents->m_xic)
-          XUnsetICFocus(WinEvents->m_xic);
+        if (m_xic)
+          XUnsetICFocus(m_xic);
         g_application.m_AppFocused = false;
-        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+        m_winSystem.NotifyAppFocusChange(g_application.m_AppFocused);
         serial = xevent.xfocus.serial;
         break;
       }
@@ -382,10 +366,10 @@ bool CWinEventsX11Imp::MessagePump()
 
       case ConfigureNotify:
       {
-        if (xevent.xconfigure.window != WinEvents->m_window)
+        if (xevent.xconfigure.window != m_window)
           break;
 
-        WinEvents->m_structureChanged = true;
+        m_structureChanged = true;
         XBMC_Event newEvent;
         memset(&newEvent, 0, sizeof(newEvent));
         newEvent.type = XBMC_VIDEORESIZE;
@@ -398,7 +382,7 @@ bool CWinEventsX11Imp::MessagePump()
 
       case ClientMessage:
       {
-        if ((unsigned int)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
+        if ((unsigned int)xevent.xclient.data.l[0] == m_wmDeleteMessage)
           if (!g_application.m_bStop) CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
         break;
       }
@@ -411,7 +395,7 @@ bool CWinEventsX11Imp::MessagePump()
         KeySym xkeysym;
 
         // fallback if we have no IM
-        if (!WinEvents->m_xic)
+        if (!m_xic)
         {
           static XComposeStatus state;
           char keybuf[32];
@@ -428,15 +412,15 @@ bool CWinEventsX11Imp::MessagePump()
 
         Status status;
         int len;
-        len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                WinEvents->m_keybuf, WinEvents->m_keybuf_len,
+        len = Xutf8LookupString(m_xic, &xevent.xkey,
+                                m_keybuf, m_keybuf_len,
                                 &xkeysym, &status);
         if (status == XBufferOverflow)
         {
-          WinEvents->m_keybuf_len = len;
-          WinEvents->m_keybuf = (char*)realloc(WinEvents->m_keybuf, WinEvents->m_keybuf_len);
-          len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                  WinEvents->m_keybuf, WinEvents->m_keybuf_len,
+          m_keybuf_len = len;
+          m_keybuf = (char*)realloc(m_keybuf, m_keybuf_len);
+          len = Xutf8LookupString(m_xic, &xevent.xkey,
+                                  m_keybuf, m_keybuf_len,
                                   &xkeysym, &status);
         }
         switch (status)
@@ -446,7 +430,7 @@ bool CWinEventsX11Imp::MessagePump()
           case XLookupChars:
           case XLookupBoth:
           {
-            std::string data(WinEvents->m_keybuf, len);
+            std::string data(m_keybuf, len);
             std::wstring keys;
             g_charsetConverter.utf8ToW(data, keys, false);
 
@@ -488,14 +472,14 @@ bool CWinEventsX11Imp::MessagePump()
       case KeyRelease:
       {
         // if we have a queued press directly after, this is a repeat
-        if( XEventsQueued( WinEvents->m_display, QueuedAfterReading ) )
+        if (XEventsQueued(m_display, QueuedAfterReading))
         {
           XEvent next_event;
-          XPeekEvent( WinEvents->m_display, &next_event );
-          if(next_event.type == KeyPress
-            && next_event.xkey.window == xevent.xkey.window
-            && next_event.xkey.keycode == xevent.xkey.keycode
-            && (next_event.xkey.time - xevent.xkey.time < 2) )
+          XPeekEvent(m_display, &next_event);
+          if (next_event.type == KeyPress &&
+              next_event.xkey.window == xevent.xkey.window &&
+              next_event.xkey.keycode == xevent.xkey.keycode &&
+              (next_event.xkey.time - xevent.xkey.time < 2))
             continue;
         }
 
@@ -524,7 +508,7 @@ bool CWinEventsX11Imp::MessagePump()
 
       case MotionNotify:
       {
-        if (xevent.xmotion.window != WinEvents->m_window)
+        if (xevent.xmotion.window != m_window)
           break;
         XBMC_Event newEvent;
         memset(&newEvent, 0, sizeof(newEvent));
@@ -566,17 +550,17 @@ bool CWinEventsX11Imp::MessagePump()
     }// switch event.type
   }// while
 
-  if (WinEvents && WinEvents->m_xrrEventPending && WinEvents->m_xrrFailSafeTimer.IsTimePast())
+  if (m_display && m_xrrEventPending && m_xrrFailSafeTimer.IsTimePast())
   {
     CLog::Log(LOGERROR,"CWinEventsX11::MessagePump - missed XRR Events");
-    g_Windowing.NotifyXRREvent();
-    WinEvents->m_xrrEventPending = false;
+    m_winSystem.NotifyXRREvent();
+    m_xrrEventPending = false;
   }
 
   return ret;
 }
 
-bool CWinEventsX11Imp::ProcessKey(XBMC_Event &event)
+bool CWinEventsX11::ProcessKey(XBMC_Event &event)
 {
   if (event.type == XBMC_KEYDOWN)
   {
@@ -584,83 +568,83 @@ bool CWinEventsX11Imp::ProcessKey(XBMC_Event &event)
     switch(event.key.keysym.sym)
     {
       case XBMCK_LSHIFT:
-        WinEvents->m_keymodState |= XBMCKMOD_LSHIFT;
+        m_keymodState |= XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        WinEvents->m_keymodState |= XBMCKMOD_RSHIFT;
+        m_keymodState |= XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LCTRL:
-        WinEvents->m_keymodState |= XBMCKMOD_LCTRL;
+        m_keymodState |= XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        WinEvents->m_keymodState |= XBMCKMOD_RCTRL;
+        m_keymodState |= XBMCKMOD_RCTRL;
         break;
       case XBMCK_LALT:
-        WinEvents->m_keymodState |= XBMCKMOD_LALT;
+        m_keymodState |= XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        WinEvents->m_keymodState |= XBMCKMOD_RCTRL;
+        m_keymodState |= XBMCKMOD_RCTRL;
         break;
       case XBMCK_LMETA:
-        WinEvents->m_keymodState |= XBMCKMOD_LMETA;
+        m_keymodState |= XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        WinEvents->m_keymodState |= XBMCKMOD_RMETA;
+        m_keymodState |= XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        WinEvents->m_keymodState |= XBMCKMOD_MODE;
+        m_keymodState |= XBMCKMOD_MODE;
         break;
       default:
         break;
     }
-    event.key.keysym.mod = (XBMCMod)WinEvents->m_keymodState;
+    event.key.keysym.mod = (XBMCMod)m_keymodState;
   }
   else if (event.type == XBMC_KEYUP)
   {
     switch(event.key.keysym.sym)
     {
       case XBMCK_LSHIFT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LSHIFT;
+        m_keymodState &= ~XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RSHIFT;
+        m_keymodState &= ~XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LCTRL:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LCTRL;
+        m_keymodState &= ~XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RCTRL;
+        m_keymodState &= ~XBMCKMOD_RCTRL;
         break;
       case XBMCK_LALT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LALT;
+        m_keymodState &= ~XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RCTRL;
+        m_keymodState &= ~XBMCKMOD_RCTRL;
         break;
       case XBMCK_LMETA:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LMETA;
+        m_keymodState &= ~XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RMETA;
+        m_keymodState &= ~XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        WinEvents->m_keymodState &= ~XBMCKMOD_MODE;
+        m_keymodState &= ~XBMCKMOD_MODE;
         break;
       default:
         break;
     }
-    event.key.keysym.mod = (XBMCMod)WinEvents->m_keymodState;
+    event.key.keysym.mod = (XBMCMod)m_keymodState;
   }
 
   return g_application.OnEvent(event);
 }
 
-XBMCKey CWinEventsX11Imp::LookupXbmcKeySym(KeySym keysym)
+XBMCKey CWinEventsX11::LookupXbmcKeySym(KeySym keysym)
 {
   // try direct mapping first
   std::map<uint32_t, uint32_t>::iterator it;
-  it = WinEvents->m_symLookupTable.find(keysym);
-  if (it != WinEvents->m_symLookupTable.end())
+  it = m_symLookupTable.find(keysym);
+  if (it != m_symLookupTable.end())
   {
     return (XBMCKey)(it->second);
   }
@@ -671,4 +655,3 @@ XBMCKey CWinEventsX11Imp::LookupXbmcKeySym(KeySym keysym)
 
   return (XBMCKey)keysym;
 }
-#endif

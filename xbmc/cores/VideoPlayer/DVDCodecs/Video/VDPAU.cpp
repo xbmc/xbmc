@@ -21,13 +21,14 @@
 #include "VDPAU.h"
 #include "ServiceBroker.h"
 #include <dlfcn.h>
-#include "windowing/WindowingFactory.h"
+#include "windowing/X11/WinSystemX11.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
@@ -197,7 +198,7 @@ bool CVDPAUContext::CreateContext()
     if (!m_display)
       return false;
 
-    mScreen = g_Windowing.GetCurrentScreen();
+    mScreen = CServiceBroker::GetWinSystem().GetCurrentScreen();
   }
 
   VdpStatus vdp_st;
@@ -499,7 +500,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
   // check if user wants to decode this format with VDPAU
-  std::string gpuvendor = g_Windowing.GetRenderVendor();
+  std::string gpuvendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
@@ -515,7 +516,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       return false;
   }
 
-  if (!g_Windowing.IsExtSupported("GL_NV_vdpau_interop"))
+  if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_NV_vdpau_interop"))
   {
     CLog::Log(LOGNOTICE, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;
@@ -589,7 +590,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
       avctx->hwaccel_context = &m_hwContext;
 
-      g_Windowing.Register(this);
+      CServiceBroker::GetWinSystem().Register(this);
       m_avctx = mainctx;
       return true;
     }
@@ -606,7 +607,7 @@ void CDecoder::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
 
-  g_Windowing.Unregister(this);
+  CServiceBroker::GetWinSystem().Unregister(this);
 
   CSingleLock lock(m_DecoderSection);
 

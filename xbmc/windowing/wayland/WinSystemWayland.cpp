@@ -147,8 +147,6 @@ struct MsgBufferScale
 CWinSystemWayland::CWinSystemWayland()
 : CWinSystemBase{}, m_protocol{"WinSystemWaylandInternal"}
 {
-  m_eWindowSystem = WINDOW_SYSTEM_WAYLAND;
-
   m_winEvents.reset(new CWinEventsWayland());
 }
 
@@ -1356,7 +1354,7 @@ std::unique_ptr<CVideoSync> CWinSystemWayland::GetVideoSync(void* clock)
   if (m_surface && m_presentation)
   {
     CLog::LogF(LOGINFO, "Using presentation protocol for video sync");
-    return std::unique_ptr<CVideoSync>(new CVideoSyncWpPresentation(clock));
+    return std::unique_ptr<CVideoSync>(new CVideoSyncWpPresentation(clock, *this));
   }
   else
   {

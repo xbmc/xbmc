@@ -23,11 +23,12 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#include "ServiceBroker.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 #include <sstream>
 #include <AudioToolbox/AudioToolbox.h>
@@ -545,7 +546,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_displayNameExtra = "";
   // TODO screen changing on ios needs to call
   // devices changed once this is available in active
-  if (g_Windowing.GetCurrentScreen() > 0)
+  if (CServiceBroker::GetWinSystem().GetCurrentScreen() > 0)
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout
     device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);

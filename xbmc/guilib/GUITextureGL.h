@@ -24,6 +24,8 @@
 
 #include "GUITexture.h"
 
+class CRenderSystemGL;
+
 class CGUITextureGL : public CGUITextureBase
 {
 public:
@@ -47,5 +49,6 @@ private:
 
   std::vector<PackedVertex> m_packedVertices;
   std::vector<GLushort> m_idx;
+  CRenderSystemGL *m_renderSystem;
 };
 

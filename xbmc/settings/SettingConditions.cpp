@@ -46,10 +46,10 @@
 #endif // defined(HAS_LIBAMCODEC)
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
+#include "windowing/WinSystem.h"
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
@@ -107,7 +107,7 @@ bool HasPowerOffFeature(const std::string &condition, const std::string &value, 
 
 bool IsFullscreen(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return g_Windowing.IsFullScreen();
+  return CServiceBroker::GetWinSystem().IsFullScreen();
 }
 
 bool IsMasterUser(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)

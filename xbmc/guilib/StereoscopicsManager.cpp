@@ -44,7 +44,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 #include "guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::MESSAGING;
@@ -143,7 +143,7 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 
   if (applyMode != currentMode && applyMode >= RENDER_STEREO_MODE_OFF)
   {
-    if (!g_Windowing.SupportsStereo(applyMode))
+    if (!CServiceBroker::GetRenderSystem().SupportsStereo(applyMode))
       return;
     CServiceBroker::GetSettings().SetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE, applyMode);
   }
@@ -154,7 +154,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
   RENDER_STEREO_MODE mode = currentMode;
   do {
     mode = (RENDER_STEREO_MODE) ((mode + step) % RENDER_STEREO_MODE_COUNT);
-    if(g_Windowing.SupportsStereo(mode))
+    if(CServiceBroker::GetRenderSystem().SupportsStereo(mode))
       break;
    } while (mode != currentMode);
   return mode;
@@ -218,7 +218,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE selectableMode = (RENDER_STEREO_MODE) i;
-    if (g_Windowing.SupportsStereo(selectableMode))
+    if (CServiceBroker::GetRenderSystem().SupportsStereo(selectableMode))
     {
       selectableModes.push_back(selectableMode);
       std::string label = GetLabelForStereoMode((RENDER_STEREO_MODE) i);
@@ -578,7 +578,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
       int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
 
-      if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && g_Windowing.SupportsStereo(playing)) // same as movie
+      if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && CServiceBroker::GetRenderSystem().SupportsStereo(playing)) // same as movie
         idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
                                     + " ("
                                     + GetLabelForStereoMode(playing)

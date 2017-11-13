@@ -20,6 +20,7 @@
 
 #include "RendererVTBGL.h"
 #include "../RenderFactory.h"
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -28,7 +29,8 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
+#include "windowing/osx/WinSystemOSX.h"
 
 CBaseRenderer* CRendererVTB::Create(CVideoBuffer *buffer)
 {
@@ -160,7 +162,8 @@ bool CRendererVTB::UploadTexture(int index)
 
   // It is the fastest way to render a CVPixelBuffer backed
   // with an IOSurface as there is no CPU -> GPU upload.
-  CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+  CWinSystemOSX& winSystem = dynamic_cast<CWinSystemOSX&>(CServiceBroker::GetWinSystem());
+  CGLContextObj cgl_ctx  = (CGLContextObj)winSystem.GetCGLContextObj();
   IOSurfaceRef surface  = CVPixelBufferGetIOSurface(cvBufferRef);
   OSType format_type = IOSurfaceGetPixelFormat(surface);
 

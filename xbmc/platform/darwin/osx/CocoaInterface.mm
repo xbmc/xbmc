@@ -24,7 +24,8 @@
 #define BOOL XBMC_BOOL
 #include "utils/log.h"
 #include "CompileInfo.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+#include "windowing/osx/WinSystemOSX.h"
 #undef BOOL
 
 #import <Cocoa/Cocoa.h>
@@ -51,7 +52,8 @@ CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
 NSOpenGLContext* Cocoa_GL_GetCurrentContext(void)
 {
-  return (NSOpenGLContext *)g_Windowing.GetNSOpenGLContext();
+  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(&CServiceBroker::GetWinSystem());
+  return (NSOpenGLContext *)winSystem->GetNSOpenGLContext();
 }
 
 uint32_t Cocoa_GL_GetCurrentDisplayID(void)

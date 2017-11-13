@@ -19,7 +19,6 @@
  */
 #include "VAAPI.h"
 #include "ServiceBroker.h"
-#include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -166,7 +165,7 @@ void CVAAPIContext::SetValidDRMVaDisplayFromRenderNode()
 
 void CVAAPIContext::SetVaDisplayForSystem()
 {
-  m_display = g_Windowing.GetVaDisplay();
+  m_display = CDecoder::m_pWinSystem->GetVADisplay();
 
   // Fallback to DRM
   if (!m_display)
@@ -487,6 +486,7 @@ bool CVideoSurfaces::HasRefs()
 
 bool CDecoder::m_capGeneral = false;
 bool CDecoder::m_capHevc = false;
+IVaapiWinSystem* CDecoder::m_pWinSystem = nullptr;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiOutput(*this, &m_inMsgEvent),
@@ -1180,8 +1180,10 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
   return nullptr;
 }
 
-void CDecoder::Register(bool hevc)
+void CDecoder::Register(IVaapiWinSystem *winSystem, bool hevc)
 {
+  m_pWinSystem = winSystem;
+
   CVaapiConfig config;
   if (!CVAAPIContext::EnsureContext(&config.context, nullptr))
     return;

@@ -19,6 +19,7 @@
  */
 
 #include "RPProcessInfo.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/process/RenderBufferManager.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/DataCacheCore.h"
@@ -27,7 +28,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 extern "C" {
 #include "libavutil/pixdesc.h"
@@ -42,8 +43,8 @@ CCriticalSection CRPProcessInfo::m_createSection;
 
 CRPProcessInfo::CRPProcessInfo() :
   m_renderBufferManager(new CRenderBufferManager),
-  m_renderContext(new CRenderContext(&g_Windowing,
-                                     &g_Windowing,
+  m_renderContext(new CRenderContext(&CServiceBroker::GetRenderSystem(),
+                                     &CServiceBroker::GetWinSystem(),
                                      g_graphicsContext,
                                      CDisplaySettings::GetInstance(),
                                      CMediaSettings::GetInstance()))

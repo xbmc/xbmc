@@ -45,7 +45,14 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
+#include "windowing/WinSystem.h"
+
+#if defined(HAVE_X11)
+#include "windowing/X11/WinSystemX11.h"
+#elif defined(HAVE_WAYLAND)
+#include "windowing/wayland/WinSystemWayland.h"
+#endif
 
 using namespace KODI::MESSAGING;
 
@@ -306,7 +313,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_MONITOR)
   {
-    g_Windowing.UpdateResolutions();
+    CServiceBroker::GetWinSystem().UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
 
     SetCurrentResolution(newRes, false);
@@ -329,7 +336,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #if defined(HAVE_X11)
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
   {
-    g_Windowing.UpdateResolutions();
+    CServiceBroker::GetWinSystem().UpdateResolutions();
   }
 #endif
 
@@ -379,7 +386,7 @@ bool CDisplaySettings::OnSettingUpdate(std::shared_ptr<CSetting> setting, const 
 
 void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* = false */)
 {
-  if (resolution == RES_WINDOW && !g_Windowing.CanDoWindowed())
+  if (resolution == RES_WINDOW && !CServiceBroker::GetWinSystem().CanDoWindowed())
     resolution = RES_DESKTOP;
 
   if (save)
@@ -640,7 +647,7 @@ RESOLUTION CDisplaySettings::GetResolutionForScreen()
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
 
-  for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
+  for (int idx=0; idx < CServiceBroker::GetWinSystem().GetNumScreens(); idx++)
   {
     if (CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
       return (RESOLUTION)(RES_DESKTOP + idx);
@@ -674,7 +681,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
 
   RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
   // The only meaningful parts of res here are iScreen, iScreenWidth, iScreenHeight
-  std::vector<REFRESHRATE> refreshrates = g_Windowing.RefreshRates(resInfo.iScreen, resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
+  std::vector<REFRESHRATE> refreshrates = CServiceBroker::GetWinSystem().RefreshRates(resInfo.iScreen, resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
 
   bool match = false;
   for (std::vector<REFRESHRATE>::const_iterator refreshrate = refreshrates.begin(); refreshrate != refreshrates.end(); ++refreshrate)
@@ -686,7 +693,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
   }
 
   if (!match)
-    current = GetStringFromResolution(res, g_Windowing.DefaultRefreshRate(resInfo.iScreen, refreshrates).RefreshRate);
+    current = GetStringFromResolution(res, CServiceBroker::GetWinSystem().DefaultRefreshRate(resInfo.iScreen, refreshrates).RefreshRate);
 }
 
 void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
@@ -701,7 +708,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
   else
   {
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
-    std::vector<RESOLUTION_WHR> resolutions = g_Windowing.ScreenResolutions(info.iScreen, info.fRefreshRate);
+    std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem().ScreenResolutions(info.iScreen, info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
       list.push_back(std::make_pair(
@@ -724,14 +731,14 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   // setting. When the user sets canwindowed to true but the windowing system
   // does not support windowed modes, we would just shoot ourselves in the foot
   // by offering the option.
-  if (g_advancedSettings.m_canWindowed && g_Windowing.CanDoWindowed())
+  if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem().CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
 #if defined(HAVE_X11) || defined(HAVE_WAYLAND)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
-  for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
+  for (int idx = 0; idx < CServiceBroker::GetWinSystem().GetNumScreens(); idx++)
   {
     int screen = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
 #if defined(TARGET_DARWIN_OSX)
@@ -758,7 +765,7 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr set
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
-    if (g_Windowing.SupportsStereo(mode))
+    if (CServiceBroker::GetRenderSystem().SupportsStereo(mode))
       list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
   }
 }
@@ -771,7 +778,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     // also skip "mono" mode which is no real stereoscopic mode
-    if (mode != RENDER_STEREO_MODE_MONO && g_Windowing.SupportsStereo(mode))
+    if (mode != RENDER_STEREO_MODE_MONO && CServiceBroker::GetRenderSystem().SupportsStereo(mode))
       list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
   }
 }
@@ -780,7 +787,8 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
 {
 #if defined(HAVE_X11)
   std::vector<std::string> monitors;
-  g_Windowing.GetConnectedOutputs(&monitors);
+  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
+  winSystem.GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
@@ -793,7 +801,8 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
   }
 #elif defined(HAVE_WAYLAND)
   std::vector<std::string> monitors;
-  g_Windowing.GetConnectedOutputs(&monitors);
+  KODI::WINDOWING::WAYLAND::CWinSystemWayland &winSystem = dynamic_cast<KODI::WINDOWING::WAYLAND::CWinSystemWayland&>(CServiceBroker::GetWinSystem());
+  winSystem.GetConnectedOutputs(&monitors);
   bool foundMonitor = false;
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (auto const& monitor : monitors)

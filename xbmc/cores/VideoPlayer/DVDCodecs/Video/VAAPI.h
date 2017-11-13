@@ -354,9 +354,21 @@ private:
   int m_renderNodeFD{-1};
 };
 
-/**
- *  VAAPI main class
- */
+//-----------------------------------------------------------------------------
+// Interface into windowing
+//-----------------------------------------------------------------------------
+
+class IVaapiWinSystem
+{
+public:
+  virtual VADisplay GetVADisplay() = 0;
+  virtual void *GetEGLDisplay() { return nullptr; };
+};
+
+//-----------------------------------------------------------------------------
+// VAAPI main class
+//-----------------------------------------------------------------------------
+
 class CDecoder
  : public IHardwareDecoder
 {
@@ -384,7 +396,9 @@ public:
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
-  static void Register(bool hevc);
+  static void Register(IVaapiWinSystem *winSystem, bool hevc);
+
+  static IVaapiWinSystem* m_pWinSystem;
 
 protected:
   void SetWidthHeight(int width, int height);

@@ -21,7 +21,9 @@
 #include "MouseStat.h"
 #include "input/Key.h"
 #include "utils/TimeUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+#include "windowing/WinSystem.h"
+#include <cstring>
 
 CMouseStat::CMouseStat()
 {
@@ -231,7 +233,8 @@ void CMouseStat::SetActive(bool active /*=true*/)
   // 1. The mouse is active (it has been moved) AND
   // 2. The XBMC mouse is disabled in settings AND
   // 3. XBMC is not in fullscreen.
-  g_Windowing.ShowOSMouse(m_mouseState.active && !IsEnabled() && !g_Windowing.IsFullScreen());
+  CWinSystemBase &winSystem = CServiceBroker::GetWinSystem();
+  winSystem.ShowOSMouse(m_mouseState.active && !IsEnabled() && !CServiceBroker::GetWinSystem().IsFullScreen());
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period

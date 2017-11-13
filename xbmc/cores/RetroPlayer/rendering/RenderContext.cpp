@@ -23,7 +23,7 @@
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "system_gl.h"
 
 #if defined(HAS_GL)

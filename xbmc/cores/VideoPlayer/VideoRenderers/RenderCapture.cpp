@@ -19,10 +19,12 @@
  */
 
 #include "RenderCapture.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/IPlayer.h"
+#include "rendering/RenderSystem.h"
 #ifdef HAS_DX
 #include "rendering/dx/DirectXHelper.h"
 #endif
@@ -52,7 +54,7 @@ bool CRenderCaptureBase::UseOcclusionQuery()
     return false;
   else if ((g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0) ||
            (g_advancedSettings.m_videoCaptureUseOcclusionQuery == -1 &&
-            g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY))
+            CServiceBroker::GetRenderSystem().GetRenderQuirks() & RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY))
     return false;
   else
     return true;
@@ -136,14 +138,14 @@ void CRenderCaptureGL::BeginRender()
   if (!m_asyncChecked)
   {
 #ifndef HAS_GLES
-    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object");
-    m_occlusionQuerySupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query");
+    m_asyncSupported = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_pixel_buffer_object");
+    m_occlusionQuerySupported = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_occlusion_query");
 
     if (m_flags & CAPTUREFLAG_CONTINUOUS)
     {
       if (!m_occlusionQuerySupported)
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query not supported, performance might suffer");
-      if (!g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object"))
+      if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
       if (UseOcclusionQuery())
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query disabled, performance might suffer");

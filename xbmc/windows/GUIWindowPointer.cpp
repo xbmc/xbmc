@@ -21,8 +21,8 @@
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
-#include "windowing/WindowingFactory.h"
 #include "ServiceBroker.h"
+#include "windowing/WinSystem.h"
 
 #define ID_POINTER 10
 
@@ -56,7 +56,7 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
-  if(g_Windowing.HasCursor())
+  if(CServiceBroker::GetWinSystem().HasCursor())
   {
     if (CServiceBroker::GetInputManager().IsMouseActive())
       Open();

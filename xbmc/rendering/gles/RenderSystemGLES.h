@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef RENDER_SYSTEM_GLES_H
-#define RENDER_SYSTEM_GLES_H
-
 #pragma once
 
 #include "system.h"
@@ -119,4 +116,3 @@ protected:
   GLint      m_viewPort[4];
 };
 
-#endif // RENDER_SYSTEM_H

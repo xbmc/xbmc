@@ -21,13 +21,13 @@
 #include "Screenshot.h"
 
 #include "system.h"
+#include "system_gl.h"
 #include <vector>
 
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "URL.h"
 
-#include "windowing/WindowingFactory.h"
 #include "pictures/Picture.h"
 
 #ifdef TARGET_RASPBERRY_PI

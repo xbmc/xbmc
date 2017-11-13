@@ -31,7 +31,7 @@
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "guilib/StereoscopicsManager.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 
 using namespace JSONRPC;
 using namespace ADDON;
@@ -122,7 +122,7 @@ JSONRPC_STATUS CGUIOperations::GetStereoscopicModes(const std::string &method, I
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
-    if (g_Windowing.SupportsStereo(mode))
+    if (CServiceBroker::GetRenderSystem().SupportsStereo(mode))
       result["stereoscopicmodes"].push_back(GetStereoModeObjectFromGuiMode(mode));
   }
 

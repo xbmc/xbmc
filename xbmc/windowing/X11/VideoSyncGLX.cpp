@@ -23,7 +23,7 @@
 #include "VideoSyncGLX.h"
 #include <sstream>
 #include <X11/extensions/Xrandr.h>
-#include "windowing/WindowingFactory.h"
+#include "windowing/X11/WinSystemX11GLContext.h"
 #include "guilib/GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -79,7 +79,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
-  g_Windowing.Register(this);
+  m_winSystem.Register(this);
 
   m_displayLost = false;
   m_displayReset = false;
@@ -102,7 +102,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   }
 
   bool          ExtensionFound = false;
-  std::istringstream Extensions(glXQueryExtensionsString(m_Dpy, g_Windowing.GetCurrentScreen()));
+  std::istringstream Extensions(glXQueryExtensionsString(m_Dpy, m_winSystem.GetCurrentScreen()));
   std::string        ExtensionStr;
 
   while (!ExtensionFound)
@@ -121,7 +121,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
     return false;
   }
 
-  m_vInfo = glXChooseVisual(m_Dpy, g_Windowing.GetCurrentScreen(), singleBufferAttributes);
+  m_vInfo = glXChooseVisual(m_Dpy, m_winSystem.GetCurrentScreen(), singleBufferAttributes);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
@@ -130,10 +130,10 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 
   Swa.border_pixel = 0;
   Swa.event_mask = StructureNotifyMask;
-  Swa.colormap = XCreateColormap(m_Dpy, g_Windowing.GetWindow(), m_vInfo->visual, AllocNone );
+  Swa.colormap = XCreateColormap(m_Dpy, m_winSystem.GetWindow(), m_vInfo->visual, AllocNone );
   SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-  m_Window = XCreateWindow(m_Dpy, g_Windowing.GetWindow(), 0, 0, 256, 256, 0,
+  m_Window = XCreateWindow(m_Dpy, m_winSystem.GetWindow(), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
 
   m_Context = glXCreateContext(m_Dpy, m_vInfo, NULL, True);
@@ -278,7 +278,7 @@ void CVideoSyncGLX::Cleanup()
   }
 
   m_lostEvent.Set();
-  g_Windowing.Unregister(this);
+  m_winSystem.Unregister(this);
 }
 
 float CVideoSyncGLX::GetFps()

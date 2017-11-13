@@ -21,7 +21,7 @@
 #include "ScreenSaver.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "utils/log.h"
 
 namespace ADDON

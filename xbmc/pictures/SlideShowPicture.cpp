@@ -25,12 +25,18 @@
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "windowing/WindowingFactory.h"
 #include "threads/SingleLock.h"
+#include "windowing/WinSystem.h"
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
+
+#if defined(HAS_GL)
+#include "rendering/gl/RenderSystemGL.h"
+#elif defined(HAS_GLES)
+#include "rendering/gles/RenderSystemGLES.h"
+#endif
 
 #define IMMEDIATE_TRANSITION_TIME          20
 
@@ -837,6 +843,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   }
 
 #elif defined(HAS_GL)
+  CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(&CServiceBroker::GetRenderSystem());
   if (pTexture)
   {
     pTexture->LoadToGPU();
@@ -845,11 +852,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
-    g_Windowing.EnableShader(SM_TEXTURE);
+    renderSystem->EnableShader(SM_TEXTURE);
   }
   else
   {
-    g_Windowing.EnableShader(SM_DEFAULT);
+    renderSystem->EnableShader(SM_DEFAULT);
   }
 
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
@@ -894,9 +901,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   vertex[3].u1 = u1;
   vertex[3].v1 = v2;
 
-  GLint posLoc  = g_Windowing.ShaderGetPos();
-  GLint tex0Loc = g_Windowing.ShaderGetCoord0();
-  GLint uniColLoc= g_Windowing.ShaderGetUniCol();
+  GLint posLoc  = renderSystem->ShaderGetPos();
+  GLint tex0Loc = renderSystem->ShaderGetCoord0();
+  GLint uniColLoc= renderSystem->ShaderGetUniCol();
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
@@ -914,7 +921,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   colour[2] = (GLubyte)GET_B(color);
   colour[3] = (GLubyte)GET_A(color);
 
-  if (g_Windowing.UseLimitedColor())
+  if (CServiceBroker::GetWinSystem().UseLimitedColor())
   {
     colour[0] = (235 - 16) * colour[0] / 255 + 16.0f / 255.0f;
     colour[1] = (235 - 16) * colour[1] / 255 + 16.0f / 255.0f;
@@ -938,9 +945,10 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &indexVBO);
 
-  g_Windowing.DisableShader();
+  renderSystem->DisableShader();
 
 #elif defined(HAS_GLES)
+  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(&CServiceBroker::GetRenderSystem());
   if (pTexture)
   {
     pTexture->LoadToGPU();
@@ -949,11 +957,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
-    g_Windowing.EnableGUIShader(SM_TEXTURE);
+    renderSystem->EnableGUIShader(SM_TEXTURE);
   }
   else
   {
-    g_Windowing.EnableGUIShader(SM_DEFAULT);
+    renderSystem->EnableGUIShader(SM_DEFAULT);
   }
 
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
@@ -968,9 +976,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  GLint posLoc  = g_Windowing.GUIShaderGetPos();
-  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
-  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
+  GLint posLoc  = renderSystem->GUIShaderGetPos();
+  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
@@ -1003,7 +1011,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  g_Windowing.DisableGUIShader();
+  renderSystem->DisableGUIShader();
 
 #endif
 }

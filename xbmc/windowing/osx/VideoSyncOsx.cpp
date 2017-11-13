@@ -22,10 +22,11 @@
 
 #include "utils/log.h"
 #include "VideoSyncOsx.h"
+#include "ServiceBroker.h"
 #include "utils/MathUtils.h"
 #include "guilib/GraphicContext.h"
 #include "utils/TimeUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include <QuartzCore/CVDisplayLink.h>
 #include <CoreVideo/CVHostTime.h>
 #include "platform/darwin/osx/CocoaInterface.h"
@@ -42,7 +43,7 @@ bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
   m_displayReset = false;
   m_lostEvent.Reset();
 
-  g_Windowing.Register(this);
+  CServiceBroker::GetWinSystem().Register(this);
   
   return true;
 }
@@ -72,7 +73,7 @@ void CVideoSyncOsx::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s cleaning up OSX", __FUNCTION__);
   m_lostEvent.Set();
   m_LastVBlankTime = 0;
-  g_Windowing.Unregister(this);
+  CServiceBroker::GetWinSystem().Unregister(this);
 }
 
 float CVideoSyncOsx::GetFps()

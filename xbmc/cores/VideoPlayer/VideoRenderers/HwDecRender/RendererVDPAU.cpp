@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "windowing/WindowingFactory.h"
 
 using namespace VDPAU;
 

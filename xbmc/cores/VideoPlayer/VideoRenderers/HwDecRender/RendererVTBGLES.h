@@ -58,5 +58,6 @@ protected:
     GLsync m_fence;
   };
   CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
+  CVEAGLContext m_glContext;
 };
 

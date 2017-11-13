@@ -22,6 +22,7 @@
 #include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
 #include <Platinum/Source/Devices/MediaServer/PltDidl.h>
 
+#include "ServiceBroker.h"
 #include "UPnPPlayer.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
@@ -41,7 +42,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI::MESSAGING;
 
@@ -180,12 +181,12 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   else
     CLog::Log(LOGERROR, "UPNP: CUPnPPlayer couldn't find device as %s", uuid);
 
-  g_Windowing.RegisterRenderLoop(this);
+  CServiceBroker::GetWinSystem().RegisterRenderLoop(this);
 }
 
 CUPnPPlayer::~CUPnPPlayer()
 {
-  g_Windowing.UnregisterRenderLoop(this);
+  CServiceBroker::GetWinSystem().UnregisterRenderLoop(this);
   CloseFile();
   CUPnP::UnregisterUserdata(m_delegate);
   delete m_delegate;

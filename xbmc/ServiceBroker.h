@@ -57,6 +57,8 @@ class CFavouritesService;
 class CInputManager;
 class CFileExtensionProvider;
 class CNetwork;
+class CWinSystemBase;
+class CRenderSystemBase;
 
 namespace KODI
 {
@@ -103,4 +105,6 @@ public:
   static CFileExtensionProvider &GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
   static CNetwork& GetNetwork();
+  static CWinSystemBase& GetWinSystem();
+  static CRenderSystemBase& GetRenderSystem();
 };

@@ -20,11 +20,12 @@
 
 #include <sys/resource.h>
 #include <signal.h>
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/DisplaySettings.h"
 #include "threads/Event.h"
 #include "Application.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "settings/DisplaySettings.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -273,13 +274,13 @@ static CEvent screenChangeEvent;
   if([[UIScreen screens] count] == 1 && _screenIdx != 0)
   {
     RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);//internal screen default res
-    g_Windowing.SetFullScreen(true, res, false);
+    CServiceBroker::GetWinSystem().SetFullScreen(true, res, false);
   }
 }
 //--------------------------------------------------------------
 + (void) updateResolutions
 {
-  g_Windowing.UpdateResolutions();
+  CServiceBroker::GetWinSystem().UpdateResolutions();
 }
 //--------------------------------------------------------------
 - (void) dealloc

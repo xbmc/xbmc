@@ -26,9 +26,10 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "windowing/WindowingFactory.h"
 
 using namespace VAAPI;
+
+IVaapiWinSystem *CRendererVAAPI::m_pWinSystem = nullptr;
 
 CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
 {
@@ -39,11 +40,14 @@ CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
   return nullptr;
 }
 
-void CRendererVAAPI::Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
+void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
 {
   CVaapiTexture::TestInterop(vaDpy, eglDisplay, general, hevc);
   if (general)
+  {
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
+    m_pWinSystem = winSystem;
+  }
 }
 
 CRendererVAAPI::CRendererVAAPI() = default;
@@ -69,7 +73,7 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
   interop.eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
   interop.eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
-  interop.eglDisplay = g_Windowing.GetEGLDisplay();
+  interop.eglDisplay = m_pWinSystem->GetEGLDisplay();
 
   for (auto &tex : m_vaapiTextures)
   {

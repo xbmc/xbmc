@@ -21,7 +21,6 @@
 #include "GUIRenderingControl.h"
 #include "threads/SingleLock.h"
 #include "guilib/IRenderingCallback.h"
-#include "windowing/WindowingFactory.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11

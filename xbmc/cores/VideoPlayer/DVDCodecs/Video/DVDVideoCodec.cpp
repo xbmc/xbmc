@@ -21,9 +21,10 @@
 #include "DVDVideoCodec.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include <string>
 #include <vector>
 
@@ -95,7 +96,7 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
   }
 
   // check if we are running on nvidia hardware
-  std::string gpuvendor = g_Windowing.GetRenderVendor();
+  std::string gpuvendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
   bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);

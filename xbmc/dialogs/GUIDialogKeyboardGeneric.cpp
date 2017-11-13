@@ -37,7 +37,7 @@
 #include "utils/StringUtils.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/CharsetConverter.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "utils/log.h"
 
 #ifdef TARGET_ANDROID
@@ -100,7 +100,7 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
 {
-  g_Windowing.EnableTextInput(false);
+  CServiceBroker::GetWinSystem().EnableTextInput(false);
   CGUIEditControl *edit = static_cast<CGUIEditControl*>(GetControl(CTL_EDIT));
   if (edit)
   {

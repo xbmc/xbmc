@@ -62,6 +62,7 @@ class CSettings;
 class IAE;
 class CFavouritesService;
 class CNetwork;
+class CWinSystemBase;
 
 namespace KODI
 {
@@ -131,6 +132,9 @@ public:
   CInputManager &GetInputManager();
   CFileExtensionProvider &GetFileExtensionProvider();
 
+  CWinSystemBase &GetWinSystem();
+  void SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem);
+
 protected:
   struct delete_dataCacheCore
   {
@@ -180,4 +184,5 @@ protected:
   std::unique_ptr<CInputManager> m_inputManager;
   std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
   std::unique_ptr<CNetwork> m_network;
+  std::unique_ptr<CWinSystemBase> m_winSystem;
 };

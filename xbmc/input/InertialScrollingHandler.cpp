@@ -21,10 +21,11 @@
 
 #include "InertialScrollingHandler.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "utils/TimeUtils.h"
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 #include "utils/log.h"
 
@@ -55,7 +56,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
 
-  if(g_Windowing.HasInertialGestures())
+  if(CServiceBroker::GetWinSystem().HasInertialGestures())
   {
     return ret;//no need for emulating inertial scrolling - windowing does support it natively.
   }

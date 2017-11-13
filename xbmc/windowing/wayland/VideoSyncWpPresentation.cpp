@@ -26,13 +26,13 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/wayland/WinSystemWayland.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
 
-CVideoSyncWpPresentation::CVideoSyncWpPresentation(void* clock)
-: CVideoSync(clock)
+CVideoSyncWpPresentation::CVideoSyncWpPresentation(void* clock, CWinSystemWayland& winSystem)
+: CVideoSync(clock), m_winSystem(winSystem)
 {
 }
 
@@ -40,14 +40,14 @@ bool CVideoSyncWpPresentation::Setup(PUPDATECLOCK func)
 {
   UpdateClock = func;
   m_stopEvent.Reset();
-  m_fps = g_Windowing.GetSyncOutputRefreshRate();
+  m_fps = m_winSystem.GetSyncOutputRefreshRate();
 
   return true;
 }
 
 void CVideoSyncWpPresentation::Run(CEvent& stopEvent)
 {
-  m_presentationHandler = g_Windowing.RegisterOnPresentationFeedback(std::bind(&CVideoSyncWpPresentation::HandlePresentation, this, _1, _2, _3, _4, _5));
+  m_presentationHandler = m_winSystem.RegisterOnPresentationFeedback(std::bind(&CVideoSyncWpPresentation::HandlePresentation, this, _1, _2, _3, _4, _5));
 
   XbmcThreads::CEventGroup waitGroup{&stopEvent, &m_stopEvent};
   waitGroup.wait();

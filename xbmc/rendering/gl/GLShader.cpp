@@ -22,8 +22,9 @@
 #include "system.h"
 
 #include "GLShader.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/MatrixGLES.h"
 
@@ -82,7 +83,7 @@ bool CGLShader::OnEnabled()
 
   const TransformMatrix &guiMatrix = g_graphicsContext.GetGUIMatrix();
   CRect viewPort; // absolute positions of corners
-  g_Windowing.GetViewPort(viewPort);
+  CServiceBroker::GetRenderSystem().GetViewPort(viewPort);
 
   /* glScissor operates in window coordinates. In order that we can use it to
    * perform clipping, we must ensure that there is an independent linear

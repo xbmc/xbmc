@@ -22,10 +22,13 @@
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
+class CWinSystemX11GLContext;
+
 class CVideoSyncDRM : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncDRM(void *clock) : CVideoSync(clock) {};
+  explicit CVideoSyncDRM(void *clock, CWinSystemX11GLContext& winSystem) :
+    CVideoSync(clock), m_winSystem(winSystem) {};
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
@@ -41,5 +44,6 @@ private:
     uint64_t start;
     CVideoSyncDRM *videoSync;
   };
+  CWinSystemX11GLContext &m_winSystem;
 };
 

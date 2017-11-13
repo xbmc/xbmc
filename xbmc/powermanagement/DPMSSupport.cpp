@@ -21,7 +21,6 @@
 #include "system.h"
 #include "DPMSSupport.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
 #include <assert.h>
 #include <string>
 #ifdef TARGET_WINDOWS
@@ -104,6 +103,8 @@ bool DPMSSupport::DisablePowerSaving()
 ///////// Platform-specific support
 
 #if defined(HAVE_X11)
+#include "ServiceBroker.h"
+#include "windowing/X11/WinSystemX11.h"
 //// X Windows
 
 // Here's a sad story: our Windows-inspired BOOL type from linux/PlatformDefs.h
@@ -129,8 +130,10 @@ static const CARD16 X_DPMS_MODES[] =
 
 void DPMSSupport::PlatformSpecificInit()
 {
-  Display* dpy = g_Windowing.GetDisplay();
-  if (dpy == NULL) return;
+  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem.GetDisplay();
+  if (dpy == NULL)
+    return;
 
   int event_base, error_base;   // we ignore these
   if (!DPMSQueryExtension(dpy, &event_base, &error_base)) {
@@ -152,8 +155,10 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  Display* dpy = g_Windowing.GetDisplay();
-  if (dpy == NULL) return false;
+  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem.GetDisplay();
+  if (dpy == NULL)
+    return false;
 
   // This is not needed on my ATI Radeon, but the docs say that DPMSForceLevel
   // after a DPMSDisable (from SDL) should not normally work.
@@ -167,14 +172,16 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
-  Display* dpy = g_Windowing.GetDisplay();
-  if (dpy == NULL) return false;
+  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem.GetDisplay();
+  if (dpy == NULL)
+    return false;
 
   DPMSForceLevel(dpy, DPMSModeOn);
   DPMSDisable(dpy);
   XFlush(dpy);
 
-  g_Windowing.RecreateWindow();
+  winSystem.RecreateWindow();
 
   return true;
 }

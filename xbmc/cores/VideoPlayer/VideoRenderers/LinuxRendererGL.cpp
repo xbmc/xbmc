@@ -34,10 +34,11 @@
 #include "settings/Settings.h"
 #include "VideoShaders/YUV2RGBShaderGL.h"
 #include "VideoShaders/VideoFilterShaderGL.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/MatrixGLES.h"
+#include "rendering/gl/RenderSystemGL.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
@@ -140,7 +141,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
-  m_fullRange = !g_Windowing.UseLimitedColor();
+  m_fullRange = !CServiceBroker::GetWinSystem().UseLimitedColor();
 
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
@@ -160,6 +161,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_CLUTsize = 0;
   m_cmsToken = -1;
   m_cmsOn = false;
+
+  m_renderSystem = dynamic_cast<CRenderSystemGL*>(&CServiceBroker::GetRenderSystem());
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -202,8 +205,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    if (!g_Windowing.IsExtSupported("GL_ARB_texture_non_power_of_two") &&
-         g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
+    if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_non_power_of_two") &&
+         CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_rectangle"))
     {
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
@@ -264,10 +267,10 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
 
-  m_pboSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object");
+  m_pboSupported = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_pixel_buffer_object");
 
   // setup the background colour
-  m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+  m_clearColour = CServiceBroker::GetWinSystem().UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
 #ifdef TARGET_DARWIN_OSX
   // on osx 10.9 mavericks we get a strange ripple
@@ -275,7 +278,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // when used on intel gpu - we have to quirk it here
   if (CDarwinUtils::IsMavericksOrHigher())
   {
-    std::string rendervendor = g_Windowing.GetRenderVendor();
+    std::string rendervendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
     StringUtils::ToLower(rendervendor);
     if (rendervendor.find("intel") != std::string::npos)
       m_pboSupported = false;
@@ -571,9 +574,9 @@ void CLinuxRendererGL::DrawBlackBars()
   Svertex vertices[24];
   GLubyte count = 0;
 
-  g_Windowing.EnableShader(SM_DEFAULT);
-  GLint posLoc = g_Windowing.ShaderGetPos();
-  GLint uniCol = g_Windowing.ShaderGetUniCol();
+  m_renderSystem->EnableShader(SM_DEFAULT);
+  GLint posLoc = m_renderSystem->ShaderGetPos();
+  GLint uniCol = m_renderSystem->ShaderGetUniCol();
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
@@ -676,7 +679,7 @@ void CLinuxRendererGL::DrawBlackBars()
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
 
-  g_Windowing.DisableShader();
+  m_renderSystem->DisableShader();
 }
 
 void CLinuxRendererGL::UpdateVideoFilter()
@@ -916,9 +919,9 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
 
   // determine whether GPU supports NPOT textures
-  if (!g_Windowing.IsExtSupported("GL_ARB_texture_non_power_of_two"))
+  if (!m_renderSystem->IsExtSupported("GL_ARB_texture_non_power_of_two"))
   {
-    if (!g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
+    if (!m_renderSystem->IsExtSupported("GL_ARB_texture_rectangle"))
     {
       CLog::Log(LOGWARNING, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
     }
@@ -1224,7 +1227,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glMatrixProject.Load();
 
   CRect viewport;
-  g_Windowing.GetViewPort(viewport);
+  m_renderSystem->GetViewPort(viewport);
   glViewport(0, 0, m_sourceWidth, m_sourceHeight);
   glScissor (0, 0, m_sourceWidth, m_sourceHeight);
 
@@ -1344,7 +1347,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glMatrixModview.PopLoad();
   glMatrixProject.PopLoad();
 
-  g_Windowing.SetViewPort(viewport);
+  m_renderSystem->SetViewPort(viewport);
 
   m_fbo.fbo.EndRender();
 
@@ -2490,7 +2493,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
-  return g_Windowing.IsExtSupported("GL_EXT_framebuffer_object");
+  return m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object");
 }
 
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
@@ -2521,11 +2524,11 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
     bool hasFramebuffer = false;
     unsigned int major, minor;
-    g_Windowing.GetRenderVersion(major, minor);
+    m_renderSystem->GetRenderVersion(major, minor);
     if (major > 3 ||
         (major == 3 && minor >= 2))
       hasFramebuffer = true;
-    if (g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
+    if (m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object"))
       hasFramebuffer = true;
     if (hasFramebuffer  && (m_renderMethod & RENDER_GLSL))
     {

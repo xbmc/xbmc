@@ -19,9 +19,10 @@
  */
 
 #include "GUIWindowTestPattern.h"
+#include "ServiceBroker.h"
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
@@ -85,7 +86,7 @@ void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 
 #ifndef HAS_DX
-  if(g_Windowing.UseLimitedColor())
+  if(CServiceBroker::GetWinSystem().UseLimitedColor())
   {
     m_white = 235.0f / 255;
     m_black =  16.0f / 255;

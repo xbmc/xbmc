@@ -32,6 +32,7 @@
 #include "X11/Xutil.h"
 
 class IDispResource;
+class CWinEventsX11;
 
 class CWinSystemX11 : public CWinSystemBase
 {
@@ -96,6 +97,7 @@ protected:
   bool m_bIsInternalXrr;
   int m_MouseX, m_MouseY;
   int m_crtc;
+  CWinEventsX11 *m_winEventsX11;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

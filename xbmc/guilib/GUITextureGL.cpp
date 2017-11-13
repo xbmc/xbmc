@@ -20,11 +20,13 @@
 
 #include "system.h"
 #include "GUITextureGL.h"
+#include "ServiceBroker.h"
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/Geometry.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/gl/RenderSystemGL.h"
+#include "windowing/WinSystem.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -32,6 +34,7 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 : CGUITextureBase(posX, posY, width, height, texture)
 {
   memset(m_col, 0, sizeof(m_col));
+  m_renderSystem = dynamic_cast<CRenderSystemGL*>(&CServiceBroker::GetRenderSystem());
 }
 
 void CGUITextureGL::Begin(color_t color)
@@ -49,7 +52,7 @@ void CGUITextureGL::Begin(color_t color)
   m_col[2] = (GLubyte)GET_B(color);
   m_col[3] = (GLubyte)GET_A(color);
 
-  if (g_Windowing.UseLimitedColor())
+  if (CServiceBroker::GetWinSystem().UseLimitedColor())
   {
     m_col[0] = (235 - 16) * m_col[0] / 255 + 16.0f / 255.0f;
     m_col[1] = (235 - 16) * m_col[1] / 255 + 16.0f / 255.0f;
@@ -62,11 +65,11 @@ void CGUITextureGL::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
-      g_Windowing.EnableShader(SM_MULTI);
+      m_renderSystem->EnableShader(SM_MULTI);
     }
     else
     {
-      g_Windowing.EnableShader(SM_MULTI_BLENDCOLOR);
+      m_renderSystem->EnableShader(SM_MULTI_BLENDCOLOR);
     }
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
@@ -77,11 +80,11 @@ void CGUITextureGL::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
-      g_Windowing.EnableShader(SM_TEXTURE_NOBLEND);
+      m_renderSystem->EnableShader(SM_TEXTURE_NOBLEND);
     }
     else
     {
-      g_Windowing.EnableShader(SM_TEXTURE);
+      m_renderSystem->EnableShader(SM_TEXTURE);
     }
   }
 
@@ -102,10 +105,10 @@ void CGUITextureGL::End()
 {
   if (m_packedVertices.size())
   {
-    GLint posLoc  = g_Windowing.ShaderGetPos();
-    GLint tex0Loc = g_Windowing.ShaderGetCoord0();
-    GLint tex1Loc = g_Windowing.ShaderGetCoord1();
-    GLint uniColLoc = g_Windowing.ShaderGetUniCol();
+    GLint posLoc  = m_renderSystem->ShaderGetPos();
+    GLint tex0Loc = m_renderSystem->ShaderGetCoord0();
+    GLint tex1Loc = m_renderSystem->ShaderGetCoord1();
+    GLint uniColLoc = m_renderSystem->ShaderGetUniCol();
 
     GLuint VertexVBO;
     GLuint IndexVBO;
@@ -152,7 +155,7 @@ void CGUITextureGL::End()
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
 
-  g_Windowing.DisableShader();
+  m_renderSystem->DisableShader();
 }
 
 void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
@@ -249,6 +252,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
 
 void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
+  CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(&CServiceBroker::GetRenderSystem());
   if (texture)
   {
     texture->LoadToGPU();
@@ -272,13 +276,13 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
   }vertex[4];
 
   if (texture)
-    g_Windowing.EnableShader(SM_TEXTURE);
+    renderSystem->EnableShader(SM_TEXTURE);
   else
-    g_Windowing.EnableShader(SM_DEFAULT);
+    renderSystem->EnableShader(SM_DEFAULT);
 
-  GLint posLoc = g_Windowing.ShaderGetPos();
-  GLint tex0Loc = g_Windowing.ShaderGetCoord0();
-  GLint uniColLoc = g_Windowing.ShaderGetUniCol();
+  GLint posLoc = renderSystem->ShaderGetPos();
+  GLint tex0Loc = renderSystem->ShaderGetCoord0();
+  GLint uniColLoc = renderSystem->ShaderGetUniCol();
 
   // Setup Colors
   col[0] = (GLubyte)GET_R(color);
@@ -345,6 +349,6 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &indexVBO);
 
-  g_Windowing.DisableShader();
+  renderSystem->DisableShader();
 }
 

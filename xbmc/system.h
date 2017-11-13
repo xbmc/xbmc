@@ -98,7 +98,6 @@
   #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
-    #define HAS_SDL_WIN_EVENTS
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
@@ -120,14 +119,8 @@
 #define HAS_DBUS
 #endif
 #define HAS_GL
-#ifdef HAVE_X11
-#define HAS_X11_WIN_EVENTS
-#endif
 #ifdef HAVE_SDL
 #define HAS_SDL
-#ifndef HAVE_X11
-#define HAS_SDL_WIN_EVENTS
-#endif
 #else
 #ifndef HAVE_X11
 #define HAS_LINUX_EVENTS

@@ -19,14 +19,16 @@
  *
  */
 
-#if defined(TARGET_DARWIN_IOS)
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
+
+class CWinSystemIOS;
 
 class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncIos(void *clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
+  CVideoSyncIos(void *clock, CWinSystemIOS &winSystem) :
+    CVideoSync(clock), m_winSystem(winSystem) {}
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func) override;
@@ -45,8 +47,8 @@ private:
   virtual bool InitDisplayLink();
   virtual void DeinitDisplayLink();
 
-  int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+  int64_t m_LastVBlankTime = 0;  //timestamp of the last vblank, used for calculating how many vblanks happened
   CEvent m_abortEvent;
+  CWinSystemIOS &m_winSystem;
 };
 
-#endif// TARGET_DARWIN_IOS

@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"

@@ -51,7 +51,7 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -6420,7 +6420,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    if(g_Windowing.IsFullScreen())
+    if(CServiceBroker::GetWinSystem().IsFullScreen())
       strLabel = StringUtils::Format("%ix%i@%.2fHz - %s",
         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
@@ -6782,13 +6782,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_RENDER_VENDOR:
-    strLabel = g_Windowing.GetRenderVendor();
+    strLabel = CServiceBroker::GetRenderSystem().GetRenderVendor();
     break;
   case SYSTEM_RENDER_RENDERER:
-    strLabel = g_Windowing.GetRenderRenderer();
+    strLabel = CServiceBroker::GetRenderSystem().GetRenderRenderer();
     break;
   case SYSTEM_RENDER_VERSION:
-    strLabel = g_Windowing.GetRenderVersionString();
+    strLabel = CServiceBroker::GetRenderSystem().GetRenderVersionString();
     break;
   }
 
@@ -7085,7 +7085,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_ISMASTER)
     bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
-    bReturn = g_Windowing.IsFullScreen();
+    bReturn = CServiceBroker::GetWinSystem().IsFullScreen();
   else if (condition == SYSTEM_ISSTANDALONE)
     bReturn = g_application.IsStandAlone();
   else if (condition == SYSTEM_ISINHIBIT)

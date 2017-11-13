@@ -21,6 +21,7 @@
 #include <sys/resource.h>
 #include <signal.h>
 
+#include "ServiceBroker.h"
 #include "system.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -33,7 +34,7 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/osx/WinSystemIOS.h"
 #include "windowing/XBMC_events.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -923,13 +924,15 @@ XBMCController *g_xbmcController;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
-  g_Windowing.OnAppFocusChange(false);
+  CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
+  winSystem.OnAppFocusChange(false);
 }
 
 - (void)enterForeground
 {
   PRINT_SIGNATURE();
-  g_Windowing.OnAppFocusChange(true);
+  CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
+  winSystem.OnAppFocusChange(true);
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
