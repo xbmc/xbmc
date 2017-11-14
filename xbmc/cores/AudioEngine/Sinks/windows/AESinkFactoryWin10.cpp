@@ -48,21 +48,20 @@ static Platform::String^ PKEY_Device_EnumeratorName = "{a45c254e-df1c-4efd-8020-
 std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 {
   std::vector<RendererDetail> list;
-
-  // Get the string identifier of the audio renderer
-  Platform::String^ defaultId = MediaDevice::GetDefaultAudioRenderId(AudioDeviceRole::Default);
-  Platform::String^ audioSelector = MediaDevice::GetAudioRenderSelector();
-
-  // Add custom properties to the query
-  auto propertyList = ref new Platform::Collections::Vector<Platform::String^>();
-  propertyList->Append(PKEY_AudioEndpoint_FormFactor);
-  propertyList->Append(PKEY_AudioEndpoint_GUID);
-  propertyList->Append(PKEY_AudioEndpoint_PhysicalSpeakers);
-  propertyList->Append(PKEY_AudioEngine_DeviceFormat);
-  propertyList->Append(PKEY_Device_EnumeratorName);
-
   try
   {
+    // Get the string identifier of the audio renderer
+    Platform::String^ defaultId = MediaDevice::GetDefaultAudioRenderId(AudioDeviceRole::Default);
+    Platform::String^ audioSelector = MediaDevice::GetAudioRenderSelector();
+
+    // Add custom properties to the query
+    auto propertyList = ref new Platform::Collections::Vector<Platform::String^>();
+    propertyList->Append(PKEY_AudioEndpoint_FormFactor);
+    propertyList->Append(PKEY_AudioEndpoint_GUID);
+    propertyList->Append(PKEY_AudioEndpoint_PhysicalSpeakers);
+    propertyList->Append(PKEY_AudioEngine_DeviceFormat);
+    propertyList->Append(PKEY_Device_EnumeratorName);
+
     DeviceInformationCollection^ devInfocollection = Wait(DeviceInformation::FindAllAsync(audioSelector, propertyList));
     if (devInfocollection == nullptr || devInfocollection->Size == 0)
       goto failed;
@@ -114,6 +113,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 
       list.push_back(details);
     }
+    return list;
   }
   catch (...)
   {
