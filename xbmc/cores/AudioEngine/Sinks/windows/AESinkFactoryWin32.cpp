@@ -318,10 +318,11 @@ HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDe
   {
     AEWASAPIDeviceWin32* pAEDevice = new AEWASAPIDeviceWin32(pDevice);
     pAEDevice->deviceId = device;
+    *ppDevice = pAEDevice;
     return S_OK;
   }
 
-  return S_FALSE;
+  return E_FAIL;
 
 failed:
   CLog::Log(LOGERROR, __FUNCTION__": WASAPI initialization failed.");

@@ -71,7 +71,7 @@ CAESinkXAudio::CAESinkXAudio() :
   HRESULT hr = XAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
   if (FAILED(hr))
   {
-    CLog::LogFunction(LOGERROR, "CAESinkXAudio", "XAudio initialization failed.");
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "XAudio initialization failed.");
   }
 #ifdef  _DEBUG
   else
@@ -80,6 +80,7 @@ CAESinkXAudio::CAESinkXAudio() :
     config.BreakMask = XAUDIO2_LOG_ERRORS | XAUDIO2_LOG_WARNINGS | XAUDIO2_LOG_API_CALLS | XAUDIO2_LOG_STREAMING;
     config.TraceMask = XAUDIO2_LOG_ERRORS | XAUDIO2_LOG_WARNINGS | XAUDIO2_LOG_API_CALLS | XAUDIO2_LOG_STREAMING;
     config.LogTiming = true;
+    config.LogFunctionName = true;
     m_xAudio2->SetDebugConfiguration(&config, 0);
   }
 #endif //  _DEBUG
@@ -139,7 +140,7 @@ void CAESinkXAudio::Deinitialize()
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "%s: Invalidated AudioClient - Releasing", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s: Invalidated source voice - Releasing", __FUNCTION__);
     }
   }
   m_running = false;
@@ -329,7 +330,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
-    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
     if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
     {
@@ -344,7 +345,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     /* Test format Dolby TrueHD */
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
 
-    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
     {
       if (FAILED(hr))
@@ -360,11 +361,11 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-    SAFE_DESTROY_VOICE(mMasterVoice);
     SAFE_DESTROY_VOICE(mSourceVoice);
+    SAFE_DESTROY_VOICE(mMasterVoice);
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
-    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
     if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
     {
@@ -382,11 +383,11 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-    SAFE_DESTROY_VOICE(mMasterVoice);
     SAFE_DESTROY_VOICE(mSourceVoice);
+    SAFE_DESTROY_VOICE(mMasterVoice);
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
-    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
     {
       if (FAILED(hr))
@@ -402,7 +403,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     /* Test format Dolby AC3 */
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
 
-    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
     {
       if (FAILED(hr))
@@ -439,7 +440,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       }
 
       SAFE_DESTROY_VOICE(mSourceVoice);
-      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
       if (SUCCEEDED(hr))
         deviceInfo.m_dataFormats.push_back((AEDataFormat)p);
@@ -458,15 +459,15 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     for (int j = 0; j < WASAPISampleRateCount; j++)
     {
-      SAFE_DESTROY_VOICE(mMasterVoice);
       SAFE_DESTROY_VOICE(mSourceVoice);
+      SAFE_DESTROY_VOICE(mMasterVoice);
 
       wfxex.Format.nSamplesPerSec = WASAPISampleRates[j];
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
       hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                           0, deviceId.c_str(), nullptr, AudioCategory_Media);
-      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, nullptr, nullptr);
+      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
       if (SUCCEEDED(hr))
         deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
       else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
@@ -475,8 +476,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", details.strDescription.c_str());
       }
     }
-    SAFE_DESTROY_VOICE(mMasterVoice);
     SAFE_DESTROY_VOICE(mSourceVoice);
+    SAFE_DESTROY_VOICE(mMasterVoice);
 
     deviceInfo.m_deviceName = details.strDeviceId;
     deviceInfo.m_displayName = details.strWinDevType.append(details.strDescription);
@@ -551,12 +552,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   if (!bdefault)
   {
-    try
-    {
-      hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                           0, device.c_str(), nullptr, AudioCategory_Media);
-    }
-    catch (...) {}
+    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
+                                          0, device.c_str(), nullptr, AudioCategory_Media);
   }
 
   if (!pMasterVoice)
@@ -564,16 +561,11 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     if (!bdefault)
       CLog::Log(LOGINFO, __FUNCTION__": Could not locate the device named \"%s\" in the list of Xaudio endpoint devices. Trying the default device...", device.c_str());
 
-    try
-    {
-      // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
-      // workaround: device = nullptr will initialize default audio endpoint
-      hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                           0, 0, nullptr, AudioCategory_Media);
-    }
-    catch (...) {}
-
-    if (!pMasterVoice)
+    // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
+    // workaround: device = nullptr will initialize default audio endpoint
+    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
+                                          0, 0, nullptr, AudioCategory_Media);
+    if (FAILED(hr) || !pMasterVoice)
     {
       CLog::Log(LOGINFO, __FUNCTION__": Could not retrieve the default XAudio audio endpoint (%s).", WASAPIErrToStr(hr));
       return false;
@@ -582,23 +574,18 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   m_masterVoice = pMasterVoice;
 
-  hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback, nullptr, nullptr);
+  hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGINFO, __FUNCTION__": Format is Supported - will attempt to Initialize");
     goto initialize;
   }
 
-  if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
-    return false;
-  }
-  else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
+  if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGDEBUG, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
+    CLog::Log(LOGDEBUG, __FUNCTION__": CreateSourceVoice failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;
@@ -642,7 +629,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
                                              0, device.c_str(), nullptr, AudioCategory_Media);
         if (SUCCEEDED(hr))
         {
-          hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback, nullptr, nullptr);
+          hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
           if (SUCCEEDED(hr))
           {
             /* If the current sample rate matches the source then stop looking and use it */
@@ -767,7 +754,7 @@ void CAESinkXAudio::Drain()
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "%s: Invalidated AudioClient - Releasing", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s: Invalidated source voice - Releasing", __FUNCTION__);
     }
   }
   m_running = false;
