@@ -206,6 +206,7 @@
       <delete>Delete</delete>
       <m mod="ctrl">Move</m>
       <h>PreviousMenu</h>
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </TVChannels>
   <TVRecordings>
@@ -249,6 +250,7 @@
       <g>NextChannelGroup</g>
       <backspace mod="longpress">Number0</backspace> <!-- 0 key goes to "now" on EPG timeline -->
       <browser_back mod="longpress">Number0</browser_back> <!-- 0 key goes to "now" on EPG timeline -->
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </TVGuide>
   <RadioChannels>
@@ -256,6 +258,7 @@
       <delete>Delete</delete>
       <m mod="ctrl">Move</m>
       <j>PreviousMenu</j>
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </RadioChannels>
   <RadioRecordings>
@@ -294,6 +297,7 @@
       <t>ShowTimerRule</t>
       <backspace mod="longpress">Number0</backspace> <!-- 0 key goes to "now" on EPG timeline -->
       <browser_back mod="longpress">Number0</browser_back> <!-- 0 key goes to "now" on EPG timeline -->
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </RadioGuide>
   <FileManager>
@@ -672,6 +676,7 @@
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </FullscreenLiveTV>
   <FullscreenRadio>
@@ -688,10 +693,12 @@
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </FullscreenRadio>
   <PVROSDChannels>
     <keyboard>
+      <period mod="longpress">ChannelNumberSeparator</period>
       <backspace>Close</backspace>
       <escape>Close</escape>
       <browser_back>Close</browser_back>
