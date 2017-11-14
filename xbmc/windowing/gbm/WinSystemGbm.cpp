@@ -153,6 +153,11 @@ void CWinSystemGbm::FlipPage(CGLContextEGL *pGLContext)
   m_DRM.FlipPage(pGLContext);
 }
 
+void CWinSystemGbm::WaitVBlank()
+{
+  CDRMUtils::WaitVBlank();
+}
+
 void* CWinSystemGbm::GetVaDisplay()
 {
 #if defined(HAVE_LIBVA)

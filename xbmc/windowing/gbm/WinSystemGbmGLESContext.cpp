@@ -24,6 +24,9 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
 #endif
 
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
+
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -61,6 +64,9 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     VAAPI::CDecoder::Register(hevc);
   }
 #endif
+
+  CRendererDRMPRIME::Register();
+  CDVDVideoCodecDRMPRIME::Register();
 
   return true;
 }
@@ -134,12 +140,19 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   return true;
 }
 
-void CWinSystemGbmGLESContext::PresentRenderImpl(bool rendered)
+void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
 {
+  if (!m_bRenderCreated)
+    return;
+
   if (rendered)
   {
     m_pGLContext.SwapBuffers();
     CWinSystemGbm::FlipPage(&m_pGLContext);
+  }
+  else
+  {
+    CWinSystemGbm::WaitVBlank();
   }
 }
 

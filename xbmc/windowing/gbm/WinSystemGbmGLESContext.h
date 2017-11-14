@@ -38,13 +38,14 @@ public:
                        RESOLUTION_INFO& res) override;
 
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  void PresentRender(bool rendered, bool videoLayer) override;
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;
   EGLConfig  GetEGLConfig() const;
 protected:
   void SetVSyncImpl(bool enable) override { return; };
-  void PresentRenderImpl(bool rendered) override;
+  void PresentRenderImpl(bool rendered) override {};
 
 private:
   CGLContextEGL m_pGLContext;

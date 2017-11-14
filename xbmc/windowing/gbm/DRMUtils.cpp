@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <drm/drm_fourcc.h>
-#include <drm/drm_mode.h>
+#include <drm_fourcc.h>
+#include <drm_mode.h>
 #include <EGL/egl.h>
 #include <unistd.h>
 
@@ -38,9 +38,23 @@
 static struct drm *m_drm = nullptr;
 
 static drmModeResPtr m_drm_resources = nullptr;
+static drmModePlaneResPtr m_drm_plane_resources = nullptr;
 static drmModeConnectorPtr m_drm_connector = nullptr;
 static drmModeEncoderPtr m_drm_encoder = nullptr;
 static drmModeCrtcPtr m_orig_crtc = nullptr;
+
+struct drm *CDRMUtils::GetDrm()
+{
+  return m_drm;
+}
+
+void CDRMUtils::WaitVBlank()
+{
+  drmVBlank vbl;
+  vbl.request.type = DRM_VBLANK_RELATIVE;
+  vbl.request.sequence = 1;
+  drmWaitVBlank(m_drm->fd, &vbl);
+}
 
 bool CDRMUtils::SetMode(RESOLUTION_INFO res)
 {
@@ -120,6 +134,12 @@ bool CDRMUtils::GetResources()
 {
   m_drm_resources = drmModeGetResources(m_drm->fd);
   if(!m_drm_resources)
+  {
+    return false;
+  }
+
+  m_drm_plane_resources = drmModeGetPlaneResources(m_drm->fd);
+  if (!m_drm_plane_resources)
   {
     return false;
   }
@@ -306,6 +326,18 @@ bool CDRMUtils::InitDrm(drm *drm)
     }
   }
 
+  m_drm->video_plane_id = 0;
+  for (uint32_t i = 0; i < m_drm_plane_resources->count_planes; i++)
+  {
+    drmModePlane *plane = drmModeGetPlane(m_drm->fd, m_drm_plane_resources->planes[i]);
+    if (!plane)
+      continue;
+    if (!m_drm->video_plane_id && plane->possible_crtcs & (1 << m_drm->crtc_index))
+      m_drm->video_plane_id = plane->plane_id;
+    drmModeFreePlane(plane);
+  }
+
+  drmModeFreePlaneResources(m_drm_plane_resources);
   drmModeFreeResources(m_drm_resources);
 
   drmSetMaster(m_drm->fd);
@@ -360,6 +392,11 @@ void CDRMUtils::DestroyDrm()
     drmModeFreeConnector(m_drm_connector);
   }
 
+  if (m_drm_plane_resources)
+  {
+     drmModeFreePlaneResources(m_drm_plane_resources);
+  }
+
   if(m_drm_resources)
   {
     drmModeFreeResources(m_drm_resources);
@@ -371,6 +408,7 @@ void CDRMUtils::DestroyDrm()
   m_drm_encoder = nullptr;
   m_drm_connector = nullptr;
   m_drm_resources = nullptr;
+  m_drm_plane_resources = nullptr;
 
   m_drm->connector = nullptr;
   m_drm->connector_id = 0;
@@ -378,6 +416,7 @@ void CDRMUtils::DestroyDrm()
   m_drm->crtc_id = 0;
   m_drm->crtc_index = 0;
   m_drm->fd = -1;
+  m_drm->video_plane_id = 0;
   m_drm->mode = nullptr;
 }
 
@@ -391,7 +430,10 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     res.iHeight = m_drm_connector->modes[i].vdisplay;
     res.iScreenWidth = m_drm_connector->modes[i].hdisplay;
     res.iScreenHeight = m_drm_connector->modes[i].vdisplay;
-    res.fRefreshRate = m_drm_connector->modes[i].vrefresh;
+    if (m_drm_connector->modes[i].clock % 10 != 0)
+      res.fRefreshRate = (float)m_drm_connector->modes[i].vrefresh * (1000.0f/1001.0f);
+    else
+      res.fRefreshRate = m_drm_connector->modes[i].vrefresh;
     res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
     res.fPixelRatio = 1.0f;
     res.bFullScreen = true;

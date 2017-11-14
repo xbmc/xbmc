@@ -49,6 +49,11 @@ if(CORE_SYSTEM_NAME STREQUAL android)
                       RendererMediaCodecSurface.h)
 endif()
 
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+  list(APPEND SOURCES RendererDRMPRIME.cpp)
+  list(APPEND HEADERS RendererDRMPRIME.h)
+endif()
+
 # we might want to build on linux systems
 # with ENABLE_VDPAU=OFF and ENABLE_VAAPI=OFF
 if(SOURCES)
