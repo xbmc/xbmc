@@ -67,8 +67,6 @@ public:
    * \param dir      The direction for analog sticks, or ignored otherwise
    *
    * \return A valid name for a key in the joystick keymap
-   *
-   * \sa ParseKeyName()
    */
   static std::string MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN);
 
