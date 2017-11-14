@@ -374,7 +374,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   WAVEFORMATEXTENSIBLE wfxex = {0};
   HRESULT              hr;
 
-  for (RendererDetail details : CAESinkFactoryWin::GetRendererDetails())
+  for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())
   {
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
