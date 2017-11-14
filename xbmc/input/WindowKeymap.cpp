@@ -29,10 +29,13 @@ CWindowKeymap::CWindowKeymap(const std::string &controllerId) :
 
 void CWindowKeymap::MapAction(int windowId, const std::string &keyName, JOYSTICK::KeymapAction action)
 {
-  m_windowKeymap[windowId][keyName].insert(std::move(action));
+  auto &actionGroup = m_windowKeymap[windowId][keyName];
+
+  actionGroup.windowId = windowId;
+  actionGroup.actions.insert(std::move(action));
 }
 
-const JOYSTICK::KeymapActions &CWindowKeymap::GetActions(int windowId, const std::string& keyName) const
+const JOYSTICK::KeymapActionGroup &CWindowKeymap::GetActions(int windowId, const std::string& keyName) const
 {
   auto it = m_windowKeymap.find(windowId);
   if (it != m_windowKeymap.end())
@@ -43,6 +46,6 @@ const JOYSTICK::KeymapActions &CWindowKeymap::GetActions(int windowId, const std
       return it2->second;
   }
 
-  static const JOYSTICK::KeymapActions empty;
+  static const JOYSTICK::KeymapActionGroup empty{};
   return empty;
 }

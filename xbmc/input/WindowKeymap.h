@@ -33,14 +33,14 @@ public:
   // implementation of IWindowKeymap
   virtual std::string ControllerID() const override { return m_controllerId; }
   virtual void MapAction(int windowId, const std::string &keyName, KODI::JOYSTICK::KeymapAction action) override;
-  virtual const KODI::JOYSTICK::KeymapActions &GetActions(int windowId, const std::string& keyName) const override;
+  virtual const KODI::JOYSTICK::KeymapActionGroup &GetActions(int windowId, const std::string& keyName) const override;
 
 private:
   // Construction parameter
   const std::string m_controllerId;
 
   using KeyName = std::string;
-  using Keymap = std::map<KeyName, KODI::JOYSTICK::KeymapActions>;
+  using Keymap = std::map<KeyName, KODI::JOYSTICK::KeymapActionGroup>;
 
   using WindowID = int;
   using WindowMap = std::map<WindowID, Keymap>;

@@ -269,7 +269,7 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
     {
       bool bIsSelectAction = false;
 
-      const auto &actions = m_keymap->GetActions(CJoystickUtils::MakeKeyName(feature.Name()));
+      const auto &actions = m_keymap->GetActions(CJoystickUtils::MakeKeyName(feature.Name())).actions;
       if (!actions.empty() && actions.begin()->actionId == ACTION_SELECT_ITEM)
         bIsSelectAction = true;
 

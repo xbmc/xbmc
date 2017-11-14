@@ -96,7 +96,7 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     std::string feature;
     if (buttonMap->GetFeature(primitive, feature))
     {
-      const auto &actions = keymap->GetActions(JOYSTICK::CJoystickUtils::MakeKeyName(feature));
+      const auto &actions = keymap->GetActions(JOYSTICK::CJoystickUtils::MakeKeyName(feature)).actions;
       if (!actions.empty())
       {
         switch (actions.begin()->actionId)

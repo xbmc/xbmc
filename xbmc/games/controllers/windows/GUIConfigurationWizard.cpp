@@ -206,7 +206,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       std::string feature;
       if (buttonMap->GetFeature(primitive, feature))
       {
-        const auto &actions = keymap->GetActions(CJoystickUtils::MakeKeyName(feature));
+        const auto &actions = keymap->GetActions(CJoystickUtils::MakeKeyName(feature)).actions;
         if (!actions.empty())
         {
           //! @todo Handle multiple actions mapped to the same key
