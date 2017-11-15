@@ -17513,7 +17513,13 @@ msgctxt "#35258"
 msgid "Select emulator for {0:s} file"
 msgstr ""
 
-#empty strings from id 35259 to 35504
+#. Label on emulators with a savestate in the emulator selection dialog
+#: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+msgctxt "#35259"
+msgid "Saved"
+msgstr ""
+
+#empty strings from id 35260 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

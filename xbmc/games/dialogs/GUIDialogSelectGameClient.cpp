@@ -50,14 +50,18 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
   std::string extension = URIUtils::GetExtension(gamePath);
   std::string xmlPath = CSavestateUtils::MakeMetadataPath(gamePath);
 
-  std::string selected;
+  // Load savestate
   CSavestate save;
   CSavestateDatabase db;
   CLog::Log(LOGDEBUG, "Select game client dialog: Loading savestate metadata %s", CURL::GetRedacted(xmlPath).c_str());
-  if (db.GetSavestate(xmlPath, save))
+  const bool bLoaded = db.GetSavestate(xmlPath, save);
+
+  // Get savestate game client
+  std::string saveGameClient;
+  if (bLoaded)
   {
-    selected = save.GameClient();
-    CLog::Log(LOGDEBUG, "Select game client dialog: Auto-selecting %s", selected.c_str());
+    saveGameClient = save.GameClient();
+    CLog::Log(LOGDEBUG, "Select game client dialog: Auto-selecting %s", saveGameClient.c_str());
   }
 
   // "Select emulator for {0:s}"
@@ -70,6 +74,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(candidate, candidate->ID()));
       item->SetLabel2(g_localizeStrings.Get(35257)); // "Installed"
+      if (item->GetPath() == saveGameClient)
+        item->SetLabel2(item->GetLabel2() + ", " + g_localizeStrings.Get(35259)); // "Saved"
       items.Add(std::move(item));
     }
     for (const auto &addon : installable)
@@ -83,7 +89,7 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
 
     for (int i = 0; i < items.Size(); i++)
     {
-      if (items[i]->GetPath() == selected)
+      if (items[i]->GetPath() == saveGameClient)
         dialog->SetSelected(i);
     }
 
