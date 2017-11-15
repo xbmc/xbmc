@@ -157,6 +157,20 @@
 						<ondown>131</ondown>
 						<include>KeyboardButton</include>
 					</control>
+					<control type="button" id="112">
+						<description>(0,12) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>132</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="112">
+						<description>(0,12) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>132</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
 				<!-- 2nd row -->
 				<control type="grouplist">
@@ -235,6 +249,12 @@
 						<description>(1,11) key button</description>
 						<onup>111</onup>
 						<ondown>151</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="132">
+						<description>(1,12) key button</description>
+						<onup>112</onup>
+						<ondown>152</ondown>
 						<include>KeyboardButton</include>
 					</control>
 				</control>
@@ -317,6 +337,12 @@
 						<ondown>171</ondown>
 						<include>KeyboardButton</include>
 					</control>
+					<control type="button" id="152">
+						<description>(2,12) key button</description>
+						<onup>132</onup>
+						<ondown>172</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
 				<!-- 4th row -->
 				<control type="grouplist">
@@ -394,6 +420,12 @@
 					<control type="button" id="171">
 						<description>(3,11) key button</description>
 						<onup>501</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="172">
+						<description>(3,12) key button</description>
+						<onup>502</onup>
 						<ondown>8</ondown>
 						<include>KeyboardButton</include>
 					</control>
