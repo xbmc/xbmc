@@ -83,7 +83,7 @@ bool CWinSystemWin10::DestroyWindowSystem()
 
 void CWinSystemWin10::SetCoreWindow(Windows::UI::Core::CoreWindow^ window)
 {
-  CWinEventsWin10::InitEventHandlers(window);
+  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
   m_coreWindow = window;
 }
 

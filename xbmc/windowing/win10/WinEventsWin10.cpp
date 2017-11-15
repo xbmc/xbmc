@@ -97,18 +97,34 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   //window->SetPointerCapture();
 
   // window
-  window->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(CWinEventsWin10::OnWindowSizeChanged);
+  window->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>([&](CoreWindow^ wnd, WindowSizeChangedEventArgs^ args) {
+    OnWindowSizeChanged(wnd, args);
+  });
+  window->Closed += ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>([&](CoreWindow^ wnd, CoreWindowEventArgs^ args) {
+    OnWindowClosed(wnd, args);
+  });
   window->VisibilityChanged += ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(CWinEventsWin10::OnVisibilityChanged);
   window->Activated += ref new TypedEventHandler<CoreWindow^, WindowActivatedEventArgs^>(CWinEventsWin10::OnWindowActivationChanged);
-  window->Closed += ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(CWinEventsWin10::OnWindowClosed);
   // mouse, touch and pen
-  window->PointerPressed += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerPressed);
-  window->PointerMoved += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerMoved);
-  window->PointerReleased += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerReleased);
-  window->PointerExited += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerExited);
-  window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(CWinEventsWin10::OnPointerWheelChanged);
+  window->PointerPressed += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>([&](CoreWindow^ wnd, PointerEventArgs^ args) {
+    OnPointerPressed(wnd, args);
+  });
+  window->PointerMoved += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>([&](CoreWindow^ wnd, PointerEventArgs^ args) {
+    OnPointerMoved(wnd, args);
+  });
+  window->PointerReleased += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>([&](CoreWindow^ wnd, PointerEventArgs^ args) {
+    OnPointerReleased(wnd, args);
+  });
+  window->PointerExited += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>([&](CoreWindow^ wnd, PointerEventArgs^ args) {
+    OnPointerExited(wnd, args);
+  });
+  window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>([&](CoreWindow^ wnd, PointerEventArgs^ args) {
+    OnPointerWheelChanged(wnd, args);
+  });
   // keyboard
-  window->Dispatcher->AcceleratorKeyActivated += ref new TypedEventHandler<CoreDispatcher^, AcceleratorKeyEventArgs^>(CWinEventsWin10::OnAcceleratorKeyActivated);
+  window->Dispatcher->AcceleratorKeyActivated += ref new TypedEventHandler<CoreDispatcher^, AcceleratorKeyEventArgs^>([&](CoreDispatcher^ disp, AcceleratorKeyEventArgs^ args) {
+    OnAcceleratorKeyActivated(disp, args);
+  });
   // display
   DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
   currentDisplayInformation->DpiChanged += ref new TypedEventHandler<DisplayInformation^, Platform::Object^>(CWinEventsWin10::OnDpiChanged);
@@ -297,7 +313,7 @@ void CWinEventsWin10::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs
   MessagePush(&newEvent);
 }
 
-static void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
+void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
 {
   static auto downState = CoreVirtualKeyStates::Down;
 
