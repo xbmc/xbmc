@@ -234,6 +234,7 @@ private:
 
 std::string CAESinkFactoryWin::GetDefaultDeviceId()
 {
+  std::string strDeviceId = "";
   IMMDevice* pDevice;
   IMMDeviceEnumerator* pEnumerator = NULL;
   LPWSTR pwszID = NULL;
@@ -245,19 +246,36 @@ std::string CAESinkFactoryWin::GetDefaultDeviceId()
     // get the default audio endpoint
   if (pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice) == S_OK)
   {
-    if (pDevice->GetId(&pwszID) == S_OK)
+    IPropertyStore *pProperty = NULL;
+    PROPVARIANT varName;
+    PropVariantInit(&varName);
+
+    hr = pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+    if (FAILED(hr))
     {
-      wstrDDID = pwszID;
-      CoTaskMemFree(pwszID);
+      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.");
+      SAFE_RELEASE(pDevice);
+      goto failed;
     }
+
+    hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint GUID failed.");
+      SAFE_RELEASE(pProperty);
+      SAFE_RELEASE(pDevice);
+      goto failed;
+    }
+    strDeviceId = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
+    PropVariantClear(&varName);
+
+    SAFE_RELEASE(pProperty);
     SAFE_RELEASE(pDevice);
   }
   SAFE_RELEASE(pEnumerator);
 
-  return KODI::PLATFORM::WINDOWS::FromW(wstrDDID);
-
 failed:
-  return std::string();
+  return strDeviceId;
 }
 
 HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDevice **ppDevice)
