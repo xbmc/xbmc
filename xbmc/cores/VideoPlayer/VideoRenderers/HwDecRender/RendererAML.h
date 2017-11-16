@@ -57,7 +57,7 @@ public:
   virtual bool Supports(ERENDERFEATURE feature) override;
 
 private:
-  static const int m_numRenderBuffers = 4;
+  static const int m_numRenderBuffers = 6;
 
   struct BUFFER
   {
