@@ -1885,8 +1885,11 @@ int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::ReleaseFrame idx:%u", index);
 
-  if ((ret = m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf)) < 0)
-    CLog::Log(LOGERROR, "CAMLCodec::ReleaseFrame - VIDIOC_QBUF failed: %s", strerror(errno));
+  { CSingleLock lock(m_amlVideo_lock);
+    ret = m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf);
+  }
+  if (ret < 0)
+      CLog::Log(LOGERROR, "CAMLCodec::ReleaseFrame - VIDIOC_QBUF failed: %s", strerror(errno));
   return ret;
 }
 
@@ -1900,7 +1903,10 @@ int CAMLCodec::DequeueBuffer()
 
   unsigned int waitTime(10);
 DRAIN:
-  if (m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0)
+  { CSingleLock lock(m_amlVideo_lock);
+    ret = m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf);
+  }
+  if (ret < 0)
   {
     if (errno != EAGAIN)
       CLog::Log(LOGERROR, "CAMLCodec::DequeueBuffer - VIDIOC_DQBUF failed: %s", strerror(errno));

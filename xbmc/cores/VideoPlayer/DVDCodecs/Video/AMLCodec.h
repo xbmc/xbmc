@@ -117,4 +117,5 @@ private:
   static std::atomic_flag  m_pollSync;
   static int m_pollDevice;
   CProcessInfo &m_processInfo;
+  CCriticalSection m_amlVideo_lock;
 };
