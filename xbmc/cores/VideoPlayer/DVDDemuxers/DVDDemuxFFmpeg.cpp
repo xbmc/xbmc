@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "Util.h"
 
 #include <sstream>
 #include <utility>
@@ -1675,7 +1676,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
           else
           {
-            fileName += nameTag->value;
+            fileName += CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
             XFILE::CFile file;
             if (pStream->codecpar->extradata && file.OpenForWrite(fileName))
             {
