@@ -8,7 +8,7 @@ set(HEADERS OSScreenSaver.h
             XBMC_events.h
             VideoSync.h)
 
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi OR CORE_PLATFORM_NAME_LC STREQUAL gbm)
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi OR CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL aml)
   list(APPEND SOURCES WinEventsLinux.cpp)
   list(APPEND HEADERS WinEventsLinux.h)
 endif()
