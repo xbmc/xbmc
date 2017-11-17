@@ -33,8 +33,3 @@ void CRPProcessInfoWin::Register()
 {
   CRPProcessInfo::RegisterProcessControl(CRPProcessInfoWin::Create);
 }
-
-ESCALINGMETHOD CRPProcessInfoWin::GetDefaultScalingMethod() const
-{
-  return CRPWinRenderer::DEFAULT_SCALING_METHOD;
-}

@@ -74,6 +74,9 @@ void CGUIGameSettings::UpdateSettings()
   ViewMode viewMode = m_guiSettings.ViewMode();
 
   // Save settings for renderer
-  m_renderSettings.VideoSettings().SetScalingMethod(scalingMethod);
+  if (m_processInfo.HasScalingMethod(scalingMethod))
+    m_renderSettings.VideoSettings().SetScalingMethod(scalingMethod);
+  else
+    m_renderSettings.VideoSettings().SetScalingMethod(m_processInfo.GetDefaultScalingMethod());
   m_renderSettings.VideoSettings().SetRenderViewMode(viewMode);
 }

@@ -31,9 +31,6 @@ namespace RETRO
   public:
     static CRPProcessInfo* Create();
     static void Register();
-
-    // implementation of CRPProcessInfo
-    ESCALINGMETHOD GetDefaultScalingMethod() const override;
   };
 }
 }

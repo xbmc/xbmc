@@ -68,9 +68,10 @@ namespace RETRO
     void ResetInfo();
 
     // rendering info
-    virtual ESCALINGMETHOD GetDefaultScalingMethod() const { return VS_SCALINGMETHOD_NEAREST; }
     CRenderContext &GetRenderContext() { return *m_renderContext; }
     CRenderBufferManager &GetBufferManager() { return *m_renderBufferManager; }
+    bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
+    ESCALINGMETHOD GetDefaultScalingMethod() const { return m_defaultScalingMethod; }
 
     // player video
     void SetVideoPixelFormat(AVPixelFormat pixFormat);
@@ -89,6 +90,8 @@ namespace RETRO
   protected:
     CRPProcessInfo();
 
+    static std::vector<ESCALINGMETHOD> GetScalingMethods();
+
     static CreateRPProcessControl m_processControl;
     static std::vector<std::unique_ptr<IRendererFactory>> m_rendererFactories;
     static CCriticalSection m_createSection;
@@ -99,6 +102,7 @@ namespace RETRO
 
   private:
     std::unique_ptr<CRenderContext> m_renderContext;
+    ESCALINGMETHOD m_defaultScalingMethod = VS_SCALINGMETHOD_AUTO;
   };
 
 }
