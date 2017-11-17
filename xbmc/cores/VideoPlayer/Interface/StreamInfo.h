@@ -50,12 +50,14 @@ struct AudioStreamInfo
   std::string language;
   std::string name;
   std::string audioCodecName;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
 };
 
 struct SubtitleStreamInfo
 {
   std::string language;
   std::string name;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
 };
 
 struct VideoStreamInfo

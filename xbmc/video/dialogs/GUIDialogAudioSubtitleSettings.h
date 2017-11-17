@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 
 class CVariant;
 
@@ -80,4 +81,6 @@ protected:
   typedef std::vector<int> Features;
   Features m_audioCaps;
   Features m_subCaps;
+private:
+  static std::string FormatFlags(StreamFlags flags);
 };

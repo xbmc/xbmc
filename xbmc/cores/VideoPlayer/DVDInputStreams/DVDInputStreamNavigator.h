@@ -50,41 +50,27 @@ struct DVDNavStreamInfo
 {
   std::string name;
   std::string language;
-
-  DVDNavStreamInfo() = default;
 };
 
 struct DVDNavAudioStreamInfo : DVDNavStreamInfo
 {
   std::string codec;
-  int channels;
-
-  DVDNavAudioStreamInfo() : DVDNavStreamInfo(),
-    channels(0) {}
+  int channels = 0;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
 };
 
 struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
 {
-  StreamFlags flags;
-
-  DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
-    flags(StreamFlags::FLAG_NONE) {}
+  StreamFlags flags = StreamFlags::FLAG_NONE;
 };
 
 struct DVDNavVideoStreamInfo : DVDNavStreamInfo
 {
-  int angles;
-  float aspectRatio;
+  int angles = 0;
+  float aspectRatio = 0.0f;
   std::string codec;
-  uint32_t width;
-  uint32_t height;
-
-  DVDNavVideoStreamInfo() : DVDNavStreamInfo(),
-    angles(0),
-    aspectRatio(0.0f),
-    width(0),
-    height(0)
-  {}
+  uint32_t width = 0;
+  uint32_t height = 0;
 };
 
 class CDVDInputStreamNavigator
@@ -189,8 +175,8 @@ protected:
   int ConvertSubtitleStreamId_XBMCToExternal(int id);
   int ConvertSubtitleStreamId_ExternalToXBMC(int id);
 
-  static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
-  static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
+  static void SetAudioStreamName(DVDNavAudioStreamInfo &info, const audio_attr_t &audio_attributes);
+  static void SetSubtitleStreamName(DVDNavSubtitleStreamInfo &info, const subp_attr_t &subp_attributes);
 
   int GetAngleCount();
   void GetVideoResolution(uint32_t * width, uint32_t * height);

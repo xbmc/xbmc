@@ -476,6 +476,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.name     = info.name;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
+      s.flags = info.flags;
       Update(s);
     }
 
@@ -3299,6 +3300,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
     info.name += "(Invalid)";
 
   info.language = s.language;
+  info.flags = s.flags;
 }
 
 void CVideoPlayer::SetSubtitle(int iStream)
@@ -4669,6 +4671,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
   info.bitrate = s.bitrate;
   info.channels = s.channels;
   info.audioCodecName = s.codec;
+  info.flags = s.flags;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)

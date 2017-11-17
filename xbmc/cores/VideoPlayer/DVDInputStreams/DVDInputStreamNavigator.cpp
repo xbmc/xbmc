@@ -914,7 +914,7 @@ DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const i
   return info;
 }
 
-void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes)
+void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavSubtitleStreamInfo &info, const subp_attr_t &subp_attributes)
 {
   if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
     subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
@@ -931,9 +931,11 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, con
     case DVD_SUBPICTURE_LANG_EXT_BigCC:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
       info.name += g_localizeStrings.Get(37011);
+      info.flags = StreamFlags::FLAG_HEARING_IMPAIRED;
       break;
     case DVD_SUBPICTURE_LANG_EXT_Forced:
       info.name += g_localizeStrings.Get(37012);
+      info.flags = StreamFlags::FLAG_FORCED;
       break;
     case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
     case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
@@ -1001,12 +1003,13 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
   return activeStream;
 }
 
-void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes)
+void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavAudioStreamInfo &info, const audio_attr_t &audio_attributes)
 {
   switch( audio_attributes.code_extension )
   {
   case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
     info.name = g_localizeStrings.Get(37000);
+    info.flags = StreamFlags::FLAG_VISUAL_IMPAIRED;
     break;
   case DVD_AUDIO_LANG_EXT_DirectorsComments1:
     info.name = g_localizeStrings.Get(37001);
