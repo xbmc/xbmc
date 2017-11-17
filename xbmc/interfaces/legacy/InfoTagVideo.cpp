@@ -176,5 +176,25 @@ namespace XBMCAddon
     {
       return infoTag->m_strTrailer;
     }
+
+    std::vector<std::string> InfoTagVideo::getArtist()
+    {
+      return infoTag->m_artist;
+    }
+
+    String InfoTagVideo::getAlbum()
+    {
+      return infoTag->m_strAlbum;
+    }
+
+    int InfoTagVideo::getTrack()
+    {
+      return infoTag->m_iTrack;
+    }
+
+    unsigned int InfoTagVideo::getDuration()
+    {
+      return infoTag->GetDuration();
+    }
   }
 }
