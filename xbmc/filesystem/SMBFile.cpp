@@ -244,6 +244,11 @@ std::string CSMB::URLEncode(const CURL &url)
   }
   flat += URLEncode(url.GetHostName());
 
+  if (url.HasPort())
+  {
+    flat += StringUtils::Format(":%i", url.GetPort());
+  }
+
   /* okey sadly since a slash is an invalid name we have to tokenize */
   std::vector<std::string> parts;
   std::vector<std::string>::iterator it;
