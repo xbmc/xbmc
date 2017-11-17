@@ -232,9 +232,9 @@ std::string CSMB::URLEncode(const CURL &url)
   }
   flat += URLEncode(url.GetHostName());
 
-  if(url.HasPort())
+  if (url.HasPort())
   {
-     flat += StringUtils::Format(":%i", url.GetPort());
+    flat += StringUtils::Format(":%i", url.GetPort());
   }
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
