@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
 #include "threads/SingleLock.h"
+#include "../WinEventsLinux.h"
 
 #include <linux/fb.h>
 
@@ -71,6 +72,8 @@ CWinSystemAmlogic::CWinSystemAmlogic()
 
   aml_permissions();
   aml_disable_freeScale();
+
+  m_winEvents.reset(new CWinEventsLinux());
 }
 
 CWinSystemAmlogic::~CWinSystemAmlogic()
