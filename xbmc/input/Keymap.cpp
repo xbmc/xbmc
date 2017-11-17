@@ -34,28 +34,28 @@ std::string CKeymap::ControllerID() const
   return m_keymap->ControllerID();
 }
 
-const JOYSTICK::KeymapActions &CKeymap::GetActions(const std::string& keyName) const
+const JOYSTICK::KeymapActionGroup &CKeymap::GetActions(const std::string& keyName) const
 {
   const int windowId = m_environment->GetWindowID();
-  const JOYSTICK::KeymapActions& actions = m_keymap->GetActions(windowId, keyName);
-  if (!actions.empty())
+  const auto &actions = m_keymap->GetActions(windowId, keyName);
+  if (!actions.actions.empty())
     return actions;
 
   const int fallbackWindowId = m_environment->GetFallthrough(windowId);
   if (fallbackWindowId >= 0)
   {
-    const JOYSTICK::KeymapActions& fallbackActions = m_keymap->GetActions(fallbackWindowId, keyName);
-    if (!fallbackActions.empty())
+    const auto &fallbackActions = m_keymap->GetActions(fallbackWindowId, keyName);
+    if (!fallbackActions.actions.empty())
       return fallbackActions;
   }
 
   if (m_environment->UseGlobalFallthrough())
   {
-    const JOYSTICK::KeymapActions& globalActions = m_keymap->GetActions(-1, keyName);
-    if (!globalActions.empty())
+    const auto &globalActions = m_keymap->GetActions(-1, keyName);
+    if (!globalActions.actions.empty())
       return globalActions;
   }
 
-  static const JOYSTICK::KeymapActions empty;
+  static const JOYSTICK::KeymapActionGroup empty{};
   return empty;
 }

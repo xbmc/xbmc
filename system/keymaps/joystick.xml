@@ -70,6 +70,12 @@
       <rightstick direction="down">VolumeDown</rightstick>
     </joystick>
   </global>
+  <Home>
+    <joystick profile="game.controller.default">
+      <b>Back</b>
+      <b holdtime="500">ActivateWindow(ShutdownMenu)</b>
+    </joystick>
+  </Home>
   <FileManager>
     <joystick profile="game.controller.default">
       <rightbumper>Highlight</rightbumper>
@@ -85,7 +91,8 @@
   <FullscreenVideo>
     <joystick profile="game.controller.default">
       <a>Pause</a>
-      <b>Stop</b>
+      <b>Fullscreen</b>
+      <b holdtime="500">Stop</b>
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>

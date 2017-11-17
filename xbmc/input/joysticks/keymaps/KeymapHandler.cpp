@@ -173,7 +173,7 @@ bool CKeymapHandler::HasAction(const std::string &keyName) const
 {
   bool bHasAction = false;
 
-  const auto &actions = m_keymap->GetActions(keyName);
+  const auto &actions = m_keymap->GetActions(keyName).actions;
   for (const auto &action : actions)
   {
     if (HotkeysPressed(action.hotkeys))

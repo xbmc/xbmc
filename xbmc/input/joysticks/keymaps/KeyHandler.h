@@ -55,10 +55,10 @@ namespace JOYSTICK
   private:
     void Reset();
 
-    bool HandleActions(std::vector<const KeymapAction*> actions, float magnitude, unsigned int holdTimeMs);
-    bool HandleRelease(std::vector<const KeymapAction*> actions);
+    bool HandleActions(std::vector<const KeymapAction*> actions, int windowId, float magnitude, unsigned int holdTimeMs);
+    bool HandleRelease(std::vector<const KeymapAction*> actions, int windowId);
 
-    bool HandleAction(const KeymapAction& action, float magnitude, unsigned int holdTimeMs);
+    bool HandleAction(const KeymapAction& action, int windowId, float magnitude, unsigned int holdTimeMs);
 
     // Check criteria for sending a repeat action
     bool SendRepeatAction(unsigned int holdTimeMs);
@@ -79,6 +79,7 @@ namespace JOYSTICK
     unsigned int m_lastHoldTimeMs;
     bool m_bActionSent;
     unsigned int m_lastActionMs;
+    int m_activeWindowId = -1; // Window that activated the key
   };
 }
 }

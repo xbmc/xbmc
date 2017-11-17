@@ -54,7 +54,7 @@ public:
    *
    * \return A list of actions associated with the given key
    */
-  virtual const KODI::JOYSTICK::KeymapActions& GetActions(const std::string& keyName) const = 0;
+  virtual const KODI::JOYSTICK::KeymapActionGroup& GetActions(const std::string& keyName) const = 0;
 };
 
 /*!
@@ -91,5 +91,5 @@ public:
    *
    * \return A list of actions associated with the given key for the given window
    */
-  virtual const KODI::JOYSTICK::KeymapActions& GetActions(int windowId, const std::string& keyName) const = 0;
+  virtual const KODI::JOYSTICK::KeymapActionGroup& GetActions(int windowId, const std::string& keyName) const = 0;
 };

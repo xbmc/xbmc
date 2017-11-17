@@ -170,6 +170,10 @@ namespace JOYSTICK
    * \ingroup joystick
    * \brief Container that sorts action entries by their holdtime
    */
-  using KeymapActions = std::set<KeymapAction>;
+  struct KeymapActionGroup
+  {
+    int windowId = -1;
+    std::set<KeymapAction> actions;
+  };
 }
 }
