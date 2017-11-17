@@ -20,6 +20,7 @@
 #pragma once
 
 #include "cores/RetroPlayer/RetroPlayerTypes.h"
+#include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -43,7 +44,11 @@ namespace RETRO
     std::vector<IRenderBufferPool*> GetBufferPools();
     void FlushPools();
 
+    bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
+
   protected:
+    static std::vector<ESCALINGMETHOD> GetScalingMethods();
+
     struct RenderBufferPools
     {
       IRendererFactory* factory;

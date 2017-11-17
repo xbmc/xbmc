@@ -20,6 +20,7 @@
 
 #include "RPWinRenderer.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "cores/RetroPlayer/rendering/RenderTranslator.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/RetroPlayer/rendering/VideoShaders/windows/RPWinOutputShader.h"
 #include "guilib/D3DResource.h"
@@ -169,12 +170,14 @@ AVPixelFormat CWinRenderBuffer::GetPixFormat(DXGI_FORMAT dxFormat)
 
 // --- CWinRenderBufferPool ----------------------------------------------------
 
+CWinRenderBufferPool::CWinRenderBufferPool()
+{
+  CompileOutputShaders();
+}
+
 bool CWinRenderBufferPool::IsCompatible(const CRenderVideoSettings &renderSettings) const
 {
-  if (!CRPWinRenderer::SupportsScalingMethod(renderSettings.GetScalingMethod()))
-    return false;
-
-  return true;
+  return GetShader(renderSettings.GetScalingMethod()) != nullptr;
 }
 
 IRenderBuffer *CWinRenderBufferPool::CreateRenderBuffer(void *header /* = nullptr */)
@@ -192,23 +195,49 @@ bool CWinRenderBufferPool::ConfigureDX(DXGI_FORMAT dxFormat)
   return true;
 }
 
+CRPWinOutputShader *CWinRenderBufferPool::GetShader(ESCALINGMETHOD scalingMethod) const
+{
+  auto it = m_outputShaders.find(scalingMethod);
+
+  if (it != m_outputShaders.end())
+    return it->second.get();
+
+  return nullptr;
+}
+
+const std::vector<ESCALINGMETHOD> &CWinRenderBufferPool::GetScalingMethods()
+{
+  static std::vector<ESCALINGMETHOD> scalingMethods = {
+    VS_SCALINGMETHOD_NEAREST,
+    VS_SCALINGMETHOD_LINEAR,
+  };
+
+  return scalingMethods;
+}
+
+void CWinRenderBufferPool::CompileOutputShaders()
+{
+  for (auto scalingMethod : GetScalingMethods())
+  {
+    std::unique_ptr<CRPWinOutputShader> outputShader(new CRPWinOutputShader);
+    if (outputShader->Create(scalingMethod))
+      m_outputShaders[scalingMethod] = std::move(outputShader);
+    else
+      CLog::Log(LOGERROR, "RPWinRenderer: Unable to create output shader (%s)",
+        CRenderTranslator::TranslateScalingMethod(scalingMethod));
+  }
+}
+
 // --- CRPWinRenderer ----------------------------------------------------------
 
 CRPWinRenderer::CRPWinRenderer(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
-  CRPBaseRenderer(renderSettings, context, std::move(bufferPool)),
-  m_outputShader(new CRPWinOutputShader)
+  CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
 }
 
 CRPWinRenderer::~CRPWinRenderer()
 {
   Deinitialize();
-}
-
-void CRPWinRenderer::CompileOutputShader(ESCALINGMETHOD scalingMethod)
-{
-  if (!m_outputShader->Create(scalingMethod))
-    CLog::Log(LOGERROR, "RPWinRenderer: Unable to create output shader");
 }
 
 bool CRPWinRenderer::ConfigureInternal()
@@ -218,9 +247,6 @@ bool CRPWinRenderer::ConfigureInternal()
   DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer()->GetFormat();
 
   static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX(targetDxFormat);
-
-  // Compile output shader
-  HandleScalingChange();
 
   return true;
 }
@@ -233,16 +259,6 @@ void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
   renderingDx->SetAlphaBlendEnable(alpha < 0xFF);
 
   Render(renderingDx->GetBackBuffer());
-}
-
-void CRPWinRenderer::HandleScalingChange()
-{
-  ESCALINGMETHOD scalingMethod = m_renderSettings.VideoSettings().GetScalingMethod();
-  if (scalingMethod != m_prevScalingMethod)
-  {
-    CompileOutputShader(scalingMethod);
-    m_prevScalingMethod = scalingMethod;
-  }
 }
 
 bool CRPWinRenderer::Supports(ERENDERFEATURE feature) const
@@ -269,9 +285,7 @@ bool CRPWinRenderer::SupportsScalingMethod(ESCALINGMETHOD method)
 
 void CRPWinRenderer::Render(CD3DTexture *target)
 {
-  HandleScalingChange();
-
-  if (m_renderBuffer != nullptr && m_outputShader)
+  if (m_renderBuffer != nullptr)
   {
     CD3DTexture *intermediateTarget = static_cast<CWinRenderBuffer*>(m_renderBuffer)->GetTarget();
     if (intermediateTarget != nullptr)
@@ -279,9 +293,19 @@ void CRPWinRenderer::Render(CD3DTexture *target)
       CRect viewPort;
       m_context.GetViewPort(viewPort);
 
-      m_outputShader->Render(*intermediateTarget, m_sourceWidth, m_sourceHeight,
-        m_sourceRect, m_rotatedDestCoords, viewPort, target,
-        m_context.UseLimitedColor() ? 1 : 0);
+      // Pick appropriate output shader depending on the scaling method of the renderer
+      ESCALINGMETHOD scalingMethod = m_renderSettings.VideoSettings().GetScalingMethod();
+
+      CWinRenderBufferPool *bufferPool = static_cast<CWinRenderBufferPool*>(m_bufferPool.get());
+      CRPWinOutputShader *outputShader = bufferPool->GetShader(scalingMethod);
+
+      // Use the picked output shader to render to the target
+      if (outputShader != nullptr)
+      {
+        outputShader->Render(*intermediateTarget, m_sourceWidth, m_sourceHeight,
+          m_sourceRect, m_rotatedDestCoords, viewPort, target,
+          m_context.UseLimitedColor() ? 1 : 0);
+      }
     }
   }
 }

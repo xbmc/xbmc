@@ -53,6 +53,16 @@ CRPProcessInfo::CRPProcessInfo() :
     RenderBufferPoolVector bufferPools = rendererFactory->CreateBufferPools();
     m_renderBufferManager->RegisterPools(rendererFactory.get(), std::move(bufferPools));
   }
+
+  // Initialize default scaling method
+  for (auto scalingMethod : GetScalingMethods())
+  {
+    if (HasScalingMethod(scalingMethod))
+    {
+      m_defaultScalingMethod = scalingMethod;
+      break;
+    }
+  }
 }
 
 CRPProcessInfo::~CRPProcessInfo() = default;
@@ -124,6 +134,19 @@ void CRPProcessInfo::ResetInfo()
     m_dataCache->SetVideoRender(false); //! @todo
     m_dataCache->SetPlayTimes(0, 0, 0, 0);
   }
+}
+
+bool CRPProcessInfo::HasScalingMethod(ESCALINGMETHOD scalingMethod) const
+{
+  return m_renderBufferManager->HasScalingMethod(scalingMethod);
+}
+
+std::vector<ESCALINGMETHOD> CRPProcessInfo::GetScalingMethods()
+{
+  return {
+    VS_SCALINGMETHOD_NEAREST,
+    VS_SCALINGMETHOD_LINEAR,
+  };
 }
 
 //******************************************************************************

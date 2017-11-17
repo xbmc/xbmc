@@ -20,6 +20,7 @@
 
 #include "RenderBufferManager.h"
 #include "IRenderBufferPool.h"
+#include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "threads/SingleLock.h"
 
 #include <algorithm>
@@ -81,4 +82,19 @@ void CRenderBufferManager::FlushPools()
     for (const auto &pool : pools.pools)
       pool->Flush();
   }
+}
+
+bool CRenderBufferManager::HasScalingMethod(ESCALINGMETHOD scalingMethod) const
+{
+  CRenderVideoSettings videoSettings;
+  videoSettings.SetScalingMethod(scalingMethod);
+
+  for (const auto &pools : m_pools)
+  {
+    for (const auto &pool : pools.pools)
+      if (pool->IsCompatible(videoSettings))
+        return true;
+  }
+
+  return false;
 }

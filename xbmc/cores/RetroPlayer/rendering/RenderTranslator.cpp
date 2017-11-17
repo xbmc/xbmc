@@ -17,20 +17,23 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "cores/IPlayer.h"
-#include "../RPProcessInfo.h"
+#include "RenderTranslator.h"
 
-namespace KODI
+using namespace KODI;
+using namespace RETRO;
+
+const char *CRenderTranslator::TranslateScalingMethod(ESCALINGMETHOD scalingMethod)
 {
-namespace RETRO
-{
-  class CRPProcessInfoWin : public CRPProcessInfo
+  switch (scalingMethod)
   {
-  public:
-    static CRPProcessInfo* Create();
-    static void Register();
-  };
-}
+  case VS_SCALINGMETHOD_NEAREST:
+    return "nearest";
+  case VS_SCALINGMETHOD_LINEAR:
+    return "linear";
+  default:
+    break;
+  }
+
+  return "";
 }

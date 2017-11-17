@@ -84,7 +84,7 @@ namespace RETRO
   class CWinRenderBufferPool : public CBaseRenderBufferPool
   {
   public:
-    CWinRenderBufferPool() = default;
+    CWinRenderBufferPool();
     ~CWinRenderBufferPool() override = default;
 
     // implementation of IRenderBufferPool via CRenderBufferPoolSysMem
@@ -95,9 +95,15 @@ namespace RETRO
 
     // DirectX interface
     bool ConfigureDX(DXGI_FORMAT dxFormat);
+    CRPWinOutputShader *GetShader(ESCALINGMETHOD scalingMethod) const;
 
   private:
+    static const std::vector<ESCALINGMETHOD> &GetScalingMethods();
+
+    void CompileOutputShaders();
+
     DXGI_FORMAT m_targetDxFormat = DXGI_FORMAT_UNKNOWN;
+    std::map<ESCALINGMETHOD, std::unique_ptr<CRPWinOutputShader>> m_outputShaders;
   };
 
   class CRPWinRenderer : public CRPBaseRenderer
@@ -123,12 +129,7 @@ namespace RETRO
     void RenderInternal(bool clear, uint8_t alpha) override;
 
   private:
-    void CompileOutputShader(ESCALINGMETHOD scalingMethod);
-    void HandleScalingChange();
     void Render(CD3DTexture *target);
-
-    std::unique_ptr<CRPWinOutputShader> m_outputShader;
-    ESCALINGMETHOD m_prevScalingMethod = VS_SCALINGMETHOD_AUTO;
   };
 }
 }

@@ -20,17 +20,18 @@
 #pragma once
 
 #include "cores/IPlayer.h"
-#include "../RPProcessInfo.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRPProcessInfoWin : public CRPProcessInfo
+  class CRenderTranslator
   {
   public:
-    static CRPProcessInfo* Create();
-    static void Register();
+    /*!
+     * \brief Translate a scaling method to a string suitable for logging
+     */
+    static const char *TranslateScalingMethod(ESCALINGMETHOD scalingMethod);
   };
 }
 }
