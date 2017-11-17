@@ -41,6 +41,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace KODI::MESSAGING;
 
@@ -178,10 +179,13 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   }
   else
     CLog::Log(LOGERROR, "UPNP: CUPnPPlayer couldn't find device as %s", uuid);
+
+  g_Windowing.RegisterRenderLoop(this);
 }
 
 CUPnPPlayer::~CUPnPPlayer()
 {
+  g_Windowing.UnregisterRenderLoop(this);
   CloseFile();
   CUPnP::UnregisterUserdata(m_delegate);
   delete m_delegate;

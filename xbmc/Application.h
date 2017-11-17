@@ -31,6 +31,7 @@
 #include "ServiceManager.h"
 
 #include <atomic>
+#include <deque>
 #include <map>
 #include <memory>
 #include <string>
@@ -286,7 +287,7 @@ public:
 
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
-  static bool OnEvent(XBMC_Event& newEvent);
+  bool OnEvent(XBMC_Event& newEvent);
 
   CNetwork& getNetwork();
 
@@ -492,11 +493,11 @@ protected:
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
 
   float NavigationIdleTime();
-
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
   void CreateUserDirs() const;
+  void HandleWinEvents();
 
   /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN
   */
@@ -509,10 +510,9 @@ protected:
 #endif
 
   ReplayGainSettings m_replayGainSettings;
-  
   std::vector<IActionListener *> m_actionListeners;
-
   std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
+  std::deque<XBMC_Event> m_winEvents;
 
 private:
   CCriticalSection m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */

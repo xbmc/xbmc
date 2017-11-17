@@ -34,6 +34,7 @@
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
 #include "windowing/WindowingFactory.h"
+#include "windowing/XBMC_events.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
@@ -96,10 +97,10 @@ XBMCController *g_xbmcController;
 - (void) sendKeypressEvent: (XBMC_Event) event
 {
   event.type = XBMC_KEYDOWN;
-  CWinEvents::MessagePush(&event);
+  g_application.OnEvent(event);
 
   event.type = XBMC_KEYUP;
-  CWinEvents::MessagePush(&event);
+  g_application.OnEvent(event);
 }
 
 // START OF UIKeyInput protocol

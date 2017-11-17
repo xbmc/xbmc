@@ -20,6 +20,7 @@
  */
 
 #include "cores/IPlayer.h"
+#include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
 #include <string>
 
@@ -35,7 +36,7 @@ namespace UPNP
 class CUPnPPlayerController;
 
 class CUPnPPlayer
-  : public IPlayer
+  : public IPlayer, public IRenderLoop
 {
 public:
   CUPnPPlayer(IPlayerCallback& callback, const char* uuid);

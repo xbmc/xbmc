@@ -59,6 +59,8 @@ struct REFRESHRATE
   int   ResInfo_Index;
 };
 
+class IRenderLoop;
+
 class CWinSystemBase
 {
 public:
@@ -148,8 +150,12 @@ public:
   // text input interface
   virtual void EnableTextInput(bool bEnable) {}
   virtual bool IsTextInputEnabled() { return false; }
-
   virtual std::string GetClipboardText(void);
+
+  // render loop
+  void RegisterRenderLoop(IRenderLoop *client);
+  void UnregisterRenderLoop(IRenderLoop *client);
+  void DriveRenderLoop();
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
@@ -166,6 +172,10 @@ protected:
   bool              m_bBlankOtherDisplay;
   float             m_fRefreshRate;
   std::unique_ptr<KODI::WINDOWING::COSScreenSaverManager> m_screenSaverManager;
+  CCriticalSection m_renderLoopSection;
+  std::vector<IRenderLoop*> m_renderLoopClients;
+
+  std::unique_ptr<IWinEvents> m_winEvents;
 };
 
 

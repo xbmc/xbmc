@@ -293,7 +293,8 @@ public:
 
 class CProcessInfo;
 
-class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource, public IRenderMsg
+class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer,
+                     public IDispResource, public IRenderLoop, public IRenderMsg
 {
 public:
   explicit CVideoPlayer(IPlayerCallback& callback);

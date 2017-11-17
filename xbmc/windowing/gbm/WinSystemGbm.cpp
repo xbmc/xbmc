@@ -29,12 +29,14 @@
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
+#include "../WinEventsLinux.h"
 
 CWinSystemGbm::CWinSystemGbm() :
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
 {
   m_eWindowSystem = WINDOW_SYSTEM_GBM;
+  m_winEvents.reset(new CWinEventsLinux());
 }
 
 bool CWinSystemGbm::InitWindowSystem()

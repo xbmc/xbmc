@@ -611,6 +611,8 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
   m_delayDispReset = false;
+
+  m_winEvents.reset(new CWinEventsOSX());
 }
 
 CWinSystemOSX::~CWinSystemOSX()

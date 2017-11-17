@@ -54,6 +54,7 @@ CWinSystemWin10::CWinSystemWin10()
   , m_bMinimized(false)
 {
   m_eWindowSystem = WINDOW_SYSTEM_WIN10;
+  m_winEvents.reset(new CWinEventsWin10());
 }
 
 CWinSystemWin10::~CWinSystemWin10()
@@ -82,7 +83,7 @@ bool CWinSystemWin10::DestroyWindowSystem()
 
 void CWinSystemWin10::SetCoreWindow(Windows::UI::Core::CoreWindow^ window)
 {
-  CWinEventsWin10::InitEventHandlers(window);
+  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
   m_coreWindow = window;
 }
 
@@ -104,7 +105,7 @@ bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, 
   m_coreWindow->Activate();
 
   AdjustWindow();
-  // dispatch all events currently pending in the queue to show window's content 
+  // dispatch all events currently pending in the queue to show window's content
   // and hide UWP splash, without this the Kodi's splash will not be shown
   m_coreWindow->Dispatcher->ProcessEvents(Windows::UI::Core::CoreProcessEventsOption::ProcessAllIfPresent);
 
