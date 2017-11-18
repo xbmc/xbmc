@@ -405,7 +405,7 @@ std::string ByChannel(SortAttribute attributes, const SortItem &values)
 
 std::string ByChannelNumber(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%i", (int)values.at(FieldChannelNumber).asInteger());
+  return values.at(FieldChannelNumber).asString();
 }
 
 std::string ByDateTaken(SortAttribute attributes, const SortItem &values)
