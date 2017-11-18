@@ -7,8 +7,10 @@
  */
 
 #include <android/input.h>
+#include <android/keycodes.h>
 
 #include "PeripheralBusAndroid.h"
+#include "AndroidJoystickTranslator.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "peripherals/devices/PeripheralJoystick.h"
@@ -18,8 +20,14 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+#include <algorithm>
+#include <numeric>
+
 using namespace KODI;
 using namespace PERIPHERALS;
+
+// Set this to the final key code in android/keycodes.h
+const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
@@ -55,7 +63,8 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 
   if (peripheral.Type() != PERIPHERAL_JOYSTICK)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: invalid peripheral type");
+    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: invalid peripheral type: %s",
+        PeripheralTypeTranslator::TypeToString(peripheral.Type()));
     return false;
   }
 
@@ -77,6 +86,8 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   joystick.SetRequestedPort(device.getControllerNumber());
   joystick.SetProvider("android");
 
+  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device %d \"%s\"", deviceId, peripheral.DeviceName().c_str());
+
   // prepare the joystick state
   CAndroidJoystickState state;
   if (!state.Initialize(device))
@@ -93,8 +104,9 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device \"%s\" with ID %d has %u buttons, %u hats and %u axes",
-            joystick.DeviceName().c_str(), deviceId, joystick.ButtonCount(), joystick.HatCount(), joystick.AxisCount());
+  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has %u buttons and %u axes",
+            joystick.ButtonCount(), joystick.AxisCount());
+
   return true;
 }
 
@@ -159,10 +171,11 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     // add the device to the cached result list
     const auto& it = std::find_if(m_scanResults.m_results.cbegin(), m_scanResults.m_results.cend(),
       [&deviceLocation](const PeripheralScanResult& scanResult) { return scanResult.m_strLocation == deviceLocation; });
+
     if (it != m_scanResults.m_results.cend())
     {
-        CLog::Log(LOGINFO, "CPeripheralBusAndroid: ignoring added input device with ID %d because we already know it", deviceId);
-        return;
+      CLog::Log(LOGINFO, "CPeripheralBusAndroid: ignoring added input device with ID %d because we already know it", deviceId);
+      return;
     }
 
     const CJNIViewInputDevice device = CXBMCApp::GetInputDevice(deviceId);
@@ -171,6 +184,9 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
       CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to add input device with ID %d because it couldn't be found", deviceId);
       return;
     }
+
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device added:");
+    LogInputDevice(device);
 
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
@@ -289,11 +305,14 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
       continue;
     }
 
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device discovered:");
+    LogInputDevice(device);
+
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
       continue;
 
-    CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"%s\" with ID %d detected", result.m_strDeviceName.c_str(), deviceId);
+    CLog::Log(LOGINFO, "CPeripheralBusAndroid: added input device");
     results.m_results.push_back(result);
   }
 
@@ -322,28 +341,111 @@ bool CPeripheralBusAndroid::GetDeviceId(const std::string& deviceLocation, int& 
 
 bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(const CJNIViewInputDevice& inputDevice, PeripheralScanResult& peripheralScanResult)
 {
-  int deviceId = inputDevice.getId();
-  std::string deviceName = inputDevice.getName();
   if (inputDevice.isVirtual())
   {
-    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring virtual input device \"%s\" with ID %d", deviceName.c_str(), deviceId);
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring virtual input device");
     return false;
   }
+
   if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_JOYSTICK) && !inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
   {
-    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring unknown input device \"%s\" with ID %d", deviceName.c_str(), deviceId);
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device");
     return false;
   }
 
   peripheralScanResult.m_type = PERIPHERAL_JOYSTICK;
-  peripheralScanResult.m_strLocation = GetDeviceLocation(deviceId);
+  peripheralScanResult.m_strLocation = GetDeviceLocation(inputDevice.getId());
   peripheralScanResult.m_iVendorId = inputDevice.getVendorId();
   peripheralScanResult.m_iProductId = inputDevice.getProductId();
   peripheralScanResult.m_mappedType = PERIPHERAL_JOYSTICK;
-  peripheralScanResult.m_strDeviceName = deviceName;
+  peripheralScanResult.m_strDeviceName = inputDevice.getName();
   peripheralScanResult.m_busType = PERIPHERAL_BUS_ANDROID;
   peripheralScanResult.m_mappedBusType = PERIPHERAL_BUS_ANDROID;
   peripheralScanResult.m_iSequence = 0;
 
   return true;
+}
+
+void CPeripheralBusAndroid::LogInputDevice(const CJNIViewInputDevice &device)
+{
+  // Log device properties
+  CLog::Log(LOGDEBUG, "  Name: \"%s\"", device.getName().c_str());
+  CLog::Log(LOGDEBUG, "    ID: %d", device.getId());
+  CLog::Log(LOGDEBUG, "    Controller number: %d", device.getControllerNumber());
+  std::string descriptor = device.getDescriptor();
+  if (descriptor.size() > 14)
+    CLog::Log(LOGDEBUG, "    Descriptor: \"%s...\"", descriptor.substr(0, 14).c_str());
+  else
+    CLog::Log(LOGDEBUG, "    Descriptor: \"%s\"", descriptor.c_str());
+  CLog::Log(LOGDEBUG, "    Product ID: %04X", device.getProductId());
+  CLog::Log(LOGDEBUG, "    Vendor ID: %04X", device.getVendorId());
+  CLog::Log(LOGDEBUG, "    Has microphone: %s", device.hasMicrophone() ? "true" : "false");
+  CLog::Log(LOGDEBUG, "    Is virtual: %s", device.isVirtual() ? "true" : "false");
+
+  // Log device sources
+  CLog::Log(LOGDEBUG, "    Source flags: 0x%08x", device.getSources());
+  for (const auto &source : GetInputSources())
+  {
+    if (device.supportsSource(source.first))
+      CLog::Log(LOGDEBUG, "    Has source: %s (0x%08x)", source.second, source.first);
+  }
+
+  // Log device keys
+  std::vector<int> keys(KEY_CODE_FINAL);
+  std::iota(keys.begin(), keys.end(), 1);
+
+  auto results = device.hasKeys(keys);
+
+  if (results.size() != keys.size())
+  {
+    CLog::Log(LOGERROR, "Failed to get key status for %u keys", keys.size());
+  }
+  else
+  {
+    for (unsigned int i = 0; i < keys.size(); i++)
+    {
+      if (results[i])
+        CLog::Log(LOGDEBUG, "    Has key: %s (%d)", CAndroidJoystickTranslator::TranslateKeyCode(keys[i]), keys[i]);
+    }
+  }
+
+  // Log analog axes
+  const CJNIList<CJNIViewInputDeviceMotionRange> motionRanges = device.getMotionRanges();
+  for (int index = 0; index < motionRanges.size(); ++index)
+  {
+    const CJNIViewInputDeviceMotionRange motionRange = motionRanges.get(index);
+
+    int axisId = motionRange.getAxis();
+    CLog::Log(LOGDEBUG, "    Has axis: %s (%d)", CAndroidJoystickTranslator::TranslateAxis(axisId), axisId);
+    CLog::Log(LOGDEBUG, "      Endpoints: [%f, %f]", motionRange.getMin(), motionRange.getMax());
+    CLog::Log(LOGDEBUG, "      Center: %f", motionRange.getFlat());
+    CLog::Log(LOGDEBUG, "      Fuzz: %f", motionRange.getFuzz());
+  }
+}
+
+std::vector<std::pair<int, const char*>> CPeripheralBusAndroid::GetInputSources()
+{
+  std::vector<std::pair<int, const char*>> sources = {
+    { CJNIViewInputDevice::SOURCE_DPAD, "SOURCE_DPAD" },
+    { CJNIViewInputDevice::SOURCE_GAMEPAD, "SOURCE_GAMEPAD" },
+    { CJNIViewInputDevice::SOURCE_HDMI, "SOURCE_HDMI" },
+    { CJNIViewInputDevice::SOURCE_JOYSTICK, "SOURCE_JOYSTICK" },
+    { CJNIViewInputDevice::SOURCE_KEYBOARD, "SOURCE_KEYBOARD" },
+    { CJNIViewInputDevice::SOURCE_MOUSE, "SOURCE_MOUSE" },
+    { CJNIViewInputDevice::SOURCE_MOUSE_RELATIVE, "SOURCE_MOUSE_RELATIVE" },
+    { CJNIViewInputDevice::SOURCE_ROTARY_ENCODER, "SOURCE_ROTARY_ENCODER" },
+    { CJNIViewInputDevice::SOURCE_STYLUS, "SOURCE_STYLUS" },
+    { CJNIViewInputDevice::SOURCE_TOUCHPAD, "SOURCE_TOUCHPAD" },
+    { CJNIViewInputDevice::SOURCE_TOUCHSCREEN, "SOURCE_TOUCHSCREEN" },
+    { CJNIViewInputDevice::SOURCE_TOUCH_NAVIGATION, "SOURCE_TOUCH_NAVIGATION" },
+    { CJNIViewInputDevice::SOURCE_TRACKBALL, "SOURCE_TRACKBALL" },
+  };
+
+  sources.erase(std::remove_if(sources.begin(), sources.end(),
+    [](const std::pair<int, const char*> &source)
+    {
+      return source.first == 0;
+    }), sources.end());
+
+  return sources;
 }
