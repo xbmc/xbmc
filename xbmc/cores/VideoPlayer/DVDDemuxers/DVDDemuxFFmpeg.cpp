@@ -198,8 +198,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   if(m_timeout.IsTimePast())
     return true;
 
-  CDVDInputStreamFFmpeg * input = dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
-  if(input && input->Aborted())
+  if (m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) && static_cast<CDVDInputStreamFFmpeg*>(m_pInput)->Aborted())
     return true;
 
   return false;
