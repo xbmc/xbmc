@@ -229,7 +229,6 @@ lib/cpluff/stamp-h1
 /project/Win32BuildSetup/makeclean
 /project/Win32BuildSetup/noprompt
 /project/Win32BuildSetup/BUILD_WIN32/
-/project/Win32BuildSetup/dependencies/
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
