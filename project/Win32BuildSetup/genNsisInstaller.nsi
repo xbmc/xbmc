@@ -330,7 +330,7 @@ Section "VS2015 C++ re-distributable Package (${TARGET_ARCHITECTURE})" SEC_VCRED
 DetailPrint "Running VS2015 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2015"
-  File "${app_root}\..\dependencies\vcredist\2015\vcredist_${TARGET_ARCHITECTURE}.exe"
+  File "${app_root}\..\..\BuildDependencies\downloads\vcredist\2015\vcredist_${TARGET_ARCHITECTURE}.exe"
   ExecWait '"$TEMP\vc2015\vcredist_${TARGET_ARCHITECTURE}.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2015"
   DetailPrint "Finished VS2015 re-distributable setup"
