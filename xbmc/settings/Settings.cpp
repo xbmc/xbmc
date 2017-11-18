@@ -342,7 +342,9 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAYPASSWORD = "services.airpla
 const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.airplayvideosupport";
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
+const std::string CSettings::SETTING_SMB_MINPROTOCOL = "smb.minprotocol";
 const std::string CSettings::SETTING_SMB_MAXPROTOCOL = "smb.maxprotocol";
+const std::string CSettings::SETTING_SMB_LEGACYSECURITY = "smb.legacysecurity";
 const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
 const std::string CSettings::SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
 const std::string CSettings::SETTING_VIDEOSCREEN_RESOLUTION = "videoscreen.resolution";
@@ -995,7 +997,9 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
   settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
   settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
+  settingSet.insert(CSettings::SETTING_SMB_MINPROTOCOL);
   settingSet.insert(CSettings::SETTING_SMB_MAXPROTOCOL);
+  settingSet.insert(CSettings::SETTING_SMB_LEGACYSECURITY);
   GetSettingsManager()->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
 
   settingSet.clear();

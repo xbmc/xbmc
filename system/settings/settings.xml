@@ -1988,6 +1988,19 @@
           <default>0.0.0.0</default>
           <control type="edit" format="ip" />
         </setting>
+        <setting id="smb.minprotocol" type="integer" label="36628" help="36629">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36623">0</option>
+              <option label="36624">1</option>
+              <option label="36625">2</option>
+              <option label="36626">3</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
+        </setting>
         <setting id="smb.maxprotocol" type="integer" label="36621" help="36622">
           <level>2</level>
           <default>3</default>
@@ -2000,6 +2013,16 @@
             </options>
           </constraints>
           <control type="list" format="integer" />
+        </setting>
+        <setting id="smb.legacysecurity" type="boolean" label="36630" help="36631">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable">
+                <condition setting="smb.maxprotocol" operator="is">1</condition>
+            </dependency>
+          </dependencies>
         </setting>
       </group>
     </category>
