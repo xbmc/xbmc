@@ -22,6 +22,7 @@
 #include "XBDateTime.h"
 
 #include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelNumber.h"
 
 class CFileItemList;
 
@@ -92,8 +93,8 @@ namespace PVR
     bool IsRadio() const { return m_bIsRadio; }
     void SetIsRadio(bool bIsRadio) { m_bIsRadio = bIsRadio; }
 
-    int GetChannelNumber() const { return m_iChannelNumber; }
-    void SetChannelNumber(int iChannelNumber) { m_iChannelNumber = iChannelNumber; }
+    const CPVRChannelNumber& GetChannelNumber() const { return m_channelNumber; }
+    void SetChannelNumber(const CPVRChannelNumber& channelNumber) { m_channelNumber = channelNumber; }
 
     bool IsFreeToAirOnly() const { return m_bFreeToAirOnly; }
     void SetFreeToAirOnly(bool bFreeToAirOnly) { m_bFreeToAirOnly = bFreeToAirOnly; }
@@ -137,7 +138,7 @@ namespace PVR
     bool          m_bIsRadio;                 /*!< True to filter radio channels only, false to tv only */
 
     /* PVR specific filters */
-    int           m_iChannelNumber;           /*!< The channel number in the selected channel group */
+    CPVRChannelNumber  m_channelNumber;       /*!< The channel number in the selected channel group */
     bool          m_bFreeToAirOnly;           /*!< Include free to air channels only */
     int           m_iChannelGroup;            /*!< The group this channel belongs to */
     bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */

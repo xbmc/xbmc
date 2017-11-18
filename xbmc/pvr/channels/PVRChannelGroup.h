@@ -297,16 +297,9 @@ namespace PVR
     /*!
      * @brief Get the channel number in this group of the given channel.
      * @param channel The channel to get the channel number for.
-     * @return The channel number in this group or 0 if the channel isn't a member of this group.
+     * @return The channel number in this group.
      */
-    unsigned int GetChannelNumber(const CPVRChannelPtr &channel) const;
-
-    /*!
-     * @brief Get the sub channel number in this group of the given channel.
-     * @param channel The channel to get the sub channel number for.
-     * @return The sub channel number in this group or 0 if the channel isn't a member of this group.
-     */
-    unsigned int GetSubChannelNumber(const CPVRChannelPtr &channel) const;
+    CPVRChannelNumber GetChannelNumber(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the next channel in this group.

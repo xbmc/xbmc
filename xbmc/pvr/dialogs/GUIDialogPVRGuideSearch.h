@@ -19,8 +19,12 @@
  *
  */
 
+#include <map>
+
 #include "XBDateTime.h"
 #include "guilib/GUIDialog.h"
+
+#include "pvr/channels/PVRChannelNumber.h"
 
 namespace PVR
 {
@@ -57,5 +61,6 @@ namespace PVR
     bool m_bConfirmed;
     bool m_bCanceled;
     CPVREpgSearchFilter *m_searchFilter;
+    std::map<int, CPVRChannelNumber> m_channelNumbersMap;
   };
 }

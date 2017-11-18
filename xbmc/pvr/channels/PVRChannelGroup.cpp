@@ -487,18 +487,11 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
   return retVal;
 }
 
-unsigned int CPVRChannelGroup::GetSubChannelNumber(const CPVRChannelPtr &channel) const
+CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &channel) const
 {
   CSingleLock lock(m_critSection);
   const PVRChannelGroupMember& member(GetByUniqueID(channel->StorageId()));
-  return member.channelNumber.GetSubChannelNumber();
-}
-
-unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &channel) const
-{
-  CSingleLock lock(m_critSection);
-  const PVRChannelGroupMember& member(GetByUniqueID(channel->StorageId()));
-  return member.channelNumber.GetChannelNumber();
+  return member.channelNumber;
 }
 
 CFileItemPtr CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber &channelNumber) const
