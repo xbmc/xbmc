@@ -166,13 +166,6 @@ void CDRMLegacy::FlipPage(CGLContextEGL *pGLContext)
   }
 
   flip_happening = QueueFlip();
-
-  if(g_Windowing.NoOfBuffers() >= 3 && gbm_surface_has_free_buffers(m_gbm->surface))
-  {
-    return;
-  }
-
-  WaitingForFlip();
 }
 
 bool CDRMLegacy::InitDrmLegacy(drm *drm, gbm *gbm)

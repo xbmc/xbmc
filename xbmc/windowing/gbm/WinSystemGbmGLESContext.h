@@ -22,8 +22,10 @@
 
 #include "GLContextEGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
-#include "utils/GlobalsHandling.h"
 #include "WinSystemGbm.h"
+#include <memory>
+
+class CVaapiProxy;
 
 class CWinSystemGbmGLESContext : public CWinSystemGbm, public CRenderSystemGLES
 {
@@ -49,8 +51,5 @@ protected:
 
 private:
   CGLContextEGL m_pGLContext;
-
+  std::unique_ptr<CVaapiProxy> m_vaapiProxy;
 };
-
-XBMC_GLOBAL_REF(CWinSystemGbmGLESContext, g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemGbmGLESContext)

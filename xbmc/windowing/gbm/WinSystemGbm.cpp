@@ -35,7 +35,6 @@ CWinSystemGbm::CWinSystemGbm() :
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
 {
-  m_eWindowSystem = WINDOW_SYSTEM_GBM;
   m_winEvents.reset(new CWinEventsLinux());
 }
 
