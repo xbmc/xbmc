@@ -370,7 +370,11 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CDirectory directory;
       if (directory.GetDirectory(strPath, items, extensions))
       {
-        items.Sort(SortByFile, SortOrderAscending);
+        // Sort folders and files by filename to avoid reverse item order bug on some platforms,
+        // but leave items from a playlist, smartplaylist or upnp container in order supplied
+        if (!items.IsPlayList() && !items.IsSmartPlayList() && !URIUtils::IsUPnP(items.GetPath()))
+          items.Sort(SortByFile, SortOrderAscending);
+
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
