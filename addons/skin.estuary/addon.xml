@@ -9,6 +9,8 @@
 		<res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
 		<res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
+		<res width="2338" height="1080" aspect="19.5:9" default="false" folder="xml" />
+		<res width="2160" height="1080" aspect="18:9" default="false" folder="xml" />
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="af_ZA">Estuary oortreksel deur phil65. (Kodi se bestek oortreksel)</summary>
