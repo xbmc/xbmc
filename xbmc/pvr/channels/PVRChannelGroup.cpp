@@ -227,49 +227,6 @@ bool CPVRChannelGroup::SetChannelNumber(const CPVRChannelPtr &channel, const CPV
   return bReturn;
 }
 
-bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
-{
-  if (iOldChannelNumber == iNewChannelNumber)
-    return true;
-
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
-
-  /* make sure the list is sorted by channel number */
-  SortByChannelNumber();
-
-  /* old channel number out of range */
-  if (iOldChannelNumber > m_sortedMembers.size())
-    return bReturn;
-
-  /* new channel number out of range */
-  if (iNewChannelNumber < 1)
-    return bReturn;
-
-  if (iNewChannelNumber > m_sortedMembers.size())
-    iNewChannelNumber = m_sortedMembers.size();
-
-  /* move the channel in the list */
-  PVRChannelGroupMember entry = m_sortedMembers.at(iOldChannelNumber - 1);
-  m_sortedMembers.erase(m_sortedMembers.begin() + iOldChannelNumber - 1);
-  m_sortedMembers.insert(m_sortedMembers.begin() + iNewChannelNumber - 1, entry);
-
-  /* renumber the list */
-  Renumber();
-
-  m_bChanged = true;
-
-  if (bSaveInDb)
-    bReturn = Persist();
-  else
-    bReturn = true;
-
-  CLog::Log(LOGNOTICE, "CPVRChannelGroup - %s - %s channel '%s' moved to channel number '%d'",
-      __FUNCTION__, (m_bRadio ? "radio" : "tv"), entry.channel->ChannelName().c_str(), iNewChannelNumber);
-
-  return bReturn;
-}
-
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
   std::string iconPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
@@ -424,13 +381,18 @@ bool CPVRChannelGroup::UpdateClientPriorities()
 }
 
 /********** getters **********/
+PVRChannelGroupMember& CPVRChannelGroup::GetByUniqueID(const std::pair<int, int>& id)
+{
+  CSingleLock lock(m_critSection);
+  const auto it = m_members.find(id);
+  return it != m_members.end() ? it->second : CPVRChannelGroup::EmptyMember;
+}
+
 const PVRChannelGroupMember& CPVRChannelGroup::GetByUniqueID(const std::pair<int, int>& id) const
 {
   CSingleLock lock(m_critSection);
-  PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.find(id);
-  return it != m_members.end() ?
-      it->second :
-      CPVRChannelGroup::EmptyMember;
+  const auto it = m_members.find(id);
+  return it != m_members.end() ? it->second : CPVRChannelGroup::EmptyMember;
 }
 
 CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueChannelId, int iClientID) const
@@ -646,7 +608,9 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
     /* if it's found, add the channel to this group */
     if (!IsGroupMember(existingChannel.channel))
     {
-      AddToGroup(existingChannel.channel, bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : CPVRChannelNumber());
+      AddToGroup(existingChannel.channel,
+                 bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : CPVRChannelNumber(),
+                 bUseBackendChannelNumbers);
 
       bReturn = true;
       CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' to group '%s'",
@@ -800,7 +764,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
   return bReturn;
 }
 
-bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber)
+bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
 {
   const CPVRChannelGroupPtr groupAll(CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio));
 
@@ -817,7 +781,8 @@ bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, const CPVRChann
     if (realChannel.channel)
     {
       unsigned int iChannelNumber = channelNumber.GetChannelNumber();
-      if (iChannelNumber == 0 || iChannelNumber > m_members.size() + 1)
+      if (!channelNumber.IsValid() ||
+          (!bUseBackendChannelNumbers && (iChannelNumber > m_members.size() + 1)))
         iChannelNumber = m_members.size() + 1;
 
       PVRChannelGroupMember newMember(realChannel);

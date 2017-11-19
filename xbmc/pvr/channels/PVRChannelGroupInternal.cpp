@@ -134,16 +134,18 @@ bool CPVRChannelGroupInternal::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber)
+bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
 {
   CSingleLock lock(m_critSection);
 
   bool bReturn(false);
 
   /* get the group member, because we need the channel ID in this group, and the channel from this group */
-  const PVRChannelGroupMember& groupMember(GetByUniqueID(channel->StorageId()));
+  PVRChannelGroupMember& groupMember = GetByUniqueID(channel->StorageId());
   if (!groupMember.channel)
     return bReturn;
+
+  bool bSort = false;
 
   /* switch the hidden flag */
   if (groupMember.channel->IsHidden())
@@ -152,18 +154,28 @@ bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const C
     if (m_iHiddenChannels > 0)
       m_iHiddenChannels--;
 
-    SortAndRenumber();
+    bSort = true;
   }
 
-  /* move this channel and persist */
   unsigned int iChannelNumber = channelNumber.GetChannelNumber();
-  if (iChannelNumber == 0)
+  if (!channelNumber.IsValid() ||
+      (!bUseBackendChannelNumbers && (iChannelNumber > m_members.size() - m_iHiddenChannels)))
     iChannelNumber = m_members.size() - m_iHiddenChannels;
 
-  bReturn = MoveChannel(groupMember.channelNumber.GetChannelNumber(), iChannelNumber, true);
+  if (groupMember.channelNumber.GetChannelNumber() != iChannelNumber)
+  {
+    groupMember.channelNumber = CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber());
+    bSort = true;
+  }
+
+  if (bSort)
+    SortAndRenumber();
 
   if (m_bLoaded)
+  {
+    bReturn = Persist();
     groupMember.channel->Persist();
+  }
   return bReturn;
 }
 
@@ -201,16 +213,6 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   /* and persist */
   return channel->Persist() &&
       Persist();
-}
-
-bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
-{
-  CSingleLock lock(m_critSection);
-  /* new channel number out of range */
-  if (iNewChannelNumber > m_members.size() - m_iHiddenChannels)
-    iNewChannelNumber = m_members.size() - m_iHiddenChannels;
-
-  return CPVRChannelGroup::MoveChannel(iOldChannelNumber, iNewChannelNumber, bSaveInDb);
 }
 
 int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const

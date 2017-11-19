@@ -1710,7 +1710,7 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
   else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(channel, CPVRChannelNumber(member->iChannelNumber, /*member->iSubChannelNumber*/ 0)); // FIXME: Extend PVR API: Add PVR_CHANNEL_GROUP_MEMBER::iSubChannelNumber
+    group->AddToGroup(channel, CPVRChannelNumber(member->iChannelNumber, /*member->iSubChannelNumber*/ 0), true); // FIXME: Extend PVR API: Add PVR_CHANNEL_GROUP_MEMBER::iSubChannelNumber
   }
 }
 

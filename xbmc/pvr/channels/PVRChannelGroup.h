@@ -125,15 +125,6 @@ namespace PVR
     bool SetChannelNumber(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
 
     /*!
-     * @brief Move a channel from position iOldIndex to iNewIndex.
-     * @param iOldChannelNumber The channel number of the channel to move.
-     * @param iNewChannelNumber The new channel number.
-     * @param bSaveInDb If true, save this change in the database.
-     * @return True if the channel was moved successfully, false otherwise.
-     */
-    virtual bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
-
-    /*!
      * @brief Search missing channel icons for all known channels.
      * @param bUpdateDb If true, update the changed values in the database.
      */
@@ -150,9 +141,10 @@ namespace PVR
      * @brief Add a channel to this container.
      * @param channel The channel to add.
      * @param channelNumber The channel number of the channel to add. Use empty channel number to add it at the end.
+     * @param bUseBackendChannelNumbers True, if channelNumber contains a backend channel number.
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
+    virtual bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers);
 
     /*!
      * @brief Change the name of this group.
@@ -428,6 +420,13 @@ namespace PVR
      * @return The channel or NULL if it wasn't found.
      */
     CPVRChannelPtr GetByUniqueID(int iUniqueChannelId, int iClientID) const;
+
+    /*!
+     * @brief Get a channel group member given its storage id.
+     * @param id The storage id (a pair of client id and unique channel id).
+     * @return A reference to the group member or an empty group member if it wasn't found.
+     */
+    PVRChannelGroupMember& GetByUniqueID(const std::pair<int, int>& id);
     const PVRChannelGroupMember& GetByUniqueID(const std::pair<int, int>& id) const;
 
     void SetSelectedGroup(bool bSetTo);

@@ -61,17 +61,12 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber) override;
+    bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers) override;
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
     bool RemoveFromGroup(const CPVRChannelPtr &channel) override;
-
-    /*!
-     * @see CPVRChannelGroup::MoveChannel
-     */
-    bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true) override;
 
     /*!
      * @see CPVRChannelGroup::GetMembers
