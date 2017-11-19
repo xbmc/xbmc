@@ -180,9 +180,9 @@ std::string CGameClient::LibPath() const
 {
   // If the game client requires a proxy, load its DLL instead
   if (m_struct.props.proxy_dll_count > 0)
-    return m_struct.props.proxy_dll_paths[0];
+    return GetDllPath(m_struct.props.proxy_dll_paths[0]);
 
-  return CAddon::LibPath();
+  return CAddonDll::LibPath();
 }
 
 ADDON::AddonPtr CGameClient::GetRunningInstance() const

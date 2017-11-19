@@ -37,6 +37,9 @@ namespace ADDON
 
     virtual ADDON_STATUS GetStatus();
 
+    // Implementation of IAddon via CAddon
+    std::string LibPath() const override;
+
     // addon settings
     void SaveSettings() override;
     std::string GetSetting(const std::string& key) override;
@@ -72,6 +75,8 @@ namespace ADDON
 
   protected:
     bool Initialized() { return m_initialized; }
+
+    static std::string GetDllPath(const std::string &strFileName);
 
     CAddonInterfaces* m_pHelpers;
     std::string m_parentLib;

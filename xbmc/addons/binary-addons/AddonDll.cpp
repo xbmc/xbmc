@@ -77,13 +77,13 @@ CAddonDll::~CAddonDll()
     Destroy();
 }
 
-bool CAddonDll::LoadDll()
+std::string CAddonDll::GetDllPath(const std::string &libPath)
 {
-  if (m_pDll)
-    return true;
+  std::string strFileName = libPath;
+  std::string strLibName = URIUtils::GetFileName(strFileName);
 
-  std::string strFileName = LibPath();
-  std::string strAltFileName;
+  if (strLibName.empty())
+    return "";
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
 #if defined(TARGET_ANDROID)
@@ -92,15 +92,18 @@ bool CAddonDll::LoadDll()
   if (!XFILE::CFile::Exists(strFileName))
   {
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-    strFileName = tempbin + "/" + m_addonInfo.LibName();
+    strFileName = tempbin + "/" + strLibName;
   }
 #endif
+
   if (!XFILE::CFile::Exists(strFileName))
   {
+    std::string strAltFileName;
+
     std::string altbin = CSpecialProtocol::TranslatePath("special://xbmcaltbinaddons/");
     if (!altbin.empty())
     {
-      strAltFileName = altbin + m_addonInfo.LibName();
+      strAltFileName = altbin + strLibName;
       if (!XFILE::CFile::Exists(strAltFileName))
       {
         std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/addons/");
@@ -121,11 +124,28 @@ bool CAddonDll::LoadDll()
       strFileName = tempbin + strFileName;
       if (!XFILE::CFile::Exists(strFileName))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_addonInfo.LibName().c_str());
-        return false;
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", strLibName.c_str());
+        strFileName.clear();
       }
     }
   }
+
+  return strFileName;
+}
+
+std::string CAddonDll::LibPath() const
+{
+  return GetDllPath(CAddon::LibPath());
+}
+
+bool CAddonDll::LoadDll()
+{
+  if (m_pDll)
+    return true;
+
+  std::string strFileName = LibPath();
+  if (strFileName.empty())
+    return false;
 
   /* Load the Dll */
   m_pDll = new DllAddon;
