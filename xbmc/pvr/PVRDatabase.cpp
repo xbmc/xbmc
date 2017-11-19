@@ -253,7 +253,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
 
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
-      "map_channelgroups_channels.iChannelNumber, channels.idEpg "
+      "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
       "WHERE map_channelgroups_channels.idGroup = %u", results.GroupID());
@@ -283,8 +283,10 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
         channel->m_iEpgId                  = bIgnoreEpgDB ? -1 : m_pDS->fv("idEpg").get_asInt();
         channel->UpdateEncryptionName();
 
-        // FIXME: iSubChannelNumber is persisted but never read from db
-        PVRChannelGroupMember newMember(channel, CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()), 0), 0);
+        PVRChannelGroupMember newMember(channel,
+                                        CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
+                                                          static_cast<unsigned int>(m_pDS->fv("iSubChannelNumber").get_asInt())),
+                                        0);
         results.m_sortedMembers.emplace_back(newMember);
         results.m_members.insert(std::make_pair(channel->StorageId(), newMember));
 
@@ -565,7 +567,8 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
 
   CSingleLock lock(m_critSection);
 
-  const std::string strQuery = PrepareSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
+  const std::string strQuery = PrepareSQL("SELECT idChannel, iChannelNumber, iSubChannelNumber FROM map_channelgroups_channels "
+                                          "WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -586,8 +589,10 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
 
         if (channel != allChannels.end())
         {
-          // FIXME: iSubChannelNumber is persisted but never read from db
-          PVRChannelGroupMember newMember(channel->second, CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()), 0), 0);
+          PVRChannelGroupMember newMember(channel->second,
+                                          CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
+                                                            static_cast<unsigned int>(m_pDS->fv("iSubChannelNumber").get_asInt())),
+                                          0);
           group.m_sortedMembers.emplace_back(newMember);
           group.m_members.insert(std::make_pair(channel->second->StorageId(), newMember));
           ++iReturn;
