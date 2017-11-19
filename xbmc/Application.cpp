@@ -27,7 +27,6 @@
 #include "interfaces/builtins/Builtins.h"
 #include "utils/JobManager.h"
 #include "utils/Variant.h"
-#include "utils/Splash.h"
 #include "LangInfo.h"
 #include "utils/Screenshot.h"
 #include "Util.h"
@@ -736,7 +735,7 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
-  CSplash::GetInstance().Show();
+  g_Windowing.ShowSplash("");
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
@@ -1089,13 +1088,13 @@ bool CApplication::Initialize()
   while (!event.WaitMSec(1000))
   {
     if (CDatabaseManager::GetInstance().m_bIsUpgrading)
-      CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+      g_Windowing.ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
     if (iDots == 3)
       iDots = 1;
     else
       ++iDots;
   }
-  CSplash::GetInstance().Show();
+  g_Windowing.ShowSplash("");
 
   StartServices();
 
@@ -1124,13 +1123,13 @@ bool CApplication::Initialize()
     while (!event.WaitMSec(1000))
     {
       if (isMigratingAddons)
-        CSplash::GetInstance().Show(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+        g_Windowing.ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
       if (iDots == 3)
         iDots = 1;
       else
         ++iDots;
     }
-    CSplash::GetInstance().Show();
+    g_Windowing.ShowSplash("");
     m_incompatibleAddons = incompatibleAddons;
     m_confirmSkinChange = true;
 

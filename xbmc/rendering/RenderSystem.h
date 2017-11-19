@@ -27,6 +27,7 @@
 #include "guilib/Geometry.h"
 #include "guilib/TransformMatrix.h"
 #include "guilib/DirtyRegion.h"
+#include <memory>
 #include <string>
 
 typedef enum _RenderingSystemType
@@ -50,6 +51,9 @@ enum
   RENDER_CAPS_BGRA     = (1 << 3),
   RENDER_CAPS_BGRA_APPLE = (1 << 4)
 };
+
+class CGUIImage;
+class CGUITextLayout;
 
 class CRenderSystemBase
 {
@@ -113,6 +117,8 @@ public:
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
 
+  void ShowSplash(const std::string& message);
+
 protected:
   bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
@@ -129,6 +135,9 @@ protected:
   unsigned int m_renderQuirks;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
+
+  std::unique_ptr<CGUIImage> m_splashImage;
+  std::unique_ptr<CGUITextLayout> m_splashMessageLayout;
 };
 
 #endif // RENDER_SYSTEM_H

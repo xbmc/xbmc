@@ -56,7 +56,6 @@ set(SOURCES ActorProtocol.cpp
             SeekHandler.cpp
             SortUtils.cpp
             Speed.cpp
-            Splash.cpp
             Stopwatch.cpp
             StreamDetails.cpp
             StreamUtils.cpp
@@ -148,7 +147,6 @@ set(HEADERS ActorProtocol.h
             SeekHandler.h
             SortUtils.h
             Speed.h
-            Splash.h
             Stopwatch.h
             StreamDetails.h
             StreamUtils.h
