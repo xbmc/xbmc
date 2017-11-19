@@ -691,6 +691,19 @@ XBMCController *g_xbmcController;
 
   [self becomeFirstResponder];
   [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  // Notifies UIKit that our view controller updated its preference
+  // regarding the visual indicator
+  // this should make ios call prefersHomeIndicatorAutoHidden and
+  // hide the home indicator on iPhoneX and other devices without
+  // home button
+  if ([self respondsToSelector:@selector(setNeedsUpdateOfHomeIndicatorAutoHidden)]) {
+    [self performSelector:@selector(setNeedsUpdateOfHomeIndicatorAutoHidden)];
+  }
+}
+//--------------------------------------------------------------
+- (BOOL)prefersHomeIndicatorAutoHidden
+{
+  return YES;
 }
 //--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
