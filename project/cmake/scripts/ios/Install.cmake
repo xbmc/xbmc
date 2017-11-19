@@ -7,6 +7,8 @@ set(BUNDLE_RESOURCES xbmc/platform/darwin/ios/Default-568h@2x.png
                      xbmc/platform/darwin/ios/Default-667h@2x.png
                      xbmc/platform/darwin/ios/Default-736h@3x.png
                      xbmc/platform/darwin/ios/Default-Landscape-736h@3x.png
+                     xbmc/platform/darwin/ios/Default-812h@3x.png
+                     xbmc/platform/darwin/ios/Default-Landscape-812h@3x.png
                      tools/darwin/packaging/media/ios/rounded/AppIcon29x29.png
                      tools/darwin/packaging/media/ios/rounded/AppIcon29x29@2x.png
                      tools/darwin/packaging/media/ios/rounded/AppIcon40x40.png
