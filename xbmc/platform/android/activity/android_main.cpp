@@ -84,7 +84,7 @@ static void process_input(struct android_app* app, struct android_poll_source* s
         AInputQueue_finishEvent(app->inputQueue, event, handled);
         processed = 1;
     }
-    if (processed == 0) {
+    if (processed == 0 && errno != EAGAIN) {
         CXBMCApp::android_printf("process_input: Failure reading next input event: %s", strerror(errno));
     }
 }
