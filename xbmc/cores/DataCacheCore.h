@@ -162,5 +162,5 @@ protected:
     int64_t m_time;
     int64_t m_timeMax;
     int64_t m_timeMin;
-  } m_timeInfo;
+  } m_timeInfo = {};
 };
