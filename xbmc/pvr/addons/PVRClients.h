@@ -85,8 +85,42 @@ namespace PVR
      */
     void UpdateAddons(const std::string &changedAddonId = "");
 
-    /*! @name Backend methods */
-    //@{
+    /*!
+     * @brief Restart a single client add-on.
+     * @param addon The add-on to restart.
+     * @param bDataChanged True if the client's data changed, false otherwise (unused).
+     * @return True if the client was found and restarted, false otherwise.
+     */
+    bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
+
+    /*!
+     * @brief Stop a client.
+     * @param addon The client to stop.
+     * @param bRestart If true, restart the client.
+     * @return True if the client was found, false otherwise.
+     */
+    bool StopClient(const ADDON::AddonPtr &client, bool bRestart);
+
+    /*!
+     * @brief Handle addon events (enable, disable, ...).
+     * @param event The addon event.
+     */
+    void OnAddonEvent(const ADDON::AddonEvent& event);
+
+    bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
+
+    int GetClientId(const std::string& strId) const;
+
+    /*!
+     * @return The amount of connected clients.
+     */
+    int CreatedClientAmount(void) const;
+
+    /*!
+     * @brief Check whether there are any connected clients.
+     * @return True if at least one client is connected.
+     */
+    bool HasCreatedClients(void) const;
 
     /*!
      * @brief Check whether a given client ID points to a created pvr client.
@@ -94,13 +128,6 @@ namespace PVR
      * @return True if the the client ID represents a created client, false otherwise.
      */
     bool IsCreatedClient(int iClientId) const;
-
-    /*!
-     * @brief Check whether an given addon instance is a created pvr client.
-     * @param addon The addon.
-     * @return True if the the addon represents a created client, false otherwise.
-     */
-    bool IsCreatedClient(const ADDON::AddonPtr &addon);
 
     /*!
      * @brief Get the instance of the client, if it's created.
@@ -118,27 +145,6 @@ namespace PVR
     int GetCreatedClients(CPVRClientMap &clients) const;
 
     /*!
-     * @brief Get all created clients and clients not (yet) ready to use.
-     * @param clientsReady Store the created clients in this map.
-     * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.
-     * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
-     */
-    PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
-
-    /*!
-     * @brief Restart a single client add-on.
-     * @param addon The add-on to restart.
-     * @param bDataChanged True if the client's data changed, false otherwise (unused).
-     * @return True if the client was found and restarted, false otherwise.
-     */
-    bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
-
-    /*!
-     * @brief Unload all loaded add-ons and reset all class properties.
-     */
-    void Unload(void);
-
-    /*!
      * @brief The ID of the first active client or -1 if no clients are active;
      */
     int GetFirstConnectedClientID(void);
@@ -147,25 +153,6 @@ namespace PVR
      * @return The amount of enabled clients.
      */
     int EnabledClientAmount(void) const;
-
-    /*!
-     * @brief Stop a client.
-     * @param addon The client to stop.
-     * @param bRestart If true, restart the client.
-     * @return True if the client was found, false otherwise.
-     */
-    bool StopClient(const ADDON::AddonPtr &client, bool bRestart);
-
-    /*!
-     * @return The amount of connected clients.
-     */
-    int CreatedClientAmount(void) const;
-
-    /*!
-     * @brief Check whether there are any connected clients.
-     * @return True if at least one client is connected.
-     */
-    bool HasCreatedClients(void) const;
 
     /*!
      * @brief Get the friendly name for the client with the given id.
@@ -192,12 +179,6 @@ namespace PVR
     bool GetClientAddonIcon(int iClientId, std::string &strIcon) const;
 
     /*!
-     * @brief Returns properties about all connected clients
-     * @return the properties
-     */
-    std::vector<SBackend> GetBackendProperties() const;
-
-    /*!
      * Get the add-on ID of the client
      * @param iClientId The db id of the client
      * @return The add-on id
@@ -205,74 +186,9 @@ namespace PVR
     std::string GetClientAddonId(int iClientId) const;
 
     /*!
-     * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
-     */
-    int GetPlayingClientID(void) const;
-
-    //@}
-
-    /*! @name Stream methods */
-    //@{
-
-    /*!
      * @return True if a stream is playing, false otherwise.
      */
     bool IsPlaying(void) const;
-
-    /*!
-     * @return The friendly name of the client that is currently playing or an empty string if nothing is playing.
-     */
-    const std::string GetPlayingClientName(void) const;
-
-    /*!
-     * @brief Read from an open stream.
-     * @param lpBuf Target buffer.
-     * @param uiBufSize The size of the buffer.
-     * @return The amount of bytes that was added.
-     */
-    int ReadStream(void* lpBuf, int64_t uiBufSize);
-
-    /*!
-     * @brief Return the filesize of the currently running stream.
-     *        Limited to recordings playback at the moment.
-     * @return The size of the stream.
-     */
-    int64_t GetStreamLength(void);
-
-    /*!
-     * @brief Seek to a position in a stream.
-     *        Limited to recordings playback at the moment.
-     * @param iFilePosition The position to seek to.
-     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual position" or "new position=filesize-pos")
-     * @return The new stream position.
-     */
-    int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
-
-    /*!
-     * @brief Close a PVR stream.
-     */
-    void CloseStream(void);
-
-    /*!
-     * @brief (Un)Pause a PVR stream (only called when timeshifting is supported)
-     */
-    void PauseStream(bool bPaused);
-
-    /*!
-     * @brief Check whether it is possible to pause the currently playing livetv or recording stream
-     */
-    bool CanPauseStream(void) const;
-
-    /*!
-     * @brief Check whether it is possible to seek the currently playing livetv or recording stream
-     */
-    bool CanSeekStream(void) const;
-
-    /*!
-     * @brief Get the input format name of the current playing stream content.
-     * @return A pointer to the properties or NULL if no stream is playing.
-     */
-    std::string GetCurrentInputFormat(void) const;
 
     /*!
      * @return True if a TV channel is playing, false otherwise.
@@ -285,30 +201,31 @@ namespace PVR
     bool IsPlayingRadio(void) const;
 
     /*!
+     * @return True if a recording is playing, false otherwise.
+     */
+    bool IsPlayingRecording(void) const;
+
+    /*!
+     * @return True if an epg tag is playing, false otherwise.
+     */
+    bool IsPlayingEpgTag(void) const;
+
+    /*!
      * @return True if the currently playing channel is encrypted, false otherwise.
      */
     bool IsEncrypted(void) const;
 
-    /*!
-     * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled.
-     * @return True if the stream properties have been set, false otherwiese.
-     */
-    bool FillChannelStreamFileItem(CFileItem &fileItem);
+    bool GetPlayingClient(CPVRClientPtr &client) const;
 
     /*!
-     * @brief Fill the file item for a recording with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled.
-     * @return True if the stream properties have been set, false otherwiese.
+     * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
      */
-    bool FillRecordingStreamFileItem(CFileItem &fileItem);
+    int GetPlayingClientID(void) const;
 
     /*!
-     * @brief Open a stream on the given channel.
-     * @param channel The channel to start playing.
-     * @return True if the stream was opened successfully, false otherwise.
+     * @return The friendly name of the client that is currently playing or an empty string if nothing is playing.
      */
-    bool OpenStream(const CPVRChannelPtr &channel);
+    const std::string GetPlayingClientName(void) const;
 
     /*!
      * @brief Set the channel that is currently playing.
@@ -328,18 +245,6 @@ namespace PVR
     CPVRChannelPtr GetPlayingChannel() const;
 
     /*!
-     * @return True if a recording is playing, false otherwise.
-     */
-    bool IsPlayingRecording(void) const;
-
-    /*!
-     * @brief Open a stream from the given recording.
-     * @param recording The recording to start playing.
-     * @return True if the stream was opened successfully, false otherwise.
-     */
-    bool OpenStream(const CPVRRecordingPtr &recording);
-
-    /*!
      * @brief Set the recording that is currently playing.
      * @param recording The recording that is currently playing.
      */
@@ -355,6 +260,145 @@ namespace PVR
      * @return The recording that is currently playing, NULL otherwise.
      */
     CPVRRecordingPtr GetPlayingRecording(void) const;
+
+    /*!
+     * @brief Check whether there is an active recording on the current channel.
+     * @return True if there is, false otherwise.
+     */
+    bool IsRecordingOnPlayingChannel(void) const;
+
+    /*!
+     * @brief Check whether the current channel can be recorded instantly.
+     * @return True if it can, false otherwise.
+     */
+    bool CanRecordInstantly(void);
+
+    /*!
+     * @brief Set the epg tag that is currently playing.
+     * @param epgTag The tag that is currently playing.
+     */
+    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
+
+    /*!
+     * @brief Clear the epg tag that is currently playing, if any.
+     */
+    void ClearPlayingEpgTag();
+
+    /*!
+     * @brief Get the epg tag that is currently playing.
+     * @return The tag that is currently playing, NULL otherwise.
+     */
+    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
+
+    /*! @name general methods */
+    //@{
+
+    /*!
+     * @brief Query the the given client's capabilities.
+     * @param iClientId The client id
+     * @return The capabilities.
+     */
+    CPVRClientCapabilities GetClientCapabilities(int iClientId) const;
+
+    /*!
+     * @brief Returns properties about all connected clients
+     * @return the properties
+     */
+    std::vector<SBackend> GetBackendProperties() const;
+
+    std::string GetBackendHostnameByClientId(int iClientId) const;
+
+    //@}
+
+    /*! @name stream methods */
+    //@{
+
+    /*!
+     * @brief Open a stream on the given channel.
+     * @param channel The channel to start playing.
+     * @return True if the stream was opened successfully, false otherwise.
+     */
+    bool OpenStream(const CPVRChannelPtr &channel);
+
+    /*!
+     * @brief Open a stream from the given recording.
+     * @param recording The recording to start playing.
+     * @return True if the stream was opened successfully, false otherwise.
+     */
+    bool OpenStream(const CPVRRecordingPtr &recording);
+
+    /*!
+     * @brief Close a PVR stream.
+     */
+    void CloseStream(void);
+
+    /*!
+     * @brief Read from an open stream.
+     * @param lpBuf Target buffer.
+     * @param uiBufSize The size of the buffer.
+     * @return The amount of bytes that was added.
+     */
+    int ReadStream(void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Return the filesize of the currently running stream.
+     *        Limited to recordings playback at the moment.
+     * @return The size of the stream.
+     */
+    int64_t GetStreamLength(void);
+
+    /*!
+     * @brief Check whether it is possible to seek the currently playing livetv or recording stream
+     */
+    bool CanSeekStream(void) const;
+
+    /*!
+     * @brief Seek to a position in a stream.
+     *        Limited to recordings playback at the moment.
+     * @param iFilePosition The position to seek to.
+     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual position" or "new position=filesize-pos")
+     * @return The new stream position.
+     */
+    int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+
+    /*!
+     * @brief Check whether it is possible to pause the currently playing livetv or recording stream
+     */
+    bool CanPauseStream(void) const;
+
+    /*!
+     * @brief (Un)Pause a PVR stream (only called when timeshifting is supported)
+     */
+    void PauseStream(bool bPaused);
+
+    /*!
+     * @brief Get the input format name of the current playing stream content.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    std::string GetCurrentInputFormat(void) const;
+
+    /*!
+     * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillChannelStreamFileItem(CFileItem &fileItem);
+
+    /*!
+     * @brief Fill the file item for a recording with the properties required for playback. Values are obtained from the PVR backend.
+     * @param fileItem The file item to be filled.
+     * @return True if the stream properties have been set, false otherwiese.
+     */
+    bool FillRecordingStreamFileItem(CFileItem &fileItem);
+
+    bool IsTimeshifting() const;
+    time_t GetPlayingTime() const;
+    time_t GetBufferTimeStart() const;
+    time_t GetBufferTimeEnd() const;
+
+    bool GetStreamTimes(PVR_STREAM_TIMES *times) const;
+
+    bool IsRealTimeStream() const;
 
     //@}
 
@@ -418,8 +462,8 @@ namespace PVR
 
     /*!
      * @brief Get all timer types supported by a certain client.
-     * @param iClientId The id of the client.
      * @param results The container to store the result in.
+     * @param iClientId The id of the client.
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
     PVR_ERROR GetTimerTypes(CPVRTimerTypes& results, int iClientId) const;
@@ -507,18 +551,6 @@ namespace PVR
     */
     std::vector<PVR_EDL_ENTRY> GetRecordingEdl(const CPVRRecording &recording);
 
-    /*!
-     * @brief Check whether there is an active recording on the current channel.
-     * @return True if there is, false otherwise.
-     */
-    bool IsRecordingOnPlayingChannel(void) const;
-
-    /*!
-     * @brief Check whether the current channel can be recorded instantly.
-     * @return True if it can, false otherwise.
-     */
-    bool CanRecordInstantly(void);
-
     //@}
 
     /*! @name EPG methods */
@@ -567,28 +599,6 @@ namespace PVR
      */
     bool FillEpgTagStreamFileItem(CFileItem &fileItem);
 
-    /*!
-     * @brief Set the epg tag that is currently playing.
-     * @param epgTag The tag that is currently playing.
-     */
-    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
-
-    /*!
-     * @brief Clear the epg tag that is currently playing, if any.
-     */
-    void ClearPlayingEpgTag();
-
-    /*!
-     * @brief Get the epg tag that is currently playing.
-     * @return The tag that is currently playing, NULL otherwise.
-     */
-    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
-
-    /*!
-     * @return True if an epg tag is playing, false otherwise.
-     */
-    bool IsPlayingEpgTag(void) const;
-
     //@}
 
     /*! @name Channel methods */
@@ -618,32 +628,24 @@ namespace PVR
      */
     PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group, std::vector<int> &failedClients);
 
-    //@}
-
-    /*! @name Menu hook methods */
-    //@{
+    /*!
+     * @brief Inform addon to delete channel
+     * @param channel The channel to delete.
+     * @return PVR_ERROR_NO_ERROR if the channel was deleted successfully, the respective error code otherwise.
+     */
+    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Check whether a client has any PVR specific menu entries.
-     * @param iClientId The ID of the client to get the menu entries for. Get the menu for the active channel if iClientId < 0.
-     * @return True if the client has any menu hooks, false otherwise.
+     * @brief Request the client to rename given channel
+     * @param channel The channel to rename
+     * @return True if the edit was successful, false otherwise.
      */
-    bool HasMenuHooks(int iClientId, PVR_MENUHOOK_CAT cat);
-
-    //@}
-
-    /*! @name Channel scan methods */
-    //@{
+    bool RenameChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @return All clients that support channel scanning.
      */
     std::vector<CPVRClientPtr> GetClientsSupportingChannelScan(void) const;
-
-    //@}
-
-    /*! @name Channel settings methods */
-    //@{
 
     /*!
      * @return All clients that support channel settings inside addon.
@@ -664,48 +666,22 @@ namespace PVR
      */
     PVR_ERROR OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
-    /*!
-     * @brief Inform addon to delete channel
-     * @param channel The channel to delete.
-     * @return PVR_ERROR_NO_ERROR if the channel was deleted successfully, the respective error code otherwise.
-     */
-    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
+    //@}
+
+    /*! @name Menu hook methods */
+    //@{
 
     /*!
-     * @brief Request the client to rename given channel
-     * @param channel The channel to rename
-     * @return True if the edit was successful, false otherwise.
+     * @brief Check whether a client has any PVR specific menu entries.
+     * @param iClientId The ID of the client to get the menu entries for. Get the menu for the active channel if iClientId < 0.
+     * @return True if the client has any menu hooks, false otherwise.
      */
-    bool RenameChannel(const CPVRChannelPtr &channel);
+    bool HasMenuHooks(int iClientId, PVR_MENUHOOK_CAT cat);
 
     //@}
 
-    bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
-
-    /*!
-     * @brief Query the the given client's capabilities.
-     * @param iClientId The client id
-     * @return The capabilities.
-     */
-    CPVRClientCapabilities GetClientCapabilities(int iClientId) const;
-
-    bool GetPlayingClient(CPVRClientPtr &client) const;
-
-    std::string GetBackendHostnameByClientId(int iClientId) const;
-
-    bool IsTimeshifting() const;
-    time_t GetPlayingTime() const;
-    time_t GetBufferTimeStart() const;
-    time_t GetBufferTimeEnd() const;
-
-    bool GetStreamTimes(PVR_STREAM_TIMES *times) const;
-
-    int GetClientId(const std::string& strId) const;
-
-    bool IsRealTimeStream() const;
-
-    void ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
-                               std::string &strMessage);
+    /*! @name Power management methods */
+    //@{
 
     /*!
      * @brief Propagate event to clients
@@ -715,13 +691,16 @@ namespace PVR
     void OnPowerSavingActivated();
     void OnPowerSavingDeactivated();
 
-    /*!
-     * @brief Handle addon events (enable, disable, ...).
-     * @param event The addon event.
-     */
-    void OnAddonEvent(const ADDON::AddonEvent& event);
+    //@}
+
+    void ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState, std::string &strMessage);
 
   private:
+    /*!
+     * @brief Unload all loaded add-ons and reset all class properties.
+     */
+    void Unload(void);
+
     /*!
      * @brief Get the instance of the client.
      * @param iClientId The id of the client to get.
@@ -737,7 +716,22 @@ namespace PVR
      */
     bool IsKnownClient(const ADDON::AddonPtr &client) const;
 
+    /*!
+     * @brief Check whether an given addon instance is a created pvr client.
+     * @param addon The addon.
+     * @return True if the the addon represents a created client, false otherwise.
+     */
+    bool IsCreatedClient(const ADDON::AddonPtr &addon);
+
     int GetClientId(const ADDON::AddonPtr &client) const;
+
+    /*!
+     * @brief Get all created clients and clients not (yet) ready to use.
+     * @param clientsReady Store the created clients in this map.
+     * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.
+     * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
+     */
+    PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
 
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
