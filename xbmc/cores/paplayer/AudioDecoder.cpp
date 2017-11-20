@@ -32,6 +32,7 @@
 CAudioDecoder::CAudioDecoder()
 {
   m_codec = NULL;
+  m_rawBuffer = nullptr;
 
   m_eof = false;
 
