@@ -88,7 +88,6 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 
   // fill in the number of buttons, hats and axes
   joystick.SetButtonCount(state.GetButtonCount());
-  joystick.SetHatCount(state.GetHatCount());
   joystick.SetAxisCount(state.GetAxisCount());
 
   // remember the joystick state
@@ -127,12 +126,6 @@ void CPeripheralBusAndroid::ProcessEvents()
       {
         const bool bPressed = (event.ButtonState() == JOYSTICK_STATE_BUTTON_PRESSED);
         joystick->OnButtonMotion(event.DriverIndex(), bPressed);
-        break;
-      }
-      case PERIPHERAL_EVENT_TYPE_DRIVER_HAT:
-      {
-        const JOYSTICK::HAT_STATE state = CPeripheralAddonTranslator::TranslateHatState(event.HatState());
-        joystick->OnHatMotion(event.DriverIndex(), state);
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_AXIS:

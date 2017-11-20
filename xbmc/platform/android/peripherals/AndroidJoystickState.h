@@ -28,7 +28,6 @@ namespace PERIPHERALS
     int GetDeviceId() const { return m_deviceId; }
 
     unsigned int GetButtonCount() const { return static_cast<unsigned int>(m_buttons.size()); }
-    unsigned int GetHatCount() const { return static_cast<unsigned int>(m_hats.size()); }
     unsigned int GetAxisCount() const { return static_cast<unsigned int>(m_axes.size()); }
 
     /*!
@@ -55,11 +54,9 @@ namespace PERIPHERALS
 
   private:
     bool SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON buttonValue);
-    bool SetHatValue(const std::vector<int>& axisIds, JOYSTICK_STATE_HAT hatValue);
     bool SetAxisValue(const std::vector<int>& axisIds, JOYSTICK_STATE_AXIS axisValue);
 
     void GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
-    void GetHatEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
     void GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
 
     static float Contain(float value, float min, float max);
@@ -86,14 +83,12 @@ namespace PERIPHERALS
     struct JoystickState
     {
       std::vector<JOYSTICK_STATE_BUTTON> buttons;
-      std::vector<JOYSTICK_STATE_HAT> hats;
       std::vector<JOYSTICK_STATE_AXIS> axes;
     };
 
     int m_deviceId;
 
     JoystickAxes m_buttons;
-    JoystickAxes m_hats;
     JoystickAxes m_axes;
 
     mutable JoystickState m_state;

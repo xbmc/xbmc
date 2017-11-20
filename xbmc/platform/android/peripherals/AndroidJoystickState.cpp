@@ -102,30 +102,15 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       motionRange.getResolution()
     };
 
-    // check if the axis ID belongs to a hat/D-PAD
-    if (axisId == AMOTION_EVENT_AXIS_HAT_X || axisId == AMOTION_EVENT_AXIS_HAT_Y)
-    {
-      // check if this hat is already known
-      if (ContainsAxis(axisId, m_hats))
-      {
-        CLog::Log(LOGWARNING, "CAndroidJoystickState: duplicate hat %d on input device \"%s\" with ID %d", axisId, deviceName.c_str(), m_deviceId);
-        continue;
-      }
-
-      // handle the two hat axes together as they belong to the same hat
-      MapAxisIds(axisId, AMOTION_EVENT_AXIS_HAT_X, AMOTION_EVENT_AXIS_HAT_Y, axis.ids);
-
-      m_hats.push_back(axis);
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState: hat %s on input device \"%s\" with ID %d detected", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
-    }
-    // check if the axis ID belongs to an analogue stick or trigger
-    else if (axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
+    // check if the axis ID belongs to a D-pad, analogue stick or trigger
+    if (axisId == AMOTION_EVENT_AXIS_HAT_X || axisId == AMOTION_EVENT_AXIS_HAT_Y ||
+             axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
              axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RZ ||
              axisId == AMOTION_EVENT_AXIS_LTRIGGER || axisId == AMOTION_EVENT_AXIS_RTRIGGER ||
              axisId == AMOTION_EVENT_AXIS_GAS || axisId == AMOTION_EVENT_AXIS_BRAKE ||
              axisId == AMOTION_EVENT_AXIS_THROTTLE || axisId == AMOTION_EVENT_AXIS_RUDDER || axisId == AMOTION_EVENT_AXIS_WHEEL)
     {
-       // check if this hat is already known
+       // check if this axis is already known
       if (ContainsAxis(axisId, m_axes))
       {
         CLog::Log(LOGWARNING, "CAndroidJoystickState: duplicate axis %s on input device \"%s\" with ID %d", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
@@ -158,19 +143,17 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
 
-  // check if there are no buttons, hats or axes at all
-  if (GetButtonCount() == 0 && GetHatCount() == 0 && GetAxisCount() == 0)
+  // check if there are no buttons or axes at all
+  if (GetButtonCount() == 0 && GetAxisCount() == 0)
   {
     CLog::Log(LOGWARNING, "CAndroidJoystickState: no buttons, hats or axes detected for input device \"%s\" with ID %d", deviceName.c_str(), m_deviceId);
     return false;
   }
 
   m_state.buttons.assign(GetButtonCount(), JOYSTICK_STATE_BUTTON_UNPRESSED);
-  m_state.hats.assign(GetHatCount(), JOYSTICK_STATE_HAT_UNPRESSED);
   m_state.axes.assign(GetAxisCount(), 0.0f);
 
   m_stateBuffer.buttons.assign(GetButtonCount(), JOYSTICK_STATE_BUTTON_UNPRESSED);
-  m_stateBuffer.hats.assign(GetHatCount(), JOYSTICK_STATE_HAT_UNPRESSED);
   m_stateBuffer.axes.assign(GetAxisCount(), 0.0f);
 
   return true;
@@ -179,15 +162,12 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
 void CAndroidJoystickState::Deinitialize(void)
 {
   m_buttons.clear();
-  m_hats.clear();
   m_axes.clear();
 
   m_state.buttons.clear();
-  m_state.hats.clear();
   m_state.axes.clear();
 
   m_stateBuffer.buttons.clear();
-  m_stateBuffer.hats.clear();
   m_stateBuffer.axes.clear();
 }
 
@@ -210,13 +190,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
 
       bool result = SetButtonValue(keycode, buttonState);
 
-      // check if the key event belongs to the D-Pad which needs to be ignored
-      // if we handle the D-Pad as a hat
-      if (!result &&
-         (keycode == AKEYCODE_DPAD_UP || keycode == AKEYCODE_DPAD_DOWN || keycode == AKEYCODE_DPAD_LEFT || keycode == AKEYCODE_DPAD_RIGHT) &&
-         !m_hats.empty())
-        return true;
-
       return result;
     }
 
@@ -227,25 +200,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
       bool success = false;
       for (size_t pointer = 0; pointer < count; ++pointer)
       {
-        // process the hats
-        for (const auto& hat : m_hats)
-        {
-          float valueX = AMotionEvent_getAxisValue(event, hat.ids[0], pointer);
-          float valueY = AMotionEvent_getAxisValue(event, hat.ids[1], pointer);
-
-          int hatValue = JOYSTICK_STATE_HAT_UNPRESSED;
-          if (valueX < -hat.flat)
-            hatValue |= JOYSTICK_STATE_HAT_LEFT;
-          else if (valueX > hat.flat)
-            hatValue |= JOYSTICK_STATE_HAT_RIGHT;
-          if (valueY < -hat.flat)
-            hatValue |= JOYSTICK_STATE_HAT_UP;
-          else if (valueY > hat.flat)
-            hatValue |= JOYSTICK_STATE_HAT_DOWN;
-
-          success |= SetHatValue(hat.ids, static_cast<JOYSTICK_STATE_HAT>(hatValue));
-        }
-
         // process all axes
         for (const auto& axis : m_axes)
         {
@@ -279,7 +233,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
 void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
   GetButtonEvents(events);
-  GetHatEvents(events);
   GetAxisEvents(events);
 }
 
@@ -294,19 +247,6 @@ void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralE
   }
 
   m_state.buttons.assign(buttons.begin(), buttons.end());
-}
-
-void CAndroidJoystickState::GetHatEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
-{
-  const std::vector<JOYSTICK_STATE_HAT>& hats = m_stateBuffer.hats;
-
-  for (unsigned int i = 0; i < hats.size(); i++)
-  {
-    if (hats[i] != m_state.hats[i])
-      events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, hats[i]));
-  }
-
-  m_state.hats.assign(hats.begin(), hats.end());
 }
 
 void CAndroidJoystickState::GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
@@ -327,16 +267,6 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
 
   CLog::Log(LOGDEBUG, "CAndroidJoystickState: setting value for button %s to %d", PrintAxisIds(m_buttons[buttonIndex].ids).c_str(), buttonValue);
   m_stateBuffer.buttons[buttonIndex] = buttonValue;
-  return true;
-}
-
-bool CAndroidJoystickState::SetHatValue(const std::vector<int>& axisIds, JOYSTICK_STATE_HAT hatValue)
-{
-  size_t hatIndex = 25;
-  if (!GetAxesIndex(axisIds, m_hats, hatIndex) || hatIndex >= GetHatCount())
-    return false;
-
-  m_stateBuffer.hats[hatIndex] = hatValue;
   return true;
 }
 
