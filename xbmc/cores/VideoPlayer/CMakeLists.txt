@@ -35,6 +35,7 @@ set(HEADERS AudioSinkAE.h
             VideoPlayerTeletext.h
             VideoPlayerVideo.h
             VideoReferenceClock.h
+            Interface/StreamInfo.h
             Interface/Addon/DemuxPacket.h
             Interface/Addon/DemuxCrypto.h
             Interface/Addon/TimingConstants.h)

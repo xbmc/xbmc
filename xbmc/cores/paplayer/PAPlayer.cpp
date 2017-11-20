@@ -1004,7 +1004,7 @@ int PAPlayer::GetCacheLevel() const
   return m_playerGUIData.m_cacheLevel;
 }
 
-void PAPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
+void PAPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
 {
   info.bitrate = m_playerGUIData.m_audioBitrate;
   info.channels = m_playerGUIData.m_channelCount;

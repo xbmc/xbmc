@@ -342,7 +342,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
   if(StringUtils::EqualsNoCase(preferredLanguage, "original"))
   {
-    SPlayerAudioStreamInfo info;
+    AudioStreamInfo info;
     std::string strLanguage;
 
     g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);

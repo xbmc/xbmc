@@ -441,7 +441,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(SettingConstPtr s
     std::string strItem;
     std::string strLanguage;
 
-    SPlayerAudioStreamInfo info;
+    AudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
 
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
@@ -470,7 +470,7 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPt
   // cycle through each subtitle and add it to our entry list
   for (int i = 0; i < subtitleStreamCount; ++i)
   {
-    SPlayerSubtitleStreamInfo info;
+    SubtitleStreamInfo info;
     g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
 
     std::string strItem;

@@ -503,7 +503,7 @@ std::string CStereoscopicsManager::GetVideoStereoMode()
   std::string playerMode;
   if (g_application.m_pPlayer->IsPlaying())
   {
-    SPlayerVideoStreamInfo videoInfo;
+    VideoStreamInfo videoInfo;
     g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
     playerMode = videoInfo.stereoMode;
   }

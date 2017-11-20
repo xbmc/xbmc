@@ -425,7 +425,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
     std::string strItem;
     std::string strLanguage;
 
-    SPlayerVideoStreamInfo info;
+    VideoStreamInfo info;
     g_application.m_pPlayer->GetVideoStreamInfo(i, info);
 
     g_LangCodeExpander.Lookup(info.language, strLanguage);

@@ -1535,7 +1535,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           int index = g_application.m_pPlayer->GetAudioStream();
           if (index >= 0)
           {
-            SPlayerAudioStreamInfo info;
+            AudioStreamInfo info;
             g_application.m_pPlayer->GetAudioStreamInfo(index, info);
 
             result["index"] = index;
@@ -1566,7 +1566,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         {
           for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
           {
-            SPlayerAudioStreamInfo info;
+            AudioStreamInfo info;
             g_application.m_pPlayer->GetAudioStreamInfo(index, info);
 
             CVariant audioStream(CVariant::VariantTypeObject);
@@ -1598,7 +1598,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       if (index >= 0)
       {
         result = CVariant(CVariant::VariantTypeObject);
-        SPlayerVideoStreamInfo info;
+        VideoStreamInfo info;
         g_application.m_pPlayer->GetVideoStreamInfo(index, info);
 
         result["index"] = index;
@@ -1631,7 +1631,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       {
         for (int index = 0; index < streamCount; ++index)
         {
-          SPlayerVideoStreamInfo info;
+          VideoStreamInfo info;
           g_application.m_pPlayer->GetVideoStreamInfo(index, info);
 
           CVariant videoStream(CVariant::VariantTypeObject);
@@ -1679,7 +1679,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           int index = g_application.m_pPlayer->GetSubtitle();
           if (index >= 0)
           {
-            SPlayerSubtitleStreamInfo info;
+            SubtitleStreamInfo info;
             g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
 
             result["index"] = index;
@@ -1708,7 +1708,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         {
           for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
           {
-            SPlayerSubtitleStreamInfo info;
+            SubtitleStreamInfo info;
             g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
 
             CVariant subtitle(CVariant::VariantTypeObject);

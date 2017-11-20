@@ -1553,7 +1553,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
     stream->source = STREAM_SOURCE_DEMUX;
     stream->pPrivate = pStream;
-    stream->flags = (CDemuxStream::EFlags)pStream->disposition;
+    stream->flags = (StreamFlags)pStream->disposition;
 
     AVDictionaryEntry *langTag = av_dict_get(pStream->metadata, "language", NULL, 0);
     if (!langTag)

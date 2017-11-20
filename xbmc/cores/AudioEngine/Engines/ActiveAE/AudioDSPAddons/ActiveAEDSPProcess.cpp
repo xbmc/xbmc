@@ -190,7 +190,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     if (identifier < 0)
       identifier = 0;
 
-    SPlayerAudioStreamInfo info;
+    AudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(identifier, info);
 
     m_addonStreamProperties.strName       = info.name.c_str();

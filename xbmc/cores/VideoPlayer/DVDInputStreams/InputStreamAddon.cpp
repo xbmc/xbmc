@@ -371,7 +371,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   {
     demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
     demuxStream->ExtraSize = stream.m_ExtraSize;
-    demuxStream->flags = static_cast<CDemuxStream::EFlags>(stream.m_flags);
+    demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
     for (unsigned int j = 0; j < stream.m_ExtraSize; ++j)
       demuxStream->ExtraData[j] = stream.m_ExtraData[j];
   }

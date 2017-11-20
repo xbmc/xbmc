@@ -24,6 +24,7 @@
 #include <vector>
 #include <memory>
 #include "system.h"
+#include "Interface/StreamInfo.h"
 
 struct DemuxPacket;
 struct DemuxCryptoSession;
@@ -94,7 +95,7 @@ public:
     memset(language, 0, sizeof(language));
     disabled = false;
     changes = 0;
-    flags = FLAG_NONE;
+    flags = StreamFlags::FLAG_NONE;
     realtime = false;
   }
 
@@ -121,25 +122,13 @@ public:
   uint8_t*     ExtraData; // extra data for codec to use
   unsigned int ExtraSize; // size of extra data
 
+  StreamFlags flags;
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
 
   std::string codecName;
 
   int  changes; // increment on change which player may need to know about
-
-  enum EFlags
-  { FLAG_NONE             = 0x0000 
-  , FLAG_DEFAULT          = 0x0001
-  , FLAG_DUB              = 0x0002
-  , FLAG_ORIGINAL         = 0x0004
-  , FLAG_COMMENT          = 0x0008
-  , FLAG_LYRICS           = 0x0010
-  , FLAG_KARAOKE          = 0x0020
-  , FLAG_FORCED           = 0x0040
-  , FLAG_HEARING_IMPAIRED = 0x0080
-  , FLAG_VISUAL_IMPAIRED  = 0x0100
-  } flags;
 
   std::shared_ptr<DemuxCryptoSession> cryptoSession;
   std::shared_ptr<ADDON::IAddonProvider> externalInterfaces;
