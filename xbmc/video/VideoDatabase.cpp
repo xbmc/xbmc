@@ -98,7 +98,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
               "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream integer, SubtitleStream integer,"
               "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
-              "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer,"
+              "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
               "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
               "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, VideoStream integer)\n");
 
@@ -4276,7 +4276,6 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_ResumeTime = m_pDS->fv("ResumeTime").get_asInt();
       settings.m_InterlaceMethod = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInt();
       settings.m_VolumeAmplification = m_pDS->fv("VolumeAmplification").get_asFloat();
-      settings.m_OutputToAllSpeakers = m_pDS->fv("OutputToAllSpeakers").get_asBool();
       settings.m_ScalingMethod = (ESCALINGMETHOD)m_pDS->fv("ScalingMethod").get_asInt();
       settings.m_StereoMode = m_pDS->fv("StereoMode").get_asInt();
       settings.m_StereoInvert = m_pDS->fv("StereoInvert").get_asBool();
@@ -4318,11 +4317,11 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       // update the item
       strSQL=PrepareSQL("update settings set Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,VerticalShift=%f,"
                        "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast=%f,Gamma=%f,"
-                       "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,Sharpness=%f,NoiseReduction=%f,NonLinStretch=%i,PostProcess=%i,ScalingMethod=%i,",
+                       "VolumeAmplification=%f,AudioDelay=%f,Sharpness=%f,NoiseReduction=%f,NonLinStretch=%i,PostProcess=%i,ScalingMethod=%i,",
                        setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_CustomVerticalShift,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_OutputToAllSpeakers,setting.m_Sharpness,setting.m_NoiseReduction,setting.m_CustomNonLinStretch,setting.m_PostProcess,setting.m_ScalingMethod);
+                       setting.m_Sharpness,setting.m_NoiseReduction,setting.m_CustomNonLinStretch,setting.m_PostProcess,setting.m_ScalingMethod);
       std::string strSQL2;
       strSQL2=PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i, VideoStream=%i where idFile=%i\n", setting.m_ResumeTime, setting.m_StereoMode,
                         setting.m_StereoInvert, setting.m_VideoStream, idFile);
@@ -4335,14 +4334,14 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       m_pDS->close();
       strSQL= "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
                 "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
-                "Contrast,Gamma,VolumeAmplification,AudioDelay,OutputToAllSpeakers,"
+                "Contrast,Gamma,VolumeAmplification,AudioDelay,"
                 "ResumeTime,"
                 "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream) "
               "VALUES ";
-      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i)",
+      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i)",
                            idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_CustomVerticalShift,
                            setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn, setting.m_Brightness,
-                           setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_OutputToAllSpeakers,
+                           setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
                            setting.m_ResumeTime,
                            setting.m_Sharpness, setting.m_NoiseReduction, setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
                            setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream);
@@ -5246,11 +5245,18 @@ void CVideoDatabase::UpdateTables(int iVersion)
       pDS->close();
     }
   }
+
+  if (iVersion < 109)
+  {
+    m_pDS->exec("CREATE TABLE settingsnew AS SELECT idFile, Deinterlace, ViewMode, ZoomAmount, PixelRatio, VerticalShift, AudioStream, SubtitleStream, SubtitleDelay, SubtitlesOn, Brightness, Contrast, Gamma, VolumeAmplification, AudioDelay, ResumeTime, Sharpness, NoiseReduction, NonLinStretch, PostProcess, ScalingMethod, DeinterlaceMode, StereoMode, StereoInvert, VideoStream FROM settings");
+    m_pDS->exec("DROP TABLE settings");
+    m_pDS->exec("ALTER TABLE settingsnew RENAME TO settings");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 108;
+  return 109;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
