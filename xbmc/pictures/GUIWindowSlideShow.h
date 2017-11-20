@@ -145,6 +145,7 @@ private:
   bool m_bSlideShow;
   bool m_bPause;
   bool m_bPlayingVideo;
+  int m_iVideoSlide = -1;
   bool m_bErrorMessage;
 
   std::vector<CFileItemPtr> m_slides;
