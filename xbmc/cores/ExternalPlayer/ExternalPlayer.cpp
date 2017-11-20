@@ -523,20 +523,6 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 {
 }
 
-float CExternalPlayer::GetPercentage()
-{
-  int64_t iTime = 0;
-  int64_t iTotalTime = 0;
-
-  if (iTotalTime != 0)
-  {
-    CLog::Log(LOGDEBUG, "Percentage is %f", (iTime * 100 / (float)iTotalTime));
-    return iTime * 100 / (float)iTotalTime;
-  }
-
-  return 0.0f;
-}
-
 void CExternalPlayer::SetAVDelay(float fValue)
 {
 }

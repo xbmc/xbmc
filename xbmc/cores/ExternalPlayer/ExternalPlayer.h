@@ -75,7 +75,6 @@ public:
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
   void Process() override;
-  float GetPercentage();
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;
