@@ -49,7 +49,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
   m_bFullTextEpgSearch(false),
   m_state(PVR_TIMER_STATE_SCHEDULED),
-  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstConnectedClientID()),
+  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstCreatedClientID()),
   m_iClientIndex(PVR_TIMER_NO_CLIENT_INDEX),
   m_iParentClientIndex(PVR_TIMER_NO_PARENT),
   m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),

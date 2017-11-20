@@ -216,7 +216,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool       bIsPlayingRadio           = bStarted && CServiceBroker::GetPVRManager().Clients()->IsPlayingRadio();
   bool       bIsPlayingRecording       = bStarted && CServiceBroker::GetPVRManager().Clients()->IsPlayingRecording();
   bool       bIsPlayingEpgTag          = bStarted && CServiceBroker::GetPVRManager().Clients()->IsPlayingEpgTag();
-  bool       bIsPlayingEncryptedStream = bStarted && CServiceBroker::GetPVRManager().Clients()->IsEncrypted();
+  bool       bIsPlayingEncryptedStream = bStarted && CServiceBroker::GetPVRManager().Clients()->IsPlayingEncryptedChannel();
   bool       bHasTVChannels            = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV()->HasChannels();
   bool       bHasRadioChannels         = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio()->HasChannels();
   std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? CServiceBroker::GetPVRManager().GetPlayingGroup(false)->GroupName() : "";

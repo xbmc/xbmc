@@ -69,7 +69,9 @@ CPVRClients::~CPVRClients(void)
 {
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(ADDON_PVRDLL);
-  Unload();
+
+  for (const auto &client : m_clientMap)
+    client.second->Destroy();
 }
 
 void CPVRClients::Start(void)
@@ -93,23 +95,6 @@ void CPVRClients::Continue()
   {
     client.second->Continue();
   }
-}
-
-void CPVRClients::Unload(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* reset class properties */
-  m_bIsPlayingLiveTV     = false;
-  m_bIsPlayingRecording  = false;
-  m_bIsPlayingEpgTag     = false;
-  m_strPlayingClientName = "";
-
-  for (const auto &client : m_clientMap)
-  {
-    client.second->Destroy();
-  }
-  m_clientMap.clear();
 }
 
 void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
@@ -232,14 +217,14 @@ bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
   return StopClient(addon, true);
 }
 
-bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
+bool CPVRClients::StopClient(const AddonPtr &addon, bool bRestart)
 {
   /* stop playback if needed */
   if (IsPlaying())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CSingleLock lock(m_critSection);
-  int iId = GetClientId(client);
+  int iId = GetClientId(addon);
   CPVRClientPtr mappedClient;
   if (GetClient(iId, mappedClient))
   {
@@ -323,7 +308,7 @@ int CPVRClients::GetClientId(const AddonPtr &client) const
 int CPVRClients::GetClientId(const std::string& strId) const
 {
   CSingleLock lock(m_critSection);
-  std::map<std::string, int>::const_iterator it = m_addonNameIds.find(strId);
+  const auto& it = m_addonNameIds.find(strId);
   return it != m_addonNameIds.end() ? it->second : -1;
 }
 
@@ -356,7 +341,7 @@ bool CPVRClients::HasCreatedClients(void) const
 
 bool CPVRClients::IsKnownClient(const AddonPtr &client) const
 {
-  // database IDs start at 1
+  // valid client IDs start at 1
   return GetClientId(client) > 0;
 }
 
@@ -430,7 +415,7 @@ PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap &clientsReady, std::vecto
   return clientsNotReady.empty() ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR;
 }
 
-int CPVRClients::GetFirstConnectedClientID(void)
+int CPVRClients::GetFirstCreatedClientID(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -531,7 +516,7 @@ bool CPVRClients::IsPlayingEpgTag(void) const
   return m_bIsPlayingEpgTag;
 }
 
-bool CPVRClients::IsEncrypted(void) const
+bool CPVRClients::IsPlayingEncryptedChannel(void) const
 {
   CPVRClientPtr client;
   if (GetPlayingClient(client))
@@ -559,7 +544,7 @@ const std::string CPVRClients::GetPlayingClientName(void) const
   return m_strPlayingClientName;
 }
 
-void CPVRClients::SetPlayingChannel(const CPVRChannelPtr channel)
+void CPVRClients::SetPlayingChannel(const CPVRChannelPtr &channel)
 {
   const CPVRChannelPtr playingChannel = GetPlayingChannel();
   if (!playingChannel || *playingChannel != *channel)
@@ -601,7 +586,7 @@ CPVRChannelPtr CPVRClients::GetPlayingChannel() const
   return CPVRChannelPtr();
 }
 
-void CPVRClients::SetPlayingRecording(const CPVRRecordingPtr recording)
+void CPVRClients::SetPlayingRecording(const CPVRRecordingPtr &recording)
 {
   const CPVRRecordingPtr playingRecording = GetPlayingRecording();
   if (!playingRecording || *playingRecording != *recording)
@@ -640,7 +625,7 @@ CPVRRecordingPtr CPVRClients::GetPlayingRecording(void) const
   return GetPlayingClient(client) ? client->GetPlayingRecording() : CPVRRecordingPtr();
 }
 
-void CPVRClients::SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag)
+void CPVRClients::SetPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag)
 {
   const CPVREpgInfoTagPtr playingEpgTag = GetPlayingEpgTag();
   if (!playingEpgTag || *playingEpgTag != *epgTag)
@@ -711,20 +696,17 @@ CPVRClientCapabilities CPVRClients::GetClientCapabilities(int iClientId) const
 std::vector<SBackend> CPVRClients::GetBackendProperties() const
 {
   std::vector<SBackend> backendProperties;
-  std::vector<CPVRClientPtr> clients;
+  CPVRClientMap clients;
 
   {
     CSingleLock lock(m_critSection);
-
-    for (const auto &client : m_clientMap)
-    {
-      if (client.second)
-        clients.push_back(client.second);
-    }
+    GetCreatedClients(clients);
   }
 
-  for (const auto &client : clients)
+  for (const auto &clientMapEntry : clients)
   {
+    const CPVRClientPtr& client = clientMapEntry.second;
+
     if (!client->ReadyToUse())
       continue;
 
@@ -744,7 +726,7 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
     properties.version = client->GetBackendVersion();
     properties.host = client->GetConnectionString();
 
-    backendProperties.push_back(properties);
+    backendProperties.emplace_back(properties);
   }
 
   return backendProperties;
