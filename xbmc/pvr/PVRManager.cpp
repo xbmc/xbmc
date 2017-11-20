@@ -981,7 +981,7 @@ bool CPVRManager::EventOccursOnLocalBackend(const CFileItemPtr& item) const
   {
     CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
     std::string hostname(m_addons->GetBackendHostnameByClientId(tag->m_iClientId));
-    if (!hostname.empty() && g_application.getNetwork().IsLocalHost(hostname))
+    if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
       return true;
   }
   return false;

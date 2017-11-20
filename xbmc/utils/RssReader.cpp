@@ -21,8 +21,8 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "RssReader.h"
+#include "ServiceBroker.h"
 #include "utils/HTMLUtil.h"
-#include "Application.h"
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "filesystem/File.h"
@@ -146,7 +146,7 @@ void CRssReader::Process()
 
     // we wait for the network to come up
     if ((url.IsProtocol("http") || url.IsProtocol("https")) &&
-        !g_application.getNetwork().IsAvailable())
+        !CServiceBroker::GetNetwork().IsAvailable())
     {
       CLog::Log(LOGWARNING, "RSS: No network connection");
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";

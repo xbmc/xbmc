@@ -31,6 +31,7 @@
 #include "network/Network.h"
 #include "network/NetworkServices.h"
 #include "profiles/ProfilesManager.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "video/VideoLibraryQueue.h"
@@ -75,7 +76,7 @@ static int LogOff(const std::vector<std::string>& params)
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+  CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
   CProfilesManager::GetInstance().LoadMasterProfileForLogin();
   g_passwordManager.bMasterUser = false;
 

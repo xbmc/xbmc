@@ -61,6 +61,7 @@ class CDataCacheCore;
 class CSettings;
 class IAE;
 class CFavouritesService;
+class CNetwork;
 
 namespace KODI
 {
@@ -106,6 +107,7 @@ public:
   ADDON::CServiceAddonManager& GetServiceAddons();
   ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
+  CNetwork& GetNetwork();
 #ifdef HAS_PYTHON
   XBPython& GetXBPython();
 #endif
@@ -150,6 +152,9 @@ protected:
     void operator()(CFavouritesService *p) const;
   };
 
+  //! \brief Initialize appropriate networking instance.
+  CNetwork* SetupNetwork() const;
+
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
@@ -174,4 +179,5 @@ protected:
   std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
   std::unique_ptr<CInputManager> m_inputManager;
   std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
+  std::unique_ptr<CNetwork> m_network;
 };

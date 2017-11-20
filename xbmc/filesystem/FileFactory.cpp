@@ -68,7 +68,6 @@
 #include "UDFFile.h"
 #include "ImageFile.h"
 #include "ResourceFile.h"
-#include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
@@ -145,7 +144,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   else if (url.IsProtocol("resource")) return new CResourceFile();
 
-  bool networkAvailable = g_application.getNetwork().IsAvailable();
+  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
   if (networkAvailable)
   {
     if (url.IsProtocol("ftp")

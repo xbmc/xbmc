@@ -61,9 +61,6 @@ void TestBasicEnvironment::SetUp()
    */
   g_advancedSettings.Initialize();
 
-  // Need to configure the network as some tests access the network member
-  g_application.SetupNetwork();
-
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
   CXBMCTestUtils::Instance().setTestFileFactoryWriteInputFile(

@@ -283,7 +283,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 1);
     CProfilesManager::GetInstance().LoadProfile(profile);
   }
   else
@@ -292,7 +292,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     if (pWindow)
       pWindow->ResetControlStates();
   }
-  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+  CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_UP, 1);
 
   CProfilesManager::GetInstance().UpdateCurrentProfileDate();
   CProfilesManager::GetInstance().Save();

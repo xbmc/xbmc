@@ -22,12 +22,12 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
 
-#include "Application.h"
 #include "PasswordManager.h"
 #include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 
 using namespace kodi; // addon-dev-kit namespace
@@ -64,7 +64,7 @@ bool Interface_Network::wake_on_lan(void* kodiBase, const char* mac)
     return false;
   }
 
-  return g_application.getNetwork().WakeOnLan(mac);
+  return CServiceBroker::GetNetwork().WakeOnLan(mac);
 }
 
 char* Interface_Network::get_ip_address(void* kodiBase)
@@ -77,7 +77,7 @@ char* Interface_Network::get_ip_address(void* kodiBase)
   }
 
   std::string titleIP;
-  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface)
     titleIP = iface->GetCurrentIPAddress();
   else

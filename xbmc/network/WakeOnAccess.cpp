@@ -110,7 +110,7 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
+  std::vector<CNetworkInterface*>& ifaces = CServiceBroker::GetNetwork().GetInterfaceList();
   for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
   {
     if ((*it)->GetHostMacAddress(ipAddress, m_macAddress))
@@ -240,7 +240,7 @@ public:
   bool SuccessWaiting () const override
   {
     unsigned long address = ntohl(HostToIP(m_host));
-    bool online = g_application.getNetwork().HasInterfaceForIP(address);
+    bool online = CServiceBroker::GetNetwork().HasInterfaceForIP(address);
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
       m_end.Set (m_settle_time_ms);
@@ -283,7 +283,7 @@ public:
   {
     ULONG dst_ip = HostToIP(server.host);
 
-    return g_application.getNetwork().PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
+    return CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
   }
 
 private:
@@ -376,7 +376,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
     if (dlg.ShowAndWait (waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
     {
-      if (g_application.getNetwork().IsConnected() && HostToIP(server.host) == INADDR_NONE)
+      if (CServiceBroker::GetNetwork().IsConnected() && HostToIP(server.host) == INADDR_NONE)
       {
         // network connected (at least one interface) but dns-lookup failed (host by name, not ip-address), so dont abort yet
         CLog::Log(LOGWARNING, "WakeOnAccess timeout/cancel while waiting for network (proceeding anyway)");
@@ -392,14 +392,14 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   {
     ULONG dst_ip = HostToIP(server.host);
 
-    if (g_application.getNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
+    if (CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
     {
       CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
       return true;
     }
   }
 
-  if (!g_application.getNetwork().WakeOnLan(server.mac.c_str()))
+  if (!CServiceBroker::GetNetwork().WakeOnLan(server.mac.c_str()))
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 

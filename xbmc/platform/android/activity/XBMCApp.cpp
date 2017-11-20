@@ -1029,7 +1029,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   {
     if (g_application.IsInitialized())
     {
-      CNetwork& net = g_application.getNetwork();
+      CNetwork& net = CServiceBroker::GetNetwork();
       CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
       netdroid->RetrieveInterfaces();
     }

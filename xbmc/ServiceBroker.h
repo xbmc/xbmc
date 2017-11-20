@@ -56,6 +56,7 @@ class IAE;
 class CFavouritesService;
 class CInputManager;
 class CFileExtensionProvider;
+class CNetwork;
 
 namespace KODI
 {
@@ -101,4 +102,5 @@ public:
   static CInputManager& GetInputManager();
   static CFileExtensionProvider &GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
+  static CNetwork& GetNetwork();
 };

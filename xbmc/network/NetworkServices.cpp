@@ -22,7 +22,6 @@
 
 #include <utility>
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
@@ -533,7 +532,7 @@ void CNetworkServices::Stop(bool bWait)
 bool CNetworkServices::StartWebserver()
 {
 #ifdef HAS_WEB_SERVER
-  if (!g_application.getNetwork().IsAvailable())
+  if (!CServiceBroker::GetNetwork().IsAvailable())
     return false;
 
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
@@ -608,7 +607,7 @@ bool CNetworkServices::StartAirPlayServer()
     return true;
 
 #ifdef HAS_AIRPLAY
-  if (!g_application.getNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  if (!CServiceBroker::GetNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirPlayServerRunning())
@@ -623,7 +622,7 @@ bool CNetworkServices::StartAirPlayServer()
   
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
@@ -670,7 +669,7 @@ bool CNetworkServices::StopAirPlayServer(bool bWait)
 bool CNetworkServices::StartAirTunesServer()
 {
 #ifdef HAS_AIRTUNES
-  if (!g_application.getNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  if (!CServiceBroker::GetNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirTunesServerRunning())

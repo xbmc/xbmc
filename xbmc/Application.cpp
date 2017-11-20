@@ -280,7 +280,6 @@ CApplication::CApplication(void)
   , m_muted(false)
   , m_volumeLevel(VOLUME_MAXIMUM)
   , m_pInertialScrollingHandler(new CInertialScrollingHandler())
-  , m_network(nullptr)
   , m_WaitingExternalCalls(0)
   , m_ProcessedExternalCalls(0)
 {
@@ -399,23 +398,6 @@ void CApplication::Preflight()
 #endif
 }
 
-bool CApplication::SetupNetwork()
-{
-#if defined(TARGET_ANDROID)
-  m_network = new CNetworkAndroid();
-#elif defined(HAS_LINUX_NETWORK)
-  m_network = new CNetworkLinux();
-#elif defined(HAS_WIN32_NETWORK)
-  m_network = new CNetworkWin32();
-#elif defined(HAS_WIN10_NETWORK)
-  m_network = new CNetworkWin10();
-#else
-  m_network = new CNetwork();
-#endif
-
-  return m_network != NULL;
-}
-
 bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
@@ -427,7 +409,6 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
-  SetupNetwork();
   Preflight();
 
   // here we register all global classes for the CApplicationMessenger,
@@ -553,7 +534,7 @@ bool CApplication::Create(const CAppParamParser &params)
   std::string executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   std::string hostname("[unknown]");
-  m_network->GetHostName(hostname);
+  m_ServiceManager->GetNetwork().GetHostName(hostname);
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
@@ -1063,7 +1044,7 @@ bool CApplication::Initialize()
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
-  getNetwork().WaitForNet();
+  m_ServiceManager->GetNetwork().WaitForNet();
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
@@ -1299,7 +1280,7 @@ void CApplication::StartServices()
 
 void CApplication::StopServices()
 {
-  m_network->NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+  m_ServiceManager->GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
@@ -2464,7 +2445,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_NETWORKMESSAGE:
-    getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
+    m_ServiceManager->GetNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
     break;
 
   case TMSG_SETLANGUAGE:
@@ -2829,9 +2810,6 @@ bool CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
-
-    delete m_network;
-    m_network = NULL;
 
     // Cleanup was called more than once on exit during my tests
     if (m_ServiceManager)
@@ -5144,10 +5122,6 @@ void CApplication::SetRenderGUI(bool renderGUI)
   m_renderGUI = renderGUI;
 }
 
-CNetwork& CApplication::getNetwork()
-{
-  return *m_network;
-}
 #ifdef HAS_PERFORMANCE_SAMPLE
 CPerformanceStats &CApplication::GetPerformanceStats()
 {

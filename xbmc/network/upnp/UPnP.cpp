@@ -32,7 +32,6 @@
 #include "UPnPServer.h"
 #include "UPnPSettings.h"
 #include "utils/URIUtils.h"
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -429,8 +428,8 @@ CUPnP::CUPnP() :
     m_UPnP = new PLT_UPnP();
 
     // keep main IP around
-    if (g_application.getNetwork().GetFirstConnectedInterface()) {
-        m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    if (CServiceBroker::GetNetwork().GetFirstConnectedInterface()) {
+        m_IP = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
     }
     NPT_List<NPT_IpAddress> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list)) && list.GetItemCount()) {
