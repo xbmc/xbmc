@@ -141,51 +141,22 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       m_axes.push_back(axis);
       CLog::Log(LOGDEBUG, "CAndroidJoystickState: axis %s on input device \"%s\" with ID %d detected", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
     }
-    // check if the axis ID belongs to a known button
-    else if (axisId == AKEYCODE_HOME || axisId == AKEYCODE_BACK || axisId == AKEYCODE_MENU ||
-             axisId == AKEYCODE_BUTTON_A || axisId == AKEYCODE_BUTTON_B || axisId == AKEYCODE_BUTTON_C ||
-             axisId == AKEYCODE_BUTTON_X || axisId == AKEYCODE_BUTTON_Y || axisId == AKEYCODE_BUTTON_Z ||
-             axisId == AKEYCODE_BUTTON_L1 || axisId == AKEYCODE_BUTTON_R1 || axisId == AKEYCODE_BUTTON_L2 || axisId == AKEYCODE_BUTTON_R2 ||
-             axisId == AKEYCODE_BUTTON_THUMBL || axisId == AKEYCODE_BUTTON_THUMBR ||
-             axisId == AKEYCODE_BUTTON_START || axisId == AKEYCODE_BUTTON_SELECT || axisId == AKEYCODE_BUTTON_MODE)
-    {
-       // check if this hat is already known
-      if (ContainsAxis(axisId, m_buttons))
-      {
-        CLog::Log(LOGWARNING, "CAndroidJoystickState: duplicate button %d on input device \"%s\" with ID %d", axisId, deviceName.c_str(), m_deviceId);
-        continue;
-      }
-
-      // map AKEYCODE_BUTTON_SELECT to AKEYCODE_BACK and
-      // AKEYCODE_BUTTON_MODE to AKEYCODE_MENU and
-      // AKEYCODE_BUTTON_START to AKEYCODE_HOME to avoid
-      // duplicate events on controllers sending both events
-      MapAxisIds(axisId, AKEYCODE_BACK, AKEYCODE_BUTTON_SELECT, axis.ids);
-      MapAxisIds(axisId, AKEYCODE_MENU, AKEYCODE_BUTTON_MODE, axis.ids);
-      MapAxisIds(axisId, AKEYCODE_HOME, AKEYCODE_BUTTON_START, axis.ids);
-
-      m_buttons.push_back(axis);
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState: button %s on input device \"%s\" with ID %d detected", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
-    }
     else
       CLog::Log(LOGWARNING, "CAndroidJoystickState: ignoring unknown axis %d on input device \"%s\" with ID %d", axisId, deviceName.c_str(), m_deviceId);
   }
 
-  // if there are no buttons add the usual suspects
-  if (GetButtonCount() <= 0)
-  {
-    m_buttons.push_back({ { AKEYCODE_BUTTON_A } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_B } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_X } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_Y } });
-    m_buttons.push_back({ { AKEYCODE_BACK, AKEYCODE_BUTTON_SELECT } });
-    m_buttons.push_back({ { AKEYCODE_MENU, AKEYCODE_BUTTON_MODE } });
-    m_buttons.push_back({ { AKEYCODE_HOME, AKEYCODE_BUTTON_START } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_L1 } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_R1 } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
-    m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
-  }
+  // add the usual suspects
+  m_buttons.push_back({ { AKEYCODE_BUTTON_A } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_B } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_X } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_Y } });
+  m_buttons.push_back({ { AKEYCODE_BACK, AKEYCODE_BUTTON_SELECT } });
+  m_buttons.push_back({ { AKEYCODE_MENU, AKEYCODE_BUTTON_MODE } });
+  m_buttons.push_back({ { AKEYCODE_HOME, AKEYCODE_BUTTON_START } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_L1 } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_R1 } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
 
   // check if there are no buttons, hats or axes at all
   if (GetButtonCount() == 0 && GetHatCount() == 0 && GetAxisCount() == 0)
