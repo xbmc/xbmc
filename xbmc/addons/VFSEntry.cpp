@@ -151,6 +151,7 @@ CVFSEntry::ProtocolInfo::ProtocolInfo(BinaryAddonBasePtr addonInfo)
     supportPassword(addonInfo->Type(ADDON_VFS)->GetValue("@supportPassword").asBoolean()),
     supportPort(addonInfo->Type(ADDON_VFS)->GetValue("@supportPort").asBoolean()),
     supportBrowsing(addonInfo->Type(ADDON_VFS)->GetValue("@supportBrowsing").asBoolean()),
+    supportWrite(addonInfo->Type(ADDON_VFS)->GetValue("@supportWrite").asBoolean()),
     defaultPort(addonInfo->Type(ADDON_VFS)->GetValue("@defaultPort").asInteger()),
     type(addonInfo->Type(ADDON_VFS)->GetValue("@protocols").asString()),
     label(addonInfo->Type(ADDON_VFS)->GetValue("@label").asInteger())

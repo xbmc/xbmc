@@ -60,6 +60,7 @@ namespace ADDON
       bool supportPassword;  //!< Protocol supports passwords
       bool supportPort;      //!< Protocol supports port customization
       bool supportBrowsing;  //!< Protocol supports server browsing
+      bool supportWrite;     //!< Protocol supports write operations
       int defaultPort;       //!< Default port to use for protocol
       std::string type;      //!< URL type for protocol
       int label;             //!< String ID to use as label in dialog

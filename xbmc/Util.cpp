@@ -47,6 +47,7 @@
 #include <algorithm>
 
 #include "Application.h"
+#include "addons/VFSEntry.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/PVRDirectory.h"
@@ -1515,6 +1516,18 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     return SupportsWriteFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
   if (URIUtils::IsMultiPath(strPath))
     return CMultiPathDirectory::SupportsWriteFileOperations(strPath);
+
+
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+  {
+    CURL url(strPath);
+    for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+    {
+      const auto& info = addon->GetProtocolInfo();
+      if (info.type == url.GetProtocol() && info.supportWrite)
+        return true;
+    }
+  }
 
   return false;
 }
