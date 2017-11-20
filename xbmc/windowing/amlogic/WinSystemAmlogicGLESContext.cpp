@@ -23,6 +23,12 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemAmlogicGLESContext());
+  return winSystem;
+}
+
 bool CWinSystemAmlogicGLESContext::InitWindowSystem()
 {
   if (!CWinSystemAmlogic::InitWindowSystem())
