@@ -39,6 +39,7 @@
 #endif
 #endif
 #include "Autorun.h"
+#include "addons/VFSEntry.h"
 #include "GUIUserMessages.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -235,6 +236,20 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     share.strName = g_localizeStrings.Get(20262);
     locations.push_back(share);
 #endif
+
+    if (CServiceBroker::IsBinaryAddonCacheUp())
+    {
+      for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+      {
+        const auto& info = addon->GetProtocolInfo();
+        if (!info.type.empty() && info.supportBrowsing)
+        {
+          share.strPath = info.type + "://";
+          share.strName = g_localizeStrings.Get(info.label);
+          locations.push_back(share);
+        }
+      }
+    }
   }
 }
 
