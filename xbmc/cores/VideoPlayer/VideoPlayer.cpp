@@ -767,7 +767,10 @@ bool CVideoPlayer::CloseFile(bool reopen)
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
-  StopThread();
+  {
+    CSingleExit exitlock(g_graphicsContext);
+    StopThread();
+  }
 
   m_Edl.Clear();
 
