@@ -823,7 +823,7 @@ namespace XBMCAddon
       unsigned int i = 1;
       for (const auto& it: paths)
       {
-        String property = StringUtils::Format("subtitle:%u", i);
+        String property = StringUtils::Format("subtitle:%u", i++);
         item->SetProperty(property, it);
       }
     }
