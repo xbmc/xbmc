@@ -383,7 +383,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_bSlideShow && !m_bPause && !g_application.IsInScreenSaver())
     g_application.ResetScreenSaver();
   int iSlides = m_slides.size();
-  if (!iSlides) return ;
+  if (!iSlides)
+    return;
 
   // if we haven't processed yet, we should mark the whole screen
   if (!HasProcessed())
@@ -404,11 +405,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   bool bSlideShow = m_bSlideShow && !m_bPause && !m_bPlayingVideo;
   if (bSlideShow && m_slides.at(m_iCurrentSlide)->HasProperty("unplayable"))
   {
-    m_iNextSlide    = GetNextSlide();
+    m_iNextSlide = GetNextSlide();
     if (m_iCurrentSlide == m_iNextSlide)
       return;
     m_iCurrentSlide = m_iNextSlide;
-    m_iNextSlide    = GetNextSlide();
+    m_iNextSlide = GetNextSlide();
   }
 
   if (m_bErrorMessage)
@@ -518,7 +519,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
   }
 
-  if (m_slides.at(m_iCurrentSlide)->IsVideo() && bSlideShow)
+  if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
+      m_iVideoSlide != m_iCurrentSlide)
   {
     if (!PlayVideo())
       return;
@@ -556,6 +558,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       if (g_application.m_pPlayer->IsPlayingVideo())
         g_application.m_pPlayer->CloseFile();
       m_bPlayingVideo = false;
+      m_iVideoSlide = -1;
 
       // first time render the next image, make sure using current display effect.
       if (!m_Image[1 - m_iCurrentPic].IsStarted())
@@ -986,6 +989,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         if (m_bPlayingVideo)
         {
           m_bPlayingVideo = false;
+          m_iVideoSlide = -1;
           if (m_bSlideShow)
             m_bPause = true;
         }
@@ -997,6 +1001,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         if (m_bPlayingVideo)
         {
           m_bPlayingVideo = false;
+          m_iVideoSlide = -1;
           if (m_bSlideShow)
           {
             m_bPause = false;
@@ -1093,6 +1098,7 @@ bool CGUIWindowSlideShow::PlayVideo()
     return false;
   CLog::Log(LOGDEBUG, "Playing current video slide %s", item->GetPath().c_str());
   m_bPlayingVideo = true;
+  m_iVideoSlide = m_iCurrentSlide;
   PlayBackRet ret = g_application.PlayFile(*item, "");
   if (ret == PLAYBACK_OK)
     return true;
@@ -1104,6 +1110,7 @@ bool CGUIWindowSlideShow::PlayVideo()
   else if (ret == PLAYBACK_CANCELED)
     m_bPause = true;
   m_bPlayingVideo = false;
+  m_iVideoSlide = -1;
   return false;
 }
 
