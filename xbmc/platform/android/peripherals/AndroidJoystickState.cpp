@@ -135,9 +135,12 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   m_buttons.push_back({ { AKEYCODE_BUTTON_B } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_X } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_Y } });
-  m_buttons.push_back({ { AKEYCODE_BACK, AKEYCODE_BUTTON_SELECT } });
-  m_buttons.push_back({ { AKEYCODE_MENU, AKEYCODE_BUTTON_MODE } });
-  m_buttons.push_back({ { AKEYCODE_HOME, AKEYCODE_BUTTON_START } });
+  m_buttons.push_back({ { AKEYCODE_BACK } });
+  m_buttons.push_back({ { AKEYCODE_MENU } });
+  m_buttons.push_back({ { AKEYCODE_HOME } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_SELECT } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_MODE } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_START } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_L1 } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_R1 } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
