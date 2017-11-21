@@ -220,6 +220,12 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
 
   visual = XGetVisualInfo(m_dpy, vMask, &vTemplate, &count);
 
+  if (!visual)
+  {
+    vTemplate.depth = 30;
+    visual = XGetVisualInfo(m_dpy, vMask, &vTemplate, &count);
+  }
+
   return visual;
 }
 
