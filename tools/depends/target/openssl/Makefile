@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=MACHINE=$(PLATFORM) ./config shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
 ifeq ($(OS), android)
-  CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32
+  CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
 endif
 ifeq ($(OS), ios)
   CONFIGURE=./Configure iphoneos-cross zlib no-asm no-krb5 --openssldir=$(PREFIX)

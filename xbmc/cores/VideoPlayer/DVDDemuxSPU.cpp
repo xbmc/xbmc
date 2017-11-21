@@ -18,6 +18,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "DVDDemuxSPU.h"
 
 #include <locale.h>
