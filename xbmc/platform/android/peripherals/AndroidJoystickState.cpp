@@ -11,6 +11,7 @@
 #include <android/input.h>
 
 #include "AndroidJoystickState.h"
+#include "AndroidJoystickTranslator.h"
 #include "androidjni/View.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -188,8 +189,11 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
       JOYSTICK_STATE_BUTTON buttonState = JOYSTICK_STATE_BUTTON_UNPRESSED;
       if (action == AKEY_EVENT_ACTION_DOWN)
         buttonState = JOYSTICK_STATE_BUTTON_PRESSED;
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState::ProcessEvent(type = key, keycode = %d, action = %d): %s",
-                keycode, action, (buttonState == JOYSTICK_STATE_BUTTON_UNPRESSED ? "unpressed" : "pressed"));
+
+      CLog::Log(LOGDEBUG, "Android Key %s (%d) %s",
+          CAndroidJoystickTranslator::TranslateKeyCode(keycode),
+          keycode,
+          (buttonState == JOYSTICK_STATE_BUTTON_UNPRESSED ? "released" : "pressed"));
 
       bool result = SetButtonValue(keycode, buttonState);
 
@@ -268,7 +272,6 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
   if (!GetAxesIndex({ axisId }, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
     return false;
 
-  CLog::Log(LOGDEBUG, "CAndroidJoystickState: setting value for button %s to %d", PrintAxisIds(m_buttons[buttonIndex].ids).c_str(), buttonValue);
   m_stateBuffer.buttons[buttonIndex] = buttonValue;
   return true;
 }
