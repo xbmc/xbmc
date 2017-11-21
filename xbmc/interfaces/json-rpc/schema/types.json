@@ -459,7 +459,7 @@
                 "yearsactive", "musicbrainzartistid", "fanart",
                 "thumbnail", "compilationartist", "dateadded",
                 "roles", "songgenres", "isalbumartist", 
-                "sortname", "type", "gender", "disambiguation"]
+                "sortname", "type", "gender", "disambiguation", "art"]
     }
   },
   "Audio.Fields.Album": {
@@ -472,7 +472,7 @@
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded",
-                "sortartist", "musicbrainzreleasegroupid", "songgenres"]
+                "sortartist", "musicbrainzreleasegroupid", "songgenres", "art"]
     }
   },
   "Audio.Fields.Song": {
@@ -488,7 +488,7 @@
                 "albumartistid", "albumreleasetype", "dateadded", 
                 "votes", "userrating", "mood", "contributors",
                 "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
-                "sortartist"]
+                "sortartist", "art"]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -533,7 +533,8 @@
     "extends": "Media.Details.Base",
     "properties": {
       "genre": { "$ref": "Array.String" },
-      "dateadded": { "type": "string" }
+      "dateadded": { "type": "string" },
+      "art": { "$ref": "Media.Artwork" }
     }
   },
   "Audio.Details.Media": {

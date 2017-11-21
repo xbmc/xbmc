@@ -35,6 +35,7 @@
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "TextureDatabase.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -564,6 +565,31 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
   if (ParameterNotNull(parameterObject, "disambiguation"))
     artist.strDisambiguation = parameterObject["disambiguation"].asString();
 
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+  // If the value is null then the existing art with that type is removed.
+  if (ParameterNotNull(parameterObject, "art"))
+  {
+    // Get current artwork    
+    musicdatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
+
+    std::set<std::string> removedArtwork;
+    CVariant art = parameterObject["art"];
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    {
+      if (artIt->second.isString() && !artIt->second.asString().empty())
+        artist.art[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+      else if (artIt->second.isNull())
+      {
+        artist.art.erase(artIt->first);
+        removedArtwork.insert(artIt->first);
+      }
+    }
+    // Remove null art now, as not done by update
+    if (!musicdatabase.RemoveArtForItem(artist.idArtist, MediaTypeArtist, removedArtwork))
+      return InternalError;   
+  }
+
+  // Update artist including adding or replacing (but not removing) art
   if (!musicdatabase.UpdateArtist(artist))
     return InternalError;
 
@@ -636,7 +662,32 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
     album.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzreleasegroupid"))
     album.strReleaseGroupMBID = parameterObject["musicbrainzreleasegroupid"].asString();
+  
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+  // If the value is null then the existing art with that type is removed.
+  if (ParameterNotNull(parameterObject, "art"))
+  {
+    // Get current artwork    
+    musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, album.art);
 
+    std::set<std::string> removedArtwork;
+    CVariant art = parameterObject["art"];
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    {
+      if (artIt->second.isString() && !artIt->second.asString().empty())
+        album.art[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+      else if (artIt->second.isNull())
+      {
+        album.art.erase(artIt->first);
+        removedArtwork.insert(artIt->first);
+      }
+    }
+    // Remove null art now, as not done by update
+    if (!musicdatabase.RemoveArtForItem(album.idAlbum, MediaTypeAlbum, removedArtwork))
+      return InternalError;
+  }
+
+  // Update artist including adding or replacing (but not removing) art
   if (!musicdatabase.UpdateAlbum(album))
     return InternalError;
 
@@ -706,7 +757,34 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
     song.lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
   if (ParameterNotNull(parameterObject, "mood"))
     song.strAlbum = parameterObject["mood"].asString();
+  
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+  // If the value is null then the existing art with that type is removed.
+  if (ParameterNotNull(parameterObject, "art"))
+  {
+    // Get current artwork    
+    std::map<std::string, std::string> artwork;
+    musicdatabase.GetArtForItem(song.idSong, MediaTypeSong, artwork);
 
+    std::set<std::string> removedArtwork;
+    CVariant art = parameterObject["art"];
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    {
+      if (artIt->second.isString() && !artIt->second.asString().empty())
+        artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+      else if (artIt->second.isNull())
+      {
+        artwork.erase(artIt->first);
+        removedArtwork.insert(artIt->first);
+      }
+    }
+    //Update artwork, not done in update song
+    musicdatabase.SetArtForItem(song.idSong, MediaTypeSong, artwork);
+    if (!musicdatabase.RemoveArtForItem(song.idSong, MediaTypeSong, removedArtwork))
+      return InternalError;
+  }
+
+  // Update song (not including artwork)
   if (!musicdatabase.UpdateSong(song, updateartists))
     return InternalError;
 

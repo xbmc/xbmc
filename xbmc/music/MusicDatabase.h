@@ -519,6 +519,26 @@ public:
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
+  /*! \brief Remove art for a database item.
+  Removes  a single piece of art for a database item.
+  \param mediaId the id in the media (song/artist/album) table.
+  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+  \param artType the type of art to remove, eg "thumb", "fanart".
+  \return true if art is removed, false if no art is found.
+  \sa RemoveArtForItem
+  */
+  bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+
+  /*! \brief Remove art for a database item.
+  Removes multiple pieces of art for a database item.
+  \param mediaId the id in the media (song/artist/album) table.
+  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+  \param arttypes a set of types, e.g. "thumb", "fanart", etc. to be removed.
+  \return true if art is removed, false if no art is found.
+  \sa RemoveArtForItem
+  */
+  bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
+
   /////////////////////////////////////////////////
   // Tag Scan Version
   /////////////////////////////////////////////////
