@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include "Texture.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"

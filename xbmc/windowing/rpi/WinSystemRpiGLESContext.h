@@ -22,7 +22,6 @@
 
 #include "GLContextEGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
-#include "utils/GlobalsHandling.h"
 #include "WinSystemRpi.h"
 
 class CWinSystemRpiGLESContext : public CWinSystemRpi, public CRenderSystemGLES
@@ -53,6 +52,3 @@ private:
   CGLContextEGL m_pGLContext;
 
 };
-
-XBMC_GLOBAL_REF(CWinSystemRpiGLESContext, g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemRpiGLESContext)

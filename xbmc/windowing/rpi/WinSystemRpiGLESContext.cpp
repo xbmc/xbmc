@@ -34,6 +34,13 @@
 
 using namespace KODI;
 
+
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemRpiGLESContext());
+  return winSystem;
+}
+
 bool CWinSystemRpiGLESContext::InitWindowSystem()
 {
   if (!CWinSystemRpi::InitWindowSystem())
