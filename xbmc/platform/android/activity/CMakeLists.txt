@@ -14,7 +14,6 @@ set(SOURCES android_main.cpp
             JNIXBMCNsdManagerDiscoveryListener.cpp
             JNIXBMCNsdManagerRegistrationListener.cpp
             JNIXBMCNsdManagerResolveListener.cpp
-            XBMCApp.cpp
             ${NDKROOT}/sources/android/native_app_glue/android_native_app_glue.c
             ${NDKROOT}/sources/android/cpufeatures/cpu-features.c)
 
