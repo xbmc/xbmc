@@ -792,13 +792,6 @@ namespace PVR
     bool IsCreatedClient(const ADDON::AddonPtr &addon);
 
     /*!
-     * @brief Get the client id for a given addon instance.
-     * @param client The client.
-     * @return The id of the client.
-     */
-    int GetClientId(const ADDON::AddonPtr &client) const;
-
-    /*!
      * @brief Get all created clients and clients not (yet) ready to use.
      * @param clientsReady Store the created clients in this map.
      * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.

@@ -226,7 +226,7 @@ bool CPVRClients::StopClient(const AddonPtr &addon, bool bRestart)
 
   CSingleLock lock(m_critSection);
 
-  int iId = GetClientId(addon);
+  int iId = GetClientId(addon->ID());
   CPVRClientPtr mappedClient;
   if (GetClient(iId, mappedClient))
   {
@@ -293,18 +293,6 @@ bool CPVRClients::GetClient(int iClientId, CPVRClientPtr &addon) const
   return bReturn;
 }
 
-int CPVRClients::GetClientId(const AddonPtr &client) const
-{
-  CSingleLock lock(m_critSection);
-  for (const auto &entry : m_clientMap)
-  {
-    if (entry.second->ID() == client->ID())
-      return entry.first;
-  }
-
-  return -1;
-}
-
 int CPVRClients::GetClientId(const std::string& strId) const
 {
   CSingleLock lock(m_critSection);
@@ -341,7 +329,7 @@ bool CPVRClients::HasCreatedClients(void) const
 bool CPVRClients::IsKnownClient(const AddonPtr &client) const
 {
   // valid client IDs start at 1
-  return GetClientId(client) > 0;
+  return GetClientId(client->ID()) > 0;
 }
 
 bool CPVRClients::IsCreatedClient(int iClientId) const
