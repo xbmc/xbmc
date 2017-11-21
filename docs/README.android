@@ -151,7 +151,7 @@ Building for arm architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
       --toolchain=arm-linux-androideabi-4.9
 
@@ -160,7 +160,7 @@ Building for aarch64 architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
       --toolchain=aarch64-linux-android-4.9
 
@@ -169,7 +169,7 @@ Building for x86 architecture:
     $ cd <android-ndk>
     $ ls platforms
     $ cd build/tools
-    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+    $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
       --toolchain=x86-4.9 --arch=x86
 
