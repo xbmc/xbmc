@@ -446,17 +446,20 @@ void CMusicInfoTag::SetAlbumArtistSort(const std::string& strAlbumArtistSort)
   m_strAlbumArtistSort = strAlbumArtistSort;
 }
 
-void CMusicInfoTag::SetGenre(const std::string& strGenre)
+void CMusicInfoTag::SetGenre(const std::string& strGenre, bool bTrim /* = false*/)
 {
   if (!strGenre.empty())
-    SetGenre(StringUtils::Split(strGenre, g_advancedSettings.m_musicItemSeparator));
+    SetGenre(StringUtils::Split(strGenre, g_advancedSettings.m_musicItemSeparator), bTrim);
   else
     m_genre.clear();
 }
 
-void CMusicInfoTag::SetGenre(const std::vector<std::string>& genres)
+void CMusicInfoTag::SetGenre(const std::vector<std::string>& genres, bool bTrim /* = false*/)
 {
   m_genre = genres;
+  if (bTrim)
+    for (auto genre : m_genre)
+      StringUtils::Trim(genre);
 }
 
 void CMusicInfoTag::SetYear(int year)
