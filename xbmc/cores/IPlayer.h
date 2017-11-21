@@ -26,8 +26,6 @@
 
 #include "IPlayerCallback.h"
 #include "VideoSettings.h"
-#include "guilib/Geometry.h"
-#include "guilib/Resolution.h"
 #include "Interface/StreamInfo.h"
 
 #define CURRENT_STREAM -1
