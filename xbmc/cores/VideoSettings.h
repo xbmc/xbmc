@@ -101,7 +101,6 @@ public:
   bool  m_CustomNonLinStretch;
   int m_AudioStream;
   float m_VolumeAmplification;
-  bool m_OutputToAllSpeakers; // not used -> drop
   int m_SubtitleStream;
   float m_SubtitleDelay;
   bool m_SubtitleOn;

@@ -110,7 +110,6 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     XMLUtils::GetBoolean(pElement, "postprocess", m_defaultVideoSettings.m_PostProcess);
     if (!XMLUtils::GetFloat(pElement, "sharpness", m_defaultVideoSettings.m_Sharpness, -1.0f, 1.0f))
       m_defaultVideoSettings.m_Sharpness = 0.0f;
-    XMLUtils::GetBoolean(pElement, "outputtoallspeakers", m_defaultVideoSettings.m_OutputToAllSpeakers);
     XMLUtils::GetBoolean(pElement, "showsubtitles", m_defaultVideoSettings.m_SubtitleOn);
     if (!XMLUtils::GetFloat(pElement, "brightness", m_defaultVideoSettings.m_Brightness, 0, 100))
       m_defaultVideoSettings.m_Brightness = 50;
@@ -213,7 +212,6 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "pixelratio", m_defaultVideoSettings.m_CustomPixelRatio);
   XMLUtils::SetFloat(pNode, "verticalshift", m_defaultVideoSettings.m_CustomVerticalShift);
   XMLUtils::SetFloat(pNode, "volumeamplification", m_defaultVideoSettings.m_VolumeAmplification);
-  XMLUtils::SetBoolean(pNode, "outputtoallspeakers", m_defaultVideoSettings.m_OutputToAllSpeakers);
   XMLUtils::SetBoolean(pNode, "showsubtitles", m_defaultVideoSettings.m_SubtitleOn);
   XMLUtils::SetFloat(pNode, "brightness", m_defaultVideoSettings.m_Brightness);
   XMLUtils::SetFloat(pNode, "contrast", m_defaultVideoSettings.m_Contrast);
