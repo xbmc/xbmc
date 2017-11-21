@@ -81,7 +81,4 @@ protected:
   bool IsStereoEnabled() override;
 };
 
-XBMC_GLOBAL_REF(CWinSystemWin10DX, g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin10DX)
-
 #endif // WIN_SYSTEM_WIN32_DX_H

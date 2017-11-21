@@ -356,7 +356,7 @@ void CExternalPlayer::Process()
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
 #if defined(TARGET_WINDOWS_DESKTOP)
-  g_Windowing.Restore();
+  CServiceBroker::GetWinSystem().Restore();
 
   if (currentStyle & WS_EX_TOPMOST)
   {

@@ -534,7 +534,7 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
   if (!m_bRenderCreated)
     return;
 
-  auto m_pContext = Get3D11Context();
+  auto m_pContext = m_deviceResources->GetD3DContext();
 
   m_scissor = rect;
   CD3D11_RECT scissor(MathUtils::round_int(rect.x1)
@@ -552,7 +552,7 @@ void CRenderSystemDX::ResetScissors()
   if (!m_bRenderCreated)
     return;
 
-  auto m_pContext = Get3D11Context();
+  auto m_pContext = m_deviceResources->GetD3DContext();
   auto outputSize = m_deviceResources->GetOutputSize();
 
   m_scissor.SetRect(0.0f, 0.0f,

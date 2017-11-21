@@ -19,7 +19,6 @@
  */
 
 #include "TextureDX.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
 /************************************************************************/

@@ -25,8 +25,9 @@
 #include "settings/AdvancedSettings.h"
 #include "cores/IPlayer.h"
 #include "rendering/RenderSystem.h"
-#ifdef HAS_DX
-#include "rendering/dx/DirectXHelper.h"
+#ifdef TARGET_WINDOWS
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #endif
 
 extern "C" {
@@ -286,14 +287,14 @@ CRenderCaptureDX::CRenderCaptureDX()
   m_query         = nullptr;
   m_surfaceWidth  = 0;
   m_surfaceHeight = 0;
-  g_Windowing.Register(this);
+  DX::Windowing().Register(this);
 }
 
 CRenderCaptureDX::~CRenderCaptureDX()
 {
   CleanupDX();
   av_freep(&m_pixels);
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
 }
 
 int CRenderCaptureDX::GetCaptureFormat()
@@ -303,8 +304,8 @@ int CRenderCaptureDX::GetCaptureFormat()
 
 void CRenderCaptureDX::BeginRender()
 {
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
   CD3D11_QUERY_DESC queryDesc(D3D11_QUERY_EVENT);
 
   if (!m_asyncChecked)
@@ -399,7 +400,7 @@ void CRenderCaptureDX::ReadOut()
   if (m_query)
   {
     //if the result of the occlusion query is available, the data is probably also written into m_copySurface
-    HRESULT result = g_Windowing.GetImmediateContext()->GetData(m_query, nullptr, 0, 0);
+    HRESULT result = DX::DeviceResources::Get()->GetImmediateContext()->GetData(m_query, nullptr, 0, 0);
     if (SUCCEEDED(result))
     {
       if (S_OK == result)

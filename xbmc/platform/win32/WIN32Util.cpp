@@ -30,7 +30,6 @@
 #include "my_ntddscsi.h"
 #include "Setupapi.h"
 #include "storage/MediaManager.h"
-#include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"

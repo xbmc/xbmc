@@ -50,6 +50,10 @@
 #include "utils/ScreenshotAML.h"
 #endif
 
+#if defined(TARGET_WINDOWS)
+#include "rendering/dx/DeviceResources.h"
+#endif
+
 using namespace XFILE;
 
 CScreenshotSurface::CScreenshotSurface()
@@ -72,7 +76,7 @@ bool CScreenshotSurface::capture()
   m_buffer = g_RBP.CaptureDisplay(m_width, m_height, &m_stride, true, false);
   if (!m_buffer)
     return false;
-#elif defined(HAS_DX)
+#elif defined(TARGET_WINDOWS)
 
   CSingleLock lock(g_graphicsContext);
 

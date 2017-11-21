@@ -36,6 +36,9 @@
 #include "rendering/gl/RenderSystemGL.h"
 #elif defined(HAS_GLES)
 #include "rendering/gles/RenderSystemGLES.h"
+#elif defined(TARGET_WINDOWS)
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #endif
 
 #define IMMEDIATE_TRANSITION_TIME          20
@@ -771,12 +774,12 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = vertices;
     initData.SysMemPitch = sizeof(Vertex) * 5;
-    if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
+    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, &m_vb)))
       return true;
   }
   else // update 
   {
-    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
@@ -814,7 +817,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   }
   vertex[4] = vertex[0]; // Not used when pTexture != NULL
 
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
   pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   // Set state to render the image
@@ -831,7 +834,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     if (!UpdateVertexBuffer(vertex))
       return;
 
-    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
 
     unsigned stride = sizeof(Vertex);
     unsigned offset = 0;

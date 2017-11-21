@@ -88,12 +88,6 @@ public:
   void ReleaseDecodingTime();
   void SetAlphaBlendEnable(bool enable);
 
-  // keeps this for backward compatibility
-  ID3D11Device* Get3D11Device() const { return m_deviceResources->GetD3DDevice(); }
-  ID3D11DeviceContext1* Get3D11Context() const { return m_deviceResources->GetD3DContext(); }
-  ID3D11DeviceContext1* GetImmediateContext() const { return m_deviceResources->GetImmediateContext(); }
-  unsigned GetFeatureLevel() const { return m_deviceResources->GetDeviceFeatureLevel(); }
-
   // empty overrides
   bool IsExtSupported(const char* extension) override { return false; };
   void ApplyHardwareTransform(const TransformMatrix &matrix) override {};

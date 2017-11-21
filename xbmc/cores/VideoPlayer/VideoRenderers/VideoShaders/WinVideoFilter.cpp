@@ -26,7 +26,8 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "VideoRenderers/WinRenderBuffer.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/RenderContext.h"
+#include "rendering/dx/DeviceResources.h"
 #include "WinVideoFilter.h"
 #include "YUVMatrix.h"
 
@@ -68,10 +69,10 @@ void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned in
     m_NeedRecalc = true;
     m_format = format;
   }
-  if (m_limitedRange != g_Windowing.UseLimitedColor())
+  if (m_limitedRange != DX::Windowing().UseLimitedColor())
   {
     m_NeedRecalc = true;
-    m_limitedRange = g_Windowing.UseLimitedColor();
+    m_limitedRange = DX::Windowing().UseLimitedColor();
   }
 }
 
@@ -143,14 +144,14 @@ bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned nu
     return false;
   }
 
-  return S_OK == g_Windowing.Get3D11Device()->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout);
+  return S_OK == DX::DeviceResources::Get()->GetD3DDevice()->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout);
 }
 
 void CWinShader::SetTarget(CD3DTexture* target)
 {
   m_target = target;
   if (m_target)
-    g_Windowing.Get3D11Context()->OMSetRenderTargets(1, target->GetAddressOfRTV(), nullptr);
+    DX::DeviceResources::Get()->GetD3DContext()->OMSetRenderTargets(1, target->GetAddressOfRTV(), nullptr);
 }
 
 bool CWinShader::LockVertexBuffer(void **data)
@@ -198,7 +199,7 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
 
 bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep)
 {
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   ComPtr<ID3D11RenderTargetView> oldRT;
 
   // The render target will be overridden: save the caller's original RT
@@ -373,8 +374,8 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
   else
     cData = clutData;
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
-  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetImmediateContext();
   CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
                                D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_IMMUTABLE);
 
@@ -460,7 +461,7 @@ void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned ran
 
   UINT numPorts = 1;
   D3D11_VIEWPORT viewPort;
-  g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
+  DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 
   float params[3] = { static_cast<float>(range), contrast, brightness };
@@ -471,7 +472,7 @@ void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned ran
 
 void COutputShader::CreateDitherView()
 {
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   CD3D11_TEXTURE2D_DESC txDesc(DXGI_FORMAT_R16_UNORM, dither_size, dither_size, 1, 1);
   D3D11_SUBRESOURCE_DATA resData;
@@ -523,7 +524,7 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
   case BUFFER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
-    if (!g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+    if (!DX::Windowing().IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
     break;
   case BUFFER_FMT_UYVY422:
@@ -663,7 +664,7 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 
   UINT numPorts = 1;
   D3D11_VIEWPORT viewPort;
-  g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
+  DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
   if (m_pOutShader)
     m_pOutShader->ApplyEffectParameters(m_effect, m_sourceWidth, m_sourceHeight);
@@ -687,19 +688,19 @@ CConvolutionShader::~CConvolutionShader()
 
 bool CConvolutionShader::ChooseKernelD3DFormat()
 {
-  if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
     m_floattex = true;
     m_rgba = true;
   }
-  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     m_floattex = false;
     m_rgba = true;
   }
-  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
     m_floattex = false;
@@ -864,7 +865,7 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
   UINT numVP = 1;
   D3D11_VIEWPORT viewPort = {};
-  g_Windowing.Get3D11Context()->RSGetViewports(&numVP, &viewPort);
+  DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numVP, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
   float colorRange[2] =
   {
@@ -972,7 +973,7 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
   Execute({ &m_IntermediateTarget, target }, 4);
 
   // we changed view port, so we need to restore our real viewport.
-  g_Windowing.RestoreViewPort();
+  DX::Windowing().RestoreViewPort();
 }
 
 CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
@@ -986,8 +987,8 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
   D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
 
   // Need a float texture, as the output of the first pass can contain negative values.
-  if      (g_Windowing.IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+  if      (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {
     CLog::Log(LOGNOTICE, __FUNCTION__": no float format available for the intermediate render target");
@@ -1015,7 +1016,7 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
 bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
 {
   float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  g_Windowing.Get3D11Context()->ClearRenderTargetView(m_IntermediateTarget.GetRenderTarget(), color);
+  DX::DeviceResources::Get()->GetD3DContext()->ClearRenderTargetView(m_IntermediateTarget.GetRenderTarget(), color);
   return true;
 }
 
@@ -1125,7 +1126,7 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
 {
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
 
   CD3D11_VIEWPORT viewPort = CD3D11_VIEWPORT(
     0.0f, 
@@ -1136,14 +1137,14 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   if (iPass == 0)
   {
     // reset scissor
-    g_Windowing.ResetScissors();
+    DX::Windowing().ResetScissors();
   }
   else if (iPass == 1)
   {
     // at the second pass m_IntermediateTarget is a source of data
     m_effect.SetTexture("g_Texture", m_IntermediateTarget);
     // restore scissor
-    g_Windowing.SetScissors(g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors()));
+    DX::Windowing().SetScissors(g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors()));
   }
   // setting view port
   pContext->RSSetViewports(1, &viewPort);

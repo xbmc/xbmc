@@ -59,7 +59,6 @@ CWinSystemWin32::CWinSystemWin32()
   , m_inFocus(false)
   , m_bMinimized(false)
 {
-  m_eWindowSystem = WINDOW_SYSTEM_WIN32;
   m_winEvents.reset(new CWinEventsWin32());
 }
 

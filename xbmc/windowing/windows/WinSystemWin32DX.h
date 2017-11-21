@@ -25,7 +25,6 @@
 
 #include "easyhook/easyhook.h"
 #include "rendering/dx/RenderSystemDX.h"
-#include "utils/GlobalsHandling.h"
 #include "windowing/windows/WinSystemWin32.h"
 
 struct D3D10DDIARG_CREATERESOURCE;
@@ -89,8 +88,5 @@ protected:
   HMODULE m_hDriverModule;
   TRACED_HOOK_HANDLE m_hHook;
 };
-
-XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32DX)
 
 #endif // WIN_SYSTEM_WIN32_DX_H

@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "windowing/WinSystem.h"
 #include <cstring>
+#include <algorithm>
 
 CMouseStat::CMouseStat()
 {

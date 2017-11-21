@@ -25,13 +25,14 @@
 #include "platform/xbmc.h"
 #include "platform/XbmcContext.h"
 #include "platform/win32/CharsetConverter.h"
+#include "rendering/dx/RenderContext.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Environment.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
 #include "windowing/win10/WinEventsWin10.h"
 #include "Win10App.h"
 
+#include <agile.h>
 #include <collection.h>
 #include <ppltasks.h>
 
@@ -83,7 +84,7 @@ void App::Initialize(CoreApplicationView^ applicationView)
 // Called when the CoreWindow object is created (or re-created).
 void App::SetWindow(CoreWindow^ window)
 {
-  g_Windowing.SetCoreWindow(window);
+  DX::CoreWindowHolder::Get()->SetWindow(window);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -175,7 +176,7 @@ void App::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 
   Concurrency::create_task([this, deferral]()
   {
-    g_Windowing.TrimDevice();
+    DX::Windowing().TrimDevice();
     // Insert your code here.
     deferral->Complete();
   });

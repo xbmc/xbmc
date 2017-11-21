@@ -28,11 +28,10 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
-#include "settings/MediaSettings.h"
 #include "utils/Log.h"
-#include "utils/win32/memcpy_sse2.h"
 #include "platform/win32/WIN32Util.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/RenderContext.h"
+#include "rendering/dx/DeviceResources.h"
 
 using namespace DXVA;
 
@@ -53,12 +52,12 @@ CProcessorHD::CProcessorHD()
   , m_pEnumerator(nullptr)
   , m_pVideoProcessor(nullptr)
 {
-  g_Windowing.Register(this);
+  DX::Windowing().Register(this);
 }
 
 CProcessorHD::~CProcessorHD()
 {
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
   UnInit();
 }
 
@@ -81,7 +80,8 @@ bool CProcessorHD::PreInit()
 {
   SAFE_RELEASE(m_pVideoDevice);
 
-  if (FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice))))
+  ID3D11Device* pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  if (FAILED(pD3DDevice->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice))))
   {
     CLog::Log(LOGWARNING, "%s: failed to get video device.", __FUNCTION__);
     return false;
@@ -112,7 +112,8 @@ bool CProcessorHD::InitProcessor()
   SAFE_RELEASE(m_pEnumerator);
   SAFE_RELEASE(m_pVideoContext);
 
-  if (FAILED(g_Windowing.GetImmediateContext()->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_pVideoContext))))
+  ID3D11DeviceContext1* pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
+  if (FAILED(pD3DDeviceContext->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_pVideoContext))))
   {
     CLog::Log(LOGWARNING, "%s: Context initialization is failed.", __FUNCTION__);
     return false;
@@ -483,7 +484,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // Output color space
   // don't apply any color range conversion, this will be fixed at later stage.
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
-  colorSpace.RGB_Range     = g_Windowing.UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
+  colorSpace.RGB_Range     = DX::Windowing().UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
   colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined

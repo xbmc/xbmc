@@ -23,9 +23,21 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/SystemInfo.h"
 #include "utils/win32/Win32Log.h"
 #include "WinSystemWin10DX.h"
+
+#include <agile.h>
+
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  auto winSysDX = new CWinSystemWin10DX();
+  winSysDX->SetCoreWindow(DX::CoreWindowHolder::Get()->GetWindow());
+
+  std::unique_ptr<CWinSystemBase> winSystem(winSysDX);
+  return winSystem;
+}
 
 CWinSystemWin10DX::CWinSystemWin10DX() : CRenderSystemDX()
 {

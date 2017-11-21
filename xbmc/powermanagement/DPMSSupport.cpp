@@ -25,6 +25,7 @@
 #include <string>
 #ifdef TARGET_WINDOWS
 #include "guilib/GraphicContext.h"
+#include "rendering/dx/RenderContext.h"
 #endif
 
 //////// Generic, non-platform-specific code
@@ -210,10 +211,10 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   {
   case OFF:
     // Turn off display
-    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
+    return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
   case STANDBY:
     // Set display to low power
-    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
+    return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
   default:
     return true;
   }
@@ -227,7 +228,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return false;
 #else
   // Turn display on
-  return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
+  return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
 #endif
 }
 

@@ -36,7 +36,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "VideoShaders/WinVideoFilter.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 
 typedef struct
 {
@@ -300,15 +301,15 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   m_iYV12RenderBuffer = index;
 
   if (clear)
-    g_graphicsContext.Clear(g_Windowing.UseLimitedColor() ? 0x101010 : 0);
+    g_graphicsContext.Clear(DX::Windowing().UseLimitedColor() ? 0x101010 : 0);
 
   if (!m_bConfigured)
     return;
 
-  g_Windowing.SetAlphaBlendEnable(alpha < 255);
+  DX::Windowing().SetAlphaBlendEnable(alpha < 255);
   ManageTextures();
   ManageRenderArea();
-  Render(flags, g_Windowing.GetBackBuffer());
+  Render(flags, DX::Windowing().GetBackBuffer());
 }
 
 void CWinRenderer::PreInit()
@@ -379,8 +380,8 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
 
   DXGI_FORMAT format = DXGI_FORMAT_B8G8R8X8_UNORM;
   if      (m_renderMethod == RENDER_DXVA)                                   format = DXGI_FORMAT_B8G8R8X8_UNORM;
-  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8X8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8X8_UNORM;
+  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8A8_UNORM;
+  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8X8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8X8_UNORM;
 
   // don't create new one if it exists with requested size and format
   if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
@@ -428,8 +429,8 @@ EBufferFormat CWinRenderer::SelectBufferFormat(AVPixelFormat format, const Rende
   }
 
   // check shared formats and processor formats
-  if ( method != RENDER_SW && Contains(g_Windowing.m_sharedFormats, decoderFormat)
-    || (method == RENDER_DXVA && Contains(g_Windowing.m_processorFormats, decoderFormat)) )
+  if ( method != RENDER_SW && Contains(DX::Windowing().m_sharedFormats, decoderFormat)
+    || (method == RENDER_DXVA && Contains(DX::Windowing().m_processorFormats, decoderFormat)) )
   {
     switch (format)
     {
@@ -466,7 +467,7 @@ EBufferFormat CWinRenderer::SelectBufferFormat(AVPixelFormat format, const Rende
   }
 
   // check common formats (SW rendering or win7)
-  if ( method == RENDER_SW || (method == RENDER_PS && Contains(g_Windowing.m_shaderFormats, decoderFormat)))
+  if ( method == RENDER_SW || (method == RENDER_PS && Contains(DX::Windowing().m_shaderFormats, decoderFormat)))
   {
     switch (format)
     {
@@ -724,7 +725,7 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   if (m_bUseHQScaler)
     RenderHQ(target);
 
-  g_Windowing.ApplyStateBlock();
+  DX::Windowing().ApplyStateBlock();
 }
 
 void CWinRenderer::RenderSW(CD3DTexture* target)
@@ -790,7 +791,7 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
   // 2. output to display
 
   m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
-                         g_Windowing.UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
+                         DX::Windowing().UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
 
 void CWinRenderer::RenderPS(CD3DTexture* target)
@@ -801,10 +802,10 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(target->GetWidth()), static_cast<float>(target->GetHeight()));
 
   if (m_bUseHQScaler)
-    g_Windowing.ResetScissors();
+    DX::Windowing().ResetScissors();
 
   // reset view port
-  g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
+  DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
 
   // select destination rectangle
   CPoint destPoints[4];
@@ -828,7 +829,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
                         m_videoSettings.m_Brightness,
                         &m_renderBuffers[m_iYV12RenderBuffer], target);
   // Restore our view port.
-  g_Windowing.RestoreViewPort();
+  DX::Windowing().RestoreViewPort();
 }
 
 void CWinRenderer::RenderHQ(CD3DTexture* target)
@@ -920,7 +921,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
                        static_cast<float>(m_IntermediateTarget.GetWidth()),
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
 
-  if (target != g_Windowing.GetBackBuffer())
+  if (target != DX::Windowing().GetBackBuffer())
   {
     // rendering capture
     targetRect.x2 = target->GetWidth();
@@ -936,14 +937,14 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
       || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     {
-      CD3DTexture *backBuffer = g_Windowing.GetBackBuffer();
+      CD3DTexture *backBuffer = DX::Windowing().GetBackBuffer();
       CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer->GetWidth()), static_cast<float>(backBuffer->GetHeight()));
-      g_Windowing.Get3D11Context()->RSSetViewports(1, &bbSize);
+      DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &bbSize);
     }
 
     // render frame
     m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
-    g_Windowing.RestoreViewPort();
+    DX::Windowing().RestoreViewPort();
   }
 }
 
@@ -1039,7 +1040,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
      || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS))
         return true;
 
-    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
+    if (DX::DeviceResources::Get()->GetDeviceFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
     {
       if (method == VS_SCALINGMETHOD_CUBIC
        || method == VS_SCALINGMETHOD_LANCZOS2
