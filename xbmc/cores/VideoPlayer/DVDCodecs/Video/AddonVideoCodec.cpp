@@ -241,6 +241,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
 
     return CDVDVideoCodec::VC_PICTURE;
   case VIDEOCODEC_RETVAL::VC_EOF:
+    CLog::Log(LOGINFO, "CAddonVideoCodec: GetPicture: EOF");
     return CDVDVideoCodec::VC_EOF;
   default:
     return CDVDVideoCodec::VC_ERROR;

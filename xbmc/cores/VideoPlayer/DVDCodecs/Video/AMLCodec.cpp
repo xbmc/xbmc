@@ -1883,7 +1883,7 @@ int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
   if (drop)
     vbuf.flags |= V4L2_BUF_FLAG_DONE;
 
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::ReleaseFrame idx:%u", index);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::ReleaseFrame idx:%u, drop:%d", index, static_cast<int>(drop));
 
   if ((ret = m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf)) < 0)
     CLog::Log(LOGERROR, "CAMLCodec::ReleaseFrame - VIDIOC_QBUF failed: %s", strerror(errno));
