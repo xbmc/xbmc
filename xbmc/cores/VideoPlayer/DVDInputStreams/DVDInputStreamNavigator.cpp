@@ -1563,8 +1563,9 @@ void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* hei
 {
   if (!m_dvdnav) return;
 
-  dvdnav_status_t status = m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height);
-  if (status != DVDNAV_STATUS_OK)
+  // for version <= 5.0.3 this functions returns 0 instead of DVDNAV_STATUS_OK and -1 instead of DVDNAV_STATUS_ERR
+  int status = m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height);
+  if (status == -1)
   {
     CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::GetVideoResolution - Failed to get resolution (%s)", m_dll.dvdnav_err_to_string(m_dvdnav));
     *width = 0;
