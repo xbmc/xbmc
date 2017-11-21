@@ -27,7 +27,6 @@
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
 
 #define ALMOST_ZERO 0.125f
 enum {
