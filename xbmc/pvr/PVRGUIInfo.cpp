@@ -606,22 +606,12 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
         strValue = recording->m_strChannelName;
         return true;
       }
-      case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
+      case VIDEOPLAYER_CHANNEL_NUMBER:
       {
         const CPVRChannelPtr channel = recording->Channel();
         if (channel)
         {
-          strValue = StringUtils::Format("%i", channel->SubChannelNumber());
-          return true;
-        }
-        break;
-      }
-      case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
-      {
-        const CPVRChannelPtr channel = recording->Channel();
-        if (channel)
-        {
-          strValue = channel->FormattedChannelNumber();
+          strValue = channel->ChannelNumber().FormattedChannelNumber();
           return true;
         }
         break;
@@ -782,31 +772,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
 
         if (channel)
         {
-          strValue = StringUtils::Format("%i", channel->ChannelNumber());
-          return true;
-        }
-        break;
-      }
-      case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
-      {
-        if (!channel && epgTag)
-          channel = epgTag->Channel();
-
-        if (channel)
-        {
-          strValue = StringUtils::Format("%i", channel->SubChannelNumber());
-          return true;
-        }
-        break;
-      }
-      case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
-      {
-        if (!channel && epgTag)
-          channel = epgTag->Channel();
-
-        if (channel)
-        {
-          strValue = channel->FormattedChannelNumber();
+          strValue = channel->ChannelNumber().FormattedChannelNumber();
           return true;
         }
         break;

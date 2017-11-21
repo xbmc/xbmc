@@ -62,7 +62,7 @@ void CPVREpgSearchFilter::Reset()
 
   /* pvr specific filters */
   m_bIsRadio                 = false;
-  m_iChannelNumber           = EPG_SEARCH_UNSET;
+  m_channelNumber = CPVRChannelNumber();
   m_bFreeToAirOnly           = false;
   m_iChannelGroup            = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers     = true;
@@ -192,13 +192,13 @@ bool CPVREpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelNumber != EPG_SEARCH_UNSET && CServiceBroker::GetPVRManager().IsStarted())
+  if (m_channelNumber.IsValid() && CServiceBroker::GetPVRManager().IsStarted())
   {
     CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
     if (!group)
       group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
 
-    bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag->Channel()));
+    bReturn = (m_channelNumber == group->GetChannelNumber(tag->Channel()));
   }
 
   return bReturn;

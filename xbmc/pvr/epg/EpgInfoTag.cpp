@@ -579,25 +579,6 @@ bool CPVREpgInfoTag::HasChannel(void) const
   return m_channel.get() != NULL;
 }
 
-int CPVREpgInfoTag::ChannelNumber(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_channel ? m_channel->ChannelNumber() : -1;
-}
-
-std::string CPVREpgInfoTag::ChannelName(void) const
-{
-  std::string strReturn;
-
-  {
-    CSingleLock lock(m_critSection);
-    if (m_channel)
-      strReturn = m_channel->ChannelName();
-  }
-
-  return strReturn;
-}
-
 const PVR::CPVRChannelPtr CPVREpgInfoTag::Channel() const
 {
   CSingleLock lock(m_critSection);

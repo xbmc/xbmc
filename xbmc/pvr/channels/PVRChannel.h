@@ -29,6 +29,7 @@
 #include "utils/ISortable.h"
 #include "utils/Observer.h"
 
+#include "pvr/channels/PVRChannelNumber.h"
 #include "pvr/PVRTypes.h"
 
 class CVariant;
@@ -37,12 +38,6 @@ class CFileItemList;
 namespace PVR
 {
   class CPVRChannelGroupInternal;
-
-  typedef struct
-  {
-    unsigned int channel;
-    unsigned int subchannel;
-  } pvr_channel_num;
 
   /** PVR Channel class */
   class CPVRChannel : public Observable,
@@ -108,14 +103,16 @@ namespace PVR
     bool SetChannelID(int iDatabaseId);
 
     /*!
-     * @return The channel number used by XBMC by the currently active group.
+     * @brief Set the channel number for this channel.
+     * @param channelNumber The new channel number
      */
-    int ChannelNumber(void) const;
+    void SetChannelNumber(const CPVRChannelNumber& channelNumber);
 
     /*!
-     * @return The sub channel number used by XBMC by the currently active group.
+     * @brief Get the channel number for this channel.
+     * @return The channel number.
      */
-    int SubChannelNumber(void) const;
+    const CPVRChannelNumber& ChannelNumber() const;
 
     /*!
      * @return True if this channel is a radio channel, false if not.
@@ -126,16 +123,6 @@ namespace PVR
      * @return True if this channel is hidden. False if not.
      */
     bool IsHidden(void) const;
-
-    /**
-     * @return True when this is a sub channel, false if it's a main channel
-     */
-    bool IsSubChannel(void) const;
-
-    /**
-     * @return the channel number, formatted as [channel] or [channel].[subchannel]
-     */
-    std::string FormattedChannelNumber(void) const;
 
     /*!
      * @brief Set to true to hide this channel. Set to false to unhide it.
@@ -271,14 +258,10 @@ namespace PVR
     bool SetClientID(int iClientId);
 
     /*!
+     * Get the channel number on the client.
      * @return The channel number on the client.
      */
-    unsigned int ClientChannelNumber(void) const;
-
-    /*!
-     * @return The sub channel number on the client (ATSC).
-     */
-    unsigned int ClientSubChannelNumber(void) const;
+    const CPVRChannelNumber& ClientChannelNumber() const;
 
     /*!
      * @return The name of this channel on the client.
@@ -436,9 +419,6 @@ namespace PVR
      */
     bool SetEPGScraper(const std::string &strScraper);
 
-    void SetCachedChannelNumber(unsigned int iChannelNumber);
-    void SetCachedSubChannelNumber(unsigned int iSubChannelNumber);
-
     bool CanRecord(void) const;
 
     static std::string GetEncryptionName(int iCaid);
@@ -463,8 +443,7 @@ namespace PVR
     std::string      m_strChannelName;          /*!< the name for this channel used by XBMC */
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
-    unsigned int     m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */
-    unsigned int     m_iCachedSubChannelNumber; /*!< the cached sub channel number in the selected group */
+    CPVRChannelNumber m_channelNumber;         /*!< the number this channel has in the currently selected channel group */
     //@}
 
     /*! @name EPG related channel data
@@ -481,7 +460,7 @@ namespace PVR
     //@{
     int              m_iUniqueId;               /*!< the unique identifier for this channel */
     int              m_iClientId;               /*!< the identifier of the client that serves this channel */
-    pvr_channel_num  m_iClientChannelNumber;    /*!< the channel number on the client */
+    CPVRChannelNumber m_clientChannelNumber;   /*!< the channel number on the client */
     std::string      m_strClientChannelName;    /*!< the name of this channel on the client */
     std::string      m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
     std::string      m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */

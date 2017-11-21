@@ -99,7 +99,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths(void)
   }
 }
 
-CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &channel, unsigned int iChannelNumber /* = 0 */)
+CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber)
 {
   CSingleLock lock(m_critSection);
   const PVRChannelGroupMember& realChannel(GetByUniqueID(channel->StorageId()));
@@ -110,7 +110,11 @@ CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &
   }
   else
   {
-    PVRChannelGroupMember newMember = { channel, iChannelNumber > 0l ? iChannelNumber : (int)m_sortedMembers.size() + 1 };
+    unsigned int iChannelNumber = channelNumber.GetChannelNumber();
+    if (iChannelNumber == 0)
+      iChannelNumber = static_cast<int>(m_sortedMembers.size()) + 1;
+
+    PVRChannelGroupMember newMember(channel, CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber()), 0);
     channel->UpdatePath(this);
     m_sortedMembers.push_back(newMember);
     m_members.insert(std::make_pair(channel->StorageId(), newMember));
@@ -130,16 +134,18 @@ bool CPVRChannelGroupInternal::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber /* = 0 */)
+bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
 {
   CSingleLock lock(m_critSection);
 
   bool bReturn(false);
 
   /* get the group member, because we need the channel ID in this group, and the channel from this group */
-  const PVRChannelGroupMember& groupMember(GetByUniqueID(channel->StorageId()));
+  PVRChannelGroupMember& groupMember = GetByUniqueID(channel->StorageId());
   if (!groupMember.channel)
     return bReturn;
+
+  bool bSort = false;
 
   /* switch the hidden flag */
   if (groupMember.channel->IsHidden())
@@ -148,16 +154,28 @@ bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iCh
     if (m_iHiddenChannels > 0)
       m_iHiddenChannels--;
 
-    SortAndRenumber();
+    bSort = true;
   }
 
-  /* move this channel and persist */
-  bReturn = (iChannelNumber > 0l) ?
-    MoveChannel(groupMember.iChannelNumber, iChannelNumber, true) :
-    MoveChannel(groupMember.iChannelNumber, m_members.size() - m_iHiddenChannels, true);
+  unsigned int iChannelNumber = channelNumber.GetChannelNumber();
+  if (!channelNumber.IsValid() ||
+      (!bUseBackendChannelNumbers && (iChannelNumber > m_members.size() - m_iHiddenChannels)))
+    iChannelNumber = m_members.size() - m_iHiddenChannels;
+
+  if (groupMember.channelNumber.GetChannelNumber() != iChannelNumber)
+  {
+    groupMember.channelNumber = CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber());
+    bSort = true;
+  }
+
+  if (bSort)
+    SortAndRenumber();
 
   if (m_bLoaded)
+  {
+    bReturn = Persist();
     groupMember.channel->Persist();
+  }
   return bReturn;
 }
 
@@ -195,16 +213,6 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   /* and persist */
   return channel->Persist() &&
       Persist();
-}
-
-bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
-{
-  CSingleLock lock(m_critSection);
-  /* new channel number out of range */
-  if (iNewChannelNumber > m_members.size() - m_iHiddenChannels)
-    iNewChannelNumber = m_members.size() - m_iHiddenChannels;
-
-  return CPVRChannelGroup::MoveChannel(iOldChannelNumber, iNewChannelNumber, bSaveInDb);
 }
 
 int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const
@@ -272,7 +280,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
     else
     {
       /* new channel */
-      UpdateFromClient(it->second.channel, bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : 0);
+      UpdateFromClient(it->second.channel, bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : CPVRChannelNumber());
       bReturn = true;
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", it->second.channel->ChannelName().c_str());
     }

@@ -79,14 +79,25 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   if (!group)
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
 
-  std::vector<PVRChannelGroupMember> groupMembers(group->GetMembers());
-  for (std::vector<PVRChannelGroupMember>::const_iterator it = groupMembers.begin(); it != groupMembers.end(); ++it)
+  m_channelNumbersMap.clear();
+  const std::vector<PVRChannelGroupMember> groupMembers(group->GetMembers());
+  int iIndex = 0;
+  int iSelectedChannel = EPG_SEARCH_UNSET;
+  for (const auto& groupMember : groupMembers)
   {
-    if ((*it).channel)
-      labels.push_back(std::make_pair((*it).channel->ChannelName(), (*it).iChannelNumber));
+    if (groupMember.channel)
+    {
+      labels.emplace_back(std::make_pair(groupMember.channel->ChannelName(), iIndex));
+      m_channelNumbersMap.insert(std::make_pair(iIndex, groupMember.channelNumber));
+
+      if (iSelectedChannel == EPG_SEARCH_UNSET && groupMember.channelNumber == m_searchFilter->GetChannelNumber())
+        iSelectedChannel = iIndex;
+
+      ++iIndex;
+    }
   }
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, m_searchFilter->GetChannelNumber(), &labels);
+  SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, iSelectedChannel, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
@@ -222,7 +233,7 @@ int CGUIDialogPVRGuideSearch::GetSpinValue(int controlID)
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), controlID);
   OnMessage(msg);
-  return (int)msg.GetParam1();
+  return msg.GetParam1();
 }
 
 std::string CGUIDialogPVRGuideSearch::GetEditValue(int controlID)
@@ -250,7 +261,10 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   m_searchFilter->SetGenreType(GetSpinValue(CONTROL_SPIN_GENRE));
   m_searchFilter->SetMinimumDuration(GetSpinValue(CONTROL_SPIN_MIN_DURATION));
   m_searchFilter->SetMaximumDuration(GetSpinValue(CONTROL_SPIN_MAX_DURATION));
-  m_searchFilter->SetChannelNumber(GetSpinValue(CONTROL_SPIN_CHANNELS));
+
+  auto it = m_channelNumbersMap.find(GetSpinValue(CONTROL_SPIN_CHANNELS));
+  m_searchFilter->SetChannelNumber(it == m_channelNumbersMap.end() ? CPVRChannelNumber() : (*it).second);
+
   m_searchFilter->SetChannelGroup(GetSpinValue(CONTROL_SPIN_GROUPS));
 
   m_searchFilter->SetStartDateTime(ReadDateTime(GetEditValue(CONTROL_EDIT_START_DATE), GetEditValue(CONTROL_EDIT_START_TIME)));

@@ -90,7 +90,6 @@ namespace PVR
      */
     CPVREpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
 
-    int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;
 
@@ -278,7 +277,6 @@ namespace PVR
     unsigned int          m_iPreventDupEpisodes; /*!< @brief only record new episodes for epg-based timer rules */
     unsigned int          m_iRecordingGroup;     /*!< @brief (optional) if set, the addon/backend stores the recording to a group (sub-folder) */
     std::string           m_strFileNameAndPath;  /*!< @brief file name is only for reference */
-    int                   m_iChannelNumber;      /*!< @brief integer value of the channel number */
     bool                  m_bIsRadio;            /*!< @brief is radio channel if set */
     unsigned int          m_iTimerId;            /*!< @brief id that won't change as long as XBMC is running */
 

@@ -60,7 +60,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iMaxRecordings(0),
   m_iPreventDupEpisodes(DEFAULT_RECORDING_DUPLICATEHANDLING),
   m_iRecordingGroup(0),
-  m_iChannelNumber(0),
   m_bIsRadio(bRadio),
   m_iTimerId(0),
   m_iMarginStart(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART)),
@@ -114,7 +113,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iPreventDupEpisodes(timer.iPreventDuplicateEpisodes),
   m_iRecordingGroup(timer.iRecordingGroup),
   m_strFileNameAndPath(StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex)),
-  m_iChannelNumber(channel ? CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0),
   m_bIsRadio(channel && channel->IsRadio()),
   m_iTimerId(0),
   m_iMarginStart(timer.iMarginStart),
@@ -600,7 +598,6 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_iPreventDupEpisodes = tag->m_iPreventDupEpisodes;
   m_iRecordingGroup     = tag->m_iRecordingGroup;
   m_iWeekdays           = tag->m_iWeekdays;
-  m_iChannelNumber      = tag->m_iChannelNumber;
   m_bIsRadio            = tag->m_bIsRadio;
   m_iMarginStart        = tag->m_iMarginStart;
   m_iMarginEnd          = tag->m_iMarginEnd;
@@ -684,12 +681,6 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
     HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
 }
 
-int CPVRTimerInfoTag::ChannelNumber() const
-{
-  CPVRChannelPtr channeltag = Channel();
-  return channeltag ? channeltag->ChannelNumber() : 0;
-}
-
 std::string CPVRTimerInfoTag::ChannelName() const
 {
   std::string strReturn;
@@ -744,7 +735,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     newTimer->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
     newTimer->m_channel            = channel;
     newTimer->m_strTitle           = channel->ChannelName();
-    newTimer->m_iChannelNumber     = channel->ChannelNumber();
     newTimer->m_iClientChannelUid  = channel->UniqueID();
     newTimer->m_iClientId          = channel->ClientID();
     newTimer->m_bIsRadio           = channel->IsRadio();
@@ -810,7 +800,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   newTag->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
   newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
   newTag->m_strTitle           = tag->Title().empty() ? channel->ChannelName() : tag->Title();
-  newTag->m_iChannelNumber     = channel->ChannelNumber();
   newTag->m_iClientChannelUid  = channel->UniqueID();
   newTag->m_iClientId          = channel->ClientID();
   newTag->m_bIsRadio           = channel->IsRadio();

@@ -50,9 +50,9 @@ namespace PVR
   private:
     /*!
      * @brief Switch to the channel with the given number.
-     * @param iChannelNumber the channel number
+     * @param channelNumber the channel number
      */
-    void SwitchToChannel(int iChannelNumber);
+    void SwitchToChannel(const CPVRChannelNumber& channelNumber);
 
     /*!
      * @brief Switch to the previously played channel.

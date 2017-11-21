@@ -18,10 +18,12 @@
  *
  */
 
+#include "PVRChannelNumberInputHandler.h"
+
+#include <cstdlib>
+
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-
-#include "PVRChannelNumberInputHandler.h"
 
 namespace PVR
 {
@@ -44,29 +46,31 @@ void CPVRChannelNumberInputHandler::OnTimeout()
   OnInputDone();
 
   CSingleLock lock(m_mutex);
-  m_digits.clear();
-  m_strChannel.erase();
+  m_inputBuffer.erase();
 }
 
-void CPVRChannelNumberInputHandler::AppendChannelNumberDigit(int iDigit)
+void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter)
 {
-  if (iDigit < 0 || iDigit > 9)
+  if (cCharacter != CPVRChannelNumber::SEPARATOR && (cCharacter < '0' || cCharacter > '9'))
     return;
 
   CSingleLock lock(m_mutex);
 
-  if (m_digits.size() == (size_t)m_iMaxDigits)
-    m_digits.pop_front();
-
-  m_digits.emplace_back(iDigit);
-
-  // recalc channel string
-  m_strChannel.erase();
-  if (m_digits.size() != (size_t)m_iMaxDigits || GetChannelNumber() > 0)
+  if (cCharacter == CPVRChannelNumber::SEPARATOR)
   {
-    for (int digit : m_digits)
-      m_strChannel.append(StringUtils::Format("%d", digit));
+    // no leading separator
+    if (m_inputBuffer.empty())
+      return;
+
+    // max one separator
+    if (m_inputBuffer.find(CPVRChannelNumber::SEPARATOR) != std::string::npos)
+      return;
   }
+
+  if (m_inputBuffer.size() == static_cast<size_t>(m_iMaxDigits))
+    m_inputBuffer.erase(m_inputBuffer.begin());
+
+  m_inputBuffer.append(&cCharacter, 1);
 
   if (!m_timer.IsRunning())
     m_timer.Start(m_iDelay);
@@ -74,24 +78,37 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberDigit(int iDigit)
     m_timer.Restart();
 }
 
-int CPVRChannelNumberInputHandler::GetChannelNumber() const
+CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
 {
-  int iNumber = 0;
-  int iDigitMultiplier = 1;
+  int iChannelNumber = 0;
+  int iSubChannelNumber = 0;
 
-  for (std::deque<int>::const_reverse_iterator it = m_digits.rbegin(); it != m_digits.rend(); ++it)
+  CSingleLock lock(m_mutex);
+
+  size_t pos = m_inputBuffer.find(CPVRChannelNumber::SEPARATOR);
+  if (pos != std::string::npos)
   {
-    iNumber += (*it * iDigitMultiplier);
-    iDigitMultiplier *= 10;
+    // main + sub
+    if (pos != 0)
+    {
+      iChannelNumber = std::atoi(m_inputBuffer.substr(0, pos).c_str());
+      if (pos != m_inputBuffer.back())
+        iSubChannelNumber = std::atoi(m_inputBuffer.substr(pos + 1).c_str());
+    }
+  }
+  else
+  {
+    // only main
+    iChannelNumber = std::atoi(m_inputBuffer.c_str());
   }
 
-  return iNumber;
+  return CPVRChannelNumber(iChannelNumber, iSubChannelNumber);
 }
 
 std::string CPVRChannelNumberInputHandler::GetChannelNumberAsString() const
 {
   CSingleLock lock(m_mutex);
-  return m_strChannel;
+  return m_inputBuffer;
 }
 
 } // namespace PVR

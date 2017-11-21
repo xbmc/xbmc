@@ -428,10 +428,6 @@ namespace PVR
      */
     bool HasChannel(void) const;
 
-    int ChannelNumber(void) const;
-
-    std::string ChannelName(void) const;
-
     /*!
      * @brief Get the channel that plays this event.
      * @return a pointer to the channel.

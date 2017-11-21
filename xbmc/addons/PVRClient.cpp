@@ -360,8 +360,8 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
 {
   addonChannel = {0};
   addonChannel.iUniqueId         = xbmcChannel->UniqueID();
-  addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber();
-  addonChannel.iSubChannelNumber = xbmcChannel->ClientSubChannelNumber();
+  addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber().GetChannelNumber();
+  addonChannel.iSubChannelNumber = xbmcChannel->ClientChannelNumber().GetSubChannelNumber();
   strncpy(addonChannel.strChannelName, xbmcChannel->ClientChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
   strncpy(addonChannel.strIconPath, xbmcChannel->IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
   addonChannel.iEncryptionSystem = xbmcChannel->EncryptionSystem();
@@ -1710,7 +1710,7 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
   else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(channel, member->iChannelNumber);
+    group->AddToGroup(channel, CPVRChannelNumber(member->iChannelNumber, /*member->iSubChannelNumber*/ 0), true); // FIXME: Extend PVR API: Add PVR_CHANNEL_GROUP_MEMBER::iSubChannelNumber
   }
 }
 
@@ -1752,7 +1752,7 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
 
   /* transfer this entry to the internal channels group */
   CPVRChannelPtr transferChannel(new CPVRChannel(*channel, client->GetID()));
-  kodiChannels->UpdateFromClient(transferChannel);
+  kodiChannels->UpdateFromClient(transferChannel, CPVRChannelNumber());
 }
 
 void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
