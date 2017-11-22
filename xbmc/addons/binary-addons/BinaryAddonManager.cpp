@@ -43,7 +43,6 @@ CBinaryAddonManager::~CBinaryAddonManager()
 bool CBinaryAddonManager::Init()
 {
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CBinaryAddonManager::OnEvent);
-  CServiceBroker::GetAddonMgr().UnloadEvents().Subscribe(this, &CBinaryAddonManager::OnEvent);
 
   BINARY_ADDON_LIST binaryAddonList;
   if (!CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList))
@@ -66,7 +65,6 @@ void CBinaryAddonManager::DeInit()
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
     XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
 
-  CServiceBroker::GetAddonMgr().UnloadEvents().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
@@ -185,8 +183,8 @@ void CBinaryAddonManager::OnEvent(const AddonEvent& event)
   {
     DisableEvent(event.id);
   }
-  else if (typeid(event) == typeid(AddonEvents::Load) ||
-           typeid(event) == typeid(AddonEvents::Unload))
+  else if (typeid(event) == typeid(AddonEvents::ReInstalled) ||
+           typeid(event) == typeid(AddonEvents::UnInstalled))
   {
     InstalledChangeEvent();
   }

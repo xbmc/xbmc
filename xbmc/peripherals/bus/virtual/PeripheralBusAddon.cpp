@@ -42,7 +42,6 @@ CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager) :
   using namespace ADDON;
 
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPeripheralBusAddon::OnEvent);
-  CServiceBroker::GetAddonMgr().UnloadEvents().Subscribe(this, &CPeripheralBusAddon::OnEvent);
 
   UpdateAddons();
 }
@@ -51,7 +50,6 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
 {
   using namespace ADDON;
 
-  CServiceBroker::GetAddonMgr().UnloadEvents().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   // stop everything before destroying any (loaded) addons
@@ -335,16 +333,19 @@ void CPeripheralBusAddon::GetDirectory(const std::string &strPath, CFileItemList
 void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::Load))
+      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
     if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
       UpdateAddons();
   }
-  else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
-           typeid(event) == typeid(ADDON::AddonEvents::Unload))
+  else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
   {
     if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
       UnRegisterAddon(event.id);
+  }
+  else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
+  {
+    UnRegisterAddon(event.id);
   }
 }
 
@@ -444,8 +445,6 @@ void CPeripheralBusAddon::UpdateAddons(void)
 
 void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
 {
-  CLog::Log(LOGDEBUG, "Add-on bus: Unregistering add-on %s", addonId.c_str());
-
   PeripheralAddonPtr erased;
   auto ErasePeripheralAddon = [&addonId, &erased](const PeripheralAddonPtr& addon)
     {
@@ -463,6 +462,7 @@ void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
 
   if (erased)
   {
+    CLog::Log(LOGDEBUG, "Add-on bus: Unregistered add-on %s", addonId.c_str());
     CSingleExit exit(m_critSection);
     erased->DestroyAddon();
   }
