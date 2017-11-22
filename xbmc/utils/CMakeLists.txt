@@ -39,8 +39,6 @@ set(SOURCES ActorProtocol.cpp
             md5.cpp
             Mime.cpp
             Observer.cpp
-            PerformanceSample.cpp
-            PerformanceStats.cpp
             POUtils.cpp
             RecentlyAddedJob.cpp
             RegExp.cpp
@@ -129,8 +127,6 @@ set(HEADERS ActorProtocol.h
             Mime.h
             Observer.h
             params_check_macros.h
-            PerformanceSample.h
-            PerformanceStats.h
             POUtils.h
             ProgressJob.h
             RecentlyAddedJob.h
