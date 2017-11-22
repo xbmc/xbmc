@@ -32,7 +32,6 @@
   #ifdef HAS_SDL
     #include <SDL/SDL.h>
   #endif
-#include <locale.h>
 #endif
 
 #include "AppParamParser.h"
@@ -49,6 +48,7 @@
 #include "input/linux/LIRC.h"
 #endif
 
+#include <locale.h>
 
 namespace
 {

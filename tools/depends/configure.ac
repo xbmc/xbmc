@@ -171,7 +171,7 @@ case $host in
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
@@ -190,7 +190,7 @@ case $host in
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarm64-v8a"; then
       platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
@@ -209,7 +209,7 @@ case $host in
     use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
+    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     platform_ldflags="-L$prefix/$deps_dir/lib/android-$use_ndk_api"
     platform_cxxflags="$platform_cflags -frtti"

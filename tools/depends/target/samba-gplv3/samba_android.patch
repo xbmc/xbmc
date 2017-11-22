@@ -1,3 +1,14 @@
+--- lib/replace/system/network.h
++++ lib/replace/system/network.h
+@@ -128,7 +128,7 @@
+ struct hostent *rep_gethostbyname(const char *name);
+ #endif
+ 
+-#ifdef HAVE_IFADDRS_H
++#if defined(HAVE_IFADDRS_H) && (!defined(__ANDROID_API__) || __ANDROID_API__ >= 24)
+ #include <ifaddrs.h>
+ #endif
+ 
 diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 --- lib/util/charset/iconv.c	2013-01-29 09:49:31.000000000 +0100
 +++ lib/util/charset/iconv.c	2015-03-28 08:30:53.191217266 +0100
@@ -87,6 +98,19 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
  	}
  
  	wbc_status = WBC_ERR_SUCCESS;
+--- nsswitch/winbind_struct_protocol.h
++++ nsswitch/winbind_struct_protocol.h
+@@ -186,6 +186,10 @@
+ 	WINBINDD_NUM_CMDS
+ };
+ 
++#if defined(ANDROID) && defined(pw_gecos)
++#undef pw_gecos
++#endif
++
+ typedef struct winbindd_pw {
+ 	fstring pw_name;
+ 	fstring pw_passwd;
 diff -ru source3/configure source3/configure
 --- source3/configure	2013-01-29 10:21:59.000000000 +0100
 +++ source3/configure	2015-03-28 08:43:34.903227582 +0100
