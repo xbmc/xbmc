@@ -84,6 +84,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   if( codec     != right.codec
   ||  type      != right.type
   ||  uniqueId  != right.uniqueId
+  ||  demuxerId != right.demuxerId
   ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
   ||  flags     != right.flags)
@@ -140,6 +141,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   codec = right.codec;
   type = right.type;
   uniqueId = right.uniqueId;
+  demuxerId = right.demuxerId;
   realtime = right.realtime;
   codec_tag = right.codec_tag;
   flags = right.flags;
@@ -200,6 +202,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   codec = right.codec;
   type = right.type;
   uniqueId = right.uniqueId;
+  demuxerId = right.demuxerId;
   realtime = right.realtime;
   codec_tag = right.codec_fourcc;
   profile   = right.profile;
