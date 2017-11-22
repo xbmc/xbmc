@@ -92,7 +92,7 @@ CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
     if (pos != 0)
     {
       iChannelNumber = std::atoi(m_inputBuffer.substr(0, pos).c_str());
-      if (pos != m_inputBuffer.back())
+      if (pos != m_inputBuffer.size() - 1)
         iSubChannelNumber = std::atoi(m_inputBuffer.substr(pos + 1).c_str());
     }
   }
