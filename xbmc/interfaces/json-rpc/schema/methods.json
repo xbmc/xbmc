@@ -1753,11 +1753,12 @@
   },
   "VideoLibrary.Clean": {
     "type": "method",
-    "description": "Cleans the video library from non-existent items",
+    "description": "Cleans the video library for non-existent items",
     "transport": "Response",
     "permission": "RemoveData",
     "params": [
-      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" }
+      { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" },
+      { "name": "content", "type": "string", "default": "video", "enum": [ "video", "movies", "tvshows", "musicvideos" ], "description": "Content type to clean for" }
     ],
     "returns": "string"
   },

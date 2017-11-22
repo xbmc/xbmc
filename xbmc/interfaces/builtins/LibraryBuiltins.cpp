@@ -48,10 +48,16 @@ static int CleanLibrary(const std::vector<std::string>& params)
   bool userInitiated = true;
   if (params.size() > 1)
     userInitiated = StringUtils::EqualsNoCase(params[1], "true");
-  if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
+  if (!params.size() || StringUtils::EqualsNoCase(params[0], "video")
+                     || StringUtils::EqualsNoCase(params[0], "movies")
+                     || StringUtils::EqualsNoCase(params[0], "tvshows")
+                     || StringUtils::EqualsNoCase(params[0], "musicvideos"))
   {
     if (!g_application.IsVideoScanning())
-      g_application.StartVideoCleanup(userInitiated);
+    {
+      const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
+      g_application.StartVideoCleanup(userInitiated, content);
+    }
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
   }
@@ -62,6 +68,8 @@ static int CleanLibrary(const std::vector<std::string>& params)
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
   }
+  else
+    CLog::Log(LOGERROR, "Unknown content type '%s' passed to CleanLibrary, ignoring", params[0].c_str());
 
   return 0;
 }
@@ -300,7 +308,7 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 ///     <b>`cleanlibrary(type)`</b>
 ///     ,
 ///      Clean the video/music library
-///     @param[in] type                  "video" or "music".
+///     @param[in] type                  "video", "movies", "tvshows", "musicvideos" or "music".
 ///   }
 ///   \table_row2_l{
 ///     <b>`exportlibrary(type [\, exportSingeFile\, exportThumbs\, overwrite\, exportActorThumbs])`</b>
