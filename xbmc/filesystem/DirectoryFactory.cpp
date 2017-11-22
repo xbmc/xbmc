@@ -39,7 +39,6 @@
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
 #include "UDFDirectory.h"
-#include "Application.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 
@@ -153,7 +152,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("resource")) return new CResourceDirectory();
   if (url.IsProtocol("events")) return new CEventsDirectory();
 
-  bool networkAvailable = g_application.getNetwork().IsAvailable();
+  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
   if (networkAvailable)
   {
     if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();

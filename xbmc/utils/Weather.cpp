@@ -24,7 +24,6 @@
 
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
@@ -75,7 +74,7 @@ CWeatherJob::CWeatherJob(int location)
 bool CWeatherJob::DoWork()
 {
   // wait for the network
-  if (!g_application.getNetwork().IsAvailable())
+  if (!CServiceBroker::GetNetwork().IsAvailable())
     return false;
 
   AddonPtr addon;

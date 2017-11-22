@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "FileItem.h"
 #include "network/Network.h"
+#include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
@@ -181,7 +182,7 @@ void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t 
 
 bool CAddonCallbacksAddon::WakeOnLan(const char *mac)
 {
-  return g_application.getNetwork().WakeOnLan(mac);
+  return CServiceBroker::GetNetwork().WakeOnLan(mac);
 }
 
 bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue)

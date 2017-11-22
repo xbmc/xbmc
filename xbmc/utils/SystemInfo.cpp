@@ -32,7 +32,6 @@
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "network/Network.h"
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
@@ -297,7 +296,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 std::string CSysInfoJob::GetMACAddress()
 {
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) || defined(HAS_WIN10_NETWORK)
-  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface)
     return iface->GetMacAddress();
 #endif
@@ -1216,7 +1215,7 @@ std::string CSysInfo::GetDeviceName()
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");
-    g_application.getNetwork().GetHostName(hostname);
+    CServiceBroker::GetNetwork().GetHostName(hostname);
     return StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
   }
   

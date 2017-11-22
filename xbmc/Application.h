@@ -86,7 +86,6 @@ class CInertialScrollingHandler;
 class DPMSSupport;
 class CSplash;
 class CBookmark;
-class CNetwork;
 class IActionListener;
 
 namespace VIDEO
@@ -203,7 +202,6 @@ public:
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
   void ActivateScreenSaver(bool forceType = false);
-  bool SetupNetwork();
   void CloseNetworkShares();
 
   void ShowAppMigrationMessage();
@@ -288,8 +286,6 @@ public:
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   bool OnEvent(XBMC_Event& newEvent);
-
-  CNetwork& getNetwork();
 
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
@@ -504,7 +500,6 @@ protected:
   void HandleShutdownMessage();
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
-  CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
 #endif

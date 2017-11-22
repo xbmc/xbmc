@@ -31,7 +31,6 @@
 #include "network/Network.h"
 #include "GUIPassword.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
@@ -578,7 +577,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
   else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
     //! @todo Handle not connected to a remote share
-    if ( !g_application.getNetwork().IsConnected() )
+    if ( !CServiceBroker::GetNetwork().IsConnected() )
     {
       HELPERS::ShowOKDialogText(CVariant{220}, CVariant{221});
       return false;
