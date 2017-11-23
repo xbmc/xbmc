@@ -55,7 +55,7 @@ class HID:
             print("Accepted Interrupt connection from %s" % self.iaddress[0])
             self.connected = True
             return True
-        except Exception, e:
+        except Exception as e:
             self.connected = False
             return False
 

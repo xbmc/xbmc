@@ -29,7 +29,7 @@ try:
     import dbus, gobject, avahi
     from dbus import DBusException
     from dbus.mainloop.glib import DBusGMainLoop
-except Exception, e:
+except Exception as e:
     print("Zeroconf support disabled. To enable, install the following Python modules:")
     print("    dbus, gobject, avahi")
     pass

@@ -34,7 +34,7 @@ if os.path.exists("../../lib/python"):
     from ps3_remote import process_keys as process_remote
     try:
         from ps3 import sixwatch
-    except Exception, e:
+    except Exception as e:
         print("Failed to import sixwatch now disabled: " + str(e))
         sixwatch = None
 
@@ -53,7 +53,7 @@ else:
     from kodi.defs import *
     try:
         from kodi.ps3 import sixwatch
-    except Exception, e:
+    except Exception as e:
         print("Failed to import sixwatch now disabled: " + str(e))
         sixwatch = None
     try:
@@ -141,11 +141,11 @@ class PS3SixaxisThread ( StoppableThread ):
                 try:
                     if six.process_socket(self.isock):
                         self.reset_timeout()
-                except Exception, e:
+                except Exception as e:
                     print(e)
                     break
 
-        except Exception, e:
+        except Exception as e:
             printerr()
         six.close()
         self.close_sockets()
@@ -170,7 +170,7 @@ class PS3RemoteThread ( StoppableThread ):
                 self.zeroconf_thread.add_service('_xbmc-events._udp',
                                              self.zeroconf_service_handler)
                 self.zeroconf_thread.start()
-            except Exception, e:
+            except Exception as e:
                 print(str(e))
 
             # main thread loop
@@ -191,7 +191,7 @@ class PS3RemoteThread ( StoppableThread ):
                     self.reset_timeout()
 
         # process_remote() will raise an exception on read errors
-        except Exception, e:
+        except Exception as e:
             print(str(e))
 
         self.zeroconf_thread.stop()
@@ -224,7 +224,7 @@ class PS3RemoteThread ( StoppableThread ):
             print("Connecting to %s" % service['name'])
             self.xbmc.connect( service['address'], service['port'] )
             self.xbmc.send_notification("PS3 Blu-Ray Remote", "New Connection", None)
-        except Exception, e:
+        except Exception as e:
             print(str(e))
 
     def zeroconf_service_handler(self, event, service):
@@ -256,7 +256,7 @@ class SixWatch(threading.Thread):
       while True:
         try:
             sixwatch.main(self.mac)
-        except Exception, e:
+        except Exception as e:
             print("Exception caught in sixwatch, restarting: " + str(e))
 
 class ZeroconfThread ( threading.Thread ):
@@ -322,7 +322,7 @@ def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
         try:
             print("Starting USB sixwatch")
             watch = SixWatch(hid.get_local_address())
-        except Exception, e:
+        except Exception as e:
             print("Failed to initialize sixwatch" + str(e))
             pass
 
@@ -375,14 +375,14 @@ def main():
                     raise Exception("Invalid format")
                 bdaddr = addr
                 print("Connecting to Bluetooth device: %s" % bdaddr)
-            except Exception, e:
+            except Exception as e:
                 try:
                     ipaddr = addr
                     print("Connecting to : %s" % ipaddr)
                 except:
                     print(str(e))
                     return usage()
-    except Exception, e:
+    except Exception as e:
         pass
 
     print("Starting HID daemon")
@@ -400,7 +400,7 @@ if __name__=="__main__":
                     t.join()
                 print("Thread "+str(t)+" terminated")
 
-            except Exception, e:
+            except Exception as e:
                 print(str(e))
         pass
 

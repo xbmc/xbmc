@@ -25,7 +25,7 @@ def main():
     except:
         try:
             xbmc.send_action(sys.argv[1], ACTION_EXECBUILTIN)
-        except Exception, e:
+        except Exception as e:
             print(str(e))
             xbmc.send_action("ActivateWindow(ShutdownMenu)")
     

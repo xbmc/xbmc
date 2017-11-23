@@ -20,7 +20,7 @@ def main(mac):
                     print("Detected sixaxis connected by usb")
                     try:
                         sixpair.set_pair_filename(device.attributes['busnum'], device.attributes['devnum'], mac)
-                    except Exception, e:
+                    except Exception as e:
                         print("Failed to check pairing of sixaxis: " + str(e))
                         pass
 

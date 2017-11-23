@@ -69,7 +69,7 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
         if not target_address:
             try:
                 nearby_devices = bt_discover_devices()
-            except Exception, e:
+            except Exception as e:
                 print("Error performing bluetooth discovery")
                 print(str(e))
                 xbmc.send_notification("Error", "Unable to find devices.", bticon)
@@ -150,7 +150,7 @@ def process_keys(remote, xbmc):
     try:
         data = remote.recv(1024)
         datalen = len(data)
-    except Exception, e:
+    except Exception as e:
         if str(e)=="timed out":
             return 2
         time.sleep(2)
@@ -178,7 +178,7 @@ def process_keys(remote, xbmc):
 
             if g_keymap[keycode]:
                 xbmc.send_remote_button(g_keymap[keycode])
-        except Exception, e:
+        except Exception as e:
             print("Unknown data: %s" % str(e))
     return done
 
