@@ -83,7 +83,8 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   }
 
   CPeripheralJoystick& joystick = static_cast<CPeripheralJoystick&>(peripheral);
-  joystick.SetRequestedPort(device.getControllerNumber());
+  if (device.getControllerNumber() > 0)
+     joystick.SetRequestedPort(device.getControllerNumber() - 1);
   joystick.SetProvider("android");
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device %d \"%s\"", deviceId, peripheral.DeviceName().c_str());
