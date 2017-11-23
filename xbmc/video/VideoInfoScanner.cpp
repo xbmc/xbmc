@@ -70,11 +70,6 @@ namespace VIDEO
   CVideoInfoScanner::CVideoInfoScanner()
   {
     m_bStop = false;
-    m_bRunning = false;
-    m_handle = NULL;
-    m_showDialog = false;
-    m_bCanInterrupt = false;
-    m_bClean = false;
     m_scanAll = false;
   }
 
@@ -500,7 +495,14 @@ namespace VIDEO
     return FoundSomeInfo;
   }
 
-  INFO_RET CVideoInfoScanner::RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
+  CInfoScanner::INFO_RET
+  CVideoInfoScanner::RetrieveInfoForTvShow(CFileItem *pItem,
+                                           bool bDirNames,
+                                           ScraperPtr &info2,
+                                           bool useLocal,
+                                           CScraperUrl* pURL,
+                                           bool fetchEpisodes,
+                                           CGUIDialogProgress* pDlgProgress)
   {
     long idTvShow = -1;
     if (pItem->m_bIsFolder)
@@ -579,7 +581,13 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  INFO_RET CVideoInfoScanner::RetrieveInfoForMovie(CFileItem *pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  CInfoScanner::INFO_RET
+  CVideoInfoScanner::RetrieveInfoForMovie(CFileItem *pItem,
+                                          bool bDirNames,
+                                          ScraperPtr &info2,
+                                          bool useLocal,
+                                          CScraperUrl* pURL,
+                                          CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
@@ -636,7 +644,12 @@ namespace VIDEO
     return INFO_NOT_FOUND;
   }
 
-  INFO_RET CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItem *pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  CInfoScanner::INFO_RET
+  CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItem *pItem,                                                                   bool bDirNames,
+                                               ScraperPtr &info2,
+                                               bool useLocal,
+                                               CScraperUrl* pURL,
+                                               CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
@@ -693,7 +706,12 @@ namespace VIDEO
     return INFO_NOT_FOUND;
   }
 
-  INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItem *item, long showID, const ADDON::ScraperPtr &scraper, bool useLocal, CGUIDialogProgress *progress)
+  CInfoScanner::INFO_RET
+  CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItem *item,
+                                             long showID,
+                                             const ADDON::ScraperPtr &scraper,
+                                             bool useLocal,
+                                             CGUIDialogProgress *progress)
   {
     // enumerate episodes
     EPISODELIST files;
@@ -1440,7 +1458,12 @@ namespace VIDEO
     return fanart;
   }
 
-  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, const CVideoInfoTag& showInfo, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  CInfoScanner::INFO_RET
+  CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& files,
+                                           const ADDON::ScraperPtr &scraper,
+                                           bool useLocal,
+                                           const CVideoInfoTag& showInfo,
+                                           CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
