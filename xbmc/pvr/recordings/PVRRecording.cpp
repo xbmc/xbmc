@@ -321,7 +321,7 @@ CBookmark CPVRRecording::GetResumePoint() const
 
 void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
 {
-  if (m_bGotMetaData)
+  if (m_bGotMetaData || !db.IsOpen())
     return;
 
   if (!CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsRecordingsPlayCount())
