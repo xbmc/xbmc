@@ -40,10 +40,6 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceSample.h"
-#endif
-
 using namespace KODI::MESSAGING;
 
 bool CGUIWindow::icompare::operator()(const std::string &s1, const std::string &s2) const
@@ -81,10 +77,6 @@ CGUIWindow::~CGUIWindow()
 
 bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
 {
-#ifdef HAS_PERFORMANCE_SAMPLE
-  CPerformanceSample aSample("WindowLoad-" + strFileName, true);
-#endif
-
   if (m_windowLoaded || !g_SkinInfo)
     return true;      // no point loading if it's already there
 

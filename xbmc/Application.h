@@ -71,9 +71,6 @@ namespace PLAYLIST
 #include "platform/win32/WIN32Util.h"
 #endif
 #include "utils/Stopwatch.h"
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceStats.h"
-#endif
 #include "windowing/OSScreenSaver.h"
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
@@ -288,10 +285,6 @@ public:
 
   bool OnEvent(XBMC_Event& newEvent);
 
-#ifdef HAS_PERFORMANCE_SAMPLE
-  CPerformanceStats &GetPerformanceStats();
-#endif
-
   std::unique_ptr<CApplicationPlayer> m_pPlayer;
 
 #ifdef HAS_DVD_DRIVE
@@ -501,9 +494,6 @@ protected:
   void HandleShutdownMessage();
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
-#ifdef HAS_PERFORMANCE_SAMPLE
-  CPerformanceStats m_perfStats;
-#endif
 
   ReplayGainSettings m_replayGainSettings;
   std::vector<IActionListener *> m_actionListeners;

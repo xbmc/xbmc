@@ -27,7 +27,6 @@
 #include "Util.h"
 #include "URL.h"
 
-#include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "pictures/Picture.h"
 

@@ -25,11 +25,6 @@
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #include "threads/SystemClock.h"
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceSample.h"
-#else
-#define MEASURE_FUNCTION
-#endif
 #include "commons/Exception.h"
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
@@ -79,9 +74,6 @@ INT CXBApplicationEx::Run(const CAppParamParser &params)
   // Run xbmc
   while (!m_bStop)
   {
-#ifdef HAS_PERFORMANCE_SAMPLE
-    CPerformanceSample sampleLoop("XBApplicationEx-loop");
-#endif
     //-----------------------------------------
     // Animate and render a frame
     //-----------------------------------------

@@ -27,7 +27,6 @@ set(SOURCES TestAlarmClock.cpp
             TestMathUtils.cpp
             Testmd5.cpp
             TestMime.cpp
-            TestPerformanceSample.cpp
             TestPOUtils.cpp
             TestRegExp.cpp
             Testrfft.cpp

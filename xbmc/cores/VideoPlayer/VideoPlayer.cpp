@@ -56,11 +56,6 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "xbmc/utils/PerformanceSample.h"
-#else
-#define MEASURE_FUNCTION
-#endif
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"

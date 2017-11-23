@@ -64,12 +64,6 @@
 #include "settings/Settings.h"
 #include "AppParamParser.h"
 
-#ifdef HAS_PERFORMANCE_SAMPLE
-#include "utils/PerformanceSample.h"
-#else
-#define MEASURE_FUNCTION
-#endif
-
 #include <algorithm>
 
 #ifdef HAS_EVENT_SERVER
@@ -163,8 +157,6 @@ bool CInputManager::ProcessPeripherals(float frameTime)
 
 bool CInputManager::ProcessMouse(int windowId)
 {
-  MEASURE_FUNCTION;
-
   if (!m_Mouse.IsActive() || !g_application.IsAppFocused())
     return false;
 
