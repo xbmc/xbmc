@@ -85,7 +85,7 @@ def set_pair_all(mac):
 def update_pair(dev, mac):
     old = get_pair(dev)
     if old != mac:
-        print "Re-pairing sixaxis from:" + mac_to_string(old) + " to:" + mac_to_string(mac)
+        print("Re-pairing sixaxis from:" + mac_to_string(old) + " to:" + mac_to_string(mac))
     set_pair(dev, mac)
 
 if __name__=="__main__":
@@ -97,17 +97,17 @@ if __name__=="__main__":
         mac = sys.argv[1].split(':')
         mac = tuple([int(x, 16) for x in mac])
         if len(mac) != 6:
-          print "Invalid length of HCI address, should be 6 parts"
+          print("Invalid length of HCI address, should be 6 parts")
           mac = None
       except:
-        print "Failed to parse HCI address"
+        print("Failed to parse HCI address")
         mac = None
     
     for dev in devs:
       if mac:
         update_pair(dev, mac)
       else:
-        print "Found sixaxis paired to: " + mac_to_string(get_pair(dev))
+        print("Found sixaxis paired to: " + mac_to_string(get_pair(dev)))
 
 
 

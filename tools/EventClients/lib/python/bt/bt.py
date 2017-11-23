@@ -24,10 +24,10 @@ except:
     try:
         import lightblue
     except:
-        print "ERROR: You need to have either LightBlue or PyBluez installed\n"\
-            "       in order to use this program."
-        print "- PyBluez (Linux / Windows XP) http://org.csail.mit.edu/pybluez/"
-        print "- LightBlue (Mac OS X / Linux) http://lightblue.sourceforge.net/"
+        print("ERROR: You need to have either LightBlue or PyBluez installed\n"\
+            "       in order to use this program.")
+        print("- PyBluez (Linux / Windows XP) http://org.csail.mit.edu/pybluez/")
+        print("- LightBlue (Mac OS X / Linux) http://lightblue.sourceforge.net/")
         exit()
 
 def bt_create_socket():

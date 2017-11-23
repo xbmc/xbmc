@@ -35,7 +35,7 @@ if os.path.exists("../../lib/python"):
     try:
         from ps3 import sixwatch
     except Exception, e:
-        print "Failed to import sixwatch now disabled: " + str(e)
+        print("Failed to import sixwatch now disabled: " + str(e))
         sixwatch = None
 
     try:
@@ -54,7 +54,7 @@ else:
     try:
         from kodi.ps3 import sixwatch
     except Exception, e:
-        print "Failed to import sixwatch now disabled: " + str(e)
+        print("Failed to import sixwatch now disabled: " + str(e))
         sixwatch = None
     try:
         import kodi.zeroconf as zeroconf
@@ -142,7 +142,7 @@ class PS3SixaxisThread ( StoppableThread ):
                     if six.process_socket(self.isock):
                         self.reset_timeout()
                 except Exception, e:
-                    print e
+                    print(e)
                     break
 
         except Exception, e:
@@ -171,7 +171,7 @@ class PS3RemoteThread ( StoppableThread ):
                                              self.zeroconf_service_handler)
                 self.zeroconf_thread.start()
             except Exception, e:
-                print str(e)
+                print(str(e))
 
             # main thread loop
             while not self.stop():
@@ -192,7 +192,7 @@ class PS3RemoteThread ( StoppableThread ):
 
         # process_remote() will raise an exception on read errors
         except Exception, e:
-            print str(e)
+            print(str(e))
 
         self.zeroconf_thread.stop()
         self.close_sockets()
@@ -221,11 +221,11 @@ class PS3RemoteThread ( StoppableThread ):
         """
         try:
             service = self.services[ self.current_xbmc ]
-            print "Connecting to %s" % service['name']
+            print("Connecting to %s" % service['name'])
             self.xbmc.connect( service['address'], service['port'] )
             self.xbmc.send_notification("PS3 Blu-Ray Remote", "New Connection", None)
         except Exception, e:
-            print str(e)
+            print(str(e))
 
     def zeroconf_service_handler(self, event, service):
         """
@@ -257,7 +257,7 @@ class SixWatch(threading.Thread):
         try:
             sixwatch.main(self.mac)
         except Exception, e:
-            print "Exception caught in sixwatch, restarting: " + str(e)
+            print("Exception caught in sixwatch, restarting: " + str(e))
 
 class ZeroconfThread ( threading.Thread ):
     """
@@ -302,7 +302,7 @@ class ZeroconfThread ( threading.Thread ):
 
 
 def usage():
-    print """
+    print("""
 PS3 Sixaxis / Blu-Ray Remote HID Server v0.1
 
 Usage: ps3.py [bdaddress] [XBMC host]
@@ -311,7 +311,7 @@ Usage: ps3.py [bdaddress] [XBMC host]
                 (e.g. aa:bb:cc:dd:ee:ff)
   ip address => IP address or hostname of the XBMC instance (default: localhost)
                 (e.g. 192.168.1.110)
-"""
+""")
 
 def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
     devices = [ 'PLAYSTATION(R)3 Controller',
@@ -320,10 +320,10 @@ def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
     watch = None
     if sixwatch:
         try:
-            print "Starting USB sixwatch"
+            print("Starting USB sixwatch")
             watch = SixWatch(hid.get_local_address())
         except Exception, e:
-            print "Failed to initialize sixwatch" + str(e)
+            print("Failed to initialize sixwatch" + str(e))
             pass
 
     while True:
@@ -337,10 +337,10 @@ def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
                 # handle the PS3 remote
                 handle_ps3_remote(hid, ipaddr)
             else:
-                print "Unknown Device: %s" % (device_name)
+                print("Unknown Device: %s" % (device_name))
 
 def handle_ps3_controller(hid, ipaddr):
-    print "Received connection from a Sixaxis PS3 Controller"
+    print("Received connection from a Sixaxis PS3 Controller")
     csock = hid.get_control_socket()[0]
     isock = hid.get_interrupt_socket()[0]
     sixaxis = PS3SixaxisThread(csock, isock, ipaddr)
@@ -349,7 +349,7 @@ def handle_ps3_controller(hid, ipaddr):
     return
 
 def handle_ps3_remote(hid, ipaddr):
-    print "Received connection from a PS3 Blu-Ray Remote"
+    print("Received connection from a PS3 Blu-Ray Remote")
     csock = hid.get_control_socket()[0]
     isock = hid.get_interrupt_socket()[0]
     isock.settimeout(1)
@@ -374,18 +374,18 @@ def main():
                 if "".join([ str(len(a)) for a in addr.split(":") ]) != "222222":
                     raise Exception("Invalid format")
                 bdaddr = addr
-                print "Connecting to Bluetooth device: %s" % bdaddr
+                print("Connecting to Bluetooth device: %s" % bdaddr)
             except Exception, e:
                 try:
                     ipaddr = addr
-                    print "Connecting to : %s" % ipaddr
+                    print("Connecting to : %s" % ipaddr)
                 except:
-                    print str(e)
+                    print(str(e))
                     return usage()
     except Exception, e:
         pass
 
-    print "Starting HID daemon"
+    print("Starting HID daemon")
     start_hidd(bdaddr, ipaddr)
 
 if __name__=="__main__":
@@ -394,13 +394,13 @@ if __name__=="__main__":
     finally:
         for t in event_threads:
             try:
-                print "Waiting for thread "+str(t)+" to terminate"
+                print("Waiting for thread "+str(t)+" to terminate")
                 t.stop_thread()
                 if t.isAlive():
                     t.join()
-                print "Thread "+str(t)+" terminated"
+                print("Thread "+str(t)+" terminated")
 
             except Exception, e:
-                print str(e)
+                print(str(e))
         pass
 
