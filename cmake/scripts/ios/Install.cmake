@@ -4,6 +4,8 @@ set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-568h@2
                      ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-667h@2x.png
                      ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-736h@3x.png
                      ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-Landscape-736h@3x.png
+                     ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-812h@3x.png
+                     ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-Landscape-812h@3x.png
                      ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29.png
                      ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29@2x.png
                      ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon40x40.png

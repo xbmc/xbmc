@@ -113,6 +113,26 @@
 			<key>UILaunchImageOrientation</key>
 			<string>Portrait</string>
 		</dict>
+                <dict>
+                        <key>UILaunchImageSize</key>
+                        <string>{375, 812}</string>
+                        <key>UILaunchImageName</key>
+                        <string>Default-812h</string>
+                        <key>UILaunchImageMinimumOSVersion</key>
+                        <string>9.0</string>
+                        <key>UILaunchImageOrientation</key>
+                        <string>Portrait</string>
+                </dict>
+                <dict>
+                        <key>UILaunchImageSize</key>
+                        <string>{375, 812}</string>
+                        <key>UILaunchImageName</key>
+                        <string>Default-Landscape-812h</string>
+                        <key>UILaunchImageMinimumOSVersion</key>
+                        <string>9.0</string>
+                        <key>UILaunchImageOrientation</key>
+                        <string>Landscape</string>
+                </dict>
 	</array>
 	<key>UIDeviceFamily</key>
 	<array>
