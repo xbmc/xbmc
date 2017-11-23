@@ -1931,6 +1931,12 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
     return m_state->m_httpheader.GetCharset();
   case FILE_PROPERTY_MIME_TYPE:
     return m_state->m_httpheader.GetMimeType();
+  case FILE_PROPERTY_EFFECTIVE_URL:
+  {
+    char *url = nullptr;
+    g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL, &url);
+    return url ? url : "";
+  }
   default:
     return "";
   }

@@ -241,7 +241,9 @@ typedef enum FilePropertyTypes
   /// Get file content charset
   ADDON_FILE_PROPERTY_CONTENT_CHARSET,
   /// Get file mime type
-  ADDON_FILE_PROPERTY_MIME_TYPE
+  ADDON_FILE_PROPERTY_MIME_TYPE,
+  /// Get file effective URL (last one if redirected)
+  ADDON_FILE_PROPERTY_EFFECTIVE_URL
 } FilePropertyTypes;
 //------------------------------------------------------------------------------
 
