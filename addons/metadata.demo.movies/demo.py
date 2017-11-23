@@ -35,7 +35,7 @@ if action == 'find':
     except:
         pass
 
-    print 'Find movie with title %s from year %i' %(title, int(year))
+    print('Find movie with title %s from year %i' %(title, int(year)))
     liz=xbmcgui.ListItem('Demo movie 1', thumbnailImage='DefaultVideo.png', offscreen=True)
     liz.setProperty('relevance', '0.5')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/movie", listitem=liz, isFolder=True)

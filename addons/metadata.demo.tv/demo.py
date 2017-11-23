@@ -35,7 +35,7 @@ if action == 'find':
     except:
         pass
 
-    print 'Find TV show with title %s from year %i' %(title, int(year))
+    print('Find TV show with title %s from year %i' %(title, int(year)))
     liz=xbmcgui.ListItem('Demo show 1', thumbnailImage='DefaultVideo.png', offscreen=True)
     liz.setProperty('relevance', '0.5')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True)
@@ -99,7 +99,7 @@ elif action == 'getdetails':
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getepisodelist':
     url=urllib.unquote_plus(params["url"])
-    print 'in here yo ' + url
+    print('in here yo ' + url)
     if url == '/path/to/show/guide':
         liz=xbmcgui.ListItem('Demo Episode 1x1', offscreen=True)
         liz.setProperty('video.episode', '1')

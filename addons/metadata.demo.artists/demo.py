@@ -36,7 +36,7 @@ if action == 'find':
     except:
         pass
 
-    print 'Find artist with name %s' %(artist)
+    print('Find artist with name %s' %(artist))
     liz=xbmcgui.ListItem('Demo artist 1', thumbnailImage='DefaultAlbum.png', offscreen=True)
     liz.setProperty('artist.genre', 'rock / pop')
     liz.setProperty('artist.born', '2002')
@@ -51,7 +51,7 @@ elif action == 'resolveid':
     xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getdetails':
     url=urllib.unquote_plus(params["url"])
-    print 'Artist with url %s' %(url)
+    print('Artist with url %s' %(url))
     if url == '/path/to/artist':
         liz=xbmcgui.ListItem('Demo artist 1', offscreen=True)
         liz.setProperty('artist.musicbrainzid', '123')

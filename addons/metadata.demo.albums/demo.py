@@ -24,7 +24,7 @@ def get_params():
 
 
 params=get_params()
-print params
+print(params)
 
 try:
     action=urllib.unquote_plus(params["action"])
@@ -40,7 +40,7 @@ if action == 'find':
     except:
         pass
 
-    print 'Find album with title %s from artist %s' %(album, artist)
+    print('Find album with title %s from artist %s' %(album, artist))
     liz=xbmcgui.ListItem('Demo album 1', thumbnailImage='DefaultAlbum.png', offscreen=True)
     liz.setProperty('relevance', '0.5')
     liz.setProperty('album.artist', artist)
