@@ -241,8 +241,6 @@ namespace VIDEO
 
     bool m_showDialog;
     CGUIDialogProgressBarHandle* m_handle;
-    int m_currentItem;
-    int m_itemCount;
     bool m_bStop;
     bool m_bRunning;
     bool m_bCanInterrupt;
