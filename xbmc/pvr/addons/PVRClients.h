@@ -20,6 +20,7 @@
  */
 
 #include <deque>
+#include <functional>
 #include <vector>
 
 #include "addons/PVRClient.h"
@@ -798,6 +799,42 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
      */
     PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
+
+    typedef std::function<PVR_ERROR(const CPVRClientPtr &client)> PVRClientFunction;
+
+    /*!
+     * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
+     */
+    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function) const;
+
+    /*!
+     * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @param faildeClients Contains a list of the ids of clients for that the call failed, if any.
+     * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
+     */
+    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int> &failedClients) const;
+
+    /*!
+     * @brief Wraps a call to a created client in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param iClientId The id of the client to call.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
+     */
+    PVR_ERROR ForCreatedClient(const char* strFunctionName, int iClientId, PVRClientFunction function) const;
+
+    /*!
+     * @brief Wraps a call to the playing client, if any, in order to do common pre and post function invocation actions.
+     * @param strFunctionName The function name, for logging purposes.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @return PVR_ERROR_NO_ERROR on success, PVR_ERROR_REJECTED if there is no playing client, any other PVR_ERROR_* value otherwise.
+     */
+    PVR_ERROR ForPlayingClient(const char* strFunctionName, PVRClientFunction function) const;
 
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;

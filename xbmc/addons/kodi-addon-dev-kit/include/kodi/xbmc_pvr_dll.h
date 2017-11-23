@@ -246,7 +246,7 @@ extern "C"
   /*!
    * @return The total amount of recordings on the backend or -1 on error.
    * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
-   * @remarks Required if bSupportsRecordings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Required if bSupportsRecordings is set to true. Return -1 if this add-on won't provide this function.
    */
   int GetRecordingsAmount(bool deleted);
 
