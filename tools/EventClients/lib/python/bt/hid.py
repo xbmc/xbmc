@@ -50,12 +50,12 @@ class HID:
     def listen(self):
         try:
             (self.client_csock, self.caddress) = self.csock.accept()
-            print "Accepted Control connection from %s" % self.caddress[0]
+            print("Accepted Control connection from %s" % self.caddress[0])
             (self.client_isock, self.iaddress) = self.isock.accept()
-            print "Accepted Interrupt connection from %s" % self.iaddress[0]
+            print("Accepted Interrupt connection from %s" % self.iaddress[0])
             self.connected = True
             return True
-        except Exception, e:
+        except Exception as e:
             self.connected = False
             return False
 

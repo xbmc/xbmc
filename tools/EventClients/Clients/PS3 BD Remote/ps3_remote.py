@@ -62,16 +62,16 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
         xbmc.send_notification("Action Required!",
                                "Hold Start+Enter on your remote.",
                                bticon)
-        print "Searching for %s" % target_name
-        print "(Hold Start + Enter on remote to make it discoverable)"
+        print("Searching for %s" % target_name)
+        print("(Hold Start + Enter on remote to make it discoverable)")
         time.sleep(2)
 
         if not target_address:
             try:
                 nearby_devices = bt_discover_devices()
-            except Exception, e:
-                print "Error performing bluetooth discovery"
-                print str(e)
+            except Exception as e:
+                print("Error performing bluetooth discovery")
+                print(str(e))
                 xbmc.send_notification("Error", "Unable to find devices.", bticon)
                 time.sleep(5)
                 continue
@@ -79,22 +79,22 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
             for bdaddr in nearby_devices:
                 bname = bt_lookup_name( bdaddr )
                 addr = bt_lookup_addr ( bdaddr )
-                print "%s (%s) in range" % (bname,addr)
+                print("%s (%s) in range" % (bname,addr))
                 if target_name == bname:
                     target_address = addr
                     break
 
         if target_address is not None:
-            print "Found %s with address %s" % (target_name, target_address)
+            print("Found %s with address %s" % (target_name, target_address))
             xbmc.send_notification("Found Device",
                                    "Pairing %s, please wait." % target_name,
                                    bticon)
-            print "Attempting to pair with remote"
+            print("Attempting to pair with remote")
 
             try:
                 remote.connect((target_address,19))
                 target_connected = True
-                print "Remote Paired.\a"
+                print("Remote Paired.\a")
                 xbmc.send_notification("Pairing Successful",
                                        "Your remote was successfully "\
                                            "paired and is ready to be used.",
@@ -106,17 +106,17 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
                 xbmc.send_notification("Pairing Failed",
                                        "An error occurred while attempting to "\
                                            "pair.", bticon)
-                print "ERROR - Could Not Connect. Trying again..."
+                print("ERROR - Could Not Connect. Trying again...")
                 time.sleep(2)
         else:
             xbmc.send_notification("Error", "No remotes were found.", bticon)
-            print "Could not find BD Remote Control. Trying again..."
+            print("Could not find BD Remote Control. Trying again...")
             time.sleep(2)
     return (remote,target_address)
 
 
 def usage():
-    print """
+    print("""
 PS3 Blu-Ray Remote Control Client for XBMC v0.1
 
 Usage: ps3_remote.py <address> [port]
@@ -126,7 +126,7 @@ Usage: ps3_remote.py <address> [port]
 
      port => port to send packets to
              (default 9777)
-"""
+""")
 
 def process_keys(remote, xbmc):
     """
@@ -150,7 +150,7 @@ def process_keys(remote, xbmc):
     try:
         data = remote.recv(1024)
         datalen = len(data)
-    except Exception, e:
+    except Exception as e:
         if str(e)=="timed out":
             return 2
         time.sleep(2)
@@ -178,8 +178,8 @@ def process_keys(remote, xbmc):
 
             if g_keymap[keycode]:
                 xbmc.send_remote_button(g_keymap[keycode])
-        except Exception, e:
-            print "Unknown data: %s" % str(e)
+        except Exception as e:
+            print("Unknown data: %s" % str(e))
     return done
 
 def main():
@@ -209,11 +209,11 @@ def main():
         while True:
             if process_keys(remote, xbmc):
                 break
-        print "Disconnected."
+        print("Disconnected.")
         try:
             remote.close()
         except:
-            print "Cannot close."
+            print("Cannot close.")
 
 if __name__=="__main__":
     main()

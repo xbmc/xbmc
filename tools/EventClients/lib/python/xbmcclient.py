@@ -438,7 +438,7 @@ class PacketLOG (Packet):
         self.append_payload( chr (loglevel) )
         self.append_payload( format_string(logmessage) )
         if (autoprint):
-          print logmessage
+          print(logmessage)
 
 class PacketACTION (Packet):
     """An ACTION packet

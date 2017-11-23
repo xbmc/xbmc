@@ -165,7 +165,7 @@ def set_l2cap_mtu2(sock, mtu):
   try:
     sock.setsockopt (SOL_L2CAP, L2CAP_OPTIONS, s)
   except:
-    print "Warning: Unable to set mtu"
+    print("Warning: Unable to set mtu")
 
 class sixaxis():
     

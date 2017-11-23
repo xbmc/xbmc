@@ -29,9 +29,9 @@ try:
     import dbus, gobject, avahi
     from dbus import DBusException
     from dbus.mainloop.glib import DBusGMainLoop
-except Exception, e:
-    print "Zeroconf support disabled. To enable, install the following Python modules:"
-    print "    dbus, gobject, avahi"
+except Exception as e:
+    print("Zeroconf support disabled. To enable, install the following Python modules:")
+    print("    dbus, gobject, avahi")
     pass
 
 SERVICE_FOUND  = 1
@@ -141,15 +141,15 @@ class Browser:
 
 
     def _error_handler( self, *args ):
-        print 'ERROR: %s ' % str( args[0] )
+        print('ERROR: %s ' % str( args[0] ))
 
 
 if __name__ == "__main__":
     def service_handler( found, service ):
-        print "---------------------"
-        print ['Found Service', 'Lost Service'][found-1]
+        print("---------------------")
+        print(['Found Service', 'Lost Service'][found-1])
         for key in service.keys():
-            print key+" : "+str( service[key] )
+            print(key+" : "+str( service[key] ))
 
     browser = Browser( {
             '_xbmc-events._udp' : service_handler,
