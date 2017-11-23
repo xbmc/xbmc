@@ -51,6 +51,7 @@ public:
   AVCodecID codec;
   StreamType type;
   int uniqueId;
+  int demuxerId = -1;
   bool realtime;
   int flags;
   std::string filename;

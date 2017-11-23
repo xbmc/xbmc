@@ -75,6 +75,7 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   if (!m_pAudioStream)
     return false;
 
+  m_dataFormat = audioframe.format.m_dataFormat;
   m_sampleRate = audioframe.format.m_sampleRate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
@@ -239,9 +240,10 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
   if (audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if (m_sampleRate != audioframe.format.m_sampleRate ||
-     m_iBitsPerSample != audioframe.bits_per_sample ||
-     m_channelLayout != audioframe.format.m_channelLayout)
+  if (m_dataFormat != audioframe.format.m_dataFormat ||
+      m_sampleRate != audioframe.format.m_sampleRate ||
+      m_iBitsPerSample != audioframe.bits_per_sample ||
+      m_channelLayout != audioframe.format.m_channelLayout)
     return false;
 
   return true;
