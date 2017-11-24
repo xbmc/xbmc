@@ -21396,3 +21396,8 @@ msgstr ""
 msgctxt "#39103"
 msgid "Unable to configure network location. Invalid path given."
 msgstr ""
+
+#: xbmc/windows/GUIWindowFileManager.cpp
+msgctxt "#39104"
+msgid "View as text"
+msgstr ""

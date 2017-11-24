@@ -32,6 +32,11 @@ public:
   void SetText(const std::string& strText) { m_strText = strText; }
   void SetHeading(const std::string& strHeading) { m_strHeading = strHeading; }
   void UseMonoFont(bool use);
+
+  //! \brief Load a file into memory and show in dialog.
+  //! \param path Path to file
+  //! \param useMonoFont True to use monospace font
+  static void ShowForFile(const std::string& path, bool useMonoFont);
 protected:
   void OnDeinitWindow(int nextWindowID) override;
 
