@@ -557,21 +557,13 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
 {
   {
+    // set the new timer title locally
     CSingleLock lock(m_critSection);
     m_strTitle = strNewName;
   }
 
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->RenameTimer(*this, strNewName);
-  if (error != PVR_ERROR_NO_ERROR)
-  {
-    if (error == PVR_ERROR_NOT_IMPLEMENTED)
-      return UpdateOnClient();
-
-    DisplayError(error);
-    return false;
-  }
-
-  return true;
+  // update timer data in the backend
+  return UpdateOnClient();
 }
 
 bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)

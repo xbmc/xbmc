@@ -502,14 +502,6 @@ namespace PVR
     PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
 
     /*!
-     * @brief Rename a timer on the backend.
-     * @param timer The timer to rename.
-     * @param strNewName The new name.
-     * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
-     */
-    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
-
-    /*!
      * @brief Get all supported timer types.
      * @param results The container to store the result in.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.

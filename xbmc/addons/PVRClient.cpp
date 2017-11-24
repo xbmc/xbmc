@@ -1001,15 +1001,6 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName)
-{
-  return DoAddonCall(__FUNCTION__, [this, &timer, &strNewName] {
-    PVR_TIMER tag;
-    WriteClientTimerInfo(timer, tag);
-    return m_struct.toAddon.UpdateTimer(tag);
-  }, m_clientCapabilities.SupportsTimers());
-}
-
 PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
 {
   return DoAddonCall(__FUNCTION__, [this, &timer] {

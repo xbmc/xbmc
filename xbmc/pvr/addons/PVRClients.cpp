@@ -959,13 +959,6 @@ PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
   });
 }
 
-PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName)
-{
-  return ForCreatedClient(__FUNCTION__, timer.m_iClientId, [&timer, &strNewName](const CPVRClientPtr &client) {
-    return client->RenameTimer(timer, strNewName);
-  });
-}
-
 PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
 {
   return ForCreatedClients(__FUNCTION__, [&results](const CPVRClientPtr &client) {
