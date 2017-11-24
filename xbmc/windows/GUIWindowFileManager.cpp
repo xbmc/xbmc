@@ -29,6 +29,7 @@
 #include "filesystem/FileDirectoryFactory.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
+#include "dialogs/GUIDialogTextViewer.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -639,6 +640,22 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     return ;
   }
 #endif
+  if (pItem->IsType(".nfo|.log|.txt|.xml"))
+  {
+    CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+    pDlgInfo->SetHeading(pItem->GetLabel());
+    CFile file;
+    XFILE::auto_buffer buf;
+    if (file.LoadFile(pItem->GetPath(), buf) > 0)
+    {
+      const size_t len = buf.length();
+      std::string str(buf.get(), len);
+      StringUtils::Replace(str, "\t", "    ");
+      pDlgInfo->SetText(str);
+    }
+    pDlgInfo->Open();
+    return ;
+  }
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
