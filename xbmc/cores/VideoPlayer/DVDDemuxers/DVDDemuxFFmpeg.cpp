@@ -700,8 +700,8 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       // map some standard http headers to the ffmpeg related options
       else if (name == "user-agent")
       {
-        av_dict_set(&options, "user-agent", value.c_str(), 0);
-        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user-agent: %s'", value.c_str());
+        av_dict_set(&options, "user_agent", value.c_str(), 0);
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user_agent: %s'", value.c_str());
         hasUserAgent = true;
       }
       else if (name == "cookies")
@@ -750,7 +750,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     if (!hasUserAgent)
     {
       // set default xbmc user-agent.
-      av_dict_set(&options, "user-agent", g_advancedSettings.m_userAgent.c_str(), 0);
+      av_dict_set(&options, "user_agent", g_advancedSettings.m_userAgent.c_str(), 0);
     }
 
     if (!headers.empty())
@@ -1087,9 +1087,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     if (!stream)
     {
-      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::AddStream - internal error, stream is null");
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-      return NULL;
+      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+      return pPacket;
     }
 
     pPacket->iStreamId = stream->uniqueId;
@@ -1362,11 +1362,20 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
   AVStream* pStream = m_pFormatContext->streams[streamIdx];
   if (pStream)
   {
+    // Video (mp4) from GoPro cameras can have a 'meta' track used for a file repair containing
+    // 'fdsc' data, this is also called the SOS track.
+    if (pStream->codecpar->codec_tag == MKTAG('f','d','s','c'))
+    {
+      CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding fdsc stream");
+      pStream->discard = AVDISCARD_ALL;
+      return nullptr;
+    }
+
     CDemuxStream* stream = nullptr;
 
     switch (pStream->codecpar->codec_type)
     {
-    case AVMEDIA_TYPE_AUDIO:
+      case AVMEDIA_TYPE_AUDIO:
       {
         CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(pStream);
         stream = st;
@@ -1384,7 +1393,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
         break;
       }
-    case AVMEDIA_TYPE_VIDEO:
+      case AVMEDIA_TYPE_VIDEO:
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(pStream);
         stream = st;
@@ -1466,13 +1475,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
         break;
       }
-    case AVMEDIA_TYPE_DATA:
+      case AVMEDIA_TYPE_DATA:
       {
         stream = new CDemuxStream();
         stream->type = STREAM_DATA;
         break;
       }
-    case AVMEDIA_TYPE_SUBTITLE:
+      case AVMEDIA_TYPE_SUBTITLE:
       {
         if (pStream->codecpar->codec_id == AV_CODEC_ID_DVB_TELETEXT && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
@@ -1492,10 +1501,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           break;
         }
       }
-    case AVMEDIA_TYPE_ATTACHMENT:
+      case AVMEDIA_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
-        if(pStream->codecpar->codec_id == AV_CODEC_ID_TTF ||
-           pStream->codecpar->codec_id == AV_CODEC_ID_OTF)
+        if (pStream->codecpar->codec_id == AV_CODEC_ID_TTF ||
+            pStream->codecpar->codec_id == AV_CODEC_ID_OTF)
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
@@ -1524,11 +1533,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         stream->type = STREAM_NONE;
         break;
       }
-    default:
+      default:
       {
-        stream = new CDemuxStream();
-        stream->type = STREAM_NONE;
-        break;
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: %d", pStream->index);
+        pStream->discard = AVDISCARD_ALL;
+        return nullptr;;
       }
     }
 
@@ -1539,7 +1548,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     stream->codec = pStream->codecpar->codec_id;
     stream->codec_fourcc = pStream->codecpar->codec_tag;
     stream->profile = pStream->codecpar->profile;
-    stream->level   = pStream->codecpar->level;
+    stream->level = pStream->codecpar->level;
     stream->realtime = m_pInput->IsRealtime();
 
     stream->source = STREAM_SOURCE_DEMUX;
@@ -1618,7 +1627,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     return stream;
   }
   else
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -1639,8 +1648,7 @@ void CDVDDemuxFFmpeg::AddStream(int streamIdx, CDemuxStream* stream)
     delete res.first->second;
     res.first->second = stream;
   }
-  if(g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-    CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream ID: %d", streamIdx);
+  CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream ID: %d", streamIdx);
 }
 
 
