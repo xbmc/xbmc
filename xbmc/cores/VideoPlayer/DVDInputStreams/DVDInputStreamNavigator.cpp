@@ -930,17 +930,15 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
     case DVD_SUBPICTURE_LANG_EXT_NormalCC:
     case DVD_SUBPICTURE_LANG_EXT_BigCC:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
-      info.name += g_localizeStrings.Get(37011);
       info.flags = StreamFlags::FLAG_HEARING_IMPAIRED;
       break;
     case DVD_SUBPICTURE_LANG_EXT_Forced:
-      info.name += g_localizeStrings.Get(37012);
       info.flags = StreamFlags::FLAG_FORCED;
       break;
     case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
     case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
-      info.name += g_localizeStrings.Get(37013);
+      info.name = g_localizeStrings.Get(37001);
       break;
     default:
       break;
