@@ -26,6 +26,8 @@
 using namespace KODI;
 using namespace PERIPHERALS;
 
+#define JOYSTICK_PROVIDER_ANDROID  "android"
+
 // Set this to the final key code in android/keycodes.h
 const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
 
@@ -85,7 +87,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   CPeripheralJoystick& joystick = static_cast<CPeripheralJoystick&>(peripheral);
   if (device.getControllerNumber() > 0)
      joystick.SetRequestedPort(device.getControllerNumber() - 1);
-  joystick.SetProvider("android");
+  joystick.SetProvider(JOYSTICK_PROVIDER_ANDROID);
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device %d \"%s\"", deviceId, peripheral.DeviceName().c_str());
 
