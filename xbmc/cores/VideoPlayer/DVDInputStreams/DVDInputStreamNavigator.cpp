@@ -890,9 +890,9 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   return activeStream;
 }
 
-DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
+SubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
 {
-  DVDNavSubtitleStreamInfo info;
+  SubtitleStreamInfo info;
   if (!m_dvdnav)
     return info;
 
@@ -914,7 +914,7 @@ DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const i
   return info;
 }
 
-void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavSubtitleStreamInfo &info, const subp_attr_t &subp_attributes)
+void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, const subp_attr_t &subp_attributes)
 {
   if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
     subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
@@ -1003,7 +1003,7 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
   return activeStream;
 }
 
-void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavAudioStreamInfo &info, const audio_attr_t &audio_attributes)
+void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const audio_attr_t &audio_attributes)
 {
   switch( audio_attributes.code_extension )
   {
@@ -1077,9 +1077,9 @@ void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavAudioStreamInfo &info, c
   StringUtils::TrimLeft(info.name);
 }
 
-DVDNavAudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
+AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
 {
-  DVDNavAudioStreamInfo info;
+  AudioStreamInfo info;
   if (!m_dvdnav)
     return info;
 
@@ -1573,19 +1573,23 @@ void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* hei
   }
 }
 
-DVDNavVideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
+VideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 {
-  DVDNavVideoStreamInfo info;
+  VideoStreamInfo info;
   if (!m_dvdnav)
     return info;
 
   info.angles = GetAngleCount();
-  info.aspectRatio = GetVideoAspectRatio();
-  GetVideoResolution(&info.width, &info.height);
+  info.videoAspectRatio = GetVideoAspectRatio();
+  uint32_t width, height = 0;
+  GetVideoResolution(&width, &height);
+
+  info.width = static_cast<int>(width);
+  info.height = static_cast<int>(height);
 
   // Until we add get_video_attr or get_video_codec we can't distinguish MPEG-1 (h261)
   // from MPEG-2 (h262). The latter is far more common, so use this.
-  info.codec = "h262";
+  info.codecName = "h262";
 
   return info;
 }

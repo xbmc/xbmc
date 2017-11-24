@@ -71,4 +71,5 @@ struct VideoStreamInfo : StreamInfo
   CRect SrcRect;
   CRect DestRect;
   std::string stereoMode;
+  int angles = 0;
 };

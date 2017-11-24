@@ -472,7 +472,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.flags    = StreamFlags::FLAG_NONE;
       s.filename = filename;
 
-      DVDNavAudioStreamInfo info = nav->GetAudioStreamInfo(i);
+      AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
@@ -490,14 +490,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.filename = filename;
       s.channels = 0;
 
-      DVDNavSubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
+      SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
     }
 
-    DVDNavVideoStreamInfo info = nav->GetVideoStreamInfo();
+    VideoStreamInfo info = nav->GetVideoStreamInfo();
     for (int i = 1; i <= info.angles; i++)
     {
       SelectionStream s;
@@ -507,10 +507,10 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.flags = StreamFlags::FLAG_NONE;
       s.filename = filename;
       s.channels = 0;
-      s.aspect_ratio = info.aspectRatio;
-      s.width = (int)info.width;
-      s.height = (int)info.height;
-      s.codec = info.codec;
+      s.aspect_ratio = info.videoAspectRatio;
+      s.width = info.width;
+      s.height = info.height;
+      s.codec = info.codecName;
       s.name = StringUtils::Format("%s %i", g_localizeStrings.Get(38032).c_str(), i);
       Update(s);
     }
