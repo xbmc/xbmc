@@ -919,15 +919,15 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
   if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
     subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
   {
-    switch (subp_attributes.lang_extension)
+    switch (subp_attributes.code_extension)
     {
     case DVD_SUBPICTURE_LANG_EXT_NotSpecified:
-    case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
-    case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensCaptions:
       break;
 
+    case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
     case DVD_SUBPICTURE_LANG_EXT_NormalCC:
+    case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
     case DVD_SUBPICTURE_LANG_EXT_BigCC:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
       info.flags = StreamFlags::FLAG_HEARING_IMPAIRED;
