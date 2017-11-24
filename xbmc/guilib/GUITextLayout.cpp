@@ -41,7 +41,7 @@ std::string CGUIString::GetAsString() const
 
 CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
 {
-  m_font = font;
+  m_varFont = m_font = font;
   m_borderFont = borderFont;
   m_textColor = 0;
   m_wrap = wrap;

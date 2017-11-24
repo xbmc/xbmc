@@ -32,11 +32,6 @@ CGUIDialogTextViewer::CGUIDialogTextViewer(void)
 
 CGUIDialogTextViewer::~CGUIDialogTextViewer(void) = default;
 
-bool CGUIDialogTextViewer::OnAction(const CAction &action)
-{
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -46,6 +41,7 @@ bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       SetHeading();
       SetText();
+      UseMonoFont(m_mono);
       return true;
     }
     break;
@@ -76,6 +72,13 @@ void CGUIDialogTextViewer::SetHeading()
 {
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
   msg.SetLabel(m_strHeading);
+  OnMessage(msg);
+}
+
+void CGUIDialogTextViewer::UseMonoFont(bool use)
+{
+  m_mono = use;
+  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_TEXTAREA, use ? 1 : 0);
   OnMessage(msg);
 }
 
