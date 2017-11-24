@@ -18,32 +18,15 @@
  *
  */
 
-#ifndef WINDOW_SYSTEM_BASE_H
-#define WINDOW_SYSTEM_BASE_H
+#pragma once
 
 #include "OSScreenSaver.h"
 #include "VideoSync.h"
 #include "WinEvents.h"
+#include "guilib/DispResource.h"
 #include "guilib/Resolution.h"
 #include <memory>
 #include <vector>
-
-enum WindowSystemType
-{
-  WINDOW_SYSTEM_WIN32,
-  WINDOW_SYSTEM_OSX,
-  WINDOW_SYSTEM_IOS,
-  WINDOW_SYSTEM_X11,
-  WINDOW_SYSTEM_MIR,
-  WINDOW_SYSTEM_GBM,
-  WINDOW_SYSTEM_SDL,
-  WINDOW_SYSTEM_EGL,
-  WINDOW_SYSTEM_RPI,
-  WINDOW_SYSTEM_AML,
-  WINDOW_SYSTEM_ANDROID,
-  WINDOW_SYSTEM_WAYLAND,
-  WINDOW_SYSTEM_WIN10
-};
 
 struct RESOLUTION_WHR
 {
@@ -66,7 +49,8 @@ class CWinSystemBase
 public:
   CWinSystemBase();
   virtual ~CWinSystemBase();
-  WindowSystemType GetWinSystem() { return m_eWindowSystem; }
+
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   // windowing interfaces
   virtual bool InitWindowSystem();
@@ -124,7 +108,7 @@ public:
   // OS System screensaver
   /**
    * Get OS screen saver inhibit implementation if available
-   * 
+   *
    * \return OS screen saver implementation that can be used with this windowing system
    *         or nullptr if unsupported.
    *         Lifetime of the returned object will usually end with \ref DestroyWindowSystem, so
@@ -152,6 +136,10 @@ public:
   virtual bool IsTextInputEnabled() { return false; }
   virtual std::string GetClipboardText(void);
 
+  // Display event callback
+  virtual void Register(IDispResource *resource) = 0;
+  virtual void Unregister(IDispResource *resource) = 0;
+
   // render loop
   void RegisterRenderLoop(IRenderLoop *client);
   void UnregisterRenderLoop(IRenderLoop *client);
@@ -161,22 +149,18 @@ protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
-  WindowSystemType  m_eWindowSystem;
-  int               m_nWidth;
-  int               m_nHeight;
-  int               m_nTop;
-  int               m_nLeft;
-  bool              m_bWindowCreated;
-  bool              m_bFullScreen;
-  int               m_nScreen;
-  bool              m_bBlankOtherDisplay;
-  float             m_fRefreshRate;
+  int m_nWidth;
+  int m_nHeight;
+  int m_nTop;
+  int m_nLeft;
+  bool m_bWindowCreated;
+  bool m_bFullScreen;
+  int m_nScreen;
+  bool m_bBlankOtherDisplay;
+  float m_fRefreshRate;
   std::unique_ptr<KODI::WINDOWING::COSScreenSaverManager> m_screenSaverManager;
   CCriticalSection m_renderLoopSection;
   std::vector<IRenderLoop*> m_renderLoopClients;
 
   std::unique_ptr<IWinEvents> m_winEvents;
 };
-
-
-#endif // WINDOW_SYSTEM_H

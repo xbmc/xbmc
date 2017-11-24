@@ -27,7 +27,6 @@
 #include "utils/SysfsUtils.h"
 #include "utils/ScreenshotAML.h"
 #include "settings/MediaSettings.h"
-#include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "../RenderFactory.h"
 #include "settings/AdvancedSettings.h"

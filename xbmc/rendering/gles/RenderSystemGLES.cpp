@@ -25,7 +25,6 @@
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
 #include "guilib/MatrixGLES.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
@@ -106,10 +105,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   LogGraphicsInfo();
   
-  if (IsExtSupported("GL_TEXTURE_NPOT"))
-  {
-    m_renderCaps |= RENDER_CAPS_NPOT;
-  }
+  m_renderCaps |= RENDER_CAPS_NPOT;
 
   if (IsExtSupported("GL_EXT_texture_format_BGRA8888"))
   {
@@ -519,7 +515,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
     {
       if (i == SM_TEXTURE_RGBA_OES || i == SM_TEXTURE_RGBA_BOB_OES)
       {
-        if (!g_Windowing.IsExtSupported("GL_OES_EGL_image_external"))
+        if (!IsExtSupported("GL_OES_EGL_image_external"))
         {
           m_pGUIshader[i] = NULL;
           continue;

@@ -24,7 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
+#include "RenderContext.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -845,7 +845,7 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
           CLog::LogF(LOGDEBUG, "selected %S adapter. ", foundDesc.Description);
 
           // adapter is changed, (re)init hooks into new driver
-          g_Windowing.InitHooks(output.Get());
+          Windowing().InitHooks(output.Get());
         }
         return;
       }

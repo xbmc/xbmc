@@ -21,13 +21,13 @@
 #include "Screenshot.h"
 
 #include "system.h"
+#include "system_gl.h"
 #include <vector>
 
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "URL.h"
 
-#include "windowing/WindowingFactory.h"
 #include "pictures/Picture.h"
 
 #ifdef TARGET_RASPBERRY_PI
@@ -48,6 +48,10 @@
 
 #if defined(HAS_LIBAMCODEC)
 #include "utils/ScreenshotAML.h"
+#endif
+
+#if defined(TARGET_WINDOWS)
+#include "rendering/dx/DeviceResources.h"
 #endif
 
 using namespace XFILE;
@@ -72,7 +76,7 @@ bool CScreenshotSurface::capture()
   m_buffer = g_RBP.CaptureDisplay(m_width, m_height, &m_stride, true, false);
   if (!m_buffer)
     return false;
-#elif defined(HAS_DX)
+#elif defined(TARGET_WINDOWS)
 
   CSingleLock lock(g_graphicsContext);
 

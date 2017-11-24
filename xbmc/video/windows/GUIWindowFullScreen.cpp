@@ -45,7 +45,7 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "input/InputManager.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "cores/IPlayer.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "video/ViewModeSettings.h"
@@ -355,7 +355,7 @@ void CGUIWindowFullScreen::FrameMove()
     // show resolution information
     {
       std::string strStatus;
-      if (g_Windowing.IsFullScreen())
+      if (CServiceBroker::GetWinSystem().IsFullScreen())
         strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
                                         g_localizeStrings.Get(13287).c_str(),
                                         res.iScreenWidth,

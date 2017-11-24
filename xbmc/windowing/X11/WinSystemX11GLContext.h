@@ -28,9 +28,10 @@
 
 #include "EGL/egl.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "utils/GlobalsHandling.h"
+#include <memory>
 
 class CGLContext;
+class CVaapiProxy;
 
 class CWinSystemX11GLContext : public CWinSystemX11, public CRenderSystemGL
 {
@@ -68,7 +69,5 @@ protected:
 
   CGLContext *m_pGLContext = nullptr;
   bool m_newGlContext;
+  std::unique_ptr<CVaapiProxy> m_vaapiProxy;
 };
-
-XBMC_GLOBAL_REF(CWinSystemX11GLContext,g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GLContext)

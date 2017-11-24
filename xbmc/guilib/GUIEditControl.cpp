@@ -20,6 +20,7 @@
 
 #include "GUIEditControl.h"
 #include "GUIWindowManager.h"
+#include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Variant.h"
 #include "GUIKeyboardFactory.h"
@@ -28,7 +29,7 @@
 #include "input/Key.h"
 #include "LocalizeStrings.h"
 #include "XBDateTime.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "utils/md5.h"
 #include "GUIUserMessages.h"
 
@@ -257,7 +258,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         }
       default:
         {
-          if (!g_Windowing.IsTextInputEnabled())
+          if (CServiceBroker::GetWinSystem().IsTextInputEnabled())
           {
             ClearMD5();
             m_edit.clear();
@@ -685,8 +686,8 @@ void CGUIEditControl::OnPasteClipboard()
   std::wstring unicode_text;
   std::string utf8_text;
 
-// Get text from the clipboard
-  utf8_text = g_Windowing.GetClipboardText();
+  // Get text from the clipboard
+  utf8_text = CServiceBroker::GetWinSystem().GetClipboardText();
   g_charsetConverter.utf8ToW(utf8_text, unicode_text);
 
   // Insert the pasted text at the current cursor position.
@@ -743,7 +744,7 @@ void CGUIEditControl::ValidateInput()
 void CGUIEditControl::SetFocus(bool focus)
 {
   m_smsTimer.Stop();
-  g_Windowing.EnableTextInput(focus);
+  CServiceBroker::GetWinSystem().EnableTextInput(focus);
   CGUIControl::SetFocus(focus);
   SetInvalid();
 }

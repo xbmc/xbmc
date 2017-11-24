@@ -23,7 +23,8 @@
 #include "utils/log.h"
 #include "Utils/TimeUtils.h"
 #include "Utils/MathUtils.h"
-#include "windowing\WindowingFactory.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #include "VideoSyncD3D.h"
 #include "guilib/GraphicContext.h"
 #include "platform/win32/dxerr.h"
@@ -53,7 +54,7 @@ bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
   CSingleLock lock(g_graphicsContext);
-  g_Windowing.Register(this);
+  DX::Windowing().Register(this);
   m_displayLost = false;
   m_displayReset = false;
   m_lostEvent.Reset();
@@ -124,7 +125,7 @@ void CVideoSyncD3D::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Cleaning up Direct3d");
 
   m_lostEvent.Set();
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
 }
 
 float CVideoSyncD3D::GetFps()
@@ -140,7 +141,7 @@ float CVideoSyncD3D::GetFps()
   if (m_fps == 23 || m_fps == 29 || m_fps == 59)
     m_fps++;
 
-  if (g_Windowing.Interlaced())
+  if (DX::Windowing().Interlaced())
   {
     m_fps *= 2;
   }

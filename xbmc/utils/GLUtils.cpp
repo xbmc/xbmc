@@ -22,8 +22,9 @@
 
 #include "GLUtils.h"
 #include "log.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 #if defined(HAS_GL) && defined(_DEBUG)
@@ -98,7 +99,7 @@ void LogGraphicsInfo()
 #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 
-  if (g_Windowing.IsExtSupported("GL_NVX_gpu_memory_info"))
+  if (CServiceBroker::GetRenderSystem().IsExtSupported("GL_NVX_gpu_memory_info"))
   {
     GLint mem = 0;
 
@@ -113,7 +114,7 @@ void LogGraphicsInfo()
   std::string extensions;
 #if defined(HAS_GL)
   unsigned int renderVersionMajor, renderVersionMinor;
-  g_Windowing.GetRenderVersion(renderVersionMajor, renderVersionMinor);
+  CServiceBroker::GetRenderSystem().GetRenderVersion(renderVersionMajor, renderVersionMinor);
   if (renderVersionMajor > 3 ||
       (renderVersionMajor == 3 && renderVersionMinor >= 2))
   {

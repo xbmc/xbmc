@@ -24,7 +24,8 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+#include "windowing/android/WinSystemAndroid.h"
 
 //#define DEBUG_VERBOSE
 
@@ -140,5 +141,5 @@ void CAndroidMouse::MouseWheel(float x, float y, float value)
 
   newEvent.type = XBMC_MOUSEBUTTONUP;
 
-  g_Windowing.MessagePush(&newEvent);
+  dynamic_cast<CWinSystemAndroid&>(CServiceBroker::GetWinSystem()).MessagePush(&newEvent);
 }

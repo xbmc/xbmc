@@ -1,10 +1,11 @@
-set(SOURCES GUIWindowTestPatternDX.cpp
-            RenderSystemDX.cpp
-            DeviceResources.cpp)
+set(SOURCES DeviceResources.cpp
+            GUIWindowTestPatternDX.cpp
+            RenderSystemDX.cpp)
 
-set(HEADERS GUIWindowTestPatternDX.h
-            RenderSystemDX.h
-            DeviceResources.h
-            DirectXHelper.h)
+set(HEADERS DeviceResources.h
+            DirectXHelper.h
+            GUIWindowTestPatternDX.h
+            RenderContext.h
+            RenderSystemDX.h)
 
 core_add_library(rendering_dx)

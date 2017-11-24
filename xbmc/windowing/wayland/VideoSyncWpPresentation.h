@@ -31,10 +31,12 @@ namespace WINDOWING
 namespace WAYLAND
 {
 
+class CWinSystemWayland;
+
 class CVideoSyncWpPresentation : public CVideoSync
 {
 public:
-  explicit CVideoSyncWpPresentation(void* clock);
+  explicit CVideoSyncWpPresentation(void* clock, CWinSystemWayland& winSystem);
 
   float GetFps() override;
   bool Setup(PUPDATECLOCK func) override;
@@ -48,6 +50,7 @@ private:
   CSignalRegistration m_presentationHandler;
   std::uint64_t m_lastMsc{};
   std::uint32_t m_syncOutputID{};
+  CWinSystemWayland &m_winSystem;
 };
 
 }

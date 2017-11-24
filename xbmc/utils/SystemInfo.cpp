@@ -33,7 +33,7 @@
 #include "filesystem/File.h"
 #include "network/Network.h"
 #include "ServiceBroker.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "CompileInfo.h"
@@ -305,7 +305,7 @@ std::string CSysInfoJob::GetMACAddress()
 
 std::string CSysInfoJob::GetVideoEncoder()
 {
-  return "GPU: " + g_Windowing.GetRenderRenderer();
+  return "GPU: " + CServiceBroker::GetRenderSystem().GetRenderRenderer();
 }
 
 std::string CSysInfoJob::GetBatteryLevel()

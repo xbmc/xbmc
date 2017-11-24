@@ -25,6 +25,11 @@
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "VaapiEGL.h"
 
+namespace VAAPI
+{
+class IVaapiWinSystem;
+}
+
 class CRendererVAAPI : public CLinuxRendererGL
 {
 public:
@@ -32,7 +37,7 @@ public:
   ~CRendererVAAPI() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
-  static void Register(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
+  static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
 
   bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
@@ -60,4 +65,5 @@ protected:
   bool m_isVAAPIBuffer = true;
   VAAPI::CVaapiTexture m_vaapiTextures[NUM_BUFFERS];
   GLsync m_fences[NUM_BUFFERS];
+  static VAAPI::IVaapiWinSystem *m_pWinSystem;
 };

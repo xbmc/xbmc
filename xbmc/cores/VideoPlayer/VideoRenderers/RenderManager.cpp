@@ -28,7 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 #include "Application.h"
 #include "ServiceBroker.h"
@@ -1082,7 +1082,7 @@ void CRenderManager::PrepareNextRender()
   double frameOnScreen = m_dvdClock.GetClock();
   double frametime = 1.0 / g_graphicsContext.GetFPS() * DVD_TIME_BASE;
 
-  m_displayLatency = DVD_MSEC_TO_TIME(m_latencyTweak + g_graphicsContext.GetDisplayLatency() - m_videoDelay - g_Windowing.GetFrameLatencyAdjustment());
+  m_displayLatency = DVD_MSEC_TO_TIME(m_latencyTweak + g_graphicsContext.GetDisplayLatency() - m_videoDelay - CServiceBroker::GetWinSystem().GetFrameLatencyAdjustment());
 
   double renderPts = frameOnScreen + m_displayLatency;
 

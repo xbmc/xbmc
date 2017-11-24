@@ -25,10 +25,11 @@
 #include <math.h>
 
 #include "VideoFilterShaderGL.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 
 #define USE1DTEXTURE
 #define TEXTARGET GL_TEXTURE_1D
@@ -72,7 +73,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   std::string shadername;
   std::string defines;
 
-  m_floattex = g_Windowing.IsExtSupported("GL_ARB_texture_float");
+  m_floattex = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_float");
 
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||

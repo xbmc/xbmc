@@ -20,7 +20,7 @@
 
 #include "commons/ilog.h"
 #include "guilib/GraphicContext.h"
-#include "rendering/dx/DirectXHelper.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/SystemInfo.h"
 #include "utils/win32/Win32Log.h"
 #include "WinSystemWin32DX.h"
@@ -43,6 +43,12 @@ static PFND3D10DDI_OPENADAPTER s_fnOpenAdapter10_2{ nullptr };
 static PFND3D10DDI_CREATEDEVICE s_fnCreateDeviceOrig{ nullptr };
 static PFND3D10DDI_CREATERESOURCE s_fnCreateResourceOrig{ nullptr };
 
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWin32DX());
+  return winSystem;
+}
+ 
 CWinSystemWin32DX::CWinSystemWin32DX() : CRenderSystemDX()
   , m_hDriverModule(nullptr)
   , m_hHook(nullptr)
@@ -310,7 +316,7 @@ void APIENTRY HookCreateResource(D3D10DDI_HDEVICE hDevice, const D3D10DDIARG_CRE
 {
   if (pResource && pResource->pPrimaryDesc)
   {
-    g_Windowing.FixRefreshRateIfNecessary(pResource);
+    DX::Windowing().FixRefreshRateIfNecessary(pResource);
   }
   s_fnCreateResourceOrig(hDevice, pResource, hResource, hRtResource);
 }

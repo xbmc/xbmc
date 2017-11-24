@@ -20,8 +20,6 @@
  *
  */
 
-#if defined(TARGET_DARWIN_OSX)
-
 #include <string>
 #include <vector>
 
@@ -66,14 +64,14 @@ public:
 
   virtual std::string GetClipboardText(void) override;
 
-  void Register(IDispResource *resource);
-  void Unregister(IDispResource *resource);
-  
+  void Register(IDispResource *resource) override;
+  void Unregister(IDispResource *resource) override;
+
   virtual int GetNumScreens() override;
   virtual int GetCurrentScreen() override;
 
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
-  
+
   void        WindowChangedScreen();
 
   void        AnnounceOnLostDevice();
@@ -81,18 +79,18 @@ public:
   void        HandleOnResetDevice();
   void        StartLostDeviceTimer();
   void        StopLostDeviceTimer();
-  
+
   void* GetCGLContextObj();
   void* GetNSOpenGLContext();
 
 protected:
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
-  
+
   void  HandlePossibleRefreshrateChange();
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
-  void  EnableVSync(bool enable); 
+  void  EnableVSync(bool enable);
   bool  SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
   void  FillInVideoModes();
   bool  FlushBuffer(void);
@@ -121,5 +119,3 @@ protected:
   bool                         m_delayDispReset;
   XbmcThreads::EndTime         m_dispResetTimer;
 };
-
-#endif

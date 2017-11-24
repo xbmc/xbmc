@@ -21,11 +21,12 @@
 #include "system.h"
 
 #include "utils/log.h"
+#include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 #include "platform/android/activity/XBMCApp.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "guilib/GraphicContext.h"
 #include "utils/MathUtils.h"
 #include "linux/XTimeUtils.h"
@@ -41,7 +42,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   m_abortEvent.Reset();
 
   CXBMCApp::InitFrameCallback(this);
-  g_Windowing.Register(this);
+  CServiceBroker::GetWinSystem().Register(this);
 
   return true;
 }
@@ -56,7 +57,7 @@ void CVideoSyncAndroid::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s cleaning up", __FUNCTION__);
   CXBMCApp::DeinitFrameCallback();
-  g_Windowing.Unregister(this);
+  CServiceBroker::GetWinSystem().Unregister(this);
 }
 
 float CVideoSyncAndroid::GetFps()

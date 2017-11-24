@@ -39,7 +39,7 @@
 #include "system.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
@@ -277,7 +277,7 @@ void CPowerManager::OnWake()
     dialog->Close(true); // force close. no closing animation, sound etc at this early stage
 
 #if defined(HAS_SDL) || defined(TARGET_WINDOWS)
-  if (g_Windowing.IsFullScreen())
+  if (CServiceBroker::GetWinSystem().IsFullScreen())
   {
 #if defined(TARGET_WINDOWS_DESKTOP)
     ShowWindow(g_hWnd,SW_RESTORE);

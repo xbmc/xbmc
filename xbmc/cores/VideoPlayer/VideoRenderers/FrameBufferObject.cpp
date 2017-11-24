@@ -21,7 +21,8 @@
 #include "system.h"
 
 #include "FrameBufferObject.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+#include "rendering/RenderSystem.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
@@ -40,7 +41,7 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  if(g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
+  if(CServiceBroker::GetRenderSystem().IsExtSupported("GL_EXT_framebuffer_object"))
     m_supported = true;
   else
     m_supported = false;

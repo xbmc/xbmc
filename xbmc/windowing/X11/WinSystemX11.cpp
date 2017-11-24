@@ -35,7 +35,6 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
-#include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xatom.h>
@@ -52,7 +51,6 @@ using namespace KODI::WINDOWING;
 
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_dpy = NULL;
   m_glWindow = 0;
   m_mainWindow = 0;
@@ -65,7 +63,8 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 
   XSetErrorHandler(XErrorHandler);
 
-  m_winEvents.reset(new CWinEventsX11());
+  m_winEventsX11 = new CWinEventsX11(*this);
+  m_winEvents.reset(m_winEventsX11);
 }
 
 CWinSystemX11::~CWinSystemX11() = default;
@@ -122,7 +121,7 @@ bool CWinSystemX11::DestroyWindow()
     m_invisibleCursor = 0;
   }
 
-  CWinEventsX11Imp::Quit();
+  m_winEventsX11->Quit();
 
   XUnmapWindow(m_dpy, m_mainWindow);
   XDestroyWindow(m_dpy, m_glWindow);
@@ -179,7 +178,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_bFullScreen = false;
   m_currentOutput = m_userOutput;
 
-  return false;
+  return true;
 }
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
@@ -592,7 +591,7 @@ void CWinSystemX11::OnLostDevice()
       (*i)->OnLostDisplay();
   }
 
-  CWinEventsX11Imp::SetXRRFailSafeTimer(3000);
+  m_winEventsX11->SetXRRFailSafeTimer(3000);
 }
 
 void CWinSystemX11::Register(IDispResource *resource)
@@ -755,13 +754,13 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     XFree(vi);
 
     //init X11 events
-    CWinEventsX11Imp::Init(m_dpy, m_mainWindow);
+    m_winEventsX11->Init(m_dpy, m_mainWindow);
 
     changeWindow = true;
     changeSize = true;
   }
 
-  if (!CWinEventsX11Imp::HasStructureChanged() && ((width != m_nWidth) || (height != m_nHeight)))
+  if (!m_winEventsX11->HasStructureChanged() && ((width != m_nWidth) || (height != m_nHeight)))
   {
     changeSize = true;
   }

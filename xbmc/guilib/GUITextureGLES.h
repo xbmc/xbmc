@@ -1,11 +1,3 @@
-/*!
-\file GUITextureGLES.h
-\brief
-*/
-
-#ifndef GUILIB_GUITEXTUREGLES_H
-#define GUILIB_GUITEXTUREGLES_H
-
 #pragma once
 
 /*
@@ -41,6 +33,8 @@ struct PackedVertex
 };
 typedef std::vector<PackedVertex> PackedVertices;
 
+class CRenderSystemGLES;
+
 class CGUITextureGLES : public CGUITextureBase
 {
 public:
@@ -55,6 +49,6 @@ protected:
 
   PackedVertices m_packedVertices;
   std::vector<GLushort> m_idx;
+  CRenderSystemGLES *m_renderSystem;
 };
 
-#endif

@@ -39,8 +39,6 @@
 
 CWinSystemRpi::CWinSystemRpi()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_RPI;
-
   m_nativeDisplay = EGL_NO_DISPLAY;
   m_nativeWindow = EGL_NO_SURFACE;
 

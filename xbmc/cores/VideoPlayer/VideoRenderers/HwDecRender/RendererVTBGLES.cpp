@@ -20,12 +20,13 @@
 
 #include "RendererVTBGLES.h"
 #include "../RenderFactory.h"
+#include "ServiceBroker.h"
 #include "cores/IPlayer.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "settings/MediaSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/osx/WinSystemIOS.h"
 #include "platform/darwin/DarwinUtils.h"
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
@@ -49,9 +50,11 @@ bool CRendererVTB::Register()
 CRendererVTB::CRendererVTB()
 {
   m_textureCache = nullptr;
+  CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
+  m_glContext = winSystem.GetEAGLContextObj();
   CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                               NULL,
-                                              g_Windowing.GetEAGLContextObj(),
+                                              m_glContext,
                                               NULL,
                                               &m_textureCache);
   if (ret != kCVReturnSuccess)
@@ -121,7 +124,7 @@ bool CRendererVTB::LoadShadersHook()
 
   CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                               NULL,
-                                              g_Windowing.GetEAGLContextObj(),
+                                              m_glContext,
                                               NULL,
                                               &m_textureCache);
   if (ret != kCVReturnSuccess)

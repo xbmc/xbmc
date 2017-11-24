@@ -25,10 +25,11 @@
 #include <math.h>
 
 #include "VideoFilterShaderGLES.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 #define TEXTARGET GL_TEXTURE_2D
 
@@ -112,7 +113,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   std::string shadername;
   std::string defines;
 
-  if (g_Windowing.IsExtSupported("GL_EXT_color_buffer_float"))
+  if (CServiceBroker::GetRenderSystem().IsExtSupported("GL_EXT_color_buffer_float"))
   {
     m_floattex = true;
   }

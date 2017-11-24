@@ -21,7 +21,9 @@
 #include "GUIRenderingControl.h"
 #include "threads/SingleLock.h"
 #include "guilib/IRenderingCallback.h"
-#include "windowing/WindowingFactory.h"
+#ifdef TARGET_WINDOWS
+#include "rendering/dx/DeviceResources.h"
+#endif
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -58,8 +60,8 @@ bool CGUIRenderingControl::InitCallback(IRenderingCallback *callback)
   if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
   void *device = NULL;
-#if HAS_DX
-  device = g_Windowing.Get3D11Device();
+#if TARGET_WINDOWS
+  device = DX::DeviceResources::Get()->GetD3DDevice();
 #endif
   if (callback->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f), device))
     m_callback = callback;

@@ -27,9 +27,9 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "messaging/ApplicationMessenger.h"
 #include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #include "windowing/windows/WinKeyMap.h"
-#include "windowing/WindowingFactory.h"
 #include "WinEventsWin10.h"
 
 using namespace PERIPHERALS;
@@ -137,7 +137,7 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
 
 void CWinEventsWin10::UpdateWindowSize()
 {
-  auto size = g_Windowing.GetOutputSize();
+  auto size = DX::DeviceResources::Get()->GetOutputSize();
 
   CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %f x %f (as:%s)", size.Width, size.Height, g_advancedSettings.m_fullScreen ? "true" : "false");
 
@@ -153,14 +153,14 @@ void CWinEventsWin10::UpdateWindowSize()
   newEvent.type = XBMC_VIDEORESIZE;
   newEvent.resize.w = size.Width;
   newEvent.resize.h = size.Height;
-  if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+  if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
     MessagePush(&newEvent);
 }
 
 // Window event handlers.
 void CWinEventsWin10::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
-  g_Windowing.OnResize(args->Size.Width, args->Size.Height);
+  DX::Windowing().OnResize(args->Size.Width, args->Size.Height);
   UpdateWindowSize();
 }
 
@@ -169,7 +169,7 @@ void CWinEventsWin10::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedE
   bool active = g_application.GetRenderGUI();
   g_application.SetRenderGUI(args->Visible);
   if (g_application.GetRenderGUI() != active)
-    g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
+    DX::Windowing().NotifyAppActiveChange(g_application.GetRenderGUI());
   CLog::Log(LOGDEBUG, __FUNCTION__": window is %s", g_application.GetRenderGUI() ? "shown" : "hidden");
 }
 
@@ -178,7 +178,7 @@ void CWinEventsWin10::OnWindowActivationChanged(CoreWindow ^ sender, WindowActiv
   bool active = g_application.GetRenderGUI();
   if (args->WindowActivationState == CoreWindowActivationState::Deactivated)
   {
-    g_application.SetRenderGUI(g_Windowing.WindowedMode());
+    g_application.SetRenderGUI(DX::Windowing().WindowedMode());
   }
   else if (args->WindowActivationState == CoreWindowActivationState::PointerActivated
     || args->WindowActivationState == CoreWindowActivationState::CodeActivated)
@@ -186,7 +186,7 @@ void CWinEventsWin10::OnWindowActivationChanged(CoreWindow ^ sender, WindowActiv
     g_application.SetRenderGUI(true);
   }
   if (g_application.GetRenderGUI() != active)
-    g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
+    DX::Windowing().NotifyAppActiveChange(g_application.GetRenderGUI());
   CLog::Log(LOGDEBUG, __FUNCTION__": window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
 }
 
@@ -437,7 +437,7 @@ void CWinEventsWin10::OnDpiChanged(DisplayInformation^ sender, Platform::Object^
   // See DeviceResources.cpp for more details.
   //critical_section::scoped_lock lock(m_deviceResources->GetCriticalSection());
   RECT resizeRect = { 0,0,0,0 };
-  g_Windowing.DPIChanged(sender->LogicalDpi, resizeRect);
+  DX::Windowing().DPIChanged(sender->LogicalDpi, resizeRect);
   CGenericTouchInputHandler::GetInstance().SetScreenDPI(DX::DisplayMetrics::Dpi100);
 }
 

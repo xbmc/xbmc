@@ -21,7 +21,8 @@
  */
 
 #include "GUIWindowTestPatternDX.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #ifndef M_PI
   #define M_PI       3.14159265358979323846
 #endif
@@ -71,8 +72,8 @@ void CGUIWindowTestPatternDX::DrawVerticalLines(int top, int left, int bottom, i
   }
   UpdateVertexBuffer(vert, p);
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -102,8 +103,8 @@ void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom,
   }
   UpdateVertexBuffer(vert, p);
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -144,8 +145,8 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
   }
   UpdateVertexBuffer(vert, i);
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -227,8 +228,8 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   };
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -301,8 +302,8 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
 
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -313,7 +314,7 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
 
 void CGUIWindowTestPatternDX::BeginRender()
 {
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   ID3D11RenderTargetView* renderTarget;
 
   pContext->OMGetRenderTargets(1, &renderTarget, NULL);
@@ -324,7 +325,7 @@ void CGUIWindowTestPatternDX::BeginRender()
 
 void CGUIWindowTestPatternDX::EndRender()
 {
-  g_Windowing.GetGUIShader()->RestoreBuffers();
+  DX::Windowing().GetGUIShader()->RestoreBuffers();
 }
 
 void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2, DWORD color)
@@ -344,8 +345,8 @@ void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2
 
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -366,7 +367,7 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned coun
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = vertices;
     initData.SysMemPitch = width;
-    if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
+    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, &m_vb)))
     {
       m_bufferWidth = width;
     }
@@ -374,7 +375,7 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned coun
   }
   else // update 
   {
-    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {

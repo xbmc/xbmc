@@ -21,11 +21,12 @@
 #include "system.h"
 
 #include "VideoSyncAML.h"
+#include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "threads/Thread.h"
+#include "windowing/WinSystem.h"
 #include <sys/poll.h>
 
 #include <chrono>
@@ -49,7 +50,7 @@ bool CVideoSyncAML::Setup(PUPDATECLOCK func)
 
   m_abort = false;
 
-  g_Windowing.Register(this);
+  CServiceBroker::GetWinSystem().Register(this);
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up AML");
 
   return true;
@@ -90,7 +91,7 @@ void CVideoSyncAML::Run(CEvent& stopEvent)
 void CVideoSyncAML::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up AML");
-  g_Windowing.Unregister(this);
+  CServiceBroker::GetWinSystem().Unregister(this);
 }
 
 float CVideoSyncAML::GetFps()

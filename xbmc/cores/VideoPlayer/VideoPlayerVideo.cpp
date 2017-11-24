@@ -21,7 +21,7 @@
 #include "system.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/MathUtils.h"

@@ -48,8 +48,6 @@ using namespace KODI;
 
 CWinSystemAndroid::CWinSystemAndroid()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_ANDROID;
-
   m_nativeDisplay = EGL_NO_DISPLAY;
   m_nativeWindow = nullptr;
 

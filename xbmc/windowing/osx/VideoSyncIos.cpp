@@ -20,13 +20,12 @@
 
 #include "system.h"
 
-#if defined(TARGET_DARWIN_IOS)
 #include "utils/log.h"
 #include "VideoSyncIos.h"
 #include "utils/MathUtils.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "guilib/GraphicContext.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/osx/WinSystemIOS.h"
 #include "utils/TimeUtils.h"
 
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)
@@ -41,7 +40,7 @@ bool CVideoSyncIos::Setup(PUPDATECLOCK func)
   bool setupOk = InitDisplayLink();
   if (setupOk)
   {
-    g_Windowing.Register(this);
+    m_winSystem.Register(this);
   }
   
   return setupOk;
@@ -58,7 +57,7 @@ void CVideoSyncIos::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncIos::%s cleaning up OSX", __FUNCTION__);
   DeinitDisplayLink();
-  g_Windowing.Unregister(this);
+  m_winSystem.Unregister(this);
 }
 
 float CVideoSyncIos::GetFps()
@@ -94,7 +93,7 @@ bool CVideoSyncIos::InitDisplayLink()
 {
   bool ret = true;
   CLog::Log(LOGDEBUG, "CVideoSyncIos: setting up displaylink");
-  if (!g_Windowing.InitDisplayLink(this))
+  if (!m_winSystem.InitDisplayLink(this))
   {
     CLog::Log(LOGDEBUG, "CVideoSyncIos: InitDisplayLink failed");
     ret = false;
@@ -104,7 +103,6 @@ bool CVideoSyncIos::InitDisplayLink()
 
 void CVideoSyncIos::DeinitDisplayLink()
 {
-  g_Windowing.DeinitDisplayLink();
+  m_winSystem.DeinitDisplayLink();
 }
 
-#endif//TARGET_DARWIN_IOS

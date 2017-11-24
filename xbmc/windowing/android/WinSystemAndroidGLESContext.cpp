@@ -23,6 +23,12 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemAndroidGLESContext());
+  return winSystem;
+}
+
 bool CWinSystemAndroidGLESContext::InitWindowSystem()
 {
   if (!CWinSystemAndroid::InitWindowSystem())

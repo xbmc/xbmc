@@ -23,7 +23,8 @@
 #include "GUIShaderDX.h"
 #include "system.h"
 #include "utils/log.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #pragma comment(lib, "d3dcompiler.lib")
@@ -191,7 +192,7 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   if (format == DXGI_FORMAT_UNKNOWN)
     format = DXGI_FORMAT_B8G8R8A8_UNORM; // DXGI_FORMAT_UNKNOWN
 
-  if (!g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+  if (!DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - unsupported texture format %d", format);
     return false;
@@ -209,16 +210,16 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   m_usage = usage;
 
   m_bindFlags = 0; // D3D11_BIND_SHADER_RESOURCE;
-  if (D3D11_USAGE_DEFAULT == usage && g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+  if (D3D11_USAGE_DEFAULT == usage && DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     m_bindFlags |= D3D11_BIND_RENDER_TARGET;
   if ( D3D11_USAGE_STAGING != m_usage )
   {
-    if (g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
-      || g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+    if (DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
+      || DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
     {
       m_bindFlags |= D3D11_BIND_SHADER_RESOURCE;
     }
-    if (g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_DECODER_OUTPUT))
+    if (DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_DECODER_OUTPUT))
     {
       m_bindFlags |= D3D11_BIND_DECODER;
     }
@@ -230,18 +231,18 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
     return false;
   }
 
-  g_Windowing.Register(this);
+  DX::Windowing().Register(this);
   return true;
 }
 
 bool CD3DTexture::CreateInternal(const void* pixels /* nullptr */, unsigned int srcPitch /* 0 */)
 {
-  ID3D11Device* pD3DDevice = g_Windowing.Get3D11Device();
-  ID3D11DeviceContext* pD3D11Context = g_Windowing.Get3D11Context();
+  ID3D11Device* pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  ID3D11DeviceContext* pD3D11Context = DX::DeviceResources::Get()->GetD3DContext();
 
   UINT miscFlags = 0;
   bool autogenmm = false;
-  if (m_mipLevels == 0 && g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN))
+  if (m_mipLevels == 0 && DX::Windowing().IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN))
   {
     autogenmm = pixels != nullptr;
     miscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
@@ -276,15 +277,15 @@ ID3D11ShaderResourceView* CD3DTexture::GetShaderResource(DXGI_FORMAT format /* =
   if (format == DXGI_FORMAT_UNKNOWN)
     format = m_format;
 
-  if (!g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
-    && !g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
+  if (!DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
+    && !DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
     return nullptr;
 
   if (!m_views[format])
   {
     ID3D11ShaderResourceView* pView = nullptr;
     CD3D11_SHADER_RESOURCE_VIEW_DESC cSRVDesc(D3D11_SRV_DIMENSION_TEXTURE2D, format);
-    HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(m_texture, &cSRVDesc, &pView);
+    HRESULT hr = DX::DeviceResources::Get()->GetD3DDevice()->CreateShaderResourceView(m_texture, &cSRVDesc, &pView);
     if (FAILED(hr))
     {
       CLog::Log(LOGWARNING, __FUNCTION__ " - cannot create texture view.");
@@ -325,7 +326,7 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 void CD3DTexture::Release()
 {
   if (m_texture)
-    g_Windowing.Unregister(this);
+    DX::Windowing().Unregister(this);
 
   for (auto it : m_views)
     SAFE_RELEASE(it.second);
@@ -354,7 +355,7 @@ bool CD3DTexture::LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D1
     if ((mapType == D3D11_MAP_READ || mapType == D3D11_MAP_READ_WRITE) && m_usage == D3D11_USAGE_DYNAMIC)
       return false;
 
-    return (S_OK == g_Windowing.GetImmediateContext()->Map(m_texture, subresource, mapType, 0, res));
+    return (S_OK == DX::DeviceResources::Get()->GetImmediateContext()->Map(m_texture, subresource, mapType, 0, res));
   }
   return false;
 }
@@ -363,7 +364,7 @@ bool CD3DTexture::UnlockRect(UINT subresource) const
 {
   if (m_texture)
   {
-    g_Windowing.GetImmediateContext()->Unmap(m_texture, subresource);
+    DX::DeviceResources::Get()->GetImmediateContext()->Unmap(m_texture, subresource);
     return true;
   }
   return false;
@@ -376,7 +377,7 @@ void CD3DTexture::SaveTexture()
     delete[] m_data;
     m_data = nullptr;
 
-    ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetImmediateContext();
 
     D3D11_TEXTURE2D_DESC textureDesc;
     m_texture->GetDesc(&textureDesc);
@@ -390,7 +391,7 @@ void CD3DTexture::SaveTexture()
       stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
       stagingDesc.BindFlags = 0;
 
-      if (FAILED(g_Windowing.Get3D11Device()->CreateTexture2D(&stagingDesc, NULL, &texture)))
+      if (FAILED(DX::DeviceResources::Get()->GetD3DDevice()->CreateTexture2D(&stagingDesc, NULL, &texture)))
         return;
 
       // copy contents to new texture
@@ -458,13 +459,13 @@ ID3D11RenderTargetView* CD3DTexture::GetRenderTargetInternal(unsigned idx)
   if (!m_texture)
     return nullptr;
 
-  if (!g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+  if (!DX::Windowing().IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     return nullptr;
 
   if (!m_renderTargets[idx])
   {
     CD3D11_RENDER_TARGET_VIEW_DESC cRTVDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_UNKNOWN, 0, idx, 1);
-    if (FAILED(g_Windowing.Get3D11Device()->CreateRenderTargetView(m_texture, &cRTVDesc, &m_renderTargets[idx])))
+    if (FAILED(DX::DeviceResources::Get()->GetD3DDevice()->CreateRenderTargetView(m_texture, &cRTVDesc, &m_renderTargets[idx])))
     {
       CLog::Log(LOGWARNING, __FUNCTION__ " - cannot create texture view.");
     }
@@ -492,7 +493,7 @@ void CD3DTexture::GenerateMipmaps()
   {
     ID3D11ShaderResourceView* pSRView = GetShaderResource();
     if (pSRView != nullptr)
-      g_Windowing.Get3D11Context()->GenerateMips(pSRView);
+      DX::DeviceResources::Get()->GetD3DContext()->GenerateMips(pSRView);
   }
 }
 
@@ -536,7 +537,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, unsigned numVi
     { XMFLOAT3(points[3].x, points[3].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y2), XMFLOAT2(0.0f, 0.0f) },
   };
 
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(view && numViews > 0 ? options : SHADER_METHOD_RENDER_DEFAULT);
   if (view && numViews > 0)
@@ -577,7 +578,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
     m_defines = *defines; //FIXME: is this a copy of all members?
   if (CreateEffect())
   {
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
     return true;
   }
   return false;
@@ -585,7 +586,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
 
 void CD3DEffect::Release()
 {
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
   OnDestroyDevice(false);
 }
 
@@ -731,7 +732,7 @@ bool CD3DEffect::BeginPass(UINT pass)
       m_currentPass = nullptr;
       return false;
     }
-    return (S_OK == m_currentPass->Apply(0, g_Windowing.Get3D11Context()));
+    return (S_OK == m_currentPass->Apply(0, DX::DeviceResources::Get()->GetD3DContext()));
   }
   return false;
 }
@@ -787,7 +788,7 @@ bool CD3DEffect::CreateEffect()
 #endif
 
   hr = D3DX11CompileEffectFromMemory(m_effectString.c_str(), m_effectString.length(), "", &definemacros[0], this,
-                                     dwShaderFlags, 0, g_Windowing.Get3D11Device(), &m_effect, &pError);
+                                     dwShaderFlags, 0, DX::DeviceResources::Get()->GetD3DDevice(), &m_effect, &pError);
 
   if(hr == S_OK)
     return true;
@@ -839,7 +840,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
   // create the vertex buffer
   if (CreateBuffer(data))
   {
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
     return true;
   }
   return false;
@@ -847,7 +848,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
 
 void CD3DBuffer::Release()
 {
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
   SAFE_RELEASE(m_buffer);
 }
 
@@ -856,7 +857,7 @@ bool CD3DBuffer::Map(void **data)
   if (m_buffer)
   {
     D3D11_MAPPED_SUBRESOURCE resource;
-    if (SUCCEEDED(g_Windowing.Get3D11Context()->Map(m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
+    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DContext()->Map(m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
     {
       *data = resource.pData;
       return true;
@@ -869,7 +870,7 @@ bool CD3DBuffer::Unmap()
 {
   if (m_buffer)
   {
-    g_Windowing.Get3D11Context()->Unmap(m_buffer, 0);
+    DX::DeviceResources::Get()->GetD3DContext()->Unmap(m_buffer, 0);
     return true;
   }
   return false;
@@ -883,8 +884,8 @@ void CD3DBuffer::OnDestroyDevice(bool fatal)
     return;
   }
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
-  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
 
   if (!pDevice || !pContext || !m_buffer)
     return;
@@ -937,7 +938,7 @@ bool CD3DBuffer::CreateBuffer(const void* pData)
   CD3D11_BUFFER_DESC bDesc(m_length, m_type, m_usage, m_cpuFlags);
   D3D11_SUBRESOURCE_DATA initData;
   initData.pSysMem = pData;
-  return (S_OK == g_Windowing.Get3D11Device()->CreateBuffer(&bDesc, (pData ? &initData : nullptr), &m_buffer));
+  return (S_OK == DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&bDesc, (pData ? &initData : nullptr), &m_buffer));
 }
 
 /****************************************************/
@@ -960,7 +961,7 @@ CD3DVertexShader::~CD3DVertexShader()
 
 void CD3DVertexShader::Release()
 {
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
   ReleaseShader();
   SAFE_RELEASE(m_VSBuffer);
   SAFE_DELETE_ARRAY(m_vertexLayout);
@@ -979,7 +980,7 @@ bool CD3DVertexShader::Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMEN
 {
   ReleaseShader();
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   if (!pDevice)
     return false;
@@ -1003,7 +1004,7 @@ bool CD3DVertexShader::Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMEN
   m_inited = CreateInternal();
 
   if (m_inited)
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
 
   return m_inited;
 }
@@ -1012,7 +1013,7 @@ bool CD3DVertexShader::Create(const void* code, size_t codeLength, D3D11_INPUT_E
 {
   ReleaseShader();
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   if (!pDevice)
     return false;
@@ -1037,14 +1038,14 @@ bool CD3DVertexShader::Create(const void* code, size_t codeLength, D3D11_INPUT_E
   m_inited = CreateInternal();
 
   if (m_inited)
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
 
   return m_inited;
 }
 
 bool CD3DVertexShader::CreateInternal()
 {
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   CLog::Log(LOGDEBUG, __FUNCTION__ " - Create the vertex shader.");
 
@@ -1072,7 +1073,7 @@ void CD3DVertexShader::BindShader()
   if (!m_inited)
     return;
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   if (!pContext)
     return;
 
@@ -1085,7 +1086,7 @@ void CD3DVertexShader::UnbindShader()
   if (!m_inited)
     return;
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   pContext->IASetInputLayout(nullptr);
   pContext->VSSetShader(nullptr, nullptr, 0);
 }
@@ -1118,7 +1119,7 @@ CD3DPixelShader::~CD3DPixelShader()
 
 void CD3DPixelShader::Release()
 {
-  g_Windowing.Unregister(this);
+  DX::Windowing().Unregister(this);
   ReleaseShader();
   SAFE_RELEASE(m_PSBuffer);
 }
@@ -1133,7 +1134,7 @@ bool CD3DPixelShader::Create(const std::wstring& wstrFile)
 {
   ReleaseShader();
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   if (!pDevice)
     return false;
@@ -1147,7 +1148,7 @@ bool CD3DPixelShader::Create(const std::wstring& wstrFile)
   m_inited = CreateInternal();
 
   if (m_inited)
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
 
   return m_inited;
 }
@@ -1156,7 +1157,7 @@ bool CD3DPixelShader::Create(const void* code, size_t codeLength)
 {
   ReleaseShader();
 
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   if (!pDevice)
     return false;
@@ -1171,14 +1172,14 @@ bool CD3DPixelShader::Create(const void* code, size_t codeLength)
   m_inited = CreateInternal();
 
   if (m_inited)
-    g_Windowing.Register(this);
+    DX::Windowing().Register(this);
 
   return m_inited;
 }
 
 bool CD3DPixelShader::CreateInternal()
 {
-  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   CLog::Log(LOGDEBUG, __FUNCTION__ " - Create the pixel shader.");
 
@@ -1198,7 +1199,7 @@ void CD3DPixelShader::BindShader()
   if (!m_inited)
     return;
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   if (!pContext)
     return;
 
@@ -1210,7 +1211,7 @@ void CD3DPixelShader::UnbindShader()
   if (!m_inited)
     return;
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
   pContext->IASetInputLayout(nullptr);
   pContext->VSSetShader(nullptr, nullptr, 0);
 }

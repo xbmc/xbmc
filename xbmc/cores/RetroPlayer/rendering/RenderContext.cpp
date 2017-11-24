@@ -23,13 +23,15 @@
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "system_gl.h"
 
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
 #elif HAS_GLES >= 2
 #include "rendering/gles/RenderSystemGLES.h"
+#elif defined(TARGET_WINDOWS)
+#include "rendering/dx/RenderSystemDX.h"
 #endif
 
 using namespace KODI;

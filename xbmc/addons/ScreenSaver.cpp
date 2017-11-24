@@ -21,8 +21,11 @@
 #include "ScreenSaver.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "utils/log.h"
+#ifdef TARGET_WINDOWS
+#include "rendering/dx/DeviceResources.h"
+#endif
 
 namespace ADDON
 {
@@ -36,7 +39,7 @@ CScreenSaver::CScreenSaver(BinaryAddonBasePtr addonBase)
 
   m_struct = {{0}};
 #ifdef TARGET_WINDOWS
-  m_struct.props.device = g_Windowing.Get3D11Context();
+  m_struct.props.device = DX::DeviceResources::Get()->GetD3DContext();
 #else
   m_struct.props.device = nullptr;
 #endif

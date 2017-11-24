@@ -31,9 +31,30 @@
 #if defined(HAVE_LIBVA)
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
+
+using namespace KODI::WINDOWING::WAYLAND;
+class CVaapiProxy : public VAAPI::IVaapiWinSystem
+{
+public:
+  CVaapiProxy(CWinSystemWaylandEGLContextGLES &winSystem) : m_winSystem(winSystem) {};
+  VADisplay GetVADisplay() override { return m_winSystem.GetVaDisplay(); };
+  void *GetEGLDisplay() override { return m_winSystem.GetEGLDisplay(); };
+protected:
+  CWinSystemWaylandEGLContextGLES &m_winSystem;
+};
+#else
+class CVaapiProxy
+{
+};
 #endif
 
 using namespace KODI::WINDOWING::WAYLAND;
+
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWaylandEGLContextGLES());
+  return winSystem;
+}
 
 bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
 {
@@ -47,10 +68,11 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
 
 #if defined(HAVE_LIBVA)
   bool general, hevc;
-  CRendererVAAPI::Register(GetVaDisplay(), m_eglContext.GetEGLDisplay(), general, hevc);
+  m_vaapiProxy.reset(new CVaapiProxy(*this));
+  CRendererVAAPI::Register(m_vaapiProxy.get(), GetVaDisplay(), m_eglContext.GetEGLDisplay(), general, hevc);
   if (general)
   {
-    VAAPI::CDecoder::Register(hevc);
+    VAAPI::CDecoder::Register(m_vaapiProxy.get(), hevc);
   }
 #endif
 

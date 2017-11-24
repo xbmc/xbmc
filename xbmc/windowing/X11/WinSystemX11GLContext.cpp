@@ -47,6 +47,12 @@
 
 using namespace KODI;
 
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemX11GLContext());
+  return winSystem;
+}
+
 CWinSystemX11GLContext::CWinSystemX11GLContext() = default;
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()
@@ -206,7 +212,22 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
 #include <va/va_x11.h>
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGL.h"
+
+class CVaapiProxy : public VAAPI::IVaapiWinSystem
+{
+public:
+  CVaapiProxy(CWinSystemX11GLContext &winSystem) : m_winSystem(winSystem) {};
+  VADisplay GetVADisplay() override { return m_winSystem.GetVaDisplay(); };
+  void *GetEGLDisplay() override { return m_winSystem.GetEGLDisplay(); };
+protected:
+  CWinSystemX11GLContext &m_winSystem;
+};
+#else
+class CVaapiProxy
+{
+};
 #endif
+
 #if defined (HAVE_LIBVDPAU)
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVDPAU.h"
@@ -240,12 +261,13 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
     if (gpuvendor.compare(0, 5, "intel") == 0)
     {
 #if defined (HAVE_LIBVA)
+      m_vaapiProxy.reset(new CVaapiProxy(*this));
       EGLDisplay eglDpy = static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
       VADisplay vaDpy = GetVaDisplay();
       bool general, hevc;
-      CRendererVAAPI::Register(vaDpy, eglDpy, general, hevc);
+      CRendererVAAPI::Register(m_vaapiProxy.get(), vaDpy, eglDpy, general, hevc);
       if (general)
-        VAAPI::CDecoder::Register(hevc);
+        VAAPI::CDecoder::Register(m_vaapiProxy.get(), hevc);
 #endif
       return success;
     }
@@ -274,12 +296,12 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
 
   if (dynamic_cast<CGLContextEGL*>(m_pGLContext))
   {
-    pVSync.reset(new CVideoSyncDRM(clock));
+    pVSync.reset(new CVideoSyncDRM(clock, *this));
   }
 #ifdef HAS_GLX
   else if (dynamic_cast<CGLContextGLX*>(m_pGLContext))
   {
-    pVSync.reset(new CVideoSyncGLX(clock));
+    pVSync.reset(new CVideoSyncGLX(clock, *this));
   }
 #endif // HAS_GLX
   return pVSync;

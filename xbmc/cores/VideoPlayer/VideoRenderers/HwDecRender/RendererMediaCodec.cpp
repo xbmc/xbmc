@@ -25,7 +25,8 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "settings/MediaSettings.h"
-#include "windowing/WindowingFactory.h"
+#include "ServiceBroker.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "../RenderFactory.h"
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
@@ -130,11 +131,13 @@ bool CRendererMediaCodec::RenderHook(int index)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
+  CRenderSystemGLES& renderSystem = dynamic_cast<CRenderSystemGLES&>(CServiceBroker::GetRenderSystem());
+
   if (m_currentField != FIELD_FULL)
   {
-    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
-    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
-    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
+    renderSystem.EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
+    GLint   fieldLoc = renderSystem.GUIShaderGetField();
+    GLint   stepLoc = renderSystem.GUIShaderGetStep();
 
     // Y is inverted, so invert fields
     if     (m_currentField == FIELD_TOP)
@@ -144,21 +147,21 @@ bool CRendererMediaCodec::RenderHook(int index)
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
-    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_OES);
+    renderSystem.EnableGUIShader(SM_TEXTURE_RGBA_OES);
 
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
+  GLint   contrastLoc = renderSystem.GUIShaderGetContrast();
   glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
+  GLint   brightnessLoc = renderSystem.GUIShaderGetBrightness();
   glUniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
 
-  glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
+  glUniformMatrix4fv(renderSystem.GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][4];
 
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
+  GLint   posLoc = renderSystem.GUIShaderGetPos();
+  GLint   texLoc = renderSystem.GUIShaderGetCoord0();
 
 
   glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
@@ -209,9 +212,9 @@ bool CRendererMediaCodec::RenderHook(int index)
       0.0f, 0.0f, 1.0f, 0.0f,
       0.0f, 0.0f, 0.0f, 1.0f
   };
-  glUniformMatrix4fv(g_Windowing.GUIShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
+  glUniformMatrix4fv(renderSystem.GUIShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
 
-  g_Windowing.DisableGUIShader();
+  renderSystem.DisableGUIShader();
   VerifyGLState();
 
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
@@ -235,12 +238,6 @@ bool CRendererMediaCodec::CreateTexture(int index)
     plane.texheight = m_sourceHeight;
     plane.pixpertex_x = 1;
     plane.pixpertex_y = 1;
-
-    if(m_renderMethod & RENDER_POT)
-    {
-      plane.texwidth  = NP2(plane.texwidth);
-      plane.texheight = NP2(plane.texheight);
-    }
   }
 
   return true;

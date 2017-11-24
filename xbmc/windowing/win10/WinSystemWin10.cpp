@@ -53,7 +53,6 @@ CWinSystemWin10::CWinSystemWin10()
   , m_inFocus(false)
   , m_bMinimized(false)
 {
-  m_eWindowSystem = WINDOW_SYSTEM_WIN10;
   m_winEvents.reset(new CWinEventsWin10());
 }
 
@@ -83,8 +82,8 @@ bool CWinSystemWin10::DestroyWindowSystem()
 
 void CWinSystemWin10::SetCoreWindow(Windows::UI::Core::CoreWindow^ window)
 {
-  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
   m_coreWindow = window;
+  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
 }
 
 bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

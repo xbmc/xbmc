@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 
 #include <string>
 #include <utility>
@@ -374,7 +374,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
   // set the label control correctly
   std::string strText;
-  if (g_Windowing.IsFullScreen())
+  if (CServiceBroker::GetWinSystem().IsFullScreen())
     strText = StringUtils::Format("%ix%i@%.2f - %s | %s",
                                   info.iScreenWidth,
                                   info.iScreenHeight,
@@ -393,7 +393,6 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
 void CGUIWindowSettingsScreenCalibration::FrameMove()
 {
-  //  g_Windowing.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_iControl = GetFocusedControlID();
   if (m_iControl >= 0)
   {

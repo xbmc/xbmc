@@ -32,7 +32,7 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
 #include "settings/Settings.h"
-#include "windowing/WindowingFactory.h"
+#include "windowing/WinSystem.h"
 #include "utils/log.h"
 
 #define MAX_CACHE_LEVEL 0.4   // total cache time of stream in seconds
@@ -300,7 +300,7 @@ CActiveAE::~CActiveAE()
 
 void CActiveAE::Dispose()
 {
-  g_Windowing.Unregister(this);
+  CServiceBroker::GetWinSystem().Unregister(this);
 
   m_bStop = true;
   m_outMsgEvent.Set();
@@ -2613,7 +2613,7 @@ bool CActiveAE::Initialize()
   }
 
   // hook into windowing for receiving display reset events
-  g_Windowing.Register(this);
+  CServiceBroker::GetWinSystem().Register(this);
 
   m_inMsgEvent.Reset();
   return true;

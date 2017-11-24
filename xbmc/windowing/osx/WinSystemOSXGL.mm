@@ -18,12 +18,18 @@
  *
  */
 
-#if defined(TARGET_DARWIN_OSX)
-
 #include "guilib/Texture.h"
 #include "WinSystemOSXGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+{
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemOSXGL());
+  return winSystem;
+}
 
 CWinSystemOSXGL::CWinSystemOSXGL()
 {
@@ -86,4 +92,3 @@ bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   return true;
 }
 
-#endif

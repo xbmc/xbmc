@@ -27,10 +27,13 @@
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
 
+class CWinSystemX11GLContext;
+
 class CVideoSyncGLX : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncGLX(void *clock) : CVideoSync(clock) {};
+  explicit CVideoSyncGLX(void *clock, CWinSystemX11GLContext& winSystem) :
+    CVideoSync(clock), m_winSystem(winSystem) {};
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
@@ -43,6 +46,7 @@ private:
   int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
 
   static Display* m_Dpy;
+  CWinSystemX11GLContext &m_winSystem;
   XVisualInfo *m_vInfo;
   Window       m_Window;
   GLXContext   m_Context;

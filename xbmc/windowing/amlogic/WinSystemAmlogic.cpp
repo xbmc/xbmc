@@ -48,8 +48,6 @@ using namespace KODI;
 
 CWinSystemAmlogic::CWinSystemAmlogic()
 {
-  m_eWindowSystem = WINDOW_SYSTEM_AML;
-
   const char *env_framebuffer = getenv("FRAMEBUFFER");
 
   // default to framebuffer 0

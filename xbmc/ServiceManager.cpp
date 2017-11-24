@@ -41,6 +41,7 @@
 #include "network/Network.h"
 #include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
+#include "windowing/WinSystem.h"
 
 using namespace KODI;
 
@@ -325,6 +326,16 @@ CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
   return *m_fileExtensionProvider;
 }
 
+CWinSystemBase &CServiceManager::GetWinSystem()
+{
+  return *m_winSystem.get();
+}
+
+void CServiceManager::SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem)
+{
+  m_winSystem = std::move(winSystem);
+}
+
 // deleters for unique_ptr
 void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
 {
@@ -365,3 +376,4 @@ CNetwork& CServiceManager::GetNetwork()
 {
   return *m_network;
 }
+

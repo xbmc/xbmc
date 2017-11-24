@@ -31,7 +31,6 @@
 #include "ServiceBroker.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "DVDVideoCodec.h"

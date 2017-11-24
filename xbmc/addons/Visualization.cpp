@@ -24,7 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #if defined(TARGET_WINDOWS)
-#include "windowing/WindowingFactory.h"
+#include "rendering/dx/DeviceResources.h"
 #endif
 
 namespace ADDON
@@ -40,7 +40,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
 
   m_struct = {{0}};
 #if defined(TARGET_WINDOWS)
-  m_struct.props.device = g_Windowing.Get3D11Context();
+  m_struct.props.device = DX::DeviceResources::Get()->GetD3DContext();
 #else
   m_struct.props.device = nullptr;
 #endif

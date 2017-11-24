@@ -19,8 +19,9 @@
  */
 
 #include "system.h"
+#include "ServiceBroker.h"
 #include "Texture.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
@@ -29,7 +30,6 @@
 #include "linux/XMemUtils.h"
 #endif
 
-#if defined(HAS_GL) || defined(HAS_GLES)
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -96,7 +96,7 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  unsigned int maxSize = g_Windowing.GetMaxTextureSize();
+  unsigned int maxSize = CServiceBroker::GetRenderSystem().GetMaxTextureSize();
   if (m_textureHeight > maxSize)
   {
     CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_textureHeight, maxSize);
@@ -173,11 +173,11 @@ void CGLTexture::LoadToGPU()
       internalformat = pixelformat = GL_RGB;
       break;
     case XB_FMT_A8R8G8B8:
-      if (g_Windowing.SupportsBGRA())
+      if (CServiceBroker::GetRenderSystem().SupportsBGRA())
       {
         internalformat = pixelformat = GL_BGRA_EXT;
       }
-      else if (g_Windowing.SupportsBGRAApple())
+      else if (CServiceBroker::GetRenderSystem().SupportsBGRAApple())
       {
         // Apple's implementation does not conform to spec. Instead, they require
         // differing format/internalformat, more like GL.
@@ -217,4 +217,3 @@ void CGLTexture::BindToUnit(unsigned int unit)
   glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
-#endif // HAS_GL

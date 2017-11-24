@@ -20,11 +20,12 @@
 
 #include "system.h"
 
+#include "ServiceBroker.h"
 #include "Shader.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 
 #ifdef HAS_GLES
 #define GLchar char
@@ -46,7 +47,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   CFileStream file;
 
   std::string path = "special://xbmc/system/shaders/";
-  path += g_Windowing.GetShaderPath();
+  path += CServiceBroker::GetRenderSystem().GetShaderPath();
   path += filename;
   if(!file.Open(path))
   {
@@ -76,7 +77,7 @@ bool CShader::AppendSource(const std::string& filename)
   std::string temp;
 
   std::string path = "special://xbmc/system/shaders/";
-  path += g_Windowing.GetShaderPath();
+  path += CServiceBroker::GetRenderSystem().GetShaderPath();
   path += filename;
   if(!file.Open(path))
   {
