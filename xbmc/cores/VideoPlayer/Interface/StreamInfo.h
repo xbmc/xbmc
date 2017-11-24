@@ -40,36 +40,34 @@ enum StreamFlags
   , FLAG_VISUAL_IMPAIRED = 0x0100
 };
 
-struct AudioStreamInfo
+struct StreamInfo
 {
   bool valid = false;
   int bitrate = 0;
+  std::string language;
+  std::string name;
+  std::string codecName;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
+
+protected:
+  StreamInfo() = default;
+};
+
+struct AudioStreamInfo : StreamInfo
+{
   int channels = 0;
   int samplerate = 0;
   int bitspersample = 0;
-  std::string language;
-  std::string name;
-  std::string audioCodecName;
-  StreamFlags flags = StreamFlags::FLAG_NONE;
 };
 
-struct SubtitleStreamInfo
-{
-  std::string language;
-  std::string name;
-  StreamFlags flags = StreamFlags::FLAG_NONE;
-};
+struct SubtitleStreamInfo : StreamInfo
+{};
 
-struct VideoStreamInfo
+struct VideoStreamInfo : StreamInfo
 {
-  bool valid = false;
-  int bitrate = 0;
   float videoAspectRatio = 0.0f;
   int height = 0;
   int width = 0;
-  std::string language;
-  std::string name;
-  std::string videoCodecName;
   CRect SrcRect;
   CRect DestRect;
   std::string stereoMode;

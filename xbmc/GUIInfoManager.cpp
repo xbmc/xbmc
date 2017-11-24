@@ -6233,7 +6233,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = m_videoInfo.videoCodecName;
+      strLabel = m_videoInfo.codecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
@@ -6245,7 +6245,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = m_audioInfo.audioCodecName;
+      strLabel = m_audioInfo.codecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
@@ -8670,7 +8670,7 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_CODEC:
     {
-      return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
+      return StringUtils::Format("%s", m_audioInfo.codecName.c_str());
     }
     break;
   }

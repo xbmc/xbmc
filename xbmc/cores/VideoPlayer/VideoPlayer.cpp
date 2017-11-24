@@ -4632,7 +4632,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
   info.height = s.height;
   info.SrcRect = s.SrcRect;
   info.DestRect = s.DestRect;
-  info.videoCodecName = s.codec;
+  info.codecName = s.codec;
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
 }
@@ -4670,7 +4670,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
   info.valid = true;
   info.bitrate = s.bitrate;
   info.channels = s.channels;
-  info.audioCodecName = s.codec;
+  info.codecName = s.codec;
   info.flags = s.flags;
 }
 

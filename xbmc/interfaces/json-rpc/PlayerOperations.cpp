@@ -1541,7 +1541,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["index"] = index;
             result["name"] = info.name;
             result["language"] = info.language;
-            result["codec"] = info.audioCodecName;
+            result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
           }
@@ -1573,7 +1573,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             audioStream["index"] = index;
             audioStream["name"] = info.name;
             audioStream["language"] = info.language;
-            audioStream["codec"] = info.audioCodecName;
+            audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
 
@@ -1604,7 +1604,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         result["index"] = index;
         result["name"] = info.name;
         result["language"] = info.language;
-        result["codec"] = info.videoCodecName;
+        result["codec"] = info.codecName;
         result["width"] = info.width;
         result["height"] = info.height;
       }
@@ -1638,7 +1638,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           videoStream["index"] = index;
           videoStream["name"] = info.name;
           videoStream["language"] = info.language;
-          videoStream["codec"] = info.videoCodecName;
+          videoStream["codec"] = info.codecName;
           videoStream["width"] = info.width;
           videoStream["height"] = info.height;
 

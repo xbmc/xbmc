@@ -195,7 +195,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
 
     m_addonStreamProperties.strName       = info.name.c_str();
     m_addonStreamProperties.strLanguage   = info.language.c_str();
-    m_addonStreamProperties.strCodecId    = info.audioCodecName.c_str();
+    m_addonStreamProperties.strCodecId    = info.codecName.c_str();
     m_addonStreamProperties.iIdentifier   = identifier;
     m_addonStreamProperties.iSampleRate   = info.samplerate;
     m_addonStreamProperties.iChannels     = info.channels;

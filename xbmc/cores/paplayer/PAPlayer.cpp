@@ -1008,7 +1008,7 @@ void PAPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
 {
   info.bitrate = m_playerGUIData.m_audioBitrate;
   info.channels = m_playerGUIData.m_channelCount;
-  info.audioCodecName = m_playerGUIData.m_codec;
+  info.codecName = m_playerGUIData.m_codec;
   info.samplerate = m_playerGUIData.m_sampleRate;
   info.bitspersample = m_playerGUIData.m_bitsPerSample;
 }
