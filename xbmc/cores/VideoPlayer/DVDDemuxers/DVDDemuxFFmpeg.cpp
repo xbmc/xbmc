@@ -700,8 +700,8 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       // map some standard http headers to the ffmpeg related options
       else if (name == "user-agent")
       {
-        av_dict_set(&options, "user-agent", value.c_str(), 0);
-        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user-agent: %s'", value.c_str());
+        av_dict_set(&options, "user_agent", value.c_str(), 0);
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user_agent: %s'", value.c_str());
         hasUserAgent = true;
       }
       else if (name == "cookies")
@@ -750,7 +750,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     if (!hasUserAgent)
     {
       // set default xbmc user-agent.
-      av_dict_set(&options, "user-agent", g_advancedSettings.m_userAgent.c_str(), 0);
+      av_dict_set(&options, "user_agent", g_advancedSettings.m_userAgent.c_str(), 0);
     }
 
     if (!headers.empty())
