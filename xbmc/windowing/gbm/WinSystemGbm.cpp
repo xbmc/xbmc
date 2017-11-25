@@ -110,12 +110,16 @@ void CWinSystemGbm::UpdateResolutions()
   }
   else
   {
+    CDisplaySettings::GetInstance().ClearCustomResolutions();
+
     for (unsigned int i = 0; i < resolutions.size(); i++)
     {
       g_graphicsContext.ResetOverscan(resolutions[i]);
       CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
 
-      CLog::Log(LOGNOTICE, "Found resolution for display %d with %dx%d%s @ %f Hz",
+      CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
+                resolutions[i].iWidth,
+                resolutions[i].iHeight,
                 resolutions[i].iScreen,
                 resolutions[i].iScreenWidth,
                 resolutions[i].iScreenHeight,
