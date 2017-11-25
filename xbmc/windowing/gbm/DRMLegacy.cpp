@@ -57,11 +57,11 @@ bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
   m_drm_fb = CDRMUtils::DrmFbGetFromBo(m_bo);
 
   auto ret = drmModeSetCrtc(m_drm->fd,
-                            m_drm->crtc_id,
+                            m_drm->crtc->crtc->crtc_id,
                             m_drm_fb->fb_id,
                             0,
                             0,
-                            &m_drm->connector_id,
+                            &m_drm->connector->connector->connector_id,
                             1,
                             m_drm->mode);
 
@@ -144,7 +144,7 @@ bool CDRMLegacy::QueueFlip()
   m_drm_fb = CDRMUtils::DrmFbGetFromBo(m_next_bo);
 
   auto ret = drmModePageFlip(m_drm->fd,
-                             m_drm->crtc_id,
+                             m_drm->crtc->crtc->crtc_id,
                              m_drm_fb->fb_id,
                              DRM_MODE_PAGE_FLIP_EVENT,
                              &flip_happening);
