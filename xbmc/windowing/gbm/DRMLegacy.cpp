@@ -195,10 +195,12 @@ void CDRMLegacy::DestroyDrmLegacy()
   if(m_gbm->surface)
   {
     gbm_surface_destroy(m_gbm->surface);
+    m_gbm->surface = nullptr;
   }
 
   if(m_gbm->dev)
   {
     gbm_device_destroy(m_gbm->dev);
+    m_gbm->dev = nullptr;
   }
 }
