@@ -275,6 +275,8 @@
 
 #define ACTION_PLAYER_RESET           248 //!< Send a reset command to the active game
 
+#define ACTION_TOGGLE_FONT            249 //!< Toggle font. Used in TextViewer dialog
+
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE        300
 
