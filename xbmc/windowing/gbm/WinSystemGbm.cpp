@@ -144,13 +144,7 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     return false;
   }
 
-  auto ret = m_DRM.SetVideoMode(res);
-  if (!ret)
-  {
-    return false;
-  }
-
-  return true;
+  return m_DRM.SetVideoMode(res);
 }
 
 void CWinSystemGbm::FlipPage(CGLContextEGL *pGLContext)

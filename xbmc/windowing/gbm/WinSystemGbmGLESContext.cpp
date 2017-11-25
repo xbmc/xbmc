@@ -98,12 +98,7 @@ bool CWinSystemGbmGLESContext::DestroyWindowSystem()
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
 
-  if (!CWinSystemGbm::DestroyWindowSystem())
-  {
-    return false;
-  }
-
-  return true;
+  return CWinSystemGbm::DestroyWindowSystem();
 }
 
 bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
