@@ -792,7 +792,7 @@ namespace PVR
      */
     PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
 
-    typedef std::function<PVR_ERROR(const CPVRClientPtr &client)> PVRClientFunction;
+    typedef std::function<PVR_ERROR(const CPVRClientPtr&)> PVRClientFunction;
 
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
@@ -806,7 +806,7 @@ namespace PVR
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
      * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
-     * @param faildeClients Contains a list of the ids of clients for that the call failed, if any.
+     * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
     PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int> &failedClients) const;
