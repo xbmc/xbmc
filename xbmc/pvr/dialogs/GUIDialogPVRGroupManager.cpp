@@ -369,8 +369,6 @@ void CGUIDialogPVRGroupManager::OnWindowUnload()
 
 void CGUIDialogPVRGroupManager::Update()
 {
-  /* lock our display, as this window is rendered from the player thread */
-  g_graphicsContext.Lock();
   m_viewUngroupedChannels.SetCurrentView(CONTROL_LIST_CHANNELS_LEFT);
   m_viewGroupMembers.SetCurrentView(CONTROL_LIST_CHANNELS_RIGHT);
   m_viewChannelGroups.SetCurrentView(CONTROL_LIST_CHANNEL_GROUPS);
@@ -423,8 +421,6 @@ void CGUIDialogPVRGroupManager::Update()
     m_viewGroupMembers.SetItems(*m_groupMembers);
     m_viewGroupMembers.SetSelectedItem(m_iSelectedGroupMember);
   }
-
-  g_graphicsContext.Unlock();
 }
 
 void CGUIDialogPVRGroupManager::Clear()

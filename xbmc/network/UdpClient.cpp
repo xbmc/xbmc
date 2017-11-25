@@ -192,13 +192,7 @@ void CUdpClient::Process()
         CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'",
                   XbmcThreads::SystemClockMillis(), message.c_str() );
 
-        // NOTE: You should consider locking access to the screen device
-        // or at least wait until after vertical refresh before firing off events
-        // to protect access to graphics resources.
-
-        g_graphicsContext.Lock();
         OnMessage(remoteAddress, message, (LPBYTE)messageBuffer, messageLength);
-        g_graphicsContext.Unlock();
       }
       else
       {

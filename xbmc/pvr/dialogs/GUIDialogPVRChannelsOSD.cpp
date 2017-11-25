@@ -182,8 +182,6 @@ void CGUIDialogPVRChannelsOSD::Update()
   g_infoManager.RegisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
-  // lock our display, as this window is rendered from the player thread
-  g_graphicsContext.Lock();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
   // empty the list ready for population
@@ -206,8 +204,6 @@ void CGUIDialogPVRChannelsOSD::Update()
       }
     }
   }
-
-  g_graphicsContext.Unlock();
 }
 
 void CGUIDialogPVRChannelsOSD::SetInvalid()
