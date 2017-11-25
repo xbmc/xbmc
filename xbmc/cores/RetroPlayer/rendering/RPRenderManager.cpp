@@ -31,7 +31,6 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "guilib/TransformMatrix.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/GameSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
