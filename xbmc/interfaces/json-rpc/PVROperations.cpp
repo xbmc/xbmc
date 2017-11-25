@@ -365,7 +365,7 @@ JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransport
   if (!timer)
     return InvalidParams;
 
-  if (timers->DeleteTimer(timer, timer->IsRecording(), false))
+  if (timers->DeleteTimer(timer, timer->IsRecording(), false) == TimerOperationResult::OK)
     return ACK;
 
   return FailedToExecute;
@@ -390,7 +390,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
       timer = CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer);
 
     if (timer)
-      sentOkay = CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, timer->IsRecording(), false);
+      sentOkay = (CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, timer->IsRecording(), false) == TimerOperationResult::OK);
   }
   else
   {

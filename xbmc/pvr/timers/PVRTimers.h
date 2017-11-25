@@ -218,28 +218,34 @@ namespace PVR
 
     /*!
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
+     * @param tag The timer to add.
      * @return True if timer add request was sent correctly, false if not.
      */
-     static bool AddTimer(const CPVRTimerInfoTagPtr &item);
+     static bool AddTimer(const CPVRTimerInfoTagPtr &tag);
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
+     * @param tag The timer to delete.
+     * @param bForce Control what to do in case the timer is currently recording.
+     *        True to force to delete the timer, false to return TimerDeleteResult::RECORDING.
      * @param bDeleteRule Also delete the timer rule that scheduled the timer instead of single timer only.
-     * @return True if timer delete request was sent correctly, false if not.
+     * @return The result.
      */
-    static bool DeleteTimer(const CPVRTimerInfoTagPtr &tag, bool bForce = false, bool bDeleteRule = false);
+    static TimerOperationResult DeleteTimer(const CPVRTimerInfoTagPtr &tag, bool bForce = false, bool bDeleteRule = false);
 
     /*!
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
+     * @param tag The timer to rename.
      * @return True if timer rename request was sent correctly, false if not.
      */
-    static bool RenameTimer(CFileItem &item, const std::string &strNewName);
+    static bool RenameTimer(const CPVRTimerInfoTagPtr &tag, const std::string &strNewName);
 
     /*!
      * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.
+     * @param tag The timer to update.
      * @return True if timer update request was sent correctly, false if not.
      */
-    static bool UpdateTimer(const CPVRTimerInfoTagPtr &item);
+    static bool UpdateTimer(const CPVRTimerInfoTagPtr &tag);
 
     /*!
      * @brief Get the timer tag that matches the given epg tag.
