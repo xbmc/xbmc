@@ -4635,6 +4635,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
   info.codecName = s.codec;
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
+  info.flags = s.flags;
 }
 
 int CVideoPlayer::GetSourceBitrate()

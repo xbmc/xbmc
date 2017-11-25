@@ -452,6 +452,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
     else
       strItem += ")";
 
+    strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
     list.push_back(make_pair(strItem, i));
   }
@@ -461,4 +462,24 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
     list.push_back(make_pair(g_localizeStrings.Get(231), -1));
     current = -1;
   }
+}
+
+std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)
+{
+  std::vector<std::string> localizedFlags;
+  if (flags & StreamFlags::FLAG_DEFAULT)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39104));
+  if (flags & StreamFlags::FLAG_FORCED)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39105));
+  if (flags & StreamFlags::FLAG_HEARING_IMPAIRED)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39106));
+  if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39107));
+
+  std::string formated = StringUtils::Join(localizedFlags, ", ");
+
+  if (!formated.empty())
+    formated = StringUtils::Format(" [%s]", formated);
+
+  return formated;
 }
