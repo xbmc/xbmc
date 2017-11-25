@@ -20,12 +20,7 @@
 
 #pragma once
 
-#include <xf86drm.h>
-#include <xf86drmMode.h>
 #include <gbm.h>
-#include <vector>
-
-#include "guilib/Resolution.h"
 
 struct gbm
 {

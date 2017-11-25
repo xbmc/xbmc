@@ -18,23 +18,8 @@
  *
  */
 
-#include <errno.h>
-#include <fcntl.h>
-#include <poll.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <drm_mode.h>
-#include <EGL/egl.h>
-#include <unistd.h>
-
-#include "WinSystemGbmGLESContext.h"
-#include "guilib/gui3d.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
-
 #include "GBMUtils.h"
+#include "utils/log.h"
 
 bool CGBMUtils::InitGbm(struct gbm *gbm, int hdisplay, int vdisplay)
 {
@@ -65,7 +50,8 @@ void CGBMUtils::DestroyGbm(struct gbm *gbm)
   if(gbm->surface)
   {
     gbm_surface_destroy(gbm->surface);
+    gbm->surface = nullptr;
+    gbm->width = 0;
+    gbm->height = 0;
   }
-
-  gbm->surface = nullptr;
 }
