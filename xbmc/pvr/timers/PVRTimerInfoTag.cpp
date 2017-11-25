@@ -49,7 +49,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
   m_bFullTextEpgSearch(false),
   m_state(PVR_TIMER_STATE_SCHEDULED),
-  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstConnectedClientID()),
+  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstCreatedClientID()),
   m_iClientIndex(PVR_TIMER_NO_CLIENT_INDEX),
   m_iParentClientIndex(PVR_TIMER_NO_PARENT),
   m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),
@@ -557,21 +557,13 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
 {
   {
+    // set the new timer title locally
     CSingleLock lock(m_critSection);
     m_strTitle = strNewName;
   }
 
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->RenameTimer(*this, strNewName);
-  if (error != PVR_ERROR_NO_ERROR)
-  {
-    if (error == PVR_ERROR_NOT_IMPLEMENTED)
-      return UpdateOnClient();
-
-    DisplayError(error);
-    return false;
-  }
-
-  return true;
+  // update timer data in the backend
+  return UpdateOnClient();
 }
 
 bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)

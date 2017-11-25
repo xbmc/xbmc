@@ -314,7 +314,8 @@ DemuxPacket* CDVDInputStreamPVRManager::ReadDemux()
     return nullptr;
   }
 
-  DemuxPacket* pPacket = client->DemuxRead();
+  DemuxPacket* pPacket = nullptr;
+  client->DemuxRead(pPacket);
   if (!pPacket)
   {
     return nullptr;

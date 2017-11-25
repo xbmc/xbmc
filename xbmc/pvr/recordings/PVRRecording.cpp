@@ -255,7 +255,7 @@ bool CPVRRecording::Undelete(void)
 
 bool CPVRRecording::Rename(const std::string &strNewName)
 {
-  m_strTitle = StringUtils::Format("%s", strNewName.c_str());
+  m_strTitle = strNewName;
   PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->RenameRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
     return false;

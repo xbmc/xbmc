@@ -515,12 +515,12 @@ void CPVRManager::OnSleep()
 {
   SetWakeupCommand();
 
-  CServiceBroker::GetPVRManager().Clients()->OnSystemSleep();
+  m_addons->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
-  CServiceBroker::GetPVRManager().Clients()->OnSystemWake();
+  m_addons->OnSystemWake();
 
   /* start job to search for missing channel icons */
   TriggerSearchMissingChannelIcons();
