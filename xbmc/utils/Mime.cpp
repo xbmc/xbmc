@@ -17,7 +17,7 @@
 #include "utils/StringUtils.h"
 #include "filesystem/CurlFile.h"
 
-std::map<std::string, std::string> fillMimeTypes()
+static std::map<std::string, std::string> fillMimeTypes()
 {
   std::map<std::string, std::string> mimeTypes;
 
