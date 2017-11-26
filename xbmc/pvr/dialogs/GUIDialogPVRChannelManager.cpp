@@ -660,8 +660,6 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
 
 void CGUIDialogPVRChannelManager::Update()
 {
-  // lock our display, as this window is rendered from the player thread
-  g_graphicsContext.Lock();
   m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS);
 
   // empty the lists ready for population
@@ -717,8 +715,6 @@ void CGUIDialogPVRChannelManager::Update()
   Renumber();
   m_viewControl.SetItems(*m_channelItems);
   m_viewControl.SetSelectedItem(m_iSelected);
-
-  g_graphicsContext.Unlock();
 }
 
 void CGUIDialogPVRChannelManager::Clear(void)
