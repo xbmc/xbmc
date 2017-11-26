@@ -108,7 +108,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   auto ret = drmModeAddFB2(m_drm->fd,
                            width,
                            height,
-                           DRM_FORMAT_ARGB8888,
+                           m_drm->primary_plane->format,
                            handles,
                            strides,
                            offsets,
@@ -279,6 +279,7 @@ bool CDRMUtils::GetPlanes()
   drmModePlaneResPtr plane_resources;
   uint32_t primary_plane_id = -1;
   uint32_t overlay_plane_id = -1;
+  uint32_t fourcc = 0;
 
   plane_resources = drmModeGetPlaneResources(m_drm->fd);
   if (!plane_resources)
@@ -348,6 +349,30 @@ bool CDRMUtils::GetPlanes()
     m_drm->primary_plane->props_info[i] = drmModeGetProperty(m_drm->fd, m_drm->primary_plane->props->props[i]);
   }
 
+  for (uint32_t i = 0; i < m_drm->primary_plane->plane->count_formats; i++)
+  {
+    /* we want an alpha layer so break if we find one */
+    if (m_drm->primary_plane->plane->formats[i] == DRM_FORMAT_XRGB8888)
+    {
+      fourcc = DRM_FORMAT_XRGB8888;
+      m_drm->primary_plane->format = fourcc;
+    }
+    else if (m_drm->primary_plane->plane->formats[i] == DRM_FORMAT_ARGB8888)
+    {
+      fourcc = DRM_FORMAT_ARGB8888;
+      m_drm->primary_plane->format = fourcc;
+      break;
+    }
+  }
+
+  if (fourcc == 0)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not find a suitable primary plane format", __FUNCTION__);
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "CDRMUtils::%s - primary plane format: %c%c%c%c", __FUNCTION__, fourcc, fourcc >> 8, fourcc >> 16, fourcc >> 24);
+
   // overlay plane
   m_drm->overlay_plane->plane = drmModeGetPlane(m_drm->fd, overlay_plane_id);
   if (!m_drm->overlay_plane->plane)
@@ -368,6 +393,32 @@ bool CDRMUtils::GetPlanes()
   {
     m_drm->overlay_plane->props_info[i] = drmModeGetProperty(m_drm->fd, m_drm->overlay_plane->props->props[i]);
   }
+
+  fourcc = 0;
+
+  for (uint32_t i = 0; i < m_drm->overlay_plane->plane->count_formats; i++)
+  {
+    /* we want an alpha layer so break if we find one */
+    if (m_drm->overlay_plane->plane->formats[i] == DRM_FORMAT_XRGB8888)
+    {
+      fourcc = DRM_FORMAT_XRGB8888;
+      m_drm->overlay_plane->format = fourcc;
+    }
+    else if(m_drm->overlay_plane->plane->formats[i] == DRM_FORMAT_ARGB8888)
+    {
+      fourcc = DRM_FORMAT_ARGB8888;
+      m_drm->overlay_plane->format = fourcc;
+      break;
+    }
+  }
+
+  if (fourcc == 0)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not find a suitable overlay plane format", __FUNCTION__);
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "CDRMUtils::%s - overlay plane format: %c%c%c%c", __FUNCTION__, fourcc, fourcc >> 8, fourcc >> 16, fourcc >> 24);
 
   return true;
 }

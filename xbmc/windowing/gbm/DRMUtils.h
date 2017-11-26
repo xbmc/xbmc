@@ -33,6 +33,7 @@ struct plane
   drmModePlane *plane;
   drmModeObjectProperties *props;
   drmModePropertyRes **props_info;
+  uint32_t format;
 };
 
 struct connector
