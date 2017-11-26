@@ -46,6 +46,11 @@
 #include "linux/XTimeUtils.h"
 #endif
 
+#ifdef HAS_UPNP
+#include "network/upnp/UPnP.h"
+#include <Platinum/Source/Platinum/Platinum.h>
+#endif
+
 #include "WakeOnAccess.h"
 
 #define DEFAULT_NETWORK_INIT_SEC      (20)   // wait 20 sec for network after startup or resume
@@ -55,6 +60,8 @@
 #define DEFAULT_WAIT_FOR_ONLINE_SEC_1 (40)   // wait at 40 seconds after sending magic packet
 #define DEFAULT_WAIT_FOR_ONLINE_SEC_2 (40)   // same for extended wait
 #define DEFAULT_WAIT_FOR_SERVICES_SEC (5)    // wait 5 seconds after host go online to launch file sharing deamons
+
+static CDateTime upnpInitReady;
 
 static int GetTotalSeconds(const CDateTimeSpan& ts)
 {
@@ -68,6 +75,113 @@ static unsigned long HostToIP(const std::string& host)
   std::string ip;
   CDNSNameCache::Lookup(host, ip);
   return inet_addr(ip.c_str());
+}
+
+#define LOCALIZED(id) g_localizeStrings.Get(id)
+
+static void ShowDiscoveryMessage(const char* function, const char* server_name, bool new_entry)
+{
+  std::string message;
+
+  if (new_entry)
+  {
+    CLog::Log(LOGINFO, "%s - Create new entry for host '%s'", function, server_name);
+    message = StringUtils::Format(LOCALIZED(13035).c_str(), server_name);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "%s - Update existing entry for host '%s'", function, server_name);
+    message = StringUtils::Format(LOCALIZED(13034).c_str(), server_name);
+  }
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, LOCALIZED(13033), message, 4000, true, 3000);
+}
+
+struct UPnPServer
+{
+  UPnPServer()
+  {
+    m_nextWake = CDateTime::GetCurrentDateTime();
+  }
+  bool operator == (const UPnPServer& server) const { return server.m_uuid == m_uuid; }
+  bool operator != (const UPnPServer& server) const { return !(*this == server); }
+  bool operator == (const std::string& server_uuid) const { return server_uuid == m_uuid; }
+  bool operator != (const std::string& server_uuid) const { return !(*this == server_uuid); }
+  std::string m_name;
+  std::string m_uuid;
+  std::string m_mac;
+  CDateTime m_nextWake;
+};
+
+static UPnPServer* LookupUPnPServer(std::vector<UPnPServer>& list, const std::string& uuid)
+{
+  auto serverIt = find(list.begin(), list.end(), uuid);
+
+  return serverIt != list.end() ? &(*serverIt) : nullptr;
+}
+
+static void AddOrUpdateUPnPServer(std::vector<UPnPServer>& list, const UPnPServer& server)
+{
+  auto serverIt = find(list.begin(), list.end(), server);
+
+  bool addNewEntry = serverIt == list.end();
+
+  if (addNewEntry)
+	  list.push_back(server); // add server
+  else
+    *serverIt = server; // update existing server
+
+  ShowDiscoveryMessage(__FUNCTION__, server.m_name.c_str(), addNewEntry);
+}
+
+static void AddMatchingUPnPServers(std::vector<UPnPServer>& list, const std::string& host, const std::string& mac, const CDateTimeSpan& wakeupDelay)
+{
+#ifdef HAS_UPNP
+  while (CDateTime::GetCurrentDateTime() < upnpInitReady)
+    Sleep(1000);
+
+  PLT_SyncMediaBrowser* browser = UPNP::CUPnP::GetInstance()->m_MediaBrowser;
+
+  if (browser)
+  {
+    UPnPServer server;
+    server.m_nextWake += wakeupDelay;
+
+    for (NPT_List<PLT_DeviceDataReference>::Iterator device = browser->GetMediaServers().GetFirstItem(); device; ++device)
+    {
+      if (host == (const char*) (*device)->GetURLBase().GetHost())
+      {
+        server.m_name = (*device)->GetFriendlyName();
+        server.m_uuid = (*device)->GetUUID();
+        server.m_mac = mac;
+
+        AddOrUpdateUPnPServer(list, server);
+      }
+    }
+  }
+#endif
+}
+
+static std::string LookupUPnPHost(const std::string& uuid)
+{
+#ifdef HAS_UPNP
+  UPNP::CUPnP* upnp = UPNP::CUPnP::GetInstance();
+
+  if (!upnp->IsClientStarted())
+  {
+    upnp->StartClient();
+
+    upnpInitReady = CDateTime::GetCurrentDateTime() + CDateTimeSpan(0, 0, 0, 10);
+  }
+
+  PLT_SyncMediaBrowser* browser = upnp->m_MediaBrowser;
+
+  PLT_DeviceDataReference device;
+
+  if (browser && NPT_SUCCEEDED(browser->FindServer(uuid.c_str(), device)) && !device.IsNull())
+    return (const char*)device->GetURLBase().GetHost();
+#endif
+
+  return "";
 }
 
 CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
@@ -279,11 +393,27 @@ public:
     m_hostOnline = success;
   }
 
-  static bool Ping (const CWakeOnAccess::WakeUpEntry& server)
+  static bool Ping(const CWakeOnAccess::WakeUpEntry& server, unsigned timeOutMs = 2000)
   {
-    ULONG dst_ip = HostToIP(server.host);
+    if (server.upnpUuid.empty())
+    {
+      ULONG dst_ip = HostToIP(server.host);
 
-    return CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, 2000, server.ping_mode & 1);
+      return CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, timeOutMs, server.ping_mode & 1);
+    }
+    else // upnp mode
+    {
+      std::string host = LookupUPnPHost(server.upnpUuid);
+
+      if (host.empty())
+      {
+        Sleep(timeOutMs);
+
+        host = LookupUPnPHost(server.upnpUuid);
+      }
+
+      return !host.empty();
+    }
   }
 
 private:
@@ -331,20 +461,26 @@ bool CWakeOnAccess::WakeUpHost(const CURL& url)
   std::string hostName = url.GetHostName();
 
   if (!hostName.empty())
-    return WakeUpHost (hostName, url.Get());
+    return WakeUpHost(hostName, url.Get(), url.IsProtocol("upnp"));
+
   return true;
 }
 
-bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const std::string& customMessage)
+bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& customMessage)
+{
+  return WakeUpHost(hostName, customMessage, false);
+}
+
+bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& customMessage, bool upnpMode)
 {
   if (!IsEnabled())
     return true; // bail if feature is turned off
 
   WakeUpEntry server;
 
-  if (FindOrTouchHostEntry(hostName, server))
+  if (FindOrTouchHostEntry(hostName, upnpMode, server))
   {
-    CLog::Log(LOGNOTICE,"WakeOnAccess [%s] trigged by accessing : %s", hostName.c_str(), customMessage.c_str());
+    CLog::Log(LOGNOTICE, "WakeOnAccess [%s] trigged by accessing : %s", server.friendlyName.c_str(), customMessage.c_str());
 
     NestDetect nesting ; // detect recursive calls on gui thread..
 
@@ -354,20 +490,18 @@ bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const std::string& 
     bool ret = WakeUpHost(server);
 
     if (!ret) // extra log if we fail for some reason
-      CLog::Log(LOGWARNING,"WakeOnAccess failed to bring up [%s] - there may be trouble ahead !", hostName.c_str());
+      CLog::Log(LOGWARNING, "WakeOnAccess failed to bring up [%s] - there may be trouble ahead !", server.friendlyName.c_str());
 
-    TouchHostEntry(hostName);
+    TouchHostEntry(hostName, upnpMode);
 
     return ret;
   }
   return true;
 }
 
-#define LOCALIZED(id) g_localizeStrings.Get(id)
-
 bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
-  std::string heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.host.c_str());
+  std::string heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.friendlyName.c_str());
 
   ProgressDialogHelper dlg (heading);
 
@@ -389,14 +523,10 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     }
   }
 
+  if (PingResponseWaiter::Ping(server, 500)) // quick ping with short timeout to not block too long
   {
-    ULONG dst_ip = HostToIP(server.host);
-
-    if (CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
-    {
-      CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
-      return true;
-    }
+    CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
+    return true;
   }
 
   if (!CServiceBroker::GetNetwork().WakeOnLan(server.mac.c_str()))
@@ -436,28 +566,39 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   return true;
 }
 
-bool CWakeOnAccess::FindOrTouchHostEntry (const std::string& hostName, WakeUpEntry& result)
+bool CWakeOnAccess::FindOrTouchHostEntry(const std::string& hostName, bool upnpMode, WakeUpEntry& result)
 {
   CSingleLock lock (m_entrylist_protect);
 
   bool need_wakeup = false;
 
+  UPnPServer* upnp = upnpMode ? LookupUPnPServer(m_UPnPServers, hostName) : nullptr;
+
   for (EntriesVector::iterator i = m_entries.begin();i != m_entries.end(); ++i)
   {
     WakeUpEntry& server = *i;
 
-    if (StringUtils::EqualsNoCase(hostName, server.host))
+    if (upnp ? StringUtils::EqualsNoCase(upnp->m_mac, server.mac) : StringUtils::EqualsNoCase(hostName, server.host))
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
-      if (now >= server.nextWake)
+      if (now >= (upnp ? upnp->m_nextWake : server.nextWake))
       {
         result = server;
+
+        result.friendlyName = upnp ? upnp->m_name : server.host;
+
+        if (upnp)
+          result.upnpUuid = upnp->m_uuid;
+
         need_wakeup = true;
       }
       else // 'touch' next wakeup time
       {
         server.nextWake = now + server.timeout;
+
+        if (upnp)
+          upnp->m_nextWake = server.nextWake;
       }
 
       break;
@@ -467,17 +608,23 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const std::string& hostName, WakeUpEnt
   return need_wakeup;
 }
 
-void CWakeOnAccess::TouchHostEntry (const std::string& hostName)
+void CWakeOnAccess::TouchHostEntry(const std::string& hostName, bool upnpMode)
 {
   CSingleLock lock (m_entrylist_protect);
+
+  UPnPServer* upnp = upnpMode ? LookupUPnPServer(m_UPnPServers, hostName) : nullptr;
 
   for (EntriesVector::iterator i = m_entries.begin();i != m_entries.end(); ++i)
   {
     WakeUpEntry& server = *i;
 
-    if (StringUtils::EqualsNoCase(hostName, server.host))
+    if (upnp ? StringUtils::EqualsNoCase(upnp->m_mac, server.mac) : StringUtils::EqualsNoCase(hostName, server.host))
     {
       server.nextWake = CDateTime::GetCurrentDateTime() + server.timeout;
+
+      if (upnp)
+        upnp->m_nextWake = server.nextWake;
+
       return;
     }
   }
@@ -516,7 +663,12 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
   {
     CURL url(*it);
 
-    AddHost (url.GetHostName(), hosts);
+    std::string host_name = url.GetHostName();
+
+    if (url.IsProtocol("upnp"))
+      host_name = LookupUPnPHost(host_name);
+
+    AddHost(host_name, hosts);
   }
 }
 
@@ -567,25 +719,15 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::s
 {
   CLog::Log(LOGNOTICE, "%s - Mac discovered for host '%s' -> '%s'", __FUNCTION__, host.c_str(), mac.c_str());
 
-  std::string heading = LOCALIZED(13033);
-
   for (EntriesVector::iterator i = m_entries.begin(); i != m_entries.end(); ++i)
   {
     if (StringUtils::EqualsNoCase(host, i->host))
     {
-      CLog::Log(LOGDEBUG, "%s - Update existing entry for host '%s'", __FUNCTION__, host.c_str());
-      if (!StringUtils::EqualsNoCase(mac, i->mac))
-      {
-        if (IsEnabled()) // show notification only if we have general feature enabled
-        {
-          std::string message = StringUtils::Format(LOCALIZED(13034).c_str(), host.c_str());
-          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
-        }
+      i->mac = mac;
+      ShowDiscoveryMessage(__FUNCTION__, host.c_str(), false);
 
-        i->mac = mac;
-        SaveToXML();
-      }
-
+      AddMatchingUPnPServers(m_UPnPServers, host, mac, i->timeout);
+      SaveToXML();
       return;
     }
   }
@@ -595,14 +737,9 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::s
   entry.host = host;
   entry.mac  = mac;
   m_entries.push_back(entry);
+  ShowDiscoveryMessage(__FUNCTION__, host.c_str(), true);
 
-  CLog::Log(LOGDEBUG, "%s - Create new entry for host '%s'", __FUNCTION__, host.c_str());
-  if (IsEnabled()) // show notification only if we have general feature enabled
-  {
-    std::string message = StringUtils::Format(LOCALIZED(13035).c_str(), host.c_str());
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
-  }
-
+  AddMatchingUPnPServers(m_UPnPServers, host, mac, entry.timeout);
   SaveToXML();
 }
 
@@ -753,6 +890,33 @@ void CWakeOnAccess::LoadFromXML()
 
     pWakeUp = pWakeUp->NextSiblingElement("wakeup"); // get next one
   }
+
+  // load upnp server map
+  m_UPnPServers.clear();
+
+  const TiXmlNode* pUPnPNode = pRootElement->FirstChildElement("upnp_map");
+  while (pUPnPNode)
+  {
+    UPnPServer server;
+
+    XMLUtils::GetString(pUPnPNode, "name", server.m_name);
+    XMLUtils::GetString(pUPnPNode, "uuid", server.m_uuid);
+    XMLUtils::GetString(pUPnPNode, "mac", server.m_mac);
+
+    if (server.m_name.empty())
+      server.m_name = server.m_uuid;
+
+    if (server.m_uuid.empty() || server.m_mac.empty())
+      CLog::Log(LOGERROR, "%s - Missing or empty <upnp_map> entry", __FUNCTION__);
+    else
+    {
+      CLog::Log(LOGNOTICE, "  Registering upnp_map entry [%s : %s] -> [%s]", server.m_name.c_str(), server.m_uuid.c_str(), server.m_mac.c_str());
+
+      m_UPnPServers.push_back(server);
+    }
+
+    pUPnPNode = pUPnPNode->NextSiblingElement("upnp_map"); // get next one
+  }
 }
 
 void CWakeOnAccess::SaveToXML()
@@ -779,6 +943,18 @@ void CWakeOnAccess::SaveToXML()
       XMLUtils::SetInt(pWakeUpNode, "waitonline", i->wait_online1_sec);
       XMLUtils::SetInt(pWakeUpNode, "waitonline2", i->wait_online2_sec);
       XMLUtils::SetInt(pWakeUpNode, "waitservices", i->wait_services_sec);
+    }
+  }
+
+  for (const auto& upnp : m_UPnPServers)
+  {
+    TiXmlElement xmlSetting("upnp_map");
+    TiXmlNode* pUPnPNode = pRoot->InsertEndChild(xmlSetting);
+    if (pUPnPNode)
+    {
+      XMLUtils::SetString(pUPnPNode, "name", upnp.m_name);
+      XMLUtils::SetString(pUPnPNode, "uuid", upnp.m_uuid);
+      XMLUtils::SetString(pUPnPNode, "mac", upnp.m_mac);
     }
   }
 

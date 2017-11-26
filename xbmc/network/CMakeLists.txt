@@ -51,3 +51,15 @@ core_add_library(network)
 if(BLUETOOTH_FOUND)
   target_compile_definitions(${CORE_LIBRARY} PRIVATE -DHAVE_LIBBLUETOOTH=1)
 endif()
+
+if(ENABLE_UPNP)
+  target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_SOURCE_DIR}/lib/libUPnP
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Core
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Platinum
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaConnect
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaRenderer
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaServer
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Extras
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Neptune/Source/System/Posix
+                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Neptune/Source/Core)
+endif()

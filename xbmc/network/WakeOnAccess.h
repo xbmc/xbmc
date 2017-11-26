@@ -56,6 +56,8 @@ public:
     unsigned short ping_mode; // how to ping
 
     CDateTime nextWake;
+    std::string upnpUuid; // empty unless upnpmode
+    std::string friendlyName;
   };
 
 private:
@@ -73,12 +75,15 @@ private:
   typedef std::vector<WakeUpEntry> EntriesVector;
   EntriesVector m_entries;
   CCriticalSection m_entrylist_protect;
-  bool FindOrTouchHostEntry (const std::string& hostName, WakeUpEntry& server);
-  void TouchHostEntry (const std::string& hostName);
+  bool FindOrTouchHostEntry(const std::string& hostName, bool upnpMode, WakeUpEntry& server);
+  void TouchHostEntry(const std::string& hostName, bool upnpMode);
 
   unsigned int m_netinit_sec, m_netsettle_ms; //time to wait for network connection
 
   bool m_enabled;
 
+  bool WakeUpHost(const std::string& hostName, const std::string& customMessage, bool upnpMode);
   bool WakeUpHost(const WakeUpEntry& server);
+
+  std::vector<struct UPnPServer> m_UPnPServers; // list of wakeable upnp servers
 };
