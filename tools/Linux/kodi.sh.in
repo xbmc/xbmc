@@ -60,19 +60,19 @@ done
 # Your distribution might provide extra packages for those
 if [ "$WINDOWING" = "auto" ]; then
     # Wayland
-    if [ -n $WAYLAND_DISPLAY ] && [ -x $LIBDIR/${bin_name}/${bin_name}-wayland ]; then
+    if [ -n "$WAYLAND_DISPLAY" ] && [ -x $LIBDIR/${bin_name}/${bin_name}-wayland ]; then
         KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-wayland
     # X11
     elif echo $DISPLAY | grep -qE ":[0-9]+" && [ -x $LIBDIR/${bin_name}/${bin_name}-x11 ]; then
         KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-x11
     # GBM/DRM
-    elif [ -z $DISPLAY ] && [ -z $WAYLAND_DISPLAY ] && [ -x $LIBDIR/${bin_name}/${bin_name}-gbm ]; then
+    elif [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -x $LIBDIR/${bin_name}/${bin_name}-gbm ]; then
         KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-gbm
     # Default kodi.bin
     else
         KODI_BINARY=${APP_BINARY}
     fi
-elif [ -n $WINDOWING ]; then
+elif [ -n "$WINDOWING" ]; then
     KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-${WINDOWING}
 else
     KODI_BINARY=${APP_BINARY}
