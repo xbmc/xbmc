@@ -148,18 +148,12 @@ public:
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
-  /*! \brief Update a song in the database.
-
-   NOTE: This function assumes that song.artist contains the artist string to be concatenated.
-         Most internal functions should instead use the long-form function as the artist string
-         should be constructed from the artist credits.
-         This function will eventually be demised.
-
-   \param idSong  the database ID of the song to update
-   \param song the song
-   \return the id of the song.
+   /*! \brief Update a song and all its nested entities (genres, artists, contributors)
+    \param song [in/out] the song to update, artist ids are returned in artist credits
+    \param bArtists to update artist credits and contributors, default is true
+    \return true if sucessfull
    */
-  int UpdateSong(int idSong, const CSong &song);
+  bool UpdateSong(CSong& song, bool bArtists = true);
 
   /*! \brief Update a song in the database
    \param idSong [in] the database ID of the song to update
@@ -366,7 +360,7 @@ public:
   bool AddSongGenres(int idSong, const std::vector<std::string>& genres);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
 
-  bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
+  bool GetGenresByAlbum(int idAlbum, CFileItem* item);
 
   bool GetGenresByArtist(int idArtist, CFileItem* item);
   bool GetIsAlbumArtist(int idArtist, CFileItem* item);

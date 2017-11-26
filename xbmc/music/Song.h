@@ -152,6 +152,16 @@ public:
    */
   bool ArtMatches(const CSong &right) const;
 
+  /*! \brief Set artist credits using the arrays of tag values.
+    If strArtistSort (as from ARTISTSORT tag) is already set then individual
+    artist sort names are also processed.
+    \param names       String vector of artist names (as from ARTIST tag)
+    \param hints       String vector of artist name hints (as from ARTISTS tag)
+    \param mbids       String vector of artist Musicbrainz IDs (as from MUSICBRAINZARTISTID tag)
+  */
+  void SetArtistCredits(const std::vector<std::string>& names, const std::vector<std::string>& hints,
+    const std::vector<std::string>& mbids);
+
   long idSong;
   int idAlbum;
   std::string strFileName;
