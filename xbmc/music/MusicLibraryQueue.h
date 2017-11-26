@@ -48,11 +48,57 @@ public:
   static CMusicLibraryQueue& GetInstance();
 
   /*!
-  \brief Enqueue a music library export job.
-  \param[in] settings   Library export settings
-  \param[in] showDialog Show a progress dialog while (asynchronously) exporting, otherwise export in synchronous
+   \brief Enqueue a music library export job.
+   \param[in] settings   Library export settings
+   \param[in] showDialog Show a progress dialog while (asynchronously) exporting, otherwise export in synchronous
   */
   void ExportLibrary(const CLibExportSettings& settings, bool showDialog = false);
+
+  /*!
+   \brief Enqueue a music library update job, scanning tags embedded in music files and optionally scraping additional data.
+   \param[in] strDirectory Directory to scan or "" (empty string) for a global scan.
+   \param[in] flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
+   \param[in] showProgress Whether or not to show a progress dialog. Defaults to true
+   */
+  void ScanLibrary(const std::string& strDirectory, int flags = 0, bool showProgress = true);
+
+  /*!
+   \brief Enqueue an album scraping job fetching additional album data.
+   \param[in] strDirectory Virtual path that identifies which albums to process or "" (empty string) for all albums
+   \param[in] refresh Whether or not to refresh data for albums that have previously been scraped
+  */
+  void StartAlbumScan(const std::string& strDirectory, bool refresh = false);
+  
+  /*!
+   \brief Enqueue an artist scraping job fetching additional artist data.
+   \param[in] strDirectory Virtual path that identifies which artists to process or "" (empty string) for all artists
+   \param[in] refresh Whether or not to refresh data for artists that have previously been scraped
+   */
+  void StartArtistScan(const std::string& strDirectory, bool refresh = false);
+
+  /*!
+   \brief Check if a library scan or cleaning is in progress.
+   \return True if a scan or clean is in progress, false otherwise
+   */
+  bool IsScanningLibrary() const;
+
+  /*!
+   \brief Stop and dequeue all scanning jobs.
+   */
+  void StopLibraryScanning();
+
+  /*!
+   \brief Enqueue an asynchronous library cleaning job.
+   \param[in] showDialog Show a model progress dialog while cleaning. Default is false.
+   */
+  void CleanLibrary(bool showDialog = false);
+
+  /*!
+   \brief Executes a library cleaning with a modal dialog.
+   However UI rendering of dialog is on same thread as the cleaning process, so mouse movement
+   is stilted and opportunities to cancel the process limited
+   */
+  void CleanLibraryModal();
   
   /*!
    \brief Adds the given job to the queue.
@@ -97,4 +143,5 @@ private:
 
   bool m_modal;
   bool m_exporting;
+  bool m_cleaning;
 };
