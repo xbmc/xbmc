@@ -38,6 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogTextViewer.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "favourites/FavouritesService.h"
@@ -79,6 +80,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTNCALCSIZE             9
 #define CONTROL_BTNSWITCHMEDIA          11
 #define CONTROL_BTNCANCELJOB            12
+#define CONTROL_BTNVIEW                 13
 
 
 #define CONTROL_NUMFILES_LEFT           12
@@ -652,7 +654,10 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     pSlideShow->Select(pItem->GetPath());
 
     g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    return;
   }
+  if (pItem->IsType(".txt") || pItem->IsType(".xml"))
+    CGUIDialogTextViewer::ShowForFile(pItem->GetPath(), true);
 }
 
 bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDriveType )
@@ -1035,6 +1040,9 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (CJobManager::GetInstance().IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
 
+  if (!pItem->m_bIsFolder)
+    choices.Add(CONTROL_BTNVIEW, 39104);
+
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (btnid == CONTROL_BTNSELECTALL)
   {
@@ -1103,6 +1111,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (btnid == CONTROL_BTNCANCELJOB)
     CancelJobs();
+  if (btnid == CONTROL_BTNVIEW)
+    CGUIDialogTextViewer::ShowForFile(pItem->GetPath(), true);
 
   if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
   { // deselect item as we didn't do anything
