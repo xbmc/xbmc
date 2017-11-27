@@ -124,7 +124,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-void CFileItem::FillMusicInfoTag(const CPVRChannelPtr channel, const CPVREpgInfoTagPtr tag)
+void CFileItem::FillMusicInfoTag(const CPVRChannelPtr& channel, const CPVREpgInfoTagPtr& tag)
 {
   if (channel && channel->IsRadio() && !HasMusicInfoTag())
   {

@@ -12,7 +12,7 @@ source_file=$2
 
 tmpfil=`mktemp`
 $clangcheck_cmd -p @CMAKE_BINARY_DIR@ -analyze $source_file &> $tmpfil
-nerr=`cat $tmpfil | grep -v "warning: /usr/bin/c++: 'linker' input unused" | wc -l`
+nerr=`cat $tmpfil | grep -v "warning: .*: 'linker' input unused" | wc -l`
 if test $nerr -gt 0
 then
   cat $tmpfil

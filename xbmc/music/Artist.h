@@ -37,7 +37,7 @@ class CMusicDatabase;
 class CArtist
 {
 public:
-  long idArtist;
+  long idArtist = -1;
   bool operator<(const CArtist& a) const
   {
     if (strMusicBrainzArtistID.empty() && a.strMusicBrainzArtistID.empty())
@@ -115,7 +115,7 @@ public:
   std::map<std::string, std::string> art;  // Current artwork - thumb, fanart etc.
   std::vector<std::pair<std::string,std::string> > discography;
   CDateTime dateAdded;
-  bool bScrapedMBID;
+  bool bScrapedMBID = false;
   std::string strLastScraped;
 };
 
@@ -158,11 +158,11 @@ public:
   void SetScrapedMBID(bool scrapedMBID) { this->m_bScrapedMBID = scrapedMBID; }
 
 private:
-  long idArtist;
+  long idArtist = -1;
   std::string m_strArtist;
   std::string m_strSortName;
   std::string m_strMusicBrainzArtistID;
-  bool m_bScrapedMBID; // Flag that mbid is from album merge of scarper results not derived from tags
+  bool m_bScrapedMBID = false; // Flag that mbid is from album merge of scarper results not derived from tags
 };
 
 typedef std::vector<CArtist> VECARTISTS;

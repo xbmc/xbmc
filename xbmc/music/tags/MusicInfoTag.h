@@ -45,7 +45,7 @@ public:
   CMusicInfoTag(void);
   CMusicInfoTag(const CMusicInfoTag& tag);
   ~CMusicInfoTag() override;
-  const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
+  CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
   const std::string& GetTitle() const;
