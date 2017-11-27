@@ -59,9 +59,6 @@ public:
   virtual bool Show(bool raise = true) override;
   virtual void OnMove(int x, int y) override;
 
-  virtual void EnableTextInput(bool bEnable) override;
-  virtual bool IsTextInputEnabled() override;
-
   virtual std::string GetClipboardText(void) override;
 
   void Register(IDispResource *resource) override;
