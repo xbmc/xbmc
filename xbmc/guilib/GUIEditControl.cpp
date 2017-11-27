@@ -258,7 +258,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         }
       default:
         {
-          if (CServiceBroker::GetWinSystem().IsTextInputEnabled())
+          if (!CServiceBroker::GetWinSystem().IsTextInputEnabled())
           {
             ClearMD5();
             m_edit.clear();
