@@ -2124,17 +2124,17 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
       StringUtils::ToLower(flag_tmp);
       if (!flag_tmp.compare("none"))
       {
-        info.flag |= CDemuxStream::FLAG_NONE;
+        info.flag |= StreamFlags::FLAG_NONE;
         continue;
       }
       else if (!flag_tmp.compare("default"))
       {
-        info.flag |= CDemuxStream::FLAG_DEFAULT;
+        info.flag |= StreamFlags::FLAG_DEFAULT;
         continue;
       }
       else if (!flag_tmp.compare("forced"))
       {
-        info.flag |= CDemuxStream::FLAG_FORCED;
+        info.flag |= StreamFlags::FLAG_FORCED;
         continue;
       }
 
@@ -2146,7 +2146,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   StringUtils::Trim(name);
   info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
   if (info.flag == 0)
-    info.flag = CDemuxStream::FLAG_NONE;
+    info.flag = StreamFlags::FLAG_NONE;
 
   CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s",
              __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(associatedFile).c_str());

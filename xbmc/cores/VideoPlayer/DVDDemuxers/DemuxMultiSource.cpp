@@ -230,9 +230,9 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
   {
     ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(baseFileName, fileName);
 
-    if (stream->flags == CDemuxStream::FLAG_NONE)
+    if (stream->flags == StreamFlags::FLAG_NONE)
     {
-      stream->flags = static_cast<CDemuxStream::EFlags>(info.flag);
+      stream->flags = static_cast<StreamFlags>(info.flag);
     }
     if (stream->language[0] == '\0')
     {

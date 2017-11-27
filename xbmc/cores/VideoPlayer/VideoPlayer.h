@@ -239,7 +239,7 @@ typedef struct SelectionStream
   std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string  language;
   std::string  name;
-  CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
   int          source = 0;
   int          id = 0;
   int64_t      demuxerId = -1;
@@ -274,7 +274,7 @@ public:
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1, -1) + 1; }
   int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
-  bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
+  bool             Get     (StreamType type, StreamFlags flag, SelectionStream& out);
 
   SelectionStreams Get(StreamType type);
   template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)
@@ -329,7 +329,7 @@ public:
   float GetSubTitleDelay() override;
   int GetSubtitleCount() override;
   int GetSubtitle() override;
-  void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info) override;
+  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info) override;
   void SetSubtitle(int iStream) override;
   bool GetSubtitleVisible() override;
   void SetSubtitleVisible(bool bVisible) override;
@@ -341,7 +341,7 @@ public:
 
   int GetVideoStream() const override;
   int GetVideoStreamCount() const override;
-  void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) override;
+  void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) override;
   void SetVideoStream(int iStream) override;
 
   TextCacheStruct_t* GetTeletextCache() override;
@@ -364,7 +364,7 @@ public:
   bool OnAction(const CAction &action) override;
 
   int GetSourceBitrate() override;
-  void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
+  void GetAudioStreamInfo(int index, AudioStreamInfo &info) override;
 
   std::string GetPlayerState() override;
   bool SetPlayerState(const std::string& state) override;

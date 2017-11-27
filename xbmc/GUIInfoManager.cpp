@@ -6233,7 +6233,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = m_videoInfo.videoCodecName;
+      strLabel = m_videoInfo.codecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
@@ -6245,7 +6245,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = m_audioInfo.audioCodecName;
+      strLabel = m_audioInfo.codecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
@@ -6294,7 +6294,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_SUBTITLES_LANG:
     if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible())
     {
-      SPlayerSubtitleStreamInfo info;
+      SubtitleStreamInfo info;
       g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
       strLabel = info.language;
     }
@@ -8466,7 +8466,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
       if (!tag.GetLanguage().empty())
         return tag.GetLanguage();
 
-      SPlayerAudioStreamInfo info;
+      AudioStreamInfo info;
       g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
       return info.language;
     }
@@ -8670,7 +8670,7 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_CODEC:
     {
-      return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
+      return StringUtils::Format("%s", m_audioInfo.codecName.c_str());
     }
     break;
   }
@@ -9332,8 +9332,8 @@ void CGUIInfoManager::UpdateAVInfo()
   {
     if (CServiceBroker::GetDataCacheCore().HasAVInfoChanges())
     {
-      SPlayerVideoStreamInfo video;
-      SPlayerAudioStreamInfo audio;
+      VideoStreamInfo video;
+      AudioStreamInfo audio;
 
       g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM, video);
       g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, audio);

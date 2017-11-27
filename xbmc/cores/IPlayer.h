@@ -26,8 +26,7 @@
 
 #include "IPlayerCallback.h"
 #include "VideoSettings.h"
-#include "guilib/Geometry.h"
-#include "guilib/Resolution.h"
+#include "Interface/StreamInfo.h"
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
@@ -74,57 +73,6 @@ enum IPlayerSubtitleCapabilities
   IPC_SUBS_SELECT,
   IPC_SUBS_EXTERNAL,
   IPC_SUBS_OFFSET
-};
-
-struct SPlayerAudioStreamInfo
-{
-  bool valid;
-  int bitrate;
-  int channels;
-  int samplerate;
-  int bitspersample;
-  std::string language;
-  std::string name;
-  std::string audioCodecName;
-
-  SPlayerAudioStreamInfo()
-  {
-    valid = false;
-    bitrate = 0;
-    channels = 0;
-    samplerate = 0;
-    bitspersample = 0;
-  }
-};
-
-struct SPlayerSubtitleStreamInfo
-{
-  std::string language;
-  std::string name;
-};
-
-struct SPlayerVideoStreamInfo
-{
-  bool valid;
-  int bitrate;
-  float videoAspectRatio;
-  int height;
-  int width;
-  std::string language;
-  std::string name;
-  std::string videoCodecName;
-  CRect SrcRect;
-  CRect DestRect;
-  std::string stereoMode;
-
-  SPlayerVideoStreamInfo() : SrcRect {}, DestRect {}
-  {
-    valid = false;
-    bitrate = 0;
-    videoAspectRatio = 1.0f;
-    height = 0;
-    width = 0;
-  }
 };
 
 enum ERENDERFEATURE
@@ -180,7 +128,7 @@ public:
   virtual float GetSubTitleDelay()    { return 0.0f; }
   virtual int  GetSubtitleCount()     { return 0; }
   virtual int  GetSubtitle()          { return -1; }
-  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info){};
+  virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info){};
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
   virtual void SetSubtitleVisible(bool bVisible){};
@@ -194,11 +142,11 @@ public:
   virtual int  GetAudioStreamCount()  { return 0; }
   virtual int  GetAudioStream()       { return -1; }
   virtual void SetAudioStream(int iStream){};
-  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
+  virtual void GetAudioStreamInfo(int index, AudioStreamInfo &info){};
 
   virtual int GetVideoStream() const { return -1; }
   virtual int GetVideoStreamCount() const { return 0; }
-  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) {}
+  virtual void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) {}
   virtual void SetVideoStream(int iStream) {}
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };

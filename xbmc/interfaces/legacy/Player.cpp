@@ -416,7 +416,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
-        SPlayerSubtitleStreamInfo info;
+        SubtitleStreamInfo info;
         g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
 
         if (info.language.length() > 0)
@@ -436,7 +436,7 @@ namespace XBMCAddon
         std::vector<String> ret(subtitleCount);
         for (int iStream=0; iStream < subtitleCount; iStream++)
         {
-          SPlayerSubtitleStreamInfo info;
+          SubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, info);
 
           if (info.language.length() > 0)
@@ -471,7 +471,7 @@ namespace XBMCAddon
         std::vector<String> ret(streamCount);
         for (int iStream=0; iStream < streamCount; iStream++)
         {
-          SPlayerAudioStreamInfo info;
+          AudioStreamInfo info;
           g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
 
           if (info.language.length() > 0)
@@ -501,7 +501,7 @@ namespace XBMCAddon
       std::vector<String> ret(streamCount);
       for (int iStream = 0; iStream < streamCount; ++iStream)
       {
-        SPlayerVideoStreamInfo info;
+        VideoStreamInfo info;
         g_application.m_pPlayer->GetVideoStreamInfo(iStream, info);
 
         if (info.language.length() > 0)

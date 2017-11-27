@@ -332,7 +332,7 @@ void CGUIWindowFullScreen::FrameMove()
       OnMessage(msg);
     }
     // show sizing information
-    SPlayerVideoStreamInfo info;
+    VideoStreamInfo info;
     g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM,info);
     {
       // Splitres scaling factor

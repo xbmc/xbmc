@@ -40,9 +40,9 @@ class CAction;
 class CPlayerOptions;
 class CStreamDetails;
 
-struct SPlayerAudioStreamInfo;
-struct SPlayerVideoStreamInfo;
-struct SPlayerSubtitleStreamInfo;
+struct AudioStreamInfo;
+struct VideoStreamInfo;
+struct SubtitleStreamInfo;
 struct TextCacheStruct_t;
 
 class CApplicationPlayer
@@ -105,7 +105,7 @@ public:
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
   int   GetAudioStream();
   int   GetAudioStreamCount();
-  void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
+  void  GetAudioStreamInfo(int index, AudioStreamInfo &info);
   int   GetCacheLevel() const;
   float GetCachePercentage() const;
   int   GetChapterCount();
@@ -119,7 +119,7 @@ public:
   int   GetSubtitle();
   void  GetSubtitleCapabilities(std::vector<int> &subCaps);
   int   GetSubtitleCount();
-  void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
+  void  GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info);
   bool  GetSubtitleVisible();
   TextCacheStruct_t* GetTeletextCache();
   std::string GetRadioText(unsigned int line);
@@ -130,7 +130,7 @@ public:
   int64_t GetTotalTime() const;
   int   GetVideoStream();
   int   GetVideoStreamCount();
-  void  GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);
+  void  GetVideoStreamInfo(int streamId, VideoStreamInfo &info);
   bool  HasAudio() const;
   bool  HasMenu() const;
   bool  HasVideo() const;

@@ -37,8 +37,8 @@
 
 static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
-  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+  PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT
+                 , rh.flags & StreamFlags::FLAG_DEFAULT);
   return false;
 }
 

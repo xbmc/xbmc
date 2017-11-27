@@ -60,7 +60,7 @@ public:
   void SetSpeed(float speed = 0) override;
   int GetCacheLevel() const override;
   void SetTotalTime(int64_t time) override;
-  void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
+  void GetAudioStreamInfo(int index, AudioStreamInfo &info) override;
   void SetTime(int64_t time) override;
   void SeekTime(int64_t iTime = 0) override;
   void GetAudioCapabilities(std::vector<int> &audioCaps) override {}

@@ -169,7 +169,7 @@ public:
 
     if (onlyforced)
     {
-      if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
+      if ((ss.flags & StreamFlags::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
         return false;
       else
         return true;
@@ -178,10 +178,10 @@ public:
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
       return false;
 
-    if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
+    if ((ss.flags & StreamFlags::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
       return false;
 
-    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (ss.flags & CDemuxStream::FLAG_DEFAULT))
+    if ((ss.flags & StreamFlags::FLAG_FORCED) && (ss.flags & StreamFlags::FLAG_DEFAULT))
       return false;
 
     if(!original)
@@ -190,7 +190,7 @@ public:
       if (g_LangCodeExpander.CompareISO639Codes(subtitle_language, ss.language))
         return false;
     }
-    else if (ss.flags & CDemuxStream::FLAG_DEFAULT)
+    else if (ss.flags & StreamFlags::FLAG_DEFAULT)
       return false;
 
     return true;
@@ -217,18 +217,18 @@ public:
                        , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
 
       bool hearingimp = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
-      PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
-                       , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
+      PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED
+                       , !hearingimp ? !(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED);
 
       bool visualimp = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
-      PREDICATE_RETURN(!visualimp ? !(lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : lh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED
-                       , !visualimp ? !(rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED) : rh.flags & CDemuxStream::FLAG_VISUAL_IMPAIRED);
+      PREDICATE_RETURN(!visualimp ? !(lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED
+                       , !visualimp ? !(rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED);
     }
 
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG))
     {
-      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT,
-                       rh.flags & CDemuxStream::FLAG_DEFAULT);
+      PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
+                       rh.flags & StreamFlags::FLAG_DEFAULT);
     }
 
     PREDICATE_RETURN(lh.channels,
@@ -237,8 +237,8 @@ public:
     PREDICATE_RETURN(StreamUtils::GetCodecPriority(lh.codec),
                      StreamUtils::GetCodecPriority(rh.codec));
 
-    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT,
-                     rh.flags & CDemuxStream::FLAG_DEFAULT);
+    PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
+                     rh.flags & StreamFlags::FLAG_DEFAULT);
     return false;
   };
 };
@@ -294,17 +294,17 @@ public:
 
     if (!subson || original)
     {
-      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
-                     , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
+      PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
+                     , rh.flags & StreamFlags::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
 
-      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
-                     , rh.flags & CDemuxStream::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
+      PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
+                     , rh.flags & StreamFlags::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
 
       PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
                      , g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
 
-      PREDICATE_RETURN(lh.flags & (CDemuxStream::FLAG_FORCED && CDemuxStream::FLAG_DEFAULT)
-                     , rh.flags & (CDemuxStream::FLAG_FORCED && CDemuxStream::FLAG_DEFAULT));
+      PREDICATE_RETURN(lh.flags & (StreamFlags::FLAG_FORCED && StreamFlags::FLAG_DEFAULT)
+                     , rh.flags & (StreamFlags::FLAG_FORCED && StreamFlags::FLAG_DEFAULT));
 
     }
 
@@ -321,12 +321,12 @@ public:
                      , g_LangCodeExpander.CompareISO639Codes(subtitle_language, rh.language));
 
       bool hearingimp = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
-      PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
-                     , !hearingimp ? !(rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : rh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED);
+      PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED
+                     , !hearingimp ? !(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED);
     }
 
-    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                   , rh.flags & CDemuxStream::FLAG_DEFAULT);
+    PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT
+                   , rh.flags & StreamFlags::FLAG_DEFAULT);
 
     return false;
   }
@@ -345,13 +345,13 @@ public:
     PREDICATE_RETURN(lh.type_index == currentVideoStream,
                      rh.type_index == currentVideoStream);
 
-    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT,
-                     rh.flags & CDemuxStream::FLAG_DEFAULT);
+    PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
+                     rh.flags & StreamFlags::FLAG_DEFAULT);
     return false;
   }
 };
 
-bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, SelectionStream& out)
+bool CSelectionStreams::Get(StreamType type, StreamFlags flag, SelectionStream& out)
 {
   CSingleLock lock(m_section);
   for(size_t i=0;i<m_Streams.size();i++)
@@ -469,13 +469,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.source   = source;
       s.type     = STREAM_AUDIO;
       s.id       = i;
-      s.flags    = CDemuxStream::FLAG_NONE;
+      s.flags    = StreamFlags::FLAG_NONE;
       s.filename = filename;
 
-      DVDNavAudioStreamInfo info = nav->GetAudioStreamInfo(i);
+      AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
+      s.flags = info.flags;
       Update(s);
     }
 
@@ -489,27 +490,27 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.filename = filename;
       s.channels = 0;
 
-      DVDNavSubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
+      SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
     }
 
-    DVDNavVideoStreamInfo info = nav->GetVideoStreamInfo();
+    VideoStreamInfo info = nav->GetVideoStreamInfo();
     for (int i = 1; i <= info.angles; i++)
     {
       SelectionStream s;
       s.source = source;
       s.type = STREAM_VIDEO;
       s.id = i;
-      s.flags = CDemuxStream::FLAG_NONE;
+      s.flags = StreamFlags::FLAG_NONE;
       s.filename = filename;
       s.channels = 0;
-      s.aspect_ratio = info.aspectRatio;
-      s.width = (int)info.width;
-      s.height = (int)info.height;
-      s.codec = info.codec;
+      s.aspect_ratio = info.videoAspectRatio;
+      s.width = info.width;
+      s.height = info.height;
+      s.codec = info.codecName;
       s.name = StringUtils::Format("%s %i", g_localizeStrings.Get(38032).c_str(), i);
       Update(s);
     }
@@ -993,7 +994,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       valid = true;
       if(!psp.relevant(stream))
         visible = false;
-      else if(stream.flags & CDemuxStream::FLAG_FORCED)
+      else if(stream.flags & StreamFlags::FLAG_FORCED)
         visible = true;
       break;
     }
@@ -3285,7 +3286,7 @@ int CVideoPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
-void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
+void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (index < 0 || index > (int) GetSubtitleCount() - 1)
@@ -3299,6 +3300,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &i
     info.name += "(Invalid)";
 
   info.language = s.language;
+  info.flags = s.flags;
 }
 
 void CVideoPlayer::SetSubtitle(int iStream)
@@ -3776,13 +3778,13 @@ bool CVideoPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
 void CVideoPlayer::AdaptForcedSubtitles()
 {
   SelectionStream ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
-  if (ss.flags & CDemuxStream::FLAG_FORCED)
+  if (ss.flags & StreamFlags::FLAG_FORCED)
   {
     SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
     bool found = false;
     for (const auto &stream : m_SelectionStreams.Get(STREAM_SUBTITLE))
     {
-      if (stream.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+      if (stream.flags & StreamFlags::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
       {
         if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
         {
@@ -4605,7 +4607,7 @@ double CVideoPlayer::GetQueueTime()
   return std::max(a, v) * 8000.0 / 100;
 }
 
-void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
+void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (streamId == CURRENT_STREAM)
@@ -4630,9 +4632,10 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info
   info.height = s.height;
   info.SrcRect = s.SrcRect;
   info.DestRect = s.DestRect;
-  info.videoCodecName = s.codec;
+  info.codecName = s.codec;
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
+  info.flags = s.flags;
 }
 
 int CVideoPlayer::GetSourceBitrate()
@@ -4643,7 +4646,7 @@ int CVideoPlayer::GetSourceBitrate()
   return 0;
 }
 
-void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
+void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (index == CURRENT_STREAM)
@@ -4668,7 +4671,8 @@ void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   info.valid = true;
   info.bitrate = s.bitrate;
   info.channels = s.channels;
-  info.audioCodecName = s.codec;
+  info.codecName = s.codec;
+  info.flags = s.flags;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
@@ -4707,8 +4711,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (stream.language.empty())
         stream.language = info.language;
 
-      if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
-        stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+      if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
+        stream.flags = static_cast<StreamFlags>(info.flag);
     }
 
     return m_SelectionStreams.IndexOf(STREAM_SUBTITLE,
@@ -4729,8 +4733,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), filename);
   s.name = info.name;
   s.language = info.language;
-  if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
-    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+  if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
+    s.flags = static_cast<StreamFlags>(info.flag);
 
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.demuxerId, s.id);

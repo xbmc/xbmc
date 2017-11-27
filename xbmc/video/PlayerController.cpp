@@ -67,7 +67,7 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string sub, lang;
         if (subsOn)
         {
-          SPlayerSubtitleStreamInfo info;
+          SubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
@@ -114,7 +114,7 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string sub, lang;
         if (currentSubVisible)
         {
-          SPlayerSubtitleStreamInfo info;
+          SubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(currentSub, info);
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
@@ -214,7 +214,7 @@ bool CPlayerController::OnAction(const CAction &action)
         g_application.m_pPlayer->SetAudioStream(currentAudio);    // Set the audio stream to the one selected
         std::string aud;
         std::string lan;
-        SPlayerAudioStreamInfo info;
+        AudioStreamInfo info;
         g_application.m_pPlayer->GetAudioStreamInfo(currentAudio, info);
         if (!g_LangCodeExpander.Lookup(info.language, lan))
           lan = g_localizeStrings.Get(13205); // Unknown

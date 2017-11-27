@@ -1535,13 +1535,13 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           int index = g_application.m_pPlayer->GetAudioStream();
           if (index >= 0)
           {
-            SPlayerAudioStreamInfo info;
+            AudioStreamInfo info;
             g_application.m_pPlayer->GetAudioStreamInfo(index, info);
 
             result["index"] = index;
             result["name"] = info.name;
             result["language"] = info.language;
-            result["codec"] = info.audioCodecName;
+            result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
           }
@@ -1566,14 +1566,14 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         {
           for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
           {
-            SPlayerAudioStreamInfo info;
+            AudioStreamInfo info;
             g_application.m_pPlayer->GetAudioStreamInfo(index, info);
 
             CVariant audioStream(CVariant::VariantTypeObject);
             audioStream["index"] = index;
             audioStream["name"] = info.name;
             audioStream["language"] = info.language;
-            audioStream["codec"] = info.audioCodecName;
+            audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
 
@@ -1598,13 +1598,13 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       if (index >= 0)
       {
         result = CVariant(CVariant::VariantTypeObject);
-        SPlayerVideoStreamInfo info;
+        VideoStreamInfo info;
         g_application.m_pPlayer->GetVideoStreamInfo(index, info);
 
         result["index"] = index;
         result["name"] = info.name;
         result["language"] = info.language;
-        result["codec"] = info.videoCodecName;
+        result["codec"] = info.codecName;
         result["width"] = info.width;
         result["height"] = info.height;
       }
@@ -1631,14 +1631,14 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       {
         for (int index = 0; index < streamCount; ++index)
         {
-          SPlayerVideoStreamInfo info;
+          VideoStreamInfo info;
           g_application.m_pPlayer->GetVideoStreamInfo(index, info);
 
           CVariant videoStream(CVariant::VariantTypeObject);
           videoStream["index"] = index;
           videoStream["name"] = info.name;
           videoStream["language"] = info.language;
-          videoStream["codec"] = info.videoCodecName;
+          videoStream["codec"] = info.codecName;
           videoStream["width"] = info.width;
           videoStream["height"] = info.height;
 
@@ -1679,7 +1679,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           int index = g_application.m_pPlayer->GetSubtitle();
           if (index >= 0)
           {
-            SPlayerSubtitleStreamInfo info;
+            SubtitleStreamInfo info;
             g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
 
             result["index"] = index;
@@ -1708,7 +1708,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         {
           for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
           {
-            SPlayerSubtitleStreamInfo info;
+            SubtitleStreamInfo info;
             g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
 
             CVariant subtitle(CVariant::VariantTypeObject);

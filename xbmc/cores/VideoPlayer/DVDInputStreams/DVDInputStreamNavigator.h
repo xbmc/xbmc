@@ -46,47 +46,6 @@ class CDVDOverlayPicture;
 
 struct dvdnav_s;
 
-struct DVDNavStreamInfo
-{
-  std::string name;
-  std::string language;
-
-  DVDNavStreamInfo() = default;
-};
-
-struct DVDNavAudioStreamInfo : DVDNavStreamInfo
-{
-  std::string codec;
-  int channels;
-
-  DVDNavAudioStreamInfo() : DVDNavStreamInfo(),
-    channels(0) {}
-};
-
-struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
-{
-  CDemuxStream::EFlags flags;
-
-  DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
-    flags(CDemuxStream::EFlags::FLAG_NONE) {}
-};
-
-struct DVDNavVideoStreamInfo : DVDNavStreamInfo
-{
-  int angles;
-  float aspectRatio;
-  std::string codec;
-  uint32_t width;
-  uint32_t height;
-
-  DVDNavVideoStreamInfo() : DVDNavStreamInfo(),
-    angles(0),
-    aspectRatio(0.0f),
-    width(0),
-    height(0)
-  {}
-};
-
 class CDVDInputStreamNavigator
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
@@ -133,7 +92,7 @@ public:
 
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();
-  DVDNavSubtitleStreamInfo GetSubtitleStreamInfo(const int iId);
+  SubtitleStreamInfo GetSubtitleStreamInfo(const int iId);
 
   bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
@@ -144,7 +103,7 @@ public:
   int GetActiveAngle();
   bool SetAngle(int angle);
   bool SetActiveAudioStream(int iId);
-  DVDNavAudioStreamInfo GetAudioStreamInfo(const int iId);
+  AudioStreamInfo GetAudioStreamInfo(const int iId);
 
   bool GetState(std::string &xmlstate) override;
   bool SetState(const std::string &xmlstate) override;
@@ -169,7 +128,7 @@ public:
 
   void CheckButtons();
 
-  DVDNavVideoStreamInfo GetVideoStreamInfo();
+  VideoStreamInfo GetVideoStreamInfo();
 
 protected:
 
@@ -189,8 +148,8 @@ protected:
   int ConvertSubtitleStreamId_XBMCToExternal(int id);
   int ConvertSubtitleStreamId_ExternalToXBMC(int id);
 
-  static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
-  static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
+  static void SetAudioStreamName(AudioStreamInfo &info, const audio_attr_t &audio_attributes);
+  static void SetSubtitleStreamName(SubtitleStreamInfo &info, const subp_attr_t &subp_attributes);
 
   int GetAngleCount();
   void GetVideoResolution(uint32_t * width, uint32_t * height);
