@@ -133,7 +133,7 @@ CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
     if (m_scurl.m_url.empty())
     {
       if (m_doc.find("[scrape url]") != std::string::npos)
-        return CInfoScanner::PARTIAL_NFO;
+        return CInfoScanner::OVERRIDE_NFO;
       else
         return CInfoScanner::FULL_NFO;
     }

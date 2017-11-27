@@ -54,8 +54,8 @@ public:
   }
 
   void Close();
-  void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; }
-  const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
+  void SetScraperInfo(ADDON::ScraperPtr info) { m_info = info; }
+  ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
 private:

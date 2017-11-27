@@ -1355,7 +1355,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
     }
-    else if (result != CInfoScanner::PARTIAL_NFO)
+    else if (result != CInfoScanner::OVERRIDE_NFO)
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
@@ -1390,7 +1390,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   CGUIDialogSelect *pDlg = NULL;
   int iSelectedAlbum=0;
-  if ((result == CInfoScanner::NO_NFO || result == CInfoScanner::PARTIAL_NFO)
+  if ((result == CInfoScanner::NO_NFO || result == CInfoScanner::OVERRIDE_NFO)
       && !bMusicBrainz)
   {
     iSelectedAlbum = -1; // set negative so that we can detect a failure
@@ -1517,7 +1517,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
   
-  if (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::PARTIAL_NFO)
+  if (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
     nfoReader.GetDetails(albumInfo.GetAlbum(), NULL, true);
   
   return INFO_ADDED;
