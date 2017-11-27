@@ -123,6 +123,12 @@ protected:
    \return utf8 text
    */
   std::string GetText() const;
+
+  //! \brief Set the monospaced font to use
+  void SetMonoFont(CGUIFont* font) { m_monoFont = font; }
+
+  //! \brief Set whether or not to use the monospace font
+  void UseMonoFont(bool use) { m_font = use && m_monoFont ? m_monoFont : m_varFont; }
   
   // our text to render
   vecColors m_colors;
@@ -132,6 +138,8 @@ protected:
   // the layout and font details
   CGUIFont *m_font;        // has style, colour info
   CGUIFont *m_borderFont;  // only used for outlined text
+  CGUIFont* m_monoFont = nullptr; //!< Mono-space font to use
+  CGUIFont* m_varFont;    //!< Varible-space font to use
 
   bool  m_wrap;            // wrapping (true if justify is enabled!)
   float m_maxHeight;

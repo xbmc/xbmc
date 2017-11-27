@@ -745,7 +745,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool scrollOut = true;
   int preloadItems = 0;
 
-  CLabelInfo labelInfo;
+  CLabelInfo labelInfo, labelInfoMono;
 
   CGUIInfoColor hitColor(0xFFFFFFFF);
   CGUIInfoColor textColor3;
@@ -847,9 +847,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
   if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;
-  std::string strFont;
+  std::string strFont, strMonoFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
+  XMLUtils::GetString(pControlNode, "monofont", strMonoFont);
   uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
@@ -1407,9 +1408,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTROL_TEXTBOX:
     {
+      if (!strMonoFont.empty())
+      {
+        labelInfoMono = labelInfo;
+        labelInfoMono.font = g_fontManager.GetFont(strMonoFont);
+      }
       control = new CGUITextBox(
         parentID, id, posX, posY, width, height,
-        labelInfo, scrollTime);
+        labelInfo, scrollTime, strMonoFont.empty() ? nullptr : &labelInfoMono);
 
       CGUITextBox* tcontrol = static_cast<CGUITextBox*>(control);
 

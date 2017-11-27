@@ -185,7 +185,7 @@ namespace XBMCAddon
       return HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line1}, CVariant{line2}, CVariant{line3});
     }
 
-    void Dialog::textviewer(const String& heading, const String& text)
+    void Dialog::textviewer(const String& heading, const String& text, bool usemono)
     {
       DelayedCallGuard dcguard(languageHook);
 
@@ -196,6 +196,7 @@ namespace XBMCAddon
         pDialog->SetHeading(heading);
       if (!text.empty())
         pDialog->SetText(text);
+      pDialog->UseMonoFont(usemono);
       pDialog->Open();
     }
 

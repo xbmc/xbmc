@@ -29,14 +29,15 @@ public:
   CGUIDialogTextViewer(void);
   ~CGUIDialogTextViewer(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  bool OnAction(const CAction &action) override;
   void SetText(const std::string& strText) { m_strText = strText; }
   void SetHeading(const std::string& strHeading) { m_strHeading = strHeading; }
+  void UseMonoFont(bool use);
 protected:
   void OnDeinitWindow(int nextWindowID) override;
 
   std::string m_strText;
   std::string m_strHeading;
+  bool m_mono = false;
 
   void SetText();
   void SetHeading();
