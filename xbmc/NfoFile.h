@@ -28,6 +28,7 @@
 #include <string>
 
 #include "addons/Scraper.h"
+#include "InfoScanner.h"
 
 class CNfoFile
 {
@@ -35,17 +36,8 @@ public:
   CNfoFile() : m_headPos(0), m_type(ADDON::ADDON_UNKNOWN) {}
   virtual ~CNfoFile() { Close(); }
 
-  enum NFOResult
-  {
-    NO_NFO       = 0,
-    FULL_NFO     = 1,
-    URL_NFO      = 2,
-    COMBINED_NFO = 3,
-    ERROR_NFO    = 4,
-    PARTIAL_NFO  = 5
-  };
-
-  NFOResult Create(const std::string&, const ADDON::ScraperPtr&, int episode=-1);
+  CInfoScanner::INFO_TYPE Create(const std::string&,
+                                 const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details, const char* document=NULL,
                     bool prioritise=false)

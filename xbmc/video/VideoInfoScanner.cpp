@@ -526,12 +526,12 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
     if (useLocal)
       result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
+    if (result == CInfoScanner::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
@@ -548,7 +548,7 @@ namespace VIDEO
       }
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
       pURL = &scrUrl;
 
     CScraperUrl url;
@@ -565,8 +565,8 @@ namespace VIDEO
 
     long lResult = -1;
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO
+                    || result == CInfoScanner::PARTIAL_NFO) ? &m_nfoReader : NULL,
                    pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -602,12 +602,12 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
     if (useLocal)
       result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
+    if (result == CInfoScanner::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
@@ -616,7 +616,7 @@ namespace VIDEO
         return INFO_ERROR;
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
       pURL = &scrUrl;
 
     CScraperUrl url;
@@ -632,8 +632,8 @@ namespace VIDEO
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO
+                    || result == CInfoScanner::PARTIAL_NFO) ? &m_nfoReader : NULL,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -664,12 +664,12 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
     if (useLocal)
       result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
+    if (result == CInfoScanner::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
@@ -678,7 +678,7 @@ namespace VIDEO
         return INFO_ERROR;
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
       pURL = &scrUrl;
 
     CScraperUrl url;
@@ -694,8 +694,8 @@ namespace VIDEO
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO
+                    || result == CInfoScanner::PARTIAL_NFO) ? &m_nfoReader : NULL,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -1505,13 +1505,13 @@ namespace VIDEO
       item.SetPath(file->strPath);
 
       // handle .nfo files
-      CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+      CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
       CScraperUrl scrUrl;
       ScraperPtr info(scraper);
       item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       if (useLocal)
         result = CheckForNFOFile(&item, false, info,scrUrl);
-      if (result == CNfoFile::FULL_NFO)
+      if (result == CInfoScanner::FULL_NFO)
       {
         m_nfoReader.GetDetails(*item.GetVideoInfoTag());
         // override with episode and season number from file if available
@@ -2025,7 +2025,7 @@ namespace VIDEO
     }
   }
 
-  CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ScraperPtr& info, CScraperUrl& scrUrl)
+  CInfoScanner::INFO_TYPE CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ScraperPtr& info, CScraperUrl& scrUrl)
   {
     std::string strNfoFile;
     if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
@@ -2034,7 +2034,7 @@ namespace VIDEO
     else if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       strNfoFile = URIUtils::AddFileToFolder(pItem->GetPath(), "tvshow.nfo");
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
     if (!strNfoFile.empty() && CFile::Exists(strNfoFile))
     {
       if (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder)
@@ -2045,41 +2045,41 @@ namespace VIDEO
       std::string type;
       switch(result)
       {
-        case CNfoFile::COMBINED_NFO:
+        case CInfoScanner::COMBINED_NFO:
           type = "mixed";
           break;
-        case CNfoFile::FULL_NFO:
+        case CInfoScanner::FULL_NFO:
           type = "full";
           break;
-        case CNfoFile::URL_NFO:
+        case CInfoScanner::URL_NFO:
           type = "URL";
           break;
-        case CNfoFile::NO_NFO:
+        case CInfoScanner::NO_NFO:
           type = "";
           break;
-        case CNfoFile::PARTIAL_NFO:
+        case CInfoScanner::PARTIAL_NFO:
           type = "partial";
           break;
         default:
           type = "malformed";
       }
-      if (result != CNfoFile::NO_NFO)
+      if (result != CInfoScanner::NO_NFO)
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching %s NFO file: %s", type.c_str(), CURL::GetRedacted(strNfoFile).c_str());
-      if (result == CNfoFile::FULL_NFO)
+      if (result == CInfoScanner::FULL_NFO)
       {
         if (info->Content() == CONTENT_TVSHOWS)
           info = m_nfoReader.GetScraperInfo();
       }
-      else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
+      else if (result != CInfoScanner::NO_NFO && result != CInfoScanner::ERROR_NFO)
       {
-        if (result != CNfoFile::PARTIAL_NFO)
+        if (result != CInfoScanner::PARTIAL_NFO)
         {
           scrUrl = m_nfoReader.ScraperUrl();
           StringUtils::RemoveCRLF(scrUrl.m_url[0].m_url);
           info = m_nfoReader.GetScraperInfo();
         }
 
-        if (result != CNfoFile::URL_NFO)
+        if (result != CInfoScanner::URL_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }
     }

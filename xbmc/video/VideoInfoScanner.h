@@ -82,7 +82,7 @@ namespace VIDEO
 
     static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
-    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
+    CInfoScanner::INFO_TYPE CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
 
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to find artwork for.

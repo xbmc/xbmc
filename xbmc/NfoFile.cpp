@@ -37,13 +37,13 @@
 using namespace XFILE;
 using namespace ADDON;
 
-CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath,
-                                     const ScraperPtr& info, int episode)
+CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
+                                         const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
   if (Load(strPath) != 0)
-    return NO_NFO;
+    return CInfoScanner::NO_NFO;
 
   CFileItemList items;
   bool bNfo=false;
@@ -127,20 +127,20 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath,
       break;
 
   if (res == 2)
-    return ERROR_NFO;
+    return CInfoScanner::ERROR_NFO;
   if (bNfo)
   {
     if (m_scurl.m_url.empty())
     {
       if (m_doc.find("[scrape url]") != std::string::npos)
-        return PARTIAL_NFO;
+        return CInfoScanner::PARTIAL_NFO;
       else
-        return FULL_NFO;
+        return CInfoScanner::FULL_NFO;
     }
     else
-      return COMBINED_NFO;
+      return CInfoScanner::COMBINED_NFO;
   }
-  return m_scurl.m_url.empty() ? NO_NFO : URL_NFO;
+  return m_scurl.m_url.empty() ? CInfoScanner::NO_NFO : CInfoScanner::URL_NFO;
 }
 
 // return value: 0 - success; 1 - no result; skip; 2 - error
