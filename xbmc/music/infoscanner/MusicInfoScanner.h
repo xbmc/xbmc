@@ -30,17 +30,6 @@ class CGUIDialogProgressBarHandle;
 
 namespace MUSIC_INFO
 {
-/*! \brief return values from the information lookup functions
- */
-enum INFO_RET 
-{ 
-  INFO_CANCELLED,
-  INFO_ERROR,
-  INFO_NOT_NEEDED,
-  INFO_HAVE_ALREADY,
-  INFO_NOT_FOUND,
-  INFO_ADDED 
-};
 
 class CMusicInfoScanner : CThread, public IRunnable, public CInfoScanner
 {
@@ -59,13 +48,9 @@ public:
   void StartCleanDatabase();
   void FetchAlbumInfo(const std::string& strDirectory, bool refresh = false);
   void FetchArtistInfo(const std::string& strDirectory, bool refresh = false);
-  bool IsScanning();
   void Stop(bool wait = false);
 
   void CleanDatabase(bool showProgress = true);
-
-  //! \brief Set whether or not to show a progress dialog
-  void ShowDialog(bool show) { m_showDialog = show; }
 
   /*! \brief Categorize FileItems into Albums, Songs, and Artists
    This takes a list of FileItems and turns it into a tree of Albums,
@@ -218,13 +203,8 @@ protected:
   bool ResolveMusicBrainz(const std::string &strMusicBrainzID, const ADDON::ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL);
 
 protected:
-  bool m_showDialog;
-  CGUIDialogProgressBarHandle* m_handle;
   int m_currentItem;
   int m_itemCount;
-  bool m_bRunning;
-  bool m_bCanInterrupt;
-  bool m_bClean;
   bool m_needsCleanup;
   int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
   CMusicDatabase m_musicDatabase;
@@ -232,7 +212,6 @@ protected:
   std::vector<int> m_albumsAdded;
   std::set<int> m_artistsArt;
 
-  std::set<std::string> m_pathsToScan;
   std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;

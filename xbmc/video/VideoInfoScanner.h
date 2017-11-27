@@ -44,15 +44,6 @@ namespace VIDEO
     bool exclude;           /* exclude this path from scraping */
   } SScanSettings;
 
-  /*! \brief return values from the information lookup functions
-   */
-  enum INFO_RET { INFO_CANCELLED,
-                  INFO_ERROR,
-                  INFO_NOT_NEEDED,
-                  INFO_HAVE_ALREADY,
-                  INFO_NOT_FOUND,
-                  INFO_ADDED };
-
   class CVideoInfoScanner : public CInfoScanner
   {
   public:
@@ -64,11 +55,7 @@ namespace VIDEO
      \param scanAll whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned.) Defaults to false.
      */
     void Start(const std::string& strDirectory, bool scanAll = false);
-    bool IsScanning() const { return m_bRunning; }
     void Stop();
-
-    //! \brief Set whether or not to show a progress dialog
-    void ShowDialog(bool show) { m_showDialog = show; }
 
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
@@ -239,18 +226,10 @@ namespace VIDEO
 
     std::string GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 
-    bool m_showDialog;
-    CGUIDialogProgressBarHandle* m_handle;
-    int m_currentItem;
-    int m_itemCount;
     bool m_bStop;
-    bool m_bRunning;
-    bool m_bCanInterrupt;
-    bool m_bClean;
     bool m_scanAll;
     std::string m_strStartDir;
     CVideoDatabase m_database;
-    std::set<std::string> m_pathsToScan;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
     CNfoFile m_nfoReader;
