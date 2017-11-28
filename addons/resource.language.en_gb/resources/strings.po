@@ -9701,7 +9701,6 @@ msgstr ""
 
 #. message box text stating that an epg event is already being recorded
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
@@ -9959,21 +9958,19 @@ msgid "Fallback framerate"
 msgstr ""
 
 #. message box text stating that a timer could not be saved
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19109"
-msgid "Couldn't save timer. Check the log for more information about this message."
+msgid "Could not save the timer. Check the log for more information about this message."
 msgstr ""
 
-#. message box text stating that an unexpected error occured
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+#. message box text stating that a timer could not be deleted
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19110"
-msgid "An unexpected error occurred. Try again later or check the log for more information."
+msgid "Could not delete the timer. Check the log for more information about this message."
 msgstr ""
 
 #. message box text stating that a PVR backend error occured
 #: xbmc/pvr/PVRGUIActions.cpp
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for more information about this message."
 msgstr ""
@@ -10279,7 +10276,7 @@ msgstr ""
 #. error box text stating that recording could not be started
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19164"
-msgid "Can't start recording. Check the log for more information about this message."
+msgid "Could not start recording. Check the log for more information about this message."
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
@@ -10312,7 +10309,11 @@ msgctxt "#19169"
 msgid "Hide video information box"
 msgstr ""
 
-#empty string with id 19170
+#. error box text stating that recording could not be stopped
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19170"
+msgid "Could not stop recording. Check the log for more information about this message."
+msgstr ""
 
 #. pvr settings "start playback full screen" setting label
 #: system/settings/settings.xml
@@ -10860,7 +10861,11 @@ msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
 msgstr ""
 
-#empty string with id 19263
+#. message box text stating that a timer could not be updated
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19263"
+msgid "Could not update the timer. Check the log for more information about this message."
+msgstr ""
 
 #. label for 'incorrect pin' error dialog header
 #: xbmc/pvr/PVRGUIActions.cpp

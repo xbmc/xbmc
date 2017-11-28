@@ -45,6 +45,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -337,7 +338,7 @@ namespace PVR
     if (!item->Channel() && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no channel given", __FUNCTION__);
-      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19109}); // "Information", "Couldn't save timer. Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
       return false;
     }
 
@@ -356,7 +357,13 @@ namespace PVR
     if (!CheckParentalLock(item->Channel()))
       return false;
 
-    return CServiceBroker::GetPVRManager().Timers()->AddTimer(item);
+    if (!CServiceBroker::GetPVRManager().Timers()->AddTimer(item))
+    {
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
+      return false;
+    }
+
+    return true;
   }
 
   namespace
@@ -587,12 +594,15 @@ namespace PVR
           bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
 
         if (!bReturn)
-          HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19164}); // "Information", "Can't start recording. Check the log for more information about this message."
+          HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19164}); // "Error", "Could not start recording. Check the log for more information about this message."
       }
       else if (!bOnOff && channel->IsRecording())
       {
         /* delete active timers */
         bReturn = CServiceBroker::GetPVRManager().Timers()->DeleteTimersOnChannel(channel, true, true);
+
+        if (!bReturn)
+          HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19170}); // "Error", "Could not stop recording. Check the log for more information about this message."
       }
     }
 
@@ -627,7 +637,11 @@ namespace PVR
     else
       timer->m_state = PVR_TIMER_STATE_DISABLED;
 
-    return CServiceBroker::GetPVRManager().Timers()->UpdateTimer(timer);
+    if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(timer))
+      return true;
+
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19263}); // "Error", "Could not update the timer. Check the log for more information about this message."
+    return false;
   }
 
   bool CPVRGUIActions::EditTimer(const CFileItemPtr &item) const
@@ -647,7 +661,11 @@ namespace PVR
     {
       if (newTimer->GetTimerType() == timer->GetTimerType())
       {
-        return CServiceBroker::GetPVRManager().Timers()->UpdateTimer(newTimer);
+        if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(newTimer))
+          return true;
+
+        HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19263}); // "Error", "Could not update the timer. Check the log for more information about this message."
+        return false;
       }
       else
       {
@@ -655,7 +673,7 @@ namespace PVR
         // important. for instance, the new timer might be a rule which schedules the original timer.
         // deleting the original timer after creating the rule would do literally this and we would
         // end up with one timer missing wrt to the rule defined by the new timer.
-        if (CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, timer->IsRecording(), false))
+        if (DeleteTimer(timer, timer->IsRecording(), false))
         {
           if (AddTimer(newTimer))
             return true;
@@ -689,8 +707,11 @@ namespace PVR
                                              CVariant{g_localizeStrings.Get(19042)}, // "Are you sure you want to rename this timer?"
                                              false))
     {
-      if (!CServiceBroker::GetPVRManager().Timers()->RenameTimer(*item, strNewName))
-        return false;
+      if (CServiceBroker::GetPVRManager().Timers()->RenameTimer(timer, strNewName))
+        return true;
+
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19263}); // "Error", "Could not update the timer. Check the log for more information about this message."
+      return false;
     }
 
     CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase*>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
@@ -740,7 +761,13 @@ namespace PVR
     if (bIsRecording)
     {
       if (ConfirmStopRecording(timer))
-        return CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, true, false);
+      {
+        if (CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, true, false) == TimerOperationResult::OK)
+          return true;
+
+        HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19170}); // "Error", "Could not stop recording. Check the log for more information about this message."
+        return false;
+      }
     }
     else if (timer->HasTimerType() && timer->GetTimerType()->IsReadOnly())
     {
@@ -750,7 +777,40 @@ namespace PVR
     {
       bool bAlsoDeleteRule(false);
       if (ConfirmDeleteTimer(timer, bAlsoDeleteRule))
-        return CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, false, bAlsoDeleteRule);
+        return DeleteTimer(timer, false, bAlsoDeleteRule);
+    }
+    return false;
+  }
+
+  bool CPVRGUIActions::DeleteTimer(const CPVRTimerInfoTagPtr &timer, bool bIsRecording, bool bDeleteRule) const
+  {
+    TimerOperationResult result = CServiceBroker::GetPVRManager().Timers()->DeleteTimer(timer, bIsRecording, bDeleteRule);
+    switch (result)
+    {
+      case TimerOperationResult::RECORDING:
+      {
+        // recording running. ask the user if it should be deleted anyway
+        if (HELPERS::ShowYesNoDialogText(CVariant{122},   // "Confirm delete"
+                                         CVariant{19122}) // "This timer is still recording. Are you sure you want to delete this timer?"
+            != HELPERS::DialogResponse::YES)
+          return false;
+
+        return DeleteTimer(timer, true, bDeleteRule);
+      }
+      case TimerOperationResult::OK:
+      {
+        return true;
+      }
+      case TimerOperationResult::FAILED:
+      {
+        HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19110}); // "Error", "Could not delete the timer. Check the log for more information about this message."
+        return false;
+      }
+      default:
+      {
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - unhandled TimerOperationResult (%d)!", __FUNCTION__, result);
+        break;
+      }
     }
     return false;
   }

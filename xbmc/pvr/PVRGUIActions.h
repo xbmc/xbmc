@@ -367,6 +367,15 @@ namespace PVR
     bool DeleteTimer(const CFileItemPtr &item, bool bIsRecording, bool bDeleteRule) const;
 
     /*!
+     * @brief Delete a timer or timer rule, showing a confirmation dialog in case a timer currently recording shall be deleted.
+     * @param timer containing a timer or timer rule to delete.
+     * @param bIsRecording denotes whether the timer is currently recording (controls correct confirmation dialog).
+     * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer created by a rule.
+     * @return true, if the timer or timer rule was deleted successfully, false otherwise.
+     */
+    bool DeleteTimer(const CPVRTimerInfoTagPtr &timer, bool bIsRecording, bool bDeleteRule) const;
+
+    /*!
      * @brief Open a dialog to confirm timer delete.
      * @param timer the timer to delete.
      * @param bDeleteRule in: ignored

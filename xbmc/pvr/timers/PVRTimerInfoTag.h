@@ -45,6 +45,13 @@ class CVariant;
 
 namespace PVR
 {
+  enum class TimerOperationResult
+  {
+    OK,
+    FAILED,
+    RECORDING // The timer was not deleted because it is currently recording (see DeleteTimer).
+  };
+
   class CPVRTimerInfoTag : public ISerializable
   {
   public:
@@ -59,8 +66,6 @@ namespace PVR
     void Serialize(CVariant &value) const override;
 
     void UpdateSummary(void);
-
-    void DisplayError(PVR_ERROR err) const;
 
     std::string GetStatus() const;
     std::string GetTypeAsString() const;
@@ -220,10 +225,31 @@ namespace PVR
      */
     unsigned int UniqueBroadcastID() const { return m_iEpgUid; }
 
-    /* Client control functions */
+    /*!
+     * @brief Add this timer to the backend, transferring all local data of this timer to the backend.
+     * @return True on success, false otherwise.
+     */
     bool AddToClient() const;
-    bool DeleteFromClient(bool bForce = false) const;
+
+    /*!
+     * @brief Delete this timer on the backend.
+     * @param bForce Control what to do in case the timer is currently recording.
+     *        True to force to delete the timer, false to return TimerDeleteResult::RECORDING.
+     * @return The result.
+     */
+    TimerOperationResult DeleteFromClient(bool bForce = false) const;
+
+    /*!
+     * @brief Rename this timer on the backend, transferring all local data of this timer to the backend.
+     * @param strNewName The new name.
+     * @return True on success, false otherwise.
+     */
     bool RenameOnClient(const std::string &strNewName);
+
+    /*!
+     * @brief Update this timer on the backend, transferring all local data of this timer to the backend.
+     * @return True on success, false otherwise.
+     */
     bool UpdateOnClient();
 
     /*!

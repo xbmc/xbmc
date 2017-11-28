@@ -22,10 +22,6 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -41,9 +37,6 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
-
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
@@ -522,36 +515,17 @@ std::string CPVRTimerInfoTag::GetWeekdaysString() const
 
 bool CPVRTimerInfoTag::AddToClient(void) const
 {
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->AddTimer(*this);
-  if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
-    return false;
-  }
-
-  return true;
+  return CServiceBroker::GetPVRManager().Clients()->AddTimer(*this) == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
+TimerOperationResult CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
   PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->DeleteTimer(*this, bForce);
+
   if (error == PVR_ERROR_RECORDING_RUNNING)
-  {
-    // recording running. ask the user if it should be deleted anyway
-    if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{19122}) != DialogResponse::YES)
-      return false;
+    return TimerOperationResult::RECORDING;
 
-    error = CServiceBroker::GetPVRManager().Clients()->DeleteTimer(*this, true);
-  }
-
-  if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
-    return false;
-  }
-
-
-  return true;
+  return (error == PVR_ERROR_NO_ERROR) ? TimerOperationResult::OK : TimerOperationResult::FAILED;
 }
 
 bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
@@ -651,26 +625,7 @@ void CPVRTimerInfoTag::ResetChildState()
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->UpdateTimer(*this);
-  if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
-    return false;
-  }
-
-  return true;
-}
-
-void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
-{
-  if (err == PVR_ERROR_SERVER_ERROR)
-    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_REJECTED)
-    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19109}); /* print info dialog "Couldn't save timer!" */
-  else if (err == PVR_ERROR_ALREADY_PRESENT)
-    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19067}); /* print info dialog */
-  else
-    HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
+  return CServiceBroker::GetPVRManager().Clients()->UpdateTimer(*this) == PVR_ERROR_NO_ERROR;
 }
 
 std::string CPVRTimerInfoTag::ChannelName() const
