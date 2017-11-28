@@ -506,6 +506,11 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   auto cached = m_mapDiscInfo.find(mediaPath);
   if (cached != m_mapDiscInfo.end())
     return cached->second.name;
+  
+  // try to minimize the chance of a "device not ready" dialog
+  std::string drivePath = g_mediaManager.TranslateDevicePath(devicePath, true);
+  if (g_mediaManager.GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
+    return "";
 
   DiscInfo info;
   info = GetDiscInfo(mediaPath);
