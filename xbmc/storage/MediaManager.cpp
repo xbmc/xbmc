@@ -332,6 +332,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 #ifdef HAS_DVD_DRIVE
   // delete cached CdInfo if any
   RemoveCdInfo(TranslateDevicePath(share.strPath, true));
+  RemoveDiscInfo(TranslateDevicePath(share.strPath, true));
 #endif
 }
 
@@ -516,11 +517,23 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
     return "";
 
   std::string mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
-  URIUtils::AddSlashAtEnd(mediaPath);
 
-  DiscInfo info = GetDiscInfo(mediaPath);
+  auto cached = m_mapDiscInfo.find(mediaPath);
+  if (cached != m_mapDiscInfo.end())
+    return cached->second.name;
+  
+  // try to minimize the chance of a "device not ready" dialog
+  std::string drivePath = g_mediaManager.TranslateDevicePath(devicePath, true);
+  if (g_mediaManager.GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
+    return "";
+
+  DiscInfo info;
+  info = GetDiscInfo(mediaPath);
   if (!info.name.empty())
+  {
+    m_mapDiscInfo[mediaPath] = info;
     return info.name;
+  }
 
   std::string strDevice = TranslateDevicePath(devicePath);
   WCHAR cVolumenName[128];
@@ -531,7 +544,11 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if(GetVolumeInformationW(strDeviceW.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  return StringUtils::TrimRight(strDevice, " ");
+  info.name = StringUtils::TrimRight(strDevice, " ");
+  if (!info.name.empty())
+    m_mapDiscInfo[mediaPath] = info;
+
+  return info.name;
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
@@ -558,7 +575,6 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   if (mediaPath.empty() || mediaPath == "iso9660://")
   {
     mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
-    URIUtils::AddSlashAtEnd(mediaPath);
   }
 #endif
   
@@ -762,4 +778,13 @@ CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
 #endif
 
   return info;
+}
+
+void CMediaManager::RemoveDiscInfo(const std::string& devicePath)
+{
+  std::string strDevice = TranslateDevicePath(devicePath, false);
+
+  auto it = m_mapDiscInfo.find(strDevice);
+  if (it != m_mapDiscInfo.end())
+    m_mapDiscInfo.erase(it);
 }
