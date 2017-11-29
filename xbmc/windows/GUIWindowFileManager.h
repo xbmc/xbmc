@@ -84,7 +84,6 @@ protected:
   void OnPopupMenu(int iList, int iItem, bool bContextDriven = true);
   void ShowShareErrorMessage(CFileItem* pItem);
   void UpdateItemCounts();
-  void TextView(const std::string& path);
 
   //
   bool bCheckShareConnectivity;
