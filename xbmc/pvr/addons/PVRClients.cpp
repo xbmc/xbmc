@@ -843,29 +843,23 @@ std::string CPVRClients::GetCurrentInputFormat(void) const
 
 bool CPVRClients::FillChannelStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetPVRChannelInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillChannelStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetPVRChannelInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillChannelStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::FillRecordingStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetPVRRecordingInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillRecordingStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetPVRRecordingInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillRecordingStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::FillEpgTagStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetEPGInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillEpgTagStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetEPGInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillEpgTagStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::IsTimeshifting(void) const
