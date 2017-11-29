@@ -40,10 +40,8 @@ public:
 
   //! \brief Load "tag" from nfo file.
   //! \brief tag Tag to load info into
-  CInfoScanner::INFO_TYPE Load(CVideoInfoTag& tag, bool prioritise) override;
-
-  //! \brief Returns url associated with info (NFO_URL et al).
-  bool ScraperUrl(CScraperUrl& url) const override;
+  CInfoScanner::INFO_TYPE Load(CVideoInfoTag& tag, bool prioritise,
+                               std::vector<EmbeddedArt>* = nullptr) override;
 
 protected:
   //! \brief Find nfo file for item
@@ -52,5 +50,4 @@ protected:
   std::string FindNFO(const CFileItem& item, bool movieFolder) const;
 
   std::string m_path; //!< Path to nfo file
-  CScraperUrl m_url; //!< Resolved url for scraper use
 };

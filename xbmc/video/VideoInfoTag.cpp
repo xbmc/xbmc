@@ -100,6 +100,7 @@ void CVideoInfoTag::Reset()
   m_type.clear();
   m_relevance = -1;
   m_parsedDetails = 0;
+  m_coverArt.clear();
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
@@ -421,6 +422,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
     ar << m_iIdSeason;
+    ar << m_coverArt.size();
+    for (auto& it : m_coverArt)
+      ar << it;
   }
   else
   {
@@ -541,6 +545,11 @@ void CVideoInfoTag::Archive(CArchive& ar)
     m_dateAdded.SetFromDBDateTime(dateAdded);
     ar >> m_type;
     ar >> m_iIdSeason;
+    size_t size;
+    ar >> size;
+    m_coverArt.resize(size);
+    for (size_t i = 0; i < size; ++i)
+      ar >> m_coverArt[i];
   }
 }
 

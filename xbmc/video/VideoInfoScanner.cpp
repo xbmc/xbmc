@@ -557,7 +557,7 @@ namespace VIDEO
     }
     if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
     {
-      loader->ScraperUrl(scrUrl);
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
     }
 
@@ -633,7 +633,7 @@ namespace VIDEO
     }
     if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
     {
-      loader->ScraperUrl(scrUrl);
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
     }
 
@@ -703,7 +703,7 @@ namespace VIDEO
     }
     if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
     {
-      loader->ScraperUrl(scrUrl);
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
     }
 
@@ -1408,6 +1408,20 @@ namespace VIDEO
       }
     }
 
+    // find embedded art
+    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+    {
+      for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
+      {
+        if (art.find(it.type) == art.end())
+        {
+          std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(),
+                                                                "video_" + it.type);
+          art.insert(std::make_pair(it.type, thumb));
+        }
+      }
+    }
+
     // find online art
     for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
     {
@@ -1710,7 +1724,7 @@ namespace VIDEO
     if (ret)
     {
       if (loader)
-       loader->Load(movieDetails, true);
+        loader->Load(movieDetails, true);
 
       if (m_handle && url.strTitle.empty())
         m_handle->SetText(movieDetails.m_strTitle);

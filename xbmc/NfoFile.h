@@ -58,6 +58,12 @@ public:
   ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
+  static int Scrape(ADDON::ScraperPtr& scraper, CScraperUrl& url,
+                    const std::string& content);
+
+  static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::TYPE type,
+                                                    ADDON::ScraperPtr selectedScraper);
+
 private:
   std::string m_doc;
   size_t m_headPos;
@@ -66,7 +72,6 @@ private:
   CScraperUrl m_scurl;
 
   int Load(const std::string&);
-  int Scrape(ADDON::ScraperPtr& scraper);
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

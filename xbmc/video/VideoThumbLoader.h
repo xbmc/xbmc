@@ -27,6 +27,7 @@
 
 class CStreamDetails;
 class CVideoDatabase;
+class EmbeddedArt;
 
 /*!
  \ingroup thumbs,jobs
@@ -125,6 +126,10 @@ public:
    \param artwork the artwork map.
    */
   static void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
+
+  static bool GetEmbeddedThumb(const std::string& path,
+                               const std::string& type,
+                               EmbeddedArt& art);
 
 protected:
   CVideoDatabase *m_videoDatabase;

@@ -39,8 +39,10 @@
 #include "TextureCache.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/tags/VideoInfoTagLoaderFactory.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
@@ -358,6 +360,21 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         CTextureCache::GetInstance().BackgroundCacheImage(art);
         artwork.insert(std::make_pair(type, art));
       }
+      else
+      {
+        // If nothing was found, try embedded art
+        if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+        {
+          for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
+          {
+            if (it.type == type)
+            {
+              art = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "video_" + type);
+              artwork.insert(std::make_pair(type, art));
+            }
+          }
+        }
+      }
     }
   }
   SetArt(*pItem, artwork);
@@ -513,6 +530,22 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
   }
   if (!thumb.empty())
     item.SetArt("thumb", thumb);
+  else
+  {
+    // If nothing was found, try embedded art
+    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_coverArt.empty())
+    {
+      for (auto& it : item.GetVideoInfoTag()->m_coverArt)
+      {
+        if (it.type == "thumb")
+        {
+          thumb = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_" + it.type);
+          item.SetArt(it.type, thumb);
+        }
+      }
+    }
+  }
+
   return !thumb.empty();
 }
 
@@ -550,6 +583,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
         art = item.FindLocalArt("folder.jpg", true);
     }
   }
+
   return art;
 }
 
@@ -562,6 +596,29 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
     path = CStackDirectory::GetFirstStackedFile(path);
 
   return CTextureUtils::GetWrappedImageURL(path, "video");
+}
+
+bool CVideoThumbLoader::GetEmbeddedThumb(const std::string& path,
+                                         const std::string& type, EmbeddedArt& art)
+{
+  CFileItem item(path, false);
+  std::unique_ptr<IVideoInfoTagLoader> pLoader;
+  pLoader.reset(CVideoInfoTagLoaderFactory::CreateLoader(item,ADDON::ScraperPtr(),false));
+  CVideoInfoTag tag;
+  std::vector<EmbeddedArt> artv;
+  if (pLoader)
+    pLoader->Load(tag, false, &artv);
+
+  for (const EmbeddedArt& it : artv)
+  {
+    if (it.type == type)
+    {
+      art = it;
+      break;
+    }
+  }
+
+  return !art.empty();
 }
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)

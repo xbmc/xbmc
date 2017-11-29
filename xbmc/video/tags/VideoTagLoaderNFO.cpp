@@ -36,7 +36,7 @@ CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
                                        bool lookInFolder)
   : IVideoInfoTagLoader(item, info, lookInFolder)
 {
-  if (m_info->Content() == CONTENT_TVSHOWS && m_item.m_bIsFolder)
+  if (m_info && m_info->Content() == CONTENT_TVSHOWS && m_item.m_bIsFolder)
     m_path = URIUtils::AddFileToFolder(m_item.GetPath(), "tvshow.nfo");
   else
     m_path = FindNFO(m_item, lookInFolder);
@@ -48,7 +48,8 @@ bool CVideoTagLoaderNFO::HasInfo() const
 }
 
 CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
-                                                 bool prioritise)
+                                                 bool prioritise,
+                                                 std::vector<EmbeddedArt>*)
 {
   CNfoFile nfoReader;
   CInfoScanner::INFO_TYPE result;
@@ -61,7 +62,10 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
     nfoReader.GetDetails(tag, nullptr, prioritise);
 
   if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+  {
+    m_url = nfoReader.ScraperUrl();
     m_info = nfoReader.GetScraperInfo();
+  }
 
   std::string type;
   switch(result)
@@ -90,14 +94,6 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
     CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '%s'", CURL::GetRedacted(m_item.GetPath()).c_str());
 
   return result;
-}
-
-bool CVideoTagLoaderNFO::ScraperUrl(CScraperUrl& url) const
-{
-  if (!m_url.m_url.empty())
-    url = m_url;
-
-  return !m_url.m_url.empty();
 }
 
 std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,

@@ -19,6 +19,7 @@
  */
 
 #include "VideoInfoTagLoaderFactory.h"
+#include "VideoTagLoaderFFmpeg.h"
 #include "VideoTagLoaderNFO.h"
 #include "addons/AudioDecoder.h"
 
@@ -35,8 +36,15 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   CVideoTagLoaderNFO* nfo = new CVideoTagLoaderNFO(item, info, lookInFolder);
   if (nfo->HasInfo())
     return nfo;
-
   delete nfo;
+
+  if (item.IsType(".mkv") || item.IsType(".mp4"))
+  {
+    CVideoTagLoaderFFmpeg* ff = new CVideoTagLoaderFFmpeg(item, info, lookInFolder);
+    if (ff->HasInfo())
+      return ff;
+    delete ff;
+  }
 
   return nullptr;
 }

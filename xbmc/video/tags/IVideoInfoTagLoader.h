@@ -24,9 +24,8 @@
 #include <string>
 
 class CFileItem;
-class CScraperUrl;
-
 class CVideoInfoTag;
+class EmbeddedArt;
 
 namespace VIDEO
 {
@@ -51,10 +50,12 @@ public:
   //! \brief tag Tag to load info into
   //! \brief prioritise True to prioritise data over existing data in tag
   //! \returns True if tag was read, false otherwise
-  virtual CInfoScanner::INFO_TYPE Load(CVideoInfoTag& tag, bool prioritise) = 0;
+  virtual CInfoScanner::INFO_TYPE Load(CVideoInfoTag& tag,
+                                       bool prioritise,
+                                       std::vector<EmbeddedArt>* art = nullptr) = 0;
 
-  //! \brief Returns url associated with info (NFO_URL et al).
-  virtual bool ScraperUrl(CScraperUrl&) const { return false; }
+  //! \brief Returns url associated with obtained URL (NFO_URL et al).
+  const CScraperUrl& ScraperUrl() const { return m_url; }
 
   //! \brief Returns current scaper info.
   const ADDON::ScraperPtr GetAddonInfo() const { return m_info; }
@@ -62,6 +63,7 @@ public:
 protected:
   const CFileItem& m_item; //!< Reference to item to load for
   ADDON::ScraperPtr m_info; //!< Scraper info
+  CScraperUrl m_url; //!< URL for scraper
 };
 
 }

@@ -106,7 +106,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         CVideoInfoTag dummy;
         nfoResult = loader->Load(dummy, false);
         if (nfoResult == CInfoScanner::URL_NFO)
-          loader->ScraperUrl(scraperUrl);
+          scraperUrl = loader->ScraperUrl();
       }
 
       // if there's no NFO remember it in case we have to refresh again
