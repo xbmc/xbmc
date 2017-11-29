@@ -131,9 +131,9 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName        = DEFAULT_INFO_STRING_VALUE;
-  m_bIsPlayingTV          = false;
-  m_bIsPlayingRecording   = false;
-  m_bIsPlayingEpgTag      = false;
+  m_playingChannel.reset();
+  m_playingRecording.reset();
+  m_playingEpgTag.reset();
   m_strBackendHostname.clear();
   m_menuhooks.clear();
   m_timertypes.clear();
@@ -1273,50 +1273,37 @@ bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
 bool CPVRClient::IsPlayingLiveStream(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_bIsPlayingTV;
-}
-
-bool CPVRClient::IsPlayingLiveTV(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_bIsPlayingTV && !m_playingChannel->IsRadio();
-}
-
-bool CPVRClient::IsPlayingLiveRadio(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_bIsPlayingTV && m_playingChannel->IsRadio();
+  return m_bReadyToUse && m_playingChannel;
 }
 
 bool CPVRClient::IsPlayingEncryptedChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_bIsPlayingTV && m_playingChannel->IsEncrypted();
+  return m_bReadyToUse && m_playingChannel && m_playingChannel->IsEncrypted();
 }
 
 bool CPVRClient::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_bIsPlayingRecording;
+  return m_bReadyToUse && m_playingRecording;
 }
 
 bool CPVRClient::IsPlaying(void) const
 {
-  return IsPlayingLiveStream() ||
-         IsPlayingRecording();
+  CSingleLock lock(m_critSection);
+  return m_bReadyToUse && (m_playingChannel || m_playingRecording || m_playingEpgTag);
 }
 
 void CPVRClient::SetPlayingChannel(const CPVRChannelPtr channel)
 {
   CSingleLock lock(m_critSection);
   m_playingChannel = channel;
-  m_bIsPlayingTV = true;
 }
 
 CPVRChannelPtr CPVRClient::GetPlayingChannel() const
 {
   CSingleLock lock(m_critSection);
-  if (m_bReadyToUse && m_bIsPlayingTV)
+  if (m_bReadyToUse)
     return m_playingChannel;
 
   return CPVRChannelPtr();
@@ -1326,20 +1313,18 @@ void CPVRClient::ClearPlayingChannel()
 {
   CSingleLock lock(m_critSection);
   m_playingChannel.reset();
-  m_bIsPlayingTV = false;
 }
 
 void CPVRClient::SetPlayingRecording(const CPVRRecordingPtr recording)
 {
   CSingleLock lock(m_critSection);
   m_playingRecording = recording;
-  m_bIsPlayingRecording = true;
 }
 
 CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
-  if (m_bReadyToUse && m_bIsPlayingRecording)
+  if (m_bReadyToUse)
     return m_playingRecording;
 
   return CPVRRecordingPtr();
@@ -1349,20 +1334,18 @@ void CPVRClient::ClearPlayingRecording()
 {
   CSingleLock lock(m_critSection);
   m_playingRecording.reset();
-  m_bIsPlayingRecording = false;
 }
 
 void CPVRClient::SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag)
 {
   CSingleLock lock(m_critSection);
   m_playingEpgTag = epgTag;
-  m_bIsPlayingEpgTag = true;
 }
 
 CPVREpgInfoTagPtr CPVRClient::GetPlayingEpgTag(void) const
 {
   CSingleLock lock(m_critSection);
-  if (m_bReadyToUse && m_bIsPlayingEpgTag)
+  if (m_bReadyToUse)
     return m_playingEpgTag;
 
   return CPVREpgInfoTagPtr();
@@ -1372,7 +1355,6 @@ void CPVRClient::ClearPlayingEpgTag()
 {
   CSingleLock lock(m_critSection);
   m_playingEpgTag.reset();
-  m_bIsPlayingEpgTag = false;
 }
 
 PVR_ERROR CPVRClient::OpenStream(const CPVRChannelPtr &channel)
