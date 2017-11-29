@@ -309,6 +309,16 @@ public:
   virtual int GetNrOfStreams() const = 0;
 
   /*
+   * get a list of available programs
+   */
+  virtual int GetPrograms(std::vector<ProgramInfo>& programs) { return 0; }
+
+  /*
+   * select programs
+   */
+  virtual void SetProgram(int progId) {}
+
+  /*
    * returns opened filename
    */
   virtual std::string GetFileName() { return ""; }

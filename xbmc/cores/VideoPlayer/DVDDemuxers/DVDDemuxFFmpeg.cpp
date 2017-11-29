@@ -561,6 +561,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   if (skipCreateStreams && GetNrOfStreams() == 0)
     m_program = 0;
 
+  m_newProgram = m_program;
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 
@@ -1256,6 +1257,40 @@ int CDVDDemuxFFmpeg::GetNrOfStreams() const
   return m_streams.size();
 }
 
+int CDVDDemuxFFmpeg::GetPrograms(std::vector<ProgramInfo>& programs)
+{
+  programs.clear();
+  if (!m_pFormatContext || m_pFormatContext->nb_programs <= 1)
+    return 0;
+  
+  for (int i = 0; i < m_pFormatContext->nb_programs; i++)
+  {
+    std::ostringstream os;
+    ProgramInfo prog;
+    prog.id = i;
+    os << i;
+    prog.name = os.str();
+
+    if (!m_pFormatContext->programs[i]->metadata)
+      continue;
+
+    AVDictionaryEntry *tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "", nullptr, AV_DICT_IGNORE_SUFFIX);
+    while (tag)
+    {
+      os << " - " << tag->key << ": " << tag->value;
+      tag = av_dict_get(m_pFormatContext->programs[i]->metadata, nullptr, tag, AV_DICT_IGNORE_SUFFIX);
+    }
+    prog.name = os.str();
+    programs.push_back(prog);
+  }
+  return programs.size();
+}
+
+void CDVDDemuxFFmpeg::SetProgram(int progId)
+{
+  m_newProgram = progId;
+}
+
 double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
 {
   // trust matroska container
@@ -1302,10 +1337,11 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
   if (m_pFormatContext->nb_programs)
   {
     // check if desired program is available
-    if (program < m_pFormatContext->nb_programs && m_pFormatContext->programs[program]->nb_stream_indexes > 0)
+    if (program < m_pFormatContext->nb_programs)
     {
       m_program = program;
       m_streamsInProgram = m_pFormatContext->programs[program]->nb_stream_indexes;
+      m_pFormatContext->programs[program]->discard = AVDISCARD_NONE;
     }
     else
       m_program = UINT_MAX;
@@ -1313,12 +1349,12 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
     // look for first non empty stream and discard nonselected programs
     for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
     {
-      if(m_program == UINT_MAX && m_pFormatContext->programs[i]->nb_stream_indexes > 0)
+      if (m_program == UINT_MAX && m_pFormatContext->programs[i]->nb_stream_indexes > 0)
       {
         m_program = i;
       }
 
-      if(i != m_program)
+      if (i != m_program)
         m_pFormatContext->programs[i]->discard = AVDISCARD_ALL;
     }
     if (m_program != UINT_MAX)
@@ -1795,6 +1831,12 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   if (m_program == 0 && !m_pFormatContext->nb_programs)
     return false;
 
+  if (m_program != m_newProgram)
+  {
+    m_program = m_newProgram;
+    return true;
+  }
+  
   if (m_pFormatContext->programs[m_program]->nb_stream_indexes != m_streamsInProgram)
     return true;
 

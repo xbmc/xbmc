@@ -146,6 +146,9 @@ public:
   virtual void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) {}
   virtual void SetVideoStream(int iStream) {}
 
+  virtual int GetPrograms(std::vector<ProgramInfo>& programs) { return 0; }
+  virtual void SetProgram(int progId) {}
+
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
 

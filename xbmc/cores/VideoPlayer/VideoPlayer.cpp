@@ -908,6 +908,7 @@ bool CVideoPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+  m_pDemuxer->GetPrograms(m_programs);
 
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
@@ -1091,16 +1092,17 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     }
   }
   // read a data frame from stream.
-  if(m_pDemuxer)
+  if (m_pDemuxer)
     packet = m_pDemuxer->Read();
 
-  if(packet)
+  if (packet)
   {
     // stream changed, update and open defaults
-    if(packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
+    if (packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
     {
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+        m_pDemuxer->GetPrograms(m_programs);
         OpenDefaultStreams(false);
 
         // reevaluate HasVideo/Audio, we may have switched from/to a radio channel
@@ -2766,6 +2768,15 @@ void CVideoPlayer::HandleMessages()
       CDVDMsgBool* pValue = static_cast<CDVDMsgBool*>(pMsg);
       SetSubtitleVisibleInternal(pValue->m_value);
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
+    {
+      CDVDMsgInt* msg = static_cast<CDVDMsgInt*>(pMsg);
+      if (m_pDemuxer)
+      {
+        m_pDemuxer->SetProgram(msg->m_value);
+        FlushBuffers(DVD_NOPTS_VALUE, false, true);
+      }
+    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
     {
       g_infoManager.SetDisplayAfterSeek(100000);
@@ -3360,6 +3371,17 @@ void CVideoPlayer::SetVideoStream(int iStream)
   m_messenger.Put(new CDVDMsgPlayerSetVideoStream(iStream));
   m_processInfo->UpdateVideoSettings().SetVideoStream(iStream);
   SynchronizeDemuxer();
+}
+
+int CVideoPlayer::GetPrograms(std::vector<ProgramInfo>& programs)
+{
+  programs = m_programs;
+  return programs.size();
+}
+
+void CVideoPlayer::SetProgram(int progId)
+{
+  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SET_PROGRAM, progId));
 }
 
 TextCacheStruct_t* CVideoPlayer::GetTeletextCache()

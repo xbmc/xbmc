@@ -51,6 +51,7 @@ struct StreamInfo
 
 protected:
   StreamInfo() = default;
+  virtual ~StreamInfo() = default;
 };
 
 struct AudioStreamInfo : StreamInfo
@@ -72,4 +73,10 @@ struct VideoStreamInfo : StreamInfo
   CRect DestRect;
   std::string stereoMode;
   int angles = 0;
+};
+
+struct ProgramInfo
+{
+  int id;
+  std::string name;
 };
