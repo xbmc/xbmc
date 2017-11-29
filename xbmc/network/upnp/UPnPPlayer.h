@@ -69,7 +69,6 @@ public:
   void DoAudioWork() override;
   bool OnAction(const CAction &action) override;
 
-  std::string GetPlayingTitle() override;
   void FrameMove() override;
 
   int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);

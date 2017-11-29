@@ -318,15 +318,6 @@ void CApplicationPlayer::SeekTimeRelative(int64_t iTime)
   }
 }
 
-std::string CApplicationPlayer::GetPlayingTitle()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetPlayingTitle();
-  else
-    return "";
-}
-
 int64_t CApplicationPlayer::GetTime() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
