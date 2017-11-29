@@ -977,13 +977,14 @@ namespace PVR
     /*!
      * @brief Wraps an addon function call in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must not take any parameters.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take one parameter of type const AddonInstance*.
      * @param bIsImplemented If false, this method will return PVR_ERROR_NOT_IMPLEMENTED.
      * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
+    typedef KodiToAddonFuncTable_PVR AddonInstance;
     PVR_ERROR DoAddonCall(const char* strFunctionName,
-                          std::function<PVR_ERROR()> function,
+                          std::function<PVR_ERROR(const AddonInstance*)> function,
                           bool bIsImplemented = true,
                           bool bCheckReadyToUse = true) const;
 
