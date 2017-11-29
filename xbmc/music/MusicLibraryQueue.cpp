@@ -71,14 +71,10 @@ void CMusicLibraryQueue::ExportLibrary(const CLibExportSettings& settings, bool 
   {    
     AddJob(exportJob);
 
+    // Wait for export to complete or be canceled, but render every 10ms so that the 
+    // pointer movements work on dialog even when export is reporting progress infrequently
     if (progress)
-    {
-      // Wait for export to complete or be canceled, but render every 10 milliseconds so 
-      // that pointer movements work on dialog even when export is reporting progress infrequently
-      CEvent m_done;
-      while (!m_done.WaitMSec(10) && progress->IsActive() && !progress->IsCanceled())
-        progress->Progress();
-    }
+      progress->Wait();
   }
   else
   {

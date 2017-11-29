@@ -173,6 +173,15 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
   SetInvalid();
 }
 
+bool CGUIDialogProgress::Wait(int progresstime /*= 10*/)
+{
+  CEvent m_done;
+  while (!m_done.WaitMSec(progresstime) && m_active && !m_bCanceled)
+    Progress();
+
+  return !m_bCanceled;
+}
+
 void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_bInvalidated)
