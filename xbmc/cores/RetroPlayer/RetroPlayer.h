@@ -115,7 +115,6 @@ namespace RETRO
     bool OnAction(const CAction &action) override;
     std::string GetPlayerState() override;
     bool SetPlayerState(const std::string& state) override;
-    //virtual std::string GetPlayingTitle() override { return ""; }
     //virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override { return false; }
     //virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override { audioCaps.assign(1,IPC_AUD_ALL); }
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }

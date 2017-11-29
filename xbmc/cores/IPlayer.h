@@ -205,8 +205,6 @@ public:
   virtual std::string GetPlayerState() { return ""; };
   virtual bool SetPlayerState(const std::string& state) { return false;};
   
-  virtual std::string GetPlayingTitle() { return ""; };
-
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
   /*!
    \brief define the subtitle capabilities of the player

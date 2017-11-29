@@ -592,11 +592,6 @@ failed:
   return 0;
 };
 
-std::string CUPnPPlayer::GetPlayingTitle()
-{
-  return "";
-};
-
 bool CUPnPPlayer::OnAction(const CAction &action)
 {
   switch (action.GetID())

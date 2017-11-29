@@ -4947,16 +4947,6 @@ bool CVideoPlayer::Record(bool bOnOff)
   return false;
 }
 
-std::string CVideoPlayer::GetPlayingTitle()
-{
-  /* Currently we support only Title Name from Teletext line 30 */
-  TextCacheStruct_t* ttcache = m_VideoPlayerTeletext->GetTeletextCache();
-  if (ttcache && !ttcache->line30.empty())
-    return ttcache->line30;
-
-  return "";
-}
-
 CVideoSettings CVideoPlayer::GetVideoSettings()
 {
   return m_processInfo->GetVideoSettings();

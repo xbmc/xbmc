@@ -114,7 +114,6 @@ public:
   int64_t GetChapterPos(int chapterIdx=-1);
   float GetPercentage() const;
   std::string GetPlayerState();
-  std::string GetPlayingTitle();
   int   GetPreferredPlaylist() const;
   int   GetSubtitle();
   void  GetSubtitleCapabilities(std::vector<int> &subCaps);
