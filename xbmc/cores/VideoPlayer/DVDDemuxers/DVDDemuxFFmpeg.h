@@ -152,7 +152,8 @@ protected:
   bool     m_bAVI;
   bool     m_bSup;
   int      m_speed;
-  unsigned m_program;
+  unsigned int m_program;
+  int m_streamsInProgram;
   XbmcThreads::EndTime  m_timeout;
 
   // Due to limitations of ffmpeg, we only can detect a program change
