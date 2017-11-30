@@ -89,7 +89,6 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNPLAYLISTS    7
 #define CONTROL_BTNSCAN         9
-#define CONTROL_BTNREC          10
 #define CONTROL_BTNRIP          11
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)

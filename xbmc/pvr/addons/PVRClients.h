@@ -296,10 +296,10 @@ namespace PVR
     bool IsRecordingOnPlayingChannel(void) const;
 
     /*!
-     * @brief Check whether the currently playing channel can be recorded instantly.
-     * @return True if there is a playing channel that can be recorded instantly, false otherwise.
+     * @brief Check whether the currently playing channel can be recorded.
+     * @return True if there is a playing channel that can be recorded, false otherwise.
      */
-    bool CanRecordInstantly(void);
+    bool CanRecordOnPlayingChannel(void);
 
     /*!
      * @brief Set the epg tag that is currently playing.

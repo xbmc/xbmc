@@ -21,9 +21,9 @@
 #include "PVRBuiltins.h"
 
 #include "Application.h"
-#include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
-
+#include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
 
 /*! \brief Search for missing channel icons
  *   \param params (ignored)
@@ -31,7 +31,15 @@
 static int SearchMissingIcons(const std::vector<std::string>& params)
 {
   CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
+  return 0;
+}
 
+/*! \brief will toggle recording of playing channel, if any.
+ *   \param params (ignored)
+ */
+static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
+{
+  CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
   return 0;
 }
 
@@ -51,12 +59,18 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
 ///     ,
 ///     Will start a search for missing channel icons
 ///   }
+///   \table_row2_l{
+///     <b>`PVR.ToggleRecordPlayingChannel`</b>
+///     ,
+///     Will toggle recording on playing channel, if any
+///   }
 /// \table_end
 ///
 
 CBuiltins::CommandMap CPVRBuiltins::GetOperations() const
 {
   return {
-           {"pvr.searchmissingchannelicons",  {"Search for missing channel icons", 0, SearchMissingIcons}}
+           {"pvr.searchmissingchannelicons",  {"Search for missing channel icons", 0, SearchMissingIcons}},
+           {"pvr.togglerecordplayingchannel", {"Toggle recording on playing channel", 0, ToggleRecordPlayingChannel}},
          };
 }

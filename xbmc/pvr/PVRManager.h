@@ -320,12 +320,6 @@ namespace PVR
     bool OpenRecordedStream(const CPVRRecordingPtr &tag);
 
     /*!
-     * @brief Start or stop recording on the channel that is currently being played.
-     * @param bOnOff True to start recording, false to stop.
-     */
-    void StartRecordingOnPlayingChannel(bool bOnOff);
-
-    /*!
      * @brief Check whether there are active recordings.
      * @return True if there are active recordings, false otherwise.
      */

@@ -4595,6 +4595,16 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     Returns the currently entered channel number while in numeric channel input mode, an empty string otherwise
 ///   }
+///   \table_row3{   <b>`Pvr.CanRecordPlayingChannel`</b>,
+///                  \anchor Pvr_CanRecordPlayingChannel
+///                  _boolean_,
+///     Returns true if PVR is currently playing a channel and if this channel can be recorded.
+///   }
+///   \table_row3{   <b>`Pvr.IsRecordingPlayingChannel`</b>,
+///                  \anchor Pvr_IsRecordingPlayingChannel
+///                  _boolean_,
+///     Returns true if PVR is currently playing a channel and if this channel is currently recorded.
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4680,7 +4690,9 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isrecordingradio",           PVR_IS_RECORDING_RADIO },
                                   { "hasradiotimer",              PVR_HAS_RADIO_TIMER },
                                   { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER },
-                                  { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT }};
+                                  { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT },
+                                  { "canrecordplayingchannel",    PVR_CAN_RECORD_PLAYING_CHANNEL },
+                                  { "isrecordingplayingchannel",  PVR_IS_RECORDING_PLAYING_CHANNEL }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_ADSP ADSP

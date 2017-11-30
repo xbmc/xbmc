@@ -105,9 +105,9 @@
 						<texturenofocus />
 						<radioposx>1</radioposx>
 						<radioposy>0</radioposy>
-						<selected>!Player.Recording</selected>
-						<onclick>PlayerControl(Record)</onclick>
-						<visible>Player.CanRecord</visible>
+						<selected>!PVR.IsRecordingPlayingChannel</selected>
+						<onclick>PVR.ToggleRecordPlayingChannel</onclick>
+						<visible>PVR.CanRecordPlayingChannel</visible>
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 				</control>

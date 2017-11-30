@@ -248,7 +248,10 @@ namespace PVR
     bool                            m_bIsPlayingEncryptedStream;
     bool                            m_bHasTVChannels;
     bool                            m_bHasRadioChannels;
+    bool                            m_bCanRecordPlayingChannel;
+    bool                            m_bIsRecordingPlayingChannel;
     std::string                     m_strPlayingTVGroup;
+
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */

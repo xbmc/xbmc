@@ -50,7 +50,7 @@
 					<visible>player.chaptercount</visible>
 				</control>
 				<control type="group">
-					<visible>Player.Recording + !Player.ChannelPreviewActive</visible>
+					<visible>PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>

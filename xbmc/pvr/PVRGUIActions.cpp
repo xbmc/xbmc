@@ -476,6 +476,15 @@ namespace PVR
 
   } // unnamed namespace
 
+  bool CPVRGUIActions::ToggleRecordingOnPlayingChannel()
+  {
+    const CPVRChannelPtr channel = CServiceBroker::GetPVRManager().GetCurrentChannel();
+    if (channel && channel->CanRecord())
+      return SetRecordingOnChannel(channel, !channel->IsRecording());
+
+    return false;
+  }
+
   bool CPVRGUIActions::SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff)
   {
     bool bReturn = false;
