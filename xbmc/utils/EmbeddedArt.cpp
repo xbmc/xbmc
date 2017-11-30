@@ -21,15 +21,17 @@
 #include "EmbeddedArt.h"
 #include "Archive.h"
 
-EmbeddedArtInfo::EmbeddedArtInfo(size_t siz, const std::string &mim)
+EmbeddedArtInfo::EmbeddedArtInfo(size_t siz,
+                                 const std::string &mim, const std::string& t)
 {
-  set(siz, mim);
+  set(siz, mim, t);
 }
 
-void EmbeddedArtInfo::set(size_t siz, const std::string &mim)
+void EmbeddedArtInfo::set(size_t siz, const std::string &mim, const std::string& t)
 {
   size = siz;
   mime = mim;
+  type = t;
 }
 
 void EmbeddedArtInfo::clear()
@@ -46,7 +48,8 @@ bool EmbeddedArtInfo::empty() const
 bool EmbeddedArtInfo::matches(const EmbeddedArtInfo &right) const
 {
   return (size == right.size &&
-          mime == right.mime);
+          mime == right.mime &&
+          type == right.type);
 }
 
 void EmbeddedArtInfo::Archive(CArchive &ar)
@@ -55,22 +58,26 @@ void EmbeddedArtInfo::Archive(CArchive &ar)
   {
     ar << size;
     ar << mime;
+    ar << type;
   }
   else
   {
     ar >> size;
     ar >> mime;
+    ar >> type;
   }
 }
 
-EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz, const std::string &mim)
+EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz,
+                         const std::string &mim, const std::string& type)
 {
-  set(dat, siz, mim);
+  set(dat, siz, mim, type);
 }
 
-void EmbeddedArt::set(const uint8_t *dat, size_t siz, const std::string &mim)
+void EmbeddedArt::set(const uint8_t *dat, size_t siz,
+                      const std::string &mim, const std::string& type)
 {
-  EmbeddedArtInfo::set(siz, mim);
+  EmbeddedArtInfo::set(siz, mim, type);
   data.resize(siz);
   memcpy(&data[0], dat, siz);
 }

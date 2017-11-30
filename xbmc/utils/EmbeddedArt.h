@@ -29,29 +29,33 @@ class EmbeddedArtInfo : public IArchivable
 {
 public:
   EmbeddedArtInfo() : size(0) { }
-  EmbeddedArtInfo(size_t size, const std::string &mime);
+  EmbeddedArtInfo(size_t size, const std::string &mime, const std::string& t = "");
   ~EmbeddedArtInfo() override = default;
 
   // implementation of IArchivable
   void Archive(CArchive& ar) override;
 
-  void set(size_t size, const std::string &mime);
+  void set(size_t size, const std::string &mime, const std::string& t = "");
   void clear();
   bool empty() const;
   bool matches(const EmbeddedArtInfo &right) const;
+  void setType(const std::string& t) { type = t; }
 
   size_t size;
   std::string mime;
+  std::string type;
 };
 
 class EmbeddedArt : public EmbeddedArtInfo
 {
 public:
   EmbeddedArt() = default;
-  EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
+  EmbeddedArt(const uint8_t *data, size_t size,
+              const std::string &mime, const std::string& type = "");
   ~EmbeddedArt() override = default;
 
-  void set(const uint8_t *data, size_t size, const std::string &mime);
+  void set(const uint8_t *data, size_t size,
+           const std::string &mime, const std::string& type = "");
 
   std::vector<uint8_t> data;
 };
