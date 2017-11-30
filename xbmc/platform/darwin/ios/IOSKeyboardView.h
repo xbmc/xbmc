@@ -37,6 +37,7 @@
 @property (nonatomic, retain) NSMutableString *text;
 @property (getter = isConfirmed) BOOL _confirmed;
 @property (assign, setter = registerKeyboard:) CIOSKeyboard *_iosKeyboard;
+@property CGRect _frame;
 
 - (void) setHeading:(NSString *)heading;
 - (void) setHidden:(BOOL)hidden;
@@ -46,4 +47,5 @@
 - (void) textChanged:(NSNotification*)aNotification;
 - (void) setCancelFlag:(bool *)cancelFlag;
 - (void) doDeactivate:(NSDictionary *)dict;
+- (id)initWithFrameInternal;
 @end
