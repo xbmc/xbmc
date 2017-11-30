@@ -35,13 +35,6 @@
       return (lh) > (rh); \
   } while(0)
 
-static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStream& rh)
-{
-  PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT
-                 , rh.flags & StreamFlags::FLAG_DEFAULT);
-  return false;
-}
-
 bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, CDVDInputStream* m_pInputStream, CSelectionStreams &m_SelectionStreams)
 {
   // if no OMXPlayer acceleration then it is not suitable
@@ -70,11 +63,9 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     // find video stream
     int num_supported = 0, num_unsupported = 0;
     AVCodecID codec = AV_CODEC_ID_NONE;
-    SelectionStreams streams = m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority);
-    for(SelectionStreams::iterator it = streams.begin(); it != streams.end(); ++it)
+    for (const auto &it : m_SelectionStreams.Get(STREAM_VIDEO))
     {
-      int iStream = it->id;
-      CDemuxStream *stream = m_pDemuxer->GetStream(it->demuxerId, iStream);
+      CDemuxStream *stream = m_pDemuxer->GetStream(it.demuxerId, it.id);
       if(!stream || stream->disabled || stream->flags & AV_DISPOSITION_ATTACHED_PIC)
         continue;
       CDVDStreamInfo hint(*stream, true);
