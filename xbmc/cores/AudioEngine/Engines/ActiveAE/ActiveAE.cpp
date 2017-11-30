@@ -20,6 +20,7 @@
 
 #include "ActiveAE.h"
 
+using namespace AE;
 using namespace ActiveAE;
 #include "ActiveAESound.h"
 #include "ActiveAEStream.h"
