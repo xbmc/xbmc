@@ -304,7 +304,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   return true;
 }
 
-void CApplication::CApplication::HandleWinEvents()
+void CApplication::HandleWinEvents()
 {
   while (!m_winEvents.empty())
   {

@@ -70,6 +70,12 @@ HWND g_hWnd = nullptr;
 static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
 
 uint32_t g_uQueryCancelAutoPlay = 0;
+bool g_sizeMoveSizing = false;
+bool g_sizeMoveMoving = false;
+int g_sizeMoveWidth = 0;
+int g_sizeMoveHight = 0;
+int g_sizeMoveX = -10000;
+int g_sizeMoveY = -10000;
 
 int XBMC_TranslateUNICODE = 1;
 
@@ -527,6 +533,40 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         DX::Windowing().UpdateResolutions();
       }
       return(0);  
+    case WM_ENTERSIZEMOVE:
+      {
+        DX::Windowing().SetSizeMoveMode(true);
+      }
+      return(0);
+    case WM_EXITSIZEMOVE:
+      {
+        DX::Windowing().SetSizeMoveMode(false);
+        if (g_sizeMoveSizing)
+        {
+          g_sizeMoveSizing = false;
+          newEvent.type = XBMC_VIDEORESIZE;
+          newEvent.resize.w = g_sizeMoveWidth;
+          newEvent.resize.h = g_sizeMoveHight;
+
+          // tell the device about new size
+          DX::Windowing().OnResize(newEvent.resize.w, newEvent.resize.h);
+          // tell the application about new size
+          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+            g_application.OnEvent(newEvent);
+        }
+        if (g_sizeMoveMoving)
+        {
+          g_sizeMoveMoving = false;
+          newEvent.type = XBMC_VIDEOMOVE;
+          newEvent.move.x = g_sizeMoveX;
+          newEvent.move.y = g_sizeMoveY;
+
+          // tell the application about new position
+          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+            g_application.OnEvent(newEvent);
+        }
+      }
+    return(0);
     case WM_SIZE:
       if (wParam == SIZE_MINIMIZED)
       {
@@ -545,28 +585,55 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       } 
       else
       {
-        newEvent.type = XBMC_VIDEORESIZE;
-        newEvent.resize.w = GET_X_LPARAM(lParam);
-        newEvent.resize.h = GET_Y_LPARAM(lParam);
+        g_sizeMoveWidth = GET_X_LPARAM(lParam);
+        g_sizeMoveHight = GET_Y_LPARAM(lParam);
+        if (DX::Windowing().IsInSizeMoveMode())
+        {
+          // If an user is dragging the resize bars, we don't resize 
+          // the buffers and don't rise XBMC_VIDEORESIZE here because 
+          // as the user continuously resize the window, a lot of WM_SIZE
+          // messages are sent to the proc, and it'd be pointless (and slow)
+          // to resize for each WM_SIZE message received from dragging.
+          // So instead, we reset after the user is done resizing the 
+          // window and releases the resize bars, which ends with WM_EXITSIZEMOVE.
+          g_sizeMoveSizing = true;
+        }
+        else
+        {
+          // API call such as SetWindowPos or SwapChain->SetFullscreenState
+          newEvent.type = XBMC_VIDEORESIZE;
+          newEvent.resize.w = g_sizeMoveWidth;
+          newEvent.resize.h = g_sizeMoveHight;
 
-        CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
-        // tell device about new size
-        DX::Windowing().OnResize(newEvent.resize.w, newEvent.resize.h);
-        // tell application about size changes
-        if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-          g_application.OnEvent(newEvent);
+          CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
+          // tell device about new size
+          DX::Windowing().OnResize(newEvent.resize.w, newEvent.resize.h);
+          // tell application about size changes
+          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+            g_application.OnEvent(newEvent);
+        }
       }
       return(0);
     case WM_MOVE:
-      newEvent.type = XBMC_VIDEOMOVE;
-      newEvent.move.x = GET_X_LPARAM(lParam);
-      newEvent.move.y = GET_Y_LPARAM(lParam);
+      {
+        g_sizeMoveX = GET_X_LPARAM(lParam);
+        g_sizeMoveY = GET_Y_LPARAM(lParam);
+        if (DX::Windowing().IsInSizeMoveMode())
+        {
+          // the same as WM_SIZE
+          g_sizeMoveMoving = true;
+        }
+        else
+        {
+          newEvent.type = XBMC_VIDEOMOVE;
+          newEvent.move.x = g_sizeMoveX;
+          newEvent.move.y = g_sizeMoveY;
 
-      CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
-
-      if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow())
-        g_application.OnEvent(newEvent);
-
+          CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
+          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow())
+            g_application.OnEvent(newEvent);
+        }
+      }
       return(0);
     case WM_MEDIA_CHANGE:
       {

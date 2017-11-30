@@ -312,6 +312,12 @@ bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
+void CWinSystemWin32::FinishWindowResize(int newWidth, int newHeight)
+{
+  m_nWidth = newWidth;
+  m_nHeight = newHeight;
+}
+
 void CWinSystemWin32::AdjustWindow(bool forceResize)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": adjusting window if required.");
