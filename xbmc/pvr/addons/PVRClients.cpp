@@ -58,6 +58,7 @@ namespace
 CPVRClients::CPVRClients(void)
 : m_playingClientId(-EINVAL),
   m_bIsPlayingLiveTV(false),
+  m_bIsPlayingLiveRadio(false),
   m_bIsPlayingRecording(false),
   m_bIsPlayingEpgTag(false)
 {
@@ -469,27 +470,19 @@ std::string CPVRClients::GetClientAddonId(int iClientId) const
 bool CPVRClients::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bIsPlayingRecording || m_bIsPlayingLiveTV || m_bIsPlayingEpgTag;
+  return m_bIsPlayingRecording || m_bIsPlayingLiveTV || m_bIsPlayingLiveRadio || m_bIsPlayingEpgTag;
 }
 
 bool CPVRClients::IsPlayingRadio(void) const
 {
-  bool bReturn = false;
-  ForPlayingClient(__FUNCTION__, [&bReturn](const CPVRClientPtr &client) {
-    bReturn = client->IsPlayingLiveRadio();
-    return PVR_ERROR_NO_ERROR;
-  });
-  return bReturn;
+  CSingleLock lock(m_critSection);
+  return m_bIsPlayingLiveRadio;
 }
 
 bool CPVRClients::IsPlayingTV(void) const
 {
-  bool bReturn = false;
-  ForPlayingClient(__FUNCTION__, [&bReturn](const CPVRClientPtr &client) {
-    bReturn = client->IsPlayingLiveTV();
-    return PVR_ERROR_NO_ERROR;
-  });
-  return bReturn;
+  CSingleLock lock(m_critSection);
+  return m_bIsPlayingLiveTV;
 }
 
 bool CPVRClients::IsPlayingRecording(void) const
@@ -522,7 +515,7 @@ bool CPVRClients::GetPlayingClient(CPVRClientPtr &client) const
 int CPVRClients::GetPlayingClientID(void) const
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsPlayingLiveTV || m_bIsPlayingRecording || m_bIsPlayingEpgTag)
+  if (m_bIsPlayingLiveTV || m_bIsPlayingLiveRadio || m_bIsPlayingRecording || m_bIsPlayingEpgTag)
     return m_playingClientId;
 
   return -EINVAL;
@@ -549,7 +542,8 @@ void CPVRClients::SetPlayingChannel(const CPVRChannelPtr &channel)
 
       CSingleLock lock(m_critSection);
       m_playingClientId = channel->ClientID();
-      m_bIsPlayingLiveTV = true;
+      m_bIsPlayingLiveRadio = channel->IsRadio();
+      m_bIsPlayingLiveTV = !m_bIsPlayingLiveRadio;
       m_strPlayingClientName = client->GetFriendlyName();
     }
   }
@@ -563,6 +557,7 @@ void CPVRClients::ClearPlayingChannel()
   });
 
   CSingleLock lock(m_critSection);
+  m_bIsPlayingLiveRadio = false;
   m_bIsPlayingLiveTV = false;
   m_playingClientId = PVR_INVALID_CLIENT_ID;
   m_strPlayingClientName.clear();
@@ -843,29 +838,23 @@ std::string CPVRClients::GetCurrentInputFormat(void) const
 
 bool CPVRClients::FillChannelStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetPVRChannelInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillChannelStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetPVRChannelInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillChannelStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::FillRecordingStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetPVRRecordingInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillRecordingStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetPVRRecordingInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillRecordingStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::FillEpgTagStreamFileItem(CFileItem &fileItem)
 {
-  bool bReturn = ForCreatedClient(__FUNCTION__, fileItem.GetEPGInfoTag()->ClientID(), [&fileItem, &bReturn](const CPVRClientPtr &client) {
-    bReturn = client->FillEpgTagStreamFileItem(fileItem);
-    return PVR_ERROR_NO_ERROR;
+  return ForCreatedClient(__FUNCTION__, fileItem.GetEPGInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
+    return client->FillEpgTagStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-  return bReturn;
 }
 
 bool CPVRClients::IsTimeshifting(void) const

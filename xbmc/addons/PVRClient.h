@@ -768,12 +768,11 @@ namespace PVR
      */
     PVR_ERROR DemuxRead(DemuxPacket* &packet);
 
-    bool IsPlayingLiveStream(void) const;
-    bool IsPlayingLiveTV(void) const;
-    bool IsPlayingLiveRadio(void) const;
+    /*!
+     * @brief Check whether this client is currently playing an encrypted channel.
+     * @return True if the client is playing an encrypted channel, false otherwise.
+     */
     bool IsPlayingEncryptedChannel(void) const;
-    bool IsPlayingRecording(void) const;
-    bool IsPlaying(void) const;
 
     /*!
      * @brief Set the channel that is currently playing.
@@ -958,15 +957,34 @@ namespace PVR
     void StopRunningInstance();
 
     /*!
+     * @brief Check whether this client is currently playing.
+     * @return True if the client is playing a live radio or tv stream, a recording or an epg tag, false otherwise.
+     */
+    bool IsPlaying(void) const;
+
+    /*!
+     * @brief Check whether this client is currently playing a live stream.
+     * @return True if the client is playing a live radio or tv stream, false otherwise.
+     */
+    bool IsPlayingLiveStream(void) const;
+
+    /*!
+     * @brief Check whether this client is currently playing a recording.
+     * @return True if the client is playing a recording, false otherwise.
+     */
+    bool IsPlayingRecording(void) const;
+
+    /*!
      * @brief Wraps an addon function call in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must not take any parameters.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take one parameter of type const AddonInstance*.
      * @param bIsImplemented If false, this method will return PVR_ERROR_NOT_IMPLEMENTED.
      * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
+    typedef KodiToAddonFuncTable_PVR AddonInstance;
     PVR_ERROR DoAddonCall(const char* strFunctionName,
-                          std::function<PVR_ERROR()> function,
+                          std::function<PVR_ERROR(const AddonInstance*)> function,
                           bool bIsImplemented = true,
                           bool bCheckReadyToUse = true) const;
 
@@ -1136,11 +1154,8 @@ namespace PVR
 
     CCriticalSection m_critSection;
 
-    bool                m_bIsPlayingTV;
     CPVRChannelPtr      m_playingChannel;
-    bool                m_bIsPlayingRecording;
     CPVRRecordingPtr    m_playingRecording;
-    bool                m_bIsPlayingEpgTag;
     CPVREpgInfoTagPtr   m_playingEpgTag;
 
     AddonInstance_PVR m_struct;

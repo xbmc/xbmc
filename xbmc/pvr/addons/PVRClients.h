@@ -830,6 +830,7 @@ namespace PVR
 
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
+    bool                  m_bIsPlayingLiveRadio;
     bool                  m_bIsPlayingRecording;
     bool                  m_bIsPlayingEpgTag;
     std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
