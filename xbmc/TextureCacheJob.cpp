@@ -193,7 +193,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
 {
   if (additional_info == "music")
   { // special case for embedded music images
-    MUSIC_INFO::EmbeddedArt art;
+    EmbeddedArt art;
     if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
       return CBaseTexture::LoadFromFileInMemory(&art.data[0], art.size, art.mime, width, height);
   }

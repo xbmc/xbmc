@@ -12,7 +12,6 @@ set(SOURCES Album.cpp
 set(HEADERS Album.h
             Artist.h
             ContextMenus.h
-            EmbeddedArt.h
             GUIViewStateMusic.h
             MusicDatabase.h
             MusicDbUrl.h

@@ -21,9 +21,10 @@
 
 #include <string>
 
+class EmbeddedArt;
+
 namespace MUSIC_INFO
 {
-  class EmbeddedArt;
   class CMusicInfoTag;
   class IMusicInfoTagLoader
   {

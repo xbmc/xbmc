@@ -31,7 +31,6 @@ class CVariant;
 #include "XBDateTime.h"
 #include "music/Album.h"
 #include "music/Artist.h"
-#include "music/EmbeddedArt.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"

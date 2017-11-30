@@ -31,60 +31,6 @@
 
 using namespace MUSIC_INFO;
 
-EmbeddedArtInfo::EmbeddedArtInfo(size_t siz, const std::string &mim)
-{
-  set(siz, mim);
-}
-
-void EmbeddedArtInfo::set(size_t siz, const std::string &mim)
-{
-  size = siz;
-  mime = mim;
-}
-
-void EmbeddedArtInfo::clear()
-{
-  mime.clear();
-  size = 0;
-}
-
-bool EmbeddedArtInfo::empty() const
-{
-  return size == 0;
-}
-
-bool EmbeddedArtInfo::matches(const EmbeddedArtInfo &right) const
-{
-  return (size == right.size &&
-          mime == right.mime);
-}
-
-void EmbeddedArtInfo::Archive(CArchive &ar)
-{
-  if (ar.IsStoring())
-  {
-    ar << size;
-    ar << mime;
-  }
-  else
-  {
-    ar >> size;
-    ar >> mime;
-  }
-}
-
-EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz, const std::string &mim)
-{
-  set(dat, siz, mim);
-}
-
-void EmbeddedArt::set(const uint8_t *dat, size_t siz, const std::string &mim)
-{
-  EmbeddedArtInfo::set(siz, mim);
-  data.resize(siz);
-  memcpy(&data[0], dat, siz);
-}
-
 CMusicInfoTag::CMusicInfoTag(void)
 {
   Clear();
