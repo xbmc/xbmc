@@ -184,7 +184,6 @@ public:
    its not available in the underlaying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
-  virtual int GetSourceBitrate(){ return 0;}
   virtual void SetSpeed(float speed) = 0;
   virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }

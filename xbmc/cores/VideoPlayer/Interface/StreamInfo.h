@@ -77,6 +77,7 @@ struct VideoStreamInfo : StreamInfo
 
 struct ProgramInfo
 {
-  int id;
+  int id = -1;
+  bool playing = false;
   std::string name;
 };

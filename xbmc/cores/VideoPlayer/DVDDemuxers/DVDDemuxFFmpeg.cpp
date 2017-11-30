@@ -1270,6 +1270,8 @@ int CDVDDemuxFFmpeg::GetPrograms(std::vector<ProgramInfo>& programs)
     prog.id = i;
     os << i;
     prog.name = os.str();
+    if (i == m_program)
+      prog.playing = true;
 
     if (!m_pFormatContext->programs[i]->metadata)
       continue;

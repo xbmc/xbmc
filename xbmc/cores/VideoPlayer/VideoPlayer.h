@@ -149,11 +149,6 @@ class CStreamInfo;
 class CDVDDemuxCC;
 class CVideoPlayer;
 
-namespace PVR
-{
-  class CPVRChannel;
-}
-
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
@@ -227,65 +222,65 @@ public:
   }
 };
 
-typedef struct SelectionStream
+//------------------------------------------------------------------------------
+// selection streams
+//------------------------------------------------------------------------------
+struct SelectionStream
 {
-  StreamType   type = STREAM_NONE;
-  int          type_index = 0;
-  std::string  filename;
-  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
-  std::string  language;
-  std::string  name;
+  StreamType type = STREAM_NONE;
+  int type_index = 0;
+  std::string filename;
+  std::string filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
+  std::string language;
+  std::string name;
   StreamFlags flags = StreamFlags::FLAG_NONE;
-  int          source = 0;
-  int          id = 0;
-  int64_t      demuxerId = -1;
-  std::string  codec;
-  int          channels = 0;
-  int          bitrate = 0;
-  int          width = 0;
-  int          height = 0;
-  CRect        SrcRect;
-  CRect        DestRect;
-  std::string  stereo_mode;
-  float        aspect_ratio = 0.0f;
-} SelectionStream;
-
-typedef std::vector<SelectionStream> SelectionStreams;
+  int source = 0;
+  int id = 0;
+  int64_t demuxerId = -1;
+  std::string codec;
+  int channels = 0;
+  int bitrate = 0;
+  int width = 0;
+  int height = 0;
+  CRect SrcRect;
+  CRect DestRect;
+  std::string stereo_mode;
+  float aspect_ratio = 0.0f;
+};
 
 class CSelectionStreams
 {
-  SelectionStream  m_invalid;
 public:
-  CSelectionStreams()
-  {
-    m_invalid.id = -1;
-    m_invalid.source = STREAM_SOURCE_NONE;
-    m_invalid.type = STREAM_NONE;
-  }
-  std::vector<SelectionStream> m_Streams;
-  CCriticalSection m_section;
+  CSelectionStreams() = default;
 
-  int              IndexOf (StreamType type, int source, int64_t demuxerId, int id) const;
-  int              IndexOf (StreamType type, const CVideoPlayer& p) const;
-  int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1, -1) + 1; }
-  int              CountSource(StreamType type, StreamSource source) const;
-  SelectionStream& Get     (StreamType type, int index);
-  bool             Get     (StreamType type, StreamFlags flag, SelectionStream& out);
+  int IndexOf(StreamType type, int source, int64_t demuxerId, int id) const;
+  int Count(StreamType type) const;
+  int CountSource(StreamType type, StreamSource source) const;
+  SelectionStream& Get(StreamType type, int index);
+  bool Get(StreamType type, StreamFlags flag, SelectionStream& out);
+  void Clear(StreamType type, StreamSource source);
+  int Source(StreamSource source, std::string filename);
+  void Update(SelectionStream& s);
+  void Update(CDVDInputStream* input, CDVDDemux* demuxer);
+  void Update(CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2);
 
-  SelectionStreams Get(StreamType type);
-  template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)
+  std::vector<SelectionStream> Get(StreamType type);
+  template<typename Compare> std::vector<SelectionStream> Get(StreamType type, Compare compare)
   {
-    SelectionStreams streams = Get(type);
+    std::vector<SelectionStream> streams = Get(type);
     std::stable_sort(streams.begin(), streams.end(), compare);
     return streams;
   }
 
-  void             Clear   (StreamType type, StreamSource source);
-  int              Source  (StreamSource source, std::string filename);
+  std::vector<SelectionStream> m_Streams;
 
-  void             Update  (SelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
+protected:
+  SelectionStream m_invalid;
 };
+
+//------------------------------------------------------------------------------
+// main class
+//------------------------------------------------------------------------------
 
 class CProcessInfo;
 
@@ -359,7 +354,6 @@ public:
   void FrameAdvance(int frames) override;
   bool OnAction(const CAction &action) override;
 
-  int GetSourceBitrate() override;
   void GetAudioStreamInfo(int index, AudioStreamInfo &info) override;
 
   std::string GetPlayerState() override;
@@ -488,6 +482,9 @@ protected:
   int64_t GetTime();
   float GetPercentage();
 
+  void UpdateContent();
+  void UpdateContentState();
+
   bool m_players_created;
 
   CFileItem m_item;
@@ -508,6 +505,17 @@ protected:
 
   CSelectionStreams m_SelectionStreams;
   std::vector<ProgramInfo> m_programs;
+
+  struct SContent
+  {
+    CCriticalSection m_section;
+    CSelectionStreams m_selectionStreams;
+    std::vector<ProgramInfo> m_programs;
+    int m_program;
+    int m_videoIndex;
+    int m_audioIndex;
+    int m_subtitleIndex;
+  } m_content;
 
   int m_playSpeed;
   int m_streamPlayerSpeed;
