@@ -70,9 +70,6 @@ namespace RETRO
     void SetMute(bool bOnOff) override;
     //virtual void SetVolume(float volume) override { }
     //virtual void SetDynamicRangeCompression(long drc) override { }
-    //virtual bool CanRecord() override { return false; }
-    //virtual bool IsRecording() override { return false; }
-    //virtual bool Record(bool bOnOff) override { return false; }
     //virtual void SetAVDelay(float fValue = 0.0f) override { return; }
     //virtual float GetAVDelay() override { return 0.0f; }
     //virtual void SetSubTitleDelay(float fValue = 0.0f) override { }

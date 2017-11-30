@@ -195,18 +195,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       {
         OnScan(-1);
       }
-      else if (iControl == CONTROL_BTNREC)
-      {
-        if (g_application.m_pPlayer->IsPlayingAudio() )
-        {
-          if (g_application.m_pPlayer->CanRecord() )
-          {
-            bool bIsRecording = g_application.m_pPlayer->IsRecording();
-            g_application.m_pPlayer->Record(!bIsRecording);
-            UpdateButtons();
-          }
-        }
-      }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         int iItem = m_viewControl.GetSelectedItem();
@@ -751,35 +739,6 @@ void CGUIWindowMusicBase::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   else
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
-
-  bool bIsPlaying = g_application.m_pPlayer->IsPlayingAudio();
-  bool bCanRecord = false;
-  bool bIsRecording = false;
-
-  if (bIsPlaying)
-  {
-    bCanRecord = g_application.m_pPlayer->CanRecord();
-    bIsRecording = g_application.m_pPlayer->IsRecording();
-  }
-
-  // Update Record button
-  if (bIsPlaying && bCanRecord)
-  {
-    CONTROL_ENABLE(CONTROL_BTNREC);
-    if (bIsRecording)
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNREC, 265); //Stop Recording
-    }
-    else
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
-    }
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
-    CONTROL_DISABLE(CONTROL_BTNREC);
-  }
 
   CGUIMediaWindow::UpdateButtons();
 }

@@ -243,11 +243,6 @@ static int PlayerControl(const std::vector<std::string>& params)
     if( g_application.m_pPlayer->IsPlaying() )
       g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
   }
-  else if (paramlow == "record")
-  {
-    if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
-      g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
-  }
   else if (StringUtils::StartsWithNoCase(params[0], "partymode"))
   {
     std::string strXspPath;

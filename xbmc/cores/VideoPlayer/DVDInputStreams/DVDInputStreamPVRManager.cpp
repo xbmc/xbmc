@@ -243,23 +243,6 @@ CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
   return NEXTSTREAM_NONE;
 }
 
-bool CDVDInputStreamPVRManager::CanRecord()
-{
-  if (!m_isRecording)
-    return CServiceBroker::GetPVRManager().Clients()->CanRecordInstantly();
-  return false;
-}
-
-bool CDVDInputStreamPVRManager::IsRecording()
-{
-  return CServiceBroker::GetPVRManager().Clients()->IsRecordingOnPlayingChannel();
-}
-
-void CDVDInputStreamPVRManager::Record(bool bOnOff)
-{
-  CServiceBroker::GetPVRManager().StartRecordingOnPlayingChannel(bOnOff);
-}
-
 bool CDVDInputStreamPVRManager::CanPause()
 {
   return CServiceBroker::GetPVRManager().Clients()->CanPauseStream();

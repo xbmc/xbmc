@@ -40,8 +40,6 @@
 #define PLAYER_FORWARDING_8x         15
 #define PLAYER_FORWARDING_16x        16
 #define PLAYER_FORWARDING_32x        17
-#define PLAYER_CAN_RECORD            18
-#define PLAYER_RECORDING             19
 #define PLAYER_CACHING               20
 #define PLAYER_DISPLAY_AFTER_SEEK    21
 #define PLAYER_PROGRESS              22
