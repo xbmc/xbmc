@@ -145,6 +145,16 @@ bool CWinSystemWin10::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
+void CWinSystemWin10::FinishWindowResize(int newWidth, int newHeight)
+{
+  m_nWidth = newWidth;
+  m_nHeight = newHeight;
+
+  auto appView = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView();
+  appView->PreferredLaunchViewSize = Windows::Foundation::Size(m_nWidth, m_nHeight);
+  appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::PreferredLaunchViewSize;
+}
+
 void CWinSystemWin10::AdjustWindow(bool forceResize)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": adjusting window if required.");
@@ -156,7 +166,8 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
   {
     if (!isInFullscreen)
     {
-      appView->TryEnterFullScreenMode();
+      if (appView->TryEnterFullScreenMode())
+        appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::FullScreen;
     }
   }
   else // m_state == WINDOW_STATE_WINDOWED
@@ -164,8 +175,15 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
     if (isInFullscreen)
     {
       appView->ExitFullScreenMode();
+      appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::Auto;
     }
-    // @todo get windows size/pos
+
+    int viewWidth = appView->VisibleBounds.Width;
+    int viewHeight = appView->VisibleBounds.Height;
+    if (viewHeight != m_nHeight || viewWidth != m_nWidth)
+    {
+      appView->TryResizeView(Windows::Foundation::Size(m_nWidth, m_nHeight));
+    }
   }
 }
 

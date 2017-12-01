@@ -93,6 +93,7 @@ public:
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  void FinishWindowResize(int newWidth, int newHeight) override;
   void UpdateResolutions() override;
   bool CenterWindow() override;
   virtual void NotifyAppFocusChange(bool bGaining) override;
