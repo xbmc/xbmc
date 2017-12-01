@@ -21417,3 +21417,8 @@ msgstr ""
 msgctxt "#39108"
 msgid "audio description"
 msgstr ""
+
+#: xbmc/video/PlayerController.cpp
+msgctxt "#39109"
+msgid "Select Program"
+msgstr ""
