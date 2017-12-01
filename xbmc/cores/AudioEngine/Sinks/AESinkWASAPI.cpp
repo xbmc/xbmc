@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <algorithm>
 
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -69,7 +70,25 @@ CAESinkWASAPI::CAESinkWASAPI() :
 
 CAESinkWASAPI::~CAESinkWASAPI()
 {
+}
 
+void CAESinkWASAPI::Register()
+{
+  AE::AESinkRegEntry reg;
+  reg.sinkName = "WASAPI";
+  reg.createFunc = CAESinkWASAPI::Create;
+  reg.enumerateFunc = CAESinkWASAPI::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(reg);
+}
+
+IAESink* CAESinkWASAPI::Create(std::string &device, AEAudioFormat &desiredFormat)
+{
+  IAESink *sink = new CAESinkWASAPI();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
