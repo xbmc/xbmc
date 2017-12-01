@@ -564,7 +564,7 @@ std::string CSysInfo::GetKernelVersionFull(void)
 #if defined(TARGET_WINDOWS_DESKTOP)
   OSVERSIONINFOEXW osvi;
   if (sysGetVersionExWByRef(osvi))
-    kernelVersionFull = StringUtils::Format("%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+    kernelVersionFull = StringUtils::Format("%d.%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
 #elif  defined(TARGET_WINDOWS_STORE)
   // get the system version number
   auto sv = AnalyticsInfo::VersionInfo->DeviceFamilyVersion;
@@ -573,8 +573,7 @@ std::string CSysInfo::GetKernelVersionFull(void)
   unsigned long long v1 = (v & 0xFFFF000000000000L) >> 48;
   unsigned long long v2 = (v & 0x0000FFFF00000000L) >> 32;
   unsigned long long v3 = (v & 0x00000000FFFF0000L) >> 16;
-  unsigned long long v4 = (v & 0x000000000000FFFFL);
-  kernelVersionFull = StringUtils::Format("%lld.%lld.%lld.%lld", v1, v2, v3, v4);
+  kernelVersionFull = StringUtils::Format("%lld.%lld.%lld", v1, v2, v3);
 
 #elif defined(TARGET_POSIX)
   struct utsname un;
@@ -873,8 +872,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin8;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
         m_WinVer = WindowsVersionWin8_1;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0)
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber < 16299)
         m_WinVer = WindowsVersionWin10;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 16299)
+        m_WinVer = WindowsVersionWin10_FCU;
       /* Insert checks for new Windows versions here */
       else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 10)
         m_WinVer = WindowsVersionFuture;
