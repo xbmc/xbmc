@@ -596,7 +596,12 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr ""
 
-#empty strings from id 31132 to 31133
+#: /xml/Custom_1101_SettingsList.xml
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+#empty string with empty id  31133
 
 #: /xml/DialogSeekBar.xml
 msgctxt "#31134"
