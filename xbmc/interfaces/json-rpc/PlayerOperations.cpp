@@ -146,7 +146,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
       if (IsPVRChannel())
       {
-        CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
+        CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
         if (currentChannel)
           fileItem = CFileItemPtr(new CFileItem(currentChannel));
       }
@@ -1773,7 +1773,7 @@ CPVREpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
   if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
     return CPVREpgInfoTagPtr();
 
-  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
+  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
   if (!currentChannel)
     return CPVREpgInfoTagPtr();
 

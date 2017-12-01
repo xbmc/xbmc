@@ -226,7 +226,7 @@ bool CDVDInputStreamPVRManager::GetTimes(Times &times)
 
 CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel()
 {
-  return CServiceBroker::GetPVRManager().GetCurrentChannel();
+  return CServiceBroker::GetPVRManager().GetPlayingChannel();
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
@@ -256,11 +256,6 @@ bool CDVDInputStreamPVRManager::CanSeek()
 void CDVDInputStreamPVRManager::Pause(bool bPaused)
 {
   CServiceBroker::GetPVRManager().Clients()->PauseStream(bPaused);
-}
-
-std::string CDVDInputStreamPVRManager::GetInputFormat()
-{
-  return CServiceBroker::GetPVRManager().Clients()->GetCurrentInputFormat();
 }
 
 bool CDVDInputStreamPVRManager::IsRealtime()

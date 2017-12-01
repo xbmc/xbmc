@@ -131,9 +131,8 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName        = DEFAULT_INFO_STRING_VALUE;
-  m_playingChannel.reset();
-  m_playingRecording.reset();
-  m_playingEpgTag.reset();
+  m_bIsPlayingRecording = false;
+  m_bIsPlayingLiveStream = false;
   m_strBackendHostname.clear();
   m_menuhooks.clear();
   m_timertypes.clear();
@@ -1273,88 +1272,19 @@ bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
 bool CPVRClient::IsPlayingLiveStream(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_playingChannel;
-}
-
-bool CPVRClient::IsPlayingEncryptedChannel(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_playingChannel && m_playingChannel->IsEncrypted();
+  return m_bReadyToUse && m_bIsPlayingLiveStream;
 }
 
 bool CPVRClient::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && m_playingRecording;
+  return m_bReadyToUse && m_bIsPlayingRecording;
 }
 
 bool CPVRClient::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bReadyToUse && (m_playingChannel || m_playingRecording || m_playingEpgTag);
-}
-
-void CPVRClient::SetPlayingChannel(const CPVRChannelPtr channel)
-{
-  CSingleLock lock(m_critSection);
-  m_playingChannel = channel;
-}
-
-CPVRChannelPtr CPVRClient::GetPlayingChannel() const
-{
-  CSingleLock lock(m_critSection);
-  if (m_bReadyToUse)
-    return m_playingChannel;
-
-  return CPVRChannelPtr();
-}
-
-void CPVRClient::ClearPlayingChannel()
-{
-  CSingleLock lock(m_critSection);
-  m_playingChannel.reset();
-}
-
-void CPVRClient::SetPlayingRecording(const CPVRRecordingPtr recording)
-{
-  CSingleLock lock(m_critSection);
-  m_playingRecording = recording;
-}
-
-CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (m_bReadyToUse)
-    return m_playingRecording;
-
-  return CPVRRecordingPtr();
-}
-
-void CPVRClient::ClearPlayingRecording()
-{
-  CSingleLock lock(m_critSection);
-  m_playingRecording.reset();
-}
-
-void CPVRClient::SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag)
-{
-  CSingleLock lock(m_critSection);
-  m_playingEpgTag = epgTag;
-}
-
-CPVREpgInfoTagPtr CPVRClient::GetPlayingEpgTag(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (m_bReadyToUse)
-    return m_playingEpgTag;
-
-  return CPVREpgInfoTagPtr();
-}
-
-void CPVRClient::ClearPlayingEpgTag()
-{
-  CSingleLock lock(m_critSection);
-  m_playingEpgTag.reset();
+  return m_bReadyToUse && (m_bIsPlayingLiveStream || m_bIsPlayingRecording);
 }
 
 PVR_ERROR CPVRClient::OpenStream(const CPVRChannelPtr &channel)
@@ -1372,7 +1302,14 @@ PVR_ERROR CPVRClient::OpenStream(const CPVRChannelPtr &channel)
       CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel->ChannelName().c_str());
       PVR_CHANNEL tag;
       WriteClientChannelInfo(channel, tag);
-      return addon->OpenLiveStream(tag) ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
+      if (addon->OpenLiveStream(tag))
+      {
+        CSingleLock lock(m_critSection);
+        m_bIsPlayingRecording = false;
+        m_bIsPlayingLiveStream = true;
+        return PVR_ERROR_NO_ERROR;
+      }
+      return PVR_ERROR_NOT_IMPLEMENTED;
     }
   });
 }
@@ -1384,7 +1321,14 @@ PVR_ERROR CPVRClient::OpenStream(const CPVRRecordingPtr &recording)
 
     PVR_RECORDING tag;
     WriteClientRecordingInfo(*recording, tag);
-    return addon->OpenRecordedStream(tag) ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
+    if (addon->OpenRecordedStream(tag))
+    {
+      CSingleLock lock(m_critSection);
+      m_bIsPlayingRecording = true;
+      m_bIsPlayingLiveStream = false;
+      return PVR_ERROR_NO_ERROR;
+    }
+    return PVR_ERROR_NOT_IMPLEMENTED;
   }, m_clientCapabilities.SupportsRecordings());
 }
 
@@ -1394,12 +1338,16 @@ PVR_ERROR CPVRClient::CloseStream()
     if (IsPlayingLiveStream())
     {
       addon->CloseLiveStream();
-      ClearPlayingChannel();
+
+      CSingleLock lock(m_critSection);
+      m_bIsPlayingLiveStream = false;
     }
     else if (IsPlayingRecording())
     {
       addon->CloseRecordedStream();
-      ClearPlayingRecording();
+
+      CSingleLock lock(m_critSection);
+      m_bIsPlayingRecording = false;
     }
     return PVR_ERROR_NO_ERROR;
   });

@@ -187,7 +187,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   // empty the list ready for population
   Clear();
 
-  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
+  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
   if (channel)
   {
     CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(channel->IsRadio());

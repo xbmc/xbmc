@@ -768,63 +768,6 @@ namespace PVR
      */
     PVR_ERROR DemuxRead(DemuxPacket* &packet);
 
-    /*!
-     * @brief Check whether this client is currently playing an encrypted channel.
-     * @return True if the client is playing an encrypted channel, false otherwise.
-     */
-    bool IsPlayingEncryptedChannel(void) const;
-
-    /*!
-     * @brief Set the channel that is currently playing.
-     * @param channel The channel that is currently playing.
-     */
-    void SetPlayingChannel(const CPVRChannelPtr channel);
-
-    /*!
-     * @brief Clear the channel that is currently playing, if any.
-     */
-    void ClearPlayingChannel();
-
-    /*!
-     * @brief Get the channel that is currently playing.
-     * @return the channel that is currently playing, NULL otherwise.
-     */
-    CPVRChannelPtr GetPlayingChannel() const;
-
-    /*!
-     * @brief Set the recording that is currently playing.
-     * @param recording The recording that is currently playing.
-     */
-    void SetPlayingRecording(const CPVRRecordingPtr recording);
-
-    /*!
-     * @brief Get the recording that is currently playing.
-     * @return The recording that is currently playing, NULL otherwise.
-     */
-    CPVRRecordingPtr GetPlayingRecording() const;
-
-    /*!
-     * @brief Clear the recording that is currently playing, if any.
-     */
-    void ClearPlayingRecording();
-
-    /*!
-     * @brief Set the epg tag that is currently playing.
-     * @param epgTag The tag that is currently playing.
-     */
-    void SetPlayingEpgTag(const CPVREpgInfoTagPtr epgTag);
-
-    /*!
-     * @brief Clear the epg tag that is currently playing, if any.
-     */
-    void ClearPlayingEpgTag();
-
-    /*!
-     * @brief Get the epg tag that is currently playing.
-     * @return The tag that is currently playing, NULL otherwise.
-     */
-    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
-
     static const char *ToString(const PVR_ERROR error);
 
     /*!
@@ -1154,9 +1097,8 @@ namespace PVR
 
     CCriticalSection m_critSection;
 
-    CPVRChannelPtr      m_playingChannel;
-    CPVRRecordingPtr    m_playingRecording;
-    CPVREpgInfoTagPtr   m_playingEpgTag;
+    std::atomic<bool> m_bIsPlayingRecording;
+    std::atomic<bool> m_bIsPlayingLiveStream;
 
     AddonInstance_PVR m_struct;
   };

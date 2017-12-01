@@ -594,7 +594,7 @@ void CPVRManager::TriggerPlayChannelOnStartup(void)
 
 bool CPVRManager::IsPlaying(void) const
 {
-  return IsStarted() && m_addons->IsPlaying();
+  return IsStarted() && (m_playingChannel || m_playingRecording || m_playingEpgTag);
 }
 
 bool CPVRManager::IsPlayingChannel(const CPVRChannelPtr &channel) const
@@ -603,12 +603,17 @@ bool CPVRManager::IsPlayingChannel(const CPVRChannelPtr &channel) const
 
   if (channel && IsStarted())
   {
-    CPVRChannelPtr current(GetCurrentChannel());
+    CPVRChannelPtr current(GetPlayingChannel());
     if (current && *current == *channel)
       bReturn = true;
   }
 
   return bReturn;
+}
+
+bool CPVRManager::IsPlayingEncryptedChannel(void) const
+{
+  return IsStarted() && m_playingChannel && m_playingChannel->IsEncrypted();
 }
 
 bool CPVRManager::IsPlayingRecording(const CPVRRecordingPtr &recording) const
@@ -617,7 +622,7 @@ bool CPVRManager::IsPlayingRecording(const CPVRRecordingPtr &recording) const
 
   if (recording && IsStarted())
   {
-    CPVRRecordingPtr current(GetCurrentRecording());
+    CPVRRecordingPtr current(GetPlayingRecording());
     if (current && *current == *recording)
       bReturn = true;
   }
@@ -631,7 +636,7 @@ bool CPVRManager::IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 
   if (epgTag && IsStarted())
   {
-    CPVREpgInfoTagPtr current(GetCurrentEpgTag());
+    CPVREpgInfoTagPtr current(GetPlayingEpgTag());
     if (current && *current == *epgTag)
       bReturn = true;
   }
@@ -639,19 +644,31 @@ bool CPVRManager::IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const
   return bReturn;
 }
 
-CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
+CPVRChannelPtr CPVRManager::GetPlayingChannel(void) const
 {
-  return m_addons->GetPlayingChannel();
+  return m_playingChannel;
 }
 
-CPVRRecordingPtr CPVRManager::GetCurrentRecording(void) const
+CPVRRecordingPtr CPVRManager::GetPlayingRecording(void) const
 {
-  return m_addons->GetPlayingRecording();
+  return m_playingRecording;
 }
 
-CPVREpgInfoTagPtr CPVRManager::GetCurrentEpgTag(void) const
+CPVREpgInfoTagPtr CPVRManager::GetPlayingEpgTag(void) const
 {
-  return m_addons->GetPlayingEpgTag();
+  return m_playingEpgTag;
+}
+
+bool CPVRManager::IsRecordingOnPlayingChannel(void) const
+{
+  const CPVRChannelPtr currentChannel = GetPlayingChannel();
+  return currentChannel && currentChannel->IsRecording();
+}
+
+bool CPVRManager::CanRecordOnPlayingChannel(void) const
+{
+  const CPVRChannelPtr currentChannel = GetPlayingChannel();
+  return currentChannel && currentChannel->CanRecord();
 }
 
 void CPVRManager::ResetPlayingTag(void)
@@ -672,7 +689,7 @@ bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
   bool bReturn(false);
   if (!IsStarted())
     return bReturn;
-  CPVRChannelPtr currentChannel(GetCurrentChannel());
+  CPVRChannelPtr currentChannel(GetPlayingChannel());
 
   if (// different channel
       (!currentChannel || channel != currentChannel) &&
@@ -748,15 +765,15 @@ void CPVRManager::CloseStream(void)
 
 void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
 {
-  m_addons->ClearPlayingChannel();
-  m_addons->ClearPlayingRecording();
-  m_addons->ClearPlayingEpgTag();
+  m_playingChannel.reset();
+  m_playingRecording.reset();
+  m_playingEpgTag.reset();
 
   if (item->HasPVRChannelInfoTag())
   {
     const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-    m_addons->SetPlayingChannel(channel);
+    m_playingChannel = channel;
 
     m_guiActions->GetChannelNavigator().SetPlayingChannel(channel);
     SetPlayingGroup(channel);
@@ -767,11 +784,11 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   }
   else if (item->HasPVRRecordingInfoTag())
   {
-    m_addons->SetPlayingRecording(item->GetPVRRecordingInfoTag());
+    m_playingRecording = item->GetPVRRecordingInfoTag();
   }
   else if (item->HasEPGInfoTag())
   {
-    m_addons->SetPlayingEpgTag(item->GetEPGInfoTag());
+    m_playingEpgTag = item->GetEPGInfoTag();
   }
 }
 
@@ -779,23 +796,23 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
 {
   // Playback ended due to user interaction
 
-  if (item->HasPVRChannelInfoTag())
+  if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag() == m_playingChannel)
   {
     UpdateLastWatched(item->GetPVRChannelInfoTag());
 
     // store channel settings
     g_application.SaveFileState();
 
-    m_addons->ClearPlayingChannel();
+    m_playingChannel.reset();
     m_guiActions->GetChannelNavigator().ClearPlayingChannel();
   }
-  else if (item->HasPVRRecordingInfoTag())
+  else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag() == m_playingRecording)
   {
-    m_addons->ClearPlayingRecording();
+    m_playingRecording.reset();
   }
-  else if (item->HasEPGInfoTag())
+  else if (item->HasEPGInfoTag() && item->GetEPGInfoTag() == m_playingEpgTag)
   {
-    m_addons->ClearPlayingEpgTag();
+    m_playingEpgTag.reset();
   }
 }
 
@@ -1010,17 +1027,22 @@ bool CPVRManager::EpgsCreated(void) const
 
 bool CPVRManager::IsPlayingTV(void) const
 {
-  return IsStarted() && m_addons->IsPlayingTV();
+  return IsStarted() && m_playingChannel && !m_playingChannel->IsRadio();
 }
 
 bool CPVRManager::IsPlayingRadio(void) const
 {
-  return IsStarted() && m_addons->IsPlayingRadio();
+  return IsStarted() && m_playingChannel && m_playingChannel->IsRadio();
 }
 
 bool CPVRManager::IsPlayingRecording(void) const
 {
-  return IsStarted() && m_addons->IsPlayingRecording();
+  return IsStarted() && m_playingRecording;
+}
+
+bool CPVRManager::IsPlayingEpgTag(void) const
+{
+  return IsStarted() && m_playingEpgTag;
 }
 
 void CPVRManager::SearchMissingChannelIcons(void)

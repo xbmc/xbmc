@@ -28,8 +28,7 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/PVRTypes.h"
 
 namespace ADDON
 {
@@ -39,6 +38,7 @@ namespace ADDON
 namespace PVR
 {
   class CPVREpg;
+  class CPVRChannelGroupInternal;
 
   typedef std::map<int, CPVRClientPtr> CPVRClientMap;
   typedef std::map<int, PVR_STREAM_PROPERTIES> STREAMPROPS;
@@ -201,42 +201,6 @@ namespace PVR
     std::string GetClientAddonId(int iClientId) const;
 
     /*!
-     * @brief Check if a client is currently playing a stream.
-     * @return True if a stream (TV/radio channel, recording, epg event) is playing, false otherwise.
-     */
-    bool IsPlaying(void) const;
-
-    /*!
-     * @brief Check if a client is currently playing a TV channel.
-     * @return True if a TV channel is playing, false otherwise.
-     */
-    bool IsPlayingTV(void) const;
-
-    /*!
-     * @brief Check if a client is currently playing a radio channel.
-     * @return True if a radio channel playing, false otherwise.
-     */
-    bool IsPlayingRadio(void) const;
-
-    /*!
-     * @brief Check if a client is currently playing a recording.
-     * @return True if a recording is playing, false otherwise.
-     */
-    bool IsPlayingRecording(void) const;
-
-    /*!
-     * @brief Check if a client is currently playing an epg event.
-     * @return True if an epg tag is playing, false otherwise.
-     */
-    bool IsPlayingEpgTag(void) const;
-
-    /*!
-     * @brief Check if a client is currently playing an encrypted channel.
-     * @return True if there is a client playing a TV/radio channel and that channel is encrypted, false otherwise.
-     */
-    bool IsPlayingEncryptedChannel(void) const;
-
-    /*!
      * @brief Get the instance of the playing client, if there is one.
      * @param client Will be filled with requested client on success, null otherwise.
      * @return True on success, false otherwise.
@@ -254,69 +218,6 @@ namespace PVR
      * @return The name of the client or an empty string if nothing is playing.
      */
     const std::string GetPlayingClientName(void) const;
-
-    /*!
-     * @brief Set the channel that is currently playing.
-     * @param channel The channel that is currently playing.
-     */
-    void SetPlayingChannel(const CPVRChannelPtr &channel);
-
-    /*!
-     * @brief Clear the channel that is currently playing, if any.
-     */
-    void ClearPlayingChannel();
-
-    /*!
-     * @brief Get the channel that is currently playing.
-     * @return the channel that is currently playing, NULL otherwise.
-     */
-    CPVRChannelPtr GetPlayingChannel() const;
-
-    /*!
-     * @brief Set the recording that is currently playing.
-     * @param recording The recording that is currently playing.
-     */
-    void SetPlayingRecording(const CPVRRecordingPtr &recording);
-
-    /*!
-     * @brief Clear the recording that is currently playing, if any.
-     */
-    void ClearPlayingRecording();
-
-    /*!
-     * @brief Get the recording that is currently playing.
-     * @return The recording that is currently playing, NULL otherwise.
-     */
-    CPVRRecordingPtr GetPlayingRecording(void) const;
-
-    /*!
-     * @brief Check whether there is an active recording on the currenlyt playing channel.
-     * @return True if there is a playing channel and there is an active recording on that channel, false otherwise.
-     */
-    bool IsRecordingOnPlayingChannel(void) const;
-
-    /*!
-     * @brief Check whether the currently playing channel can be recorded.
-     * @return True if there is a playing channel that can be recorded, false otherwise.
-     */
-    bool CanRecordOnPlayingChannel(void);
-
-    /*!
-     * @brief Set the epg tag that is currently playing.
-     * @param epgTag The tag that is currently playing.
-     */
-    void SetPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag);
-
-    /*!
-     * @brief Clear the epg tag that is currently playing, if any.
-     */
-    void ClearPlayingEpgTag();
-
-    /*!
-     * @brief Get the epg tag that is currently playing.
-     * @return The tag that is currently playing, NULL otherwise.
-     */
-    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
 
     /*! @name general methods */
     //@{
@@ -402,12 +303,6 @@ namespace PVR
      * @param bPaused If true, pause the stream, unpause otherwise.
      */
     void PauseStream(bool bPaused);
-
-    /*!
-     * @brief Get the input format name of the current playing stream content.
-     * @return A string containing the input format.
-     */
-    std::string GetCurrentInputFormat(void) const;
 
     /*!
      * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
@@ -828,11 +723,14 @@ namespace PVR
      */
     PVR_ERROR ForPlayingClient(const char* strFunctionName, PVRClientFunction function) const;
 
+    /*!
+     * @brief Check if a client is currently playing a stream.
+     * @return True if a stream (TV/radio channel, recording) is playing, false otherwise.
+     */
+    bool IsPlaying(void) const;
+
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
-    bool                  m_bIsPlayingLiveTV;
-    bool                  m_bIsPlayingLiveRadio;
     bool                  m_bIsPlayingRecording;
-    bool                  m_bIsPlayingEpgTag;
     std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
     CPVRClientMap         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;
