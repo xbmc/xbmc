@@ -21,7 +21,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
 
-#include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
@@ -61,7 +61,8 @@ class CVaapiProxy
 bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
   CLinuxRendererGLES::Register();
-  RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
+  RETRO::CRPProcessInfoGbm::Register();
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
   if (!CWinSystemGbm::InitWindowSystem())
   {
