@@ -25,6 +25,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "ServiceBroker.h"
 
 static const char *ContextStateToString(pa_context_state s)
@@ -477,7 +478,24 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
 
 /* PulseAudio class memberfunctions*/
 
+void CAESinkPULSE::Register()
+{
+  AE::AESinkRegEntry entry;
+  entry.sinkName = "PULSE";
+  entry.createFunc = CAESinkPULSE::Create;
+  entry.enumerateFunc = CAESinkPULSE::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(entry);
+}
 
+IAESink* CAESinkPULSE::Create(std::string &device, AEAudioFormat& desiredFormat)
+{
+  IAESink* sink = new CAESinkPULSE();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
+}
 CAESinkPULSE::CAESinkPULSE()
 {
   m_IsAllocated = false;
