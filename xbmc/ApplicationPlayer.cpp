@@ -440,22 +440,10 @@ bool CApplicationPlayer::GetSubtitleVisible()
   return (player && player->GetSubtitleVisible());
 }
 
-bool CApplicationPlayer::CanRecord()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->CanRecord());
-}
-
 bool CApplicationPlayer::CanPause()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->CanPause());
-}
-
-bool CApplicationPlayer::IsRecording() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->IsRecording());
 }
 
 TextCacheStruct_t* CApplicationPlayer::GetTeletextCache()
@@ -574,12 +562,6 @@ bool CApplicationPlayer::OnAction(const CAction &action)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->OnAction(action));
-}
-
-bool CApplicationPlayer::Record(bool bOnOff)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->Record(bOnOff));
 }
 
 int  CApplicationPlayer::GetAudioStreamCount()

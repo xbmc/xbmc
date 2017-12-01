@@ -667,7 +667,7 @@ bool CPVRClients::IsRecordingOnPlayingChannel(void) const
   return currentChannel && currentChannel->IsRecording();
 }
 
-bool CPVRClients::CanRecordInstantly(void)
+bool CPVRClients::CanRecordOnPlayingChannel(void)
 {
   CPVRChannelPtr currentChannel(GetPlayingChannel());
   return currentChannel && currentChannel->CanRecord();

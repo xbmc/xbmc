@@ -174,6 +174,12 @@ namespace PVR
     bool ShowRecordingInfo(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Toggle recording on the currently playing channel, if any.
+     * @return True if the recording was started or stopped successfully, false otherwise.
+     */
+    bool ToggleRecordingOnPlayingChannel();
+
+    /*!
      * @brief Start or stop recording on a given channel.
      * @param channel the channel to start/stop recording.
      * @param bOnOff True to start recording, false to stop.

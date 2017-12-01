@@ -40,11 +40,6 @@
 namespace PVR
 {
 
-bool CPVRSetRecordingOnChannelJob::DoWork()
-{
-  return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(m_channel, m_bOnOff);
-}
-
 CPVRChannelEntryTimeoutJob::CPVRChannelEntryTimeoutJob(int iTimeout)
 {
   m_delayTimer.Set(iTimeout);

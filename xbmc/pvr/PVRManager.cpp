@@ -661,12 +661,6 @@ void CPVRManager::ResetPlayingTag(void)
     m_guiInfo->ResetPlayingTag();
 }
 
-void CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
-{
-  // can be called from VideoPlayer thread. SetRecordingOnChannel can open a dialog. Thus, execute async.
-  CJobManager::GetInstance().AddJob(new CPVRSetRecordingOnChannelJob(m_addons->GetPlayingChannel(), bOnOff), NULL);
-}
-
 void CPVRManager::RestartParentalTimer()
 {
   if (m_parentalTimer)

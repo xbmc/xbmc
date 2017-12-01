@@ -194,6 +194,12 @@ bool CPVRActionListener::OnAction(const CAction &action)
       CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
       return true;
     }
+
+    case ACTION_RECORD:
+    {
+      CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+      return true;
+    }
   }
   return false;
 }

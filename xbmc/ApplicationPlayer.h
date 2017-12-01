@@ -99,7 +99,6 @@ public:
   // proxy calls
   void   AddSubtitle(const std::string& strSubPath);
   bool  CanPause();
-  bool  CanRecord();
   bool  CanSeek();
   void  DoAudioWork();
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
@@ -145,13 +144,11 @@ public:
   bool  IsPlayingVideo() const;
   bool  IsPlayingGame() const;
   bool  IsPlayingRDS() const;
-  bool  IsRecording() const;
   void  LoadPage(int p, int sp, unsigned char* buffer);
   bool  OnAction(const CAction &action);
   void  OnNothingToQueueNotify();
   void  Pause();
   bool  QueueNextFile(const CFileItem &file);
-  bool  Record(bool bOnOff);
   void  Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
   int   SeekChapter(int iChapter);
   void  SeekPercentage(float fPercent = 0);

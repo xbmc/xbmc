@@ -52,9 +52,6 @@ public:
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float fPercent = 0) override;
   void SetVolume(float volume) override;
-  bool CanRecord() override { return false; }
-  bool IsRecording() override { return false; }
-  bool Record(bool bOnOff) override { return false; }
 
   int GetChapterCount() override { return 0; }
   int GetChapter() override { return -1; }

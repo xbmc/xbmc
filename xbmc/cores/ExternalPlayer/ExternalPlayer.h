@@ -47,9 +47,6 @@ public:
   void SeekPercentage(float iPercent) override;
   void SetVolume(float volume) override {}
   void SetDynamicRangeCompression(long drc) override {}
-  bool CanRecord() override { return false; }
-  bool IsRecording() override { return false; }
-  bool Record(bool bOnOff) override { return false; }
   void SetAVDelay(float fValue = 0.0f) override;
   float GetAVDelay() override;
 

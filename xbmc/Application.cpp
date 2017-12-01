@@ -2244,13 +2244,6 @@ bool CApplication::OnAction(const CAction &action)
         return true;
       }
     }
-
-    // record current file
-    if (action.GetID() == ACTION_RECORD)
-    {
-      if (m_pPlayer->CanRecord())
-        m_pPlayer->Record(!m_pPlayer->IsRecording());
-    }
   }
 
 

@@ -103,8 +103,6 @@ struct SPlayerState
     hasMenu = false;
     chapter = 0;
     chapters.clear();
-    canrecord = false;
-    recording = false;
     canpause = false;
     canseek = false;
     caching = false;
@@ -132,8 +130,6 @@ struct SPlayerState
   int chapter;              // current chapter
   std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
 
-  bool canrecord;           // can input stream record
-  bool recording;           // are we currently recording
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item
   bool caching;
@@ -316,10 +312,7 @@ public:
   void SetVolume(float nVolume) override;
   void SetMute(bool bOnOff) override;
   void SetDynamicRangeCompression(long drc) override;
-  bool CanRecord() override;
-  bool IsRecording() override;
   bool CanPause() override;
-  bool Record(bool bOnOff) override;
   void SetAVDelay(float fValue = 0.0f) override;
   float GetAVDelay() override;
   bool IsInMenu() const override;

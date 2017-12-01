@@ -68,9 +68,6 @@ public:
   int GetTotalTime() override;
   int GetTime() override;
 
-  bool CanRecord();
-  bool IsRecording();
-  void Record(bool bOnOff);
   bool CanSeek() override;
   bool CanPause() override;
   void Pause(bool bPaused);

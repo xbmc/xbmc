@@ -2785,12 +2785,6 @@ void CVideoPlayer::HandleMessages()
 
       g_infoManager.SetDisplayAfterSeek();
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_RECORD))
-    {
-      CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-      if(input)
-        input->Record(*static_cast<CDVDMsgBool*>(pMsg));
-    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
@@ -4790,14 +4784,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_pInputStream)
   {
-    // override from input stream if needed
-    CDVDInputStreamPVRManager* pvrStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-    if (pvrStream)
-    {
-      state.canrecord = pvrStream->CanRecord();
-      state.recording = pvrStream->IsRecording();
-    }
-
     CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
     CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
 
@@ -4922,29 +4908,6 @@ void CVideoPlayer::SetDynamicRangeCompression(long drc)
 {
   m_processInfo->UpdateVideoSettings().SetVolumeAmplification(static_cast<float>(drc) / 100);
   m_VideoPlayerAudio->SetDynamicRangeCompression(drc);
-}
-
-bool CVideoPlayer::CanRecord()
-{
-  CSingleLock lock(m_StateSection);
-  return m_State.canrecord;
-}
-
-bool CVideoPlayer::IsRecording()
-{
-  CSingleLock lock(m_StateSection);
-  return m_State.recording;
-}
-
-bool CVideoPlayer::Record(bool bOnOff)
-{
-  if (m_pInputStream && (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV) ||
-                         m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)) )
-  {
-    m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_RECORD, bOnOff));
-    return true;
-  }
-  return false;
 }
 
 CVideoSettings CVideoPlayer::GetVideoSettings()

@@ -219,6 +219,8 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool       bIsPlayingEncryptedStream = bStarted && CServiceBroker::GetPVRManager().Clients()->IsPlayingEncryptedChannel();
   bool       bHasTVChannels            = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV()->HasChannels();
   bool       bHasRadioChannels         = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio()->HasChannels();
+  bool bCanRecordPlayingChannel        = bStarted && CServiceBroker::GetPVRManager().Clients()->CanRecordOnPlayingChannel();
+  bool bIsRecordingPlayingChannel      = bStarted && CServiceBroker::GetPVRManager().Clients()->IsRecordingOnPlayingChannel();
   std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? CServiceBroker::GetPVRManager().GetPlayingGroup(false)->GroupName() : "";
 
   CSingleLock lock(m_critSection);
@@ -233,6 +235,8 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bHasTVChannels            = bHasTVChannels;
   m_bHasRadioChannels         = bHasRadioChannels;
   m_strPlayingTVGroup         = strPlayingTVGroup;
+  m_bCanRecordPlayingChannel  = bCanRecordPlayingChannel;
+  m_bIsRecordingPlayingChannel = bIsRecordingPlayingChannel;
 }
 
 void CPVRGUIInfo::UpdateTimeshift(void)
@@ -489,6 +493,12 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
     break;
   case PVR_IS_TIMESHIFTING:
     bReturn = m_bIsTimeshifting;
+    break;
+  case PVR_CAN_RECORD_PLAYING_CHANNEL:
+    bReturn = m_bCanRecordPlayingChannel;
+    break;
+  case PVR_IS_RECORDING_PLAYING_CHANNEL:
+    bReturn = m_bIsRecordingPlayingChannel;
     break;
   default:
     break;
