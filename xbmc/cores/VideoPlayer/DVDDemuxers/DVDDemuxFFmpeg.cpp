@@ -1305,6 +1305,7 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
     if (program < m_pFormatContext->nb_programs && m_pFormatContext->programs[program]->nb_stream_indexes > 0)
     {
       m_program = program;
+      m_streamsInProgram = m_pFormatContext->programs[program]->nb_stream_indexes;
     }
     else
       m_program = UINT_MAX;
@@ -1794,7 +1795,7 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   if (m_program == 0 && !m_pFormatContext->nb_programs)
     return false;
 
-  if(m_pFormatContext->programs[m_program]->nb_stream_indexes != m_streams.size())
+  if (m_pFormatContext->programs[m_program]->nb_stream_indexes != m_streamsInProgram)
     return true;
 
   if (m_program >= m_pFormatContext->nb_programs)
@@ -1803,6 +1804,8 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
   {
     int idx = m_pFormatContext->programs[m_program]->stream_index[i];
+    if (m_pFormatContext->streams[idx]->discard >= AVDISCARD_ALL)
+      continue;
     CDemuxStream *stream = GetStream(idx);
     if (!stream)
       return true;
