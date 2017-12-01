@@ -541,6 +541,17 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_EXITSIZEMOVE:
       {
         DX::Windowing().SetSizeMoveMode(false);
+        if (g_sizeMoveMoving)
+        {
+          g_sizeMoveMoving = false;
+          newEvent.type = XBMC_VIDEOMOVE;
+          newEvent.move.x = g_sizeMoveX;
+          newEvent.move.y = g_sizeMoveY;
+
+          // tell the application about new position
+          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow())
+            g_application.OnEvent(newEvent);
+        }
         if (g_sizeMoveSizing)
         {
           g_sizeMoveSizing = false;
@@ -551,17 +562,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           // tell the device about new size
           DX::Windowing().OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell the application about new size
-          if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-            g_application.OnEvent(newEvent);
-        }
-        if (g_sizeMoveMoving)
-        {
-          g_sizeMoveMoving = false;
-          newEvent.type = XBMC_VIDEOMOVE;
-          newEvent.move.x = g_sizeMoveX;
-          newEvent.move.y = g_sizeMoveY;
-
-          // tell the application about new position
           if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
             g_application.OnEvent(newEvent);
         }
