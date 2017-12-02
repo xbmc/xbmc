@@ -65,6 +65,7 @@ CRenderBuffer::~CRenderBuffer()
 
 void CRenderBuffer::Release()
 {
+  loaded = false;
   SAFE_RELEASE(videoBuffer);
   SAFE_RELEASE(m_staging);
   for (unsigned i = 0; i < m_activePlanes; i++)
