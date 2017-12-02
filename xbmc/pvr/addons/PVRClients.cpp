@@ -550,7 +550,7 @@ bool CPVRClients::OpenStream(const CPVRChannelPtr &channel)
 
   /* try to open the stream on the client */
   PVR_ERROR error = ForCreatedClient(__FUNCTION__, channel->ClientID(), [&channel](const CPVRClientPtr &client) {
-    return client->OpenStream(channel);
+    return client->OpenLiveStream(channel);
   });
 
   if (error == PVR_ERROR_NO_ERROR)
@@ -575,7 +575,7 @@ bool CPVRClients::OpenStream(const CPVRRecordingPtr &recording)
 
   /* try to open the recording stream on the client */
   PVR_ERROR error = ForCreatedClient(__FUNCTION__, recording->ClientID(), [&recording](const CPVRClientPtr &client) {
-    return client->OpenStream(recording);
+    return client->OpenRecordedStream(recording);
   });
 
   if (error == PVR_ERROR_NO_ERROR)
@@ -596,8 +596,11 @@ bool CPVRClients::OpenStream(const CPVRRecordingPtr &recording)
 
 void CPVRClients::CloseStream(void)
 {
-  PVR_ERROR error = ForPlayingClient(__FUNCTION__, [](const CPVRClientPtr &client) {
-    return client->CloseStream();
+  PVR_ERROR error = ForPlayingClient(__FUNCTION__, [this](const CPVRClientPtr &client) {
+    if (m_bIsPlayingRecording)
+      return client->CloseRecordedStream();
+    else
+      return client->CloseLiveStream();
   });
 
   if (error == PVR_ERROR_NO_ERROR)
@@ -611,8 +614,11 @@ void CPVRClients::CloseStream(void)
 int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   int iRead = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [&lpBuf, uiBufSize, &iRead](const CPVRClientPtr &client) {
-    return client->ReadStream(lpBuf, uiBufSize, iRead);
+  ForPlayingClient(__FUNCTION__, [this, &lpBuf, uiBufSize, &iRead](const CPVRClientPtr &client) {
+    if (m_bIsPlayingRecording)
+      return client->ReadRecordedStream(lpBuf, uiBufSize, iRead);
+    else
+      return client->ReadLiveStream(lpBuf, uiBufSize, iRead);
   });
   return iRead;
 }
@@ -620,8 +626,11 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
 int64_t CPVRClients::GetStreamLength(void)
 {
   int64_t iLength = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [&iLength](const CPVRClientPtr &client) {
-    return client->GetStreamLength(iLength);
+  ForPlayingClient(__FUNCTION__, [this, &iLength](const CPVRClientPtr &client) {
+    if (m_bIsPlayingRecording)
+      return client->GetRecordedStreamLength(iLength);
+    else
+      return client->GetLiveStreamLength(iLength);
   });
   return iLength;
 }
@@ -646,8 +655,11 @@ bool CPVRClients::CanSeekStream(void) const
 int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
   int64_t iPos = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [iFilePosition, iWhence, &iPos](const CPVRClientPtr &client) {
-    return client->SeekStream(iFilePosition, iWhence, iPos);
+  ForPlayingClient(__FUNCTION__, [this, iFilePosition, iWhence, &iPos](const CPVRClientPtr &client) {
+    if (m_bIsPlayingRecording)
+      return client->SeekRecordedStream(iFilePosition, iWhence, iPos);
+    else
+      return client->SeekLiveStream(iFilePosition, iWhence, iPos);
   });
   return iPos;
 }
