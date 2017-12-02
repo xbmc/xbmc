@@ -26,6 +26,7 @@
 
 #include "AESinkPi.h"
 #include "ServiceBroker.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
@@ -178,6 +179,26 @@ static uint32_t GetChannelMap(const CAEChannelInfo &channelLayout, bool passthro
 
   return channel_map;
 }
+
+void CAESinkPi::Register()
+{
+  AE::AESinkRegEntry reg;
+  reg.sinkName = "PI";
+  reg.createFunc = CAESinkPi::Create;
+  reg.enumerateFunc = CAESinkPi::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(reg);
+}
+
+IAESink* CAESinkPi::Create(std::string &device, AEAudioFormat &desiredFormat)
+{
+  IAESink *sink = new CAESinkPi();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
+}
+
 
 bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 {
