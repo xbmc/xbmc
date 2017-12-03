@@ -254,6 +254,8 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
   if (ret == AVERROR(EAGAIN))
     return false;
+  else if (ret == AVERROR_EOF)
+    return true;
   else if (ret)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::%s - send packet failed, ret:%d", __FUNCTION__, ret);
