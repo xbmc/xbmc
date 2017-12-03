@@ -48,10 +48,11 @@ void SendKeyboardText(const char *text)
 
 void SendEditingText(const char *text, unsigned int location, unsigned int length)
 {
+  //@todo fix this hack
 //  CLog::Log(LOGDEBUG, "SendEditingText(%s, %u, %u)", text, location, length);
-  CGUIMessage msg(GUI_MSG_INPUT_TEXT_EDIT, 0, 0, location, length);
-  msg.SetLabel(text);
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetFocusedWindow());
+//  CGUIMessage msg(GUI_MSG_INPUT_TEXT_EDIT, 0, 0, location, length);
+//  msg.SetLabel(text);
+//  g_windowManager.SendThreadMessage(msg, g_windowManager.GetFocusedWindow());
 }
 
 @implementation OSXTextInputResponder

@@ -100,14 +100,6 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
     SetLabel2(message.GetLabel());
     UpdateText();
   }
-  else if (message.GetMessage() == GUI_MSG_INPUT_TEXT_EDIT && HasFocus())
-  {
-    g_charsetConverter.utf8ToW(message.GetLabel(), m_edit);
-    m_editOffset = message.GetParam1();
-    m_editLength = message.GetParam2();
-    UpdateText(false);
-    return true;
-  }
   return CGUIButtonControl::OnMessage(message);
 }
 
@@ -258,12 +250,9 @@ bool CGUIEditControl::OnAction(const CAction &action)
         }
       default:
         {
-          if (!CServiceBroker::GetWinSystem().IsTextInputEnabled())
-          {
-            ClearMD5();
-            m_edit.clear();
-            m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
-          }
+          ClearMD5();
+          m_edit.clear();
+          m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
           break;
         }
       }
@@ -744,7 +733,6 @@ void CGUIEditControl::ValidateInput()
 void CGUIEditControl::SetFocus(bool focus)
 {
   m_smsTimer.Stop();
-  CServiceBroker::GetWinSystem().EnableTextInput(focus);
   CGUIControl::SetFocus(focus);
   SetInvalid();
 }

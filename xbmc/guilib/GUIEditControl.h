@@ -3,9 +3,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIEditControl_H
-#define GUILIB_GUIEditControl_H
-
 #pragma once
 
 /*
@@ -141,4 +138,3 @@ protected:
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
 };
-#endif

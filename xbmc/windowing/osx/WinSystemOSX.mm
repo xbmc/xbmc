@@ -1717,20 +1717,7 @@ std::unique_ptr<IOSScreenSaver> CWinSystemOSX::GetOSScreenSaverImpl()
   return std::unique_ptr<IOSScreenSaver> (new COSScreenSaverOSX);
 }
 
-void CWinSystemOSX::EnableTextInput(bool bEnable)
-{
-  if (bEnable)
-    StartTextInput();
-  else
-    StopTextInput();
-}
-
 OSXTextInputResponder *g_textInputResponder = nil;
-
-bool CWinSystemOSX::IsTextInputEnabled()
-{
-  return g_textInputResponder != nil && [[g_textInputResponder superview] isEqual: [[NSApp keyWindow] contentView]];
-}
 
 void CWinSystemOSX::StartTextInput()
 {
