@@ -63,7 +63,7 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
-  m_nativeDisplay = m_gbm.dev;
+  m_nativeDisplay = m_gbm.device;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
@@ -88,7 +88,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if(!CGBMUtils::InitGbm(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
+  if(!CGBMUtils::CreateSurface(&m_gbm, m_drm.mode->hdisplay, m_drm.mode->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -102,7 +102,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbm::DestroyWindow()
 {
-  CGBMUtils::DestroyGbm(&m_gbm);
+  CGBMUtils::DestroySurface(&m_gbm);
   m_nativeWindow = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);

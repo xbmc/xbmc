@@ -46,8 +46,8 @@ static drmEventContext m_drm_evctx;
 
 bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
 {
-  m_gbm->next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(m_gbm->next_bo);
+  struct gbm_bo *bo = CGBMUtils::LockFrontBuffer(m_gbm);
+  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
 
   auto ret = drmModeSetCrtc(m_drm->fd,
                             m_drm->crtc->crtc->crtc_id,
@@ -78,9 +78,7 @@ bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
             m_drm->mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
             m_drm->mode->vrefresh);
 
-  gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
-  m_gbm->bo = m_gbm->next_bo;
-  m_gbm->next_bo = nullptr;
+  CGBMUtils::ReleaseBuffer(m_gbm);
 
   return true;
 }
@@ -129,17 +127,13 @@ bool CDRMLegacy::WaitingForFlip()
     }
   }
 
-  gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
-  m_gbm->bo = m_gbm->next_bo;
-  m_gbm->next_bo = nullptr;
-
   return false;
 }
 
 bool CDRMLegacy::QueueFlip()
 {
-  m_gbm->next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(m_gbm->next_bo);
+  struct gbm_bo *bo = CGBMUtils::LockFrontBuffer(m_gbm);
+  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
 
   auto ret = drmModePageFlip(m_drm->fd,
                              m_drm->crtc->crtc->crtc_id,
@@ -160,6 +154,7 @@ void CDRMLegacy::FlipPage()
 {
   flip_happening = QueueFlip();
   WaitingForFlip();
+  CGBMUtils::ReleaseBuffer(m_gbm);
 }
 
 bool CDRMLegacy::InitDrmLegacy(drm *drm, gbm *gbm)
@@ -172,9 +167,12 @@ bool CDRMLegacy::InitDrmLegacy(drm *drm, gbm *gbm)
     return false;
   }
 
-  m_gbm->dev = gbm_create_device(m_drm->fd);
+  if (!CGBMUtils::CreateDevice(m_gbm, m_drm->fd))
+  {
+    return false;
+  }
 
-  if (!CGBMUtils::InitGbm(m_gbm, m_drm->mode->hdisplay, m_drm->mode->vdisplay))
+  if (!CGBMUtils::CreateSurface(m_gbm, m_drm->mode->hdisplay, m_drm->mode->vdisplay))
   {
     return false;
   }
@@ -184,20 +182,7 @@ bool CDRMLegacy::InitDrmLegacy(drm *drm, gbm *gbm)
 
 void CDRMLegacy::DestroyDrmLegacy()
 {
+  CGBMUtils::DestroySurface(m_gbm);
+  CGBMUtils::DestroyDevice(m_gbm);
   CDRMUtils::DestroyDrm();
-
-  if(m_gbm->surface)
-  {
-    gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
-    m_gbm->bo = m_gbm->next_bo = nullptr;
-
-    gbm_surface_destroy(m_gbm->surface);
-    m_gbm->surface = nullptr;
-  }
-
-  if(m_gbm->dev)
-  {
-    gbm_device_destroy(m_gbm->dev);
-    m_gbm->dev = nullptr;
-  }
 }

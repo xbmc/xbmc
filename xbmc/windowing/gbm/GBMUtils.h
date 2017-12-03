@@ -24,7 +24,7 @@
 
 struct gbm
 {
-  struct gbm_device *dev = nullptr;
+  struct gbm_device *device = nullptr;
   struct gbm_surface *surface = nullptr;
   struct gbm_bo *bo = nullptr;
   struct gbm_bo *next_bo = nullptr;
@@ -35,6 +35,10 @@ struct gbm
 class CGBMUtils
 {
 public:
-  static bool InitGbm(struct gbm *gbm, int hdisplay, int vdisplay);
-  static void DestroyGbm(struct gbm *gbm);
+  static bool CreateDevice(struct gbm *gbm, int fd);
+  static void DestroyDevice(struct gbm *gbm);
+  static bool CreateSurface(struct gbm *gbm, int width, int height);
+  static void DestroySurface(struct gbm *gbm);
+  static struct gbm_bo *LockFrontBuffer(struct gbm *gbm);
+  static void ReleaseBuffer(struct gbm *gbm);
 };
