@@ -256,7 +256,7 @@ void CPowerManager::OnSleep()
 
   CServiceBroker::GetPVRManager().OnSleep();
   g_application.SaveFileState(true);
-  g_application.StopPlaying();
+  g_application.IdlePlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
