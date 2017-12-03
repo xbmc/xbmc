@@ -96,15 +96,6 @@ echo " TOOLCHAIN = $TOOLS"
 echo
 echo "-------------------------------------------------------------------------------"
 
-echo -ne "\033]0;building FFmpeg $TRIPLET\007"
-echo "-------------------------------------------------"
-echo " building FFmpeg $TRIPLET"
-echo "-------------------------------------------------"
-./buildffmpeg.sh $MAKECLEAN
-checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
-echo "-------------------------------------------------"
-echo " building of FFmpeg $TRIPLET done..."
-echo "-------------------------------------------------"
 if [[ $win10 != "yes" ]]; then # currently disabled for uwp
 echo -ne "\033]0;building libdvd $TRIPLET\007"
 echo "-------------------------------------------------"
@@ -116,6 +107,15 @@ echo "-------------------------------------------------"
 echo " building of libdvd $TRIPLET done..."
 echo "-------------------------------------------------"
 fi
+echo -ne "\033]0;building FFmpeg $TRIPLET\007"
+echo "-------------------------------------------------"
+echo " building FFmpeg $TRIPLET"
+echo "-------------------------------------------------"
+./buildffmpeg.sh $MAKECLEAN
+checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
+echo "-------------------------------------------------"
+echo " building of FFmpeg $TRIPLET done..."
+echo "-------------------------------------------------"
 echo "-------------------------------------------------------------------------------"
 echo " compile mingw libs $TRIPLET done..."
 echo "-------------------------------------------------------------------------------"
