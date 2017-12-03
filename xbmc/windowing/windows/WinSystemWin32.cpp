@@ -186,7 +186,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   CreateBlankWindows();
 
   m_state = state;
-  AdjustWindow();
+  AdjustWindow(true);
 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
