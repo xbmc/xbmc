@@ -74,6 +74,8 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bIsPlayingRecording         = false;
   m_bIsPlayingEpgTag            = false;
   m_bIsPlayingEncryptedStream   = false;
+  m_bIsRecordingPlayingChannel  = false;
+  m_bCanRecordPlayingChannel    = false;
   m_bHasTVChannels              = false;
   m_bHasRadioChannels           = false;
   m_bIsTimeshifting             = false;
