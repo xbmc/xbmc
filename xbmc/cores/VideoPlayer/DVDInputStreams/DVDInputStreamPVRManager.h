@@ -75,14 +75,6 @@ public:
   /* overloaded is streamtype to support m_pOtherStream */
   bool IsStreamType(DVDStreamType type) const;
 
-  /*! \brief Get the input format from the Backend
-   If it is empty ffmpeg scanning the stream to find the right input format.
-   See "xbmc/cores/VideoPlayer/Codecs/ffmpeg/libavformat/allformats.c" for a
-   list of the input formats.
-   \return The name of the input format
-   */
-  std::string GetInputFormat();
-
   // Demux interface
   CDVDInputStream::IDemux* GetIDemux() override;
   bool OpenDemux() override;

@@ -540,7 +540,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
 
   if (bGrabSuccess)
   {
-    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
+    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
     if (channel &&
         channel->EpgID() == m_iEpgID)
       CServiceBroker::GetPVRManager().ResetPlayingTag();

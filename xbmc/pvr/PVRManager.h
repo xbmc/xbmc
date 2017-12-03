@@ -257,19 +257,31 @@ namespace PVR
      * @brief Return the channel that is currently playing.
      * @return The channel or NULL if none is playing.
      */
-    CPVRChannelPtr GetCurrentChannel(void) const;
+    CPVRChannelPtr GetPlayingChannel(void) const;
 
     /*!
      * @brief Return the recording that is currently playing.
      * @return The recording or NULL if none is playing.
      */
-    CPVRRecordingPtr GetCurrentRecording(void) const;
+    CPVRRecordingPtr GetPlayingRecording(void) const;
 
     /*!
      * @brief Return the epg tag that is currently playing.
      * @return The tag or NULL if none is playing.
      */
-    CPVREpgInfoTagPtr GetCurrentEpgTag(void) const;
+    CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
+
+    /*!
+     * @brief Check whether there is an active recording on the currenlyt playing channel.
+     * @return True if there is a playing channel and there is an active recording on that channel, false otherwise.
+     */
+    bool IsRecordingOnPlayingChannel(void) const;
+
+    /*!
+     * @brief Check whether the currently playing channel can be recorded.
+     * @return True if there is a playing channel that can be recorded, false otherwise.
+     */
+    bool CanRecordOnPlayingChannel(void) const;
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -417,10 +429,22 @@ namespace PVR
     bool IsPlayingRadio(void) const;
 
     /*!
+     * @brief Check if a an encrypted TV or radio channel is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingEncryptedChannel(void) const;
+
+    /*!
      * @brief Check if a recording is playing.
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingRecording(void) const;
+
+    /*!
+     * @brief Check if an epg tag is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingEpgTag(void) const;
 
     /*!
      * @brief Try to find missing channel icons automatically
@@ -572,5 +596,9 @@ namespace PVR
 
     CPVRActionListener m_actionListener;
     CPVRSettings m_settings;
+
+    CPVRChannelPtr m_playingChannel;
+    CPVRRecordingPtr m_playingRecording;
+    CPVREpgInfoTagPtr m_playingEpgTag;
   };
 }

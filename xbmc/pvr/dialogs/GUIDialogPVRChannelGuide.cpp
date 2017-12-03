@@ -78,7 +78,7 @@ void CGUIDialogPVRChannelGuide::OnInitWindow()
 {
   // no user-specific channel is set use current playing channel
   if (!m_channel)
-    m_channel = CServiceBroker::GetPVRManager().GetCurrentChannel();
+    m_channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
 
   // no channel at all, close the dialog
   if (!m_channel)

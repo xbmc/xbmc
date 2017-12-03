@@ -185,7 +185,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
     return false;
 
   /* check if this channel is currently playing if we are hiding it */
-  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
+  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
   if (currentChannel && currentChannel == channel)
   {
     HELPERS::ShowOKDialogText(CVariant{19098}, CVariant{19102});

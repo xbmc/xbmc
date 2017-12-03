@@ -202,7 +202,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   CVariant channel = parameterObject["channel"];
   if (channel.isString() && channel.asString() == "current")
   {
-    pChannel = CServiceBroker::GetPVRManager().GetCurrentChannel();
+    pChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
     if (!pChannel)
       return InternalError;
   }
