@@ -49,6 +49,9 @@ void CGBMUtils::DestroyGbm(struct gbm *gbm)
 {
   if(gbm->surface)
   {
+    gbm_surface_release_buffer(gbm->surface, gbm->bo);
+    gbm->bo = gbm->next_bo = nullptr;
+
     gbm_surface_destroy(gbm->surface);
     gbm->surface = nullptr;
     gbm->width = 0;
