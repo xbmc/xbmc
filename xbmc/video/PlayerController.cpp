@@ -20,6 +20,7 @@
 
 #include "PlayerController.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -28,12 +29,14 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUISliderControl.h"
+#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
 #include "Application.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 CPlayerController::CPlayerController()
   : m_sliderAction(0)
@@ -422,6 +425,32 @@ bool CPlayerController::OnAction(const CAction &action)
         ShowSlider(action.GetID(), 660,
                    g_application.m_pPlayer->GetVideoSettings().m_VolumeAmplification,
                    sliderMin, 1.0f, sliderMax, true);
+        return true;
+      }
+
+      case ACTION_PLAYER_PROGRAM_SELECT:
+      {
+        std::vector<ProgramInfo> programs;
+        g_application.m_pPlayer->GetPrograms(programs);
+        CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+        if (dialog)
+        {
+          int playing = 0;
+          int idx = 0;
+          for (auto prog : programs)
+          {
+            dialog->Add(prog.name);
+            if (prog.playing)
+              playing = idx;
+            idx++;
+          }
+          dialog->SetHeading(CVariant{g_localizeStrings.Get(39109)});
+          dialog->SetSelected(playing);
+          dialog->Open();
+          idx = dialog->GetSelectedItem();
+          if (idx > 0)
+            g_application.m_pPlayer->SetProgram(programs[idx].id);
+        }
         return true;
       }
 

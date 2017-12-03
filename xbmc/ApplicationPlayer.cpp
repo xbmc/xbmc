@@ -558,6 +558,31 @@ void CApplicationPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
     player->GetAudioStreamInfo(index, info);
 }
 
+int CApplicationPlayer::GetPrograms(std::vector<ProgramInfo> &programs)
+{
+  int ret = 0;
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    ret = player->GetPrograms(programs);
+  return ret;
+}
+
+void CApplicationPlayer::SetProgram(int progId)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetProgram(progId);
+}
+
+int CApplicationPlayer::GetProgramsCount()
+{
+  int ret = 0;
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    ret = player->GetProgramsCount();
+  return ret;
+}
+
 bool CApplicationPlayer::OnAction(const CAction &action)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

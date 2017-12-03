@@ -60,6 +60,13 @@
 						<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
 						<onclick>AudioNextLanguage</onclick>
 					</control>
+					<control type="button" id="11105">
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31132]</label>
+						<onclick>PlayerProgramSelect</onclick>
+						<visible>Player.HasPrograms</visible>
+					</control>
 				</control>
 				<control type="grouplist" id="12100">
 					<visible>String.IsEqual(window(home).Property(settingslist_content),subtitle)</visible>

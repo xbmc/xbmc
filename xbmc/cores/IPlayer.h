@@ -146,6 +146,10 @@ public:
   virtual void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) {}
   virtual void SetVideoStream(int iStream) {}
 
+  virtual int GetPrograms(std::vector<ProgramInfo>& programs) { return 0; }
+  virtual void SetProgram(int progId) {}
+  virtual int GetProgramsCount() { return 0; }
+
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
 
@@ -181,7 +185,6 @@ public:
    its not available in the underlaying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
-  virtual int GetSourceBitrate(){ return 0;}
   virtual void SetSpeed(float speed) = 0;
   virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }
