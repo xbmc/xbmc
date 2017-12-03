@@ -516,7 +516,8 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE},
                                   { "tempoenabled", PLAYER_SUPPORTS_TEMPO},
                                   { "istempo", PLAYER_IS_TEMPO},
-                                  { "playspeed", PLAYER_PLAYSPEED}};
+                                  { "playspeed", PLAYER_PLAYSPEED},
+                                  { "hasprograms", PLAYER_HAS_PROGRAMS}};
 
 /// \page modules__General__List_of_gui_access
 /// @{
@@ -7314,6 +7315,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PLAYER_ISINTERNETSTREAM:
       bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
+      break;
+    case PLAYER_HAS_PROGRAMS:
+      bReturn = (g_application.m_pPlayer->GetProgramsCount() > 1) ? true : false;
       break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();

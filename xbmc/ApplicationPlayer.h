@@ -131,6 +131,7 @@ public:
   void  GetVideoStreamInfo(int streamId, VideoStreamInfo &info);
   int GetPrograms(std::vector<ProgramInfo>& programs);
   void SetProgram(int progId);
+  int GetProgramsCount();
   bool  HasAudio() const;
   bool  HasMenu() const;
   bool  HasVideo() const;

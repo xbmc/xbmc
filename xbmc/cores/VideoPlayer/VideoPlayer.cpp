@@ -5093,3 +5093,10 @@ void CVideoPlayer::SetProgram(int progId)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SET_PROGRAM, progId));
 }
+
+int CVideoPlayer::GetProgramsCount()
+{
+  CSingleLock lock(m_content.m_section);
+  return m_programs.size();
+}
+

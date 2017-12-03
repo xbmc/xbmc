@@ -574,6 +574,15 @@ void CApplicationPlayer::SetProgram(int progId)
     player->SetProgram(progId);
 }
 
+int CApplicationPlayer::GetProgramsCount()
+{
+  int ret = 0;
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    ret = player->GetProgramsCount();
+  return ret;
+}
+
 bool CApplicationPlayer::OnAction(const CAction &action)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

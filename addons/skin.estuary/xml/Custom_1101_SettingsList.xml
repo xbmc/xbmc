@@ -65,6 +65,7 @@
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[31132]</label>
 						<onclick>PlayerProgramSelect</onclick>
+						<visible>Player.HasPrograms</visible>
 					</control>
 				</control>
 				<control type="grouplist" id="12100">

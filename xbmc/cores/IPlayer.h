@@ -148,6 +148,7 @@ public:
 
   virtual int GetPrograms(std::vector<ProgramInfo>& programs) { return 0; }
   virtual void SetProgram(int progId) {}
+  virtual int GetProgramsCount() { return 0; }
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};

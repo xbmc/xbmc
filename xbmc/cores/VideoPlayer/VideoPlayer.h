@@ -334,6 +334,7 @@ public:
 
   int GetPrograms(std::vector<ProgramInfo>& programs) override;
   void SetProgram(int progId) override;
+  int GetProgramsCount() override;
 
   TextCacheStruct_t* GetTeletextCache() override;
   void LoadPage(int p, int sp, unsigned char* buffer) override;
