@@ -75,6 +75,26 @@
 					<onclick>PlayerControl(Next)</onclick>
 					<visible>MusicPlayer.HasNext</visible>
 				</control>
+				<control type="radiobutton" id="606">
+					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
+					<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/record.png</textureradioofffocus>
+					<textureradiooffnofocus>osd/fullscreen/buttons/record.png</textureradiooffnofocus>
+					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
+					<width>76</width>
+					<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+					<height>76</height>
+					<radiowidth>74</radiowidth>
+					<radioheight>74</radioheight>
+					<font></font>
+					<texturenofocus />
+					<radioposx>1</radioposx>
+					<radioposy>0</radioposy>
+					<selected>!PVR.IsRecordingPlayingChannel</selected>
+					<onclick>PVR.ToggleRecordPlayingChannel</onclick>
+					<visible>PVR.CanRecordPlayingChannel</visible>
+					<visible>VideoPlayer.Content(livetv)</visible>
+				</control>
 			</control>
 			<control type="grouplist" id="202">
 				<right>20</right>
@@ -87,7 +107,7 @@
 				<orientation>horizontal</orientation>
 				<onup>87</onup>
 				<ondown>noop</ondown>
-				<onleft>605</onleft>
+				<onleft>606</onleft>
 				<onright>600</onright>
 				<control type="radiobutton" id="620">
 					<include content="OSDButton">

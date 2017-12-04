@@ -50,7 +50,7 @@
 					<visible>player.chaptercount</visible>
 				</control>
 				<control type="group">
-					<visible>PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
+					<visible>Window.IsActive(fullscreenvideo) + PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>
@@ -61,6 +61,25 @@
 					<control type="label">
 						<top>110</top>
 						<left>90</left>
+						<width>400</width>
+						<height>50</height>
+						<aligny>center</aligny>
+						<font>font25_title</font>
+						<label>$LOCALIZE[19158]</label>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Window.IsActive(visualisation) + PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
+					<control type="image">
+						<top>100</top>
+						<left>170</left>
+						<width>74</width>
+						<height>74</height>
+						<texture>osd/fullscreen/buttons/record.png</texture>
+					</control>
+					<control type="label">
+						<top>110</top>
+						<left>240</left>
 						<width>400</width>
 						<height>50</height>
 						<aligny>center</aligny>
