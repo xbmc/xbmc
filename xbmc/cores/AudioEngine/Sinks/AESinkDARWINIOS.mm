@@ -19,7 +19,7 @@
  */
 
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
-
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
@@ -596,6 +596,25 @@ CAESinkDARWINIOS::CAESinkDARWINIOS()
 
 CAESinkDARWINIOS::~CAESinkDARWINIOS()
 {
+}
+
+void CAESinkDARWINIOS::Register()
+{
+  AE::AESinkRegEntry reg;
+  reg.sinkName = "DARWINIOS";
+  reg.createFunc = CAESinkDARWINIOS::Create;
+  reg.enumerateFunc = CAESinkDARWINIOS::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(reg);
+}
+
+IAESink* CAESinkDARWINIOS::Create(std::string &device, AEAudioFormat &desiredFormat)
+{
+  IAESink *sink = new CAESinkDARWINIOS();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
