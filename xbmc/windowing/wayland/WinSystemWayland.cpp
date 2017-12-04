@@ -20,13 +20,10 @@
 
 #include "WinSystemWayland.h"
 
+#include "OptionalsReg.h"
 #include <algorithm>
 #include <limits>
 #include <numeric>
-
-#if defined(HAVE_LIBVA)
-#include <va/va_wayland.h>
-#endif
 
 #include "Application.h"
 #include "Connection.h"
@@ -147,6 +144,24 @@ struct MsgBufferScale
 CWinSystemWayland::CWinSystemWayland()
 : CWinSystemBase{}, m_protocol{"WinSystemWaylandInternal"}
 {
+  std::string envSink;
+  if (getenv("AE_SINK"))
+    envSink = getenv("AE_SINK");
+  if (StringUtils::CompareNoCase(envSink, "ALSA"))
+  {
+    ::WAYLAND::ALSARegister();
+  }
+  else if (StringUtils::CompareNoCase(envSink, "PULSE"))
+  {
+    ::WAYLAND::PulseAudioRegister();
+  }
+  else
+  {
+    if (!::WAYLAND::PulseAudioRegister())
+    {
+      ::WAYLAND::ALSARegister();
+    }
+  }
   m_winEvents.reset(new CWinEventsWayland());
 }
 
@@ -1362,13 +1377,6 @@ std::unique_ptr<CVideoSync> CWinSystemWayland::GetVideoSync(void* clock)
     return nullptr;
   }
 }
-
-#if defined(HAVE_LIBVA)
-void* CWinSystemWayland::GetVaDisplay()
-{
-  return vaGetDisplayWl(m_connection->GetDisplay());
-}
-#endif
 
 std::unique_ptr<IOSScreenSaver> CWinSystemWayland::GetOSScreenSaverImpl()
 {

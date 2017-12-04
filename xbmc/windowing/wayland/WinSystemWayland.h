@@ -89,8 +89,6 @@ public:
   float GetFrameLatencyAdjustment() override;
   std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
 
-  void* GetVaDisplay();
-
   void Register(IDispResource* resource);
   void Unregister(IDispResource* resource);
 

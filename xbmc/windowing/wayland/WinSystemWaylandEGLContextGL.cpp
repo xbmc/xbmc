@@ -19,6 +19,7 @@
  */
 
 #include "WinSystemWaylandEGLContextGL.h"
+#include "OptionalsReg.h"
 
 #include <EGL/egl.h>
 
@@ -26,25 +27,6 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "utils/log.h"
-
-#if defined(HAVE_LIBVA)
-#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGL.h"
-using namespace KODI::WINDOWING::WAYLAND;
-class CVaapiProxy : public VAAPI::IVaapiWinSystem
-{
-public:
-  CVaapiProxy(CWinSystemWaylandEGLContextGL &winSystem) : m_winSystem(winSystem) {};
-  VADisplay GetVADisplay() override { return m_winSystem.GetVaDisplay(); };
-  void *GetEGLDisplay() override { return m_winSystem.GetEGLDisplay(); };
-protected:
-  CWinSystemWaylandEGLContextGL &m_winSystem;
-};
-#else
-class CVaapiProxy
-{
-};
-#endif
 
 using namespace KODI::WINDOWING::WAYLAND;
 
@@ -64,15 +46,15 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   CLinuxRendererGL::Register();
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
 
-#if defined(HAVE_LIBVA)
   bool general, hevc;
-  m_vaapiProxy.reset(new CVaapiProxy(*this));
-  CRendererVAAPI::Register(m_vaapiProxy.get(), GetVaDisplay(), m_eglContext.GetEGLDisplay(), general, hevc);
+  m_vaapiProxy.reset(::WAYLAND::VaapiProxyCreate());
+  ::WAYLAND::VaapiProxyConfig(m_vaapiProxy.get(),GetConnection()->GetDisplay(),
+                              m_eglContext.GetEGLDisplay());
+  ::WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, hevc);
   if (general)
   {
-    VAAPI::CDecoder::Register(m_vaapiProxy.get(), hevc);
+    ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), hevc);
   }
-#endif
 
   return true;
 }
@@ -97,4 +79,9 @@ void CWinSystemWaylandEGLContextGL::SetVSyncImpl(bool enable)
 void CWinSystemWaylandEGLContextGL::PresentRenderImpl(bool rendered)
 {
   PresentFrame(rendered);
+}
+
+void CWinSystemWaylandEGLContextGL::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
+{
+  ::WAYLAND::VaapiProxyDelete(p);
 }
