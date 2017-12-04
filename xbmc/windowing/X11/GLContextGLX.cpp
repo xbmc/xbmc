@@ -113,6 +113,7 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
       // make this context current
       glXMakeCurrent(m_dpy, glWindow, m_glxContext);
       retVal = true;
+      newContext = true;
     }
     else
       CLog::Log(LOGERROR, "GLX Error: Could not create context");
