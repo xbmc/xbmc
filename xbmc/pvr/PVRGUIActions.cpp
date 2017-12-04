@@ -1685,8 +1685,28 @@ namespace PVR
       {
         if (channelNumber != playingChannel->ChannelNumber())
         {
-          const CPVRChannelGroupPtr selectedGroup(CServiceBroker::GetPVRManager().GetPlayingGroup(playingChannel->IsRadio()));
-          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(channelNumber));
+          // channel number present in playing group?
+          bool bRadio = playingChannel->IsRadio();
+          const CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(bRadio);
+          CFileItemPtr channel = group->GetByChannelNumber(channelNumber);
+
+          if (!channel || !channel->HasPVRChannelInfoTag())
+          {
+            // channel number present in any group?
+            const CPVRChannelGroups* groupAccess = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
+            const std::vector<CPVRChannelGroupPtr> groups = groupAccess->GetMembers(true);
+            for (const auto &currentGroup : groups)
+            {
+              channel = currentGroup->GetByChannelNumber(channelNumber);
+              if (channel)
+              {
+                // switch channel group
+                CServiceBroker::GetPVRManager().SetPlayingGroup(currentGroup);
+                break;
+              }
+            }
+          }
+
           if (channel && channel->HasPVRChannelInfoTag())
           {
             CApplicationMessenger::GetInstance().PostMsg(
