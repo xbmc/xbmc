@@ -3752,6 +3752,19 @@ void CApplication::UpdateFileState()
   }
 }
 
+void CApplication::IdlePlaying()
+{
+  //pause if possible but don't trigger timeshift
+  if(m_pPlayer->CanPause() && !m_itemCurrentFile->IsLiveTV())
+  {
+    m_pPlayer->Pause();
+  }
+  else
+  {
+    StopPlaying();
+  }
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = g_windowManager.GetActiveWindow();

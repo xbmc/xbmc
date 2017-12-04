@@ -185,6 +185,7 @@ public:
   PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
+  void IdlePlaying();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
