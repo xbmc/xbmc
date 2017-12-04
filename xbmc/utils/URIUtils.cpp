@@ -770,7 +770,10 @@ bool URIUtils::IsRAR(const std::string& strFile)
 
 bool URIUtils::IsInArchive(const std::string &strFile)
 {
-  return IsInZIP(strFile) || IsInRAR(strFile) || IsInAPK(strFile);
+  CURL url(strFile);
+
+  bool archiveProto = url.IsProtocol("archive") && !url.GetFileName().empty();
+  return archiveProto || IsInZIP(strFile) || IsInRAR(strFile) || IsInAPK(strFile);
 }
 
 bool URIUtils::IsInAPK(const std::string& strFile)
@@ -784,14 +787,26 @@ bool URIUtils::IsInZIP(const std::string& strFile)
 {
   CURL url(strFile);
 
-  return url.IsProtocol("zip") && !url.GetFileName().empty();
+  if (url.GetFileName().empty())
+    return false;
+
+  if (url.IsProtocol("archive"))
+    return IsZIP(url.GetHostName());
+
+  return url.IsProtocol("zip");
 }
 
 bool URIUtils::IsInRAR(const std::string& strFile)
 {
   CURL url(strFile);
 
-  return url.IsProtocol("rar") && !url.GetFileName().empty();
+  if (url.GetFileName().empty())
+    return false;
+
+  if (url.IsProtocol("archive"))
+    return IsRAR(url.GetHostName());
+
+  return url.IsProtocol("rar");
 }
 
 bool URIUtils::IsAPK(const std::string& strFile)
