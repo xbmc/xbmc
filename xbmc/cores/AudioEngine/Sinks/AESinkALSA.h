@@ -20,7 +20,6 @@
  */
 
 #include "system.h"
-#ifdef HAS_ALSA
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
@@ -45,6 +44,10 @@ public:
   CAESinkALSA();
   ~CAESinkALSA() override;
 
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+
   bool Initialize(AEAudioFormat &format, std::string &device) override;
   void Deinitialize() override;
 
@@ -54,7 +57,6 @@ public:
   unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
   void Drain() override;
 
-  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
   CAEChannelInfo GetChannelLayoutRaw(const AEAudioFormat& format);
   CAEChannelInfo GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels);
@@ -120,5 +122,4 @@ private:
 
   static void sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...);
 };
-#endif
 
