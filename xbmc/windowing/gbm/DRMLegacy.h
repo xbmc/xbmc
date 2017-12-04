@@ -26,7 +26,7 @@
 class CDRMLegacy : public CDRMUtils
 {
 public:
-  static void FlipPage(CGLContextEGL *pGLContext);
+  static void FlipPage();
   static bool SetVideoMode(RESOLUTION_INFO res);
   static bool InitDrmLegacy(drm *drm, gbm *gbm);
   static void DestroyDrmLegacy();

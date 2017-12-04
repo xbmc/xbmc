@@ -213,12 +213,12 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     // TODO: use atomic or legacy api
 
     // show the video frame FB on the video plane
-    ret = drmModeSetPlane(drm->fd, drm->video_plane_id, drm->crtc_id, buffer->m_fb_id, 0,
+    ret = drmModeSetPlane(drm->fd, drm->overlay_plane->plane->plane_id, drm->crtc->crtc->crtc_id, buffer->m_fb_id, 0,
                           crtc_x, crtc_y, crtc_w, crtc_h,
                           src_x, src_y, src_w, src_h);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, drm->video_plane_id, buffer->m_fb_id, ret);
+      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, drm->overlay_plane->plane->plane_id, buffer->m_fb_id, ret);
       return;
     }
   }

@@ -39,11 +39,6 @@
 static struct drm *m_drm = nullptr;
 static struct gbm *m_gbm = nullptr;
 
-static struct drm_fb *m_drm_fb = new drm_fb;
-
-static struct gbm_bo *m_bo = nullptr;
-static struct gbm_bo *m_next_bo = nullptr;
-
 static int flip_happening = 0;
 
 static struct pollfd m_drm_fds;
@@ -51,17 +46,15 @@ static drmEventContext m_drm_evctx;
 
 bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
 {
-  gbm_surface_release_buffer(m_gbm->surface, m_bo);
-
-  m_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  m_drm_fb = CDRMUtils::DrmFbGetFromBo(m_bo);
+  m_gbm->next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
+  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(m_gbm->next_bo);
 
   auto ret = drmModeSetCrtc(m_drm->fd,
-                            m_drm->crtc_id,
-                            m_drm_fb->fb_id,
+                            m_drm->crtc->crtc->crtc_id,
+                            drm_fb->fb_id,
                             0,
                             0,
-                            &m_drm->connector_id,
+                            &m_drm->connector->connector->connector_id,
                             1,
                             m_drm->mode);
 
@@ -84,6 +77,10 @@ bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res)
             m_drm->mode->vdisplay,
             m_drm->mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
             m_drm->mode->vrefresh);
+
+  gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
+  m_gbm->bo = m_gbm->next_bo;
+  m_gbm->next_bo = nullptr;
 
   return true;
 }
@@ -132,20 +129,21 @@ bool CDRMLegacy::WaitingForFlip()
     }
   }
 
-  gbm_surface_release_buffer(m_gbm->surface, m_bo);
-  m_bo = m_next_bo;
+  gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
+  m_gbm->bo = m_gbm->next_bo;
+  m_gbm->next_bo = nullptr;
 
   return false;
 }
 
 bool CDRMLegacy::QueueFlip()
 {
-  m_next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
-  m_drm_fb = CDRMUtils::DrmFbGetFromBo(m_next_bo);
+  m_gbm->next_bo = gbm_surface_lock_front_buffer(m_gbm->surface);
+  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(m_gbm->next_bo);
 
   auto ret = drmModePageFlip(m_drm->fd,
-                             m_drm->crtc_id,
-                             m_drm_fb->fb_id,
+                             m_drm->crtc->crtc->crtc_id,
+                             drm_fb->fb_id,
                              DRM_MODE_PAGE_FLIP_EVENT,
                              &flip_happening);
 
@@ -158,14 +156,10 @@ bool CDRMLegacy::QueueFlip()
   return true;
 }
 
-void CDRMLegacy::FlipPage(CGLContextEGL *pGLContext)
+void CDRMLegacy::FlipPage()
 {
-  if(WaitingForFlip())
-  {
-    return;
-  }
-
   flip_happening = QueueFlip();
+  WaitingForFlip();
 }
 
 bool CDRMLegacy::InitDrmLegacy(drm *drm, gbm *gbm)
@@ -194,11 +188,16 @@ void CDRMLegacy::DestroyDrmLegacy()
 
   if(m_gbm->surface)
   {
+    gbm_surface_release_buffer(m_gbm->surface, m_gbm->bo);
+    m_gbm->bo = m_gbm->next_bo = nullptr;
+
     gbm_surface_destroy(m_gbm->surface);
+    m_gbm->surface = nullptr;
   }
 
   if(m_gbm->dev)
   {
     gbm_device_destroy(m_gbm->dev);
+    m_gbm->dev = nullptr;
   }
 }

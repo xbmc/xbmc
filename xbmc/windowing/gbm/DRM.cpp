@@ -23,9 +23,9 @@
 #include "DRM.h"
 #include "DRMLegacy.h"
 
-void CDRM::FlipPage(CGLContextEGL *pGLContext)
+void CDRM::FlipPage()
 {
-  CDRMLegacy::FlipPage(pGLContext);
+  CDRMLegacy::FlipPage();
 }
 
 bool CDRM::SetVideoMode(RESOLUTION_INFO res)

@@ -28,11 +28,12 @@
 #include "guilib/Resolution.h"
 #include "GBMUtils.h"
 
-struct crtc
+struct plane
 {
-  drmModeCrtc *crtc;
+  drmModePlane *plane;
   drmModeObjectProperties *props;
   drmModePropertyRes **props_info;
+  uint32_t format;
 };
 
 struct connector
@@ -42,18 +43,31 @@ struct connector
   drmModePropertyRes **props_info;
 };
 
+struct encoder
+{
+  drmModeEncoder *encoder;
+};
+
+struct crtc
+{
+  drmModeCrtc *crtc;
+  drmModeObjectProperties *props;
+  drmModePropertyRes **props_info;
+};
+
 struct drm
 {
   int fd;
 
-  struct crtc *crtc;
+  struct plane *primary_plane;
+  struct plane *overlay_plane;
   struct connector *connector;
-  int crtc_index;
+  struct encoder *encoder;
+  struct crtc *crtc;
 
   drmModeModeInfo *mode;
-  uint32_t crtc_id;
-  uint32_t connector_id;
-  uint32_t video_plane_id;
+
+  int crtc_index;
 };
 
 struct drm_fb
@@ -79,6 +93,8 @@ private:
   static bool GetResources();
   static bool GetConnector();
   static bool GetEncoder();
+  static bool GetCrtc();
+  static bool GetPlanes();
   static bool GetPreferredMode();
   static int Open(const char* device);
   static bool RestoreOriginalMode();

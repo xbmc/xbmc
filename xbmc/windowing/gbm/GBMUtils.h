@@ -20,18 +20,16 @@
 
 #pragma once
 
-#include <xf86drm.h>
-#include <xf86drmMode.h>
 #include <gbm.h>
-#include <vector>
-
-#include "guilib/Resolution.h"
 
 struct gbm
 {
-  struct gbm_device *dev;
-  struct gbm_surface *surface;
-  int width, height;
+  struct gbm_device *dev = nullptr;
+  struct gbm_surface *surface = nullptr;
+  struct gbm_bo *bo = nullptr;
+  struct gbm_bo *next_bo = nullptr;
+  int width = 0;
+  int height = 0;
 };
 
 class CGBMUtils

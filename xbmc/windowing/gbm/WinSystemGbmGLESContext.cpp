@@ -98,12 +98,7 @@ bool CWinSystemGbmGLESContext::DestroyWindowSystem()
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
 
-  if (!CWinSystemGbm::DestroyWindowSystem())
-  {
-    return false;
-  }
-
-  return true;
+  return CWinSystemGbm::DestroyWindowSystem();
 }
 
 bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
@@ -170,7 +165,7 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   if (rendered)
   {
     m_pGLContext.SwapBuffers();
-    CWinSystemGbm::FlipPage(&m_pGLContext);
+    CWinSystemGbm::FlipPage();
   }
   else
   {
