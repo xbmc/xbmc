@@ -288,10 +288,10 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
     res->iWidth = defWidth;
     res->iHeight = defHeight;
     res->fPixelRatio   = 1.0f;
+    res->iScreenWidth  = res->iWidth;
+    res->iScreenHeight = res->iHeight;
   }
   res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->iScreenWidth  = res->iWidth;
-  res->iScreenHeight = res->iHeight;
   res->strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
                                            res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: Current resolution: %s\n",res->strMode.c_str());
@@ -300,7 +300,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %s: %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %s: %dx%d@%f", res.strId.c_str(), res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
 
   if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
@@ -328,8 +328,6 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
       {
         res.iWidth = std::min(res.iWidth, m_width);
         res.iHeight = std::min(res.iHeight, m_height);
-        res.iScreenWidth = res.iWidth;
-        res.iScreenHeight = res.iHeight;
       }
       resolutions.push_back(res);
     }
