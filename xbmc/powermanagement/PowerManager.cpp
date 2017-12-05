@@ -253,7 +253,19 @@ void CPowerManager::OnSleep()
 #endif
 
   CServiceBroker::GetPVRManager().OnSleep();
-
+  if (g_application.m_pPlayer->IsPlaying())
+  {
+    m_lastFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
+    // keep the actual offset instead of store and load it from database
+    m_lastFileItem->m_lStartOffset = static_cast<int>(g_application.GetTime() * 75);
+    m_lastPlayer = g_application.m_pPlayer->GetCurrentPlayer();
+    CLog::Log(LOGDEBUG, "%s: was playing startOffset %i playSpeed %f", __FUNCTION__, m_lastFileItem->m_lStartOffset, g_application.m_pPlayer->GetPlaySpeed());
+  }
+  else
+  {
+    // clear last file based on IsPlaying() instead based on CurrentFileItem()
+    m_lastFileItem.reset();
+  }
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
@@ -296,6 +308,12 @@ void CPowerManager::OnWake()
   CServiceBroker::GetWeatherManager().Refresh();
 
   CServiceBroker::GetPVRManager().OnWake();
+
+  if (m_lastFileItem)
+  {
+    g_application.PlayFile(*m_lastFileItem, m_lastPlayer);
+  }
+
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }
 
