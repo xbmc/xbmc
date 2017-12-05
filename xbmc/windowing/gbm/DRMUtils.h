@@ -55,21 +55,6 @@ struct crtc
   drmModePropertyRes **props_info;
 };
 
-struct drm
-{
-  int fd;
-
-  struct plane *primary_plane;
-  struct plane *overlay_plane;
-  struct connector *connector;
-  struct encoder *encoder;
-  struct crtc *crtc;
-
-  drmModeModeInfo *mode;
-
-  int crtc_index;
-};
-
 struct drm_fb
 {
   struct gbm_bo *bo;
@@ -79,24 +64,41 @@ struct drm_fb
 class CDRMUtils
 {
 public:
-  static bool InitDrm(drm *drm);
-  static void DestroyDrm();
-  static bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
-  static bool SetMode(RESOLUTION_INFO res);
-  static void WaitVBlank();
-  static struct drm *GetDrm();
+  CDRMUtils();
+  virtual ~CDRMUtils() = default;
+  virtual void FlipPage(struct gbm_bo *bo) {};
+  virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) { return false; };
+  virtual bool InitDrm();
+
+  void DestroyDrm();
+  bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
+  bool SetMode(RESOLUTION_INFO res);
+  void WaitVBlank();
+
+  int m_fd;
+
+  struct connector *m_connector = nullptr;
+  struct encoder *m_encoder = nullptr;
+  struct crtc *m_crtc = nullptr;
+  struct plane *m_primary_plane = nullptr;
+  struct plane *m_overlay_plane = nullptr;
+  drmModeModeInfo *m_mode = nullptr;
 
 protected:
-  static drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
+  drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:
-  static bool GetResources();
-  static bool GetConnector();
-  static bool GetEncoder();
-  static bool GetCrtc();
-  static bool GetPlanes();
-  static bool GetPreferredMode();
-  static int Open(const char* device);
-  static bool RestoreOriginalMode();
+  bool GetResources();
+  bool GetConnector();
+  bool GetEncoder();
+  bool GetCrtc();
+  bool GetPlanes();
+  bool GetPreferredMode();
+  int Open(const char* device);
+  bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
+
+  int m_crtc_index;
+  drmModeResPtr m_drm_resources = nullptr;
+  drmModeCrtcPtr m_orig_crtc = nullptr;
 };

@@ -26,14 +26,15 @@
 class CDRMLegacy : public CDRMUtils
 {
 public:
-  static void FlipPage();
-  static bool SetVideoMode(RESOLUTION_INFO res);
-  static bool InitDrmLegacy(drm *drm, gbm *gbm);
-  static void DestroyDrmLegacy();
+  CDRMLegacy() = default;
+  ~CDRMLegacy() { DestroyDrm(); };
+  virtual void FlipPage(struct gbm_bo *bo) override;
+  virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) override;
+  virtual bool InitDrm() override;
 
 private:
-  static bool WaitingForFlip();
-  static bool QueueFlip();
+  bool WaitingForFlip();
+  bool QueueFlip(struct gbm_bo *bo);
   static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
                               unsigned int usec, void *data);
 };
