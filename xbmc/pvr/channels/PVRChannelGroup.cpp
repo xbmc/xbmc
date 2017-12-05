@@ -445,8 +445,7 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
     }
   }
 
-  CFileItemPtr retVal = CFileItemPtr(returnChannel ? new CFileItem(returnChannel) : new CFileItem);
-  return retVal;
+  return CFileItemPtr(returnChannel ? new CFileItem(returnChannel) : nullptr);
 }
 
 CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &channel) const
@@ -467,8 +466,6 @@ CFileItemPtr CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber &chann
       retval = CFileItemPtr(new CFileItem((*it).channel));
   }
 
-  if (!retval)
-    retval = CFileItemPtr(new CFileItem);
   return retval;
 }
 
