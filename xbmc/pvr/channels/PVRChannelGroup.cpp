@@ -873,12 +873,16 @@ bool CPVRChannelGroup::Persist(void)
 
 bool CPVRChannelGroup::Renumber(void)
 {
+  if (PreventSortAndRenumber())
+    return true;
+
   bool bReturn(false);
   unsigned int iChannelNumber(0);
   bool bUseBackendChannelNumbers(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
                                  CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1);
-  if (PreventSortAndRenumber())
-    return true;
+  CPVRChannelGroupPtr groupAll;
+  if (!bUseBackendChannelNumbers && !IsInternalGroup())
+    groupAll = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio);
 
   CSingleLock lock(m_critSection);
 
@@ -895,7 +899,10 @@ bool CPVRChannelGroup::Renumber(void)
     }
     else
     {
-      currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
+      if (IsInternalGroup())
+        currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
+      else
+        currentChannelNumber = groupAll->GetChannelNumber((*it).channel);
     }
 
     if ((*it).channelNumber != currentChannelNumber)
