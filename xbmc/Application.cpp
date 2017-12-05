@@ -758,7 +758,7 @@ bool CApplication::InitWindow(RESOLUTION res)
     return false;
   }
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(res);
+  g_graphicsContext.SetVideoResolution(res, false);
   return true;
 }
 
@@ -1389,6 +1389,11 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     {
       CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART);
     }
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
+  {
+    if (g_graphicsContext.IsFullScreenRoot())
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
   }
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
     m_replayGainSettings.iType = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
@@ -2527,8 +2532,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
 
-    g_graphicsContext.Lock();
-
     if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
       g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
     if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
@@ -2558,7 +2561,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
       pSlideShow->Add(&item);
       pSlideShow->Select(pMsg->strParam);
     }
-    g_graphicsContext.Unlock();
   }
   break;
 
@@ -2570,7 +2572,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (g_application.m_pPlayer->IsPlayingVideo())
       g_application.StopPlaying();
 
-    g_graphicsContext.Lock();
     pSlideShow->Reset();
 
     CFileItemList items;
@@ -2598,7 +2599,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
         g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
     }
 
-    g_graphicsContext.Unlock();
   }
   break;
 
@@ -2647,13 +2647,13 @@ void CApplication::LockFrameMoveGuard()
   ++m_WaitingExternalCalls;
   m_frameMoveGuard.lock();
   ++m_ProcessedExternalCalls;
-  g_graphicsContext.Lock();
+  g_graphicsContext.lock();
 };
 
 void CApplication::UnlockFrameMoveGuard()
 {
   --m_WaitingExternalCalls;
-  g_graphicsContext.Unlock();
+  g_graphicsContext.unlock();
   m_frameMoveGuard.unlock();
 };
 
@@ -2670,7 +2670,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI && m_renderGUI)
     {
-      g_graphicsContext.Lock();
+      CSingleLock lock(g_graphicsContext);
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
       if (toast && toast->DoWork())
@@ -2680,7 +2680,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
           toast->Open();
         }
       }
-      g_graphicsContext.Unlock();
     }
 
     HandleWinEvents();
@@ -4285,7 +4284,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else
         {
-          CSingleLock lock(g_graphicsContext);
           //  resets to res_desktop or look&feel resolution (including refreshrate)
           g_graphicsContext.SetFullScreenVideo(false);
         }

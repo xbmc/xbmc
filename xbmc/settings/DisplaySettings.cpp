@@ -292,7 +292,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
     RESOLUTION newRes = GetResolutionFromString(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     SetCurrentResolution(newRes, false);
-    g_graphicsContext.SetVideoResolution(newRes);
+    g_graphicsContext.SetVideoResolution(newRes, false);
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user

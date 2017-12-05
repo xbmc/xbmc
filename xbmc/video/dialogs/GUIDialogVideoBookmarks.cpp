@@ -348,17 +348,13 @@ void CGUIDialogVideoBookmarks::Update()
   }
 
 
-  // lock our display, as this window is rendered from the player thread
-  g_graphicsContext.Lock();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_ICONS);
 
   // empty the list ready for population
   Clear();
 
   OnRefreshList();
-  
-  g_graphicsContext.Unlock();
-  
+
   videoDatabase.Close();
 }
 

@@ -38,6 +38,7 @@
  */
 
 class IListProvider;
+class TiXmlNode;
 
 class CGUIBaseContainer : public IGUIContainer
 {

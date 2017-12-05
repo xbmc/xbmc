@@ -263,9 +263,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CServiceBroker::GetSettings().Save();
 
-      CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(false);
-      lock.Leave();
 
       return true;
     }

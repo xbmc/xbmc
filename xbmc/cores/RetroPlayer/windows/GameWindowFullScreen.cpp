@@ -181,8 +181,6 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
 
-  CSingleLock lock(g_graphicsContext);
-
   g_graphicsContext.SetFullScreenVideo(false); //! @todo
 }
 
