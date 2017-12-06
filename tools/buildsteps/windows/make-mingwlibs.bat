@@ -17,7 +17,7 @@ SET msys2=msys64
 SET win10=no
 SET UWPSDKVer=
 
-FOR %%b in (%1, %2, %3, %4) DO (
+FOR %%b in (%*) DO (
   IF %%b==noprompt SET PROMPTLEVEL=noprompt
   IF %%b==clean SET BUILDMODE=clean
   IF %%b==noclean SET BUILDMODE=noclean

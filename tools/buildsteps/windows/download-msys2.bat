@@ -28,11 +28,8 @@ POPD
 
 set msysver=20161025
 set msys2=msys64
-set build32=yes
-set build64=no
 set instdir=%WORKSPACE%\project\BuildDependencies
-set msyspackages=autoconf automake libtool m4 make gettext patch pkg-config wget p7zip coreutils gcc perl
-set mingwpackages=dlfcn gcc gcc-libs gettext libiconv libgpg-error libpng yasm nettle libtasn1 openssl xz
+set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
 set usemirror=yes
 set opt=mintty
@@ -49,11 +46,7 @@ if "%usemirror%"=="yes" (
 set downloaddir=%instdir%\downloads2
 set unpack_exe=%instdir%\..\Win32BuildSetup\tools\7z\7za.exe
 
-for %%b in (%1, %2, %3) do (
-  if %%b==build64 (
-    set build32=no
-    set build64=yes
-  )
+for %%b in (%*) do (
   if %%b==sh (set opt=sh)
 )
 
@@ -105,14 +98,14 @@ if exist "%downloaddir%\%msysfile%" GOTO unpack
 :unpack
 if exist "%downloaddir%\%msysfile%" (
     echo -------------------------------------------------------------------------------
-    echo.- Install msys2 basic system
+    echo.- Installing msys2 basic system
     echo -------------------------------------------------------------------------------
-	%unpack_exe% x %downloaddir%\%msysfile% -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
+	%unpack_exe% x %downloaddir%\%msysfile% -so 2>NUL | %unpack_exe% x -aoa -si -ttar -o%instdir% >NUL 2>NUL
 	)
 	
 if not exist %instdir%\%msys2%\usr\bin\msys-2.0.dll (
 	echo -------------------------------------------------------------------------------
-	echo.- Install msys2 basic system failed,
+	echo.- Installing msys2 basic system failed,
 	echo -------------------------------------------------------------------------------
 	exit /B 1
 	)
@@ -184,89 +177,65 @@ if %msys2%==msys32 (
     )
 
 :preparedirs
-if %build32%==yes (
-    if not exist %instdir%\build mkdir %instdir%\build
-    if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
-    if not exist %instdir%\locals mkdir %instdir%\locals
-    if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
-    if not exist %instdir%\locals\win32\share (
-        echo.-------------------------------------------------------------------------------
-        echo.create local win32 folders
-        echo.-------------------------------------------------------------------------------
-        mkdir %instdir%\locals\win32
-        mkdir %instdir%\locals\win32\bin
-        mkdir %instdir%\locals\win32\etc
-        mkdir %instdir%\locals\win32\include
-        mkdir %instdir%\locals\win32\lib
-        mkdir %instdir%\locals\win32\lib\pkgconfig
-        mkdir %instdir%\locals\win32\share
-        )
+if not exist %instdir%\build mkdir %instdir%\build
+if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
+if not exist %instdir%\locals mkdir %instdir%\locals
+if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
+if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
+
+if not exist %instdir%\locals\win32\share (
+    echo.-------------------------------------------------------------------------------
+    echo.create local win32 folders
+    echo.-------------------------------------------------------------------------------
+    mkdir %instdir%\locals\win32\bin
+    mkdir %instdir%\locals\win32\etc
+    mkdir %instdir%\locals\win32\include
+    mkdir %instdir%\locals\win32\lib
+    mkdir %instdir%\locals\win32\lib\pkgconfig
+    mkdir %instdir%\locals\win32\share
     )
 
-if %build64%==yes (
-    if not exist %instdir%\build mkdir %instdir%\build
-    if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
-    if not exist %instdir%\locals mkdir %instdir%\locals
-    if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
-    if not exist %instdir%\locals\x64\share (
-        echo.-------------------------------------------------------------------------------
-        echo.create local x64 folders
-        echo.-------------------------------------------------------------------------------
-        mkdir %instdir%\locals\x64
-        mkdir %instdir%\locals\x64\bin
-        mkdir %instdir%\locals\x64\etc
-        mkdir %instdir%\locals\x64\include
-        mkdir %instdir%\locals\x64\lib
-        mkdir %instdir%\locals\x64\lib\pkgconfig
-        mkdir %instdir%\locals\x64\share
-        )
+if not exist %instdir%\locals\x64\share (
+    echo.-------------------------------------------------------------------------------
+    echo.create local x64 folders
+    echo.-------------------------------------------------------------------------------
+    mkdir %instdir%\locals\x64\bin
+    mkdir %instdir%\locals\x64\etc
+    mkdir %instdir%\locals\x64\include
+    mkdir %instdir%\locals\x64\lib
+    mkdir %instdir%\locals\x64\lib\pkgconfig
+    mkdir %instdir%\locals\x64\share
     )
-
-if %build32%==yes (
-    set searchStr=local32
-    ) else (
-        set searchStr=local64
-        )
 
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
+for /f "tokens=2 delims=/" %%a in ('findstr /i xbmc %instdir%\%msys2%\etc\fstab.') do set searchRes=%%a
+if "%searchRes%"=="xbmc" GOTO installbase
 
-for /f "tokens=2 delims=/" %%b in ('findstr /i build32 %instdir%\%msys2%\etc\fstab.') do set searchRes=oldbuild
-
-if "%searchRes%"=="oldbuild" (
-    del %instdir%\%msys2%\etc\fstab.
-    GOTO writeFstab
+:writeFstab
+echo -------------------------------------------------------------------------------
+echo.- write fstab mount file
+echo -------------------------------------------------------------------------------
+set cygdrive=no
+if exist %instdir%\%msys2%\etc\fstab. (
+    for /f %%b in ('findstr /i binary %instdir%\%msys2%\etc\fstab.') do set cygdrive=yes
     )
-
-for /f "tokens=2 delims=/" %%a in ('findstr /i %searchStr% %instdir%\%msys2%\etc\fstab.') do set searchRes=%%a
-
-if "%searchRes%"=="local32" GOTO installbase
-if "%searchRes%"=="local64" GOTO installbase
-
-    :writeFstab
-    echo -------------------------------------------------------------------------------
-    echo.- write fstab mount file
-    echo -------------------------------------------------------------------------------
-    set cygdrive=no
-    if exist %instdir%\%msys2%\etc\fstab. (
-        for /f %%b in ('findstr /i binary %instdir%\%msys2%\etc\fstab.') do set cygdrive=yes
-        )
-    if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%instdir%\%msys2%\etc\fstab.
-    (
-        echo.
-        echo.%instdir%\build\            /build
-        echo.%instdir%\downloads\        /downloads
-        echo.%instdir%\locals\win32\     /local32
-        echo.%instdir%\locals\x64\       /local64
-        echo.%instdir%\%msys2%\mingw32\  /mingw32
-        echo.%instdir%\%msys2%\mingw64\  /mingw64
-        echo.%instdir%\downloads2\       /var/cache/pacman/pkg
-        echo.%instdir%\win32\            /depends/win32
-        echo.%instdir%\x64\              /depends/x64
-        echo.%instdir%\win10-arm\        /depends/win10-arm
-        echo.%instdir%\win10-win32\      /depends/win10-win32
-        echo.%instdir%\win10-x64\        /depends/win10-x64
-        echo.%instdir%\..\..\            /xbmc
-        )>>%instdir%\%msys2%\etc\fstab.
+if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%instdir%\%msys2%\etc\fstab.
+(
+    echo.
+    echo.%instdir%\build\            /build
+    echo.%instdir%\downloads\        /downloads
+    echo.%instdir%\locals\win32\     /local32
+    echo.%instdir%\locals\x64\       /local64
+    echo.%instdir%\%msys2%\mingw32\  /mingw32
+    echo.%instdir%\%msys2%\mingw64\  /mingw64
+    echo.%instdir%\downloads2\       /var/cache/pacman/pkg
+    echo.%instdir%\win32\            /depends/win32
+    echo.%instdir%\x64\              /depends/x64
+    echo.%instdir%\win10-arm\        /depends/win10-arm
+    echo.%instdir%\win10-win32\      /depends/win10-win32
+    echo.%instdir%\win10-x64\        /depends/win10-x64
+    echo.%instdir%\..\..\            /xbmc
+)>>%instdir%\%msys2%\etc\fstab.
 
 :installbase
 if exist "%instdir%\%msys2%\etc\pac-base-old.pk" del "%instdir%\%msys2%\etc\pac-base-old.pk"
@@ -274,7 +243,7 @@ if exist "%instdir%\%msys2%\etc\pac-base-new.pk" ren "%instdir%\%msys2%\etc\pac-
 
 for %%i in (%msyspackages%) do echo.%%i>>%instdir%\%msys2%\etc\pac-base-new.pk
 
-if exist %instdir%\%msys2%\usr\bin\make.exe GOTO getmingw32
+if exist %instdir%\%msys2%\usr\bin\make.exe GOTO rebase2
     echo.-------------------------------------------------------------------------------
     echo.install msys2 base system
     echo.-------------------------------------------------------------------------------
@@ -298,50 +267,6 @@ if exist %instdir%\%msys2%\usr\bin\make.exe GOTO getmingw32
             )
         )
 
-:getmingw32
-if %build32%==yes (
-if exist "%instdir%\%msys2%\etc\pac-mingw32-old.pk" del "%instdir%\%msys2%\etc\pac-mingw32-old.pk"
-if exist "%instdir%\%msys2%\etc\pac-mingw32-new.pk" ren "%instdir%\%msys2%\etc\pac-mingw32-new.pk" pac-mingw32-old.pk
-
-for %%i in (%mingwpackages%) do echo.mingw-w64-i686-%%i>>%instdir%\%msys2%\etc\pac-mingw32-new.pk
-
-if exist %instdir%\%msys2%\mingw32\bin\gcc.exe GOTO getmingw64
-    echo.-------------------------------------------------------------------------------
-    echo.install 32 bit compiler
-    echo.-------------------------------------------------------------------------------
-    if exist %instdir%\mingw32.sh del %instdir%\mingw32.sh
-    (
-        echo.echo -ne "\033]0;install 32 bit compiler\007"
-        echo.pacman --noconfirm -S $(cat /etc/pac-mingw32-new.pk ^| sed -e 's#\\##'^)
-        echo.sleep ^3
-        echo.exit
-        )>>%instdir%\mingw32.sh
-    %sh% --login %instdir%\mingw32.sh
-    del %instdir%\mingw32.sh
-    )
-
-:getmingw64
-if %build64%==yes (
-if exist "%instdir%\%msys2%\etc\pac-mingw64-old.pk" del "%instdir%\%msys2%\etc\pac-mingw64-old.pk"
-if exist "%instdir%\%msys2%\etc\pac-mingw64-new.pk" ren "%instdir%\%msys2%\etc\pac-mingw64-new.pk" pac-mingw64-old.pk
-
-for %%i in (%mingwpackages%) do echo.mingw-w64-x86_64-%%i>>%instdir%\%msys2%\etc\pac-mingw64-new.pk
-
-if exist %instdir%\%msys2%\mingw64\bin\gcc.exe GOTO rebase2
-    echo.-------------------------------------------------------------------------------
-    echo.install 64 bit compiler
-    echo.-------------------------------------------------------------------------------
-    if exist %instdir%\mingw64.sh del %instdir%\mingw64.sh
-        (
-        echo.echo -ne "\033]0;install 64 bit compiler\007"
-        echo.pacman --noconfirm -S $(cat /etc/pac-mingw64-new.pk ^| sed -e 's#\\##'^)
-        echo.sleep ^3
-        echo.exit
-        )>>%instdir%\mingw64.sh
-    %sh% --login %instdir%\mingw64.sh
-    del %instdir%\mingw64.sh
-    )
-
 :rebase2
 if %msys2%==msys32 (
     echo.-------------------------------------------------------------------------------
@@ -350,190 +275,122 @@ if %msys2%==msys32 (
     call %instdir%\msys32\autorebase.bat
     )
 
-:checkdyn
-echo.-------------------------------------------------------------------------------
-echo.check for dynamic libs
-echo.-------------------------------------------------------------------------------
-
-Setlocal EnableDelayedExpansion
-
-if %build32%==yes (
-if exist %instdir%\%msys2%\mingw32\lib\xvidcore.dll.a (
-    del %instdir%\%msys2%\mingw32\bin\xvidcore.dll
-    %instdir%\%msys2%\usr\bin\mv %instdir%\%msys2%\mingw32\lib\xvidcore.a %instdir%\%msys2%\mingw32\lib\libxvidcore.a
-    %instdir%\%msys2%\usr\bin\mv %instdir%\%msys2%\mingw32\lib\xvidcore.dll.a %instdir%\%msys2%\mingw32\lib\xvidcore.dll.a.dyn
-    )
-
-    FOR /R "%instdir%\%msys2%\mingw32" %%C IN (*.dll.a) DO (
-        set file=%%C
-        set name=!file:~0,-6!
-        if exist %%C.dyn del %%C.dyn
-        if exist !name!.a (
-            %instdir%\%msys2%\usr\bin\mv %%C %%C.dyn
-            )
-        )
-    )
-
-if %build64%==yes (
-if exist %instdir%\%msys2%\mingw64\lib\xvidcore.dll.a (
-    del %instdir%\%msys2%\mingw64\bin\xvidcore.dll
-    %instdir%\%msys2%\usr\bin\mv %instdir%\%msys2%\mingw64\lib\xvidcore.a %instdir%\%msys2%\mingw64\lib\libxvidcore.a
-    %instdir%\%msys2%\usr\bin\mv %instdir%\%msys2%\mingw64\lib\xvidcore.dll.a %instdir%\%msys2%\mingw64\lib\xvidcore.dll.a.dyn
-    )
-
-    FOR /R "%instdir%\%msys2%\mingw64" %%C IN (*.dll.a) DO (
-        set file=%%C
-        set name=!file:~0,-6!
-        if exist %%C.dyn del %%C.dyn
-        if exist !name!.a (
-            %instdir%\%msys2%\usr\bin\mv %%C %%C.dyn
-            )
-        )
-    )
-
-Setlocal DisableDelayedExpansion
-
 ::------------------------------------------------------------------
 :: write config profiles:
 ::------------------------------------------------------------------
 
 :writeProfile32
-if %build32%==yes (
-    if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
-        echo -------------------------------------------------------------------------------
-        echo.- write profile for 32 bit compiling
-        echo -------------------------------------------------------------------------------
-        (
-            echo.#
-            echo.# /local32/etc/profile.local
-            echo.#
-            echo.
-            echo.MSYSTEM=MINGW32
-            echo.
-            echo.alias dir='ls -la --color=auto'
-            echo.alias ls='ls --color=auto'
-            echo.export CC=gcc
-            echo.export python=/usr/bin/python
-            echo.
-            echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
-            echo.MANPATH="/usr/share/man:/mingw32/share/man:/local32/man:/local32/share/man"
-            echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/mingw32/share/info"
-            echo.MINGW_PREFIX="/mingw32"
-            echo.MINGW_CHOST="i686-w64-mingw32"
-            echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
-            echo.
-            echo.DXSDK_DIR="/mingw32/i686-w64-mingw32"
-            echo.ACLOCAL_PATH="/mingw32/share/aclocal:/usr/share/aclocal"
-            echo.PKG_CONFIG_LOCAL_PATH="/local32/lib/pkgconfig"
-            echo.PKG_CONFIG_PATH="/local32/lib/pkgconfig:/mingw32/lib/pkgconfig"
-            echo.CPPFLAGS="-I/local32/include -D_FORTIFY_SOURCE=2"
-            echo.CFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
-            echo.CXXFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
-            echo.LDFLAGS="-L/local32/lib -mthreads -pipe"
-            echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
-            echo.
-            echo.PYTHONHOME=/usr
-            echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
-            echo.
-            echo.PATH=".:/local32/bin:/mingw32/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
-            echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
-            echo.export PATH PS1
-            echo.
-            echo.# package build directory
-            echo.LOCALBUILDDIR=/build
-            echo.# package installation prefix
-            echo.LOCALDESTDIR=/local32
-            echo.export LOCALBUILDDIR LOCALDESTDIR
-            )>>%instdir%\locals\win32\etc\profile.local
-        )
-
-:writeProfile64
-if %build64%==yes (
-    if exist %instdir%\locals\x64\etc\profile.local GOTO loginProfile
-        echo -------------------------------------------------------------------------------
-        echo.- write profile for 64 bit compiling
-        echo -------------------------------------------------------------------------------
-        (
-            echo.#
-            echo.# /local64/etc/profile.local
-            echo.#
-            echo.
-            echo.MSYSTEM=MINGW64
-            echo.
-            echo.alias dir='ls -la --color=auto'
-            echo.alias ls='ls --color=auto'
-            echo.export CC=gcc
-            echo.export python=/usr/bin/python
-            echo.
-            echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
-            echo.MANPATH="/usr/share/man:/mingw64/share/man:/local64/man:/local64/share/man"
-            echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/mingw64/share/info"
-            echo.MINGW_PREFIX="/mingw64"
-            echo.MINGW_CHOST="x86_64-w64-mingw32"
-            echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
-            echo.
-            echo.DXSDK_DIR="/mingw64/x86_64-w64-mingw32"
-            echo.ACLOCAL_PATH="/mingw64/share/aclocal:/usr/share/aclocal"
-            echo.PKG_CONFIG_LOCAL_PATH="/local64/lib/pkgconfig"
-            echo.PKG_CONFIG_PATH="/local64/lib/pkgconfig:/mingw64/lib/pkgconfig"
-            echo.CPPFLAGS="-I/local64/include -D_FORTIFY_SOURCE=2"
-            echo.CFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
-            echo.CXXFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
-            echo.LDFLAGS="-L/local64/lib -pipe"
-            echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
-            echo.
-            echo.PYTHONHOME=/usr
-            echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
-            echo.
-            echo.PATH=".:/local64/bin:/mingw64/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
-            echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
-            echo.export PATH PS1
-            echo.
-            echo.# package build directory
-            echo.LOCALBUILDDIR=/build
-            echo.# package installation prefix
-            echo.LOCALDESTDIR=/local64
-            echo.export LOCALBUILDDIR LOCALDESTDIR
-            )>>%instdir%\locals\x64\etc\profile.local
-        )
-
-:loginProfile
-if %build32%==no GOTO loginProfile64
-    %instdir%\%msys2%\usr\bin\grep -q -e 'profile.local' %instdir%\%msys2%\etc\profile || (
-        echo -------------------------------------------------------------------------------
-        echo.- write default profile [32 bit]
-        echo -------------------------------------------------------------------------------
-        (
-            echo.
-            echo.if [[ -z "$MSYSTEM" ^&^& -f /local32/etc/profile.local ]]; then
-            echo.       source /local32/etc/profile.local
-            echo.fi
-            )>>%instdir%\%msys2%\etc\profile.
+if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
+    echo -------------------------------------------------------------------------------
+    echo.- write profile for 32 bit compiling
+    echo -------------------------------------------------------------------------------
+    (
+        echo.#
+        echo.# /local32/etc/profile.local
+        echo.#
+        echo.
+        echo.MSYSTEM=MINGW32
+        echo.
+        echo.alias dir='ls -la --color=auto'
+        echo.alias ls='ls --color=auto'
+        echo.export CC=gcc
+        echo.export python=/usr/bin/python
+        echo.
+        echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
+        echo.MANPATH="/usr/share/man:/mingw32/share/man:/local32/man:/local32/share/man"
+        echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/mingw32/share/info"
+        echo.MINGW_PREFIX="/mingw32"
+        echo.MINGW_CHOST="i686-w64-mingw32"
+        echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
+        echo.
+        echo.DXSDK_DIR="/mingw32/i686-w64-mingw32"
+        echo.ACLOCAL_PATH="/mingw32/share/aclocal:/usr/share/aclocal"
+        echo.PKG_CONFIG_LOCAL_PATH="/local32/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/local32/lib/pkgconfig:/mingw32/lib/pkgconfig"
+        echo.CPPFLAGS="-I/local32/include -D_FORTIFY_SOURCE=2"
+        echo.CFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.CXXFLAGS="-I/local32/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.LDFLAGS="-L/local32/lib -mthreads -pipe"
+        echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
+        echo.
+        echo.PYTHONHOME=/usr
+        echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
+        echo.
+        echo.PATH=".:/local32/bin:/mingw32/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
+        echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
+        echo.export PATH PS1
+        echo.
+        echo.# package build directory
+        echo.LOCALBUILDDIR=/build
+        echo.# package installation prefix
+        echo.LOCALDESTDIR=/local32
+        echo.export LOCALBUILDDIR LOCALDESTDIR
+        )>>%instdir%\locals\win32\etc\profile.local
     )
 
-    GOTO loadGasPreproc
-
-:loginProfile64
-    %instdir%\%msys2%\usr\bin\grep -q -e 'profile.local' %instdir%\%msys2%\etc\profile || (
-        echo -------------------------------------------------------------------------------
-        echo.- write default profile [64 bit]
-        echo -------------------------------------------------------------------------------
-        (
-            echo.
-            echo.if [[ -z "$MSYSTEM" ^&^& -f /local64/etc/profile.local ]]; then
-            echo.       source /local64/etc/profile.local
-            echo.fi
-            )>>%instdir%\%msys2%\etc\profile.
+:writeProfile64
+if exist %instdir%\locals\x64\etc\profile.local GOTO loadGasPreproc
+    echo -------------------------------------------------------------------------------
+    echo.- write profile for 64 bit compiling
+    echo -------------------------------------------------------------------------------
+    (
+        echo.#
+        echo.# /local64/etc/profile.local
+        echo.#
+        echo.
+        echo.MSYSTEM=MINGW64
+        echo.
+        echo.alias dir='ls -la --color=auto'
+        echo.alias ls='ls --color=auto'
+        echo.export CC=gcc
+        echo.export python=/usr/bin/python
+        echo.
+        echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
+        echo.MANPATH="/usr/share/man:/mingw64/share/man:/local64/man:/local64/share/man"
+        echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/mingw64/share/info"
+        echo.MINGW_PREFIX="/mingw64"
+        echo.MINGW_CHOST="x86_64-w64-mingw32"
+        echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
+        echo.
+        echo.DXSDK_DIR="/mingw64/x86_64-w64-mingw32"
+        echo.ACLOCAL_PATH="/mingw64/share/aclocal:/usr/share/aclocal"
+        echo.PKG_CONFIG_LOCAL_PATH="/local64/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/local64/lib/pkgconfig:/mingw64/lib/pkgconfig"
+        echo.CPPFLAGS="-I/local64/include -D_FORTIFY_SOURCE=2"
+        echo.CFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.CXXFLAGS="-I/local64/include -mms-bitfields -mthreads -mtune=generic -pipe"
+        echo.LDFLAGS="-L/local64/lib -pipe"
+        echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
+        echo.
+        echo.PYTHONHOME=/usr
+        echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
+        echo.
+        echo.PATH=".:/local64/bin:/mingw64/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
+        echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
+        echo.export PATH PS1
+        echo.
+        echo.# package build directory
+        echo.LOCALBUILDDIR=/build
+        echo.# package installation prefix
+        echo.LOCALDESTDIR=/local64
+        echo.export LOCALBUILDDIR LOCALDESTDIR
+        )>>%instdir%\locals\x64\etc\profile.local
     )
 
 :loadGasPreproc
 set gaspreprocfile=gas-preprocessor.tar.gz
 if exist %downloaddir%\%gaspreprocfile% goto extractGasPreproc
+    echo -------------------------------------------------------------------------------
+    echo.- Downloading gas-preprocessor.pl
+    echo -------------------------------------------------------------------------------
     %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\%gaspreprocfile% %gaspreprocurl%
 
 :extractGasPreproc
 if exist %instdir%\%msys2%\usr\bin\gas-preprocessor.pl goto end
-    %unpack_exe% x %downloaddir%\%gaspreprocfile% -so | %unpack_exe% e -si -ttar -o%instdir%\%msys2%\usr\bin *.pl -r
+    echo -------------------------------------------------------------------------------
+    echo.- Installing gas-preprocessor.pl
+    echo -------------------------------------------------------------------------------
+    %unpack_exe% x %downloaddir%\%gaspreprocfile% -so 2>NUL | %unpack_exe% e -si -ttar -o%instdir%\%msys2%\usr\bin *.pl -r >NUL 2>NUL
 
 :end
 cd %instdir%
