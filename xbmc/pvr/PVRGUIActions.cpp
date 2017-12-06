@@ -34,6 +34,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/Thread.h"
@@ -157,7 +158,9 @@ namespace PVR
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
       CSettings::SETTING_PVRPARENTAL_PIN,
-      CSettings::SETTING_PVRPARENTAL_ENABLED
+      CSettings::SETTING_PVRPARENTAL_ENABLED,
+      CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+      CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME
     })
   {
   }
@@ -1640,6 +1643,155 @@ namespace PVR
     }
 
     return bValidPIN;
+  }
+
+  bool CPVRGUIActions::CanSystemPowerdown(bool bAskUser /*= true*/) const
+  {
+    bool bReturn(true);
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      CPVRTimerInfoTagPtr cause;
+      if (!AllLocalBackendsIdle(cause))
+      {
+        if (bAskUser)
+        {
+          std::string text;
+
+          if (cause)
+          {
+            if (cause->IsRecording())
+            {
+              text = StringUtils::Format(g_localizeStrings.Get(19691).c_str(), // "PVR is currently recording...."
+                                         cause->Title().c_str(),
+                                         cause->ChannelName().c_str());
+            }
+            else
+            {
+              // Next event is due to a local recording.
+
+              const CDateTime now(CDateTime::GetUTCDateTime());
+              const CDateTime start(cause->StartAsUTC());
+              const CDateTimeSpan prestart(0, 0, cause->MarginStart(), 0);
+
+              CDateTimeSpan diff(start - now);
+              diff -= prestart;
+              int mins = diff.GetSecondsTotal() / 60;
+
+              std::string dueStr;
+              if (mins > 1)
+              {
+                // "%d minutes"
+                dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
+              }
+              else
+              {
+                // "about a minute"
+                dueStr = g_localizeStrings.Get(19695);
+              }
+
+              text = StringUtils::Format(g_localizeStrings.Get(19692).c_str(), // "PVR will start recording...."
+                                         cause->Title().c_str(),
+                                         cause->ChannelName().c_str(),
+                                         dueStr.c_str());
+            }
+          }
+          else
+          {
+            // Next event is due to automatic daily wakeup of PVR.
+            const CDateTime now(CDateTime::GetUTCDateTime());
+
+            CDateTime dailywakeuptime;
+            dailywakeuptime.SetFromDBTime(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+            dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
+
+            const CDateTimeSpan diff(dailywakeuptime - now);
+            int mins = diff.GetSecondsTotal() / 60;
+
+            std::string dueStr;
+            if (mins > 1)
+            {
+              // "%d minutes"
+              dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
+            }
+            else
+            {
+              // "about a minute"
+              dueStr = g_localizeStrings.Get(19695);
+            }
+
+            text = StringUtils::Format(g_localizeStrings.Get(19693).c_str(), // "Daily wakeup is due in...."
+                                       dueStr.c_str());
+          }
+
+          // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
+          bReturn = HELPERS::ShowYesNoDialogText(CVariant{19685}, // "Confirm shutdown"
+                                                 CVariant{text},
+                                                 CVariant{222}, // "Shutdown anyway",
+                                                 CVariant{19696}, // "Cancel"
+                                                 10000) // timeout value before closing
+                    == HELPERS::DialogResponse::YES;
+        }
+        else
+          bReturn = false; // do not powerdown (busy, but no user interaction requested).
+      }
+    }
+    return bReturn;
+  }
+
+  bool CPVRGUIActions::AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const
+  {
+    // active recording on local backend?
+    const std::vector<CFileItemPtr> activeRecordings = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
+    for (const auto& timer : activeRecordings)
+    {
+      if (EventOccursOnLocalBackend(timer))
+      {
+        causingEvent = timer->GetPVRTimerInfoTag();
+        return false;
+      }
+    }
+
+    // soon recording on local backend?
+    if (IsNextEventWithinBackendIdleTime())
+    {
+      const CFileItemPtr item = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
+      if (!item)
+      {
+        // Next event is due to automatic daily wakeup of PVR!
+        causingEvent.reset();
+        return false;
+      }
+
+      if (EventOccursOnLocalBackend(item))
+      {
+        causingEvent = item->GetPVRTimerInfoTag();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool CPVRGUIActions::EventOccursOnLocalBackend(const CFileItemPtr& item) const
+  {
+    if (item && item->HasPVRTimerInfoTag())
+    {
+      const CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
+      std::string hostname(CServiceBroker::GetPVRManager().Clients()->GetBackendHostnameByClientId(tag->m_iClientId));
+      if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
+        return true;
+    }
+    return false;
+  }
+
+  bool CPVRGUIActions::IsNextEventWithinBackendIdleTime(void) const
+  {
+    // timers going off soon?
+    const CDateTime now(CDateTime::GetUTCDateTime());
+    const CDateTimeSpan idle(0, 0, m_settings.GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
+    const CDateTime next(CServiceBroker::GetPVRManager().Timers()->GetNextEventTime());
+    const CDateTimeSpan delta(next - now);
+
+    return (delta <= idle);
   }
 
   CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()

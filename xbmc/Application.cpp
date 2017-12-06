@@ -2028,7 +2028,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(action.GetName()) ||
-        CServiceBroker::GetPVRManager().CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
     {
       CBuiltins::GetInstance().Execute(action.GetName());
       m_navigationTimer.StartZero();
@@ -2359,7 +2359,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   uint32_t msg = pMsg->dwMessage;
   if (msg == TMSG_SYSTEM_POWERDOWN)
   {
-    if (CServiceBroker::GetPVRManager().CanSystemPowerdown())
+    if (CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
       msg = pMsg->param1; // perform requested shutdown action
     else
       return; // no shutdown
@@ -4076,7 +4076,7 @@ void CApplication::CheckShutdown()
       || m_musicInfoScanner->IsScanning()
       || CVideoLibraryQueue::GetInstance().IsRunning()
       || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
-      || !CServiceBroker::GetPVRManager().CanSystemPowerdown(false))
+      || !CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown(false))
   {
     m_shutdownTimer.StartZero();
     return;
@@ -4349,7 +4349,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   if (CBuiltins::GetInstance().HasCommand(actionStr))
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(actionStr) ||
-        CServiceBroker::GetPVRManager().CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
       CBuiltins::GetInstance().Execute(actionStr);
   }
   else

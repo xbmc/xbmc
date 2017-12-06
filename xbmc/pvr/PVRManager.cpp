@@ -23,23 +23,15 @@
 #include <utility>
 
 #include "Application.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
-#include "Util.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "network/Network.h"
 #include "settings/Settings.h"
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -60,8 +52,6 @@
 using namespace PVR;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
-
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CPVRManagerJobQueue::CPVRManagerJobQueue()
 : m_triggerEvent(false),
@@ -157,10 +147,7 @@ CPVRManager::CPVRManager(void) :
       CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
-      CSettings::SETTING_PVRPARENTAL_DURATION,
-      CSettings::SETTING_EPG_HIDENOINFOAVAILABLE,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME
+      CSettings::SETTING_PVRPARENTAL_DURATION
     })
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
@@ -855,158 +842,6 @@ bool CPVRManager::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
 bool CPVRManager::IsRecording(void) const
 {
   return IsStarted() && m_timers ? m_timers->IsRecording() : false;
-}
-
-bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
-{
-  bool bReturn(true);
-  if (IsStarted())
-  {
-    CPVRTimerInfoTagPtr cause;
-    if (!AllLocalBackendsIdle(cause))
-    {
-      if (bAskUser)
-      {
-        std::string text;
-
-        if (cause)
-        {
-          if (cause->IsRecording())
-          {
-            text = StringUtils::Format(g_localizeStrings.Get(19691).c_str(), // "PVR is currently recording...."
-                                       cause->Title().c_str(),
-                                       cause->ChannelName().c_str());
-          }
-          else
-          {
-            // Next event is due to a local recording.
-
-            const CDateTime now(CDateTime::GetUTCDateTime());
-            const CDateTime start(cause->StartAsUTC());
-            const CDateTimeSpan prestart(0, 0, cause->MarginStart(), 0);
-
-            CDateTimeSpan diff(start - now);
-            diff -= prestart;
-            int mins = diff.GetSecondsTotal() / 60;
-
-            std::string dueStr;
-            if (mins > 1)
-            {
-              // "%d minutes"
-              dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
-            }
-            else
-            {
-              // "about a minute"
-              dueStr = g_localizeStrings.Get(19695);
-            }
-
-            text = StringUtils::Format(g_localizeStrings.Get(19692).c_str(), // "PVR will start recording...."
-                                       cause->Title().c_str(),
-                                       cause->ChannelName().c_str(),
-                                       dueStr.c_str());
-          }
-        }
-        else
-        {
-          // Next event is due to automatic daily wakeup of PVR.
-          const CDateTime now(CDateTime::GetUTCDateTime());
-
-          CDateTime dailywakeuptime;
-          dailywakeuptime.SetFromDBTime(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
-          dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
-
-          const CDateTimeSpan diff(dailywakeuptime - now);
-          int mins = diff.GetSecondsTotal() / 60;
-
-          std::string dueStr;
-          if (mins > 1)
-          {
-            // "%d minutes"
-            dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
-          }
-          else
-          {
-            // "about a minute"
-            dueStr = g_localizeStrings.Get(19695);
-          }
-
-          text = StringUtils::Format(g_localizeStrings.Get(19693).c_str(), // "Daily wakeup is due in...."
-                                     dueStr.c_str());
-        }
-
-        // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
-        bReturn = HELPERS::DialogResponse::YES == 
-          HELPERS::ShowYesNoDialogText(CVariant{19685}, // "Confirm shutdown"
-                                       CVariant{text},
-                                       CVariant{222}, // "Shutdown anyway",
-                                       CVariant{19696}, // "Cancel"
-                                       10000); // timeout value before closing
-      }
-      else
-        bReturn = false; // do not powerdown (busy, but no user interaction requested).
-    }
-  }
-  return bReturn;
-}
-
-bool CPVRManager::AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const
-{
-  if (m_timers)
-  {
-    // active recording on local backend?
-    std::vector<CFileItemPtr> recordings = m_timers->GetActiveRecordings();
-    for (std::vector<CFileItemPtr>::const_iterator timerIt = recordings.begin(); timerIt != recordings.end(); ++timerIt)
-    {
-      if (EventOccursOnLocalBackend(*timerIt))
-      {
-        causingEvent = (*timerIt)->GetPVRTimerInfoTag();
-        return false;
-      }
-    }
-
-    // soon recording on local backend?
-    if (IsNextEventWithinBackendIdleTime())
-    {
-      CFileItemPtr item = m_timers->GetNextActiveTimer();
-      if (item.get() == NULL)
-      {
-        // Next event is due to automatic daily wakeup of PVR!
-        causingEvent.reset();
-        return false;
-      }
-
-      if (EventOccursOnLocalBackend(item))
-      {
-        causingEvent = item->GetPVRTimerInfoTag();
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-bool CPVRManager::EventOccursOnLocalBackend(const CFileItemPtr& item) const
-{
-  if (item && item->HasPVRTimerInfoTag())
-  {
-    CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
-    std::string hostname(m_addons->GetBackendHostnameByClientId(tag->m_iClientId));
-    if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
-      return true;
-  }
-  return false;
-}
-
-bool CPVRManager::IsNextEventWithinBackendIdleTime(void) const
-{
-  // timers going off soon?
-  const CDateTime now(CDateTime::GetUTCDateTime());
-  const CDateTimeSpan idle(0, 0, m_settings.GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
-  const CDateTime next(m_timers->GetNextEventTime());
-  const CDateTimeSpan delta(next - now);
-
-  return (delta <= idle);
 }
 
 void CPVRManager::LocalizationChanged(void)
