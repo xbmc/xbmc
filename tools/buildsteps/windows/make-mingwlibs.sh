@@ -8,12 +8,10 @@ RM=/bin/rm
 NOPROMPT=0
 MAKECLEAN=""
 MAKEFLAGS=""
-TOOLS="mingw"
 TRIPLET=""
 
 while true; do
   case $1 in
-    --tools=* ) TOOLS="${1#*=}"; shift ;;
     --build32=* ) build32="${1#*=}"; shift ;;
     --build64=* ) build64="${1#*=}"; shift ;;
     --buildArm=* ) buildArm="${1#*=}"; shift ;;
@@ -54,7 +52,7 @@ elif [[ $win10 = "yes" ]]; then
   TRIPLET=win10-$TRIPLET
 fi
 
-export TRIPLET ARCH TOOLS
+export TRIPLET ARCH
 
 throwerror() {
   $TOUCH $ERRORFILE
@@ -92,7 +90,6 @@ echo
 echo " NOPROMPT  = $NOPROMPT"
 echo " MAKECLEAN = $MAKECLEAN"
 echo " WORKSPACE = $WORKSPACE"
-echo " TOOLCHAIN = $TOOLS"
 echo
 echo "-------------------------------------------------------------------------------"
 
