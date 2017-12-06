@@ -191,6 +191,9 @@ bool CPVRActionListener::OnAction(const CAction &action)
       const CPVRChannelGroupPtr selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
       const CFileItemPtr item(selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber)));
 
+      if (!item)
+        return false;
+
       CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
       return true;
     }

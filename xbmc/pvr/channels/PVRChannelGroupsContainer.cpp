@@ -303,9 +303,7 @@ CFileItemPtr CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
   CFileItemPtr channelRadio = m_groupsRadio->GetGroupAll()->GetLastPlayedChannel();
 
   if (!channelTV ||
-      !channelTV->HasPVRChannelInfoTag() ||
-      (channelRadio && channelRadio->HasPVRChannelInfoTag() &&
-       channelRadio->GetPVRChannelInfoTag()->LastWatched() > channelTV->GetPVRChannelInfoTag()->LastWatched()))
+      (channelRadio && channelRadio->GetPVRChannelInfoTag()->LastWatched() > channelTV->GetPVRChannelInfoTag()->LastWatched()))
      return channelRadio;
 
   return channelTV;
