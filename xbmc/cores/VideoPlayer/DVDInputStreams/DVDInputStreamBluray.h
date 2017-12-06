@@ -49,6 +49,7 @@ class CDVDInputStreamBluray
   , public CDVDInputStream::IChapter
   , public CDVDInputStream::IPosTime
   , public CDVDInputStream::IMenus
+  , public CDVDInputStream::IStreams
 {
 public:
   CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem);
@@ -111,6 +112,10 @@ public:
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int ms) override;
+
+  CDVDInputStream::IStreams* GetIStreams() override { return this; }
+  bool SetAudioStream(uint32_t streamId) override;
+  bool SetSubtitleStream(uint32_t streamId) override;
 
   void GetStreamInfo(int pid, char* language);
 

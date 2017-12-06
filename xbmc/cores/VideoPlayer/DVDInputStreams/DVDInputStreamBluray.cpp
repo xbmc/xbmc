@@ -1324,3 +1324,31 @@ bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 
   return true;
 }
+
+bool CDVDInputStreamBluray::SetAudioStream(uint32_t streamId)
+{
+  if (!m_title || m_clip >= m_title->clip_count)
+    return false;
+
+  BLURAY_CLIP_INFO *clip = m_title->clips + m_clip;
+  if (streamId > clip->audio_stream_count)
+    return false;
+
+  m_dll->bd_select_stream(m_bd, BLURAY_AUDIO_STREAM, streamId, 1);
+
+  return true;
+}
+
+bool CDVDInputStreamBluray::SetSubtitleStream(uint32_t streamId)
+{
+  if (!m_title || m_clip >= m_title->clip_count)
+    return false;
+
+  BLURAY_CLIP_INFO *clip = m_title->clips + m_clip;
+  if (streamId > clip->pg_stream_count)
+    return false;
+
+  m_dll->bd_select_stream(m_bd, BLURAY_PG_TEXTST_STREAM, streamId, 1);
+
+  return true;
+}
