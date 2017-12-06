@@ -1794,6 +1794,21 @@ namespace PVR
     return (delta <= idle);
   }
 
+  void CPVRGUIActions::SetSelectedItemPath(bool bRadio, const std::string &path)
+  {
+    CSingleLock lock(m_critSection);
+    if (bRadio)
+      m_selectedItemPathRadio = path;
+    else
+      m_selectedItemPathTV = path;
+  }
+
+  std::string CPVRGUIActions::GetSelectedItemPath(bool bRadio) const
+  {
+    CSingleLock lock(m_critSection);
+    return bRadio ? m_selectedItemPathRadio : m_selectedItemPathTV;
+  }
+
   CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()
   {
     // window/dialog specific input handler
@@ -1808,6 +1823,27 @@ namespace PVR
   CPVRGUIChannelNavigator &CPVRGUIActions::GetChannelNavigator()
   {
     return m_channelNavigator;
+  }
+
+  void CPVRGUIActions::OnPlaybackStarted(const CFileItemPtr &item)
+  {
+    if (item->HasPVRChannelInfoTag())
+    {
+      const CPVRChannelPtr channel = item->GetPVRChannelInfoTag();
+      m_channelNavigator.SetPlayingChannel(channel);
+      SetSelectedItemPath(channel->IsRadio(), channel->Path());
+    }
+  }
+
+  void CPVRGUIActions::OnPlaybackStopped(const CFileItemPtr &item)
+  {
+    if (item->HasPVRChannelInfoTag())
+    {
+      m_channelNavigator.ClearPlayingChannel();
+
+      // store channel settings
+      g_application.SaveFileState();
+    }
   }
 
   void CPVRChannelSwitchingInputHandler::OnInputDone()

@@ -67,7 +67,7 @@ void CGUIWindowPVRGuideBase::Init()
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    m_bChannelSelectionRestored = epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+    m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
     epgGridContainer->GoToNow();
   }
 
@@ -178,7 +178,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
   {
     CPVRChannelPtr channel(epgGridContainer->GetSelectedChannel());
     if (channel)
-      SetSelectedItemPath(m_bRadio, channel->Path());
+      CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio, channel->Path());
   }
 }
 
@@ -197,7 +197,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool update
   {
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
-      m_bChannelSelectionRestored = epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+      m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
   }
 
   return bReturn;

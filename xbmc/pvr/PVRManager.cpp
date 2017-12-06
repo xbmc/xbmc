@@ -22,7 +22,6 @@
 
 #include <utility>
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -47,7 +46,6 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVRBase.h"
 
 using namespace PVR;
 using namespace ANNOUNCEMENT;
@@ -761,13 +759,8 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
     const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
     m_playingChannel = channel;
-
-    m_guiActions->GetChannelNavigator().SetPlayingChannel(channel);
     SetPlayingGroup(channel);
     UpdateLastWatched(channel);
-
-    // set channel as selected item
-    CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
   }
   else if (item->HasPVRRecordingInfoTag())
   {
@@ -777,6 +770,8 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   {
     m_playingEpgTag = item->GetEPGInfoTag();
   }
+
+  m_guiActions->OnPlaybackStarted(item);
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
@@ -786,12 +781,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag() == m_playingChannel)
   {
     UpdateLastWatched(item->GetPVRChannelInfoTag());
-
-    // store channel settings
-    g_application.SaveFileState();
-
     m_playingChannel.reset();
-    m_guiActions->GetChannelNavigator().ClearPlayingChannel();
   }
   else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag() == m_playingRecording)
   {
@@ -801,6 +791,8 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   {
     m_playingEpgTag.reset();
   }
+
+  m_guiActions->OnPlaybackStopped(item);
 }
 
 void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)

@@ -22,6 +22,8 @@
 #include <memory>
 #include <string>
 
+#include "threads/CriticalSection.h"
+
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/PVRGUIChannelNavigator.h"
 #include "pvr/PVRSettings.h"
@@ -344,6 +346,20 @@ namespace PVR
     bool CanSystemPowerdown(bool bAskUser = true) const;
 
     /*!
+     * @brief Get the currently selected item path; used across several windows/dialogs to share item selection.
+     * @param bRadio True to query the selected path for PVR radio, false for Live TV.
+     * @return the path.
+     */
+    std::string GetSelectedItemPath(bool bRadio) const;
+
+    /*!
+     * @brief Set the currently selected item path; used across several windows/dialogs to share item selection.
+     * @param bRadio True to set the selected path for PVR radio, false for Live TV.
+     * @param path The new path to set.
+     */
+    void SetSelectedItemPath(bool bRadio, const std::string &path);
+
+    /*!
      * @brief Get the currently active channel number input handler.
      * @return the handler.
      */
@@ -354,6 +370,18 @@ namespace PVR
      * @return the navigator.
      */
     CPVRGUIChannelNavigator &GetChannelNavigator();
+
+    /*!
+     * @brief Inform GUI actions that playback of an item just started.
+     * @param item The item that started to play.
+     */
+    void OnPlaybackStarted(const CFileItemPtr &item);
+
+    /*!
+     * @brief Inform GUI actions manager that playback of an item was stopped due to user interaction.
+     * @param item The item that stopped to play.
+     */
+    void OnPlaybackStopped(const CFileItemPtr &item);
 
   private:
     CPVRGUIActions(const CPVRGUIActions&) = delete;
@@ -464,10 +492,13 @@ namespace PVR
     bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
     bool IsNextEventWithinBackendIdleTime(void) const;
 
+    CCriticalSection m_critSection;
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
     bool m_bChannelScanRunning;
     CPVRSettings m_settings;
     CPVRGUIChannelNavigator m_channelNavigator;
+    std::string m_selectedItemPathTV;
+    std::string m_selectedItemPathRadio;
   };
 
 } // namespace PVR

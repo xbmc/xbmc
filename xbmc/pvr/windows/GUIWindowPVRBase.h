@@ -69,9 +69,6 @@ namespace PVR
     void SetInvalid() override;
     bool CanBeActivated() const override;
 
-    static std::string GetSelectedItemPath(bool bRadio);
-    static void SetSelectedItemPath(bool bRadio, const std::string &path);
-
     /*!
      * @brief Refresh window content.
      * @return true, if refresh succeeded, false otherwise.
@@ -108,9 +105,6 @@ namespace PVR
 
     void RegisterObservers(void);
     void UnregisterObservers(void);
-
-    static CCriticalSection m_selectedItemPathsLock;
-    static std::string m_selectedItemPaths[2];
 
     CCriticalSection m_critSection;
     bool m_bRadio;
