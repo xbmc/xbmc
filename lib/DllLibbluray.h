@@ -88,6 +88,7 @@ public:
   virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
   virtual int      bd_mouse_select              (BLURAY *bd, int64_t pts, uint16_t x, uint16_t y)=0;
   virtual int      bd_get_sound_effect          (BLURAY *bd, unsigned sound_id, struct bd_sound_effect *effect)=0;
+  virtual void     bd_select_stream             (BLURAY *bd, uint32_t stream_type, uint32_t stream_id, uint32_t enable_flag)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -141,6 +142,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
   DEFINE_METHOD4(int,                 bd_mouse_select,           (BLURAY *p1, int64_t p2, uint16_t p3, uint16_t p4))
   DEFINE_METHOD3(int,                 bd_get_sound_effect,       (BLURAY *p1, unsigned p2, struct bd_sound_effect* p3))
+  DEFINE_METHOD4(void,                bd_select_stream,          (BLURAY *p1, uint32_t p2, uint32_t p3, uint32_t p4))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
@@ -190,6 +192,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_menu_call)
     RESOLVE_METHOD(bd_mouse_select)
     RESOLVE_METHOD(bd_get_sound_effect)
+    RESOLVE_METHOD(bd_select_stream)
   END_METHOD_RESOLVE()
 
 public:

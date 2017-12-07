@@ -2675,6 +2675,22 @@ void CVideoPlayer::HandleMessages()
             m_messenger.Put(new CDVDMsgPlayerSeek(mode));
           }
         }
+        else if (m_pInputStream->GetIStreams())
+        {
+          CDVDInputStream::IStreams* pStream = m_pInputStream->GetIStreams();
+          if (pStream->SetAudioStream(st.id))
+          {
+            m_dvd.iSelectedAudioStream = -1;
+            CloseStream(m_CurrentAudio, false);
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = (int)GetUpdatedTime();
+            mode.backward = true;
+            mode.accurate = true;
+            mode.trickplay = true;
+            mode.sync = true;
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
+          }
+        }
         else
         {
           CloseStream(m_CurrentAudio, false);

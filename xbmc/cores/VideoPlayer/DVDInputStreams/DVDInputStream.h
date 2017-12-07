@@ -146,6 +146,15 @@ public:
     virtual void SetVideoResolution(int width, int height) {};
   };
 
+  class IStreams
+  {
+  public:
+    virtual ~IStreams() = default;
+    virtual bool SetAudioStream(uint32_t streamId) { return false; };
+    virtual bool SetSubtitleStream(uint32_t streamId) { return false; };
+    virtual bool SetVideoStream(uint32_t streamId) { return false; };
+  };
+
   enum ENextStream
   {
     NEXTSTREAM_NONE,
@@ -196,6 +205,7 @@ public:
   virtual IPosTime* GetIPosTime() { return nullptr; }
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
   virtual ITimes* GetITimes() { return nullptr; }
+  virtual IStreams* GetIStreams() { return nullptr; }
 
   const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
 
