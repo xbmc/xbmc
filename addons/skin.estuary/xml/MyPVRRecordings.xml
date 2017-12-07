@@ -199,7 +199,7 @@
 									<shadowcolor>text_shadow</shadowcolor>
 								</control>
 							</itemlayout>
-							<content sortby="date" sortorder="descending">$INFO[ListItem.FilenameAndPath]</content>
+							<content sortby="date" sortorder="ascending">$INFO[ListItem.FilenameAndPath]</content>
 						</control>
 					</control>
 				</control>

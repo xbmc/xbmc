@@ -59,6 +59,7 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
 
   // Default sorting
   SetSortMethod(SortByDate);
+  SetSortOrder(SortOrderAscending);
 
   LoadViewState(items.GetPath(), m_windowId);
 }
