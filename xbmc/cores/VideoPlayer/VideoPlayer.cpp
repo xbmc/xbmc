@@ -720,13 +720,6 @@ bool CVideoPlayer::CloseFile(bool reopen)
 {
   CLog::Log(LOGNOTICE, "CVideoPlayer::CloseFile()");
 
-  IPlayerCallback *cb = &m_callback;
-  CFileItem fileItem(m_item);
-  CVideoSettings vs = m_processInfo->GetVideoSettings();
-  CJobManager::GetInstance().Submit([=]() {
-    cb->StoreVideoSettings(fileItem, vs);
-  }, CJob::PRIORITY_NORMAL);
-
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
@@ -2452,6 +2445,22 @@ void CVideoPlayer::OnExit()
   CloseStream(m_CurrentSubtitle, false);  // clear overlay container
 
   CServiceBroker::GetWinSystem().UnregisterRenderLoop(this);
+
+  IPlayerCallback *cb = &m_callback;
+  CFileItem fileItem(m_item);
+  CVideoSettings vs = m_processInfo->GetVideoSettings();
+  CJobManager::GetInstance().Submit([=]() {
+    cb->StoreVideoSettings(fileItem, vs);
+  }, CJob::PRIORITY_NORMAL);
+
+  CBookmark bookmark;
+  bookmark.totalTimeInSeconds = m_processInfo->GetMaxTime() / 1000;
+  bookmark.timeInSeconds = GetTime() / 1000;
+  bookmark.player = m_name;
+  bookmark.playerState = GetPlayerState();
+  CJobManager::GetInstance().Submit([=]() {
+    cb->OnPlayerCloseFile(fileItem, bookmark);
+  }, CJob::PRIORITY_NORMAL);
     
   // destroy objects
   SAFE_DELETE(m_pDemuxer);
@@ -2474,7 +2483,6 @@ void CVideoPlayer::OnExit()
   CFFmpegLog::ClearLogLevel();
   m_bStop = true;
 
-  IPlayerCallback *cb = &m_callback;
   bool error = m_error;
   bool abort = m_bAbortRequest;
   CJobManager::GetInstance().Submit([=]() {
@@ -2503,6 +2511,15 @@ void CVideoPlayer::HandleMessages()
       CVideoSettings vs = m_processInfo->GetVideoSettings();
       CJobManager::GetInstance().Submit([=]() {
         cb->StoreVideoSettings(fileItem, vs);
+      }, CJob::PRIORITY_NORMAL);
+
+      CBookmark bookmark;
+      bookmark.totalTimeInSeconds = m_processInfo->GetMaxTime() / 1000;
+      bookmark.timeInSeconds = GetTime() / 1000;
+      bookmark.player = m_name;
+      bookmark.playerState = GetPlayerState();
+      CJobManager::GetInstance().Submit([=]() {
+        cb->OnPlayerCloseFile(fileItem, bookmark);
       }, CJob::PRIORITY_NORMAL);
 
       m_item = msg.GetItem();

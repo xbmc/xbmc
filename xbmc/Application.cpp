@@ -264,9 +264,6 @@ CApplication::CApplication(void)
   , m_threadID(0)
   , m_bInitializing(true)
   , m_bPlatformDirectories(true)
-  , m_progressTrackingVideoResumeBookmark(*new CBookmark)
-  , m_progressTrackingItem(new CFileItem)
-  , m_progressTrackingPlayCountUpdate(false)
   , m_currentStackPosition(0)
   , m_nextPlaylistItem(-1)
   , m_lastRenderTime(0)
@@ -291,8 +288,6 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
-  delete &m_progressTrackingVideoResumeBookmark;
-
   delete m_pInertialScrollingHandler;
 
   m_actionListeners.clear();
@@ -2834,8 +2829,6 @@ void CApplication::Stop(int exitCode)
     // Abort any active screensaver
     WakeUpScreenSaverAndDPMS();
 
-    SaveFileState(true);
-
     g_alarmClock.StopThread();
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
@@ -3179,8 +3172,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   if (!bRestart)
   {
-    SaveFileState(true);
-
     m_pPlayer->SetPlaySpeed(1);
 
     m_itemCurrentFile.reset(new CFileItem(item));
@@ -3488,6 +3479,55 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmark)
+{
+  CFileItem fileItem(file);
+  CBookmark resumeBookmark;
+  bool playCountUpdate = false;
+
+  float percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
+
+  if ((fileItem.IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+       percent >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+      (fileItem.IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+       percent >= g_advancedSettings.m_videoPlayCountMinimumPercent))
+  {
+    playCountUpdate = true;
+  }
+
+  if (!(fileItem.IsDiscImage() || fileItem.IsDVDFile()) || bookmark.totalTimeInSeconds > 15*60)
+  {
+    if (fileItem.IsStack())
+      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, bookmark.totalTimeInSeconds);
+  }
+
+  if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
+      bookmark.totalTimeInSeconds - bookmark.timeInSeconds <
+        0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * bookmark.totalTimeInSeconds)
+  {
+    resumeBookmark.timeInSeconds = -1.0f;
+  }
+  else if (bookmark.timeInSeconds > g_advancedSettings.m_videoIgnoreSecondsAtStart)
+  {
+    resumeBookmark.timeInSeconds = bookmark.timeInSeconds;
+    resumeBookmark.totalTimeInSeconds = bookmark.totalTimeInSeconds;
+  }
+  else
+  {
+    resumeBookmark.timeInSeconds = 0.0f;
+  }
+
+  if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
+  {
+    CJob* job = new CSaveFileStateJob(fileItem,
+                                      *m_stackFileItemToUpdate,
+                                      resumeBookmark,
+                                      playCountUpdate);
+    job->DoWork();
+    delete job;
+  }
+}
+
 void CApplication::OnQueueNextItem()
 {
   CLog::LogF(LOGDEBUG,"CApplication::OnQueueNextItem");
@@ -3643,105 +3683,6 @@ bool CApplication::IsFullScreen()
   return IsPlayingFullScreenVideo() ||
         (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) ||
          g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW;
-}
-
-void CApplication::SaveFileState(bool bForeground /* = false */)
-{
-  if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
-    return;
-
-  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
-                                    *m_stackFileItemToUpdate,
-                                    m_progressTrackingVideoResumeBookmark,
-                                    m_progressTrackingPlayCountUpdate);
-
-  if (bForeground)
-  {
-    // Run job in the foreground to make sure it finishes
-    job->DoWork();
-    delete job;
-  }
-  else
-    CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
-}
-
-void CApplication::UpdateFileState()
-{
-  // Did the file change?
-  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
-  {
-    // Also ignore video playlists containing multiple items: video settings have already been saved in PlayFile()
-    // and we'd overwrite them with settings for the *previous* item.
-    //! @todo these "exceptions" should be removed and the whole logic of saving settings be revisited and
-    //! possibly moved out of CApplication.  See PRs 5842, 5958, http://trac.kodi.tv/ticket/15704#comment:3
-    int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-    if (!(playlist == PLAYLIST_VIDEO && CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() > 1))
-      SaveFileState();
-
-    // Reset tracking item
-    m_progressTrackingItem->Reset();
-  }
-  else
-  {
-    if (m_pPlayer->IsPlaying())
-    {
-      if (m_progressTrackingItem->GetPath() == "")
-      {
-        // Init some stuff
-        *m_progressTrackingItem = CurrentFileItem();
-        m_progressTrackingPlayCountUpdate = false;
-      }
-
-      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-          (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-      {
-        m_progressTrackingPlayCountUpdate = true;
-      }
-
-      // Check whether we're *really* playing video else we may race when getting eg. stream details
-      if (m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingGame())
-      {
-        /* Always update streamdetails, except for DVDs where we only update
-           streamdetails if total duration > 15m (Should yield more correct info) */
-        if (!(m_progressTrackingItem->IsDiscImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
-        {
-          if (m_progressTrackingItem->IsStack())
-            m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, (int)GetTotalTime()); // Overwrite with CApp's totaltime as it takes into account total stack time
-        }
-
-        // Update bookmark for save
-        m_progressTrackingVideoResumeBookmark.player = m_pPlayer->GetCurrentPlayer();
-        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.clear();
-
-        if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
-            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
-        {
-          // Delete the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-        }
-        else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
-        {
-          // Update the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-          m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
-        }
-        else
-        {
-          // Do nothing
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-        }
-      }
-      if (m_pPlayer->IsPlayingAudio() && !m_pPlayer->IsPlayingGame())
-      {
-        if (m_progressTrackingItem->IsAudioBook())
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-      }
-    }
-  }
 }
 
 void CApplication::StopPlaying()
@@ -4244,14 +4185,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      // In case playback ended due to user eg. skipping over the end, clear
-      // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
-      {
-        // Delete the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-      }
-
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
@@ -4475,9 +4408,6 @@ void CApplication::ProcessSlow()
     CJobManager::GetInstance().UnPauseJobs();
   }
 
-  // Store our file state for use on close()
-  UpdateFileState();
-
   // Check if we need to activate the screensaver / DPMS.
   CheckScreenSaverAndDPMS();
 
@@ -4593,8 +4523,6 @@ void CApplication::Restart(bool bSamePosition)
 
   if( !m_pPlayer->HasPlayer() )
     return ;
-
-  SaveFileState();
 
   // do we want to return to the current position in the file
   if (false == bSamePosition)
