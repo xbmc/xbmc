@@ -3460,9 +3460,6 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackEnded();
 #endif
-#if defined(TARGET_DARWIN_IOS)
-  CDarwinUtils::EnableOSScreenSaver(true);
-#endif
 
   CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
 
@@ -3482,10 +3479,6 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted(file);
-#endif
-#if defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer->IsPlayingVideo())
-    CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
   m_itemCurrentFile.reset(new CFileItem(file));
