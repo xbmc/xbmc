@@ -82,12 +82,17 @@ bool CDVDInputStreamFile::Open()
 
   std::string content = m_item.GetMimeType();
 
-  if (content == "video/mp4" ||
-      content == "video/x-msvideo" ||
-      content == "video/avi" ||
-      content == "video/x-matroska" ||
-      content == "video/x-matroska-3d")
+  if (content == "video/mp4")
+  {
+    flags |= READ_NO_CACHE;
+  }
+  else if (content == "video/avi" ||
+    content == "video/x-msvideo"  ||
+    content == "video/x-matroska" ||
+    content == "video/x-matroska-3d")
+  {
     flags |= READ_MULTI_STREAM;
+  }
 
   // open file in binary mode
   if (!m_pFile->Open(m_item.GetDynPath(), flags))

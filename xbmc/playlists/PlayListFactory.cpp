@@ -124,9 +124,10 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   if (item.IsInternetStream() && item.IsType(".m3u8"))
     return false;
 
-  if(strMimeType == "audio/x-pn-realaudio"
-  || strMimeType == "playlist"
-  || strMimeType == "audio/x-mpegurl")
+  if (!item.IsVideo() && (strMimeType == "audio/x-pn-realaudio" || strMimeType == "audio/x-mpegurl"))
+    return true;
+
+  if (strMimeType == "playlist")
     return true;
 
   return IsPlaylist(item.GetPath());
