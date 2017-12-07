@@ -1280,7 +1280,7 @@ int CDVDDemuxFFmpeg::GetPrograms(std::vector<ProgramInfo>& programs)
     while (tag)
     {
       os << " - " << tag->key << ": " << tag->value;
-      tag = av_dict_get(m_pFormatContext->programs[i]->metadata, nullptr, tag, AV_DICT_IGNORE_SUFFIX);
+      tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX);
     }
     prog.name = os.str();
     programs.push_back(prog);
