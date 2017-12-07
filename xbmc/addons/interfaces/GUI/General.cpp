@@ -144,7 +144,7 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
 void Interface_GUIGeneral::lock()
 {
   if (m_iAddonGUILockRef == 0)
-    g_graphicsContext.Lock();
+    g_graphicsContext.lock();
   ++m_iAddonGUILockRef;
 }
 
@@ -154,7 +154,7 @@ void Interface_GUIGeneral::unlock()
   {
     --m_iAddonGUILockRef;
     if (m_iAddonGUILockRef == 0)
-      g_graphicsContext.Unlock();
+      g_graphicsContext.unlock();
   }
 }
 //@}

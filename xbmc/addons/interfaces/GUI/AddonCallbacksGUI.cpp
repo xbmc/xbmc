@@ -211,7 +211,8 @@ CAddonCallbacksGUI::~CAddonCallbacksGUI()
 
 void CAddonCallbacksGUI::Lock()
 {
-  if (iXBMCGUILockRef == 0) g_graphicsContext.Lock();
+  if (iXBMCGUILockRef == 0)
+    g_graphicsContext.lock();
   iXBMCGUILockRef++;
 }
 
@@ -220,7 +221,8 @@ void CAddonCallbacksGUI::Unlock()
   if (iXBMCGUILockRef > 0)
   {
     iXBMCGUILockRef--;
-    if (iXBMCGUILockRef == 0) g_graphicsContext.Unlock();
+    if (iXBMCGUILockRef == 0)
+      g_graphicsContext.unlock();
   }
 }
 

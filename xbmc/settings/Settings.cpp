@@ -34,7 +34,6 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "games/GameSettings.h"
-#include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/StereoscopicsManager.h"
@@ -825,7 +824,6 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_application);
   GetSettingsManager()->UnregisterCallback(&g_audioManager);
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
-  GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
@@ -953,6 +951,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SOURCE_VIDEOS);
   settingSet.insert(CSettings::SETTING_SOURCE_MUSIC);
   settingSet.insert(CSettings::SETTING_SOURCE_PICTURES);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
   GetSettingsManager()->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();
@@ -963,10 +962,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
   settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
   GetSettingsManager()->RegisterCallback(&g_charsetConverter, settingSet);
-
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
-  GetSettingsManager()->RegisterCallback(&g_graphicsContext, settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
@@ -1075,7 +1070,6 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_application);
   GetSettingsManager()->UnregisterCallback(&g_audioManager);
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
-  GetSettingsManager()->UnregisterCallback(&g_graphicsContext);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
   GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);

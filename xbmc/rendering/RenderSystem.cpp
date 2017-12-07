@@ -99,7 +99,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
     m_splashImage->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 
-  g_graphicsContext.Lock();
+  g_graphicsContext.lock();
   g_graphicsContext.Clear();
 
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
@@ -136,7 +136,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
 
   //show it on screen
   EndRender();
-  g_graphicsContext.Unlock();
+  g_graphicsContext.unlock();
   g_graphicsContext.Flip(true, false);
 }
 

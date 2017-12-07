@@ -93,7 +93,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     // choose the next resolution in our list
     {
       m_iCurRes = (m_iCurRes+1) % m_Res.size();
-      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes]);
+      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], false);
       ResetControls();
       return true;
     }
@@ -141,7 +141,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       CServiceBroker::GetSettings().Save();
       g_graphicsContext.SetCalibrating(false);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
+      g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
       g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     }
     break;

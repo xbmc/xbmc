@@ -68,19 +68,6 @@ CGraphicContext::CGraphicContext(void) :
 
 CGraphicContext::~CGraphicContext(void) = default;
 
-void CGraphicContext::OnSettingChanged(std::shared_ptr<const CSetting> setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
-  {
-    if (IsFullScreenRoot())
-      SetVideoResolution(GetVideoResolution(), true);
-  }
-}
-
 void CGraphicContext::SetOrigin(float x, float y)
 {
   if (!m_origins.empty())
@@ -174,6 +161,42 @@ CRect CGraphicContext::GetClipRegion()
   if (!m_origins.empty())
     clipRegion -= m_origins.top();
   return clipRegion;
+}
+
+void CGraphicContext::AddGUITransform()
+{
+  m_transforms.push(m_finalTransform);
+  m_finalTransform = m_guiTransform;
+}
+
+TransformMatrix CGraphicContext::AddTransform(const TransformMatrix &matrix)
+{
+  m_transforms.push(m_finalTransform);
+  m_finalTransform.matrix *= matrix;
+  return m_finalTransform.matrix;
+}
+
+void CGraphicContext::SetTransform(const TransformMatrix &matrix)
+{
+  m_transforms.push(m_finalTransform);
+  m_finalTransform.matrix = matrix;
+}
+
+void CGraphicContext::SetTransform(const TransformMatrix &matrix, float scaleX, float scaleY)
+{
+  m_transforms.push(m_finalTransform);
+  m_finalTransform.matrix = matrix;
+  m_finalTransform.scaleX = scaleX;
+  m_finalTransform.scaleY = scaleY;
+}
+
+void CGraphicContext::RemoveTransform()
+{
+  if (!m_transforms.empty())
+  {
+    m_finalTransform = m_transforms.top();
+    m_transforms.pop();
+  }
 }
 
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
@@ -295,6 +318,11 @@ void CGraphicContext::SetScissors(const CRect &rect)
   CServiceBroker::GetRenderSystem().SetScissors(StereoCorrection(m_scissors));
 }
 
+const CRect &CGraphicContext::GetScissors() const
+{
+  return m_scissors;
+}
+
 void CGraphicContext::ResetScissors()
 {
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
@@ -326,23 +354,22 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
-  Lock();
+  CSingleLock lock(*this);
+
   m_bFullScreenVideo = bOnOff;
 
-  if(m_bFullScreenRoot)
+  if (m_bFullScreenRoot)
   {
     bool allowDesktopRes = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
     if (m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
       g_application.m_pPlayer->TriggerUpdateResolution();
     else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
-      SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
+      SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
     else
-      SetVideoResolution(RES_DESKTOP);
+      SetVideoResolution(RES_DESKTOP, false);
   }
   else
-    SetVideoResolution(RES_WINDOW);
-
-  Unlock();
+    SetVideoResolution(RES_WINDOW, false);
 }
 
 bool CGraphicContext::IsFullScreenVideo() const
@@ -410,7 +437,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     m_bFullScreenRoot = false;
   }
 
-  Lock();
+  CSingleLock lock(*this);
 
   // FIXME Wayland windowing needs some way to "deny" resolution updates since what Kodi
   // requests might not get actually set by the compositor.
@@ -473,8 +500,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
       m_Resolution = RES_DESKTOP;
     }
   }
-
-  Unlock();
 }
 
 void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
@@ -496,7 +521,7 @@ void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
     m_bFullScreenRoot = false;
   }
 
-  Lock();
+  CSingleLock lock(*this);
 
   UpdateInternalStateWithResolution(res);
 
@@ -509,8 +534,6 @@ void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
   RESOLUTION_INFO info_org  = CDisplaySettings::GetInstance().GetResolutionInfo(res);
   CServiceBroker::GetInputManager().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
-
-  Unlock();
 }
 
 void CGraphicContext::UpdateInternalStateWithResolution(RESOLUTION res)
@@ -813,6 +836,11 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
   }
 }
 
+const RESOLUTION_INFO CGraphicContext::GetResInfo() const
+{
+  return GetResInfo(m_Resolution);
+}
+
 void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix /* = NULL */)
 {
   if (m_Resolution != RES_INVALID)
@@ -862,7 +890,8 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
 
 void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
-  Lock();
+  CSingleLock lock(*this);
+
   m_windowResolution = res;
   if (needsScaling && m_Resolution != RES_INVALID)
     GetGUIScaling(res, m_guiTransform.scaleX, m_guiTransform.scaleY, &m_guiTransform.matrix);
@@ -884,15 +913,14 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
 
   // and reset the final transform
   m_finalTransform = m_guiTransform;
-  Unlock();
 }
 
 void CGraphicContext::SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
-  Lock();
+  CSingleLock lock(*this);
+
   SetScalingResolution(res, needsScaling);
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
-  Unlock();
 }
 
 void CGraphicContext::SetStereoView(RENDER_STEREO_VIEW view)
@@ -915,6 +943,26 @@ void CGraphicContext::SetStereoView(RENDER_STEREO_VIEW view)
 void CGraphicContext::InvertFinalCoords(float &x, float &y) const
 {
   m_finalTransform.matrix.InverseTransformPosition(x, y);
+}
+
+float CGraphicContext::ScaleFinalXCoord(float x, float y) const
+{
+  return m_finalTransform.matrix.TransformXCoord(x, y, 0);
+}
+
+float CGraphicContext::ScaleFinalYCoord(float x, float y) const
+{
+  return m_finalTransform.matrix.TransformYCoord(x, y, 0);
+}
+
+float CGraphicContext::ScaleFinalZCoord(float x, float y) const
+{
+  return m_finalTransform.matrix.TransformZCoord(x, y, 0);
+}
+
+void CGraphicContext::ScaleFinalCoords(float &x, float &y, float &z) const
+{
+  m_finalTransform.matrix.TransformPosition(x, y, z);
 }
 
 float CGraphicContext::GetScalingPixelRatio() const
@@ -959,7 +1007,7 @@ void CGraphicContext::RestoreStereoFactor()
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
 
-CRect CGraphicContext::generateAABB(const CRect &rect) const
+CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 {
 // ------------------------
 // |(x1, y1)      (x2, y2)|
@@ -1023,6 +1071,38 @@ bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
   return false;
 }
 
+const TransformMatrix &CGraphicContext::GetGUIMatrix() const
+{
+  return m_finalTransform.matrix;
+}
+
+float CGraphicContext::GetGUIScaleX() const
+{
+  return m_finalTransform.scaleX;
+}
+
+float CGraphicContext::GetGUIScaleY() const
+{
+  return m_finalTransform.scaleY;
+}
+
+color_t CGraphicContext::MergeAlpha(color_t color) const
+{
+  color_t alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
+  if (alpha > 255) alpha = 255;
+  return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
+}
+
+int CGraphicContext::GetWidth() const
+{
+  return m_iScreenWidth;
+}
+
+int CGraphicContext::GetHeight() const
+{
+  return m_iScreenHeight;
+}
+
 float CGraphicContext::GetFPS() const
 {
   if (m_Resolution != RES_INVALID)
@@ -1078,6 +1158,12 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 {
   g_TextureManager.SetTexturePath(strMediaDir);
   m_strMediaDir = strMediaDir;
+}
+
+const std::string& CGraphicContext::GetMediaDir() const
+{
+  return m_strMediaDir;
+  
 }
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)

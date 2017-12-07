@@ -167,7 +167,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // update our render region
-  m_renderRegion = g_graphicsContext.generateAABB(CalcRenderRegion());
+  m_renderRegion = g_graphicsContext.GenerateAABB(CalcRenderRegion());
   m_hasProcessed = true;
 }
 
@@ -194,7 +194,7 @@ void CGUIControl::DoRender()
     if (m_hitColor != 0xffffffff)
     {
       color_t color = g_graphicsContext.MergeAlpha(m_hitColor);
-      CGUITexture::DrawQuad(g_graphicsContext.generateAABB(m_hitRect), color);
+      CGUITexture::DrawQuad(g_graphicsContext.GenerateAABB(m_hitRect), color);
     }
 
     Render();

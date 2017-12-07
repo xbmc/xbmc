@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,33 +18,19 @@
  *
  */
 
-/*!
-\file GraphicContext.h
-\brief
-*/
-
 #pragma once
-
-#ifdef __GNUC__
-// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even with optimizations.
-#define XBMC_FORCE_INLINE __attribute__((always_inline))
-#else
-#define XBMC_FORCE_INLINE
-#endif
-
 
 #include <string>
 #include <vector>
 #include <stack>
 #include <map>
-#include "threads/CriticalSection.h"  // base class
+#include "threads/CriticalSection.h"
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
-#include "settings/lib/ISettingCallback.h"
 #include "rendering/RenderSystem.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
@@ -68,93 +54,50 @@ enum AdjustRefreshRate
   ADJUST_REFRESHRATE_ON_STARTSTOP
 };
 
-class CGraphicContext : public CCriticalSection,
-                        public ISettingCallback
+class CGraphicContext : public CCriticalSection
 {
 public:
   CGraphicContext(void);
-  ~CGraphicContext(void) override;
+  virtual ~CGraphicContext();
 
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-
-  int GetWidth() const { return m_iScreenWidth; }
-  int GetHeight() const { return m_iScreenHeight; }
+  // methods related to windowing
   float GetFPS() const;
-  /**
-   * Get average display latency
-   *
-   * If windowing has no reliable information, the fallback implementation returns
-   * a guess based on the number of buffers in the driver and the current refresh rate.
-   *
-   * \return average display latency in milliseconds
-   */
+  void SetFPS(float fps);
   float GetDisplayLatency() const;
-  const std::string& GetMediaDir() const { return m_strMediaDir; }
-  void SetMediaDir(const std::string& strMediaDir);
-  bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
-  void RestoreViewPort();
-
-  void SetScissors(const CRect &rect);
-  void ResetScissors();
-  const CRect &GetScissors() const { return m_scissors; }
-
-  const CRect GetViewWindow() const;
-  void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
   void ToggleFullScreen();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
-  bool IsCalibrating() const;
-  void SetCalibrating(bool bOnOff);
   bool IsValidResolution(RESOLUTION res);
-  /**
-   * Set graphic context resolution including windowing
-   *
-   * Applies to scissors, view port, clipping etc. but does not affect rendering system.
-   * Updating rendering system size is the responsibility of the windowing
-   * implementation. Windowing implementation SetFullScreen etc. will be called to
-   * actually perform the mode switch.
-   *
-   * \param res resolution to set
-   * \param forceUpdate true to continue resolution update even if res is
-   *                    already the current resolution - useful if the data of
-   *                    res such as width/height has changed
-   */
-  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false);
-  /**
-   * Update graphic context resolution with data from specific RESOLUTION
-   *
-   * This should be called in response to a mode change initiated by windowing.
-   * Windowing will be informed of the completion of the change.
-   *
-   * \param res resolution to change to
-   */
+  void SetVideoResolution(RESOLUTION res, bool forceUpdate);
   void ApplyModeChange(RESOLUTION res);
-  /**
-   * Update windowed resolution RES_WINDOW and graphic context resolution
-   *
-   * This should be called in response to a mode change initiated by windowing.
-   * Windowing will be informed of the completion of the change.
-   */
   void ApplyWindowResize(int newWidth, int newHeight);
   RESOLUTION GetVideoResolution() const;
+  const RESOLUTION_INFO GetResInfo() const;
+  const RESOLUTION_INFO GetResInfo(RESOLUTION res) const;
+  void SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info);
+
+  void Flip(bool rendered, bool videoLayer);
+
+  // gfx contect interface
+  int GetWidth() const;
+  int GetHeight() const;
+  bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
+  void RestoreViewPort();
+  void SetScissors(const CRect &rect);
+  void ResetScissors();
+  const CRect &GetScissors() const;
+  const CRect GetViewWindow() const;
+  void SetViewWindow(float left, float top, float right, float bottom);
+  bool IsCalibrating() const;
+  void SetCalibrating(bool bOnOff);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { lock(); }
-  void Unlock() { unlock(); }
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear(color_t color = 0);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
-
-  // output scaling
-  const RESOLUTION_INFO GetResInfo() const
-  {
-    return GetResInfo(m_Resolution);
-  }
-  const RESOLUTION_INFO GetResInfo(RESOLUTION res) const;
-  void SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info);
 
   /* \brief Get UI scaling information from a given resolution to the screen resolution.
    Takes account of overscan and UI zooming.
@@ -164,28 +107,19 @@ public:
    \param matrix [out] if non-NULL, a suitable transformation from res to screen resolution is set.
    */
   void GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix = NULL);
-
   void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
-  void Flip(bool rendered, bool videoLayer);
   void InvertFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.matrix.TransformXCoord(x, y, 0); }
-  inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.matrix.TransformYCoord(x, y, 0); }
-  inline float ScaleFinalZCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.matrix.TransformZCoord(x, y, 0); }
-  inline void ScaleFinalCoords(float &x, float &y, float &z) const XBMC_FORCE_INLINE { m_finalTransform.matrix.TransformPosition(x, y, z); }
+  float ScaleFinalXCoord(float x, float y) const;
+  float ScaleFinalYCoord(float x, float y) const;
+  float ScaleFinalZCoord(float x, float y) const;
+  void ScaleFinalCoords(float &x, float &y, float &z) const;
   bool RectIsAngled(float x1, float y1, float x2, float y2) const;
-
-  inline const TransformMatrix &GetGUIMatrix() const XBMC_FORCE_INLINE { return m_finalTransform.matrix; }
-  inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_finalTransform.scaleX; }
-  inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_finalTransform.scaleY; }
-  inline color_t MergeAlpha(color_t color) const XBMC_FORCE_INLINE
-  {
-    color_t alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
-    if (alpha > 255) alpha = 255;
-    return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
-  }
-
+  const TransformMatrix &GetGUIMatrix() const;
+  float GetGUIScaleX() const;
+  float GetGUIScaleY() const;
+  color_t MergeAlpha(color_t color) const;
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
@@ -222,61 +156,33 @@ public:
    \sa RestoreClipRegion
    */
   bool SetClipRegion(float x, float y, float w, float h);
-
-   /*! \brief Restore a clip region to the previous clip region (if any) prior to the last SetClipRegion call
-    This function should be within an if (SetClipRegion(x,y,w,h)) block.
-    \sa SetClipRegion
-    */
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   CRect GetClipRegion();
-  inline void AddGUITransform()
-  {
-    m_transforms.push(m_finalTransform);
-    m_finalTransform = m_guiTransform;
-  }
-  inline TransformMatrix AddTransform(const TransformMatrix &matrix)
-  {
-    m_transforms.push(m_finalTransform);
-    m_finalTransform.matrix *= matrix;
-    return m_finalTransform.matrix;
-  }
-  inline void SetTransform(const TransformMatrix &matrix)
-  {
-   m_transforms.push(m_finalTransform);
-   m_finalTransform.matrix = matrix;
-  }
-  inline void SetTransform(const TransformMatrix &matrix, float scaleX, float scaleY)
-  {
-    m_transforms.push(m_finalTransform);
-    m_finalTransform.matrix = matrix;
-    m_finalTransform.scaleX = scaleX;
-    m_finalTransform.scaleY = scaleY;
-  }
-  inline void RemoveTransform()
-  {
-    if (!m_transforms.empty())
-    {
-      m_finalTransform = m_transforms.top();
-      m_transforms.pop();
-    }
-  }
+  void AddGUITransform();
+  TransformMatrix AddTransform(const TransformMatrix &matrix);
+  void SetTransform(const TransformMatrix &matrix);
+  void SetTransform(const TransformMatrix &matrix, float scaleX, float scaleY);
+  void RemoveTransform();
 
   /* modifies final coordinates according to stereo mode if needed */
   CRect StereoCorrection(const CRect &rect) const;
   CPoint StereoCorrection(const CPoint &point) const;
 
-  CRect generateAABB(const CRect &rect) const;
+  CRect GenerateAABB(const CRect &rect) const;
 
-  /*! \brief sets refresh rate, overrides the one stored with modes
-   *  \param fps refresh rate
-   */
-  void SetFPS(float fps);
+  //@todo move those somewhere else
+  const std::string& GetMediaDir() const;
+  void SetMediaDir(const std::string& strMediaDir);
 
 protected:
-  std::stack<CRect> m_viewStack;
+
+  void UpdateCameraPosition(const CPoint &camera, const float &factor);
+  void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
+  void ApplyVideoResolution(RESOLUTION res);
+  void UpdateInternalStateWithResolution(RESOLUTION res);
 
   int m_iScreenHeight;
   int m_iScreenWidth;
@@ -289,7 +195,14 @@ protected:
   RESOLUTION m_Resolution;
   float m_fFPSOverride;
 
-private:
+  RESOLUTION_INFO m_windowResolution;
+  std::stack<CPoint> m_cameras;
+  std::stack<CPoint> m_origins;
+  std::stack<CRect> m_clipRegions;
+  std::stack<float> m_stereoFactors;
+  std::stack<CRect> m_viewStack;
+  CRect m_scissors;
+
   class UITransform
   {
   public:
@@ -301,18 +214,6 @@ private:
     float scaleX;
     float scaleY;
   };
-  void UpdateCameraPosition(const CPoint &camera, const float &factor);
-  // this method is indirectly called by the public SetVideoResolution
-  // it only works when called from mainthread (thats what SetVideoResolution ensures)
-  void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
-  /// Update current resolution without calling windowing
-  void ApplyVideoResolution(RESOLUTION res);
-  void UpdateInternalStateWithResolution(RESOLUTION res);
-  RESOLUTION_INFO m_windowResolution;
-  std::stack<CPoint> m_cameras;
-  std::stack<CPoint> m_origins;
-  std::stack<CRect>  m_clipRegions;
-  std::stack<float>  m_stereoFactors;
 
   UITransform m_guiTransform;
   UITransform m_finalTransform;
@@ -320,14 +221,7 @@ private:
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
   RENDER_STEREO_MODE m_nextStereoMode;
-
-  CRect m_scissors;
 };
-
-/*!
- \ingroup graphics
- \brief
- */
 
 XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
 #define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)
