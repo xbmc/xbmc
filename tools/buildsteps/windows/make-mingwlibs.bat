@@ -14,11 +14,10 @@ SET build64=no
 SET buildArm=no
 SET vcarch=x86
 SET msys2=msys64
-SET tools=mingw
 SET win10=no
 SET UWPSDKVer=
 
-FOR %%b in (%1, %2, %3, %4) DO (
+FOR %%b in (%*) DO (
   IF %%b==noprompt SET PROMPTLEVEL=noprompt
   IF %%b==clean SET BUILDMODE=clean
   IF %%b==noclean SET BUILDMODE=noclean
@@ -35,9 +34,7 @@ FOR %%b in (%1, %2, %3, %4) DO (
     SET buildArm=yes
     SET vcarch=arm
     )
-  IF %%b==msvc SET tools=msvc
   IF %%b==win10 (
-    SET tools=msvc
     SET win10=yes
   )
 )
@@ -69,7 +66,7 @@ rem compiles a bunch of mingw libs and not more
 IF %opt%==sh (
   IF EXIST %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe (
     ECHO starting sh shell
-    %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe --login -i /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --tools=%tools% --win10=%win10%
+    %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe --login -i /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --win10=%win10%
     GOTO END
   ) ELSE (
     GOTO ENDWITHERROR
@@ -77,7 +74,7 @@ IF %opt%==sh (
 )
 IF EXIST %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe (
   ECHO starting mintty shell
-  %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash --login /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --tools=%tools% --win10=%win10%
+  %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash --login /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --win10=%win10%
   GOTO END
 )
 GOTO ENDWITHERROR

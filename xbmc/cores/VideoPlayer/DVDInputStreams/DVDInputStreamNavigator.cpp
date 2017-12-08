@@ -33,6 +33,10 @@
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
+#if defined(TARGET_WINDOWS_STORE)
+#include "filesystem/SpecialProtocol.h"
+#include "utils/Environment.h"
+#endif
 
 #define HOLDMODE_NONE 0
 #define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
@@ -77,6 +81,13 @@ bool CDVDInputStreamNavigator::Open()
   m_item.SetMimeType("video/x-dvd-mpeg");
   if (!CDVDInputStream::Open())
     return false;
+
+#if defined(TARGET_WINDOWS_STORE)
+  // libdvdcss
+  CEnvironment::putenv("DVDCSS_METHOD=key");
+  CEnvironment::putenv("DVDCSS_VERBOSE=3");
+  CEnvironment::putenv("DVDCSS_CACHE=" + CSpecialProtocol::TranslatePath("special://masterprofile/cache"));
+#endif
 
   // load libdvdnav.dll
   if (!m_dll.Load())

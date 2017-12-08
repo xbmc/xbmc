@@ -132,7 +132,6 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   #uses header only version of Fmt
   list(REMOVE_ITEM required_deps Fmt)
-  list(REMOVE_ITEM required_deps LibDvd)
 endif()
 
 # Optional dependencies. Keep in alphabetical order please
@@ -286,11 +285,7 @@ endif()
 
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
-if (CORE_SYSTEM_NAME STREQUAL windowsstore)
-  add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg)
-else()
-  add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid ${PLATFORM_GLOBAL_TARGET_DEPS})
-endif()
+add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid ${PLATFORM_GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 
 # Other files (IDE)

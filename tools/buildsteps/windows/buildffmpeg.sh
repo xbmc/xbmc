@@ -78,78 +78,43 @@ do_removeOption() {
 
 do_getFFmpegConfig
 
-if [ "$TOOLS" = "msvc" ]; then
-  do_removeOption "--enable-gnutls"
-  do_removeOption "--enable-openssl"
-  do_addOption "--disable-gnutls"
-  do_addOption "--disable-openssl"
-  do_addOption "--toolchain=msvc"
+do_removeOption "--enable-gnutls"
+do_removeOption "--enable-openssl"
+do_addOption "--disable-gnutls"
+do_addOption "--disable-openssl"
+do_addOption "--toolchain=msvc"
 
-  if [ "$ARCH" == "x86_64" ]; then
-    FFMPEG_TARGET_OS=win64
-  elif [ "$ARCH" = "x86" ]; then
-    FFMPEG_TARGET_OS=win32
-  elif [ "$ARCH" = "arm" ]; then
-    FFMPEG_TARGET_OS=win32
-  fi
+if [ "$ARCH" == "x86_64" ]; then
+  FFMPEG_TARGET_OS=win64
+elif [ "$ARCH" = "x86" ]; then
+  FFMPEG_TARGET_OS=win32
+elif [ "$ARCH" = "arm" ]; then
+  FFMPEG_TARGET_OS=win32
+fi
 
-  export CFLAGS=""
-  export CXXFLAGS=""
-  export LDFLAGS=""
+export CFLAGS=""
+export CXXFLAGS=""
+export LDFLAGS=""
 
-  extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include"
-  extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
-  if [ $win10 == "yes" ]; then
-    # enable OpenSSL on UWP, because schannel isn't available
-    do_removeOption "--disable-openssl"
-    do_addOption "--enable-openssl"
-    do_addOption "--enable-nonfree"
-    do_addOption "--enable-cross-compile"
-    extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
-    extra_ldflags=$extra_ldflags" -APPCONTAINER WindowsApp.lib"
-  else
-    # compile ffmpeg with debug symbols
-    do_removeOption "--disable-debug"
-    do_addOption "--enable-debug"
-    extra_cflags=$extra_cflags" -MDd"
-    extra_ldflags=$extra_ldflags" -NODEFAULTLIB:libcmt"
-  fi
+extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include"
+extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
+if [ $win10 == "yes" ]; then
+  # enable OpenSSL on UWP, because schannel isn't available
+  do_removeOption "--disable-openssl"
+  do_addOption "--enable-openssl"
+  do_addOption "--enable-nonfree"
+  do_addOption "--enable-cross-compile"
+  extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
+  extra_ldflags=$extra_ldflags" -APPCONTAINER WindowsApp.lib"
+fi
+
+# compile ffmpeg with debug symbols
+if do_checkForOptions "--enable-debug"; then
+  extra_cflags=$extra_cflags" -MDd"
+  extra_ldflags=$extra_ldflags" -NODEFAULTLIB:libcmt"
 fi
 
 cd $LOCALBUILDDIR
-
-if do_checkForOptions "--enable-gnutls"; then
-if do_pkgConfig "gnutls = $GNUTLS_VER"; then
-  if [[ ! -f "/downloads/gnutls-${GNUTLS_VER}.tar.xz" ]]; then
-    do_wget "http://mirrors.xbmc.org/build-deps/sources/gnutls-${GNUTLS_VER}.tar.xz"
-  fi
-  tar -xaf "/downloads/gnutls-${GNUTLS_VER}.tar.xz" -C $LOCALBUILDDIR/src
-
-  gnutls_triplet="gnutls-${GNUTLS_VER}-$TRIPLET"
-  if [[ ! -d "${gnutls_triplet}" ]]; then
-    mkdir "${gnutls_triplet}"
-  fi
-  cd "${gnutls_triplet}"
-
-  do_print_status "gnutls-${GNUTLS_VER}" "$blue_color" "Configuring"
-
-  rm -rf $LOCALDESTDIR/include/gnutls
-  rm -f $LOCALDESTDIR/lib/{libgnutls*,pkgconfig/gnutls.pc}
-  rm -f $LOCALDESTDIR/bin-global/{gnutls-*,{psk,cert,srp,ocsp}tool}.exe
-
-  $LOCALBUILDDIR/src/gnutls-${GNUTLS_VER}/configure --prefix=$LOCALDESTDIR --disable-shared \
-      --build="$MINGW_CHOST" --disable-cxx --disable-doc --disable-tools --disable-tests \
-      --without-p11-kit --disable-rpath --disable-libdane --without-idn --without-tpm \
-      --enable-local-libopts --disable-guile
-
-  sed -i 's/-lgnutls *$/-lgnutls -lnettle -lhogweed -lcrypt32 -lws2_32 -lz -lgmp -lintl -liconv/' \
-  lib/gnutls.pc
-
-  do_print_status "gnutls-${GNUTLS_VER}" "$blue_color" "Compiling"
-  do_makeinstall
-  do_pkgConfig "gnutls = $GNUTLS_VER";
-fi
-fi
 
 do_clean_get $1
 [ -f config.mak ] && make distclean

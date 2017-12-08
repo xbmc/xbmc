@@ -2,7 +2,6 @@
 
 MAKEFLAGS="$1"
 BGPROCESSFILE="$2"
-tools="$3"
 
 cpuCount=1
 if [[ $NUMBER_OF_PROCESSORS > 1 ]]; then
@@ -139,7 +138,6 @@ do_loaddeps() {
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
-  GNUTLS_VER=$(grep "GNUTLS_VER=" $file | sed 's/GNUTLS_VER=//g;s/#.*$//g;/^$/d')
   GITREV=$(git ls-remote $BASE_URL $VERSION | awk '{print substr($1, 1, 10)}')
   if [[ -z "$GITREV" ]]; then
     ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
@@ -168,7 +166,7 @@ do_clean_get() {
 
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
 
-#hash a dir based on the git revision, $TRIPLET and $tools 
+#hash a dir based on the git revision and $TRIPLET
 #param1 path to be hashed
 function getBuildHash ()
 {
@@ -177,7 +175,7 @@ function getBuildHash ()
   shift 1
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath $@)"
-  hashStr="$hashStr $@ $TRIPLET $TOOLS"
+  hashStr="$hashStr $@ $TRIPLET"
   echo $hashStr
 }
 
