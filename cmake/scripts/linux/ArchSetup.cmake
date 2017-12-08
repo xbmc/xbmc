@@ -37,9 +37,32 @@ else()
   endif()
 endif()
 
-# Make sure we strip binaries in Release build
-if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
+if((CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
+    AND CMAKE_COMPILER_IS_GNUCXX)
+  # Make sure we strip binaries in Release build
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+
+  # LTO Support, requires cmake >= 3.9
+  if(CMAKE_VERSION VERSION_EQUAL 3.9.0 OR CMAKE_VERSION VERSION_GREATER 3.9.0)
+    option(USE_LTO "Enable link time optimization. Specify an int for number of parallel jobs" OFF)
+    if(USE_LTO)
+      include(CheckIPOSupported)
+      check_ipo_supported(RESULT HAVE_LTO OUTPUT _output)
+      if(HAVE_LTO)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+        # override flags to enable parallel processing
+        set(NJOBS 2)
+        if(USE_LTO MATCHES "^[0-9]+$")
+          set(NJOBS ${USE_LTO})
+        endif()
+        set(CMAKE_CXX_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
+        set(CMAKE_C_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
+      else()
+        message(WARNING "LTO optimization not supported: ${_output}")
+        unset(_output)
+      endif()
+    endif()
+  endif()
 endif()
 
 if(KODI_DEPENDSBUILD)
