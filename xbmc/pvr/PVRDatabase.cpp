@@ -757,10 +757,12 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
     return bReturn;
   }
 
-  std::string strQuery;
   CSingleLock lock(m_critSection);
 
-  if (channel.ChannelID() <= 0)
+  // Note: Do not use channel.ChannelID value to check presence of channel in channels table. It might not yet be set correctly.
+  std::string strQuery = PrepareSQL("iUniqueId = %u AND iClientId = %u", channel.UniqueID(), channel.ClientID());
+  const std::string strValue = GetSingleValue("channels", "idChannel", strQuery);
+  if (strValue.empty())
   {
     /* new channel */
     strQuery = PrepareSQL("INSERT INTO channels ("
@@ -779,19 +781,15 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "idChannel, idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i)",
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(),
-        channel.ChannelID(),
+        strValue.c_str(),
         channel.EpgID());
   }
 
   if (QueueInsertQuery(strQuery))
   {
-    /* update the channel ID for new channels */
-    if (channel.ChannelID() <= 0)
-      channel.SetChannelID(static_cast<int>(m_pDS->lastinsertid()));
-
     bReturn = true;
 
     if (bCommit)
