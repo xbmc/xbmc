@@ -49,11 +49,19 @@ testMain
 *.vcproj.*.user
 *.vcxproj.*.user
 *.vcxproj.user
+*.vcxproj
+*.sln
+*-sln.bat
+*.vcxproj.filters
 *.obj
 *.idb
 *ReSharper*
 *.idb
 *.diagsession
+/*.dll
+/*.dir/
+/x64/
+/.vs/
 
 # osx specifics
 /build/
