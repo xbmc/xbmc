@@ -3519,12 +3519,8 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
 
   if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
   {
-    CJob* job = new CSaveFileStateJob(fileItem,
-                                      *m_stackFileItemToUpdate,
-                                      resumeBookmark,
-                                      playCountUpdate);
-    job->DoWork();
-    delete job;
+    CSaveFileState::DoWork(fileItem, *m_stackFileItemToUpdate,
+                           resumeBookmark, playCountUpdate);
   }
 }
 
