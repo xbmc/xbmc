@@ -3022,7 +3022,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       av_freep(&io_ctx);
     }
     delete sound;
-    return NULL;
+    return nullptr;
   }
 
   // find decoder
@@ -3031,14 +3031,14 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
     fmt_ctx->flags |= AVFMT_FLAG_NOPARSE;
     if (avformat_find_stream_info(fmt_ctx, NULL) >= 0)
     {
-      dec_ctx = fmt_ctx->streams[0]->codec;
-      dec = avcodec_find_decoder(dec_ctx->codec_id);
-      config.sample_rate = dec_ctx->sample_rate;
-      config.channels = dec_ctx->channels;
-      config.channel_layout = dec_ctx->channel_layout;
+      AVCodecID codecId = fmt_ctx->streams[0]->codecpar->codec_id;
+      dec = avcodec_find_decoder(codecId);
+      config.sample_rate = fmt_ctx->streams[0]->codecpar->sample_rate;
+      config.channels = fmt_ctx->streams[0]->codecpar->channels;
+      config.channel_layout = fmt_ctx->streams[0]->codecpar->channel_layout;
     }
   }
-  if (dec == NULL)
+  if (dec == nullptr)
   {
     avformat_close_input(&fmt_ctx);
     if (io_ctx)
@@ -3047,7 +3047,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       av_freep(&io_ctx);
     }
     delete sound;
-    return NULL;
+    return nullptr;
   }
 
   dec_ctx = avcodec_alloc_context3(dec);
