@@ -98,7 +98,7 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>!Player.ShowInfo</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)]</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -200,6 +200,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<visible>!Window.IsVisible(playerprocessinfo)</visible>
 			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<animation effect="slide" end="0,-80" time="150" condition="Control.IsVisible(6000)">conditional</animation>
