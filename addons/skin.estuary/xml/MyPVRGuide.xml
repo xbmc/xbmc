@@ -64,8 +64,7 @@
 						<left>300</left>
 						<right>60</right>
 						<height>30</height>
-						<textcolor>button_focus</textcolor>
-						<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]$INFO[ListItem.EpgEventTitle,  [COLOR white],[/COLOR]]$INFO[ListItem.EpisodeName, [COLOR grey](,)[/COLOR]]$INFO[ListItem.Genre,      $LOCALIZE[515]: [COLOR grey],[/COLOR]]</label>
+						<label>[COLOR button_focus]$INFO[ListItem.StartTime][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]] $INFO[ListItem.EpgEventTitle]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Genre,      [COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
 					</control>
 					<control type="textbox">
 						<left>300</left>
