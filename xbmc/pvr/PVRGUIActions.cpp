@@ -1840,9 +1840,6 @@ namespace PVR
     if (item->HasPVRChannelInfoTag())
     {
       m_channelNavigator.ClearPlayingChannel();
-
-      // store channel settings
-      g_application.SaveFileState();
     }
   }
 

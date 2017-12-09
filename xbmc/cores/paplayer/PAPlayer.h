@@ -24,6 +24,7 @@
 #include <list>
 #include <vector>
 
+#include "FileItem.h"
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
 #include "AudioDecoder.h"
@@ -93,6 +94,7 @@ protected:
 private:
   typedef struct
   {
+    CFileItem m_fileItem;
     CAudioDecoder m_decoder;             /* the stream decoder */
     int64_t m_startOffset;               /* the stream start offset */
     int64_t m_endOffset;                 /* the stream end offset */
@@ -131,8 +133,6 @@ private:
   StreamInfo*         m_currentStream;       /* the current playing stream */
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
 
-  CFileItem*          m_FileItem;            /* our queued file or current file if no file is queued */      
-
   CCriticalSection    m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */
@@ -158,5 +158,6 @@ private:
   int64_t GetTimeInternal();
   void SetTimeInternal(int64_t time);
   void SetTotalTimeInternal(int64_t time);
+  void CloseFileCB(StreamInfo &si);
 };
 

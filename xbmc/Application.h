@@ -165,6 +165,7 @@ public:
   std::string GetCurrentPlayer();
   void OnPlayBackEnded() override;
   void OnPlayBackStarted(const CFileItem &file) override;
+  void OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmark) override;
   void OnPlayBackPaused() override;
   void OnPlayBackResumed() override;
   void OnPlayBackStopped() override;
@@ -183,8 +184,6 @@ public:
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
   PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
-  void SaveFileState(bool bForeground = false);
-  void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -452,10 +451,6 @@ protected:
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
   bool m_bInitializing;
   bool m_bPlatformDirectories;
-
-  CBookmark& m_progressTrackingVideoResumeBookmark;
-  CFileItemPtr m_progressTrackingItem;
-  bool m_progressTrackingPlayCountUpdate;
 
   int m_currentStackPosition;
   int m_nextPlaylistItem;

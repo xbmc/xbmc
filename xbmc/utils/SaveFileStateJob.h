@@ -19,30 +19,16 @@
  */
 #pragma once
 
-#include "Job.h"
 #include "FileItem.h"
 #include "video/Bookmark.h"
 #include "cores/VideoSettings.h"
 
-class CSaveFileStateJob : public CJob
+class CSaveFileState
 {
-  CFileItem m_item;
-  CFileItem m_item_discstack;
-  CBookmark m_bookmark;
-  bool      m_updatePlayCount;
-
 public:
-  CSaveFileStateJob(const CFileItem& item,
-                    const CFileItem& item_discstack,
-                    const CBookmark& bookmark,
-                    bool updatePlayCount)
-    : m_item(item),
-      m_item_discstack(item_discstack),
-      m_bookmark(bookmark),
-      m_updatePlayCount(updatePlayCount)
-  {
-  }
-  ~CSaveFileStateJob() override = default;
-  bool  DoWork() override;
+  static void DoWork(CFileItem& item,
+                     CFileItem& item_discstack,
+                     CBookmark& bookmark,
+                     bool updatePlayCount);
 };
 
