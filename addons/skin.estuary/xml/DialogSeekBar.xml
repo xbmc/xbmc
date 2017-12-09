@@ -235,7 +235,7 @@
 				<width>800</width>
 				<top>190</top>
 				<height>25</height>
-				<label>$INFO[VideoPlayer.NextTitle,[COLOR grey]$LOCALIZE[19031]: [/COLOR], - ][COLOR button_focus]$INFO[VideoPlayer.NextStartTime]$INFO[VideoPlayer.NextEndTime: ][/COLOR]</label>
+				<label>$INFO[VideoPlayer.NextTitle,[COLOR grey]$LOCALIZE[19031]: [/COLOR], ]($INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime])</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<visible>VideoPlayer.HasEpg</visible>
