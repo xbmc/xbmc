@@ -31,7 +31,7 @@ public:
   explicit CDVDDemuxCC(AVCodecID codec);
   ~CDVDDemuxCC() override;
 
-  void Reset() override {};
+  bool Reset() override { return true; };
   void Flush() override {};
   DemuxPacket* Read() override { return NULL; };
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};

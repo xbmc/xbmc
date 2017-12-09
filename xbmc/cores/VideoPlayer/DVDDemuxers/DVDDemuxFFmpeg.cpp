@@ -608,11 +608,11 @@ void CDVDDemuxFFmpeg::Dispose()
   m_pInput = NULL;
 }
 
-void CDVDDemuxFFmpeg::Reset()
+bool CDVDDemuxFFmpeg::Reset()
 {
   CDVDInputStream* pInputStream = m_pInput;
   Dispose();
-  Open(pInputStream, m_streaminfo);
+  return Open(pInputStream, m_streaminfo);
 }
 
 void CDVDDemuxFFmpeg::Flush()

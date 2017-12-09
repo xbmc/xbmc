@@ -77,11 +77,11 @@ void CDVDDemuxCDDA::Dispose()
   m_bytes  = 0;
 }
 
-void CDVDDemuxCDDA::Reset()
+bool CDVDDemuxCDDA::Reset()
 {
   CDVDInputStream* pInputStream = m_pInput;
   Dispose();
-  Open(pInputStream);
+  return Open(pInputStream);
 }
 
 void CDVDDemuxCDDA::Abort()

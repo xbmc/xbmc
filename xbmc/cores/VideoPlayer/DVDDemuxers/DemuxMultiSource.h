@@ -58,7 +58,7 @@ public:
   std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) override;
   int GetStreamLength() override;
   DemuxPacket* Read() override;
-  void Reset() override;
+  bool Reset() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
 
 protected:

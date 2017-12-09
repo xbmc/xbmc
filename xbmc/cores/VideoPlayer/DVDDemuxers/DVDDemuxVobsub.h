@@ -38,7 +38,7 @@ public:
   bool Open(const std::string& filename, int source, const std::string& subfilename);
 
   // implementation of CDVDDemux
-  void Reset() override;
+  bool Reset() override;
   void Flush() override;
   DemuxPacket* Read() override;
   bool SeekTime(double time, bool backwards, double* startpts = NULL) override;

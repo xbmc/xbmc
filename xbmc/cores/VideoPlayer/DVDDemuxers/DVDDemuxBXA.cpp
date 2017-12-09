@@ -97,11 +97,11 @@ void CDVDDemuxBXA::Dispose()
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));
 }
 
-void CDVDDemuxBXA::Reset()
+bool CDVDDemuxBXA::Reset()
 {
   CDVDInputStream* pInputStream = m_pInput;
   Dispose();
-  Open(pInputStream);
+  return Open(pInputStream);
 }
 
 void CDVDDemuxBXA::Abort()

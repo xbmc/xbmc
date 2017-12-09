@@ -232,7 +232,7 @@ public:
   /*
    * Reset the entire demuxer (same result as closing and opening it)
    */
-  virtual void Reset() = 0;
+  virtual bool Reset() = 0;
 
   /*
    * Aborts any internal reading that might be stalling main thread
