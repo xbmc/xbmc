@@ -24,6 +24,7 @@
 #include "VideoSyncIos.h"
 #include "WinEventsIOS.h"
 #include "WinSystemIOS.h"
+#include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -85,6 +86,8 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
   m_pDisplayLink = new CADisplayLinkWrapper;
   m_pDisplayLink->callbackClass = [[IOSDisplayLinkCallback alloc] init];
   m_winEvents.reset(new CWinEventsIOS());
+
+  CAESinkDARWINIOS::Register();
 }
 
 CWinSystemIOS::~CWinSystemIOS()

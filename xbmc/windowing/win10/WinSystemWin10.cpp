@@ -19,6 +19,9 @@
  */
 
 #include "Application.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkXAudio.h"
+#include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
 #include "guilib/gui3d.h"
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
@@ -54,6 +57,9 @@ CWinSystemWin10::CWinSystemWin10()
   , m_bMinimized(false)
 {
   m_winEvents.reset(new CWinEventsWin10());
+  AE::CAESinkFactory::ClearSinks();
+  CAESinkXAudio::Register();
+  CAESinkWASAPI::Register();
 }
 
 CWinSystemWin10::~CWinSystemWin10()

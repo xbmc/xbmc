@@ -22,6 +22,7 @@
 
 
 #include "AESinkDirectSound.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/win32/CharsetConverter.h"
@@ -96,6 +97,25 @@ CAESinkDirectSound::CAESinkDirectSound() :
 CAESinkDirectSound::~CAESinkDirectSound()
 {
   Deinitialize();
+}
+
+void CAESinkDirectSound::Register()
+{
+  AE::AESinkRegEntry reg;
+  reg.sinkName = "DIRECTSOUND";
+  reg.createFunc = CAESinkDirectSound::Create;
+  reg.enumerateFunc = CAESinkDirectSound::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(reg);
+}
+
+IAESink* CAESinkDirectSound::Create(std::string &device, AEAudioFormat &desiredFormat)
+{
+  IAESink *sink = new CAESinkDirectSound();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)

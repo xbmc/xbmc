@@ -22,8 +22,8 @@
 #include "system.h"
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
-#include "Utils/AEDeviceInfo.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include <pulse/pulseaudio.h>
 #include "threads/CriticalSection.h"
 
@@ -34,6 +34,10 @@ public:
 
   CAESinkPULSE();
   ~CAESinkPULSE() override;
+
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
   bool Initialize(AEAudioFormat &format, std::string &device) override;
   void Deinitialize() override;
@@ -47,7 +51,6 @@ public:
   bool HasVolume() override { return true; };
   void SetVolume(float volume) override;
 
-  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   bool IsInitialized();
   void UpdateInternalVolume(const pa_cvolume* nVol);
   pa_stream* GetInternalStream();

@@ -18,23 +18,40 @@
  *
  */
 
-#if defined (HAVE_LIBVA)
-#include <va/va_drm.h>
-#endif
-
 #include "WinSystemGbm.h"
 
 #include <string.h>
 
+#include "OptionalsReg.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "../WinEventsLinux.h"
 
 CWinSystemGbm::CWinSystemGbm() :
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
 {
+  std::string envSink;
+  if (getenv("AE_SINK"))
+    envSink = getenv("AE_SINK");
+  if (StringUtils::CompareNoCase(envSink, "ALSA"))
+  {
+    GBM::ALSARegister();
+  }
+  else if (StringUtils::CompareNoCase(envSink, "PULSE"))
+  {
+   GBM::PulseAudioRegister();
+  }
+  else
+  {
+    if (!GBM::PulseAudioRegister())
+    {
+      GBM::ALSARegister();
+    }
+  }
+
   m_winEvents.reset(new CWinEventsLinux());
 }
 
@@ -155,36 +172,6 @@ void CWinSystemGbm::FlipPage()
 void CWinSystemGbm::WaitVBlank()
 {
   CDRMUtils::WaitVBlank();
-}
-
-void* CWinSystemGbm::GetVaDisplay()
-{
-#if defined(HAVE_LIBVA)
-  int const buf_size{128};
-  char name[buf_size];
-  int fd{-1};
-
-  // 128 is the start of the NUM in renderD<NUM>
-  for (int i = 128; i < (128 + 16); i++)
-  {
-    snprintf(name, buf_size, "/dev/dri/renderD%u", i);
-
-    fd = open(name, O_RDWR);
-
-    if (fd < 0)
-    {
-      continue;
-    }
-
-    auto display = vaGetDisplayDRM(fd);
-
-    if (display != nullptr)
-    {
-      return display;
-    }
-  }
-#endif
-  return nullptr;
 }
 
 bool CWinSystemGbm::Hide()

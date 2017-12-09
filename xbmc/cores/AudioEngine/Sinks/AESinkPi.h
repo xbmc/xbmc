@@ -34,6 +34,9 @@ public:
   CAESinkPi();
   virtual ~CAESinkPi();
 
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device);

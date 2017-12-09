@@ -39,7 +39,11 @@ protected:
   void SetContextSize(CSizeInt size) override;
   void SetVSyncImpl(bool enable) override;
   void PresentRenderImpl(bool rendered) override;
-  std::unique_ptr<CVaapiProxy> m_vaapiProxy;
+  struct delete_CVaapiProxy
+  {
+    void operator()(CVaapiProxy *p) const;
+  };
+  std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
 };
 
 }

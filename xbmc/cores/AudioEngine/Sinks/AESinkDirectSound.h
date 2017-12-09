@@ -33,16 +33,20 @@ public:
   CAESinkDirectSound();
   virtual ~CAESinkDirectSound();
 
-  virtual bool Initialize  (AEAudioFormat &format, std::string &device);
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+
+  virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
 
-  virtual void         Stop               ();
-  virtual void         Drain              ();
-  virtual void         GetDelay           (AEDelayStatus& status);
-  virtual double       GetCacheTotal      ();
-  virtual unsigned int AddPackets         (uint8_t **data, unsigned int frames, unsigned int offset);
-  static  std::string  GetDefaultDevice   ();
-  static  void         EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
+  virtual void Stop();
+  virtual void Drain();
+  virtual void GetDelay(AEDelayStatus& status);
+  virtual double GetCacheTotal();
+  virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
+
+  static std::string GetDefaultDevice();
+  static void EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);

@@ -19,6 +19,7 @@
  */
 
 #include "AESinkXAudio.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -90,6 +91,25 @@ CAESinkXAudio::~CAESinkXAudio()
 {
   if (m_xAudio2)
     m_xAudio2.Reset();
+}
+
+void CAESinkXAudio::Register()
+{
+  AE::AESinkRegEntry reg;
+  reg.sinkName = "XAUDIO";
+  reg.createFunc = CAESinkXAudio::Create;
+  reg.enumerateFunc = CAESinkXAudio::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(reg);
+}
+
+IAESink* CAESinkXAudio::Create(std::string &device, AEAudioFormat &desiredFormat)
+{
+  IAESink *sink = new CAESinkXAudio();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)

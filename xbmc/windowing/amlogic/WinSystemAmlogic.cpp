@@ -29,6 +29,9 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererAML.h"
+// AESink Factory
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkALSA.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Resolution.h"
 #include "settings/Settings.h"
@@ -72,6 +75,9 @@ CWinSystemAmlogic::CWinSystemAmlogic()
   aml_disable_freeScale();
 
   m_winEvents.reset(new CWinEventsLinux());
+  // Register sink
+  AE::CAESinkFactory::ClearSinks();
+  CAESinkALSA::Register();
 }
 
 CWinSystemAmlogic::~CWinSystemAmlogic()

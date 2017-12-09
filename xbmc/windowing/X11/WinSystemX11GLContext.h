@@ -22,10 +22,6 @@
 
 #include "WinSystemX11.h"
 
-#ifdef HAS_GLX
-#include "GL/glx.h"
-#endif // HAS_GLX
-
 #include "EGL/egl.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include <memory>
@@ -49,16 +45,12 @@ public:
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
-#ifdef HAS_GLX
-  GLXWindow GetWindow() const;
-  GLXContext GetGlxContext() const;
-#endif // HAS_GLX
+  XID GetWindow() const;
+  void* GetGlxContext() const;
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;
   EGLConfig GetEGLConfig() const;
-
-  void* GetVaDisplay();
 
 protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
@@ -69,5 +61,10 @@ protected:
 
   CGLContext *m_pGLContext = nullptr;
   bool m_newGlContext;
-  std::unique_ptr<CVaapiProxy> m_vaapiProxy;
+
+  struct delete_CVaapiProxy
+  {
+    void operator()(CVaapiProxy *p) const;
+  };
+  std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
 };

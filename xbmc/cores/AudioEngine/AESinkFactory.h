@@ -20,29 +20,44 @@
  */
 
 #include <stdint.h>
+#include <map>
 #include <string>
 #include <vector>
-
-#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "Utils/AEDeviceInfo.h"
 
 class IAESink;
 
-typedef struct
+namespace AE
 {
-  std::string      m_sinkName;
-  AEDeviceInfoList m_deviceInfoList;
-} AESinkInfo;
 
-typedef std::vector<AESinkInfo> AESinkInfoList;
+struct AESinkInfo
+{
+  std::string m_sinkName;
+  AEDeviceInfoList m_deviceInfoList;
+};
+
+typedef IAESink* (*CreateSink)(std::string &device, AEAudioFormat &desiredFormat);
+typedef void (*Enumerate)(AEDeviceInfoList &list, bool force);
+
+struct AESinkRegEntry
+{
+  std::string sinkName;
+  CreateSink createFunc;
+  Enumerate enumerateFunc;
+};
 
 class CAESinkFactory
 {
 public:
-  static void     ParseDevice(std::string &device, std::string &driver);
-  static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough);
-  static void     EnumerateEx(AESinkInfoList &list, bool force = false); /* The force flag can be used to indicate the rescan devices */
+  static void RegisterSink(AESinkRegEntry regEntry);
+  static void ClearSinks();
+
+  static void ParseDevice(std::string &device, std::string &driver);
+  static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat);
+  static void EnumerateEx(std::vector<AESinkInfo> &list, bool force);
 
 protected:
-  static IAESink *TrySink(const std::string &driver, std::string &device, AEAudioFormat &format);
+  static std::map<std::string, AESinkRegEntry> m_AESinkRegEntry;
 };
 
+}

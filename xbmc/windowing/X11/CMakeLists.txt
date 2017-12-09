@@ -1,5 +1,6 @@
 set(SOURCES GLContextEGL.cpp
             GLContext.cpp
+            OptionalsReg.cpp
             OSScreenSaverX11.cpp
             WinEventsX11.cpp
             WinSystemX11.cpp
@@ -9,6 +10,7 @@ set(SOURCES GLContextEGL.cpp
 
 set(HEADERS GLContext.h
             GLContextEGL.h
+            OptionalsReg.h
             OSScreenSaverX11.h
             WinEventsX11.h
             WinSystemX11.h

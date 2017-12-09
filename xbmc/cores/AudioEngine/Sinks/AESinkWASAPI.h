@@ -35,14 +35,18 @@ public:
     CAESinkWASAPI();
     virtual ~CAESinkWASAPI();
 
-    virtual bool Initialize  (AEAudioFormat &format, std::string &device);
+    static void Register();
+    static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+
+    virtual bool Initialize(AEAudioFormat &format, std::string &device);
     virtual void Deinitialize();
 
-    virtual void         GetDelay(AEDelayStatus& status);
-    virtual double       GetCacheTotal               ();
-    virtual unsigned int AddPackets                  (uint8_t **data, unsigned int frames, unsigned int offset);
-    virtual void         Drain                       ();
-    static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList, bool force = false);
+    virtual void GetDelay(AEDelayStatus& status);
+    virtual double GetCacheTotal();
+    virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
+    virtual void Drain();
+    static  void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
+
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
     static void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);

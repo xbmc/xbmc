@@ -51,5 +51,9 @@ protected:
 
 private:
   CGLContextEGL m_pGLContext;
-  std::unique_ptr<CVaapiProxy> m_vaapiProxy;
+  struct delete_CVaapiProxy
+  {
+    void operator()(CVaapiProxy *p) const;
+  };
+  std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
 };

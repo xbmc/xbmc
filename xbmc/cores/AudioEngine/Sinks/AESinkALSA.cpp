@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAS_ALSA
 
 #include <stdint.h>
 #include <limits.h>
@@ -29,6 +28,7 @@
 #include <algorithm>
 
 #include "AESinkALSA.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEELDParser.h"
 #include "utils/log.h"
@@ -105,6 +105,25 @@ CAESinkALSA::CAESinkALSA() :
 CAESinkALSA::~CAESinkALSA()
 {
   Deinitialize();
+}
+
+void CAESinkALSA::Register()
+{
+  AE::AESinkRegEntry entry;
+  entry.sinkName = "PULSE";
+  entry.createFunc = CAESinkALSA::Create;
+  entry.enumerateFunc = CAESinkALSA::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(entry);
+}
+
+IAESink* CAESinkALSA::Create(std::string &device, AEAudioFormat& desiredFormat)
+{
+  IAESink* sink = new CAESinkALSA();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& format)
@@ -1650,4 +1669,3 @@ CALSADeviceMonitor CAESinkALSA::m_deviceMonitor; // ARGH
 #endif
 CALSAHControlMonitor CAESinkALSA::m_controlMonitor; // ARGH
 
-#endif

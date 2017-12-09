@@ -22,6 +22,9 @@
 #include "WinEventsWin32.h"
 #include "resource.h"
 #include "Application.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkDirectSound.h"
+#include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
 #include "ServiceBroker.h"
 #include "guilib/gui3d.h"
 #include "messaging/ApplicationMessenger.h"
@@ -60,6 +63,9 @@ CWinSystemWin32::CWinSystemWin32()
   , m_bMinimized(false)
 {
   m_winEvents.reset(new CWinEventsWin32());
+  AE::CAESinkFactory::ClearSinks();
+  CAESinkDirectSound::Register();
+  CAESinkWASAPI::Register();
 }
 
 CWinSystemWin32::~CWinSystemWin32()

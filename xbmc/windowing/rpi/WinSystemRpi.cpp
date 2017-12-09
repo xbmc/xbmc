@@ -33,6 +33,8 @@
 #include "guilib/DispResource.h"
 #include "utils/log.h"
 #include "../WinEventsLinux.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkPi.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
@@ -51,6 +53,8 @@ CWinSystemRpi::CWinSystemRpi()
   m_rpi = new CRPIUtils();
 
   m_winEvents.reset(new CWinEventsLinux());
+  AE::CAESinkFactory::ClearSinks();
+  CAESinkPi::Register();
 }
 
 CWinSystemRpi::~CWinSystemRpi()

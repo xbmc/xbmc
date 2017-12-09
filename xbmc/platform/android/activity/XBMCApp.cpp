@@ -71,7 +71,11 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+// Audio Engine includes for Factory and interfaces
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
+
 #include "ServiceBroker.h"
 #include "GUIInfoManager.h"
 #include "guiinfo/GUIInfoLabels.h"
@@ -194,6 +198,9 @@ void CXBMCApp::onStart()
 
   if (m_firstrun)
   {
+    // Register sink
+    AE::CAESinkFactory::ClearSinks();
+    CAESinkAUDIOTRACK::Register();
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -209,7 +216,6 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.SCREEN_OFF");
     intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
     registerReceiver(*this, intentFilter);
-
     m_mediaSession.reset(new CJNIXBMCMediaSession());
   }
 }
