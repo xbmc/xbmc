@@ -328,7 +328,7 @@
 				<include>Animation_BottomSlide</include>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
-				<visible>!Player.ChannelPreviewActive</visible>
+				<visible>![Player.ChannelPreviewActive | Window.IsActive(videoosd)]</visible>
 				<include content="MediaFlag">
 					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
 				</include>
