@@ -41,8 +41,8 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char*
       if (strUTF8[pos] == '{')
       {
         size_t pos2, pos3;
-        if (((pos2 = strUTF8.find(':', pos)) != std::string::npos) && \
-           ((pos3 = strUTF8.find('}', pos2)) != std::string::npos))
+        if (((pos2 = strUTF8.find(':', pos)) != std::string::npos) &&
+            ((pos3 = strUTF8.find('}', pos2)) != std::string::npos))
         {
           std::string tagName = strUTF8.substr(pos + 1, pos2 - pos - 1);
           std::string tagValue = strUTF8.substr(pos2 + 1, pos3 - pos2 - 1);

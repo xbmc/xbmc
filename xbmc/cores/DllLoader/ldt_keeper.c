@@ -32,6 +32,7 @@
 #include "ldt_keeper.h"
 
 #include <string.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -263,7 +264,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
   Setup_FS_Segment();
 
   ldt_fs->prev_struct = malloc(8);
-  *(void**)array.base_addr = ldt_fs->prev_struct;
+  array.base_addr = (uintptr_t)(ldt_fs->prev_struct);
 
   return ldt_fs;
 }

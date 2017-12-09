@@ -1268,7 +1268,7 @@ int CDVDDemuxFFmpeg::GetPrograms(std::vector<ProgramInfo>& programs)
   if (!m_pFormatContext || m_pFormatContext->nb_programs <= 1)
     return 0;
   
-  for (int i = 0; i < m_pFormatContext->nb_programs; i++)
+  for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
   {
     std::ostringstream os;
     ProgramInfo prog;
