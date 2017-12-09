@@ -37,7 +37,7 @@ public:
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();
-  void Reset() override;
+  bool Reset() override;
   void Abort() override;
   void Flush() override;
   DemuxPacket* Read() override;

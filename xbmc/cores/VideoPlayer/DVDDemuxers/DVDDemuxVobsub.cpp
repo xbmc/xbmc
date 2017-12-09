@@ -129,9 +129,10 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
   return true;
 }
 
-void CDVDDemuxVobsub::Reset()
+bool CDVDDemuxVobsub::Reset()
 {
   Flush();
+  return true;
 }
 
 void CDVDDemuxVobsub::Flush()

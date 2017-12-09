@@ -90,7 +90,7 @@ public:
 
   bool Open(CDVDInputStream* pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
-  void Reset() override ;
+  bool Reset() override ;
   void Flush() override;
   void Abort() override;
   void SetSpeed(int iSpeed) override;

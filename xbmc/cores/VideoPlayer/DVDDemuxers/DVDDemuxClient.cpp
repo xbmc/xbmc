@@ -111,11 +111,11 @@ void CDVDDemuxClient::DisposeStreams()
   m_streams.clear();
 }
 
-void CDVDDemuxClient::Reset()
+bool CDVDDemuxClient::Reset()
 {
   CDVDInputStream* pInputStream = m_pInput;
   Dispose();
-  Open(pInputStream);
+  return Open(pInputStream);
 }
 
 void CDVDDemuxClient::Abort()

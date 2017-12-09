@@ -156,10 +156,15 @@ bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
   return !m_demuxerMap.empty();
 }
 
-void CDemuxMultiSource::Reset()
+bool CDemuxMultiSource::Reset()
 {
+  bool ret = true;
   for (auto& iter : m_demuxerMap)
-    iter.second->Reset();
+  {
+    if (!iter.second->Reset())
+      ret = false;
+  }
+  return ret;
 }
 
 DemuxPacket* CDemuxMultiSource::Read()

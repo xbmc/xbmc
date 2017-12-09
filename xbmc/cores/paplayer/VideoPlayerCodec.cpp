@@ -233,7 +233,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     else
     {
       m_pInputStream->Seek(0, SEEK_SET);
-      m_pDemuxer->Reset();
+      if (!m_pDemuxer->Reset())
+        return false;
     }
   }
 
