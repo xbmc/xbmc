@@ -22,10 +22,10 @@
 				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<control type="image">
-					<left>30</left>
+					<right>20</right>
 					<top>90</top>
 					<width>120</width>
-					<height>99</height>
+					<height>100</height>
 					<texture>$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>!Player.ChannelPreviewActive</visible>
