@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "ServiceBroker.h"
 
