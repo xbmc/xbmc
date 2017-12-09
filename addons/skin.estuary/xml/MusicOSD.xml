@@ -43,6 +43,7 @@
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
+					<visible>!MusicPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="602">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/play.png</textureradioonfocus>
@@ -73,7 +74,7 @@
 						<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 					</include>
 					<onclick>PlayerControl(Next)</onclick>
-					<visible>MusicPlayer.HasNext</visible>
+					<visible>MusicPlayer.HasNext + !MusicPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="606">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
@@ -93,7 +94,7 @@
 					<selected>!PVR.IsRecordingPlayingChannel</selected>
 					<onclick>PVR.ToggleRecordPlayingChannel</onclick>
 					<visible>PVR.CanRecordPlayingChannel</visible>
-					<visible>VideoPlayer.Content(livetv)</visible>
+					<visible>MusicPlayer.Content(livetv)</visible>
 				</control>
 			</control>
 			<control type="grouplist" id="202">

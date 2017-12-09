@@ -28,7 +28,8 @@
 					<height>100</height>
 					<texture>$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>!Player.ChannelPreviewActive</visible>
+					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
+					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 				</control>
 				<control type="image">
 					<left>200</left>
@@ -58,7 +59,7 @@
 					<include>Animation_BottomSlide</include>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<visible>Player.ShowInfo + Window.IsActive(fullscreenvideo) + !Player.ChannelPreviewActive</visible>
+					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
@@ -74,7 +75,7 @@
 					</include>
 				</control>
 				<control type="group">
-					<visible>Window.IsActive(fullscreenvideo) + PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
+					<visible>PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>
@@ -85,25 +86,6 @@
 					<control type="label">
 						<top>110</top>
 						<left>90</left>
-						<width>400</width>
-						<height>50</height>
-						<aligny>center</aligny>
-						<font>font25_title</font>
-						<label>$LOCALIZE[19158]</label>
-					</control>
-				</control>
-				<control type="group">
-					<visible>Window.IsActive(visualisation) + PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
-					<control type="image">
-						<top>100</top>
-						<left>170</left>
-						<width>74</width>
-						<height>74</height>
-						<texture>osd/fullscreen/buttons/record.png</texture>
-					</control>
-					<control type="label">
-						<top>110</top>
-						<left>240</left>
 						<width>400</width>
 						<height>50</height>
 						<aligny>center</aligny>
@@ -225,7 +207,7 @@
 		</control>
 		<control type="group">
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<animation effect="slide" end="0,-80" time="150" condition="Control.IsVisible(6000)">conditional</animation>
 			<bottom>0</bottom>
