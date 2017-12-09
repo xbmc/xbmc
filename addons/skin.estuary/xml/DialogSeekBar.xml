@@ -49,6 +49,30 @@
 					<label>[COLOR button_focus]$LOCALIZE[21396]:[CR][/COLOR]$INFO[player.chapter]$INFO[player.chaptercount, / ]</label>
 					<visible>player.chaptercount</visible>
 				</control>
+				<control type="grouplist">
+					<right>20</right>
+					<top>110</top>
+					<width>1000</width>
+					<height>100</height>
+					<align>right</align>
+					<include>Animation_BottomSlide</include>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<visible>Player.ShowInfo + Window.IsActive(fullscreenvideo) + !Player.ChannelPreviewActive</visible>
+					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+					</include>
+				</control>
 				<control type="group">
 					<visible>Window.IsActive(fullscreenvideo) + PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
 					<control type="image">
@@ -205,21 +229,7 @@
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<animation effect="slide" end="0,-80" time="150" condition="Control.IsVisible(6000)">conditional</animation>
 			<bottom>0</bottom>
-			<height>450</height>
-			<control type="image">
-				<left>0</left>
-				<width>100%</width>
-				<height>310</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-			</control>
-			<control type="image">
-				<left>30</left>
-				<top>20</top>
-				<width>200</width>
-				<height>200</height>
-				<aspectratio aligny="center">keep</aspectratio>
-				<texture>$INFO[Player.Art(thumb)]</texture>
-			</control>
+			<height>380</height>
 			<control type="label">
 				<left>20</left>
 				<width>220</width>
@@ -231,51 +241,35 @@
 				<font>WeatherTemp</font>
 				<aligny>center</aligny>
 			</control>
-			<control type="label">
-				<right>20</right>
-				<width>800</width>
-				<top>260</top>
-				<height>25</height>
-				<label>$INFO[VideoPlayer.NextTitle,[COLOR grey]$LOCALIZE[19031]: [/COLOR], ]($INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime])</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<visible>VideoPlayer.HasEpg</visible>
+			<control type="image">
+				<left>0</left>
+				<width>100%</width>
+				<height>240</height>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+			</control>
+			<control type="image">
+				<left>30</left>
+				<top>20</top>
+				<width>200</width>
+				<height>200</height>
+				<aspectratio aligny="center">keep</aspectratio>
+				<texture>$INFO[Player.Art(thumb)]</texture>
 			</control>
 			<control type="textbox">
 				<left>260</left>
-				<top>20</top>
-				<right>50</right>
-				<height>225</height>
-				<label fallback="416">$INFO[VideoPlayer.Plot]</label>
+				<top>10</top>
+				<right>30</right>
+				<height>160</height>
+				<label fallback="19055">$INFO[VideoPlayer.Plot]</label>
 				<align>justify</align>
 				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 			</control>
-			<control type="grouplist">
+			<control type="label">
 				<left>260</left>
-				<top>245</top>
-				<width>600</width>
-				<height>100</height>
-				<align>left</align>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<visible>!Player.ChannelPreviewActive</visible>
-				<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
-					<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
-					<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
-					<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoAspect)" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
-					<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoCodec)" />
-				</include>
+				<top>180</top>
+				<height>25</height>
+        <label>[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime]: $INFO[VideoPlayer.NextTitle]</label>
+				<visible>VideoPlayer.HasEpg</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -320,30 +314,6 @@
 					</control>
 				</control>
 			</control>
-			<control type="grouplist">
-				<right>20</right>
-				<top>155</top>
-				<width>1000</width>
-				<height>100</height>
-				<align>right</align>
-				<include>Animation_BottomSlide</include>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<visible>![Player.ChannelPreviewActive | Window.IsActive(videoosd)]</visible>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
-				</include>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
-				</include>
-			</control>
 		</control>
-
 	</controls>
 </window>
