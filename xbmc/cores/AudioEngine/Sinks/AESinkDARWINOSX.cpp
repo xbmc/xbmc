@@ -19,7 +19,6 @@
  */
 
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
