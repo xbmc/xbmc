@@ -21,6 +21,7 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
@@ -48,6 +49,8 @@ public:
   virtual void         AddPause        (unsigned int millis);
   virtual void         Drain           ();
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
 
 protected:
   jni::CJNIAudioTrack *CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize);
