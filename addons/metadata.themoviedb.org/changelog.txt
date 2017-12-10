@@ -1,9 +1,21 @@
+[B]5.0.2[/B]
+- changed: made tmdb uniqueid consistent with documentation
+
+[B]5.0.1[/B]
+- changed: simplified ratings code
+
+[B]5.0.0[/B]
+Version bump for Krypton
+
+[B]4.0.3[/B]
+- changed: split zh-cn and zh-tw
+
 [B]4.0.1[/B]
--switched API queries to https
+- switched API queries to https
 
 [B]4.0.0[/B]
 - added: multiple ratings and uniqueid support (requires Kodi v17) -thanks phate89
-- added: premiered date -thanks phate89
+- added: premiered date (requires Kodi v17) -thanks phate89
 
 [B]3.9.4[/B]
 - Fixed after API layout changes

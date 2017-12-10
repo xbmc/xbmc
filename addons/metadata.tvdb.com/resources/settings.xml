@@ -10,4 +10,5 @@
     <setting label="30008" type="select" id="fallbacklanguage" values="cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|tr|zh" subsetting="true" sort="yes" visible="eq(-1,true)" default="en" />
     <setting label="30005" type="labelenum" values="TheTVDB|IMDb" id="RatingS" default="TheTVDB"/>
 	<setting label="30006" type="bool" id="fallback" subsetting="true" visible="eq(-1,1)" default="true"/>
+	<setting label="30009" type="bool" id="alsoimdb" subsetting="true" visible="eq(-2,0)" default="false"/>
 </settings>

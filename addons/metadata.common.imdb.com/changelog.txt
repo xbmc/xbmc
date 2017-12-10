@@ -1,3 +1,9 @@
+[B]2.9.3[/B]
+- fixed: always get USA rating regardless of the country set
+
+[B]2.9.2[/B]
+- changed: simplify ratings code
+
 [B]2.9.1[/B]
 - changed: improved USA rating detection
 
