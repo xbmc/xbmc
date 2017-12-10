@@ -160,7 +160,8 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   const std::string &settingId = setting->GetId();
 #ifdef HAS_WEB_SERVER
   if (settingId == CSettings::SETTING_SERVICES_WEBSERVER ||
-      settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT)
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT ||
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERSSL)
   {
     if (IsWebserverRunning() && !StopWebserver())
       return false;

@@ -35,6 +35,7 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
 #include "Util.h"
@@ -1157,7 +1158,9 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 #endif
 
-  if (LoadCert(m_key, m_cert) && MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES)
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVERSSL) &&
+      MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES &&
+      LoadCert(m_key, m_cert))
     // SSL enabled
     return MHD_start_daemon(flags |
 #if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)

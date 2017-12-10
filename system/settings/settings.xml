@@ -1758,6 +1758,14 @@
             <hidden>true</hidden>
           </control>
         </setting>
+        <setting id="services.webserverssl" type="boolean" parent="services.webserver" label="729" help="36899">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.webserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="services.webskin" type="addon" label="199" help="36332">
           <level>1</level>
           <default>webinterface.default</default>
