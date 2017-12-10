@@ -62,13 +62,14 @@
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
+#include "utils/JobManager.h"
 #include "utils/StreamDetails.h"
-#include "pvr/PVRManager.h"
 #include "utils/StreamUtils.h"
 #include "utils/Variant.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
+#include "video/Bookmark.h"
 #include "Util.h"
 #include "LangInfo.h"
 #include "URL.h"
@@ -4327,79 +4328,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream))
-  {
-    switch (action.GetID())
-    {
-      case ACTION_MOVE_UP:
-      case ACTION_NEXT_ITEM:
-      case ACTION_CHANNEL_UP:
-      {
-        if (m_Edl.HasCut()) 
-        {
-          // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
-          const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
-          CEdl::Cut cut;
-          if (m_Edl.GetNearestCut(true, clock, &cut)) 
-          {
-            CDVDMsgPlayerSeek::CMode mode;
-            mode.time = cut.end + 1;
-            mode.backward = false;
-            mode.accurate = false;
-            mode.restore = true;
-            mode.trickplay = false;
-            mode.sync = true;
-
-            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
-            return true;
-          }
-        }
-        return true;
-      }
-
-      case ACTION_MOVE_DOWN:
-      case ACTION_PREV_ITEM:
-      case ACTION_CHANNEL_DOWN:
-      {
-        if (m_Edl.HasCut())
-        {
-          // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
-          const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
-          CEdl::Cut cut;
-          if (m_Edl.GetNearestCut(false, clock, &cut)) 
-          {
-            CDVDMsgPlayerSeek::CMode mode;
-            mode.time = cut.start - 1;
-            mode.backward = true;
-            mode.accurate = false;
-            mode.restore = true;
-            mode.trickplay = false;
-            mode.sync = true;
-
-            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
-            return true;
-          }
-          else
-          {
-            // Go back to beginning
-            CDVDMsgPlayerSeek::CMode mode;
-            mode.time = 0;
-            mode.backward = true;
-            mode.accurate = false;
-            mode.restore = true;
-            mode.trickplay = false;
-            mode.sync = true;
-
-            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
-            return true;
-          }
-        }
-        return true;
-      }
-      break;
-    }
-  }
-
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
@@ -4409,6 +4337,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
+      else if (SeekScene(true))
+        return true;
       else
         break;
     case ACTION_PREV_ITEM:
@@ -4418,6 +4348,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         return true;
       }
+      else if (SeekScene(false))
+        return true;
       else
         break;
     case ACTION_TOGGLE_COMMSKIP:
