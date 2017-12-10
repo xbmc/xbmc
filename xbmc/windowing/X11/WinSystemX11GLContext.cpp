@@ -182,6 +182,16 @@ bool CWinSystemX11GLContext::ResizeWindow(int newWidth, int newHeight, int newLe
   return true;
 }
 
+void CWinSystemX11GLContext::FinishWindowResize(int newWidth, int newHeight)
+{
+  m_newGlContext = false;
+  CWinSystemX11::FinishWindowResize(newWidth, newHeight);
+  CRenderSystemGL::ResetRenderSystem(newWidth, newHeight);
+
+  if (m_newGlContext)
+    g_application.ReloadSkin();
+}
+
 bool CWinSystemX11GLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_newGlContext = false;

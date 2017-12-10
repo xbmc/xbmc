@@ -36,6 +36,7 @@ public:
   ~CWinSystemX11GLContext() override;
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  void FinishWindowResize(int newWidth, int newHeight) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   bool DestroyWindowSystem() override;
   bool DestroyWindow() override;
