@@ -1957,7 +1957,7 @@
         </setting>
         <setting id="services.airplayvideosupport" type="boolean" parent="services.airplay" label="1268" help="36549">
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable" setting="services.airplay">true</dependency>
           </dependencies>
