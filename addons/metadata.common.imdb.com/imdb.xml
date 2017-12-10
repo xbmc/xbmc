@@ -28,33 +28,22 @@
 		</RegExp>
 	</ParseIMDBRating>
 
-	<GetIMDBRatingsById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBRatings&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
+	<GetIMDBRatingsById dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-main.html&quot; function=&quot;ParseIMDBRatings&quot;&gt;http://akas.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">^(tt\d+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
+			<expression clear="yes">\|default$</expression>
 		</RegExp>
 	</GetIMDBRatingsById>
 	<ParseIMDBRatings dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; &gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; $$3&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
 				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?ratingCount&quot;&gt;([0-9,]+)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseIMDBRatings>
-
-	<GetIMDBRatingsByIdAsDef dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBRatingsAsDef&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetIMDBRatingsByIdAsDef>
-	<ParseIMDBRatingsAsDef dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1&lt;/value&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
-				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?ratingCount&quot;&gt;([0-9,]+)&lt;</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseIMDBRatingsAsDef>
 
 	<GetIMDBTOP250ById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBTOP250&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
@@ -102,46 +91,50 @@
 	</ParseIMDBCountry>
 
 	<GetMetaCriticRatingById dest="5">	<!-- Compatibility function for Pre-Krypton versions-->
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseMetaCriticRating&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-criticreviews.html&quot; function=&quot;ParseMetaCriticRating&quot;&gt;http://akas.imdb.com/title/$$1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMetaCriticRatingById>
 	<ParseMetaCriticRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;rating&gt;\1.\2&lt;/rating&gt;" dest="2">
-				<expression>&lt;div\sclass=&quot;metacriticScore\sscore_[^\s]+\stitleReviewBarSubItem&quot;&gt;.*?&lt;span&gt;(\d*)(\d)</expression>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">(&lt;div class=&quot;metascore_block&quot;.*)</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/value&gt;" dest="2">
+				<expression clear="yes">&lt;span itemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="2+">
+				<expression>&lt;span itemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseMetaCriticRating>
 
-	<GetMetaCriticRatingsById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseMetaCriticRatings&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
+	<GetMetaCriticRatingsById dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-criticreviews.html&quot; function=&quot;ParseMetaCriticRatings&quot;&gt;http://akas.imdb.com/title/\1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">(tt\d+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
+			<expression clear="yes">\|default$</expression>
 		</RegExp>
 	</GetMetaCriticRatingsById>
 	<ParseMetaCriticRatings dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;metacritic&quot; &gt;&lt;value&gt;\1.\2&lt;/value&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
-				<expression>&lt;div\sclass=&quot;metacriticScore\sscore_[^\s]+\stitleReviewBarSubItem&quot;&gt;.*?&lt;span&gt;(\d*)(\d)</expression>
+			<RegExp input="$$4" output="&lt;ratings&gt;&lt;rating name=&quot;metacritic&quot; max=&quot;100&quot; $$3&gt;\1&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression clear="yes" noclean="1">(&lt;div class=&quot;metascore_block&quot;.*)</expression>
+				</RegExp>
+				<RegExp input="$$6" output="&lt;value&gt;\1&lt;/value&gt;" dest="4">
+					<expression clear="yes">&lt;span itemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
+				</RegExp>
+				<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
+					<expression>&lt;span itemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
+				</RegExp>
+				<expression noclean="1" clear="yes"/>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseMetaCriticRatings>
-
-	<GetMetaCriticRatingsByIdAsDef dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseMetaCriticRatingsAsDef&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
-		</RegExp>
-	</GetMetaCriticRatingsByIdAsDef>
-	<ParseMetaCriticRatingsAsDef dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;metacritic&quot; default=&quot;true&quot;&gt;&lt;value&gt;\1.\2&lt;/value&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
-				<expression>&lt;div\sclass=&quot;metacriticScore\sscore_[^\s]+\stitleReviewBarSubItem&quot;&gt;.*?&lt;span&gt;(\d*)(\d)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseMetaCriticRatingsAsDef>
 
 	<GetIMDBPlotById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBPlot&quot;&gt;http://akas.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
@@ -348,8 +341,8 @@
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBCountryCert&quot;&gt;http://akas.imdb.com/title/$$1/combined|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
-		<RegExp input="$INFO[imdbcertcountry]" output="$$5" dest="5">
-			<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;http://akas.imdb.com/title/$$1/combined|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$INFO[imdbcertcountry]" output="$$2" dest="5">
+			<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;http://akas.imdb.com/title/$$1/combined|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="2">
 				<expression noclean="1"/>
 			</RegExp>
 			<expression>USA</expression>

@@ -1,3 +1,12 @@
+[B]3.0.1[/B]
+- fixed: Uniqueids fixes
+
+[B]3.0.0[/B]
+- Changed: Multiple ratings and uniqueids
+
+[B]2.0.5[/B]
+- Fixed: Prevent language choices from interfering with IMDb ratings
+
 [B]2.0.4[/B]
 - Fixed: Moved IMDb ratings to prevent clearing buffers before GetActors
 
