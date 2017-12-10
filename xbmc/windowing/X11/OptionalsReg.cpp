@@ -87,19 +87,16 @@ void X11::VaapiProxyDelete(CVaapiProxy *proxy)
 
 void X11::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
 {
-
 }
 
-void X11::RegisterVAAPI(CVaapiProxy *winSystem, bool hevc)
+void X11::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
 {
-
 }
 
-void X11::RegisterVAAPIRender(CVaapiProxy *winSystem, void* dpy,
-                         void* eglDisplay, bool &general, bool &hevc)
+void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
 {
-
 }
+
 #endif
 
 //-----------------------------------------------------------------------------
