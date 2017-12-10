@@ -1209,21 +1209,29 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     CQueryParams params;
     CDirectoryNode::GetDatabaseInfo(items.GetPath(), params);
 
+    // Get art for directory when album or artist
+    bool artfound = false;
+    std::vector<ArtForThumbLoader> art;
     if (params.GetAlbumId() > 0)
-    {
-      std::map<std::string, std::string> artistArt;
-      if (m_musicdatabase.GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, artistArt))
-        items.AppendArt(artistArt, MediaTypeArtist);
-
-      std::map<std::string, std::string> albumArt;
-      if (m_musicdatabase.GetArtForItem(params.GetAlbumId(), MediaTypeAlbum, albumArt))
-        items.AppendArt(albumArt, MediaTypeAlbum);
+    { // Get album and related artist(s) art
+      artfound = m_musicdatabase.GetArtForItem(-1, params.GetAlbumId(), -1, false, art);
     }
-    if (params.GetArtistId() > 0)
+    else if (params.GetArtistId() > 0)
+    { // get artist art
+      artfound = m_musicdatabase.GetArtForItem(-1, -1, params.GetArtistId(), true, art);
+    }
+    if (artfound)
     {
-      std::map<std::string, std::string> artistArt;
-      if (m_musicdatabase.GetArtForItem(params.GetArtistId(), "artist", artistArt))
-        items.AppendArt(artistArt, MediaTypeArtist);
+      std::map<std::string, std::string> artmap;
+      for (auto artitem : art)
+      {
+        std::string artname;
+        artname = artitem.artType;
+        if (params.GetAlbumId() > 0 && artitem.mediaType != MediaTypeAlbum)
+          artname = artitem.mediaType + "." + artitem.artType;
+        artmap.insert(std::make_pair(artname, artitem.url));
+      }
+      items.SetArt(artmap);
     }
 
     // add in the "New Playlist" item if we're in the playlists folder

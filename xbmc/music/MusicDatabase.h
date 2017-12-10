@@ -73,6 +73,19 @@ typedef std::set<std::string> SETPATHS;
  */
 typedef std::set<std::string>::iterator ISETPATHS;
 
+/*!
+\ingroup music
+\brief A structure used for fetching music art data
+\sa CMusicDatabase::GetArtForItem()
+*/
+
+typedef struct {
+  std::string mediaType;
+  std::string artType;
+  std::string prefix;
+  std::string url;
+} ArtForThumbLoader;
+
 class CGUIDialogProgress;
 class CFileItemList;
 
@@ -479,6 +492,26 @@ public:
    */
   void SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art);
 
+
+  /*! \brief Fetch all related art for a database item.
+  Fetches multiple pieces of art for a database item including that for related media types
+  Given song id art for the related album, artist(s) and albumartist(s) will also be fetched, looking up the 
+  album and artist when ids are not provided.
+  Given album id (and not song id) art for the related artist(s) will also be fetched, looking up the 
+  artist(s) when id are not provided.
+  \param songId the id in the song table, -1 when song art not being fetched
+  \param albumId the id in the album table, -1 when album art not being fetched
+  \param artistId the id in the artist table, -1 when artist not known
+  \param bPrimaryArtist true if art from only the first song artist or album artist is to be fetched
+  \param art [out] a vector, each element having media type e.g. "artist", "album" or "song", 
+  artType e.g. "thumb", "fanart", etc., prefix of "", "artist" or "albumartist" etc. giving the kind of artist
+  relationship, and the original url of the art.
+  
+  \return true if art is retrieved, false if no art is found.
+  \sa SetArtForItem
+  */
+  bool GetArtForItem(int songId, int albumId, int artistId, bool bPrimaryArtist, std::vector<ArtForThumbLoader> &art);
+
   /*! \brief Fetch art for a database item.
    Fetches multiple pieces of art for a database item.
    \param mediaId the id in the media (song/artist/album) table.
@@ -498,26 +531,6 @@ public:
    \sa SetArtForItem
    */
   std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
-
-  /*! \brief Fetch artist art for a song or album item.
-   Fetches the art associated with the primary artist for the song or album.
-   \param mediaId the id in the media (song/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/album).
-   \param art [out] the art map <type, url> of artist art.
-   \return true if artist art is found, false otherwise.
-   \sa GetArtForItem
-   */
-  bool GetArtistArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);
-
-  /*! \brief Fetch artist art for a song or album item.
-   Fetches a single piece of art associated with the primary artist for the song or album.
-   \param mediaId the id in the media (song/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/album).
-   \param artType the type of art to retrieve, eg "thumb", "fanart".
-   \return the original URL to the piece of art, if available.
-   \sa GetArtForItem
-   */
-  std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
   /*! \brief Remove art for a database item.
   Removes  a single piece of art for a database item.

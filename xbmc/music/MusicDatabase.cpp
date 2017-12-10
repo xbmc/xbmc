@@ -7089,6 +7089,103 @@ void CMusicDatabase::SetArtForItem(int mediaId, const std::string &mediaType, co
   }
 }
 
+bool CMusicDatabase::GetArtForItem(int songId, int albumId, int artistId, bool bPrimaryArtist, std::vector<ArtForThumbLoader> &art)
+{
+  std::string strSQL;
+  try
+  {
+    if (!(songId > 0 || albumId > 0 || artistId > 0)) return false;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    Filter filter;
+    if (songId > 0)
+      filter.AppendWhere(PrepareSQL("media_id = %i AND media_type ='%s'", songId, MediaTypeSong));
+    if (albumId > 0)
+      filter.AppendWhere(PrepareSQL("media_id = %i AND media_type ='%s'", albumId, MediaTypeAlbum), false);
+    if (artistId > 0)
+      filter.AppendWhere(PrepareSQL("media_id = %i AND media_type ='%s'", artistId, MediaTypeArtist), false);
+
+    strSQL = "SELECT DISTINCT art_id, media_id, media_type, type, '' as prefix, url, 0 as iorder FROM art";
+    if (!BuildSQL(strSQL, filter, strSQL))
+      return false;
+
+    if (!(artistId > 0))
+    {      
+      // Artist ID unknown, so lookup album artist for albums and songs
+      std::string strSQL2;
+      if (albumId > 0)
+      {
+        //Album ID known, so use it to look up album artist(s)
+        strSQL2 = PrepareSQL(
+          "SELECT art_id, media_id, media_type, type, 'albumartist' as prefix, "
+          "url, album_artist.iOrder as iorder FROM art "
+          "JOIN album_artist ON art.media_id = album_artist.idArtist AND art.media_type ='%s' "
+          "WHERE album_artist.idAlbum = %i ",
+          MediaTypeArtist, albumId);
+        if (bPrimaryArtist)
+          strSQL2 += "AND album_artist.iOrder = 0";
+
+        strSQL = strSQL + " UNION " + strSQL2;
+      }
+      if (songId > 0)
+      {
+        if (albumId < 0)
+        {
+          //Album ID unknown, so get from song to look up album artist(s)
+          strSQL2 = PrepareSQL(
+            "SELECT art_id, media_id, media_type, type, 'albumartist' as prefix, "
+            "url, album_artist.iOrder as iorder FROM art "
+            "JOIN album_artist ON art.media_id = album_artist.idArtist AND art.media_type ='%s' "
+            "JOIN song ON song.idAlbum = album_artist.idAlbum  "
+            "WHERE song.idSong = %i ",
+            MediaTypeArtist, songId);
+          if (bPrimaryArtist)
+            strSQL2 += "AND album_artist.iOrder = 0";
+
+          strSQL = strSQL + " UNION " + strSQL2;
+        }
+
+        // Artist ID unknown, so lookup artist for songs (could be different from album artist)
+        strSQL2 = PrepareSQL(
+          "SELECT art_id, media_id, media_type, type, 'artist' as prefix, "
+          "url, song_artist.iOrder as iorder FROM art "
+          "JOIN song_artist on art.media_id = song_artist.idArtist AND art.media_type = '%s' "
+          "WHERE song_artist.idsong = %i AND song_artist.idRole = %i ",
+          MediaTypeArtist, songId, ROLE_ARTIST);
+        if (bPrimaryArtist)
+          strSQL2 += "AND song_artist.iOrder = 0";
+
+        strSQL = strSQL +  " UNION " + strSQL2;
+      }
+    }
+
+    m_pDS2->query(strSQL);
+    while (!m_pDS2->eof())
+    {
+      ArtForThumbLoader artitem;
+      artitem.artType = m_pDS2->fv("type").get_asString();
+      artitem.mediaType = m_pDS2->fv("media_type").get_asString();
+      artitem.prefix = m_pDS2->fv("prefix").get_asString();
+      artitem.url = m_pDS2->fv("url").get_asString();
+      int iOrder = m_pDS2->fv("iorder").get_asInt();
+      // Add order to prefix for multiple artist art for songs and albums e.g. "albumartist2"
+      if (iOrder > 0)
+        artitem.prefix += m_pDS2->fv("iorder").get_asString();
+
+      art.emplace_back(artitem);
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return !art.empty();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strSQL.c_str());
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art)
 {
   try
@@ -7116,54 +7213,6 @@ bool CMusicDatabase::GetArtForItem(int mediaId, const std::string &mediaType, st
 std::string CMusicDatabase::GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType)
 {
   std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
-  return GetSingleValue(query, m_pDS2);
-}
-
-bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
-
-    std::string sql;
-    if (mediaType == MediaTypeAlbum)
-      sql = PrepareSQL("SELECT type, url FROM art WHERE media_id=(SELECT idArtist FROM album_artist "
-                       "WHERE idAlbum=%i AND iOrder=0) AND media_type='artist'", 
-                       mediaId);
-    else
-      //Select first "artist" only from song_artist, no other roles.
-      sql = PrepareSQL("SELECT type, url FROM art WHERE media_id=(SELECT idArtist FROM song_artist "
-                       "WHERE idSong=%i AND idRole=%i AND iOrder=0) AND media_type='artist'", 
-                       mediaId, ROLE_ARTIST);
-    m_pDS2->query(sql);
-    while (!m_pDS2->eof())
-    {
-      art.insert(std::make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
-      m_pDS2->next();
-    }
-    m_pDS2->close();
-    return !art.empty();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, mediaId);
-  }
-  return false;
-}
-
-std::string CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType)
-{
-  std::string query;
-  if (mediaType == MediaTypeAlbum)
-    query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist FROM album_artist "
-                       "WHERE idAlbum=%i AND iOrder=0) AND media_type='artist' AND type='%s'", 
-                       mediaId, artType.c_str());
-  else
-    //Select first "artist" only from song_artist, no other roles.
-    query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist FROM song_artist "
-                       "WHERE idSong=%i AND idRole=%i AND iOrder=0) AND media_type='artist' AND type='%s'", 
-                       mediaId, ROLE_ARTIST, artType.c_str());
   return GetSingleValue(query, m_pDS2);
 }
 
