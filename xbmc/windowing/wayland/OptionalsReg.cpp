@@ -88,12 +88,12 @@ void WAYLAND::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
 
 }
 
-void WAYLAND::RegisterVAAPI(CVaapiProxy *winSystem, bool hevc)
+void WAYLAND::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
 {
 
 }
 
-void WAYLAND::RegisterVAAPIRender(CVaapiProxy *winSystem, void* dpy,
+void WAYLAND::VAAPIRegisterRender(CVaapiProxy *winSystem, void* dpy,
                          void* eglDisplay, bool &general, bool &hevc)
 {
 
