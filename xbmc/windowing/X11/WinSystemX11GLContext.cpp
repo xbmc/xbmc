@@ -182,6 +182,16 @@ bool CWinSystemX11GLContext::ResizeWindow(int newWidth, int newHeight, int newLe
   return true;
 }
 
+void CWinSystemX11GLContext::FinishWindowResize(int newWidth, int newHeight)
+{
+  m_newGlContext = false;
+  CWinSystemX11::FinishWindowResize(newWidth, newHeight);
+  CRenderSystemGL::ResetRenderSystem(newWidth, newHeight);
+
+  if (m_newGlContext)
+    g_application.ReloadSkin();
+}
+
 bool CWinSystemX11GLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_newGlContext = false;
@@ -219,6 +229,12 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
   vTemplate.c_class = TrueColor;
 
   visual = XGetVisualInfo(m_dpy, vMask, &vTemplate, &count);
+
+  if (!visual)
+  {
+    vTemplate.depth = 30;
+    visual = XGetVisualInfo(m_dpy, vMask, &vTemplate, &count);
+  }
 
   return visual;
 }

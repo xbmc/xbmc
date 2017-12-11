@@ -46,6 +46,7 @@ public:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  void FinishWindowResize(int newWidth, int newHeight) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void UpdateResolutions() override;
   int  GetNumScreens() override { return 1; }
