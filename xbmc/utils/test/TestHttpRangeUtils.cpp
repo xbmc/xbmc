@@ -142,7 +142,7 @@ TEST(TestHttpResponseRange, SetData)
 
   range.SetData(validData, validDataLength);
   EXPECT_EQ(validData, range.GetData());
-  EXPECT_EQ(0, range.GetFirstPosition());
+  EXPECT_EQ(0U, range.GetFirstPosition());
   EXPECT_EQ(validDataLength - 1, range.GetLastPosition());
   EXPECT_EQ(validDataLength, range.GetLength());
   EXPECT_TRUE(range.IsValid());
@@ -166,7 +166,7 @@ TEST(TestHttpRanges, Ctor)
 
   CHttpRanges ranges_empty;
 
-  EXPECT_EQ(0, ranges_empty.Size());
+  EXPECT_EQ(0U, ranges_empty.Size());
   EXPECT_TRUE(ranges_empty.Get().empty());
 
   EXPECT_FALSE(ranges_empty.Get(0, range));
@@ -175,7 +175,7 @@ TEST(TestHttpRanges, Ctor)
 
   EXPECT_FALSE(ranges_empty.GetFirstPosition(position));
   EXPECT_FALSE(ranges_empty.GetLastPosition(position));
-  EXPECT_EQ(0, ranges_empty.GetLength());
+  EXPECT_EQ(0U, ranges_empty.GetLength());
   EXPECT_FALSE(ranges_empty.GetTotalRange(range));
 }
 
@@ -273,7 +273,7 @@ TEST(TestHttpRanges, Size)
   ranges_raw.push_back(range_2);
 
   CHttpRanges ranges_empty;
-  EXPECT_EQ(0, ranges_empty.Size());
+  EXPECT_EQ(0U, ranges_empty.Size());
 
   CHttpRanges ranges(ranges_raw);
   EXPECT_EQ(ranges_raw.size(), ranges.Size());
@@ -361,21 +361,21 @@ TEST(TestHttpRanges, Add)
   CHttpRange range;
 
   ranges.Add(range_0);
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.GetLast(range));
   EXPECT_EQ(range_0, range);
 
   ranges.Add(range_1);
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.GetLast(range));
   EXPECT_EQ(range_1, range);
 
   ranges.Add(range_2);
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.GetLast(range));
@@ -396,7 +396,7 @@ TEST(TestHttpRanges, Remove)
   CHttpRanges ranges(ranges_raw);
 
   CHttpRange range;
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -406,7 +406,7 @@ TEST(TestHttpRanges, Remove)
 
   // remove non-existing range
   ranges.Remove(ranges.Size());
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -416,7 +416,7 @@ TEST(TestHttpRanges, Remove)
 
   // remove first range
   ranges.Remove(0);
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range_1, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -424,13 +424,13 @@ TEST(TestHttpRanges, Remove)
 
   // remove last range
   ranges.Remove(1);
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range_1, range);
 
   // remove remaining range
   ranges.Remove(0);
-  EXPECT_EQ(0, ranges.Size());
+  EXPECT_EQ(0U, ranges.Size());
 }
 
 TEST(TestHttpRanges, Clear)
@@ -447,7 +447,7 @@ TEST(TestHttpRanges, Clear)
   CHttpRanges ranges(ranges_raw);
 
   CHttpRange range;
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -456,7 +456,7 @@ TEST(TestHttpRanges, Clear)
   EXPECT_EQ(range_2, range);
 
   ranges.Clear();
-  EXPECT_EQ(0, ranges.Size());
+  EXPECT_EQ(0U, ranges.Size());
 }
 
 TEST(TestHttpRanges, ParseInvalid)
@@ -506,13 +506,13 @@ TEST(TestHttpRanges, ParseStartOnly)
 
   CHttpRanges ranges_all;
   EXPECT_TRUE(ranges_all.Parse(RANGES_START "0-", totalLength));
-  EXPECT_EQ(1, ranges_all.Size());
+  EXPECT_EQ(1U, ranges_all.Size());
   EXPECT_TRUE(ranges_all.Get(0, range));
   EXPECT_EQ(range0_, range);
 
   CHttpRanges ranges_some;
   EXPECT_TRUE(ranges_some.Parse(RANGES_START "2-", totalLength));
-  EXPECT_EQ(1, ranges_some.Size());
+  EXPECT_EQ(1U, ranges_some.Size());
   EXPECT_TRUE(ranges_some.Get(0, range));
   EXPECT_EQ(range2_, range);
 }
@@ -527,13 +527,13 @@ TEST(TestHttpRanges, ParseFromEnd)
 
   CHttpRanges ranges_1;
   EXPECT_TRUE(ranges_1.Parse(RANGES_START "-1", totalLength));
-  EXPECT_EQ(1, ranges_1.Size());
+  EXPECT_EQ(1U, ranges_1.Size());
   EXPECT_TRUE(ranges_1.Get(0, range));
   EXPECT_EQ(range_1, range);
 
   CHttpRanges ranges_3;
   EXPECT_TRUE(ranges_3.Parse(RANGES_START "-3", totalLength));
-  EXPECT_EQ(1, ranges_3.Size());
+  EXPECT_EQ(1U, ranges_3.Size());
   EXPECT_TRUE(ranges_3.Get(0, range));
   EXPECT_EQ(range_3, range);
 }
@@ -553,37 +553,37 @@ TEST(TestHttpRanges, ParseSingle)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-1", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-5", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_5, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-1", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range1_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-3", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range1_3, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "3-4", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range3_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "4-4", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range4_4, range);
 }
@@ -602,14 +602,14 @@ TEST(TestHttpRanges, ParseMulti)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,2-2", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range2_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,2-2,4-5", totalLength));
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -618,14 +618,14 @@ TEST(TestHttpRanges, ParseMulti)
   EXPECT_EQ(range4_5, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-1,5-5", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range5_5, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-3,5-5", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range1_3, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -645,14 +645,14 @@ TEST(TestHttpRanges, ParseOrderedNotOverlapping)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,-1", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,2-2,-1", totalLength));
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -661,7 +661,7 @@ TEST(TestHttpRanges, ParseOrderedNotOverlapping)
   EXPECT_EQ(range_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,2-", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -683,34 +683,34 @@ TEST(TestHttpRanges, ParseOrderedBackToBack)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,1-1", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,1-1,2-2", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,1-1,2-2,3-3", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_3, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,1-1,2-2,3-3,4-4", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,1-1,3-3,4-4", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range3_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-1,2-2,4-4", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range1_2, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -731,32 +731,32 @@ TEST(TestHttpRanges, ParseOrderedOverlapping)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,0-1", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,0-1,0-2", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,0-1,1-2", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,0-2,1-3", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_3, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-1,1-2,2-3,3-4", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-0,2-3,2-4,4-4", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -776,14 +776,14 @@ TEST(TestHttpRanges, ParseUnorderedNotOverlapping)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "-1,0-0", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "2-2,-1,0-0", totalLength));
-  EXPECT_EQ(3, ranges.Size());
+  EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -792,7 +792,7 @@ TEST(TestHttpRanges, ParseUnorderedNotOverlapping)
   EXPECT_EQ(range_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "2-,0-0", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -818,34 +818,34 @@ TEST(TestHttpRanges, ParseUnorderedBackToBack)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-1,0-0", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "1-1,0-0,2-2", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "2-2,1-1,3-3,0-0", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_3, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "4-4,1-1,0-0,2-2,3-3", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "3-3,0-0,4-4,1-1", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
   EXPECT_TRUE(ranges.Get(1, range));
   EXPECT_EQ(range3_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "4-4,1-1,2-2", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range1_2, range);
   EXPECT_TRUE(ranges.Get(1, range));
@@ -866,32 +866,32 @@ TEST(TestHttpRanges, ParseUnorderedOverlapping)
 
   CHttpRanges ranges;
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-1,0-0", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_1, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-2,0-0,0-1", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-1,1-2,0-0", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_2, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "0-2,0-0,1-3", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_3, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "2-3,1-2,0-1,3-4", totalLength));
-  EXPECT_EQ(1, ranges.Size());
+  EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_4, range);
 
   EXPECT_TRUE(ranges.Parse(RANGES_START "4-4,0-0,2-4,2-3", totalLength));
-  EXPECT_EQ(2, ranges.Size());
+  EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.Get(0, range));
   EXPECT_EQ(range0_0, range);
   EXPECT_TRUE(ranges.Get(1, range));

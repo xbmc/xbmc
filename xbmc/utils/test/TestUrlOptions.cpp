@@ -182,7 +182,7 @@ TEST(TestUrlOptions, GetOptions)
   urlOptions.AddOption(key2, value2);
   const CUrlOptions::UrlOptions &options = urlOptions.GetOptions();
   EXPECT_FALSE(options.empty());
-  EXPECT_EQ(2, options.size());
+  EXPECT_EQ(2U, options.size());
 
   CUrlOptions::UrlOptions::const_iterator it1 = options.find(key1);
   EXPECT_TRUE(it1 != options.end());

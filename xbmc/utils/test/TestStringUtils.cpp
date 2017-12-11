@@ -266,35 +266,35 @@ TEST(TestStringUtils, Split)
 
   EXPECT_TRUE(StringUtils::Split("", "|").empty());
 
-  EXPECT_EQ(4, StringUtils::Split("a bc  d ef ghi ", " ", 4).size());
+  EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", " ", 4).size());
   EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str()) << "Last part must include rest of the input string";
-  EXPECT_EQ(7, StringUtils::Split("a bc  d ef ghi ", " ").size()) << "Result must be 7 strings including two empty strings";
+  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", " ").size()) << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", " ").at(1).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(2).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(6).c_str());
 
-  EXPECT_EQ(2, StringUtils::Split("a bc  d ef ghi ", "  ").size());
-  EXPECT_EQ(2, StringUtils::Split("a bc  d ef ghi ", "  ", 10).size());
+  EXPECT_EQ(2U, StringUtils::Split("a bc  d ef ghi ", "  ").size());
+  EXPECT_EQ(2U, StringUtils::Split("a bc  d ef ghi ", "  ", 10).size());
   EXPECT_STREQ("a bc", StringUtils::Split("a bc  d ef ghi ", "  ", 10).at(0).c_str());
 
-  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", " z").size());
+  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", " z").size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " z").at(0).c_str());
 
-  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", "").size());
+  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", "").size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", "").at(0).c_str());
   
   // test overload with char as delimiter
-  EXPECT_EQ(4, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
+  EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
   EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
-  EXPECT_EQ(7, StringUtils::Split("a bc  d ef ghi ", ' ').size()) << "Result must be 7 strings including two empty strings";
+  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", ' ').size()) << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
 
-  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", 'z').size());
+  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", 'z').size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
 
-  EXPECT_EQ(1, StringUtils::Split("a bc  d ef ghi ", "").size());
+  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", "").size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
 }
 
