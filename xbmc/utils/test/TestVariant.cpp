@@ -248,14 +248,13 @@ TEST(TestVariant, iterator_array)
   EXPECT_TRUE(a.isArray());
   EXPECT_EQ(CVariant::VariantTypeArray, a.type());
 
-  CVariant::iterator_array it;
-  for (it = a.begin_array(); it < a.end_array(); it++)
+  for (auto it = a.begin_array(); it != a.end_array(); it++)
   {
     EXPECT_STREQ("string", it->c_str());
   }
 
   CVariant::const_iterator_array const_it;
-  for (const_it = a.begin_array(); const_it < a.end_array(); const_it++)
+  for (auto const_it = a.begin_array(); const_it != a.end_array(); const_it++)
   {
     EXPECT_STREQ("string", const_it->c_str());
   }
@@ -272,14 +271,12 @@ TEST(TestVariant, iterator_map)
   EXPECT_TRUE(a.isObject());
   EXPECT_EQ(CVariant::VariantTypeObject, a.type());
 
-  CVariant::iterator_map it;
-  for (it = a.begin_map(); it != a.end_map(); it++)
+  for (auto it = a.begin_map(); it != a.end_map(); it++)
   {
     EXPECT_STREQ("string", it->second.c_str());
   }
 
-  CVariant::const_iterator_map const_it;
-  for (const_it = a.begin_map(); const_it != a.end_map(); const_it++)
+  for (auto const_it = a.begin_map(); const_it != a.end_map(); const_it++)
   {
     EXPECT_STREQ("string", const_it->second.c_str());
   }

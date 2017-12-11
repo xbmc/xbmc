@@ -292,9 +292,8 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     {
       arg = argv[++i];
       std::vector<std::string> urls = StringUtils::Split(arg, ",");
-      std::vector<std::string>::iterator it;
-      for (it = urls.begin(); it < urls.end(); ++it)
-        TestFileFactoryReadUrls.push_back(*it);
+      for (const auto& it : urls)
+        TestFileFactoryReadUrls.push_back(it);
     }
     else if (arg == "--add-testfilefactory-writeurl")
     {
@@ -304,9 +303,8 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     {
       arg = argv[++i];
       std::vector<std::string> urls = StringUtils::Split(arg, ",");
-      std::vector<std::string>::iterator it;
-      for (it = urls.begin(); it < urls.end(); ++it)
-        TestFileFactoryWriteUrls.push_back(*it);
+      for (const auto& it : urls)
+        TestFileFactoryWriteUrls.push_back(it);
     }
     else if (arg == "--set-testfilefactory-writeinputfile")
     {
@@ -320,9 +318,8 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     {
       arg = argv[++i];
       std::vector<std::string> urls = StringUtils::Split(arg, ",");
-      std::vector<std::string>::iterator it;
-      for (it = urls.begin(); it < urls.end(); ++it)
-        AdvancedSettingsFiles.push_back(*it);
+      for (const auto& it : urls)
+        AdvancedSettingsFiles.push_back(it);
     }
     else if (arg == "--add-guisettings-file")
     {
@@ -332,9 +329,8 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     {
       arg = argv[++i];
       std::vector<std::string> urls = StringUtils::Split(arg, ",");
-      std::vector<std::string>::iterator it;
-      for (it = urls.begin(); it < urls.end(); ++it)
-        GUISettingsFiles.push_back(*it);
+      for (const auto& it : urls)
+        GUISettingsFiles.push_back(it);
     }
     else if (arg == "--set-probability")
     {
