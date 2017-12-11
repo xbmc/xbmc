@@ -26,6 +26,8 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "guilib/GUIWindowManager.h"
 #include "AddonUtils.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
@@ -351,6 +353,16 @@ namespace XBMCAddon
         return new InfoTagMusic(*tag);
 
       return new InfoTagMusic();
+    }
+
+    void Player::updateInfoTag(const XBMCAddon::xbmcgui::ListItem* item)
+    {
+      XBMC_TRACE;
+      if (!g_application.m_pPlayer->IsPlaying())
+        throw PlayerException("Kodi is not playing any file");
+
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, item->item);
+      g_windowManager.SendMessage(msg);
     }
 
     InfoTagRadioRDS* Player::getRadioRDSInfoTag() throw (PlayerException)

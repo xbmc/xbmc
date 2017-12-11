@@ -575,6 +575,38 @@ namespace XBMCAddon
       void setSubtitleStream(int iStream);
 #endif
 
+      // Player_UpdateInfoTag
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
+      /// @brief \python_func{ updateInfoTag(item) }
+      ///-----------------------------------------------------------------------
+      /// Update info labels for currently playing item.
+      ///
+      /// @param item ListItem with new info
+      ///
+      /// @throws Exception          If player is not playing a file
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// item = xbmcgui.ListItem()
+      /// item.setPath(xbmc.Player().getPlayingFile())
+      /// item.setInfo('music', {'title' : 'foo', 'artist' : 'bar'})
+      /// xbmc.Player().updateInfoTag(item)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      updateInfoTag();
+#else
+      void updateInfoTag(const XBMCAddon::xbmcgui::ListItem* item);
+#endif
+
+
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
