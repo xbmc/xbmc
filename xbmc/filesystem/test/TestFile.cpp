@@ -42,7 +42,7 @@ TEST(TestFile, Read)
 
   XFILE::CFile file;
   char buf[23];
-  memset(&buf, 0, sizeof(buf));
+  memset(buf, 0, sizeof(buf));
 
   int currentPos;
   ASSERT_TRUE(file.Open(
@@ -102,7 +102,7 @@ TEST(TestFile, Write)
   XFILE::CFile *file;
   const char str[] = "TestFile.Write test string\n";
   char buf[30];
-  memset(&buf, 0, sizeof(buf));
+  memset(buf, 0, sizeof(buf));
 
   ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
