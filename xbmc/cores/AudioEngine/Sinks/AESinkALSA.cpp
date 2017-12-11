@@ -110,7 +110,7 @@ CAESinkALSA::~CAESinkALSA()
 void CAESinkALSA::Register()
 {
   AE::AESinkRegEntry entry;
-  entry.sinkName = "PULSE";
+  entry.sinkName = "ALSA";
   entry.createFunc = CAESinkALSA::Create;
   entry.enumerateFunc = CAESinkALSA::EnumerateDevicesEx;
   AE::CAESinkFactory::RegisterSink(entry);
