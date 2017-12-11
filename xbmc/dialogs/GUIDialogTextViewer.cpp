@@ -22,6 +22,8 @@
 #include "GUIUserMessages.h"
 #include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/Action.h"
+#include "input/ActionIDs.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
@@ -37,6 +39,17 @@ CGUIDialogTextViewer::CGUIDialogTextViewer(void)
 }
 
 CGUIDialogTextViewer::~CGUIDialogTextViewer(void) = default;
+
+bool CGUIDialogTextViewer::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_TOGGLE_FONT)
+  {
+    UseMonoFont(!m_mono);
+    return true;
+  }
+
+  return CGUIDialog::OnAction(action);
+}
 
 bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
 {

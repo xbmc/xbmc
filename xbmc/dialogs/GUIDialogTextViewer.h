@@ -39,6 +39,7 @@ public:
   static void ShowForFile(const std::string& path, bool useMonoFont);
 protected:
   void OnDeinitWindow(int nextWindowID) override;
+  bool OnAction(const CAction &action) override;
 
   std::string m_strText;
   std::string m_strHeading;

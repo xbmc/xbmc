@@ -779,4 +779,9 @@
       <o>PlayerProcessInfo</o>
     </keyboard>
   </PlayerProcessInfo>
+  <TextViewer>
+    <keyboard>
+      <t>ToggleFont</t>
+    </keyboard>
+  </TextViewer>
 </keymap>
