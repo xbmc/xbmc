@@ -429,7 +429,7 @@ void CAirTunesServer::SetupRemoteControl()
   std::vector<CZeroconfBrowser::ZeroconfService> services = CZeroconfBrowser::GetInstance()->GetFoundServices();
   for (auto service : services )
   {
-    if (StringUtils::CompareNoCase(service.GetType(), std::string(ZEROCONF_DACP_SERVICE) + ".") == 0)
+    if (StringUtils::EqualsNoCase(service.GetType(), std::string(ZEROCONF_DACP_SERVICE) + "."))
     {
 #define DACP_NAME_PREFIX "iTunes_Ctrl_"
       // name has the form "iTunes_Ctrl_56B29BB6CB904862"
