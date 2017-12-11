@@ -147,11 +147,11 @@ CWinSystemWayland::CWinSystemWayland()
   std::string envSink;
   if (getenv("AE_SINK"))
     envSink = getenv("AE_SINK");
-  if (StringUtils::CompareNoCase(envSink, "ALSA"))
+  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
     ::WAYLAND::ALSARegister();
   }
-  else if (StringUtils::CompareNoCase(envSink, "PULSE"))
+  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
     ::WAYLAND::PulseAudioRegister();
   }
