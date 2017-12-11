@@ -36,11 +36,11 @@ CWinSystemGbm::CWinSystemGbm() :
   std::string envSink;
   if (getenv("AE_SINK"))
     envSink = getenv("AE_SINK");
-  if (StringUtils::CompareNoCase(envSink, "ALSA"))
+  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
     GBM::ALSARegister();
   }
-  else if (StringUtils::CompareNoCase(envSink, "PULSE"))
+  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
    GBM::PulseAudioRegister();
   }
