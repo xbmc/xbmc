@@ -20,8 +20,7 @@ set(SOURCES AEResampleFactory.cpp
             Utils/AELimiter.cpp
             Utils/AEPackIEC61937.cpp
             Utils/AEStreamInfo.cpp
-            Utils/AEUtil.cpp
-            Sinks/AESinkNULL.cpp)
+            Utils/AEUtil.cpp)
 
 set(HEADERS AEResampleFactory.h
             AESinkFactory.h
@@ -47,7 +46,6 @@ set(HEADERS AEResampleFactory.h
             Interfaces/AEStream.h
             Interfaces/IAudioCallback.h
             Interfaces/ThreadedAE.h
-            Sinks/AESinkNULL.h
             Utils/AEAudioFormat.h
             Utils/AEBitstreamPacker.h
             Utils/AEChannelData.h

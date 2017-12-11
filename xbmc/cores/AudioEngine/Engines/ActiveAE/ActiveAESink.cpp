@@ -836,16 +836,6 @@ void CActiveAESink::OpenSink()
     m_sink = CAESinkFactory::Create(device, m_sinkFormat);
   }
 
-  // open NULL sink
-  //! @todo should not be required by ActiveAE
-  if (!m_sink)
-  {
-    device = "NULL:NULL";
-    m_sinkFormat = m_requestedFormat;
-    CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - open NULL sink");
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat);
-  }
-
   if (!m_sink)
   {
     CLog::Log(LOGERROR, "CActiveAESink::OpenSink - no sink was returned");
