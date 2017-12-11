@@ -75,9 +75,9 @@ bool IDirectory::IsAllowed(const CURL& url) const
     if (folder.size() <= 3) // cannot be a vcd variant
       return true;
 
-    if (!StringUtils::CompareNoCase(folder, "vcd") &&
-        !StringUtils::CompareNoCase(folder, "MPEGAV") &&
-        !StringUtils::CompareNoCase(folder, "CDDA"))
+    if (StringUtils::EqualsNoCase(folder, "vcd") ||
+        StringUtils::EqualsNoCase(folder, "MPEGAV") ||
+        StringUtils::EqualsNoCase(folder, "CDDA"))
       return true;
 
     // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
