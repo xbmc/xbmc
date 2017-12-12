@@ -72,22 +72,18 @@ bool IDirectory::IsAllowed(const CURL& url) const
     std::string folder = URIUtils::GetDirectory(fileName);
     URIUtils::RemoveSlashAtEnd(folder);
     folder = URIUtils::GetFileName(folder);
-    if (folder.size() <= 3) // cannot be a vcd variant
-      return true;
-
     if (StringUtils::EqualsNoCase(folder, "vcd") ||
-        StringUtils::EqualsNoCase(folder, "MPEGAV") ||
-        StringUtils::EqualsNoCase(folder, "CDDA"))
-      return true;
-
-    // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
-    // and MUSIC##(#).DAT
-    return (fileName.length() == 11 || fileName.length() == 12) &&
-           (StringUtils::StartsWithNoCase(fileName, "AVSEQ") ||
-            StringUtils::StartsWithNoCase(fileName, "MUSIC") ||
-            StringUtils::StartsWithNoCase(fileName, "ITEM"));
+        StringUtils::EqualsNoCase(folder, "mpegav") ||
+        StringUtils::EqualsNoCase(folder, "cdda"))
+    {
+      // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
+      // and MUSIC##(#).DAT
+      return (fileName.length() == 11 || fileName.length() == 12) &&
+             (StringUtils::StartsWithNoCase(fileName, "AVSEQ") ||
+              StringUtils::StartsWithNoCase(fileName, "MUSIC") ||
+              StringUtils::StartsWithNoCase(fileName, "ITEM"));
+    }
   }
-
   return true;
 }
 
