@@ -1,4 +1,4 @@
-xbmc/linux                 linuxsupport
+xbmc/platform/linux        platform/linux
 xbmc/input/linux           input/linux
 xbmc/input/touch           input/touch
 xbmc/input/touch/generic   input/touch/generic

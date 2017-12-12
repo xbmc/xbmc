@@ -1,4 +1,4 @@
-xbmc/linux                   linuxsupport
+xbmc/platform/linux          platform/linux
 xbmc/network/linux           network/linux
 xbmc/network/osx             network/osx
 xbmc/peripherals/bus/osx     peripherals/bus/osx
