@@ -1,5 +1,5 @@
 xbmc/platform/linux        platform/linux
-xbmc/input/linux           input/linux
+xbmc/platform/linux/input  platform/linux/input
 xbmc/input/touch           input/touch
 xbmc/input/touch/generic   input/touch/generic
 xbmc/network/linux         network/linux
