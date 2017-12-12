@@ -560,21 +560,30 @@ void CDRMUtils::DestroyDrm()
 {
   RestoreOriginalMode();
 
-  if (m_drm_resources)
-  {
-    drmModeFreeResources(m_drm_resources);
-    m_drm_resources = nullptr;
-  }
-
   drmDropMaster(m_fd);
   close(m_fd);
 
-  m_connector = nullptr;
-  m_encoder = nullptr;
-  m_crtc = nullptr;
-  m_primary_plane = nullptr;
-  m_overlay_plane = nullptr;
   m_fd = -1;
+
+  drmModeFreeResources(m_drm_resources);
+  m_drm_resources = nullptr;
+
+  delete m_connector;
+  m_connector = nullptr;
+
+  delete m_encoder;
+  m_encoder = nullptr;
+
+  delete m_crtc;
+  m_crtc = nullptr;
+
+  delete m_primary_plane;
+  m_primary_plane = nullptr;
+
+  delete m_overlay_plane;
+  m_overlay_plane = nullptr;
+
+  drmModeFreeModeInfo(m_mode);
   m_mode = nullptr;
 }
 
