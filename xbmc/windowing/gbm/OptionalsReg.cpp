@@ -115,12 +115,12 @@ void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
 
 }
 
-void GBM::RegisterVAAPI(CVaapiProxy *winSystem, bool hevc)
+void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
 {
 
 }
 
-void GBM::RegisterVAAPIRender(CVaapiProxy *winSystem, void* dpy,
+void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, void* dpy,
                          void* eglDisplay, bool &general, bool &hevc)
 {
 
