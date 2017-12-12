@@ -23,9 +23,11 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "utils/log.h"
-#include "windowing/gbm/DRMUtils.h"
 
-CRendererDRMPRIME::CRendererDRMPRIME()
+static CWinSystemGbmGLESContext *m_pWinSystem;
+
+CRendererDRMPRIME::CRendererDRMPRIME(std::shared_ptr<CDRMUtils> drm)
+  : m_DRM(drm)
 {
 }
 
@@ -37,14 +39,15 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
   if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer))
-    return new CRendererDRMPRIME();
+    return new CRendererDRMPRIME(m_pWinSystem->m_DRM);
 
   return nullptr;
 }
 
-bool CRendererDRMPRIME::Register()
+bool CRendererDRMPRIME::Register(CWinSystemGbmGLESContext *winSystem)
 {
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
+  m_pWinSystem = winSystem;
   return true;
 }
 
@@ -162,17 +165,18 @@ bool CRendererDRMPRIME::Supports(ESCALINGMETHOD method)
 
 void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
 {
+  buffer->m_drm_fd = m_DRM->m_fd;
+
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   if (descriptor && descriptor->nb_layers)
   {
     uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0};
-    struct drm* drm = CDRMUtils::GetDrm();
     int ret;
 
     // convert Prime FD to GEM handle
     for (int object = 0; object < descriptor->nb_objects; object++)
     {
-      ret = drmPrimeFDToHandle(drm->fd, descriptor->objects[object].fd, &buffer->m_handles[object]);
+      ret = drmPrimeFDToHandle(m_DRM->m_fd, descriptor->objects[object].fd, &buffer->m_handles[object]);
       if (ret < 0)
       {
         CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to retrieve the GEM handle from prime fd %d, ret = %d", __FUNCTION__, descriptor->objects[object].fd, ret);
@@ -194,7 +198,7 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     }
 
     // add the video frame FB
-    ret = drmModeAddFB2(drm->fd, buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, &buffer->m_fb_id, 0);
+    ret = drmModeAddFB2(m_DRM->m_fd, buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, &buffer->m_fb_id, 0);
     if (ret < 0)
     {
       CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to add drm layer %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
@@ -213,12 +217,12 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     // TODO: use atomic or legacy api
 
     // show the video frame FB on the video plane
-    ret = drmModeSetPlane(drm->fd, drm->overlay_plane->plane->plane_id, drm->crtc->crtc->crtc_id, buffer->m_fb_id, 0,
+    ret = drmModeSetPlane(m_DRM->m_fd, m_DRM->m_overlay_plane->plane->plane_id, m_DRM->m_crtc->crtc->crtc_id, buffer->m_fb_id, 0,
                           crtc_x, crtc_y, crtc_w, crtc_h,
                           src_x, src_y, src_w, src_h);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, drm->overlay_plane->plane->plane_id, buffer->m_fb_id, ret);
+      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, m_DRM->m_overlay_plane->plane->plane_id, buffer->m_fb_id, ret);
       return;
     }
   }

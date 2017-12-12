@@ -21,40 +21,85 @@
 #include "GBMUtils.h"
 #include "utils/log.h"
 
-bool CGBMUtils::InitGbm(struct gbm *gbm, int hdisplay, int vdisplay)
+bool CGBMUtils::CreateDevice(int fd)
 {
-  gbm->width = hdisplay;
-  gbm->height = vdisplay;
+  if (m_device)
+    CLog::Log(LOGWARNING, "CGBMUtils::%s - device already created", __FUNCTION__);
 
-  gbm->surface = gbm_surface_create(gbm->dev,
-                                    gbm->width,
-                                    gbm->height,
-                                    GBM_FORMAT_ARGB8888,
-                                    GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+  m_device = gbm_create_device(fd);
+  if (!m_device)
+  {
+    CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create device", __FUNCTION__);
+    return false;
+  }
 
-  if(!gbm->surface)
+  return true;
+}
+
+void CGBMUtils::DestroyDevice()
+{
+  if (!m_device)
+    CLog::Log(LOGWARNING, "CGBMUtils::%s - device already destroyed", __FUNCTION__);
+
+  if (m_device)
+  {
+    gbm_device_destroy(m_device);
+    m_device = nullptr;
+  }
+}
+
+bool CGBMUtils::CreateSurface(int width, int height)
+{
+  if (m_surface)
+    CLog::Log(LOGWARNING, "CGBMUtils::%s - surface already created", __FUNCTION__);
+
+  m_surface = gbm_surface_create(m_device,
+                                 width,
+                                 height,
+                                 GBM_FORMAT_ARGB8888,
+                                 GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+
+  if (!m_surface)
   {
     CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create surface", __FUNCTION__);
     return false;
   }
 
   CLog::Log(LOGDEBUG, "CGBMUtils::%s - created surface with size %dx%d", __FUNCTION__,
-                                                                         gbm->width,
-                                                                         gbm->height);
+                                                                         width,
+                                                                         height);
 
   return true;
 }
 
-void CGBMUtils::DestroyGbm(struct gbm *gbm)
+void CGBMUtils::DestroySurface()
 {
-  if(gbm->surface)
-  {
-    gbm_surface_release_buffer(gbm->surface, gbm->bo);
-    gbm->bo = gbm->next_bo = nullptr;
+  if (!m_surface)
+    CLog::Log(LOGWARNING, "CGBMUtils::%s - surface already destroyed", __FUNCTION__);
 
-    gbm_surface_destroy(gbm->surface);
-    gbm->surface = nullptr;
-    gbm->width = 0;
-    gbm->height = 0;
+  if (m_surface)
+  {
+    ReleaseBuffer();
+
+    gbm_surface_destroy(m_surface);
+    m_surface = nullptr;
   }
+}
+
+struct gbm_bo *CGBMUtils::LockFrontBuffer()
+{
+  if (m_next_bo)
+    CLog::Log(LOGWARNING, "CGBMUtils::%s - uneven surface buffer usage", __FUNCTION__);
+
+  m_next_bo = gbm_surface_lock_front_buffer(m_surface);
+  return m_next_bo;
+}
+
+void CGBMUtils::ReleaseBuffer()
+{
+  if (m_bo)
+    gbm_surface_release_buffer(m_surface, m_bo);
+
+  m_bo = m_next_bo;
+  m_next_bo = nullptr;
 }

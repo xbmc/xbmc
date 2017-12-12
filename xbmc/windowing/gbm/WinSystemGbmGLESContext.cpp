@@ -67,7 +67,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     GBM::VAAPIRegister(m_vaapiProxy.get(), hevc);
   }
 
-  CRendererDRMPRIME::Register();
+  CRendererDRMPRIME::Register(this);
   CDVDVideoCodecDRMPRIME::Register();
 
   return true;
@@ -122,8 +122,8 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  if (res.iWidth != m_drm.mode->hdisplay ||
-      res.iHeight != m_drm.mode->vdisplay)
+  if (res.iWidth != m_DRM->m_mode->hdisplay ||
+      res.iHeight != m_DRM->m_mode->vdisplay)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - resolution changed, creating a new window", __FUNCTION__);
     CreateNewWindow("", fullScreen, res);
