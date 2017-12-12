@@ -35,12 +35,12 @@ std::string CJoystickUtils::MakeKeyName(const FeatureName &feature, ANALOG_STICK
   std::string keyName = feature;
 
   if (dir != ANALOG_STICK_DIRECTION::UNKNOWN)
-    keyName += CJoystickTranslator::TranslateDirection(dir);
+    keyName += CJoystickTranslator::TranslateAnalogStickDirection(dir);
 
   return keyName;
 }
 
-const std::vector<ANALOG_STICK_DIRECTION> &CJoystickUtils::GetDirections()
+const std::vector<ANALOG_STICK_DIRECTION> &CJoystickUtils::GetAnalogStickDirections()
 {
   static std::vector<ANALOG_STICK_DIRECTION> directions;
   if (directions.empty())

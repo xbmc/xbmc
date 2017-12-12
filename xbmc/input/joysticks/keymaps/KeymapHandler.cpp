@@ -75,7 +75,7 @@ bool CKeymapHandler::AcceptsInput(const FeatureName& feature) const
   if (HasAction(CJoystickUtils::MakeKeyName(feature)))
     return true;
   
-  for (auto dir : CJoystickUtils::GetDirections())
+  for (auto dir : CJoystickUtils::GetAnalogStickDirections())
   {
     if (HasAction(CJoystickUtils::MakeKeyName(feature, dir)))
       return true;
@@ -122,7 +122,7 @@ bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, fl
   const float magnitude = std::max(std::fabs(x), std::fabs(y));
 
   // Deactivate directions in which the stick is not pointing first
-  for (auto dir : CJoystickUtils::GetDirections())
+  for (auto dir : CJoystickUtils::GetAnalogStickDirections())
   {
     if (dir != analogStickDir)
       DeactivateDirection(feature, dir);

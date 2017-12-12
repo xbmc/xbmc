@@ -85,7 +85,7 @@ bool CGUIAnalogStickButton::IsFinished(void) const
   return m_state >= STATE::FINISHED;
 }
 
-JOYSTICK::ANALOG_STICK_DIRECTION CGUIAnalogStickButton::GetDirection(void) const
+JOYSTICK::ANALOG_STICK_DIRECTION CGUIAnalogStickButton::GetAnalogStickDirection(void) const
 {
   using namespace JOYSTICK;
 

@@ -137,7 +137,7 @@ bool CJoystickMapper::DeserializeButton(const TiXmlElement *pButton, std::string
     dir = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
     const char *szDirection = pButton->Attribute(JOYSTICK_XML_ATTR_DIRECTION);
     if (szDirection != nullptr)
-      dir = JOYSTICK::CJoystickTranslator::TranslateDirection(szDirection);
+      dir = JOYSTICK::CJoystickTranslator::TranslateAnalogStickDirection(szDirection);
 
     // Process holdtime parameter
     holdtimeMs = 0;

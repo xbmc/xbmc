@@ -82,7 +82,7 @@ public:
   /*!
     * \brief Return a vector of the four cardinal directions
     */
-  static const std::vector<ANALOG_STICK_DIRECTION> &GetDirections();
+  static const std::vector<ANALOG_STICK_DIRECTION> &GetAnalogStickDirections();
 };
 
 }

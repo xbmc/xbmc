@@ -46,7 +46,7 @@ const char* CJoystickTranslator::HatStateToString(HAT_STATE state)
   return "RELEASED";
 }
 
-const char* CJoystickTranslator::TranslateDirection(ANALOG_STICK_DIRECTION dir)
+const char* CJoystickTranslator::TranslateAnalogStickDirection(ANALOG_STICK_DIRECTION dir)
 {
   switch (dir)
   {
@@ -61,7 +61,7 @@ const char* CJoystickTranslator::TranslateDirection(ANALOG_STICK_DIRECTION dir)
   return "";
 }
 
-ANALOG_STICK_DIRECTION CJoystickTranslator::TranslateDirection(const std::string &dir)
+ANALOG_STICK_DIRECTION CJoystickTranslator::TranslateAnalogStickDirection(const std::string &dir)
 {
   if (dir == "up")    return ANALOG_STICK_DIRECTION::UP;
   if (dir == "down")  return ANALOG_STICK_DIRECTION::DOWN;

@@ -57,7 +57,7 @@ CGUIConfigurationWizard::~CGUIConfigurationWizard(void) = default;
 void CGUIConfigurationWizard::InitializeState(void)
 {
   m_currentButton = nullptr;
-  m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
+  m_analogStickDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
   m_lateAxisDetected = false;
   m_deviceName.clear();
@@ -126,8 +126,8 @@ void CGUIConfigurationWizard::Process(void)
 
       while (!button->IsFinished())
       {
-        // Allow other threads to access which direction the analog stick is on
-        m_currentDirection = button->GetDirection();
+        // Allow other threads to access which direction the prompt is on
+        m_analogStickDirection = button->GetAnalogStickDirection();
 
         // Wait for input
         {
@@ -253,11 +253,11 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   {
     // Get the current state of the thread
     IFeatureButton* currentButton;
-    ANALOG_STICK_DIRECTION currentDirection;
+    ANALOG_STICK_DIRECTION analogStickDirection;
     {
       CSingleLock lock(m_stateMutex);
       currentButton = m_currentButton;
-      currentDirection = m_currentDirection;
+      analogStickDirection = m_analogStickDirection;
     }
 
     if (currentButton)
@@ -277,13 +277,13 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         case FEATURE_TYPE::ANALOG_STICK:
         {
-          buttonMap->AddAnalogStick(feature.Name(), currentDirection, primitive);
+          buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
           bHandled = true;
           break;
         }
         case FEATURE_TYPE::RELPOINTER:
         {
-          buttonMap->AddRelativePointer(feature.Name(), currentDirection, primitive);
+          buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
           bHandled = true;
           break;
         }
