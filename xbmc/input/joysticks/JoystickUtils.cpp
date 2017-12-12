@@ -25,7 +25,12 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-std::string CJoystickUtils::MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir /* = ANALOG_STICK_DIRECTION::UNKNOWN */)
+std::string CJoystickUtils::MakeKeyName(const FeatureName &feature)
+{
+  return feature;
+}
+
+std::string CJoystickUtils::MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir)
 {
   std::string keyName = feature;
 
