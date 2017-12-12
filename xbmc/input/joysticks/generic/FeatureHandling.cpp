@@ -43,7 +43,8 @@ CJoystickFeature::CJoystickFeature(const FeatureName& name, IInputHandler* handl
   m_name(name),
   m_handler(handler),
   m_buttonMap(buttonMap),
-  m_bEnabled(m_handler->HasFeature(name))
+  m_bEnabled(m_handler->HasFeature(name)),
+  m_motionStartTimeMs(0)
 {
 }
 
@@ -60,13 +61,35 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
   return bAcceptsInput;
 }
 
+void CJoystickFeature::ResetMotion()
+{
+  m_motionStartTimeMs = 0;
+}
+
+void CJoystickFeature::StartMotion()
+{
+  m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+}
+
+bool CJoystickFeature::InMotion() const
+{
+  return m_motionStartTimeMs > 0;
+}
+
+unsigned int CJoystickFeature::MotionTimeMs() const
+{
+  if (!InMotion())
+    return 0;
+
+  return XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+}
+
 // --- CScalarFeature ----------------------------------------------------------
 
 CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_inputType(INPUT_TYPE::UNKNOWN),
   m_bDigitalState(false),
-  m_motionStartTimeMs(0),
   m_analogState(0.0f),
   m_bActivated(false),
   m_bDiscrete(true)
@@ -125,7 +148,9 @@ bool CScalarFeature::OnDigitalMotion(bool bPressed)
   if (m_bDigitalState != bPressed)
   {
     m_bDigitalState = bPressed;
-    m_motionStartTimeMs = 0; // This is set in ProcessMotions()
+
+    // Motion is initiated in ProcessMotions()
+    ResetMotion();
 
     bHandled = m_bInitialPressHandled = m_handler->OnButtonPress(m_name, bPressed);
 
@@ -152,9 +177,9 @@ bool CScalarFeature::OnAnalogMotion(float magnitude)
 
   // Update motion time
   if (!bActivated)
-    m_motionStartTimeMs = 0;
-  else if (m_motionStartTimeMs == 0)
-    m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+    ResetMotion();
+  else if (!InMotion())
+    StartMotion();
 
   // Log activation/deactivation
   if (m_bDigitalState != bActivated)
@@ -169,16 +194,16 @@ bool CScalarFeature::OnAnalogMotion(float magnitude)
 
 void CScalarFeature::ProcessDigitalMotion()
 {
-  if (m_motionStartTimeMs == 0)
+  if (!InMotion())
   {
     // Button was just pressed, record start time and exit (button press event
     // was already sent this frame)
-    m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+    StartMotion();
   }
   else
   {
     // Button has been pressed more than one event frame
-    const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+    const unsigned int elapsed = MotionTimeMs();
     m_handler->OnButtonHold(m_name, elapsed);
   }
 }
@@ -188,9 +213,7 @@ void CScalarFeature::ProcessAnalogMotion()
   float magnitude = m_analogState;
 
   // Calculate time elapsed since motion began
-  unsigned int elapsed = 0;
-  if (m_motionStartTimeMs > 0)
-    elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+  unsigned int elapsed = MotionTimeMs();
 
   // If analog value is discrete, ramp up magnitude
   if (m_bActivated && m_bDiscrete)
@@ -211,8 +234,7 @@ void CScalarFeature::ProcessAnalogMotion()
 CAnalogStick::CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_vertState(0.0f),
-  m_horizState(0.0f),
-  m_motionStartTimeMs(0)
+  m_horizState(0.0f)
 {
 }
 
@@ -296,14 +318,14 @@ void CAnalogStick::ProcessMotions(void)
 
     if (bActivated)
     {
-      if (m_motionStartTimeMs == 0)
-        m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+      if (!InMotion())
+        StartMotion();
       else
-        motionTimeMs = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+        motionTimeMs = MotionTimeMs();
     }
     else
     {
-      m_motionStartTimeMs = 0;
+      ResetMotion();
     }
 
     m_handler->OnAnalogStickMotion(m_name, newHorizState, newVertState, motionTimeMs);

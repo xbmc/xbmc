@@ -90,10 +90,33 @@ namespace JOYSTICK
     bool AcceptsInput(bool bActivation);
 
   protected:
+    /*!
+     * \brief Reset motion timer
+     */
+    void ResetMotion();
+
+    /*!
+     * \brief Start the motion timer
+     */
+    void StartMotion();
+
+    /*!
+     * \brief Check if the feature is in motion
+     */
+    bool InMotion() const;
+
+    /*!
+     * \brief Get the time for which the feature has been in motion
+     */
+    unsigned int MotionTimeMs() const;
+
     const FeatureName    m_name;
     IInputHandler* const m_handler;
     IButtonMap* const    m_buttonMap;
     const bool           m_bEnabled;
+
+  private:
+    unsigned int m_motionStartTimeMs;
   };
 
   class CScalarFeature : public CJoystickFeature
@@ -117,7 +140,6 @@ namespace JOYSTICK
     // State variables
     INPUT_TYPE       m_inputType = INPUT_TYPE::UNKNOWN;
     bool             m_bDigitalState;
-    unsigned int     m_motionStartTimeMs;
     bool             m_bInitialPressHandled = false;
 
     // Analog state variables
@@ -208,8 +230,6 @@ namespace JOYSTICK
 
     float m_vertState;
     float m_horizState;
-
-    unsigned int m_motionStartTimeMs;
   };
 
   class CAccelerometer : public CJoystickFeature
