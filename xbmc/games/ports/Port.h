@@ -57,6 +57,8 @@ namespace GAME
     virtual bool OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs) override;
     virtual bool OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
+    virtual bool OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
+    virtual bool OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
 
     // Implementation of IKeymapEnvironment
     virtual int GetWindowID() const override;

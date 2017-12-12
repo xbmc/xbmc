@@ -43,8 +43,7 @@ CJoystickFeature::CJoystickFeature(const FeatureName& name, IInputHandler* handl
   m_name(name),
   m_handler(handler),
   m_buttonMap(buttonMap),
-  m_bEnabled(m_handler->HasFeature(name)),
-  m_motionStartTimeMs(0)
+  m_bEnabled(m_handler->HasFeature(name))
 {
 }
 
@@ -227,6 +226,161 @@ void CScalarFeature::ProcessAnalogMotion()
   }
 
   m_handler->OnButtonMotion(m_name, magnitude, elapsed);
+}
+
+// --- CAxisFeature ------------------------------------------------------------
+
+CAxisFeature::CAxisFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
+  CJoystickFeature(name, handler, buttonMap),
+  m_state(0.0f)
+{
+}
+
+bool CAxisFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
+{
+  return OnAnalogMotion(source, bPressed ? 1.0f : 0.0f);
+}
+
+void CAxisFeature::ProcessMotions(void)
+{
+  const float newState = m_axis.GetPosition();
+
+  const bool bActivated = (newState != 0.0f);
+
+  if (!AcceptsInput(bActivated))
+    return;
+
+  const bool bWasActivated = (m_state != 0.0f);
+
+  if (!bActivated && bWasActivated)
+    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s deactivated", m_name.c_str());
+  else if (bActivated && !bWasActivated)
+  {
+    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s activated %s", m_name.c_str(),
+              m_handler->ControllerID().c_str(),
+              newState > 0.0f ? "positive" : "negative");
+  }
+
+  if (bActivated || bWasActivated)
+  {
+    m_state = newState;
+
+    unsigned int motionTimeMs = 0;
+
+    if (bActivated)
+    {
+      if (!InMotion())
+        StartMotion();
+      else
+        motionTimeMs = MotionTimeMs();
+    }
+    else
+      ResetMotion();
+
+    switch (m_buttonMap->GetFeatureType(m_name))
+    {
+      case FEATURE_TYPE::WHEEL:
+        m_handler->OnWheelMotion(m_name, newState, motionTimeMs);
+        break;
+      case FEATURE_TYPE::THROTTLE:
+        m_handler->OnThrottleMotion(m_name, newState, motionTimeMs);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+// --- CWheel ------------------------------------------------------------------
+
+CWheel::CWheel(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
+  CAxisFeature(name, handler, buttonMap)
+{
+}
+
+bool CWheel::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
+{
+  WHEEL_DIRECTION direction = WHEEL_DIRECTION::UNKNOWN;
+
+  std::vector<WHEEL_DIRECTION> dirs = {
+    WHEEL_DIRECTION::RIGHT,
+    WHEEL_DIRECTION::LEFT,
+  };
+
+  CDriverPrimitive primitive;
+  for (auto dir : dirs)
+  {
+    if (m_buttonMap->GetWheel(m_name, dir, primitive) && primitive == source)
+    {
+      direction = dir;
+      break;
+    }
+  }
+
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(magnitude > 0.0f);
+
+  switch (direction)
+  {
+    case WHEEL_DIRECTION::RIGHT:
+      m_axis.SetPositiveDistance(magnitude);
+      break;
+    case WHEEL_DIRECTION::LEFT:
+      m_axis.SetNegativeDistance(magnitude);
+      break;
+    default:
+      // Just in case, avoid sticking
+      m_axis.Reset();
+      break;
+  }
+
+  return bHandled;
+}
+
+// --- CThrottle ---------------------------------------------------------------
+
+CThrottle::CThrottle(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
+  CAxisFeature(name, handler, buttonMap)
+{
+}
+
+bool CThrottle::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
+{
+  THROTTLE_DIRECTION direction = THROTTLE_DIRECTION::UNKNOWN;
+
+  std::vector<THROTTLE_DIRECTION> dirs = {
+    THROTTLE_DIRECTION::UP,
+    THROTTLE_DIRECTION::DOWN,
+  };
+
+  CDriverPrimitive primitive;
+  for (auto dir : dirs)
+  {
+    if (m_buttonMap->GetThrottle(m_name, dir, primitive) && primitive == source)
+    {
+      direction = dir;
+      break;
+    }
+  }
+
+  // Feature must accept input to be considered handled
+  bool bHandled = AcceptsInput(magnitude > 0.0f);
+
+  switch (direction)
+  {
+    case THROTTLE_DIRECTION::UP:
+      m_axis.SetPositiveDistance(magnitude);
+      break;
+    case THROTTLE_DIRECTION::DOWN:
+      m_axis.SetNegativeDistance(magnitude);
+      break;
+    default:
+      // Just in case, avoid sticking
+      m_axis.Reset();
+      break;
+  }
+
+  return bHandled;
 }
 
 // --- CAnalogStick ------------------------------------------------------------

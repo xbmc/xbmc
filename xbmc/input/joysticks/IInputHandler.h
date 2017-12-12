@@ -127,6 +127,32 @@ namespace JOYSTICK
      */
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) { return false; }
 
+    /*!
+     * \brief A wheel has changed state
+     *
+     * Left is negative position, right is positive position
+     *
+     * \param feature      The wheel changing state
+     * \param position     The position in the closed interval [-1, 1]
+     * \param motionTimeMs The time elapsed since the position was 0
+     *
+     * \return True if the event was handled otherwise false
+     */
+    virtual bool OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) = 0;
+
+    /*!
+     * \brief A throttle has changed state
+     *
+     * Up is positive position, down is negative position.
+     *
+     * \param feature      The wheel changing state
+     * \param position     The position in the closed interval [-1, 1]
+     * \param motionTimeMs The time elapsed since the position was 0
+     *
+     * \return True if the event was handled otherwise false
+     */
+    virtual bool OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) = 0;
+
     // Input receiver interface
     void SetInputReceiver(IInputReceiver* receiver) { m_receiver = receiver; }
     void ResetInputReceiver(void) { m_receiver = nullptr; }

@@ -21,6 +21,8 @@
 #include "GUIFeatureFactory.h"
 #include "GUIAnalogStickButton.h"
 #include "GUIScalarFeatureButton.h"
+#include "GUIThrottleButton.h"
+#include "GUIWheelButton.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -38,6 +40,12 @@ CGUIButtonControl* CGUIFeatureFactory::CreateButton(BUTTON_TYPE type,
 
   case BUTTON_TYPE::ANALOG_STICK:
     return new CGUIAnalogStickButton(buttonTemplate, wizard, feature, index);
+
+  case BUTTON_TYPE::WHEEL:
+    return new CGUIWheelButton(buttonTemplate, wizard, feature, index);
+
+  case BUTTON_TYPE::THROTTLE:
+    return new CGUIThrottleButton(buttonTemplate, wizard, feature, index);
 
   default:
     break;

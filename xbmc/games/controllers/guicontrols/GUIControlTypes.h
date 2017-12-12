@@ -31,6 +31,8 @@ namespace GAME
     UNKNOWN,
     BUTTON,
     ANALOG_STICK,
+    WHEEL,
+    THROTTLE,
   };
 }
 }

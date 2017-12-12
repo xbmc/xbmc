@@ -105,6 +105,22 @@ bool CPort::OnAccelerometerMotion(const std::string& feature, float x, float y, 
   return m_gameInput->OnAccelerometerMotion(feature, x, y, z);
 }
 
+bool CPort::OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  if ((position != 0.0f) && !m_gameClient.AcceptsInput())
+    return false;
+
+  return m_gameInput->OnWheelMotion(feature, position, motionTimeMs);
+}
+
+bool CPort::OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  if ((position != 0.0f) && !m_gameClient.AcceptsInput())
+    return false;
+
+  return m_gameInput->OnThrottleMotion(feature, position, motionTimeMs);
+}
+
 int CPort::GetWindowID() const
 {
   return WINDOW_FULLSCREEN_GAME;

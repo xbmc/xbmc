@@ -108,7 +108,7 @@
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
 
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.4"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.5"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.4"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \

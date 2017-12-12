@@ -76,6 +76,28 @@ bool CJoystickMonitor::OnAnalogStickMotion(const FeatureName& feature, float x, 
   return false;
 }
 
+bool CJoystickMonitor::OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs)
+{
+  if (std::fabs(position) > AXIS_DEADZONE)
+  {
+    CServiceBroker::GetInputManager().SetMouseActive(false);
+    return ResetTimers();
+  }
+
+  return false;
+}
+
+bool CJoystickMonitor::OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs)
+{
+  if (std::fabs(position) > AXIS_DEADZONE)
+  {
+    CServiceBroker::GetInputManager().SetMouseActive(false);
+    return ResetTimers();
+  }
+
+  return false;
+}
+
 bool CJoystickMonitor::ResetTimers(void)
 {
   g_application.ResetSystemIdleTimer();

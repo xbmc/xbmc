@@ -116,7 +116,7 @@ namespace JOYSTICK
     const bool           m_bEnabled;
 
   private:
-    unsigned int m_motionStartTimeMs;
+    unsigned int m_motionStartTimeMs = 0;
   };
 
   class CScalarFeature : public CJoystickFeature
@@ -211,6 +211,42 @@ namespace JOYSTICK
   protected:
     float m_positiveDistance;
     float m_negativeDistance;
+  };
+
+  class CAxisFeature : public CJoystickFeature
+  {
+  public:
+    CAxisFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
+    virtual ~CAxisFeature() = default;
+
+    // partial implementation of CJoystickFeature
+    virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
+    virtual void ProcessMotions(void) override;
+
+  protected:
+    CFeatureAxis m_axis;
+
+    float m_state;
+  };
+
+  class CWheel : public CAxisFeature
+  {
+  public:
+    CWheel(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
+    virtual ~CWheel() = default;
+
+    // partial implementation of CJoystickFeature
+    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+  };
+
+  class CThrottle : public CAxisFeature
+  {
+  public:
+    CThrottle(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
+    virtual ~CThrottle() = default;
+
+    // partial implementation of CJoystickFeature
+    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
   };
 
   class CAnalogStick : public CJoystickFeature

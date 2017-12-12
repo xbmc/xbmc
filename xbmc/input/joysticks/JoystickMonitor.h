@@ -42,6 +42,8 @@ namespace JOYSTICK
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
     virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override { return false; }
+    virtual bool OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
+    virtual bool OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
 
   private:
     /*!

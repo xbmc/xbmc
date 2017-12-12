@@ -17083,7 +17083,22 @@ msgctxt "#35064"
 msgid "Pair your controllers with the various input devices of different game systems."
 msgstr ""
 
-#empty strings from id 35065 to 35073
+#empty strings from id 35065 to 35070
+
+#. Label for buttons that appear on a racing wheel for games. Used in the controller mapping dialog.
+msgctxt "#35071"
+msgid "Racing wheel"
+msgstr ""
+
+#. Label for paddle buttons that appear on a racing wheel for games. Used in the controller mapping dialog.
+msgctxt "#35072"
+msgid "Paddles"
+msgstr ""
+
+#. Label for buttons that appear on a joystick for games. Used in the controller mapping dialog.
+msgctxt "#35073"
+msgid "Joysticks"
+msgstr ""
 
 #. Label for buttons that appear on the face of the controller. Used in the controller mapping dialog.
 msgctxt "#35074"

@@ -71,12 +71,70 @@ ANALOG_STICK_DIRECTION CJoystickTranslator::TranslateAnalogStickDirection(const 
   return ANALOG_STICK_DIRECTION::UNKNOWN;
 }
 
+const char* CJoystickTranslator::TranslateWheelDirection(WHEEL_DIRECTION dir)
+{
+  switch (dir)
+  {
+    case WHEEL_DIRECTION::RIGHT: return "right";
+    case WHEEL_DIRECTION::LEFT:  return "left";
+    default:
+      break;
+  }
+
+  return "";
+}
+
+WHEEL_DIRECTION CJoystickTranslator::TranslateWheelDirection(const std::string &dir)
+{
+  if (dir == "right") return WHEEL_DIRECTION::RIGHT;
+  if (dir == "left")  return WHEEL_DIRECTION::LEFT;
+
+  return WHEEL_DIRECTION::UNKNOWN;
+}
+
+const char* CJoystickTranslator::TranslateThrottleDirection(THROTTLE_DIRECTION dir)
+{
+  switch (dir)
+  {
+    case THROTTLE_DIRECTION::UP:    return "up";
+    case THROTTLE_DIRECTION::DOWN:  return "down";
+    default:
+      break;
+  }
+
+  return "";
+}
+
+THROTTLE_DIRECTION CJoystickTranslator::TranslateThrottleDirection(const std::string &dir)
+{
+  if (dir == "up")    return THROTTLE_DIRECTION::UP;
+  if (dir == "down")  return THROTTLE_DIRECTION::DOWN;
+
+  return THROTTLE_DIRECTION::UNKNOWN;
+}
+
 SEMIAXIS_DIRECTION CJoystickTranslator::PositionToSemiAxisDirection(float position)
 {
   if      (position > 0) return SEMIAXIS_DIRECTION::POSITIVE;
   else if (position < 0) return SEMIAXIS_DIRECTION::NEGATIVE;
 
   return SEMIAXIS_DIRECTION::ZERO;
+}
+
+WHEEL_DIRECTION CJoystickTranslator::PositionToWheelDirection(float position)
+{
+  if      (position > 0.0f) return WHEEL_DIRECTION::RIGHT;
+  else if (position < 0.0f) return WHEEL_DIRECTION::LEFT;
+
+  return WHEEL_DIRECTION::UNKNOWN;
+}
+
+THROTTLE_DIRECTION CJoystickTranslator::PositionToThrottleDirection(float position)
+{
+  if      (position > 0.0f) return THROTTLE_DIRECTION::UP;
+  else if (position < 0.0f) return THROTTLE_DIRECTION::DOWN;
+
+  return THROTTLE_DIRECTION::UNKNOWN;
 }
 
 ANALOG_STICK_DIRECTION CJoystickTranslator::VectorToAnalogStickDirection(float x, float y)
