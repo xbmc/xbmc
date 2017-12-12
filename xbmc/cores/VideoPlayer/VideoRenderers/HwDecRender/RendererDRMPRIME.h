@@ -24,17 +24,18 @@
 
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
+#include "windowing/gbm/WinSystemGbmGLESContext.h"
 
 class CRendererDRMPRIME
   : public CBaseRenderer
 {
 public:
-  CRendererDRMPRIME();
+  CRendererDRMPRIME(std::shared_ptr<CDRMUtils> drm);
   virtual ~CRendererDRMPRIME();
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
-  static bool Register();
+  static bool Register(CWinSystemGbmGLESContext *winSystem);
 
   // Player functions
   bool Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation) override;
@@ -62,6 +63,8 @@ private:
   bool m_bConfigured = false;
   int m_iLastRenderBuffer = -1;
   static const int m_numRenderBuffers = 4;
+
+  std::shared_ptr<CDRMUtils> m_DRM;
 
   struct BUFFER
   {
