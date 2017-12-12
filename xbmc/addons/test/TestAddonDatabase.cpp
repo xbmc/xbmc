@@ -61,6 +61,11 @@ protected:
     builder.SetVersion(AddonVersion(version));
     addons.push_back(builder.Build());
   }
+
+  void TearDown() override
+  {
+    database.Close();
+  }
 };
 
 
