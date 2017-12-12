@@ -28,7 +28,7 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "settings/Settings.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)

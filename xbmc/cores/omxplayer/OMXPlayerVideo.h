@@ -34,7 +34,7 @@
 #include "DVDOverlayContainer.h"
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
-#include "linux/DllBCM.h"
+#include "platform/linux/DllBCM.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include <atomic>
 

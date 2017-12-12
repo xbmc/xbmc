@@ -46,7 +46,7 @@
 #ifdef TARGET_RASPBERRY_PI
 #include "OMXCore.h"
 #include "OMXClock.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #else
 
 

@@ -45,7 +45,7 @@
 #include "utils/log.h"
 
 #ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
+#include "platform/linux/input/LIRC.h"
 #endif
 
 #include <locale.h>

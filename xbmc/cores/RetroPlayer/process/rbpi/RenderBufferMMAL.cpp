@@ -19,7 +19,7 @@
  */
 
 #include "RenderBufferMMAL.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 using namespace KODI;
 using namespace RETRO;

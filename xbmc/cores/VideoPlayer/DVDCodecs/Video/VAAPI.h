@@ -33,7 +33,7 @@
 #include <memory>
 #include <vector>
 #include <va/va.h>
-#include "linux/sse4/DllLibSSE4.h"
+#include "platform/linux/sse4/DllLibSSE4.h"
 
 extern "C" {
 #include "libavutil/avutil.h"

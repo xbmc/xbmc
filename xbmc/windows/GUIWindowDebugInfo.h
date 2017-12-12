@@ -22,7 +22,7 @@
 
 #include "guilib/GUIDialog.h"
 #ifdef TARGET_POSIX
-#include "linux/LinuxResourceCounter.h"
+#include "platform/linux/LinuxResourceCounter.h"
 #endif
 
 class CGUITextLayout;

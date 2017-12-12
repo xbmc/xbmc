@@ -20,7 +20,7 @@
 
 #include <interface/mmal/util/mmal_default_components.h>
 #include "ProcessInfoPi.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 
 // Override for platform ports

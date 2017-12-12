@@ -31,7 +31,7 @@
 #include <string>
 
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 Display* CVideoSyncGLX::m_Dpy = NULL;

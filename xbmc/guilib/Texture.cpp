@@ -36,7 +36,7 @@
 #include "filesystem/AndroidAppFile.h"
 #endif
 #ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #endif
 #include "rendering/RenderSystem.h"
 

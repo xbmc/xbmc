@@ -20,7 +20,7 @@
  */
 
 #include "cores/AudioEngine/Interfaces/AEResample.h"
-#include "linux/OMXCore.h"
+#include "platform/linux/OMXCore.h"
 
 namespace ActiveAE
 {

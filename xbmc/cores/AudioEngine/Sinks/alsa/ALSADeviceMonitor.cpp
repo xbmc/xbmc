@@ -24,7 +24,7 @@
 
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "ALSADeviceMonitor.h"
-#include "linux/FDEventMonitor.h"
+#include "platform/linux/FDEventMonitor.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
 

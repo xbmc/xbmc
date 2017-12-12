@@ -18,7 +18,7 @@
  *
  */
 
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "EGL/egl.h"
 #include <bcm_host.h>
 #include "guilib/Resolution.h"

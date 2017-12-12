@@ -25,7 +25,7 @@
 #include "ActiveAEResamplePi.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 extern "C" {
 #include "libavutil/channel_layout.h"

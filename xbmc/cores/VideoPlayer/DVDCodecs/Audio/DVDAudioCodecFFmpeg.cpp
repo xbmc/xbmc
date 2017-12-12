@@ -21,7 +21,7 @@
 #include "DVDAudioCodecFFmpeg.h"
 #ifdef TARGET_POSIX
 #include "XMemUtils.h"
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"

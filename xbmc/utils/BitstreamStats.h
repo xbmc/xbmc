@@ -23,7 +23,7 @@
 
 #include <string>
 #ifdef TARGET_POSIX
-#include "linux/PlatformDefs.h"
+#include "platform/linux/PlatformDefs.h"
 #else
 #include <stdint.h>
 #endif

@@ -53,7 +53,7 @@
 #include <stdio.h>
 #include <algorithm>
 #if defined(TARGET_DARWIN)
-#include "linux/LinuxResourceCounter.h"
+#include "platform/linux/LinuxResourceCounter.h"
 #endif
 
 using namespace KODI::MESSAGING;

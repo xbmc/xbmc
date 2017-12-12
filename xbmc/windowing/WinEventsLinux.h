@@ -25,7 +25,7 @@
 #include <memory>
 #include "utils/Observer.h"
 #include "windowing/WinEvents.h"
-#include "input/linux/LinuxInputDevices.h"
+#include "platform/linux/input/LinuxInputDevices.h"
 
 class CWinEventsLinux : public IWinEvents, public Observer
 {

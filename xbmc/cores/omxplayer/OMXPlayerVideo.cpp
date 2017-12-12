@@ -29,7 +29,7 @@
 #include "OMXPlayerVideo.h"
 
 #include "ServiceBroker.h"
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #include "utils/BitstreamStats.h"
 
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -42,7 +42,7 @@
 #include "guilib/GraphicContext.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 using namespace RenderManager;
 

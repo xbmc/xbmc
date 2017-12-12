@@ -50,7 +50,7 @@
 #include "GUIWindowSlideShow.h"
 
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #define CONTROL_BTNVIEWASICONS      2

@@ -35,7 +35,7 @@
 #include "utils/URIUtils.h"
 
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 namespace dbiplus {

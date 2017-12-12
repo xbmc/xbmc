@@ -30,7 +30,7 @@ extern "C" {
 }
 
 #include "DVDStreamInfo.h"
-#include "linux/PlatformDefs.h"
+#include "platform/linux/PlatformDefs.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 class COMXAudioCodecOMX

@@ -23,7 +23,7 @@
 #include "cores/RetroPlayer/process/rbpi/RenderBufferMMAL.h"
 #include "cores/RetroPlayer/process/rbpi/RenderBufferPoolMMAL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

@@ -113,7 +113,7 @@ class CRenderCaptureBase
 };
 
 #if defined(TARGET_RASPBERRY_PI)
-#include "xbmc/linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 class CRenderCaptureDispmanX : public CRenderCaptureBase
 {

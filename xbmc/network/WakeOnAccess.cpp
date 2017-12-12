@@ -43,7 +43,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #ifdef HAS_UPNP

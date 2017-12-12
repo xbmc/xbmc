@@ -25,7 +25,7 @@
 #include "utils/log.h"
 
 #include "OMXClock.h"
-#include "xbmc/linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include <cassert>
 
 #ifdef TARGET_LINUX

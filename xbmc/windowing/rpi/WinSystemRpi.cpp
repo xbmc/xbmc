@@ -23,8 +23,8 @@
 #include <string.h>
 #include <float.h>
 
-#include "linux/DllBCM.h"
-#include "linux/RBP.h"
+#include "platform/linux/DllBCM.h"
+#include "platform/linux/RBP.h"
 #include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Resolution.h"

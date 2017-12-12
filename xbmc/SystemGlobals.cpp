@@ -40,7 +40,7 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 #include "filesystem/ZipManager.h"
 
 #ifdef TARGET_RASPBERRY_PI
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #endif
 
   CLangCodeExpander  g_LangCodeExpander;

@@ -29,7 +29,7 @@
 #include "MMALFFmpeg.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "settings/AdvancedSettings.h"
 
 extern "C" {

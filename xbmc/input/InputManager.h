@@ -25,7 +25,7 @@
 #include <vector>
 
 #if defined(HAS_LIRC)
-#include "input/linux/LIRC.h"
+#include "platform/linux/input/LIRC.h"
 #endif
 #if defined(HAS_IRSERVERSUITE)
 #include "input/windows/IRServerSuite.h"

@@ -26,7 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #include "URL.h"
 
 #include <dirent.h>
