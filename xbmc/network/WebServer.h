@@ -44,6 +44,7 @@ public:
   bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
+  static bool WebServerSupportsSSL();
   void SetCredentials(const std::string &username, const std::string &password);
 
   void RegisterRequestHandler(IHTTPRequestHandler *handler);

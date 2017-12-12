@@ -1289,6 +1289,11 @@ bool CWebServer::IsStarted()
   return m_running;
 }
 
+bool CWebServer::WebServerSupportsSSL()
+{
+  return MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES;
+}
+
 void CWebServer::SetCredentials(const std::string &username, const std::string &password)
 {
   CSingleLock lock(m_critSection);
