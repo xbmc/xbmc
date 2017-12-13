@@ -51,6 +51,32 @@ CServiceManager::CServiceManager()
 
 CServiceManager::~CServiceManager() = default;
 
+bool CServiceManager::InitForTesting()
+{
+  m_settings.reset(new CSettings());
+  m_network.reset(SetupNetwork());
+  m_fileExtensionProvider.reset(new CFileExtensionProvider());
+
+  m_addonMgr.reset(new ADDON::CAddonMgr());
+  if (!m_addonMgr->Init())
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to start CAddonMgr", __FUNCTION__);
+    return false;
+  }
+
+  init_level = 1;
+  return true;
+}
+
+void CServiceManager::DeinitTesting()
+{
+  init_level = 0;
+  m_addonMgr.reset();
+  m_fileExtensionProvider.reset();
+  m_network.reset();
+  m_settings.reset();
+}
+
 bool CServiceManager::InitStageOne()
 {
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
