@@ -63,6 +63,7 @@ class IAE;
 class CFavouritesService;
 class CNetwork;
 class CWinSystemBase;
+class CPowerManager;
 
 namespace KODI
 {
@@ -137,6 +138,8 @@ public:
   CWinSystemBase &GetWinSystem();
   void SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem);
 
+  CPowerManager &GetPowerManager();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -187,4 +190,5 @@ protected:
   std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
   std::unique_ptr<CNetwork> m_network;
   std::unique_ptr<CWinSystemBase> m_winSystem;
+  std::unique_ptr<CPowerManager> m_powerManager;
 };

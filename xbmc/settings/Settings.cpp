@@ -666,8 +666,6 @@ void CSettings::InitializeDefaults()
 
   if (g_application.IsStandAlone())
     std::static_pointer_cast<CSettingInt>(GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
-
-  g_powerManager.SetDefaults();
 }
 
 void CSettings::InitializeOptionFillers()
