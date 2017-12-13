@@ -218,3 +218,21 @@ bool X11::PulseAudioRegister()
   return false;
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// sndio
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_SNDIO
+#include "cores/AudioEngine/Sinks/AESinkSNDIO.h"
+bool X11::SndioRegister()
+{
+  CAESinkSNDIO::Register();
+  return true;
+}
+#else
+bool X11::SndioRegister()
+{
+  return false;
+}
+#endif

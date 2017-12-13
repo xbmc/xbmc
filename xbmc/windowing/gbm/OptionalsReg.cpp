@@ -161,3 +161,21 @@ bool GBM::PulseAudioRegister()
   return false;
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// sndio
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_SNDIO
+#include "cores/AudioEngine/Sinks/AESinkSNDIO.h"
+bool GBM::SndioRegister()
+{
+  CAESinkSNDIO::Register();
+  return true;
+}
+#else
+bool GBM::SndioRegister()
+{
+  return false;
+}
+#endif

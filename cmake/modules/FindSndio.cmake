@@ -25,7 +25,7 @@ find_package_handle_standard_args(Sndio
 if(SNDIO_FOUND)
   set(SNDIO_INCLUDE_DIRS ${SNDIO_INCLUDE_DIR})
   set(SNDIO_LIBRARIES ${SNDIO_LIBRARY})
-  set(SNDIO_DEFINITIONS -DHAVE_SNDIO=1)
+  set(SNDIO_DEFINITIONS -DHAS_SNDIO=1)
 
   if(NOT TARGET Sndio::Sndio)
     add_library(Sndio::Sndio UNKNOWN IMPORTED)
@@ -33,7 +33,7 @@ if(SNDIO_FOUND)
                                        IMPORTED_LOCATION "${SNDIO_LIBRARY}"
                                        INTERFACE_INCLUDE_DIRECTORIES "${SNDIO_INCLUDE_DIR}")
     set_target_properties(Sndio::Sndio PROPERTIES
-                                       INTERFACE_COMPILE_DEFINITIONS -DHAVE_SNDIO=1)
+                                       INTERFACE_COMPILE_DEFINITIONS -DHAS_SNDIO=1)
   endif()
 endif()
 

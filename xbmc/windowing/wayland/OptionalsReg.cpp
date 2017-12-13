@@ -135,3 +135,21 @@ bool WAYLAND::PulseAudioRegister()
   return false;
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// sndio
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_SNDIO
+#include "cores/AudioEngine/Sinks/AESinkSNDIO.h"
+bool WAYLAND::SndioRegister()
+{
+  CAESinkSNDIO::Register();
+  return true;
+}
+#else
+bool WAYLAND::SndioRegister()
+{
+  return false;
+}
+#endif

@@ -45,13 +45,20 @@ CWinSystemGbm::CWinSystemGbm() :
   }
   else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
-   GBM::PulseAudioRegister();
+    GBM::PulseAudioRegister();
+  }
+  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  {
+    GBM::SndioRegister();
   }
   else
   {
     if (!GBM::PulseAudioRegister())
     {
-      GBM::ALSARegister();
+      if (!GBM::ALSARegister())
+      {
+        GBM::SndioRegister();
+      }
     }
   }
 

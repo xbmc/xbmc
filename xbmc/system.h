@@ -130,9 +130,6 @@
 #ifdef HAVE_LIRC
 #define HAS_LIRC
 #endif
-#ifdef HAVE_SNDIO
-#define HAS_SNDIO
-#endif
 #endif
 
 #ifdef HAVE_LIBSSH

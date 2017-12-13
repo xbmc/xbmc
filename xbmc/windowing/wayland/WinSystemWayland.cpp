@@ -155,11 +155,18 @@ CWinSystemWayland::CWinSystemWayland()
   {
     ::WAYLAND::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  {
+    ::WAYLAND::SndioRegister();
+  }
   else
   {
     if (!::WAYLAND::PulseAudioRegister())
     {
-      ::WAYLAND::ALSARegister();
+      if (!::WAYLAND::ALSARegister())
+      {
+        ::WAYLAND::SndioRegister();
+      }
     }
   }
   m_winEvents.reset(new CWinEventsWayland());

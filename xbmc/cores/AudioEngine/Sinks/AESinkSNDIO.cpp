@@ -21,6 +21,7 @@
 #include "system.h"
 #ifdef HAS_SNDIO
 #include "AESinkSNDIO.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 
@@ -156,6 +157,25 @@ CAESinkSNDIO::CAESinkSNDIO()
 CAESinkSNDIO::~CAESinkSNDIO()
 {
   Deinitialize();
+}
+
+void CAESinkSNDIO::Register()
+{
+  AE::AESinkRegEntry entry;
+  entry.sinkName = "SNDIO";
+  entry.createFunc = CAESinkSNDIO::Create;
+  entry.enumerateFunc = CAESinkSNDIO::EnumerateDevicesEx;
+  AE::CAESinkFactory::RegisterSink(entry);
+}
+
+IAESink* CAESinkSNDIO::Create(std::string &device, AEAudioFormat& desiredFormat)
+{
+  IAESink* sink = new CAESinkSNDIO();
+  if (sink->Initialize(desiredFormat, device))
+    return sink;
+
+  delete sink;
+  return nullptr;
 }
 
 bool CAESinkSNDIO::Initialize(AEAudioFormat &format, std::string &device)
