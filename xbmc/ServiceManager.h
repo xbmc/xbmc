@@ -113,6 +113,7 @@ public:
   XBPython& GetXBPython();
 #endif
   PVR::CPVRManager& GetPVRManager();
+  bool HasActiveAE() const;
   IAE& GetActiveAE();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
