@@ -423,10 +423,8 @@ bool CDRMUtils::GetPlanes()
   return true;
 }
 
-int CDRMUtils::Open(const char* device)
+bool CDRMUtils::OpenDrm()
 {
-  int fd = -1;
-
   std::vector<const char*>modules =
   {
     "i915",
@@ -442,67 +440,85 @@ int CDRMUtils::Open(const char* device)
     "sun4i-drm",
   };
 
-  for (auto module : modules)
+  for(int i = 0; i < 10; ++i)
   {
-    fd = drmOpen(module, device);
-    if (fd >= 0)
+    std::string device = "/dev/dri/card";
+    device.append(std::to_string(i));
+
+    for (auto module : modules)
     {
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device, module);
-      break;
+      m_fd = drmOpen(module, device.c_str());
+      if (m_fd >= 0)
+      {
+        if(!GetResources())
+        {
+          continue;
+        }
+
+        if(!GetConnector())
+        {
+          continue;
+        }
+
+        drmModeFreeResources(m_drm_resources);
+        m_drm_resources = nullptr;
+
+        drmModeFreeConnector(m_connector->connector);
+        m_connector->connector = nullptr;
+
+        drmModeFreeObjectProperties(m_connector->props);
+        m_connector->props = nullptr;
+
+        drmModeFreeProperty(*m_connector->props_info);
+        *m_connector->props_info = nullptr;
+
+        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
+        return true;
+      }
+
+      drmClose(m_fd);
+      m_fd = -1;
     }
   }
 
-  return fd;
+  return false;
 }
 
 bool CDRMUtils::InitDrm()
 {
-  for(int i = 0; i < 10; ++i)
+  if(m_fd >= 0)
   {
-    if (m_fd >= 0)
+    /* caps need to be set before allocating connectors, encoders, crtcs, and planes */
+    auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
+    if (ret)
     {
-      drmClose(m_fd);
+      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to set Universal planes capability: %s", __FUNCTION__, strerror(errno));
+      return false;
     }
 
-    std::string device = "/dev/dri/card";
-    device.append(std::to_string(i));
-    m_fd = CDRMUtils::Open(device.c_str());
-
-    if(m_fd >= 0)
+    if(!GetResources())
     {
-      if(!GetResources())
-      {
-        continue;
-      }
+      return false;
+    }
 
-      if(!GetConnector())
-      {
-        continue;
-      }
+    if(!GetConnector())
+    {
+      return false;
+    }
 
-      if(!GetEncoder())
-      {
-        continue;
-      }
+    if(!GetEncoder())
+    {
+      return false;
+    }
 
-      if(!GetCrtc())
-      {
-        continue;
-      }
+    if(!GetCrtc())
+    {
+      return false;
+    }
 
-      auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
-      if (ret)
-      {
-        CLog::Log(LOGERROR, "CDRMUtils::%s - failed to set Universal planes capability: %s", __FUNCTION__, strerror(errno));
-        return false;
-      }
-
-      if(!GetPlanes())
-      {
-        continue;
-      }
-
-      break;
+    if(!GetPlanes())
+    {
+      return false;
     }
   }
 
@@ -560,21 +576,30 @@ void CDRMUtils::DestroyDrm()
 {
   RestoreOriginalMode();
 
-  if (m_drm_resources)
-  {
-    drmModeFreeResources(m_drm_resources);
-    m_drm_resources = nullptr;
-  }
-
   drmDropMaster(m_fd);
   close(m_fd);
 
-  m_connector = nullptr;
-  m_encoder = nullptr;
-  m_crtc = nullptr;
-  m_primary_plane = nullptr;
-  m_overlay_plane = nullptr;
   m_fd = -1;
+
+  drmModeFreeResources(m_drm_resources);
+  m_drm_resources = nullptr;
+
+  delete m_connector;
+  m_connector = nullptr;
+
+  delete m_encoder;
+  m_encoder = nullptr;
+
+  delete m_crtc;
+  m_crtc = nullptr;
+
+  delete m_primary_plane;
+  m_primary_plane = nullptr;
+
+  delete m_overlay_plane;
+  m_overlay_plane = nullptr;
+
+  drmModeFreeModeInfo(m_mode);
   m_mode = nullptr;
 }
 

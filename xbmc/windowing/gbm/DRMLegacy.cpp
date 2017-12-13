@@ -155,6 +155,11 @@ void CDRMLegacy::FlipPage(struct gbm_bo *bo)
 
 bool CDRMLegacy::InitDrm()
 {
+  if (!CDRMUtils::OpenDrm())
+  {
+    return false;
+  }
+
   if (!CDRMUtils::InitDrm())
   {
     return false;

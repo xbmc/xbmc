@@ -28,10 +28,11 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "../WinEventsLinux.h"
+#include "DRMAtomic.h"
 #include "DRMLegacy.h"
 
 CWinSystemGbm::CWinSystemGbm() :
-  m_DRM(new CDRMLegacy),
+  m_DRM(nullptr),
   m_GBM(new CGBMUtils),
   m_nativeDisplay(nullptr),
   m_nativeWindow(nullptr)
@@ -67,11 +68,21 @@ CWinSystemGbm::CWinSystemGbm() :
 
 bool CWinSystemGbm::InitWindowSystem()
 {
+  m_DRM = std::make_shared<CDRMAtomic>();
+
   if (!m_DRM->InitDrm())
   {
-    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Legacy DRM", __FUNCTION__);
+    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Atomic DRM", __FUNCTION__);
     m_DRM.reset();
-    return false;
+
+    m_DRM = std::make_shared<CDRMLegacy>();
+
+    if (!m_DRM->InitDrm())
+    {
+      CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Legacy DRM", __FUNCTION__);
+      m_DRM.reset();
+      return false;
+    }
   }
 
   if (!m_GBM->CreateDevice(m_DRM->m_fd))
@@ -183,7 +194,13 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     return false;
   }
 
-  struct gbm_bo *bo = m_GBM->LockFrontBuffer();
+  struct gbm_bo *bo = nullptr;
+
+  if (!m_DRM->m_req)
+  {
+    bo = m_GBM->LockFrontBuffer();
+  }
+
   auto result = m_DRM->SetVideoMode(res, bo);
   m_GBM->ReleaseBuffer();
 

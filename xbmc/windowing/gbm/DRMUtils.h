@@ -69,8 +69,8 @@ public:
   virtual void FlipPage(struct gbm_bo *bo) {};
   virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) { return false; };
   virtual bool InitDrm();
+  virtual void DestroyDrm();
 
-  void DestroyDrm();
   bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
   bool SetMode(RESOLUTION_INFO res);
   void WaitVBlank();
@@ -83,8 +83,10 @@ public:
   struct plane *m_primary_plane = nullptr;
   struct plane *m_overlay_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
+  drmModeAtomicReq *m_req = nullptr;
 
 protected:
+  bool OpenDrm();
   drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:
@@ -94,11 +96,11 @@ private:
   bool GetCrtc();
   bool GetPlanes();
   bool GetPreferredMode();
-  int Open(const char* device);
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
 
   int m_crtc_index;
+
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;
 };

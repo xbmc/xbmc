@@ -22,18 +22,21 @@
 
 #include "DRMUtils.h"
 
-class CDRMLegacy : public CDRMUtils
+class CDRMAtomic : public CDRMUtils
 {
 public:
-  CDRMLegacy() = default;
-  ~CDRMLegacy() { DestroyDrm(); };
+  CDRMAtomic() = default;
+  ~CDRMAtomic() { DestroyDrm(); };
   virtual void FlipPage(struct gbm_bo *bo) override;
   virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) override;
   virtual bool InitDrm() override;
+  virtual void DestroyDrm() override;
 
 private:
-  bool WaitingForFlip();
-  bool QueueFlip(struct gbm_bo *bo);
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
+  bool AddConnectorProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
+  bool AddCrtcProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
+  bool AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, const char *name, int value);
+  bool DrmAtomicCommit(int fb_id, int flags);
+
+  bool m_need_modeset;
 };
