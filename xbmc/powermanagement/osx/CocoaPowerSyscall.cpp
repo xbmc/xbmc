@@ -26,6 +26,7 @@ typedef unsigned char BYTE;
 #include "utils/SystemInfo.h"
 #include "Application.h"
 #include "powermanagement/PowerManager.h"
+#include "ServiceBroker.h"
 #include "CocoaPowerSyscall.h"
 
 #if defined(TARGET_DARWIN_OSX)

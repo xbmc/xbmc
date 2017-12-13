@@ -23,6 +23,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
+#include "ServiceBroker.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
