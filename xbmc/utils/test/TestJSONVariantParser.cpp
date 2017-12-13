@@ -78,11 +78,11 @@ TEST(TestJSONVariantParser, CanParseUnsignedInteger)
   CVariant variant;
   ASSERT_TRUE(CJSONVariantParser::Parse("0", variant));
   ASSERT_TRUE(variant.isUnsignedInteger());
-  ASSERT_EQ(0, variant.asUnsignedInteger());
+  ASSERT_EQ(0U, variant.asUnsignedInteger());
 
   ASSERT_TRUE(CJSONVariantParser::Parse("1", variant));
   ASSERT_TRUE(variant.isUnsignedInteger());
-  ASSERT_EQ(1, variant.asUnsignedInteger());
+  ASSERT_EQ(1U, variant.asUnsignedInteger());
 }
 
 TEST(TestJSONVariantParser, CanParseSignedInteger64)
@@ -98,7 +98,7 @@ TEST(TestJSONVariantParser, CanParseUnsignedInteger64)
   CVariant variant;
   ASSERT_TRUE(CJSONVariantParser::Parse("4294967296", variant));
   ASSERT_TRUE(variant.isUnsignedInteger());
-  ASSERT_EQ(4294967296, variant.asUnsignedInteger());
+  ASSERT_EQ(4294967296U, variant.asUnsignedInteger());
 }
 
 TEST(TestJSONVariantParser, CanParseDouble)
@@ -177,14 +177,14 @@ TEST(TestJSONVariantParser, CanParseArray)
   variant.clear();
   ASSERT_TRUE(CJSONVariantParser::Parse("[ true ]", variant));
   ASSERT_TRUE(variant.isArray());
-  ASSERT_EQ(1, variant.size());
+  ASSERT_EQ(1U, variant.size());
   ASSERT_TRUE(variant[0].isBoolean());
   ASSERT_TRUE(variant[0].asBoolean());
 
   variant.clear();
   ASSERT_TRUE(CJSONVariantParser::Parse("[ true, \"foo\" ]", variant));
   ASSERT_TRUE(variant.isArray());
-  ASSERT_EQ(2, variant.size());
+  ASSERT_EQ(2U, variant.size());
   ASSERT_TRUE(variant[0].isBoolean());
   ASSERT_TRUE(variant[0].asBoolean());
   ASSERT_TRUE(variant[1].isString());
@@ -193,7 +193,7 @@ TEST(TestJSONVariantParser, CanParseArray)
   variant.clear();
   ASSERT_TRUE(CJSONVariantParser::Parse("[ { \"foo\": \"bar\" } ]", variant));
   ASSERT_TRUE(variant.isArray());
-  ASSERT_EQ(1, variant.size());
+  ASSERT_EQ(1U, variant.size());
   ASSERT_TRUE(variant[0].isObject());
   ASSERT_TRUE(variant[0].isMember("foo"));
   ASSERT_TRUE(variant[0]["foo"].isString());

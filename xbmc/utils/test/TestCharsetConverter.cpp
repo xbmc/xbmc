@@ -343,10 +343,10 @@ TEST_F(TestCharsetConverter, getCharsetLabels)
   std::vector<std::string> varlabels = g_charsetConverter.getCharsetLabels();
   ASSERT_EQ(reflabels.size(), varlabels.size());
 
-  std::vector<std::string>::iterator it;
-  for (it = varlabels.begin(); it < varlabels.end(); ++it)
+  size_t pos = 0;
+  for (const auto& it : varlabels)
   {
-    EXPECT_STREQ((reflabels.at(it - varlabels.begin())).c_str(), (*it).c_str());
+    EXPECT_STREQ((reflabels.at(pos++)).c_str(), it.c_str());
   }
 }
 

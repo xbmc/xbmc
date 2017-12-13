@@ -61,6 +61,11 @@ protected:
     builder.SetVersion(AddonVersion(version));
     addons.push_back(builder.Build());
   }
+
+  void TearDown() override
+  {
+    database.Close();
+  }
 };
 
 
@@ -68,7 +73,7 @@ TEST_F(AddonDatabaseTest, TestFindById)
 {
   VECADDONS addons;
   EXPECT_TRUE(database.FindByAddonId("foo.baz", addons));
-  EXPECT_EQ(1, addons.size());
+  EXPECT_EQ(1U, addons.size());
   EXPECT_EQ(addons.at(0)->ID(), "foo.baz");
   EXPECT_EQ(addons.at(0)->Version().asString(), "1.1.0");
   EXPECT_EQ(addons.at(0)->Origin(), "repository.b");
@@ -78,5 +83,5 @@ TEST_F(AddonDatabaseTest, TestFindByNonExistingId)
 {
   VECADDONS addons;
   EXPECT_TRUE(database.FindByAddonId("does.not.exist", addons));
-  EXPECT_EQ(0, addons.size());
+  EXPECT_EQ(0U, addons.size());
 }
