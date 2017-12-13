@@ -21,12 +21,16 @@ endif()
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_PULSEAUDIO libpulse>=${PulseAudio_FIND_VERSION} QUIET)
   pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib QUIET)
+  pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple QUIET)
 endif()
 
-find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h
+find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h pulse/simple.h
                                  PATHS ${PC_PULSEAUDIO_INCLUDEDIR} ${PC_PULSEAUDIO_INCLUDE_DIRS})
 
 find_library(PULSEAUDIO_LIBRARY NAMES pulse libpulse
+                                PATHS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS})
+
+find_library(PULSEAUDIO_SIMPLE_LIBRARY NAMES pulse-simple libpulse-simple
                                 PATHS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS})
 
 find_library(PULSEAUDIO_MAINLOOP_LIBRARY NAMES pulse-mainloop pulse-mainloop-glib libpulse-mainloop-glib
@@ -42,12 +46,12 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PulseAudio
-                                  REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY PULSEAUDIO_INCLUDE_DIR
+                                  REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY PULSEAUDIO_INCLUDE_DIR
                                   VERSION_VAR PULSEAUDIO_VERSION_STRING)
 
 if(PULSEAUDIO_FOUND)
   set(PULSEAUDIO_INCLUDE_DIRS ${PULSEAUDIO_INCLUDE_DIR})
-  set(PULSEAUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY})
+  set(PULSEAUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
   set(PULSEAUDIO_DEFINITIONS -DHAS_PULSEAUDIO=1)
 
   if(NOT TARGET PulseAudio::PulseAudioMainloop)
@@ -65,4 +69,4 @@ if(PULSEAUDIO_FOUND)
   endif()
 endif()
 
-mark_as_advanced(PULSEAUDIO_INCLUDE_DIR PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY)
+mark_as_advanced(PULSEAUDIO_INCLUDE_DIR PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY)
