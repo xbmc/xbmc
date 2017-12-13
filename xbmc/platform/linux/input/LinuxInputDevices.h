@@ -17,8 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef LINUXINPUTDEVICES_H_
-#define LINUXINPUTDEVICES_H_
+
+#pragma once
 
 #include <vector>
 #include <string>
@@ -46,7 +46,7 @@ public:
   XBMC_Event ReadEvent();
   const std::string& GetFileName();
   bool IsUnplugged();
- 
+
 private:
   void SetupKeyboardAutoRepeat(int fd);
   XBMCKey TranslateKey(unsigned short code);
@@ -119,5 +119,3 @@ private:
 protected:
   virtual void Process();
 };
-
-#endif /* LINUXINPUTDEVICES_H_ */

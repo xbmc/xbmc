@@ -17,9 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-
-#if defined(HAS_LINUX_EVENTS)
 
 #include "WinEventsLinux.h"
 #include "WinEvents.h"
@@ -82,5 +79,3 @@ void CWinEventsLinux::MessagePush(XBMC_Event *ev)
 {
   g_application.OnEvent(*ev);
 }
-
-#endif

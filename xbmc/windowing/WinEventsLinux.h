@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef WINDOW_EVENTS_LINUX_H
-#define WINDOW_EVENTS_LINUX_H
-
 #pragma once
 #include <memory>
 #include "utils/Observer.h"
@@ -46,5 +43,3 @@ private:
   static CLinuxInputDevices m_devices;
   std::unique_ptr<CLinuxInputDevicesCheckHotplugged> m_checkHotplug;
 };
-
-#endif

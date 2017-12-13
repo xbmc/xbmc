@@ -27,8 +27,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-#if defined(HAS_LINUX_EVENTS)
 
 #include <linux/version.h>
 
@@ -1318,7 +1316,7 @@ bool CLinuxInputDevice::Open()
   {
     if (m_vt_fd < 0)
       m_vt_fd = open("/dev/tty0", O_RDWR | O_NOCTTY);
- 
+
     if (m_vt_fd < 0)
       m_vt_fd = open("/dev/tty1", O_RDWR | O_NOCTTY);
 
@@ -1503,4 +1501,3 @@ int main()
 
 }
 */
-#endif

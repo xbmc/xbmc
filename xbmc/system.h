@@ -121,15 +121,8 @@
 #define HAS_GL
 #ifdef HAVE_SDL
 #define HAS_SDL
-#else
-#ifndef HAVE_X11
-#define HAS_LINUX_EVENTS
-#endif
 #endif
 #define HAS_LINUX_NETWORK
-#ifdef HAVE_LIRC
-#define HAS_LIRC
-#endif
 #endif
 
 #ifdef HAVE_LIBSSH
@@ -170,8 +163,6 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#undef HAS_LINUX_EVENTS
-#undef HAS_LIRC
 #define HAS_ZEROCONF
 #endif
 
