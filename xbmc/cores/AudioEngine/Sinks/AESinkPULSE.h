@@ -25,6 +25,7 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include <pulse/pulseaudio.h>
+#include <pulse/simple.h>
 #include "threads/CriticalSection.h"
 
 class CAESinkPULSE : public IAESink
@@ -35,7 +36,7 @@ public:
   CAESinkPULSE();
   ~CAESinkPULSE() override;
 
-  static void Register();
+  static bool Register();
   static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
