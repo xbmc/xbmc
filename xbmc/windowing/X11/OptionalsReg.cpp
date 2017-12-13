@@ -209,8 +209,8 @@ bool X11::ALSARegister()
 #include "cores/AudioEngine/Sinks/AESinkPULSE.h"
 bool X11::PulseAudioRegister()
 {
-  CAESinkPULSE::Register();
-  return true;
+  bool ret = CAESinkPULSE::Register();
+  return ret;
 }
 #else
 bool X11::PulseAudioRegister()
