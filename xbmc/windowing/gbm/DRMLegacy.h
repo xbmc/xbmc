@@ -21,7 +21,6 @@
 #pragma once
 
 #include "DRMUtils.h"
-#include "GLContextEGL.h"
 
 class CDRMLegacy : public CDRMUtils
 {
