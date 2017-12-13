@@ -33,7 +33,7 @@ find_package_handle_standard_args(Alsa
 if(ALSA_FOUND)
   set(ALSA_INCLUDE_DIRS "") # Don't want these added as 'timer.h' is a dangerous file
   set(ALSA_LIBRARIES ${ALSA_LIBRARY})
-  set(ALSA_DEFINITIONS -DHAVE_ALSA=1 -DUSE_ALSA=1)
+  set(ALSA_DEFINITIONS -DHAS_ALSA=1)
 
   if(NOT TARGET ALSA::ALSA)
     add_library(ALSA::ALSA UNKNOWN IMPORTED)
