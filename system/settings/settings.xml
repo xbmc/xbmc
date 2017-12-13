@@ -2583,6 +2583,11 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.dspaddonsenabled" type="boolean">
+          <hidden>true</hidden>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
         <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
           <requirement>HAS_AE_QUALITY_LEVELS</requirement>
           <level>2</level>
