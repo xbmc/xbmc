@@ -130,14 +130,8 @@
 #ifdef HAVE_LIRC
 #define HAS_LIRC
 #endif
-#ifdef HAVE_LIBPULSE
-#define HAS_PULSEAUDIO
-#endif
 #ifdef HAVE_SNDIO
 #define HAS_SNDIO
-#endif
-#ifdef HAVE_ALSA
-#define HAS_ALSA
 #endif
 #endif
 
