@@ -19,9 +19,6 @@
  *
  */
 
-#include "system.h"
-#if defined(HAS_ALSA) && defined(HAVE_LIBUDEV)
-
 #include <string>
 #include <vector>
 
@@ -44,6 +41,3 @@ private:
   struct udev *m_udev;
   struct udev_monitor* m_udevMonitor;
 };
-
-#endif
-

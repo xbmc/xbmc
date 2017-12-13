@@ -17,8 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-#ifdef HAS_PULSEAUDIO
 #include "AESinkPULSE.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -1112,4 +1110,3 @@ bool CAESinkPULSE::SetupContext(const char *host, pa_context **context, pa_threa
   pa_threaded_mainloop_unlock(*mainloop);
   return true;
 }
-#endif
