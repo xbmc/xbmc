@@ -126,8 +126,8 @@ bool WAYLAND::ALSARegister()
 #include "cores/AudioEngine/Sinks/AESinkPULSE.h"
 bool WAYLAND::PulseAudioRegister()
 {
-  CAESinkPULSE::Register();
-  return true;
+  bool ret = CAESinkPULSE::Register();
+  return ret;
 }
 #else
 bool WAYLAND::PulseAudioRegister()

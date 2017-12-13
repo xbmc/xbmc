@@ -477,13 +477,32 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
 
 /* PulseAudio class memberfunctions*/
 
-void CAESinkPULSE::Register()
+bool CAESinkPULSE::Register()
 {
+  // check if pulseaudio is actually available
+  pa_simple *s;
+  pa_sample_spec ss;
+  ss.format = PA_SAMPLE_S16NE;
+  ss.channels = 2;
+  ss.rate = 44100;
+  s = pa_simple_new(NULL, "Kodi-Tester", PA_STREAM_PLAYBACK, NULL, "Test", &ss, NULL, NULL, NULL);
+  if (!s)
+  {
+    CLog::Log(LOGNOTICE, "PulseAudio: Server not running");
+    return false;
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "PulseAudio: Server found running - will try to use Pulse");
+    pa_simple_free(s);
+  }
+
   AE::AESinkRegEntry entry;
   entry.sinkName = "PULSE";
   entry.createFunc = CAESinkPULSE::Create;
   entry.enumerateFunc = CAESinkPULSE::EnumerateDevicesEx;
   AE::CAESinkFactory::RegisterSink(entry);
+  return true;
 }
 
 IAESink* CAESinkPULSE::Create(std::string &device, AEAudioFormat& desiredFormat)

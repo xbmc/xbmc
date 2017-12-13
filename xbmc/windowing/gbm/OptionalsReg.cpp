@@ -152,8 +152,8 @@ bool GBM::ALSARegister()
 #include "cores/AudioEngine/Sinks/AESinkPULSE.h"
 bool GBM::PulseAudioRegister()
 {
-  CAESinkPULSE::Register();
-  return true;
+  bool ret = CAESinkPULSE::Register();
+  return ret;
 }
 #else
 bool GBM::PulseAudioRegister()
