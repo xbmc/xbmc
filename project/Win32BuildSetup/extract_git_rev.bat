@@ -30,9 +30,7 @@ GOTO :extract
 
 :extract
 
-FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% rev-list HEAD -n 1 --date=short --pretty=format:"%%cd-%%h""') DO (
-SET GIT_REV=%%A%%B%%C-%%D
-)
+FOR /F %%A IN ('"%GITEXE% --no-pager show -s --abbrev=8 --date=format:"%%Y%%m%%d" --pretty=format:"%%cd-%%h""') DO SET GIT_REV=%%A
 
 
 echo %GIT_REV%
