@@ -15,7 +15,7 @@ PACKAGE_ARCHITECTURE all
 PACKAGE_SECTION video
 PACKAGE_PRIORITY optional
 PACKAGE_SHLIBDEPS
-PACKAGE_DEPENDS @APP_NAME_LC@-bin (>= @CPACK_DEBIAN_PACKAGE_VERSION@), @APP_NAME_LC@-bin (<< @CPACK_DEBIAN_PACKAGE_VERSION@.1~), curl, libcurl4 | libcurl3, mesa-utils, x11-utils, fonts-liberation | ttf-liberation, fonts-dejavu-core | ttf-dejavu-core, python-bluez | python-lightblue, python-imaging | python-pil, python-simplejson, libass9 | libass5 | libass4, libgif5 | libgif7, libnfs8 | libnfs4 | libnfs1, libbluray1 | libbluray2, libshairplay0, libvorbisfile3, libaacs0, libcec4, libgnutls30 | libgnutls-deb0-28 | libgnutls28 | libgnutls26, libxslt1.1
+PACKAGE_DEPENDS @APP_NAME_LC@-bin (>= @CPACK_DEBIAN_PACKAGE_VERSION@), @APP_NAME_LC@-bin (<< @CPACK_DEBIAN_PACKAGE_VERSION@.1~), curl, libcurl4 | libcurl3, mesa-utils, x11-utils, fonts-liberation | ttf-liberation, fonts-dejavu-core | ttf-dejavu-core, python3-pil, python3-simplejson, libass9 | libass5 | libass4, libgif5 | libgif7, libnfs8 | libnfs4 | libnfs1, libbluray1 | libbluray2, libshairplay0, libvorbisfile3, libaacs0, libcec4, libgnutls30 | libgnutls-deb0-28 | libgnutls28 | libgnutls26, libxslt1.1
 PACKAGE_RECOMMENDS libvdpau1, libva-intel-vaapi-driver, libva1
 PACKAGE_SUGGESTS @APP_NAME_LC@-pvr-mythtv, @APP_NAME_LC@-pvr-vuplus, @APP_NAME_LC@-pvr-vdr-vnsi, @APP_NAME_LC@-pvr-njoy, @APP_NAME_LC@-pvr-nextpvr, @APP_NAME_LC@-pvr-mediaportal-tvserver, @APP_NAME_LC@-pvr-tvheadend-hts, @APP_NAME_LC@-pvr-dvbviewer, @APP_NAME_LC@-pvr-argustv, @APP_NAME_LC@-pvr-iptvsimple, @APP_NAME_LC@-audioencoder-vorbis, @APP_NAME_LC@-audioencoder-flac, @APP_NAME_LC@-audioencoder-lame
 PACKAGE_BREAKS xbmc (<< 2:14.0~git20141019), xbmc-data, xbmc-standalone
