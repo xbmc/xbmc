@@ -85,6 +85,7 @@ public:
   drmModeModeInfo *m_mode = nullptr;
 
 protected:
+  bool OpenDrm();
   drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:
@@ -94,7 +95,6 @@ private:
   bool GetCrtc();
   bool GetPlanes();
   bool GetPreferredMode();
-  int Open(const char* device);
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
 
