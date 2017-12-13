@@ -170,6 +170,7 @@ typedef enum GAME_INPUT_EVENT_SOURCE
 {
   GAME_INPUT_EVENT_DIGITAL_BUTTON,
   GAME_INPUT_EVENT_ANALOG_BUTTON,
+  GAME_INPUT_EVENT_AXIS,
   GAME_INPUT_EVENT_ANALOG_STICK,
   GAME_INPUT_EVENT_ACCELEROMETER,
   GAME_INPUT_EVENT_KEY,
@@ -299,6 +300,11 @@ typedef struct game_analog_button_event
   float        magnitude;
 } ATTRIBUTE_PACKED game_analog_button_event;
 
+typedef struct game_axis_event
+{
+  float        position;
+} ATTRIBUTE_PACKED game_axis_event;
+
 typedef struct game_analog_stick_event
 {
   float        x;
@@ -347,6 +353,7 @@ typedef struct game_input_event
   {
     struct game_digital_button_event digital_button;
     struct game_analog_button_event  analog_button;
+    struct game_axis_event           axis;
     struct game_analog_stick_event   analog_stick;
     struct game_accelerometer_event  accelerometer;
     struct game_key_event            key;
