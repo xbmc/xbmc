@@ -165,21 +165,27 @@ function getBranchName ()
   if [ "$branchName" != "detached" ] # if we are not detached
   then
     #we are attached - use the branchname then
-    if echo $branchName | grep pr 2>&1 > /dev/null
+    if echo $branchName | grep /pr/ 2>&1 > /dev/null
     then
       #if this is a pull request branch - fetch the pr number and prefix with "PR"
       #refs/heads/number/head
-      echo PR$(echo $branchName | awk '{gsub(".*/pr/","");print $1}' | awk '{gsub("/.*","");print $1}')
+      echo PR$(echo $branchName | awk '{gsub(".*/pr/","");print $1}' | awk '{gsub("/","-");print $1}')
     else
       #if we are on a normal branch - fetch branchname
       #refs/heads/branchname
-      echo $branchName | awk '{gsub(".*/","");print $1}'
+      echo $branchName | awk '{gsub("^([^/]*/){2}","");print $1}' | awk '{gsub("/","-");print $1}'
     fi
   else
     #if we are in detached head state
-    #fetch the first non-pullrequest branch we can find with HEAD
-    #also only grep in remotes that match current GITHUB_REPO
-    git branch -r --contains HEAD | sed "/origin\/pr\//d" | grep $GITHUB_REPO | head -n1 | awk '{gsub(".*/","");print $1}'
+    #get all branches pointing at HEAD which are from current GITHUB_REPO
+    #prefer non-pullrequest branches
+    branches=`(git branch -r --points-at HEAD 2> /dev/null || git branch -r --contains HEAD) | grep $GITHUB_REPO/`
+    if echo "$branches" | grep -v $GITHUB_REPO/pr/ 2>&1 > /dev/null
+    then
+      echo "$branches" | sed "/$GITHUB_REPO\/pr\//d" | head -n1 | awk '{gsub("^([^/]*/)","");print $1}' | awk '{gsub("/","-");print $1}'
+    else
+      echo PR$(echo "$branches" | head -n1 | awk '{gsub(".*/pr/","");print $1}' | awk '{gsub("/","-");print $1}')
+    fi
   fi
 }
 
@@ -187,7 +193,7 @@ function getBuildRevDateStr ()
 {
   local revStr
   #fetch date-rev
-  revStr=`git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}' 2>/dev/null`
+  revStr=`git --no-pager show -s --abbrev=8 --date=short --pretty=format:"%cd %h" | awk '{gsub("-", ""); print $1"-"$2}' 2>/dev/null`
   if [ "$?" == "0" ]
   then
     #fetch the first branch containing head

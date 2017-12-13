@@ -47,7 +47,6 @@ SET promptlevel=prompt
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
-SET BRANCH=na
 FOR %%b in (%1, %2, %3, %4, %5) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
@@ -62,7 +61,7 @@ set WORKSPACE=%base_dir%\kodi-build
 
 
   :: sets the BRANCH env var
-  call getbranch.bat
+  FOR /f %%a IN ('getbranch.bat') DO SET BRANCH=%%a
 
   rem  CONFIG END
   rem -------------------------------------------------------------
