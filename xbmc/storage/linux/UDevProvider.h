@@ -24,8 +24,6 @@
 
 #include "storage/IStorageProvider.h"
 
-#ifdef HAVE_LIBUDEV
-
 struct udev;
 struct udev_monitor;
 
@@ -53,5 +51,3 @@ private:
   struct udev         *m_udev;
   struct udev_monitor *m_udevMon;
 };
-
-#endif

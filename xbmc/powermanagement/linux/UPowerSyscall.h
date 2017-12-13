@@ -20,7 +20,6 @@
 
 #pragma once
 
-#ifdef HAS_DBUS
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
 
@@ -72,5 +71,3 @@ private:
   bool m_lowBattery;
   void EnumeratePowerSources();
 };
-
-#endif

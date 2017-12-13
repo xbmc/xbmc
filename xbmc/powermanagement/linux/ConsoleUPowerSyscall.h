@@ -18,8 +18,6 @@
  *
  */
 
-#ifdef HAS_DBUS
-
 #include "UPowerSyscall.h"
 #include "DBusUtil.h"
 
@@ -33,5 +31,3 @@ public:
 private:
   static bool ConsoleKitMethodCall(const char *method);
 };
-
-#endif

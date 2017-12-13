@@ -21,8 +21,6 @@
 
 #include "UDevProvider.h"
 
-#ifdef HAVE_LIBUDEV
-
 #include "platform/linux/PosixMountProvider.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -293,5 +291,3 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
   return changed;
 }
-
-#endif

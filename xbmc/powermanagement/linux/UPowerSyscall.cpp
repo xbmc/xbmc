@@ -22,8 +22,6 @@
 #include "UPowerSyscall.h"
 #include "utils/log.h"
 
-#ifdef HAS_DBUS
-
 CUPowerSource::CUPowerSource(const char *powerSource)
 {
   if(powerSource == NULL)
@@ -219,5 +217,3 @@ void CUPowerSyscall::UpdateCapabilities()
   m_CanSuspend   = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanSuspend").asBoolean(false);
   m_CanHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanHibernate").asBoolean(false);
 }
-
-#endif

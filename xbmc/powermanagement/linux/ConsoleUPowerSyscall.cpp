@@ -22,8 +22,6 @@
 #include "ConsoleUPowerSyscall.h"
 #include "utils/log.h"
 
-#ifdef HAS_DBUS
-
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
@@ -62,4 +60,3 @@ bool CConsoleUPowerSyscall::ConsoleKitMethodCall(const char *method)
 
   return false;
 }
-#endif

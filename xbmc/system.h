@@ -115,9 +115,6 @@
 #define HAS_ZEROCONF
 #define HAS_AVAHI
 #endif
-#ifdef HAVE_DBUS
-#define HAS_DBUS
-#endif
 #define HAS_GL
 #ifdef HAVE_SDL
 #define HAS_SDL

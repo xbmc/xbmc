@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef HAS_DBUS
-
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
 
@@ -40,7 +38,7 @@ public:
   int BatteryLevel() override;
   bool PumpPowerEvents(IPowerEventsCallback *callback) override;
   // we don't require UPower because everything except the battery level works fine without it
-  static bool HasLogind();  
+  static bool HasLogind();
 private:
   CDBusConnection m_connection;
   bool m_canPowerdown;
@@ -57,5 +55,3 @@ private:
   static bool LogindSetPowerState(const char *state);
   static bool LogindCheckCapability(const char *capability);
 };
-
-#endif

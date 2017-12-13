@@ -56,7 +56,7 @@
 #include "utils/ActorProtocol.h"
 #include "utils/TimeUtils.h"
 
-#if defined(HAVE_DBUS)
+#if defined(HAS_DBUS)
 # include "windowing/linux/OSScreenSaverFreedesktop.h"
 #endif
 
@@ -1398,7 +1398,7 @@ std::unique_ptr<IOSScreenSaver> CWinSystemWayland::GetOSScreenSaverImpl()
     }
   }
 
-#if defined(HAVE_DBUS)
+#if defined(HAS_DBUS)
   if (KODI::WINDOWING::LINUX::COSScreenSaverFreedesktop::IsAvailable())
   {
     CLog::LogF(LOGINFO, "Using freedesktop.org DBus interface for screen saver inhibition");
