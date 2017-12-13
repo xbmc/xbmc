@@ -101,7 +101,7 @@ class CVaapiProxy
 {
 };
 
-CVaapiProxy* VaapiProxyCreate()
+CVaapiProxy* GBM::VaapiProxyCreate()
 {
   return nullptr;
 }
@@ -110,7 +110,7 @@ void GBM::VaapiProxyDelete(CVaapiProxy *proxy)
 {
 }
 
-void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
+void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
 {
 
 }
@@ -120,8 +120,7 @@ void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
 
 }
 
-void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, void* dpy,
-                         void* eglDisplay, bool &general, bool &hevc)
+void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
 {
 
 }
