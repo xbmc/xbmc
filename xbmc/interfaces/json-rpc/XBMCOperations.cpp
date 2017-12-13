@@ -68,15 +68,15 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const std::string &method, ITran
     // Need to override power management of whats in infomanager since jsonrpc
     // have a security layer aswell.
     if (field == "system.canshutdown")
-      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (CServiceBroker::GetPowerManager().CanPowerdown() && CanControlPower);
     else if (field == "system.canpowerdown")
-      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (CServiceBroker::GetPowerManager().CanPowerdown() && CanControlPower);
     else if (field == "system.cansuspend")
-      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (CServiceBroker::GetPowerManager().CanSuspend() && CanControlPower);
     else if (field == "system.canhibernate")
-      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (CServiceBroker::GetPowerManager().CanHibernate() && CanControlPower);
     else if (field == "system.canreboot")
-      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (CServiceBroker::GetPowerManager().CanReboot() && CanControlPower);
     else
       info.push_back(parameterObject["booleans"][i].asString());
   }

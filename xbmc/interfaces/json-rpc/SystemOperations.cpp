@@ -53,7 +53,7 @@ JSONRPC_STATUS CSystemOperations::EjectOpticalDrive(const std::string &method, I
 
 JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (g_powerManager.CanPowerdown())
+  if (CServiceBroker::GetPowerManager().CanPowerdown())
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
     return ACK;
@@ -64,7 +64,7 @@ JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransport
 
 JSONRPC_STATUS CSystemOperations::Suspend(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (g_powerManager.CanSuspend())
+  if (CServiceBroker::GetPowerManager().CanSuspend())
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
     return ACK;
@@ -75,7 +75,7 @@ JSONRPC_STATUS CSystemOperations::Suspend(const std::string &method, ITransportL
 
 JSONRPC_STATUS CSystemOperations::Hibernate(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (g_powerManager.CanHibernate())
+  if (CServiceBroker::GetPowerManager().CanHibernate())
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
     return ACK;
@@ -86,7 +86,7 @@ JSONRPC_STATUS CSystemOperations::Hibernate(const std::string &method, ITranspor
 
 JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (g_powerManager.CanReboot())
+  if (CServiceBroker::GetPowerManager().CanReboot())
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
     return ACK;
@@ -98,13 +98,13 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
 {
   if (property == "canshutdown")
-    result = g_powerManager.CanPowerdown() && (permissions & ControlPower);
+    result = CServiceBroker::GetPowerManager().CanPowerdown() && (permissions & ControlPower);
   else if (property == "cansuspend")
-    result = g_powerManager.CanSuspend() && (permissions & ControlPower);
+    result = CServiceBroker::GetPowerManager().CanSuspend() && (permissions & ControlPower);
   else if (property == "canhibernate")
-    result = g_powerManager.CanHibernate() && (permissions & ControlPower);
+    result = CServiceBroker::GetPowerManager().CanHibernate() && (permissions & ControlPower);
   else if (property == "canreboot")
-    result = g_powerManager.CanReboot() && (permissions & ControlPower);
+    result = CServiceBroker::GetPowerManager().CanReboot() && (permissions & ControlPower);
   else
     return InvalidParams;
 

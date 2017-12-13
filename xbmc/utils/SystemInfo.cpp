@@ -310,7 +310,7 @@ std::string CSysInfoJob::GetVideoEncoder()
 
 std::string CSysInfoJob::GetBatteryLevel()
 {
-  return StringUtils::Format("%d%%", g_powerManager.BatteryLevel());
+  return StringUtils::Format("%d%%", CServiceBroker::GetPowerManager().BatteryLevel());
 }
 
 double CSysInfoJob::GetCPUFrequency()

@@ -81,7 +81,7 @@ public:
   bool CanSuspend();
   bool CanHibernate();
   bool CanReboot();
-  
+
   int  BatteryLevel();
 
   void ProcessEvents();
@@ -96,6 +96,3 @@ private:
 
   IPowerSyscall *m_instance;
 };
-
-extern CPowerManager g_powerManager;
-

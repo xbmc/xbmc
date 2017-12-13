@@ -6895,7 +6895,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       value = CServiceBroker::GetPVRManager().TranslateIntInfo(info);
       return true;
     case SYSTEM_BATTERY_LEVEL:
-      value = g_powerManager.BatteryLevel();
+      value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
   }
   return false;
@@ -7037,13 +7037,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
 #endif
   else if (condition == SYSTEM_CAN_POWERDOWN)
-    bReturn = g_powerManager.CanPowerdown();
+    bReturn = CServiceBroker::GetPowerManager().CanPowerdown();
   else if (condition == SYSTEM_CAN_SUSPEND)
-    bReturn = g_powerManager.CanSuspend();
+    bReturn = CServiceBroker::GetPowerManager().CanSuspend();
   else if (condition == SYSTEM_CAN_HIBERNATE)
-    bReturn = g_powerManager.CanHibernate();
+    bReturn = CServiceBroker::GetPowerManager().CanHibernate();
   else if (condition == SYSTEM_CAN_REBOOT)
-    bReturn = g_powerManager.CanReboot();
+    bReturn = CServiceBroker::GetPowerManager().CanReboot();
   else if (condition == SYSTEM_SCREENSAVER_ACTIVE)
     bReturn = g_application.IsInScreenSaver();
   else if (condition == SYSTEM_DPMS_ACTIVE)

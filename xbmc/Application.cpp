@@ -403,7 +403,7 @@ bool CApplication::Create(const CAppParamParser &params)
   // some of the serives depend on the WinSystem :(
   std::unique_ptr<CWinSystemBase> winSystem = CWinSystemBase::CreateWinSystem();
   m_ServiceManager->SetWinSystem(std::move(winSystem));
-  
+
   if (!m_ServiceManager->InitStageOne())
   {
     return false;
@@ -576,8 +576,6 @@ bool CApplication::Create(const CAppParamParser &params)
   avformat_network_init();
   // set avutil callback
   av_log_set_callback(ff_avutil_log);
-
-  g_powerManager.Initialize();
 
   // Initialize default Settings - don't move
   CLog::Log(LOGNOTICE, "load settings...");
@@ -2377,7 +2375,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   {
   case TMSG_POWERDOWN:
     Stop(EXITCODE_POWERDOWN);
-    g_powerManager.Powerdown();
+    CServiceBroker::GetPowerManager().Powerdown();
     break;
 
   case TMSG_QUIT:
@@ -2393,17 +2391,17 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_HIBERNATE:
-    g_powerManager.Hibernate();
+    CServiceBroker::GetPowerManager().Hibernate();
     break;
 
   case TMSG_SUSPEND:
-    g_powerManager.Suspend();
+    CServiceBroker::GetPowerManager().Suspend();
     break;
 
   case TMSG_RESTART:
   case TMSG_RESET:
     Stop(EXITCODE_REBOOT);
-    g_powerManager.Reboot();
+    CServiceBroker::GetPowerManager().Reboot();
     break;
 
   case TMSG_RESTARTAPP:
@@ -4384,7 +4382,7 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  g_powerManager.ProcessEvents();
+  CServiceBroker::GetPowerManager().ProcessEvents();
 
 #if defined(TARGET_DARWIN_OSX)
   // There is an issue on OS X that several system services ask the cursor to become visible

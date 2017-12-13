@@ -336,7 +336,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       ctx->m_OnSuspend = true;
       // force processing of this power event. This callback runs
       // in main thread so we can do this.
-      g_powerManager.ProcessEvents();
+      CServiceBroker::GetPowerManager().ProcessEvents();
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
       //CLog::Log(LOGDEBUG, "%s - kIOMessageSystemWillSleep", __FUNCTION__);
       // let XBMC know system will sleep
