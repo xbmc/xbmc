@@ -63,11 +63,18 @@ CWinSystemX11GLContext::CWinSystemX11GLContext()
   {
     X11::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  {
+    X11::SndioRegister();
+  }
   else
   {
     if (!X11::PulseAudioRegister())
     {
-      X11::ALSARegister();
+      if (!X11::ALSARegister())
+      {
+        X11::SndioRegister();
+      }
     }
   }
 }
