@@ -331,7 +331,10 @@ void CAddonDll::DestroyInstance(const std::string& instanceID)
 
 AddonPtr CAddonDll::GetRunningInstance() const
 {
-  return CServiceBroker::GetBinaryAddonManager().GetRunningAddon(ID());
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+    return CServiceBroker::GetBinaryAddonManager().GetRunningAddon(ID());
+
+  return AddonPtr();
 }
 
 bool CAddonDll::DllLoaded(void) const
