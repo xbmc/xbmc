@@ -61,7 +61,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   std::string strExtension=URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
-  if (!strExtension.empty())
+  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
     BinaryAddonBaseList addonInfos;
     CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
