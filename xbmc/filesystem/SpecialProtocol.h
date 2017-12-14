@@ -73,7 +73,7 @@ public:
   static std::string TranslatePath(const CURL &url);
   static std::string TranslatePathConvertCase(const std::string& path);
 
-private:
+//private:
   // Specific Path Getters (Instead of using GetPath())
   static std::string GetProfilePath();
   static std::string GetProfilePath(const std::string &fileName);
@@ -100,7 +100,7 @@ private:
 
   static void SetPath(const std::string &key, const std::string &path);
   static std::string GetPath(const std::string &key);
-
+private: //for tests only!
   static std::map<std::string, std::string> m_pathMap;
 };
 

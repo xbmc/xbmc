@@ -25,6 +25,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #ifdef TARGET_WINDOWS
 #include <windows.h>
@@ -47,6 +48,7 @@ public:
     char tmp[MAX_PATH];
 
     m_ptempFileDirectory = CSpecialProtocol::TranslatePath("special://temp/");
+    fprintf(stderr, ("TestUtils=>CTempFile=>Create=>m_ptempFileDirectory == " + m_ptempFileDirectory + "\n").c_str());
     m_ptempFilePath = m_ptempFileDirectory + "xbmctempfileXXXXXX";
     m_ptempFilePath += suffix;
     if (m_ptempFilePath.length() >= MAX_PATH)
@@ -62,6 +64,7 @@ public:
     if (!GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(),
                          L"xbmctempfile", 0, tmpW))
     {
+      fprintf(stderr,"CTempFile::Create() returns false\n");
       m_ptempFilePath = "";
       return false;
     }
@@ -71,6 +74,7 @@ public:
     if ((fd = mkstemps(tmp, suffix.length())) < 0)
     {
       m_ptempFilePath = "";
+      fprintf(stderr, "CTempFile::Create() returns false\n");
       return false;
     }
     close(fd);
@@ -78,6 +82,7 @@ public:
 #endif
 
     OpenForWrite(m_ptempFilePath.c_str(), true);
+    fprintf(stderr, "CTempFile::Create() returns true\n");
     return true;
   }
   bool Delete()
@@ -111,15 +116,18 @@ CXBMCTestUtils &CXBMCTestUtils::Instance()
 
 std::string CXBMCTestUtils::ReferenceFilePath(const std::string& path)
 {
-#ifdef TARGET_POSIX
-  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("", path));
-#else
-  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("special://xbmc", path)); 
-#endif
+  //CLog::Log(LOGDEBUG, "ReferenceFilePath() invoked\n");
+  fprintf(stderr, "ReferenceFilePath() invoked\n");
+  std::string retStr = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("special://xbmc", path));
+  fprintf(stderr, ("ReferenceFilePath() => "+ retStr+"\n").c_str());
+  return retStr;
+
 }
 
 bool CXBMCTestUtils::SetReferenceFileBasePath()
 {
+  //CLog::Log(LOGDEBUG,"SetReferenceFileBasePath() invoked\n");
+  fprintf(stderr, "SetReferenceFileBasePath() invoked\n");
   std::string xbmcPath = CUtil::GetHomePath();
   if (xbmcPath.empty())
     return false;
@@ -137,6 +145,7 @@ XFILE::CFile *CXBMCTestUtils::CreateTempFile(std::string const& suffix)
   CTempFile *f = new CTempFile();
   if (f->Create(suffix))
     return f;
+  fprintf(stderr, "CXBMCTestUtils::CreateTempFile() failed!\n");
   delete f;
   return NULL;
 }
@@ -147,7 +156,9 @@ bool CXBMCTestUtils::DeleteTempFile(XFILE::CFile *tempfile)
     return true;
   CTempFile *f = static_cast<CTempFile*>(tempfile);
   bool retval = f->Delete();
-  delete f;
+  delete f; 
+  fprintf(stderr, "DeleteTempFile == ");
+  fprintf(stderr, (retval == true) ? "True\n" : "False\n");
   return retval;
 }
 

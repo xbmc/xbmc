@@ -48,6 +48,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
+#include "utils/log.h"
 
 void TestBasicEnvironment::SetUp()
 {
@@ -63,7 +64,11 @@ void TestBasicEnvironment::SetUp()
   g_advancedSettings.Initialize();
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
+  {
+    fprintf(stderr, "!CXBMCTestUtils::Instance().SetReferenceFileBasePath() == true => SetupError()\n");
     SetUpError();
+  }
+    
   CXBMCTestUtils::Instance().setTestFileFactoryWriteInputFile(
     XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt")
   );
@@ -86,14 +91,29 @@ void TestBasicEnvironment::SetUp()
   using KODI::PLATFORM::WINDOWS::FromW;
   std::wstring xbmcTempPath;
   TCHAR lpTempPathBuffer[MAX_PATH];
+  fprintf(stderr, "Print Test\n");
   if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
+  {
+    //CLog::Log(LOGDEBUG, "!GetTempPath(MAX_PATH, lpTempPathBuffer) == true => SetupError()\n");
+    fprintf(stderr, "!GetTempPath(MAX_PATH, lpTempPathBuffer) == true => SetupError()\n");
     SetUpError();
+  }
   xbmcTempPath = lpTempPathBuffer;
   if (!GetTempFileName(xbmcTempPath.c_str(), L"xbmctempdir", 0, lpTempPathBuffer))
+  { 
+    //CLog::Log(LOGDEBUG, "!GetTempFileName(xbmcTempPath.c_str(), L\"xbmctempdir\", 0, lpTempPathBuffer) == true => SetupError()\n");
+    fprintf(stderr, "!GetTempFileName(xbmcTempPath.c_str(), L\"xbmctempdir\", 0, lpTempPathBuffer) == true => SetupError()\n");
     SetUpError();
+  }
+   
   DeleteFile(lpTempPathBuffer);
   if (!CreateDirectory(lpTempPathBuffer, NULL))
+  {
+    //CLog::Log(LOGDEBUG, "!CreateDirectory(lpTempPathBuffer, NULL) == true => SetupError()\n");
+    fprintf(stderr, "!CreateDirectory(lpTempPathBuffer, NULL) == true => SetupError()\n");
     SetUpError();
+  }
+
   CSpecialProtocol::SetTempPath(FromW(lpTempPathBuffer));
   CSpecialProtocol::SetProfilePath(FromW(lpTempPathBuffer));
 #else
@@ -101,11 +121,18 @@ void TestBasicEnvironment::SetUp()
   char *tmp;
   strcpy(buf, "/tmp/xbmctempdirXXXXXX");
   if ((tmp = mkdtemp(buf)) == NULL)
+  {
+    //CLog::Log(LOGDEBUG, "(tmp = mkdtemp(buf)) == NULL) == true => SetupError()\n");
+    fprintf(stderr, "(tmp = mkdtemp(buf)) == NULL) == true => SetupError()\n");
     SetUpError();
+  }
+    
   CSpecialProtocol::SetTempPath(tmp);
   CSpecialProtocol::SetProfilePath(tmp);
 #endif
-
+  
+  fprintf(stderr, ("Test temp path was set to: " + CSpecialProtocol::GetPath("temp")+ "\n").c_str());
+  fprintf(stderr, ("Actually translated  temp path by CSpecialProtocol::TranslatePath is: " + CSpecialProtocol::GetTmpPath() + "\n").c_str());
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not
    * affect the performance results of the test cases.
@@ -114,9 +141,16 @@ void TestBasicEnvironment::SetUp()
    * testable in a test case.
    */
   f = XBMC_CREATETEMPFILE("");
+  if (!f)
+  {
+    fprintf(stderr,"f == false! <=> XBMC_CREATETEMPFILE("") == false \n");
+  }
+
   if (!f || !XBMC_DELETETEMPFILE(f))
   {
     TearDown();
+    fprintf(stderr, "(!f || !XBMC_DELETETEMPFILE(f)) == true => SetupError()\n");
+    //CLog::Log(LOGDEBUG, "(!f || !XBMC_DELETETEMPFILE(f)) == true => SetupError()\n");
     SetUpError();
   }
   g_powerManager.Initialize();
