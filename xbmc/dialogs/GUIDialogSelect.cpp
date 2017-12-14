@@ -125,6 +125,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_CANCEL_BUTTON)
       {
         m_selectedItem = nullptr;
+        m_vecList->Clear();
+        m_selectedItems.clear();
         m_bConfirmed = false;
         Close();
       }
@@ -164,6 +166,7 @@ void CGUIDialogSelect::OnSelect(int idx)
 bool CGUIDialogSelect::OnBack(int actionID)
 {
   m_selectedItem = nullptr;
+  m_vecList->Clear();
   m_selectedItems.clear();
   m_bConfirmed = false;
   return CGUIDialogBoxBase::OnBack(actionID);
