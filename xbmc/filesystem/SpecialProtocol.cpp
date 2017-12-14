@@ -409,6 +409,7 @@ std::string CSpecialProtocol::GetLogPath(const std::string &fileName)
   return URIUtils::AddFileToFolder(GetLogPath(), fileName);
 }
 
+// returns path to our internal dylibs
 std::string CSpecialProtocol::GetXBMCFrameworksPath(const std::string &fileName)
 {
   return URIUtils::AddFileToFolder(GetXBMCFrameworksPath(), fileName);

@@ -782,26 +782,9 @@ bool CApplication::InitDirectoriesLinux()
 */
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
-  std::string userHome;
-  if (getenv("HOME"))
-    userHome = getenv("HOME");
-  else
-    userHome = "/root";
-
-  std::string binaddonAltDir;
-  if (getenv("KODI_BINADDON_PATH"))
-    binaddonAltDir = getenv("KODI_BINADDON_PATH");
 
   std::string appPath;
   std::string appName = CCompileInfo::GetAppName();
-  std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
 
@@ -830,12 +813,7 @@ bool CApplication::InitDirectoriesLinux()
   /* Set some environment variables */
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
-
-    // map our special drives
-
-    CreateUserDirs();
-
-
+  CreateUserDirs();
   return true;
 #else
   return false;
@@ -845,22 +823,6 @@ bool CApplication::InitDirectoriesLinux()
 bool CApplication::InitDirectoriesOSX()
 {
 #if defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
-  std::string userHome;
-  if (getenv("HOME"))
-    userHome = getenv("HOME");
-  else
-    userHome = "/root";
-
-  std::string binaddonAltDir;
-  if (getenv("KODI_BINADDON_PATH"))
-    binaddonAltDir = getenv("KODI_BINADDON_PATH");
-
   std::string appPath = CUtil::GetHomePath();
   setenv("KODI_HOME", appPath.c_str(), 0);
 
@@ -870,9 +832,6 @@ bool CApplication::InitDirectoriesOSX()
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
 #endif
 
-  // setup path to our internal dylibs so loader can find them
-  std::string frameworksPath = CUtil::GetFrameworksPath();
-
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
@@ -881,38 +840,18 @@ bool CApplication::InitDirectoriesOSX()
     std::string dotLowerAppName = "." + appName;
     StringUtils::ToLower(dotLowerAppName);
     // location for temp files
-    #if defined(TARGET_DARWIN_IOS)
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
-    #else
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
-      CDirectory::Create(strTempPath);
-      strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
-    #endif
+    #if !defined(TARGET_DARWIN_IOS)
+    std::string userHome;
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
 
-   //  xbmc.log file location
-    #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
-    #else
-      strTempPath = userHome + "/Library/Logs";
+    std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
+    CDirectory::Create(strTempPath);
     #endif
-    CSpecialProtocol::SetLogPath(strTempPath);
     CreateUserDirs();
   }
-  else
-  {
-    URIUtils::AddSlashAtEnd(appPath);
-
-    CSpecialProtocol::SetXBMCBinPath(appPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
-
-    std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
-  }
-  CSpecialProtocol::SetXBMCBinAddonPath(appPath + "/addons");
   return true;
 #else
   return false;
@@ -924,9 +863,7 @@ bool CApplication::InitDirectoriesWin32()
 #ifdef TARGET_WINDOWS
   std::string xbmcPath = CUtil::GetHomePath();
   CEnvironment::setenv("KODI_HOME", xbmcPath);
-  
   CEnvironment::setenv("KODI_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
-
   CreateUserDirs();
 
   return true;

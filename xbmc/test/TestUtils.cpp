@@ -111,7 +111,11 @@ CXBMCTestUtils &CXBMCTestUtils::Instance()
 
 std::string CXBMCTestUtils::ReferenceFilePath(const std::string& path)
 {
-  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("special://xbmc", path));
+#ifdef TARGET_POSIX
+  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("", path));
+#else
+  return CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder("special://xbmc", path)); 
+#endif
 }
 
 bool CXBMCTestUtils::SetReferenceFileBasePath()
