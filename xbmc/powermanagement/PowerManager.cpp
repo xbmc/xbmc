@@ -210,23 +210,23 @@ bool CPowerManager::Reboot()
 
 bool CPowerManager::CanPowerdown()
 {
-  return m_instance->CanPowerdown();
+  return m_instance ? m_instance->CanPowerdown() : false;
 }
 bool CPowerManager::CanSuspend()
 {
-  return m_instance->CanSuspend();
+  return m_instance ? m_instance->CanSuspend() : false;
 }
 bool CPowerManager::CanHibernate()
 {
-  return m_instance->CanHibernate();
+  return m_instance ? m_instance->CanHibernate() : false;
 }
 bool CPowerManager::CanReboot()
 {
-  return m_instance->CanReboot();
+  return m_instance ? m_instance->CanReboot() : false;
 }
 int CPowerManager::BatteryLevel()
 {
-  return m_instance->BatteryLevel();
+  return m_instance ? m_instance->BatteryLevel() : 0;
 }
 void CPowerManager::ProcessEvents()
 {
