@@ -41,12 +41,14 @@ CFileExtensionProvider::CFileExtensionProvider()
 
   SetAddonExtensions();
 
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
 }
 
 CFileExtensionProvider::~CFileExtensionProvider()
 {
-  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   m_advancedSettings.reset();
   m_addonExtensions.clear();
@@ -131,6 +133,9 @@ void CFileExtensionProvider::SetAddonExtensions()
 
 void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
 {
+  if (!CServiceBroker::IsBinaryAddonCacheUp())
+    return;
+
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
   BinaryAddonBaseList addonInfos;
