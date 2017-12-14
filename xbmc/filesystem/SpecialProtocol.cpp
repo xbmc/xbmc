@@ -28,46 +28,33 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-
+#include "Application.h"
+#include "filesystem/Directory.h"
 #include <cassert>
+
 #ifdef TARGET_POSIX
 #include <dirent.h>
 #include "utils/StringUtils.h"
+#include "CompileInfo.h"
 #endif
 
 #ifdef TARGET_WINDOWS
 #include "platform/win32/WIN32Util.h"
 #endif
 
+#ifdef TARGET_DARWIN
+#include "platform/darwin/DarwinUtils.h"
+#endif
 
-#ifdef TARGET_WINDOWS
-//Getters
-std::string CSpecialProtocol::GetHomePath() 
-{
-  return CWIN32Util::GetProfilePath();
-}
+#ifdef TARGET_ANDROID
+#include "platform/android/activity/XBMCApp.h"
+#include <androidjni/ApplicationInfo.h>
+#include "platform/android/bionic_supplement/bionic_supplement.h"
+#endif
 
-std::string CSpecialProtocol::GetHomePath(const std::string &fileName) 
-{
-  return URIUtils::AddFileToFolder(GetHomePath(), fileName);
-}
+using namespace XFILE;
 
-std::string CSpecialProtocol::GetTmpPath() 
-{
-  return URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache");
-}
-
-std::string CSpecialProtocol::GetTmpPath(const std::string &fileName) 
-{
-  return URIUtils::AddFileToFolder(GetTmpPath(), fileName);
-}
-
-
-std::string CSpecialProtocol::GetXBMCBinAddonPath() 
-{
-  std::string str = GetXBMCPath("/addons");
-  return str;
-}
+/*Specific Path Getters*/
 
 std::string CSpecialProtocol::GetProfilePath()
 {
@@ -79,9 +66,47 @@ std::string CSpecialProtocol::GetProfilePath(const std::string &fileName)
   return URIUtils::AddFileToFolder(GetProfilePath(), fileName);
 }
 
-std::string CSpecialProtocol::GetMasterProfilePath() 
+
+std::string CSpecialProtocol::GetMasterProfilePath()
 {
-  return URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata");
+  std::string path;
+#if defined (TARGET_WINDOWS)
+  path = URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata");
+#endif
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    path = GetHomePath() + "/userdata";
+  }
+  else
+  {
+    path = URIUtils::AddFileToFolder(GetXBMCPath(), "portable_data/userdata");
+  }
+#endif
+
+#ifdef TARGET_DARWIN
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    // REVIEW: Make a get function for userHome calc
+    std::string userHome;
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
+
+#if defined(TARGET_DARWIN_IOS)
+    path = userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + CCompileInfo::GetAppName() + "/userdata";
+#else
+    path = userHome + "/Library/Application Support/" + CCompileInfo::GetAppName() + "/userdata";
+#endif
+  }
+  else
+  {
+    path = URIUtils::AddFileToFolder(GetXBMCPath(), "portable_data");
+  }
+
+#endif
+  return path;
 }
 
 std::string CSpecialProtocol::GetMasterProfilePath(const std::string &fileName)
@@ -89,16 +114,315 @@ std::string CSpecialProtocol::GetMasterProfilePath(const std::string &fileName)
   return URIUtils::AddFileToFolder(GetMasterProfilePath(), fileName);
 }
 
+
 std::string CSpecialProtocol::GetXBMCPath()
 {
-  return CUtil::GetHomePath();
+  std::string path;
+#if defined (TARGET_WINDOWS)
+  path = CUtil::GetHomePath();
+#endif
+
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  path = INSTALL_PATH;
+  /* Check if binaries and arch independent data files are being kept in
+  * separate locations. */
+  if (!CDirectory::Exists(URIUtils::AddFileToFolder(path, "userdata")))
+  {
+    /* Attempt to locate arch independent data files. */
+    auto appBinPath = CUtil::GetHomePath("KODI_BIN_HOME");
+    path = CUtil::GetHomePath(appBinPath);
+    if (!g_application.PlatformDirectoriesEnabled())
+    {
+      URIUtils::AddSlashAtEnd(path);
+    }
+  }
+#endif
+#if defined (TARGET_DARWIN)
+  path = CUtil::GetHomePath();
+  if (!g_application.PlatformDirectoriesEnabled())
+  {
+    URIUtils::AddSlashAtEnd(path);
+  }
+#endif
+  return path;
 }
 
-std::string CSpecialProtocol::GetXBMCPath(const std::string &fileName) 
+std::string CSpecialProtocol::GetXBMCPath(const std::string &fileName)
 {
   return URIUtils::AddFileToFolder(GetXBMCPath(), fileName);
 }
+
+
+std::string CSpecialProtocol::GetXBMCBinPath()
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = GetXBMCPath();
 #endif
+
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  path = CUtil::GetHomePath("KODI_BIN_HOME");
+  if (!g_application.PlatformDirectoriesEnabled())
+  {
+    URIUtils::AddSlashAtEnd(path);
+  }
+#endif
+#ifdef TARGET_DARWIN
+  path = GetXBMCPath();
+  if (!g_application.PlatformDirectoriesEnabled())
+  {
+    URIUtils::AddSlashAtEnd(path);
+  }
+#endif
+  return path;
+}
+
+std::string CSpecialProtocol::GetXBMCBinPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetXBMCBinPath(), fileName);
+}
+
+
+std::string CSpecialProtocol::GetXBMCBinAddonPath()
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = GetXBMCPath("/addons");
+#endif
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
+  path = GetXBMCBinPath() + "/addons";
+#endif
+#ifdef TARGET_ANDROID
+  path = CXBMCApp::getApplicationInfo().nativeLibraryDir.c_str();
+#endif
+  return path;
+}
+
+std::string CSpecialProtocol::GetXBMCBinAddonPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetXBMCBinAddonPath(), fileName);
+}
+
+
+std::string CSpecialProtocol::GetXBMCAltBinAddonPath()
+{
+  std::string path;
+#if defined(TARGET_POSIX)
+  /* REVIEW:
+  if (getenv("KODI_BINADDON_PATH")) // don't see why to do this check. what to do if false?
+  */
+  path = getenv("KODI_BINADDON_PATH");
+  if (!g_application.PlatformDirectoriesEnabled())
+  {
+    URIUtils::AddSlashAtEnd(path);
+  }
+#endif
+  // REVIEW: Maybe it is appropriete to ASSERT/throw exception here.
+  return path;
+}
+
+std::string CSpecialProtocol::GetXBMCAltBinAddonPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetXBMCAltBinAddonPath(), fileName);
+}
+
+
+std::string CSpecialProtocol::GetHomePath() 
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = CWIN32Util::GetProfilePath();
+#endif
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  if (g_application.PlatformDirectoriesEnabled()) 
+  {
+    std::string userHome;
+    std::string appName = CCompileInfo::GetAppName();
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
+    // REVIEW: Make a get function for userHome calc
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
+    path = userHome + "/" + dotLowerAppName;
+  }
+  else
+  {
+    path = URIUtils::AddFileToFolder(GetXBMCPath(), "portable_data");
+  }
+#endif
+#if defined(TARGET_DARWIN)
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    // REVIEW: Make a get function for userHome calc
+    std::string userHome;
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
+#if defined(TARGET_DARWIN_IOS)
+    path = userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + CCompileInfo::GetAppName();
+#else
+    path = userHome + "/Library/Application Support/" + CCompileInfo::GetAppName();
+#endif
+  }
+  else
+  {
+    path = URIUtils::AddFileToFolder(GetXBMCPath(), "portable_data");
+  }
+#endif
+  return path;
+}
+
+std::string CSpecialProtocol::GetHomePath(const std::string &fileName) 
+{
+  return URIUtils::AddFileToFolder(GetHomePath(), fileName);
+}
+
+std::string CSpecialProtocol::GetEnvHomePath()
+{
+  std::string path;
+#if defined(TARGET_POSIX)
+  path =  getenv("HOME");
+#endif
+  return path;
+}
+
+std::string CSpecialProtocol::GetEnvHomePath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetEnvHomePath(), fileName);
+}
+
+
+std::string CSpecialProtocol::GetTmpPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetTmpPath(), fileName);
+}
+
+std::string CSpecialProtocol::GetTmpPath() 
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache");
+#endif
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  const char* envAppTemp = "KODI_TEMP";
+  // REVIEW: Make a get function for userHome calc
+  std::string userHome;
+  if (getenv("HOME"))
+    userHome = getenv("HOME");
+  else
+    userHome = "/root";
+
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    std::string strTempPath = userHome;
+    std::string appName = CCompileInfo::GetAppName();
+    // REVIEW: Make a get function for dotLowerAppName calc
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
+    path = strTempPath;
+  }
+  else
+  {
+    std::string strTempPath = GetXBMCPath();
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
+    if (getenv(envAppTemp))
+      strTempPath = getenv(envAppTemp);
+    path = strTempPath;
+  }
+#endif
+#ifdef TARGET_DARWIN
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    // REVIEW: Make a get function for dotLowerAppName calc
+    std::string appName = CCompileInfo::GetAppName();
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
+    // REVIEW: Make a get function for userHome calc
+    std::string userHome;
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
+
+#if defined(TARGET_DARWIN_IOS)
+    std::string strTempPath = URIUtils::AddFileToFolder(userHome, std::string(CDarwinUtils::GetAppRootFolder()) + "/" + CCompileInfo::GetAppName() + "/temp");
+#else
+    std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
+    CDirectory::Create(strTempPath);
+    strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
+#endif
+    path = strTempPath;
+  }
+  else
+  {
+    path = URIUtils::AddFileToFolder(GetXBMCPath(), "portable_data/temp");
+  }
+#endif
+  return path;
+}
+
+
+std::string CSpecialProtocol::GetLogPath()
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = GetHomePath();
+#endif
+
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+  path = GetTmpPath();
+#endif
+
+#if defined(TARGET_DARWIN)
+  if (g_application.PlatformDirectoriesEnabled())
+  {
+    // REVIEW: Make a get function for userHome calc
+    std::string userHome;
+    if (getenv("HOME"))
+      userHome = getenv("HOME");
+    else
+      userHome = "/root";
+
+#if defined(TARGET_DARWIN_IOS)
+    std::string strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
+#else
+    std::string strTempPath = userHome + "/Library/Logs";
+#endif
+    path = strTempPath;
+  }
+  else
+  {
+    path = GetTmpPath();
+  }
+#endif
+  return path;
+}
+
+std::string CSpecialProtocol::GetLogPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetLogPath(), fileName);
+}
+
+std::string CSpecialProtocol::GetXBMCFrameworksPath(const std::string &fileName)
+{
+  return URIUtils::AddFileToFolder(GetXBMCFrameworksPath(), fileName);
+}
+
+std::string CSpecialProtocol::GetXBMCFrameworksPath()
+{
+  std::string path;
+#ifdef TARGET_DARWIN
+  path = CUtil::GetFrameworksPath();
+#endif
+  return path;
+}
+
 
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
@@ -230,12 +554,10 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   else if (RootDir == "skin")
     translatedPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName);
 
-  // from here on, we have our "real" special paths
-
-/* In Windows platform the static path map isn't used anymore. Instead we use specific getters.
-   (for alleviating the early destruction of the map when exiting Kodi)
-*/
-#ifdef TARGET_WINDOWS
+  /* Static path map isn't used anymore. Instead we use specific getters.
+  (for alleviating the early destruction of the map when exiting Kodi)
+  Note:  "userhome" is not included since its setter is not called from anywhere.
+  */
   else if (RootDir == "profile")
   {
     translatedPath = GetProfilePath(FileName);
@@ -244,44 +566,38 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   {
     translatedPath = GetMasterProfilePath(FileName);
   }
-  else if (RootDir == "xbmc" || RootDir == "xbmcbin")
+  else if (RootDir == "xbmc")
   {
     translatedPath = GetXBMCPath(FileName);
   }
+  else if (RootDir == "xbmcbin")
+  {
+    translatedPath = GetXBMCBinPath(FileName);
+  }
   else if (RootDir == "xbmcbinaddons")
   {
-    translatedPath = GetXBMCBinAddonPath();
+    translatedPath = GetXBMCBinAddonPath(FileName);
   }
-  else if (RootDir == "home" || RootDir == "logpath")
+  else if (RootDir == "xbmcaltbinaddons")
+  {
+    translatedPath = GetXBMCAltBinAddonPath(FileName);
+  }
+  else if (RootDir == "home")
   {
     translatedPath = GetHomePath(FileName);
+  }
+  else if (RootDir == "envhome")
+  {
+    translatedPath = GetEnvHomePath(FileName);
+  }
+  else if (RootDir == "logpath")
+  {
+    translatedPath = GetLogPath(FileName);
   }
   else if (RootDir == "temp")
   {
     translatedPath = GetTmpPath(FileName);
   }
-#else
-  else if (
-    RootDir == "xbmc" ||
-    RootDir == "xbmcbin" ||
-    RootDir == "xbmcbinaddons" ||
-    RootDir == "xbmcaltbinaddons" ||
-    RootDir == "home" ||
-    RootDir == "envhome" ||
-    RootDir == "userhome" ||
-    RootDir == "temp" ||
-    RootDir == "profile" ||
-    RootDir == "masterprofile" ||
-    RootDir == "frameworks" ||
-    RootDir == "logpath")
-  {
-    std::string basePath = GetPath(RootDir);
-    if (!basePath.empty())
-      translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
-    else
-      translatedPath.clear();
-  }
-#endif
 
   // check if we need to recurse in
   if (URIUtils::IsSpecial(translatedPath))
@@ -359,30 +675,20 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
 
 void CSpecialProtocol::LogPaths()
 {
-#ifdef TARGET_WINDOWS
+//#ifdef TARGET_WINDOWS
   CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetXBMCPath().c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetXBMCPath().c_str());
+  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetXBMCBinPath().c_str());
   CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetXBMCBinAddonPath().c_str());
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetMasterProfilePath().c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetHomePath().c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetTmpPath().c_str());
   CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetHomePath().c_str());
-#else
-  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetPath("xbmcbinaddons").c_str());
-  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
-#if defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "special://envhome/ is mapped to: %s", GetPath("envhome").c_str());
-#endif
-  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
-  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
-  CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetPath("logpath").c_str());
-  //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
+ #if defined(TARGET_POSIX)
+  CLog::Log(LOGNOTICE, "special://envhome/ is mapped to: %s", GetHomePath().c_str());
+ #endif
   if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
-#endif
-}
+} 
 
 // private routines, to ensure we only set/get an appropriate path
 void CSpecialProtocol::SetPath(const std::string &key, const std::string &path)

@@ -960,9 +960,10 @@ void CXBMCApp::SetSystemVolume(float percent)
     android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
 }
 
-void CXBMCApp::InitDirectories()
+// To be removed after SpecialProtocol migration
+void cxbmcapp::initdirectories()
 {
-  CSpecialProtocol::SetXBMCBinAddonPath(getApplicationInfo().nativeLibraryDir.c_str());
+  cspecialprotocol::setxbmcbinaddonpath(getapplicationinfo().nativelibrarydir.c_str());
 }
 
 void CXBMCApp::onReceive(CJNIIntent intent)

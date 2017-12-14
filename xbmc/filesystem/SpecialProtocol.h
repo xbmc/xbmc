@@ -75,20 +75,28 @@ public:
 
 private:
   // Specific Path Getters (Instead of using GetPath())
-#ifdef TARGET_WINDOWS 
   static std::string GetProfilePath();
   static std::string GetProfilePath(const std::string &fileName);
   static std::string GetMasterProfilePath();
   static std::string GetMasterProfilePath(const std::string &fileName);
   static std::string GetXBMCPath();
   static std::string GetXBMCPath(const std::string &fileName);
+  static std::string GetXBMCBinPath();
+  static std::string GetXBMCBinPath(const std::string &fileName);
   static std::string GetXBMCBinAddonPath();
+  static std::string GetXBMCBinAddonPath(const std::string &fileName);
+  static std::string GetXBMCAltBinAddonPath();
+  static std::string GetXBMCAltBinAddonPath(const std::string &fileName);
   static std::string GetHomePath();
   static std::string GetHomePath(const std::string &fileName);
   static std::string GetTmpPath();
   static std::string GetTmpPath(const std::string &fileName);
-#endif
-
+  static std::string GetLogPath();
+  static std::string GetLogPath(const std::string &fileName);
+  static std::string GetXBMCFrameworksPath();
+  static std::string GetXBMCFrameworksPath(const std::string &fileName);
+  static std::string GetEnvHomePath();
+  static std::string GetEnvHomePath(const std::string &fileName);
 
   static void SetPath(const std::string &key, const std::string &path);
   static std::string GetPath(const std::string &key);

@@ -539,5 +539,4 @@ void CProfilesManager::SetCurrentProfileId(size_t profileId)
 {
   CSingleLock lock(m_critical);
   m_currentProfile = profileId;
-  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
 }

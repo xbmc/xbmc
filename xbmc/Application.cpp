@@ -431,10 +431,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
 
   //! @todo - move to CPlatformXXX
-  #if defined(TARGET_POSIX)
-    // set special://envhome
-    CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
-  #endif
 
   // only the InitDirectories* for the current platform should return true
   bool inited = InitDirectoriesLinux();
@@ -808,7 +804,6 @@ bool CApplication::InitDirectoriesLinux()
   StringUtils::ToLower(dotLowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
-  const char* envAppTemp = "KODI_TEMP";
 
   auto appBinPath = CUtil::GetHomePath(envAppBinHome);
   // overridden by user
@@ -836,48 +831,10 @@ bool CApplication::InitDirectoriesLinux()
   setenv(envAppBinHome, appBinPath.c_str(), 0);
   setenv(envAppHome, appPath.c_str(), 0);
 
-  if (m_bPlatformDirectories)
-  {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(appBinPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
-
-    std::string strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
 
     CreateUserDirs();
 
-  }
-  else
-  {
-    URIUtils::AddSlashAtEnd(appPath);
-
-    CSpecialProtocol::SetXBMCBinPath(appBinPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
-
-    std::string strTempPath = appPath;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
-    CreateUserDirs();
-  }
-  CSpecialProtocol::SetXBMCBinAddonPath(appBinPath + "/addons");
-
-#if defined(TARGET_ANDROID)
-  CXBMCApp::InitDirectories();
-#endif
 
   return true;
 #else
@@ -915,25 +872,12 @@ bool CApplication::InitDirectoriesOSX()
 
   // setup path to our internal dylibs so loader can find them
   std::string frameworksPath = CUtil::GetFrameworksPath();
-  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(appPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    #if defined(TARGET_DARWIN_IOS)
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
-    #else
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
-    #endif
-
+    std::string appName = CCompileInfo::GetAppName();
     std::string dotLowerAppName = "." + appName;
     StringUtils::ToLower(dotLowerAppName);
     // location for temp files
@@ -944,9 +888,8 @@ bool CApplication::InitDirectoriesOSX()
       CDirectory::Create(strTempPath);
       strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
     #endif
-    CSpecialProtocol::SetTempPath(strTempPath);
 
-    // xbmc.log file location
+   //  xbmc.log file location
     #if defined(TARGET_DARWIN_IOS)
       strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
     #else
