@@ -433,7 +433,17 @@ bool CApplication::Create(const CAppParamParser &params)
   //! @todo - move to CPlatformXXX
   #if defined(TARGET_POSIX)
     // set special://envhome
-    CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
+    if (getenv("HOME"))
+    {
+      CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
+    }
+    else
+    {
+      fprintf(stderr, "The HOME environment variable is not set!\n");
+      /* Cleanup. Leaving this out would lead to another crash */
+      m_ServiceManager->DeinitStageOne();
+      return false;
+    }
   #endif
 
   // only the InitDirectories* for the current platform should return true
