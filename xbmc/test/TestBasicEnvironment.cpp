@@ -21,8 +21,6 @@
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
 #include "cores/DataCacheCore.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -120,7 +118,6 @@ void TestBasicEnvironment::SetUp()
     SetUpError();
   }
   g_powerManager.Initialize();
-  g_application.m_ServiceManager->CreateAudioEngine();
   CServiceBroker::GetSettings().Initialize();
 
   std::unique_ptr<CWinSystemBase> winSystem = CWinSystemBase::CreateWinSystem();
@@ -128,14 +125,11 @@ void TestBasicEnvironment::SetUp()
 
   if (!g_application.m_ServiceManager->InitStageTwo(CAppParamParser()))
     exit(1);
-
-  g_application.m_ServiceManager->StartAudioEngine();
 }
 
 void TestBasicEnvironment::TearDown()
 {
   g_application.m_ServiceManager->DeinitStageTwo();
-  g_application.m_ServiceManager->DestroyAudioEngine();
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
   CServiceBroker::GetSettings().Uninitialize();

@@ -88,7 +88,6 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   }
 
   XVisualInfo vMask;
-  XVisualInfo *visuals = nullptr;
   XVisualInfo *vInfo = nullptr;
   int availableVisuals    = 0;
   vMask.screen = screen;
