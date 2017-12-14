@@ -779,6 +779,9 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     case VIDEOPLAYER_HASSUBTITLES:
       value = g_application.GetAppPlayer().GetSubtitleCount() > 0;
       return true;
+    case VIDEOPLAYER_AUDIO_MULTIPLE:
+      value = g_application.GetAppPlayer().GetAudioStreamCount() > 1;
+      return true;
     case VIDEOPLAYER_SUBTITLESENABLED:
       value = g_application.GetAppPlayer().GetSubtitleVisible();
       return true;
