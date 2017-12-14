@@ -75,6 +75,7 @@ public:
 
 private:
   // Specific Path Getters (Instead of using GetPath())
+#ifdef TARGET_WINDOWS 
   static std::string GetProfilePath();
   static std::string GetProfilePath(const std::string &fileName);
   static std::string GetMasterProfilePath();
@@ -86,6 +87,7 @@ private:
   static std::string GetHomePath(const std::string &fileName);
   static std::string GetTmpPath();
   static std::string GetTmpPath(const std::string &fileName);
+#endif
 
 
   static void SetPath(const std::string &key, const std::string &path);
