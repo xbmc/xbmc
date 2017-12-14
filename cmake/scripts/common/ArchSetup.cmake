@@ -11,6 +11,9 @@
 # DEP_DEFINES - compiler definitions for system dependencies (e.g. LIRC)
 # + the results of compiler tests etc.
 
+# workaround a bug in older cmake, where binutils wouldn't be set after deleting CMakeCache.txt
+include(CMakeFindBinUtils)
+
 include(CheckCXXSourceCompiles)
 include(CheckSymbolExists)
 include(CheckFunctionExists)
