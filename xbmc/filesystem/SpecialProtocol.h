@@ -74,6 +74,20 @@ public:
   static std::string TranslatePathConvertCase(const std::string& path);
 
 private:
+  // Specific Path Getters (Instead of using GetPath())
+  static std::string GetProfilePath();
+  static std::string GetProfilePath(const std::string &fileName);
+  static std::string GetMasterProfilePath();
+  static std::string GetMasterProfilePath(const std::string &fileName);
+  static std::string GetXBMCPath();
+  static std::string GetXBMCPath(const std::string &fileName);
+  static std::string GetXBMCBinAddonPath();
+  static std::string GetHomePath();
+  static std::string GetHomePath(const std::string &fileName);
+  static std::string GetTmpPath();
+  static std::string GetTmpPath(const std::string &fileName);
+
+
   static void SetPath(const std::string &key, const std::string &path);
   static std::string GetPath(const std::string &key);
 
