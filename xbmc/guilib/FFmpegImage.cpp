@@ -582,7 +582,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.codec = avcodec_find_encoder(jpg_output ? AV_CODEC_ID_MJPEG : AV_CODEC_ID_PNG);
   if (!tdm.codec)
   {
-    CLog::Log(LOGERROR, "Your are missing a working encoder for format: %d", jpg_output ? AV_CODEC_ID_MJPEG : AV_CODEC_ID_PNG);
+    CLog::Log(LOGERROR, "You are missing a working encoder for format: %s", jpg_output ? "JPEG" : "PNG");
     return false;
   }
 
