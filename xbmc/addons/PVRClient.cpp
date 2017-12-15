@@ -1340,39 +1340,6 @@ PVR_ERROR CPVRClient::IsTimeshifting(bool &bTimeshifting) const
   });
 }
 
-PVR_ERROR CPVRClient::GetPlayingTime(time_t &time) const
-{
-  time = time_t(0);
-  PVR_ERROR error = DoAddonCall(__FUNCTION__, [&time](const AddonInstance* addon) {
-    time = addon->GetPlayingTime();
-    return PVR_ERROR_NO_ERROR;
-  });
-
-  // fallback if not implemented by addon
-  if (time == 0)
-    CDateTime::GetUTCDateTime().GetAsTime(time);
-
-  return error;
-}
-
-PVR_ERROR CPVRClient::GetBufferTimeStart(time_t &time) const
-{
-  time = time_t(0);
-  return DoAddonCall(__FUNCTION__, [&time](const AddonInstance* addon) {
-    time = addon->GetBufferTimeStart();
-    return PVR_ERROR_NO_ERROR;
-  });
-}
-
-PVR_ERROR CPVRClient::GetBufferTimeEnd(time_t &time) const
-{
-  time = time_t(0);
-  return DoAddonCall(__FUNCTION__, [&time](const AddonInstance* addon) {
-    time = addon->GetBufferTimeEnd();
-    return PVR_ERROR_NO_ERROR;
-  });
-}
-
 PVR_ERROR CPVRClient::GetStreamTimes(PVR_STREAM_TIMES *times)
 {
   return DoAddonCall(__FUNCTION__, [&times](const AddonInstance* addon) {

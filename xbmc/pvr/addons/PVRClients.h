@@ -325,24 +325,6 @@ namespace PVR
     bool IsTimeshifting() const;
 
     /*!
-     * @brief Get the playing time of the currently playing stream.
-     * @return The time.
-     */
-    time_t GetPlayingTime() const;
-
-    /*!
-     * @brief Get the start time of the timeshift buffer for the currently playing stream.
-     * @return The buffer start time.
-     */
-    time_t GetBufferTimeStart() const;
-
-    /*!
-     * @brief Get the end time of the timeshift buffer for the currently playing stream.
-     * @return The buffer end time.
-     */
-    time_t GetBufferTimeEnd() const;
-
-    /*!
      * @brief Get timing data for the currently playing stream.
      * @param times The struct the client has to fill with data.
      * @return True, if the data were fetched successfully, false itherwise.

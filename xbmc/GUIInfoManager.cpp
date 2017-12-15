@@ -4373,18 +4373,28 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   }
 ///   \table_row3{   <b>`Pvr.Duration`</b>,
 ///                  \anchor Pvr_Duration
-///                  _time string_,
-///     Returns the duration of the currently played title on TV
+///                  _string_,
+///     Returns the duration of the currently playing epg event
 ///   }
 ///   \table_row3{   <b>`Pvr.Time`</b>,
 ///                  \anchor Pvr_Time
-///                  _time string_,
-///     Returns the time position of the currently played title on TV
+///                  _string_,
+///     Returns the time of the current position of the currently playing epg event
+///   }
+///   \table_row3{   <b>`Pvr.EpgEventRemainingTime`</b>,
+///                  \anchor Pvr_EpgEventRemainingTime
+///                  _string_,
+///     Returns the remaining time for currently playing epg event
+///   }
+///   \table_row3{   <b>`Pvr.EpgEventFinishTime`</b>,
+///                  \anchor Pvr_EpgEventFinishTime
+///                  _string_,
+///     Returns the time the currently playing epg event will end
 ///   }
 ///   \table_row3{   <b>`Pvr.Progress`</b>,
 ///                  \anchor Pvr_Progress
 ///                  _integer_,
-///     Returns the position of currently played title on TV as integer
+///     Returns the percentage complete of the currently playing epg event
 ///   }
 ///   \table_row3{   <b>`Pvr.ActStreamClient`</b>,
 ///                  \anchor Pvr_ActStreamClient
@@ -4641,6 +4651,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingepgtag",          PVR_IS_PLAYING_EPGTAG },
                                   { "duration",                 PVR_PLAYING_DURATION },
                                   { "time",                     PVR_PLAYING_TIME },
+                                  { "epgeventremainingtime",    PVR_EPG_EVENT_REMAINING_TIME },
+                                  { "epgeventfinishtime",       PVR_EPG_EVENT_FINISH_TIME },
                                   { "progress",                 PVR_PLAYING_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
@@ -5981,6 +5993,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_NEXT_TIMER:
   case PVR_PLAYING_DURATION:
   case PVR_PLAYING_TIME:
+  case PVR_EPG_EVENT_REMAINING_TIME:
+  case PVR_EPG_EVENT_FINISH_TIME:
   case PVR_PLAYING_PROGRESS:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
@@ -6808,7 +6822,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   }
 
   value = 0;
-  switch( info )
+  switch (info)
   {
     case PLAYER_VOLUME:
       value = (int)g_application.GetVolume();
@@ -6826,19 +6840,13 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PLAYER_CHAPTER:
     case PLAYER_CHAPTERCOUNT:
       {
-        if( g_application.m_pPlayer->IsPlaying())
+        if (g_application.m_pPlayer->IsPlaying())
         {
-          switch( info )
+          switch (info)
           {
           case PLAYER_PROGRESS:
-            {
-              const CPVREpgInfoTagPtr tag(GetEpgInfoTag());
-              if (tag)
-                value = lrintf(tag->ProgressPercentage());
-              else
-                value = lrintf(g_application.GetPercentage());
-              break;
-            }
+            value = lrintf(g_application.GetPercentage());
+            break;
           case PLAYER_PROGRESS_CACHE:
             value = lrintf(g_application.GetCachePercentage());
             break;

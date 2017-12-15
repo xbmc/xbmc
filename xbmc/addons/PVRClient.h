@@ -802,27 +802,6 @@ namespace PVR
     PVR_ERROR IsTimeshifting(bool &bTimeshifting) const;
 
     /*!
-     * @brief Get the current playing time
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetPlayingTime(time_t &time) const;
-
-    /*!
-     * @brief Get the time of oldest packet in timeshift buffer
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetBufferTimeStart(time_t &time) const;
-
-    /*!
-     * @brief Get the time of latest packet in timeshift buffer
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetBufferTimeEnd(time_t &time) const;
-
-    /*!
      * @brief Check whether the currently playing stream, if any, is a real-time stream.
      * @param bRealTime True if real-time, false otherwise.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.

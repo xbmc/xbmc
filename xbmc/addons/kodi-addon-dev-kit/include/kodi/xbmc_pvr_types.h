@@ -589,14 +589,14 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
 
   /*!
-   * @brief times of playing stream
+   * @brief times of playing stream (Live TV and recordings)
    */
   typedef struct PVR_STREAM_TIMES
   {
-    time_t startTime; /*!< @brief time (UTC) time elapsed refers to. Ideally start of tv show */
-    int64_t ptsStart; /*!< @brief pts of startTime */
-    int64_t ptsBegin; /*!< @brief erliest pts player can seek back */
-    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward */
+    time_t startTime; /*!< @brief For recordings, this must be zero. For Live TV, this is a reference time in units of time_t (UTC) from which time elapsed starts. Ideally start of tv show, but can be any other value. */
+    int64_t ptsStart; /*!< @brief the pts of startTime */
+    int64_t ptsBegin; /*!< @brief earliest pts player can seek back. Value is seconds, relative to ptsStart. For recordings, this must be zero. For Live TV, this must be zero if not timeshifting and must point to begin of the timeshift buffer, otherwise. */
+    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward. Value is seconds, relative to ptsStart. For recordings, this must be the total length in seconds. For Live TV, this must be zero if not timeshifting and must point to end of the timeshift buffer, otherwise. */
   } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
 
   typedef struct AddonToKodiFuncTable_PVR

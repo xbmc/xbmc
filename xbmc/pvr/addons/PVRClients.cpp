@@ -718,33 +718,6 @@ bool CPVRClients::IsTimeshifting(void) const
   return bTimeshifting;
 }
 
-time_t CPVRClients::GetPlayingTime() const
-{
-  time_t time(0);
-  ForPlayingClient(__FUNCTION__, [&time](const CPVRClientPtr &client) {
-    return client->GetPlayingTime(time);
-  });
-  return time;
-}
-
-time_t CPVRClients::GetBufferTimeStart() const
-{
-  time_t time(0);
-  ForPlayingClient(__FUNCTION__, [&time](const CPVRClientPtr &client) {
-    return client->GetBufferTimeStart(time);
-  });
-  return time;
-}
-
-time_t CPVRClients::GetBufferTimeEnd() const
-{
-  time_t time(0);
-  ForPlayingClient(__FUNCTION__, [&time](const CPVRClientPtr &client) {
-    return client->GetBufferTimeEnd(time);
-  });
-  return time;
-}
-
 bool CPVRClients::GetStreamTimes(PVR_STREAM_TIMES *times) const
 {
   return ForPlayingClient(__FUNCTION__, [&times](const CPVRClientPtr &client) {
