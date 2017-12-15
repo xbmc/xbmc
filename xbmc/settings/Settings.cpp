@@ -676,13 +676,10 @@ void CSettings::InitializeOptionFillers()
 #ifdef HAS_DVD_DRIVE
   GetSettingsManager()->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
 #endif
-  if (g_application.m_ServiceManager->HasActiveAE())
-  {
-    GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels", ActiveAE::CActiveAESettings::SettingOptionsAudioQualityLevelsFiller);
-    GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesFiller);
-    GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller);
-    GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence", ActiveAE::CActiveAESettings::SettingOptionsAudioStreamsilenceFiller);
-  }
+  GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels", ActiveAE::CActiveAESettings::SettingOptionsAudioQualityLevelsFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence", ActiveAE::CActiveAESettings::SettingOptionsAudioStreamsilenceFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);

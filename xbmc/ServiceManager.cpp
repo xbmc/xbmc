@@ -260,11 +260,6 @@ PVR::CPVRManager& CServiceManager::GetPVRManager()
   return *m_PVRManager;
 }
 
-bool CServiceManager::HasActiveAE() const
-{
-  return m_ActiveAE != nullptr;
-}
-
 IAE& CServiceManager::GetActiveAE()
 {
   ActiveAE::CActiveAE& ae = *m_ActiveAE;

@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <vector>
@@ -39,6 +40,7 @@ public:
   static void SettingOptionsAudioStreamsilenceFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static bool IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
 
+  static std::atomic_bool m_hasAE;
 private:
   static void SettingOptionsAudioDevicesFillerGeneral(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough);
 };

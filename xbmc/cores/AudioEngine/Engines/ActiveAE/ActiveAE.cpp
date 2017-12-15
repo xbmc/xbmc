@@ -22,6 +22,7 @@
 
 using namespace AE;
 using namespace ActiveAE;
+#include "ActiveAESettings.h"
 #include "ActiveAESound.h"
 #include "ActiveAEStream.h"
 #include "ServiceBroker.h"
@@ -292,10 +293,14 @@ CActiveAE::CActiveAE() :
   m_aeGUISoundForce = false;
   m_stats.Reset(44100, true);
   m_streamIdGen = 0;
+
+  CActiveAESettings::m_hasAE = true;
 }
 
 CActiveAE::~CActiveAE()
 {
+  CActiveAESettings::m_hasAE = false;
+
   Dispose();
 }
 
