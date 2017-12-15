@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
   -I@KODI_SRC_DIR@/lib \
   -I@KODI_SRC_DIR@/xbmc \
   -I@KODI_SRC_DIR@/xbmc/guilib \
-  -I@KODI_SRC_DIR@/xbmc/linux \
+  -I@KODI_SRC_DIR@/xbmc/platform/linux \
   @CPPFLAGS@
 
 AM_LDFLAGS = @LIBS@ @STATIC_FLAG@
