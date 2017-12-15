@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Ungesehene Filme"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Kategorie-Widgets aktivieren"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Icons herunterladen"
@@ -107,6 +111,10 @@ msgstr "Sortieren nach"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Ansicht"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Bewertung für Anzeige von Medien-Inhalte wählen"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -170,7 +178,7 @@ msgstr "Wiedergabelisten-Einstellungen"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Typ einstellen und Regeln für die Smart Playlist hinzufügen. Diese Art von Playlisten ist dynamisch und beinhaltet alle Medien aus der Bibliothek, die die gesetzten Regeln erfüllen."
+msgstr "Typ einstellen und Regeln für die intelligente Wiedergabeliste hinzufügen. Diese Art von Wiedergabeliste ist dynamisch und beinhaltet alle Medien aus der Bibliothek, die die gesetzten Regeln erfüllen."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -210,7 +218,7 @@ msgstr "[B]Links[/B] zum Zurückspulen, [B]Rechts[/B] zum Vorspulen drücken"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Zur Playlist..."
+msgstr "Zur Wiedergabeliste..."
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -234,11 +242,11 @@ msgstr "Sektionen"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Video-Playlist"
+msgstr "Video-Wiedergabeliste"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Musik-Playlist"
+msgstr "Musik-Wiedergabeliste"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -266,7 +274,7 @@ msgstr "Filmkollektionen"
 
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr "Vorhersage nicht verfügbar"
+msgstr "Bestzung nicht verfügbar"
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -474,7 +482,7 @@ msgstr "Wiedergabe-Geschwindigkeit"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Der PVR wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muß ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
+msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muß ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -539,3 +547,11 @@ msgstr "Medien-Flags anzeigen"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Ziffern-Eingabe"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository herunterladen."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Fanart-Hintergrund anzeigen"

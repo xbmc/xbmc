@@ -136,6 +136,10 @@ msgctxt "#31063"
 msgid "Sections"
 msgstr "ክፍሎች"
 
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "የ ሙዚቃ የሚጫወቱ ዝርዝር"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "መጨረሻ የተሻሻለው"
@@ -191,6 +195,10 @@ msgstr "አበርካቾች"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "የቀረው"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "የ ፒክስል አቀራረብ"
 
 msgctxt "#31142"
 msgid "Play speed"

@@ -52,6 +52,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Seileidig ar Ariel"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Log y digwyddiad"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Diweddarwyd Diwethaf"
@@ -71,3 +75,7 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teludestun"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Gwybodaeth ar gynnydd chwaraewr"

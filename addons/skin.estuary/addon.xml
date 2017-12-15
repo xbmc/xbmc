@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="2.0.6" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="2.0.7" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -76,7 +76,7 @@
 		<description lang="es_MX">Estuary es el skin por defecto para Kodi 17.0 y superior. Intenta ser fácil para los usuarios de Kodi de primera vez para entender y usar.</description>
 		<description lang="eu_ES">Estuary azala kodi 17.0 eta berriagoen azal lehenetsia da. Kodiren erabiltzaile hasiberrientzako erabilerraza eta ulerterraza izaten saiatzen da.</description>
 		<description lang="fi_FI">Estuary on oletusulkoasu Kodin versiosta 17.0 lähtien. Se pyrkii olemaan helppo ymmärtää ja käyttää Kodin ensikäyttäjille. </description>
-		<description lang="fr_CA">Estuary est l'habillage par défaut pour Kodi 17.0 et ultérieure. Il s'efforce d'être facile à comprendre et à utiliser pour les utilisateurs débutants de Kodi.</description>
+		<description lang="fr_CA">Estuary est l’habillage par défaut pour Kodi 17.0 et ultérieure. Il s’efforce d’être facile à comprendre et à utiliser pour les utilisateurs débutants de Kodi.</description>
 		<description lang="fr_FR">Estuary est l'habillage d'origine pour Kodi 17.0 et supérieur. Il est facile à comprendre et à utiliser pour les utilisateurs novices de Kodi.</description>
 		<description lang="gl_ES">Estuary é a pel predefinida para Kodi 17.0 e superior. Esta tenta ser doada de entender e usar polos usuarios recen chegados a Kodi.</description>
 		<description lang="he_IL">Estuary היא מעטפת ברירת המחדל של קודי מגרסאות 17.0 ומעלה. מטרת מעטפת זו היא להיות פשוטה לשימוש ולהכרה ראשונית על ידי משתמשים חדשים.</description>
@@ -120,7 +120,7 @@
 		<disclaimer lang="es_MX">Estuary es el skin por defecto para Kodi, su eliminación puede causar problemas</disclaimer>
 		<disclaimer lang="eu_ES">Estuary Kodiren azal lehenetsia da. Ezabatzeak arazoak eragin ditzake</disclaimer>
 		<disclaimer lang="fi_FI">Estuary on Kodin oletusulkoasu, sen poisto voi aiheuttaa ongelmia</disclaimer>
-		<disclaimer lang="fr_CA">Estuary est l'habillage par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
+		<disclaimer lang="fr_CA">Estuary est l’habillage par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
 		<disclaimer lang="fr_FR">Estuary est l'habillage d'origine de Kodi, le retirer peut créer des problèmes</disclaimer>
 		<disclaimer lang="gl_ES">Estuary é a pel predefinida para Kodi e eliminala pode causar problemas.</disclaimer>
 		<disclaimer lang="he_IL">Estuary היא מעטפת ברירת המחדל של קודי, הסרתה עלולה לגרום לתקלות</disclaimer>

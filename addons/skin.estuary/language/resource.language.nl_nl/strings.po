@@ -542,7 +542,7 @@ msgstr "Artwork"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Toon mediavlaggen"
+msgstr "Toon media-informatie"
 
 msgctxt "#31161"
 msgid "Numeric pad"

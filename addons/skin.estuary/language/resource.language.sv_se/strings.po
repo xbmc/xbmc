@@ -346,7 +346,7 @@ msgstr "Ange text här..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Biblioteket är för närvarande tomt. För att fylla det med din personliga media, gå till \"Fil\"-sektionen, lägg till en mediakälla och konfigurera den. Efter att källan har lagts till och indexerats, kommer du att kunna bläddra i biblioteket."
+msgstr "Biblioteket är för närvarande tomt. För att fylla det med din personliga media, gå till Filsektionen, lägg till en mediakälla och konfigurera den. Efter att källan har lagts till och indexerats, kommer du att kunna bläddra i biblioteket."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."

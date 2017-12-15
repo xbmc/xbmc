@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.31"
+       version="1.0.32"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -27,7 +27,7 @@
     <summary lang="eu_ES">Zure pantaila belzten duen pantaila-babeslea</summary>
     <summary lang="fa_IR">محافظ خاموش کننده صفحه نمایش</summary>
     <summary lang="fi_FI">Tyhjä ruutu</summary>
-    <summary lang="fr_CA">Un économiseur d'écran qui rend votre écran noir</summary>
+    <summary lang="fr_CA">Un économiseur d’écran qui rend votre écran noir</summary>
     <summary lang="fr_FR">Un économiseur d'écran qui rend l'écran noir</summary>
     <summary lang="gl_ES"> Protector de pantalla que volta a súa pantalla negra</summary>
     <summary lang="he_IL">שומר מסך ההופך את המסך לשחור</summary>
@@ -85,7 +85,7 @@
     <description lang="eu_ES">Black zure pantaila belzten duen pantaila-babesle soil bat da.</description>
     <description lang="fa_IR">Black یک محافظ ساده است که صفحه نمایش را خاموش می کند.</description>
     <description lang="fi_FI">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
-    <description lang="fr_CA">Black est un économiseur d'écran simple qui rend votre écran noir.</description>
+    <description lang="fr_CA">Black est un économiseur d’écran simple qui rend votre écran noir.</description>
     <description lang="fr_FR">Black est un simple économiseur qui passe l'écran au noir.</description>
     <description lang="gl_ES">Black é un  protector de pantalla que voltará a súa pantalla a negro.</description>
     <description lang="he_IL">Black הוא שומר מסך פשוט אשר צובע את המסך בשחור.</description>

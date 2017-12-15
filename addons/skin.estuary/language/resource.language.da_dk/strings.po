@@ -204,6 +204,10 @@ msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Musikplayliste"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Hændelseslog"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Sidst Opdateret"

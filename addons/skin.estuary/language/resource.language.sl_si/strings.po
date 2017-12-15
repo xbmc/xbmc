@@ -24,6 +24,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Išči..."
 
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Filmski način"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Spremeni način"
@@ -31,6 +35,50 @@ msgstr "Spremeni način"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Glej kot 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Naključni filmi"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Neogledani filmi"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Prenesi ikone"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmi sredi predvajanja"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Največkrat predvajani albumi"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Naključni albumi"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Naključni izvajalci"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Nepredvajani albumi"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nedavni posnetki"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nedavno predvajani kanali"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Nedavno predvajani kanali"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -80,6 +128,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Zapisnik dogodkov"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Izberite prednastavitve"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Zadnja posodobitev"
@@ -88,9 +144,21 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Zapusti"
 
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Zasedba ni na voljo"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Dodatek besedil pesmi"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Nastavitve dodatka za besedila pesmi"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Nastavitve vizualizacije"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -115,3 +183,39 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Vnesi brskalnik dodatkov"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Vnesite brskalnik dodatkov"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Išči dodatke"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorije"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Skladišče"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Neogledani videospoti"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Naključni videospoti"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Uredi kategorije"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Številčnica"
