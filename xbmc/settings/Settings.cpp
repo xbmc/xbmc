@@ -664,14 +664,6 @@ void CSettings::InitializeDefaults()
     std::static_pointer_cast<CSettingBool>(GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
 #endif
 
-#if !defined(TARGET_WINDOWS)
-  if (g_application.m_ServiceManager->HasActiveAE())
-  {
-    std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(false));
-    std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(true));
-  }
-#endif
-
   if (g_application.IsStandAlone())
     std::static_pointer_cast<CSettingInt>(GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
 

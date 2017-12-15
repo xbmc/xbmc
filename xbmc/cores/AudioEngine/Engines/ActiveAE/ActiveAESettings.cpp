@@ -79,13 +79,6 @@ bool CActiveAESettings::IsSettingVisible(const std::string & condition, const st
   return CServiceBroker::GetActiveAE().IsSettingVisible(value);
 }
 
-bool CActiveAESettings::SupportsQualitySetting(void)
-{
-    return ((CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_LOW) ? 1 : 0) +
-            (CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_MID) ? 1 : 0) +
-            (CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_HIGH) ? 1 : 0)) >= 2;
-}
-
 void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();

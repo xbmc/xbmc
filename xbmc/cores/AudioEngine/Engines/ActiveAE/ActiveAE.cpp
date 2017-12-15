@@ -2625,11 +2625,6 @@ void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   m_sink.EnumerateOutputDevices(devices, passthrough);
 }
 
-std::string CActiveAE::GetDefaultDevice(bool passthrough)
-{
-  return m_sink.GetDefaultDevice(passthrough);
-}
-
 void CActiveAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE      ||
