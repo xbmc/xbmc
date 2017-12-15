@@ -601,7 +601,7 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr ""
 
-#empty string with empty id  31133
+#empty string with id 31133
 
 #: /xml/DialogSeekBar.xml
 msgctxt "#31134"
