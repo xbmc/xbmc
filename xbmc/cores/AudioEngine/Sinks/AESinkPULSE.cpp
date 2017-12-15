@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "ServiceBroker.h"
+#include "utils/StringUtils.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
@@ -586,7 +587,10 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   sinkStruct.device_found = false;
 
   // get real sample rate of the device we want to open - to avoid resampling
-  bool isDefaultDevice = (device == "Default");
+  bool isDefaultDevice = false;
+  if(StringUtils::EndsWithNoCase(device, std::string("default")))
+    isDefaultDevice = true;
+
   WaitForOperation(pa_context_get_sink_info_by_name(m_Context, isDefaultDevice ? NULL : device.c_str(), SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
   // only check if the device is existing - don't alter the sample rate
   if (!sinkStruct.device_found)
