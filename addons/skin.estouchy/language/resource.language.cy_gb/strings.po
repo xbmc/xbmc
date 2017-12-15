@@ -40,6 +40,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Gwybodaeth ar gynnydd chwaraewr"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Tudalen"

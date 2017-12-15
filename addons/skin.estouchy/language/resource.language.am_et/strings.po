@@ -48,6 +48,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "አልበም "
 
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "የ ፒክስል አቀራረብ"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "ገጽ"

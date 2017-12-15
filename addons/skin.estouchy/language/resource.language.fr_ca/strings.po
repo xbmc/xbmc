@@ -62,11 +62,11 @@ msgstr "Albums"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr "Infos des numériscopes"
+msgstr "Informations des numériscopes"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr "Infos du processus Lecteur"
+msgstr "Informations du processus Lecteur"
 
 msgctxt "#31019"
 msgid "Video decoder"
@@ -78,7 +78,7 @@ msgstr "Format de pixel"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Utilisation de la mémoire système"
+msgstr "Utilisation de la mémoire "
 
 msgctxt "#31024"
 msgid "Page"
@@ -86,7 +86,7 @@ msgstr "Page"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Liste d'infos"
+msgstr "Liste d’informations"
 
 msgctxt "#31038"
 msgid "Login"
@@ -190,7 +190,7 @@ msgstr "Télétexte"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Valeur par défaut de l'habillage"
+msgstr "Valeur par défaut de l’habillage"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -198,7 +198,7 @@ msgstr "Basé sur Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Changer l'habillage · Définir la langue et la région · Changer les options de listage des fichiers · Définir un économiseur d'écran"
+msgstr "Changer l’habillage · Définir la langue et la région · Changer les options de listage des fichiers · Définir un économiseur d’écran"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
@@ -206,7 +206,7 @@ msgstr "Configurer et gérer les services de partage de médias · Configurer et
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Configurer l'affichage · Configurer l'audio · Configurer l'accès à Internet · Configurer les économies d'énergie · Configurer la journalisation"
+msgstr "Configurer l’affichage · Configurer l’audio · Configurer l’accès à Internet · Configurer les économies d’énergie · Configurer la journalisation"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
@@ -218,15 +218,15 @@ msgstr "Configurer les actions pouvant être utilisées pendant la lecture · Co
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configurer les sources de la médiathèque · Montrer le contenu d'affichage des listes de médias · Configurer le parcours des listes de la médiathèque"
+msgstr "Configurer les sources de la médiathèque · Montrer le contenu d’affichage des listes de médias · Configurer le parcours des listes de la médiathèque"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Configurer l'habillage · Configurer la région · Configurer les contrôles · Configurer l'économiseur d'écran · Configurer le verrou maître"
+msgstr "Configurer l’habillage · Configurer la région · Configurer les contrôles · Configurer l’économiseur d’écran · Configurer le verrou maître"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Configurer vos profils · Définir les options de verrouillage · Activer l'écran de connexion"
+msgstr "Configurer vos profils · Définir les options de verrouillage · Activer l’écran de connexion"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
@@ -234,15 +234,15 @@ msgstr "Afficher les informations du système · Statistiques matérielles · V�
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et poursuivre"
+msgstr "Choisissez votre profil d’utilisateur Kodi[CR]pour vous connecter et poursuivre"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Menu de l'accueil"
+msgstr "Menu de l’accueil"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Addiciels de l'accueil"
+msgstr "Addiciels de l’accueil"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -250,7 +250,7 @@ msgstr "Arrière-plans"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Raccourci de l'addiciel"
+msgstr "Raccourci de l’addiciel"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -266,7 +266,7 @@ msgstr "Arrière-plan : "
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configurer les paramètres télé - Changer les infos en plein écran - Gérer les paramètres des données du GÉP"
+msgstr "Configurer les paramètres télé - Changer les informations en plein écran - Gérer les paramètres des données du GÉP"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -274,11 +274,11 @@ msgstr "Télé en direct"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "Cacher l'arrière-plan de la vidéo"
+msgstr "Cacher l’arrière-plan de la vidéo"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Cacher l'arrière-plan de visualisation"
+msgstr "Cacher l’arrière-plan de visualisation"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -318,11 +318,11 @@ msgstr "Pour parcourir Estouchy, vous devez savoir deux choses"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Le logo Kodi fonctionne comme un bouton « ACCUEIL ». Lorsque vous le touchez, vous retournerez à l'écran d'accueil."
+msgstr "Le logo Kodi fonctionne comme un bouton « ACCUEIL ». Lorsque vous le touchez, vous retournerez à l’écran d’accueil."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Lorsque vous lisez de l'audio ou une vidéo, le titre de l'élément apparaîtra en haut de l'écran. Le toucher vous amènera à la visualisation en plein écran ou la fenêtre vidéo.  "
+msgstr "Lorsque vous lisez de l’audio ou une vidéo, le titre de l’élément apparaîtra en haut de l’écran. Le toucher vous amènera à la visualisation en plein écran ou la fenêtre vidéo.  "
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
