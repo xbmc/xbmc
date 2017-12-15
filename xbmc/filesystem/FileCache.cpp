@@ -30,7 +30,7 @@
 #include "settings/AdvancedSettings.h"
 
 #if !defined(TARGET_WINDOWS)
-#include "linux/ConvUtils.h" //GetLastError()
+#include "platform/linux/ConvUtils.h"
 #endif
 
 #include <cassert>
@@ -38,7 +38,7 @@
 #include <memory>
 
 #ifdef TARGET_POSIX
-#include "linux/ConvUtils.h"
+#include "platform/linux/ConvUtils.h"
 #endif
 
 using namespace XFILE;

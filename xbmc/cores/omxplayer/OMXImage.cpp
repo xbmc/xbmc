@@ -22,7 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "utils/log.h"
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 
 #include <sys/time.h>
 #include <inttypes.h>
@@ -30,7 +30,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "utils/URIUtils.h"
 #include "windowing/WinSystem.h"
 #include "windowing/rpi/WinSystemRpiGLESContext.h"

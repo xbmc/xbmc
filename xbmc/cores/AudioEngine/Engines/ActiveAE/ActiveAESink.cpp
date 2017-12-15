@@ -33,7 +33,7 @@
 #include <algorithm>
 
 #ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #endif
 
 using namespace AE;

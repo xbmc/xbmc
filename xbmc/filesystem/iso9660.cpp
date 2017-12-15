@@ -49,8 +49,8 @@ ISO9660
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
-#include "linux/XFileUtils.h"
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XFileUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #else
 #include "platform/win32/CharsetConverter.h"
 #endif

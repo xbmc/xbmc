@@ -23,7 +23,7 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererMMAL.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

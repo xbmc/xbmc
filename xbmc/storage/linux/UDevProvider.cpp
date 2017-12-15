@@ -23,7 +23,7 @@
 
 #ifdef HAVE_LIBUDEV
 
-#include "linux/PosixMountProvider.h"
+#include "platform/linux/PosixMountProvider.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 

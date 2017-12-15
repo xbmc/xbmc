@@ -26,7 +26,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "linux/PlatformDefs.h"
+#include "platform/linux/PlatformDefs.h"
 #include "DVDStreamInfo.h"
 
 #include "OMXClock.h"

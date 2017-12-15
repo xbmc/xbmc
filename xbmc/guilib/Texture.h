@@ -24,7 +24,7 @@
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
 #ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #endif
 
 #pragma pack(1)

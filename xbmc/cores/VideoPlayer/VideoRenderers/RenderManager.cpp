@@ -39,7 +39,7 @@
 
 
 #if defined(TARGET_POSIX)
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #include "RenderCapture.h"

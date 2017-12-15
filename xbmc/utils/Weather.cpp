@@ -44,7 +44,7 @@
 #include "XBDateTime.h"
 #include "XMLUtils.h"
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 using namespace ADDON;

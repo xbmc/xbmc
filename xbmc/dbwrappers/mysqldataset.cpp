@@ -34,7 +34,7 @@
 #include "mysql/errmsg.h"
 
 #ifdef TARGET_POSIX
-#include "linux/ConvUtils.h"
+#include "platform/linux/ConvUtils.h"
 #endif
 
 #define MYSQL_OK          0

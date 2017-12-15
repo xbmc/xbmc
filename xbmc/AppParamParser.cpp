@@ -30,7 +30,7 @@
 #include "WIN32Util.h"
 #endif
 #ifndef TARGET_WINDOWS
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 #include <stdlib.h>
 

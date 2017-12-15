@@ -33,7 +33,7 @@
 #include "view/ViewState.h"
 
 #ifdef TARGET_POSIX
-#include "linux/ConvUtils.h" // GetLastError()
+#include "platform/linux/ConvUtils.h"
 #endif
 CViewDatabase::CViewDatabase(void) = default;
 

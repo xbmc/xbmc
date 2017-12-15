@@ -34,7 +34,7 @@
 
 // ARGH... this is apparently needed to avoid FDEventMonitor
 // being destructed before CALSA*Monitor below.
-#include "linux/FDEventMonitor.h"
+#include "platform/linux/FDEventMonitor.h"
 
 class CAESinkALSA : public IAESink
 {

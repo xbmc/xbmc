@@ -30,7 +30,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 #define CLASSNAME "CAESinkPi"
 

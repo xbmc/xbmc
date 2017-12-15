@@ -22,7 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "utils/log.h"
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -32,7 +32,7 @@
 #include "utils/BitstreamConverter.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 #include <sys/time.h>
 #include <inttypes.h>

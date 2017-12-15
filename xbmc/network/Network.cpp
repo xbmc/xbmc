@@ -34,7 +34,7 @@
 #include "utils/CharsetConverter.h"
 #endif
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 #include "utils/StringUtils.h"
 

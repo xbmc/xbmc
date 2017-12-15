@@ -23,7 +23,7 @@
 
 #include "OMXCore.h"
 #include "DVDClock.h"
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 
 #ifdef OMX_SKIP64BIT
 static inline OMX_TICKS ToOMXTime(int64_t pts)

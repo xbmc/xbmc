@@ -33,8 +33,8 @@
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
 #include <drm_fourcc.h>
-#include "linux/XTimeUtils.h"
-#include "linux/XMemUtils.h"
+#include "platform/linux/XTimeUtils.h"
+#include "platform/linux/XMemUtils.h"
 
 extern "C" {
 #include "libavutil/avutil.h"

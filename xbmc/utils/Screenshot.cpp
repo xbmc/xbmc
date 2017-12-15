@@ -31,7 +31,7 @@
 #include "pictures/Picture.h"
 
 #ifdef TARGET_RASPBERRY_PI
-#include "xbmc/linux/RBP.h"
+#include "platform/linux/RBP.h"
 #endif
 
 #include "filesystem/File.h"

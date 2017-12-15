@@ -24,7 +24,7 @@
 #include "cores/RetroPlayer/process/rbpi/RenderBufferMMAL.h"
 #include "cores/RetroPlayer/process/rbpi/RenderBufferPoolMMAL.h"
 #include "threads/SingleLock.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 using namespace KODI;
 using namespace RETRO;

@@ -27,7 +27,7 @@
 #include "threads/SystemClock.h"
 #include "commons/Exception.h"
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 #include "AppParamParser.h"
 

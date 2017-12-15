@@ -42,7 +42,7 @@
 #include "threads/SingleLock.h"
 #include "PasswordManager.h"
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #include <libsmbclient.h>

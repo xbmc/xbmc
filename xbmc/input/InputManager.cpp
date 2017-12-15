@@ -47,7 +47,7 @@
 #endif
 
 #ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
+#include "platform/linux/input/LIRC.h"
 #endif
 
 #ifdef HAS_IRSERVERSUITE

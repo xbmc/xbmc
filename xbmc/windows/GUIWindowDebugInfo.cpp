@@ -36,7 +36,7 @@
 #include "utils/StringUtils.h"
 
 #ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #endif
 
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)

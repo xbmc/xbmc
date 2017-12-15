@@ -26,7 +26,7 @@
 #include "windowing/WinSystem.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "threads/Thread.h"
 
 bool CVideoSyncPi::Setup(PUPDATECLOCK func)

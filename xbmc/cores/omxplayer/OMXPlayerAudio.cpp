@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <iomanip>
 
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #include "utils/BitstreamStats.h"
 
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -35,7 +35,7 @@
 #include "utils/TimeUtils.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"

@@ -22,7 +22,7 @@
 #include "settings/AdvancedSettings.h"
 
 #ifdef TARGET_RASPBERRY_PI
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #endif
 
 #ifdef TARGET_WINDOWS_DESKTOP

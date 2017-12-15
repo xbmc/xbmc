@@ -24,11 +24,11 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 #define CLASSNAME "COMXAudio"
 
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"

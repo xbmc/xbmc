@@ -43,7 +43,7 @@
 #include "utils/StringUtils.h"
 
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #define LIBBLURAY_BYTESEEK 0

@@ -27,7 +27,7 @@
 #include "guilib/TextureManager.h"
 #include "settings/AdvancedSettings.h"
 #ifdef TARGET_POSIX
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #endif
 
 

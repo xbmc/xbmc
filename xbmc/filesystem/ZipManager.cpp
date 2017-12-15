@@ -26,7 +26,7 @@
 #include "File.h"
 #include "system.h"
 #include "URL.h"
-#include "linux/PlatformDefs.h"
+#include "platform/linux/PlatformDefs.h"
 #include "utils/CharsetConverter.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"

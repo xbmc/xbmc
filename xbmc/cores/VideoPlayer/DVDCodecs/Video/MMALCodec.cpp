@@ -47,7 +47,7 @@
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 
 using namespace KODI::MESSAGING;
 using namespace MMAL;

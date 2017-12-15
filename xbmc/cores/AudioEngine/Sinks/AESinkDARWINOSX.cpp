@@ -27,7 +27,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "linux/XMemUtils.h"
+#include "platform/linux/XMemUtils.h"
 #include "ServiceBroker.h"
 
 

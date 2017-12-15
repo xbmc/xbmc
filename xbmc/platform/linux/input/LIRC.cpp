@@ -33,7 +33,7 @@
 #include <sys/inotify.h>
 #endif
 #include "input/InputManager.h"
-#include "linux/PlatformDefs.h"
+#include "platform/linux/PlatformDefs.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"

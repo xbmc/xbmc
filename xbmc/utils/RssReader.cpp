@@ -36,7 +36,7 @@
 #include "threads/SingleLock.h"
 #include "log.h"
 #ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
+#include "platform/linux/XTimeUtils.h"
 #endif
 
 #define RSS_COLOR_BODY      0

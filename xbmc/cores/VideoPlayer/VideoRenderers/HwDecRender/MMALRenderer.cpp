@@ -37,7 +37,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "xbmc/Application.h"
-#include "linux/RBP.h"
+#include "platform/linux/RBP.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
