@@ -92,12 +92,14 @@ public:
   CServiceManager();
   ~CServiceManager();
 
+  bool InitForTesting();
   bool InitStageOne();
   bool InitStageTwo(const CAppParamParser &params);
   bool CreateAudioEngine();
   bool DestroyAudioEngine();
   bool StartAudioEngine();
   bool InitStageThree();
+  void DeinitTesting();
   void DeinitStageThree();
   void DeinitStageTwo();
   void DeinitStageOne();
