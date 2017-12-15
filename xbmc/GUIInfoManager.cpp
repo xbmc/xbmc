@@ -4371,13 +4371,13 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true when an epg tag is being watched.
 ///   }
-///   \table_row3{   <b>`Pvr.Duration`</b>,
-///                  \anchor Pvr_Duration
+///   \table_row3{   <b>`Pvr.EpgEventDuration`</b>,
+///                  \anchor Pvr_EpgEventDuration
 ///                  _string_,
 ///     Returns the duration of the currently playing epg event
 ///   }
-///   \table_row3{   <b>`Pvr.Time`</b>,
-///                  \anchor Pvr_Time
+///   \table_row3{   <b>`Pvr.EpgEventElapsedTime`</b>,
+///                  \anchor Pvr_EpgEventElapsedTime
 ///                  _string_,
 ///     Returns the time of the current position of the currently playing epg event
 ///   }
@@ -4391,8 +4391,8 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     Returns the time the currently playing epg event will end
 ///   }
-///   \table_row3{   <b>`Pvr.Progress`</b>,
-///                  \anchor Pvr_Progress
+///   \table_row3{   <b>`Pvr.EpgEventProgress`</b>,
+///                  \anchor Pvr_EpgEventProgress
 ///                  _integer_,
 ///     Returns the percentage complete of the currently playing epg event
 ///   }
@@ -4649,11 +4649,11 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingradio",           PVR_IS_PLAYING_RADIO },
                                   { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
                                   { "isplayingepgtag",          PVR_IS_PLAYING_EPGTAG },
-                                  { "duration",                 PVR_PLAYING_DURATION },
-                                  { "time",                     PVR_PLAYING_TIME },
+                                  { "epgeventduration",         PVR_EPG_EVENT_DURATION },
+                                  { "epgeventelapsedtime",      PVR_EPG_EVENT_ELAPSED_TIME },
                                   { "epgeventremainingtime",    PVR_EPG_EVENT_REMAINING_TIME },
                                   { "epgeventfinishtime",       PVR_EPG_EVENT_FINISH_TIME },
-                                  { "progress",                 PVR_PLAYING_PROGRESS },
+                                  { "epgeventprogress",         PVR_EPG_EVENT_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
                                   { "actstreamstatus",          PVR_ACTUAL_STREAM_STATUS },
@@ -5991,11 +5991,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-  case PVR_PLAYING_DURATION:
-  case PVR_PLAYING_TIME:
+  case PVR_EPG_EVENT_DURATION:
+  case PVR_EPG_EVENT_ELAPSED_TIME:
   case PVR_EPG_EVENT_REMAINING_TIME:
   case PVR_EPG_EVENT_FINISH_TIME:
-  case PVR_PLAYING_PROGRESS:
+  case PVR_EPG_EVENT_PROGRESS:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
   case PVR_ACTUAL_STREAM_STATUS:
@@ -6895,7 +6895,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_CPU_USAGE:
       value = g_cpuInfo.getUsedPercentage();
       return true;
-    case PVR_PLAYING_PROGRESS:
+    case PVR_EPG_EVENT_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
     case PVR_BACKEND_DISKSPACE_PROGR:

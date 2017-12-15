@@ -363,11 +363,11 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     m_radioTimersInfo.CharInfoNextTimerDateTime(strValue);
     break;
-  case PVR_PLAYING_DURATION:
-    CharInfoPlayingDuration(strValue);
+  case PVR_EPG_EVENT_DURATION:
+    CharInfoEpgEventDuration(strValue);
     break;
-  case PVR_PLAYING_TIME:
-    CharInfoPlayingTime(strValue);
+  case PVR_EPG_EVENT_ELAPSED_TIME:
+    CharInfoEpgEventElapsedTime(strValue);
     break;
   case PVR_EPG_EVENT_REMAINING_TIME:
     CharInfoEpgEventRemainingTime(strValue);
@@ -535,7 +535,7 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
-  if (dwInfo == PVR_PLAYING_PROGRESS)
+  if (dwInfo == PVR_EPG_EVENT_PROGRESS)
     iReturn = (int) ((float) GetStartTime() / m_iDuration * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
@@ -828,7 +828,7 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
   return false;
 }
 
-void CPVRGUIInfo::CharInfoPlayingDuration(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEpgEventDuration(std::string &strValue) const
 {
   strValue = StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str();
 }
@@ -848,7 +848,7 @@ void CPVRGUIInfo::CharInfoTimeshiftPlayTime(std::string &strValue) const
   strValue = m_strTimeshiftPlayTime;
 }
 
-void CPVRGUIInfo::CharInfoPlayingTime(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEpgEventElapsedTime(std::string &strValue) const
 {
   strValue = StringUtils::SecondsToTimeString(GetStartTime() / 1000, TIME_FORMAT_GUESS).c_str();
 }

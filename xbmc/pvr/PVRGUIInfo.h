@@ -194,8 +194,8 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    void CharInfoPlayingDuration(std::string &strValue) const;
-    void CharInfoPlayingTime(std::string &strValue) const;
+    void CharInfoEpgEventDuration(std::string &strValue) const;
+    void CharInfoEpgEventElapsedTime(std::string &strValue) const;
     void CharInfoEpgEventRemainingTime(std::string &strValue) const;
     void CharInfoEpgEventFinishTime(std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;

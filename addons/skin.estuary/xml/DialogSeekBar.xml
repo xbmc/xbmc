@@ -194,7 +194,7 @@
 				<top>70</top>
 				<width>100%</width>
 				<height>15</height>
-				<info>PVR.Progress</info>
+				<info>PVR.EpgEventProgress</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
 				<visible>VideoPlayer.HasEpg</visible>
