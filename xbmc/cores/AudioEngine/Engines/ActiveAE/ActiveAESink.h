@@ -96,7 +96,6 @@ public:
   explicit CActiveAESink(CEvent *inMsgEvent);
   void EnumerateSinkList(bool force);
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
-  std::string GetDefaultDevice(bool passthrough);
   void Start();
   void Dispose();
   AEDeviceType GetDeviceType(const std::string &device);

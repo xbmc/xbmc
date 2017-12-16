@@ -192,13 +192,6 @@ public:
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
 
   /**
-   * Returns the default audio device
-   * @param passthrough True if the default passthrough device is wanted
-   * @return the default audio device
-   */
-  virtual std::string GetDefaultDevice(bool passthrough) { return "default"; }
-
-  /**
    * Returns true if the AudioEngine supports AE_FMT_RAW streams for use with formats such as IEC61937
    * @see CAEPackIEC61937::CAEPackIEC61937()
    * @returns true if the AudioEngine is capable of RAW output

@@ -260,7 +260,6 @@ public:
   void GarbageCollect() override {};
 
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) override;
-  std::string GetDefaultDevice(bool passthrough) override;
   bool SupportsRaw(AEAudioFormat &format) override;
   bool SupportsSilenceTimeout() override;
   bool HasStereoAudioChannelCount() override;

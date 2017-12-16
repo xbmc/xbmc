@@ -579,13 +579,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   g_powerManager.Initialize();
 
-  // Load the AudioEngine before settings as they need to query the engine
-  if (!m_ServiceManager->CreateAudioEngine())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Failed to load an AudioEngine");
-    return false;
-  }
-
   // Initialize default Settings - don't move
   CLog::Log(LOGNOTICE, "load settings...");
   if (!m_ServiceManager->GetSettings().Initialize())
@@ -622,6 +615,11 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
+  if (!m_ServiceManager->CreateAudioEngine())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Failed to load an AudioEngine");
+    return false;
+  }
   // start the AudioEngine
   if(!m_ServiceManager->StartAudioEngine())
   {

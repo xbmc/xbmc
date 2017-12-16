@@ -32,18 +32,27 @@
 
 namespace ActiveAE
 {
-void CActiveAESettings::SettingOptionsAudioDevicesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+
+std::atomic_bool CActiveAESettings::m_hasAE(false);
+
+void CActiveAESettings::SettingOptionsAudioDevicesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list,
+                                                         std::string &current, void *data)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, false);
 }
 
-void CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list,
+                                                                    std::string &current, void *data)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, true);
 }
 
-void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list,
+                                                               int &current, void *data)
 {
+  if (!m_hasAE)
+    return;
+
   if(CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_LOW))
     list.push_back(std::make_pair(g_localizeStrings.Get(13506), AE_QUALITY_LOW));
   if(CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_MID))
@@ -56,8 +65,12 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr s
     list.push_back(std::make_pair(g_localizeStrings.Get(38010), AE_QUALITY_GPU));
 }
 
-void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list,
+                                                               int &current, void *data)
 {
+  if (!m_hasAE)
+    return;
+
   list.push_back(std::make_pair(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue));
   list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
 
@@ -76,20 +89,20 @@ bool CActiveAESettings::IsSettingVisible(const std::string & condition, const st
   if (setting == NULL || value.empty())
     return false;
 
+  if (!m_hasAE)
+    return false;
+
   return CServiceBroker::GetActiveAE().IsSettingVisible(value);
 }
 
-bool CActiveAESettings::SupportsQualitySetting(void)
-{
-    return ((CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_LOW) ? 1 : 0) +
-            (CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_MID) ? 1 : 0) +
-            (CServiceBroker::GetActiveAE().SupportsQualityLevel(AE_QUALITY_HIGH) ? 1 : 0)) >= 2;
-}
-
-void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
+void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list,
+                                                                std::string &current, bool passthrough)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   std::string firstDevice;
+
+  if (!m_hasAE)
+    return;
 
   bool foundValue = false;
   AEDeviceList sinkList;

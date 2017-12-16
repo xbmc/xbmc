@@ -347,8 +347,7 @@ void CSettingConditions::Initialize()
     m_simpleConditions.insert("isstandalone");
 #endif
 
-  if(g_application.m_ServiceManager->HasActiveAE() && ActiveAE::CActiveAESettings::SupportsQualitySetting())
-    m_simpleConditions.insert("has_ae_quality_levels");
+  m_simpleConditions.insert("has_ae_quality_levels");
 
   // add complex conditions
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("addonhassettings",              AddonHasSettings));
@@ -375,8 +374,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilehassettingslocked",      ProfileHasSettingsLocked));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilehasvideoslocked",        ProfileHasVideosLocked));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilelockmode",               ProfileLockMode));
-  if (g_application.m_ServiceManager->HasActiveAE())
-    m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("aesettingvisible",              ActiveAE::CActiveAESettings::IsSettingVisible));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("aesettingvisible",              ActiveAE::CActiveAESettings::IsSettingVisible));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("codecoptionvisible",            CDVDVideoCodec::IsSettingVisible));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gt",                            GreaterThan));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gte",                           GreaterThanOrEqual));
