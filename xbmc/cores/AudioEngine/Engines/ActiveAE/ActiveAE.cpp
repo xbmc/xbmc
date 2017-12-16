@@ -323,11 +323,12 @@ void CActiveAE::Dispose()
 enum AE_STATES
 {
   AE_TOP = 0,                      // 0
-  AE_TOP_ERROR,                    // 1
-  AE_TOP_UNCONFIGURED,             // 2
-  AE_TOP_RECONFIGURING,            // 3
-  AE_TOP_CONFIGURED,               // 4
-  AE_TOP_CONFIGURED_SUSPEND,       // 5
+  AE_TOP_WAIT_PRECOND,             // 1
+  AE_TOP_ERROR,                    // 2
+  AE_TOP_UNCONFIGURED,             // 3
+  AE_TOP_RECONFIGURING,            // 4
+  AE_TOP_CONFIGURED,               // 5
+  AE_TOP_CONFIGURED_SUSPEND,       // 6
   AE_TOP_CONFIGURED_IDLE,          // 6
   AE_TOP_CONFIGURED_PLAY,          // 7
 };
@@ -335,12 +336,13 @@ enum AE_STATES
 int AE_parentStates[] = {
     -1,
     0, //TOP_ERROR
+    0, //AE_TOP_WAIT_PRECOND
     0, //TOP_UNCONFIGURED
     0, //TOP_CONFIGURED
     0, //TOP_RECONFIGURING
-    4, //TOP_CONFIGURED_SUSPEND
-    4, //TOP_CONFIGURED_IDLE
-    4, //TOP_CONFIGURED_PLAY
+    5, //TOP_CONFIGURED_SUSPEND
+    5, //TOP_CONFIGURED_IDLE
+    5, //TOP_CONFIGURED_PLAY
 };
 
 void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
@@ -442,6 +444,31 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         CLog::Log(LOGWARNING, "CActiveAE::%s - signal: %d from port: %s not handled for state: %d", __FUNCTION__, signal, portName.c_str(), m_state);
       }
       return;
+
+    case AE_TOP_WAIT_PRECOND:
+      if (port == &m_controlPort)
+      {
+        switch (signal)
+        {
+          case CActiveAEControlProtocol::INIT:
+            LoadSettings();
+            if (!m_settings.device.empty())
+            {
+              m_state = AE_TOP_UNCONFIGURED;
+              m_bStateMachineSelfTrigger = true;
+            }
+            else
+            {
+              // Application can't handle error case and work without an AE
+              msg->Reply(CActiveAEControlProtocol::ACC);
+            }
+            return;
+
+          default:
+            break;
+        }
+      }
+      break;
 
     case AE_TOP_ERROR:
       if (port == NULL) // timeout
@@ -966,7 +993,7 @@ void CActiveAE::Process()
   bool gotMsg;
   XbmcThreads::EndTime timer;
 
-  m_state = AE_TOP_UNCONFIGURED;
+  m_state = AE_TOP_WAIT_PRECOND;
   m_extTimeout = 1000;
   m_bStateMachineSelfTrigger = false;
   m_extDrain = false;
