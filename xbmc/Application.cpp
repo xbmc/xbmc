@@ -3517,8 +3517,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   }
   else if (bookmark.timeInSeconds > g_advancedSettings.m_videoIgnoreSecondsAtStart)
   {
-    resumeBookmark.timeInSeconds = bookmark.timeInSeconds;
-    resumeBookmark.totalTimeInSeconds = bookmark.totalTimeInSeconds;
+    resumeBookmark = bookmark;
   }
   else
   {
