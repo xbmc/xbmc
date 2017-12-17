@@ -171,6 +171,10 @@ bool aml_permissions()
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     }
+    if (aml_has_frac_rate_policy() && !SysfsUtils::HasRW("/sys/class/amhdmitx/amhdmitx0/frac_rate_policy"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/amhdmitx/amhdmitx0/frac_rate_policy");
+    }
   }
 
   return permissions_ok == 1;
@@ -259,6 +263,16 @@ bool aml_support_vp9()
       has_vp9 = (regexp.RegFind(valstr) >= 0) ? 1 : 0;
   }
   return (has_vp9 == 1);
+}
+
+bool aml_has_frac_rate_policy()
+{
+  static int has_frac_rate_policy = -1;
+
+  if (has_frac_rate_policy == -1)
+    has_frac_rate_policy = SysfsUtils::Has("/sys/class/amhdmitx/amhdmitx0/frac_rate_policy");
+
+  return (has_frac_rate_policy == 1);
 }
 
 void aml_set_audio_passthrough(bool passthrough)
@@ -608,18 +622,24 @@ bool aml_get_native_resolution(RESOLUTION_INFO *res)
 {
   std::string mode;
   SysfsUtils::GetString("/sys/class/display/mode", mode);
-  return aml_mode_to_resolution(mode.c_str(), res);
+  bool result = aml_mode_to_resolution(mode.c_str(), res);
+
+  if (aml_has_frac_rate_policy())
+  {
+    int fractional_rate;
+    SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/frac_rate_policy", fractional_rate);
+    if (fractional_rate == 1)
+      res->fRefreshRate /= 1.001;
+  }
+
+  return result;
 }
 
 bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name, const int stereo_mode)
 {
   bool result = false;
 
-  // Don't set the same mode as current
-  std::string mode;
-  SysfsUtils::GetString("/sys/class/display/mode", mode);
-  if (res.strId != mode)
-    result = aml_set_display_resolution(res.strId.c_str(), framebuffer_name);
+  result = aml_set_display_resolution(res, framebuffer_name);
 
   aml_handle_scale(res);
   aml_handle_display_stereo_mode(stereo_mode);
@@ -647,10 +667,25 @@ bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions)
     {
       if (aml_mode_to_resolution(i->c_str(), &res))
         resolutions.push_back(res);
+
+      if (aml_has_frac_rate_policy())
+      {
+        // Add fractional frame rates: 23.976, 29.97 and 59.94 Hz
+        switch ((int)res.fRefreshRate)
+        {
+          case 24:
+          case 30:
+          case 60:
+            res.fRefreshRate /= 1.001;
+            res.strMode       = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+              res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+            resolutions.push_back(res);
+            break;
+        }
+      }
     }
   }
   return resolutions.size() > 0;
-
 }
 
 bool aml_get_preferred_resolution(RESOLUTION_INFO *res)
@@ -665,14 +700,29 @@ bool aml_get_preferred_resolution(RESOLUTION_INFO *res)
   return true;
 }
 
-bool aml_set_display_resolution(const char *resolution, std::string framebuffer_name)
+bool aml_set_display_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name)
 {
-  std::string mode = resolution;
-  // switch display resolution
+  std::string mode = res.strId.c_str();
+  std::string cur_mode;
+
+  SysfsUtils::GetString("/sys/class/display/mode", cur_mode);
+
+  if (aml_has_frac_rate_policy())
+  {
+    if (cur_mode == mode)
+      SysfsUtils::SetString("/sys/class/display/mode", "null");
+
+    int fractional_rate = (res.fRefreshRate == floor(res.fRefreshRate)) ? 0 : 1;
+    SysfsUtils::SetInt("/sys/class/amhdmitx/amhdmitx0/frac_rate_policy", fractional_rate);
+  }
+  else if (cur_mode == mode)
+  {
+    // Don't set the same mode as current
+    return true;
+  }
+
   SysfsUtils::SetString("/sys/class/display/mode", mode.c_str());
 
-  RESOLUTION_INFO res;
-  aml_mode_to_resolution(mode.c_str(), &res);
   aml_set_framebuffer_resolution(res, framebuffer_name);
 
   return true;
