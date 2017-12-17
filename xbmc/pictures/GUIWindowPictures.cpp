@@ -71,7 +71,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 {
   m_thumbLoader.SetObserver(this);
   m_slideShowStarted = false;
-  m_dlgProgress = NULL;
+  m_dlgProgress = nullptr;
 }
 
 void CGUIWindowPictures::OnInitWindow()
@@ -545,7 +545,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 {
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
   std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if ( NULL != pPlayList.get())
+  if ( nullptr != pPlayList.get())
   {
     if (!pPlayList->Load(strPlayList))
     {

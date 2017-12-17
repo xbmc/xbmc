@@ -45,12 +45,12 @@ using namespace XFILE;
 
 bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile, uint8_t* &result, size_t& result_size)
 {
-  unsigned char *thumb = NULL;
+  unsigned char *thumb = nullptr;
   unsigned int thumbsize = 0;
 
   // get an image handler
   IImage* image = ImageFactory::CreateLoader(thumbFile);
-  if (image == NULL || !image->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (image == nullptr || !image->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
   {
     delete image;
     return false;
@@ -79,10 +79,10 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
 #endif
   }
 
-  unsigned char *thumb = NULL;
+  unsigned char *thumb = nullptr;
   unsigned int thumbsize=0;
   IImage* pImage = ImageFactory::CreateLoader(thumbFile);
-  if(pImage == NULL || !pImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if(pImage == nullptr || !pImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
   {
     CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for %s", CURL::GetRedacted(thumbFile).c_str());
     delete pImage;
@@ -122,7 +122,7 @@ bool CThumbnailWriter::DoWork()
   }
 
   delete [] m_buffer;
-  m_buffer = NULL;
+  m_buffer = nullptr;
 
   return success;
 }
@@ -131,7 +131,7 @@ bool CPicture::ResizeTexture(const std::string &image, CBaseTexture *texture,
   uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
   CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  if (image.empty() || texture == NULL)
+  if (image.empty() || texture == nullptr)
     return false;
 
   return ResizeTexture(image, texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
@@ -143,7 +143,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
   CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  if (image.empty() || pixels == NULL)
+  if (image.empty() || pixels == nullptr)
     return false;
 
   dest_width = std::min(width, dest_width);
@@ -174,9 +174,9 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   GetScale(width, height, dest_width, dest_height);
 
   uint8_t *buffer = new uint8_t[dest_width * dest_height * sizeof(uint32_t)];
-  if (buffer == NULL)
+  if (buffer == nullptr)
   {
-    result = NULL;
+    result = nullptr;
     result_size = 0;
     return false;
   }
@@ -184,7 +184,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), scalingAlgorithm))
   {
     delete[] buffer;
-    result = NULL;
+    result = nullptr;
     result_size = 0;
     return false;
   }
@@ -194,7 +194,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
 
   if (!success)
   {
-    result = NULL;
+    result = nullptr;
     result_size = 0;
   }
 
@@ -344,11 +344,11 @@ bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned in
 {
   struct SwsContext *context = sws_getContext(in_width, in_height, AV_PIX_FMT_BGRA,
                                                          out_width, out_height, AV_PIX_FMT_BGRA,
-                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm), NULL, NULL, NULL);
+                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm), nullptr, nullptr, nullptr);
 
-  uint8_t *src[] = { in_pixels, 0, 0, 0 };
+  uint8_t *src[] = { in_pixels, nullptr, nullptr, nullptr };
   int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
-  uint8_t *dst[] = { out_pixels , 0, 0, 0 };
+  uint8_t *dst[] = { out_pixels , nullptr, nullptr, nullptr };
   int     dstStride[] = { (int)out_pitch, 0, 0, 0 };
 
   if (context)
