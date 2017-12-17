@@ -39,6 +39,8 @@ testMain
 *.dwo
 
 # Windows specific generated files
+*.appx
+*.cer
 *.exp
 *.ilk
 *.ncb
