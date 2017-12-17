@@ -96,7 +96,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), XML_SOURCES))
+  if (pRootElement == nullptr || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), XML_SOURCES))
     CLog::Log(LOGERROR, "CMediaSourceSettings: sources.xml file does not contain <sources>");
 
   // parse sources
@@ -122,7 +122,7 @@ bool CMediaSourceSettings::Save(const std::string &file) const
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_SOURCES);
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (pRoot == nullptr)
     return false;
 
   // ok, now run through and save each sources section
@@ -163,7 +163,7 @@ VECSOURCES* CMediaSourceSettings::GetSources(const std::string &type)
   else if (type == "games")
     return &m_gameSources;
 
-  return NULL;
+  return nullptr;
 }
 
 const std::string& CMediaSourceSettings::GetDefaultSource(const std::string &type) const
@@ -196,7 +196,7 @@ void CMediaSourceSettings::SetDefaultSource(const std::string &type, const std::
 bool CMediaSourceSettings::UpdateSource(const std::string &strType, const std::string &strOldName, const std::string &strUpdateChild, const std::string &strUpdateValue)
 {
   VECSOURCES *pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
@@ -206,11 +206,11 @@ bool CMediaSourceSettings::UpdateSource(const std::string &strType, const std::s
       if (strUpdateChild == "name")
         it->strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), nullptr, 10);
       else if (strUpdateChild == "lockcode")
         it->m_strLockCode = strUpdateValue;
       else if (strUpdateChild == "badpwdcount")
-        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), nullptr, 10);
       else if (strUpdateChild == "thumbnail")
         it->m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
@@ -232,7 +232,7 @@ bool CMediaSourceSettings::UpdateSource(const std::string &strType, const std::s
 bool CMediaSourceSettings::DeleteSource(const std::string &strType, const std::string &strName, const std::string &strPath, bool virtualSource /* = false */)
 {
   VECSOURCES *pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   bool found = false;
@@ -257,7 +257,7 @@ bool CMediaSourceSettings::DeleteSource(const std::string &strType, const std::s
 bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource &share)
 {
   VECSOURCES *pShares = GetSources(type);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   // translate dir and add to our current shares
@@ -292,11 +292,11 @@ bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource 
 bool CMediaSourceSettings::UpdateShare(const std::string &type, const std::string &oldName, const CMediaSource &share)
 {
   VECSOURCES *pShares = GetSources(type);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   // update our current share list
-  CMediaSource* pShare = NULL;
+  CMediaSource* pShare = nullptr;
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {
     if (it->strName == oldName)
@@ -309,7 +309,7 @@ bool CMediaSourceSettings::UpdateShare(const std::string &type, const std::strin
     }
   }
 
-  if (pShare == NULL)
+  if (pShare == nullptr)
     return false;
 
   // Update our XML file as well
@@ -326,7 +326,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   // get multiple paths
   std::vector<std::string> vecPaths;
   const TiXmlElement *pPathName = source->FirstChildElement("path");
-  while (pPathName != NULL)
+  while (pPathName != nullptr)
   {
     if (pPathName->FirstChild())
     {
@@ -405,7 +405,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   share.m_iBadPwdCount = 0;
   if (pLockMode)
   {
-    share.m_iLockMode = (LockType)std::strtol(pLockMode->FirstChild()->Value(), NULL, 10);
+    share.m_iLockMode = (LockType)std::strtol(pLockMode->FirstChild()->Value(), nullptr, 10);
     share.m_iHasLock = 2;
   }
 
@@ -413,7 +413,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     share.m_strLockCode = pLockCode->FirstChild()->Value();
 
   if (pBadPwdCount && pBadPwdCount->FirstChild())
-    share.m_iBadPwdCount = (int)std::strtol(pBadPwdCount->FirstChild()->Value(), NULL, 10);
+    share.m_iBadPwdCount = (int)std::strtol(pBadPwdCount->FirstChild()->Value(), nullptr, 10);
 
   if (pThumbnailNode && pThumbnailNode->FirstChild())
     share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
@@ -429,14 +429,14 @@ void CMediaSourceSettings::GetSources(const TiXmlNode* pRootElement, const std::
   items.clear();
 
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild == NULL)
+  if (pChild == nullptr)
   {
     CLog::Log(LOGDEBUG, "CMediaSourceSettings: <%s> tag is missing or sources.xml is malformed", strTagName.c_str());
     return;
   }
 
   pChild = pChild->FirstChild();
-  while (pChild != NULL)
+  while (pChild != nullptr)
   {
     std::string strValue = pChild->ValueStr();
     if (strValue == XML_SOURCE || strValue == "bookmark") // "bookmark" left in for backwards compatibility
@@ -467,7 +467,7 @@ bool CMediaSourceSettings::SetSources(TiXmlNode *root, const char *section, cons
 {
   TiXmlElement sectionElement(section);
   TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
-  if (sectionNode == NULL)
+  if (sectionNode == nullptr)
     return false;
 
   XMLUtils::SetPath(sectionNode, "default", defaultPath);
