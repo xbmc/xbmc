@@ -45,7 +45,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const std::string &dllname, bool bDelayUn
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  if (dllname.empty()) return NULL;
+  if (dllname.empty()) return nullptr;
   // check if it's already loaded, and increase the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
@@ -59,9 +59,9 @@ LibraryLoader *CSectionLoader::LoadDLL(const std::string &dllname, bool bDelayUn
 
   // ok, now load the dll
   CLog::Log(LOGDEBUG, "SECTION:LoadDLL(%s)\n", dllname.c_str());
-  LibraryLoader* pDll = DllLoaderContainer::LoadModule(dllname.c_str(), NULL, bLoadSymbols);
+  LibraryLoader* pDll = DllLoaderContainer::LoadModule(dllname.c_str(), nullptr, bLoadSymbols);
   if (!pDll)
-    return NULL;
+    return nullptr;
 
   CDll newDLL;
   newDLL.m_strDllName = dllname;

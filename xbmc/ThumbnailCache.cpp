@@ -27,7 +27,7 @@
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
-CThumbnailCache* CThumbnailCache::m_pCacheInstance = NULL;
+CThumbnailCache* CThumbnailCache::m_pCacheInstance = nullptr;
 
 CCriticalSection CThumbnailCache::m_cs;
 
@@ -39,7 +39,7 @@ CThumbnailCache* CThumbnailCache::GetThumbnailCache()
 {
   CSingleLock lock (m_cs);
 
-  if (m_pCacheInstance == NULL)
+  if (m_pCacheInstance == nullptr)
     m_pCacheInstance = new CThumbnailCache;
 
   return m_pCacheInstance;

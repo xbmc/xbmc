@@ -139,10 +139,10 @@ public:
    \return true if given info was handled
    \sa GetItemInt, GetMultiInfoInt
    */
-  bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
-  std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = NULL);
+  bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = nullptr) const;
+  std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = nullptr);
 
-  std::string GetImage(int info, int contextWindow, std::string *fallback = NULL);
+  std::string GetImage(int info, int contextWindow, std::string *fallback = nullptr);
 
   std::string GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   std::string GetDate(bool bNumbersOnly = false);
@@ -206,8 +206,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = NULL);
-  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = NULL);
+  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = nullptr);
+  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = nullptr);
 
   /*! \brief containers call here to specify that the focus is changing
    \param id control id
@@ -229,14 +229,14 @@ public:
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
   int TranslateSkinVariableString(const std::string& name, int context);
-  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
+  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=nullptr);
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
 
 protected:
   friend class INFO::InfoSingle;
-  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=nullptr);
   int TranslateSingleString(const std::string &strCondition, bool &listItemDependent);
 
   // routines for window retrieval
@@ -258,10 +258,10 @@ protected:
     std::vector<std::string> params;
   };
 
-  bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
+  bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = nullptr);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
   CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
-  std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
+  std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
   TIME_FORMAT TranslateTimeFormat(const std::string &format);

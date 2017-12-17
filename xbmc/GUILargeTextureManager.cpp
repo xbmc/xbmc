@@ -34,7 +34,7 @@
 CImageLoader::CImageLoader(const std::string &path, const bool useCache):
   m_path(path)
 {
-  m_texture = NULL;
+  m_texture = nullptr;
   m_use_cache = useCache;
 }
 
@@ -83,7 +83,7 @@ bool CImageLoader::DoWork()
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
   CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
-  return (m_texture != NULL);
+  return (m_texture != nullptr);
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):
@@ -239,7 +239,7 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJ
       CImageLoader *loader = static_cast<CImageLoader*>(job);
       CLargeTexture *image = it->second;
       image->SetTexture(loader->m_texture);
-      loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.
+      loader->m_texture = nullptr; // we want to keep the texture, and jobs are auto-deleted.
       m_queued.erase(it);
       m_allocated.push_back(image);
       return;

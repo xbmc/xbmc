@@ -106,7 +106,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 
 #if !defined(TARGET_WINDOWS)
-unsigned int CUtil::s_randomSeed = time(NULL);
+unsigned int CUtil::s_randomSeed = time(nullptr);
 #endif
 
 namespace
@@ -642,7 +642,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   {
 #ifdef HAS_DVD_DRIVE
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    if ( pInfo != nullptr && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
       return ;

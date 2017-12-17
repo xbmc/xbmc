@@ -127,7 +127,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
 
 bool CTextureCacheJob::ResizeTexture(const std::string &url, uint8_t* &result, size_t &result_size)
 {
-  result = NULL;
+  result = nullptr;
   result_size = 0;
 
   if (url.empty())
@@ -142,7 +142,7 @@ bool CTextureCacheJob::ResizeTexture(const std::string &url, uint8_t* &result, s
     return false;
 
   CBaseTexture *texture = LoadImage(image, width, height, additional_info, true);
-  if (texture == NULL)
+  if (texture == nullptr)
     return false;
 
   bool success = CPicture::ResizeTexture(image, texture, width, height, result, result_size, scalingAlgorithm);
@@ -178,9 +178,9 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
     else
     {
       if (thumbURL.HasOption("width") && StringUtils::IsInteger(thumbURL.GetOption("width")))
-        width = strtol(thumbURL.GetOption("width").c_str(), NULL, 0);
+        width = strtol(thumbURL.GetOption("width").c_str(), nullptr, 0);
       if (thumbURL.HasOption("height") && StringUtils::IsInteger(thumbURL.GetOption("height")))
-        height = strtol(thumbURL.GetOption("height").c_str(), NULL, 0);
+        height = strtol(thumbURL.GetOption("height").c_str(), nullptr, 0);
     }
 
     if (thumbURL.HasOption("scaling_algorithm"))
@@ -203,11 +203,11 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
   file.FillInMimeType();
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
       && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
-    return NULL;
+    return nullptr;
 
   CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, requirePixels, file.GetMimeType());
   if (!texture)
-    return NULL;
+    return nullptr;
 
   // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>

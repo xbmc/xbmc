@@ -75,7 +75,7 @@ private:
 
   enum DB_STATUS { DB_CLOSED, DB_UPDATING, DB_READY, DB_FAILED };
   void UpdateStatus(const std::string &name, DB_STATUS status);
-  void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
+  void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = nullptr);
   bool Update(CDatabase &db, const DatabaseSettings &settings);
   bool UpdateVersion(CDatabase &db, const std::string &dbName);
 
