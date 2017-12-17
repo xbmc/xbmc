@@ -308,7 +308,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
 
     // lowercase every element
     TiXmlNode *pNode = pRootElement;
-    TiXmlNode *pChild = NULL;
+    TiXmlNode *pChild = nullptr;
     std::string value;
     value = pNode->Value();
     StringUtils::ToLower(value);
@@ -335,7 +335,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
         }
 
         pNode = pChild;
-        pChild = NULL;
+        pChild = nullptr;
         continue;
       }
 
@@ -384,7 +384,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
         if (!value.empty())
         { // found an entryref, let's try loading that url
           std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
-          if (NULL != playlist.get())
+          if (nullptr != playlist.get())
             if (playlist->Load(value))
               Add(*playlist);
         }
