@@ -123,10 +123,6 @@
               <uap:FileType>.pxml</uap:FileType>
               <uap:FileType>.rcv</uap:FileType>
               <uap:FileType>.rec</uap:FileType>
-              <uap:FileType>.rm</uap:FileType>
-              <uap:FileType>.rma</uap:FileType>
-              <uap:FileType>.rmt</uap:FileType>
-              <uap:FileType>.rmvb</uap:FileType>
               <uap:FileType>.rsd</uap:FileType>
               <uap:FileType>.rss</uap:FileType>
               <uap:FileType>.pva</uap:FileType>
