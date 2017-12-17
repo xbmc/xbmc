@@ -30,7 +30,7 @@ namespace XUTILS
     /**
      * Create buffer with zero size
      */
-    auto_buffer(void) : p(0), s(0)
+    auto_buffer(void) : p(nullptr), s(0)
     {}
     /**
      * Create buffer with specified size

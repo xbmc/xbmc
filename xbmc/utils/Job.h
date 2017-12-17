@@ -112,7 +112,7 @@ public:
     PRIORITY_HIGH,
     PRIORITY_DEDICATED, // will create a new worker if no worker is available at queue time
   };
-  CJob() { m_callback = NULL; };
+  CJob() { m_callback = nullptr; };
 
   /*!
    \brief Destructor for job objects.

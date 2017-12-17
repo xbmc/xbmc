@@ -27,7 +27,7 @@
 static const uint64_t DefaultFirstPosition = 1;
 static const uint64_t DefaultLastPosition = 0;
 static const uint64_t DefaultLength = 0;
-static const void* DefaultData = NULL;
+static const void* DefaultData = nullptr;
 
 TEST(TestHttpRange, FirstPosition)
 {

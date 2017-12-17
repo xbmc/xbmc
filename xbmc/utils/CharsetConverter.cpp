@@ -397,7 +397,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   //allocate output buffer for iconv()
   size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
-  if (outBuf == NULL)
+  if (outBuf == nullptr)
   {
       CLog::Log(LOGSEVERE, "%s: malloc failed", __FUNCTION__);
       return false;
@@ -467,7 +467,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   }
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
-  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
+  if (iconv(type, nullptr, nullptr, &outBufStart, &outBytesAvail) == (size_t)-1)
     CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
 
   if (returnV == (size_t)-1)
@@ -514,7 +514,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
     const size_t lineLen = lineEnd - lineStart;
 
     FriBidiChar* visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
-    if (visual == NULL)
+    if (visual == nullptr)
     {
       free(visual);
       CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
@@ -523,10 +523,10 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
 
     bool bidiFailed = false;
     FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
-    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, NULL, NULL, NULL))
+    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, nullptr, nullptr, nullptr))
     {
       // Removes bidirectional marks
-      const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
+      const int newLen = fribidi_remove_bidi_marks(visual, lineLen, nullptr, nullptr, nullptr);
       if (newLen > 0)
         stringDst.append((const char32_t*)visual, (size_t)newLen);
       else if (newLen < 0)
@@ -575,14 +575,14 @@ static struct SCharsetMapping
   , { "SHIFT_JIS", "Japanese (Shift-JIS)" }
   , { "CP949", "Korean" }
   , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)" }
-  , { NULL, NULL }
+  , { nullptr, nullptr }
 };
 
 CCharsetConverter::CCharsetConverter() = default;
 
 void CCharsetConverter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string& settingId = setting->GetId();

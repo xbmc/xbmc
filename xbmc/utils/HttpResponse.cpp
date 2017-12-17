@@ -36,7 +36,7 @@ CHttpResponse::CHttpResponse(HTTP::Method method, HTTP::StatusCode status, HTTP:
   m_status = status;
   m_version = version;
 
-  m_content = NULL;
+  m_content = nullptr;
   m_contentLength = 0;
 }
 
@@ -52,7 +52,7 @@ void CHttpResponse::SetContent(const char* data, unsigned int length)
 {
   m_content = data;
 
-  if (m_content == NULL)
+  if (m_content == nullptr)
     m_contentLength = 0;
   else
     m_contentLength = length;
@@ -98,7 +98,7 @@ unsigned int CHttpResponse::Create(char *&response)
       hasContentLengthHeader = true;
   }
 
-  if (!hasContentLengthHeader && m_content != NULL && m_contentLength > 0)
+  if (!hasContentLengthHeader && m_content != nullptr && m_contentLength > 0)
   {
     m_buffer.append(HEADER_CONTENT_LENGTH);
     m_buffer.append(SEPARATOR);
@@ -109,7 +109,7 @@ unsigned int CHttpResponse::Create(char *&response)
   }
 
   m_buffer.append(LINEBREAK);
-  if (m_content != NULL && m_contentLength > 0)
+  if (m_content != nullptr && m_contentLength > 0)
     m_buffer.append(m_content, m_contentLength);
 
   response = (char *)m_buffer.c_str();

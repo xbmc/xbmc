@@ -61,7 +61,7 @@ CScreenshotSurface::CScreenshotSurface()
   m_width = 0;
   m_height = 0;
   m_stride = 0;
-  m_buffer = NULL;
+  m_buffer = nullptr;
 }
 
 CScreenshotSurface::~CScreenshotSurface()
@@ -213,7 +213,7 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
       CLog::Log(LOGERROR, "Unable to write screenshot %s", CURL::GetRedacted(filename).c_str());
 
     delete [] surface.m_buffer;
-    surface.m_buffer = NULL;
+    surface.m_buffer = nullptr;
   }
   else
   {
@@ -227,8 +227,8 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
     //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
     //buffer is deleted from CThumbnailWriter
     CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(surface.m_buffer, surface.m_width, surface.m_height, surface.m_stride, filename);
-    CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
-    surface.m_buffer = NULL;
+    CJobManager::GetInstance().AddJob(thumbnailwriter, nullptr);
+    surface.m_buffer = nullptr;
   }
 }
 
@@ -241,7 +241,7 @@ void CScreenShot::TakeScreenshot()
 
   // check to see if we have a screenshot folder yet
   std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
-  if (screenshotSetting != NULL)
+  if (screenshotSetting != nullptr)
   {
     strDir = screenshotSetting->GetValue();
     if (strDir.empty())
@@ -275,7 +275,7 @@ void CScreenShot::TakeScreenshot()
       if (promptUser)
       { // grab the real directory
         std::string newDir;
-        if (screenshotSetting != NULL)
+        if (screenshotSetting != nullptr)
         {
           newDir = screenshotSetting->GetValue();
           if (newDir.empty())

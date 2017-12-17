@@ -260,7 +260,7 @@ void CJobManager::CancelJob(unsigned int jobID)
   // or if we're processing it
   Processing::iterator it = find(m_processing.begin(), m_processing.end(), jobID);
   if (it != m_processing.end())
-    it->m_callback = NULL; // job is in progress, so only thing to do is to remove callback
+    it->m_callback = nullptr; // job is in progress, so only thing to do is to remove callback
 }
 
 void CJobManager::StartWorkers(CJob::PRIORITY priority)
@@ -303,7 +303,7 @@ CJob *CJobManager::PopJob()
       return job.m_job;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 void CJobManager::PauseJobs()
@@ -372,7 +372,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
     return job;
   // have no jobs
   RemoveWorker(worker);
-  return NULL;
+  return nullptr;
 }
 
 bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const

@@ -65,10 +65,10 @@ std::wstring trimRight(const std::wstring &str)
 
 int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
 {
-  char *end = NULL;
+  char *end = nullptr;
   std::string tmp = trimRight(str);
   int64_t result = strtoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -76,10 +76,10 @@ int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
 
 int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
 {
-  wchar_t *end = NULL;
+  wchar_t *end = nullptr;
   std::wstring tmp = trimRight(str);
   int64_t result = wcstoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -87,10 +87,10 @@ int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
 
 uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
 {
-  char *end = NULL;
+  char *end = nullptr;
   std::string tmp = trimRight(str);
   uint64_t result = strtoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -98,10 +98,10 @@ uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
 
 uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
 {
-  wchar_t *end = NULL;
+  wchar_t *end = nullptr;
   std::wstring tmp = trimRight(str);
   uint64_t result = wcstoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -109,10 +109,10 @@ uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
 
 double str2double(const std::string &str, double fallback /* = 0.0 */)
 {
-  char *end = NULL;
+  char *end = nullptr;
   std::string tmp = trimRight(str);
   double result = strtod(tmp.c_str(), &end);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -120,10 +120,10 @@ double str2double(const std::string &str, double fallback /* = 0.0 */)
 
 double str2double(const std::wstring &str, double fallback /* = 0.0 */)
 {
-  wchar_t *end = NULL;
+  wchar_t *end = nullptr;
   std::wstring tmp = trimRight(str);
   double result = wcstod(tmp.c_str(), &end);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -738,7 +738,7 @@ const char *CVariant::c_str() const
   if (m_type == VariantTypeString)
     return m_data.string->c_str();
   else
-    return NULL;
+    return nullptr;
 }
 
 void CVariant::swap(CVariant &rhs)
