@@ -89,7 +89,7 @@ class CMediaManager g_mediaManager;
 CMediaManager::CMediaManager()
 {
   m_bhasoptical = false;
-  m_platformStorage = NULL;
+  m_platformStorage = nullptr;
 }
 
 void CMediaManager::Stop()
@@ -98,7 +98,7 @@ void CMediaManager::Stop()
     m_platformStorage->Stop();
 
   delete m_platformStorage;
-  m_platformStorage = NULL;
+  m_platformStorage = nullptr;
 }
 
 void CMediaManager::Initialize()
@@ -405,7 +405,7 @@ bool CMediaManager::IsAudio(const std::string& devicePath)
 #else
   //! @todo switch all ports to use auto sources
   MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
-  if (pInfo != NULL && pInfo->IsAudio(1))
+  if (pInfo != nullptr && pInfo->IsAudio(1))
     return true;
 #endif
 #endif
@@ -499,7 +499,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
-    if(it->second != NULL)
+    if(it->second != nullptr)
       delete it->second;
 
     m_mapCdInfo.erase(it);
@@ -559,7 +559,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   std::string mediaPath;
 
   CCdInfo* pInfo = g_mediaManager.GetCdInfo(devicePath);
-  if (pInfo == NULL)
+  if (pInfo == nullptr)
     return "";
 
   if (mediaPath.empty() && pInfo->IsAudio(1))

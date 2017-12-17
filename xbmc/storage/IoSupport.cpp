@@ -73,7 +73,7 @@ PVOID CIoSupport::m_rawXferBuffer;
 
 HANDLE CIoSupport::OpenCDROM()
 {
-  HANDLE hDevice = 0;
+  HANDLE hDevice = nullptr;
 
 #ifdef HAS_DVD_DRIVE
 #if defined(TARGET_POSIX)
@@ -174,7 +174,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   {
     if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != (DWORD)-1)
     {
-      if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+      if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, nullptr))
       {
         memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
         return dwRead;
