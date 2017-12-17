@@ -56,12 +56,12 @@ public:
     // client
     void StartClient();
     void StopClient();
-    bool IsClientStarted() { return (m_MediaBrowser != NULL); }
+    bool IsClientStarted() { return (m_MediaBrowser != nullptr); }
 
     // controller
     void StartController();
     void StopController();
-    bool IsControllerStarted() { return (m_MediaController != NULL); }
+    bool IsControllerStarted() { return (m_MediaController != nullptr); }
 
     // renderer
     bool StartRenderer();
@@ -72,7 +72,7 @@ public:
     static CUPnP* GetInstance();
     static CUPnPServer* GetServer();
     static void   ReleaseInstance(bool bWait);
-    static bool   IsInstantiated() { return upnp != NULL; }
+    static bool   IsInstantiated() { return upnp != nullptr; }
 
     static bool MarkWatched(const CFileItem& item,
                             const bool watched);

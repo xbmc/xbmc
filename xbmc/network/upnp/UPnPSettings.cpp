@@ -73,7 +73,7 @@ bool CUPnPSettings::Load(const std::string &file)
   }
 
   TiXmlElement *pRootElement = doc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
+  if (pRootElement == nullptr || !StringUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
   {
     CLog::Log(LOGERROR, "CUPnPSettings: error loading %s, no <upnpserver> node", file.c_str());
     return false;
@@ -96,7 +96,7 @@ bool CUPnPSettings::Save(const std::string &file) const
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_UPNP);
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (pRoot == nullptr)
     return false;
 
   XMLUtils::SetString(pRoot, XML_SERVER_UUID, m_serverUUID);

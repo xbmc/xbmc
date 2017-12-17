@@ -50,11 +50,11 @@ using namespace SOCKETS;
 /************************************************************************/
 /* CEventServer                                                         */
 /************************************************************************/
-CEventServer* CEventServer::m_pInstance = NULL;
+CEventServer* CEventServer::m_pInstance = nullptr;
 CEventServer::CEventServer() : CThread("EventServer")
 {
-  m_pSocket       = NULL;
-  m_pPacketBuffer = NULL;
+  m_pSocket       = nullptr;
+  m_pPacketBuffer = nullptr;
   m_bStop         = false;
   m_bRunning      = false;
   m_bRefreshSettings = false;
@@ -68,7 +68,7 @@ void CEventServer::RemoveInstance()
   if (m_pInstance)
   {
     delete m_pInstance;
-    m_pInstance=NULL;
+    m_pInstance=nullptr;
   }
 }
 
@@ -114,13 +114,13 @@ void CEventServer::Cleanup()
   {
     m_pSocket->Close();
     delete m_pSocket;
-    m_pSocket = NULL;
+    m_pSocket = nullptr;
   }
 
   if (m_pPacketBuffer)
   {
     free(m_pPacketBuffer);
-    m_pPacketBuffer = NULL;
+    m_pPacketBuffer = nullptr;
   }
   CSingleLock lock(m_critSection);
 
@@ -241,7 +241,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
   CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
-  if(packet == NULL)
+  if(packet == nullptr)
   {
     CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
     return;
@@ -276,7 +276,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
     // new client
     CEventClient* client = new CEventClient ( addr );
-    if (client==NULL)
+    if (client==nullptr)
     {
       CLog::Log(LOGERROR, "ES: Out of memory, cannot accept new client connection");
       delete packet;

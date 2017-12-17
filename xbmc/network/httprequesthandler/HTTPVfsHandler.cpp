@@ -51,11 +51,11 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         while (URIUtils::IsInArchive(realPath))
           realPath = CURL(realPath).GetHostName();
 
-        VECSOURCES *sources = NULL;
+        VECSOURCES *sources = nullptr;
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
           sources = CMediaSourceSettings::GetInstance().GetSources(sourceTypes[index]);
-          if (sources == NULL)
+          if (sources == nullptr)
             continue;
 
           for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end() && !accessible; ++source)

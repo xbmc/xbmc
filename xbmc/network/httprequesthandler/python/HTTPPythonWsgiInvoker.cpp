@@ -98,19 +98,19 @@ static PythonModule PythonModules[] =
 
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
   : CHTTPPythonInvoker(invocationHandler, request),
-    m_wsgiResponse(NULL)
+    m_wsgiResponse(nullptr)
 { }
 
 CHTTPPythonWsgiInvoker::~CHTTPPythonWsgiInvoker()
 {
   delete m_wsgiResponse;
-  m_wsgiResponse = NULL;
+  m_wsgiResponse = nullptr;
 }
 
 HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 {
-  if (m_request == NULL || m_wsgiResponse == NULL)
-    return NULL;
+  if (m_request == nullptr || m_wsgiResponse == nullptr)
+    return nullptr;
 
   if (m_internalError)
     return m_request;
@@ -121,8 +121,8 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
-      fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+  if (m_request == nullptr || m_addon == nullptr || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
+      fp == nullptr || script.empty() || module == nullptr || moduleDict == nullptr)
     return;
 
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
@@ -132,22 +132,22 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
     return;
   }
 
-  PyObject* pyScript = NULL;
-  PyObject* pyModule = NULL;
-  PyObject* pyEntryPoint = NULL;
+  PyObject* pyScript = nullptr;
+  PyObject* pyModule = nullptr;
+  PyObject* pyEntryPoint = nullptr;
   std::map<std::string, std::string> cgiEnvironment;
-  PyObject* pyEnviron = NULL;
-  PyObject* pyStart_response = NULL;
-  PyObject* pyArgs = NULL;
-  PyObject* pyResult = NULL;
-  PyObject* pyResultIterator = NULL;
-  PyObject* pyIterResult = NULL;
+  PyObject* pyEnviron = nullptr;
+  PyObject* pyStart_response = nullptr;
+  PyObject* pyArgs = nullptr;
+  PyObject* pyResult = nullptr;
+  PyObject* pyResultIterator = nullptr;
+  PyObject* pyIterResult = nullptr;
 
   // get the script
   std::string scriptName = URIUtils::GetFileName(script);
   URIUtils::RemoveExtension(scriptName);
   pyScript = PyString_FromStringAndSize(scriptName.c_str(), scriptName.size());
-  if (pyScript == NULL)
+  if (pyScript == nullptr)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to convert script \"%s\" to python string", script.c_str());
     return;
@@ -157,7 +157,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   CLog::Log(LOGDEBUG, "CHTTPPythonWsgiInvoker: loading WSGI script \"%s\"", script.c_str());
   pyModule = PyImport_Import(pyScript);
   Py_DECREF(pyScript);
-  if (pyModule == NULL)
+  if (pyModule == nullptr)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to load WSGI script \"%s\"", script.c_str());
     return;
@@ -167,7 +167,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   const std::string& entryPoint = webinterface->EntryPoint();
   CLog::Log(LOGDEBUG, "CHTTPPythonWsgiInvoker: loading entry point \"%s\" from WSGI script \"%s\"", entryPoint.c_str(), script.c_str());
   pyEntryPoint = PyObject_GetAttrString(pyModule, entryPoint.c_str());
-  if (pyEntryPoint == NULL)
+  if (pyEntryPoint == nullptr)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to entry point \"%s\" from WSGI script \"%s\"", entryPoint.c_str(), script.c_str());
     goto cleanup;
@@ -182,7 +182,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
 
   // prepare the WsgiResponse object
   m_wsgiResponse = new XBMCAddon::xbmcwsgi::WsgiResponse();
-  if (m_wsgiResponse == NULL)
+  if (m_wsgiResponse == nullptr)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to create WsgiResponse object for WSGI script \"%s\"", script.c_str());
     goto cleanup;
@@ -231,7 +231,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   // call the given handler with the prepared arguments
   pyResult = PyObject_CallObject(pyEntryPoint, pyArgs);
   Py_DECREF(pyArgs);
-  if (pyResult == NULL)
+  if (pyResult == nullptr)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: no result for WSGI script \"%s\"", script.c_str());
     goto cleanup;
@@ -239,14 +239,14 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
 
   // try to get an iterator from the result object
   pyResultIterator = PyObject_GetIter(pyResult);
-  if (pyResultIterator == NULL || !PyIter_Check(pyResultIterator))
+  if (pyResultIterator == nullptr || !PyIter_Check(pyResultIterator))
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: result of WSGI script \"%s\" is not iterable", script.c_str());
     goto cleanup;
   }
 
   // go through all the iterables in the result and turn them into strings
-  while ((pyIterResult = PyIter_Next(pyResultIterator)) != NULL)
+  while ((pyIterResult = PyIter_Next(pyResultIterator)) != nullptr)
   {
     std::string result;
     try
@@ -274,29 +274,29 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   }
 
 cleanup:
-  if (pyIterResult != NULL)
+  if (pyIterResult != nullptr)
   {
     Py_DECREF(pyIterResult);
   }
-  if (pyResultIterator != NULL)
+  if (pyResultIterator != nullptr)
   {
     // Call optional close method on iterator
     if (PyObject_HasAttrString(pyResultIterator, (char*)"close") == 1)
     {
-      if (PyObject_CallMethod(pyResultIterator, (char*)"close", NULL) == NULL)
+      if (PyObject_CallMethod(pyResultIterator, (char*)"close", nullptr) == nullptr)
         CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to close iterator object for WSGI script \"%s\"", script.c_str());
     }
     Py_DECREF(pyResultIterator);
   }
-  if (pyResult != NULL)
+  if (pyResult != nullptr)
   {
     Py_DECREF(pyResult);
   }
-  if (pyEntryPoint != NULL)
+  if (pyEntryPoint != nullptr)
   {
     Py_DECREF(pyEntryPoint);
   }
-  if (pyModule != NULL)
+  if (pyModule != nullptr)
   {
     Py_DECREF(pyModule);
   }
@@ -413,7 +413,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   {
     // wsgi.input
     XBMCAddon::xbmcwsgi::WsgiInputStream* wsgiInputStream = new XBMCAddon::xbmcwsgi::WsgiInputStream();
-    if (request != NULL)
+    if (request != nullptr)
       wsgiInputStream->SetRequest(request);
 
     PythonBindings::prepareForReturn(wsgiInputStream);
@@ -424,7 +424,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   {
     // wsgi.errors
     XBMCAddon::xbmcwsgi::WsgiErrorStream* wsgiErrorStream = new XBMCAddon::xbmcwsgi::WsgiErrorStream();
-    if (request != NULL)
+    if (request != nullptr)
       wsgiErrorStream->SetRequest(request);
 
     PythonBindings::prepareForReturn(wsgiErrorStream);

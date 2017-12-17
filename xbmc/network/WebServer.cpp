@@ -1137,8 +1137,8 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif 
                           ,
                           port,
-                          NULL,
-                          NULL,
+                          nullptr,
+                          nullptr,
                           &CWebServer::AnswerToConnection,
                           this,
 

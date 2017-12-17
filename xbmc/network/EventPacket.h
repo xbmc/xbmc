@@ -211,7 +211,7 @@ namespace EVENTPACKET
       m_bValid = false;
       m_iSeq = 0;
       m_iTotalPackets = 0;
-      m_pPayload = NULL;
+      m_pPayload = nullptr;
       m_iPayloadSize = 0;
       m_iClientToken = 0;
       m_cMajVer = '0';
@@ -224,7 +224,7 @@ namespace EVENTPACKET
       m_bValid = false;
       m_iSeq = 0;
       m_iTotalPackets = 0;
-      m_pPayload = NULL;
+      m_pPayload = nullptr;
       m_iPayloadSize = 0;
       m_iClientToken = 0;
       m_cMajVer = '0';

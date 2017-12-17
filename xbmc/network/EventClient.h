@@ -214,7 +214,7 @@ namespace EVENTCLIENT
     // reset the timeout counter
     void ResetTimeout()
     {
-      m_lastPing = time(NULL);
+      m_lastPing = time(nullptr);
     }
 
     // helper functions

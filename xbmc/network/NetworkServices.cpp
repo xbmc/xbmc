@@ -172,7 +172,7 @@ CNetworkServices& CNetworkServices::GetInstance()
 
 bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -442,7 +442,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
 void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -471,7 +471,7 @@ void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 
 bool CNetworkServices::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -623,7 +623,7 @@ bool CNetworkServices::StartAirPlayServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-  txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
+  txt.push_back(std::make_pair("deviceid", iface != nullptr ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 

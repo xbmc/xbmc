@@ -39,7 +39,7 @@ void CDACP::SendCmd(const std::string &cmd)
   // issue the command
   XFILE::CFile file;
   file.Open(m_dacpUrl);
-  file.Write(NULL, 0);
+  file.Write(nullptr, 0);
 }
 
 void CDACP::BeginFwd()

@@ -39,7 +39,7 @@ class CUPnPRenderer : public PLT_MediaRenderer
 public:
     CUPnPRenderer(const char*  friendly_name,
                   bool         show_ip = false,
-                  const char*  uuid = NULL,
+                  const char*  uuid = nullptr,
                   unsigned int port = 0);
 
     ~CUPnPRenderer() override;
@@ -72,7 +72,7 @@ private:
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const NPT_String& uri,
                          const NPT_String& meta,
-                         PLT_Action* action = NULL);
+                         PLT_Action* action = nullptr);
     NPT_Mutex m_state;
 };
 
