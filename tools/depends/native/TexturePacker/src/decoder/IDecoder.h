@@ -25,7 +25,7 @@
 class RGBAImage
 {
 public:
-  RGBAImage() : pixels(NULL), width(0), height(0), bbp(0), pitch(0) {}
+  RGBAImage() : pixels(nullptr), width(0), height(0), bbp(0), pitch(0) {}
   
   char *pixels;//image data
   int width;// width
@@ -45,14 +45,14 @@ class DecodedFrame
 class DecodedFrames
 {
   public:
-    DecodedFrames(): user(NULL) {}
+    DecodedFrames(): user(nullptr) {}
     std::vector<DecodedFrame> frameList;
     void     *user;         /* used internally*/
 
     void clear()
     {
       frameList.clear();
-      user = NULL;
+      user = nullptr;
     }
 };
 
