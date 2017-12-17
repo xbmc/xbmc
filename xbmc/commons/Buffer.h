@@ -104,7 +104,7 @@ namespace XbmcCommons
     /**
      * Construct an uninitialized buffer instance, perhaps as an lvalue.
      */
-    inline Buffer() : buffer(NULL), mposition(0), mcapacity(0), mlimit(0) { clear(); }
+    inline Buffer() : buffer(nullptr), mposition(0), mcapacity(0), mlimit(0) { clear(); }
 
     /**
      * Construct a buffer given an externally managed memory buffer.
@@ -129,7 +129,7 @@ namespace XbmcCommons
      * other Buffer instances. It will be freed upon destruction of
      * the last Buffer that references it.
      */
-    inline explicit Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : NULL), mcapacity(bufferSize)
+    inline explicit Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : nullptr), mcapacity(bufferSize)
     { 
       clear(); 
       bufferRef.reset(buffer, std::default_delete<unsigned char[]>());
@@ -165,7 +165,7 @@ namespace XbmcCommons
 
     inline Buffer& allocate(size_t bufferSize)
     {
-      buffer = bufferSize ? new unsigned char[bufferSize] : NULL;
+      buffer = bufferSize ? new unsigned char[bufferSize] : nullptr;
       bufferRef.reset(buffer, std::default_delete<unsigned char[]>());
       mcapacity = bufferSize;
       clear();

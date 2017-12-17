@@ -22,7 +22,7 @@
 
 namespace XbmcCommons
 {
-  ILogger* Exception::logger = NULL;
+  ILogger* Exception::logger = nullptr;
 
   Exception::~Exception() = default;
 }
