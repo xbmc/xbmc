@@ -229,20 +229,20 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("pvrtimersettings", -1);
-  if (category == NULL)
+  if (category == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::InitializeSettings - Unable to add settings category");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (group == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::InitializeSettings - Unable to add settings group");
     return;
   }
 
-  std::shared_ptr<CSetting> setting = NULL;
+  std::shared_ptr<CSetting> setting = nullptr;
 
   // Timer type
   setting = AddList(group, SETTING_TMR_TYPE, 803, SettingLevel::Basic, 0, TypesFiller, 803);
@@ -397,7 +397,7 @@ int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(SettingConstPtr setting)
 
 void CGUIDialogPVRTimerSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - No setting");
     return;
@@ -512,7 +512,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(std::shared_ptr<const CSetting
 
 void CGUIDialogPVRTimerSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingAction - No setting");
     return;
@@ -673,14 +673,14 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
 {
   // timer start time
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_TMR_BEGIN);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerStartTimeStr);
   }
 
   // timer end time
   settingControl = GetSettingControl(SETTING_TMR_END);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
   }
@@ -1115,11 +1115,11 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(std::shared_ptr
 
 bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (pThis == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::TypeReadOnlyCondition - No dialog");
     return false;
@@ -1178,11 +1178,11 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentVisibilityCondition(std::shared
 
 bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (pThis == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::TypeSupportsCondition - No dialog");
     return false;
@@ -1257,11 +1257,11 @@ void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(std
 
 bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (pThis == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::AnytimeSetCondition - No dialog");
     return false;
@@ -1300,11 +1300,11 @@ void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(std::
 
 bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (pThis == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::AnytimeSetCondition - No dialog");
     return false;

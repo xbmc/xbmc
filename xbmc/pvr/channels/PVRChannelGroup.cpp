@@ -959,7 +959,7 @@ bool CPVRChannelGroup::HasChanges(void) const
 
 void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   //! @todo while pvr manager is starting up do accept setting changes.

@@ -458,7 +458,7 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
   {
     m_iGenreType    = iGenreType;
     m_iGenreSubType = iGenreSubType;
-    if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+    if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != nullptr) && (strlen(strGenre) > 0))
     {
       /* Type and sub type are not given. No EPG color coding possible
        * Use the provided genre description as backup. */
@@ -551,7 +551,7 @@ std::string CPVREpgInfoTag::Path(void) const
 
 bool CPVREpgInfoTag::HasTimer(void) const
 {
-  return m_timer != NULL;
+  return m_timer != nullptr;
 }
 
 bool CPVREpgInfoTag::HasTimerRule(void) const
@@ -576,7 +576,7 @@ void CPVREpgInfoTag::SetChannel(const PVR::CPVRChannelPtr &channel)
 bool CPVREpgInfoTag::HasChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_channel.get() != NULL;
+  return m_channel.get() != nullptr;
 }
 
 const PVR::CPVRChannelPtr CPVREpgInfoTag::Channel() const
@@ -758,7 +758,7 @@ void CPVREpgInfoTag::ClearRecording(void)
 bool CPVREpgInfoTag::HasRecording(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_recording.get() != NULL;
+  return m_recording.get() != nullptr;
 }
 
 CPVRRecordingPtr CPVREpgInfoTag::Recording(void) const

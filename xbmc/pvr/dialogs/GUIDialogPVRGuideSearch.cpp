@@ -59,7 +59,7 @@ CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void) :
     CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml"),
     m_bConfirmed(false),
     m_bCanceled(false),
-    m_searchFilter(NULL)
+    m_searchFilter(nullptr)
 {
 }
 

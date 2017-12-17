@@ -918,13 +918,13 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
 void CPVRManager::TriggerSearchMissingChannelIcons(void)
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), nullptr);
 }
 
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
 {
   // Note: No check for started pvr manager here. This method is intended to get called even before the mgr is started.
-  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
+  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), nullptr);
 }
 
 bool CPVRManager::CreateChannelEpgs(void)
