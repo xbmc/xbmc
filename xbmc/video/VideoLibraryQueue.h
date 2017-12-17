@@ -73,7 +73,7 @@ public:
    \param[in] asynchronous Run the clean job asynchronously. Defaults to true
    \param[in] progressBar Progress bar to update in GUI. Defaults to NULL (no progress bar to update)
    */
-  void CleanLibrary(const std::set<int>& paths = std::set<int>(), bool asynchronous = true, CGUIDialogProgressBarHandle* progressBar = NULL);
+  void CleanLibrary(const std::set<int>& paths = std::set<int>(), bool asynchronous = true, CGUIDialogProgressBarHandle* progressBar = nullptr);
 
   /*!
   \brief Executes a library cleaning with a modal dialog.

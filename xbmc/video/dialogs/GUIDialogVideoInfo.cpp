@@ -1185,7 +1185,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   }
   else if (mediaType == MediaTypeTvShow)
   {
-    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, 0, VideoDbDetailsNone);
+    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, nullptr, VideoDbDetailsNone);
     title = detail.m_strTitle;
   }
   else if (mediaType == MediaTypeMusicVideo)
@@ -1919,7 +1919,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.GetMovieInfo("", detail, iDbId, VideoDbDetailsNone);
   else if (iType == VIDEODB_CONTENT_TVSHOWS)
-    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, 0, VideoDbDetailsNone);
+    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId, nullptr, VideoDbDetailsNone);
 
   std::string currentTitle;
   if (detail.m_strSortTitle.empty())
@@ -1948,7 +1948,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
     for (unsigned int i = 0; i < ids.size(); ++i)
     {
       CVideoInfoTag tag;
-      database.GetTvShowInfo("", tag, ids[i], 0 , VideoDbDetailsNone);
+      database.GetTvShowInfo("", tag, ids[i], nullptr , VideoDbDetailsNone);
       CFileItemPtr show(new CFileItem(tag));
       list.Add(show);
     }

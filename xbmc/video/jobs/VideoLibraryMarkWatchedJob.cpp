@@ -47,7 +47,7 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
     return false;
 
   const CVideoLibraryMarkWatchedJob* markJob = dynamic_cast<const CVideoLibraryMarkWatchedJob*>(job);
-  if (markJob == NULL)
+  if (markJob == nullptr)
     return false;
 
   return m_item->IsSamePath(markJob->m_item.get()) && markJob->m_mark == m_mark;

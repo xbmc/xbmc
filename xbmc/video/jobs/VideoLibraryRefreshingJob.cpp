@@ -296,7 +296,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // finally download the information for the item
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
-                                   scraperUrl.m_url.empty() ? NULL : &scraperUrl,
+                                   scraperUrl.m_url.empty() ? nullptr : &scraperUrl,
                                    m_refreshAll, GetProgressDialog()))
     {
       // something went wrong

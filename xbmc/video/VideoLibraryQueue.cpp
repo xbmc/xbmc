@@ -148,7 +148,7 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
 
 void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
 {
-  if (item == NULL)
+  if (item == nullptr)
     return;
 
   AddJob(new CVideoLibraryMarkWatchedJob(item, watched));
@@ -164,7 +164,7 @@ void CVideoLibraryQueue::ResetResumePoint(const CFileItemPtr item)
 
 void CVideoLibraryQueue::AddJob(CVideoLibraryJob *job)
 {
-  if (job == NULL)
+  if (job == nullptr)
     return;
 
   CSingleLock lock(m_critical);
@@ -186,14 +186,14 @@ void CVideoLibraryQueue::AddJob(CVideoLibraryJob *job)
 
 void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
 {
-  if (job == NULL)
+  if (job == nullptr)
     return;
 
   CSingleLock lock(m_critical);
   // remember the job type needed later because the job might be deleted
   // in the call to CJobQueue::CancelJob()
   std::string jobType;
-  if (job->GetType() != NULL)
+  if (job->GetType() != nullptr)
     jobType = job->GetType();
 
   // check if the job supports cancellation and cancel it

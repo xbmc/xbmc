@@ -98,7 +98,7 @@ namespace VIDEO
 
         if (m_handle)
           m_handle->MarkFinished();
-        m_handle = NULL;
+        m_handle = nullptr;
 
         m_bRunning = false;
 
@@ -175,7 +175,7 @@ namespace VIDEO
     
     if (m_handle)
       m_handle->MarkFinished();
-    m_handle = NULL;
+    m_handle = nullptr;
   }
 
   void CVideoInfoScanner::Start(const std::string& strDirectory, bool scanAll)
@@ -471,7 +471,7 @@ namespace VIDEO
           pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
       }
 
-      pURL = NULL;
+      pURL = nullptr;
 
       // Keep track of directories we've seen
       if (m_bClean && pItem->m_bIsFolder)
@@ -566,7 +566,7 @@ namespace VIDEO
     long lResult = -1;
     if (GetDetails(pItem, url, info2,
                    (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : nullptr,
                    pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -633,7 +633,7 @@ namespace VIDEO
 
     if (GetDetails(pItem, url, info2,
                    (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -695,7 +695,7 @@ namespace VIDEO
 
     if (GetDetails(pItem, url, info2,
                    (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -1130,7 +1130,7 @@ namespace VIDEO
 
     if (!season.empty() || !episode.empty())
     {
-      char* endptr = NULL;
+      char* endptr = nullptr;
       if (season.empty() && !episode.empty())
       { // no season specified -> assume defaultSeason
         episodeInfo.iSeason = defaultSeason;
@@ -1785,7 +1785,7 @@ namespace VIDEO
     if (ret)
     {
       if (nfoFile)
-        nfoFile->GetDetails(movieDetails,NULL,true);
+        nfoFile->GetDetails(movieDetails,nullptr,true);
 
       if (m_handle && url.strTitle.empty())
         m_handle->SetText(movieDetails.m_strTitle);

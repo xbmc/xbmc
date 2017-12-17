@@ -344,7 +344,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, CViewStateSettings::GetInstance().Get("videonavgenres"));
       break;
     case NODE_TYPE_TITLE_MOVIES:
-      SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, params.GetSetId() > -1 ? NULL : CViewStateSettings::GetInstance().Get("videonavtitles"));
+      SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, params.GetSetId() > -1 ? nullptr : CViewStateSettings::GetInstance().Get("videonavtitles"));
       break;
     case NODE_TYPE_EPISODES:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, CViewStateSettings::GetInstance().Get("videonavepisodes"));
