@@ -55,7 +55,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   {
     if (m_eglSurface == EGL_NO_SURFACE)
     {
-      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
+      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, nullptr);
       if (m_eglSurface == EGL_NO_SURFACE)
       {
         CLog::Log(LOGERROR, "failed to create EGL window surface %d\n", eglGetError());
@@ -80,7 +80,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       CLog::Log(LOGERROR, "failed to get egl display\n");
       return false;
     }
-    if (!eglInitialize(m_eglDisplay, NULL, NULL))
+    if (!eglInitialize(m_eglDisplay, nullptr, nullptr))
     {
       CLog::Log(LOGERROR, "failed to initialize egl display\n");
       return false;
@@ -139,7 +139,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       CLog::Log(LOGERROR, "failed to get egl display");
       return false;
     }
-    if (!eglInitialize(m_eglDisplay, NULL, NULL))
+    if (!eglInitialize(m_eglDisplay, nullptr, nullptr))
     {
       CLog::Log(LOGERROR, "failed to initialize egl\n");
       return false;
@@ -166,7 +166,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
     if (m_eglSurface == EGL_NO_SURFACE)
     {
-      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
+      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, nullptr);
       if (m_eglSurface == EGL_NO_SURFACE)
       {
         CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());

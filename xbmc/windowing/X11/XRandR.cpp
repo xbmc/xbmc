@@ -55,7 +55,7 @@ bool CXRandR::Query(bool force, bool ignoreoff)
 
   m_bInit = true;
 
-  if (getenv("KODI_BIN_HOME") == NULL)
+  if (getenv("KODI_BIN_HOME") == nullptr)
     return false;
 
   m_outputs.clear();
@@ -113,14 +113,14 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     StringUtils::Trim(xoutput.name);
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
     xoutput.screen = screennum;
-    xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
-    xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
-    xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
-    xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
-    xoutput.crtc = (output->Attribute("crtc") != NULL ? atoi(output->Attribute("crtc")) : 0);
-    xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
-    xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
-    if (output->Attribute("rotation") != NULL
+    xoutput.w = (output->Attribute("w") != nullptr ? atoi(output->Attribute("w")) : 0);
+    xoutput.h = (output->Attribute("h") != nullptr ? atoi(output->Attribute("h")) : 0);
+    xoutput.x = (output->Attribute("x") != nullptr ? atoi(output->Attribute("x")) : 0);
+    xoutput.y = (output->Attribute("y") != nullptr ? atoi(output->Attribute("y")) : 0);
+    xoutput.crtc = (output->Attribute("crtc") != nullptr ? atoi(output->Attribute("crtc")) : 0);
+    xoutput.wmm = (output->Attribute("wmm") != nullptr ? atoi(output->Attribute("wmm")) : 0);
+    xoutput.hmm = (output->Attribute("hmm") != nullptr ? atoi(output->Attribute("hmm")) : 0);
+    if (output->Attribute("rotation") != nullptr
         && (strcasecmp(output->Attribute("rotation"), "left") == 0 || strcasecmp(output->Attribute("rotation"), "right") == 0))
     {
       xoutput.isRotated = true;
@@ -467,7 +467,7 @@ bool CXRandR::IsOutputConnected(const std::string& name)
 
 XOutput* CXRandR::GetOutput(const std::string& outputName)
 {
-  XOutput *result = 0;
+  XOutput *result = nullptr;
   Query();
   for (unsigned int i = 0; i < m_outputs.size(); ++i)
   {

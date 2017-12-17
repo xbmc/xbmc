@@ -111,7 +111,7 @@ void CVideoSyncDRM::Run(CEvent& stopEvent)
   memset(&evctx, 0, sizeof evctx);
   evctx.version = DRM_EVENT_CONTEXT_VERSION;
   evctx.vblank_handler = EventHandler;
-  evctx.page_flip_handler = NULL;
+  evctx.page_flip_handler = nullptr;
 
   timeval timeout;
   fd_set fds;
@@ -122,7 +122,7 @@ void CVideoSyncDRM::Run(CEvent& stopEvent)
   {
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
-    ret = select(m_fd + 1, &fds, NULL, NULL, &timeout);
+    ret = select(m_fd + 1, &fds, nullptr, nullptr, &timeout);
 
     if (ret <= 0)
     {

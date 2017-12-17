@@ -54,7 +54,7 @@ public:
   EGLConfig GetEGLConfig() const;
 
 protected:
-  bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
+  bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = nullptr) override;
   void PresentRenderImpl(bool rendered) override;
   void SetVSyncImpl(bool enable) override;
   bool RefreshGLContext(bool force);

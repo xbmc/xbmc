@@ -34,7 +34,7 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 
-Display* CVideoSyncGLX::m_Dpy = NULL;
+Display* CVideoSyncGLX::m_Dpy = nullptr;
 
 void CVideoSyncGLX::OnLostDisplay()
 {
@@ -54,11 +54,11 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 {
   CSingleLock lock(g_graphicsContext);
 
-  m_glXWaitVideoSyncSGI = NULL;
-  m_glXGetVideoSyncSGI = NULL;
-  m_vInfo = NULL;
+  m_glXWaitVideoSyncSGI = nullptr;
+  m_glXGetVideoSyncSGI = nullptr;
+  m_vInfo = nullptr;
   m_Window = 0;
-  m_Context = NULL;
+  m_Context = nullptr;
   UpdateClock = func;
 
   int singleBufferAttributes[] = {
@@ -73,8 +73,8 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   unsigned int GlxTest;
   XSetWindowAttributes Swa;
 
-  m_vInfo = NULL;
-  m_Context = NULL;
+  m_vInfo = nullptr;
+  m_Context = nullptr;
   m_Window = 0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
@@ -87,7 +87,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 
   if (!m_Dpy)
   {
-    m_Dpy = XOpenDisplay(NULL);
+    m_Dpy = XOpenDisplay(nullptr);
     if (!m_Dpy)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
@@ -95,7 +95,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
     }
   }
 
-  if (!glXQueryExtension(m_Dpy, NULL, NULL))
+  if (!glXQueryExtension(m_Dpy, nullptr, nullptr))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support GLX");
     return false;
@@ -136,7 +136,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   m_Window = XCreateWindow(m_Dpy, m_winSystem.GetWindow(), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
 
-  m_Context = glXCreateContext(m_Dpy, m_vInfo, NULL, True);
+  m_Context = glXCreateContext(m_Dpy, m_vInfo, nullptr, True);
   if (!m_Context)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateContext returned NULL");
@@ -221,7 +221,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detaching glX context");
-      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
+      ReturnV = glXMakeCurrent(m_Dpy, None, nullptr);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
@@ -262,13 +262,13 @@ void CVideoSyncGLX::Cleanup()
     if (m_vInfo)
     {
       XFree(m_vInfo);
-      m_vInfo = NULL;
+      m_vInfo = nullptr;
     }
     if (m_Context)
     {
-      glXMakeCurrent(m_Dpy, None, NULL);
+      glXMakeCurrent(m_Dpy, None, nullptr);
       glXDestroyContext(m_Dpy, m_Context);
-      m_Context = NULL;
+      m_Context = nullptr;
     }
     if (m_Window)
     {
