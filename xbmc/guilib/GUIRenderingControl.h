@@ -32,7 +32,7 @@ public:
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
-  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
   void FreeResources(bool immediately = false) override;
   bool CanFocus() const override { return false; }
   bool CanFocusFromPoint(const CPoint &point) const override;

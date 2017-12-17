@@ -60,7 +60,7 @@ protected:
   unsigned int GetRows() const override;
   int  CorrectOffset(int offset, int cursor) const override;
   bool SelectItemFromPoint(const CPoint &point) override;
-  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
+  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = nullptr) const override;
   void SetCursor(int cursor) override;
   void SelectItem(int item) override;
   bool HasPreviousPage() const override;

@@ -216,7 +216,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
 {
   // found texture - allocate the necessary buffers
   unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
-  if (buffer == NULL)
+  if (buffer == nullptr)
   {
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
     return false;
@@ -234,14 +234,14 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
   if (frame.IsPacked())
   { // unpack
     unsigned char *unpacked = new unsigned char[(size_t)frame.GetUnpackedSize()];
-    if (unpacked == NULL)
+    if (unpacked == nullptr)
     {
       CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
       delete[] buffer;
       return false;
     }
     lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-    if (lzo1x_decompress_safe(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
+    if (lzo1x_decompress_safe(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, nullptr) != LZO_E_OK ||
         s != frame.GetUnpackedSize())
     {
       CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());

@@ -43,7 +43,7 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
   bool CanFocus() const override { return false; };
-  void UpdateInfo(const CGUIListItem *item = NULL) override;
+  void UpdateInfo(const CGUIListItem *item = nullptr) override;
   void SetFocus(bool focus) override;
   void SetInvalid() override;
   void SetWidth(float width) override;

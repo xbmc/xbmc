@@ -49,7 +49,7 @@ CGUIControl::CGUIControl() :
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
-  m_parentControl = NULL;
+  m_parentControl = nullptr;
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
@@ -78,7 +78,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_bInvalidated = true;
   m_bAllocated=false;
   m_hasProcessed = false;
-  m_parentControl = NULL;
+  m_parentControl = nullptr;
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
@@ -769,12 +769,12 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
         return &anim;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 bool CGUIControl::HasAnimation(ANIMATION_TYPE type)
 {
-  return (NULL != GetAnimation(type, true));
+  return (nullptr != GetAnimation(type, true));
 }
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)

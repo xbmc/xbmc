@@ -58,6 +58,6 @@ protected:
   void ValidateOffset() override;
   void SelectItem(int item) override;
   bool SelectItemFromPoint(const CPoint &point) override;
-  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
+  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = nullptr) const override;
 };
 

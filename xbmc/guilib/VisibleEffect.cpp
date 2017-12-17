@@ -401,7 +401,7 @@ CAnimation &CAnimation::operator =(const CAnimation &src)
   // and assign the others across
   for (unsigned int i = 0; i < src.m_effects.size(); i++)
   {
-    CAnimEffect *newEffect = NULL;
+    CAnimEffect *newEffect = nullptr;
     if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_FADE)
       newEffect = new CFadeEffect(*static_cast<CFadeEffect*>(src.m_effects[i]));
     else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ZOOM)
@@ -679,7 +679,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
 
 void CAnimation::AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect)
 {
-  CAnimEffect *effect = NULL;
+  CAnimEffect *effect = nullptr;
   if (StringUtils::EqualsNoCase(type, "fade"))
     effect = new CFadeEffect(node, m_type < 0);
   else if (StringUtils::EqualsNoCase(type, "slide"))

@@ -106,7 +106,7 @@ public:
    \param scaleY [out] the scaling amount in the Y direction.
    \param matrix [out] if non-NULL, a suitable transformation from res to screen resolution is set.
    */
-  void GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix = NULL);
+  void GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix = nullptr);
   void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
@@ -159,7 +159,7 @@ public:
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
-  void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = nullptr);
   CRect GetClipRegion();
   void AddGUITransform();
   TransformMatrix AddTransform(const TransformMatrix &matrix);

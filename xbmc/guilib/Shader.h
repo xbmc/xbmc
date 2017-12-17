@@ -130,8 +130,8 @@ namespace Shaders {
       {
         m_ok = false;
         m_shaderProgram = 0;
-        m_pFP = NULL;
-        m_pVP = NULL;
+        m_pFP = nullptr;
+        m_pVP = nullptr;
       }
 
     virtual ~CShaderProgram()

@@ -65,7 +65,7 @@ public:
 class CGUITextLayout
 {
 public:
-  CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f, CGUIFont *borderFont = NULL);  // this may need changing - we may just use this class to replace CLabelInfo completely
+  CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f, CGUIFont *borderFont = nullptr);  // this may need changing - we may just use this class to replace CLabelInfo completely
 
   bool UpdateScrollinfo(CScrollInfo &scrollInfo);
 
