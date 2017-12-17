@@ -48,7 +48,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
   bool forceUnicodeFont(false);
   std::string charsetSubtitle;
   cp_cfg_element_t *charsetsElement = CServiceBroker::GetAddonMgr().GetExtElement(ext->configuration, "charsets");
-  if (charsetsElement != NULL)
+  if (charsetsElement != nullptr)
   {
     charsetGui = CServiceBroker::GetAddonMgr().GetExtValue(charsetsElement, "gui");
     forceUnicodeFont = CServiceBroker::GetAddonMgr().GetExtValue(charsetsElement, "gui@unicodefont") == "true";
@@ -60,7 +60,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
   std::string dvdLanguageAudio;
   std::string dvdLanguageSubtitle;
   cp_cfg_element_t *dvdElement = CServiceBroker::GetAddonMgr().GetExtElement(ext->configuration, "dvd");
-  if (dvdElement != NULL)
+  if (dvdElement != nullptr)
   {
     dvdLanguageMenu = CServiceBroker::GetAddonMgr().GetExtValue(dvdElement, "menu");
     dvdLanguageAudio = CServiceBroker::GetAddonMgr().GetExtValue(dvdElement, "audio");
@@ -77,13 +77,13 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
   // parse <sorttokens>
   std::set<std::string> sortTokens;
   cp_cfg_element_t *sorttokensElement = CServiceBroker::GetAddonMgr().GetExtElement(ext->configuration, "sorttokens");
-  if (sorttokensElement != NULL)
+  if (sorttokensElement != nullptr)
   {
     for (size_t i = 0; i < sorttokensElement->num_children; ++i)
     {
       cp_cfg_element_t &tokenElement = sorttokensElement->children[i];
-      if (tokenElement.name != NULL && strcmp(tokenElement.name, "token") == 0 &&
-          tokenElement.value != NULL)
+      if (tokenElement.name != nullptr && strcmp(tokenElement.name, "token") == 0 &&
+          tokenElement.value != nullptr)
       {
         std::string token(tokenElement.value);
         std::string separators = CServiceBroker::GetAddonMgr().GetExtValue(&tokenElement, "@separators");

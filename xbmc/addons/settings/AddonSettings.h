@@ -51,7 +51,7 @@ namespace ADDON
     bool Save() override { return false; }
 
     // specialization of CSettingCreator
-    std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
+    std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = nullptr) const override;
 
     // implementation of ISettingCallback
     void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
