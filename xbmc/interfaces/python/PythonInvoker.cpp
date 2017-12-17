@@ -119,7 +119,7 @@ static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>
 
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : ILanguageInvoker(invocationHandler),
-    m_threadState(NULL), m_stop(false)
+    m_threadState(nullptr), m_stop(false)
 { }
 
 CPythonInvoker::~CPythonInvoker()
@@ -170,7 +170,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // get the global lock
   PyEval_AcquireLock();
   PyThreadState* state = Py_NewInterpreter();
-  if (state == NULL)
+  if (state == nullptr)
   {
     PyEval_ReleaseLock();
     CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): FAILED to get thread state!", GetId(), m_sourceFile.c_str());
@@ -223,12 +223,12 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
   PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 
-  if (pathObj != NULL && PyList_Check(pathObj))
+  if (pathObj != nullptr && PyList_Check(pathObj))
   {
     for (int i = 0; i < PyList_Size(pathObj); i++)
     {
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-      if (e != NULL && PyString_Check(e))
+      if (e != nullptr && PyString_Check(e))
         addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
 #ifdef TARGET_WINDOWS_STORE
       // uwp python operates unicodes
@@ -263,7 +263,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   PyObject* moduleDict = PyModule_GetDict(module);
 
   // when we are done initing we store thread state so we can be aborted
-  PyThreadState_Swap(NULL);
+  PyThreadState_Swap(nullptr);
   PyEval_ReleaseLock();
 
   // we need to check if we was asked to abort before we had inited
@@ -297,7 +297,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
       FILE *fp = PyFile_AsFile(file);
 
-      if (fp != NULL)
+      if (fp != nullptr)
       {
         PyObject *f = PyString_FromString(nativeFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
@@ -348,7 +348,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     // if it failed with an exception we already logged the details
     if (!failed)
     {
-      PythonBindings::PythonToCppException *e = NULL;
+      PythonBindings::PythonToCppException *e = nullptr;
       if (PythonBindings::PythonToCppException::ParsePythonException(exceptionType, exceptionValue, exceptionTraceback))
         e = new PythonBindings::PythonToCppException(exceptionType, exceptionValue, exceptionTraceback);
       else
@@ -369,11 +369,11 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   PyObject *m = PyImport_AddModule((char*)"xbmc");
-  if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+  if (m == nullptr || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
     CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
   // make sure all sub threads have finished
-  for (PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
+  for (PyThreadState* s = state->interp->tstate_head, *old = nullptr; s;)
   {
     if (s == state)
     {
@@ -396,7 +396,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   // pending calls must be cleared out
   XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(state);
 
-  PyThreadState_Swap(NULL);
+  PyThreadState_Swap(nullptr);
   PyEval_ReleaseLock();
 
   // set stopped event - this allows ::stop to run and kill remaining threads
@@ -406,7 +406,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   m_stoppedEvent.Set();
 
   { CSingleLock lock(m_critical);
-    m_threadState = NULL;
+    m_threadState = nullptr;
   }
 
   PyEval_AcquireLock();
@@ -445,11 +445,11 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
 void CPythonInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
 {
-  if (fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+  if (fp == nullptr || script.empty() || module == nullptr || moduleDict == nullptr)
     return;
 
   int m_Py_file_input = Py_file_input;
-  PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, NULL);
+  PyRun_FileExFlags(static_cast<FILE*>(fp), script.c_str(), m_Py_file_input, static_cast<PyObject*>(moduleDict), static_cast<PyObject*>(moduleDict), 1, nullptr);
 }
 
 bool CPythonInvoker::stop(bool abort)
@@ -462,22 +462,22 @@ bool CPythonInvoker::stop(bool abort)
 
   setState(InvokerStateStopping);
 
-  if (m_threadState != NULL)
+  if (m_threadState != nullptr)
   {
     PyEval_AcquireLock();
     PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
     //tell xbmc.Monitor to call onAbortRequested()
-    if (m_addon != NULL)
+    if (m_addon != nullptr)
       onAbortRequested();
 
     PyObject *m;
     m = PyImport_AddModule((char*)"xbmc");
-    if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+    if (m == nullptr || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
     PyThreadState_Swap(old);
-    old = NULL;
+    old = nullptr;
     PyEval_ReleaseLock();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
@@ -511,7 +511,7 @@ bool CPythonInvoker::stop(bool abort)
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
-    if (m_threadState != NULL)
+    if (m_threadState != nullptr)
     {
       old = PyThreadState_Swap((PyThreadState*)m_threadState);
       for (PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
@@ -526,7 +526,7 @@ bool CPythonInvoker::stop(bool abort)
       pulseGlobalEvent();
     }
 
-    if (old != NULL)
+    if (old != nullptr)
       PyThreadState_Swap(old);
 
     lock.Leave();
@@ -538,14 +538,14 @@ bool CPythonInvoker::stop(bool abort)
 
 void CPythonInvoker::onExecutionFailed()
 {
-  PyThreadState_Swap(NULL);
+  PyThreadState_Swap(nullptr);
   PyEval_ReleaseLock();
 
   setState(InvokerStateFailed);
   CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): abnormally terminating python thread", GetId(), m_sourceFile.c_str());
 
   CSingleLock lock(m_critical);
-  m_threadState = NULL;
+  m_threadState = nullptr;
 
   ILanguageInvoker::onExecutionFailed();
 }
@@ -566,7 +566,7 @@ void CPythonInvoker::onInitialization()
 
   // get a possible initialization script
   const char* runscript = getInitializationScript();
-  if (runscript!= NULL && strlen(runscript) > 0)
+  if (runscript!= nullptr && strlen(runscript) > 0)
   {
     // redirecting default output to debug console
     if (PyRun_SimpleString(runscript) == -1)
@@ -576,7 +576,7 @@ void CPythonInvoker::onInitialization()
 
 void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (m_addon.get() == nullptr || moduleDict == nullptr)
     return;
 
   PyObject *moduleDictionary = (PyObject *)moduleDict;
@@ -606,7 +606,7 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   CSingleLock gc(g_graphicsContext);
 
   CGUIDialogKaiToast *pDlgToast = g_windowManager.GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
-  if (pDlgToast != NULL)
+  if (pDlgToast != nullptr)
   {
     std::string message;
     if (m_addon && !m_addon->Name().empty())
@@ -621,7 +621,7 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
 
 const char* CPythonInvoker::getInitializationScript() const
 {
-  return NULL;
+  return nullptr;
 }
 
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
@@ -635,7 +635,7 @@ void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleI
 
 bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
 {
-  if (module == NULL)
+  if (module == nullptr)
     return false;
 
   module();

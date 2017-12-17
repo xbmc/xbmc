@@ -33,7 +33,7 @@ namespace XBMCAddon
     //! @todo need a means to check for a valid construction
     //!  either by throwing an exception or by an "isValid" check
     PlayList::PlayList(int playList) : 
-      iPlayList(playList), pPlayList(NULL)
+      iPlayList(playList), pPlayList(nullptr)
     {
       // we do not create our own playlist, just using the ones from playlistplayer
       if (iPlayList != PLAYLIST_MUSIC &&
@@ -50,7 +50,7 @@ namespace XBMCAddon
     {
       CFileItemList items;
 
-      if (listitem != NULL)
+      if (listitem != nullptr)
       {
         // an optional listitem was passed
         // set m_strPath to the passed url
@@ -81,7 +81,7 @@ namespace XBMCAddon
         // load a playlist like .m3u, .pls
         // first get correct factory to load playlist
         std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-        if ( NULL != pPlayList.get())
+        if ( nullptr != pPlayList.get())
         {
           // load it
           if (!pPlayList->Load(item.GetPath()))

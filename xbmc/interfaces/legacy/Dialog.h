@@ -608,7 +608,7 @@ namespace XBMCAddon
 
     public:
 
-      DialogProgress() : dlg(NULL), open(false) {}
+      DialogProgress() : dlg(nullptr), open(false) {}
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       virtual ~DialogProgress();
 
@@ -749,7 +749,7 @@ namespace XBMCAddon
 
     public:
 
-      DialogBusy() : dlg(NULL), open(false) {}
+      DialogBusy() : dlg(nullptr), open(false) {}
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       virtual ~DialogBusy();
 
@@ -859,7 +859,7 @@ namespace XBMCAddon
 
     public:
 
-      DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
+      DialogProgressBG() : dlg(nullptr), handle(nullptr), open(false) {}
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       virtual ~DialogProgressBG();
 

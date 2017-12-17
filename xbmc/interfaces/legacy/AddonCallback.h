@@ -39,10 +39,10 @@ namespace XBMCAddon
 
     bool hasHandler() { return handler.isNotNull(); }
 
-    inline AddonCallback() : handler(NULL)
+    inline AddonCallback() : handler(nullptr)
     {
       // if there is a LanguageHook, it should be set already.
-      if (languageHook != NULL)
+      if (languageHook != nullptr)
         setHandler(languageHook->GetCallbackHandler());
     }
   public:

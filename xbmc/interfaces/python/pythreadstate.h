@@ -31,7 +31,7 @@ class CPyThreadState
   public:
     explicit CPyThreadState(bool save = true)
     {
-      m_threadState = NULL;
+      m_threadState = nullptr;
 
       if (save)
         Save();
@@ -53,7 +53,7 @@ class CPyThreadState
       if (m_threadState)
       {
         PyEval_RestoreThread(m_threadState); //same as Py_END_ALLOW_THREADS
-        m_threadState = NULL;
+        m_threadState = nullptr;
       }
     }
 

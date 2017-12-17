@@ -46,7 +46,7 @@ namespace XBMCAddon
       std::set<AddonClass*> currentObjects;
 
       // This constructor is only used to instantiate the global LanguageHook
-      inline PythonLanguageHook() : m_interp(NULL)  {  }
+      inline PythonLanguageHook() : m_interp(nullptr)  {  }
 
     public:
 
