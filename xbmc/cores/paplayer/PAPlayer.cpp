@@ -52,8 +52,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_isFinished(false),
   m_defaultCrossfadeMS (0),
   m_upcomingCrossfadeMS(0),
-  m_currentStream(NULL ),
-  m_audioCallback(NULL ),
+  m_currentStream(nullptr ),
+  m_audioCallback(nullptr ),
   m_jobCounter(0),
   m_continueStream(false),
   m_newForcedPlayerTime(-1),
@@ -194,7 +194,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       {
         CloseFileCB(*si);
         CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
-        si->m_stream = NULL;
+        si->m_stream = nullptr;
       }
 
       si->m_decoder.Destroy();
@@ -222,7 +222,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
   {
     SoftStop(false, true);
     CSingleLock lock(m_streamsLock);
-    m_currentStream = NULL;
+    m_currentStream = nullptr;
   }  
 }
 
@@ -383,7 +383,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   si->m_framesSent = 0;
   si->m_seekNextAtFrame = 0;
   si->m_seekFrame = -1;
-  si->m_stream = NULL;
+  si->m_stream = nullptr;
   si->m_volume = (fadeIn && m_upcomingCrossfadeMS) ? 0.0f : 1.0f;
   si->m_fadeOutTriggered = false;
   si->m_isSlaved = false;
@@ -654,7 +654,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
           }
-          m_currentStream = NULL;
+          m_currentStream = nullptr;
         }
         else
         {
@@ -697,7 +697,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
           si->m_stream->FadeVolume(1.0f, 0.0f, m_upcomingCrossfadeMS);
           si->m_fadeOutTriggered = true;
         }
-        m_currentStream = NULL;
+        m_currentStream = nullptr;
 
         /* unregister the audio callback */
         si->m_stream->UnRegisterAudioCallback();
