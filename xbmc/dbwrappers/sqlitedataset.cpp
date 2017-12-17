@@ -55,14 +55,14 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
     }
   }
 
-  if (result != NULL)
+  if (result != nullptr)
   {
     sql_record *rec = new sql_record;
     rec->resize(ncol);
     for (int i=0; i<ncol; i++)
     { 
       field_value &v = rec->at(i);
-      if (result[i] == NULL)
+      if (result[i] == nullptr)
       {
         v.set_asString("");
         v.set_isNull();
@@ -217,11 +217,11 @@ int SqliteDatabase::connect(bool create) {
     int flags = SQLITE_OPEN_READWRITE;
     if (create)
       flags |= SQLITE_OPEN_CREATE;
-    if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
+    if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, nullptr)==SQLITE_OK)
     {
-      sqlite3_busy_handler(conn, busy_callback, NULL);
-      char* err=NULL;
-      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
+      sqlite3_busy_handler(conn, busy_callback, nullptr);
+      char* err=nullptr;
+      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",nullptr,nullptr,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
       {
         throw DbErrors(getErrorMsg());
       }
@@ -247,7 +247,7 @@ bool SqliteDatabase::exists(void)
   // performing a select all on the sqlite_master will return rows if there are tables
   // defined indicating it's not empty and therefore must "exist".
   sprintf(sqlcmd,"SELECT * FROM sqlite_master");
-  if ((last_err = sqlite3_exec(getHandle(),sqlcmd, &callback, &res,NULL)) == SQLITE_OK)
+  if ((last_err = sqlite3_exec(getHandle(),sqlcmd, &callback, &res,nullptr)) == SQLITE_OK)
   {
     bRet = (res.records.size() > 0);
   }
@@ -322,31 +322,31 @@ int SqliteDatabase::drop_analytics(void) {
 
   CLog::Log(LOGDEBUG, "Cleaning indexes from database %s at %s", db.c_str(), host.c_str());
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
-  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP INDEX '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, nullptr, nullptr, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
   CLog::Log(LOGDEBUG, "Cleaning views from database %s at %s", db.c_str(), host.c_str());
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'view'");
-  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP VIEW '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, nullptr, nullptr, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
   CLog::Log(LOGDEBUG, "Cleaning triggers from database %s at %s", db.c_str(), host.c_str());
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'trigger'");
-  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
   for (size_t i=0; i < res.records.size(); i++) {
     sprintf(sqlcmd,"DROP TRIGGER '%s'", res.records[i]->at(0).get_asString().c_str());
-    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn, sqlcmd, nullptr, nullptr, nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
   }
   // res would be cleared on destruct
 
@@ -369,19 +369,19 @@ long SqliteDatabase::nextid(const char* sname) {
   result_set res;
   char sqlcmd[512];
   sprintf(sqlcmd,"select nextid from %s where seq_name = '%s'",sequence_table.c_str(), sname);
-  if ((last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL)) != SQLITE_OK) {
+  if ((last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,nullptr)) != SQLITE_OK) {
     return DB_UNEXPECTED_RESULT;
     }
   if (res.records.empty()) {
     id = 1;
     sprintf(sqlcmd,"insert into %s (nextid,seq_name) values (%d,'%s')",sequence_table.c_str(),id,sname);
-    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn,sqlcmd,nullptr,nullptr,nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
   else {
     id = res.records[0]->at(0).get_asInt()+1;
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",sequence_table.c_str(),id,sname);
-    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn,sqlcmd,nullptr,nullptr,nullptr)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
   return DB_UNEXPECTED_RESULT;
@@ -392,21 +392,21 @@ long SqliteDatabase::nextid(const char* sname) {
 // ---------------------------------------------
 void SqliteDatabase::start_transaction() {
   if (active) {
-    sqlite3_exec(conn,"begin IMMEDIATE",NULL,NULL,NULL);
+    sqlite3_exec(conn,"begin IMMEDIATE",nullptr,nullptr,nullptr);
     _in_transaction = true;
   }
 }
 
 void SqliteDatabase::commit_transaction() {
   if (active) {
-    sqlite3_exec(conn,"commit",NULL,NULL,NULL);
+    sqlite3_exec(conn,"commit",nullptr,nullptr,nullptr);
     _in_transaction = false;
   }
 }
 
 void SqliteDatabase::rollback_transaction() {
   if (active) {
-    sqlite3_exec(conn,"rollback",NULL,NULL,NULL);
+    sqlite3_exec(conn,"rollback",nullptr,nullptr,nullptr);
     _in_transaction = false;
   }  
 }
@@ -448,8 +448,8 @@ std::string SqliteDatabase::vprepare(const char *format, va_list args)
 
 SqliteDataset::SqliteDataset():Dataset() {
   haveError = false;
-  db = NULL;
-  errmsg = NULL;
+  db = nullptr;
+  errmsg = nullptr;
   autorefresh = false;
 }
 
@@ -457,7 +457,7 @@ SqliteDataset::SqliteDataset():Dataset() {
 SqliteDataset::SqliteDataset(SqliteDatabase *newDb):Dataset(newDb) {
   haveError = false;
   db = newDb;
-  errmsg = NULL;
+  errmsg = nullptr;
   autorefresh = false;
 }
 
@@ -475,15 +475,15 @@ void SqliteDataset::set_autorefresh(bool val){
 //--------- protected functions implementation -----------------//
 
 sqlite3* SqliteDataset::handle(){
-  if (db != NULL){
+  if (db != nullptr){
     return static_cast<SqliteDatabase*>(db)->getHandle();
       }
-  else return NULL;
+  else return nullptr;
 }
 
 void SqliteDataset::make_query(StringList &_sql) {
   std::string query;
-  if (db == NULL) throw DbErrors("No Database Connection");
+  if (db == nullptr) throw DbErrors("No Database Connection");
 
  try {
 
@@ -492,9 +492,9 @@ void SqliteDataset::make_query(StringList &_sql) {
 
   for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
   query = *i;
-  char* err=NULL; 
+  char* err=nullptr; 
   Dataset::parse_sql(query);
-  if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
+  if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),nullptr,nullptr,&err),query.c_str())!=SQLITE_OK) {
     throw DbErrors(db->getErrorMsg());
   }
   } // end of for
@@ -534,7 +534,7 @@ void SqliteDataset::make_deletion() {
 
 void SqliteDataset::fill_fields() {
   //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-  if ((db == NULL) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
+  if ((db == nullptr) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
 
   if (fields_object->size() == 0) // Filling columns name
   {
@@ -646,8 +646,8 @@ bool SqliteDataset::query(const std::string &query) {
 
   close();
 
-  sqlite3_stmt *stmt = NULL;
-  if (db->setErr(sqlite3_prepare_v2(handle(),query.c_str(),-1,&stmt, NULL),query.c_str()) != SQLITE_OK)
+  sqlite3_stmt *stmt = nullptr;
+  if (db->setErr(sqlite3_prepare_v2(handle(),query.c_str(),-1,&stmt, nullptr),query.c_str()) != SQLITE_OK)
     throw DbErrors(db->getErrorMsg());
 
   // column headers
@@ -780,7 +780,7 @@ void SqliteDataset::free_row(void)
   if (row)
   {
     delete row;
-    result.records[frecno] = NULL;
+    result.records[frecno] = nullptr;
   }
 }
 

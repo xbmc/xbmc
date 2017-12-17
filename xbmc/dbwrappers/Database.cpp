@@ -181,7 +181,7 @@ std::string CDatabase::PrepareSQL(std::string strStmt, ...) const
 {
   std::string strResult = "";
 
-  if (NULL != m_pDB.get())
+  if (nullptr != m_pDB.get())
   {
     va_list args;
     va_start(args, strStmt);
@@ -270,8 +270,8 @@ bool CDatabase::ExecuteQuery(const std::string &strQuery)
 
   try
   {
-    if (NULL == m_pDB.get()) return bReturn;
-    if (NULL == m_pDS.get()) return bReturn;
+    if (nullptr == m_pDB.get()) return bReturn;
+    if (nullptr == m_pDS.get()) return bReturn;
     m_pDS->exec(strQuery);
     bReturn = true;
   }
@@ -290,8 +290,8 @@ bool CDatabase::ResultQuery(const std::string &strQuery)
 
   try
   {
-    if (NULL == m_pDB.get()) return bReturn;
-    if (NULL == m_pDS.get()) return bReturn;
+    if (nullptr == m_pDB.get()) return bReturn;
+    if (nullptr == m_pDS.get()) return bReturn;
 
     std::string strPreparedQuery = PrepareSQL(strQuery.c_str());
 
@@ -313,8 +313,8 @@ bool CDatabase::QueueInsertQuery(const std::string &strQuery)
 
   if (!m_bMultiWrite)
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS2.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS2.get()) return false;
 
     m_bMultiWrite = true;
     m_pDS2->insert();
@@ -530,8 +530,8 @@ void CDatabase::Close()
   m_openCount = 0;
   m_multipleExecute = false;
 
-  if (NULL == m_pDB.get() ) return ;
-  if (NULL != m_pDS.get()) m_pDS->close();
+  if (nullptr == m_pDB.get() ) return ;
+  if (nullptr != m_pDS.get()) m_pDS->close();
   m_pDB->disconnect();
   m_pDB.reset();
   m_pDS.reset();
@@ -545,8 +545,8 @@ bool CDatabase::Compress(bool bForce /* =true */)
 
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
     if (!bForce)
     {
       m_pDS->query("select iCompressCount from version");
@@ -583,7 +583,7 @@ void CDatabase::BeginTransaction()
 {
   try
   {
-    if (NULL != m_pDB.get())
+    if (nullptr != m_pDB.get())
       m_pDB->start_transaction();
   }
   catch (...)
@@ -596,7 +596,7 @@ bool CDatabase::CommitTransaction()
 {
   try
   {
-    if (NULL != m_pDB.get())
+    if (nullptr != m_pDB.get())
       m_pDB->commit_transaction();
   }
   catch (...)
@@ -611,7 +611,7 @@ void CDatabase::RollbackTransaction()
 {
   try
   {
-    if (NULL != m_pDB.get())
+    if (nullptr != m_pDB.get())
       m_pDB->rollback_transaction();
   }
   catch (...)
@@ -622,7 +622,7 @@ void CDatabase::RollbackTransaction()
 
 bool CDatabase::InTransaction()
 {
-  if (NULL != m_pDB.get()) return false;
+  if (nullptr != m_pDB.get()) return false;
   return m_pDB->in_transaction();
 }
 
