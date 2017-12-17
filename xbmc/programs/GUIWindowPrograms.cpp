@@ -39,7 +39,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
     : CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
   m_thumbLoader.SetObserver(this);
-  m_dlgProgress = NULL;
+  m_dlgProgress = nullptr;
   m_rootDir.AllowNonLocalSources(false); // no nonlocal shares for this window please
 }
 
