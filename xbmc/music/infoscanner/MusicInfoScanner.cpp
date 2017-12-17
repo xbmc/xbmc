@@ -44,6 +44,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -69,11 +70,11 @@ using namespace MUSIC_GRABBER;
 using namespace ADDON;
 
 CMusicInfoScanner::CMusicInfoScanner()
-: CThread("MusicInfoScanner"),
-  m_needsCleanup(false),
+: m_needsCleanup(false),
   m_scanType(0),
   m_fileCountReader(this, "MusicFileCounter")
 {
+  m_bStop = false;
   m_currentItem=0;
   m_itemCount=0;
   m_flags = 0;
@@ -83,6 +84,7 @@ CMusicInfoScanner::~CMusicInfoScanner() = default;
 
 void CMusicInfoScanner::Process()
 {
+  m_bStop = false;
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
@@ -97,7 +99,7 @@ void CMusicInfoScanner::Process()
     // check if we only need to perform a cleaning
     if (m_bClean && m_pathsToScan.empty())
     {
-      CleanDatabase(false);
+      CMusicLibraryQueue::GetInstance().CleanLibrary(false);
       m_handle = NULL;
       m_bRunning = false;
 
@@ -120,7 +122,6 @@ void CMusicInfoScanner::Process()
       m_itemCount=-1;
 
       // Create the thread to count all files to be scanned
-      SetPriority( GetMinPriority() );
       if (m_handle)
         m_fileCountReader.Create();
 
@@ -284,7 +285,7 @@ void CMusicInfoScanner::Process()
 void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
 {
   m_fileCountReader.StopThread();
-  StopThread();
+  
   m_pathsToScan.clear();
   m_seenPaths.clear();
   m_albumsAdded.clear();
@@ -304,29 +305,14 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
-  Create();
   m_bRunning = true;
-}
-
-void CMusicInfoScanner::StartCleanDatabase()
-{
-  m_fileCountReader.StopThread();
-  StopThread();
-  m_pathsToScan.clear();
-  m_seenPaths.clear();
-  m_flags = SCAN_BACKGROUND;
-  m_bClean = true;
-
-  m_scanType = 0;
-  Create();
-  m_bRunning = true;
+  Process();
 }
 
 void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
                                        bool refresh)
 {
   m_fileCountReader.StopThread();
-  StopThread();
   m_pathsToScan.clear();
 
   CFileItemList items;
@@ -380,15 +366,14 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   m_musicDatabase.Close();
 
   m_scanType = 1;
-  Create();
   m_bRunning = true;
+  Process();
 }
 
 void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
                                         bool refresh)
 {
   m_fileCountReader.StopThread();
-  StopThread();
   m_pathsToScan.clear();
   CFileItemList items;
 
@@ -442,28 +427,16 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   m_musicDatabase.Close();
 
   m_scanType = 2;
-  Create();
   m_bRunning = true;
+  Process();
 }
 
-void CMusicInfoScanner::Stop(bool wait /* = false*/)
+void CMusicInfoScanner::Stop()
 {
   if (m_bCanInterrupt)
     m_musicDatabase.Interrupt();
 
-  StopThread(wait);
-}
-
-void CMusicInfoScanner::CleanDatabase(bool showProgress /* = true */)
-{
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return;
-
-  musicdatabase.Cleanup(showProgress);
-  musicdatabase.Close();
-
-  CUtil::DeleteMusicDatabaseDirectoryCache();
+  m_bStop = true;
 }
 
 static void OnDirectoryScanned(const std::string& strDirectory)
@@ -1402,7 +1375,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         scraper.Cancel();
         return INFO_CANCELLED;
       }
-      Sleep(1);
+      ScannerWait(1);
     }
     /*
     Finding album using xml scraper may request data from Musicbrainz.
@@ -1411,7 +1384,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     To stay below the rate-limit threshold wait 1s before proceeding
     */
     if (!info->IsPython())
-      Sleep(1000);
+      ScannerWait(1000);
   }
 
   CGUIDialogSelect *pDlg = NULL;
@@ -1527,7 +1500,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       scraper.Cancel();
       return INFO_CANCELLED;
     }
-    Sleep(1);
+    ScannerWait(1);
   }
   if (!scraper.Succeeded())
     return INFO_ERROR;
@@ -1539,7 +1512,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   to scrape another album or artist
   */
   if (!info->IsPython())
-    Sleep(1000);
+    ScannerWait(1000);
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
   
@@ -1668,7 +1641,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
         scraper.Cancel();
         return INFO_CANCELLED;
       }
-      Sleep(1);
+      ScannerWait(1);
     }
     /*
     Finding artist using xml scraper makes a request for data from Musicbrainz.
@@ -1677,7 +1650,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     below the rate-limit threshold wait 1s before proceeding
     */
     if (!info->IsPython())
-      Sleep(1000); 
+      ScannerWait(1000);
   }
 
   int iSelectedArtist = 0;
@@ -1751,7 +1724,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   to scrape another album or artist
   */
   if (!info->IsPython())
-    Sleep(1000);
+    ScannerWait(1000);
 
   scraper.LoadArtistInfo(iSelectedArtist, artist.strArtist);
   while (!scraper.Completed())
@@ -1761,7 +1734,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
       scraper.Cancel();
       return INFO_CANCELLED;
     }
-    Sleep(1);
+    ScannerWait(1);
   }
 
   if (!scraper.Succeeded())
@@ -1800,6 +1773,18 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
 
   return bMusicBrainz;
 }
+
+void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
+{
+  if (milliseconds > 10)
+  {
+    CEvent m_StopEvent;
+    m_StopEvent.WaitMSec(milliseconds);
+  }
+  else
+    XbmcThreads::ThreadSleep(milliseconds);
+}
+
 
 std::map<std::string, std::string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist, unsigned int level /* = 3*/)
 {

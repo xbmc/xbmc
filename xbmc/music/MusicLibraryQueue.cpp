@@ -25,7 +25,9 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "music/jobs/MusicLibraryCleaningJob.h"
 #include "music/jobs/MusicLibraryExportJob.h"
+#include "music/jobs/MusicLibraryScanningJob.h"
 #include "music/jobs/MusicLibraryJob.h"
 #include "threads/SingleLock.h"
 #include "Util.h"
@@ -35,7 +37,8 @@ CMusicLibraryQueue::CMusicLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
     m_jobs(),
     m_modal(false),
-    m_exporting(false)
+    m_exporting(false),
+    m_cleaning(false)
 { }
 
 CMusicLibraryQueue::~CMusicLibraryQueue()
@@ -85,6 +88,111 @@ void CMusicLibraryQueue::ExportLibrary(const CLibExportSettings& settings, bool 
     m_modal = false;
     Refresh();
   }
+}
+
+void CMusicLibraryQueue::ScanLibrary(const std::string& strDirectory, int flags /* = 0 */, bool showProgress /* = true */)
+{
+  AddJob(new CMusicLibraryScanningJob(strDirectory, flags, showProgress));
+}
+
+void CMusicLibraryQueue::StartAlbumScan(const std::string & strDirectory, bool refresh)
+{
+  int flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ALBUMS;
+  if (refresh)
+    flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_RESCAN;
+  AddJob(new CMusicLibraryScanningJob(strDirectory, flags, true));
+}
+
+void CMusicLibraryQueue::StartArtistScan(const std::string& strDirectory, bool refresh)
+{
+  int flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ARTISTS;
+  if (refresh)
+    flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_RESCAN;
+  AddJob(new CMusicLibraryScanningJob(strDirectory, flags, true));
+}
+
+bool CMusicLibraryQueue::IsScanningLibrary() const
+{
+  // check if the library is being cleaned synchronously
+  if (m_cleaning)
+    return true;
+
+  // check if the library is being scanned asynchronously
+  MusicLibraryJobMap::const_iterator scanningJobs = m_jobs.find("MusicLibraryScanningJob");
+  if (scanningJobs != m_jobs.end() && !scanningJobs->second.empty())
+    return true;
+
+  // check if the library is being cleaned asynchronously
+  MusicLibraryJobMap::const_iterator cleaningJobs = m_jobs.find("MusicLibraryCleaningJob");
+  if (cleaningJobs != m_jobs.end() && !cleaningJobs->second.empty())
+    return true;
+
+  return false;
+}
+
+void CMusicLibraryQueue::StopLibraryScanning()
+{
+  CSingleLock lock(m_critical);
+  MusicLibraryJobMap::const_iterator scanningJobs = m_jobs.find("MusicLibraryScanningJob");
+  if (scanningJobs == m_jobs.end())
+    return;
+
+  // get a copy of the scanning jobs because CancelJob() will modify m_scanningJobs
+  MusicLibraryJobs tmpScanningJobs(scanningJobs->second.begin(), scanningJobs->second.end());
+
+  // cancel all scanning jobs
+  for (const auto& job : tmpScanningJobs)
+    CancelJob(job);
+  Refresh();
+}
+
+void CMusicLibraryQueue::CleanLibrary(bool showDialog /* = false */)
+{
+  CGUIDialogProgress* progress = NULL;
+  if (showDialog)
+  {
+    progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    if (progress)
+    {
+      progress->SetHeading(CVariant{ 700 });
+      progress->SetPercentage(0);
+      progress->Open();
+      progress->ShowProgressBar(true);
+    }
+  }
+
+  CMusicLibraryCleaningJob* cleaningJob = new CMusicLibraryCleaningJob(progress);  
+  AddJob(cleaningJob);
+
+  // Wait for cleaning to complete or be canceled, but render every 20ms so that the 
+  // pointer movements work on dialog even when cleaning is reporting progress infrequently
+  if (progress)
+    progress->Wait(20);
+}
+
+void CMusicLibraryQueue::CleanLibraryModal()
+{
+  // We can't perform a modal library cleaning if other jobs are running
+  if (IsRunning())
+    return;
+
+  CGUIDialogProgress* progress = nullptr;
+  progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  if (progress)
+  {
+    progress->SetHeading(CVariant{ 700 });
+    progress->SetPercentage(0);
+    progress->Open();
+    progress->ShowProgressBar(true);
+  }
+
+  m_modal = true;
+  m_cleaning = true;
+  CMusicLibraryCleaningJob cleaningJob(progress);
+  cleaningJob.DoWork();
+  m_cleaning = false;
+  m_modal = false;
+  Refresh();
 }
 
 void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)

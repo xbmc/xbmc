@@ -42,6 +42,7 @@
 #include "Autorun.h"
 #include "video/Bookmark.h"
 #include "video/VideoLibraryQueue.h"
+#include "music/MusicLibraryQueue.h"
 #include "guilib/GUIControlProfiler.h"
 #include "utils/LangCodeExpander.h"
 #include "GUIInfoManager.h"
@@ -135,7 +136,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "windows/GUIWindowScreensaver.h"
-#include "video/VideoInfoScanner.h"
 #include "video/PlayerController.h"
 
 // Dialog includes
@@ -272,7 +272,6 @@ CApplication::CApplication(void)
   , m_bEnableLegacyRes(false)
   , m_bTestMode(false)
   , m_bSystemScreenSaverEnable(false)
-  , m_musicInfoScanner(new CMusicInfoScanner)
   , m_muted(false)
   , m_volumeLevel(VOLUME_MAXIMUM)
   , m_pInertialScrollingHandler(new CInertialScrollingHandler())
@@ -2870,8 +2869,8 @@ void CApplication::Stop(int exitCode)
     CJobManager::GetInstance().CancelJobs();
 
     // stop scanning before we kill the network and so on
-    if (m_musicInfoScanner->IsScanning())
-      m_musicInfoScanner->Stop(true);
+    if (CMusicLibraryQueue::GetInstance().IsRunning())
+      CMusicLibraryQueue::GetInstance().CancelAllJobs();
 
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
@@ -4009,7 +4008,7 @@ void CApplication::CheckShutdown()
   // first check if we should reset the timer
   if (m_bInhibitIdleShutdown
       || m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback() // is something playing?
-      || m_musicInfoScanner->IsScanning()
+      || CMusicLibraryQueue::GetInstance().IsRunning()
       || CVideoLibraryQueue::GetInstance().IsRunning()
       || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
       || !CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown(false))
@@ -4903,7 +4902,7 @@ bool CApplication::IsVideoScanning() const
 
 bool CApplication::IsMusicScanning() const
 {
-  return m_musicInfoScanner->IsScanning();
+  return CMusicLibraryQueue::GetInstance().IsScanningLibrary();
 }
 
 void CApplication::StopVideoScan()
@@ -4913,8 +4912,7 @@ void CApplication::StopVideoScan()
 
 void CApplication::StopMusicScan()
 {
-  if (m_musicInfoScanner->IsScanning())
-    m_musicInfoScanner->Stop();
+  CMusicLibraryQueue::GetInstance().StopLibraryScanning();
 }
 
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
@@ -4960,21 +4958,23 @@ void CApplication::StartVideoScan(const std::string &strDirectory, bool userInit
 
 void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
 {
-  if (m_musicInfoScanner->IsScanning())
+  if (userInitiated && CMusicLibraryQueue::GetInstance().IsRunning())
     return;
 
   if (userInitiated)
-    m_musicInfoScanner->CleanDatabase(true);
+    /*
+     CMusicLibraryQueue::GetInstance().CleanLibraryModal();
+     As cleaning is non-granular and does not offer many opportunities to update progress 
+     dialog rendering, do asynchronously with model dialog
+    */
+    CMusicLibraryQueue::GetInstance().CleanLibrary(true);
   else
-  {
-    m_musicInfoScanner->ShowDialog(false);
-    m_musicInfoScanner->StartCleanDatabase();
-  }
+    CMusicLibraryQueue::GetInstance().CleanLibrary(false);
 }
 
 void CApplication::StartMusicScan(const std::string &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
 {
-  if (m_musicInfoScanner->IsScanning())
+  if (IsMusicScanning())
     return;
 
   // Setup default flags
@@ -4986,33 +4986,24 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
   if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     flags |= CMusicInfoScanner::SCAN_BACKGROUND;
 
-
-  if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
-    m_musicInfoScanner->ShowDialog(true);
-
-  m_musicInfoScanner->Start(strDirectory, flags);
+  CMusicLibraryQueue::GetInstance().ScanLibrary(strDirectory, flags, !(flags & CMusicInfoScanner::SCAN_BACKGROUND));
 }
 
-void CApplication::StartMusicAlbumScan(const std::string& strDirectory,
-                                       bool refresh)
+void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool refresh)
 {
-  if (m_musicInfoScanner->IsScanning())
+  if (IsMusicScanning())
     return;
 
-  m_musicInfoScanner->ShowDialog(true);
-
-  m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
+  CMusicLibraryQueue::GetInstance().StartAlbumScan(strDirectory, refresh);
 }
 
 void CApplication::StartMusicArtistScan(const std::string& strDirectory,
                                         bool refresh)
 {
-  if (m_musicInfoScanner->IsScanning())
+  if (IsMusicScanning())
     return;
 
-  m_musicInfoScanner->ShowDialog(true);
-
-  m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
+  CMusicLibraryQueue::GetInstance().StartArtistScan(strDirectory, refresh);
 }
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
