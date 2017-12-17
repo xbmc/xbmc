@@ -89,8 +89,8 @@ public:
     type = STREAM_NONE;
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
-    pPrivate = NULL;
-    ExtraData = NULL;
+    pPrivate = nullptr;
+    ExtraData = nullptr;
     ExtraSize = 0;
     memset(language, 0, sizeof(language));
     disabled = false;
@@ -254,13 +254,13 @@ public:
   /*
    * Seek, time in msec calculated from stream start
    */
-  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) = 0;
+  virtual bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) = 0;
 
   /*
    * Seek to a specified chapter.
    * startpts can be updated to the point where display should start
    */
-  virtual bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
+  virtual bool SeekChapter(int chapter, double* startpts = nullptr) { return false; }
 
   /*
    * Get the number of chapters available

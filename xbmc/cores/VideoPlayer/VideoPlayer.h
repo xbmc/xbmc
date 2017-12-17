@@ -201,7 +201,7 @@ public:
     dts = DVD_NOPTS_VALUE;
     dur = DVD_NOPTS_VALUE;
     hint.Clear();
-    stream = NULL;
+    stream = nullptr;
     changes = 0;
     inited = false;
     packets = 0;

@@ -94,7 +94,7 @@ namespace OVERLAY {
     {
       SElement()
       {
-        overlay_dvd = NULL;
+        overlay_dvd = nullptr;
         pts = 0.0;
       }
       double pts;

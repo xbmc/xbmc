@@ -39,8 +39,8 @@ public:
 
 CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()
 {
-  m_pInput = NULL;
-  m_stream = NULL;
+  m_pInput = nullptr;
+  m_stream = nullptr;
   m_bytes = 0;
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));
 }
@@ -89,9 +89,9 @@ bool CDVDDemuxBXA::Open(CDVDInputStream* pInput)
 void CDVDDemuxBXA::Dispose()
 {
   delete m_stream;
-  m_stream = NULL;
+  m_stream = nullptr;
 
-  m_pInput = NULL;
+  m_pInput = nullptr;
   m_bytes = 0;
 
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));
@@ -118,7 +118,7 @@ void CDVDDemuxBXA::Flush()
 DemuxPacket* CDVDDemuxBXA::Read()
 {
   if(!m_pInput)
-    return NULL;
+    return nullptr;
 
   DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(BXA_READ_SIZE);
 
@@ -126,7 +126,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
   {
     if (m_pInput)
       m_pInput->Close();
-    return NULL;
+    return nullptr;
   }
 
   pPacket->iSize = m_pInput->Read(pPacket->pData, BXA_READ_SIZE);
@@ -135,7 +135,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
   if(pPacket->iSize < 1)
   {
     delete pPacket;
-    pPacket = NULL;
+    pPacket = nullptr;
   }
   else
   {
@@ -159,7 +159,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
 CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId) const
 {
   if(iStreamId != 0)
-    return NULL;
+    return nullptr;
 
   return m_stream;
 }
@@ -178,7 +178,7 @@ std::vector<CDemuxStream*> CDVDDemuxBXA::GetStreams() const
 
 int CDVDDemuxBXA::GetNrOfStreams() const
 {
-  return (m_stream == NULL ? 0 : 1);
+  return (m_stream == nullptr ? 0 : 1);
 }
 
 std::string CDVDDemuxBXA::GetFileName()

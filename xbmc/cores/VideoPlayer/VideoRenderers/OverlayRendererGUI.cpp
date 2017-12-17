@@ -75,7 +75,7 @@ CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, 
       return new CGUITextLayout(subtitle_font, true, 0, border_font);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 COverlayText::COverlayText(CDVDOverlayText * src)
@@ -160,7 +160,7 @@ void COverlayText::PrepareRender(const std::string &font, int color, int height,
   if (!m_layout)
     m_layout = GetFontLayout(font, color, height, style, fontcache, fontbordercache);
 
-  if (m_layout == NULL)
+  if (m_layout == nullptr)
   {
     CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font %s", font.c_str());
     return;
@@ -173,7 +173,7 @@ void COverlayText::PrepareRender(const std::string &font, int color, int height,
 
 void COverlayText::Render(OVERLAY::SRenderState &state)
 {
-  if(m_layout == NULL)
+  if(m_layout == nullptr)
     return;
 
   CRect rd = g_graphicsContext.GetViewWindow();

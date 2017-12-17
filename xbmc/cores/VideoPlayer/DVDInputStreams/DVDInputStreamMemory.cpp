@@ -22,7 +22,7 @@
 
 CDVDInputStreamMemory::CDVDInputStreamMemory(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_MEMORY, fileitem)
 {
-  m_pData = NULL;
+  m_pData = nullptr;
   m_iDataSize = 0;
   m_iDataPos = 0;
 }
@@ -52,7 +52,7 @@ bool CDVDInputStreamMemory::Open()
 void CDVDInputStreamMemory::Close()
 {
   if (m_pData) delete[] m_pData;
-  m_pData = NULL;
+  m_pData = nullptr;
   m_iDataSize = 0;
   m_iDataPos = 0;
 

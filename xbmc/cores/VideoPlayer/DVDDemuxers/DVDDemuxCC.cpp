@@ -101,7 +101,7 @@ CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec)
 {
   m_hasData = false;
   m_curPts = 0.0;
-  m_ccDecoder = NULL;
+  m_ccDecoder = nullptr;
   m_codec = codec;
 }
 
@@ -140,7 +140,7 @@ int CDVDDemuxCC::GetNrOfStreams() const
 
 DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
 {
-  DemuxPacket *pPacket = NULL;
+  DemuxPacket *pPacket = nullptr;
   uint32_t startcode = 0xffffffff;
   int picType = 0;
   int p = 0;
@@ -286,7 +286,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
     if (!m_ccDecoder)
     {
       if (!OpenDecoder())
-        return NULL;
+        return nullptr;
     }
     std::sort(m_ccReorderBuffer.begin(), m_ccReorderBuffer.end(), reorder_sort);
     pPacket = Decode();
@@ -359,7 +359,7 @@ void CDVDDemuxCC::Dispose()
   m_streams.clear();
   m_streamdata.clear();
   delete m_ccDecoder;
-  m_ccDecoder = NULL;
+  m_ccDecoder = nullptr;
 
   while (!m_ccReorderBuffer.empty())
   {
@@ -375,7 +375,7 @@ void CDVDDemuxCC::Dispose()
 
 DemuxPacket* CDVDDemuxCC::Decode()
 {
-  DemuxPacket *pPacket = NULL;
+  DemuxPacket *pPacket = nullptr;
 
   while(!m_hasData && !m_ccReorderBuffer.empty())
   {

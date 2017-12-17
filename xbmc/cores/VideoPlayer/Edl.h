@@ -53,7 +53,7 @@ public:
   int RemoveCutTime(int iSeek) const;
   double RestoreCutTime(double dClock) const;
 
-  bool InCut(int iSeek, Cut *pCut = NULL);
+  bool InCut(int iSeek, Cut *pCut = nullptr);
   bool GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const;
 
   int GetLastCutTime() const;

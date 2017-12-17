@@ -69,7 +69,7 @@ VideoPicture& VideoPicture::operator=(VideoPicture const&) = default;
 //******************************************************************************
 bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data)
 {
-  if (setting == NULL || value.empty())
+  if (setting == nullptr || value.empty())
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -133,7 +133,7 @@ bool CDVDVideoCodec::IsCodecDisabled(const std::map<AVCodecID, std::string> &map
     return (!CServiceBroker::GetSettings().GetBool(codec->second) ||
             !CDVDVideoCodec::IsSettingVisible("unused", "unused",
                                               CServiceBroker::GetSettings().GetSetting(codec->second),
-                                              NULL));
+                                              nullptr));
   }
   return false; // don't disable what we don't have
 }

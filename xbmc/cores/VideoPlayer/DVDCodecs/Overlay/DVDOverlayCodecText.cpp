@@ -29,7 +29,7 @@
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {
-  m_pOverlay = NULL;
+  m_pOverlay = nullptr;
   m_bIsSSA = false;
 }
 
@@ -147,8 +147,8 @@ CDVDOverlay* CDVDOverlayCodecText::GetOverlay()
   if(m_pOverlay)
   {
     CDVDOverlay* overlay = m_pOverlay;
-    m_pOverlay = NULL;
+    m_pOverlay = nullptr;
     return overlay;
   }
-  return NULL;
+  return nullptr;
 }

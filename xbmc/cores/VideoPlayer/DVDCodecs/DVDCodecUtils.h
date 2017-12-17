@@ -26,6 +26,6 @@ class CDVDCodecUtils
 {
 public:
   static bool IsVP3CompatibleWidth(int width);
-  static double NormalizeFrameduration(double frameduration, bool *match = NULL);
+  static double NormalizeFrameduration(double frameduration, bool *match = nullptr);
 };
 

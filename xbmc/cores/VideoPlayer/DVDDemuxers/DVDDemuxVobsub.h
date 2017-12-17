@@ -41,7 +41,7 @@ public:
   bool Reset() override;
   void Flush() override;
   DemuxPacket* Read() override;
-  bool SeekTime(double time, bool backwards, double* startpts = NULL) override;
+  bool SeekTime(double time, bool backwards, double* startpts = nullptr) override;
   CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override { return m_Streams.size(); }

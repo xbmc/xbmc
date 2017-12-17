@@ -22,15 +22,15 @@
 
 #include "DVDDemuxers/DVDDemux.h"
 
-CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }
-CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }
-CDVDStreamInfo::CDVDStreamInfo(const CDemuxStream &right, bool withextradata )       { extradata = NULL; Clear(); Assign(right, withextradata); }
+CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = nullptr; Clear(); }
+CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = nullptr; Clear(); Assign(right, withextradata); }
+CDVDStreamInfo::CDVDStreamInfo(const CDemuxStream &right, bool withextradata )       { extradata = nullptr; Clear(); Assign(right, withextradata); }
 
 CDVDStreamInfo::~CDVDStreamInfo()
 {
   if( extradata && extrasize ) free(extradata);
 
-  extradata = NULL;
+  extradata = nullptr;
   extrasize = 0;
 }
 
@@ -49,7 +49,7 @@ void CDVDStreamInfo::Clear()
 
   if( extradata && extrasize ) free(extradata);
 
-  extradata = NULL;
+  extradata = nullptr;
   extrasize = 0;
 
   cryptoSession = nullptr;
@@ -161,7 +161,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   else
   {
     extrasize = 0;
-    extradata = 0;
+    extradata = nullptr;
   }
 
   cryptoSession = right.cryptoSession;

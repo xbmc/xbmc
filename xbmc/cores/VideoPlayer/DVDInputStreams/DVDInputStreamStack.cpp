@@ -107,7 +107,7 @@ void CDVDInputStreamStack::Close()
 
 int CDVDInputStreamStack::Read(uint8_t* buf, int buf_size)
 {
-  if(m_file == NULL || m_eof)
+  if(m_file == nullptr || m_eof)
     return 0;
 
   unsigned int ret = m_file->Read(buf, buf_size);

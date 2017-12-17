@@ -33,7 +33,7 @@
 
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
-  m_pAudioStream = NULL;
+  m_pAudioStream = nullptr;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
   m_sampleRate = 0;
@@ -94,7 +94,7 @@ void CAudioSinkAE::Destroy()
   if (m_pAudioStream)
     CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
 
-  m_pAudioStream = NULL;
+  m_pAudioStream = nullptr;
   m_sampleRate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;

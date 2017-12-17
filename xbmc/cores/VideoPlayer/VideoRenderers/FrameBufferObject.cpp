@@ -93,7 +93,7 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
 
   glGenTextures(1, &m_texid);
   glBindTexture(target, m_texid);
-  glTexImage2D(target, 0, format,  width, height, 0, GL_RGBA, type, NULL);
+  glTexImage2D(target, 0, format,  width, height, 0, GL_RGBA, type, nullptr);
   glTexParameteri(target, GL_TEXTURE_WRAP_S, clampmode);
   glTexParameteri(target, GL_TEXTURE_WRAP_T, clampmode);
   glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);

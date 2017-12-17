@@ -462,7 +462,7 @@ static char *rds_entitychar(char *text)
 
   while (i < EntityChars)
   {
-    if ((temp = strstr(text, entitystr[i])) != NULL)
+    if ((temp = strstr(text, entitystr[i])) != nullptr)
     {
       l = strlen(entitystr[i]);
       lof = (temp-text);
@@ -623,7 +623,7 @@ void CDVDRadioRDSData::ResetRDSCache()
   m_RTPlus_ItemToggle = 1;
   m_RTPlus_Title[0] = 0;
   m_RTPlus_Artist[0] = 0;
-  m_RTPlus_Starttime = time(NULL);
+  m_RTPlus_Starttime = time(nullptr);
   m_RTPlus_GenrePresent = false;
 
   m_currentInfoTag = CPVRRadioRDSInfoTag::CreateDefaultTag();
@@ -1285,7 +1285,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
                 m_RTPlus_iDiffs = (int) m_RTPlus_iTime.GetElapsedSeconds();
               if (!m_RT_NewItem)
               {
-                m_RTPlus_Starttime = time(NULL);
+                m_RTPlus_Starttime = time(nullptr);
                 m_RTPlus_iTime.StartZero();
                 m_RTPlus_Artist[0] = 0;
               }
@@ -1313,7 +1313,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
                 m_RTPlus_iDiffs = (int) m_RTPlus_iTime.GetElapsedSeconds();
               if (!m_RT_NewItem)
               {
-                m_RTPlus_Starttime = time(NULL);
+                m_RTPlus_Starttime = time(nullptr);
                 m_RTPlus_iTime.StartZero();
                 m_RTPlus_Title[0] = 0;
               }
@@ -1470,7 +1470,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
       m_RTPlus_Show = false;
       m_RTPlus_TToggle = true;
       m_RTPlus_iDiffs = (int) m_RTPlus_iTime.GetElapsedSeconds();
-      m_RTPlus_Starttime = time(NULL);
+      m_RTPlus_Starttime = time(nullptr);
     }
     m_RT_NewItem = false;
   }

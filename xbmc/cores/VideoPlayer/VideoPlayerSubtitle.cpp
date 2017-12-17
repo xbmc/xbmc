@@ -35,9 +35,9 @@ CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContain
 {
   m_pOverlayContainer = pOverlayContainer;
 
-  m_pSubtitleFileParser = NULL;
-  m_pSubtitleStream = NULL;
-  m_pOverlayCodec = NULL;
+  m_pSubtitleFileParser = nullptr;
+  m_pSubtitleStream = nullptr;
+  m_pOverlayCodec = nullptr;
   m_lastPts = DVD_NOPTS_VALUE;
 }
 
@@ -69,7 +69,7 @@ void CVideoPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
       {
         CDVDOverlay* overlay;
 
-        while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
+        while((overlay = m_pOverlayCodec->GetOverlay()) != nullptr)
         {
           m_pOverlayContainer->Add(overlay);
           overlay->Release();

@@ -80,7 +80,7 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
       m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                           attribs);
       if (!m_glSurface.eglImageY)
       {
@@ -104,7 +104,7 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
       m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                           attribs);
       if (!m_glSurface.eglImageVU)
       {
@@ -154,7 +154,7 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
       m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                           attribs);
       if (!m_glSurface.eglImageY)
       {
@@ -178,7 +178,7 @@ bool CVaapiTexture::Map(CVaapiRenderPicture *pic)
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
       m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                           attribs);
       if (!m_glSurface.eglImageVU)
       {
@@ -312,7 +312,7 @@ void CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &ge
 
   if (vaCreateSurfaces(vaDpy,  VA_RT_FORMAT_YUV420,
                        width, height,
-                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
+                       &surface, 1, nullptr, 0) != VA_STATUS_SUCCESS)
   {
     vaTerminate(vaDpy);
     return;
@@ -353,7 +353,7 @@ void CVaapiTexture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &ge
       *attrib++ = image.pitches[0];
       *attrib++ = EGL_NONE;
       eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                    attribs);
       if (eglImage)
       {
@@ -434,7 +434,7 @@ bool CVaapiTexture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
       *attrib++ = image.pitches[1];
       *attrib++ = EGL_NONE;
       eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)nullptr,
                                    attribs);
       if (eglImage)
       {

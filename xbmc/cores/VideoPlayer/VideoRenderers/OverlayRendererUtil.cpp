@@ -59,7 +59,7 @@ uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
   uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
 
   if(!rgba)
-    return NULL;
+    return nullptr;
 
   uint32_t palette[256];
   memset(palette, 0, 256 * sizeof(palette[0]));
@@ -84,7 +84,7 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
 
   if(!rgba)
-    return NULL;
+    return nullptr;
 
   uint32_t palette[8];
   for(int i = 0; i < 4; i++)

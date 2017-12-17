@@ -40,13 +40,13 @@ public:
   public:
     explicit CElement(ElementType type)
     {
-      pNext = NULL;
+      pNext = nullptr;
       m_type = type;
     }
 
     CElement(CElement& src)
     {
-      pNext  = NULL;
+      pNext  = nullptr;
       m_type = src.m_type;
     }
 
@@ -115,15 +115,15 @@ public:
 
   CDVDOverlayText() : CDVDOverlay(DVDOVERLAY_TYPE_TEXT)
   {
-    m_pHead = NULL;
-    m_pEnd = NULL;
+    m_pHead = nullptr;
+    m_pEnd = nullptr;
   }
 
   CDVDOverlayText(CDVDOverlayText& src)
     : CDVDOverlay(src)
   {
-    m_pHead = NULL;
-    m_pEnd = NULL;
+    m_pHead = nullptr;
+    m_pEnd = nullptr;
     for(CElement* e = src.m_pHead; e; e = e->pNext)
     {
       if(e->IsElementType(ELEMENT_TYPE_TEXT))
@@ -152,7 +152,7 @@ public:
 
   void AddElement(CDVDOverlayText::CElement* pElement)
   {
-    pElement->pNext = NULL;
+    pElement->pNext = nullptr;
 
     if (!m_pHead)
     { // first element - set our head to this element, and update the end to the new element

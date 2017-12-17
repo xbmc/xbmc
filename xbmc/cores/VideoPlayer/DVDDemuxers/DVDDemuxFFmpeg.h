@@ -98,7 +98,7 @@ public:
 
   DemuxPacket* Read() override;
 
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override;
   bool SeekByte(int64_t pos);
   int GetStreamLength() override;
   CDemuxStream* GetStream(int iStreamId) const override;
@@ -107,7 +107,7 @@ public:
   int GetPrograms(std::vector<ProgramInfo>& programs) override;
   void SetProgram(int progId) override;
 
-  bool SeekChapter(int chapter, double* startpts = NULL) override;
+  bool SeekChapter(int chapter, double* startpts = nullptr) override;
   int GetChapterCount() override;
   int GetChapter() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;

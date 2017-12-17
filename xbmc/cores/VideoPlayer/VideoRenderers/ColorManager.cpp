@@ -518,7 +518,7 @@ cmsToneCurve* CColorManager::CreateToneCurve(CMS_TRC_TYPE gammaType, float gamma
     CLog::Log(LOGERROR, "gamma type %d not implemented\n", gammaType);
   }
 
-  cmsToneCurve* result = cmsBuildTabulatedToneCurveFloat(0,
+  cmsToneCurve* result = cmsBuildTabulatedToneCurveFloat(nullptr,
       tableSize,
       gammaTable);
   return result;
