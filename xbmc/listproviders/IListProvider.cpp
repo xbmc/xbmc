@@ -35,7 +35,7 @@ IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
 
     return CreateSingle(root, parentID);
   }
-  return NULL;
+  return nullptr;
 }
 
 IListProvider *IListProvider::CreateSingle(const TiXmlNode *content, int parentID)
@@ -47,5 +47,5 @@ IListProvider *IListProvider::CreateSingle(const TiXmlNode *content, int parentI
   if (!content->NoChildren())
     return new CDirectoryProvider(content->ToElement(), parentID);
 
-  return NULL;
+  return nullptr;
 }
