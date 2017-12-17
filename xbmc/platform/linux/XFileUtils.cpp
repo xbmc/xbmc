@@ -55,13 +55,13 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
   // Fail on unsupported items
-  if (lpSecurityAttributes != NULL )
+  if (lpSecurityAttributes != nullptr )
   {
     CLog::Log(LOGERROR, "CreateFile does not support security attributes");
     return INVALID_HANDLE_VALUE;
   }
 
-  if (hTemplateFile != (HANDLE) 0)
+  if (hTemplateFile != (HANDLE) nullptr)
   {
     CLog::Log(LOGERROR, "CreateFile does not support template file");
     return INVALID_HANDLE_VALUE;
@@ -205,7 +205,7 @@ int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
 uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
-  if (hFile == NULL)
+  if (hFile == nullptr)
     return 0;
 
   LONGLONG offset = lDistanceToMove;
@@ -272,13 +272,13 @@ int GetDiskFreeSpaceEx(
 
 uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 {
-  if (lpTimeZoneInformation == NULL)
+  if (lpTimeZoneInformation == nullptr)
     return TIME_ZONE_ID_INVALID;
 
   memset(lpTimeZoneInformation, 0, sizeof(TIME_ZONE_INFORMATION));
 
   struct tm t;
-  time_t tt = time(NULL);
+  time_t tt = time(nullptr);
   if(localtime_r(&tt, &t))
     lpTimeZoneInformation->Bias = -t.tm_gmtoff / 60;
 
@@ -316,7 +316,7 @@ int SetFilePointerEx(  HANDLE hFile,
 
 int _fstat64(int fd, struct __stat64 *buffer)
 {
-  if (buffer == NULL)
+  if (buffer == nullptr)
     return -1;
 
   return fstat64(fd, buffer);
@@ -325,7 +325,7 @@ int _fstat64(int fd, struct __stat64 *buffer)
 int _stat64(   const char *path,   struct __stat64 *buffer )
 {
 
-  if (buffer == NULL || path == NULL)
+  if (buffer == nullptr || path == nullptr)
     return -1;
 
   return stat64(path, buffer);

@@ -56,7 +56,7 @@ CXHandle::CXHandle(const CXHandle &src)
 
   fd = src.fd;
   m_bManualEvent = src.m_bManualEvent;
-  m_tmCreation = time(NULL);
+  m_tmCreation = time(nullptr);
   m_FindFileResults = src.m_FindFileResults;
   m_nFindFileIterator = src.m_nFindFileIterator;
   m_FindFileDir = src.m_FindFileDir;
@@ -101,15 +101,15 @@ CXHandle::~CXHandle()
 void CXHandle::Init()
 {
   fd=0;
-  m_hMutex=NULL;
-  m_hCond=NULL;
+  m_hMutex=nullptr;
+  m_hCond=nullptr;
   m_type = HND_NULL;
   RecursionCount=0;
   m_bManualEvent=FALSE;
   m_bEventSet=FALSE;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
-  m_tmCreation = time(NULL);
+  m_tmCreation = time(nullptr);
   m_internalLock = new CCriticalSection();
 }
 

@@ -228,7 +228,7 @@ void CFDEventMonitor::StartMonitoring()
 
     /* Add wakeup fd to the fd list */
     int id;
-    AddFDLocked(MonitoredFD(m_wakeupfd, POLLIN, NULL, NULL), id);
+    AddFDLocked(MonitoredFD(m_wakeupfd, POLLIN, nullptr, nullptr), id);
 
     Create(false);
   }
