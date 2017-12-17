@@ -370,7 +370,7 @@ bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, Peripher
     if (addon)
     {
       const char* strJoystickIndex = parts[1].c_str();
-      char* p = NULL;
+      char* p = nullptr;
       peripheralIndex = strtol(strJoystickIndex, &p, 10);
       if (strJoystickIndex != p)
         return true;
