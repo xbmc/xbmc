@@ -250,7 +250,37 @@ set WORKSPACE=%base_dir%\kodi-build
   ECHO Setup is located at %CD%\%APP_SETUPFILE%
   ECHO ------------------------------------------------------------
   GOTO END
-  
+
+:MAKE_APPX
+  call %base_dir%\project\Win32BuildSetup\extract_git_rev.bat > NUL
+  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%buildconfig%\.appx$"') DO (
+    copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
+    copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+    goto END
+  )
+  rem Release builds don't have Release in it's name
+  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%\.appx$"') DO (
+    copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
+    copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+    goto END
+  )
+
+  rem apxx file has win32 instead of x86 in it's name
+  if %TARGET_ARCHITECTURE%==x86 (
+    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%buildconfig%\.appx$"') DO (
+      copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
+      copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+      goto END
+    )
+
+    rem Release builds don't have Release in it's name
+    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32\.appx$"') DO (
+      copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
+      copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+      goto END
+    )
+  )
+
 :DIE
   ECHO ------------------------------------------------------------
   ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
@@ -262,8 +292,6 @@ set WORKSPACE=%base_dir%\kodi-build
   ECHO ------------------------------------------------------------
   GOTO END
 
-:MAKE_APPX
-:: todo copy appx to BUILD_WIN32
 :END
   IF %promptlevel% NEQ noprompt (
     ECHO Press any key to exit...
