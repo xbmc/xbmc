@@ -150,7 +150,7 @@ public:
   virtual void SetProgram(int progId) {}
   virtual int GetProgramsCount() { return 0; }
 
-  virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
+  virtual TextCacheStruct_t* GetTeletextCache() { return nullptr; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
 
   virtual std::string GetRadioText(unsigned int line) { return ""; };

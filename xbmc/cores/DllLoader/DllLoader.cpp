@@ -77,12 +77,12 @@ static void __attribute__((noinline)) extend_stack_for_dll_alloca(void)
 
 DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps) : LibraryLoader(sDll)
 {
-  ImportDirTable = 0;
-  m_pExportHead = NULL;
+  ImportDirTable = nullptr;
+  m_pExportHead = nullptr;
   m_pStaticExports = exps;
   m_bTrack = bTrack;
   m_bSystemDll = bSystemDll;
-  m_pDlls = NULL;
+  m_pDlls = nullptr;
 
 
   if(!bSystemDll)
@@ -136,11 +136,11 @@ DllLoader::~DllLoader()
   }
   if (m_bTrack) tracker_dll_free(this);
 
-  ImportDirTable = 0;
+  ImportDirTable = nullptr;
 
   // hModule points to DllLoader in this case
   if (m_bSystemDll)
-    hModule = NULL;
+    hModule = nullptr;
 }
 
 int DllLoader::Parse()
@@ -360,7 +360,7 @@ const char* DllLoader::ResolveReferencedDll(const char* dll)
   if (!pDll)
   {
     CLog::Log(LOGDEBUG, "Unable to load referenced dll %s - Dll: %s", dll, GetFileName());
-    return NULL;
+    return nullptr;
   }
   else if (!pDll->IsSystemDll())
   {
@@ -469,7 +469,7 @@ Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
@@ -496,7 +496,7 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 int DllLoader::ResolveOrdinal(const char *sName, unsigned long ordinal, void **fixup)
@@ -548,7 +548,7 @@ void DllLoader::AddExport(unsigned long ordinal, void* function, void* track_fun
   entry->exp.function = function;
   entry->exp.ordinal = ordinal;
   entry->exp.track_function = track_function;
-  entry->exp.name = NULL;
+  entry->exp.name = nullptr;
 
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -674,7 +674,7 @@ bool DllLoader::Load()
 #ifdef TARGET_POSIX
 	extend_stack_for_dll_alloca();
 #endif
-      initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+      initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , nullptr); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
       CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
@@ -717,7 +717,7 @@ void DllLoader::Unload()
     if(EntryAddress)
     {
       EntryFunc initdll = (EntryFunc)EntryAddress;
-      initdll((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+      initdll((HINSTANCE)hModule, DLL_PROCESS_DETACH , nullptr);
     }
 
 #ifdef LOGALL

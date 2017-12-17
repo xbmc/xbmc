@@ -98,7 +98,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
-  const char* path = NULL;
+  const char* path = nullptr;
   if (pInfo) path = pInfo->pDll->GetFileName();
 
   HMODULE hHandle = dllLoadLibraryExtended(file, path);
@@ -112,7 +112,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
-  const char* path = NULL;
+  const char* path = nullptr;
   if (pInfo) path = pInfo->pDll->GetFileName();
 
   HMODULE hHandle = dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, path);

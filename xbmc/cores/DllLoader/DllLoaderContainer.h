@@ -31,7 +31,7 @@ public:
   static LibraryLoader* GetModule(int iPos);
   static LibraryLoader* GetModule(const char* sName);
   static LibraryLoader* GetModule(HMODULE hModule);
-  static LibraryLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
+  static LibraryLoader* LoadModule(const char* sName, const char* sCurrentDir=nullptr, bool bLoadSymbols=false);
   static void       ReleaseModule(LibraryLoader*& pDll);
 
   static void RegisterDll(LibraryLoader* pDll);

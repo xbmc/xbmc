@@ -121,7 +121,7 @@ DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
@@ -134,7 +134,7 @@ DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
       return *it;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr)
