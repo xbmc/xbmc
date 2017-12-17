@@ -69,7 +69,7 @@ protected:
   explicit CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
 
   virtual void SaveViewState() = 0;
-  virtual void SaveViewToDb(const std::string &path, int windowID, CViewState *viewState = NULL);
+  virtual void SaveViewToDb(const std::string &path, int windowID, CViewState *viewState = nullptr);
   void LoadViewState(const std::string &path, int windowID);
   
   /*! \brief Add the addons source for the given content type, if the user has suitable addons
