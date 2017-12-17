@@ -115,7 +115,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   // fetch the lyrics and add it to the current music info tag
   CFileItem tempItem(path, false);
   std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(tempItem));
-  if (NULL != pLoader.get())
+  if (nullptr != pLoader.get())
   {
     CMusicInfoTag tag;
     pLoader->Load(path, tag);
@@ -209,7 +209,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         // always try to load cddb info
         // get correct tag parser
         std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
-        if (NULL != pLoader.get())
+        if (nullptr != pLoader.get())
           // get tag
           pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());
         m_tagReads++;

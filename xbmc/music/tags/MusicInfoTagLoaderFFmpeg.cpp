@@ -61,19 +61,19 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
     bufferSize = blockSize;
   uint8_t* buffer = (uint8_t*)av_malloc(bufferSize);
   AVIOContext* ioctx = avio_alloc_context(buffer, bufferSize, 0,
-                                          &file, vfs_file_read, NULL,
+                                          &file, vfs_file_read, nullptr,
                                           vfs_file_seek);
 
   AVFormatContext* fctx = avformat_alloc_context();
   fctx->pb = ioctx;
 
-  if (file.IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 1)
+  if (file.IoControl(IOCTRL_SEEK_POSSIBLE, nullptr) != 1)
     ioctx->seekable = 0;
 
-  AVInputFormat* iformat=NULL;
-  av_probe_input_buffer(ioctx, &iformat, strFileName.c_str(), NULL, 0, 0);
+  AVInputFormat* iformat=nullptr;
+  av_probe_input_buffer(ioctx, &iformat, strFileName.c_str(), nullptr, 0, 0);
 
-  if (avformat_open_input(&fctx, strFileName.c_str(), iformat, NULL) < 0)
+  if (avformat_open_input(&fctx, strFileName.c_str(), iformat, nullptr) < 0)
   {
     if (fctx)
       avformat_close_input(&fctx);

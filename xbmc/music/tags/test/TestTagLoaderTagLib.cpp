@@ -56,7 +56,7 @@ TYPED_TEST(TestTagParser, ParsesBasicTag) {
   tg->setTrack (2);
 
   CMusicInfoTag tag;
-  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, nullptr, tag));
 
   EXPECT_EQ(1985, tag.GetYear());
   EXPECT_EQ(2, tag.GetTrackNumber());
@@ -73,7 +73,7 @@ TYPED_TEST(TestTagParser, ParsesBasicTag) {
 TYPED_TEST(TestTagParser, HandleNullTag) {
   // A Null tag should not parse, and not break us either
   CMusicInfoTag tag;
-  EXPECT_FALSE(CTagLoaderTagLib::ParseTag<TypeParam>(NULL, NULL, tag));
+  EXPECT_FALSE(CTagLoaderTagLib::ParseTag<TypeParam>(nullptr, NULL, tag));
 }
 
 template<typename T, size_t N>
@@ -123,7 +123,7 @@ TYPED_TEST(EmptyTagParser, EmptyProperties) {
 
   // Even though all the properties are empty, we shouldn't
   // crash
-  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, nullptr, tag));
 }
 
 
@@ -138,7 +138,7 @@ TYPED_TEST(TestTagParser, FooProperties) {
   }
   tg->setProperties(props);
 
-  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, nullptr, tag));
   EXPECT_EQ(0, tag.GetYear());
   EXPECT_EQ(0, tag.GetTrackNumber());
   EXPECT_EQ(1u, tag.GetArtist().size());

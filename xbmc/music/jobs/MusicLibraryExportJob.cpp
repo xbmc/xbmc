@@ -24,11 +24,11 @@
 #include "settings/LibExportSettings.h"
 
 CMusicLibraryExportJob::CMusicLibraryExportJob(const CLibExportSettings& settings, CGUIDialogProgress* progressDialog)
-  : CMusicLibraryProgressJob(NULL),
+  : CMusicLibraryProgressJob(nullptr),
     m_settings(settings)
 { 
   if (progressDialog)
-    SetProgressIndicators(NULL, progressDialog);
+    SetProgressIndicators(nullptr, progressDialog);
   SetAutoClose(true);
 }
 
@@ -40,7 +40,7 @@ bool CMusicLibraryExportJob::operator==(const CJob* job) const
     return false;
 
   const CMusicLibraryExportJob* exportJob = dynamic_cast<const CMusicLibraryExportJob*>(job);
-  if (exportJob == NULL)
+  if (exportJob == nullptr)
     return false;
 
   return !(m_settings != exportJob->m_settings);

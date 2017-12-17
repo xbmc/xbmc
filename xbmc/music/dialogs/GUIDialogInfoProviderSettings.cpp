@@ -439,14 +439,14 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
 void CGUIDialogInfoProviderSettings::SetLabel2(const std::string &settingid, const std::string &label)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
     SET_CONTROL_LABEL2(settingControl->GetID(), label);
 }
 
 void CGUIDialogInfoProviderSettings::ToggleState(const std::string &settingid, bool enabled)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
   {
     if (enabled)
       CONTROL_ENABLE(settingControl->GetID());
@@ -458,7 +458,7 @@ void CGUIDialogInfoProviderSettings::ToggleState(const std::string &settingid, b
 void CGUIDialogInfoProviderSettings::SetFocus(const std::string &settingid)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }
 

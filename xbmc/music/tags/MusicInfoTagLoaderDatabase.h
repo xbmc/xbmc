@@ -29,7 +29,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderDatabase(void);
       ~CMusicInfoTagLoaderDatabase() override;
 
-      bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) override;
+      bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = nullptr) override;
   };
 }
 

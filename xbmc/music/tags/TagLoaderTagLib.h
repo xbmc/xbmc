@@ -36,7 +36,7 @@ public:
   CTagLoaderTagLib() = default;
   ~CTagLoaderTagLib() override = default;
   bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = nullptr) override;
-  bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = NULL);
+  bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = nullptr);
 
   static std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
 protected:

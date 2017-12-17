@@ -45,7 +45,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
 {
   // dont try to read the tags for streams & shoutcast
   if (item.IsInternetStream())
-    return NULL;
+    return nullptr;
 
   if (item.IsMusicDb())
     return new CMusicInfoTagLoaderDatabase();
@@ -55,7 +55,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   StringUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
-    return NULL;
+    return nullptr;
 
   BinaryAddonBaseList addonInfos;
   CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
@@ -109,5 +109,5 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
            strExtension == "dff")
     return new CMusicInfoTagLoaderFFmpeg();
 
-  return NULL;
+  return nullptr;
 }
