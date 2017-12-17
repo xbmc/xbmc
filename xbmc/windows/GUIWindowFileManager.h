@@ -45,7 +45,7 @@ public:
   bool OnBack(int actionID) override;
   const CFileItem &CurrentDirectory(int indx) const;
 
-  static int64_t CalculateFolderSize(const std::string &strDirectory, CGUIDialogProgress *pProgress = NULL);
+  static int64_t CalculateFolderSize(const std::string &strDirectory, CGUIDialogProgress *pProgress = nullptr);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 protected:

@@ -558,7 +558,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ALL))
   {
-    XFILE::IFileDirectory *pFileDirectory = NULL;
+    XFILE::IFileDirectory *pFileDirectory = nullptr;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
@@ -613,7 +613,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
   {
     std::string strPlayList = pItem->GetPath();
     std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-    if (NULL != pPlayList.get())
+    if (nullptr != pPlayList.get())
     {
       if (!pPlayList->Load(strPlayList))
       {
