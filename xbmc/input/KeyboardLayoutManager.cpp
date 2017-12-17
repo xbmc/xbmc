@@ -76,7 +76,7 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     }
 
     const TiXmlElement* rootElement = xmlDoc.RootElement();
-    if (rootElement == NULL)
+    if (rootElement == nullptr)
     {
       CLog::Log(LOGWARNING, "CKeyboardLayoutManager: missing or invalid XML root element in %s", layoutPath.c_str());
       continue;
@@ -89,7 +89,7 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     }
 
     const TiXmlElement* layoutElement = rootElement->FirstChildElement("layout");
-    while (layoutElement != NULL)
+    while (layoutElement != nullptr)
     {
       CKeyboardLayout layout;
       if (!layout.Load(layoutElement))

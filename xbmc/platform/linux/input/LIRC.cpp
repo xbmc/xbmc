@@ -60,7 +60,7 @@ CRemoteControl::CRemoteControl()
 
 CRemoteControl::~CRemoteControl()
 {
-  if (m_file != NULL)
+  if (m_file != nullptr)
     fclose(m_file);
 }
 
@@ -89,12 +89,12 @@ void CRemoteControl::Disconnect()
 
   if (m_fd != -1) 
   {
-    if (m_file != NULL)
+    if (m_file != nullptr)
       fclose(m_file);
     if (m_fd != -1)
       close(m_fd);
     m_fd = -1;
-    m_file = NULL;
+    m_file = nullptr;
 #ifdef HAVE_INOTIFY
     if (m_inotify_wd >= 0) {
       inotify_rm_watch(m_inotify_fd, m_inotify_wd);
@@ -212,7 +212,7 @@ void CRemoteControl::Update()
   {
     {
       CSingleLock lock(m_CS);
-      if (fgets(buf, sizeof(buf), m_file) == NULL)
+      if (fgets(buf, sizeof(buf), m_file) == nullptr)
         break;
     }
 
@@ -258,7 +258,7 @@ void CRemoteControl::Update()
 
     m_button = CServiceBroker::GetInputManager().TranslateLircRemoteString(deviceName, buttonName);
 
-    char *end = NULL;
+    char *end = nullptr;
     long repeat = strtol(repeatStr, &end, 16);
     if (!end || *end != 0)
       CLog::Log(LOGERROR, "LIRC: invalid non-numeric character in expression %s", repeatStr);
@@ -345,7 +345,7 @@ bool CRemoteControl::Connect(struct sockaddr_un addr, bool logMessages)
         opts = (opts | O_NONBLOCK);
         if (fcntl(m_fd, F_SETFL, opts) != -1)
         {
-          if ((m_file = fdopen(m_fd, "r+")) != NULL)
+          if ((m_file = fdopen(m_fd, "r+")) != nullptr)
           {
 #ifdef HAVE_INOTIFY
             // Setup inotify so we can disconnect if lircd is restarted

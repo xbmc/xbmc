@@ -27,7 +27,7 @@ void ITouchInputHandling::RegisterHandler(ITouchActionHandler *touchHandler)
 
 void ITouchInputHandling::UnregisterHandler()
 {
-  m_handler = NULL;
+  m_handler = nullptr;
 }
 
 void ITouchInputHandling::OnTouchAbort()
