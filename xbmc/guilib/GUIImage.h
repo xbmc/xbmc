@@ -74,7 +74,7 @@ public:
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
-  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
   bool OnAction(const CAction &action) override ;
   bool OnMessage(CGUIMessage& message) override;
   void AllocResources() override;
@@ -83,7 +83,7 @@ public:
   bool IsDynamicallyAllocated() override { return m_bDynamicResourceAlloc; };
   void SetInvalid() override;
   bool CanFocus() const override;
-  void UpdateInfo(const CGUIListItem *item = NULL) override;
+  void UpdateInfo(const CGUIListItem *item = nullptr) override;
 
   virtual void SetInfo(const CGUIInfoLabel &info);
   virtual void SetFileName(const std::string& strFileName, bool setConstant = false, const bool useCache = true);

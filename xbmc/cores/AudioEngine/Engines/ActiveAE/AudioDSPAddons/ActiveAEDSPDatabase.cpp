@@ -207,8 +207,8 @@ bool CActiveAEDSPDatabase::AddUpdateMode(CActiveAEDSPMode &mode)
     if (mode.IsInternal())
       return false;
 
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
     std::string strSQL = PrepareSQL("SELECT * FROM modes WHERE modes.iAddonId=%i AND modes.iAddonModeNumber=%i AND modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType());
 
     m_pDS->query( strSQL );
@@ -297,7 +297,7 @@ int CActiveAEDSPDatabase::GetModeId(const CActiveAEDSPMode &mode)
   std::string id = GetSingleValue(PrepareSQL("SELECT * from modes WHERE modes.iAddonId=%i and modes.iAddonModeNumber=%i and modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType()));
   if (id.empty())
     return -1;
-  return strtol(id.c_str(), NULL, 10);
+  return strtol(id.c_str(), nullptr, 10);
 }
 
 int CActiveAEDSPDatabase::GetModes(AE_DSP_MODELIST &results, int modeType)
@@ -373,8 +373,8 @@ bool CActiveAEDSPDatabase::GetActiveDSPSettings(const CFileItem &item, CAudioSet
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
     std::string strPath, strFileName;
     URIUtils::Split(item.GetPath(), strPath, strFileName);
     std::string strSQL=PrepareSQL("SELECT * FROM settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
@@ -408,8 +408,8 @@ void CActiveAEDSPDatabase::SetActiveDSPSettings(const CFileItem &item, const CAu
 {
   try
   {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
+    if (nullptr == m_pDB.get()) return ;
+    if (nullptr == m_pDS.get()) return ;
     std::string strPath, strFileName;
     URIUtils::Split(item.GetPath(), strPath, strFileName);
     std::string strSQL = StringUtils::Format("select * from settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
@@ -517,7 +517,7 @@ int CActiveAEDSPDatabase::GetAudioDSPAddonId(const std::string &strAddonUid)
   if (strValue.empty())
     return -1;
 
-  return strtol(strValue.c_str(), NULL, 10);
+  return strtol(strValue.c_str(), nullptr, 10);
 }
 
 int CActiveAEDSPDatabase::Persist(const AddonPtr& addon)

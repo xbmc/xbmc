@@ -75,7 +75,7 @@ public:
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
-  virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) = 0;
+  virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = nullptr) = 0;
   virtual XVisualInfo* GetVisual() = 0;
 
   void OnLostDevice();

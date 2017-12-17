@@ -94,7 +94,7 @@ IFile* CFileFactory::CreateLoader(const std::string& strFileName)
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
   if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
-    return NULL;
+    return nullptr;
 
   std::string strProtocol = url.GetProtocol();
   if (!strProtocol.empty() && CServiceBroker::IsBinaryAddonCacheUp())
@@ -176,5 +176,5 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str());
-  return NULL;
+  return nullptr;
 }

@@ -134,7 +134,7 @@ XFILE::CFile *CXBMCTestUtils::CreateTempFile(std::string const& suffix)
   if (f->Create(suffix))
     return f;
   delete f;
-  return NULL;
+  return nullptr;
 }
 
 bool CXBMCTestUtils::DeleteTempFile(XFILE::CFile *tempfile)
@@ -172,7 +172,7 @@ XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(std::string const& strFileName
 
   if (tmpfile && inputfile.Open(strFileName))
   {
-    srand(time(NULL));
+    srand(time(nullptr));
     while ((size = inputfile.Read(buf, sizeof(buf))) > 0)
     {
       for (i = 0; i < size; i++)
@@ -191,7 +191,7 @@ XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(std::string const& strFileName
         inputfile.Close();
         tmpfile->Close();
         DeleteTempFile(tmpfile);
-        return NULL;
+        return nullptr;
       }
     }
     inputfile.Close();
@@ -199,7 +199,7 @@ XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(std::string const& strFileName
     return tmpfile;
   }
   delete tmpfile;
-  return NULL;
+  return nullptr;
 }
 
 

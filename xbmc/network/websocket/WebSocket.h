@@ -60,7 +60,7 @@ class CWebSocketFrame
 {
 public:
   CWebSocketFrame(const char* data, uint64_t length);
-  CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data = NULL, uint32_t length = 0, bool final = true, bool masked = false, int32_t mask = 0, int8_t extension = 0);
+  CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data = nullptr, uint32_t length = 0, bool final = true, bool masked = false, int32_t mask = 0, int8_t extension = 0);
   virtual ~CWebSocketFrame();
 
   virtual bool IsValid() const { return m_valid; }
@@ -117,7 +117,7 @@ protected:
 class CWebSocket
 {
 public:
-  CWebSocket() { m_state = WebSocketStateNotConnected; m_message = NULL; }
+  CWebSocket() { m_state = WebSocketStateNotConnected; m_message = nullptr; }
   virtual ~CWebSocket() { if (m_message) delete m_message; };
 
   int GetVersion() { return m_version; }
@@ -125,9 +125,9 @@ public:
 
   virtual bool Handshake(const char* data, size_t length, std::string &response) = 0;
   virtual const CWebSocketMessage* Handle(const char* &buffer, size_t &length, bool &send);
-  virtual const CWebSocketMessage* Send(WebSocketFrameOpcode opcode, const char* data = NULL, uint32_t length = 0);
-  virtual const CWebSocketFrame* Ping(const char* data = NULL) const = 0;
-  virtual const CWebSocketFrame* Pong(const char* data = NULL) const = 0;
+  virtual const CWebSocketMessage* Send(WebSocketFrameOpcode opcode, const char* data = nullptr, uint32_t length = 0);
+  virtual const CWebSocketFrame* Ping(const char* data = nullptr) const = 0;
+  virtual const CWebSocketFrame* Pong(const char* data = nullptr) const = 0;
   virtual const CWebSocketFrame* Close(WebSocketCloseReason reason = WebSocketCloseNormal, const std::string &message = "") = 0;
   virtual void Fail() = 0;
 
@@ -137,6 +137,6 @@ protected:
   CWebSocketMessage *m_message;
 
   virtual CWebSocketFrame* GetFrame(const char* data, uint64_t length) = 0;
-  virtual CWebSocketFrame* GetFrame(WebSocketFrameOpcode opcode, const char* data = NULL, uint32_t length = 0, bool final = true, bool masked = false, int32_t mask = 0, int8_t extension = 0) = 0;
+  virtual CWebSocketFrame* GetFrame(WebSocketFrameOpcode opcode, const char* data = nullptr, uint32_t length = 0, bool final = true, bool masked = false, int32_t mask = 0, int8_t extension = 0) = 0;
   virtual CWebSocketMessage* GetMessage() = 0;
 };

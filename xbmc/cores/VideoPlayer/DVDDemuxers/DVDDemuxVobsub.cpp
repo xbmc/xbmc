@@ -71,7 +71,7 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
   CFileItem item(vobsub, false);
   item.SetMimeType("video/x-vobsub");
   item.SetContentLookup(false);
-  m_Input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, item));
+  m_Input.reset(CDVDFactoryInputStream::CreateInputStream(nullptr, item));
   if(!m_Input.get() || !m_Input->Open())
     return false;
 
@@ -161,17 +161,17 @@ DemuxPacket* CDVDDemuxVobsub::Read()
   std::vector<STimestamp>::iterator current;
   do {
     if(m_Timestamp == m_Timestamps.end())
-      return NULL;
+      return nullptr;
 
     current =  m_Timestamp++;
   } while(m_Streams[current->id]->m_discard == true);
 
   if(!m_Demuxer->SeekByte(current->pos))
-    return NULL;
+    return nullptr;
 
   DemuxPacket *packet = m_Demuxer->Read();
   if(!packet)
-    return NULL;
+    return nullptr;
 
   packet->iStreamId = current->id;
   packet->pts = current->pts;

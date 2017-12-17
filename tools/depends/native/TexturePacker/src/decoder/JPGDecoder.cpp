@@ -84,7 +84,7 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // Image Size is calculated as (width * height * bytes per pixel = 4
   ImageSize = cinfo.image_width * cinfo.image_height * 4;
   
-  frames.user = NULL;
+  frames.user = nullptr;
   DecodedFrame frame;
   
   frame.rgbaImage.pixels = (char *)new char[ImageSize];

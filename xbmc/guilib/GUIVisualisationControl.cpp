@@ -315,7 +315,7 @@ void CGUIVisualisationControl::UpdateTrack()
   std::string albumArtist(tag->GetAlbumArtistString());
   std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
 
-  VisTrack track = {0};
+  VisTrack track = {nullptr};
   track.title       = tag->GetTitle().c_str();
   track.artist      = artist.c_str();
   track.album       = tag->GetAlbum().c_str();

@@ -195,7 +195,7 @@ std::string Xcddb::Recv(bool wait4point)
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 {
-  if ( pInfo == NULL )
+  if ( pInfo == nullptr )
   {
     m_lastError = E_PARAMETER_WRONG;
     return false;
@@ -481,13 +481,13 @@ void Xcddb::parseData(const char *buffer)
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
   strtok((char*)buffer, trenner); // skip first line
-  while ((line = strtok(0, trenner)))
+  while ((line = strtok(nullptr, trenner)))
   {
     // Lines that begin with # are comments, should be ignored
     if (line[0] != '#')
     {
       char *s = strstr(line, "=");
-      if (s != NULL)
+      if (s != nullptr)
       {
         std::string strKeyword(line, s - line);
         StringUtils::TrimRight(strKeyword);
@@ -564,7 +564,7 @@ void Xcddb::parseData(const char *buffer)
           StringUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {
-            int iGenre = strtol(strGenre.c_str(), NULL, 10);
+            int iGenre = strtol(strGenre.c_str(), nullptr, 10);
             m_strGenre = TagLib::ID3v1::genre(iGenre).to8Bit(true);
           }
         }
@@ -802,7 +802,7 @@ const std::string& Xcddb::getGenre() const
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 {
-  if ( pInfo == NULL )
+  if ( pInfo == nullptr )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo pInfo == NULL");
     m_lastError = E_PARAMETER_WRONG;
@@ -960,7 +960,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   {
   case 200: //Found exact match
     strtok((char *)recv_buffer.c_str(), " ");
-    read_buffer = StringUtils::Format("cddb read %s %08x", strtok(NULL, " "), discid);
+    read_buffer = StringUtils::Format("cddb read %s %08x", strtok(nullptr, " "), discid);
     break;
 
   case 210: //Found exact matches, list follows (until terminating marker)
@@ -1055,7 +1055,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 {
   if (cCacheDir.empty())
     return false;
-  if ( pInfo == NULL )
+  if ( pInfo == nullptr )
     return false;
 
   return XFILE::CFile::Exists(GetCacheFile(pInfo->GetCddbDiscId()));

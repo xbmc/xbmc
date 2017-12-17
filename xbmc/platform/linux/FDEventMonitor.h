@@ -48,7 +48,7 @@ public:
 
     MonitoredFD(int fd_, short events_, EventCallback callback_, void *callbackData_) :
       fd(fd_), events(events_), callback(callback_), callbackData(callbackData_) {}
-    MonitoredFD() : fd(-1), events(0), callback(NULL), callbackData(NULL) {}
+    MonitoredFD() : fd(-1), events(0), callback(nullptr), callbackData(nullptr) {}
   };
 
   CFDEventMonitor();

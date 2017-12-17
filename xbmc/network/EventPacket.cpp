@@ -86,7 +86,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
     if (m_pPayload)
     {
       free(m_pPayload);
-      m_pPayload = NULL;
+      m_pPayload = nullptr;
     }
 
     m_pPayload = malloc(m_iPayloadSize);

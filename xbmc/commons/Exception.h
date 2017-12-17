@@ -91,7 +91,7 @@ namespace XbmcCommons
   public:
     virtual ~Exception();
 
-    inline virtual void LogThrowMessage(const char* prefix = NULL) const
+    inline virtual void LogThrowMessage(const char* prefix = nullptr) const
     {
       if (logger)
         logger->Log(LOGERROR,"EXCEPTION Thrown (%s) : %s", classname.c_str(), message.c_str());

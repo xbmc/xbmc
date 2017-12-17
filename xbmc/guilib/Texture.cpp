@@ -47,7 +47,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
  : m_hasAlpha( true ),
    m_mipmapping( false )
 {
-  m_pixels = NULL;
+  m_pixels = nullptr;
   m_loadedToGPU = false;
   Allocate(width, height, format);
 }
@@ -55,7 +55,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
 CBaseTexture::~CBaseTexture()
 {
   _aligned_free(m_pixels);
-  m_pixels = NULL;
+  m_pixels = nullptr;
 }
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
@@ -105,7 +105,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_imageHeight, m_textureHeight);
 
   _aligned_free(m_pixels);
-  m_pixels = NULL;
+  m_pixels = nullptr;
   if (GetPitch() * GetRows() > 0)
   {
     size_t size = GetPitch() * GetRows();
@@ -120,7 +120,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
 
 void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU)
 {
-  if (pixels == NULL)
+  if (pixels == nullptr)
     return;
 
   if (format & XB_FMT_DXT_MASK)
@@ -216,7 +216,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
   if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
   delete texture;
-  return NULL;
+  return nullptr;
 }
 
 CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t bufferSize, const std::string &mimeType, unsigned int idealWidth, unsigned int idealHeight)
@@ -225,7 +225,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight))
     return texture;
   delete texture;
-  return NULL;
+  return nullptr;
 }
 
 bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool requirePixels, const std::string& strMimeType)
@@ -313,7 +313,7 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
 
 bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
 {
-  if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
+  if(pImage != nullptr && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
@@ -347,7 +347,7 @@ bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsig
 
 bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette)
 {
-  if (pixels == NULL || palette == NULL)
+  if (pixels == nullptr || palette == nullptr)
     return false;
 
   Allocate(width, height, format);

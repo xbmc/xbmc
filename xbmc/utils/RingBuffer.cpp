@@ -28,7 +28,7 @@
 /* Constructor */
 CRingBuffer::CRingBuffer()
 {
-  m_buffer = NULL;
+  m_buffer = nullptr;
   m_size = 0;
   m_readPtr = 0;
   m_writePtr = 0;
@@ -46,7 +46,7 @@ bool CRingBuffer::Create(unsigned int size)
 {
   CSingleLock lock(m_critSection);
   m_buffer = (char*)malloc(size);
-  if (m_buffer != NULL)
+  if (m_buffer != nullptr)
   {
     m_size = size;
     return true;
@@ -58,10 +58,10 @@ bool CRingBuffer::Create(unsigned int size)
 void CRingBuffer::Destroy()
 {
   CSingleLock lock(m_critSection);
-  if (m_buffer != NULL)
+  if (m_buffer != nullptr)
   {
     free(m_buffer);
-    m_buffer = NULL;
+    m_buffer = nullptr;
   }
   m_size = 0;
   m_readPtr = 0;
@@ -112,7 +112,7 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
 bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
 {
   CSingleLock lock(m_critSection);
-  if (rBuf.getBuffer() == NULL)
+  if (rBuf.getBuffer() == nullptr)
     rBuf.Create(size);
 
   bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
@@ -163,7 +163,7 @@ bool CRingBuffer::WriteData(const char *buf, unsigned int size)
 bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 {
   CSingleLock lock(m_critSection);
-  if (m_buffer == NULL)
+  if (m_buffer == nullptr)
     Create(size);
 
   bool bOk = size <= rBuf.getMaxReadSize() && size <= getMaxWriteSize();

@@ -30,8 +30,8 @@ class CDVDOverlayImage : public CDVDOverlay
 public:
   CDVDOverlayImage() : CDVDOverlay(DVDOVERLAY_TYPE_IMAGE)
   {
-    data = NULL;
-    palette = NULL;
+    data = nullptr;
+    palette = nullptr;
     palette_colors = 0;
     linesize = 0;
     x = 0;
@@ -54,7 +54,7 @@ public:
       memcpy(palette, src.palette, src.palette_colors * 4);
     }
     else
-      palette = NULL;
+      palette = nullptr;
 
     palette_colors = src.palette_colors;
     linesize       = src.linesize;
@@ -80,7 +80,7 @@ public:
     else
     {
       bpp = 4;
-      palette = NULL;
+      palette = nullptr;
     }
 
     palette_colors = src.palette_colors;

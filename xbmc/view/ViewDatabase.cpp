@@ -130,8 +130,8 @@ bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
 
     std::string path1(path);
     URIUtils::AddSlashAtEnd(path1);
@@ -166,8 +166,8 @@ bool CViewDatabase::SetViewState(const std::string &path, int window, const CVie
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
 
     std::string path1(path);
     URIUtils::AddSlashAtEnd(path1);
@@ -202,8 +202,8 @@ bool CViewDatabase::ClearViewStates(int windowID)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (nullptr == m_pDB.get()) return false;
+    if (nullptr == m_pDS.get()) return false;
 
     std::string sql = PrepareSQL("delete from view where window = %i", windowID);
     m_pDS->exec(sql);

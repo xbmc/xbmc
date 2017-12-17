@@ -122,7 +122,7 @@ void CGUIDialogLibExportSettings::OnSettingChanged(std::shared_ptr<const CSettin
 
 void CGUIDialogLibExportSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
@@ -321,7 +321,7 @@ void CGUIDialogLibExportSettings::InitializeSettings()
 void CGUIDialogLibExportSettings::SetLabel2(const std::string &settingid, const std::string &label)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
     SET_CONTROL_LABEL2(settingControl->GetID(), label);
 }
 
@@ -329,7 +329,7 @@ void CGUIDialogLibExportSettings::SetLabel2(const std::string &settingid, const 
 void CGUIDialogLibExportSettings::ToggleState(const std::string & settingid, bool enabled)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
   {
     if (enabled)
       CONTROL_ENABLE(settingControl->GetID());
@@ -341,7 +341,7 @@ void CGUIDialogLibExportSettings::ToggleState(const std::string & settingid, boo
 void CGUIDialogLibExportSettings::SetFocus(const std::string &settingid)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl != nullptr && settingControl->GetControl() != nullptr)
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }
 

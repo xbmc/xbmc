@@ -43,7 +43,7 @@ namespace Shaders {
   class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=NULL);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=nullptr);
    ~BaseYUV2RGBGLSLShader();
     void Free() override;
 
@@ -114,7 +114,7 @@ namespace Shaders {
                              unsigned flags=0,
                              EShaderFormat format=SHADER_NONE,
                              bool stretch = false,
-                             GLSLOutput *output=NULL);
+                             GLSLOutput *output=nullptr);
   };
 
 } // end namespace

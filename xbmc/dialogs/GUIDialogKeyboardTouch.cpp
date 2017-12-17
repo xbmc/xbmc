@@ -27,7 +27,7 @@ CGUIDialogKeyboardTouch::CGUIDialogKeyboardTouch()
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD_TOUCH, "")
 , CGUIKeyboard()
 , CThread("keyboard")
-, m_pCharCallback(NULL)
+, m_pCharCallback(nullptr)
 {
 }
 

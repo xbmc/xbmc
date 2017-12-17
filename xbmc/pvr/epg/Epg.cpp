@@ -882,7 +882,7 @@ bool CPVREpg::IsValid(void) const
 {
   CSingleLock lock(m_critSection);
   if (ScraperName() == "client")
-    return m_pvrChannel != NULL;
+    return m_pvrChannel != nullptr;
   return true;
 }
 

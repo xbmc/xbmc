@@ -27,7 +27,7 @@
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
 {
   m_buffering = buffering;
-  m_solver = NULL;
+  m_solver = nullptr;
 }
 
 CDirtyRegionTracker::~CDirtyRegionTracker()

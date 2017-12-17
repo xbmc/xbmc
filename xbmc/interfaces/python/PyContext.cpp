@@ -31,7 +31,7 @@ namespace XBMCAddon
     struct PyContextState
     {
       inline explicit PyContextState(bool pcreatedByGilRelease = false) :
-        value(0), state(NULL), gilReleasedDepth(0), createdByGilRelease(pcreatedByGilRelease) {}
+        value(0), state(nullptr), gilReleasedDepth(0), createdByGilRelease(pcreatedByGilRelease) {}
 
       int value;
       PyThreadState* state;
@@ -44,7 +44,7 @@ namespace XBMCAddon
     void* PyContext::enterContext()
     {
       PyContextState* cur = tlsPyContextState.get();
-      if (cur == NULL)
+      if (cur == nullptr)
       {
         cur = new PyContextState();
         tlsPyContextState.set(cur);
@@ -73,7 +73,7 @@ namespace XBMCAddon
       if (curlevel == 0)
       {
         // clear the tlsPyContextState
-        tlsPyContextState.set(NULL);
+        tlsPyContextState.set(nullptr);
         delete cur;
       }
     }
@@ -118,7 +118,7 @@ namespace XBMCAddon
         {
           Py_BLOCK_THREADS
         }
-        cur->state = NULL; // clear the state to indicate we've reacquired the gil
+        cur->state = nullptr; // clear the state to indicate we've reacquired the gil
 
         // we clear it only if we created it on this level.
         if (cur->createdByGilRelease)

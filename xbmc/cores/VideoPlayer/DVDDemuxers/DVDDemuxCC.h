@@ -33,8 +33,8 @@ public:
 
   bool Reset() override { return true; };
   void Flush() override {};
-  DemuxPacket* Read() override { return NULL; };
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
+  DemuxPacket* Read() override { return nullptr; };
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override {return true;};
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;

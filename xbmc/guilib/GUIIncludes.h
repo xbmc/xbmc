@@ -62,7 +62,7 @@ public:
    \param node the node from where we start to resolve the include components
    \param includeConditions a map that holds the conditions for resolved includes
    */
-  void Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* includeConditions = NULL);
+  void Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* includeConditions = nullptr);
 
   /*!
    \brief Create a skin variable for the given \code{name} within the given \code{context}.
@@ -117,7 +117,7 @@ private:
   void FlattenSkinVariableConditions();
 
   void SetDefaults(TiXmlElement *node);
-  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = nullptr);
   void ResolveConstants(TiXmlElement *node);
   void ResolveExpressions(TiXmlElement *node);
 

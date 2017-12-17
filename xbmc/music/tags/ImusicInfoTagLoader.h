@@ -31,6 +31,6 @@ namespace MUSIC_INFO
     IMusicInfoTagLoader(void) = default;
     virtual ~IMusicInfoTagLoader() = default;
 
-    virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) = 0;
+    virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = nullptr) = 0;
   };
 }

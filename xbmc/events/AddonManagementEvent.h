@@ -35,6 +35,6 @@ public:
   const char* GetType() const override { return "AddonManagementEvent"; }
   std::string GetExecutionLabel() const override;
 
-  bool CanExecute() const override { return m_addon != NULL; }
+  bool CanExecute() const override { return m_addon != nullptr; }
   bool Execute() const override;
 };

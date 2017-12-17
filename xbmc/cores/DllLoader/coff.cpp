@@ -55,14 +55,14 @@ const char *DATA_DIR_NAME[16] =
 
 CoffLoader::CoffLoader()
 {
-  CoffFileHeader = 0;
-  OptionHeader = 0;
-  WindowsHeader = 0;
-  Directory = 0;
-  SectionHeader = 0;
-  SymTable = 0;
-  StringTable = 0;
-  SectionData = 0;
+  CoffFileHeader = nullptr;
+  OptionHeader = nullptr;
+  WindowsHeader = nullptr;
+  Directory = nullptr;
+  SectionHeader = nullptr;
+  SymTable = nullptr;
+  StringTable = nullptr;
+  SectionData = nullptr;
 
   NumberOfSymbols = 0;
   SizeOfStringTable = 0;
@@ -70,7 +70,7 @@ CoffLoader::CoffLoader()
   NumOfSections = 0;
   FileHeaderOffset = 0;
   EntryAddress = 0;
-  hModule = NULL;
+  hModule = nullptr;
 }
 
 CoffLoader::~CoffLoader()
@@ -82,22 +82,22 @@ CoffLoader::~CoffLoader()
 #else
     VirtualFree(hModule, 0, MEM_RELEASE);
 #endif
-    hModule = NULL;
+    hModule = nullptr;
   }
   if ( SymTable )
   {
     delete [] SymTable;
-    SymTable = 0;
+    SymTable = nullptr;
   }
   if ( StringTable )
   {
     delete [] StringTable;
-    StringTable = 0;
+    StringTable = nullptr;
   }
   if ( SectionData )
   {
     delete [] SectionData;
-    SectionData = 0;
+    SectionData = nullptr;
   }
 }
 
@@ -218,7 +218,7 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
   if (hModule == NULL)
     hModule = VirtualAlloc(GetCurrentProcess(), tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 #endif
-  if (hModule == NULL)
+  if (hModule == nullptr)
     return 0;   //memory allocation fails
 
   rewind(fp);
@@ -314,7 +314,7 @@ int CoffLoader::LoadSymTable(FILE *fp)
 int CoffLoader::LoadStringTable(FILE *fp)
 {
   int StringTableSize;
-  char *tmp = NULL;
+  char *tmp = nullptr;
   
   int Offset = ftell(fp);
   if (Offset < 0)
@@ -334,7 +334,7 @@ int CoffLoader::LoadStringTable(FILE *fp)
   if (StringTableSize != 0)
   {
     tmp = new char[StringTableSize];
-    if (tmp == NULL)
+    if (tmp == nullptr)
     {
       printf("Could not allocate memory for string table\n");
       return 0;

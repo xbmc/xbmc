@@ -41,8 +41,8 @@ namespace OVERLAY {
   {
     SQuads()
     {
-      data = NULL;
-      quad = NULL;
+      data = nullptr;
+      quad = nullptr;
       size_x = 0;
       size_y = 0;
       count  = 0;

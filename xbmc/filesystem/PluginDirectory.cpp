@@ -109,7 +109,7 @@ CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
   if (i != globalHandles.end())
     return i->second;
   CLog::Log(LOGWARNING, "Attempt to use invalid handle %i", handle);
-  return NULL;
+  return nullptr;
 }
 
 bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)

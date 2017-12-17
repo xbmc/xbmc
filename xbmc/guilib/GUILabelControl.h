@@ -45,7 +45,7 @@ public:
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
-  void UpdateInfo(const CGUIListItem *item = NULL) override;
+  void UpdateInfo(const CGUIListItem *item = nullptr) override;
   bool CanFocus() const override;
   bool OnMessage(CGUIMessage& message) override;
   std::string GetDescription() const override;

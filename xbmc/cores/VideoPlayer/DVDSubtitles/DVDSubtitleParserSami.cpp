@@ -69,11 +69,11 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       }
     }
   }
-  const char *lang = NULL;
+  const char *lang = nullptr;
   if (!strClassID.empty())
     lang = strClassID.c_str();
 
-  CDVDOverlayText* pOverlay = NULL;
+  CDVDOverlayText* pOverlay = nullptr;
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
     if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))

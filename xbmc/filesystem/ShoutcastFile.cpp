@@ -44,8 +44,8 @@ CShoutcastFile::CShoutcastFile() :
 {
   m_discarded = 0;
   m_currint = 0;
-  m_buffer = NULL;
-  m_cacheReader = NULL;
+  m_buffer = nullptr;
+  m_cacheReader = nullptr;
   m_tagPos = 0;
   m_metaint = 0;
 }
@@ -137,7 +137,7 @@ void CShoutcastFile::Close()
 {
   StopThread();
   delete[] m_buffer;
-  m_buffer = NULL;
+  m_buffer = nullptr;
   m_file.Close();
 }
 

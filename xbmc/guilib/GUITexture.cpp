@@ -240,7 +240,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   CRect diffuse(u1, v1, u2, v2);
   CRect texture(u1, v1, u2, v2);
   CRect vertex(left, top, right, bottom);
-  g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
+  g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : nullptr);
 
   if (vertex.IsEmpty())
     return; // nothing to render

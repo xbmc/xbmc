@@ -70,7 +70,7 @@ namespace XBMCAddon
       ///
       operator(...);
 #else
-      WsgiResponseBody* operator()(const String& status, const std::vector<WsgiHttpHeader>& response_headers, void* exc_info = NULL);
+      WsgiResponseBody* operator()(const String& status, const std::vector<WsgiHttpHeader>& response_headers, void* exc_info = nullptr);
 #endif
 
 #ifndef SWIG

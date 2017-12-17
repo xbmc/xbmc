@@ -74,7 +74,7 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const std::string &method, ITranspo
   CFileItemList list;
   int playlist = GetPlaylist(parameterObject["playlistid"]);
 
-  CGUIWindowSlideShow *slideshow = NULL;
+  CGUIWindowSlideShow *slideshow = nullptr;
   switch (playlist)
   {
     case PLAYLIST_VIDEO:
@@ -112,11 +112,11 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
 
-  CGUIWindowSlideShow *slideshow = NULL;
+  CGUIWindowSlideShow *slideshow = nullptr;
   if (playlist == PLAYLIST_PICTURE)
   {
     slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    if (slideshow == NULL)
+    if (slideshow == nullptr)
       return FailedToExecute;
   }
 
@@ -192,7 +192,7 @@ JSONRPC_STATUS CPlaylistOperations::Remove(const std::string &method, ITransport
 JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
-  CGUIWindowSlideShow *slideshow = NULL;
+  CGUIWindowSlideShow *slideshow = nullptr;
   switch (playlist)
   {
     case PLAYLIST_MUSIC:
@@ -269,7 +269,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const std::st
   else if (property == "size")
   {
     CFileItemList list;
-    CGUIWindowSlideShow *slideshow = NULL;
+    CGUIWindowSlideShow *slideshow = nullptr;
     switch (playlist)
     {
       case PLAYLIST_MUSIC:

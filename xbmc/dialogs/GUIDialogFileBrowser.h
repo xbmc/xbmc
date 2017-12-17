@@ -49,10 +49,10 @@ public:
   static bool ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly=false);
   static bool ShowAndGetFile(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetFile(const std::string &directory, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs = false, bool useFileDirectories = false, bool singleList = false);
-  static bool ShowAndGetSource(std::string &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const std::string& strType="");
+  static bool ShowAndGetSource(std::string &path, bool allowNetworkShares, VECSOURCES* additionalShare = nullptr, const std::string& strType="");
   static bool ShowAndGetFileList(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::vector<std::string> &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path);
-  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &path, bool* flip=NULL, int label=21371);
+  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &path, bool* flip=nullptr, int label=21371);
   static bool ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path);
 
   void SetSources(const VECSOURCES &shares);

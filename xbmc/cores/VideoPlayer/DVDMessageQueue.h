@@ -37,7 +37,7 @@ struct DVDMessageListItem
   }
   DVDMessageListItem()
   {
-    message = NULL;
+    message = nullptr;
     priority = 0;
   }
   DVDMessageListItem(const DVDMessageListItem&) = delete;

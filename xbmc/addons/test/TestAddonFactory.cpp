@@ -31,11 +31,11 @@ struct TestAddonFactory : public ::testing::Test
 
   void SetUp() override
   {
-    plugin = {0};
+    plugin = {nullptr};
     plugin.identifier = strdup("foo.bar");
     plugin.version = strdup("1.2.3");
 
-    scriptExtension = {0};
+    scriptExtension = {nullptr};
     scriptExtension.plugin = &plugin;
     scriptExtension.ext_point_id = strdup("xbmc.python.script");
   }
@@ -126,16 +126,16 @@ TEST_F(TestAddonFactory, IconPathShouldBeBuiltFromPluginPath)
 
 TEST_F(TestAddonFactory, AssetsElementShouldOverrideImplicitArt)
 {
-  cp_cfg_element_t icon{0};
+  cp_cfg_element_t icon{nullptr};
   icon.name = (char*)"icon";
   icon.value = (char*)"foo/bar.jpg";
 
-  cp_cfg_element_t assets{0};
+  cp_cfg_element_t assets{nullptr};
   assets.name = (char*)"assets";
   assets.num_children = 1;
   assets.children = &icon;
 
-  cp_cfg_element_t root{0};
+  cp_cfg_element_t root{nullptr};
   root.name = (char*)"kodi.addon.metadata";
   root.num_children = 1;
   root.children = &assets;

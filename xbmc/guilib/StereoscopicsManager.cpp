@@ -377,7 +377,7 @@ CAction CStereoscopicsManager::ConvertActionCommandToAction(const std::string &c
 
 void CStereoscopicsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();

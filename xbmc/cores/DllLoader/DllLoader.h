@@ -66,7 +66,7 @@ typedef struct _LoadedList
 class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
-  DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
+  DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = nullptr);
   ~DllLoader() override;
 
   bool Load() override;
@@ -84,9 +84,9 @@ protected:
   int Parse();
   int ResolveImports();
 
-  void AddExport(unsigned long ordinal, void* function, void* track_function = NULL);
-  void AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function = NULL);
-  void AddExport(char* sFunctionName, void* function, void* track_function = NULL);
+  void AddExport(unsigned long ordinal, void* function, void* track_function = nullptr);
+  void AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function = nullptr);
+  void AddExport(char* sFunctionName, void* function, void* track_function = nullptr);
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
 protected:

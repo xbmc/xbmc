@@ -38,7 +38,7 @@ using namespace PVR;
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo)
 {
   if (!pInputStream)
-    return NULL;
+    return nullptr;
 
   // Try to open the AirTunes demuxer
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && pInputStream->GetContent().compare("audio/x-xbmc-pcm") == 0 )
@@ -49,7 +49,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     if(demuxer->Open(pInputStream))
       return demuxer.release();
     else
-      return NULL;
+      return nullptr;
   }
   
   // Try to open CDDA demuxer
@@ -99,13 +99,13 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     if (demuxer->Open(pInputStream))
       return demuxer.release();
     else
-      return NULL;
+      return nullptr;
   }
 
   std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream, streaminfo, fileinfo))
     return demuxer.release();
   else
-    return NULL;
+    return nullptr;
 }
 

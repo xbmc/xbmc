@@ -33,11 +33,11 @@
 #define EAC3_MAX_BURST_PAYLOAD_SIZE (24576 - BURST_HEADER_SIZE)
 
 CAEBitstreamPacker::CAEBitstreamPacker() :
-  m_trueHD   (NULL),
+  m_trueHD   (nullptr),
   m_trueHDPos(0),
-  m_dtsHD    (NULL),
+  m_dtsHD    (nullptr),
   m_dtsHDSize(0),
-  m_eac3     (NULL),
+  m_eac3     (nullptr),
   m_eac3Size (0),
   m_eac3FramesCount(0),
   m_eac3FramesPerBurst(0),
@@ -229,7 +229,7 @@ void CAEBitstreamPacker::PackEAC3(CAEStreamInfo &info, uint8_t* data, int size)
   {
     /* multiple frames needed to achieve 6 blocks as required by IEC 61937-3:2007 */
 
-    if (m_eac3 == NULL)
+    if (m_eac3 == nullptr)
       m_eac3 = new uint8_t[EAC3_MAX_BURST_PAYLOAD_SIZE];
 
     unsigned int newsize = m_eac3Size + size;

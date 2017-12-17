@@ -32,7 +32,7 @@ using namespace ActiveAE;
 
 CActiveAEResampleFFMPEG::CActiveAEResampleFFMPEG()
 {
-  m_pContext = NULL;
+  m_pContext = nullptr;
   m_doesResample = false;
 }
 
@@ -64,9 +64,9 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
   if (m_src_chan_layout == 0)
     m_src_chan_layout = av_get_default_channel_layout(m_src_channels);
 
-  m_pContext = swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
+  m_pContext = swr_alloc_set_opts(nullptr, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
                                                         m_src_chan_layout, m_src_fmt, m_src_rate,
-                                                        0, NULL);
+                                                        0, nullptr);
 
   if(!m_pContext)
   {
@@ -276,10 +276,10 @@ int CActiveAEResampleFFMPEG::CalcDstSampleCount(int src_samples, int dst_rate, i
 
 int CActiveAEResampleFFMPEG::GetSrcBufferSize(int samples)
 {
-  return av_samples_get_buffer_size(NULL, m_src_channels, samples, m_src_fmt, 1);
+  return av_samples_get_buffer_size(nullptr, m_src_channels, samples, m_src_fmt, 1);
 }
 
 int CActiveAEResampleFFMPEG::GetDstBufferSize(int samples)
 {
-  return av_samples_get_buffer_size(NULL, m_dst_channels, samples, m_dst_fmt, 1);
+  return av_samples_get_buffer_size(nullptr, m_dst_channels, samples, m_dst_fmt, 1);
 }

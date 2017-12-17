@@ -68,7 +68,7 @@ void ILanguageInvoker::pulseGlobalEvent()
 
 bool ILanguageInvoker::onExecutionInitialized()
 {
-  if (m_invocationHandler == NULL)
+  if (m_invocationHandler == nullptr)
     return false;
 
   return m_invocationHandler->OnScriptInitialized(this);

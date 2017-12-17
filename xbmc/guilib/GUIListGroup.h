@@ -43,7 +43,7 @@ public:
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void ResetAnimation(ANIMATION_TYPE type) override;
-  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
   void UpdateInfo(const CGUIListItem *item) override;
   void SetInvalid() override;
 

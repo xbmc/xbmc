@@ -60,14 +60,14 @@ protected:
 TEST_F(TestJobManager, AddJob)
 {
   CJob* job = new CSysInfoJob();
-  CJobManager::GetInstance().AddJob(job, NULL);
+  CJobManager::GetInstance().AddJob(job, nullptr);
 }
 
 TEST_F(TestJobManager, CancelJob)
 {
   unsigned int id;
   CJob* job = new CSysInfoJob();
-  id = CJobManager::GetInstance().AddJob(job, NULL);
+  id = CJobManager::GetInstance().AddJob(job, nullptr);
   CJobManager::GetInstance().CancelJob(id);
 }
 
@@ -146,7 +146,7 @@ BroadcastingJob *
 WaitForJobToStartProcessing(CJob::PRIORITY priority, JobControlPackage &package)
 {
   BroadcastingJob* job = new BroadcastingJob(package);
-  CJobManager::GetInstance().AddJob(job, NULL, priority);
+  CJobManager::GetInstance().AddJob(job, nullptr, priority);
 
   // We're now ready to wait, wait and then unblock once ready
   while (!package.ready)

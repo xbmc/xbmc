@@ -89,7 +89,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const std::string &xmlFile)
 {
   m_thumbLoader.SetObserver(this);
   m_stackingAvailable = true;
-  m_dlgProgress = NULL;
+  m_dlgProgress = nullptr;
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase() = default;
@@ -374,7 +374,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     if (!needsRefresh)
       return pDlgInfo->HasUpdatedThumb();
     // check if the item in the video info dialog has changed and if so, get the new item
-    else if (pDlgInfo->GetCurrentListItem() != NULL)
+    else if (pDlgInfo->GetCurrentListItem() != nullptr)
     {
       item = pDlgInfo->GetCurrentListItem();
 

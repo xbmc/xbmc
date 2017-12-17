@@ -25,7 +25,7 @@
 
 CEncoder::CEncoder(std::shared_ptr<IEncoder> encoder)
 {
-  m_file = NULL;
+  m_file = nullptr;
   m_dwWriteBufferPointer = 0;
   m_impl = encoder;
 }
@@ -57,7 +57,7 @@ int64_t CEncoder::SeekCallback(void *opaque, int64_t position, int whence)
 
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
-  if (strFile == NULL) return false;
+  if (strFile == nullptr) return false;
 
   m_dwWriteBufferPointer = 0;
   m_impl->m_strFile = strFile;
@@ -95,7 +95,7 @@ bool CEncoder::FileClose()
   {
     m_file->Close();
     delete m_file;
-    m_file = NULL;
+    m_file = nullptr;
   }
   return true;
 }

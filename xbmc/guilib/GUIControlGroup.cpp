@@ -116,7 +116,7 @@ void CGUIControlGroup::Render()
 {
   CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
-  CGUIControl *focusedControl = NULL;
+  CGUIControl *focusedControl = nullptr;
   for (auto *control : m_children)
   {
     if (m_renderFocusedLast && control->HasFocus())
@@ -443,13 +443,13 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
     else if (control->HasFocus())
       return control;
   }
-  return NULL;
+  return nullptr;
 }
 
 // in the case of id == 0, we don't match id
 CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
 {
-  if (!CanFocus()) return NULL;
+  if (!CanFocus()) return nullptr;
   if (id && id == (int) GetID()) return this; // we're focusable and they want us
   for (auto *pControl : m_children)
   {
@@ -462,7 +462,7 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
     if ((!id || (int) pControl->GetID() == id) && pControl->CanFocus())
       return pControl;
   }
-  return NULL;
+  return nullptr;
 }
 
 void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)

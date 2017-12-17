@@ -222,6 +222,6 @@ template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicVa
 
 void CVertexBuffer::clear()
 {
-  if (m_font != NULL)
+  if (m_font != nullptr)
     m_font->DestroyVertexBuffer(*this);
 }

@@ -103,7 +103,7 @@ void CGUIControlGroupList::Render()
   bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
   float pos = GetAlignOffset();
   float focusedPos = 0;
-  CGUIControl *focusedControl = NULL;
+  CGUIControl *focusedControl = nullptr;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     // note we render all controls, even if they're offscreen, as then they'll be updated
@@ -246,8 +246,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
     {
       // we're inserting at the given position, so grab the items above and below and alter
       // their navigation accordingly
-      CGUIControl *before = NULL;
-      CGUIControl *after = NULL;
+      CGUIControl *before = nullptr;
+      CGUIControl *after = nullptr;
       if (position == 0)
       { // inserting at the beginning
         after = m_children[0];

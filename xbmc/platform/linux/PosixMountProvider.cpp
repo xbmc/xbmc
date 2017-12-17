@@ -28,7 +28,7 @@
 CPosixMountProvider::CPosixMountProvider()
 {
   m_removableLength = 0;
-  PumpDriveChangeEvents(NULL);
+  PumpDriveChangeEvents(nullptr);
 }
 
 void CPosixMountProvider::Initialize()
@@ -105,7 +105,7 @@ std::vector<std::string> CPosixMountProvider::GetDiskUsage()
   FILE* pipe = popen("df -h", "r");
 #endif
   
-  static const char* excludes[] = {"rootfs","devtmpfs","tmpfs","none","/dev/loop", "udev", NULL};
+  static const char* excludes[] = {"rootfs","devtmpfs","tmpfs","none","/dev/loop", "udev", nullptr};
 
   if (pipe)
   {

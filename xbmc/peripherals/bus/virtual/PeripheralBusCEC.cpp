@@ -53,13 +53,13 @@ class PERIPHERALS::DllLibCEC : public DllDynamic, DllLibCECInterface
 CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals& manager) :
     CPeripheralBus("PeripBusCEC", manager, PERIPHERAL_BUS_CEC),
     m_dll(new DllLibCEC),
-    m_cecAdapter(NULL)
+    m_cecAdapter(nullptr)
 {
   m_iRescanTime = 5000;
   if (!m_dll->Load() || !m_dll->IsLoaded())
   {
     delete m_dll;
-    m_dll = NULL;
+    m_dll = nullptr;
   }
   else
   {
@@ -80,7 +80,7 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
     return false;
 
   cec_adapter_descriptor deviceList[10];
-  int8_t iFound = m_cecAdapter->DetectAdapters(deviceList, 10, NULL, true);
+  int8_t iFound = m_cecAdapter->DetectAdapters(deviceList, 10, nullptr, true);
 
   for (uint8_t iDevicePtr = 0; iDevicePtr < iFound; iDevicePtr++)
   {

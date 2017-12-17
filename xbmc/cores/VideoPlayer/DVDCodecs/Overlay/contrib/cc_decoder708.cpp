@@ -61,37 +61,37 @@ void clearTV (cc708_service_decoder *decoder);
 const char *COMMANDS_C0[32]=
 {
     "NUL", // 0 = NUL
-    NULL,  // 1 = Reserved
-    NULL,  // 2 = Reserved
+    nullptr,  // 1 = Reserved
+    nullptr,  // 2 = Reserved
     "ETX", // 3 = ETX
-    NULL,  // 4 = Reserved
-    NULL,  // 5 = Reserved
-    NULL,  // 6 = Reserved
-    NULL,  // 7 = Reserved
+    nullptr,  // 4 = Reserved
+    nullptr,  // 5 = Reserved
+    nullptr,  // 6 = Reserved
+    nullptr,  // 7 = Reserved
     "BS",  // 8 = Backspace
-    NULL,  // 9 = Reserved
-    NULL,  // A = Reserved
-    NULL,  // B = Reserved
+    nullptr,  // 9 = Reserved
+    nullptr,  // A = Reserved
+    nullptr,  // B = Reserved
     "FF",  // C = FF
     "CR",  // D = CR
     "HCR", // E = HCR
-    NULL,  // F = Reserved
+    nullptr,  // F = Reserved
     "EXT1",// 0x10 = EXT1,
-    NULL,  // 0x11 = Reserved
-    NULL,  // 0x12 = Reserved
-    NULL,  // 0x13 = Reserved
-    NULL,  // 0x14 = Reserved
-    NULL,  // 0x15 = Reserved
-    NULL,  // 0x16 = Reserved
-    NULL,  // 0x17 = Reserved
+    nullptr,  // 0x11 = Reserved
+    nullptr,  // 0x12 = Reserved
+    nullptr,  // 0x13 = Reserved
+    nullptr,  // 0x14 = Reserved
+    nullptr,  // 0x15 = Reserved
+    nullptr,  // 0x16 = Reserved
+    nullptr,  // 0x17 = Reserved
     "P16", // 0x18 = P16
-    NULL,  // 0x19 = Reserved
-    NULL,  // 0x1A = Reserved
-    NULL,  // 0x1B = Reserved
-    NULL,  // 0x1C = Reserved
-    NULL,  // 0x1D = Reserved
-    NULL,  // 0x1E = Reserved
-    NULL,  // 0x1F = Reserved
+    nullptr,  // 0x19 = Reserved
+    nullptr,  // 0x1A = Reserved
+    nullptr,  // 0x1B = Reserved
+    nullptr,  // 0x1C = Reserved
+    nullptr,  // 0x1D = Reserved
+    nullptr,  // 0x1E = Reserved
+    nullptr,  // 0x1F = Reserved
 };
 
 struct S_COMMANDS_C1 COMMANDS_C1[32]=
@@ -417,7 +417,7 @@ void process_cr (cc708_service_decoder *decoder)
 int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
   const char *name=COMMANDS_C0[data[0]];
-  if (name==NULL)
+  if (name==nullptr)
     name="Reserved";
   int len=-1;
   // These commands have a known length even if they are reserved.
@@ -681,7 +681,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
       for (int i=0;i<=I708_MAX_ROWS;i++)
       {
         decoder->windows[window].rows[i]=(unsigned char *) malloc (I708_MAX_COLUMNS+1);
-        if (decoder->windows[window].rows[i]==NULL) // Great
+        if (decoder->windows[window].rows[i]==nullptr) // Great
         {
           decoder->windows[window].is_defined=0;
           decoder->current_window=-1;

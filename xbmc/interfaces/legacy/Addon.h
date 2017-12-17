@@ -79,7 +79,7 @@ namespace XBMCAddon
       bool UpdateSettingInActiveDialog(const char* id, const String& value);
 
     public:
-      explicit Addon(const char* id = NULL);
+      explicit Addon(const char* id = nullptr);
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       virtual ~Addon();
 

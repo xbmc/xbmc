@@ -71,7 +71,7 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
             dbus_message_iter_recurse(&sub, &dict);
             do
             {
-              const char * key = NULL;
+              const char * key = nullptr;
 
               dbus_message_iter_get_basic(&dict, &key);
               if (!dbus_message_iter_next(&dict))
@@ -105,7 +105,7 @@ CVariant CDBusUtil::ParseVariant(DBusMessageIter *itr)
 CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
 {
   CVariant value;
-  const char *    string  = NULL;
+  const char *    string  = nullptr;
   dbus_int32_t    int32   = 0;
   dbus_uint32_t   uint32  = 0;
   dbus_int64_t    int64   = 0;

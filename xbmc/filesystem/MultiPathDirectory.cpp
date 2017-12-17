@@ -53,7 +53,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
 
   XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
-  CGUIDialogProgress* dlgProgress = NULL;
+  CGUIDialogProgress* dlgProgress = nullptr;
 
   unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)

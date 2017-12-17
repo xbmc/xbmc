@@ -80,7 +80,7 @@ public:
   bool HasTextChangeActions() const { return m_textChangeActions.HasActionsMeetingCondition(); };
 
   virtual bool HasInvalidInput() const { return m_invalidInput; }
-  virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = NULL);
+  virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = nullptr);
 
 protected:
   void SetFocus(bool focus) override;

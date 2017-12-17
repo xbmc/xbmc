@@ -57,7 +57,7 @@ CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
     m_binaryAddonBase(addonBase),
     m_pDll(nullptr),
     m_initialized(false),
-    m_interface{0}
+    m_interface{nullptr}
 {
 }
 
@@ -67,7 +67,7 @@ CAddonDll::CAddonDll(CAddonInfo addonInfo)
     m_binaryAddonBase(nullptr),
     m_pDll(nullptr),
     m_initialized(false),
-    m_interface{0}
+    m_interface{nullptr}
 {
 }
 
@@ -154,7 +154,7 @@ bool CAddonDll::LoadDll()
   if (!m_pDll->Load())
   {
     delete m_pDll;
-    m_pDll = NULL;
+    m_pDll = nullptr;
 
     std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{24070}, CVariant{24071});
@@ -283,11 +283,11 @@ void CAddonDll::Destroy()
   DeInitInterface();
 
   delete m_pHelpers;
-  m_pHelpers = NULL;
+  m_pHelpers = nullptr;
   if (m_pDll)
   {
     delete m_pDll;
-    m_pDll = NULL;
+    m_pDll = nullptr;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
   m_initialized = false;
@@ -339,7 +339,7 @@ AddonPtr CAddonDll::GetRunningInstance() const
 
 bool CAddonDll::DllLoaded(void) const
 {
-  return m_pDll != NULL;
+  return m_pDll != nullptr;
 }
 
 ADDON_STATUS CAddonDll::GetStatus()
@@ -498,7 +498,7 @@ bool CAddonDll::UpdateSettingInActiveDialog(const char* id, const std::string& v
 
 bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
 {
-  m_interface = {0};
+  m_interface = {nullptr};
 
   m_interface.libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
   m_interface.addonBase = nullptr;
@@ -551,7 +551,7 @@ void CAddonDll::DeInitInterface()
     free((char*)m_interface.toKodi);
   if (m_interface.toAddon)
     free((char*)m_interface.toAddon);
-  m_interface = {0};
+  m_interface = {nullptr};
 }
 
 char* CAddonDll::get_addon_path(void* kodiBase)

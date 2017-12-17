@@ -38,7 +38,7 @@
 
 using namespace KODI::MESSAGING;
 
-CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = NULL;
+CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = nullptr;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 
 CGUIKeyboardFactory::CGUIKeyboardFactory(void) = default;
@@ -84,7 +84,7 @@ bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextStrin
 bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant heading, bool allowEmptyResult, bool hiddenInput /* = false */, unsigned int autoCloseMs /* = 0 */)
 {
   bool confirmed = false;
-  CGUIKeyboard *kb = NULL;
+  CGUIKeyboard *kb = nullptr;
   //heading can be a string or a localization id
   std::string headingStr;
   if (heading.isString())
@@ -103,7 +103,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
     g_activeKeyboard = kb;
     kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
-    g_activeKeyboard = NULL;
+    g_activeKeyboard = nullptr;
   }
 
   if (confirmed)

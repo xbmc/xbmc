@@ -110,7 +110,7 @@
 CCPUInfo::CCPUInfo(void)
 {
 #ifdef TARGET_POSIX
-  m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
+  m_fProcStat = m_fProcTemperature = m_fCPUFreq = nullptr;
   m_cpuInfoForFreq = false;
 #elif defined(TARGET_WINDOWS)
   m_cpuQueryFreq = nullptr;
@@ -266,16 +266,16 @@ CCPUInfo::CCPUInfo(void)
 #else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
-  if (m_fProcTemperature == NULL)
+  if (m_fProcTemperature == nullptr)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
-  if (m_fProcTemperature == NULL)
+  if (m_fProcTemperature == nullptr)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR0/temperature", "r");
-  if (m_fProcTemperature == NULL)
+  if (m_fProcTemperature == nullptr)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/TZ0/temperature", "r");
   // read from the new location of the temperature data on new kernels, 2.6.39, 3.0 etc
-  if (m_fProcTemperature == NULL)   
+  if (m_fProcTemperature == nullptr)   
     m_fProcTemperature = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
-  if (m_fProcTemperature == NULL)   
+  if (m_fProcTemperature == nullptr)   
     m_fProcTemperature = fopen("/sys/class/thermal/thermal_zone0/temp", "r");  // On Raspberry PIs
 
   m_fCPUFreq = fopen ("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq", "r");
@@ -390,7 +390,7 @@ CCPUInfo::CCPUInfo(void)
         char* needle = strchr(buffer, ':');
         if (needle)
         {
-          char* tok = NULL,
+          char* tok = nullptr,
               * save;
           needle++;
           tok = strtok_r(needle, " ", &save);
@@ -416,7 +416,7 @@ CCPUInfo::CCPUInfo(void)
               m_cpuFeatures |= CPU_FEATURE_3DNOW;
             else if (0 == strcmp(tok, "3dnowext"))
               m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
-            tok = strtok_r(NULL, " ", &save);
+            tok = strtok_r(nullptr, " ", &save);
           }
         }
       }
@@ -478,13 +478,13 @@ CCPUInfo::CCPUInfo(void)
 CCPUInfo::~CCPUInfo()
 {
 #ifdef TARGET_POSIX
-  if (m_fProcStat != NULL)
+  if (m_fProcStat != nullptr)
     fclose(m_fProcStat);
 
-  if (m_fProcTemperature != NULL)
+  if (m_fProcTemperature != nullptr)
     fclose(m_fProcTemperature);
 
-  if (m_fCPUFreq != NULL)
+  if (m_fCPUFreq != nullptr)
     fclose(m_fCPUFreq);
 #elif defined(TARGET_WINDOWS_DESKTOP)
   if (m_cpuQueryFreq)
@@ -615,12 +615,12 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
   scale = 'c';
 #else
   int         ret   = 0;
-  FILE        *p    = NULL;
+  FILE        *p    = nullptr;
   std::string  cmd   = g_advancedSettings.m_cpuTempCmd;
 
   temperature.SetValid(false);
 
-  if (cmd.empty() && m_fProcTemperature == NULL)
+  if (cmd.empty() && m_fProcTemperature == nullptr)
     return false;
 
   if (!cmd.empty())
@@ -804,7 +804,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   }
   free(cptimes);
 #else
-  if (m_fProcStat == NULL)
+  if (m_fProcStat == nullptr)
     return false;
 
 #ifdef TARGET_ANDROID

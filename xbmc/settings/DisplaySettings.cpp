@@ -115,7 +115,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
   CSingleLock lock(m_critical);
   m_calibrations.clear();
 
-  if (settings == NULL)
+  if (settings == nullptr)
     return false;
 
   const TiXmlElement *pElement = settings->FirstChildElement("resolutions");
@@ -176,13 +176,13 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
 
 bool CDisplaySettings::Save(TiXmlNode *settings) const
 {
-  if (settings == NULL)
+  if (settings == nullptr)
     return false;
 
   CSingleLock lock(m_critical);
   TiXmlElement xmlRootElement("resolutions");
   TiXmlNode *pRoot = settings->InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (pRoot == nullptr)
     return false;
 
   // save calibrations
@@ -191,7 +191,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     // Write the resolution tag
     TiXmlElement resElement("resolution");
     TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-    if (pNode == NULL)
+    if (pNode == nullptr)
       return false;
 
     // Now write each of the pieces of information we need...
@@ -207,7 +207,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     // create the overscan child
     TiXmlElement overscanElement("overscan");
     TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    if (pOverscanNode == NULL)
+    if (pOverscanNode == nullptr)
       return false;
 
     XMLUtils::SetInt(pOverscanNode, "left", it->Overscan.left);
@@ -233,7 +233,7 @@ void CDisplaySettings::Clear()
 
 void CDisplaySettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -261,7 +261,7 @@ void CDisplaySettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 
 bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -345,7 +345,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
 bool CDisplaySettings::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -596,10 +596,10 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 21)
   {
     // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int screen = std::strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
-    int width = std::strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
-    int height = std::strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
-    float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
+    int screen = std::strtol(StringUtils::Mid(strResolution, 0,1).c_str(), nullptr, 10);
+    int width = std::strtol(StringUtils::Mid(strResolution, 1,5).c_str(), nullptr, 10);
+    int height = std::strtol(StringUtils::Mid(strResolution, 6,5).c_str(), nullptr, 10);
+    float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 11,9).c_str(), nullptr);
     unsigned flags = 0;
 
     // look for 'i' and treat everything else as progressive,

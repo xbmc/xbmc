@@ -82,8 +82,8 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
   /* the Process() method in this class overrides the one in CPeripheralBus, so leave this set to true */
   m_bNeedsPolling = true;
 
-  m_udev          = NULL;
-  m_udevMon       = NULL;
+  m_udev          = nullptr;
+  m_udevMon       = nullptr;
 
   if (!(m_udev = udev_new()))
   {
@@ -109,7 +109,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 {
   struct udev_enumerate *enumerate;
   struct udev_list_entry *devices, *dev_list_entry;
-  struct udev_device *dev(NULL), *parent(NULL);
+  struct udev_device *dev(nullptr), *parent(nullptr);
   enumerate = udev_enumerate_new(m_udev);
   udev_enumerate_scan_devices(enumerate);
   devices = udev_enumerate_get_list_entry(enumerate);
@@ -167,7 +167,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
     {
       /* unref the _parent_ device */
       udev_device_unref(parent);
-      parent = NULL;
+      parent = nullptr;
     }
   }
   /* Free the enumerator object */

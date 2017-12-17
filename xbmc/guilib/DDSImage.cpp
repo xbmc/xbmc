@@ -33,13 +33,13 @@ using namespace XFILE;
 
 CDDSImage::CDDSImage()
 {
-  m_data = NULL;
+  m_data = nullptr;
   memset(&m_desc, 0, sizeof(m_desc));
 }
 
 CDDSImage::CDDSImage(unsigned int width, unsigned int height, unsigned int format)
 {
-  m_data = NULL;
+  m_data = nullptr;
   Allocate(width, height, format);
 }
 

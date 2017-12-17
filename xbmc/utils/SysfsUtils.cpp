@@ -99,7 +99,7 @@ int SysfsUtils::GetInt(const std::string& path, int& val)
     if (read(fd, bcmd, sizeof(bcmd)) < 0)
       ret = -1;
     else
-      val = strtol(bcmd, NULL, 16);
+      val = strtol(bcmd, nullptr, 16);
 
     close(fd);
   }

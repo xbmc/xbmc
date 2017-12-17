@@ -79,7 +79,7 @@ namespace XBMCAddon
      * For scripting languages that need a global callback handler, this
      *  method should be overloaded to supply one.
      */
-    virtual CallbackHandler* GetCallbackHandler() { return NULL; }
+    virtual CallbackHandler* GetCallbackHandler() { return nullptr; }
 
     /**
      * This is a callback method that can be overridden to receive a callback

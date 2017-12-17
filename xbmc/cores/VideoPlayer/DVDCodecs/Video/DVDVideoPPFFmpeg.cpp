@@ -30,7 +30,7 @@ extern "C" {
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(CProcessInfo &processInfo):
   m_sType(""), m_processInfo(processInfo)
 {
-  m_pMode = m_pContext = NULL;
+  m_pMode = m_pContext = nullptr;
   m_iInitWidth = m_iInitHeight = 0;
   m_deinterlace = false;
 }
@@ -45,12 +45,12 @@ void CDVDVideoPPFFmpeg::Dispose()
   if (m_pMode)
   {
     pp_free_mode(m_pMode);
-    m_pMode = NULL;
+    m_pMode = nullptr;
   }
   if(m_pContext)
   {
     pp_free_context(m_pContext);
-    m_pContext = NULL;
+    m_pContext = nullptr;
   }
 
   m_iInitWidth = 0;

@@ -102,14 +102,14 @@ bool CActiveAEFilter::CreateFilterGraph()
                                          av_get_sample_fmt_name(m_sampleFormat),
                                          m_channelLayout);
 
-  int ret = avfilter_graph_create_filter(&m_pFilterCtxIn, srcFilter, "in", args.c_str(), NULL, m_pFilterGraph);
+  int ret = avfilter_graph_create_filter(&m_pFilterCtxIn, srcFilter, "in", args.c_str(), nullptr, m_pFilterGraph);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEFilter::CreateFilterGraph - avfilter_graph_create_filter: src");
     return false;
   }
 
-  ret = avfilter_graph_create_filter(&m_pFilterCtxOut, outFilter, "out", NULL, NULL, m_pFilterGraph);
+  ret = avfilter_graph_create_filter(&m_pFilterCtxOut, outFilter, "out", nullptr, nullptr, m_pFilterGraph);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEFilter::CreateFilterGraph - avfilter_graph_create_filter: out");
@@ -150,7 +150,7 @@ bool CActiveAEFilter::CreateAtempoFilter()
     return false;
   }
 
-  ret = avfilter_graph_config(m_pFilterGraph, NULL);
+  ret = avfilter_graph_config(m_pFilterGraph, nullptr);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_graph_config failed");

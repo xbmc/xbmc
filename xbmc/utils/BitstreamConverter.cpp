@@ -320,16 +320,16 @@ bool CBitstreamParser::CanStartDecode(const uint8_t *buf, int buf_size)
 CBitstreamConverter::CBitstreamConverter()
 {
   m_convert_bitstream = false;
-  m_convertBuffer     = NULL;
+  m_convertBuffer     = nullptr;
   m_convertSize       = 0;
-  m_inputBuffer       = NULL;
+  m_inputBuffer       = nullptr;
   m_inputSize         = 0;
   m_to_annexb         = false;
-  m_extradata         = NULL;
+  m_extradata         = nullptr;
   m_extrasize         = 0;
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
-  m_sps_pps_context.sps_pps_data = NULL;
+  m_sps_pps_context.sps_pps_data = nullptr;
   m_start_decode = true;
 }
 
@@ -346,7 +346,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
   switch(m_codec)
   {
     case AV_CODEC_ID_H264:
-      if (in_extrasize < 7 || in_extradata == NULL)
+      if (in_extrasize < 7 || in_extradata == nullptr)
       {
         CLog::Log(LOGERROR, "CBitstreamConverter::Open avcC data too small or missing");
         return false;
@@ -384,7 +384,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             // create a valid avcC atom data from ffmpeg's extradata
             isom_write_avcc(pb, in_extradata, in_extrasize);
             // unhook from ffmpeg's extradata
-            in_extradata = NULL;
+            in_extradata = nullptr;
             // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
             in_extrasize = avio_close_dyn_buf(pb, &in_extradata);
             // make a copy of extradata contents
@@ -426,7 +426,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
       return false;
       break;
     case AV_CODEC_ID_HEVC:
-      if (in_extrasize < 23 || in_extradata == NULL)
+      if (in_extrasize < 23 || in_extradata == nullptr)
       {
         CLog::Log(LOGERROR, "CBitstreamConverter::Open hvcC data too small or missing");
         return false;
@@ -500,18 +500,18 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
 void CBitstreamConverter::Close(void)
 {
   if (m_sps_pps_context.sps_pps_data)
-    av_free(m_sps_pps_context.sps_pps_data), m_sps_pps_context.sps_pps_data = NULL;
+    av_free(m_sps_pps_context.sps_pps_data), m_sps_pps_context.sps_pps_data = nullptr;
 
   if (m_convertBuffer)
-    av_free(m_convertBuffer), m_convertBuffer = NULL;
+    av_free(m_convertBuffer), m_convertBuffer = nullptr;
   m_convertSize = 0;
 
   if (m_extradata)
-    av_free(m_extradata), m_extradata = NULL;
+    av_free(m_extradata), m_extradata = nullptr;
   m_extrasize = 0;
 
   m_inputSize = 0;
-  m_inputBuffer = NULL;
+  m_inputBuffer = nullptr;
 
   m_convert_bitstream = false;
   m_convert_bytestream = false;
@@ -523,11 +523,11 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
   if (m_convertBuffer)
   {
     av_free(m_convertBuffer);
-    m_convertBuffer = NULL;
+    m_convertBuffer = nullptr;
   }
   m_inputSize = 0;
   m_convertSize = 0;
-  m_inputBuffer = NULL;
+  m_inputBuffer = nullptr;
 
   if (pData)
   {
@@ -543,7 +543,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
         {
           // convert demuxer packet from bitstream to bytestream (AnnexB)
           int bytestream_size = 0;
-          uint8_t *bytestream_buff = NULL;
+          uint8_t *bytestream_buff = nullptr;
 
           BitstreamConvert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
           if (bytestream_buff && (bytestream_size > 0))
@@ -555,7 +555,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           else
           {
             m_convertSize = 0;
-            m_convertBuffer = NULL;
+            m_convertBuffer = nullptr;
             CLog::Log(LOGERROR, "CBitstreamConverter::Convert: error converting.");
             return false;
           }
@@ -577,7 +577,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           if(m_convertBuffer)
           {
             av_free(m_convertBuffer);
-            m_convertBuffer = NULL;
+            m_convertBuffer = nullptr;
           }
           m_convertSize = 0;
 
@@ -596,7 +596,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           if(m_convertBuffer)
           {
             av_free(m_convertBuffer);
-            m_convertBuffer = NULL;
+            m_convertBuffer = nullptr;
           }
           m_convertSize = 0;
 
@@ -630,7 +630,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
 uint8_t *CBitstreamConverter::GetConvertBuffer() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != nullptr)
     return m_convertBuffer;
   else
     return m_inputBuffer;
@@ -638,7 +638,7 @@ uint8_t *CBitstreamConverter::GetConvertBuffer() const
 
 int CBitstreamConverter::GetConvertSize() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != nullptr)
     return m_convertSize;
   else
     return m_inputSize;
@@ -676,7 +676,7 @@ bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_ext
   // and Licensed GPL 2.1 or greater
 
   m_sps_pps_size = 0;
-  m_sps_pps_context.sps_pps_data = NULL;
+  m_sps_pps_context.sps_pps_data = nullptr;
 
   // nothing to filter
   if (!in_extradata || in_extrasize < 6)
@@ -684,7 +684,7 @@ bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_ext
 
   uint16_t unit_size;
   uint32_t total_size = 0;
-  uint8_t *out = NULL, unit_nb, sps_done = 0, sps_seen = 0, pps_seen = 0;
+  uint8_t *out = nullptr, unit_nb, sps_done = 0, sps_seen = 0, pps_seen = 0;
   const uint8_t *extradata = (uint8_t*)in_extradata + 4;
   static const uint8_t nalu_header[4] = {0, 0, 0, 1};
 
@@ -754,7 +754,7 @@ pps:
 bool CBitstreamConverter::BitstreamConvertInitHEVC(void *in_extradata, int in_extrasize)
 {
   m_sps_pps_size = 0;
-  m_sps_pps_context.sps_pps_data = NULL;
+  m_sps_pps_context.sps_pps_data = nullptr;
 
   // nothing to filter
   if (!in_extradata || in_extrasize < 23)
@@ -762,7 +762,7 @@ bool CBitstreamConverter::BitstreamConvertInitHEVC(void *in_extradata, int in_ex
 
   uint16_t unit_nb, unit_size;
   uint32_t total_size = 0;
-  uint8_t *out = NULL, array_nb, nal_type, sps_seen = 0, pps_seen = 0;
+  uint8_t *out = nullptr, array_nb, nal_type, sps_seen = 0, pps_seen = 0;
   const uint8_t *extradata = (uint8_t*)in_extradata + 21;
   static const uint8_t nalu_header[4] = {0, 0, 0, 1};
 
@@ -941,7 +941,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     }
     else
     {
-      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
+      BitstreamAllocAndCopy(poutbuf, poutbuf_size, nullptr, 0, buf, nal_size);
       if (!m_sps_pps_context.first_idr && IsSlice(unit_type))
       {
           m_sps_pps_context.first_idr = 1;
@@ -956,7 +956,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   return true;
 
 fail:
-  av_free(*poutbuf), *poutbuf = NULL;
+  av_free(*poutbuf), *poutbuf = nullptr;
   *poutbuf_size = 0;
   return false;
 }
@@ -1038,9 +1038,9 @@ int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *data, i
     /* check for h264 start code */
     if (BS_RB32(data) == 0x00000001 || BS_RB24(data) == 0x000001)
     {
-      uint8_t *buf=NULL, *end, *start;
+      uint8_t *buf=nullptr, *end, *start;
       uint32_t sps_size=0, pps_size=0;
-      uint8_t *sps=0, *pps=0;
+      uint8_t *sps=nullptr, *pps=nullptr;
 
       int ret = avc_parse_nal_units_buf(data, &buf, &len);
       if (ret < 0)

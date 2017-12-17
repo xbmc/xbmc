@@ -28,7 +28,7 @@ CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
 {
   m_extPrefix = "GLX_";
   m_glxWindow = 0;
-  m_glxContext = 0;
+  m_glxContext = nullptr;
   m_vsyncMode = 0;
 }
 
@@ -42,7 +42,7 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
   if (m_glxContext && !force)
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
-    glXMakeCurrent(m_dpy, None, NULL);
+    glXMakeCurrent(m_dpy, None, nullptr);
     glXMakeCurrent(m_dpy, glWindow, m_glxContext);
     return true;
   }
@@ -51,7 +51,7 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
   XVisualInfo vMask;
   XVisualInfo *visuals;
-  XVisualInfo *vInfo = NULL;
+  XVisualInfo *vInfo = nullptr;
   int availableVisuals = 0;
   vMask.screen = screen;
   XWindowAttributes winAttr;
@@ -73,7 +73,7 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
                 (unsigned) vInfo->visualid);
       vMask.depth = vInfo->depth;
       XFree(vInfo);
-      vInfo = NULL;
+      vInfo = nullptr;
     }
   }
   else
@@ -103,12 +103,12 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
     CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
     if (m_glxContext)
     {
-      glXMakeCurrent(m_dpy, None, NULL);
+      glXMakeCurrent(m_dpy, None, nullptr);
       glXDestroyContext(m_dpy, m_glxContext);
       XSync(m_dpy, FALSE);
     }
 
-    if ((m_glxContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
+    if ((m_glxContext = glXCreateContext(m_dpy, vInfo, nullptr, True)))
     {
       // make this context current
       glXMakeCurrent(m_dpy, glWindow, m_glxContext);
@@ -130,14 +130,14 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
 void CGLContextGLX::Destroy()
 {
-  glXMakeCurrent(m_dpy, None, NULL);
+  glXMakeCurrent(m_dpy, None, nullptr);
   glXDestroyContext(m_dpy, m_glxContext);
-  m_glxContext = 0;
+  m_glxContext = nullptr;
 }
 
 void CGLContextGLX::Detach()
 {
-  glXMakeCurrent(m_dpy, None, NULL);
+  glXMakeCurrent(m_dpy, None, nullptr);
 }
 
 bool CGLContextGLX::IsSuitableVisual(XVisualInfo *vInfo)
@@ -275,20 +275,20 @@ void CGLContextGLX::QueryExtensions()
   if (IsExtSupported("GLX_SGI_video_sync"))
     m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   else
-    m_glXWaitVideoSyncSGI = NULL;
+    m_glXWaitVideoSyncSGI = nullptr;
 
   if (IsExtSupported("GLX_SGI_video_sync"))
     m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
   else
-    m_glXGetVideoSyncSGI = NULL;
+    m_glXGetVideoSyncSGI = nullptr;
 
   if (IsExtSupported("GLX_MESA_swap_control"))
     m_glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
   else
-    m_glXSwapIntervalMESA = NULL;
+    m_glXSwapIntervalMESA = nullptr;
 
   if (IsExtSupported("GLX_EXT_swap_control"))
     m_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddress((const GLubyte*)"glXSwapIntervalEXT");
   else
-    m_glXSwapIntervalEXT = NULL;
+    m_glXSwapIntervalEXT = nullptr;
 }

@@ -125,7 +125,7 @@ protected:
   std::shared_ptr<CSettingList> AddList(std::shared_ptr<CSettingGroup> group, const std::string &id, int label, SettingLevel level, std::vector<int> values, const IntegerSettingOptions &entries,
     int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
   std::shared_ptr<CSettingList> AddList(std::shared_ptr<CSettingGroup> group, const std::string &id, int label, SettingLevel level, std::vector<int> values, IntegerSettingOptionsFiller filler,
-    int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1, SettingControlListValueFormatter formatter = NULL);
+    int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1, SettingControlListValueFormatter formatter = nullptr);
 
   // slider controls
   std::shared_ptr<CSettingInt> AddPercentageSlider(std::shared_ptr<CSettingGroup> group, const std::string &id, int label, SettingLevel level, int value, int formatLabel, int step = 1, int heading = -1,
@@ -170,7 +170,7 @@ protected:
   std::shared_ptr<ISettingControl> GetButtonControl(const std::string &format, bool delayed = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true,
     bool showInstallableAddons = false, bool showMoreAddons = true);
   std::shared_ptr<ISettingControl> GetSpinnerControl(const std::string &format, bool delayed = false, int minimumLabel = -1, int formatLabel = -1, const std::string &formatString = "");
-  std::shared_ptr<ISettingControl> GetListControl(const std::string &format, bool delayed = false, int heading = -1, bool multiselect = false, SettingControlListValueFormatter formatter = NULL);
+  std::shared_ptr<ISettingControl> GetListControl(const std::string &format, bool delayed = false, int heading = -1, bool multiselect = false, SettingControlListValueFormatter formatter = nullptr);
   std::shared_ptr<ISettingControl> GetSliderControl(const std::string &format, bool delayed = false, int heading = -1, bool usePopup = false, int formatLabel = -1, const std::string &formatString = "");
   std::shared_ptr<ISettingControl> GetRangeControl(const std::string &format, bool delayed = false, int formatLabel = -1, int valueFormatLabel = -1, const std::string &valueFormatString = "");
 

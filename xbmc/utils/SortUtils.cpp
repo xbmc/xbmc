@@ -563,7 +563,7 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
 {
   std::map<SortBy, SortUtils::SortPreparator> preparators;
 
-  preparators[SortByNone]                     = NULL;
+  preparators[SortByNone]                     = nullptr;
   preparators[SortByLabel]                    = ByLabel;
   preparators[SortByDate]                     = ByDate;
   preparators[SortBySize]                     = BySize;
@@ -715,7 +715,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
   {
     // get the matching SortPreparator
     SortPreparator preparator = getPreparator(sortBy);
-    if (preparator != NULL)
+    if (preparator != nullptr)
     {
       Fields sortingFields = GetFieldsForSorting(sortBy);
 
@@ -765,7 +765,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
   {
     // get the matching SortPreparator
     SortPreparator preparator = getPreparator(sortBy);
-    if (preparator != NULL)
+    if (preparator != nullptr)
     {
       Fields sortingFields = GetFieldsForSorting(sortBy);
 

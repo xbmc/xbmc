@@ -53,7 +53,7 @@ public:
 
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
-  int UpdateFramerate(double fps, double* interval = NULL);
+  int UpdateFramerate(double fps, double* interval = nullptr);
 
   void SetMaxSpeedAdjust(double speed);
 

@@ -88,7 +88,7 @@ Dataset::Dataset():
   select_sql("")
 {
 
-  db = NULL;
+  db = nullptr;
   haveError = active = false;
   frecno = 0;
   fbof = feof = true;
@@ -412,7 +412,7 @@ const field_value Dataset::get_field_value(int index) {
 const sql_record* Dataset::get_sql_record()
 {
   if (result.records.empty() || frecno >= (int)result.records.size())
-    return NULL;
+    return nullptr;
 
   return result.records[frecno];
 }
@@ -539,7 +539,7 @@ const char *Dataset::fieldName(int n) {
   if ( n < field_count() && n >= 0)
     return (*fields_object)[n].props.name.c_str();
   else
-    return NULL;
+    return nullptr;
 }
 
 int Dataset::fieldSize(int n) {

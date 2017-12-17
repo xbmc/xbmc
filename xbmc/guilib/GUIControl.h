@@ -225,7 +225,7 @@ public:
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible, bool setVisState = false);
   void SetVisibleCondition(const std::string &expression, const std::string &allowHiddenFocus = "");
-  bool HasVisibleCondition() const { return m_visibleCondition != NULL; };
+  bool HasVisibleCondition() const { return m_visibleCondition != nullptr; };
   void SetEnableCondition(const std::string &expression);
   virtual void UpdateVisibility(const CGUIListItem *item);
   virtual void SetInitialVisibility();
@@ -246,7 +246,7 @@ public:
   virtual void ResetAnimations();
 
   // push information updates
-  virtual void UpdateInfo(const CGUIListItem *item = NULL) {};
+  virtual void UpdateInfo(const CGUIListItem *item = nullptr) {};
   virtual void SetPushUpdates(bool pushUpdates) { m_pushedUpdates = pushUpdates; };
 
   virtual bool IsGroup() const { return false; };

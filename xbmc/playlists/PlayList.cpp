@@ -463,7 +463,7 @@ bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
   std::unique_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
-  if ( NULL == playlist.get())
+  if ( nullptr == playlist.get())
     return false;
 
   if(!playlist->Load(item->GetPath()))

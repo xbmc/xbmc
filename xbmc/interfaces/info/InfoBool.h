@@ -43,13 +43,13 @@ public:
    This is called to update (if dirty) and fetch the value of the info bool
    \param item the item used to evaluate the bool
    */
-  inline bool Get(const CGUIListItem *item = NULL)
+  inline bool Get(const CGUIListItem *item = nullptr)
   {
     if (item && m_listItemDependent)
       Update(item);
     else if (m_refreshCounter != m_parentRefreshCounter || m_refreshCounter == 0)
     {
-      Update(NULL);
+      Update(nullptr);
       m_refreshCounter = m_parentRefreshCounter;
     }
     return m_value;

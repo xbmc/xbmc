@@ -30,7 +30,7 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int p
   m_controlID = controlID;
   m_param1 = param1;
   m_param2 = param2;
-  m_pointer = NULL;
+  m_pointer = nullptr;
 }
 
 CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CFileItemList *item)
@@ -50,7 +50,7 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int p
   m_controlID = controlID;
   m_param1 = param1;
   m_param2 = param2;
-  m_pointer = NULL;
+  m_pointer = nullptr;
   m_item = item;
 }
 

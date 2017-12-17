@@ -217,7 +217,7 @@ struct CVertexBuffer
 #endif
   BufferHandleType bufferHandle; // this is really a GLuint
   size_t size;
-  CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(NULL) {}
+  CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(nullptr) {}
   CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {

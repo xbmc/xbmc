@@ -156,7 +156,7 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
     if (pos + length > maxpos) return false;
 
     // Process tag here
-    char *tag = NULL;
+    char *tag = nullptr;
     if (signature == 0x1C02)
     {
       switch (type)

@@ -96,7 +96,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
 
   // get the profile
   const CProfile *profile = CProfilesManager::GetInstance().GetProfile(index);
-  if (profile == NULL)
+  if (profile == nullptr)
     return InvalidParams;
 
   bool bPrompt = parameterObject["prompt"].asBoolean();

@@ -31,7 +31,7 @@
 
 CAudioDecoder::CAudioDecoder()
 {
-  m_codec = NULL;
+  m_codec = nullptr;
   m_rawBuffer = nullptr;
 
   m_eof = false;
@@ -61,7 +61,7 @@ void CAudioDecoder::Destroy()
 
   if ( m_codec )
     delete m_codec;
-  m_codec = NULL;
+  m_codec = nullptr;
 
   m_canPlay = false;
 }
@@ -203,7 +203,7 @@ void *CAudioDecoder::GetData(unsigned int samples)
   if (size > sizeof(m_outputBuffer))
   {
     CLog::Log(LOGERROR, "CAudioDecoder::GetData - More data was requested then we have space to buffer!");
-    return NULL;
+    return nullptr;
   }
   
   if (size > m_pcmBuffer.getMaxReadSize())
@@ -221,7 +221,7 @@ void *CAudioDecoder::GetData(unsigned int samples)
   }
   
   CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", samples);
-  return NULL;
+  return nullptr;
 }
 
 uint8_t *CAudioDecoder::GetRawData(int &size)

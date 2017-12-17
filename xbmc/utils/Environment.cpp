@@ -305,7 +305,7 @@ std::string CEnvironment::getenv(const std::string &name)
   return win32ConvertWToUtf8(Wvalue);
 #else
   char * str = ::getenv(name.c_str());
-  if (str == NULL)
+  if (str == nullptr)
     return "";
   return str;
 #endif

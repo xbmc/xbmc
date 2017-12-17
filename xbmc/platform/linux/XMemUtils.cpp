@@ -56,7 +56,7 @@ void _aligned_free(void *p) {
 #ifndef TARGET_WINDOWS
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
-static FILE* procMeminfoFP = NULL;
+static FILE* procMeminfoFP = nullptr;
 #endif
 
 void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
@@ -152,7 +152,7 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
   struct sysinfo info;
   char name[32];
   unsigned val;
-  if (!procMeminfoFP && (procMeminfoFP = fopen("/proc/meminfo", "r")) == NULL)
+  if (!procMeminfoFP && (procMeminfoFP = fopen("/proc/meminfo", "r")) == nullptr)
     sysinfo(&info);
   else
   {

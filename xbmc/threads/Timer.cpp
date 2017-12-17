@@ -42,7 +42,7 @@ CTimer::~CTimer()
 
 bool CTimer::Start(uint32_t timeout, bool interval /* = false */)
 {
-  if (m_callback == NULL || timeout == 0 || IsRunning())
+  if (m_callback == nullptr || timeout == 0 || IsRunning())
     return false;
 
   m_timeout = timeout;

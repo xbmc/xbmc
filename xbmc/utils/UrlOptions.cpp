@@ -59,7 +59,7 @@ std::string CUrlOptions::GetOptionsString(bool withLeadingSeparator /* = false *
 
 void CUrlOptions::AddOption(const std::string &key, const char *value)
 {
-  if (key.empty() || value == NULL)
+  if (key.empty() || value == nullptr)
     return;
 
   return AddOption(key, std::string(value));

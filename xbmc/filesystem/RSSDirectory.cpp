@@ -454,7 +454,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   SResources resources;
   ParseItem(item, resources, root, path);
 
-  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:broadcasts", "svtplay:xmllink", "rss:link", "rss:guid", NULL };
+  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:broadcasts", "svtplay:xmllink", "rss:link", "rss:guid", nullptr };
 
   std::string mime;
   if     (FindMime(resources, "video/"))
@@ -596,7 +596,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else
     return false;
 
-  TiXmlElement* child = NULL;
+  TiXmlElement* child = nullptr;
   for (child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement())
   {
     // Create new item,
@@ -621,7 +621,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   int mins = 60;
   TiXmlElement* ttl = docHandle.FirstChild("rss").FirstChild("ttl").Element();
   if (ttl)
-    mins = strtol(ttl->FirstChild()->Value(),NULL,10);
+    mins = strtol(ttl->FirstChild()->Value(),nullptr,10);
   time += CDateTimeSpan(0,0,mins,0);
   items.SetPath(strPath);
   items.Save();

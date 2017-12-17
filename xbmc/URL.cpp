@@ -167,7 +167,7 @@ void CURL::Parse(const std::string& strURL1)
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   size_t iEnd = strURL.length();
-  const char* sep = NULL;
+  const char* sep = nullptr;
 
   //! @todo fix all Addon paths
   std::string strProtocol2 = GetTranslatedProtocol();

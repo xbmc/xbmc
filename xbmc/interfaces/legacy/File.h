@@ -62,7 +62,7 @@ namespace XBMCAddon
     {
       XFILE::CFile* file;
     public:
-      inline File(const String& filepath, const char* mode = NULL) : file(new XFILE::CFile())
+      inline File(const String& filepath, const char* mode = nullptr) : file(new XFILE::CFile())
       {
         DelayedCallGuard dg(languageHook);
         if (mode && strncmp(mode, "w", 1) == 0)

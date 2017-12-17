@@ -126,7 +126,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
-      if (playlist != NULL)
+      if (playlist != nullptr)
       {
         // set fullscreen or windowed
         CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
@@ -437,7 +437,7 @@ namespace XBMCAddon
           return info.name;
       }
 
-      return NULL;
+      return nullptr;
     }
 
     std::vector<String> Player::getAvailableSubtitleStreams()

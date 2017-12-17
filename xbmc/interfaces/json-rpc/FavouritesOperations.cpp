@@ -67,7 +67,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
       if (fields.find("window") != fields.end())
       {
         if (StringUtils::IsNaturalNumber(parameters[0]))
-          object["window"] = CWindowTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
+          object["window"] = CWindowTranslator::TranslateWindow(strtol(parameters[0].c_str(), nullptr, 10));
         else
           object["window"] = parameters[0];
       }

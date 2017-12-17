@@ -71,14 +71,14 @@ using namespace XFILE;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
-DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
-CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
+DllLibShairplay *CAirTunesServer::m_pLibShairplay = nullptr;
+CAirTunesServer *CAirTunesServer::ServerInstance = nullptr;
 std::string CAirTunesServer::m_macAddress;
 std::string CAirTunesServer::m_metadata[3];
 CCriticalSection CAirTunesServer::m_metadataLock;
 bool CAirTunesServer::m_streamStarted = false;
 CCriticalSection CAirTunesServer::m_dacpLock;
-CDACP *CAirTunesServer::m_pDACP = NULL;
+CDACP *CAirTunesServer::m_pDACP = nullptr;
 std::string CAirTunesServer::m_dacp_id;
 std::string CAirTunesServer::m_active_remote_header;
 CCriticalSection CAirTunesServer::m_actionQueueLock;
@@ -141,7 +141,7 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
 {
   static std::string coverArtFile = TMP_COVERART_PATH_JPG;
 
-  if (outputFilename != NULL)
+  if (outputFilename != nullptr)
     coverArtFile = std::string(outputFilename);
 
   CSingleLock lock(m_metadataLock);
@@ -320,7 +320,7 @@ void CAirTunesServer::FreeDACPRemote()
   CSingleLock lock(m_dacpLock);
   if (m_pDACP)
     delete m_pDACP;
-  m_pDACP = NULL;
+  m_pDACP = nullptr;
 }
 
 #define RSA_KEY " \
@@ -376,7 +376,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   header.durationMs = 0;
 
   if (pipe->Write(&header, sizeof(header)) == 0)
-    return 0;
+    return nullptr;
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
@@ -425,7 +425,7 @@ void CAirTunesServer::SetupRemoteControl()
 {
   // check if we found the remote control service via zeroconf already or
   // if no valid id and headers was received yet
-  if (m_dacp_id.empty() || m_active_remote_header.empty() || m_pDACP != NULL)
+  if (m_dacp_id.empty() || m_active_remote_header.empty() || m_pDACP != nullptr)
     return;
 
   // check for the service matching m_dacp_id
@@ -447,7 +447,7 @@ void CAirTunesServer::SetupRemoteControl()
           CZeroconfBrowser::GetInstance()->ResolveService(service);
           CSingleLock lock(m_dacpLock);
           // recheck with lock hold
-          if (m_pDACP == NULL)
+          if (m_pDACP == nullptr)
           {
             // we can control the client with this object now
             m_pDACP = new CDACP(m_active_remote_header, service.GetIP(), service.GetPort());
@@ -611,7 +611,7 @@ void CAirTunesServer::StopServer(bool bWait)
     if (bWait)
     {
       delete ServerInstance;
-      ServerInstance = NULL;
+      ServerInstance = nullptr;
     }
 
     CZeroconf::GetInstance()->RemoveService("servers.airtunes");
@@ -620,7 +620,7 @@ void CAirTunesServer::StopServer(bool bWait)
 
 bool CAirTunesServer::IsRunning()
 {
-  if (ServerInstance == NULL)
+  if (ServerInstance == nullptr)
     return false;
 
   return ServerInstance->IsRAOPRunningInternal();
@@ -692,7 +692,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
     ao.audio_set_progress   = AudioOutputFunctions::audio_set_progress;
     m_pLibShairplay->EnableDelayedUnload(false);
     m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max
-    ret = m_pRaop != NULL;    
+    ret = m_pRaop != nullptr;    
 
     if(ret)
     {
@@ -705,7 +705,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
         m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
       }
 
-      m_pLibShairplay->raop_set_log_callback(m_pRaop, shairplay_log, NULL);
+      m_pLibShairplay->raop_set_log_callback(m_pRaop, shairplay_log, nullptr);
 
       CNetworkInterface *net = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
 

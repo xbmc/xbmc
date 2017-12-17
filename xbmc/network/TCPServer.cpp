@@ -62,7 +62,7 @@ using namespace ANNOUNCEMENT;
 
 #define RECEIVEBUFFER 1024
 
-CTCPServer *CTCPServer::ServerInstance = NULL;
+CTCPServer *CTCPServer::ServerInstance = nullptr;
 
 bool CTCPServer::StartServer(int port, bool nonlocal)
 {
@@ -99,14 +99,14 @@ void CTCPServer::StopServer(bool bWait)
     if (bWait)
     {
       delete ServerInstance;
-      ServerInstance = NULL;
+      ServerInstance = nullptr;
     }
   }
 }
 
 bool CTCPServer::IsRunning()
 {
-  if (ServerInstance == NULL)
+  if (ServerInstance == nullptr)
     return false;
 
   return ((CThread*)ServerInstance)->IsRunning();
@@ -116,7 +116,7 @@ CTCPServer::CTCPServer(int port, bool nonlocal) : CThread("TCPServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;
-  m_sdpd = NULL;
+  m_sdpd = nullptr;
 }
 
 void CTCPServer::Process()
@@ -144,7 +144,7 @@ void CTCPServer::Process()
         max_fd = m_connections[i]->m_socket;
     }
 
-    int res = select((intptr_t)max_fd+1, &rfds, NULL, NULL, &to);
+    int res = select((intptr_t)max_fd+1, &rfds, nullptr, nullptr, &to);
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
@@ -172,7 +172,7 @@ void CTCPServer::Process()
               if (!response.empty())
                 m_connections[i]->Send(response.c_str(), response.size());
 
-              if (websocket != NULL)
+              if (websocket != nullptr)
               {
                 // Replace the CTCPClient with a CWebSocketClient
                 CWebSocketClient *websocketClient = new CWebSocketClient(websocket, *(m_connections[i]));
@@ -393,14 +393,14 @@ bool CTCPServer::InitializeBlue()
   uint8_t rfcomm_channel = sa.rc_channel;
 
   uuid_t root_uuid, l2cap_uuid, rfcomm_uuid, svc_uuid;
-  sdp_list_t *l2cap_list = 0,
-             *rfcomm_list = 0,
-             *root_list = 0,
-             *proto_list = 0,
-             *access_proto_list = 0,
-             *service_class = 0;
+  sdp_list_t *l2cap_list = nullptr,
+             *rfcomm_list = nullptr,
+             *root_list = nullptr,
+             *proto_list = nullptr,
+             *access_proto_list = nullptr,
+             *service_class = nullptr;
 
-  sdp_data_t *channel = 0;
+  sdp_data_t *channel = nullptr;
 
   sdp_record_t *record = sdp_record_alloc();
 
@@ -410,43 +410,43 @@ bool CTCPServer::InitializeBlue()
 
   // make the service record publicly browseable
   sdp_uuid16_create(&root_uuid, PUBLIC_BROWSE_GROUP);
-  root_list = sdp_list_append(0, &root_uuid);
+  root_list = sdp_list_append(nullptr, &root_uuid);
   sdp_set_browse_groups(record, root_list);
 
   // set l2cap information
   sdp_uuid16_create(&l2cap_uuid, L2CAP_UUID);
-  l2cap_list = sdp_list_append(0, &l2cap_uuid);
-  proto_list = sdp_list_append(0, l2cap_list);
+  l2cap_list = sdp_list_append(nullptr, &l2cap_uuid);
+  proto_list = sdp_list_append(nullptr, l2cap_list);
 
   // set rfcomm information
   sdp_uuid16_create(&rfcomm_uuid, RFCOMM_UUID);
   channel = sdp_data_alloc(SDP_UINT8, &rfcomm_channel);
-  rfcomm_list = sdp_list_append(0, &rfcomm_uuid);
+  rfcomm_list = sdp_list_append(nullptr, &rfcomm_uuid);
   sdp_list_append(rfcomm_list, channel);
   sdp_list_append(proto_list, rfcomm_list);
 
   // attach protocol information to service record
-  access_proto_list = sdp_list_append(0, proto_list);
+  access_proto_list = sdp_list_append(nullptr, proto_list);
   sdp_set_access_protos(record, access_proto_list);
 
   // set the name, provider, and description
   sdp_set_info_attr(record, bt_service_name, bt_service_prov, bt_service_desc);
 
   // set the Service class ID
-  service_class = sdp_list_append(0, &svc_uuid);
+  service_class = sdp_list_append(nullptr, &svc_uuid);
   sdp_set_service_classes(record, service_class);
 
   // cleanup
   sdp_data_free(channel);
-  sdp_list_free(l2cap_list, 0);
-  sdp_list_free(rfcomm_list, 0);
-  sdp_list_free(root_list, 0);
-  sdp_list_free(access_proto_list, 0);
-  sdp_list_free(service_class, 0);
+  sdp_list_free(l2cap_list, nullptr);
+  sdp_list_free(rfcomm_list, nullptr);
+  sdp_list_free(root_list, nullptr);
+  sdp_list_free(access_proto_list, nullptr);
+  sdp_list_free(service_class, nullptr);
 
   // connect to the local SDP server, register the service record
   sdp_session_t *session = sdp_connect(&bt_bdaddr_any, &bt_bdaddr_local, SDP_RETRY_IF_BUSY);
-  if (session == NULL)
+  if (session == nullptr)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
     closesocket(fd);
@@ -503,7 +503,7 @@ void CTCPServer::Deinitialize()
 #ifdef HAVE_LIBBLUETOOTH
   if (m_sdpd)
     sdp_close((sdp_session_t*)m_sdpd);
-  m_sdpd = NULL;
+  m_sdpd = nullptr;
 #endif
 
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
@@ -655,7 +655,7 @@ CTCPServer::CWebSocketClient& CTCPServer::CWebSocketClient::operator=(const CWeb
 void CTCPServer::CWebSocketClient::Send(const char *data, unsigned int size)
 {
   const CWebSocketMessage *msg = m_websocket->Send(WebSocketTextFrame, data, size);
-  if (msg == NULL || !msg->IsComplete())
+  if (msg == nullptr || !msg->IsComplete())
     return;
 
   std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
@@ -666,11 +666,11 @@ void CTCPServer::CWebSocketClient::Send(const char *data, unsigned int size)
 void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buffer, int length)
 {
   bool send;
-  const CWebSocketMessage *msg = NULL;
+  const CWebSocketMessage *msg = nullptr;
   size_t len = length;
   do
   {
-    if ((msg = m_websocket->Handle(buffer, len, send)) != NULL && msg->IsComplete())
+    if ((msg = m_websocket->Handle(buffer, len, send)) != nullptr && msg->IsComplete())
     {
       std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
       if (send)
@@ -687,7 +687,7 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
       delete msg;
     }
   }
-  while (len > 0 && msg != NULL);
+  while (len > 0 && msg != nullptr);
 
   if (m_websocket->GetState() == WebSocketStateClosed)
     Disconnect();

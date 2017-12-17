@@ -72,7 +72,7 @@ enum {
 // Constructor
 //--------------------------------------------------------------------------
 CJpegParse::CJpegParse():
-  m_SectionBuffer(NULL)
+  m_SectionBuffer(nullptr)
 {
   memset(&m_ExifInfo, 0, sizeof(m_ExifInfo));
   memset(&m_IPTCInfo, 0, sizeof(m_IPTCInfo));
@@ -111,7 +111,7 @@ bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
   }
 
   m_SectionBuffer = new unsigned char[sectionLength];
-  if (m_SectionBuffer == NULL)
+  if (m_SectionBuffer == nullptr)
   {
     printf("JpgParse: could not allocate memory");
     return false;
@@ -139,7 +139,7 @@ bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
 void CJpegParse::ReleaseSection (void)
 {
   delete[] m_SectionBuffer;
-  m_SectionBuffer = NULL;
+  m_SectionBuffer = nullptr;
 }
 
 //--------------------------------------------------------------------------
@@ -200,7 +200,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
 
       case M_COM: // Comment section
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer != nullptr)
         {
        //   CExifParse::FixComment(comment);          // Ensure comment is printable
           unsigned short length = min(itemlen - 2, MAX_COMMENT);
@@ -224,7 +224,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
       case M_SOF14:
       case M_SOF15:
         GetSection(infile, itemlen);
-        if ((m_SectionBuffer != NULL) && (itemlen >= 7))
+        if ((m_SectionBuffer != nullptr) && (itemlen >= 7))
         {
           ProcessSOFn();
           m_ExifInfo.Process = marker;
@@ -234,7 +234,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
 
       case M_IPTC:
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer != nullptr)
         {
           CIptcParse::Process(m_SectionBuffer, itemlen, &m_IPTCInfo);
         }
@@ -246,7 +246,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
         // that uses marker 31 for non exif stuff.  Thus make sure
         // it says 'Exif' in the section before treating it as exif.
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer != nullptr)
         {
           CExifParse exif;
           exif.Process(m_SectionBuffer, itemlen, &m_ExifInfo);

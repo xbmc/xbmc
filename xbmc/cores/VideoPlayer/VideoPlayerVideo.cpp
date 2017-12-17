@@ -71,7 +71,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
-  m_pVideoCodec = NULL;
+  m_pVideoCodec = nullptr;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_bRenderSubs = false;
@@ -259,7 +259,7 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   if (m_pVideoCodec)
   {
     delete m_pVideoCodec;
-    m_pVideoCodec = NULL;
+    m_pVideoCodec = nullptr;
   }
 
   if (m_picture.videoBuffer)
@@ -497,7 +497,7 @@ void CVideoPlayerVideo::Process()
       }
 
       OpenStream(msg->m_hints, msg->m_codec);
-      msg->m_codec = NULL;
+      msg->m_codec = nullptr;
       if (m_picture.videoBuffer)
       {
         m_picture.videoBuffer->Release();

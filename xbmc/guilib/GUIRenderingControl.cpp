@@ -33,14 +33,14 @@ CGUIRenderingControl::CGUIRenderingControl(int parentID, int controlID, float po
     : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   ControlType = GUICONTROL_RENDERADDON;
-  m_callback = NULL;
+  m_callback = nullptr;
 }
 
 CGUIRenderingControl::CGUIRenderingControl(const CGUIRenderingControl &from)
 : CGUIControl(from)
 {
   ControlType = GUICONTROL_RENDERADDON;
-  m_callback = NULL;
+  m_callback = nullptr;
 }
 
 bool CGUIRenderingControl::InitCallback(IRenderingCallback *callback)
@@ -59,7 +59,7 @@ bool CGUIRenderingControl::InitCallback(IRenderingCallback *callback)
   if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
   if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
-  void *device = NULL;
+  void *device = nullptr;
 #if TARGET_WINDOWS
   device = DX::DeviceResources::Get()->GetD3DDevice();
 #endif
@@ -118,7 +118,7 @@ void CGUIRenderingControl::FreeResources(bool immediately)
   g_graphicsContext.CaptureStateBlock(); //! @todo locking
   m_callback->Stop();
   g_graphicsContext.ApplyStateBlock();
-  m_callback = NULL;
+  m_callback = nullptr;
 }
 
 bool CGUIRenderingControl::CanFocusFromPoint(const CPoint &point) const

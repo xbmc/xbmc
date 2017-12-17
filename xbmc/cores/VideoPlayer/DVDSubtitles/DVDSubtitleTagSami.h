@@ -38,8 +38,8 @@ class CDVDSubtitleTagSami
 public:
   CDVDSubtitleTagSami()
   {
-    m_tags = NULL;
-    m_tagOptions = NULL;
+    m_tags = nullptr;
+    m_tagOptions = nullptr;
     m_flag[FLAG_BOLD] = false;
     m_flag[FLAG_ITALIC] = false;
     m_flag[FLAG_COLOR] = false;
@@ -47,7 +47,7 @@ public:
   }
   virtual ~CDVDSubtitleTagSami();
   bool Init();
-  void ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang = NULL);
+  void ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang = nullptr);
   void CloseTag(CDVDOverlayText* pOverlay);
   void LoadHead(CDVDSubtitleStream* samiStream);
 

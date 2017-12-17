@@ -32,7 +32,7 @@ namespace XBMC
   public:
     XbmcCommons::ILogger* loggerImpl;
 
-    ContextOpaque() : loggerImpl(NULL) {}
+    ContextOpaque() : loggerImpl(nullptr) {}
   };
 
   Context::Context()
@@ -50,8 +50,8 @@ namespace XBMC
   Context::~Context()
   {
     // cleanup
-    XbmcCommons::Exception::SetLogger(NULL);
-    CThread::SetLogger(NULL);
+    XbmcCommons::Exception::SetLogger(nullptr);
+    CThread::SetLogger(nullptr);
     delete impl->loggerImpl;
 
     delete impl;

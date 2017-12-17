@@ -45,7 +45,7 @@ bool DPMSSupport::CheckValidMode(PowerSavingMode mode)
 
 const char* DPMSSupport::GetModeName(PowerSavingMode mode)
 {
-  if (!CheckValidMode(mode)) return NULL;
+  if (!CheckValidMode(mode)) return nullptr;
   return MODE_NAMES[mode];
 }
 
@@ -133,7 +133,7 @@ void DPMSSupport::PlatformSpecificInit()
 {
   CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
   Display* dpy = winSystem.GetDisplay();
-  if (dpy == NULL)
+  if (dpy == nullptr)
     return;
 
   int event_base, error_base;   // we ignore these
@@ -158,7 +158,7 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
   CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
   Display* dpy = winSystem.GetDisplay();
-  if (dpy == NULL)
+  if (dpy == nullptr)
     return false;
 
   // This is not needed on my ATI Radeon, but the docs say that DPMSForceLevel
@@ -175,7 +175,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
   CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
   Display* dpy = winSystem.GetDisplay();
-  if (dpy == NULL)
+  if (dpy == nullptr)
     return false;
 
   DPMSForceLevel(dpy, DPMSModeOn);

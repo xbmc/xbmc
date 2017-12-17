@@ -38,7 +38,7 @@ CRenderCaptureBase::CRenderCaptureBase()
 {
   m_state          = CAPTURESTATE_FAILED;
   m_userState      = CAPTURESTATE_FAILED;
-  m_pixels         = NULL;
+  m_pixels         = nullptr;
   m_width          = 0;
   m_height         = 0;
   m_bufferSize     = 0;
@@ -186,7 +186,7 @@ void CRenderCaptureGL::BeginRender()
     if (m_bufferSize != m_width * m_height * 4)
     {
       m_bufferSize = m_width * m_height * 4;
-      glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, m_bufferSize, 0, GL_STREAM_READ_ARB);
+      glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, m_bufferSize, nullptr, GL_STREAM_READ_ARB);
       delete[] m_pixels;
       m_pixels = new uint8_t[m_bufferSize];
     }
@@ -230,7 +230,7 @@ void* CRenderCaptureGL::GetRenderBuffer()
 #ifndef HAS_GLES
   if (m_asyncSupported)
   {
-    return NULL; //offset into the pbo
+    return nullptr; //offset into the pbo
   }
   else
 #endif

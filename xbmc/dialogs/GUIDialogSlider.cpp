@@ -31,8 +31,8 @@
 CGUIDialogSlider::CGUIDialogSlider(void)
     : CGUIDialog(WINDOW_DIALOG_SLIDER, "DialogSlider.xml")
 {
-  m_callback = NULL;
-  m_callbackData = NULL;
+  m_callback = nullptr;
+  m_callbackData = nullptr;
   m_loadType = KEEP_IN_MEMORY;
 }
 
@@ -64,8 +64,8 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
-    m_callback = NULL;
-    m_callbackData = NULL;
+    m_callback = nullptr;
+    m_callbackData = nullptr;
     break;
   }
   return CGUIDialog::OnMessage(message);
@@ -94,8 +94,8 @@ void CGUIDialogSlider::SetSlider(const std::string &label, float value, float mi
 void CGUIDialogSlider::OnWindowLoaded()
 {
   // ensure our callbacks are NULL, incase we were loaded via some non-standard means
-  m_callback = NULL;
-  m_callbackData = NULL;
+  m_callback = nullptr;
+  m_callbackData = nullptr;
   CGUIDialog::OnWindowLoaded();
 }
 
@@ -128,7 +128,7 @@ void CGUIDialogSlider::Display(int label, float value, float min, float delta, f
   // set the label and value
   slider->Initialize();
   slider->SetAutoClose(1000);
-  slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, NULL);
+  slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, nullptr);
   slider->SetModalityType(DialogModalityType::MODELESS);
   slider->Open();
 }

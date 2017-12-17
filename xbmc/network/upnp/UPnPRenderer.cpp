@@ -80,7 +80,7 @@ CUPnPRenderer::SetupServices()
     NPT_CHECK(PLT_MediaRenderer::SetupServices());
 
     // update what we can play
-    PLT_Service* service = NULL;
+    PLT_Service* service = nullptr;
     NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
     service->SetStateVariable("SinkProtocolInfo"
         ,"http-get:*:*:*"
@@ -202,7 +202,7 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
         NPT_String filepath = query.GetField("path");
         if (!filepath.IsEmpty()) {
             NPT_HttpEntity* entity = response.GetEntity();
-            if (entity == NULL) return NPT_ERROR_INVALID_STATE;
+            if (entity == nullptr) return NPT_ERROR_INVALID_STATE;
 
             // check the method
             if (request.GetMethod() != NPT_HTTP_METHOD_GET &&
@@ -404,7 +404,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     // we pass an empty CThumbLoader reference, as it can't be used
     // without CUPnPServer enabled
     NPT_Reference<CThumbLoader> thumb_loader;
-    PLT_MediaObject* object = BuildObject(item, file_path, false, thumb_loader, NULL, NULL, UPnPRenderer);
+    PLT_MediaObject* object = BuildObject(item, file_path, false, thumb_loader, nullptr, nullptr, UPnPRenderer);
     if (object) {
         // fetch the item's artwork
         std::string thumb;
@@ -654,7 +654,7 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    g_application.SetVolume((float)strtod((const char*)volume, NULL));
+    g_application.SetVolume((float)strtod((const char*)volume, nullptr));
     return NPT_SUCCESS;
 }
 

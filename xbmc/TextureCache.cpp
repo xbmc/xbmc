@@ -172,7 +172,7 @@ bool CTextureCache::CacheImage(const std::string &image, CTextureDetails &detail
 {
   std::string path = GetCachedImage(image, details);
   if (path.empty()) // not cached
-    path = CacheImage(image, NULL, &details);
+    path = CacheImage(image, nullptr, &details);
 
   return !path.empty();
 }

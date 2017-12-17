@@ -81,7 +81,7 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter, std::string fullPath, std
 
   if (dirp)
   {
-    while ((dp = readdir(dirp)) != NULL)
+    while ((dp = readdir(dirp)) != nullptr)
     {
       if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) 
       {
@@ -156,7 +156,7 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
       else
       { // success
         lzo_uint optimSize = size;
-        if (lzo1x_optimize(packed, packedSize, data, &optimSize, NULL) != LZO_E_OK || optimSize != size)
+        if (lzo1x_optimize(packed, packedSize, data, &optimSize, nullptr) != LZO_E_OK || optimSize != size)
         { //optimisation failed
           packedSize = size;
           writer.AppendContent(data, size);
@@ -386,8 +386,8 @@ int main(int argc, char* argv[])
       OutputFilename = args[++i];
       valid = true;
 #ifdef TARGET_POSIX
-      char *c = NULL;
-      while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
+      char *c = nullptr;
+      while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != nullptr) *c = '/';
 #endif
     }
     else

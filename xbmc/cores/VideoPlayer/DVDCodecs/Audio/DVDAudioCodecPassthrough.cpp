@@ -35,7 +35,7 @@ extern "C" {
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType) :
   CDVDAudioCodec(processInfo),
-  m_buffer(NULL),
+  m_buffer(nullptr),
   m_bufferSize(0),
   m_currentPts(DVD_NOPTS_VALUE),
   m_nextPts(DVD_NOPTS_VALUE),
@@ -93,7 +93,7 @@ void CDVDAudioCodecPassthrough::Dispose()
   if (m_buffer)
   {
     delete[] m_buffer;
-    m_buffer = NULL;
+    m_buffer = nullptr;
   }
 
   m_bufferSize = 0;

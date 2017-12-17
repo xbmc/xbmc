@@ -52,7 +52,7 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("([0-9]+):([0-9]+):([0-9]+):([^|]*?)(\\|([^|]*?))?$"))
     return false;
 
-  CDVDOverlayText* pPrevOverlay = NULL;
+  CDVDOverlayText* pPrevOverlay = nullptr;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {

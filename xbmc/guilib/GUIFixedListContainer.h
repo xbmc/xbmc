@@ -47,7 +47,7 @@ protected:
   bool GetOffsetRange(int &minOffset, int &maxOffset) const override;
   void ValidateOffset() override;
   bool SelectItemFromPoint(const CPoint &point) override;
-  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
+  int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = nullptr) const override;
   void SelectItem(int item) override;
   bool HasNextPage() const override;
   bool HasPreviousPage() const override;

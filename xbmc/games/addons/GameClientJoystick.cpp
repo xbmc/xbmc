@@ -36,8 +36,8 @@ CGameClientJoystick::CGameClientJoystick(CGameClient* gameClient, int port, cons
   m_controller(controller),
   m_dllStruct(dllStruct)
 {
-  assert(m_gameClient != NULL);
-  assert(m_controller.get() != NULL);
+  assert(m_gameClient != nullptr);
+  assert(m_controller.get() != nullptr);
 }
 
 std::string CGameClientJoystick::ControllerID(void) const

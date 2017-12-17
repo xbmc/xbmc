@@ -82,7 +82,7 @@ CryptThreadingInitializer::CryptThreadingInitializer()
 
   locks = new CCriticalSection*[numlocks];
   for (int i = 0; i < numlocks; i++)
-    locks[i] = NULL;
+    locks[i] = nullptr;
 
 #ifdef HAVE_GCRYPT
 #if GCRYPT_VERSION_NUMBER < 0x010600
@@ -101,7 +101,7 @@ CryptThreadingInitializer::~CryptThreadingInitializer()
 {
   CSingleLock l(locksLock);
 #if defined(HAVE_OPENSSL) && OPENSSL_VERSION_NUMBER < 0x10100000L
-  CRYPTO_set_locking_callback(NULL);
+  CRYPTO_set_locking_callback(nullptr);
 #endif
 
   for (int i = 0; i < numlocks; i++)
@@ -114,7 +114,7 @@ CCriticalSection* CryptThreadingInitializer::get_lock(int index)
 {
   CSingleLock l(locksLock);
   CCriticalSection* curlock = locks[index];
-  if (curlock == NULL)
+  if (curlock == nullptr)
   {
     curlock = new CCriticalSection();
     locks[index] = curlock;

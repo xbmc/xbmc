@@ -174,7 +174,7 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   m_xrrEventPending = false;
 
   // open input method
-  char *old_locale = NULL, *old_modifiers = NULL;
+  char *old_locale = nullptr, *old_modifiers = nullptr;
   char res_name[8];
   const char *p;
 
@@ -182,13 +182,13 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   strcpy(res_name, "xbmc");
 
   // save current locale, this should be "C"
-  p = setlocale(LC_ALL, NULL);
+  p = setlocale(LC_ALL, nullptr);
   if (p)
   {
     old_locale = (char*)malloc(strlen(p) +1);
     strcpy(old_locale, p);
   }
-  p = XSetLocaleModifiers(NULL);
+  p = XSetLocaleModifiers(nullptr);
   if (p)
   {
     old_modifiers = (char*)malloc(strlen(p) +1);
@@ -198,7 +198,7 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   // set users preferences and open input method
   p = setlocale(LC_ALL, "");
   XSetLocaleModifiers("");
-  m_xim = XOpenIM(m_display, NULL, res_name, res_name);
+  m_xim = XOpenIM(m_display, nullptr, res_name, res_name);
 
   // restore old locale
   if (old_locale)
@@ -212,7 +212,7 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
     free(old_modifiers);
   }
 
-  m_xic = NULL;
+  m_xic = nullptr;
   if (m_xim)
   {
     m_xic = XCreateIC(m_xim,
@@ -399,10 +399,10 @@ bool CWinEventsX11::MessagePump()
         {
           static XComposeStatus state;
           char keybuf[32];
-          XLookupString(&xevent.xkey, NULL, 0, &xkeysym, NULL);
+          XLookupString(&xevent.xkey, nullptr, 0, &xkeysym, nullptr);
           newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
           newEvent.key.keysym.scancode = xevent.xkey.keycode;
-          if (XLookupString(&xevent.xkey, keybuf, sizeof(keybuf), NULL, &state))
+          if (XLookupString(&xevent.xkey, keybuf, sizeof(keybuf), nullptr, &state))
           {
             newEvent.key.keysym.unicode = keybuf[0];
           }
@@ -448,7 +448,7 @@ bool CWinEventsX11::MessagePump()
             if (keys.length() > 0)
             {
               newEvent.key.keysym.scancode = xevent.xkey.keycode;
-              XLookupString(&xevent.xkey, NULL, 0, &xkeysym, NULL);
+              XLookupString(&xevent.xkey, nullptr, 0, &xkeysym, nullptr);
               newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
               newEvent.key.keysym.unicode = keys[keys.length() - 1];
 

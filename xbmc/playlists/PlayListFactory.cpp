@@ -99,7 +99,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
   if (extension == ".pxml")
     return new CPlayListXML();
 
-  return NULL;
+  return nullptr;
 
 }
 

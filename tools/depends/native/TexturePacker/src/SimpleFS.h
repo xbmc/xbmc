@@ -29,7 +29,7 @@ class CFile
 public:
   CFile()
   {
-    m_file = NULL;
+    m_file = nullptr;
   }
   
   ~CFile()
@@ -41,20 +41,20 @@ public:
   {
     Close();
     m_file = fopen(file.c_str(), "rb");
-    return NULL != m_file;
+    return nullptr != m_file;
   }
 
   bool OpenForWrite(const std::string &file, bool overwrite)
   {
     Close();
     m_file = fopen(file.c_str(), "wb");
-    return NULL != m_file;
+    return nullptr != m_file;
   }
   void Close()
   {
     if (m_file)
       fclose(m_file);
-    m_file = NULL;
+    m_file = nullptr;
   }
 
   uint64_t Read(void *data, uint64_t size)

@@ -76,7 +76,7 @@ public:
     cthread->Create();
   }
 
-  inline thread() : f(NULL), cthread(NULL) {}
+  inline thread() : f(nullptr), cthread(nullptr) {}
   ~thread()
   {
     delete cthread;
@@ -88,8 +88,8 @@ public:
    * to ensure only one thread instance has control of the
    * Runnable.a
    */
-  inline thread(const thread& other) : f(other.f), cthread(other.cthread) { ((thread&)other).f = NULL; ((thread&)other).cthread = NULL; }
-  inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = NULL; cthread = other.cthread; ((thread&)other).cthread = NULL; return *this; }
+  inline thread(const thread& other) : f(other.f), cthread(other.cthread) { ((thread&)other).f = nullptr; ((thread&)other).cthread = nullptr; }
+  inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = nullptr; cthread = other.cthread; ((thread&)other).cthread = nullptr; return *this; }
 
   void join()
   {

@@ -702,7 +702,7 @@ bool CDateTime::SetFromDateString(const std::string &date)
   if (SetFromDBDate(date))
     return true;
 
-  const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
+  const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",nullptr};
   int j=0;
   size_t iDayPos = date.find("day");
   size_t iPos = date.find(' ');
@@ -1090,7 +1090,7 @@ bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
   if (date.size() != 29)
     return false;
 
-  int day  = strtol(date.substr(5, 2).c_str(), NULL, 10);
+  int day  = strtol(date.substr(5, 2).c_str(), nullptr, 10);
 
   std::string strMonth = date.substr(8, 3);
   int month = 0;
@@ -1106,10 +1106,10 @@ bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
   if (month < 1)
     return false;
 
-  int year = strtol(date.substr(12, 4).c_str(), NULL, 10);
-  int hour = strtol(date.substr(17, 2).c_str(), NULL, 10);
-  int min  = strtol(date.substr(20, 2).c_str(), NULL, 10);
-  int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
+  int year = strtol(date.substr(12, 4).c_str(), nullptr, 10);
+  int hour = strtol(date.substr(17, 2).c_str(), nullptr, 10);
+  int min  = strtol(date.substr(20, 2).c_str(), nullptr, 10);
+  int sec  = strtol(date.substr(23, 2).c_str(), nullptr, 10);
 
   return SetDateTime(year, month, day, hour, min, sec);
 }

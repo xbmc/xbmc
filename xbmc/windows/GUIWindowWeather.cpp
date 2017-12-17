@@ -136,7 +136,7 @@ void CGUIWindowWeather::OnInitWindow()
 void CGUIWindowWeather::UpdateLocations()
 {
   if (!IsActive()) return;
-  m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
+  m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),nullptr,10);
   if (m_maxLocation < 1) return;
 
   std::vector< std::pair<std::string, int> > labels;

@@ -49,7 +49,7 @@ void CDemuxMultiSource::Dispose()
 
   m_demuxerMap.clear();
   m_DemuxerToInputStreamMap.clear();
-  m_pInput = NULL;
+  m_pInput = nullptr;
 
 }
 
@@ -86,7 +86,7 @@ CDemuxStream* CDemuxMultiSource::GetStream(int64_t demuxerId, int iStreamId) con
     return iter->second->GetStream(demuxerId, iStreamId);
   }
   else
-    return NULL;
+    return nullptr;
 }
 
 std::vector<CDemuxStream*> CDemuxMultiSource::GetStreams() const
@@ -170,13 +170,13 @@ bool CDemuxMultiSource::Reset()
 DemuxPacket* CDemuxMultiSource::Read()
 {
   if (m_demuxerQueue.empty())
-    return NULL;
+    return nullptr;
 
   DemuxPtr currentDemuxer = m_demuxerQueue.top().second;
   m_demuxerQueue.pop();
 
   if (!currentDemuxer)
-    return NULL;
+    return nullptr;
 
   DemuxPacket* packet = currentDemuxer->Read();
   if (packet)

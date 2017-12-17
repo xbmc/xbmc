@@ -288,7 +288,7 @@ void term_handler (int signum)
     if( curThread->IsAutoDelete() )
       delete curThread;
   }
-  pthread_exit(NULL);
+  pthread_exit(nullptr);
 }
 
 void CThread::SetSignalHandlers()

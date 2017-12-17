@@ -294,7 +294,7 @@ void CPeripheralBus::TriggerDeviceScan(void)
 
 bool CPeripheralBus::HasPeripheral(const std::string &strLocation) const
 {
-  return (GetPeripheral(strLocation) != NULL);
+  return (GetPeripheral(strLocation) != nullptr);
 }
 
 void CPeripheralBus::GetDirectory(const std::string &strPath, CFileItemList &items) const

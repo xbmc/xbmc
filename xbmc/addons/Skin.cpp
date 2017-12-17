@@ -497,7 +497,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vect
   {
     const char* idAttr = pChild->Attribute("id");
     const char* idLocAttr = pChild->Attribute("idloc");
-    if (idAttr != NULL)
+    if (idAttr != nullptr)
     {
       if (idLocAttr)
         list.push_back(std::make_pair(g_localizeStrings.Get(atoi(idLocAttr)), idAttr));
@@ -790,7 +790,7 @@ bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
   TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
-  if (settingsNode == NULL)
+  if (settingsNode == nullptr)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return false;

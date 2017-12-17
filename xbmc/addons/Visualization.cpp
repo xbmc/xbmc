@@ -38,7 +38,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_presetsPath = CSpecialProtocol::TranslatePath(Path());
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
-  m_struct = {{0}};
+  m_struct = {{nullptr}};
 #if defined(TARGET_WINDOWS)
   m_struct.props.device = DX::DeviceResources::Get()->GetD3DContext();
 #else

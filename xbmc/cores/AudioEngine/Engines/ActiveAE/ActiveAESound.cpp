@@ -36,9 +36,9 @@ CActiveAESound::CActiveAESound(const std::string &filename, CActiveAE *ae) :
   m_volume         (1.0f    ),
   m_channel        (AE_CH_NULL)
 {
-  m_orig_sound = NULL;
-  m_dst_sound = NULL;
-  m_pFile = NULL;
+  m_orig_sound = nullptr;
+  m_dst_sound = nullptr;
+  m_pFile = nullptr;
   m_isSeekPossible = false;
   m_fileSize = 0;
   m_isConverted = false;
@@ -129,10 +129,10 @@ bool CActiveAESound::Prepare()
   if (!m_pFile->Open(m_filename, flags))
   {
     delete m_pFile;
-    m_pFile = NULL;
+    m_pFile = nullptr;
     return false;
   }
-  m_isSeekPossible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 0;
+  m_isSeekPossible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, nullptr) != 0;
   m_fileSize = m_pFile->GetLength();
   return true;
 }
@@ -140,7 +140,7 @@ bool CActiveAESound::Prepare()
 void CActiveAESound::Finish()
 {
   delete m_pFile;
-  m_pFile = NULL;
+  m_pFile = nullptr;
 }
 
 int CActiveAESound::GetChunkSize()

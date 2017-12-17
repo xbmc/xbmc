@@ -307,9 +307,9 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #endif
 
 #ifndef TARGET_WINDOWS
-  if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL ||
-      setlocale(LC_CTYPE, strLocale.c_str()) == NULL ||
-      setlocale(LC_TIME, strLocale.c_str()) == NULL)
+  if (setlocale(LC_COLLATE, strLocale.c_str()) == nullptr ||
+      setlocale(LC_CTYPE, strLocale.c_str()) == nullptr ||
+      setlocale(LC_TIME, strLocale.c_str()) == nullptr)
   {
     strLocale = "C";
     setlocale(LC_COLLATE, strLocale.c_str());
@@ -355,7 +355,7 @@ CLangInfo::~CLangInfo() = default;
 
 void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -415,7 +415,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
   // get the matching language addon
   m_languageAddon = GetLanguageAddon(strLanguage);
-  if (m_languageAddon == NULL)
+  if (m_languageAddon == nullptr)
   {
     CLog::Log(LOGERROR, "Unknown language %s", strLanguage.c_str());
     return false;
@@ -625,7 +625,7 @@ void CLangInfo::SetDefaults()
 std::string CLangInfo::GetGuiCharSet() const
 {
   std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOCALE_CHARSET));
-  if (charsetSetting == NULL || charsetSetting->IsDefault())
+  if (charsetSetting == nullptr || charsetSetting->IsDefault())
     return m_strGuiCharSet;
 
   return charsetSetting->GetValue();
@@ -643,7 +643,7 @@ std::string CLangInfo::GetSubtitleCharSet() const
 LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "" */) const
 {
   if (locale.empty() ||
-     (m_languageAddon != NULL && (locale.compare(m_languageAddon->ID()) == 0 || m_languageAddon->GetLocale().Equals(locale))))
+     (m_languageAddon != nullptr && (locale.compare(m_languageAddon->ID()) == 0 || m_languageAddon->GetLocale().Equals(locale))))
     return m_languageAddon;
 
   std::string addonId = ADDON::CLanguageResource::GetAddonId(locale);
@@ -651,16 +651,16 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
     addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
   ADDON::AddonPtr addon;
-  if (CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true) && addon != NULL)
+  if (CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true) && addon != nullptr)
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
-  return NULL;
+  return nullptr;
 }
 
 std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" */) const
 {
   LanguageResourcePtr addon = GetLanguageAddon(locale);
-  if (addon == NULL)
+  if (addon == nullptr)
     return "";
 
   return addon->Name();
@@ -790,7 +790,7 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
 const CLocale& CLangInfo::GetLocale() const
 {
   LanguageResourcePtr language = GetLanguageAddon();
-  if (language != NULL)
+  if (language != nullptr)
     return language->GetLocale();
 
   return CLocale::Empty;
@@ -1410,8 +1410,8 @@ void CLangInfo::AddLanguages(std::vector< std::pair<std::string, std::string> > 
 {
   std::string dummy;
   std::vector<std::pair<std::string, std::string>> languages;
-  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
-  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
+  SettingOptionsISO6391LanguagesFiller(nullptr, languages, dummy, nullptr);
+  SettingOptionsLanguageNamesFiller(nullptr, languages, dummy, nullptr);
 
   // convert the vector to a set to remove duplicates
   std::set<std::pair<std::string, std::string>, SortLanguage> tmp(

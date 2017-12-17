@@ -37,13 +37,13 @@
 VideoPlayerCodec::VideoPlayerCodec()
 {
   m_CodecName = "VideoPlayer";
-  m_pDemuxer = NULL;
-  m_pInputStream = NULL;
-  m_pAudioCodec = NULL;
+  m_pDemuxer = nullptr;
+  m_pInputStream = nullptr;
+  m_pAudioCodec = nullptr;
   m_nAudioStream = -1;
   m_nDecodedLen = 0;
   m_bInited = false;
-  m_pResampler = NULL;
+  m_pResampler = nullptr;
   m_needConvert = false;
   m_channels = 0;
 
@@ -102,7 +102,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   CFileItem fileitem(file);
   fileitem.SetMimeType(m_strContentType);
   fileitem.SetMimeTypeForInternetFile();
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, fileitem);
   if (!m_pInputStream)
   {
     CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFileToOpen.c_str());
@@ -116,11 +116,11 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
     if (m_pInputStream)
       delete m_pInputStream;
-    m_pInputStream = NULL;
+    m_pInputStream = nullptr;
     return false;
   }
 
-  m_pDemuxer = NULL;
+  m_pDemuxer = nullptr;
 
   try
   {
@@ -128,7 +128,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     if (!m_pDemuxer)
     {
       delete m_pInputStream;
-      m_pInputStream = NULL;
+      m_pInputStream = nullptr;
       CLog::Log(LOGERROR, "%s: Error creating demuxer", __FUNCTION__);
       return false;
     }
@@ -139,14 +139,14 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     if (m_pDemuxer)
     {
       delete m_pDemuxer;
-      m_pDemuxer = NULL;
+      m_pDemuxer = nullptr;
     }
     delete m_pInputStream;
-    m_pInputStream = NULL;
+    m_pInputStream = nullptr;
     return false;
   }
 
-  CDemuxStream* pStream = NULL;
+  CDemuxStream* pStream = nullptr;
   m_nAudioStream = -1;
   int64_t demuxerId = -1;
   for (auto stream : m_pDemuxer->GetStreams())
@@ -164,9 +164,9 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "%s: Could not find audio stream", __FUNCTION__);
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
     delete m_pInputStream;
-    m_pInputStream = NULL;
+    m_pInputStream = nullptr;
     return false;
   }
 
@@ -178,9 +178,9 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
     delete m_pInputStream;
-    m_pInputStream = NULL;
+    m_pInputStream = nullptr;
     return false;
   }
 
@@ -274,7 +274,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
                        CAEUtil::DataFormatToDitherBits(m_srcFormat.m_dataFormat),
                        false,
                        false,
-                       NULL,
+                       nullptr,
                        AE_QUALITY_UNKNOWN,
                        false);
 
@@ -292,26 +292,26 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
 void VideoPlayerCodec::DeInit()
 {
-  if (m_pDemuxer != NULL)
+  if (m_pDemuxer != nullptr)
   {
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
   }
 
-  if (m_pInputStream != NULL)
+  if (m_pInputStream != nullptr)
   {
     delete m_pInputStream;
-    m_pInputStream = NULL;
+    m_pInputStream = nullptr;
   }
 
-  if (m_pAudioCodec != NULL)
+  if (m_pAudioCodec != nullptr)
   {
     delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
+    m_pAudioCodec = nullptr;
   }
 
   delete m_pResampler;
-  m_pResampler = NULL;
+  m_pResampler = nullptr;
 
   // cleanup format information
   m_TotalTime = 0;

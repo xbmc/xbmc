@@ -107,7 +107,7 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
-  bool HasTexture(const std::string &textureName, std::string *path = NULL, int *bundle = NULL, int *size = NULL);
+  bool HasTexture(const std::string &textureName, std::string *path = nullptr, int *bundle = nullptr, int *size = nullptr);
   static bool CanLoad(const std::string &texturePath); ///< Returns true if the texture manager can load this texture
   const CTextureArray& Load(const std::string& strTextureName, bool checkBundleOnly = false);
   void ReleaseTexture(const std::string& strTextureName, bool immediately = false);

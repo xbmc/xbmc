@@ -57,7 +57,7 @@ public:
   void SetFocus(bool bOnOff) override;
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
-  void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
 
   virtual unsigned int GetRows() const;
 
@@ -124,7 +124,7 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
-  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
+  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = nullptr) const { return -1; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;

@@ -44,7 +44,7 @@ namespace XBMCAddon
       if (m_called)
       {
         CLog::Log(LOGWARNING, "WsgiResponse: callable has already been called");
-        return NULL;
+        return nullptr;
       }
 
       m_called = true;
@@ -55,7 +55,7 @@ namespace XBMCAddon
         std::vector<String> statusParts = StringUtils::Split(status, ' ', 2);
         if (statusParts.size() == 2 && StringUtils::IsNaturalNumber(statusParts.front()))
         {
-          int64_t parsedStatus = strtol(statusParts.front().c_str(), NULL, 0);
+          int64_t parsedStatus = strtol(statusParts.front().c_str(), nullptr, 0);
           if (parsedStatus >= MHD_HTTP_OK && parsedStatus <= MHD_HTTP_NOT_EXTENDED)
             m_status = static_cast<int>(parsedStatus);
           else
@@ -83,7 +83,7 @@ namespace XBMCAddon
 
     bool WsgiResponse::Finalize(HTTPPythonRequest* request) const
     {
-      if (request == NULL || !m_called)
+      if (request == nullptr || !m_called)
         return false;
 
       // copy the response status

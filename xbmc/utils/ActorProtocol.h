@@ -48,10 +48,10 @@ public:
   CEvent *event;
 
   void Release();
-  bool Reply(int sig, void *data = NULL, int size = 0);
+  bool Reply(int sig, void *data = nullptr, int size = 0);
 
 private:
-  Message() {isSync = false; data = NULL; event = NULL; replyMessage = NULL;};
+  Message() {isSync = false; data = nullptr; event = nullptr; replyMessage = nullptr;};
 };
 
 class Protocol
@@ -64,9 +64,9 @@ public:
   virtual ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);
-  bool SendOutMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
-  bool SendInMessage(int signal, void *data = NULL, int size = 0, Message *outMsg = NULL);
-  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = NULL, int size = 0);
+  bool SendOutMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendInMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, int size = 0);
   bool ReceiveOutMessage(Message **msg);
   bool ReceiveInMessage(Message **msg);
   void Purge();

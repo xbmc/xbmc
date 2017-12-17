@@ -252,7 +252,7 @@ bool CPODocument::ParseNumID()
   if (isdigit(m_Entry.Content.at(m_Entry.xIDPos))) // verify if the first char is digit
   {
     // we check for the numeric id for the fist 10 chars (uint32)
-    m_Entry.xID = strtol(&m_Entry.Content[m_Entry.xIDPos], NULL, 10);
+    m_Entry.xID = strtol(&m_Entry.Content[m_Entry.xIDPos], nullptr, 10);
     return true;
   }
 

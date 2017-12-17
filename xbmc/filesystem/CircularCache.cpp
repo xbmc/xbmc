@@ -31,7 +31,7 @@ CCircularCache::CCircularCache(size_t front, size_t back)
  , m_beg(0)
  , m_end(0)
  , m_cur(0)
- , m_buf(NULL)
+ , m_buf(nullptr)
  , m_size(front + back)
  , m_size_back(back)
 #ifdef TARGET_WINDOWS
@@ -55,7 +55,7 @@ int CCircularCache::Open()
 #else
   m_buf = new uint8_t[m_size];
 #endif
-  if(m_buf == 0)
+  if(m_buf == nullptr)
     return CACHE_RC_ERROR;
   m_beg = 0;
   m_end = 0;
@@ -72,7 +72,7 @@ void CCircularCache::Close()
 #else
   delete[] m_buf;
 #endif
-  m_buf = NULL;
+  m_buf = nullptr;
 }
 
 size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)

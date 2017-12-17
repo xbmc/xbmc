@@ -60,7 +60,7 @@ static void LoadTexture(GLenum target
 {
   int width2  = width;
   int height2 = height;
-  char *pixelVector = NULL;
+  char *pixelVector = nullptr;
   const GLvoid *pixelData = pixels;
 
 #ifdef HAS_GLES
@@ -129,7 +129,7 @@ static void LoadTexture(GLenum target
 
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
-                , externalFormat, GL_UNSIGNED_BYTE, NULL);
+                , externalFormat, GL_UNSIGNED_BYTE, nullptr);
 
   glTexSubImage2D(target, 0
                 , 0, 0, width, height
@@ -275,7 +275,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
 {
-  m_vertex = NULL;
+  m_vertex = nullptr;
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;
@@ -570,7 +570,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);

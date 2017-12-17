@@ -92,7 +92,7 @@ CAESinkALSA::CAESinkALSA() :
   m_bufferSize(0),
   m_formatSampleRateMul(0.0),
   m_passthrough(false),
-  m_pcm(NULL),
+  m_pcm(nullptr),
   m_timeout(0),
   m_fragmented(false),
   m_originalPeriodSize(AE_MIN_PERIODSIZE)
@@ -205,7 +205,7 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
   {
 #ifdef SND_CHMAP_API_VERSION
     /* ask for the actual map */
-    snd_pcm_chmap_t* actualMap = NULL;
+    snd_pcm_chmap_t* actualMap = nullptr;
     if (AllowALSAMaps())
       actualMap = snd_pcm_get_chmap(m_pcm);
     if (actualMap)
@@ -427,13 +427,13 @@ CAEChannelInfo CAESinkALSA::GetAlternateLayoutForm(const CAEChannelInfo& info)
 
 snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
 {
-  snd_pcm_chmap_t* chmap = NULL;
+  snd_pcm_chmap_t* chmap = nullptr;
   snd_pcm_chmap_query_t** supportedMaps;
 
   supportedMaps = snd_pcm_query_chmaps(m_pcm);
 
   if (!supportedMaps)
-    return NULL;
+    return nullptr;
 
   CAEChannelInfo infoAlternate = GetAlternateLayoutForm(info);
 
@@ -597,7 +597,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   snd_config_delete(config);
 
 #ifdef SND_CHMAP_API_VERSION
-  snd_pcm_chmap_t* selectedChmap = NULL;
+  snd_pcm_chmap_t* selectedChmap = nullptr;
   if (!m_passthrough && AllowALSAMaps())
   {
     selectedChmap = SelectALSAChannelMap(format.m_channelLayout);
@@ -689,7 +689,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   snd_pcm_hw_params_set_access(m_pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 
   unsigned int sampleRate   = inconfig.sampleRate;
-  snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
+  snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, nullptr);
 
   unsigned int channelCount = inconfig.channels;
   /* select a channel count >=wanted, or otherwise the highest available */
@@ -765,7 +765,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
   snd_pcm_uframes_t periodSize, bufferSize;
   snd_pcm_hw_params_get_buffer_size_max(hw_params, &bufferSize);
-  snd_pcm_hw_params_get_period_size_max(hw_params, &periodSize, NULL);
+  snd_pcm_hw_params_get_period_size_max(hw_params, &periodSize, nullptr);
 
   /* 
    We want to make sure, that we have max 200 ms Buffer with 
@@ -790,7 +790,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
   // Make sure to not initialize too large to not cause underruns
   snd_pcm_uframes_t periodSizeMax = bufferSize / 3;
-  if(snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, NULL) != 0)
+  if(snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, nullptr) != 0)
   {
     snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
     CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: Failed to limit periodSize to %lu", periodSizeMax);
@@ -806,21 +806,21 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   periodSizeTemp = periodSize;
   bufferSizeTemp = bufferSize;
   if (snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize) != 0
-    || snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL) != 0
+    || snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, nullptr) != 0
     || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
   {
     bufferSize = bufferSizeTemp;
     periodSize = periodSizeTemp;
     // retry with PeriodSize, bufferSize
     snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
-    if (snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL) != 0
+    if (snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, nullptr) != 0
       || snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize) != 0
       || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
     {
       // try only periodSize
       periodSize = periodSizeTemp;
       snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
-      if(snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL) != 0 
+      if(snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, nullptr) != 0 
         || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
       {
         // try only BufferSize
@@ -900,7 +900,7 @@ void CAESinkALSA::Deinitialize()
   {
     Stop();
     snd_pcm_close(m_pcm);
-    m_pcm = NULL;
+    m_pcm = nullptr;
   }
 }
 
@@ -1044,7 +1044,7 @@ bool CAESinkALSA::TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_confi
       return true;
 
     snd_pcm_close(*pcmp);
-    *pcmp = NULL;
+    *pcmp = nullptr;
   }
 
   int err = snd_pcm_open_lconf(pcmp, name.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, lconf);
@@ -1173,7 +1173,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   std::string defaultDescription;
 
-  for (void** hint = hints; *hint != NULL; ++hint)
+  for (void** hint = hints; *hint != nullptr; ++hint)
   {
     char *io = snd_device_name_get_hint(*hint, "IOID");
     char *name = snd_device_name_get_hint(*hint, "NAME");
@@ -1347,7 +1347,7 @@ std::string CAESinkALSA::GetParamFromName(const std::string &name, const std::st
 
 void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config)
 {
-  snd_pcm_t *pcmhandle = NULL;
+  snd_pcm_t *pcmhandle = nullptr;
   if (!OpenPCMDevice(device, "", ALSA_MAX_CHANNELS, &pcmhandle, config))
     return;
 
@@ -1529,7 +1529,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
   CAEChannelInfo alsaChannels;
 #ifdef SND_CHMAP_API_VERSION
-  snd_pcm_chmap_query_t** alsaMaps = NULL;
+  snd_pcm_chmap_query_t** alsaMaps = nullptr;
   if (AllowALSAMaps())
     alsaMaps = snd_pcm_query_chmaps(pcmhandle);
   bool useEldChannels = (info.m_channels.Count() > 0);

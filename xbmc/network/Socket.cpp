@@ -254,7 +254,7 @@ bool CSocketListener::Listen(int timeout)
   tv.tv_usec = rem * 1000;
   tv.tv_sec = timeout / 1000;
 
-  m_iReadyCount = select(m_iMaxSockets+1, &m_fdset, NULL, NULL, (timeout < 0 ? NULL : &tv));
+  m_iReadyCount = select(m_iMaxSockets+1, &m_fdset, nullptr, nullptr, (timeout < 0 ? nullptr : &tv));
 
   if (m_iReadyCount<0)
   {
@@ -281,7 +281,7 @@ void CSocketListener::Clear()
 CBaseSocket* CSocketListener::GetFirstReadySocket()
 {
   if (m_iReadyCount<=0)
-    return NULL;
+    return nullptr;
 
   for (int i = 0 ; i < (int)m_sockets.size() ; i++)
   {
@@ -291,13 +291,13 @@ CBaseSocket* CSocketListener::GetFirstReadySocket()
       return m_sockets[i];
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 CBaseSocket* CSocketListener::GetNextReadySocket()
 {
   if (m_iReadyCount<=0)
-    return NULL;
+    return nullptr;
 
   for (int i = m_iCurrentSocket+1 ; i<(int)m_sockets.size() ; i++)
   {
@@ -307,7 +307,7 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
       return m_sockets[i];
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 #endif // HAS_EVENT_SERVER

@@ -89,7 +89,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     return false;
   }
   
-  png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
   if (!png_ptr)
   {
     fprintf(stderr, "error: png_create_read_struct returned 0.\n");
@@ -101,7 +101,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   if (!info_ptr)
   {
     fprintf(stderr, "error: png_create_info_struct returned 0.\n");
-    png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+    png_destroy_read_struct(&png_ptr, (png_infopp)nullptr, (png_infopp)nullptr);
     return false;
   }
   
@@ -110,7 +110,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   if (!end_info)
   {
     fprintf(stderr, "error: png_create_info_struct returned 0.\n");
-    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) nullptr);
     return false;
   }
   
@@ -136,7 +136,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   
   // get info about png
   png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
-               NULL, NULL, NULL);
+               nullptr, nullptr, nullptr);
   
   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
   {
@@ -188,7 +188,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // Allocate the image_data as a big block, to be given to opengl
   png_byte * image_data;
   image_data = (png_byte*)new png_byte[rowbytes * temp_height * sizeof(png_byte)+15];
-  if (image_data == NULL)
+  if (image_data == nullptr)
   {
     fprintf(stderr, "error: could not allocate memory for PNG image data\n");
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
@@ -197,7 +197,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   
   // row_pointers is for pointing to image_data for reading the png with libpng
   png_bytep * row_pointers = (png_bytep*) new png_bytep[temp_height * sizeof(png_bytep)];
-  if (row_pointers == NULL)
+  if (row_pointers == nullptr)
   {
     fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
@@ -214,7 +214,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // read the png into image_data through row_pointers
   png_read_image(png_ptr, row_pointers);
   
-  frames.user = NULL;
+  frames.user = nullptr;
   DecodedFrame frame;
   
   frame.rgbaImage.pixels = (char *)image_data;

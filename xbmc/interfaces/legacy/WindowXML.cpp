@@ -240,7 +240,7 @@ namespace XBMCAddon
         fi = A(m_vecItems)->Get(position);
       }
 
-      if (fi == NULL)
+      if (fi == nullptr)
       {
         throw WindowException("Index out of range (%i)",position);
       }

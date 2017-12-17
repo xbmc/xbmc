@@ -45,7 +45,7 @@ bool CVideoLibraryScanningJob::operator==(const CJob* job) const
     return false;
 
   const CVideoLibraryScanningJob* scanningJob = dynamic_cast<const CVideoLibraryScanningJob*>(job);
-  if (scanningJob == NULL)
+  if (scanningJob == nullptr)
     return false;
 
   return m_directory == scanningJob->m_directory &&

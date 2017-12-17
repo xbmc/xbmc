@@ -48,8 +48,8 @@ public:
 
   GUIEvent()
   {
-    m_pInstance = NULL;
-    m_pMethod = NULL;
+    m_pInstance = nullptr;
+    m_pMethod = nullptr;
   }
 
   // Assign an EventHandler (EventHandler's are derived from Event)

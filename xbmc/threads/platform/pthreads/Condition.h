@@ -47,7 +47,7 @@ namespace XbmcThreads
   public:
     inline ConditionVariable() 
     { 
-      pthread_cond_init(&cond,NULL); 
+      pthread_cond_init(&cond,nullptr); 
     }
 
     inline ~ConditionVariable() 

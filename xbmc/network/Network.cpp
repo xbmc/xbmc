@@ -223,7 +223,7 @@ CNetworkInterface* CNetwork::GetFirstConnectedInterface()
       ++iter;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 bool CNetwork::HasInterfaceForIP(unsigned long address)
@@ -256,7 +256,7 @@ bool CNetwork::IsAvailable(void)
 
 bool CNetwork::IsConnected()
 {
-   return GetFirstConnectedInterface() != NULL;
+   return GetFirstConnectedInterface() != nullptr;
 }
 
 CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
@@ -271,7 +271,7 @@ CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
       ++iter;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void CNetwork::NetworkMessage(EMESSAGE message, int param)
@@ -379,7 +379,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
       FD_ZERO(&wset); 
       FD_SET(soc, &wset); 
 
-      result = select(FD_SETSIZE, 0, &wset, 0, &timeOut);
+      result = select(FD_SETSIZE, nullptr, &wset, nullptr, &timeOut);
     }
 
     if (result < 0)
@@ -408,7 +408,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
     FD_ZERO(&rset); 
     FD_SET(soc, &rset); 
 
-    result = select(FD_SETSIZE, &rset, 0, 0, &timeOut);
+    result = select(FD_SETSIZE, &rset, nullptr, nullptr, &timeOut);
 
     if (result > 0)
     {
@@ -424,7 +424,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
       return "recv fail";
   }
 
-  return 0; // success
+  return nullptr; // success
 }
 
 bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
@@ -463,7 +463,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
     CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
   }
 
-  return err_msg == 0;
+  return err_msg == nullptr;
 }
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to

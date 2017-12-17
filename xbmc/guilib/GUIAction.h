@@ -38,7 +38,7 @@ public:
   /**
    * Execute actions (no navigation paths), if action is paired with condition - evaluate condition first
    */
-  bool ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item = NULL) const;
+  bool ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item = nullptr) const;
   /**
    * Check if there is any action that meet its condition
    */
