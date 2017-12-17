@@ -33,14 +33,14 @@ public:
   inline ~Thingy() { destructorCalled = true; }
 };
 
-Thingy* staticThingy = NULL;
+Thingy* staticThingy = nullptr;
 CEvent gate;
 ThreadLocal<Thingy> staticThreadLocal;
 
 void cleanup()
 {
   if (destructorCalled)
-    staticThingy = NULL;
+    staticThingy = nullptr;
   destructorCalled = false;
 }
 
@@ -62,7 +62,7 @@ public:
     waiter.Wait();
     waiting = false;
 
-    threadLocalHadValue = staticThreadLocal.get() != NULL;
+    threadLocalHadValue = staticThreadLocal.get() != nullptr;
     gate.Set();
   }
 };
@@ -87,8 +87,8 @@ TEST(TestThreadLocal, DISABLED_Simple)
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
-  EXPECT_TRUE(staticThingy != NULL);
-  EXPECT_TRUE(staticThreadLocal.get() == NULL);
+  EXPECT_TRUE(staticThingy != nullptr);
+  EXPECT_TRUE(staticThreadLocal.get() == nullptr);
   waiter.Set();
   gate.Wait();
   EXPECT_TRUE(runnable.threadLocalHadValue);
@@ -105,8 +105,8 @@ TEST(TestThreadLocal, DISABLED_Stack)
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
-  EXPECT_TRUE(staticThingy != NULL);
-  EXPECT_TRUE(runnable.threadLocal.get() == NULL);
+  EXPECT_TRUE(staticThingy != nullptr);
+  EXPECT_TRUE(runnable.threadLocal.get() == nullptr);
   waiter.Set();
   gate.Wait();
   EXPECT_TRUE(runnable.threadLocalHadValue);

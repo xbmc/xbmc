@@ -32,7 +32,7 @@
 
 static XbmcThreads::ThreadLocal<CThread> currentThread;
 
-XbmcCommons::ILogger* CThread::logger = NULL;
+XbmcCommons::ILogger* CThread::logger = nullptr;
 
 #include "threads/platform/ThreadImpl.cpp"
 
@@ -53,7 +53,7 @@ CThread::CThread(const char* ThreadName)
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
 
-  m_pRunnable=NULL;
+  m_pRunnable=nullptr;
 
   if (ThreadName)
     m_ThreadName = ThreadName;
@@ -143,7 +143,7 @@ THREADFUNC CThread::staticThread(void* data)
   {
     LOG(LOGDEBUG,"Thread %s %" PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
     delete pThread;
-    pThread = NULL;
+    pThread = nullptr;
   }
   else
     LOG(LOGDEBUG,"Thread %s %" PRIu64" terminating", name.c_str(), (uint64_t)id);

@@ -40,11 +40,11 @@ public:
   volatile bool haslock;
   volatile bool obtainedlock;
 
-  inline locker(CSharedSection& o, std::atomic<long>* mutex_ = NULL, CEvent* wait_ = NULL) : 
+  inline locker(CSharedSection& o, std::atomic<long>* mutex_ = nullptr, CEvent* wait_ = nullptr) : 
     sec(o), wait(wait_), mutex(mutex_), haslock(false), obtainedlock(false) {}
   
-  inline locker(CSharedSection& o, CEvent* wait_ = NULL) : 
-    sec(o), wait(wait_), mutex(NULL), haslock(false), obtainedlock(false) {}
+  inline locker(CSharedSection& o, CEvent* wait_ = nullptr) : 
+    sec(o), wait(wait_), mutex(nullptr), haslock(false), obtainedlock(false) {}
   
   void Run() override
   {
