@@ -73,7 +73,7 @@ void CRenderBufferOpenGLES::CreateTexture()
 
   glBindTexture(m_textureTarget, m_textureId);
 
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_width, m_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_width, m_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, nullptr);
 
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -127,7 +127,7 @@ void CRenderBufferOpenGLES::DeleteTexture()
 bool CRenderBufferOpenGLES::CreateScalingContext()
 {
   m_swsContext = sws_getContext(m_width, m_height, m_format, m_width, m_height, m_targetFormat,
-    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+    SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
   if (m_swsContext == nullptr)
   {
