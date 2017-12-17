@@ -129,7 +129,7 @@ sftp_file CSFTPSession::CreateFileHandle(const std::string &file)
   else
     CLog::Log(LOGERROR, "SFTPSession: Not connected and can't create file handle for '%s'", file.c_str());
 
-  return NULL;
+  return nullptr;
 }
 
 void CSFTPSession::CloseFileHandle(sftp_file handle)
@@ -143,7 +143,7 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
   int sftp_error = SSH_FX_OK;
   if (m_connected)
   {
-    sftp_dir dir = NULL;
+    sftp_dir dir = nullptr;
 
     {
       CSingleLock lock(m_critSect);
@@ -164,7 +164,7 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
       bool read = true;
       while (read)
       {
-        sftp_attributes attributes = NULL;
+        sftp_attributes attributes = nullptr;
 
         {
           CSingleLock lock(m_critSect);
@@ -172,7 +172,7 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
           attributes = sftp_readdir(m_sftp_session, dir);
         }
 
-        if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
+        if (attributes && (attributes->name == nullptr || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
         {
           CSingleLock lock(m_critSect);
           sftp_attributes_free(attributes);
@@ -190,7 +190,7 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
             CSingleLock lock(m_critSect);
             sftp_attributes_free(attributes);
             attributes = sftp_stat(m_sftp_session, CorrectPath(localPath).c_str());
-            if (attributes == NULL)
+            if (attributes == nullptr)
               continue;
           }
 
@@ -351,11 +351,11 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
 {
   int timeout     = SFTP_TIMEOUT;
   m_connected     = false;
-  m_session       = NULL;
-  m_sftp_session  = NULL;
+  m_session       = nullptr;
+  m_sftp_session  = nullptr;
 
   m_session=ssh_new();
-  if (m_session == NULL)
+  if (m_session == nullptr)
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to initialize session for host '%s'", host.c_str());
     return false;
@@ -388,7 +388,7 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 #endif
-  ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
+  ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, nullptr);
   ssh_options_set(m_session, SSH_OPTIONS_TIMEOUT, &timeout);  
 #else
   SSH_OPTIONS* options = ssh_options_new();
@@ -432,14 +432,14 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
 
 
   int noAuth = SSH_AUTH_DENIED;
-  if ((noAuth = ssh_userauth_none(m_session, NULL)) == SSH_AUTH_ERROR)
+  if ((noAuth = ssh_userauth_none(m_session, nullptr)) == SSH_AUTH_ERROR)
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to authenticate via guest '%s'", ssh_get_error(m_session));
     return false;
   }
 
 #if LIBSSH_VERSION_MINOR >= 6
-  int method = ssh_userauth_list(m_session, NULL);
+  int method = ssh_userauth_list(m_session, nullptr);
 #else
   int method = ssh_auth_list(m_session);
 #endif
@@ -447,7 +447,7 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
   // Try to authenticate with public key first
   int publicKeyAuth = SSH_AUTH_DENIED;
 #if LIBSSH_VERSION_MINOR >= 6
-  if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_publickey_auto(m_session, NULL, NULL)) == SSH_AUTH_ERROR)
+  if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_publickey_auto(m_session, nullptr, nullptr)) == SSH_AUTH_ERROR)
 #else
   if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_autopubkey(m_session, NULL)) == SSH_AUTH_ERROR)
 #endif
@@ -476,7 +476,7 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
   {
     m_sftp_session = sftp_new(m_session);
 
-    if (m_sftp_session == NULL)
+    if (m_sftp_session == nullptr)
     {
       CLog::Log(LOGERROR, "SFTPSession: Failed to initialize channel '%s'", ssh_get_error(m_session));
       return false;
@@ -506,8 +506,8 @@ void CSFTPSession::Disconnect()
   if (m_session)
     ssh_disconnect(m_session);
 
-  m_sftp_session = NULL;
-  m_session = NULL;
+  m_sftp_session = nullptr;
+  m_session = nullptr;
 }
 
 /*!
@@ -560,7 +560,7 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(const std::string &host, unsi
   CSingleLock lock(m_critSect);
   std::string key = username + ':' + password + '@' + host + ':' + portstr;
   CSFTPSessionPtr ptr = sessions[key];
-  if (ptr == NULL)
+  if (ptr == nullptr)
   {
     ptr = CSFTPSessionPtr(new CSFTPSession(host, port, username, password));
     sessions[key] = ptr;
@@ -589,7 +589,7 @@ void CSFTPSessionManager::DisconnectAllSessions()
 
 CSFTPFile::CSFTPFile()
 {
-  m_sftp_handle = NULL;
+  m_sftp_handle = nullptr;
 }
 
 CSFTPFile::~CSFTPFile()
@@ -605,7 +605,7 @@ bool CSFTPFile::Open(const CURL& url)
     m_file = url.GetFileName().c_str();
     m_sftp_handle = m_session->CreateFileHandle(m_file);
 
-    return (m_sftp_handle != NULL);
+    return (m_sftp_handle != nullptr);
   }
   else
   {
@@ -619,7 +619,7 @@ void CSFTPFile::Close()
   if (m_session && m_sftp_handle)
   {
     m_session->CloseFileHandle(m_sftp_handle);
-    m_sftp_handle = NULL;
+    m_sftp_handle = nullptr;
     m_session = CSFTPSessionPtr();
   }
 }

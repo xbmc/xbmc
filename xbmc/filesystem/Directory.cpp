@@ -81,7 +81,7 @@ public:
     : m_result(new CResult(dir, listDir))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
-                                           , NULL
+                                           , nullptr
                                            , CJob::PRIORITY_HIGH);
   }
  ~CGetDirectory()

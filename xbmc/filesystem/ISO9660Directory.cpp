@@ -68,7 +68,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
   }
 
   hFind = m_isoReader.FindFirstFile9660((char*)strSearchMask.c_str(), &wfd);
-  if (hFind == NULL)
+  if (hFind == nullptr)
     return false;
 
   do

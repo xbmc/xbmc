@@ -148,7 +148,7 @@ public:
   */
   static int  Stat(const CURL& file, struct __stat64* buffer);
   static bool Rename(const CURL& file, const CURL& urlNew);
-  static bool Copy(const CURL& file, const CURL& dest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
+  static bool Copy(const CURL& file, const CURL& dest, XFILE::IFileCallback* pCallback = nullptr, void* pContext = nullptr);
   static bool SetHidden(const CURL& file, bool hidden);
 
   // string interface
@@ -180,7 +180,7 @@ public:
   int Stat(struct __stat64 *buffer);
   static bool Delete(const std::string& strFileName);
   static bool Rename(const std::string& strFileName, const std::string& strNewFileName);
-  static bool Copy(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
+  static bool Copy(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback = nullptr, void* pContext = nullptr);
   static bool SetHidden(const std::string& fileName, bool hidden);
   double GetDownloadSpeed();
 

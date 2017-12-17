@@ -48,7 +48,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
   const TiXmlElement *pPropChild;
 
   /* Iterate response children elements */
-  for (pResponseChild = pElement->FirstChildElement(); pResponseChild != 0; pResponseChild = pResponseChild->NextSiblingElement())
+  for (pResponseChild = pElement->FirstChildElement(); pResponseChild != nullptr; pResponseChild = pResponseChild->NextSiblingElement())
   {
     if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "href") && !pResponseChild->NoChildren())
     {
@@ -62,16 +62,16 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       if (CDAVCommon::GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
       {
         /* Iterate propstat children elements */
-        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling())
+        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != nullptr; pPropstatChild = pPropstatChild->NextSibling())
         {
           if (CDAVCommon::ValueWithoutNamespace(pPropstatChild, "prop"))
           {
             /* Iterate all properties available */
-            for (pPropChild = pPropstatChild->FirstChildElement(); pPropChild != 0; pPropChild = pPropChild->NextSiblingElement())
+            for (pPropChild = pPropstatChild->FirstChildElement(); pPropChild != nullptr; pPropChild = pPropChild->NextSiblingElement())
             {
               if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getcontentlength") && !pPropChild->NoChildren())
               {
-                item.m_dwSize = strtoll(pPropChild->FirstChild()->Value(), NULL, 10);
+                item.m_dwSize = strtoll(pPropChild->FirstChild()->Value(), nullptr, 10);
               }
               else
               if (CDAVCommon::ValueWithoutNamespace(pPropChild, "getlastmodified") && !pPropChild->NoChildren())
@@ -150,7 +150,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   TiXmlNode *pChild;
   // Iterate over all responses
-  for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+  for (pChild = davResponse.RootElement()->FirstChild(); pChild != nullptr; pChild = pChild->NextSibling())
   {
     if (CDAVCommon::ValueWithoutNamespace(pChild, "response"))
     {

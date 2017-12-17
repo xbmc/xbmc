@@ -48,7 +48,7 @@ bool CDAVFile::Execute(const CURL& url)
   CLog::Log(LOGDEBUG, "CDAVFile::Execute(%p) %s", (void*)this, m_url.c_str());
 
   assert(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
-  if( m_state->m_easyHandle == NULL )
+  if( m_state->m_easyHandle == nullptr )
     g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
                                 url2.GetHostName().c_str(),
                                 &m_state->m_easyHandle,
@@ -83,7 +83,7 @@ bool CDAVFile::Execute(const CURL& url)
 
     TiXmlNode *pChild;
     // Iterate over all responses
-    for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+    for (pChild = davResponse.RootElement()->FirstChild(); pChild != nullptr; pChild = pChild->NextSibling())
     {
       if (CDAVCommon::ValueWithoutNamespace(pChild, "response"))
       {

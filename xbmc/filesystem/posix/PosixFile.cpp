@@ -110,8 +110,8 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
   if (m_fd < 0)
     return -1;
   
-  assert(lpBuf != NULL || uiBufSize == 0);
-  if (lpBuf == NULL && uiBufSize != 0)
+  assert(lpBuf != nullptr || uiBufSize == 0);
+  if (lpBuf == nullptr && uiBufSize != 0)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -152,8 +152,8 @@ ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_fd < 0)
     return -1;
 
-  assert(lpBuf != NULL || uiBufSize == 0);
-  if ((lpBuf == NULL && uiBufSize != 0) || !m_allowWrite)
+  assert(lpBuf != nullptr || uiBufSize == 0);
+  if ((lpBuf == nullptr && uiBufSize != 0) || !m_allowWrite)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -341,7 +341,7 @@ bool CPosixFile::Exists(const CURL& url)
 
 int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  assert(buffer != NULL);
+  assert(buffer != nullptr);
   const std::string filename(getFilename(url));
   if (filename.empty() || !buffer)
     return -1;
@@ -351,7 +351,7 @@ int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
 
 int CPosixFile::Stat(struct __stat64* buffer)
 {
-  assert(buffer != NULL);
+  assert(buffer != nullptr);
   if (m_fd < 0 || !buffer)
     return -1;
   

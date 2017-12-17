@@ -30,7 +30,7 @@
 #include "threads/Thread.h"
 #include "openssl/crypto.h"
 
-static CCriticalSection** m_sslLockArray = NULL;
+static CCriticalSection** m_sslLockArray = nullptr;
 
 #ifdef __cplusplus
 extern "C"
@@ -176,7 +176,7 @@ void DllLibCurlGlobal::CheckIdle()
 
 void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)
 {
-  assert(easy_handle != NULL);
+  assert(easy_handle != nullptr);
 
   CSingleLock lock(m_critSection);
 
@@ -244,25 +244,25 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
 {
   CSingleLock lock(m_critSection);
 
-  CURL_HANDLE* easy = NULL;
-  CURLM*       multi = NULL;
+  CURL_HANDLE* easy = nullptr;
+  CURLM*       multi = nullptr;
 
   if(easy_handle)
   {
     easy = *easy_handle;
-    *easy_handle = NULL;
+    *easy_handle = nullptr;
   }
 
   if(multi_handle)
   {
     multi = *multi_handle;
-    *multi_handle = NULL;
+    *multi_handle = nullptr;
   }
 
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); ++it)
   {
-    if( it->m_easy == easy && (multi == NULL || it->m_multi == multi) )
+    if( it->m_easy == easy && (multi == nullptr || it->m_multi == multi) )
     {
       /* reset session so next caller doesn't reuse options, only connections */
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
@@ -312,12 +312,12 @@ void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HAND
       if(easy_out && easy)
         session.m_easy = *easy_out;
       else
-        session.m_easy = NULL;
+        session.m_easy = nullptr;
 
       if(multi_out && multi)
         session.m_multi = *multi_out;
       else
-        session.m_multi = NULL;
+        session.m_multi = nullptr;
 
       Load();
       m_sessions.push_back(session);

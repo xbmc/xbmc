@@ -136,7 +136,7 @@ void CFTPParse::setTime(std::string str)
     /* set the day of the month */
     time_struct.tm_mday = atoi(day.c_str());
 
-    time_t t = time(NULL);
+    time_t t = time(nullptr);
     struct tm *current_time;
 #ifdef LOCALTIME_R
     struct tm result = {};
@@ -170,7 +170,7 @@ void CFTPParse::setTime(std::string str)
                                    time_struct.tm_year + 1900);
   }
   else if (multinet_re.FullMatch(str, &day, &month, &year,
-                            &hour, &minute, (void*)NULL, &second))
+                            &hour, &minute, (void*)nullptr, &second))
   {
     /* set the month */
     if (pcrecpp::RE("jan",
@@ -410,7 +410,7 @@ int CFTPParse::FTPParse(std::string str)
   if (unix_re.FullMatch(str, &type, &permissions, &link_count, &owner, &group, &size, &date, &name))
   {
     m_name = name;
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = (uint64_t)strtod(size.c_str(), nullptr);
     if (pcrecpp::RE("d").FullMatch(type))
       m_flagtrycwd = 1;
     if (pcrecpp::RE("-").FullMatch(type))
@@ -430,7 +430,7 @@ int CFTPParse::FTPParse(std::string str)
   if (netware_re.FullMatch(str, &type, &permissions, &owner, &size, &date, &name))
   {
     m_name = name;
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = (uint64_t)strtod(size.c_str(), nullptr);
     if (pcrecpp::RE("d").FullMatch(type))
       m_flagtrycwd = 1;
     if (pcrecpp::RE("-").FullMatch(type))
@@ -442,7 +442,7 @@ int CFTPParse::FTPParse(std::string str)
   if (netpresenz_re.FullMatch(str, &type, &permissions, &stuff, &size, &date, &name))
   {
     m_name = name;
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = (uint64_t)strtod(size.c_str(), nullptr);
     if (pcrecpp::RE("d").FullMatch(type))
       m_flagtrycwd = 1;
     if (pcrecpp::RE("-").FullMatch(type))
@@ -462,12 +462,12 @@ int CFTPParse::FTPParse(std::string str)
   if (eplf_re.FullMatch(str, &facts, &name))
   {
     /* Get the type, size, and date from the facts */
-    pcrecpp::RE("(\\+|,)(r|/),").PartialMatch(facts, (void*)NULL, &type);
-    pcrecpp::RE("(\\+|,)s(\\d+),").PartialMatch(facts, (void*)NULL, &size);
-    pcrecpp::RE("(\\+|,)m(\\d+),").PartialMatch(facts, (void*)NULL, &date);
+    pcrecpp::RE("(\\+|,)(r|/),").PartialMatch(facts, (void*)nullptr, &type);
+    pcrecpp::RE("(\\+|,)s(\\d+),").PartialMatch(facts, (void*)nullptr, &size);
+    pcrecpp::RE("(\\+|,)m(\\d+),").PartialMatch(facts, (void*)nullptr, &date);
 
     m_name = name;
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = (uint64_t)strtod(size.c_str(), nullptr);
     if (pcrecpp::RE("/").FullMatch(type))
       m_flagtrycwd = 1;
     if (pcrecpp::RE("r").FullMatch(type))
@@ -477,7 +477,7 @@ int CFTPParse::FTPParse(std::string str)
 
     return 1;
   }
-  if (multinet_re.FullMatch(str, &name, &version, &file_id, &date, (void*)NULL, &owner, &permissions))
+  if (multinet_re.FullMatch(str, &name, &version, &file_id, &date, (void*)nullptr, &owner, &permissions))
   {
     if (pcrecpp::RE("\\.DIR$").PartialMatch(name))
     {
@@ -504,7 +504,7 @@ int CFTPParse::FTPParse(std::string str)
     else
     {
       m_flagtryretr = 1;
-      m_size = (uint64_t)strtod(size.c_str(), NULL);
+      m_size = (uint64_t)strtod(size.c_str(), nullptr);
     }
     setTime(date);
 

@@ -150,7 +150,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             // According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4
             if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
-              long longvalue = strtol(value, NULL, 16);
+              long longvalue = strtol(value, nullptr, 16);
               if (longvalue & SMBC_DOS_MODE_HIDDEN)
                 hidden = true;
             }

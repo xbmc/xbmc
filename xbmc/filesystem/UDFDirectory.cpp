@@ -56,11 +56,11 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
 
   udf_dir_t *dirp = udfIsoReader.OpenDir(strSub.c_str());
 
-  if (dirp == NULL)
+  if (dirp == nullptr)
     return false;
 
-  udf_dirent_t *dp = NULL;
-  while ((dp = udfIsoReader.ReadDir(dirp)) != NULL)
+  udf_dirent_t *dp = nullptr;
+  while ((dp = udfIsoReader.ReadDir(dirp)) != nullptr)
   {
     if (dp->d_type == DVD_DT_DIR)
     {

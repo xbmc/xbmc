@@ -25,7 +25,7 @@
 
 using namespace XFILE;
 
-CPipeFile::CPipeFile() : m_pos(0), m_length(-1), m_pipe(NULL)
+CPipeFile::CPipeFile() : m_pos(0), m_length(-1), m_pipe(nullptr)
 {
 }
 
@@ -55,7 +55,7 @@ bool CPipeFile::Open(const CURL& url)
   m_pipe = PipesManager::GetInstance().OpenPipe(name);
   if (m_pipe)
     m_pipe->AddListener(this);
-  return (m_pipe != NULL);
+  return (m_pipe != nullptr);
 }
 
 bool CPipeFile::Exists(const CURL& url)
@@ -129,12 +129,12 @@ void CPipeFile::Close()
     m_pipe->RemoveListener(this);
     PipesManager::GetInstance().ClosePipe(m_pipe);    
   }
-  m_pipe = NULL;
+  m_pipe = nullptr;
 }
 
 bool CPipeFile::IsClosed()
 {
-  return (m_pipe == NULL);
+  return (m_pipe == nullptr);
 }
 
 void CPipeFile::Flush()
@@ -150,7 +150,7 @@ bool CPipeFile::OpenForWrite(const CURL& url, bool bOverWrite)
   m_pipe = PipesManager::GetInstance().CreatePipe(name);
   if (m_pipe)
     m_pipe->AddListener(this);
-  return (m_pipe != NULL);
+  return (m_pipe != nullptr);
 }
 
 bool CPipeFile::Delete(const CURL& url)
