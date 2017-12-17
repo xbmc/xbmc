@@ -271,12 +271,23 @@ struct SinkInfoStruct
   pa_channel_map map;
   SinkInfoStruct()
   {
-    list = NULL;
+    list = nullptr;
     isHWDevice = false;
     device_found = true;
-    mainloop = NULL;
+    mainloop = NULL; //called into C
     samplerate = 0;
     pa_channel_map_init(&map);
+  }
+};
+
+struct ModuleInfoStruct
+{
+  pa_threaded_mainloop *mainloop;
+  bool hasAllowPT;
+  ModuleInfoStruct()
+  {
+    mainloop = NULL; //called into C
+    hasAllowPT = false;
   }
 };
 
@@ -385,6 +396,21 @@ static CAEChannelInfo PAChannelToAEChannelMap(const pa_channel_map& channels)
   return info;
 }
 
+#if PA_CHECK_VERSION(10,0,0)
+static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, void *userdata)
+{
+  ModuleInfoStruct *mis = static_cast<ModuleInfoStruct*>(userdata);
+  if (!mis)
+    return;
+
+  if (i)
+  {
+    if (strcmp(i->name, "module-allow-passthrough") == 0)
+      mis->hasAllowPT = true;
+  }
+  pa_threaded_mainloop_signal(mis->mainloop, 0);
+}
+#endif
 static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
 
@@ -1010,6 +1036,17 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = mainloop;
   sinkStruct.list = &list;
+
+  ModuleInfoStruct mis;
+  mis.mainloop = mainloop;
+
+#if PA_CHECK_VERSION(10,0,0)
+  WaitForOperation(pa_context_get_module_info_list(context, ModuleInfoCallback, &mis), mainloop, "Check PA Modules");
+#endif
+  if (!mis.hasAllowPT)
+  {
+    CLog::Log(LOGWARNING, "Pulseaudio module module-allow-passthrough not loaded - opening PT devices might fail");
+  }
   WaitForOperation(pa_context_get_sink_info_list(context, SinkInfoRequestCallback, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
   pa_threaded_mainloop_unlock(mainloop);
