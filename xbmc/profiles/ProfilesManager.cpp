@@ -204,7 +204,7 @@ bool CProfilesManager::Save(const std::string &file) const
   CXBMCTinyXML xmlDoc;
   TiXmlElement xmlRootElement(XML_PROFILES);
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (pRoot == nullptr)
     return false;
 
   XMLUtils::SetInt(pRoot, XML_LAST_LOADED, m_currentProfile);
@@ -301,11 +301,11 @@ bool CProfilesManager::DeleteProfile(size_t index)
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(index);
-  if (profile == NULL)
+  if (profile == nullptr)
     return false;
 
   CGUIDialogYesNo* dlgYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo == NULL)
+  if (dlgYesNo == nullptr)
     return false;
 
   std::string str = g_localizeStrings.Get(13201);
@@ -386,7 +386,7 @@ const CProfile* CProfilesManager::GetProfile(size_t index) const
   if (index < m_profiles.size())
     return &m_profiles[index];
 
-  return NULL;
+  return nullptr;
 }
 
 CProfile* CProfilesManager::GetProfile(size_t index)
@@ -395,7 +395,7 @@ CProfile* CProfilesManager::GetProfile(size_t index)
   if (index < m_profiles.size())
     return &m_profiles[index];
 
-  return NULL;
+  return nullptr;
 }
 
 int CProfilesManager::GetProfileIndex(const std::string &name) const
