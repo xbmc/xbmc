@@ -250,7 +250,7 @@ public:
   void SetSoundMode(const int mode) override;
 
   /* returns a new stream for data in the specified format */
-  IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
+  IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = nullptr) override;
   bool FreeStream(IAEStream *stream) override;
 
   /* returns a new sound object */
@@ -309,9 +309,9 @@ protected:
   void LoadSettings();
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
-  void ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode = NULL);
-  void Configure(AEAudioFormat *desiredFmt = NULL);
-  AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = NULL);
+  void ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode = nullptr);
+  void Configure(AEAudioFormat *desiredFmt = nullptr);
+  AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = nullptr);
   CActiveAEStream* CreateStream(MsgStreamNew *streamMsg);
   void DiscardStream(CActiveAEStream *stream);
   void SFlushStream(CActiveAEStream *stream);
