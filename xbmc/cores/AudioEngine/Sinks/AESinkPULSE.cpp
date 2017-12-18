@@ -166,7 +166,7 @@ static unsigned int defaultSampleRates[] = {
 
 static void ContextStateCallback(pa_context *c, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_context_get_state(c))
   {
     case PA_CONTEXT_READY:
@@ -183,7 +183,7 @@ static void ContextStateCallback(pa_context *c, void *userdata)
 
 static void StreamStateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_stream_get_state(s))
   {
     case PA_STREAM_UNCONNECTED:
@@ -198,20 +198,20 @@ static void StreamStateCallback(pa_stream *s, void *userdata)
 
 static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   pa_threaded_mainloop_signal(m, 0);
 }
 
 static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   pa_threaded_mainloop_signal(m, 0);
 }
 
 
 static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
 {
-  CAESinkPULSE *p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE *p = static_cast<CAESinkPULSE*>(userdata);
   if (!p || !p->IsInitialized())
     return;
 
@@ -221,7 +221,7 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
 
 static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
-  CAESinkPULSE* p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
   if (!p || !p->IsInitialized())
     return;
 
@@ -237,7 +237,7 @@ static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_ty
 
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
-  CAESinkPULSE* p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
   if(!p)
     return;
 
@@ -271,18 +271,29 @@ struct SinkInfoStruct
   pa_channel_map map;
   SinkInfoStruct()
   {
-    list = NULL;
+    list = nullptr;
     isHWDevice = false;
     device_found = true;
-    mainloop = NULL;
+    mainloop = NULL; //called into C
     samplerate = 0;
     pa_channel_map_init(&map);
   }
 };
 
+struct ModuleInfoStruct
+{
+  pa_threaded_mainloop *mainloop;
+  bool hasAllowPT;
+  ModuleInfoStruct()
+  {
+    mainloop = NULL; //called into C
+    hasAllowPT = false;
+  }
+};
+
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
-  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
@@ -385,10 +396,25 @@ static CAEChannelInfo PAChannelToAEChannelMap(const pa_channel_map& channels)
   return info;
 }
 
+#if PA_CHECK_VERSION(10,0,0)
+static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, void *userdata)
+{
+  ModuleInfoStruct *mis = static_cast<ModuleInfoStruct*>(userdata);
+  if (!mis)
+    return;
+
+  if (i)
+  {
+    if (strcmp(i->name, "module-allow-passthrough") == 0)
+      mis->hasAllowPT = true;
+  }
+  pa_threaded_mainloop_signal(mis->mainloop, 0);
+}
+#endif
 static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
 
-  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
@@ -1010,6 +1036,17 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = mainloop;
   sinkStruct.list = &list;
+
+  ModuleInfoStruct mis;
+  mis.mainloop = mainloop;
+
+#if PA_CHECK_VERSION(10,0,0)
+  WaitForOperation(pa_context_get_module_info_list(context, ModuleInfoCallback, &mis), mainloop, "Check PA Modules");
+#endif
+  if (!mis.hasAllowPT)
+  {
+    CLog::Log(LOGWARNING, "Pulseaudio module module-allow-passthrough not loaded - opening PT devices might fail");
+  }
   WaitForOperation(pa_context_get_sink_info_list(context, SinkInfoRequestCallback, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
   pa_threaded_mainloop_unlock(mainloop);
