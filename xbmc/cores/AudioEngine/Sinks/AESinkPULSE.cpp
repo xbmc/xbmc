@@ -166,7 +166,7 @@ static unsigned int defaultSampleRates[] = {
 
 static void ContextStateCallback(pa_context *c, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_context_get_state(c))
   {
     case PA_CONTEXT_READY:
@@ -183,7 +183,7 @@ static void ContextStateCallback(pa_context *c, void *userdata)
 
 static void StreamStateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_stream_get_state(s))
   {
     case PA_STREAM_UNCONNECTED:
@@ -198,20 +198,20 @@ static void StreamStateCallback(pa_stream *s, void *userdata)
 
 static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   pa_threaded_mainloop_signal(m, 0);
 }
 
 static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
   pa_threaded_mainloop_signal(m, 0);
 }
 
 
 static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
 {
-  CAESinkPULSE *p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE *p = static_cast<CAESinkPULSE*>(userdata);
   if (!p || !p->IsInitialized())
     return;
 
@@ -221,7 +221,7 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
 
 static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
-  CAESinkPULSE* p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
   if (!p || !p->IsInitialized())
     return;
 
@@ -237,7 +237,7 @@ static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_ty
 
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
-  CAESinkPULSE* p = (CAESinkPULSE*) userdata;
+  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
   if(!p)
     return;
 
@@ -293,7 +293,7 @@ struct ModuleInfoStruct
 
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
-  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
@@ -414,7 +414,7 @@ static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, 
 static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
 
-  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
