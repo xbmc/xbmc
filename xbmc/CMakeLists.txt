@@ -30,7 +30,6 @@ set(SOURCES Application.cpp
             TextureCacheJob.cpp
             TextureDatabase.cpp
             ThumbLoader.cpp
-            ThumbnailCache.cpp
             URL.cpp
             Util.cpp
             XBApplicationEx.cpp
@@ -74,7 +73,6 @@ set(HEADERS AppParamParser.h
             TextureCacheJob.h
             TextureDatabase.h
             ThumbLoader.h
-            ThumbnailCache.h
             URL.h
             Util.h
             XBApplicationEx.h
