@@ -13,7 +13,7 @@ SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
 FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f %%i IN ('%awk_exe% "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY_NAME=%%i
+FOR /f %%i IN ('%awk_exe% "/COMPANY_NAME/ {$1=""; print $0}" %base_dir%\version.txt') DO SET COMPANY_NAME=%%i
 FOR /f %%i IN ('%awk_exe% "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
 FOR /f %%i IN ('%awk_exe% "/VERSION_MAJOR/ {print $2}" %base_dir%\version.txt') DO SET MAJOR=%%i
 FOR /f %%i IN ('%awk_exe% "/VERSION_MINOR/ {print $2}" %base_dir%\version.txt') DO SET MINOR=%%i
