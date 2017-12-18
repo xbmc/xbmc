@@ -557,7 +557,9 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 
   if (!epg)
   {
-    channel->SetEpgID(NextEpgId());
+    if (channel->EpgID() <= 0)
+      channel->SetEpgID(NextEpgId());
+
     epg.reset(new CPVREpg(channel, false));
 
     CSingleLock lock(m_critSection);
