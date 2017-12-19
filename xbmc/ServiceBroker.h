@@ -59,6 +59,7 @@ class CFileExtensionProvider;
 class CNetwork;
 class CWinSystemBase;
 class CRenderSystemBase;
+class CPowerManager;
 
 namespace KODI
 {
@@ -107,4 +108,5 @@ public:
   static CNetwork& GetNetwork();
   static CWinSystemBase& GetWinSystem();
   static CRenderSystemBase& GetRenderSystem();
+  static CPowerManager& GetPowerManager();
 };

@@ -152,3 +152,8 @@ CRenderSystemBase& CServiceBroker::GetRenderSystem()
   CRenderSystemBase &renderSystem = dynamic_cast<CRenderSystemBase&>(g_application.m_ServiceManager->GetWinSystem());
   return renderSystem;
 }
+
+CPowerManager& CServiceBroker::GetPowerManager()
+{
+  return g_application.m_ServiceManager->GetPowerManager();
+}

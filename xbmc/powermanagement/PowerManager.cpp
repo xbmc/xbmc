@@ -59,8 +59,6 @@ extern HWND g_hWnd;
 
 using namespace ANNOUNCEMENT;
 
-CPowerManager g_powerManager;
-
 CPowerManager::CPowerManager()
 {
   m_instance = NULL;
@@ -137,30 +135,30 @@ void CPowerManager::SetDefaults()
         defaultShutdown = POWERSTATE_SHUTDOWN;
     break;
     case POWERSTATE_HIBERNATE:
-      if (!g_powerManager.CanHibernate())
+      if (!CServiceBroker::GetPowerManager().CanHibernate())
       {
-        if (g_powerManager.CanSuspend())
+        if (CServiceBroker::GetPowerManager().CanSuspend())
           defaultShutdown = POWERSTATE_SUSPEND;
         else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+          defaultShutdown = CServiceBroker::GetPowerManager().CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
       }
     break;
     case POWERSTATE_SUSPEND:
-      if (!g_powerManager.CanSuspend())
+      if (!CServiceBroker::GetPowerManager().CanSuspend())
       {
-        if (g_powerManager.CanHibernate())
+        if (CServiceBroker::GetPowerManager().CanHibernate())
           defaultShutdown = POWERSTATE_HIBERNATE;
         else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+          defaultShutdown = CServiceBroker::GetPowerManager().CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
       }
     break;
     case POWERSTATE_SHUTDOWN:
-      if (!g_powerManager.CanPowerdown())
+      if (!CServiceBroker::GetPowerManager().CanPowerdown())
       {
-        if (g_powerManager.CanSuspend())
+        if (CServiceBroker::GetPowerManager().CanSuspend())
           defaultShutdown = POWERSTATE_SUSPEND;
         else
-          defaultShutdown = g_powerManager.CanHibernate() ? POWERSTATE_HIBERNATE : POWERSTATE_QUIT;
+          defaultShutdown = CServiceBroker::GetPowerManager().CanHibernate() ? POWERSTATE_HIBERNATE : POWERSTATE_QUIT;
       }
     break;
   }
@@ -312,11 +310,11 @@ void CPowerManager::OnLowBattery()
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  if (g_powerManager.CanPowerdown())
+  if (CServiceBroker::GetPowerManager().CanPowerdown())
     list.push_back(make_pair(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));
-  if (g_powerManager.CanHibernate())
+  if (CServiceBroker::GetPowerManager().CanHibernate())
     list.push_back(make_pair(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE));
-  if (g_powerManager.CanSuspend())
+  if (CServiceBroker::GetPowerManager().CanSuspend())
     list.push_back(make_pair(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND));
   if (!g_application.IsStandAlone())
   {

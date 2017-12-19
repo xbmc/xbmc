@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
 #include "windowing/WinSystem.h"
+#include "powermanagement/PowerManager.h"
 
 using namespace KODI;
 
@@ -143,6 +144,10 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_fileExtensionProvider.reset(new CFileExtensionProvider());
 
+  m_powerManager.reset(new CPowerManager());
+  m_powerManager->Initialize();
+  m_powerManager->SetDefaults();
+
   init_level = 2;
   return true;
 }
@@ -207,6 +212,7 @@ void CServiceManager::DeinitStageTwo()
 {
   init_level = 1;
 
+  m_powerManager.reset();
   m_fileExtensionProvider.reset();
   m_gameRenderManager.reset();
   m_peripherals.reset();
@@ -360,6 +366,11 @@ CWinSystemBase &CServiceManager::GetWinSystem()
 void CServiceManager::SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem)
 {
   m_winSystem = std::move(winSystem);
+}
+
+CPowerManager &CServiceManager::GetPowerManager()
+{
+  return *m_powerManager;
 }
 
 // deleters for unique_ptr
