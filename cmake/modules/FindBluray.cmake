@@ -50,6 +50,11 @@ if(BLURAY_FOUND)
   set(BLURAY_INCLUDE_DIRS ${BLURAY_INCLUDE_DIR})
   set(BLURAY_DEFINITIONS -DHAVE_LIBBLURAY=1)
 
+  # todo: improve syntax
+  if (NOT CORE_PLATFORM_NAME_LC STREQUAL windowsstore)
+    list(APPEND BLURAY_DEFINITIONS -DHAVE_LIBBLURAY_BDJ=1)
+  endif()
+
   if(NOT TARGET Bluray::Bluray)
     add_library(Bluray::Bluray UNKNOWN IMPORTED)
     if(BLURAY_LIBRARY)

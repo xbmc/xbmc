@@ -37,10 +37,6 @@
 #  define HAS_WIN10_NETWORK
 #endif
 
-#if defined(HAVE_LIBBLURAY) && !defined(TARGET_WINDOWS_STORE)
-  #define HAVE_LIBBLURAY_BDJ
-#endif
-
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 
