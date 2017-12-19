@@ -29,14 +29,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_IRSERVERSUITE
-#if defined(TARGET_WINDOWS_DESKTOP)
-#  define HAS_WIN32_NETWORK
-#  define HAS_FILESYSTEM_SMB
-#elif defined(TARGET_WINDOWS_STORE)
-#  define HAS_WIN10_NETWORK
-#endif
-
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 

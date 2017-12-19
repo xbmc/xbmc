@@ -64,6 +64,9 @@ set(SYSTEM_DEFINES -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS
                    -DUNICODE -D_UNICODE
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO>)
 
+# Additional SYSTEM_DEFINES
+list(APPEND SYSTEM_DEFINES -DHAS_IRSERVERSUITE -DHAS_WIN10_NETWORK)
+
 # The /MP option enables /FS by default.
 set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS} /ZW /EHsc /await")
 # Google Test needs to use shared version of runtime libraries

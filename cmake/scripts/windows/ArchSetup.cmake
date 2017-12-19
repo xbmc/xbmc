@@ -42,6 +42,9 @@ if(${ARCH} STREQUAL win32)
   list(APPEND SYSTEM_DEFINES $<$<CONFIG:Debug>:-D_ITERATOR_DEBUG_LEVEL=0>)
 endif()
 
+# Additional SYSTEM_DEFINES
+list(APPEND SYSTEM_DEFINES -DHAS_IRSERVERSUITE -DHAS_WIN32_NETWORK -DHAS_FILESYSTEM_SMB)
+
 # Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(CMAKE_CXX_FLAGS "/MP /FS ${CMAKE_CXX_FLAGS}")
