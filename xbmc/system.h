@@ -27,10 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#if defined(USE_UPNP)
-  #define HAS_UPNP
-#endif
-
 #if defined(HAVE_LIBMDNS)
   #define HAS_ZEROCONF
   #define HAS_MDNS
