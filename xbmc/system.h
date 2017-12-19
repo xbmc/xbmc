@@ -27,11 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#ifdef HAVE_LIBMICROHTTPD
-#define HAS_WEB_SERVER
-#define HAS_WEB_INTERFACE
-#endif
-
 #define HAS_JSONRPC
 
 #define HAS_FILESYSTEM_CDDA
