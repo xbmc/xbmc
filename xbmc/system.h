@@ -27,10 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#ifdef HAVE_MYSQL
-  #define HAS_MYSQL
-#endif
-
 #if defined(USE_UPNP)
   #define HAS_UPNP
 #endif
