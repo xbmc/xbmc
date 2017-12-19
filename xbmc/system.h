@@ -81,10 +81,6 @@
 #include "PlatformInclude.h"
 #endif
 
-#if defined(TARGET_ANDROID)
-#define HAS_ZEROCONF
-#endif
-
 #ifdef HAS_DVD_DRIVE
 #define HAS_CDDA_RIPPER
 #endif
