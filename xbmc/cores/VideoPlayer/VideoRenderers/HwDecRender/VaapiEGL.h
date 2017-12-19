@@ -22,7 +22,7 @@
 
 #if defined(HAS_GL)
 #include <GL/gl.h>
-#elif defined(HAVE_LIBGLESV2)
+#elif defined(HAS_GLES)
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl3.h>

@@ -161,16 +161,6 @@
 #define HAS_ZEROCONF
 #endif
 
-// GLES2.0 detected. Dont use GL!
-#ifdef HAVE_LIBGLESV2
-#define HAS_GLES 2
-#endif
-
-#ifdef HAVE_LIBGLESV3
-#undef HAS_GLES
-#define HAS_GLES 3
-#endif
-
 #ifdef HAS_DVD_DRIVE
 #define HAS_CDDA_RIPPER
 #endif
