@@ -11,6 +11,10 @@ CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-toolbox-glue --disable-framework
+ifeq ($(ENABLE_WAYLAND),yes)
+  CONFIGURE += --with-system-expat
+endif
+
 
 LIBDYLIB=$(PLATFORM)/python
 

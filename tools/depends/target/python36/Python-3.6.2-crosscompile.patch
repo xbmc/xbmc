@@ -1,0 +1,104 @@
+--- Makefile.pre.in.orig	2017-08-02 16:55:54.406031000 +0530
++++ Makefile.pre.in	2017-08-02 16:58:42.814031000 +0530
+@@ -279,7 +279,7 @@
+ ##########################################################################
+ # Parser
+ PGEN=		Parser/pgen$(EXE)
+-
++PGEN_FOR_BUILD=$(NATIVE_PGEN)
+ POBJS=		\
+ 		Parser/acceler.o \
+ 		Parser/grammar1.o \
+@@ -575,7 +575,7 @@
+ 	esac; \
+ 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
+-		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
++		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
+ 
+ 
+ # Build static library
+@@ -1434,11 +1434,13 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
++	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
++	   	--skip-build \
+ 	   	--prefix=$(prefix) \
+-		--install-scripts=$(BINDIR) \
+-		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++		--install-scripts=$(DESTDIR)$(BINDIR) \
++		--install-platlib=$(DESTDIR)$(DESTSHARED) \
++		--root=/
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
+ 	-rm -r $(DESTDIR)$(DESTSHARED)/__pycache__
+ 
+
+--- configure.ac.orig	2017-08-02 03:14:45.287912000 +0530
++++ configure.ac	2017-08-02 03:37:45.849848000 +0530
+@@ -382,7 +382,6 @@
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	ac_sys_release=
+     else
+@@ -427,7 +426,6 @@
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
+ fi
+
+
+--- setup.py.orig	2017-08-02 03:15:31.390951999 +0530
++++ setup.py	2017-08-02 03:49:29.957726000 +0530
+@@ -16,7 +16,7 @@
+ from distutils.command.build_scripts import build_scripts
+ from distutils.spawn import find_executable
+ 
+-cross_compiling = "_PYTHON_HOST_PLATFORM" in os.environ
++cross_compiling = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
+ 
+ # Add special CFLAGS reserved for building the interpreter and the stdlib
+ # modules (Issue #21121).
+@@ -199,6 +199,7 @@
+ 
+     def build_extensions(self):
+ 
++        return
+         # Detect which modules should be compiled
+         missing = self.detect_modules()
+ 
+@@ -376,6 +377,9 @@
+ 
+         # Don't try to load extensions for cross builds
+         if cross_compiling:
++            self.announce(
++                'WARNING: skipping import check for cross-compiled: "%s"' %
++                ext.name)
+             return
+ 
+         loader = importlib.machinery.ExtensionFileLoader(ext.name, ext_filename)
+@@ -1943,8 +1947,13 @@
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+-                cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
+-                      % (ffi_builddir, ffi_srcdir, " ".join(config_args))
++                if cross_compiling:
++                    cmd = "cd %s && env CFLAGS='' '%s/configure' --host=%s --build=%s %s" \
++                          % (ffi_builddir, ffi_srcdir, os.environ.get('HOSTARCH'),
++                             os.environ.get('BUILDARCH'), " ".join(config_args))
++                else:
++                    cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
++                          % (ffi_builddir, ffi_srcdir, " ".join(config_args))
+ 
+                 res = os.system(cmd)
+                 if res or not os.path.exists(ffi_configfile):
+
