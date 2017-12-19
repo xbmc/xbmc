@@ -95,9 +95,6 @@
  *****************/
 
 #if defined(TARGET_DARWIN)
-  #if defined(TARGET_DARWIN_OSX)
-    #define HAS_SDL
-  #endif
   #define HAS_ZEROCONF
 #endif
 
