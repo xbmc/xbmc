@@ -91,14 +91,6 @@
 #endif
 
 /*****************
- * Mac Specific
- *****************/
-
-#if defined(TARGET_DARWIN)
-  #define HAS_ZEROCONF
-#endif
-
-/*****************
  * Linux Specific
  *****************/
 
