@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_EVENT_SERVER
-
 #include "EventPacket.h"
 #include "Socket.h"
 #include "utils/log.h"
@@ -100,5 +98,3 @@ bool CEventPacket::Parse(int datasize, const void *data)
   m_bValid = true;
   return true;
 }
-
-#endif // HAS_EVENT_SERVER

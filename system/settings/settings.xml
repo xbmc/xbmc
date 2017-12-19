@@ -1760,19 +1760,13 @@
         </setting>
       </group>
       <group id="2" label="14275">
-      <requirement>
-        <or>
-          <condition>HAS_EVENT_SERVER</condition>
-          <condition>HAS_JSONRPC</condition>
-        </or>
-      </requirement>
+      <requirement>HAS_JSONRPC</requirement>
         <setting id="services.esenabled" type="boolean" label="14276" help="36334">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="services.esport" type="integer" label="792" help="36335">
-          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>9777</default>
           <constraints>
@@ -1786,7 +1780,6 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.esportrange" type="integer" label="793" help="36336">
-          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>10</default>
           <constraints>
@@ -1800,7 +1793,6 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="services.esmaxclients" type="integer" label="797" help="36337">
-          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>20</default>
           <constraints>
@@ -1824,7 +1816,6 @@
           <control type="toggle" />
         </setting>
         <setting id="services.esinitialdelay" type="integer" label="795" help="36339">
-          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>750</default>
           <constraints>
@@ -1838,7 +1829,6 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="services.escontinuousdelay" type="integer" label="796" help="36340">
-          <requirement>HAS_EVENT_SERVER</requirement>
           <level>4</level>
           <default>25</default>
           <constraints>

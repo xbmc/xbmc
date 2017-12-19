@@ -27,8 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#define HAS_EVENT_SERVER
-
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE

@@ -28,6 +28,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "network/EventServer.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -47,10 +48,6 @@
 #ifdef HAS_AIRTUNES
 #include "network/AirTunesServer.h"
 #endif // HAS_AIRTUNES
-
-#ifdef HAS_EVENT_SERVER
-#include "network/EventServer.h"
-#endif // HAS_EVENT_SERVER
 
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
@@ -90,9 +87,7 @@ using namespace KODI::MESSAGING;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif // HAS_JSONRPC
-#ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
-#endif // HAS_EVENT_SERVER
 #ifdef HAS_UPNP
 using namespace UPNP;
 #endif // HAS_UPNP
@@ -349,13 +344,11 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
     if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
       bool result = true;
-#ifdef HAS_EVENT_SERVER
       if (!StartEventServer())
       {
         HELPERS::ShowOKDialogText(CVariant{33102}, CVariant{33100});
         result = false;
       }
-#endif // HAS_EVENT_SERVER
 
 #ifdef HAS_JSONRPC
       if (!StartJSONRPCServer())
@@ -369,9 +362,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
     else
     {
       bool result = true;
-#ifdef HAS_EVENT_SERVER
       result = StopEventServer(true, true);
-#endif // HAS_EVENT_SERVER
 #ifdef HAS_JSONRPC
       result &= StopJSONRPCServer(false);
 #endif // HAS_JSONRPC
@@ -380,7 +371,6 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESPORT)
   {
-#ifdef HAS_EVENT_SERVER
     // restart eventserver without asking user
     if (!StopEventServer(true, false))
       return false;
@@ -395,11 +385,9 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
     // reconfigure XBMCHelper for port changes
     XBMCHelper::GetInstance().Configure();
 #endif // TARGET_DARWIN_OSX
-#endif // HAS_EVENT_SERVER
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {
-#ifdef HAS_EVENT_SERVER
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
       if (!StopEventServer(true, true))
@@ -411,7 +399,6 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
         return false;
       }
     }
-#endif // HAS_EVENT_SERVER
 
 #ifdef HAS_JSONRPC
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
@@ -428,14 +415,12 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #endif // HAS_JSONRPC
   }
 
-#ifdef HAS_EVENT_SERVER
   else if (settingId == CSettings::SETTING_SERVICES_ESINITIALDELAY ||
            settingId == CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY)
   {
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
       return RefreshEventServer();
   }
-#endif // HAS_EVENT_SERVER
 
   return true;
 }
@@ -757,7 +742,6 @@ bool CNetworkServices::StopJSONRPCServer(bool bWait)
 
 bool CNetworkServices::StartEventServer()
 {
-#ifdef HAS_EVENT_SERVER
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     return false;
 
@@ -774,21 +758,15 @@ bool CNetworkServices::StartEventServer()
   server->StartServer();
 
   return true;
-#endif // HAS_EVENT_SERVER
-  return false;
 }
 
 bool CNetworkServices::IsEventServerRunning()
 {
-#ifdef HAS_EVENT_SERVER
   return CEventServer::GetInstance()->Running();
-#endif // HAS_EVENT_SERVER
-  return false;
 }
 
 bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
 {
-#ifdef HAS_EVENT_SERVER
   if (!IsEventServerRunning())
     return true;
 
@@ -823,13 +801,10 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
   }
 
   return true;
-#endif // HAS_EVENT_SERVER
-  return false;
 }
 
 bool CNetworkServices::RefreshEventServer()
 {
-#ifdef HAS_EVENT_SERVER
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     return false;
 
@@ -838,8 +813,6 @@ bool CNetworkServices::RefreshEventServer()
 
   CEventServer::GetInstance()->RefreshSettings();
   return true;
-#endif // HAS_EVENT_SERVER
-  return false;
 }
 
 bool CNetworkServices::StartUPnP()

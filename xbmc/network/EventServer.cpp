@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_EVENT_SERVER
-
 #include "EventServer.h"
 #include "EventPacket.h"
 #include "EventClient.h"
@@ -393,5 +391,3 @@ bool CEventServer::GetMousePos(float &x, float &y)
   }
   return false;
 }
-
-#endif // HAS_EVENT_SERVER

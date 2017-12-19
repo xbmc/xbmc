@@ -283,9 +283,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_AIRPLAY
   m_simpleConditions.insert("has_airplay");
 #endif
-#ifdef HAS_EVENT_SERVER
-  m_simpleConditions.insert("has_event_server");
-#endif
 #ifdef HAVE_X11
   m_simpleConditions.insert("have_x11");
 #endif

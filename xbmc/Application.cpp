@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/EventServer.h"
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
@@ -117,9 +118,6 @@
 #include "network/ZeroconfBrowser.h"
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
-#endif
-#ifdef HAS_EVENT_SERVER
-#include "network/EventServer.h"
 #endif
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
@@ -225,9 +223,7 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
-#ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
-#endif
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif
@@ -2781,9 +2777,7 @@ bool CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo
-#ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
-#endif
     DllLoaderContainer::Clear();
     CServiceBroker::GetPlaylistPlayer().Clear();
 
