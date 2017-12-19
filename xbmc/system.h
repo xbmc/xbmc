@@ -27,10 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#ifdef HAVE_LIBSMBCLIENT
-  #define HAS_FILESYSTEM_SMB
-#endif
-
 #ifdef HAVE_LIBNFS
   #define HAS_FILESYSTEM_NFS
 #endif
