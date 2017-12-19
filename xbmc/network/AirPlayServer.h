@@ -22,9 +22,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_AIRPLAY
-
 #include <map>
 #include <vector>
 #include <sys/socket.h>
@@ -116,5 +113,3 @@ private:
   static CCriticalSection ServerInstanceLock;
   static CAirPlayServer *ServerInstance;
 };
-
-#endif

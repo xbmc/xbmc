@@ -23,8 +23,6 @@
 #include "network/Network.h"
 #include "AirPlayServer.h"
 
-#ifdef HAS_AIRPLAY
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "DllLibPlist.h"
@@ -1211,5 +1209,3 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
   return status;
 }
-
-#endif

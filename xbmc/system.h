@@ -27,10 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#ifdef HAVE_LIBPLIST
-  #define HAS_AIRPLAY
-#endif
-
 #if defined(HAVE_LIBSHAIRPLAY)
   #define HAS_AIRTUNES
 #endif

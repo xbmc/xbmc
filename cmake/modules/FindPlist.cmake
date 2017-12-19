@@ -41,7 +41,7 @@ endif()
 if(PLIST_FOUND)
   set(PLIST_LIBRARIES ${PLIST_LIBRARY})
   set(PLIST_INCLUDE_DIRS ${PLIST_INCLUDE_DIR})
-  set(PLIST_DEFINITIONS -DHAVE_LIBPLIST=1)
+  set(PLIST_DEFINITIONS -DHAS_AIRPLAY=1)
 
   if(NOT TARGET Plist::Plist)
     add_library(Plist::Plist UNKNOWN IMPORTED)
@@ -51,7 +51,7 @@ if(PLIST_FOUND)
     endif()
     set_target_properties(Plist::Plist PROPERTIES
                                        INTERFACE_INCLUDE_DIRECTORIES "${PLIST_INCLUDE_DIR}"
-                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBPLIST=1)
+                                       INTERFACE_COMPILE_DEFINITIONS HAS_AIRPLAY=1)
   endif()
 endif()
 
