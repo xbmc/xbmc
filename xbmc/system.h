@@ -99,7 +99,6 @@
     #define HAS_SDL
   #endif
   #define HAS_ZEROCONF
-  #define HAS_LINUX_NETWORK
 #endif
 
 /*****************
@@ -117,7 +116,6 @@
 #ifdef HAVE_SDL
 #define HAS_SDL
 #endif
-#define HAS_LINUX_NETWORK
 #endif
 
 #ifdef HAVE_LIBSSH

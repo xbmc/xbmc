@@ -22,6 +22,9 @@ else()
   endif()
 endif()
 
+# Additional SYSTEM_DEFINES
+list(APPEND SYSTEM_DEFINES -DHAS_LINUX_NETWORK)
+
 find_package(CXX11 REQUIRED)
 
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
