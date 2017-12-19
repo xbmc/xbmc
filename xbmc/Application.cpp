@@ -122,9 +122,7 @@
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
 #endif
-#ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
-#endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralImon.h"
@@ -224,9 +222,7 @@ using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
 using namespace EVENTSERVER;
-#ifdef HAS_JSONRPC
 using namespace JSONRPC;
-#endif
 using namespace ANNOUNCEMENT;
 using namespace PVR;
 using namespace PERIPHERALS;
@@ -1153,9 +1149,7 @@ bool CApplication::Initialize()
     }
     else
     {
-#ifdef HAS_JSONRPC
       CJSONRPC::Initialize();
-#endif
       CServiceBroker::GetServiceAddons().StartBeforeLogin();
 
       // activate the configured start window
@@ -1181,9 +1175,7 @@ bool CApplication::Initialize()
   }
   else //No GUI Created
   {
-#ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
-#endif
     CServiceBroker::GetServiceAddons().StartBeforeLogin();
   }
 

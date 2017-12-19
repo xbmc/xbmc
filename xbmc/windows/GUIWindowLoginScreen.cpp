@@ -38,9 +38,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "input/Key.h"
 #include "interfaces/builtins/Builtins.h"
-#ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
-#endif
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
@@ -319,9 +317,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_weatherManager.Refresh();
 
-#ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
-#endif
 
   // Restart context menu manager
   CServiceBroker::GetContextMenuManager().Init();

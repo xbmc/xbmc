@@ -118,7 +118,6 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dg;
-#ifdef HAS_JSONRPC
       String ret;
 
       if (! jsonrpccommand)
@@ -130,9 +129,6 @@ namespace XBMCAddon
       CAddOnTransport::CAddOnClient client;
 
       return JSONRPC::CJSONRPC::MethodCall(/*method*/ jsonrpccommand, &transport, &client);
-#else
-      THROW_UNIMP("executeJSONRPC");
-#endif
     }
 
     void sleep(long timemillis)

@@ -36,9 +36,7 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
-#ifdef HAS_JSONRPC
 #include "network/httprequesthandler/HTTPJsonRpcHandler.h"
-#endif // HAS_JSONRPC
 #include "settings/MediaSourceSettings.h"
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"

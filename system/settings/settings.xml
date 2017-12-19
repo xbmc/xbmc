@@ -1760,7 +1760,6 @@
         </setting>
       </group>
       <group id="2" label="14275">
-      <requirement>HAS_JSONRPC</requirement>
         <setting id="services.esenabled" type="boolean" label="14276" help="36334">
           <level>1</level>
           <default>true</default>

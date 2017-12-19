@@ -27,9 +27,7 @@ class CWebServer;
 class CHTTPImageHandler;
 class CHTTPImageTransformationHandler;
 class CHTTPVfsHandler;
-#ifdef HAS_JSONRPC
 class CHTTPJsonRpcHandler;
-#endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
 #ifdef HAS_PYTHON
 class CHTTPPythonHandler;
@@ -107,9 +105,7 @@ private:
   CHTTPImageHandler& m_httpImageHandler;
   CHTTPImageTransformationHandler& m_httpImageTransformationHandler;
   CHTTPVfsHandler& m_httpVfsHandler;
-#ifdef HAS_JSONRPC
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
-#endif
 #ifdef HAS_WEB_INTERFACE
 #ifdef HAS_PYTHON
   CHTTPPythonHandler& m_httpPythonHandler;
