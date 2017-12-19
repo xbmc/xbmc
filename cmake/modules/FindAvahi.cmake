@@ -40,21 +40,21 @@ if(AVAHI_FOUND)
                          ${AVAHI_COMMON_INCLUDE_DIR})
   set(AVAHI_LIBRARIES ${AVAHI_CLIENT_LIBRARY}
                       ${AVAHI_COMMON_LIBRARY})
-  set(AVAHI_DEFINITIONS -DHAVE_LIBAVAHI_CLIENT=1 -DHAVE_LIBAVAHI_COMMON=1)
+  set(AVAHI_DEFINITIONS -DHAS_AVAHI=1 -DHAS_ZEROCONF=1)
 
   if(NOT TARGET Avahi::Avahi)
     add_library(Avahi::Avahi UNKNOWN IMPORTED)
     set_target_properties(Avahi::Avahi PROPERTIES
                                        IMPORTED_LOCATION "${AVAHI_CLIENT_LIBRARY}"
                                        INTERFACE_INCLUDE_DIRECTORIES "${AVAHI_CLIENT_INCLUDE_DIR}"
-                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBAVAHI_CLIENT=1)
+                                       INTERFACE_COMPILE_DEFINITIONS HAS_AVAHI=1)
   endif()
   if(NOT TARGET Avahi::AvahiCommon)
     add_library(Avahi::AvahiCommon UNKNOWN IMPORTED)
     set_target_properties(Avahi::AvahiCommon PROPERTIES
                                              IMPORTED_LOCATION "${AVAHI_COMMON_LIBRARY}"
                                              INTERFACE_INCLUDE_DIRECTORIES "${AVAHI_COMMON_INCLUDE_DIR}"
-                                             INTERFACE_COMPILE_DEFINITIONS HAVE_LIBAVAHI_COMMON=1
+                                             INTERFACE_COMPILE_DEFINITIONS HAS_AVAHI=1
                                              INTERFACE_LINK_LIBRARIES Avahi::Avahi)
   endif()
 endif()

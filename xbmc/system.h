@@ -109,10 +109,6 @@
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
-#if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
-#define HAS_ZEROCONF
-#define HAS_AVAHI
-#endif
 #endif
 
 /****************************************
