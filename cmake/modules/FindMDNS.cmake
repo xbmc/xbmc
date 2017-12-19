@@ -26,9 +26,9 @@ find_package_handle_standard_args(MDNS
 if(MDNS_FOUND)
   set(MDNS_INCLUDE_DIRS ${MDNS_INCLUDE_DIR})
   set(MDNS_LIBRARIES ${MDNS_LIBRARY})
-  set(MDNS_DEFINITIONS -DHAVE_LIBMDNS=1)
+  set(MDNS_DEFINITIONS -DHAS_MDNS=1 -DHAS_ZEROCONF=1)
   if(MDNS_EMBEDDED_INCLUDE_DIR)
-    list(APPEND MDNS_DEFINITIONS -DHAVE_LIBMDNSEMBEDDED=1)
+    list(APPEND MDNS_DEFINITIONS -DHAS_MDNS_EMBEDDED=1)
   endif()
 
   if(NOT TARGET MDNS::MDNS)
@@ -36,10 +36,10 @@ if(MDNS_FOUND)
     set_target_properties(MDNS::MDNS PROPERTIES
                                      IMPORTED_LOCATION "${MDNS_LIBRARY}"
                                      INTERFACE_INCLUDE_DIRECTORIES "${MDNS_INCLUDE_DIR}"
-                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBMDNS=1)
+                                     INTERFACE_COMPILE_DEFINITIONS HAS_MDNS=1)
     if(MDNS_EMBEDDED_INCLUDE_DIR)
       set_target_properties(MDNS::MDNS PROPERTIES
-                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBMDNSEMBEDDED=1)
+                                       INTERFACE_COMPILE_DEFINITIONS HAS_MDNS_EMBEDDED=1)
     endif()
   endif()
 endif()

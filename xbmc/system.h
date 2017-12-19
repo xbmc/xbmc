@@ -25,17 +25,6 @@
 #endif
 
 /*****************
- * All platforms
- *****************/
-#if defined(HAVE_LIBMDNS)
-  #define HAS_ZEROCONF
-  #define HAS_MDNS
-  #if defined(HAVE_LIBMDNSEMBEDDED)
-    #define HAS_MDNS_EMBEDDED
-  #endif
-#endif
-
-/*****************
  * Win32 Specific
  *****************/
 
