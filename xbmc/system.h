@@ -27,8 +27,6 @@
 /*****************
  * All platforms
  *****************/
-#define HAS_FILESYSTEM_CDDA
-
 #ifdef HAVE_LIBSMBCLIENT
   #define HAS_FILESYSTEM_SMB
 #endif

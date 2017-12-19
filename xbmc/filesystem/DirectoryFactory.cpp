@@ -54,9 +54,7 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
-#endif
 #include "PluginDirectory.h"
 #include "ISO9660Directory.h"
 #ifdef HAS_UPNP
@@ -123,7 +121,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("special")) return new CSpecialProtocolDirectory();
   if (url.IsProtocol("sources")) return new CSourcesDirectory();
   if (url.IsProtocol("addons")) return new CAddonsDirectory();
-#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
   if (url.IsProtocol("cdda")) return new CCDDADirectory();
 #endif
   if (url.IsProtocol("iso9660")) return new CISO9660Directory();
