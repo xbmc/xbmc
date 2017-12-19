@@ -91,13 +91,11 @@
 #endif
 
 /*****************
- * Linux Specific
+ * FreeBSD Specific
  *****************/
 
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"
-#endif
 #endif
 
 /****************************************
