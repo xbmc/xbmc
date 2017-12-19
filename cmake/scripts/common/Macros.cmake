@@ -668,7 +668,22 @@ macro(core_find_versions)
   core_file_read_filtered(version_list ${CORE_SOURCE_DIR}/version.txt)
   core_file_read_filtered(json_version ${CORE_SOURCE_DIR}/xbmc/interfaces/json-rpc/schema/version.txt)
   string(REGEX REPLACE "([^ ;]*) ([^;]*)" "\\1;\\2" version_list "${version_list};${json_version}")
-  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_PACKAGE;JSONRPC_VERSION" "" ${version_list})
+  set(version_props 
+    ADDON_API
+    APP_NAME
+    APP_PACKAGE
+    COMPANY_NAME
+    JSONRPC_VERSION
+    PACKAGE_DESCRIPTION
+    PACKAGE_IDENTITY
+    PACKAGE_PUBLISHER
+    VERSION_MAJOR
+    VERSION_MINOR
+    VERSION_TAG
+    VERSION_CODE
+    WEBSITE
+  )
+  cmake_parse_arguments(APP "" "${version_props}" "" ${version_list})
 
   if(NOT ${APP_VERSION_CODE} MATCHES "^[0-9]+\\.[0-9][0-9]?\\.[0-9][0-9]?[0-9]?$")
     message(FATAL_ERROR "VERSION_CODE was set to ${APP_VERSION_CODE} in version.txt, but it has to match '^\\d+\\.\\d{1,2}\\.\\d{1,3}$'")

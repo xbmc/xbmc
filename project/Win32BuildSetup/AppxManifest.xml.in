@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Package IgnorableNamespaces="uap" xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
-  <Identity Name="XBMCFoundation.Kodi" ProcessorArchitecture="@TARGET_ARCHITECTURE@" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@VERSION_NUMBER@" />
+  <Identity Name="@PACKAGE_IDENTITY@" ProcessorArchitecture="@TARGET_ARCHITECTURE@" Publisher="CN=@PACKAGE_PUBLISHER@" Version="@VERSION_CODE@.0" />
   <Properties>
     <DisplayName>@APP_NAME@</DisplayName>
     <PublisherDisplayName>@COMPANY_NAME@</PublisherDisplayName>
-    <Description>Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more.</Description>
+    <Description>@PACKAGE_DESCRIPTION@</Description>
     <Logo>media\icon256x256.png</Logo>
   </Properties>
   <Dependencies>
@@ -16,7 +16,8 @@
   </Resources>
   <Applications>
     <Application Id="Kodi" Executable="Kodi.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="@APP_NAME@" Square150x150Logo="media\icon256x256.png" Square44x44Logo="media\icon48x48.png" Description="Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more." BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="@APP_NAME@" Description="@PACKAGE_DESCRIPTION@"
+           Square150x150Logo="media\icon256x256.png" Square44x44Logo="media\icon48x48.png" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="media\banner.png" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscape" />

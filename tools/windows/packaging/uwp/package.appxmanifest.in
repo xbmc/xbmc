@@ -5,13 +5,13 @@
 	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
 	IgnorableNamespaces="uap mp">
 
-  <Identity Name="XBMCFoundation.Kodi" ProcessorArchitecture="@SDK_TARGET_ARCH@" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@APP_VERSION_CODE@.0" />
+  <Identity Name="@APP_PACKAGE_IDENTITY@" ProcessorArchitecture="@SDK_TARGET_ARCH@" Publisher="CN=@APP_PACKAGE_PUBLISHER@" Version="@APP_VERSION_CODE@.0" />
   <mp:PhoneIdentity PhoneProductId="0175E9D8-B885-4F34-BE46-F3BA2C70C00C" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 
   <Properties>
     <DisplayName>@APP_NAME@</DisplayName>
     <PublisherDisplayName>@APP_COMPANY_NAME@</PublisherDisplayName>
-    <Description>Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more.</Description>
+    <Description>@APP_PACKAGE_DESCRIPTION@</Description>
     <Logo>media\icon50x50.png</Logo>
   </Properties>
 
@@ -27,7 +27,7 @@
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="@APP_NAME_LC@.App">
       <uap:VisualElements 
 		DisplayName="@APP_NAME@ @APP_VERSION@" 
-		Description="Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more."
+		Description="@APP_PACKAGE_DESCRIPTION@"
 		Square150x150Logo="media\icon150x150.png" 
 		Square44x44Logo="media\icon44x44.png" 
 		BackgroundColor="transparent">

@@ -11,17 +11,25 @@ IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
 SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/APP_NAME/ s/APP_NAME *//p" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/COMPANY_NAME/ s/COMPANY_NAME *//p" %base_dir%\version.txt') DO SET COMPANY_NAME=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/WEBSITE/ s/WEBSITE *//p" %base_dir%\version.txt') DO SET WEBSITE=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_MAJOR/ s/VERSION_MAJOR *//p" %base_dir%\version.txt') DO SET MAJOR=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_MINOR/ s/VERSION_MINOR *//p" %base_dir%\version.txt') DO SET MINOR=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_TAG/ s/VERSION_TAG *//p" %base_dir%\version.txt') DO SET TAG=%%i
-FOR /f "delims=" %%i IN ('%sed_exe% -n "/ADDON_API/ s/ADDON_API *//p" %base_dir%\version.txt') DO SET VERSION_NUMBER=%%i.0
+SET version_props=^
+APP_NAME ^
+COMPANY_NAME ^
+PACKAGE_DESCRIPTION ^
+PACKAGE_IDENTITY ^
+PACKAGE_PUBLISHER ^
+VERSION_MAJOR ^
+VERSION_MINOR ^
+VERSION_TAG ^
+VERSION_CODE ^
+WEBSITE
 
-SET APP_VERSION=%MAJOR%.%MINOR%
-IF NOT [%TAG%] == [] (
-  SET APP_VERSION=%APP_VERSION%-%TAG%
+FOR %%p IN (%version_props%) DO (
+  FOR /f "delims=" %%v IN ('%sed_exe% -n "/%%p/ s/%%p *//p" %base_dir%\version.txt') DO SET %%p=%%v
+)
+
+SET APP_VERSION=%VERSION_MAJOR%.%VERSION_MINOR%
+IF NOT [%VERSION_TAG%] == [] (
+  SET APP_VERSION=%APP_VERSION%-%VERSION_TAG%
 )
 
 rem ----Usage----
@@ -154,8 +162,10 @@ set WORKSPACE=%base_dir%\kodi-build
     -e 's/@APP_NAME@/%APP_NAME%/g' ^
     -e 's/@COMPANY_NAME@/%COMPANY_NAME%/g' ^
     -e 's/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g' ^
-    -e 's/@APP_VERSION@/%APP_VERSION%/g' ^
-    -e 's/@VERSION_NUMBER@/%VERSION_NUMBER%/g' ^
+    -e 's/@VERSION_CODE@/%VERSION_CODE%/g' ^
+    -e 's/@PACKAGE_IDENTITY@/%PACKAGE_IDENTITY%/g' ^
+    -e 's/@PACKAGE_PUBLISHER@/%PACKAGE_PUBLISHER%/g' ^
+    -e 's/@PACKAGE_DESCRIPTION@/%PACKAGE_DESCRIPTION%/g' ^
     "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
@@ -242,7 +252,7 @@ set WORKSPACE=%base_dir%\kodi-build
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /DAPP_NAME="%APP_NAME%" /DTARGET_ARCHITECTURE="%TARGET_ARCHITECTURE%" /DVERSION_NUMBER="%VERSION_NUMBER%" /DCOMPANY_NAME="%COMPANY_NAME%" /DWEBSITE="%WEBSITE%" /Dapp_revision="%GIT_REV%" /Dapp_branch="%BRANCH%" /D%TARGET_ARCHITECTURE% "genNsisInstaller.nsi"
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /DAPP_NAME="%APP_NAME%" /DTARGET_ARCHITECTURE="%TARGET_ARCHITECTURE%" /DVERSION_NUMBER="%VERSION_CODE%.0" /DCOMPANY_NAME="%COMPANY_NAME%" /DWEBSITE="%WEBSITE%" /Dapp_revision="%GIT_REV%" /Dapp_branch="%BRANCH%" /D%TARGET_ARCHITECTURE% "genNsisInstaller.nsi"
   IF NOT EXIST "%APP_SETUPFILE%" (
     POPD
     set DIETEXT=Failed to create %APP_SETUPFILE%. NSIS installed?
