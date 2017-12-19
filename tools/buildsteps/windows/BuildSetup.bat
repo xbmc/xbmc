@@ -8,17 +8,16 @@ SET builddeps_dir=%base_dir%\project\BuildDependencies
 SET bin_dir=%builddeps_dir%\bin
 SET msys_dir=%builddeps_dir%\msys64
 IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET awk_exe=%msys_dir%\usr\bin\awk.exe
 SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
-FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f %%i IN ('%awk_exe% "/COMPANY_NAME/ {$1=""; print $0}" %base_dir%\version.txt') DO SET COMPANY_NAME=%%i
-FOR /f %%i IN ('%awk_exe% "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
-FOR /f %%i IN ('%awk_exe% "/VERSION_MAJOR/ {print $2}" %base_dir%\version.txt') DO SET MAJOR=%%i
-FOR /f %%i IN ('%awk_exe% "/VERSION_MINOR/ {print $2}" %base_dir%\version.txt') DO SET MINOR=%%i
-FOR /f %%i IN ('%awk_exe% "/VERSION_TAG/ {print $2}" %base_dir%\version.txt') DO SET TAG=%%i
-FOR /f %%i IN ('%awk_exe% "/ADDON_API/ {print $2}" %base_dir%\version.txt') DO SET VERSION_NUMBER=%%i.0
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/APP_NAME/ s/APP_NAME *//p" %base_dir%\version.txt') DO SET APP_NAME=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/COMPANY_NAME/ s/COMPANY_NAME *//p" %base_dir%\version.txt') DO SET COMPANY_NAME=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/WEBSITE/ s/WEBSITE *//p" %base_dir%\version.txt') DO SET WEBSITE=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_MAJOR/ s/VERSION_MAJOR *//p" %base_dir%\version.txt') DO SET MAJOR=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_MINOR/ s/VERSION_MINOR *//p" %base_dir%\version.txt') DO SET MINOR=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/VERSION_TAG/ s/VERSION_TAG *//p" %base_dir%\version.txt') DO SET TAG=%%i
+FOR /f "delims=" %%i IN ('%sed_exe% -n "/ADDON_API/ s/ADDON_API *//p" %base_dir%\version.txt') DO SET VERSION_NUMBER=%%i.0
 
 SET APP_VERSION=%MAJOR%.%MINOR%
 IF NOT [%TAG%] == [] (
@@ -47,7 +46,7 @@ SET promptlevel=prompt
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
-FOR %%b in (%1, %2, %3, %4, %5) DO (
+FOR %%b in (%*) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
@@ -151,7 +150,13 @@ set WORKSPACE=%base_dir%\kodi-build
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   REM create AppxManifest.xml
-  "%sed_exe%" -e s/@APP_NAME@/%APP_NAME%/g -e s/@COMPANY_NAME@/%COMPANY_NAME%/g -e s/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g -e s/@APP_VERSION@/%APP_VERSION%/g -e s/@VERSION_NUMBER@/%VERSION_NUMBER%/g "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
+  "%sed_exe%" ^
+    -e 's/@APP_NAME@/%APP_NAME%/g' ^
+    -e 's/@COMPANY_NAME@/%COMPANY_NAME%/g' ^
+    -e 's/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g' ^
+    -e 's/@APP_VERSION@/%APP_VERSION%/g' ^
+    -e 's/@VERSION_NUMBER@/%VERSION_NUMBER%/g' ^
+    "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
   IF %buildbinaryaddons%==true (
