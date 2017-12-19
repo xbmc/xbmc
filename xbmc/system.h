@@ -96,7 +96,6 @@
 
 #if defined(TARGET_DARWIN)
   #if defined(TARGET_DARWIN_OSX)
-    #define HAS_GL
     #define HAS_SDL
   #endif
   #define HAS_ZEROCONF
@@ -115,7 +114,6 @@
 #define HAS_ZEROCONF
 #define HAS_AVAHI
 #endif
-#define HAS_GL
 #ifdef HAVE_SDL
 #define HAS_SDL
 #endif
@@ -165,7 +163,6 @@
 
 // GLES2.0 detected. Dont use GL!
 #ifdef HAVE_LIBGLESV2
-#undef HAS_GL
 #define HAS_GLES 2
 #endif
 
