@@ -118,10 +118,6 @@
 #endif
 #endif
 
-#ifdef HAVE_LIBSSH
-#define HAS_FILESYSTEM_SFTP
-#endif
-
 /****************************************
  * Additional platform specific includes
  ****************************************/
