@@ -21,9 +21,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-
-#ifdef HAS_AIRTUNES
 
 #include "DllLibShairplay.h"
 #include <sys/types.h>
@@ -106,5 +103,3 @@ private:
       static void  audio_set_progress(void *cls, void *session, unsigned int start, unsigned int curr, unsigned int end);
     };
 };
-
-#endif

@@ -46,7 +46,7 @@ endif()
 if(SHAIRPLAY_FOUND)
   set(SHAIRPLAY_LIBRARIES ${SHAIRPLAY_LIBRARY})
   set(SHAIRPLAY_INCLUDE_DIRS ${SHAIRPLAY_INCLUDE_DIR})
-  set(SHAIRPLAY_DEFINITIONS -DHAVE_LIBSHAIRPLAY=1)
+  set(SHAIRPLAY_DEFINITIONS -DHAS_AIRTUNES=1)
 
   if(NOT TARGET Shairplay::Shairplay)
     add_library(Shairplay::Shairplay UNKNOWN IMPORTED)
@@ -56,7 +56,7 @@ if(SHAIRPLAY_FOUND)
     endif()
     set_target_properties(Shairplay::Shairplay PROPERTIES
                                                INTERFACE_INCLUDE_DIRECTORIES "${SHAIRPLAY_INCLUDE_DIR}"
-                                               INTERFACE_COMPILE_DEFINITIONS HAVE_LIBSHAIRPLAY=1)
+                                               INTERFACE_COMPILE_DEFINITIONS HAS_AIRTUNES=1)
   endif()
 endif()
 
