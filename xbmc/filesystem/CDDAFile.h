@@ -19,10 +19,6 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE
-
-#ifdef HAS_DVD_DRIVE
-
 #include "IFile.h"
 #include "storage/cdioSupport.h"
 
@@ -57,6 +53,3 @@ protected:
   std::shared_ptr<MEDIA_DETECT::CLibcdio> m_cdio;
 };
 }
-
-#endif
-
