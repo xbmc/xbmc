@@ -113,9 +113,6 @@
 #define HAS_ZEROCONF
 #define HAS_AVAHI
 #endif
-#ifdef HAVE_SDL
-#define HAS_SDL
-#endif
 #endif
 
 /****************************************
