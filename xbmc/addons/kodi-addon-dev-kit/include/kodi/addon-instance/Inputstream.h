@@ -58,7 +58,10 @@ extern "C" {
       SUPPORTS_SEEK = (1 << 3),
 
       /// supports pause
-      SUPPORTS_PAUSE = (1 << 4)
+      SUPPORTS_PAUSE = (1 << 4),
+
+      /// supports interface ITime
+      SUPPORTS_ITIME = (1 << 5)
     };
 
     /// set of supported capabilities
@@ -155,6 +158,14 @@ extern "C" {
     CRYPTO_INFO m_cryptoInfo;
   } INPUTSTREAM_INFO;
 
+  typedef struct INPUTSTREAM_TIMES
+  {
+    time_t startTime;
+    double ptsStart;
+    double ptsBegin;
+    double ptsEnd;
+  }INPUTSTREAM_TIMES;
+
   /*!
    * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
    */
@@ -200,6 +211,9 @@ extern "C" {
     // IDisplayTime
     int (__cdecl* get_total_time)(const AddonInstance_InputStream* instance);
     int (__cdecl* get_time)(const AddonInstance_InputStream* instance);
+
+    // ITime
+    bool(__cdecl* get_times)(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES &times);
 
     // IPosTime
     bool (__cdecl* pos_time)(const AddonInstance_InputStream* instance, int ms);
@@ -364,6 +378,12 @@ namespace addon
     virtual int GetTime() { return -1; }
 
     /*!
+    * Get current timing values in PTS scale
+    * @remarks
+    */
+    virtual bool GetTimes(INPUTSTREAM_TIMES &times) { return false; }
+
+    /*!
      * Positions inputstream to playing time given in ms
      * @remarks
      */
@@ -483,6 +503,8 @@ namespace addon
       m_instanceData->toAddon.get_total_time = ADDON_GetTotalTime;
       m_instanceData->toAddon.get_time = ADDON_GetTime;
 
+      m_instanceData->toAddon.get_times = ADDON_GetTimes;
+
       m_instanceData->toAddon.pos_time = ADDON_PosTime;
 
       m_instanceData->toAddon.can_pause_stream = ADDON_CanPauseStream;
@@ -580,6 +602,11 @@ namespace addon
       return instance->toAddon.addonInstance->GetTime();
     }
 
+    // ITime
+    inline static bool ADDON_GetTimes(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES &times)
+    {
+      return instance->toAddon.addonInstance->GetTimes(times);
+    }
 
     // IPosTime
     inline static bool ADDON_PosTime(const AddonInstance_InputStream* instance, int ms)
