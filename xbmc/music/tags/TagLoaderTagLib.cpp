@@ -117,7 +117,7 @@ void SetFlacArt(FLAC::File *flacFile, EmbeddedArt *art, CMusicInfoTag &tag)
     {
       tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
       if (art)
-        art->set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+        art->Set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
       return; // one is enough
     }
   }
@@ -221,7 +221,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
       ASF::Picture pic = it->second.front().toPicture();
       tag.SetCoverArtInfo(pic.picture().size(), pic.mimeType().toCString());
       if (art)
-        art->set(reinterpret_cast<const uint8_t *>(pic.picture().data()), pic.picture().size(), pic.mimeType().toCString());
+        art->Set(reinterpret_cast<const uint8_t *>(pic.picture().data()), pic.picture().size(), pic.mimeType().toCString());
     }
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
@@ -459,7 +459,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
       TagLib::uint size =            pictures[i]->picture().size();
       tag.SetCoverArtInfo(size, mime);
       if (art)
-        art->set(reinterpret_cast<const uint8_t*>(pictures[i]->picture().data()), size, mime);
+        art->Set(reinterpret_cast<const uint8_t*>(pictures[i]->picture().data()), size, mime);
 
       // Stop after we find the first picture for now.
       break;
@@ -761,7 +761,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     {
       tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
       if (art)
-        art->set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+        art->Set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
       break; // one is enough
     }
   }
@@ -879,7 +879,7 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
           continue;
         tag.SetCoverArtInfo(pt->data().size(), mime);
         if (art)
-          art->set(reinterpret_cast<const uint8_t *>(pt->data().data()), pt->data().size(), mime);
+          art->Set(reinterpret_cast<const uint8_t *>(pt->data().data()), pt->data().size(), mime);
         break; // one is enough
       }
     }

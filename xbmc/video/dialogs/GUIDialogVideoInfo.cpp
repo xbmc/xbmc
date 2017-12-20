@@ -735,7 +735,7 @@ void CGUIDialogVideoInfo::OnGetArt()
       loader.Load(tag, false, nullptr);
       for (const auto& it : tag.m_coverArt)
       {
-        if (it.type == type)
+        if (it.m_type == type)
         {
           CFileItemPtr itemF(new CFileItem("thumb://Embedded", false));
           embeddedArt = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_" + type);
@@ -858,7 +858,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     loader.Load(tag, false, nullptr);
     for (const auto& it : tag.m_coverArt)
     {
-      if (it.type == "fanart")
+      if (it.m_type == "fanart")
       {
         CFileItemPtr itemF(new CFileItem("fanart://Embedded", false));
         embeddedArt = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_fanart");

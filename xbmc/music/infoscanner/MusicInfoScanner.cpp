@@ -1157,7 +1157,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
     { // more than one piece of art was found for these songs, so cache per song
       for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
       {
-        if (k->strThumb.empty() && !k->embeddedArt.empty())
+        if (k->strThumb.empty() && !k->embeddedArt.Empty())
           k->strThumb = CTextureUtils::GetWrappedImageURL(k->strFileName, "music");
       }
     }

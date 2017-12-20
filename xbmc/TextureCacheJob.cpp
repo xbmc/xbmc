@@ -198,14 +198,14 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
   { // special case for embedded music images
     EmbeddedArt art;
     if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
-      return CBaseTexture::LoadFromFileInMemory(&art.data[0], art.size, art.mime, width, height);
+      return CBaseTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width, height);
   }
 
   if (StringUtils::StartsWith(additional_info, "video_"))
   {
     EmbeddedArt art;
     if (CVideoThumbLoader::GetEmbeddedThumb(image, additional_info.substr(6), art))
-      return CBaseTexture::LoadFromFileInMemory(&art.data[0], art.size, art.mime, width, height);
+      return CBaseTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width, height);
   }
 
   // Validate file URL to see if it is an image

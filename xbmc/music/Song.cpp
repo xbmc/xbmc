@@ -271,7 +271,7 @@ void CSong::Clear()
   dateAdded.Reset();
   idAlbum = -1;
   bCompilation = false;
-  embeddedArt.clear();
+  embeddedArt.Clear();
   replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const
@@ -349,12 +349,12 @@ void CSong::AppendArtistRole(const CMusicRole& musicRole)
 bool CSong::HasArt() const
 {
   if (!strThumb.empty()) return true;
-  if (!embeddedArt.empty()) return true;
+  if (!embeddedArt.Empty()) return true;
   return false;
 }
 
 bool CSong::ArtMatches(const CSong &right) const
 {
   return (right.strThumb == strThumb &&
-          embeddedArt.matches(right.embeddedArt));
+          embeddedArt.Matches(right.embeddedArt));
 }

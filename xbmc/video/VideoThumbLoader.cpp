@@ -367,7 +367,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         {
           for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
           {
-            if (it.type == type)
+            if (it.m_type == type)
             {
               art = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "video_" + type);
               artwork.insert(std::make_pair(type, art));
@@ -537,10 +537,10 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
     {
       for (auto& it : item.GetVideoInfoTag()->m_coverArt)
       {
-        if (it.type == "thumb")
+        if (it.m_type == "thumb")
         {
-          thumb = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_" + it.type);
-          item.SetArt(it.type, thumb);
+          thumb = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_" + it.m_type);
+          item.SetArt(it.m_type, thumb);
         }
       }
     }
@@ -611,14 +611,14 @@ bool CVideoThumbLoader::GetEmbeddedThumb(const std::string& path,
 
   for (const EmbeddedArt& it : artv)
   {
-    if (it.type == type)
+    if (it.m_type == type)
     {
       art = it;
       break;
     }
   }
 
-  return !art.empty();
+  return !art.Empty();
 }
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)

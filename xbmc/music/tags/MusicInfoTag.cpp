@@ -620,7 +620,7 @@ void CMusicInfoTag::SetMusicBrainzReleaseType(const std::string& ReleaseType)
 
 void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
 {
-  m_coverArt.set(size, mimeType);
+  m_coverArt.Set(size, mimeType);
 }
 
 void CMusicInfoTag::SetReplayGain(const ReplayGain& aGain)
@@ -719,7 +719,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
-  SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
+  SetCoverArtInfo(song.embeddedArt.m_size, song.embeddedArt.m_mime);
   SetRating(song.rating);
   SetUserrating(song.userrating);
   SetVotes(song.votes);
@@ -986,7 +986,7 @@ void CMusicInfoTag::Clear()
   m_iTimesPlayed = 0;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate));
   m_iAlbumId = -1;
-  m_coverArt.clear();
+  m_coverArt.Clear();
   m_replayGain = ReplayGain();
   m_albumReleaseType = CAlbum::Album;
   m_listeners = 0;

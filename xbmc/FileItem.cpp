@@ -1833,7 +1833,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
         tag.GetReleaseDate(dateTime);
         if (dateTime.wYear)
           song.iYear = dateTime.wYear;
-        if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
+        if (song.embeddedArt.Empty() && !tag.GetCoverArtInfo().Empty())
           song.embeddedArt = tag.GetCoverArtInfo();
       }
 

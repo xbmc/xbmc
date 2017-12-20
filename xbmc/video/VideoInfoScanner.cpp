@@ -1413,11 +1413,11 @@ namespace VIDEO
     {
       for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
       {
-        if (art.find(it.type) == art.end())
+        if (art.find(it.m_type) == art.end())
         {
           std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(),
-                                                                "video_" + it.type);
-          art.insert(std::make_pair(it.type, thumb));
+                                                                "video_" + it.m_type);
+          art.insert(std::make_pair(it.m_type, thumb));
         }
       }
     }
