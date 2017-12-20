@@ -424,6 +424,7 @@ extern "C" {
     char         strGroupName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) name of the channel group to add the channel to */
     unsigned int iChannelUniqueId;                           /*!< @brief (required) unique id of the member */
     unsigned int iChannelNumber;                             /*!< @brief (optional) channel number within the group */
+    unsigned int iSubChannelNumber;                          /*!< @brief (optional) sub channel number within the group (ATSC) */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!
