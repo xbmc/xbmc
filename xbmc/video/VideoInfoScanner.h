@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "InfoScanner.h"
-#include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 
@@ -34,6 +33,8 @@ class CFileItemList;
 
 namespace VIDEO
 {
+  class IVideoInfoTagLoader;
+
   typedef struct SScanSettings
   {
     SScanSettings() { parent_name = parent_name_root = noupdate = exclude = false; recurse = 1;}
@@ -82,7 +83,6 @@ namespace VIDEO
 
     static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
-    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
 
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to find artwork for.
@@ -148,7 +148,10 @@ namespace VIDEO
      \param pDialog progress dialog to update and check for cancellation during processing. Defaults to NULL.
      \return true if information is found, false if an error occurred, the lookup was cancelled, or no information was found.
      */
-    bool GetDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, CNfoFile *nfoFile=NULL, CGUIDialogProgress* pDialog=NULL);
+    bool GetDetails(CFileItem *pItem, CScraperUrl &url,
+                    const ADDON::ScraperPtr &scraper,
+                    VIDEO::IVideoInfoTagLoader* nfoFile = nullptr,
+                    CGUIDialogProgress* pDialog = nullptr);
 
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
@@ -224,15 +227,12 @@ namespace VIDEO
     bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
-    std::string GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
-
     bool m_bStop;
     bool m_scanAll;
     std::string m_strStartDir;
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
-    CNfoFile m_nfoReader;
   };
 }
 

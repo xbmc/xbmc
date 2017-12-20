@@ -57,6 +57,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "VideoInfoDownloader.h"
+#include "tags/VideoInfoTagLoaderFactory.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -410,7 +411,6 @@ namespace VIDEO
     std::vector<int> seenPaths;
     for (int i = 0; i < (int)items.Size(); ++i)
     {
-      m_nfoReader.Close();
       CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
@@ -526,15 +526,22 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
+    std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-      result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
     {
-      pItem->GetVideoInfoTag()->Reset();
-      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
+      if (loader)
+      {
+        pItem->GetVideoInfoTag()->Reset();
+        result = loader->Load(*pItem->GetVideoInfoTag(), false);
+      }
+    }
+
+    if (result == CInfoScanner::FULL_NFO)
+    {
 
       long lResult = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
       if (lResult < 0)
@@ -548,8 +555,11 @@ namespace VIDEO
       }
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    {
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
+    }
 
     CScraperUrl url;
     int retVal = 0;
@@ -565,8 +575,8 @@ namespace VIDEO
 
     long lResult = -1;
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO ||
+                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
                    pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -602,22 +612,30 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
+    std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-      result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
     {
-      pItem->GetVideoInfoTag()->Reset();
-      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-
+      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
+      if (loader)
+      {
+        pItem->GetVideoInfoTag()->Reset();
+        result = loader->Load(*pItem->GetVideoInfoTag(), false);
+      }
+    }
+    if (result == CInfoScanner::FULL_NFO)
+    {
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
         return INFO_ERROR;
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    {
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
+    }
 
     CScraperUrl url;
     int retVal = 0;
@@ -632,8 +650,8 @@ namespace VIDEO
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO ||
+                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -664,22 +682,30 @@ namespace VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
+    std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-      result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
     {
-      pItem->GetVideoInfoTag()->Reset();
-      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-
+      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
+      if (loader)
+      {
+        pItem->GetVideoInfoTag()->Reset();
+        result = loader->Load(*pItem->GetVideoInfoTag(), false);
+      }
+    }
+    if (result == CInfoScanner::FULL_NFO)
+    {
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
         return INFO_ERROR;
       return INFO_ADDED;
     }
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    {
+      scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
+    }
 
     CScraperUrl url;
     int retVal = 0;
@@ -694,8 +720,8 @@ namespace VIDEO
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
-                   (result == CNfoFile::COMBINED_NFO
-                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   (result == CInfoScanner::COMBINED_NFO ||
+                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -1382,6 +1408,20 @@ namespace VIDEO
       }
     }
 
+    // find embedded art
+    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+    {
+      for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
+      {
+        if (art.find(it.m_type) == art.end())
+        {
+          std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(),
+                                                                "video_" + it.m_type);
+          art.insert(std::make_pair(it.m_type, thumb));
+        }
+      }
+    }
+
     // find online art
     for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
     {
@@ -1481,7 +1521,6 @@ namespace VIDEO
     int iCurr = 1;
     for (EPISODELIST::iterator file = files.begin(); file != files.end(); ++file)
     {
-      m_nfoReader.Close();
       if (pDlgProgress)
       {
         pDlgProgress->SetLine(2, CVariant{20361});
@@ -1505,15 +1544,22 @@ namespace VIDEO
       item.SetPath(file->strPath);
 
       // handle .nfo files
-      CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+      CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
       CScraperUrl scrUrl;
       ScraperPtr info(scraper);
       item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+      std::unique_ptr<IVideoInfoTagLoader> loader;
       if (useLocal)
-        result = CheckForNFOFile(&item, false, info,scrUrl);
-      if (result == CNfoFile::FULL_NFO)
       {
-        m_nfoReader.GetDetails(*item.GetVideoInfoTag());
+        loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(item, info, false));
+        if (loader)
+        {
+          // no reset here on purpose
+          result = loader->Load(*item.GetVideoInfoTag(), false);
+        }
+      }
+      if (result == CInfoScanner::FULL_NFO)
+      {
         // override with episode and season number from file if available
         if (file->iEpisode > -1)
         {
@@ -1662,117 +1708,10 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  std::string CVideoInfoScanner::GetnfoFile(CFileItem *item, bool bGrabAny) const
-  {
-    std::string nfoFile;
-    // Find a matching .nfo file
-    if (!item->m_bIsFolder)
-    {
-      if (URIUtils::IsInRAR(item->GetPath())) // we have a rarred item - we want to check outside the rars
-      {
-        CFileItem item2(*item);
-        CURL url(item->GetPath());
-        std::string strPath = URIUtils::GetDirectory(url.GetHostName());
-        item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item->GetPath())));
-        return GetnfoFile(&item2, bGrabAny);
-      }
-
-      // grab the folder path
-      std::string strPath = URIUtils::GetDirectory(item->GetPath());
-
-      if (bGrabAny && !item->IsStack())
-      { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
-        nfoFile = URIUtils::AddFileToFolder(strPath, "movie.nfo");
-        if (CFile::Exists(nfoFile))
-          return nfoFile;
-      }
-
-      // try looking for .nfo file for a stacked item
-      if (item->IsStack())
-      {
-        // first try .nfo file matching first file in stack
-        CStackDirectory dir;
-        std::string firstFile = dir.GetFirstStackedFile(item->GetPath());
-        CFileItem item2;
-        item2.SetPath(firstFile);
-        nfoFile = GetnfoFile(&item2, bGrabAny);
-        // else try .nfo file matching stacked title
-        if (nfoFile.empty())
-        {
-          std::string stackedTitlePath = dir.GetStackedTitlePath(item->GetPath());
-          item2.SetPath(stackedTitlePath);
-          nfoFile = GetnfoFile(&item2, bGrabAny);
-        }
-      }
-      else
-      {
-        // already an .nfo file?
-        if (URIUtils::HasExtension(item->GetPath(), ".nfo"))
-          nfoFile = item->GetPath();
-        // no, create .nfo file
-        else
-          nfoFile = URIUtils::ReplaceExtension(item->GetPath(), ".nfo");
-      }
-
-      // test file existence
-      if (!nfoFile.empty() && !CFile::Exists(nfoFile))
-        nfoFile.clear();
-
-      if (nfoFile.empty()) // final attempt - strip off any cd1 folders
-      {
-        URIUtils::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
-        CFileItem item2;
-        if (StringUtils::EndsWithNoCase(strPath, "cd1"))
-        {
-          strPath.erase(strPath.size() - 3);
-          item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item->GetPath())));
-          return GetnfoFile(&item2, bGrabAny);
-        }
-      }
-
-      if (nfoFile.empty() && item->IsOpticalMediaFile())
-      {
-        CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
-        nfoFile = GetnfoFile(&parentDirectory, true);
-      }
-    }
-    // folders (or stacked dvds) can take any nfo file if there's a unique one
-    if (item->m_bIsFolder || item->IsOpticalMediaFile() || (bGrabAny && nfoFile.empty()))
-    {
-      // see if there is a unique nfo file in this folder, and if so, use that
-      CFileItemList items;
-      CDirectory dir;
-      std::string strPath;
-      if (item->m_bIsFolder)
-        strPath = item->GetPath();
-      else
-        strPath = URIUtils::GetDirectory(item->GetPath());
-
-      if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
-      {
-        int numNFO = -1;
-        for (int i = 0; i < items.Size(); i++)
-        {
-          if (items[i]->IsNFO())
-          {
-            if (numNFO == -1)
-              numNFO = i;
-            else
-            {
-              numNFO = -1;
-              break;
-            }
-          }
-        }
-        if (numNFO > -1)
-          return items[numNFO]->GetPath();
-      }
-    }
-
-    return nfoFile;
-  }
-
-  bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, CNfoFile *nfoFile, CGUIDialogProgress* pDialog /* = NULL */)
+  bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url,
+                                     const ScraperPtr& scraper,
+                                     IVideoInfoTagLoader* loader,
+                                     CGUIDialogProgress* pDialog /* = NULL */)
   {
     CVideoInfoTag movieDetails;
 
@@ -1784,8 +1723,8 @@ namespace VIDEO
 
     if (ret)
     {
-      if (nfoFile)
-        nfoFile->GetDetails(movieDetails,NULL,true);
+      if (loader)
+        loader->Load(movieDetails, true);
 
       if (m_handle && url.strTitle.empty())
         m_handle->SetText(movieDetails.m_strTitle);
@@ -2023,70 +1962,6 @@ namespace VIDEO
           CTextureCache::GetInstance().BackgroundCacheImage(i->thumb);
       }
     }
-  }
-
-  CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ScraperPtr& info, CScraperUrl& scrUrl)
-  {
-    std::string strNfoFile;
-    if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
-        || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
-      strNfoFile = GetnfoFile(pItem, bGrabAny);
-    else if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
-      strNfoFile = URIUtils::AddFileToFolder(pItem->GetPath(), "tvshow.nfo");
-
-    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
-    if (!strNfoFile.empty() && CFile::Exists(strNfoFile))
-    {
-      if (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder)
-        result = m_nfoReader.Create(strNfoFile,info,pItem->GetVideoInfoTag()->m_iEpisode);
-      else
-        result = m_nfoReader.Create(strNfoFile,info);
-
-      std::string type;
-      switch(result)
-      {
-        case CNfoFile::COMBINED_NFO:
-          type = "mixed";
-          break;
-        case CNfoFile::FULL_NFO:
-          type = "full";
-          break;
-        case CNfoFile::URL_NFO:
-          type = "URL";
-          break;
-        case CNfoFile::NO_NFO:
-          type = "";
-          break;
-        case CNfoFile::PARTIAL_NFO:
-          type = "partial";
-          break;
-        default:
-          type = "malformed";
-      }
-      if (result != CNfoFile::NO_NFO)
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching %s NFO file: %s", type.c_str(), CURL::GetRedacted(strNfoFile).c_str());
-      if (result == CNfoFile::FULL_NFO)
-      {
-        if (info->Content() == CONTENT_TVSHOWS)
-          info = m_nfoReader.GetScraperInfo();
-      }
-      else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
-      {
-        if (result != CNfoFile::PARTIAL_NFO)
-        {
-          scrUrl = m_nfoReader.ScraperUrl();
-          StringUtils::RemoveCRLF(scrUrl.m_url[0].m_url);
-          info = m_nfoReader.GetScraperInfo();
-        }
-
-        if (result != CNfoFile::URL_NFO)
-          m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      }
-    }
-    else
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '%s'", CURL::GetRedacted(pItem->GetPath()).c_str());
-
-    return result;
   }
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)

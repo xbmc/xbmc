@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,19 +19,26 @@
  *
  */
 
-#include <string>
+#include "IVideoInfoTagLoader.h"
+#include "addons/Scraper.h"
 
-class EmbeddedArt;
+class CFileItem;  // forward
 
-namespace MUSIC_INFO
+namespace VIDEO
 {
-  class CMusicInfoTag;
-  class IMusicInfoTagLoader
+  class CVideoInfoTagLoaderFactory
   {
   public:
-    IMusicInfoTagLoader(void) = default;
-    virtual ~IMusicInfoTagLoader() = default;
+    //! \brief Returns a tag loader for the given item.
+    //! \param item The item to find tag loader for
+    //! \param type Type of tag loader. In particular used for tvshows
+    static IVideoInfoTagLoader* CreateLoader(const CFileItem& item,
+                                             ADDON::ScraperPtr info,
+                                             bool lookInFolder);
 
-    virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) = 0;
+  protected:
+    // No instancing of this class
+    CVideoInfoTagLoaderFactory(void) = delete;
+    virtual ~CVideoInfoTagLoaderFactory() = delete;
   };
 }

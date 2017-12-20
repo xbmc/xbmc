@@ -154,7 +154,7 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
   if (!pItem->HasArt("thumb"))
   {
     // Look for embedded art
-    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().empty())
+    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().Empty())
     {
       // The item has got embedded art but user thumbs overrule, so check for those first
       if (!FillThumb(*pItem, false)) // Check for user thumbs but ignore folder thumbs
@@ -246,5 +246,5 @@ bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &a
   if (NULL != pLoader.get())
     pLoader->Load(path, tag, &art);
 
-  return !art.empty();
+  return !art.Empty();
 }

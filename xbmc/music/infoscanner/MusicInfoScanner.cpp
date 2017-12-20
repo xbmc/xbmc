@@ -1157,7 +1157,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
     { // more than one piece of art was found for these songs, so cache per song
       for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
       {
-        if (k->strThumb.empty() && !k->embeddedArt.empty())
+        if (k->strThumb.empty() && !k->embeddedArt.Empty())
           k->strThumb = CTextureUtils::GetWrappedImageURL(k->strFileName, "music");
       }
     }
@@ -1331,19 +1331,20 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     m_musicDatabase.GetAlbumPath(album.idAlbum, path);
 
   std::string strNfo = URIUtils::AddFileToFolder(path, "album.nfo");
-  CNfoFile::NFOResult result = CNfoFile::NO_NFO;
+  CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
-    if (result == CNfoFile::FULL_NFO)
+    if (result == CInfoScanner::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       nfoReader.GetDetails(albumInfo.GetAlbum());
       return INFO_ADDED;
     }
-    else if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    else if (result == CInfoScanner::URL_NFO ||
+             result == CInfoScanner::COMBINED_NFO)
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicAlbumInfo albumNfo("nfo",scrUrl);
@@ -1354,7 +1355,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
     }
-    else if (result != CNfoFile::PARTIAL_NFO)
+    else if (result != CInfoScanner::OVERRIDE_NFO)
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
@@ -1389,7 +1390,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   CGUIDialogSelect *pDlg = NULL;
   int iSelectedAlbum=0;
-  if ((result == CNfoFile::NO_NFO || result == CNfoFile::PARTIAL_NFO)
+  if ((result == CInfoScanner::NO_NFO || result == CInfoScanner::OVERRIDE_NFO)
       && !bMusicBrainz)
   {
     iSelectedAlbum = -1; // set negative so that we can detect a failure
@@ -1516,7 +1517,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
   
-  if (result == CNfoFile::COMBINED_NFO || result == CNfoFile::PARTIAL_NFO)
+  if (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
     nfoReader.GetDetails(albumInfo.GetAlbum(), NULL, true);
   
   return INFO_ADDED;
@@ -1576,7 +1577,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   }
 
   // Handle nfo files 
-  CNfoFile::NFOResult result = CNfoFile::NO_NFO;
+  CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
   std::string strNfo;
   std::string path;
@@ -1610,13 +1611,13 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   {
     CLog::Log(LOGDEBUG, "Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
-    if (result == CNfoFile::FULL_NFO)
+    if (result == CInfoScanner::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       nfoReader.GetDetails(artistInfo.GetArtist());
       return INFO_ADDED;
     }
-    else if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    else if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicArtistInfo artistNfo("nfo", scrUrl);
@@ -1654,7 +1655,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   }
 
   int iSelectedArtist = 0;
-  if (result == CNfoFile::NO_NFO && !bMusicBrainz)
+  if (result == CInfoScanner::NO_NFO && !bMusicBrainz)
   {
     if (scraper.GetArtistCount() >= 1)
     {
@@ -1742,7 +1743,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
 
   artistInfo = scraper.GetArtist(iSelectedArtist);
 
-  if (result == CNfoFile::COMBINED_NFO)
+  if (result == CInfoScanner::COMBINED_NFO)
     nfoReader.GetDetails(artistInfo.GetArtist(), NULL, true);
 
   return INFO_ADDED;

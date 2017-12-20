@@ -91,7 +91,7 @@ bool CAudioDecoder::Seek(int64_t time)
 
 bool CAudioDecoder::Load(const std::string& fileName,
                          MUSIC_INFO::CMusicInfoTag& tag,
-                         MUSIC_INFO::EmbeddedArt* art)
+                         EmbeddedArt* art)
 {
   if (!m_struct.toAddon.read_tag)
     return false;

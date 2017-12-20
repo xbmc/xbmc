@@ -37,8 +37,11 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+#include "video/tags/IVideoInfoTagLoader.h"
+#include "video/tags/VideoInfoTagLoaderFactory.h"
 
 using namespace KODI::MESSAGING;
+using namespace VIDEO;
 
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo /* = false */, const std::string& searchTitle /* = "" */)
   : CVideoLibraryProgressJob(nullptr),
@@ -83,7 +86,6 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     itemTitle = m_item->GetMovieName(scanSettings.parent_name);
 
   CScraperUrl scraperUrl;
-  VIDEO::CVideoInfoScanner scanner;
   bool needsRefresh = m_forceRefresh;
   bool hasDetails = false;
   bool ignoreNfo = m_ignoreNfo;
@@ -94,18 +96,28 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   {
     if (!ignoreNfo)
     {
+      std::unique_ptr<IVideoInfoTagLoader> loader;
+      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*m_item, scraper,
+                                                            scanSettings.parent_name_root));
       // check if there's an NFO for the item
-      CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(m_item.get(), scanSettings.parent_name_root, scraper, scraperUrl);
-      // if there's no NFO remember it in case we have to refresh again
-      if (nfoResult == CNfoFile::ERROR_NFO)
-        ignoreNfo = true;
-      else if (nfoResult != CNfoFile::NO_NFO)
-        hasDetails = true;
+      CInfoScanner::INFO_TYPE nfoResult = CInfoScanner::NO_NFO;
+      if (loader)
+      {
+        CVideoInfoTag dummy;
+        nfoResult = loader->Load(dummy, false);
+        if (nfoResult == CInfoScanner::URL_NFO)
+          scraperUrl = loader->ScraperUrl();
+      }
 
+      // if there's no NFO remember it in case we have to refresh again
+      if (nfoResult == CInfoScanner::ERROR_NFO)
+        ignoreNfo = true;
+      else if (nfoResult != CInfoScanner::NO_NFO)
+        hasDetails = true;
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
       if (needsRefresh && IsModal() && !scraper->IsNoop()
-          && nfoResult != CNfoFile::ERROR_NFO)
+          && nfoResult != CInfoScanner::ERROR_NFO)
       {
         int heading = 20159;
         if (scraper->Content() == CONTENT_MOVIES)
@@ -294,6 +306,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // finally download the information for the item
+    CVideoInfoScanner scanner;
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.m_url.empty() ? NULL : &scraperUrl,

@@ -28,6 +28,7 @@
 #include <string>
 
 #include "addons/Scraper.h"
+#include "InfoScanner.h"
 
 class CNfoFile
 {
@@ -35,17 +36,8 @@ public:
   CNfoFile() : m_headPos(0), m_type(ADDON::ADDON_UNKNOWN) {}
   virtual ~CNfoFile() { Close(); }
 
-  enum NFOResult
-  {
-    NO_NFO       = 0,
-    FULL_NFO     = 1,
-    URL_NFO      = 2,
-    COMBINED_NFO = 3,
-    ERROR_NFO    = 4,
-    PARTIAL_NFO  = 5
-  };
-
-  NFOResult Create(const std::string&, const ADDON::ScraperPtr&, int episode=-1);
+  CInfoScanner::INFO_TYPE Create(const std::string&,
+                                 const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details, const char* document=NULL,
                     bool prioritise=false)
@@ -62,9 +54,15 @@ public:
   }
 
   void Close();
-  void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; }
-  const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
+  void SetScraperInfo(ADDON::ScraperPtr info) { m_info = info; }
+  ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
+
+  static int Scrape(ADDON::ScraperPtr& scraper, CScraperUrl& url,
+                    const std::string& content);
+
+  static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::TYPE type,
+                                                    ADDON::ScraperPtr selectedScraper);
 
 private:
   std::string m_doc;
@@ -74,7 +72,6 @@ private:
   CScraperUrl m_scurl;
 
   int Load(const std::string&);
-  int Scrape(ADDON::ScraperPtr& scraper);
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

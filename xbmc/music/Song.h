@@ -25,7 +25,7 @@
 
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
-#include "music/EmbeddedArt.h"
+#include "utils/EmbeddedArt.h"
 #include "music/tags/ReplayGain.h"
 #include "Artist.h"
 #include <map>
@@ -172,7 +172,7 @@ public:
   std::string strAlbum;
   std::vector<std::string> genre;
   std::string strThumb;
-  MUSIC_INFO::EmbeddedArtInfo embeddedArt;
+  EmbeddedArtInfo embeddedArt;
   std::string strMusicBrainzTrackID;
   std::string strComment;
   std::string strMood;

@@ -24,10 +24,11 @@
 #include <string>
 #include <vector>
 
+class EmbeddedArt;
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
-  class EmbeddedArt;
 };
 
 class CTagLoaderTagLib : public MUSIC_INFO::IMusicInfoTagLoader
@@ -35,8 +36,10 @@ class CTagLoaderTagLib : public MUSIC_INFO::IMusicInfoTagLoader
 public:
   CTagLoaderTagLib() = default;
   ~CTagLoaderTagLib() override = default;
-  bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = nullptr) override;
-  bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = NULL);
+  bool Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag,
+            EmbeddedArt *art = nullptr) override;
+  bool Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag,
+            const std::string& fallbackFileExtension, EmbeddedArt *art = nullptr);
 
   static std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
 protected:
@@ -55,6 +58,6 @@ protected:
   static int POPMtoXBMC(int popm);
 
 template<typename T>
-   static bool ParseTag(T *tag, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& infoTag);
+   static bool ParseTag(T *tag, EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& infoTag);
 };
 

@@ -21,12 +21,13 @@
 
 #include <string>
 #include <vector>
-#include "XBDateTime.h"
-#include "utils/ScraperUrl.h"
+#include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
 #include "utils/ISortable.h"
+#include "utils/ScraperUrl.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
+#include "XBDateTime.h"
 
 class CArchive;
 class TiXmlNode;
@@ -280,6 +281,7 @@ public:
   MediaType m_type;
   int m_relevance; // Used for actors' number of appearances
   int m_parsedDetails;
+  std::vector<EmbeddedArtInfo> m_coverArt; ///< art information
 
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds

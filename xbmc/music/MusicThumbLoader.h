@@ -24,11 +24,7 @@
 
 class CFileItem;
 class CMusicDatabase;
-
-namespace MUSIC_INFO
-{
-  class EmbeddedArt;
-};
+class EmbeddedArt;
 
 class CMusicThumbLoader : public CThumbLoader
 {
@@ -57,7 +53,7 @@ public:
    */
   virtual bool FillThumb(CFileItem &item, bool folderThumbs = true);
   
-  static bool GetEmbeddedThumb(const std::string &path, MUSIC_INFO::EmbeddedArt &art);
+  static bool GetEmbeddedThumb(const std::string &path, EmbeddedArt &art);
 
 protected:
   CMusicDatabase *m_musicDatabase;

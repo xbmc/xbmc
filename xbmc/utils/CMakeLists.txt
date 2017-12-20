@@ -16,6 +16,7 @@ set(SOURCES ActorProtocol.cpp
             DatabaseUtils.cpp
             EndianSwap.cpp
             Environment.cpp
+            EmbeddedArt.cpp
             FileExtensionProvider.cpp
             Fanart.cpp
             FileOperationJob.cpp

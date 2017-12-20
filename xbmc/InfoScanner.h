@@ -41,6 +41,20 @@ public:
     INFO_ADDED
   };
 
+  /*
+   \brief Type of information returned from tag readers.
+  */
+
+  enum INFO_TYPE
+  {
+    NO_NFO       = 0, //!< No info found
+    FULL_NFO     = 1, //!< Full info specified
+    URL_NFO      = 2, //!< A URL to grab info from was found
+    OVERRIDE_NFO = 3, //!< Override info was found
+    COMBINED_NFO = 4, //!< A URL to grab info from + override info was found
+    ERROR_NFO    = 5  //!< Error processing info
+  };
+
   //! \brief Empty destructor.
   virtual ~CInfoScanner() = default;
 
