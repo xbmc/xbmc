@@ -87,7 +87,7 @@ namespace PVR
     bool SupportsChannelScan() const { return m_addonCapabilities.bSupportsChannelScan; }
 
     /*!
-     * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel.
+     * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel.
      * @return True if recordings are supported, false otherwise.
      */
     bool SupportsChannelSettings() const { return m_addonCapabilities.bSupportsChannelSettings; }

@@ -312,7 +312,7 @@ extern "C" {
     bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
-    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel */
+    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel */
     bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
@@ -677,7 +677,6 @@ extern "C" {
     void (__cdecl* CloseLiveStream)(void);
     int (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
     long long (__cdecl* SeekLiveStream)(long long, int);
-    long long (__cdecl* PositionLiveStream)(void);
     long long (__cdecl* LengthLiveStream)(void);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
@@ -687,7 +686,6 @@ extern "C" {
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
     long long (__cdecl* SeekRecordedStream)(long long, int);
-    long long (__cdecl* PositionRecordedStream)(void);
     long long (__cdecl* LengthRecordedStream)(void);
     void (__cdecl* DemuxReset)(void);
     void (__cdecl* DemuxAbort)(void);
@@ -698,9 +696,6 @@ extern "C" {
     bool (__cdecl* CanSeekStream)(void);
     bool (__cdecl* SeekTime)(double, bool, double*);
     void (__cdecl* SetSpeed)(int);
-    time_t (__cdecl* GetPlayingTime)(void);
-    time_t (__cdecl* GetBufferTimeStart)(void);
-    time_t (__cdecl* GetBufferTimeEnd)(void);
     const char* (__cdecl* GetBackendHostname)(void);
     bool (__cdecl* IsTimeshifting)(void);
     bool (__cdecl* IsRealTimeStream)(void);
