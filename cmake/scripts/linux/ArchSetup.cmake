@@ -101,7 +101,6 @@ endif()
 
 if(ENABLE_GBM)
   set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU" FORCE)
-  set(ENABLE_VAAPI OFF CACHE BOOL "Disabling VAAPI" FORCE)
 endif()
 
 if(ENABLE_VDPAU)
