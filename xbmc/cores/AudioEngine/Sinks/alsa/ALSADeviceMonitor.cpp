@@ -17,8 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-#if defined(HAS_ALSA) && defined(HAVE_LIBUDEV)
 
 #include <libudev.h>
 
@@ -137,5 +135,3 @@ void CALSADeviceMonitor::FDEventCallback(int id, int fd, short revents, void *da
     CServiceBroker::GetActiveAE().DeviceChange();
   }
 }
-
-#endif

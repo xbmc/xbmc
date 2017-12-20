@@ -18,7 +18,6 @@
  *
  */
 #include "UDisksProvider.h"
-#ifdef HAS_DBUS
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -155,7 +154,7 @@ CMediaSource CUDiskDevice::ToMediaShare()
 
 bool CUDiskDevice::IsApproved()
 {
-  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && m_FileSystem != "swap") 
+  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && m_FileSystem != "swap")
       && m_MountPath != "/" && m_MountPath != "/boot") || m_isOptical;
 }
 
@@ -179,7 +178,7 @@ CUDisksProvider::CUDisksProvider()
   {
     return;
   }
-  
+
   dbus_connection_set_exit_on_disconnect(m_connection, false);
 
   CDBusError error;
@@ -371,4 +370,3 @@ void CUDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemovable)
       devices.push_back(device->ToMediaShare());
   }
 }
-#endif

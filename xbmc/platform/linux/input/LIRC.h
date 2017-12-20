@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef LIRC_H
-#define LIRC_H
+#pragma once
 
 #include <string>
 #include <atomic>
@@ -76,5 +75,3 @@ private:
   CCriticalSection m_CS;
 
 };
-
-#endif

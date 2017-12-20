@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "storage/IStorageProvider.h"
-#ifdef HAS_DBUS
 #include "DBusUtil.h"
 
 class CUDiskDevice
@@ -85,4 +84,3 @@ private:
 
   CDBusConnection m_connection;
 };
-#endif

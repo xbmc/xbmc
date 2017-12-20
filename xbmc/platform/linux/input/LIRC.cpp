@@ -17,9 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-
-#if defined (HAS_LIRC)
 
 #include "threads/SystemClock.h"
 #include <sys/time.h>
@@ -87,7 +84,7 @@ void CRemoteControl::Disconnect()
   if (IsRunning())
     StopThread();
 
-  if (m_fd != -1) 
+  if (m_fd != -1)
   {
     if (m_file != NULL)
       fclose(m_file);
@@ -166,7 +163,7 @@ void CRemoteControl::Process()
     if (AbortableWait(m_event, iMsRetryDelay) == WAIT_INTERRUPTED)
       break;
   }
-  
+
   if (!m_bInitialized)
   {
     CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Giving up.");
@@ -390,5 +387,3 @@ bool CRemoteControl::Connect(struct sockaddr_un addr, bool logMessages)
 
   return bResult;
 }
-
-#endif

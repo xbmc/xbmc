@@ -19,7 +19,6 @@
  *
  */
 #include "system.h"
-#ifdef HAS_DBUS
 #include <memory>
 #include <string>
 
@@ -98,5 +97,3 @@ private:
 
   DBusError m_error;
 };
-
-#endif

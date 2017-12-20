@@ -24,8 +24,6 @@
 #include "LogindUPowerSyscall.h"
 #include "utils/log.h"
 
-#ifdef HAS_DBUS
-
 // logind DBus interface specification:
 // http://www.freedesktop.org/wiki/Software/Logind/logind
 //
@@ -295,5 +293,3 @@ void CLogindUPowerSyscall::ReleaseDelayLock()
     CLog::Log(LOGDEBUG, "LogindUPowerSyscall - delay lock released");
   }
 }
-
-#endif

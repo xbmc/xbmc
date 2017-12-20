@@ -20,7 +20,6 @@
 #pragma once
 #include "powermanagement/IPowerSyscall.h"
 #include "system.h"
-#if defined(TARGET_POSIX)
 
 class CFallbackPowerSyscall : public CPowerSyscallWithoutEvents
 {
@@ -36,4 +35,3 @@ public:
   bool CanReboot() override {return true; }
   int  BatteryLevel() override {return 0; }
 };
-#endif

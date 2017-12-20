@@ -19,7 +19,6 @@
  *
  */
 #include "system.h"
-#ifdef HAS_DBUS
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -157,4 +156,3 @@ template<>
 void CDBusMessage::AppendArgument<bool>(const bool arg);
 template<>
 void CDBusMessage::AppendArgument<std::string>(const std::string arg);
-#endif

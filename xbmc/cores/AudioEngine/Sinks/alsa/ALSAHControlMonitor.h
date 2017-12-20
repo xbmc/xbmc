@@ -19,9 +19,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_ALSA
-
 #include <string>
 #include <map>
 #include <vector>
@@ -64,6 +61,3 @@ private:
 
   std::vector<int> m_fdMonitorIds;
 };
-
-#endif
-

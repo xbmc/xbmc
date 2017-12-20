@@ -60,13 +60,16 @@ set(HEADERS AEResampleFactory.h
 
 if(ALSA_FOUND)
   list(APPEND SOURCES Sinks/AESinkALSA.cpp
-                      Sinks/alsa/ALSADeviceMonitor.cpp
                       Sinks/alsa/ALSAHControlMonitor.cpp
                       Utils/AEELDParser.cpp)
   list(APPEND HEADERS Sinks/AESinkALSA.h
-                      Sinks/alsa/ALSADeviceMonitor.h
                       Sinks/alsa/ALSAHControlMonitor.h
                       Utils/AEELDParser.h)
+
+  if(UDEV_FOUND)
+    list(APPEND SOURCES Sinks/alsa/ALSADeviceMonitor.cpp)
+    list(APPEND HEADERS Sinks/alsa/ALSADeviceMonitor.h)
+  endif()
 endif()
 
 if(PULSEAUDIO_FOUND)
