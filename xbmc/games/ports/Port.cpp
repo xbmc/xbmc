@@ -21,6 +21,7 @@
 #include "Port.h"
 #include "InputSink.h"
 #include "games/addons/GameClient.h"
+#include "games/addons/input/GameClientInput.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/keymaps/KeymapHandling.h"
 #include "peripherals/devices/Peripheral.h"
@@ -65,12 +66,12 @@ std::string CPort::ControllerID() const
 
 bool CPort::AcceptsInput(const std::string& feature) const
 {
-  return m_gameClient.AcceptsInput();
+  return m_gameClient.Input().AcceptsInput();
 }
 
 bool CPort::OnButtonPress(const std::string& feature, bool bPressed)
 {
-  if (bPressed && !m_gameClient.AcceptsInput())
+  if (bPressed && !m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnButtonPress(feature, bPressed);
@@ -83,7 +84,7 @@ void CPort::OnButtonHold(const std::string& feature, unsigned int holdTimeMs)
 
 bool CPort::OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs)
 {
-  if (magnitude > 0.0f && !m_gameClient.AcceptsInput())
+  if (magnitude > 0.0f && !m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnButtonMotion(feature, magnitude, motionTimeMs);
@@ -91,7 +92,7 @@ bool CPort::OnButtonMotion(const std::string& feature, float magnitude, unsigned
 
 bool CPort::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
 {
-  if ((x != 0.0f || y != 0.0f) && !m_gameClient.AcceptsInput())
+  if ((x != 0.0f || y != 0.0f) && !m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnAnalogStickMotion(feature, x, y, motionTimeMs);
@@ -99,7 +100,7 @@ bool CPort::OnAnalogStickMotion(const std::string& feature, float x, float y, un
 
 bool CPort::OnAccelerometerMotion(const std::string& feature, float x, float y, float z)
 {
-  if (!m_gameClient.AcceptsInput())
+  if (!m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnAccelerometerMotion(feature, x, y, z);
@@ -107,7 +108,7 @@ bool CPort::OnAccelerometerMotion(const std::string& feature, float x, float y, 
 
 bool CPort::OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs)
 {
-  if ((position != 0.0f) && !m_gameClient.AcceptsInput())
+  if ((position != 0.0f) && !m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnWheelMotion(feature, position, motionTimeMs);
@@ -115,7 +116,7 @@ bool CPort::OnWheelMotion(const std::string& feature, float position, unsigned i
 
 bool CPort::OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs)
 {
-  if ((position != 0.0f) && !m_gameClient.AcceptsInput())
+  if ((position != 0.0f) && !m_gameClient.Input().AcceptsInput())
     return false;
 
   return m_gameInput->OnThrottleMotion(feature, position, motionTimeMs);
