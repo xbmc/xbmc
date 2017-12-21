@@ -386,6 +386,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   else
     return nullptr;
 
+  demuxStream->name = stream.m_name;
   demuxStream->codec = codec->id;
   demuxStream->codecName = stream.m_codecInternalName;
   demuxStream->uniqueId = streamId;

@@ -133,6 +133,7 @@ extern "C" {
     };
     uint32_t m_flags;
 
+    char m_name[256];                    /*!< @brief (optinal) name of the stream, \0 for default handling */
     char m_codecName[32];                /*!< @brief (required) name of codec according to ffmpeg */
     char m_codecInternalName[32];        /*!< @brief (optional) internal name of codec (selectionstream info) */
     STREAMCODEC_PROFILE m_codecProfile;  /*!< @brief (optional) the profile of the codec */

@@ -126,6 +126,7 @@ public:
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
 
+  std::string name;
   std::string codecName;
 
   int  changes; // increment on change which player may need to know about
