@@ -3109,9 +3109,10 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     double seconds = item.m_lStartOffset / 75.0;
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
-    {  // have our times now, so update the dB
+    {  
       if (dbs.Open())
       {
+        // have our times now, so update the dB
         if (!haveTimes && !times.empty())
           dbs.SetStackTimes(item.GetPath(), times);
 
