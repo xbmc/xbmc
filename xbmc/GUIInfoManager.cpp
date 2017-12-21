@@ -10077,12 +10077,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_SET:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strSet;
+      return item->GetVideoInfoTag()->m_set.title;
     break;
   case LISTITEM_SETID:
     if (item->HasVideoInfoTag())
     {
-      int iSetId = item->GetVideoInfoTag()->m_iSetId;
+      int iSetId = item->GetVideoInfoTag()->m_set.id;
       if (iSetId > 0)
         return StringUtils::Format("%d", iSetId);
     }

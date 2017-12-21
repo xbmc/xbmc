@@ -372,7 +372,7 @@ namespace XBMCAddon
           else if (key == "top250")
             videotag.m_iTop250 = strtol(value.c_str(), nullptr, 10);
           else if (key == "setid")
-            videotag.m_iSetId = strtol(value.c_str(), nullptr, 10);
+            videotag.m_set.id = strtol(value.c_str(), nullptr, 10);
           else if (key == "tracknumber")
             videotag.m_iTrack = strtol(value.c_str(), nullptr, 10);
           else if (key == "count")
