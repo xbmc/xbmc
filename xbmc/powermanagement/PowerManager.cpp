@@ -38,7 +38,7 @@
 #include "settings/Settings.h"
 #include "system.h"
 #include "utils/log.h"
-#include "weather/Weather.h"
+#include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN)

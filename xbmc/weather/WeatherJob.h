@@ -22,7 +22,7 @@
 #include <string>
 #include <map>
 
-#include "Weather.h"
+#include "WeatherManager.h"
 
 class CWeatherJob : public CJob
 {

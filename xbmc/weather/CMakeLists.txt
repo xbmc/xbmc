@@ -1,9 +1,9 @@
 set(SOURCES GUIWindowWeather.cpp
             WeatherJob.cpp
-            Weather.cpp)
+            WeatherManager.cpp)
 
 set(HEADERS GUIWindowWeather.h
             WeatherJob.h
-            Weather.h)
+            WeatherManager.h)
 
 core_add_library(weather)

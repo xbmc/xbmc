@@ -32,7 +32,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
-#include "weather/Weather.h"
+#include "weather/WeatherManager.h"
 #include "PartyModeManager.h"
 #include "guilib/GUIVisualisationControl.h"
 #include "input/WindowTranslator.h"

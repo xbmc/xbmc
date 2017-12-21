@@ -44,7 +44,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "weather/Weather.h"
+#include "weather/WeatherManager.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

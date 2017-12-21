@@ -18,7 +18,7 @@
  *
  */
 
-#include "Weather.h"
+#include "WeatherManager.h"
 
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
@@ -36,14 +36,14 @@
 
 using namespace ADDON;
 
-CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
+CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
   Reset();
 }
 
-CWeather::~CWeather(void) = default;
+CWeatherManager::~CWeatherManager(void) = default;
 
-std::string CWeather::BusyInfo(int info) const
+std::string CWeatherManager::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
     return URIUtils::AddFileToFolder(ICON_ADDON_PATH, "na.png");
@@ -51,7 +51,7 @@ std::string CWeather::BusyInfo(int info) const
   return CInfoLoader::BusyInfo(info);
 }
 
-std::string CWeather::TranslateInfo(int info) const
+std::string CWeatherManager::TranslateInfo(int info) const
 {
   switch (info) {
     case WEATHER_LABEL_CURRENT_COND:
@@ -82,7 +82,7 @@ std::string CWeather::TranslateInfo(int info) const
  \param iLocation the location index (can be in the range [1..MAXLOCATION])
  \return the city name (without the accompanying region area code)
  */
-std::string CWeather::GetLocation(int iLocation)
+std::string CWeatherManager::GetLocation(int iLocation)
 {
   CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
   if (window)
@@ -93,19 +93,19 @@ std::string CWeather::GetLocation(int iLocation)
   return "";
 }
 
-void CWeather::Reset()
+void CWeatherManager::Reset()
 {
   m_info.Reset();
 }
 
-bool CWeather::IsFetched()
+bool CWeatherManager::IsFetched()
 {
   // call GetInfo() to make sure that we actually start up
   GetInfo(0);
   return !m_info.lastUpdateTime.empty();
 }
 
-const ForecastDay &CWeather::GetForecast(int day) const
+const ForecastDay &CWeatherManager::GetForecast(int day) const
 {
   return m_info.forecast[day];
 }
@@ -115,7 +115,7 @@ const ForecastDay &CWeather::GetForecast(int day) const
         afterwards to update weather info for the new location.
  \param iLocation the new location index (can be in the range [1..MAXLOCATION])
  */
-void CWeather::SetArea(int iLocation)
+void CWeatherManager::SetArea(int iLocation)
 {
   CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
   CServiceBroker::GetSettings().Save();
@@ -125,23 +125,23 @@ void CWeather::SetArea(int iLocation)
  \brief Retrieves the current location index from the settings
  \return the active location index (will be in the range [1..MAXLOCATION])
  */
-int CWeather::GetArea() const
+int CWeatherManager::GetArea() const
 {
   return CServiceBroker::GetSettings().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
-CJob *CWeather::GetJob() const
+CJob *CWeatherManager::GetJob() const
 {
   return new CWeatherJob(GetArea());
 }
 
-void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   m_info = static_cast<CWeatherJob*>(job)->GetInfo();
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
 
-void CWeather::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -157,7 +157,7 @@ void CWeather::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CWeather::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

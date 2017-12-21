@@ -90,12 +90,12 @@ public:
   std::string naIcon;
 };
 
-class CWeather : public CInfoLoader,
-                 public ISettingCallback
+class CWeatherManager
+: public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeather(void);
-  ~CWeather(void) override;
+  CWeatherManager(void);
+  ~CWeatherManager(void) override;
   static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
 
   std::string GetLocation(int iLocation);
@@ -120,5 +120,5 @@ private:
   CWeatherInfo m_info;
 };
 
-XBMC_GLOBAL_REF(CWeather, g_weatherManager);
-#define g_weatherManager XBMC_GLOBAL_USE(CWeather)
+XBMC_GLOBAL_REF(CWeatherManager, g_weatherManager);
+#define g_weatherManager XBMC_GLOBAL_USE(CWeatherManager)

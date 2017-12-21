@@ -81,7 +81,7 @@
 #include "utils/SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
-#include "weather/Weather.h"
+#include "weather/WeatherManager.h"
 #include "ServiceBroker.h"
 #include "DiscSettings.h"
 
