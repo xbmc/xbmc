@@ -53,16 +53,28 @@ std::string CWeather::BusyInfo(int info) const
 
 std::string CWeather::TranslateInfo(int info) const
 {
-  if (info == WEATHER_LABEL_CURRENT_COND) return m_info.currentConditions;
-  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_info.currentIcon;
-  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_info.currentTemperature;
-  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_info.currentFeelsLike;
-  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_info.currentUVIndex;
-  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_info.currentWind;
-  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_info.currentDewPoint;
-  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_info.currentHumidity;
-  else if (info == WEATHER_LABEL_LOCATION) return m_info.location;
-  return "";
+  switch (info) {
+    case WEATHER_LABEL_CURRENT_COND:
+      return m_info.currentConditions;
+    case WEATHER_IMAGE_CURRENT_ICON:
+      return m_info.currentIcon;
+    case WEATHER_LABEL_CURRENT_TEMP:
+      return m_info.currentTemperature;
+    case WEATHER_LABEL_CURRENT_FEEL:
+      return m_info.currentFeelsLike;
+    case WEATHER_LABEL_CURRENT_UVID:
+      return m_info.currentUVIndex;
+    case WEATHER_LABEL_CURRENT_WIND:
+      return m_info.currentWind;
+    case WEATHER_LABEL_CURRENT_DEWP:
+      return m_info.currentDewPoint;
+    case WEATHER_LABEL_CURRENT_HUMI:
+      return m_info.currentHumidity;
+    case WEATHER_LABEL_LOCATION:
+      return m_info.location;
+    default:
+      return "";
+  }
 }
 
 /*!
