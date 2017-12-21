@@ -223,7 +223,7 @@ std::string CWeatherJob::ConstructPath(std::string in) // copy intended
   if (in.empty() || in == "N/A")
     in = "na.png";
 
-  return URIUtils::AddFileToFolder(IconAddonPath, in);
+  return URIUtils::AddFileToFolder(ICON_ADDON_PATH, in);
 }
 
 void CWeatherJob::SetFromProperties()

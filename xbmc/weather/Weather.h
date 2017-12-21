@@ -36,9 +36,9 @@
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-static const std::string IconAddonPath = "resource://resource.images.weathericons.default";
+static const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
 
-struct day_forecast
+struct ForecastDay
 {
   std::string m_icon;
   std::string m_overview;
@@ -52,7 +52,7 @@ struct day_forecast
 class CWeatherInfo
 {
 public:
-  day_forecast forecast[NUM_DAYS];
+  ForecastDay forecast[NUM_DAYS];
 
   void Reset()
   {
@@ -100,7 +100,7 @@ public:
 
   std::string GetLocation(int iLocation);
   const std::string &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
-  const day_forecast &GetForecast(int day) const;
+  const ForecastDay &GetForecast(int day) const;
   bool IsFetched();
   void Reset();
 

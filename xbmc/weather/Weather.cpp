@@ -46,7 +46,7 @@ CWeather::~CWeather(void) = default;
 std::string CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
-    return URIUtils::AddFileToFolder(IconAddonPath, "na.png");
+    return URIUtils::AddFileToFolder(ICON_ADDON_PATH, "na.png");
 
   return CInfoLoader::BusyInfo(info);
 }
@@ -105,7 +105,7 @@ bool CWeather::IsFetched()
   return !m_info.lastUpdateTime.empty();
 }
 
-const day_forecast &CWeather::GetForecast(int day) const
+const ForecastDay &CWeather::GetForecast(int day) const
 {
   return m_info.forecast[day];
 }
