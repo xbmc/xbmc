@@ -24,10 +24,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 
-#include <map>
 #include <string>
-
-class TiXmlElement;
 
 #define WEATHER_LABEL_LOCATION   10
 #define WEATHER_IMAGE_CURRENT_ICON 21
@@ -38,6 +35,8 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_WIND 26
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
+
+static const std::string IconAddonPath = "resource://resource.images.weathericons.default";
 
 struct day_forecast
 {
@@ -89,54 +88,6 @@ public:
   std::string currentHumidity;
   std::string busyString;
   std::string naIcon;
-};
-
-class CWeatherJob : public CJob
-{
-public:
-  explicit CWeatherJob(int location);
-
-  bool DoWork() override;
-
-  const CWeatherInfo &GetInfo() const;
-private:
-  void LocalizeOverview(std::string &str);
-  void LocalizeOverviewToken(std::string &str);
-  void LoadLocalizedToken();
-  static int ConvertSpeed(int speed);
-
-  void SetFromProperties();
-
-  /*! \brief Formats a celsius temperature into a string based on the users locale
-   \param text the string to format
-   \param temp the temperature (in degrees celsius).
-   */
-  static void FormatTemperature(std::string &text, double temp);
-
-  struct ci_less : std::binary_function<std::string, std::string, bool>
-  {
-    // case-independent (ci) compare_less binary function
-    struct nocase_compare : public std::binary_function<unsigned char,unsigned char,bool>
-    {
-      bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-          return tolower (c1) < tolower (c2);
-      }
-    };
-    bool operator() (const std::string & s1, const std::string & s2) const {
-      return std::lexicographical_compare
-        (s1.begin (), s1.end (),
-        s2.begin (), s2.end (),
-        nocase_compare ());
-    }
-  };
-
-  std::map<std::string, int, ci_less> m_localizedTokens;
-  typedef std::map<std::string, int, ci_less>::const_iterator ilocalizedTokens;
-
-  CWeatherInfo m_info;
-  int m_location;
-
-  static bool m_imagesOkay;
 };
 
 class CWeather : public CInfoLoader,
