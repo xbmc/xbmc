@@ -11,4 +11,6 @@ if(DBUS_FOUND)
                       UPowerSyscall.h)
 endif()
 
-core_add_library(powermanagement_linux)
+if(SOURCES)
+  core_add_library(powermanagement_linux)
+endif()
