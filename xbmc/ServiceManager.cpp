@@ -43,6 +43,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
+#include "weather/WeatherManager.h"
 
 using namespace KODI;
 
@@ -148,6 +149,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_powerManager->Initialize();
   m_powerManager->SetDefaults();
 
+  m_weatherManager.reset(new CWeatherManager());
+
   init_level = 2;
   return true;
 }
@@ -212,6 +215,7 @@ void CServiceManager::DeinitStageTwo()
 {
   init_level = 1;
 
+  m_weatherManager.reset();
   m_powerManager.reset();
   m_fileExtensionProvider.reset();
   m_gameRenderManager.reset();
@@ -412,5 +416,10 @@ CNetwork* CServiceManager::SetupNetwork() const
 CNetwork& CServiceManager::GetNetwork()
 {
   return *m_network;
+}
+
+CWeatherManager& CServiceManager::GetWeatherManager()
+{
+  return *m_weatherManager;
 }
 

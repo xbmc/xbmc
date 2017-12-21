@@ -824,7 +824,7 @@ void CSettings::UninitializeISettingsHandlers()
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
-  GetSettingsManager()->UnregisterCallback(&g_weatherManager);
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetWeatherManager());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
@@ -1012,7 +1012,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_WEATHER_ADDON);
   settingSet.insert(CSettings::SETTING_WEATHER_ADDONSETTINGS);
-  GetSettingsManager()->RegisterCallback(&g_weatherManager, settingSet);
+  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetWeatherManager(), settingSet);
 
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
@@ -1071,7 +1071,7 @@ void CSettings::UninitializeISettingCallbacks()
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
-  GetSettingsManager()->UnregisterCallback(&g_weatherManager);
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetWeatherManager());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif

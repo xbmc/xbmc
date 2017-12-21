@@ -293,7 +293,7 @@ void CPowerManager::OnWake()
 
   CServiceBroker::GetActiveAE().Resume();
   g_application.UpdateLibraries();
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 
   CServiceBroker::GetPVRManager().OnWake();
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");

@@ -317,7 +317,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     return;
   }
 
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();

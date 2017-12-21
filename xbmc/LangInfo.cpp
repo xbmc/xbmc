@@ -713,7 +713,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   if (reloadServices)
   {
     // also tell our weather and skin to reload as these are localized
-    g_weatherManager.Refresh();
+    CServiceBroker::GetWeatherManager().Refresh();
     CServiceBroker::GetPVRManager().LocalizationChanged();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
@@ -993,7 +993,7 @@ void CLangInfo::SetTemperatureUnit(CTemperature::Unit temperatureUnit)
   m_temperatureUnit = temperatureUnit;
 
   // need to reset our weather as temperatures need re-translating
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 }
 
 void CLangInfo::SetTemperatureUnit(const std::string& temperatureUnit)
@@ -1035,7 +1035,7 @@ void CLangInfo::SetSpeedUnit(CSpeed::Unit speedUnit)
   m_speedUnit = speedUnit;
 
   // need to reset our weather as speeds need re-translating
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 }
 
 void CLangInfo::SetSpeedUnit(const std::string& speedUnit)

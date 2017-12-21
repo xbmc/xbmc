@@ -22,7 +22,6 @@
 
 #include "utils/InfoLoader.h"
 #include "settings/lib/ISettingCallback.h"
-#include "utils/GlobalsHandling.h"
 
 #include <string>
 
@@ -119,6 +118,3 @@ private:
 
   CWeatherInfo m_info;
 };
-
-XBMC_GLOBAL_REF(CWeatherManager, g_weatherManager);
-#define g_weatherManager XBMC_GLOBAL_USE(CWeatherManager)
