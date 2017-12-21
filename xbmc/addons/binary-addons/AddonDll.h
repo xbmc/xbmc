@@ -73,9 +73,9 @@ namespace ADDON
 
     AddonPtr GetRunningInstance() const override;
 
-  protected:
-    bool Initialized() { return m_initialized; }
+    bool Initialized() const { return m_initialized; }
 
+  protected:
     static std::string GetDllPath(const std::string &strFileName);
 
     CAddonInterfaces* m_pHelpers;
