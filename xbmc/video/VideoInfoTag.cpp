@@ -225,7 +225,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   {
     TiXmlElement set("set");
     XMLUtils::SetString(&set, "name", m_strSet);
-    if (!m_strSetOverview.empty())
+    if (m_strSetOverview.empty())
       XMLUtils::SetString(&set, "overview", m_strSetOverview);
     movie->InsertEndChild(set);
   }
