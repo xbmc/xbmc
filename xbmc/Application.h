@@ -381,6 +381,17 @@ public:
   */
   void UnlockFrameMoveGuard();
 
+  /*!
+  \brief Returns true if Application is currently playing a (non-ISO) stack
+  */
+  bool IsPlayingStack() const { return m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0; }
+
+  CFileItem& GetStackPartFileItem(int partNumber) const { return  *(*m_currentStack)[partNumber]; }
+  CFileItem& GetStackPartCurrentFileItem() const { return GetStackPartFileItem(m_currentStackPosition); }
+  double GetStackPartEndTime(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset; }
+  double GetStackPartStartTime(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTime(partNumber - 1) : 0; }
+  double GetStackTotalTime() const { return GetStackPartEndTime(m_currentStack->Size() - 1); }
+
 protected:
   bool OnSettingsSaving() const override;
 
