@@ -130,7 +130,6 @@ res:
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/colors.xml xbmc/res/values/
-	cp xbmc/activity_main.xml xbmc/res/layout/
 	cp xbmc/searchable.xml xbmc/res/xml/
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so

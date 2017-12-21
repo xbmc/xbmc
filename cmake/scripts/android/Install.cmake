@@ -53,7 +53,6 @@ endif()
 unset(patch)
 
 set(package_files strings.xml
-                  activity_main.xml
                   colors.xml
                   searchable.xml
                   AndroidManifest.xml
