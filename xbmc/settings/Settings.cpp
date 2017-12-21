@@ -77,11 +77,11 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
+#include "weather/Weather.h"
 #include "ServiceBroker.h"
 #include "DiscSettings.h"
 

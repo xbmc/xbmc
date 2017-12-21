@@ -71,7 +71,6 @@ set(SOURCES ActorProtocol.cpp
             Variant.cpp
             VC1BitstreamParser.cpp
             Vector.cpp
-            Weather.cpp
             XBMCTinyXML.cpp
             XMLUtils.cpp)
 
@@ -160,7 +159,6 @@ set(HEADERS ActorProtocol.h
             Variant.h
             VC1BitstreamParser.h
             Vector.h
-            Weather.h
             XBMCTinyXML.h
             XMLUtils.h)
 

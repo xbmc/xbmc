@@ -53,9 +53,9 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/Weather.h"
 #include "utils/Variant.h"
 #include "view/ViewState.h"
+#include "weather/Weather.h"
 
 using namespace KODI::MESSAGING;
 

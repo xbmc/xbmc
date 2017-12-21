@@ -8,8 +8,7 @@ set(SOURCES GUIMediaWindow.cpp
             GUIWindowScreensaverDim.cpp
             GUIWindowSplash.cpp
             GUIWindowStartup.cpp
-            GUIWindowSystemInfo.cpp
-            GUIWindowWeather.cpp)
+            GUIWindowSystemInfo.cpp)
 
 set(HEADERS GUIMediaWindow.h
             GUIWindowDebugInfo.h
@@ -21,7 +20,6 @@ set(HEADERS GUIMediaWindow.h
             GUIWindowScreensaverDim.h
             GUIWindowSplash.h
             GUIWindowStartup.h
-            GUIWindowSystemInfo.h
-            GUIWindowWeather.h)
+            GUIWindowSystemInfo.h)
 
 core_add_library(windows)

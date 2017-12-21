@@ -28,7 +28,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/Weather.h"
+#include "weather/Weather.h"
 
 using namespace ADDON;
 
