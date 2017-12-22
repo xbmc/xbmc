@@ -32,9 +32,7 @@ CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 # Then xbmc will correctly access smb shares with LFS enabled
 # using the altered libsmbclient.h.
 ifeq ($(OS),android)
-ifeq ($(findstring arm64, $(CPU)), arm64)
 export CFLAGS+=-DHAVE_BZERO
-endif
 endif
 
 LIBDYLIB=$(PLATFORM)/source3/bin/libsmbclient.a

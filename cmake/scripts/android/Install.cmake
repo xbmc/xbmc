@@ -137,6 +137,8 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               CC=${CMAKE_C_COMPILER}
               CPU=${CPU}
               ARCH=${ARCH}
+              HOST=${HOST}
+              TOOLCHAIN=${TOOLCHAIN}
               PREFIX=${prefix}
               DEPENDS_PATH=${DEPENDS_PATH}
               NDKROOT=${NDKROOT}
