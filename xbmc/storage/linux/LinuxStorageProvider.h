@@ -23,7 +23,9 @@
 
 #include "storage/IStorageProvider.h"
 #include "UDevProvider.h"
+#ifdef HAS_DBUS
 #include "UDisksProvider.h"
+#endif
 #include "PosixMountProvider.h"
 
 class CLinuxStorageProvider : public IStorageProvider
