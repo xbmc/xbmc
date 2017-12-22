@@ -386,11 +386,38 @@ public:
   */
   bool IsPlayingStack() const { return m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0; }
 
+  /*!
+  \brief Returns a FileItem part of a (non-ISO) stack playback
+  \param partNumber the requested part number in the stack
+  */
   CFileItem& GetStackPartFileItem(int partNumber) const { return  *(*m_currentStack)[partNumber]; }
+
+  /*!
+  \brief Returns the FileItem currently playing back as part of a (non-ISO) stack playback
+  */
   CFileItem& GetStackPartCurrentFileItem() const { return GetStackPartFileItem(m_currentStackPosition); }
+
+  /*!
+  \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
+  \param partNumber the requested part number in the stack
+  */
   double GetStackPartEndTime(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset; }
+
+  /*!
+  \brief Returns the start time of a FileItem part of a (non-ISO) stack playback
+  \param partNumber the requested part number in the stack
+  */
   double GetStackPartStartTime(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTime(partNumber - 1) : 0; }
+
+  /*!
+  \brief Returns the total time of a (non-ISO) stack playback
+  */
   double GetStackTotalTime() const { return GetStackPartEndTime(m_currentStack->Size() - 1); }
+
+  /*!
+  \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
+  \param seconds the requested timestamp in the stack (in seconds)
+  */
   int GetStackPartNumberAtTime(double seconds);
 
 protected:

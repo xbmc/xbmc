@@ -367,7 +367,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     {
       CSingleLock lock(m_critSection);
 
-      g_application.m_pPlayer->SeekTime(GetTimeCodeSeconds() * 1000);
+      g_application.SeekTime(GetTimeCodeSeconds());
       Reset();
       return true;
     }

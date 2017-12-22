@@ -3466,7 +3466,11 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   g_pythonParser.OnPlayBackStarted(file);
 #endif
 
-  m_itemCurrentFile.reset(new CFileItem(file));
+  // reset the m_itemCurrentFile, but NOT when playing a stack (as we need it to correctly track bookmarks)
+  if (!IsPlayingStack())
+  {
+    m_itemCurrentFile.reset(new CFileItem(file));
+  }
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
@@ -3478,8 +3482,19 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   CFileItem fileItem(file);
   CBookmark resumeBookmark;
   bool playCountUpdate = false;
+  float percent = 0.0f;
 
-  float percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
+  if (IsPlayingStack())
+  {
+    // for stacks, we have to save the bookmark on the stack, held in m_itemCurrentFile
+    fileItem = *m_itemCurrentFile;
+    // the percentage needs to be calculated taking into account the start time of current stack part and the total stack time
+    percent = (GetStackPartStartTime(m_currentStackPosition) + bookmark.timeInSeconds) / GetStackTotalTime() * 100;
+  }
+  else
+  {
+    percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
+  }
 
   if ((fileItem.IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
        percent >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
@@ -3487,12 +3502,6 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
        percent >= g_advancedSettings.m_videoPlayCountMinimumPercent))
   {
     playCountUpdate = true;
-  }
-
-  if (!(fileItem.IsDiscImage() || fileItem.IsDVDFile()) || bookmark.totalTimeInSeconds > 15*60)
-  {
-    if (fileItem.IsStack())
-      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, bookmark.totalTimeInSeconds);
   }
 
   if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
@@ -3504,6 +3513,15 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   else if (bookmark.timeInSeconds > g_advancedSettings.m_videoIgnoreSecondsAtStart)
   {
     resumeBookmark = bookmark;
+    if (IsPlayingStack())
+    {
+      // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes:
+      resumeBookmark.partNumber = m_currentStackPosition;
+      resumeBookmark.timeInSeconds = GetStackPartStartTime(m_currentStackPosition) + bookmark.timeInSeconds;
+      resumeBookmark.totalTimeInSeconds = GetStackTotalTime();
+      // also update video info tag with total time
+      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, resumeBookmark.totalTimeInSeconds);
+    }
   }
   else
   {
