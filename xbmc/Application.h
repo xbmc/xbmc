@@ -382,9 +382,14 @@ public:
   void UnlockFrameMoveGuard();
 
   /*!
-  \brief Returns true if Application is currently playing a (non-ISO) stack
+  \brief Returns true if Application is currently playing an ISO stack
   */
-  bool IsPlayingStack() const { return m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0; }
+  bool IsPlayingISOStack() const { return m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_currentStackIsDiscImageStack; }
+
+  /*!
+  \brief Returns true if Application is currently playing a Regular (non-ISO) stack
+  */
+  bool IsPlayingRegularStack() const { return m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && !m_currentStackIsDiscImageStack; }
 
   /*!
   \brief Returns a FileItem part of a (non-ISO) stack playback
@@ -484,7 +489,7 @@ protected:
 
   CFileItemPtr m_itemCurrentFile;
   std::unique_ptr<CFileItemList> m_currentStack;
-  CFileItemPtr m_stackFileItemToUpdate;
+  bool m_currentStackIsDiscImageStack;
 
   std::string m_prevMedia;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
