@@ -36,6 +36,10 @@ if(ENABLE_INTERNAL_RapidJSON)
                       PREFIX ${CORE_BUILD_DIR}/rapidjson
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                                 -DRAPIDJSON_BUILD_DOC=OFF
+                                 -DRAPIDJSON_BUILD_EXAMPLES=OFF
+                                 -DRAPIDJSON_BUILD_TESTS=OFF
+                                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
                                  "${EXTRA_ARGS}"
                       PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch
                       BUILD_BYPRODUCTS ${RapidJSON_LIBRARY})
