@@ -42,5 +42,6 @@ xbmc/storage                                    storage
 xbmc/threads                                    threads
 xbmc/utils                                      utils
 xbmc/view                                       view
+xbmc/weather                                    weather
 xbmc/windowing                                  windowing
 xbmc/windows                                    windows

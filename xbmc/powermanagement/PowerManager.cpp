@@ -38,7 +38,7 @@
 #include "settings/Settings.h"
 #include "system.h"
 #include "utils/log.h"
-#include "utils/Weather.h"
+#include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN)
@@ -293,7 +293,7 @@ void CPowerManager::OnWake()
 
   CServiceBroker::GetActiveAE().Resume();
   g_application.UpdateLibraries();
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 
   CServiceBroker::GetPVRManager().OnWake();
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");

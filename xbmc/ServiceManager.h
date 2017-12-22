@@ -64,6 +64,7 @@ class CFavouritesService;
 class CNetwork;
 class CWinSystemBase;
 class CPowerManager;
+class CWeatherManager;
 
 namespace KODI
 {
@@ -140,6 +141,8 @@ public:
 
   CPowerManager &GetPowerManager();
 
+  CWeatherManager &GetWeatherManager();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -191,4 +194,5 @@ protected:
   std::unique_ptr<CNetwork> m_network;
   std::unique_ptr<CWinSystemBase> m_winSystem;
   std::unique_ptr<CPowerManager> m_powerManager;
+  std::unique_ptr<CWeatherManager> m_weatherManager;
 };

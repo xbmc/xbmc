@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,37 +18,25 @@
  *
  */
 
-#include "Weather.h"
-
-#include <utility>
+#include "WeatherJob.h"
 
 #include "addons/AddonManager.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
-#include "ServiceBroker.h"
-#include "filesystem/Directory.h"
-#include "filesystem/ZipManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "LangInfo.h"
-#include "log.h"
 #include "network/Network.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "StringUtils.h"
-#include "URIUtils.h"
-#include "utils/POUtils.h"
-#include "utils/Temperature.h"
-#include "XBDateTime.h"
-#include "XMLUtils.h"
 #ifdef TARGET_POSIX
 #include "platform/linux/XTimeUtils.h"
 #endif
-
-using namespace ADDON;
-using namespace XFILE;
+#include "ServiceBroker.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/POUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
@@ -59,12 +47,7 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     97
 
-static const std::string IconAddonPath = "resource://resource.images.weathericons.default";
-
-/*
-FIXME'S
->strings are not centered
-*/
+using namespace ADDON;
 
 CWeatherJob::CWeatherJob(int location)
 {
@@ -120,7 +103,7 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
 
 void CWeatherJob::LocalizeOverviewToken(std::string &token)
 {
-  // This routine is case-insensitive. 
+  // This routine is case-insensitive.
   std::string strLocStr;
   if (!token.empty())
   {
@@ -233,14 +216,14 @@ void CWeatherJob::LoadLocalizedToken()
   }
 }
 
-static std::string ConstructPath(std::string in) // copy intended
+std::string CWeatherJob::ConstructPath(std::string in) // copy intended
 {
   if (in.find("/") != std::string::npos || in.find("\\") != std::string::npos)
     return in;
   if (in.empty() || in == "N/A")
     in = "na.png";
 
-  return URIUtils::AddFileToFolder(IconAddonPath, in);
+  return URIUtils::AddFileToFolder(ICON_ADDON_PATH, in);
 }
 
 void CWeatherJob::SetFromProperties()
@@ -258,9 +241,9 @@ void CWeatherJob::SetFromProperties()
     m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
     LocalizeOverview(m_info.currentConditions);
     FormatTemperature(m_info.currentTemperature,
-        strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
+                      strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
     FormatTemperature(m_info.currentFeelsLike,
-        strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
+                      strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
     m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
     LocalizeOverview(m_info.currentUVIndex);
     CSpeed speed = CSpeed::CreateFromKilometresPerHour(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
@@ -271,12 +254,12 @@ void CWeatherJob::SetFromProperties()
     {
       LocalizeOverviewToken(direction);
       m_info.currentWind = StringUtils::Format(g_localizeStrings.Get(434).c_str(),
-          direction.c_str(), (int)speed.To(g_langInfo.GetSpeedUnit()), g_langInfo.GetSpeedUnitString().c_str());
+                                               direction.c_str(), (int)speed.To(g_langInfo.GetSpeedUnit()), g_langInfo.GetSpeedUnitString().c_str());
     }
     std::string windspeed = StringUtils::Format("%i %s", (int)speed.To(g_langInfo.GetSpeedUnit()), g_langInfo.GetSpeedUnitString().c_str());
     window->SetProperty("Current.WindSpeed",windspeed);
     FormatTemperature(m_info.currentDewPoint,
-        strtod(window->GetProperty("Current.DewPoint").asString().c_str(), nullptr));
+                      strtod(window->GetProperty("Current.DewPoint").asString().c_str(), nullptr));
     if (window->GetProperty("Current.Humidity").asString().empty())
       m_info.currentHumidity.clear();
     else
@@ -289,10 +272,10 @@ void CWeatherJob::SetFromProperties()
       LocalizeOverviewToken(m_info.forecast[i].m_day);
       strDay = StringUtils::Format("Day%i.HighTemp",i);
       FormatTemperature(m_info.forecast[i].m_high,
-                    strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
+                        strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
       strDay = StringUtils::Format("Day%i.LowTemp",i);
       FormatTemperature(m_info.forecast[i].m_low,
-                    strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
+                        strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
       strDay = StringUtils::Format("Day%i.OutlookIcon",i);
       m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
       strDay = StringUtils::Format("Day%i.Outlook",i);
@@ -301,130 +284,3 @@ void CWeatherJob::SetFromProperties()
     }
   }
 }
-
-CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
-{
-  Reset();
-}
-
-CWeather::~CWeather(void) = default;
-
-std::string CWeather::BusyInfo(int info) const
-{
-  if (info == WEATHER_IMAGE_CURRENT_ICON)
-    return URIUtils::AddFileToFolder(IconAddonPath, "na.png");
-
-  return CInfoLoader::BusyInfo(info);
-}
-
-std::string CWeather::TranslateInfo(int info) const
-{
-  if (info == WEATHER_LABEL_CURRENT_COND) return m_info.currentConditions;
-  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_info.currentIcon;
-  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_info.currentTemperature;
-  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_info.currentFeelsLike;
-  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_info.currentUVIndex;
-  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_info.currentWind;
-  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_info.currentDewPoint;
-  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_info.currentHumidity;
-  else if (info == WEATHER_LABEL_LOCATION) return m_info.location;
-  return "";
-}
-
-/*!
- \brief Retrieve the city name for the specified location from the settings
- \param iLocation the location index (can be in the range [1..MAXLOCATION])
- \return the city name (without the accompanying region area code)
- */
-std::string CWeather::GetLocation(int iLocation)
-{
-  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
-  if (window)
-  {
-    std::string setting = StringUtils::Format("Location%i", iLocation);
-    return window->GetProperty(setting).asString();
-  }
-  return "";
-}
-
-void CWeather::Reset()
-{
-  m_info.Reset();
-}
-
-bool CWeather::IsFetched()
-{
-  // call GetInfo() to make sure that we actually start up
-  GetInfo(0);
-  return !m_info.lastUpdateTime.empty();
-}
-
-const day_forecast &CWeather::GetForecast(int day) const
-{
-  return m_info.forecast[day];
-}
-
-/*!
- \brief Saves the specified location index to the settings. Call Refresh()
-        afterwards to update weather info for the new location.
- \param iLocation the new location index (can be in the range [1..MAXLOCATION])
- */
-void CWeather::SetArea(int iLocation)
-{
-  CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
-  CServiceBroker::GetSettings().Save();
-}
-
-/*!
- \brief Retrieves the current location index from the settings
- \return the active location index (will be in the range [1..MAXLOCATION])
- */
-int CWeather::GetArea() const
-{
-  return CServiceBroker::GetSettings().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
-}
-
-CJob *CWeather::GetJob() const
-{
-  return new CWeatherJob(GetArea());
-}
-
-void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-{
-  m_info = static_cast<CWeatherJob*>(job)->GetInfo();
-  CInfoLoader::OnJobComplete(jobID, success, job);
-}
-
-void CWeather::OnSettingChanged(std::shared_ptr<const CSetting> setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_WEATHER_ADDON)
-  {
-    // clear "WeatherProviderLogo" property that some weather addons set
-    CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
-    if (window != nullptr)
-      window->SetProperty("WeatherProviderLogo", "");
-    Refresh();
-  }
-}
-
-void CWeather::OnSettingAction(std::shared_ptr<const CSetting> setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
-  {
-    AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
-    { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
-      CGUIDialogAddonSettings::ShowForAddon(addon);
-      Refresh();
-    }
-  }
-}
-

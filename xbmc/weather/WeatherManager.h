@@ -20,14 +20,10 @@
  *
  */
 
-#include "InfoLoader.h"
+#include "utils/InfoLoader.h"
 #include "settings/lib/ISettingCallback.h"
-#include "utils/GlobalsHandling.h"
 
-#include <map>
 #include <string>
-
-class TiXmlElement;
 
 #define WEATHER_LABEL_LOCATION   10
 #define WEATHER_IMAGE_CURRENT_ICON 21
@@ -39,7 +35,9 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-struct day_forecast
+static const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
+
+struct ForecastDay
 {
   std::string m_icon;
   std::string m_overview;
@@ -53,7 +51,7 @@ struct day_forecast
 class CWeatherInfo
 {
 public:
-  day_forecast forecast[NUM_DAYS];
+  ForecastDay forecast[NUM_DAYS];
 
   void Reset()
   {
@@ -91,65 +89,17 @@ public:
   std::string naIcon;
 };
 
-class CWeatherJob : public CJob
+class CWeatherManager
+: public CInfoLoader, public ISettingCallback
 {
 public:
-  explicit CWeatherJob(int location);
-
-  bool DoWork() override;
-
-  const CWeatherInfo &GetInfo() const;
-private:
-  void LocalizeOverview(std::string &str);
-  void LocalizeOverviewToken(std::string &str);
-  void LoadLocalizedToken();
-  static int ConvertSpeed(int speed);
-
-  void SetFromProperties();
-
-  /*! \brief Formats a celsius temperature into a string based on the users locale
-   \param text the string to format
-   \param temp the temperature (in degrees celsius).
-   */
-  static void FormatTemperature(std::string &text, double temp);
-
-  struct ci_less : std::binary_function<std::string, std::string, bool>
-  {
-    // case-independent (ci) compare_less binary function
-    struct nocase_compare : public std::binary_function<unsigned char,unsigned char,bool>
-    {
-      bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-          return tolower (c1) < tolower (c2);
-      }
-    };
-    bool operator() (const std::string & s1, const std::string & s2) const {
-      return std::lexicographical_compare
-        (s1.begin (), s1.end (),
-        s2.begin (), s2.end (),
-        nocase_compare ());
-    }
-  };
-
-  std::map<std::string, int, ci_less> m_localizedTokens;
-  typedef std::map<std::string, int, ci_less>::const_iterator ilocalizedTokens;
-
-  CWeatherInfo m_info;
-  int m_location;
-
-  static bool m_imagesOkay;
-};
-
-class CWeather : public CInfoLoader,
-                 public ISettingCallback
-{
-public:
-  CWeather(void);
-  ~CWeather(void) override;
+  CWeatherManager(void);
+  ~CWeatherManager(void) override;
   static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
 
   std::string GetLocation(int iLocation);
   const std::string &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
-  const day_forecast &GetForecast(int day) const;
+  const ForecastDay &GetForecast(int day) const;
   bool IsFetched();
   void Reset();
 
@@ -168,6 +118,3 @@ private:
 
   CWeatherInfo m_info;
 };
-
-XBMC_GLOBAL_REF(CWeather, g_weatherManager);
-#define g_weatherManager XBMC_GLOBAL_USE(CWeather)

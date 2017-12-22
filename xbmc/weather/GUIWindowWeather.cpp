@@ -25,10 +25,11 @@
 #include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/Weather.h"
+#include "weather/WeatherManager.h"
 
 using namespace ADDON;
 
@@ -74,7 +75,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNREFRESH)
       {
-        g_weatherManager.Refresh(); // Refresh clicked so do a complete update
+        CServiceBroker::GetWeatherManager().Refresh(); // Refresh clicked so do a complete update
       }
       else if (iControl == CONTROL_SELECTLOCATION)
       {
@@ -88,7 +89,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
   case GUI_MSG_NOTIFY_ALL:
     if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
     {
-      g_weatherManager.Reset();
+      CServiceBroker::GetWeatherManager().Reset();
       return true;
     }
     else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
@@ -111,7 +112,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
         // Clamp location between 1 and m_maxLocation 
-        int v = (g_weatherManager.GetArea() + message.GetParam1() - 1) % m_maxLocation + 1;
+        int v = (CServiceBroker::GetWeatherManager().GetArea() + message.GetParam1() - 1) % m_maxLocation + 1;
         if (v < 1) v += m_maxLocation;
         SetLocation(v);
         return true;
@@ -141,19 +142,19 @@ void CGUIWindowWeather::UpdateLocations()
 
   std::vector< std::pair<std::string, int> > labels;
 
-  unsigned int iCurWeather = g_weatherManager.GetArea();
+  unsigned int iCurWeather = CServiceBroker::GetWeatherManager().GetArea();
 
   if (iCurWeather > m_maxLocation)
   {  
-    g_weatherManager.SetArea(m_maxLocation);
+    CServiceBroker::GetWeatherManager().SetArea(m_maxLocation);
     iCurWeather = m_maxLocation;
     ClearProperties();
-    g_weatherManager.Refresh();
+    CServiceBroker::GetWeatherManager().Refresh();
   }
 
   for (unsigned int i = 1; i <= m_maxLocation; i++)
   {
-    std::string strLabel = g_weatherManager.GetLocation(i);
+    std::string strLabel = CServiceBroker::GetWeatherManager().GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
     {
       size_t iPos = strLabel.rfind(", ");
@@ -183,17 +184,17 @@ void CGUIWindowWeather::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_BTNREFRESH, 184);   //Refresh
 
-  SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, g_weatherManager.GetLocation(g_weatherManager.GetArea()));
-  SET_CONTROL_LABEL(CONTROL_LABELUPDATED, g_weatherManager.GetLastUpdateTime());
+  SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, CServiceBroker::GetWeatherManager().GetLocation(CServiceBroker::GetWeatherManager().GetArea()));
+  SET_CONTROL_LABEL(CONTROL_LABELUPDATED, CServiceBroker::GetWeatherManager().GetLastUpdateTime());
 
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_TEMP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP) + g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_FEEL, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL) + g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_UVID, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP) + g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
-  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_COND));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_TEMP, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP) + g_langInfo.GetTemperatureUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_FEEL, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_FEEL) + g_langInfo.GetTemperatureUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_UVID, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_UVID));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_WIND));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_DEWP) + g_langInfo.GetTemperatureUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
 
   //static labels
   SET_CONTROL_LABEL(CONTROL_STATICTEMP, 401);  //Temperature
@@ -205,11 +206,11 @@ void CGUIWindowWeather::UpdateButtons()
 
   for (int i = 0; i < NUM_DAYS; i++)
   {
-    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.GetForecast(i).m_day);
-    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.GetForecast(i).m_high + g_langInfo.GetTemperatureUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.GetForecast(i).m_low + g_langInfo.GetTemperatureUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.GetForecast(i).m_overview);
-    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i*10), g_weatherManager.GetForecast(i).m_icon);
+    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), CServiceBroker::GetWeatherManager().GetForecast(i).m_day);
+    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), CServiceBroker::GetWeatherManager().GetForecast(i).m_high + g_langInfo.GetTemperatureUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), CServiceBroker::GetWeatherManager().GetForecast(i).m_low + g_langInfo.GetTemperatureUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), CServiceBroker::GetWeatherManager().GetForecast(i).m_overview);
+    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i*10), CServiceBroker::GetWeatherManager().GetForecast(i).m_icon);
   }
 }
 
@@ -230,36 +231,36 @@ void CGUIWindowWeather::SetLocation(int loc)
   if (loc < 1 || loc > (int)m_maxLocation)
     return;
   // Avoid a settings write if old location == new location
-  if (g_weatherManager.GetArea() != loc)
+  if (CServiceBroker::GetWeatherManager().GetArea() != loc)
   {
     ClearProperties();
-    g_weatherManager.SetArea(loc);
-    std::string strLabel = g_weatherManager.GetLocation(loc);
+    CServiceBroker::GetWeatherManager().SetArea(loc);
+    std::string strLabel = CServiceBroker::GetWeatherManager().GetLocation(loc);
     size_t iPos = strLabel.rfind(", ");
     if (iPos != std::string::npos)
       strLabel = strLabel.substr(0, iPos);
     SET_CONTROL_LABEL(CONTROL_SELECTLOCATION, strLabel);
   }
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 }
 
 void CGUIWindowWeather::SetProperties()
 {
   // Current weather
-  int iCurWeather = g_weatherManager.GetArea();
-  SetProperty("Location", g_weatherManager.GetLocation(iCurWeather));
+  int iCurWeather = CServiceBroker::GetWeatherManager().GetArea();
+  SetProperty("Location", CServiceBroker::GetWeatherManager().GetLocation(iCurWeather));
   SetProperty("LocationIndex", iCurWeather);
-  SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
-  SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
-  SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
-  SetProperty("Current.Temperature", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP));
-  SetProperty("Current.FeelsLike", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL));
-  SetProperty("Current.UVIndex", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
-  SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
-  SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
-  SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+  SetProperty("Updated", CServiceBroker::GetWeatherManager().GetLastUpdateTime());
+  SetProperty("Current.ConditionIcon", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SetProperty("Current.Condition", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_COND));
+  SetProperty("Current.Temperature", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP));
+  SetProperty("Current.FeelsLike", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_FEEL));
+  SetProperty("Current.UVIndex", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_UVID));
+  SetProperty("Current.Wind", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_WIND));
+  SetProperty("Current.DewPoint", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_DEWP));
+  SetProperty("Current.Humidity", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_HUMI));
   // we use the icons code number for fanart as it's the safest way
-  std::string fanartcode = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  std::string fanartcode = URIUtils::GetFileName(CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   URIUtils::RemoveExtension(fanartcode);
   SetProperty("Current.FanartCode", fanartcode);
 
@@ -268,12 +269,12 @@ void CGUIWindowWeather::SetProperties()
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day = StringUtils::Format("Day%i.", i);
-    SetProperty(day + "Title", g_weatherManager.GetForecast(i).m_day);
-    SetProperty(day + "HighTemp", g_weatherManager.GetForecast(i).m_high);
-    SetProperty(day + "LowTemp", g_weatherManager.GetForecast(i).m_low);
-    SetProperty(day + "Outlook", g_weatherManager.GetForecast(i).m_overview);
-    SetProperty(day + "OutlookIcon", g_weatherManager.GetForecast(i).m_icon);
-    fanartcode = URIUtils::GetFileName(g_weatherManager.GetForecast(i).m_icon);
+    SetProperty(day + "Title", CServiceBroker::GetWeatherManager().GetForecast(i).m_day);
+    SetProperty(day + "HighTemp", CServiceBroker::GetWeatherManager().GetForecast(i).m_high);
+    SetProperty(day + "LowTemp", CServiceBroker::GetWeatherManager().GetForecast(i).m_low);
+    SetProperty(day + "Outlook", CServiceBroker::GetWeatherManager().GetForecast(i).m_overview);
+    SetProperty(day + "OutlookIcon", CServiceBroker::GetWeatherManager().GetForecast(i).m_icon);
+    fanartcode = URIUtils::GetFileName(CServiceBroker::GetWeatherManager().GetForecast(i).m_icon);
     URIUtils::RemoveExtension(fanartcode);
     SetProperty(day + "FanartCode", fanartcode);
   }

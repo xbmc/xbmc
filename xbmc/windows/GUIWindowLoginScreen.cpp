@@ -53,9 +53,9 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/Weather.h"
 #include "utils/Variant.h"
 #include "view/ViewState.h"
+#include "weather/WeatherManager.h"
 
 using namespace KODI::MESSAGING;
 
@@ -317,7 +317,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     return;
   }
 
-  g_weatherManager.Refresh();
+  CServiceBroker::GetWeatherManager().Refresh();
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
