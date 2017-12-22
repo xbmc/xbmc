@@ -10906,7 +10906,11 @@ msgctxt "#19268"
 msgid "Hide \"No information available\" labels"
 msgstr ""
 
-#empty string with id 19269
+#. pvr settings "Preselect playing channel in lists" control label
+#: system/settings/settings.xml
+msgctxt "#19269"
+msgid "Preselect playing channel in lists"
+msgstr ""
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list in pvr recordings window.
 #: addons/skin.estuary/xml/Includes_MediaMenu.xml
@@ -18475,7 +18479,10 @@ msgctxt "#36213"
 msgid "Open the group manager, which allows modification of groups and their respective channels"
 msgstr ""
 
-#empty string with id 36214
+#: system/settings/settings.xml
+msgctxt "#36214"
+msgid "Preselect the playing channel in windows and dialogs containing channel lists. If enabled and there is a playing channel, the playing channel will be selected when opening a window or dialog containing a channel list. If disabled, the channel previously selected in a window or dialog will be selected when opening a window containing a channel list. "
+msgstr ""
 
 #. Description of setting with label #14110 "Long date format"
 #: system/settings/settings.xml
