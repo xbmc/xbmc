@@ -280,6 +280,7 @@ typedef enum GAME_ROTATION
 typedef struct game_controller
 {
   const char*  controller_id;
+  const char*  model;
   unsigned int digital_button_count;
   unsigned int analog_button_count;
   unsigned int analog_stick_count;

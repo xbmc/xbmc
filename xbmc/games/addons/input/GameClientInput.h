@@ -60,7 +60,7 @@ namespace GAME
 
   private:
     // Private input helpers
-    void UpdatePort(unsigned int port, const ControllerPtr& controller);
+    void UpdatePort(unsigned int port, const ControllerPtr& controller, const std::string &model);
     void OpenKeyboard();
     void CloseKeyboard();
     void OpenMouse();

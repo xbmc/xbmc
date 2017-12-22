@@ -93,6 +93,7 @@ bool CGameClientInput::OpenPort(unsigned int port)
   {
     //! @todo Choose controller
     ControllerPtr& controller = controllers[0];
+    std::string model = ""; //! @todo
 
     m_joysticks[port].reset(new CGameClientJoystick(m_gameClient, port, controller, m_struct.toAddon));
 
@@ -103,7 +104,7 @@ bool CGameClientInput::OpenPort(unsigned int port)
 
     CServiceBroker::GetGameServices().PortManager().OpenPort(m_joysticks[port].get(), m_hardware.get(), &m_gameClient, port, device);
 
-    UpdatePort(port, controller);
+    UpdatePort(port, controller, model);
 
     return true;
   }
@@ -121,7 +122,7 @@ void CGameClientInput::ClosePort(unsigned int port)
 
   m_joysticks.erase(port);
 
-  UpdatePort(port, CController::EmptyPtr);
+  UpdatePort(port, CController::EmptyPtr, "");
 }
 
 bool CGameClientInput::ReceiveInputEvent(const game_input_event& event)
@@ -141,7 +142,7 @@ bool CGameClientInput::ReceiveInputEvent(const game_input_event& event)
   return bHandled;
 }
 
-void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& controller)
+void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& controller, const std::string &model)
 {
   using namespace JOYSTICK;
 
@@ -156,6 +157,7 @@ void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& contro
       game_controller controllerStruct;
 
       controllerStruct.controller_id        = strId.c_str();
+      controllerStruct.model                = model.c_str();
       controllerStruct.digital_button_count = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
       controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
       controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
