@@ -153,7 +153,7 @@ Building for arm architecture:
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
-      --toolchain=arm-linux-androideabi-4.9
+      --toolchain=arm-linux-androideabi-4.9 --stl=libc++
 
 Building for aarch64 architecture:
 
@@ -162,7 +162,7 @@ Building for aarch64 architecture:
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
-      --toolchain=aarch64-linux-android-4.9
+      --toolchain=aarch64-linux-android-4.9 --stl=libc++
 
 Building for x86 architecture:
 
@@ -171,7 +171,7 @@ Building for x86 architecture:
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
       --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
-      --toolchain=x86-4.9 --arch=x86
+      --toolchain=x86-4.9 --arch=x86 --stl=libc++
 
 Make sure to pick a toolchain for your desired architecture. If an error about
 the used system is shown - please add proper --system parameter as mentioned

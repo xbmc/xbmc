@@ -41,6 +41,9 @@ else ifeq ($(findstring arm,$(CPU)),arm)
   CPU=armeabi-v7a
 endif
 
+# libc++
+STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
+
 #older ndk x86
 GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
 
@@ -144,6 +147,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
+	install -p $(STLLIB) ./xbmc/lib/$(CPU)/
 	install -p $(GDBPATH) ./xbmc/lib/$(CPU)/gdbserver
 	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/lib/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
