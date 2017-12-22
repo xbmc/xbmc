@@ -50,8 +50,8 @@ public:
 
   bool Hide() override;
   bool Show(bool raise = true) override;
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
+  void Register(IDispResource *resource) override;
+  void Unregister(IDispResource *resource) override;
 
   void MessagePush(XBMC_Event *newEvent);
 
