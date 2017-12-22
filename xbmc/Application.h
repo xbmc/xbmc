@@ -391,6 +391,7 @@ public:
   double GetStackPartEndTime(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset; }
   double GetStackPartStartTime(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTime(partNumber - 1) : 0; }
   double GetStackTotalTime() const { return GetStackPartEndTime(m_currentStack->Size() - 1); }
+  int GetStackPartNumberAtTime(double seconds);
 
 protected:
   bool OnSettingsSaving() const override;

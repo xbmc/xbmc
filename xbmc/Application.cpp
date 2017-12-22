@@ -3133,27 +3133,29 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     }
 
     m_itemCurrentFile.reset(new CFileItem(item));
-    m_currentStackPosition = 0;
 
-    if (seconds > 0)
-    {
-      // work out where to seek to
-      for (int i = 0; i < m_currentStack->Size(); i++)
-      {
-        if (seconds < GetStackPartEndTime(i))
-        {
-          CFileItem item(GetStackPartFileItem(i));
-          long start = GetStackPartStartTime(i);
-          item.m_lStartOffset = (long)(seconds - start) * 75;
-          m_currentStackPosition = i;
-          return PlayFile(item, "", true);
-        }
-      }
-    }
+    m_currentStackPosition = GetStackPartNumberAtTime(seconds);
+    CFileItem selectedStackPart(GetStackPartFileItem(m_currentStackPosition));
+    long start = GetStackPartStartTime(m_currentStackPosition);
+    selectedStackPart.m_lStartOffset = (long)(seconds - start) * 75;
 
-    return PlayFile(GetStackPartFileItem(0), "", true);
+    return PlayFile(selectedStackPart, "", true);
   }
   return PLAYBACK_FAIL;
+}
+
+int CApplication::GetStackPartNumberAtTime(double seconds)
+{
+  if (seconds > 0)
+  {
+    // work out where to seek to
+    for (int partNumber = 0; partNumber < m_currentStack->Size(); partNumber++)
+    {
+      if (seconds < GetStackPartEndTime(partNumber))
+        return partNumber;
+    }
+  }
+  return 0;
 }
 
 PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
@@ -4736,25 +4738,20 @@ void CApplication::SeekTime( double dTime )
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      for (int i = 0; i < m_currentStack->Size(); i++)
-      {
-        if (GetStackPartEndTime(i) > dTime)
-        {
-          long startOfNewFile = GetStackPartStartTime(i);
-          if (m_currentStackPosition == i)
-            m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
-          else
-          { // seeking to a new file
-            m_currentStackPosition = i;
-            CFileItem *item = new CFileItem(GetStackPartFileItem(i));
-            item->m_lStartOffset = static_cast<long>((dTime - startOfNewFile) * 75.0);
-            // don't just call "PlayFile" here, as we are quite likely called from the
-            // player thread, so we won't be able to delete ourselves.
-            CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
-          }
-          return;
-        }
+      int partNumberToPlay = GetStackPartNumberAtTime(dTime);
+      long startOfNewFile = GetStackPartStartTime(partNumberToPlay);
+      if (m_currentStackPosition == partNumberToPlay)
+        m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
+      else
+      { // seeking to a new file
+        m_currentStackPosition = partNumberToPlay;
+        CFileItem *item = new CFileItem(GetStackPartFileItem(partNumberToPlay));
+        item->m_lStartOffset = static_cast<long>((dTime - startOfNewFile) * 75.0);
+        // don't just call "PlayFile" here, as we are quite likely called from the
+        // player thread, so we won't be able to delete ourselves.
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
       }
+      return;
     }
     // convert to milliseconds and perform seek
     m_pPlayer->SeekTime( static_cast<int64_t>( dTime * 1000.0 ) );
