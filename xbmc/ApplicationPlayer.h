@@ -28,6 +28,7 @@
 #include "threads/SystemClock.h"
 #include "guilib/Resolution.h"
 #include "cores/IPlayer.h"
+#include "SeekHandler.h"
 
 typedef enum
 {
@@ -47,19 +48,6 @@ struct TextCacheStruct_t;
 
 class CApplicationPlayer
 {
-  std::shared_ptr<IPlayer> m_pPlayer;
-  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
-
-  CCriticalSection  m_player_lock;
-
-  // cache player state
-  XbmcThreads::EndTime m_audioStreamUpdate;
-  int m_iAudioStream;
-  XbmcThreads::EndTime m_videoStreamUpdate;
-  int m_iVideoStream;
-  XbmcThreads::EndTime m_subtitleStreamUpdate;
-  int m_iSubtitleStream;
-
 public:
   CApplicationPlayer();
 
@@ -176,6 +164,20 @@ public:
   CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings& settings);
 
-  protected:
-    std::shared_ptr<IPlayer> GetInternal() const;
+protected:
+  std::shared_ptr<IPlayer> GetInternal() const;
+
+private:
+  std::shared_ptr<IPlayer> m_pPlayer;
+  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
+
+  CCriticalSection  m_player_lock;
+
+  // cache player state
+  XbmcThreads::EndTime m_audioStreamUpdate;
+  int m_iAudioStream;
+  XbmcThreads::EndTime m_videoStreamUpdate;
+  int m_iVideoStream;
+  XbmcThreads::EndTime m_subtitleStreamUpdate;
+  int m_iSubtitleStream;
 };
