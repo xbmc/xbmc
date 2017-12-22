@@ -959,3 +959,8 @@ void CApplicationPlayer::SetVideoSettings(CVideoSettings& settings)
     return player->SetVideoSettings(settings);
   }
 }
+
+CSeekHandler& CApplicationPlayer::GetSeekHandler()
+{
+  return m_seekHandler;
+}

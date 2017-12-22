@@ -1520,7 +1520,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
     // special casing for numeric seek
-    else if (CSeekHandler::GetInstance().HasTimeCode())
+    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   if (iWin == WINDOW_VISUALISATION)
@@ -1529,7 +1529,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_RADIO;
     // special casing for numeric seek
-    else if (CSeekHandler::GetInstance().HasTimeCode())
+    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   // Return the window id

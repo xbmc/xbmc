@@ -812,7 +812,7 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&CSeekHandler::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&g_application.m_pPlayer->GetSeekHandler());
   GetSettingsManager()->UnregisterCallback(&CStereoscopicsManager::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_application);
   GetSettingsManager()->UnregisterCallback(&g_audioManager);
@@ -893,7 +893,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKDELAY);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
-  GetSettingsManager()->RegisterCallback(&CSeekHandler::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&g_application.m_pPlayer->GetSeekHandler(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
@@ -1058,7 +1058,7 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&CSeekHandler::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&g_application.m_pPlayer->GetSeekHandler());
   GetSettingsManager()->UnregisterCallback(&CStereoscopicsManager::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_application);
   GetSettingsManager()->UnregisterCallback(&g_audioManager);

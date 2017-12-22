@@ -38,7 +38,8 @@ enum SeekType
 class CSeekHandler : public ISettingCallback, public IActionListener
 {
 public:
-  static CSeekHandler& GetInstance();
+  CSeekHandler();
+  ~CSeekHandler() override;
 
   static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
@@ -58,10 +59,8 @@ public:
   int GetTimeCodeSeconds() const;
 
 protected:
-  CSeekHandler();
   CSeekHandler(const CSeekHandler&) = delete;
   CSeekHandler& operator=(CSeekHandler const&) = delete;
-  ~CSeekHandler() override;
   bool SeekTimeCode(const CAction &action);
   void ChangeTimeCode(int remote);
 

@@ -7305,7 +7305,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case PLAYER_SEEKING:
-      bReturn = CSeekHandler::GetInstance().InProgress();
+      bReturn = g_application.m_pPlayer->GetSeekHandler().InProgress();
     break;
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
@@ -8046,7 +8046,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == PLAYER_SEEKSTEPSIZE)
   {
-    int seekSize = CSeekHandler::GetInstance().GetSeekSize();
+    int seekSize = g_application.m_pPlayer->GetSeekHandler().GetSeekSize();
     std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), (TIME_FORMAT)info.GetData1());
     if (seekSize < 0)
       return "-" + strSeekSize;
@@ -8055,9 +8055,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == PLAYER_SEEKNUMERIC)
   {
-    if (!CSeekHandler::GetInstance().HasTimeCode())
+    if (!g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
       return "";
-    int seekTimeCode = CSeekHandler::GetInstance().GetTimeCodeSeconds();
+    int seekTimeCode = g_application.m_pPlayer->GetSeekHandler().GetTimeCodeSeconds();
     TIME_FORMAT format = (TIME_FORMAT)info.GetData1();
     if (format == TIME_FORMAT_GUESS && seekTimeCode >= 3600)
       format = TIME_FORMAT_HH_MM_SS;
@@ -8982,7 +8982,7 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 {
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  return StringUtils::SecondsToTimeString(g_application.GetTime() + CSeekHandler::GetInstance().GetSeekSize(), format);
+  return StringUtils::SecondsToTimeString(g_application.GetTime() + g_application.m_pPlayer->GetSeekHandler().GetSeekSize(), format);
 }
 
 int CGUIInfoManager::GetTotalPlayTime() const
@@ -9004,7 +9004,7 @@ float CGUIInfoManager::GetSeekPercent() const
 
   float percentPlayTime = static_cast<float>(GetPlayTime()) / GetTotalPlayTime() * 0.1f;
   float percentPerSecond = 100.0f / static_cast<float>(GetTotalPlayTime());
-  float percent = percentPlayTime + percentPerSecond * CSeekHandler::GetInstance().GetSeekSize();
+  float percent = percentPlayTime + percentPerSecond * g_application.m_pPlayer->GetSeekHandler().GetSeekSize();
 
   if (percent > 100.0f)
     percent = 100.0f;

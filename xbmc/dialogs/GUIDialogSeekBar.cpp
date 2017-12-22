@@ -67,7 +67,7 @@ void CGUIDialogSeekBar::FrameMove()
     return;
   }
 
-  unsigned int percent((!CSeekHandler::GetInstance().InProgress() && g_infoManager.GetTotalPlayTime())
+  unsigned int percent((!g_application.m_pPlayer->GetSeekHandler().InProgress() && g_infoManager.GetTotalPlayTime())
     ? lrintf(g_application.GetPercentage())
     : (unsigned int)g_infoManager.GetSeekPercent());
 

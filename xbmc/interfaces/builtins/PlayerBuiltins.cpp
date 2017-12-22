@@ -505,7 +505,7 @@ static int PlayWith(const std::vector<std::string>& params)
 static int Seek(const std::vector<std::string>& params)
 {
   if (g_application.m_pPlayer->IsPlaying())
-    CSeekHandler::GetInstance().SeekSeconds(atoi(params[0].c_str()));
+    g_application.m_pPlayer->GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
 
   return 0;
 }
