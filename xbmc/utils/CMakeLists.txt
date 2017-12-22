@@ -52,7 +52,6 @@ set(SOURCES ActorProtocol.cpp
             ScraperParser.cpp
             ScraperUrl.cpp
             Screenshot.cpp
-            SeekHandler.cpp
             SortUtils.cpp
             Speed.cpp
             Stopwatch.cpp
@@ -140,7 +139,6 @@ set(HEADERS ActorProtocol.h
             ScraperParser.h
             ScraperUrl.h
             Screenshot.h
-            SeekHandler.h
             SortUtils.h
             Speed.h
             Stopwatch.h

@@ -95,7 +95,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 #include "ServiceBroker.h"
 
 #include "input/KeyboardLayoutManager.h"

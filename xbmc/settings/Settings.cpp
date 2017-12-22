@@ -78,7 +78,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
 #include "weather/WeatherManager.h"

@@ -23,7 +23,7 @@
 #include "GUIDialogSeekBar.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 
 #define POPUP_SEEK_PROGRESS     401
 #define POPUP_SEEK_LABEL        402

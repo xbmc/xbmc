@@ -28,6 +28,7 @@
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
+#include "SeekHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "addons/Skin.h"
 #include "GUITexture.h"
@@ -35,7 +36,6 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/SeekHandler.h"
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"

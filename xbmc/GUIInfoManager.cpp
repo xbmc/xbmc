@@ -53,6 +53,7 @@
 #include "profiles/ProfilesManager.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
+#include "SeekHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/GameSettings.h"
@@ -65,7 +66,6 @@
 #include "utils/CPUInfo.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
 #include <algorithm>

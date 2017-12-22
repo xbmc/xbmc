@@ -41,7 +41,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
