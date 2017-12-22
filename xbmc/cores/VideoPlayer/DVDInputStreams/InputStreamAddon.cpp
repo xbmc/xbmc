@@ -271,7 +271,7 @@ bool CInputStreamAddon::GetTimes(Times &times)
 
   INPUTSTREAM_TIMES i_times;
 
-  if (m_struct.toAddon.get_times(&m_struct, i_times))
+  if (m_struct.toAddon.get_times(&m_struct, &i_times))
   {
     times.ptsBegin = i_times.ptsBegin;
     times.ptsEnd = i_times.ptsEnd;

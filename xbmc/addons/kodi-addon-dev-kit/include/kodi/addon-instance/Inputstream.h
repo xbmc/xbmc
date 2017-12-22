@@ -133,7 +133,7 @@ extern "C" {
     };
     uint32_t m_flags;
 
-    char m_name[256] = {0};              /*!< @brief (optinal) name of the stream, \0 for default handling */
+    char m_name[256];                    /*!< @brief (optinal) name of the stream, \0 for default handling */
     char m_codecName[32];                /*!< @brief (required) name of codec according to ffmpeg */
     char m_codecInternalName[32];        /*!< @brief (optional) internal name of codec (selectionstream info) */
     STREAMCODEC_PROFILE m_codecProfile;  /*!< @brief (optional) the profile of the codec */
@@ -214,7 +214,7 @@ extern "C" {
     int (__cdecl* get_time)(const AddonInstance_InputStream* instance);
 
     // ITime
-    bool(__cdecl* get_times)(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES &times);
+    bool(__cdecl* get_times)(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES *times);
 
     // IPosTime
     bool (__cdecl* pos_time)(const AddonInstance_InputStream* instance, int ms);
@@ -604,9 +604,9 @@ namespace addon
     }
 
     // ITime
-    inline static bool ADDON_GetTimes(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES &times)
+    inline static bool ADDON_GetTimes(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES *times)
     {
-      return instance->toAddon.addonInstance->GetTimes(times);
+      return instance->toAddon.addonInstance->GetTimes(*times);
     }
 
     // IPosTime
