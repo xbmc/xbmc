@@ -78,6 +78,8 @@ bool CWinSystemGbmGLESContext::DestroyWindowSystem()
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
 
+  m_pGLContext.Destroy();
+
   return CWinSystemGbm::DestroyWindowSystem();
 }
 
