@@ -102,7 +102,9 @@ bool CDRMLegacy::WaitingForFlip()
     DRM_EVENT_CONTEXT_VERSION,
     nullptr,
     PageFlipHandler,
+  #if DRM_EVENT_CONTEXT_VERSION > 2
     nullptr,
+  #endif
   };
 
   while(flip_happening)
