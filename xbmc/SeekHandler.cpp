@@ -158,9 +158,9 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
 
     double seekSize = (amount * amount * speed) * totalTime / 100;
     if (forward)
-      m_seekSize += seekSize;
+      SetSeekSize(m_seekSize + seekSize);
     else
-      m_seekSize -= seekSize;
+      SetSeekSize(m_seekSize - seekSize);
   }
   else
   {
@@ -168,7 +168,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     int seekSeconds = GetSeekStepSize(type, m_seekStep);
     if (seekSeconds != 0)
     {
-      m_seekSize = seekSeconds;
+      SetSeekSize(seekSeconds);
     }
     else
     {
@@ -187,7 +187,7 @@ void CSeekHandler::SeekSeconds(int seconds)
     return;
 
   CSingleLock lock(m_critSection);
-  m_seekSize = seconds;
+  SetSeekSize(seconds);
 
   // perform relative seek
   g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
@@ -198,6 +198,17 @@ void CSeekHandler::SeekSeconds(int seconds)
 int CSeekHandler::GetSeekSize() const
 {
   return MathUtils::round_int(m_seekSize);
+}
+
+void CSeekHandler::SetSeekSize(double seekSize)
+{
+  int64_t playTime = g_application.m_pPlayer->GetTime();
+  double minSeekSize = static_cast<int>((g_application.m_pPlayer->GetMinTime() - playTime) / 1000);
+  double maxSeekSize = static_cast<int>((g_application.m_pPlayer->GetMaxTime() - playTime) / 1000);
+
+  m_seekSize = seekSize > 0
+    ? std::min(seekSize, maxSeekSize)
+    : std::max(seekSize, minSeekSize);
 }
 
 bool CSeekHandler::InProgress() const
