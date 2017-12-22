@@ -1843,22 +1843,23 @@ namespace PVR
     }
   }
 
-  void CPVRChannelSwitchingInputHandler::OnInputDone()
+  void CPVRChannelSwitchingInputHandler::AppendChannelNumberCharacter(char cCharacter)
   {
-    CPVRChannelNumber channelNumber;
-    bool bSwitchToPreviousChannel;
-
+    // special case. if only a single zero was typed in, switch to previously played channel.
+    if (GetCurrentDigitCount() == 0 && cCharacter == '0')
     {
-      CSingleLock lock(m_mutex);
-      channelNumber = GetChannelNumber();
-      // special case. if only a single zero was typed in, switch to previously played channel.
-      bSwitchToPreviousChannel = (channelNumber.GetChannelNumber() == 0 && GetCurrentDigitCount() == 1);
+      SwitchToPreviousChannel();
+      return;
     }
 
+    CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(cCharacter);
+  }
+
+  void CPVRChannelSwitchingInputHandler::OnInputDone()
+  {
+    CPVRChannelNumber channelNumber = GetChannelNumber();
     if (channelNumber.GetChannelNumber())
       SwitchToChannel(channelNumber);
-    else if (bSwitchToPreviousChannel)
-      SwitchToPreviousChannel();
   }
 
   void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber)

@@ -47,6 +47,7 @@ namespace PVR
   {
   public:
     // CPVRChannelNumberInputHandler implementation
+    void AppendChannelNumberCharacter(char cCharacter) override;
     void OnInputDone() override;
 
   private:

@@ -57,7 +57,7 @@ public:
    * @brief Appends a channel number character.
    * @param cCharacter The character to append. value must be CPVRChannelNumber::SEPARATOR ('.') or any char in the range from '0' to '9'.
    */
-  void AppendChannelNumberCharacter(char cCharacter);
+  virtual void AppendChannelNumberCharacter(char cCharacter);
 
   /*!
    * @brief Get the currently entered channel number as a formatted string. Format is n digits with leading zeros, where n is the number of digits specified when calling the ctor.
