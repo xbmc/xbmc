@@ -30,34 +30,34 @@
 
 struct plane
 {
-  drmModePlane *plane;
-  drmModeObjectProperties *props;
-  drmModePropertyRes **props_info;
+  drmModePlane *plane = nullptr;
+  drmModeObjectProperties *props = nullptr;
+  drmModePropertyRes **props_info = nullptr;
   uint32_t format;
 };
 
 struct connector
 {
-  drmModeConnector *connector;
-  drmModeObjectProperties *props;
-  drmModePropertyRes **props_info;
+  drmModeConnector *connector = nullptr;
+  drmModeObjectProperties *props = nullptr;
+  drmModePropertyRes **props_info = nullptr;
 };
 
 struct encoder
 {
-  drmModeEncoder *encoder;
+  drmModeEncoder *encoder = nullptr;
 };
 
 struct crtc
 {
-  drmModeCrtc *crtc;
-  drmModeObjectProperties *props;
-  drmModePropertyRes **props_info;
+  drmModeCrtc *crtc = nullptr;
+  drmModeObjectProperties *props = nullptr;
+  drmModePropertyRes **props_info = nullptr;
 };
 
 struct drm_fb
 {
-  struct gbm_bo *bo;
+  struct gbm_bo *bo = nullptr;
   uint32_t fb_id;
 };
 
