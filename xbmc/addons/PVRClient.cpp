@@ -1016,7 +1016,7 @@ PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
 PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int &iRead)
 {
   iRead = -1;
-  return DoAddonCall(__FUNCTION__, [this, &lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
     iRead = addon->ReadLiveStream(static_cast<unsigned char *>(lpBuf), static_cast<int>(uiBufSize));
     return (iRead == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1025,7 +1025,7 @@ PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int &iRead)
 PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int &iRead)
 {
   iRead = -1;
-  return DoAddonCall(__FUNCTION__, [this, &lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
     iRead = addon->ReadRecordedStream(static_cast<unsigned char *>(lpBuf), static_cast<int>(uiBufSize));
     return (iRead == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1034,7 +1034,7 @@ PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int &iR
 PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t &iPosition)
 {
   iPosition = -1;
-  return DoAddonCall(__FUNCTION__, [this, iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
     iPosition = addon->SeekLiveStream(iFilePosition, iWhence);
     return (iPosition == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1043,7 +1043,7 @@ PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t
 PVR_ERROR CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t &iPosition)
 {
   iPosition = -1;
-  return DoAddonCall(__FUNCTION__, [this, iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
     iPosition = addon->SeekRecordedStream(iFilePosition, iWhence);
     return (iPosition == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1059,7 +1059,7 @@ PVR_ERROR CPVRClient::SeekTime(double time, bool backwards, double *startpts)
 PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t &iLength)
 {
   iLength = -1;
-  return DoAddonCall(__FUNCTION__, [this, &iLength](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [&iLength](const AddonInstance* addon) {
     iLength = addon->LengthLiveStream();
     return (iLength == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1068,7 +1068,7 @@ PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t &iLength)
 PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t &iLength)
 {
   iLength = -1;
-  return DoAddonCall(__FUNCTION__, [this, &iLength](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [&iLength](const AddonInstance* addon) {
     iLength = addon->LengthRecordedStream();
     return (iLength == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   });
@@ -1283,7 +1283,7 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const CPVRRecordingPtr &recording)
 
 PVR_ERROR CPVRClient::CloseLiveStream()
 {
-  return DoAddonCall(__FUNCTION__, [this](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [](const AddonInstance* addon) {
     addon->CloseLiveStream();
     return PVR_ERROR_NO_ERROR;
   });
@@ -1291,7 +1291,7 @@ PVR_ERROR CPVRClient::CloseLiveStream()
 
 PVR_ERROR CPVRClient::CloseRecordedStream()
 {
-  return DoAddonCall(__FUNCTION__, [this](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [](const AddonInstance* addon) {
     addon->CloseRecordedStream();
     return PVR_ERROR_NO_ERROR;
   });
