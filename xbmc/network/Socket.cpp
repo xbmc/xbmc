@@ -22,8 +22,6 @@
 
 #include "system.h"
 
-#ifdef HAS_EVENT_SERVER
-
 #include "Socket.h"
 #include "utils/log.h"
 #include <vector>
@@ -309,5 +307,3 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
   }
   return NULL;
 }
-
-#endif // HAS_EVENT_SERVER

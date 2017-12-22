@@ -14,3 +14,6 @@ else()
     message(WARNING "unknown CPU: ${CPU}")
   endif()
 endif()
+
+# Additional SYSTEM_DEFINES
+list(APPEND SYSTEM_DEFINES -DHAS_LINUX_NETWORK)

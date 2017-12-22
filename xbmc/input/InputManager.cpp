@@ -42,9 +42,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
 
-#ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
-#endif
 
 #ifdef HAS_LIRC
 #include "platform/linux/input/LIRC.h"
@@ -66,9 +64,7 @@
 
 #include <algorithm>
 
-#ifdef HAS_EVENT_SERVER
 using EVENTSERVER::CEventServer;
-#endif
 
 using namespace KODI;
 using namespace MESSAGING;
@@ -217,7 +213,6 @@ bool CInputManager::ProcessMouse(int windowId)
 
 bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 {
-#ifdef HAS_EVENT_SERVER
   CEventServer* es = CEventServer::GetInstance();
   if (!es || !es->Running() || es->GetNumberOfClients() == 0)
     return false;
@@ -327,7 +322,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       return g_application.OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
     }
   }
-#endif
+
   return false;
 }
 

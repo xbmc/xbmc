@@ -41,7 +41,7 @@ endif()
 if(NFS_FOUND)
   set(NFS_LIBRARIES ${NFS_LIBRARY})
   set(NFS_INCLUDE_DIRS ${NFS_INCLUDE_DIR})
-  set(NFS_DEFINITIONS -DHAVE_LIBNFS=1)
+  set(NFS_DEFINITIONS -DHAS_FILESYSTEM_NFS=1)
 
   if(NOT TARGET NFS::NFS)
     add_library(NFS::NFS UNKNOWN IMPORTED)
@@ -51,7 +51,7 @@ if(NFS_FOUND)
     endif()
     set_target_properties(NFS::NFS PROPERTIES
                                    INTERFACE_INCLUDE_DIRECTORIES "${NFS_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS HAVE_LIBNFS=1)
+                                   INTERFACE_COMPILE_DEFINITIONS HAS_FILESYSTEM_NFS=1)
   endif()
 endif()
 

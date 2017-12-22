@@ -36,9 +36,7 @@
 #include "SMBFile.h"
 #endif
 #endif
-#ifdef HAS_FILESYSTEM_CDDA
 #include "CDDAFile.h"
-#endif
 #include "ISOFile.h"
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
@@ -130,7 +128,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     return new CWin32File();
   }
 #endif // TARGET_WINDOWS 
-#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+#if defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
 #endif
   else if (url.IsProtocol("iso9660")) return new CISOFile();

@@ -23,12 +23,9 @@
 #include <set>
 #include <string>
 
-#include "system.h" // for HAS_EVENT_SERVER
 #include "Action.h"
 
-#ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"
-#endif
 
 class CKey;
 class TiXmlNode;
@@ -41,9 +38,7 @@ class IWindowKeymap;
 /// Warning: _not_ threadsafe!
 class CButtonTranslator
 {
-#ifdef HAS_EVENT_SERVER
   friend class EVENTCLIENT::CEventButtonState;
-#endif
 
 public:
   CButtonTranslator();

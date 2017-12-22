@@ -21,9 +21,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_AIRTUNES
 #include "AirTunesServer.h"
 
 #include <map>
@@ -732,6 +729,3 @@ void CAirTunesServer::Deinitialize()
     m_pRaop = nullptr;
   }
 }
-
-#endif
-

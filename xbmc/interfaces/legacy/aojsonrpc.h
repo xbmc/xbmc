@@ -24,7 +24,6 @@
 
 class CVariant;
 
-#ifdef HAS_JSONRPC
 class CAddOnTransport : public JSONRPC::ITransportLayer
 {
 public:
@@ -40,4 +39,3 @@ public:
     bool SetAnnouncementFlags(int flags) override { return true; }
   };
 };
-#endif

@@ -21,8 +21,6 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 
-#ifdef HAS_EVENT_SERVER
-
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "threads/SingleLock.h"
@@ -841,5 +839,3 @@ bool CEventClient::Alive() const
     return false;
   return true;
 }
-
-#endif // HAS_EVENT_SERVER

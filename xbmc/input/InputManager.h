@@ -351,9 +351,7 @@ private:
   CRemoteControl m_RemoteControl;
 #endif
 
-#if defined(HAS_EVENT_SERVER)
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
-#endif
 
   std::vector<CAction> m_queuedActions;
   CCriticalSection     m_actionMutex;

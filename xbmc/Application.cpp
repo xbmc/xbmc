@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/EventServer.h"
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
@@ -118,15 +119,10 @@
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
 #endif
-#ifdef HAS_EVENT_SERVER
-#include "network/EventServer.h"
-#endif
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
 #endif
-#ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
-#endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralImon.h"
@@ -225,12 +221,8 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
-#ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
-#endif
-#ifdef HAS_JSONRPC
 using namespace JSONRPC;
-#endif
 using namespace ANNOUNCEMENT;
 using namespace PVR;
 using namespace PERIPHERALS;
@@ -1157,9 +1149,7 @@ bool CApplication::Initialize()
     }
     else
     {
-#ifdef HAS_JSONRPC
       CJSONRPC::Initialize();
-#endif
       CServiceBroker::GetServiceAddons().StartBeforeLogin();
 
       // activate the configured start window
@@ -1185,9 +1175,7 @@ bool CApplication::Initialize()
   }
   else //No GUI Created
   {
-#ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
-#endif
     CServiceBroker::GetServiceAddons().StartBeforeLogin();
   }
 
@@ -2781,9 +2769,7 @@ bool CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo
-#ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
-#endif
     DllLoaderContainer::Clear();
     CServiceBroker::GetPlaylistPlayer().Clear();
 
