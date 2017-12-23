@@ -414,7 +414,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       goto failed;
     }
 
-    IAudioClient *pClient;
+    IAudioClient *pClient = nullptr;
     hr = pDevice->Activate(&pClient);
     if (SUCCEEDED(hr))
     {
@@ -430,6 +430,13 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
       hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
+      if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
+      {
+        CLog::Log(LOGNOTICE, __FUNCTION__": Exclusive mode is not allowed on device \"%s\", check device settings.", details.strDescription.c_str());
+        SAFE_RELEASE(pClient);
+        SAFE_RELEASE(pDevice);
+        continue; 
+      }
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
