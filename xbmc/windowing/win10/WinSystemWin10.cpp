@@ -57,9 +57,13 @@ CWinSystemWin10::CWinSystemWin10()
   , m_bMinimized(false)
 {
   m_winEvents.reset(new CWinEventsWin10());
+
   AE::CAESinkFactory::ClearSinks();
   CAESinkXAudio::Register();
-  CAESinkWASAPI::Register();
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Desktop)
+  {
+    CAESinkWASAPI::Register();
+  }
 }
 
 CWinSystemWin10::~CWinSystemWin10()
