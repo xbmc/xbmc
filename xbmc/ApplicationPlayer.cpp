@@ -36,7 +36,7 @@ CApplicationPlayer::CApplicationPlayer()
 
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 {
-  CSingleLock lock(m_player_lock);
+  CSingleLock lock(m_playerLock);
   return m_pPlayer;
 }
 
@@ -47,7 +47,7 @@ void CApplicationPlayer::ClosePlayer()
   {
     CloseFile();
     // we need to do this directly on the member
-    CSingleLock lock(m_player_lock);
+    CSingleLock lock(m_playerLock);
     m_pPlayer.reset();
   }
 }
@@ -90,7 +90,7 @@ void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
 
 void CApplicationPlayer::CreatePlayer(const std::string &player, IPlayerCallback& callback)
 {
-  CSingleLock lock(m_player_lock);
+  CSingleLock lock(m_playerLock);
   if (!m_pPlayer)
   {
     CDataCacheCore::GetInstance().Reset();
@@ -958,4 +958,9 @@ void CApplicationPlayer::SetVideoSettings(CVideoSettings& settings)
   {
     return player->SetVideoSettings(settings);
   }
+}
+
+CSeekHandler& CApplicationPlayer::GetSeekHandler()
+{
+  return m_seekHandler;
 }

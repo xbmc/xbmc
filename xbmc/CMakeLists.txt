@@ -23,6 +23,7 @@ set(SOURCES Application.cpp
             PlayListPlayer.cpp
             PartyModeManager.cpp
             SectionLoader.cpp
+            SeekHandler.cpp
             ServiceBroker.cpp
             ServiceManager.cpp
             SystemGlobals.cpp
@@ -66,6 +67,7 @@ set(HEADERS AppParamParser.h
             PasswordManager.h
             PlayListPlayer.h
             SectionLoader.h
+            SeekHandler.h
             ServiceBroker.h
             ServiceManager.h
             SortFileItem.h

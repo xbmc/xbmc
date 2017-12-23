@@ -41,7 +41,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
@@ -392,7 +392,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
           return InvalidParams;
       }
       else if (value.isMember("seconds") && value.size() == 1)
-        CSeekHandler::GetInstance().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
+        g_application.m_pPlayer->GetSeekHandler().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
       else if (value.isObject())
         g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
       else

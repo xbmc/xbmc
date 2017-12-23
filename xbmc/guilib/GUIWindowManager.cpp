@@ -28,6 +28,7 @@
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
+#include "SeekHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "addons/Skin.h"
 #include "GUITexture.h"
@@ -35,7 +36,6 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/SeekHandler.h"
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"
@@ -1520,7 +1520,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
     // special casing for numeric seek
-    else if (CSeekHandler::GetInstance().HasTimeCode())
+    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   if (iWin == WINDOW_VISUALISATION)
@@ -1529,7 +1529,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_RADIO;
     // special casing for numeric seek
-    else if (CSeekHandler::GetInstance().HasTimeCode())
+    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   // Return the window id

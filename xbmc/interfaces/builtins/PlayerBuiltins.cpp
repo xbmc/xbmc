@@ -28,6 +28,7 @@
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
+#include "SeekHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -35,7 +36,6 @@
 #include "system.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
-#include "utils/SeekHandler.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "view/GUIViewState.h"
@@ -505,7 +505,7 @@ static int PlayWith(const std::vector<std::string>& params)
 static int Seek(const std::vector<std::string>& params)
 {
   if (g_application.m_pPlayer->IsPlaying())
-    CSeekHandler::GetInstance().SeekSeconds(atoi(params[0].c_str()));
+    g_application.m_pPlayer->GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
 
   return 0;
 }

@@ -96,7 +96,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
-#include "utils/SeekHandler.h"
+#include "SeekHandler.h"
 #include "ServiceBroker.h"
 
 #include "input/KeyboardLayoutManager.h"
@@ -1193,10 +1193,10 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
   // configure seek handler
-  CSeekHandler::GetInstance().Configure();
+  m_pPlayer->GetSeekHandler().Configure();
 
   // register action listeners
-  RegisterActionListener(&CSeekHandler::GetInstance());
+  RegisterActionListener(&m_pPlayer->GetSeekHandler());
   RegisterActionListener(&CPlayerController::GetInstance());
 
   CServiceBroker::GetRepositoryUpdater().Start();
@@ -2676,7 +2676,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-      CSeekHandler::GetInstance().FrameMove();
+      m_pPlayer->GetSeekHandler().FrameMove();
     }
 
     // Open the door for external calls e.g python exactly here.
@@ -2897,7 +2897,7 @@ void CApplication::Stop(int exitCode)
     CServiceBroker::GetServiceAddons().Stop();
 
     // unregister action listeners
-    UnregisterActionListener(&CSeekHandler::GetInstance());
+    UnregisterActionListener(&m_pPlayer->GetSeekHandler());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
     g_audioManager.DeInitialize();

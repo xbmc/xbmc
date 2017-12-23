@@ -28,6 +28,7 @@
 #include "threads/SystemClock.h"
 #include "guilib/Resolution.h"
 #include "cores/IPlayer.h"
+#include "SeekHandler.h"
 
 typedef enum
 {
@@ -47,19 +48,6 @@ struct TextCacheStruct_t;
 
 class CApplicationPlayer
 {
-  std::shared_ptr<IPlayer> m_pPlayer;
-  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
-
-  CCriticalSection  m_player_lock;
-
-  // cache player state
-  XbmcThreads::EndTime m_audioStreamUpdate;
-  int m_iAudioStream;
-  XbmcThreads::EndTime m_videoStreamUpdate;
-  int m_iVideoStream;
-  XbmcThreads::EndTime m_subtitleStreamUpdate;
-  int m_iSubtitleStream;
-
 public:
   CApplicationPlayer();
 
@@ -97,28 +85,28 @@ public:
   bool IsExternalPlaying();
 
   // proxy calls
-  void   AddSubtitle(const std::string& strSubPath);
-  bool  CanPause();
-  bool  CanSeek();
-  void  DoAudioWork();
-  void  GetAudioCapabilities(std::vector<int> &audioCaps);
-  int   GetAudioStream();
-  int   GetAudioStreamCount();
-  void  GetAudioStreamInfo(int index, AudioStreamInfo &info);
-  int   GetCacheLevel() const;
+  void AddSubtitle(const std::string& strSubPath);
+  bool CanPause();
+  bool CanSeek();
+  void DoAudioWork();
+  void GetAudioCapabilities(std::vector<int> &audioCaps);
+  int GetAudioStream();
+  int GetAudioStreamCount();
+  void GetAudioStreamInfo(int index, AudioStreamInfo &info);
+  int GetCacheLevel() const;
   float GetCachePercentage() const;
-  int   GetChapterCount();
-  int   GetChapter();  
-  void  GetChapterName(std::string& strChapterName, int chapterIdx=-1);
+  int GetChapterCount();
+  int GetChapter();
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
   int64_t GetChapterPos(int chapterIdx=-1);
   float GetPercentage() const;
   std::string GetPlayerState();
-  int   GetPreferredPlaylist() const;
-  int   GetSubtitle();
-  void  GetSubtitleCapabilities(std::vector<int> &subCaps);
-  int   GetSubtitleCount();
-  void  GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info);
-  bool  GetSubtitleVisible();
+  int GetPreferredPlaylist() const;
+  int GetSubtitle();
+  void GetSubtitleCapabilities(std::vector<int> &subCaps);
+  int GetSubtitleCount();
+  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info);
+  bool GetSubtitleVisible();
   TextCacheStruct_t* GetTeletextCache();
   std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
@@ -126,56 +114,71 @@ public:
   int64_t GetMaxTime() const;
   time_t GetStartTime() const;
   int64_t GetTotalTime() const;
-  int   GetVideoStream();
-  int   GetVideoStreamCount();
-  void  GetVideoStreamInfo(int streamId, VideoStreamInfo &info);
+  int GetVideoStream();
+  int GetVideoStreamCount();
+  void GetVideoStreamInfo(int streamId, VideoStreamInfo &info);
   int GetPrograms(std::vector<ProgramInfo>& programs);
   void SetProgram(int progId);
   int GetProgramsCount();
-  bool  HasAudio() const;
-  bool  HasMenu() const;
-  bool  HasVideo() const;
-  bool  HasGame() const;
-  bool  HasRDS() const;
-  bool  IsCaching() const;
-  bool  IsInMenu() const;
-  bool  IsPaused();
-  bool  IsPausedPlayback();
-  bool  IsPassthrough() const;
-  bool  IsPlaying() const;
-  bool  IsPlayingAudio() const;
-  bool  IsPlayingVideo() const;
-  bool  IsPlayingGame() const;
-  bool  IsPlayingRDS() const;
-  void  LoadPage(int p, int sp, unsigned char* buffer);
-  bool  OnAction(const CAction &action);
-  void  OnNothingToQueueNotify();
-  void  Pause();
-  bool  QueueNextFile(const CFileItem &file);
-  void  Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
-  int   SeekChapter(int iChapter);
-  void  SeekPercentage(float fPercent = 0);
-  bool  SeekScene(bool bPlus = true);
-  void  SeekTime(int64_t iTime = 0);
-  void  SeekTimeRelative(int64_t iTime = 0);
-  void  SetAudioStream(int iStream);
-  void  SetAVDelay(float fValue = 0.0f);
-  void  SetDynamicRangeCompression(long drc);
-  void  SetMute(bool bOnOff);
-  bool  SetPlayerState(const std::string& state);
-  void  SetSubtitle(int iStream);
-  void  SetSubTitleDelay(float fValue = 0.0f);
-  void  SetSubtitleVisible(bool bVisible);
-  void  SetTime(int64_t time);
-  void  SetTotalTime(int64_t time);
-  void  SetVideoStream(int iStream);
-  void  SetVolume(float volume);
-  void  SetSpeed(float speed);
+  bool HasAudio() const;
+  bool HasMenu() const;
+  bool HasVideo() const;
+  bool HasGame() const;
+  bool HasRDS() const;
+  bool IsCaching() const;
+  bool IsInMenu() const;
+  bool IsPaused();
+  bool IsPausedPlayback();
+  bool IsPassthrough() const;
+  bool IsPlaying() const;
+  bool IsPlayingAudio() const;
+  bool IsPlayingVideo() const;
+  bool IsPlayingGame() const;
+  bool IsPlayingRDS() const;
+  void LoadPage(int p, int sp, unsigned char* buffer);
+  bool OnAction(const CAction &action);
+  void OnNothingToQueueNotify();
+  void Pause();
+  bool QueueNextFile(const CFileItem &file);
+  void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
+  int SeekChapter(int iChapter);
+  void SeekPercentage(float fPercent = 0);
+  bool SeekScene(bool bPlus = true);
+  void SeekTime(int64_t iTime = 0);
+  void SeekTimeRelative(int64_t iTime = 0);
+  void SetAudioStream(int iStream);
+  void SetAVDelay(float fValue = 0.0f);
+  void SetDynamicRangeCompression(long drc);
+  void SetMute(bool bOnOff);
+  bool SetPlayerState(const std::string& state);
+  void SetSubtitle(int iStream);
+  void SetSubTitleDelay(float fValue = 0.0f);
+  void SetSubtitleVisible(bool bVisible);
+  void SetTime(int64_t time);
+  void SetTotalTime(int64_t time);
+  void SetVideoStream(int iStream);
+  void SetVolume(float volume);
+  void SetSpeed(float speed);
   bool SupportsTempo();
 
   CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings& settings);
 
-  protected:
-    std::shared_ptr<IPlayer> GetInternal() const;
+  CSeekHandler& GetSeekHandler();
+protected:
+  std::shared_ptr<IPlayer> GetInternal() const;
+
+private:
+  std::shared_ptr<IPlayer> m_pPlayer;
+  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
+  CCriticalSection m_playerLock;
+  CSeekHandler m_seekHandler;
+
+  // cache player state
+  XbmcThreads::EndTime m_audioStreamUpdate;
+  int m_iAudioStream;
+  XbmcThreads::EndTime m_videoStreamUpdate;
+  int m_iVideoStream;
+  XbmcThreads::EndTime m_subtitleStreamUpdate;
+  int m_iSubtitleStream;
 };
