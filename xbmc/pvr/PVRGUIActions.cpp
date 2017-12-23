@@ -154,6 +154,7 @@ namespace PVR
   : m_bChannelScanRunning(false),
     m_settings({
       CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
+      CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
@@ -1805,6 +1806,14 @@ namespace PVR
 
   std::string CPVRGUIActions::GetSelectedItemPath(bool bRadio) const
   {
+    if (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
+    {
+      // if preselect playing channel is activated, return the path of the playing channel, if any.
+      const CPVRChannelPtr playingChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+      if (playingChannel && playingChannel->IsRadio() == bRadio)
+        return playingChannel->Path();
+    }
+
     CSingleLock lock(m_critSection);
     return bRadio ? m_selectedItemPathRadio : m_selectedItemPathTV;
   }

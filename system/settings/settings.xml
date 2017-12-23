@@ -1275,6 +1275,11 @@
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
       <group id="1" label="14301">
+        <setting id="pvrmanager.preselectplayingchannel" type="boolean" label="19269" help="36214">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
           <level>1</level>
           <default>true</default>
