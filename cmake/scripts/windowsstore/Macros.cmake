@@ -72,6 +72,15 @@ macro(winstore_set_assets target)
   source_group("media" FILES ${ASSET_FILES})
   set(RESOURCES ${RESOURCES} ${ASSET_FILES} 
                             "${CMAKE_SOURCE_DIR}/tools/windows/packaging/uwp/kodi_temp_key.pfx")
+  set(LICENSE_FILES 
+    ${CMAKE_SOURCE_DIR}/LICENSE.GPL
+    ${CMAKE_SOURCE_DIR}/copying.txt
+    ${CMAKE_SOURCE_DIR}/privacy-policy.txt)
+  if(EXISTS "${CMAKE_SOURCE_DIR}/known_issues.txt")
+    list(APPEND LICENSE_FILES ${CMAKE_SOURCE_DIR}/known_issues.txt)
+  endif()
+  set_property(SOURCE ${LICENSE_FILES} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+  list(APPEND RESOURCES ${LICENSE_FILES})
 endmacro()
 
 macro(winstore_generate_manifest target)
