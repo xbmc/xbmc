@@ -40,6 +40,8 @@ if(ENABLE_INTERNAL_FMT)
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                                 -DFMT_DOC=OFF
+                                 -DFMT_TEST=OFF
                                  "${EXTRA_ARGS}"
                       BUILD_BYPRODUCTS ${FMT_LIBRARY})
   set_target_properties(fmt PROPERTIES FOLDER "External Projects")
