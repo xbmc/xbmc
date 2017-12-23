@@ -7,10 +7,8 @@ AM_CXXFLAGS = $(AM_CFLAGS) -std=c++0x
 AM_CPPFLAGS = \
   -I. \
   -I./decoder \
-  -I@KODI_SRC_DIR@/lib \
   -I@KODI_SRC_DIR@/xbmc \
   -I@KODI_SRC_DIR@/xbmc/guilib \
-  -I@KODI_SRC_DIR@/xbmc/platform/linux \
   @CPPFLAGS@
 
 AM_LDFLAGS = @LIBS@ @STATIC_FLAG@
