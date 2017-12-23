@@ -3466,11 +3466,6 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   g_pythonParser.OnPlayBackStarted(file);
 #endif
 
-  // reset the m_itemCurrentFile, but NOT when playing a stack (as we need it to correctly track bookmarks)
-  if (!(IsPlayingISOStack() || IsPlayingRegularStack()))
-  {
-    m_itemCurrentFile.reset(new CFileItem(file));
-  }
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
