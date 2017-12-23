@@ -20,12 +20,12 @@
 
 #ifdef TARGET_WINDOWS
 #include <sys/types.h>
-#include <sys/stat.h>
 #define __STDC_FORMAT_MACROS
 #include <cinttypes>
 #define platform_stricmp _stricmp
 #else
-#define platform_stricmp stricmp
+#include <inttypes.h>
+#define platform_stricmp strcasecmp
 #endif
 #include <cerrno>
 #include <dirent.h>
@@ -45,6 +45,7 @@
 #endif
 
 #include <lzo/lzo1x.h>
+#include <sys/stat.h>
 
 using namespace std;
 
