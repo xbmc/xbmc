@@ -67,10 +67,8 @@ public class XBMCVideoView extends SurfaceView implements
       @Override
       public void run()
       {
-        mVideoLayout.addView(XBMCVideoView.this);
-
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        setLayoutParams(layoutParams);
+        mVideoLayout.addView(XBMCVideoView.this, layoutParams);
         setBackgroundColor(Color.TRANSPARENT);
       }
     });
