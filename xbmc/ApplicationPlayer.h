@@ -171,7 +171,7 @@ protected:
 private:
   std::shared_ptr<IPlayer> m_pPlayer;
   unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
-  CCriticalSection m_player_lock;
+  CCriticalSection m_playerLock;
   CSeekHandler m_seekHandler;
 
   // cache player state
