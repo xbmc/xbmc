@@ -167,7 +167,7 @@ bool CDRMUtils::GetConnector()
     return false;
   }
 
-  m_connector->props_info = new drmModePropertyPtr;
+  m_connector->props_info = new drmModePropertyPtr[m_connector->props->count_props];
   for (uint32_t i = 0; i < m_connector->props->count_props; i++)
   {
     m_connector->props_info[i] = drmModeGetProperty(m_fd, m_connector->props->props[i]);
@@ -229,7 +229,7 @@ bool CDRMUtils::GetCrtc()
     return false;
   }
 
-  m_crtc->props_info = new drmModePropertyPtr;
+  m_crtc->props_info = new drmModePropertyPtr[m_crtc->props->count_props];
   for (uint32_t i = 0; i < m_crtc->props->count_props; i++)
   {
     m_crtc->props_info[i] = drmModeGetProperty(m_fd, m_crtc->props->props[i]);
@@ -343,7 +343,7 @@ bool CDRMUtils::GetPlanes()
     return false;
   }
 
-  m_primary_plane->props_info = new drmModePropertyPtr;
+  m_primary_plane->props_info = new drmModePropertyPtr[m_primary_plane->props->count_props];
   for (uint32_t i = 0; i < m_primary_plane->props->count_props; i++)
   {
     m_primary_plane->props_info[i] = drmModeGetProperty(m_fd, m_primary_plane->props->props[i]);
@@ -388,7 +388,7 @@ bool CDRMUtils::GetPlanes()
     return false;
   }
 
-  m_overlay_plane->props_info = new drmModePropertyPtr;
+  m_overlay_plane->props_info = new drmModePropertyPtr[m_overlay_plane->props->count_props];
   for (uint32_t i = 0; i < m_overlay_plane->props->count_props; i++)
   {
     m_overlay_plane->props_info[i] = drmModeGetProperty(m_fd, m_overlay_plane->props->props[i]);
@@ -584,23 +584,33 @@ void CDRMUtils::DestroyDrm()
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;
 
+  drmModeFreeConnector(m_connector->connector);
+  drmModeFreeObjectProperties(m_connector->props);
+  delete [] m_connector->props_info;
   delete m_connector;
   m_connector = nullptr;
 
+  drmModeFreeEncoder(m_encoder->encoder);
   delete m_encoder;
   m_encoder = nullptr;
 
+  drmModeFreeCrtc(m_crtc->crtc);
+  drmModeFreeObjectProperties(m_crtc->props);
+  delete [] m_crtc->props_info;
   delete m_crtc;
   m_crtc = nullptr;
 
+  drmModeFreePlane(m_primary_plane->plane);
+  drmModeFreeObjectProperties(m_primary_plane->props);
+  delete [] m_primary_plane->props_info;
   delete m_primary_plane;
   m_primary_plane = nullptr;
 
+  drmModeFreePlane(m_overlay_plane->plane);
+  drmModeFreeObjectProperties(m_overlay_plane->props);
+  delete [] m_overlay_plane->props_info;
   delete m_overlay_plane;
   m_overlay_plane = nullptr;
-
-  drmModeFreeModeInfo(m_mode);
-  m_mode = nullptr;
 }
 
 bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)

@@ -105,8 +105,6 @@ bool CWinSystemGbm::DestroyWindowSystem()
   m_GBM->DestroyDevice();
   m_nativeDisplay = nullptr;
 
-  m_DRM->DestroyDrm();
-
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
   return true;
 }
