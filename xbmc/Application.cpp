@@ -251,12 +251,10 @@ CApplication::CApplication(void)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
-  , m_currentStack(new CFileItemList)
-  , m_currentStackIsDiscImageStack(false)
+  , m_pStackHelper(new CApplicationStackHelper)
   , m_threadID(0)
   , m_bInitializing(true)
   , m_bPlatformDirectories(true)
-  , m_currentStackPosition(0)
   , m_nextPlaylistItem(-1)
   , m_lastRenderTime(0)
   , m_skipGuiRender(false)
@@ -3009,151 +3007,16 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
 // return value: same with PlayFile()
 PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 {
-  if (!item.IsStack())
+  if (!m_pStackHelper->InitializeStack(item))
     return PLAYBACK_FAIL;
 
-  // read and determine kind of stack
-  CStackDirectory dir;
-  if (!dir.GetDirectory(item.GetURL(), *m_currentStack) || m_currentStack->IsEmpty())
-    return PLAYBACK_FAIL;
-  m_currentStackIsDiscImageStack = CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()), false).IsDiscImage();
-
-  CVideoDatabase dbs;
-  int startoffset = 0;
-
-  // case 1: stacked ISOs
-  if (m_currentStackIsDiscImageStack)
-  {
-    // first assume values passed to the stack
-    int selectedFile = item.m_lStartPartNumber;
-    startoffset = item.m_lStartOffset;
-
-    // check if we instructed the stack to resume from default
-    if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
-    {
-      if (dbs.Open())
-      {
-        CBookmark bookmark;
-        std::string path = item.GetPath();
-        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if( dbs.GetResumeBookMark(path, bookmark) )
-        {
-          startoffset = (int)(bookmark.timeInSeconds*75);
-          selectedFile = bookmark.partNumber;
-        }
-        dbs.Close();
-      }
-      else
-        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-    }
-
-    // make sure that the selected part is within the boundaries
-    if (selectedFile <= 0)
-    {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part 1", selectedFile);
-      selectedFile = 1;
-    }
-    else if (selectedFile > m_currentStack->Size())
-    {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part %d", selectedFile, m_currentStack->Size());
-      selectedFile = m_currentStack->Size();
-    }
-
-    // set startoffset in selected item, track stack item for updating purposes, and finally play disc part
-    m_currentStackPosition = selectedFile - 1;
-    startoffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
-  }
-  // case 2: all other stacks
-  else
-  {
-    // see if we have the info in the database
-    //! @todo If user changes the time speed (FPS via framerate conversion stuff)
-    //!       then these times will be wrong.
-    //!       Also, this is really just a hack for the slow load up times we have
-    //!       A much better solution is a fast reader of FPS and fileLength
-    //!       that we can use on a file to get it's time.
-    std::vector<int> times;
-    bool haveTimes(false);
-
-    if (dbs.Open())
-    {
-      haveTimes = dbs.GetStackTimes(item.GetPath(), times);
-      dbs.Close();
-    }
-
-    // calculate the total time of the stack
-    long totalTime = 0;
-    for (int i = 0; i < m_currentStack->Size(); i++)
-    {
-      if (haveTimes)
-        GetStackPartFileItem(i).m_lEndOffset = times[i];
-      else
-      {
-        int duration;
-        if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetPath(), duration))
-        {
-          m_currentStack->Clear();
-          return PLAYBACK_FAIL;
-        }
-        totalTime += duration / 1000;
-        GetStackPartFileItem(i).m_lEndOffset = totalTime;
-        times.push_back(totalTime);
-      }
-    }
-
-    double seconds = item.m_lStartOffset / 75.0;
-
-    if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
-    {  
-      if (dbs.Open())
-      {
-        // have our times now, so update the dB
-        if (!haveTimes && !times.empty())
-          dbs.SetStackTimes(item.GetPath(), times);
-
-        if (item.m_lStartOffset == STARTOFFSET_RESUME)
-        {
-          // can only resume seek here, not dvdstate
-          CBookmark bookmark;
-          std::string path = item.GetPath();
-          if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-            path = item.GetProperty("original_listitem_url").asString();
-          if (dbs.GetResumeBookMark(path, bookmark))
-            seconds = bookmark.timeInSeconds;
-          else
-            seconds = 0.0f;
-        }
-        dbs.Close();
-      }
-    }
-
-    m_currentStackPosition = GetStackPartNumberAtTime(seconds);
-    startoffset = (seconds - GetStackPartStartTime(m_currentStackPosition)) * 75;
-  }
+  int startoffset = m_pStackHelper->InitializeStackStartPartAndOffset(item);
 
   m_itemCurrentFile.reset(new CFileItem(item));
-  CFileItem selectedStackPart(GetStackPartFileItem(m_currentStackPosition));
+  CFileItem selectedStackPart = m_pStackHelper->GetCurrentStackPartFileItem();
   selectedStackPart.m_lStartOffset = startoffset;
-  if (m_currentStackIsDiscImageStack)
-  {
-    selectedStackPart.SetProperty("stackFileItemToUpdate", true);
-  }
-  return PlayFile(selectedStackPart, "", true);
-}
 
-int CApplication::GetStackPartNumberAtTime(double seconds)
-{
-  if (seconds > 0)
-  {
-    // work out where to seek to
-    for (int partNumber = 0; partNumber < m_currentStack->Size(); partNumber++)
-    {
-      if (seconds < GetStackPartEndTime(partNumber))
-        return partNumber;
-    }
-  }
-  return 0;
+  return PlayFile(selectedStackPart, "", true);
 }
 
 PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
@@ -3170,8 +3033,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     m_itemCurrentFile.reset(new CFileItem(item));
 
     m_nextPlaylistItem = -1;
-    m_currentStackPosition = 0;
-    m_currentStack->Clear();
+    m_pStackHelper->Clear();
 
     if (item.IsVideo())
       CUtil::ClearSubtitles();
@@ -3240,10 +3102,10 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // have to be set here due to playstack using this for starting the file
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
-    if (IsPlayingRegularStack() && m_itemCurrentFile->m_lStartOffset != 0)
+    if (m_pStackHelper->IsPlayingRegularStack() && m_itemCurrentFile->m_lStartOffset != 0)
       m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
   }
-  if (!bRestart || IsPlayingISOStack())
+  if (!bRestart || m_pStackHelper->IsPlayingISOStack())
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
@@ -3324,10 +3186,10 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
   }
-  else if(IsPlayingRegularStack())
+  else if(m_pStackHelper->IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
-    if(m_currentStackPosition == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
+    if(m_pStackHelper->GetCurrentPartNumber() == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
       options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
     else
       options.fullscreen = false;
@@ -3476,25 +3338,26 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmark)
+void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmarkParam)
 {
   CFileItem fileItem(file);
+  CBookmark bookmark = bookmarkParam;
   CBookmark resumeBookmark;
   bool playCountUpdate = false;
   float percent = 0.0f;
 
-  if (IsPlayingRegularStack())
+  if (m_pStackHelper->GetRegisteredStack(fileItem) != nullptr && m_pStackHelper->GetRegisteredStackTotalTime(fileItem) > 0)
   {
-    // for stacks, we have to save the bookmark on the stack, held in m_itemCurrentFile
-    fileItem = *m_itemCurrentFile;
-    // the percentage needs to be calculated taking into account the start time of current stack part and the total stack time
-    percent = (GetStackPartStartTime(m_currentStackPosition) + bookmark.timeInSeconds) / GetStackTotalTime() * 100;
+    // regular stack case: we have to save the bookmark on the stack
+    fileItem = *m_pStackHelper->GetRegisteredStack(file);
+    // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes (start time will be 0 for non-stackparts)
+    bookmark.timeInSeconds += m_pStackHelper->GetRegisteredStackPartStartTime(file);
+    if (m_pStackHelper->GetRegisteredStackTotalTime(file) > 0)
+      bookmark.totalTimeInSeconds = m_pStackHelper->GetRegisteredStackTotalTime(file);
+    bookmark.partNumber = m_pStackHelper->GetRegisteredStackPartNumber(file);
   }
-  else
-  {
-    // all other cases incl. normal files and ISO stacks
-    percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
-  }
+
+  percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
 
   if ((fileItem.IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
        percent >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
@@ -3513,15 +3376,8 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   else if (bookmark.timeInSeconds > g_advancedSettings.m_videoIgnoreSecondsAtStart)
   {
     resumeBookmark = bookmark;
-    if (IsPlayingRegularStack() || IsPlayingISOStack())
+    if (m_pStackHelper->GetRegisteredStack(file) != nullptr)
     {
-      resumeBookmark.partNumber = m_currentStackPosition;
-      if (IsPlayingRegularStack())
-      {
-        // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes:
-        resumeBookmark.timeInSeconds = GetStackPartStartTime(m_currentStackPosition) + bookmark.timeInSeconds;
-        resumeBookmark.totalTimeInSeconds = GetStackTotalTime();
-      }
       // also update video info tag with total time
       fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, resumeBookmark.totalTimeInSeconds);
     }
@@ -3533,8 +3389,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
 
   if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
   {
-    CSaveFileState::DoWork(fileItem, *m_itemCurrentFile,
-                           resumeBookmark, playCountUpdate);
+    CSaveFileState::DoWork(fileItem, resumeBookmark, playCountUpdate);
   }
 }
 
@@ -4188,9 +4043,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        if (IsPlayingRegularStack() && m_currentStackPosition < m_currentStack->Size() - 1)
+        if (m_pStackHelper->IsPlayingRegularStack() && m_pStackHelper->HasNextStackPartFileItem())
         { // just play the next item in the stack
-          PlayFile(GetStackPartFileItem(++m_currentStackPosition), "", true);
+          PlayFile(m_pStackHelper->SetNextStackPartCurrentFileItem(), "", true);
           return true;
         }
       }
@@ -4198,7 +4053,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
-      m_currentStack->Clear();
+      m_pStackHelper->Clear();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4573,8 +4428,8 @@ CFileItem& CApplication::CurrentFileItem()
 
 CFileItem& CApplication::CurrentUnstackedItem()
 {
-  if (IsPlayingISOStack() || IsPlayingRegularStack())
-    return GetStackPartCurrentFileItem();
+  if (m_pStackHelper->IsPlayingISOStack() || m_pStackHelper->IsPlayingRegularStack())
+    return m_pStackHelper->GetCurrentStackPartFileItem();
   else
     return *m_itemCurrentFile;
 }
@@ -4698,8 +4553,8 @@ double CApplication::GetTotalTime() const
 
   if (m_pPlayer->IsPlaying())
   {
-    if (IsPlayingRegularStack())
-      rc = GetStackTotalTime();
+    if (m_pStackHelper->IsPlayingRegularStack())
+      rc = m_pStackHelper->GetStackTotalTime();
     else
       rc = static_cast<double>(m_pPlayer->GetTotalTime() * 0.001f);
   }
@@ -4731,9 +4586,9 @@ double CApplication::GetTime() const
 
   if (m_pPlayer->IsPlaying())
   {
-    if (IsPlayingRegularStack())
+    if (m_pStackHelper->IsPlayingRegularStack())
     {
-      long startOfCurrentFile = GetStackPartStartTime(m_currentStackPosition);
+      long startOfCurrentFile = m_pStackHelper->GetCurrentStackPartStartTime();
       rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
     }
     else
@@ -4753,20 +4608,20 @@ void CApplication::SeekTime( double dTime )
   if (m_pPlayer->IsPlaying() && (dTime >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (IsPlayingRegularStack())
+    if (m_pStackHelper->IsPlayingRegularStack())
     {
       // find the item in the stack we are seeking to, and load the new
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      int partNumberToPlay = GetStackPartNumberAtTime(dTime);
-      long startOfNewFile = GetStackPartStartTime(partNumberToPlay);
-      if (m_currentStackPosition == partNumberToPlay)
+      int partNumberToPlay = m_pStackHelper->GetStackPartNumberAtTime(dTime);
+      long startOfNewFile = m_pStackHelper->GetStackPartStartTime(partNumberToPlay);
+      if (partNumberToPlay == m_pStackHelper->GetCurrentPartNumber())
         m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
       else
       { // seeking to a new file
-        m_currentStackPosition = partNumberToPlay;
-        CFileItem *item = new CFileItem(GetStackPartFileItem(partNumberToPlay));
+        m_pStackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
+        CFileItem *item = new CFileItem(m_pStackHelper->GetCurrentStackPartFileItem());
         item->m_lStartOffset = static_cast<long>((dTime - startOfNewFile) * 75.0);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
@@ -4790,7 +4645,7 @@ float CApplication::GetPercentage() const
         return (float)(GetTime() / tag.GetDuration() * 100);
     }
 
-    if (IsPlayingRegularStack())
+    if (m_pStackHelper->IsPlayingRegularStack())
     {
       double totalTime = GetTotalTime();
       if (totalTime > 0.0f)
@@ -4807,7 +4662,7 @@ float CApplication::GetCachePercentage() const
   if (m_pPlayer->IsPlaying())
   {
     // Note that the player returns a relative cache percentage and we want an absolute percentage
-    if (IsPlayingRegularStack())
+    if (m_pStackHelper->IsPlayingRegularStack())
     {
       float stackedTotalTime = (float) GetTotalTime();
       // We need to take into account the stack's total time vs. currently playing file's total time
@@ -4825,7 +4680,7 @@ void CApplication::SeekPercentage(float percent)
   if (m_pPlayer->IsPlaying() && (percent >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (IsPlayingRegularStack())
+    if (m_pStackHelper->IsPlayingRegularStack())
       SeekTime(percent * 0.01 * GetTotalTime());
     else
       m_pPlayer->SeekPercentage(percent);
@@ -5136,4 +4991,246 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
   }
 
   return false;
+}
+
+CApplicationStackHelper::CApplicationStackHelper(void)
+  : m_currentStack(new CFileItemList)
+  , m_currentStackPosition(0)
+  , m_currentStackIsDiscImageStack(false)
+{
+}
+
+CApplicationStackHelper::~CApplicationStackHelper(void)
+{
+}
+
+void CApplicationStackHelper::Clear()
+{
+  m_currentStackPosition = 0;
+  m_currentStack->Clear();
+}
+
+bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
+{
+  if (!item.IsStack())
+    return false;
+
+  CFileItemPtr stack(new CFileItem(item));
+
+  Clear();
+  // read and determine kind of stack
+  CStackDirectory dir;
+  if (!dir.GetDirectory(item.GetURL(), *m_currentStack) || m_currentStack->IsEmpty())
+    return false;
+  for (int i = 0; i < m_currentStack->Size(); i++)
+  {
+    // keep cross-references between stack parts and the stack
+    SetRegisteredStack(GetStackPartFileItem(i), stack);
+    SetRegisteredStackPartNumber(GetStackPartFileItem(i), i);
+  }
+  m_currentStackIsDiscImageStack = CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()), false).IsDiscImage();
+
+  return true;
+}
+
+int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& item)
+{
+  CVideoDatabase dbs;
+  int startoffset = 0;
+
+  // case 1: stacked ISOs
+  if (m_currentStackIsDiscImageStack)
+  {
+    // first assume values passed to the stack
+    int selectedFile = item.m_lStartPartNumber;
+    startoffset = item.m_lStartOffset;
+
+    // check if we instructed the stack to resume from default
+    if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
+    {
+      if (dbs.Open())
+      {
+        CBookmark bookmark;
+        std::string path = item.GetPath();
+        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          path = item.GetProperty("original_listitem_url").asString();
+        if (dbs.GetResumeBookMark(path, bookmark))
+        {
+          startoffset = (int)(bookmark.timeInSeconds * 75);
+          selectedFile = bookmark.partNumber;
+        }
+        dbs.Close();
+      }
+      else
+        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+    }
+
+    // make sure that the selected part is within the boundaries
+    if (selectedFile <= 0)
+    {
+      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part 1", selectedFile);
+      selectedFile = 1;
+    }
+    else if (selectedFile > m_currentStack->Size())
+    {
+      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part %d", selectedFile, m_currentStack->Size());
+      selectedFile = m_currentStack->Size();
+    }
+
+    // set startoffset in selected item, track stack item for updating purposes, and finally play disc part
+    m_currentStackPosition = selectedFile - 1;
+    startoffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
+  }
+  // case 2: all other stacks
+  else
+  {
+    // see if we have the info in the database
+    //! @todo If user changes the time speed (FPS via framerate conversion stuff)
+    //!       then these times will be wrong.
+    //!       Also, this is really just a hack for the slow load up times we have
+    //!       A much better solution is a fast reader of FPS and fileLength
+    //!       that we can use on a file to get it's time.
+    std::vector<int> times;
+    bool haveTimes(false);
+
+    if (dbs.Open())
+    {
+      haveTimes = dbs.GetStackTimes(item.GetPath(), times);
+      dbs.Close();
+    }
+
+    // calculate the total time of the stack
+    long totalTime = 0;
+    for (int i = 0; i < m_currentStack->Size(); i++)
+    {
+      if (haveTimes)
+      {
+        // set end time in every part
+        GetStackPartFileItem(i).m_lEndOffset = times[i];
+      }
+      else
+      {
+        int duration;
+        if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetPath(), duration))
+        {
+          m_currentStack->Clear();
+          return PLAYBACK_FAIL;
+        }
+        totalTime += duration / 1000;
+        // set end time in every part
+        GetStackPartFileItem(i).m_lEndOffset = totalTime;
+        times.push_back(totalTime);
+      }
+      // set start time in every part
+      SetRegisteredStackPartStartTime(GetStackPartFileItem(i), GetStackPartStartTime(i));
+    }
+    // set total time in every part
+    totalTime = GetStackTotalTime();
+    for (int i = 0; i < m_currentStack->Size(); i++)
+      SetRegisteredStackTotalTime(GetStackPartFileItem(i), totalTime);
+
+    double seconds = item.m_lStartOffset / 75.0;
+
+    if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
+    {
+      if (dbs.Open())
+      {
+        // have our times now, so update the dB
+        if (!haveTimes && !times.empty())
+          dbs.SetStackTimes(item.GetPath(), times);
+
+        if (item.m_lStartOffset == STARTOFFSET_RESUME)
+        {
+          // can only resume seek here, not dvdstate
+          CBookmark bookmark;
+          std::string path = item.GetPath();
+          if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+            path = item.GetProperty("original_listitem_url").asString();
+          if (dbs.GetResumeBookMark(path, bookmark))
+            seconds = bookmark.timeInSeconds;
+          else
+            seconds = 0.0f;
+        }
+        dbs.Close();
+      }
+    }
+
+    m_currentStackPosition = GetStackPartNumberAtTime(seconds);
+    startoffset = (seconds - GetStackPartStartTime(m_currentStackPosition)) * 75;
+  }
+  return startoffset;
+}
+
+int CApplicationStackHelper::GetStackPartNumberAtTime(double seconds)
+{
+  if (seconds > 0)
+  {
+    // work out where to seek to
+    for (int partNumber = 0; partNumber < m_currentStack->Size(); partNumber++)
+    {
+      if (seconds < GetStackPartEndTime(partNumber))
+        return partNumber;
+    }
+  }
+  return 0;
+}
+
+void CApplicationStackHelper::ClearAllRegisteredStackInformation()
+{
+  m_stackmap.clear();
+}
+
+CFileItemPtr CApplicationStackHelper::GetRegisteredStack(const CFileItem& item)
+{
+  return GetStackPartInformation(item.GetPath())->m_pStack;
+}
+
+bool CApplicationStackHelper::HasRegisteredStack(const CFileItem & item)
+{
+  return (m_stackmap.count(item.GetPath()) > 0 && m_stackmap[item.GetPath()]->m_pStack != nullptr);
+}
+
+void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem)
+{
+  GetStackPartInformation(item.GetPath())->m_pStack = stackItem;
+}
+
+int CApplicationStackHelper::GetRegisteredStackPartNumber(const CFileItem& item)
+{
+  return GetStackPartInformation(item.GetPath())->m_lStackPartNumber;
+}
+
+void CApplicationStackHelper::SetRegisteredStackPartNumber(const CFileItem& item, int partNumber)
+{
+  GetStackPartInformation(item.GetPath())->m_lStackPartNumber = partNumber;
+}
+
+int CApplicationStackHelper::GetRegisteredStackPartStartTime(const CFileItem& item)
+{
+  return GetStackPartInformation(item.GetPath())->m_lStackPartStartTime;
+}
+
+void CApplicationStackHelper::SetRegisteredStackPartStartTime(const CFileItem& item, int startTime)
+{
+  GetStackPartInformation(item.GetPath())->m_lStackPartStartTime = startTime;
+}
+
+int CApplicationStackHelper::GetRegisteredStackTotalTime(const CFileItem& item)
+{
+  return GetStackPartInformation(item.GetPath())->m_lStackTotalTime;
+}
+
+void CApplicationStackHelper::SetRegisteredStackTotalTime(const CFileItem& item, int totalTime)
+{
+  GetStackPartInformation(item.GetPath())->m_lStackTotalTime = totalTime;
+}
+
+CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(std::string key)
+{
+  if (m_stackmap.count(key) == 0)
+  {
+    StackPartInformationPtr value (new StackPartInformation());
+    m_stackmap[key] = value;
+  }
+  return m_stackmap[key];
 }

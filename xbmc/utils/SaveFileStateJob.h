@@ -27,7 +27,6 @@ class CSaveFileState
 {
 public:
   static void DoWork(CFileItem& item,
-                     CFileItem& item_discstack,
                      CBookmark& bookmark,
                      bool updatePlayCount);
 };
