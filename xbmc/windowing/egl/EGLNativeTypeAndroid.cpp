@@ -258,25 +258,20 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
   if (!*nativeWindow)
     return false;
 
-  int defWidth = 0, defHeight = 0;
   if (!m_width || !m_height)
   {
     ANativeWindow_acquire(*nativeWindow);
-    defWidth = ANativeWindow_getWidth(*nativeWindow);
-    defHeight= ANativeWindow_getHeight(*nativeWindow);
+    m_width = ANativeWindow_getWidth(*nativeWindow);
+    m_height= ANativeWindow_getHeight(*nativeWindow);
     ANativeWindow_release(*nativeWindow);
-  }
-  else
-  {
-    defWidth = m_width;
-    defHeight = m_height;
+    CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: window resolution: %dx%d", m_width, m_height);
   }
 
   if (s_hasModeApi)
   {
     *res = s_res_cur_displayMode;
-    res->iWidth = defWidth;
-    res->iHeight = defHeight;
+    res->iWidth = m_width;
+    res->iHeight = m_height;
   }
   else
   {
@@ -285,8 +280,8 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
     res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
     res->iScreen       = 0;
     res->bFullScreen   = true;
-    res->iWidth = defWidth;
-    res->iHeight = defHeight;
+    res->iWidth = m_width;
+    res->iHeight = m_height;
     res->fPixelRatio   = 1.0f;
     res->iScreenWidth  = res->iWidth;
     res->iScreenHeight = res->iHeight;
@@ -294,13 +289,13 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
   res->iSubtitles    = (int)(0.965 * res->iHeight);
   res->strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
                                            res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-  CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: Current resolution: %s\n",res->strMode.c_str());
+  CLog::Log(LOGNOTICE,"CEGLNativeTypeAndroid: Current resolution: %dx%d %s\n", res->iWidth, res->iHeight, res->strMode.c_str());
   return true;
 }
 
 bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %s: %dx%d@%f", res.strId.c_str(), res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
 
   if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
@@ -320,6 +315,11 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 
 bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
+  RESOLUTION_INFO cur_res;
+  bool ret = GetNativeResolution(&cur_res);
+
+  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: ProbeResolutions: %dx%d", m_width, m_height);
+
   if (s_hasModeApi)
   {
     for(RESOLUTION_INFO res : s_res_displayModes)
@@ -334,10 +334,7 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
     return true;
   }
 
-  RESOLUTION_INFO res;
-  bool ret = GetNativeResolution(&res);
-
-  if (ret && res.iWidth > 1 && res.iHeight > 1)
+  if (ret && cur_res.iWidth > 1 && cur_res.iHeight > 1)
   {
     std::vector<float> refreshRates;
     CJNIWindow window = CXBMCApp::getWindow();
@@ -359,17 +356,17 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
         {
           if (refreshRates[i] < 20.0 || refreshRates[i] > 70.0)
             continue;
-          res.fRefreshRate = refreshRates[i];
-          res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
-                                                 res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-          resolutions.push_back(res);
+          cur_res.fRefreshRate = refreshRates[i];
+          cur_res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", cur_res.iScreenWidth, cur_res.iScreenHeight, cur_res.fRefreshRate,
+                                                 cur_res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+          resolutions.push_back(cur_res);
         }
       }
     }
     if (resolutions.empty())
     {
       /* No valid refresh rates available, just provide the current one */
-      resolutions.push_back(res);
+      resolutions.push_back(cur_res);
     }
     return true;
   }

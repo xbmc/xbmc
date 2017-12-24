@@ -53,6 +53,6 @@ public:
   virtual bool  ShowWindow(bool show);
 
 protected:
-  int m_width;
-  int m_height;
+  mutable int m_width;
+  mutable int m_height;
 };
