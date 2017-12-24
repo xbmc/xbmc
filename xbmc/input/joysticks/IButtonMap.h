@@ -238,6 +238,66 @@ namespace JOYSTICK
     ) = 0;
 
     /*!
+     * \brief Get a wheel direction from the button map
+     *
+     * \param      feature   Must be a wheel or this will return false
+     * \param      direction The direction whose primitive is to be retrieved
+     * \param[out] primitive The primitive mapped to the specified direction
+     *
+     * \return True if the feature and direction resolved to a driver primitive
+     */
+    virtual bool GetWheel(
+      const FeatureName& feature,
+      WHEEL_DIRECTION direction,
+      CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
+     * \brief Add or update a wheel direction
+     *
+     * \param      feature   Must be a wheel or this will return false
+     * \param direction The direction being mapped
+     * \param primitive The driver primitive for the specified analog stick and direction
+     *
+     * \return True if the analog stick was updated, false otherwise
+     */
+    virtual void AddWheel(
+      const FeatureName& feature,
+      WHEEL_DIRECTION direction,
+      const CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
+     * \brief Get a throttle direction from the button map
+     *
+     * \param      feature   Must be a throttle or this will return false
+     * \param      direction The direction whose primitive is to be retrieved
+     * \param[out] primitive The primitive mapped to the specified direction
+     *
+     * \return True if the feature and direction resolved to a driver primitive
+     */
+    virtual bool GetThrottle(
+      const FeatureName& feature,
+      THROTTLE_DIRECTION direction,
+      CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
+     * \brief Add or update a throttle direction
+     *
+     * \param      feature   Must be a throttle or this will return false
+     * \param direction The direction being mapped
+     * \param primitive The driver primitive for the specified analog stick and direction
+     *
+     * \return True if the analog stick was updated, false otherwise
+     */
+    virtual void AddThrottle(
+      const FeatureName& feature,
+      THROTTLE_DIRECTION direction,
+      const CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
      * \brief Set a list of driver primitives to be ignored
      *
      * This is necessary to prevent features from interfering with the button

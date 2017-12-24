@@ -59,3 +59,13 @@ bool CInputSink::OnAccelerometerMotion(const std::string& feature, float x, floa
 {
   return true;
 }
+
+bool CInputSink::OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  return true;
+}
+
+bool CInputSink::OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  return true;
+}

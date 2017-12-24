@@ -5,7 +5,10 @@ set(SOURCES GUIAnalogStickButton.cpp
             GUIFeatureFactory.cpp
             GUIFeatureTranslator.cpp
             GUIGameController.cpp
-            GUIScalarFeatureButton.cpp)
+            GUIScalarFeatureButton.cpp
+            GUIThrottleButton.cpp
+            GUIWheelButton.cpp
+)
 
 set(HEADERS GUIAnalogStickButton.h
             GUIControllerButton.h
@@ -15,6 +18,9 @@ set(HEADERS GUIAnalogStickButton.h
             GUIFeatureFactory.h
             GUIFeatureTranslator.h
             GUIGameController.h
-            GUIScalarFeatureButton.h)
+            GUIScalarFeatureButton.h
+            GUIThrottleButton.h
+            GUIWheelButton.h
+)
 
 core_add_library(games_controller_guicontrols)

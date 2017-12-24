@@ -57,7 +57,9 @@ CGUIConfigurationWizard::~CGUIConfigurationWizard(void) = default;
 void CGUIConfigurationWizard::InitializeState(void)
 {
   m_currentButton = nullptr;
-  m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
+  m_analogStickDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
+  m_wheelDirection = JOYSTICK::WHEEL_DIRECTION::UNKNOWN;
+  m_throttleDirection = JOYSTICK::THROTTLE_DIRECTION::UNKNOWN;
   m_history.clear();
   m_lateAxisDetected = false;
   m_deviceName.clear();
@@ -126,8 +128,10 @@ void CGUIConfigurationWizard::Process(void)
 
       while (!button->IsFinished())
       {
-        // Allow other threads to access which direction the analog stick is on
-        m_currentDirection = button->GetDirection();
+        // Allow other threads to access which direction the prompt is on
+        m_analogStickDirection = button->GetAnalogStickDirection();
+        m_wheelDirection = button->GetWheelDirection();
+        m_throttleDirection = button->GetThrottleDirection();
 
         // Wait for input
         {
@@ -253,11 +257,15 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   {
     // Get the current state of the thread
     IFeatureButton* currentButton;
-    ANALOG_STICK_DIRECTION currentDirection;
+    ANALOG_STICK_DIRECTION analogStickDirection;
+    WHEEL_DIRECTION wheelDirection;
+    THROTTLE_DIRECTION throttleDirection;
     {
       CSingleLock lock(m_stateMutex);
       currentButton = m_currentButton;
-      currentDirection = m_currentDirection;
+      analogStickDirection = m_analogStickDirection;
+      wheelDirection = m_wheelDirection;
+      throttleDirection = m_throttleDirection;
     }
 
     if (currentButton)
@@ -277,13 +285,25 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         case FEATURE_TYPE::ANALOG_STICK:
         {
-          buttonMap->AddAnalogStick(feature.Name(), currentDirection, primitive);
+          buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
           bHandled = true;
           break;
         }
         case FEATURE_TYPE::RELPOINTER:
         {
-          buttonMap->AddRelativePointer(feature.Name(), currentDirection, primitive);
+          buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
+          bHandled = true;
+          break;
+        }
+        case FEATURE_TYPE::WHEEL:
+        {
+          buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
+          bHandled = true;
+          break;
+        }
+        case FEATURE_TYPE::THROTTLE:
+        {
+          buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
           bHandled = true;
           break;
         }

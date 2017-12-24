@@ -38,6 +38,12 @@ BUTTON_TYPE CGUIFeatureTranslator::GetButtonType(JOYSTICK::FEATURE_TYPE featureT
   case JOYSTICK::FEATURE_TYPE::RELPOINTER:
     return BUTTON_TYPE::ANALOG_STICK;
 
+  case JOYSTICK::FEATURE_TYPE::WHEEL:
+    return BUTTON_TYPE::WHEEL;
+
+  case JOYSTICK::FEATURE_TYPE::THROTTLE:
+    return BUTTON_TYPE::THROTTLE;
+
   default:
     break;
   }

@@ -49,7 +49,7 @@ namespace JOYSTICK
      *
      * \return A lower-case string representation, or "" if the direction is invalid
      */
-    static const char* TranslateDirection(ANALOG_STICK_DIRECTION dir);
+    static const char* TranslateAnalogStickDirection(ANALOG_STICK_DIRECTION dir);
 
     /*!
      * \brief Translate an analog stick direction string to an enum value
@@ -58,7 +58,43 @@ namespace JOYSTICK
      *
      * \return The translated direction, or ANALOG_STICK_DIRECTION::UNKNOWN if unknown
      */
-    static ANALOG_STICK_DIRECTION TranslateDirection(const std::string &dir);
+    static ANALOG_STICK_DIRECTION TranslateAnalogStickDirection(const std::string &dir);
+
+    /*!
+     * \brief Translate a wheel direction to a lower-case string
+     *
+     * \param dir The wheel direction
+     *
+     * \return A lower-case string representation, or "" if the direction is invalid
+     */
+    static const char* TranslateWheelDirection(WHEEL_DIRECTION dir);
+
+    /*!
+     * \brief Translate a wheel direction string to an enum value
+     *
+     * \param dir The wheel direction
+     *
+     * \return The translated direction, or WHEEL_DIRECTION::UNKNOWN if unknown
+     */
+    static WHEEL_DIRECTION TranslateWheelDirection(const std::string &dir);
+
+    /*!
+     * \brief Translate a throttle direction to a lower-case string
+     *
+     * \param dir The analog stick direction
+     *
+     * \return A lower-case string representation, or "" if the direction is invalid
+     */
+    static const char* TranslateThrottleDirection(THROTTLE_DIRECTION dir);
+
+    /*!
+     * \brief Translate a throttle direction string to an enum value
+     *
+     * \param dir The throttle direction
+     *
+     * \return The translated direction, or THROTTLE_DIRECTION::UNKNOWN if unknown
+     */
+    static THROTTLE_DIRECTION TranslateThrottleDirection(const std::string &dir);
 
     /*!
      * \brief Get the semi-axis direction containing the specified position
@@ -68,6 +104,24 @@ namespace JOYSTICK
      * \return POSITIVE, NEGATIVE, or UNKNOWN if position is 0
      */
     static SEMIAXIS_DIRECTION PositionToSemiAxisDirection(float position);
+
+    /*!
+     * \brief Get the wheel direction containing the specified position
+     *
+     * \param position The position of the axis
+     *
+     * \return LEFT, RIGHT, or UNKNOWN if position is 0
+     */
+    static WHEEL_DIRECTION PositionToWheelDirection(float position);
+
+    /*!
+     * \brief Get the throttle direction containing the specified position
+     *
+     * \param position The position of the axis
+     *
+     * \return UP, DOWN, or UNKNOWN if position is 0
+     */
+    static THROTTLE_DIRECTION PositionToThrottleDirection(float position);
 
     /*!
      * \brief Get the closest cardinal direction to the given vector

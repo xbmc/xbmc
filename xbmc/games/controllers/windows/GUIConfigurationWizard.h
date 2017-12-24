@@ -106,7 +106,9 @@ namespace GAME
 
     // State variables and mutex
     IFeatureButton*                      m_currentButton;
-    JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
+    JOYSTICK::ANALOG_STICK_DIRECTION     m_analogStickDirection;
+    JOYSTICK::WHEEL_DIRECTION            m_wheelDirection;
+    JOYSTICK::THROTTLE_DIRECTION         m_throttleDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
     bool                                 m_lateAxisDetected; // Set to true if an axis is detected during button mapping
     std::string                          m_deviceName;

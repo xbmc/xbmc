@@ -171,6 +171,60 @@ bool CGameClientJoystick::OnAccelerometerMotion(const std::string& feature, floa
   return bHandled;
 }
 
+bool CGameClientJoystick::OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  bool bHandled = false;
+
+  game_input_event event;
+
+  std::string controllerId = m_controller->ID();
+
+  event.type                    = GAME_INPUT_EVENT_AXIS;
+  event.port                    = m_port;
+  event.controller_id           = controllerId.c_str();
+  event.feature_name            = feature.c_str();
+  event.axis.position           = position;
+
+  try
+  {
+    bHandled = m_dllStruct->InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught while handling wheel \"%s\"",
+              m_gameClient->ID().c_str(), feature.c_str());
+  }
+
+  return bHandled;
+}
+
+bool CGameClientJoystick::OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+{
+  bool bHandled = false;
+
+  game_input_event event;
+
+  std::string controllerId = m_controller->ID();
+
+  event.type                    = GAME_INPUT_EVENT_AXIS;
+  event.port                    = m_port;
+  event.controller_id           = controllerId.c_str();
+  event.feature_name            = feature.c_str();
+  event.axis.position           = position;
+
+  try
+  {
+    bHandled = m_dllStruct->InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught while handling throttle \"%s\"",
+              m_gameClient->ID().c_str(), feature.c_str());
+  }
+
+  return bHandled;
+}
+
 bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
   bool bHandled = false;

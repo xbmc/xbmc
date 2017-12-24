@@ -25,29 +25,27 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIAnalogStickButton : public CGUIFeatureButton
+  class CGUIWheelButton : public CGUIFeatureButton
   {
   public:
-    CGUIAnalogStickButton(const CGUIButtonControl& buttonTemplate,
-                          IConfigurationWizard* wizard,
-                          const CControllerFeature& feature,
-                          unsigned int index);
+    CGUIWheelButton(const CGUIButtonControl& buttonTemplate,
+                    IConfigurationWizard* wizard,
+                    const CControllerFeature& feature,
+                    unsigned int index);
 
-    virtual ~CGUIAnalogStickButton() = default;
+    virtual ~CGUIWheelButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;
     virtual bool IsFinished(void) const override;
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetAnalogStickDirection(void) const override;
+    virtual JOYSTICK::WHEEL_DIRECTION GetWheelDirection(void) const override;
     virtual void Reset(void) override;
 
   private:
     enum class STATE
     {
-      ANALOG_STICK_UP,
-      ANALOG_STICK_RIGHT,
-      ANALOG_STICK_DOWN,
-      ANALOG_STICK_LEFT,
+      WHEEL_LEFT,
+      WHEEL_RIGHT,
       FINISHED,
     };
 

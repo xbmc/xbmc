@@ -34,6 +34,9 @@ const char* CControllerTranslator::TranslateFeatureType(FEATURE_TYPE type)
     case FEATURE_TYPE::ACCELEROMETER:    return LAYOUT_XML_ELM_ACCELEROMETER;
     case FEATURE_TYPE::MOTOR:            return LAYOUT_XML_ELM_MOTOR;
     case FEATURE_TYPE::RELPOINTER:       return LAYOUT_XML_ELM_RELPOINTER;
+    case FEATURE_TYPE::ABSPOINTER:       return LAYOUT_XML_ELM_ABSPOINTER;
+    case FEATURE_TYPE::WHEEL:            return LAYOUT_XML_ELM_WHEEL;
+    case FEATURE_TYPE::THROTTLE:         return LAYOUT_XML_ELM_THROTTLE;
     default:
       break;
   }
@@ -48,6 +51,8 @@ FEATURE_TYPE CControllerTranslator::TranslateFeatureType(const std::string& strT
   if (strType == LAYOUT_XML_ELM_MOTOR)            return FEATURE_TYPE::MOTOR;
   if (strType == LAYOUT_XML_ELM_RELPOINTER)       return FEATURE_TYPE::RELPOINTER;
   if (strType == LAYOUT_XML_ELM_ABSPOINTER)       return FEATURE_TYPE::ABSPOINTER;
+  if (strType == LAYOUT_XML_ELM_WHEEL)            return FEATURE_TYPE::WHEEL;
+  if (strType == LAYOUT_XML_ELM_THROTTLE)         return FEATURE_TYPE::THROTTLE;
 
   return FEATURE_TYPE::UNKNOWN;
 }
@@ -69,6 +74,8 @@ const char* CControllerTranslator::TranslateFeatureCategory(FEATURE_CATEGORY cat
     case FEATURE_CATEGORY::KEY:           return FEATURE_CATEGORY_KEY;
     case FEATURE_CATEGORY::KEYPAD:        return FEATURE_CATEGORY_KEYPAD;
     case FEATURE_CATEGORY::HARDWARE:      return FEATURE_CATEGORY_HARDWARE;
+    case FEATURE_CATEGORY::WHEEL:         return FEATURE_CATEGORY_WHEEL;
+    case FEATURE_CATEGORY::JOYSTICK:      return FEATURE_CATEGORY_JOYSTICK;
     default:
       break;
   }
@@ -90,6 +97,8 @@ FEATURE_CATEGORY CControllerTranslator::TranslateFeatureCategory(const std::stri
   if (strCategory == FEATURE_CATEGORY_KEY)            return FEATURE_CATEGORY::KEY;
   if (strCategory == FEATURE_CATEGORY_KEYPAD)         return FEATURE_CATEGORY::KEYPAD;
   if (strCategory == FEATURE_CATEGORY_HARDWARE)       return FEATURE_CATEGORY::HARDWARE;
+  if (strCategory == FEATURE_CATEGORY_WHEEL)          return FEATURE_CATEGORY::WHEEL;
+  if (strCategory == FEATURE_CATEGORY_JOYSTICK)       return FEATURE_CATEGORY::JOYSTICK;
 
   return FEATURE_CATEGORY::UNKNOWN;
 }

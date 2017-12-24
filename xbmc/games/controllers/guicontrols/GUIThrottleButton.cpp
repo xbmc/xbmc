@@ -18,7 +18,7 @@
  *
  */
 
-#include "GUIAnalogStickButton.h"
+#include "GUIThrottleButton.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
@@ -27,16 +27,16 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIAnalogStickButton::CGUIAnalogStickButton(const CGUIButtonControl& buttonTemplate,
-                                             IConfigurationWizard* wizard,
-                                             const CControllerFeature& feature,
-                                             unsigned int index) :
+CGUIThrottleButton::CGUIThrottleButton(const CGUIButtonControl& buttonTemplate,
+                                       IConfigurationWizard* wizard,
+                                       const CControllerFeature& feature,
+                                       unsigned int index) :
   CGUIFeatureButton(buttonTemplate, wizard, feature, index)
 {
   Reset();
 }
 
-bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
+bool CGUIThrottleButton::PromptForInput(CEvent& waitEvent)
 {
   using namespace JOYSTICK;
 
@@ -47,21 +47,13 @@ bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
   std::string strWarn;
   switch (m_state)
   {
-    case STATE::ANALOG_STICK_UP:
+    case STATE::THROTTLE_UP:
       strPrompt = g_localizeStrings.Get(35092); // "Move %s up"
       strWarn   = g_localizeStrings.Get(35093); // "Move %s up (%d)"
       break;
-    case STATE::ANALOG_STICK_RIGHT:
-      strPrompt = g_localizeStrings.Get(35096); // "Move %s right"
-      strWarn   = g_localizeStrings.Get(35097); // "Move %s right (%d)"
-      break;
-    case STATE::ANALOG_STICK_DOWN:
+    case STATE::THROTTLE_DOWN:
       strPrompt = g_localizeStrings.Get(35094); // "Move %s down"
       strWarn   = g_localizeStrings.Get(35095); // "Move %s down (%d)"
-      break;
-    case STATE::ANALOG_STICK_LEFT:
-      strPrompt = g_localizeStrings.Get(35098); // "Move %s left"
-      strWarn   = g_localizeStrings.Get(35099); // "Move %s left (%d)"
       break;
     default:
       break;
@@ -80,29 +72,27 @@ bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
   return bInterrupted;
 }
 
-bool CGUIAnalogStickButton::IsFinished(void) const
+bool CGUIThrottleButton::IsFinished(void) const
 {
   return m_state >= STATE::FINISHED;
 }
 
-JOYSTICK::ANALOG_STICK_DIRECTION CGUIAnalogStickButton::GetAnalogStickDirection(void) const
+JOYSTICK::THROTTLE_DIRECTION CGUIThrottleButton::GetThrottleDirection(void) const
 {
   using namespace JOYSTICK;
 
   switch (m_state)
   {
-    case STATE::ANALOG_STICK_UP:    return ANALOG_STICK_DIRECTION::UP;
-    case STATE::ANALOG_STICK_RIGHT: return ANALOG_STICK_DIRECTION::RIGHT;
-    case STATE::ANALOG_STICK_DOWN:  return ANALOG_STICK_DIRECTION::DOWN;
-    case STATE::ANALOG_STICK_LEFT:  return ANALOG_STICK_DIRECTION::LEFT;
+    case STATE::THROTTLE_UP:    return THROTTLE_DIRECTION::UP;
+    case STATE::THROTTLE_DOWN:  return THROTTLE_DIRECTION::DOWN;
     default:
       break;
   }
 
-  return ANALOG_STICK_DIRECTION::UNKNOWN;
+  return THROTTLE_DIRECTION::UNKNOWN;
 }
 
-void CGUIAnalogStickButton::Reset(void)
+void CGUIThrottleButton::Reset(void)
 {
-  m_state = STATE::ANALOG_STICK_UP;
+  m_state = STATE::THROTTLE_UP;
 }

@@ -19,7 +19,6 @@
  */
 #pragma once
 
-#include "ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
 
 #include <string>

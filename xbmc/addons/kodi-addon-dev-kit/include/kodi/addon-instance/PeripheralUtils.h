@@ -581,6 +581,9 @@ namespace addon
    *   3) accelerometer
    *   4) motor
    *   5) relative pointer[2]
+   *   6) absolute pointer
+   *   7) wheel
+   *   8) throttle
    *
    * [1] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,

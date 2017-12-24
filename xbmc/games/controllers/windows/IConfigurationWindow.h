@@ -185,7 +185,21 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't an
      *         analog stick or the prompt is finished
      */
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
+    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetAnalogStickDirection(void) const = 0;
+
+    /*!
+     * \brief Get the direction of the next wheel prompt
+     * \return The next direction to be prompted, or UNKNOWN if this isn't a
+     *         wheel or the prompt is finished
+     */
+    virtual JOYSTICK::WHEEL_DIRECTION GetWheelDirection(void) const = 0;
+
+    /*!
+     * \brief Get the direction of the next throttle prompt
+     * \return The next direction to be prompted, or UNKNOWN if this isn't a
+     *         throttle or the prompt is finished
+     */
+    virtual JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection(void) const = 0;
 
     /*!
      * \brief Reset button after prompting for input has finished

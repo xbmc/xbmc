@@ -64,16 +64,55 @@ public:
    * \brief Create a key name used to index an action in the keymap
    *
    * \param feature  The feature name
-   * \param dir      The direction for analog sticks, or ignored otherwise
    *
    * \return A valid name for a key in the joystick keymap
    */
-  static std::string MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN);
+  static std::string MakeKeyName(const FeatureName &feature);
+
+  /*!
+   * \brief Create a key name used to index an action in the keymap
+   *
+   * \param feature  The feature name
+   * \param dir      The direction for analog sticks
+   *
+   * \return A valid name for a key in the joystick keymap
+   */
+  static std::string MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir);
+
+  /*!
+   * \brief Create a key name used to index an action in the keymap
+   *
+   * \param feature  The feature name
+   * \param dir      The direction for a wheel to turn
+   *
+   * \return A valid name for a key in the joystick keymap
+   */
+  static std::string MakeKeyName(const FeatureName &feature, WHEEL_DIRECTION dir);
+
+  /*!
+   * \brief Create a key name used to index an action in the keymap
+   *
+   * \param feature  The feature name
+   * \param dir      The direction for a throttle to move
+   *
+   * \return A valid name for a key in the joystick keymap
+   */
+  static std::string MakeKeyName(const FeatureName &feature, THROTTLE_DIRECTION dir);
 
   /*!
     * \brief Return a vector of the four cardinal directions
     */
-  static const std::vector<ANALOG_STICK_DIRECTION> &GetDirections();
+  static const std::vector<ANALOG_STICK_DIRECTION> &GetAnalogStickDirections();
+
+  /*!
+   * \brief Return a vector of the two wheel directions
+   */
+  static const std::vector<WHEEL_DIRECTION> &GetWheelDirections();
+
+  /*!
+   * \brief Return a vector of the two throttle directions
+   */
+  static const std::vector<THROTTLE_DIRECTION> &GetThrottleDirections();
 };
 
 }
