@@ -1,4 +1,5 @@
 set(SOURCES Filesystem.cpp
+            LocalDirectoryImpl.cpp
             LocalFileImpl.cpp
             MessagePrinter.cpp)
 

@@ -2,6 +2,7 @@ file(GLOB OVERRIDES_CPP overrides/${CORE_SYSTEM_NAME}/*.cpp)
 file(GLOB OVERRIDES_H overrides/${CORE_SYSTEM_NAME}/*.h)
 
 set(SOURCES Filesystem.cpp
+            LocalDirectory.cpp
             LocalFile.cpp
             Platform.cpp
             XbmcContext.cpp
@@ -9,6 +10,7 @@ set(SOURCES Filesystem.cpp
             ${OVERRIDES_CPP})
 
 set(HEADERS Filesystem.h
+            LocalDirectory.h
             LocalFile.h
             MessagePrinter.h
             Platform.h

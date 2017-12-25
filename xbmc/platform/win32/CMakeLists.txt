@@ -1,4 +1,5 @@
 set(SOURCES CharsetConverter.cpp
+            LocalDirectoryImpl.cpp
             LocalFileImpl.cpp
             MessagePrinter.cpp
             crts_caller.cpp
@@ -16,6 +17,7 @@ set(HEADERS CharsetConverter.h
             dirent.h
             dxerr.h
             IMMNotificationClient.h
+            LocalDirectoryImpl.h
             LocalFileImpl.h
             my_ntddcdrm.h
             my_ntddscsi.h
