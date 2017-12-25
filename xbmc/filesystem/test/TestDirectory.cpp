@@ -21,20 +21,21 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "FileItem.h"
+#include "platform/LocalDirectory.h"
 #include "utils/URIUtils.h"
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
+
+using namespace KODI::PLATFORM;
 
 TEST(TestDirectory, General)
 {
   std::string tmppath1, tmppath2, tmppath3;
   CFileItemList items;
   CFileItemPtr itemptr;
-  tmppath1 = CSpecialProtocol::TranslatePath("special://temp/");
-  tmppath1 = URIUtils::AddFileToFolder(tmppath1, "TestDirectory");
-  tmppath2 = tmppath1;
-  tmppath2 = URIUtils::AddFileToFolder(tmppath2, "subdir");
+  tmppath1 = URIUtils::AddFileToFolder(CLocalDirectory::CreateSystemTempDirectory(), "TestDirectory");
+  tmppath2 = URIUtils::AddFileToFolder(tmppath1, "subdir");
   EXPECT_TRUE(XFILE::CDirectory::Create(tmppath1));
   EXPECT_TRUE(XFILE::CDirectory::Exists(tmppath1));
   EXPECT_FALSE(XFILE::CDirectory::Exists(tmppath2));
@@ -56,7 +57,7 @@ TEST(TestDirectory, General)
 TEST(TestDirectory, CreateRecursive)
 {
   auto path1 = URIUtils::AddFileToFolder(
-    CSpecialProtocol::TranslatePath("special://temp/"),
+    CLocalDirectory::CreateSystemTempDirectory(),
     "level1");
   auto path2 = URIUtils::AddFileToFolder(path1,
     "level2",

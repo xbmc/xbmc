@@ -28,6 +28,8 @@
 #error "No implementation yet"
 #endif
 
+#include "utils/URIUtils.h"
+
 namespace KODI
 {
 namespace PLATFORM
@@ -75,7 +77,7 @@ bool CLocalDirectory::RemoveRecursive(std::string url)
 
 std::string CLocalDirectory::CreateSystemTempDirectory(std::string directory)
 {
-  return DETAILS::CreateSystemTempDirectory(directory);
+  return URIUtils::AppendSlash(DETAILS::CreateSystemTempDirectory(directory));
 }
 
 bool CLocalDirectory::Exists(const CURL &url)
