@@ -157,7 +157,7 @@ CCPUInfo::CCPUInfo(void)
     m_cores[core.m_id] = core;
   }
 #elif defined(TARGET_WINDOWS_STORE)
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 #elif defined(TARGET_WINDOWS_DESKTOP)
   using KODI::PLATFORM::WINDOWS::FromW;
 
@@ -548,7 +548,7 @@ float CCPUInfo::getCPUFrequency()
     return 0.f;
   return hz / 1000000.0;
 #elif defined(TARGET_WINDOWS_STORE) 
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return 0.f;
 #elif defined(TARGET_WINDOWS_DESKTOP) 
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)

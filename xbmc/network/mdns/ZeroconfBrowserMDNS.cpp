@@ -54,7 +54,7 @@ CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
   WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, 0 );
 #elif  defined(TARGET_WINDOWS_STORE)
   // need to modify this code to use WSAEventSelect since WSAAsyncSelect is not supported
-  CLog::Log(LOGERROR, "%s is not implemented for TARGET_WINDOWS_STORE", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented for TARGET_WINDOWS_STORE", __FUNCTION__);
 #endif //TARGET_WINDOWS
 
   if (m_browser)

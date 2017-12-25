@@ -55,28 +55,22 @@ void CWin32StorageProvider::Initialize()
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
-#ifndef TARGET_WINDOWS_STORE
-  using namespace KODI::PLATFORM::WINDOWS;
   CMediaSource share;
+#ifndef TARGET_WINDOWS_STORE
   wchar_t profilePath[MAX_PATH];
   if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PROFILE, nullptr, 0, profilePath)) ||
       GetEnvironmentVariable(L"USERPROFILE", profilePath, MAX_PATH) > 0)
-    share.strPath = FromW(profilePath);
+    share.strPath = KODI::PLATFORM::WINDOWS::FromW(profilePath);
   else
+#endif
     share.strPath = CSpecialProtocol::TranslatePath("special://home");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 
+#ifndef TARGET_WINDOWS_STORE
   CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
-#else
-  CMediaSource share;
-  XFILE::CWinLibraryDirectory::GetStoragePath("documents", share.strPath);
-  share.strName = g_localizeStrings.Get(20249);
-  share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  localDrives.push_back(share);
 #endif
 }
 

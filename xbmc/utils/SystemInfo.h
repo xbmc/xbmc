@@ -91,6 +91,15 @@ public:
     /* Insert new Windows versions here, when they'll be known */
     WindowsVersionFuture = 100  // Future Windows version, not known to code
   };
+  enum WindowsDeviceFamily
+  {
+    Mobile = 1,
+    Desktop = 2,
+    IoT = 3,
+    Xbox = 4,
+    Surface = 5,
+    Other = 100
+  };
 
   CSysInfo(void);
   ~CSysInfo() override;
@@ -145,6 +154,8 @@ public:
 
   static std::string GetUsedCompilerNameAndVer(void);
   std::string GetPrivacyPolicy();
+
+  static WindowsDeviceFamily GetWindowsDeviceFamily();
 
 protected:
   CJob *GetJob() const override;

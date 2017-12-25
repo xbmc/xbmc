@@ -22,10 +22,13 @@
 #include "WinLibraryDirectory.h"
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 
+#include <collection.h>
 #include <string>
 #include <robuffer.h>
 
@@ -192,7 +195,7 @@ bool CWinLibraryFile::Rename(const CURL & urlCurrentName, const CURL & urlNewNam
   return false;
 }
 
-bool CWinLibraryFile::SetHidden(const CURL & url, bool hidden)
+bool CWinLibraryFile::SetHidden(const CURL& url, bool hidden)
 {
   return false;
 }
@@ -202,16 +205,15 @@ bool CWinLibraryFile::Exists(const CURL& url)
   return GetFile(url) != nullptr;
 }
 
-int CWinLibraryFile::Stat(const CURL & url, struct __stat64 * statData)
+int CWinLibraryFile::Stat(const CURL& url, struct __stat64* statData)
 {
   auto file = GetFile(url);
-  // TODO get stats
-  return 0;
+  return Stat(file, statData);
 }
 
-int CWinLibraryFile::Stat(struct __stat64 * statData)
+int CWinLibraryFile::Stat(struct __stat64* statData)
 {
-  return 0;
+  return Stat(m_sFile, statData);
 }
 
 bool CWinLibraryFile::IsInAccessList(const CURL& url)
@@ -286,7 +288,8 @@ StorageFile^ CWinLibraryFile::GetFile(const CURL & url)
     }
     catch (Platform::Exception^ ex)
     {
-      // TODO logging error
+      std::string error = FromW(std::wstring(ex->Message->Data()));
+      CLog::LogF(LOGERROR, __FUNCTION__, "unable to get file '%s' with error", filePath.c_str(), error.c_str());
     }
   }
   else if (url.GetProtocol() == "file" || url.GetProtocol().empty())
@@ -335,4 +338,63 @@ Platform::String^ CWinLibraryFile::GetTokenFromList(const CURL& url, IStorageIte
   }
 
   return nullptr;
+}
+
+int CWinLibraryFile::Stat(Windows::Storage::StorageFile^ file, struct __stat64* statData)
+{
+  if (!statData)
+    return -1;
+
+  if (!file)
+    return -1;
+
+  /* set st_gid */
+  statData->st_gid = 0; // UNIX group ID is always zero on Win32
+  /* set st_uid */
+  statData->st_uid = 0; // UNIX user ID is always zero on Win32
+  /* set st_ino */
+  statData->st_ino = 0; // inode number is not implemented on Win32
+
+  auto propertyList = ref new Platform::Collections::Vector<Platform::String^>();
+  propertyList->Append("System.DateAccessed");
+  propertyList->Append("System.DateCreated");
+  propertyList->Append("System.DateModified");
+  propertyList->Append("System.Size");
+
+  auto requestedProps = Wait(file->Properties->RetrievePropertiesAsync(propertyList));
+
+  auto dateAccessed = requestedProps->Lookup("System.DateAccessed");
+  if (dateAccessed)
+  {
+    statData->st_atime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateAccessed).UniversalTime);
+  }
+  auto dateCreated = requestedProps->Lookup("System.DateCreated");
+  if (dateCreated)
+  {
+    statData->st_ctime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateCreated).UniversalTime);
+  }
+  auto dateModified = requestedProps->Lookup("System.DateModified");
+  if (dateModified)
+  {
+    statData->st_mtime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateModified).UniversalTime);
+  }
+  auto fileSize = requestedProps->Lookup("System.Size");
+  if (fileSize)
+  {
+    /* set st_size */
+    statData->st_size = static_cast<unsigned long long>(fileSize);
+  }
+
+  statData->st_dev = 0;
+  statData->st_rdev = statData->st_dev;
+  /* set st_nlink */
+  statData->st_nlink = 1;
+  /* set st_mode */
+  statData->st_mode = _S_IREAD; // only read permission for file from library
+  // copy user RWX rights to group rights
+  statData->st_mode |= (statData->st_mode & (_S_IREAD | _S_IWRITE | _S_IEXEC)) >> 3;
+  // copy user RWX rights to other rights
+  statData->st_mode |= (statData->st_mode & (_S_IREAD | _S_IWRITE | _S_IEXEC)) >> 6;
+
+  return 0;
 }

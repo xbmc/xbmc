@@ -75,8 +75,8 @@ CWIN32Util::~CWIN32Util(void)
 int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
-  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, __FUNCTION__": Could not determine tray status %d", GetLastError());
   return -1;
 #else
   using KODI::PLATFORM::WINDOWS::ToW;
@@ -302,7 +302,7 @@ int CWIN32Util::BatteryLevel()
 bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   std::string strCommand = strPath;
@@ -440,7 +440,7 @@ std::string CWIN32Util::GetResInfoString()
 int CWIN32Util::GetDesktopColorDepth()
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return 32;
 #else
   DEVMODE devmode;
@@ -641,7 +641,7 @@ __time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   using namespace KODI::PLATFORM::WINDOWS;
@@ -804,7 +804,7 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   using KODI::PLATFORM::WINDOWS::ToW;
@@ -887,7 +887,7 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType, bool bonlywithmedia)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 #else
   WCHAR* pcBuffer= NULL;
   DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
@@ -1701,7 +1701,7 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
 bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 	return false;
 #else
   const int param = enable ? _ENABLE_PER_THREAD_LOCALE : _DISABLE_PER_THREAD_LOCALE;

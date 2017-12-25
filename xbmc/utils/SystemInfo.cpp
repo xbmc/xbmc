@@ -1412,6 +1412,26 @@ std::string CSysInfo::GetPrivacyPolicy()
   return m_privacyPolicy;
 }
 
+CSysInfo::WindowsDeviceFamily CSysInfo::GetWindowsDeviceFamily()
+{
+#ifdef TARGET_WINDOWS_STORE
+  auto familyName = Windows::System::Profile::AnalyticsInfo::VersionInfo->DeviceFamily;
+  if (familyName->Equals("Windows.Desktop"))
+    return WindowsDeviceFamily::Desktop;
+  else if (familyName->Equals("Windows.Mobile"))
+    return WindowsDeviceFamily::Mobile;
+  else if (familyName->Equals("Windows.Universal"))
+    return WindowsDeviceFamily::IoT;
+  else if (familyName->Equals("Windows.Team"))
+    return WindowsDeviceFamily::Surface;
+  else if (familyName->Equals("Windows.Xbox"))
+    return WindowsDeviceFamily::Xbox;
+  else
+    return WindowsDeviceFamily::Other;
+#endif // TARGET_WINDOWS_STORE
+  return WindowsDeviceFamily::Desktop;
+}
+
 CJob *CSysInfo::GetJob() const
 {
   return new CSysInfoJob();

@@ -199,7 +199,7 @@ void DPMSSupport::PlatformSpecificInit()
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   if(!g_graphicsContext.IsFullScreenRoot())
@@ -224,7 +224,7 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   // Turn display on
