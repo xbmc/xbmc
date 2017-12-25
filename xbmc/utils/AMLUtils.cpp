@@ -639,6 +639,8 @@ bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuff
 {
   bool result = false;
 
+  aml_handle_display_stereo_mode(RENDER_STEREO_MODE_OFF);
+
   result = aml_set_display_resolution(res, framebuffer_name);
 
   aml_handle_scale(res);
