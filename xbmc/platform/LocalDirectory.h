@@ -42,6 +42,7 @@ public:
   static bool Remove(const std::string &url);
   static bool RemoveRecursive(const CURL &url);
   static bool RemoveRecursive(std::string url);
+  static std::string CreateSystemTempDirectory(std::string directory = "xbmctempdirXXXXXX");
 };
 
 } // namespace PLATFORM

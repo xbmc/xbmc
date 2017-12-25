@@ -20,9 +20,10 @@
 
 #include "LocalFileImpl.h"
 #include "URL.h"
-#include "filesystem/File.h"
+#include "platform/LocalDirectory.h"
 #include "utils/AliasShortcutUtils.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include <algorithm>
 #include <assert.h>
 #include <errno.h>
@@ -381,7 +382,7 @@ bool CLocalFileImpl::Exists(const std::string &url)
   return stat64(filename.c_str(), &st) == 0 && !S_ISDIR(st.st_mode);
 }
 
-int CPosixFile::Stat(const CURL &url, struct __stat64 *buffer)
+int CLocalFileImpl::Stat(const CURL &url, struct __stat64 *buffer)
 {
   assert(buffer != NULL);
   const std::string filename(getFilename(url));
@@ -391,7 +392,7 @@ int CPosixFile::Stat(const CURL &url, struct __stat64 *buffer)
   return stat64(filename.c_str(), buffer);
 }
 
-int CPosixFile::Stat(struct __stat64 *buffer)
+int CLocalFileImpl::Stat(struct __stat64 *buffer)
 {
   assert(buffer != NULL);
   if (m_fd < 0 || !buffer)
@@ -399,6 +400,29 @@ int CPosixFile::Stat(struct __stat64 *buffer)
 
   return fstat64(m_fd, buffer);
 }
+
+std::string CLocalFileImpl::GetSystemTempFile(std::string suffix)
+{
+  char tmp[MAX_PATH];
+
+  auto tempPath = CDirectory::CreateSystemTempDirectory();
+  if (tempPath.empty())
+    return tempPath;
+
+  tempPath = URIUtils::AddFileToFolder(tempPath, "xbmctempfileXXXXXX") + suffix;
+  if (tempPath.length() >= MAX_PATH)
+    return std::string();
+
+  strcpy(tmp, tempPath.c_str());
+
+  int fd;
+  if ((fd = mkstemps(tmp, tempPath.length())) < 0)
+    return std::string();
+  close(fd);
+
+  return std::string(tmp);
+}
+
 }
 }
 }

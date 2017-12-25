@@ -30,23 +30,12 @@ namespace PLATFORM
 {
 namespace DETAILS
 {
-class CLocalDirectoryImpl
-{
-public:
-  static bool GetDirectory(const CURL &url, std::vector<std::string> &items);
-  static bool GetDirectory(const std::string &url, std::vector<std::string> &items);
-  static bool Create(const CURL &url);
-  static bool Create(std::string path);
-  static bool Exists(const CURL &url);
-  static bool Exists(const std::string &url);
-  static bool Remove(const CURL &url);
-  static bool Remove(const std::string &url);
-  static bool RemoveRecursive(const CURL &url);
-  static bool RemoveRecursive(const std::string &url);
-
-private:
-  static bool CreateInternal(std::string path);
-};
+bool GetDirectory(std::string url, std::vector<std::string> &items);
+bool Create(std::string path);
+bool Exists(std::string url);
+bool Remove(std::string url);
+bool RemoveRecursive(std::string url);
+std::string CreateSystemTempDirectory(std::string directory = "xbmctempdirXXXXXX");
 }
 }
 }

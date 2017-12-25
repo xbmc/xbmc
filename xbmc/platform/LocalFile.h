@@ -67,6 +67,7 @@ public:
   static bool Exists(const std::string &url);
   static int Stat(const CURL &url, struct __stat64 *buffer);
   static int Stat(const std::string &url, struct __stat64 *buffer);
+  static std::string GetSystemTempFilename(std::string suffix);
 
 private:
   std::unique_ptr<DETAILS::CLocalFileImpl> m_pimpl;

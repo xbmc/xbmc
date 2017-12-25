@@ -8,3 +8,4 @@ xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils
 xbmc/video/test                   test/video
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
+xbmc/platform/test                test/platform

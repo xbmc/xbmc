@@ -32,56 +32,60 @@ namespace KODI
 {
 namespace PLATFORM
 {
-using DETAILS::CLocalDirectoryImpl;
 
 bool CLocalDirectory::GetDirectory(const CURL &url, std::vector<std::string> &items)
 {
-  return CLocalDirectoryImpl::GetDirectory(url, items);
+  return DETAILS::GetDirectory(url.Get(), items);
 }
 
 bool CLocalDirectory::GetDirectory(std::string url, std::vector<std::string> &items)
 {
-  return CLocalDirectoryImpl::GetDirectory(url, items);
+  return DETAILS::GetDirectory(url, items);
 }
 
 bool CLocalDirectory::Create(const CURL &url)
 {
-  return CLocalDirectoryImpl::Create(url);
+  return DETAILS::Create(url.Get());
 }
 
 bool CLocalDirectory::Create(std::string url)
 {
-  return CLocalDirectoryImpl::Create(url);
+  return DETAILS::Create(url);
 }
 
 bool CLocalDirectory::Remove(const CURL &url)
 {
-  return CLocalDirectoryImpl::Remove(url);
+  return DETAILS::Remove(url.Get());
 }
 
 bool CLocalDirectory::Remove(const std::string &url)
 {
-  return CLocalDirectoryImpl::Remove(url);
+  return DETAILS::Remove(url);
 }
 
 bool CLocalDirectory::RemoveRecursive(const CURL &url)
 {
-  return CLocalDirectoryImpl::RemoveRecursive(url);
+  return DETAILS::RemoveRecursive(url.Get());
 }
 
 bool CLocalDirectory::RemoveRecursive(std::string url)
 {
-  return CLocalDirectoryImpl::RemoveRecursive(url);
+  return DETAILS::RemoveRecursive(url);
+}
+
+std::string CLocalDirectory::CreateSystemTempDirectory(std::string directory)
+{
+  return DETAILS::CreateSystemTempDirectory(directory);
 }
 
 bool CLocalDirectory::Exists(const CURL &url)
 {
-  return CLocalDirectoryImpl::Exists(url);
+  return DETAILS::Exists(url.Get());
 }
 
 bool CLocalDirectory::Exists(const std::string &url)
 {
-  return CLocalDirectoryImpl::Exists(url);
+  return DETAILS::Exists(url);
 }
 
 } // namespace PLATFORM

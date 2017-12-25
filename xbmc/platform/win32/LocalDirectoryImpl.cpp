@@ -21,7 +21,7 @@
 #include "LocalDirectoryImpl.h"
 #include "URL.h"
 #include "platform/win32/WIN32Util.h"
-#include "utils/CharsetConverter.h"
+#include "platform/win32/CharsetConverter.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -54,13 +54,43 @@ inline static std::wstring prepareWin32DirectoryName(const std::string &strPath)
   return nameW;
 }
 
-bool CLocalDirectoryImpl::GetDirectory(const CURL &url, std::vector<std::string> &items)
+bool CreateInternal(std::wstring path)
 {
-  return GetDirectory(url.Get(), items);
+  if (!CreateDirectoryW(path.c_str(), nullptr))
+  {
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+      return true;
+
+    if (GetLastError() != ERROR_PATH_NOT_FOUND)
+      return false;
+
+    auto sep = path.rfind(L'\\');
+    if (sep == std::wstring::npos)
+      return false;
+
+    if (CreateInternal(path.substr(0, sep)))
+      return CreateInternal(path);
+
+    return false;
+  }
+
+  // if directory name starts from dot, make it hidden
+  const auto lastSlashPos = path.rfind(L'\\');
+  if (lastSlashPos < path.length() - 1 && path[lastSlashPos + 1] == L'.')
+  {
+    DWORD dirAttrs = GetFileAttributesW(path.c_str());
+    if (dirAttrs != INVALID_FILE_ATTRIBUTES &&
+        SetFileAttributesW(path.c_str(), dirAttrs | FILE_ATTRIBUTE_HIDDEN))
+      return true;
+  }
+
+  return true;
 }
 
-bool CLocalDirectoryImpl::GetDirectory(std::string path, std::vector<std::string> &items)
+bool GetDirectory(std::string path, std::vector<std::string> &items)
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
+
   items.clear();
 
   if (!path.empty() && path.back() != '\\')
@@ -90,8 +120,8 @@ bool CLocalDirectoryImpl::GetDirectory(std::string path, std::vector<std::string
     if (itemNameW == L"." || itemNameW == L"..")
       continue;
 
-    std::string itemName;
-    if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
+    auto itemName = FromW(itemNameW);
+    if (itemName.empty())
     {
       CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
       continue;
@@ -109,12 +139,7 @@ bool CLocalDirectoryImpl::GetDirectory(std::string path, std::vector<std::string
   return true;
 }
 
-bool CLocalDirectoryImpl::Create(const CURL &url)
-{
-  return Create(url.Get());
-}
-
-bool CLocalDirectoryImpl::Create(std::string url)
+bool Create(std::string url)
 {
   auto nameW(prepareWin32DirectoryName(url));
   if (nameW.empty())
@@ -126,12 +151,7 @@ bool CLocalDirectoryImpl::Create(std::string url)
   return true;
 }
 
-bool CLocalDirectoryImpl::Exists(const CURL &url)
-{
-  return Exists(url.Get());
-}
-
-bool CLocalDirectoryImpl::Exists(const std::string &url)
+bool Exists(std::string url)
 {
   std::wstring nameW(prepareWin32DirectoryName(url));
   if (nameW.empty())
@@ -144,12 +164,7 @@ bool CLocalDirectoryImpl::Exists(const std::string &url)
   return true;
 }
 
-bool CLocalDirectoryImpl::Remove(const CURL &url)
-{
-  return Remove(url.Get());
-}
-
-bool CLocalDirectoryImpl::Remove(const std::string &url)
+bool Remove(std::string url)
 {
   std::wstring nameW(prepareWin32DirectoryName(url));
   if (nameW.empty())
@@ -161,13 +176,10 @@ bool CLocalDirectoryImpl::Remove(const std::string &url)
   return !Exists(url);
 }
 
-bool CLocalDirectoryImpl::RemoveRecursive(const CURL &url)
+bool RemoveRecursive(std::string path)
 {
-  return Remove(url.Get());
-}
+  using KODI::PLATFORM::WINDOWS::FromW;
 
-bool CLocalDirectoryImpl::RemoveRecursive(std::string path)
-{
   if (!path.empty() && path.back() != '\\')
     path.push_back('\\');
 
@@ -202,14 +214,14 @@ bool CLocalDirectoryImpl::RemoveRecursive(std::string path)
     auto pathW = basePath + itemNameW;
     if (0 != (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      std::string path;
-      if (!g_charsetConverter.wToUTF8(pathW, path, true))
+      auto path = FromW(pathW);
+      if (path.empty())
       {
         CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
         continue;
       }
 
-      if (!RemoveRecursive(CURL{path}))
+      if (!RemoveRecursive(path))
       {
         success = false;
         break;
@@ -236,37 +248,25 @@ bool CLocalDirectoryImpl::RemoveRecursive(std::string path)
   return success;
 }
 
-bool CLocalDirectoryImpl::CreateInternal(std::wstring path)
+std::string CreateSystemTempDirectory(std::string directory)
 {
-  if (!CreateDirectoryW(path.c_str(), nullptr))
-  {
-    if (GetLastError() == ERROR_ALREADY_EXISTS)
-      return true;
+  using namespace KODI::PLATFORM::WINDOWS;
 
-    if (GetLastError() != ERROR_PATH_NOT_FOUND)
-      return false;
+  wchar_t lpTempPathBuffer[MAX_PATH + 1];
 
-    auto sep = path.rfind(L'\\');
-    if (sep == std::wstring::npos)
-      return false;
+  if (!GetTempPathW(MAX_PATH, lpTempPathBuffer))
+    return std::string();
 
-    if (CreateInternal(path.substr(0, sep)))
-      return CreateInternal(path);
+  std::wstring xbmcTempPath = lpTempPathBuffer;
+  if (!GetTempFileNameW(xbmcTempPath.c_str(), ToW(directory).c_str(), 0, lpTempPathBuffer))
+    return std::string();
 
-    return false;
-  }
+  DeleteFileW(lpTempPathBuffer);
 
-  // if directory name starts from dot, make it hidden
-  const auto lastSlashPos = path.rfind(L'\\');
-  if (lastSlashPos < path.length() - 1 && path[lastSlashPos + 1] == L'.')
-  {
-    DWORD dirAttrs = GetFileAttributesW(path.c_str());
-    if (dirAttrs != INVALID_FILE_ATTRIBUTES &&
-        SetFileAttributesW(path.c_str(), dirAttrs | FILE_ATTRIBUTE_HIDDEN))
-      return true;
-  }
+  if (!CreateDirectoryW(lpTempPathBuffer, nullptr))
+    return std::string();
 
-  return true;
+  return FromW(lpTempPathBuffer);
 }
 
 } // namespace DETAILS

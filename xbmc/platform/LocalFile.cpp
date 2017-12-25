@@ -152,6 +152,11 @@ int CLocalFile::Stat(const std::string &url, struct __stat64 *buffer)
   return CLocalFileImpl::Stat(url, buffer);
 }
 
+std::string CLocalFile::GetSystemTempFilename(std::string suffix)
+{
+  return CLocalFileImpl::GetSystemTempFilename(suffix);
+}
+
 int CLocalFile::Stat(struct __stat64 *buffer)
 {
   return m_pimpl->Stat(buffer);

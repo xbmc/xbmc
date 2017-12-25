@@ -37,12 +37,26 @@ namespace PLATFORM
 namespace DETAILS
 {
 
-bool CLocalDirectoryImpl::GetDirectory(const CURL &url, std::vector<std::string> &items)
+bool CreateInternal(std::string path)
 {
-  return GetDirectory(url.Get(), items);
+  if (mkdir(path.c_str(), 0755) != 0)
+  {
+    if (errno == ENOENT)
+    {
+      auto sep = path.rfind('/');
+      if (sep == std::string::npos)
+        return false;
+
+      if (Create(path.substr(0, sep)))
+        return Create(path);
+    }
+
+    return false;
+  }
+  return true;
 }
 
-bool CLocalDirectoryImpl::GetDirectory(const std::string &root, std::vector<std::string> &items)
+bool GetDirectory(const std::string &root, std::vector<std::string> &items)
 {
   if (IsAliasShortcut(root, true))
     TranslateAliasShortcut(root);
@@ -66,12 +80,7 @@ bool CLocalDirectoryImpl::GetDirectory(const std::string &root, std::vector<std:
   return true;
 }
 
-bool CLocalDirectoryImpl::Create(const CURL &url)
-{
-  return Create(url.Get());
-}
-
-bool CLocalDirectoryImpl::Create(const std::string &url)
+bool Create(const std::string &url)
 {
   if (!Create(url))
     return Exists(url);
@@ -79,31 +88,7 @@ bool CLocalDirectoryImpl::Create(const std::string &url)
   return true;
 }
 
-bool CLocalDirectoryImpl::CreateInternal(std::string path)
-{
-  if (mkdir(path.c_str(), 0755) != 0)
-  {
-    if (errno == ENOENT)
-    {
-      auto sep = path.rfind('/');
-      if (sep == std::string::npos)
-        return false;
-
-      if (Create(path.substr(0, sep)))
-        return Create(path);
-    }
-
-    return false;
-  }
-  return true;
-}
-
-bool CLocalDirectoryImpl::Remove(const CURL &url)
-{
-  return Remove(url.Get());
-}
-
-bool CLocalDirectoryImpl::Remove(const std::string &url)
+bool Remove(const std::string &url)
 {
   if (rmdir(url.Get().c_str()) == 0)
     return true;
@@ -111,12 +96,7 @@ bool CLocalDirectoryImpl::Remove(const std::string &url)
   return !Exists(url);
 }
 
-bool CLocalDirectoryImpl::RemoveRecursive(const CURL &url)
-{
-  return RemoveRecursive(url.Get());
-}
-
-bool CLocalDirectoryImpl::RemoveRecursive(const std::string &root)
+bool RemoveRecursive(const std::string &root)
 {
 
   if (IsAliasShortcut(root, true))
@@ -179,12 +159,7 @@ bool CLocalDirectoryImpl::RemoveRecursive(const std::string &root)
   return success;
 }
 
-bool CLocalDirectoryImpl::Exists(const CURL &url)
-{
-  return Exists(url.Get());
-}
-
-bool CLocalDirectoryImpl::Exists(const std::string &url)
+bool Exists(const std::string &url)
 {
   if (IsAliasShortcut(url, true))
     TranslateAliasShortcut(url);
@@ -194,6 +169,19 @@ bool CLocalDirectoryImpl::Exists(const std::string &url)
     return false;
   return S_ISDIR(buffer.st_mode) ? true : false;
 }
+
+std::string CreateSystemTempDirectory(std::string directory)
+{
+  char buf[MAX_PATH];
+  char *tmp;
+  strcpy(buf, ("/tmp/" + directory).c_str());
+
+  if ((tmp = mkdtemp(buf)) == NULL)
+    return std::string();
+  
+  return std::string(tmp);
+}
+
 }
 }
 }
