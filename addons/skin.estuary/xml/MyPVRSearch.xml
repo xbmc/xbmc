@@ -20,10 +20,10 @@
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<onleft>9000</onleft>
-					<onright>77</onright>
+					<onright>73</onright>
 					<movement>2</movement>
 					<focusposition>3</focusposition>
-					<pagecontrol>77</pagecontrol>
+					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
 					<itemlayout height="100">
 						<control type="label">
@@ -119,24 +119,24 @@
 			</control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Right</include>
 				<width>870</width>
 				<right>0</right>
-				<include>OpenClose_Right</include>
 				<include content="ContentPanel">
-					<param name="left" value="-68" />
+					<param name="left" value="-72" />
 					<param name="width" value="970" />
 					<param name="top" value="-20" />
 					<param name="flipx" value="true" />
 				</include>
-				<control type="scrollbar" id="77">
-					<left>-45</left>
-					<top>0</top>
+				<control type="scrollbar" id="73">
+					<left>-50</left>
+					<top>list_y_offset</top>
 					<width>12</width>
-					<height>100%</height>
+					<bottom>list_y_offset</bottom>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-45,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(77)">conditional</animation>
+					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
 				<include>PVRInfoPanel</include>
 			</control>

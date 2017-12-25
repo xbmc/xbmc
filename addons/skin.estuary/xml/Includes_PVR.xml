@@ -102,45 +102,134 @@
 		</control>
 	</include>
 	<include name="PVRInfoPanel">
-		<control type="label">
-			<top>120</top>
-			<width>540</width>
-			<height>262</height>
-			<font>font45</font>
-			<label>$INFO[ListItem.ChannelName]</label>
+		<control type="group">
+			<visible>!ListItem.IsFolder</visible>
+			<control type="image">
+				<left>0</left>
+				<top>120</top>
+				<width>200</width>
+				<height>200</height>
+				<aspectratio align="right">keep</aspectratio>
+				<texture fallback="DefaultTVShows.png">$INFO[Listitem.Icon]</texture>
+				<fadetime>200</fadetime>
+			</control>
+			<control type="group">
+				<top>120</top>
+				<left>240</left>
+				<width>590</width>
+				<control type="label">
+					<height>262</height>
+					<font>font45</font>
+					<label>$INFO[ListItem.ChannelName]</label>
+				</control>
+				<control type="label">
+					<top>60</top>
+					<height>200</height>
+					<wrapmultiline>true</wrapmultiline>
+					<label>$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]</label>
+				</control>
+				<control type="group">
+					<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
+					<top>150</top>
+					<height>262</height>
+					<control type="label">
+						<label>$INFO[ListItem.StartTime]</label>
+					</control>
+					<control type="label">
+						<align>right</align>
+						<label>$INFO[ListItem.EndTime]</label>
+					</control>
+					<control type="progress">
+						<top>50</top>
+						<height>12</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
+					</control>
+				</control>
+			</control>
+			<control type="label">
+				<top>390</top>
+				<width>830</width>
+				<height>262</height>
+				<font>font36_title</font>
+				<label>$INFO[ListItem.Title]</label>
+				<visible>!PVR.HasEpg</visible>
+			</control>
+			<control type="label">
+				<top>390</top>
+				<width>830</width>
+				<height>262</height>
+				<font>font36_title</font>
+				<label>$INFO[ListItem.EpgEventTitle]</label>
+				<visible>PVR.HasEpg</visible>
+			</control>
+			<control type="label">
+				<top>435</top>
+				<width>830</width>
+				<height>70</height>
+				<label>[I]$INFO[ListItem.EpisodeName][/I]</label>
+			</control>
+			<control type="textbox">
+				<top>490</top>
+				<width>830</width>
+				<bottom>75</bottom>
+				<label>$INFO[ListItem.Plot]</label>
+				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+			</control>
+			<control type="textbox">
+				<top>530</top>
+				<width>830</width>
+				<height>340</height>
+				<align>center</align>
+				<font>font27</font>
+				<textcolor>80FFFFFF</textcolor>
+				<label>$LOCALIZE[19055]</label>
+				<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
+			</control>
 		</control>
-		<control type="image">
-			<left>520</left>
-			<top>120</top>
-			<width>270</width>
-			<height>220</height>
-			<aspectratio align="right">keep</aspectratio>
-			<texture fallback="DefaultTVShows.png">$INFO[Listitem.Icon]</texture>
-			<fadetime>200</fadetime>
-		</control>
-		<control type="label">
-			<top>240</top>
-			<width>540</width>
-			<height>262</height>
-			<textcolor>grey</textcolor>
-			<font>font36_title</font>
-			<label>$INFO[ListItem.EpgEventTitle]</label>
-		</control>
-		<control type="textbox">
-			<top>380</top>
-			<width>820</width>
-			<bottom>75</bottom>
-			<label>[B]$INFO[ListItem.EpisodeName,,[CR]][/B]$INFO[ListItem.Plot]</label>
-		</control>
-		<control type="textbox">
-			<top>510</top>
-			<width>790</width>
-			<height>362</height>
-			<align>center</align>
-			<font>font27</font>
-			<textcolor>80FFFFFF</textcolor>
-			<label>$LOCALIZE[19055]</label>
-			<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
+		<control type="group">
+			<visible>ListItem.IsFolder</visible>
+			<top>180</top>
+			<control type="label">
+				<top>10</top>
+				<width>830</width>
+				<height>262</height>
+				<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]])</label>
+				<font>font37</font>
+				<visible>!ListItem.IsParentFolder</visible>
+			</control>
+			<control type="group">
+				<left>-10</left>
+				<top>60</top>
+				<visible>!ListItem.IsParentFolder</visible>
+				<control type="panel" id="5000">
+					<top>20</top>
+					<width>830</width>
+					<bottom>100</bottom>
+					<orientation>vertical</orientation>
+					<focusedlayout height="100" width="780">
+						<control type="label">
+							<left>10</left>
+							<height>90</height>
+							<width>830</width>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</focusedlayout>
+					<itemlayout height="100" width="780">
+						<control type="label">
+							<left>10</left>
+							<height>90</height>
+							<width>830</width>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</itemlayout>
+					<content sortby="date" sortorder=$PARAM[folder_sortorder]>$INFO[ListItem.FilenameAndPath]</content>
+				</control>
+			</control>
 		</control>
 	</include>
 	<include name="PVRChannelNumberInput">

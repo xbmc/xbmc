@@ -13,7 +13,7 @@
 				<control type="fixedlist" id="50">
 					<left>0</left>
 					<top>list_y_offset</top>
-					<right>860</right>
+					<right>918</right>
 					<bottom>list_y_offset</bottom>
 					<onleft>9000</onleft>
 					<onright>73</onright>
@@ -91,118 +91,27 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Right</include>
+				<width>870</width>
 				<right>0</right>
-				<width>820</width>
 				<include content="ContentPanel">
-					<param name="left" value="-62" />
+					<param name="left" value="-72" />
 					<param name="width" value="970" />
 					<param name="top" value="-20" />
 					<param name="flipx" value="true" />
 				</include>
 				<control type="scrollbar" id="73">
-					<left>-40</left>
+					<left>-50</left>
 					<top>list_y_offset</top>
 					<width>12</width>
 					<bottom>list_y_offset</bottom>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-40,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
+					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
-				<control type="group">
-					<visible>!ListItem.IsFolder</visible>
-					<top>180</top>
-					<control type="label">
-						<left>170</left>
-						<top>57</top>
-						<width>560</width>
-						<height>262</height>
-						<wrapmultiline>true</wrapmultiline>
-						<label>$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]</label>
-					</control>
-					<control type="label">
-						<left>170</left>
-						<top>10</top>
-						<width>560</width>
-						<height>262</height>
-						<font>font36_title</font>
-						<label>$INFO[ListItem.ChannelName]</label>
-					</control>
-					<control type="image">
-						<left>-20</left>
-						<top>15</top>
-						<width>150</width>
-						<height>120</height>
-						<fadetime>200</fadetime>
-						<aspectratio>keep</aspectratio>
-						<texture>$INFO[ListItem.Icon]</texture>
-					</control>
-					<control type="label">
-						<top>195</top>
-						<width>750</width>
-						<height>262</height>
-						<font>font36_title</font>
-						<label>$INFO[ListItem.Title]</label>
-					</control>
-					<control type="label">
-						<top>240</top>
-						<width>750</width>
-						<height>70</height>
-						<label>[I]$INFO[ListItem.EpisodeName][/I]</label>
-					</control>
-					<control type="textbox">
-						<top>284</top>
-						<width>750</width>
-						<bottom>95</bottom>
-						<align>justify</align>
-						<label>$INFO[ListItem.Plot]</label>
-						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
-					</control>
-				</control>
-				<control type="group">
-					<visible>ListItem.IsFolder</visible>
-					<top>180</top>
-					<control type="label">
-						<top>10</top>
-						<width>560</width>
-						<height>262</height>
-						<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]])</label>
-						<font>font37</font>
-						<visible>ListItem.IsFolder + !ListItem.IsParentFolder</visible>
-					</control>
-					<control type="group">
-						<left>-10</left>
-						<top>60</top>
-						<visible>ListItem.IsFolder + !ListItem.IsParentFolder</visible>
-						<control type="panel" id="5000">
-							<top>20</top>
-							<width>780</width>
-							<bottom>200</bottom>
-							<orientation>vertical</orientation>
-							<focusedlayout height="100" width="780">
-								<control type="label">
-									<left>10</left>
-									<height>90</height>
-									<width>780</width>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
-									<shadowcolor>text_shadow</shadowcolor>
-								</control>
-							</focusedlayout>
-							<itemlayout height="100" width="780">
-								<control type="label">
-									<left>10</left>
-									<height>90</height>
-									<width>$PARAM[width]</width>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.Date,[COLOR grey],[/COLOR][CR]]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
-									<shadowcolor>text_shadow</shadowcolor>
-								</control>
-							</itemlayout>
-							<content sortby="date" sortorder="descending">$INFO[ListItem.FilenameAndPath]</content>
-						</control>
-					</control>
-				</control>
+				<include content="PVRInfoPanel">
+					<param name="folder_sortorder" value="descending" />
+				</include>
 			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRRecordingsVar]" />
@@ -212,24 +121,23 @@
 			</include>
 			<control type="group">
 				<depth>DepthBars</depth>
-				<right>0</right>
-				<width>820</width>
+				<right>20</right>
+				<width>850</width>
 				<include>OpenClose_Right</include>
 				<bottom>0</bottom>
 				<height>60</height>
 				<control type="label">
-					<description>Disk usage text</description>
-					<width>550</width>
+					<right>220</right>
+					<width>610</width>
 					<height>20</height>
 					<label>$INFO[PVR.backenddiskspace]</label>
 					<shadowcolor>black</shadowcolor>
 					<align>right</align>
-					<font>font30_title</font>
+					<font>font27</font>
 					<visible>!Integer.IsGreater(PVR.backenddiskspaceprogr,100)</visible>
 				</control>
 				<control type="progress">
-					<description>Disk usage bar</description>
-					<left>570</left>
+					<right>0</right>
 					<top>17</top>
 					<width>200</width>
 					<height>12</height>
