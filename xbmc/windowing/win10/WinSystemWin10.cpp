@@ -351,7 +351,7 @@ const MONITOR_DETAILS* CWinSystemWin10::GetMonitor(int screen) const
 
 int CWinSystemWin10::GetCurrentScreen()
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   // fallback to default
   return 0;
 }
@@ -376,7 +376,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
   if (!details)
     return false;
 
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 
   return true;
 }
@@ -524,22 +524,22 @@ void CWinSystemWin10::ShowOSMouse(bool show)
 
 bool CWinSystemWin10::Minimize()
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return true;
 }
 bool CWinSystemWin10::Restore()
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return true;
 }
 bool CWinSystemWin10::Hide()
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return true;
 }
 bool CWinSystemWin10::Show(bool raise)
 {
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return true;
 }
 

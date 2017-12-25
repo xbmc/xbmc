@@ -246,7 +246,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     return -1;
   }
 #elif defined(TARGET_WINDOWS_STORE)
-  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 #else
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead = {0};
