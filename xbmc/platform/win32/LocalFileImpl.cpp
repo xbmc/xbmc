@@ -19,13 +19,13 @@
  */
 
 #include "LocalFileImpl.h"
-#include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
 #include "platform/LocalDirectory.h"
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "utils/SystemInfo.h"
+#include "utils/URIUtils.h"
 #include "utils/auto_buffer.h"
 #include "utils/win32/Win32Log.h"
-#include "utils/URIUtils.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -45,8 +45,6 @@ namespace PLATFORM
 {
 namespace DETAILS
 {
-
-using FILESYSTEM::file_status;
 
 CLocalFileImpl::CLocalFileImpl()
     : m_hFile(INVALID_HANDLE_VALUE)
@@ -771,6 +769,6 @@ int CLocalFileImpl::Stat(struct __stat64 *statData)
 
   return 0;
 }
-}
-}
-}
+} // namespace DETAILS
+} // namespace PLATFORM
+} // namespace KODI

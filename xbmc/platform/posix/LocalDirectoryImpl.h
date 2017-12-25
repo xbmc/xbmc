@@ -36,6 +36,6 @@ bool Exists(std::string url);
 bool Remove(std::string url);
 bool RemoveRecursive(std::string url);
 std::string CreateSystemTempDirectory(std::string directory = "xbmctempdirXXXXXX");
-}
-}
-}
+} // namespace DETAILS
+} // namespace PLATFORM
+} // namespace KODI

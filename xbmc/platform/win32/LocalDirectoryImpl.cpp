@@ -20,8 +20,8 @@
 
 #include "LocalDirectoryImpl.h"
 #include "URL.h"
-#include "platform/win32/WIN32Util.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
