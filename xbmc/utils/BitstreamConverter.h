@@ -47,6 +47,14 @@ typedef struct mpeg2_sequence
   uint32_t  ratio_info;
 } mpeg2_sequence;
 
+typedef struct h264_sequence
+{
+  uint32_t  width;
+  uint32_t  height;
+  float     ratio;
+  uint32_t  ratio_info;
+} h264_sequence;
+
 typedef struct
 {
   int profile_idc;
@@ -111,6 +119,7 @@ public:
 
   static void       parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
+  static bool       h264_sequence_header(const uint8_t *data, const uint32_t size, h264_sequence *sequence);
 
 protected:
   static int  avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);

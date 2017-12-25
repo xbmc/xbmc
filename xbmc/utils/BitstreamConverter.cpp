@@ -185,6 +185,18 @@ static int nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
+// read signed Exp-Golomb code
+static int nal_bs_read_se(nal_bitstream *bs)
+{
+  int i = 0;
+
+  i = nal_bs_read_ue (bs);
+  /* (-1)^(i+1) Ceil (i / 2) */
+  i = (i + 1) / 2 * (i & 1 ? 1 : -1);
+
+  return i;
+}
+
 static const uint8_t* avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
 {
   const uint8_t *a = p + 4 - ((intptr_t)p & 3);
@@ -1222,6 +1234,312 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
   }
 
   return changed;
+}
+
+bool CBitstreamConverter::h264_sequence_header(const uint8_t *data, const uint32_t size, h264_sequence *sequence)
+{
+    // parse nal units until SPS is found
+    // and return the width, height and aspect ratio if changed.
+    bool changed = false;
+
+    if (!data)
+        return changed;
+
+    const uint8_t *p = data;
+    const uint8_t *end = p + size;
+    const uint8_t *nal_start, *nal_end;
+
+    int profile_idc;
+    int chroma_format_idc = 1;
+    uint8_t pic_order_cnt_type;
+    uint8_t aspect_ratio_idc = 0;
+    uint8_t separate_colour_plane_flag = 0;
+    int8_t frame_mbs_only_flag = -1;
+    unsigned int pic_width, pic_width_cropped;
+    unsigned int pic_height, pic_height_cropped;
+    unsigned int frame_crop_right_offset = 0;
+    unsigned int frame_crop_bottom_offset = 0;
+    unsigned int sar_width = 0;
+    unsigned int sar_height = 0;
+
+    int lastScale;
+    int nextScale;
+    int deltaScale;
+
+    nal_start = avc_find_startcode(p, end);
+
+    while (nal_start < end)
+    {
+        while (!*(nal_start++));
+
+        nal_end = avc_find_startcode(nal_start, end);
+
+        if ((*nal_start & 0x1f) == 7) // SPS
+        {
+            nal_bitstream bs;
+            nal_bs_init(&bs, nal_start, end - nal_start);
+
+            nal_bs_read(&bs, 8); // NAL unit type
+
+            profile_idc = nal_bs_read(&bs, 8);  // profile_idc
+
+            nal_bs_read(&bs, 1);  // constraint_set0_flag
+            nal_bs_read(&bs, 1);  // constraint_set1_flag
+            nal_bs_read(&bs, 1);  // constraint_set2_flag
+            nal_bs_read(&bs, 1);  // constraint_set3_flag
+            nal_bs_read(&bs, 4);  // reserved
+            nal_bs_read(&bs, 8);  // level_idc
+            nal_bs_read_ue(&bs);  // sps_id
+
+            if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 ||
+                profile_idc == 244 || profile_idc == 44  || profile_idc == 83  ||
+                profile_idc == 86  || profile_idc == 118 || profile_idc == 128 )
+            {
+
+                chroma_format_idc = nal_bs_read_ue(&bs); // chroma_format_idc
+                // high_profile
+                if (chroma_format_idc == 3)
+                {
+                    separate_colour_plane_flag = nal_bs_read(&bs, 1); // separate_colour_plane_flag
+                }
+
+                nal_bs_read_ue(&bs); // bit_depth_luma_minus8
+                nal_bs_read_ue(&bs); // bit_depth_chroma_minus8
+                nal_bs_read(&bs, 1); // qpprime_y_zero_transform_bypass_flag
+
+                if (nal_bs_read (&bs, 1)) // seq_scaling_matrix_present_flag
+                {
+
+                    for (int idx = 0; idx < ((chroma_format_idc != 3) ? 8 : 12); ++idx)
+                    {
+                        if (nal_bs_read(&bs, 1)) // scaling list present
+                        {
+                            lastScale = nextScale = 8;
+                            int sl_n = ((idx < 6) ? 16 : 64);
+
+                            for(int sl_i = 0; sl_i < sl_n; ++sl_i)
+                            {
+                                if (nextScale != 0)
+                                {
+                                    deltaScale = nal_bs_read_se(&bs);
+                                    nextScale = (lastScale + deltaScale + 256) % 256;
+
+                                }
+                                lastScale = (nextScale == 0) ? lastScale : nextScale;
+                            }
+                        }
+                    }
+                }
+            }
+
+            nal_bs_read_ue(&bs); // log2_max_frame_num_minus4
+
+            pic_order_cnt_type = nal_bs_read_ue(&bs); // pic_order_cnt_type
+
+            if (pic_order_cnt_type == 0)
+                nal_bs_read_ue(&bs); //  log2_max_pic_order_cnt_lsb_minus4
+            else if (pic_order_cnt_type == 1)
+            {
+                nal_bs_read(&bs, 1); // delta_pic_order_always_zero_flag
+                nal_bs_read_se(&bs); // offset_for_non_ref_pic
+                nal_bs_read_se(&bs); // offset_for_top_to_bottom_field
+
+                unsigned int tmp, idx;
+                tmp =  nal_bs_read_ue(&bs);
+                for (idx = 0; idx < tmp; ++idx)
+                    nal_bs_read_se(&bs); // offset_for_ref_frame[i]
+            }
+
+            nal_bs_read_ue(&bs); // num_ref_frames
+            nal_bs_read(&bs, 1); // gaps_in_frame_num_allowed_flag
+
+            pic_width = (nal_bs_read_ue(&bs) + 1) * 16 ; // pic_width
+            pic_height = (nal_bs_read_ue(&bs) + 1) * 16; // pic_height
+
+            frame_mbs_only_flag = nal_bs_read(&bs, 1); // frame_mbs_only_flag
+            if (!frame_mbs_only_flag)
+            {
+                pic_height *= 2;
+                nal_bs_read(&bs, 1); // mb_adaptive_frame_field_flag
+            }
+
+            nal_bs_read(&bs, 1); // direct_8x8_inference_flag
+
+            if (nal_bs_read(&bs, 1)) // frame_cropping_flag
+            {
+                nal_bs_read_ue(&bs); // frame_crop_left_offset
+                frame_crop_right_offset = nal_bs_read_ue(&bs); // frame_crop_right_offset
+                nal_bs_read_ue(&bs); // frame_crop_top_offset
+                frame_crop_bottom_offset = nal_bs_read_ue(&bs); // frame_crop_bottom_offset
+            }
+
+            if (nal_bs_read(&bs, 1)) // vui_parameters_present_flag
+            {
+                if (nal_bs_read(&bs, 1)) //aspect_ratio_info_present_flag
+                {
+                    aspect_ratio_idc = nal_bs_read(&bs, 8); // aspect_ratio_idc
+
+                    if (aspect_ratio_idc == 255) // EXTENDED_SAR
+                    {
+                        sar_width  = nal_bs_read(&bs, 16);
+                        sar_height = nal_bs_read(&bs, 16);
+
+                    }
+                }
+
+                if (nal_bs_read(&bs, 1)) //overscan_info_present_flag
+                    nal_bs_read(&bs, 1); //overscan_appropriate_flag
+
+                if (nal_bs_read(&bs, 1))  //video_signal_type_present_flag
+                {
+                    nal_bs_read(&bs, 3); //video_format
+                    nal_bs_read(&bs, 1); //video_full_range_flag
+                    if (nal_bs_read(&bs, 1)) // colour_description_present_flag
+                    {
+                        nal_bs_read(&bs, 8); // colour_primaries
+                        nal_bs_read(&bs, 8); // transfer_characteristics
+                        nal_bs_read(&bs, 8); // matrix_coefficients
+                    }
+                }
+
+                if (nal_bs_read(&bs, 1)) //chroma_loc_info_present_flag
+                {
+                    nal_bs_read_ue(&bs); //chroma_sample_loc_type_top_field ue(v)
+                    nal_bs_read_ue(&bs); //chroma_sample_loc_type_bottom_field ue(v)
+                }
+
+                if (nal_bs_read(&bs, 1)) //timing_info_present_flag
+                {
+                    nal_bs_read(&bs, 1); // fixed rate
+                }
+            }
+
+            unsigned int ChromaArrayType, crop;
+            ChromaArrayType = separate_colour_plane_flag ? 0 : chroma_format_idc;
+
+            // cropped width
+            unsigned int CropUnitX, SubWidthC;
+            CropUnitX = 1;
+            SubWidthC = chroma_format_idc == 3 ? 1 : 2;
+            if (ChromaArrayType != 0)
+                CropUnitX = SubWidthC;
+            crop = CropUnitX * frame_crop_right_offset;
+            pic_width_cropped = pic_width - crop;
+
+            if (pic_width_cropped != sequence->width)
+            {
+                changed = true;
+                sequence->width = pic_width_cropped;
+            }
+
+            // cropped height
+            unsigned int CropUnitY, SubHeightC;
+            CropUnitY = 2 - frame_mbs_only_flag;
+            SubHeightC = chroma_format_idc <= 1 ? 2 : 1;
+            if (ChromaArrayType != 0)
+                CropUnitY *= SubHeightC;
+            crop = CropUnitY * frame_crop_bottom_offset;
+            pic_height_cropped = pic_height - crop;
+
+            if (pic_height_cropped != sequence->height)
+            {
+                changed = true;
+                sequence->height = pic_height_cropped;
+            }
+
+            // aspect ratio
+            float ratio = sequence->ratio;
+            if (pic_height_cropped)
+                ratio = pic_width_cropped / (double) pic_height_cropped;
+            switch (aspect_ratio_idc)
+            {
+                case 0:
+                    // Unspecified
+                    break;
+                case 1:
+                    // 1:1
+                    break;
+                case 2:
+                    // 12:11
+                    ratio *= 1.0909090909090908;
+                    break;
+                case 3:
+                    // 10:11
+                    ratio *= 0.90909090909090906;
+                    break;
+                case 4:
+                    // 16:11
+                    ratio *= 1.4545454545454546;
+                    break;
+                case 5:
+                    // 40:33
+                    ratio *= 1.2121212121212122;
+                    break;
+                case 6:
+                    // 24:11
+                    ratio *= 2.1818181818181817;
+                    break;
+                case 7:
+                    // 20:11
+                    ratio *= 1.8181818181818181;
+                    break;
+                case 8:
+                    // 32:11
+                    ratio *= 2.9090909090909092;
+                    break;
+                case 9:
+                    // 80:33
+                    ratio *= 2.4242424242424243;
+                    break;
+                case 10:
+                    // 18:11
+                    ratio *= 1.6363636363636365;
+                    break;
+                case 11:
+                    // 15:11
+                    ratio *= 1.3636363636363635;
+                    break;
+                case 12:
+                    // 64:33
+                    ratio *= 1.9393939393939394;
+                    break;
+                case 13:
+                    // 160:99
+                    ratio *= 1.6161616161616161;
+                    break;
+                case 14:
+                    // 4:3
+                    ratio *= 1.3333333333333333;
+                    break;
+                case 15:
+                    // 3:2
+                    ratio *= 1.5;
+                    break;
+                case 16:
+                    // 2:1
+                    ratio *= 2.0;
+                    break;
+                case 255:
+                    // EXTENDED_SAR
+                    if (sar_height)
+                        ratio *= sar_width / (double)sar_height;
+                    else
+                        ratio = 0.0;
+                    break;
+            } // switch
+            if (aspect_ratio_idc != sequence->ratio_info)
+            {
+                changed = true;
+                sequence->ratio = ratio;
+                sequence->ratio_info = aspect_ratio_idc;
+            }
+
+            break;
+        } // SPS
+        nal_start = nal_end;
+    }
+
+    return changed;
 }
 
 void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
