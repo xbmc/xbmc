@@ -271,12 +271,14 @@ set WORKSPACE=%base_dir%\kodi-build
   for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%buildconfig%\.appx$"') DO (
     copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
     copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+    copy /Y %%~dpna.appxsym %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
     goto END
   )
   rem Release builds don't have Release in it's name
   for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%\.appx$"') DO (
     copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
     copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+    copy /Y %%~dpna.appxsym %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
     goto END
   )
 
@@ -285,6 +287,7 @@ set WORKSPACE=%base_dir%\kodi-build
     for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%buildconfig%\.appx$"') DO (
       copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
       copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+      copy /Y %%~dpna.appxsym %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
       goto END
     )
 
@@ -292,6 +295,7 @@ set WORKSPACE=%base_dir%\kodi-build
     for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32\.appx$"') DO (
       copy /Y %%a %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appx
       copy /Y %%~dpna.cer %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
+      copy /Y %%~dpna.appxsym %base_dir%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
       goto END
     )
   )
