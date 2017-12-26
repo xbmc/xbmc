@@ -21,6 +21,7 @@
 #include "platform/Filesystem.h"
 #include "system.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/URIUtils.h"
 
 #if defined(TARGET_LINUX)
 #include <sys/statvfs.h>
@@ -30,6 +31,9 @@
 #elif defined(TARGET_ANDROID)
 #include <sys/statfs.h>
 #endif
+
+#include <cstdlib>
+#include <limits.h>
 
 namespace KODI
 {
@@ -65,6 +69,67 @@ space_info space(const std::string& path, std::error_code& ec)
 
   return sp;
 }
+
+std::string temp_directory_path(std::error_code &ec)
+{
+  ec.clear();
+
+  auto result = getenv("TMPDIR");
+  if (result)
+    return URIUtils::AppendSlash(result);
+
+  return "/tmp/";
+}
+
+std::string create_temp_directory(std::error_code &ec)
+{
+  char buf[PATH_MAX];
+
+  auto path = temp_directory_path(ec);
+
+  strcpy(buf, (path + "xbmctempXXXXXX").c_str());
+
+  auto tmp = mkdtemp(buf);
+  if (!tmp)
+  {
+    ec.assign(errno, std::system_category());
+    return std::string();
+  }
+  
+  ec.clear();
+  return std::string(tmp);
+}
+
+std::string temp_file_path(std::string suffix, std::error_code &ec)
+{
+  char tmp[PATH_MAX];
+
+  auto tempPath = create_temp_directory(ec);
+  if (ec)
+    return std::string();
+
+  tempPath = URIUtils::AddFileToFolder(tempPath, "xbmctempfileXXXXXX" + suffix);
+  if (tempPath.length() >= PATH_MAX)
+  {
+    ec.assign(EOVERFLOW, std::system_category());
+    return std::string();
+  }
+
+  strcpy(tmp, tempPath.c_str());
+
+  auto fd = mkstemps(tmp, suffix.length());
+  if (fd < 0)
+  {
+    ec.assign(errno, std::system_category());
+    return std::string();
+  }
+
+  close(fd);
+
+  ec.clear();
+  return std::string(tmp);
+}
+
 }
 }
 }

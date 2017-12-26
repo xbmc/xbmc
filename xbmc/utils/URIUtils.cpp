@@ -1087,6 +1087,12 @@ bool URIUtils::IsDOSPath(const std::string &path)
   return false;
 }
 
+std::string URIUtils::AppendSlash(std::string strFolder)
+{
+  AddSlashAtEnd(strFolder);
+  return strFolder;
+}
+
 void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
   if (IsURL(strFolder))
