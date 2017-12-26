@@ -25,7 +25,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
 #include "guilib/GUIWindowManager.h"
@@ -65,8 +65,10 @@
 #include "linux/LinuxStorageProvider.h"
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
-#elif TARGET_WINDOWS
+#elif TARGET_WINDOWS_DESKTOP
 #include "windows/Win32StorageProvider.h"
+#elif TARGET_WINDOWS_STORE
+#include "win10/Win10StorageProvider.h"
 #endif
 
 #include <string>
@@ -111,8 +113,10 @@ void CMediaManager::Initialize()
       m_platformStorage = new CAndroidStorageProvider();
     #elif defined(TARGET_POSIX)
       m_platformStorage = new CLinuxStorageProvider();
-    #elif TARGET_WINDOWS
+    #elif TARGET_WINDOWS_DESKTOP
       m_platformStorage = new CWin32StorageProvider();
+    #elif TARGET_WINDOWS_STORE
+      m_platformStorage = new CStorageProvider();
     #endif
   }
 #ifdef HAS_DVD_DRIVE
