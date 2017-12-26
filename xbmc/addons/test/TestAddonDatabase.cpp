@@ -21,11 +21,13 @@
 #include "addons/AddonDatabase.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
+#include "platform/LocalDirectory.h"
 
 #include "gtest/gtest.h"
 #include <set>
 
 using namespace ADDON;
+using namespace KODI::PLATFORM;
 
 
 class AddonDatabaseTest : public ::testing::Test
@@ -38,7 +40,7 @@ protected:
   {
     settings.type = "sqlite3";
     settings.name = "test";
-    settings.host = CSpecialProtocol::TranslatePath("special://temp/");
+    settings.host = CLocalDirectory::CreateSystemTempDirectory();
 
     database.Connect("test", settings, true);
 

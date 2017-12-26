@@ -25,10 +25,14 @@
 
 #include "utils/RegExp.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "platform/LocalDirectory.h"
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"
+
+using namespace KODI::PLATFORM;
 
 TEST(TestRegExp, RegFind)
 {
@@ -147,15 +151,17 @@ protected:
 TEST_F(TestRegExpLog, DumpOvector)
 {
   CRegExp regex;
-  std::string logfile, logstring;
   char buf[100];
+  std::string logstring;
   unsigned int bytesread;
   XFILE::CFile file;
 
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+
+  auto logdir = URIUtils::AppendSlash(CLocalDirectory::CreateSystemTempDirectory());
+  auto logfile = URIUtils::AddFileToFolder(logdir, appName + ".log");
+  EXPECT_TRUE(CLog::Init(logdir));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));

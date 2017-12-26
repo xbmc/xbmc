@@ -23,12 +23,16 @@
 #include "utils/RegExp.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "platform/LocalDirectory.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
+
+using namespace KODI::PLATFORM;
 
 class Testlog : public testing::Test
 {
@@ -50,8 +54,10 @@ TEST_F(Testlog, Log)
 
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+
+  auto logdir = URIUtils::AppendSlash(CLocalDirectory::CreateSystemTempDirectory());
+  logfile = URIUtils::AddFileToFolder(logdir, appName + ".log");
+  EXPECT_TRUE(CLog::Init(logdir));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   CLog::Log(LOGDEBUG, "debug log message");
@@ -97,7 +103,7 @@ TEST_F(Testlog, Log)
 
 TEST_F(Testlog, MemDump)
 {
-  std::string logfile, logstring;
+  std::string logstring;
   char buf[100];
   unsigned int bytesread;
   XFILE::CFile file;
@@ -106,8 +112,10 @@ TEST_F(Testlog, MemDump)
 
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+
+  auto logdir = URIUtils::AppendSlash(CLocalDirectory::CreateSystemTempDirectory());
+  auto logfile = URIUtils::AddFileToFolder(logdir, appName + ".log");
+  EXPECT_TRUE(CLog::Init(logdir));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   CLog::MemDump(refdata, sizeof(refdata));
@@ -136,12 +144,12 @@ TEST_F(Testlog, MemDump)
 
 TEST_F(Testlog, SetLogLevel)
 {
-  std::string logfile;
-
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+
+  auto logdir = URIUtils::AppendSlash(CLocalDirectory::CreateSystemTempDirectory());
+  auto logfile = URIUtils::AddFileToFolder(logdir, appName + ".log");
+  EXPECT_TRUE(CLog::Init(logdir));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_EQ(LOG_LEVEL_DEBUG, CLog::GetLogLevel());

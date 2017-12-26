@@ -21,19 +21,13 @@
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
 #include "ServiceBroker.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "windowing/WinSystem.h"
-
-#if defined(TARGET_WINDOWS)
-#include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
-#endif
+#include "platform/LocalDirectory.h"
 
 #ifdef TARGET_DARWIN
 #include "Util.h"
@@ -74,29 +68,14 @@ void TestBasicEnvironment::SetUp()
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
    */
-#ifdef TARGET_WINDOWS
-  using KODI::PLATFORM::WINDOWS::FromW;
-  std::wstring xbmcTempPath;
-  TCHAR lpTempPathBuffer[MAX_PATH];
-  if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
-    SetUpError();
-  xbmcTempPath = lpTempPathBuffer;
-  if (!GetTempFileName(xbmcTempPath.c_str(), L"xbmctempdir", 0, lpTempPathBuffer))
-    SetUpError();
-  DeleteFile(lpTempPathBuffer);
-  if (!CreateDirectory(lpTempPathBuffer, NULL))
-    SetUpError();
-  CSpecialProtocol::SetTempPath(FromW(lpTempPathBuffer));
-  CSpecialProtocol::SetProfilePath(FromW(lpTempPathBuffer));
-#else
-  char buf[MAX_PATH];
-  char *tmp;
-  strcpy(buf, "/tmp/xbmctempdirXXXXXX");
-  if ((tmp = mkdtemp(buf)) == NULL)
-    SetUpError();
+
+  g_application.EnablePlatformDirectories(false);
+
+  using KODI::PLATFORM::CLocalDirectory;
+  auto tmp = CLocalDirectory::CreateSystemTempDirectory("xbmctempdirXXXXXX");
+
   CSpecialProtocol::SetTempPath(tmp);
   CSpecialProtocol::SetProfilePath(tmp);
-#endif
 
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not
@@ -120,8 +99,11 @@ void TestBasicEnvironment::SetUp()
 
 void TestBasicEnvironment::TearDown()
 {
+  using KODI::PLATFORM::CLocalDirectory;
+
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
-  XFILE::CDirectory::Remove(xbmcTempPath);
+  CLocalDirectory::RemoveRecursive(xbmcTempPath);
+
   CServiceBroker::GetSettings().Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
 }

@@ -1,0 +1,428 @@
+/*
+ *      Copyright (C) 2014 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "LocalFileImpl.h"
+#include "URL.h"
+#include "platform/LocalDirectory.h"
+#include "utils/AliasShortcutUtils.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
+#include <algorithm>
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <string>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+namespace KODI
+{
+namespace PLATFORM
+{
+namespace DETAILS
+{
+
+using FILESYSTEM::file_status;
+
+CLocalFileImpl::CLocalFileImpl()
+    : m_fd(-1)
+    , m_filePos(-1)
+    , m_lastDropPos(-1)
+    , m_allowWrite(false)
+{
+}
+
+CLocalFileImpl::~CLocalFileImpl()
+{
+  if (m_fd >= 0)
+    close(m_fd);
+}
+
+// local helper
+static std::string getFilename(const std::string &url)
+{
+  if (IsAliasShortcut(url, false))
+    TranslateAliasShortcut(url);
+
+  return url;
+}
+
+static std::string getFilename(const CURL &url)
+{
+  return getFilename(url.GetFileName());
+}
+
+bool CLocalFileImpl::Open(const CURL &url)
+{
+  return Open(url.GetFileName());
+}
+
+bool CLocalFileImpl::Open(const std::string &url)
+{
+  if (m_fd >= 0)
+    return false;
+
+  const std::string filename(getFilename(url));
+  if (filename.empty())
+    return false;
+
+  m_fd = open(filename.c_str(), O_RDONLY, S_IRUSR | S_IRGRP | S_IROTH);
+  m_filePos = 0;
+
+  return m_fd != -1;
+}
+
+bool CLocalFileImpl::OpenForWrite(const CURL &url, bool bOverWrite /* = false*/)
+{
+  return OpenForWrite(url.GetFileName(), bOverWrite);
+}
+
+bool CLocalFileImpl::OpenForWrite(const std::string &url, bool bOverWrite /* = false*/)
+{
+  if (m_fd >= 0)
+    return false;
+
+  const std::string filename(getFilename(url));
+  if (filename.empty())
+    return false;
+
+  m_fd = open(filename.c_str(), O_RDWR | O_CREAT | (bOverWrite ? O_TRUNC : 0),
+              S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH);
+  if (m_fd < 0)
+    return false;
+
+  m_filePos = 0;
+  m_allowWrite = true;
+
+  return true;
+}
+
+void CLocalFileImpl::Close()
+{
+  if (m_fd >= 0)
+  {
+    close(m_fd);
+    m_fd = -1;
+    m_filePos = -1;
+    m_lastDropPos = -1;
+    m_allowWrite = false;
+  }
+}
+
+int64_t CLocalFileImpl::Read(void *lpBuf, size_t uiBufSize)
+{
+  if (m_fd < 0)
+    return -1;
+
+  assert(lpBuf != NULL || uiBufSize == 0);
+  if (lpBuf == NULL && uiBufSize != 0)
+    return -1;
+
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  const ssize_t res = read(m_fd, lpBuf, uiBufSize);
+  if (res < 0)
+  {
+    Seek(0, SEEK_CUR); // force update file position
+    return -1;
+  }
+
+  if (m_filePos >= 0)
+  {
+    m_filePos += res; // if m_filePos was known - update it
+#if defined(HAVE_POSIX_FADVISE)
+    // Drop the cache between then last drop and 16 MB behind where we
+    // are now, to make sure the file doesn't displace everything else.
+    // However, never throw out the first 16 MB of the file, as it might
+    // be the header etc., and never ask the OS to drop in chunks of
+    // less than 1 MB.
+    const int64_t end_drop = m_filePos - 16 * 1024 * 1024;
+    if (end_drop >= 17 * 1024 * 1024)
+    {
+      const int64_t start_drop = std::max<int64_t>(m_lastDropPos, 16 * 1024 * 1024);
+      if (end_drop - start_drop >= 1 * 1024 * 1024 &&
+          posix_fadvise(m_fd, start_drop, end_drop - start_drop, POSIX_FADV_DONTNEED) == 0)
+        m_lastDropPos = end_drop;
+    }
+#endif
+  }
+
+  return res;
+}
+
+int64_t CLocalFileImpl::Write(const void *lpBuf, size_t uiBufSize)
+{
+  if (m_fd < 0)
+    return -1;
+
+  assert(lpBuf != NULL || uiBufSize == 0);
+  if ((lpBuf == NULL && uiBufSize != 0) || !m_allowWrite)
+    return -1;
+
+  if (uiBufSize > SSIZE_MAX)
+    uiBufSize = SSIZE_MAX;
+
+  const ssize_t res = write(m_fd, lpBuf, uiBufSize);
+  if (res < 0)
+  {
+    Seek(0, SEEK_CUR); // force update file position
+    return -1;
+  }
+
+  if (m_filePos >= 0)
+    m_filePos += res; // if m_filePos was known - update it
+
+  return res;
+}
+
+int64_t CLocalFileImpl::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
+{
+  if (m_fd < 0)
+    return -1;
+
+#ifdef TARGET_ANDROID
+  //! @todo properly support with detection in configure
+  //! Android special case: Android doesn't substitute off64_t for off_t and similar functions
+  m_filePos = lseek64(m_fd, (off64_t)iFilePosition, iWhence);
+#else  // !TARGET_ANDROID
+  const off_t filePosOffT = (off_t)iFilePosition;
+  // check for parameter overflow
+  if (sizeof(int64_t) != sizeof(off_t) && iFilePosition != filePosOffT)
+    return -1;
+
+  m_filePos = lseek(m_fd, filePosOffT, iWhence);
+#endif // !TARGET_ANDROID
+
+  return m_filePos;
+}
+
+int CLocalFileImpl::Truncate(int64_t size)
+{
+  if (m_fd < 0)
+    return -1;
+
+  const off_t sizeOffT = (off_t)size;
+  // check for parameter overflow
+  if (sizeof(int64_t) != sizeof(off_t) && size != sizeOffT)
+    return -1;
+
+  return ftruncate(m_fd, sizeOffT);
+}
+
+int64_t CLocalFileImpl::GetPosition()
+{
+  if (m_fd < 0)
+    return -1;
+
+  if (m_filePos < 0)
+    m_filePos = lseek(m_fd, 0, SEEK_CUR);
+
+  return m_filePos;
+}
+
+int64_t CLocalFileImpl::GetLength()
+{
+  if (m_fd < 0)
+    return -1;
+
+  struct stat64 st;
+  if (fstat64(m_fd, &st) != 0)
+    return -1;
+
+  return st.st_size;
+}
+
+void CLocalFileImpl::Flush()
+{
+  if (m_fd >= 0)
+    fsync(m_fd);
+}
+
+int CLocalFileImpl::IoControl(EIoControl request, void *param)
+{
+  if (m_fd < 0)
+    return -1;
+
+  if (request == IOCTRL_NATIVE)
+  {
+    if (!param)
+      return -1;
+    return ioctl(m_fd, ((SNativeIoControl *)param)->request, ((SNativeIoControl *)param)->param);
+  }
+  else if (request == IOCTRL_SEEK_POSSIBLE)
+  {
+    if (GetPosition() < 0)
+      return -1; // current position is unknown, can't test seeking
+    else if (m_filePos > 0)
+    {
+      const int64_t orgPos = m_filePos;
+      // try to seek one byte back
+      const bool seekPossible = (Seek(orgPos - 1, SEEK_SET) == (orgPos - 1));
+      // restore file position
+      if (Seek(orgPos, SEEK_SET) != orgPos)
+        return 0; // seeking is not possible
+
+      return seekPossible ? 1 : 0;
+    }
+    else
+    { // m_filePos == 0
+      // try to seek one byte forward
+      const bool seekPossible = (Seek(1, SEEK_SET) == 1);
+      // restore file position
+      if (Seek(0, SEEK_SET) != 0)
+        return 0; // seeking is not possible
+
+      if (seekPossible)
+        return 1;
+
+      if (GetLength() <= 0)
+        return -1; // size of file is zero or can be zero, can't test seeking
+      else
+        return 0; // size of file is 1 byte or more and seeking not possible
+    }
+  }
+
+  return -1;
+}
+
+bool CLocalFileImpl::Delete(const CURL &url)
+{
+  return Delete(url.GetFileName());
+}
+
+bool CLocalFileImpl::Delete(const std::string &url)
+{
+  const std::string filename(getFilename(url));
+  if (filename.empty())
+    return false;
+
+  if (unlink(filename.c_str()) == 0)
+    return true;
+
+  if (errno == EACCES || errno == EPERM)
+    CLog::LogF(LOGWARNING, "Can't access file \"%s\"", filename.c_str());
+
+  return false;
+}
+
+bool CLocalFileImpl::Rename(const CURL &url, const CURL &urlnew)
+{
+  return Rename(url.GetFileName(), urlnew.GetFileName());
+}
+
+bool CLocalFileImpl::Rename(const std::string &url, const std::string &urlnew)
+{
+  const auto name = getFilename(url);
+  const auto newName = getFilename(urlnew);
+
+  if (name.empty() || newName.empty())
+    return false;
+
+  if (name == newName)
+    return true;
+
+  if (rename(name.c_str(), newName.c_str()) == 0)
+    return true;
+
+  if (errno == EACCES || errno == EPERM)
+    CLog::LogF(LOGWARNING, "Can't access file \"%s\" for rename to \"%s\"", name.c_str(),
+               newName.c_str());
+
+  // rename across mount points - need to copy/delete
+  if (errno == EXDEV)
+  {
+    CLog::LogF(LOGDEBUG,
+               "Source file \"%s\" and target file \"%s\" are located on different filesystems, "
+               "copy&delete will be used instead of rename",
+               name.c_str(), newName.c_str());
+    if (XFILE::CFile::Copy(name, newName))
+    {
+      if (XFILE::CFile::Delete(name))
+        return true;
+      else
+        XFILE::CFile::Delete(newName);
+    }
+  }
+
+  return false;
+}
+
+bool CLocalFileImpl::Exists(const CURL &url)
+{
+  return Exists(url.GetFileName());
+}
+
+bool CLocalFileImpl::Exists(const std::string &url)
+{
+  const auto filename = getFilename(url);
+  if (filename.empty())
+    return false;
+
+  struct stat64 st;
+  return stat64(filename.c_str(), &st) == 0 && !S_ISDIR(st.st_mode);
+}
+
+int CLocalFileImpl::Stat(const CURL &url, struct __stat64 *buffer)
+{
+  assert(buffer != NULL);
+  const std::string filename(getFilename(url));
+  if (filename.empty() || !buffer)
+    return -1;
+
+  return stat64(filename.c_str(), buffer);
+}
+
+int CLocalFileImpl::Stat(struct __stat64 *buffer)
+{
+  assert(buffer != NULL);
+  if (m_fd < 0 || !buffer)
+    return -1;
+
+  return fstat64(m_fd, buffer);
+}
+
+std::string CLocalFileImpl::GetSystemTempFile(std::string suffix)
+{
+  char tmp[MAX_PATH];
+
+  auto tempPath = CDirectory::CreateSystemTempDirectory();
+  if (tempPath.empty())
+    return tempPath;
+
+  tempPath = URIUtils::AddFileToFolder(tempPath, "xbmctempfileXXXXXX") + suffix;
+  if (tempPath.length() >= MAX_PATH)
+    return std::string();
+
+  strcpy(tmp, tempPath.c_str());
+
+  int fd;
+  if ((fd = mkstemps(tmp, tempPath.length())) < 0)
+    return std::string();
+  close(fd);
+
+  return std::string(tmp);
+}
+
+}
+}
+}

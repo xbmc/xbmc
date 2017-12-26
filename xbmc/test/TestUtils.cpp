@@ -23,6 +23,8 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/LocalDirectory.h"
+#include "platform/LocalFile.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -44,38 +46,11 @@ public:
   }
   bool Create(const std::string &suffix)
   {
-    char tmp[MAX_PATH];
+    using KODI::PLATFORM::CLocalFile;
 
-    m_ptempFileDirectory = CSpecialProtocol::TranslatePath("special://temp/");
-    m_ptempFilePath = m_ptempFileDirectory + "xbmctempfileXXXXXX";
-    m_ptempFilePath += suffix;
-    if (m_ptempFilePath.length() >= MAX_PATH)
-    {
-      m_ptempFilePath = "";
+    m_ptempFilePath = CLocalFile::GetSystemTempFilename(suffix);
+    if (m_ptempFilePath.empty())
       return false;
-    }
-    strcpy(tmp, m_ptempFilePath.c_str());
-
-#ifdef TARGET_WINDOWS
-    using namespace KODI::PLATFORM::WINDOWS;
-    wchar_t tmpW[MAX_PATH];
-    if (!GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(),
-                         L"xbmctempfile", 0, tmpW))
-    {
-      m_ptempFilePath = "";
-      return false;
-    }
-    m_ptempFilePath = FromW(tmpW);
-#else
-    int fd;
-    if ((fd = mkstemps(tmp, suffix.length())) < 0)
-    {
-      m_ptempFilePath = "";
-      return false;
-    }
-    close(fd);
-    m_ptempFilePath = tmp;
-#endif
 
     OpenForWrite(m_ptempFilePath.c_str(), true);
     return true;
@@ -91,11 +66,10 @@ public:
   }
   std::string getTempFileDirectory() const
   {
-    return m_ptempFileDirectory;
+    return URIUtils::GetDirectory(m_ptempFilePath);
   }
 private:
   std::string m_ptempFilePath;
-  std::string m_ptempFileDirectory;
 };
 
 CXBMCTestUtils::CXBMCTestUtils()
