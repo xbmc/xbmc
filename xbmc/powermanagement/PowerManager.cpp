@@ -52,9 +52,11 @@
 #include "linux/LogindUPowerSyscall.h"
 #include "linux/UPowerSyscall.h"
 #endif // HAS_DBUS
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
 #include "powermanagement/windows/Win32PowerSyscall.h"
 extern HWND g_hWnd;
+#elif defined(TARGET_WINDOWS_STORE)
+#include "powermanagement/win10/Win10PowerSyscall.h"
 #endif
 
 using namespace ANNOUNCEMENT;
@@ -114,8 +116,10 @@ void CPowerManager::Initialize()
   else
 #endif // HAS_DBUS
     m_instance = new CFallbackPowerSyscall();
-#elif defined(TARGET_WINDOWS)
+#elif defined(TARGET_WINDOWS_DESKTOP)
   m_instance = new CWin32PowerSyscall();
+#elif defined(TARGET_WINDOWS_STORE)
+  m_instance = new CPowerSyscall();
 #endif
 
   if (m_instance == NULL)

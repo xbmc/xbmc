@@ -5,7 +5,7 @@ xbmc/input/touch/generic     input/touch/generic
 xbmc/network/win10           network/win10
 xbmc/network/mdns            network/mdns
 xbmc/peripherals/bus/win10   peripherals/bus/win10
-xbmc/powermanagement/windows powermanagement/windows
+xbmc/powermanagement/win10   powermanagement/win10
 xbmc/storage/windows         storage/windows
 xbmc/filesystem/win32        filesystem/win32
 xbmc/filesystem/win10        filesystem/win10
