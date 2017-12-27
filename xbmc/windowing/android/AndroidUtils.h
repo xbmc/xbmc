@@ -37,6 +37,6 @@ public:
   virtual bool  ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
 
 protected:
-  int m_width;
-  int m_height;
+  mutable int m_width;
+  mutable int m_height;
 };
