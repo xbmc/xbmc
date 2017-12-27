@@ -1,6 +1,5 @@
 set(SOURCES CharsetConverter.cpp
             MessagePrinter.cpp
-            crts_caller.cpp
             dxerr.cpp
             Filesystem.cpp
             pch.cpp
@@ -11,7 +10,6 @@ set(SOURCES CharsetConverter.cpp
             WindowHelper.cpp)
 
 set(HEADERS CharsetConverter.h
-            crts_caller.h
             dirent.h
             dxerr.h
             IMMNotificationClient.h

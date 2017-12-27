@@ -33,9 +33,6 @@
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
-#ifdef TARGET_WINDOWS_DESKTOP
-#include "platform/win32/crts_caller.h"
-#endif
 #include "CompileInfo.h"
 #include "platform/win32/CharsetConverter.h"
 
@@ -1300,12 +1297,7 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
 
 bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
 {
-#ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
-	return false;
-#else
   const int param = enable ? _ENABLE_PER_THREAD_LOCALE : _DISABLE_PER_THREAD_LOCALE;
-  return CALL_IN_CRTS(_configthreadlocale, param) != -1;
-#endif
+  return _configthreadlocale(param) != -1;
 }
 
