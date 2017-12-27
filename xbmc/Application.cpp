@@ -3371,7 +3371,11 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, VideoPlayer)
-  m_pPlayer->ClosePlayerGapless(newPlayer);
+  // DVD playback does not support gapless
+  if (item.IsDiscImage() || item.IsDVDFile())
+    m_pPlayer->ClosePlayer();
+  else
+    m_pPlayer->ClosePlayerGapless(newPlayer);
 
   m_pPlayer->CreatePlayer(newPlayer, *this);
 
