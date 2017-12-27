@@ -11,4 +11,6 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi OR CORE_PLATFORM_NAME_LC STREQUAL gbm OR 
   list(APPEND HEADERS LinuxInputDevices.h)
 endif()
 
-core_add_library(input_linux)
+if(SOURCES)
+  core_add_library(input_linux)
+endif()
