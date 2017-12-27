@@ -20,12 +20,12 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>vertical</orientation>
 					<onleft>9000</onleft>
-					<onright>60</onright>
+					<onright>73</onright>
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
-					<pagecontrol>60</pagecontrol>
+					<pagecontrol>73</pagecontrol>
 					<focusedlayout height="90">
 						<control type="image">
 							<left>0</left>
@@ -163,12 +163,12 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>vertical</orientation>
 					<onleft>9000</onleft>
-					<onright>60</onright>
+					<onright>73</onright>
 					<onup>51</onup>
 					<ondown>51</ondown>
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
-					<pagecontrol>60</pagecontrol>
+					<pagecontrol>73</pagecontrol>
 					<focusedlayout height="70">
 						<control type="image">
 							<left>0</left>
@@ -278,112 +278,48 @@
 			</control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Right</include>
 				<width>870</width>
 				<right>0</right>
-				<include>OpenClose_Right</include>
 				<include content="ContentPanel">
-					<param name="left" value="-68" />
+					<param name="left" value="-72" />
 					<param name="width" value="970" />
 					<param name="top" value="-20" />
 					<param name="flipx" value="true" />
 				</include>
-				<control type="scrollbar" id="60">
-					<left>-48</left>
+				<control type="scrollbar" id="73">
+					<left>-50</left>
 					<top>list_y_offset</top>
 					<width>12</width>
 					<bottom>list_y_offset</bottom>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-48,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
-				<control type="group">
-					<left>0</left>
-					<top>202</top>
-					<control type="progress">
-						<top>125</top>
-						<width>520</width>
-						<height>12</height>
-						<colordiffuse>88FFFFFF</colordiffuse>
-						<visible>ListItem.HasEpg</visible>
-						<info>ListItem.Progress</info>
-					</control>
-					<control type="label">
-						<top>82</top>
-						<width>560</width>
-						<height>262</height>
-						<label>$INFO[ListItem.StartTime]</label>
-					</control>
-					<control type="label">
-						<top>82</top>
-						<width>520</width>
-						<height>262</height>
-						<align>right</align>
-						<label>$INFO[ListItem.EndTime]</label>
-					</control>
-					<control type="label">
-						<top>-80</top>
-						<width>540</width>
-						<height>262</height>
-						<font>font45</font>
-						<label>$INFO[ListItem.ChannelName]</label>
-					</control>
-					<control type="label">
-						<top>20</top>
-						<width>540</width>
-						<height>625</height>
-						<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
-					</control>
-					<control type="label">
-						<top>-20</top>
-						<width>540</width>
-						<height>625</height>
-						<label>[B]$INFO[ListItem.EpgEventTitle,,[CR]][/B]</label>
-					</control>
-				</control>
-				<control type="image">
-					<left>540</left>
-					<top>122</top>
-					<width>240</width>
-					<height>220</height>
-					<aspectratio align="right">keep</aspectratio>
-					<texture fallback="DefaultTVShows.png">$INFO[Listitem.Icon]</texture>
-					<fadetime>200</fadetime>
-				</control>
-				<control type="textbox">
-					<top>382</top>
-					<width>820</width>
-					<bottom>114</bottom>
-					<label>[B]$INFO[ListItem.EpisodeName,,[CR]][/B]$INFO[ListItem.Plot]</label>
-				</control>
-				<control type="textbox">
-					<top>612</top>
-					<width>800</width>
-					<height>362</height>
-					<align>center</align>
-					<font>font27</font>
-					<textcolor>80FFFFFF</textcolor>
-					<label>$LOCALIZE[19055]</label>
-					<visible>String.IsEmpty(Listitem.Plot)</visible>
-				</control>
+				<include>PVRInfoPanel</include>
 			</control>
-			<include>PVRChannelNumberInput</include>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRChannelsVar]" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />
 			</include>
-			<control type="textbox">
-				<bottom>15</bottom>
-				<width>800</width>
-				<right>40</right>
-				<height>80</height>
-				<align>right</align>
-				<visible>!String.isempty(ListItem.NextTitle)</visible>
-				<label>$INFO[ListItem.NextTitle,[COLOR grey]$LOCALIZE[19031]:[CR][/COLOR]] $INFO[ListItem.NextStartTime]</label>
+			<control type="label">
+				<right>20</right>
 				<include>OpenClose_Right</include>
+				<bottom>10</bottom>
+				<width>850</width>
+				<height>60</height>
+				<visible>!String.isempty(ListItem.NextTitle)</visible>
+				<label>[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[ListItem.NextStartTime]: $INFO[ListItem.NextTitle]</label>
+				<shadowcolor>black</shadowcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<wrapmultiline>true</wrapmultiline>
+				<font>font27</font>
 			</control>
+			<include>PVRChannelNumberInput</include>
 			<include>MediaMenuMouseOverlay</include>
 			<control type="group">
 				<include>MediaMenuCommon</include>
