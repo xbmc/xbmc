@@ -1546,9 +1546,9 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   int currentSetId = 0;
   std::string currentSetLabel;
 
-  if (movieItem->GetVideoInfoTag()->m_iSetId > currentSetId)
+  if (movieItem->GetVideoInfoTag()->m_set.id > currentSetId)
   {
-    currentSetId = movieItem->GetVideoInfoTag()->m_iSetId;
+    currentSetId = movieItem->GetVideoInfoTag()->m_set.id;
     currentSetLabel = videodb.GetSetById(currentSetId);
   }
 
