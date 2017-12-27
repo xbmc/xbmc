@@ -25,7 +25,6 @@
 #include "URL.h"
 #include "MediaSource.h"
 #include "guilib/Geometry.h"
-#include "utils/Stopwatch.h"
 
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
 #define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
@@ -77,11 +76,4 @@ public:
 
   static std::string WUSysMsg(DWORD dwError);
   static bool SetThreadLocalLocale(bool enable = true);
-};
-
-
-class CWinIdleTimer : public CStopWatch
-{
-public:
-  void StartZero();
 };

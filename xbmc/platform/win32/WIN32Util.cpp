@@ -1194,15 +1194,6 @@ void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target, UINT rotation 
   dst.y2 = ceil(dst.y2);
 }
 
-void CWinIdleTimer::StartZero()
-{
-#ifdef TARGET_WINDOWS_DESKTOP
-  if (!g_application.IsDPMSActive())
-    SetThreadExecutionState(ES_SYSTEM_REQUIRED|ES_DISPLAY_REQUIRED);
-#endif
-  CStopWatch::StartZero();
-}
-
 extern "C"
 {
   /* case-independent string matching, similar to strstr but

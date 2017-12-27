@@ -1,4 +1,5 @@
-set(SOURCES Win10PowerSyscall.cpp)
+set(SOURCES Win10PowerSyscall.cpp
+            WinIdleTimer.cpp)
 
 set(HEADERS Win10PowerSyscall.h)
 
