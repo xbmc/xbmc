@@ -22,6 +22,7 @@
 #include "system.h"
 
 #include "RenderSystemGL.h"
+#include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/MatrixGLES.h"
@@ -138,18 +139,15 @@ bool CRenderSystemGL::InitRenderSystem()
   }
   m_RenderExtensions += " ";
 
-  if (IsExtSupported("GL_ARB_shading_language_100"))
+  ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  if (ver)
   {
-    ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-    if (ver)
-    {
-      sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
-    }
-    else
-    {
-      m_glslMajor = 1;
-      m_glslMinor = 0;
-    }
+    sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
+  }
+  else
+  {
+    m_glslMajor = 1;
+    m_glslMinor = 0;
   }
 
   LogGraphicsInfo();
@@ -835,12 +833,18 @@ GLint CRenderSystemGL::ShaderGetModel()
   return -1;
 }
 
-std::string CRenderSystemGL::GetShaderPath()
+std::string CRenderSystemGL::GetShaderPath(const std::string &filename)
 {
   std::string path = "GL/1.2/";
 
-  if (m_RenderVersionMajor > 3 ||
-      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
+  if (m_glslMajor >= 4)
+  {
+    std::string file = "special://xbmc/system/shaders/GL/4.0/" + filename;
+    const CURL pathToUrl(file);
+    if (XFILE::CFile::Exists(pathToUrl))
+      return "GL/4.0/";
+  }
+  if (m_glslMajor >= 2 || (m_glslMajor == 1 && m_glslMinor >= 50))
     path = "GL/1.5/";
 
   return path;
