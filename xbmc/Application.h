@@ -123,6 +123,7 @@ public:
   ~CApplicationStackHelper(void);
 
   void Clear();
+  void OnPlayBackStarted(const CFileItem& item);
 
   /*!
   \brief Initialize stack
@@ -269,6 +270,8 @@ public:
   \param totalTime the total time of the stack
   */
   void SetRegisteredStackTotalTime(const CFileItem& item, int totalTime);
+
+  CCriticalSection m_critSection;
 
 protected:
 

@@ -3333,6 +3333,7 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
 #endif
 
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
+  m_pStackHelper->OnPlayBackStarted(file);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3340,6 +3341,8 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
 
 void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmarkParam)
 {
+  CSingleLock lock(m_pStackHelper->m_critSection);
+
   CFileItem fileItem(file);
   CBookmark bookmark = bookmarkParam;
   CBookmark resumeBookmark;
@@ -5008,6 +5011,32 @@ void CApplicationStackHelper::Clear()
 {
   m_currentStackPosition = 0;
   m_currentStack->Clear();
+}
+
+void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
+{
+  CSingleLock lock(m_critSection);
+
+  // time to clean up stack map
+  if (!HasRegisteredStack(item))
+    m_stackmap.clear();
+  else
+  {
+    CFileItemPtr stack = GetRegisteredStack(item);
+    Stackmap::iterator itr = m_stackmap.begin();
+    while (itr != m_stackmap.end()) 
+    {
+      if (itr->second->m_pStack != stack) 
+      {
+        itr = m_stackmap.erase(itr);
+      }
+      else 
+      {
+        ++itr;
+      }
+    }
+  }
+  return;
 }
 
 bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
