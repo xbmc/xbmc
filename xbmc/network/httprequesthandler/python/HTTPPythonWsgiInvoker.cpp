@@ -77,6 +77,7 @@
 
 namespace PythonBindings {
   void initModule_xbmc(void);
+  void initModule_xbmcaddon(void);
   void initModule_xbmcwsgi(void);
 }
 
@@ -91,6 +92,7 @@ typedef struct
 static PythonModule PythonModules[] =
 {
   { "xbmc",           initModule_xbmc },
+  { "xbmcaddon",      initModule_xbmcaddon  },
   { "xbmcwsgi",       initModule_xbmcwsgi }
 };
 
