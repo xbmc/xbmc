@@ -191,17 +191,17 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 #elif defined(TARGET_WINDOWS)
 void DPMSSupport::PlatformSpecificInit()
 {
+#ifdef TARGET_WINDOWS_DESKTOP
   // Assume we support DPMS. Is there a way to test it?
   m_supportedModes.push_back(OFF);
   m_supportedModes.push_back(STANDBY);
+#else
+  CLog::Log(LOGINFO, "DPMS: not supported on this platform");
+#endif
 }
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-#ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
-  return false;
-#else
   if(!g_graphicsContext.IsFullScreenRoot())
   {
     CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
@@ -209,22 +209,22 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   }
   switch(mode)
   {
+#ifdef TARGET_WINDOWS_DESKTOP
   case OFF:
     // Turn off display
     return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
   case STANDBY:
     // Set display to low power
     return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
+#endif
   default:
     return true;
   }
-#endif
 }
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
   return false;
 #else
   // Turn display on

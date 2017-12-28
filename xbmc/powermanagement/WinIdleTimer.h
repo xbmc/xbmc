@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2018 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,13 +19,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "utils/Stopwatch.h"
 
-#ifndef STAT_UTF8_H__
-#define STAT_UTF8_H__
-
-#define stat64 __stat64
-
-extern int stat64_utf8(const char* __file, struct stat64* __buf);
-
-#endif //STAT_UTF8_H__
+class CWinIdleTimer : public CStopWatch
+{
+public:
+  void StartZero();
+};
 

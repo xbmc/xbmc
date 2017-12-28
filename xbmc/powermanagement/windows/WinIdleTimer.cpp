@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2018 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,14 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "powermanagement/WinIdleTimer.h"
+#include "Application.h"
 
-#include "stat_utf8.h"
-#include "utils/CharsetConverter.h"
-
-int stat64_utf8(const char* __file, struct stat64* __buf)
+void CWinIdleTimer::StartZero()
 {
-  std::wstring fileW;
-  g_charsetConverter.utf8ToW(__file, fileW, false);
-  return _wstat64(fileW.c_str(), __buf);
+  if (!g_application.IsDPMSActive())
+    SetThreadExecutionState(ES_SYSTEM_REQUIRED|ES_DISPLAY_REQUIRED);
+  CStopWatch::StartZero();
 }
-

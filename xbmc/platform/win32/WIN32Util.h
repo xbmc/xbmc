@@ -23,19 +23,8 @@
 #include <vector>
 
 #include "URL.h"
-#include "Cfgmgr32.h"
 #include "MediaSource.h"
 #include "guilib/Geometry.h"
-#include "powermanagement/PowerManager.h"
-#include "utils/Stopwatch.h"
-
-enum Drive_Types
-{
-  ALL_DRIVES = 0,
-  LOCAL_DRIVES,
-  REMOVABLE_DRIVES,
-  DVD_DRIVES
-};
 
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
 #define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
@@ -50,10 +39,7 @@ public:
 
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const std::string &strPath, bool bStatusEx=false);
-  static bool PowerManagement(PowerState State);
-  static int BatteryLevel();
   static bool XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit=false);
-  static std::vector<std::string> GetDiskUsage();
   static std::string GetResInfoString();
   static int GetDesktopColorDepth();
 
@@ -76,10 +62,7 @@ public:
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
-  static bool EjectDrive(const char cDriveLetter='\0');
   static BOOL IsCurrentUserLocalAdministrator();
-  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
-  static std::string GetFirstOpticalDrive();
 
 #ifdef TARGET_WINDOWS_DESKTOP
   static std::string GetSpecialFolder(int csidl);
@@ -93,15 +76,4 @@ public:
 
   static std::string WUSysMsg(DWORD dwError);
   static bool SetThreadLocalLocale(bool enable = true);
-private:
-#ifdef TARGET_WINDOWS_DESKTOP
-  static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
-#endif
-};
-
-
-class CWinIdleTimer : public CStopWatch
-{
-public:
-  void StartZero();
 };

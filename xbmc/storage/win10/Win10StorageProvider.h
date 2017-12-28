@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -18,14 +19,24 @@
  *
  */
 
-#ifndef STDIO_UTF8_H__
-#define STDIO_UTF8_H__
+#include <string>
+#include <vector>
 
-#include <cstdio>
+#include "storage/IStorageProvider.h"
+#include "utils/Job.h"
 
-extern int   remove_utf8(const char* __filename);
-extern int   rename_utf8(const char* __old, const char* __new);
-extern FILE* fopen64_utf8(const char* __filename, const char* __modes);
+class CStorageProvider : public IStorageProvider
+{
+public:
+  virtual ~CStorageProvider() { }
 
-#endif // STDIO_UTF8_H__
+  void Initialize() override;
+  void Stop() override { }
 
+  void GetLocalDrives(VECSOURCES &localDrives) override;
+  void GetRemovableDrives(VECSOURCES &removableDrives) override;
+  std::string GetFirstOpticalDeviceFileName() override;
+  bool Eject(const std::string& mountpath) override;
+  std::vector<std::string> GetDiskUsage() override;
+  bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
+};

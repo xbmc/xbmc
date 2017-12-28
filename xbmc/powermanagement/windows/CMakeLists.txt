@@ -1,4 +1,5 @@
-set(SOURCES Win32PowerSyscall.cpp)
+set(SOURCES Win32PowerSyscall.cpp
+            WinIdleTimer.cpp)
 
 set(HEADERS Win32PowerSyscall.h)
 
