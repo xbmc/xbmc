@@ -108,7 +108,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
 
-      if (g_application.m_pPlayer->IsPlayingVideo() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      if (g_application.GetAppPlayer().IsPlayingVideo() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
         int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
         if (iSong >= 0 && iSong <= (int)m_vecItems->Size())
@@ -233,7 +233,7 @@ bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bo
 
   // is the currently playing item affected?
   bool bFixCurrentSong = false;
-  if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.m_pPlayer->IsPlayingVideo()) &&
+  if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.GetAppPlayer().IsPlayingVideo()) &&
     ((CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iSelected) || (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iNew)))
     bFixCurrentSong = true;
 
@@ -285,7 +285,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
 
-    if (g_application.m_pPlayer->IsPlayingVideo() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
+    if (g_application.GetAppPlayer().IsPlayingVideo() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
     {
       CONTROL_ENABLE(CONTROL_BTNNEXT);
       CONTROL_ENABLE(CONTROL_BTNPREVIOUS);
@@ -348,7 +348,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string &player)
 void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 {
   // The current playing song can't be removed
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO && g_application.m_pPlayer->IsPlayingVideo()
+  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO && g_application.GetAppPlayer().IsPlayingVideo()
       && CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iItem)
     return ;
 
@@ -560,7 +560,7 @@ void CGUIWindowVideoPlaylist::MarkPlaying()
     m_vecItems->Get(i)->Select(false);
 
   // mark the currently playing item
-  if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.m_pPlayer->IsPlayingVideo()))
+  if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.GetAppPlayer().IsPlayingVideo()))
   {
     int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     if (iSong >= 0 && iSong <= m_vecItems->Size())

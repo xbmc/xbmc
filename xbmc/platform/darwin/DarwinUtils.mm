@@ -551,7 +551,7 @@ void CDarwinUtils::SetScheduling(int message)
   policy = SCHED_OTHER;
   thread_extended_policy_data_t theFixedPolicy={true};
 
-  if (message == GUI_MSG_PLAYBACK_STARTED && g_application.m_pPlayer->IsPlayingVideo())
+  if (message == GUI_MSG_PLAYBACK_STARTED && g_application.GetAppPlayer().IsPlayingVideo())
   {
     policy = SCHED_RR;
     theFixedPolicy.timeshare = false;

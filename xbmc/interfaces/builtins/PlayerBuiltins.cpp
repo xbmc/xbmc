@@ -101,7 +101,7 @@ static int PlayOffset(const std::vector<std::string>& params)
   // play the desired offset
   int pos = atol(strPos.c_str());
   // playlist is already playing
-  if (g_application.m_pPlayer->IsPlaying())
+  if (g_application.GetAppPlayer().IsPlaying())
     CServiceBroker::GetPlaylistPlayer().PlayNext(pos);
   // we start playing the 'other' playlist so we need to use play to initialize the player state
   else
@@ -126,12 +126,12 @@ static int PlayerControl(const std::vector<std::string>& params)
   if (paramlow ==  "play")
   { // play/pause
     // either resume playing, or pause
-    if (g_application.m_pPlayer->IsPlaying())
+    if (g_application.GetAppPlayer().IsPlaying())
     {
-      if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-        g_application.m_pPlayer->SetPlaySpeed(1);
+      if (g_application.GetAppPlayer().GetPlaySpeed() != 1)
+        g_application.GetAppPlayer().SetPlaySpeed(1);
       else
-        g_application.m_pPlayer->Pause();
+        g_application.GetAppPlayer().Pause();
     }
   }
   else if (paramlow == "stop")
@@ -150,13 +150,13 @@ static int PlayerControl(const std::vector<std::string>& params)
     strFrames = params[0].substr(13);
     StringUtils::TrimRight(strFrames, ")");
     float frames = (float) atof(strFrames.c_str());
-    g_application.m_pPlayer->FrameAdvance(frames);
+    g_application.GetAppPlayer().FrameAdvance(frames);
   }
   else if (paramlow =="rewind" || paramlow == "forward")
   {
-    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
     {
-      float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
+      float playSpeed = g_application.GetAppPlayer().GetPlaySpeed();
 
       if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
         playSpeed *= -2;
@@ -174,21 +174,21 @@ static int PlayerControl(const std::vector<std::string>& params)
       if (playSpeed > 32 || playSpeed < -32)
         playSpeed = 1;
 
-      g_application.m_pPlayer->SetPlaySpeed(playSpeed);
+      g_application.GetAppPlayer().SetPlaySpeed(playSpeed);
     }
   }
   else if (paramlow =="tempoup" || paramlow == "tempodown")
   {
-    if (g_application.m_pPlayer->SupportsTempo() &&
-        g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    if (g_application.GetAppPlayer().SupportsTempo() &&
+        g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
     {
-      float playTempo = g_application.m_pPlayer->GetPlayTempo();
+      float playTempo = g_application.GetAppPlayer().GetPlayTempo();
       if (paramlow == "tempodown")
           playTempo -= 0.1f;
       else if (paramlow == "tempoup")
           playTempo += 0.1f;
 
-      g_application.m_pPlayer->SetTempo(playTempo);
+      g_application.GetAppPlayer().SetTempo(playTempo);
     }
   }
   else if (paramlow == "next")
@@ -201,23 +201,23 @@ static int PlayerControl(const std::vector<std::string>& params)
   }
   else if (paramlow == "bigskipbackward")
   {
-    if (g_application.m_pPlayer->IsPlaying())
-      g_application.m_pPlayer->Seek(false, true);
+    if (g_application.GetAppPlayer().IsPlaying())
+      g_application.GetAppPlayer().Seek(false, true);
   }
   else if (paramlow == "bigskipforward")
   {
-    if (g_application.m_pPlayer->IsPlaying())
-      g_application.m_pPlayer->Seek(true, true);
+    if (g_application.GetAppPlayer().IsPlaying())
+      g_application.GetAppPlayer().Seek(true, true);
   }
   else if (paramlow == "smallskipbackward")
   {
-    if (g_application.m_pPlayer->IsPlaying())
-      g_application.m_pPlayer->Seek(false, false);
+    if (g_application.GetAppPlayer().IsPlaying())
+      g_application.GetAppPlayer().Seek(false, false);
   }
   else if (paramlow == "smallskipforward")
   {
-    if (g_application.m_pPlayer->IsPlaying())
-      g_application.m_pPlayer->Seek(true, false);
+    if (g_application.GetAppPlayer().IsPlaying())
+      g_application.GetAppPlayer().Seek(true, false);
   }
   else if (StringUtils::StartsWithNoCase(params[0], "seekpercentage"))
   {
@@ -234,14 +234,14 @@ static int PlayerControl(const std::vector<std::string>& params)
       float offsetpercent = (float) atof(offset.c_str());
       if (offsetpercent < 0 || offsetpercent > 100)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
-      else if (g_application.m_pPlayer->IsPlaying())
+      else if (g_application.GetAppPlayer().IsPlaying())
         g_application.SeekPercentage(offsetpercent);
     }
   }
   else if (paramlow == "showvideomenu")
   {
-    if( g_application.m_pPlayer->IsPlaying() )
-      g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
+    if( g_application.GetAppPlayer().IsPlaying() )
+      g_application.GetAppPlayer().OnAction(CAction(ACTION_SHOW_VIDEOMENU));
   }
   else if (StringUtils::StartsWithNoCase(params[0], "partymode"))
   {
@@ -504,8 +504,8 @@ static int PlayWith(const std::vector<std::string>& params)
  */
 static int Seek(const std::vector<std::string>& params)
 {
-  if (g_application.m_pPlayer->IsPlaying())
-    g_application.m_pPlayer->GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
+  if (g_application.GetAppPlayer().IsPlaying())
+    g_application.GetAppPlayer().GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
 
   return 0;
 }

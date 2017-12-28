@@ -222,11 +222,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_PLAYER_PLAY)
         {
           // if playback is paused or playback speed != 1, return
-          if (g_application.m_pPlayer->IsPlayingAudio())
+          if (g_application.GetAppPlayer().IsPlayingAudio())
           {
-            if (g_application.m_pPlayer->IsPausedPlayback())
+            if (g_application.GetAppPlayer().IsPausedPlayback())
               return false;
-            if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+            if (g_application.GetAppPlayer().GetPlaySpeed() != 1)
               return false;
           }
 
@@ -590,7 +590,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   // Determine the proper list to queue this element
   int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   if (playlist == PLAYLIST_NONE)
-    playlist = g_application.m_pPlayer->GetPreferredPlaylist();
+    playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
   if (playlist == PLAYLIST_NONE)
     playlist = PLAYLIST_MUSIC;
 
@@ -625,7 +625,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   }
 
   CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
-  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() && !g_application.m_pPlayer->IsPlaying())
+  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() && !g_application.GetAppPlayer().IsPlaying())
   {
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistmusic://");
@@ -1104,7 +1104,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
   // Update currently playing song if it's from the same album.  This is necessary as when the album
   // first gets it's cover, the info manager's item doesn't have the updated information (so will be
   // sending a blank thumb to the skin.)
-  if (g_application.m_pPlayer->IsPlayingAudio())
+  if (g_application.GetAppPlayer().IsPlayingAudio())
   {
     const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
     if (tag)

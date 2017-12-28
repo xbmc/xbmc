@@ -184,14 +184,14 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   /*!
    * Set general stream information about the processed stream
    */
-  if (g_application.m_pPlayer->GetAudioStreamCount() > 0)
+  if (g_application.GetAppPlayer().GetAudioStreamCount() > 0)
   {
-    int identifier = g_application.m_pPlayer->GetAudioStream();
+    int identifier = g_application.GetAppPlayer().GetAudioStream();
     if (identifier < 0)
       identifier = 0;
 
     AudioStreamInfo info;
-    g_application.m_pPlayer->GetAudioStreamInfo(identifier, info);
+    g_application.GetAppPlayer().GetAudioStreamInfo(identifier, info);
 
     m_addonStreamProperties.strName       = info.name.c_str();
     m_addonStreamProperties.strLanguage   = info.language.c_str();
@@ -514,7 +514,7 @@ AE_DSP_STREAMTYPE CActiveAEDSPProcess::DetectStreamType(const CFileItem *item)
   AE_DSP_STREAMTYPE detected = AE_DSP_ASTREAM_BASIC;
   if (item->HasMusicInfoTag())
     detected = AE_DSP_ASTREAM_MUSIC;
-  else if (item->HasVideoInfoTag() || g_application.m_pPlayer->HasVideo())
+  else if (item->HasVideoInfoTag() || g_application.GetAppPlayer().HasVideo())
     detected = AE_DSP_ASTREAM_MOVIE;
 //    else if (item->HasVideoInfoTag())
 //      detected = AE_DSP_ASTREAM_GAME;

@@ -185,7 +185,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
-    if (!g_application.m_pPlayer->IsPlaying() && m_bPowerOffScreensaver)
+    if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
     {
       // only power off when we're the active source
       if (m_cecAdapter->IsLibCECActiveSource())
@@ -1197,9 +1197,9 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
     bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
     CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW) : NULL;
     bool bPlayingAndDeactivated = activated == 0 && (
-        (pSlideShow && pSlideShow->IsPlaying()) || !g_application.m_pPlayer->IsPausedPlayback());
+        (pSlideShow && pSlideShow->IsPlaying()) || !g_application.GetAppPlayer().IsPausedPlayback());
     bool bPausedAndActivated = activated == 1 && adapter->m_bPlaybackPaused && (
-        (pSlideShow && pSlideShow->IsPaused()) || g_application.m_pPlayer->IsPausedPlayback());
+        (pSlideShow && pSlideShow->IsPaused()) || g_application.GetAppPlayer().IsPausedPlayback());
     if (bPlayingAndDeactivated)
       adapter->m_bPlaybackPaused = true;
     else if (bPausedAndActivated)

@@ -905,7 +905,7 @@ XBMCController *g_xbmcController;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
-        if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+        if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
 		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
@@ -919,7 +919,7 @@ XBMCController *g_xbmcController;
 - (void)enterBackground
 {
   PRINT_SIGNATURE();
-  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+  if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
@@ -945,7 +945,7 @@ XBMCController *g_xbmcController;
 {
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
-  if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
+  if (g_application.GetAppPlayer().IsPlayingVideo() && !g_application.GetAppPlayer().IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);

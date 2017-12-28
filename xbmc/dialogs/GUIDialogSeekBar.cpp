@@ -61,13 +61,13 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSeekBar::FrameMove()
 {
-  if (!g_application.m_pPlayer->HasPlayer())
+  if (!g_application.GetAppPlayer().HasPlayer())
   {
     Close(true);
     return;
   }
 
-  unsigned int percent((!g_application.m_pPlayer->GetSeekHandler().InProgress() && g_infoManager.GetTotalPlayTime())
+  unsigned int percent((!g_application.GetAppPlayer().GetSeekHandler().InProgress() && g_infoManager.GetTotalPlayTime())
     ? lrintf(g_application.GetPercentage())
     : (unsigned int)g_infoManager.GetSeekPercent());
 

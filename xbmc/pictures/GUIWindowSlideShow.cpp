@@ -555,8 +555,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
-      if (g_application.m_pPlayer->IsPlayingVideo())
-        g_application.m_pPlayer->CloseFile();
+      if (g_application.GetAppPlayer().IsPlayingVideo())
+        g_application.GetAppPlayer().CloseFile();
       m_bPlayingVideo = false;
       m_iVideoSlide = -1;
 
@@ -626,7 +626,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   RenderPause();
   if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
-      g_application.m_pPlayer->IsRenderingGuiLayer())
+      g_application.GetAppPlayer().IsRenderingGuiLayer())
   {
     MarkDirtyRegion();
   }
@@ -645,7 +645,7 @@ void CGUIWindowSlideShow::Render()
   {
     g_graphicsContext.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-    g_application.m_pPlayer->Render(true, 255);
+    g_application.GetAppPlayer().Render(true, 255);
     g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   }
   else
@@ -769,8 +769,8 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_STOP:
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
-    if (g_application.m_pPlayer->IsPlayingVideo())
-      g_application.m_pPlayer->CloseFile();
+    if (g_application.GetAppPlayer().IsPlayingVideo())
+      g_application.GetAppPlayer().CloseFile();
     Close();
     break;
 
@@ -1211,7 +1211,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
                                        const std::string &strExtensions)
 {
   // stop any video
-  if (g_application.m_pPlayer->IsPlayingVideo())
+  if (g_application.GetAppPlayer().IsPlayingVideo())
     g_application.StopPlaying();
 
   AddFromPath(strPath, bRecursive, method, order, sortAttributes, strExtensions);

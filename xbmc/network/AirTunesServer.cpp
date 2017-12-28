@@ -414,8 +414,8 @@ void CAirTunesServer::AudioOutputFunctions::audio_set_progress(void *cls, void *
   duration /= m_sampleRate;
   position /= m_sampleRate;
 
-  g_application.m_pPlayer->SetTime(position * 1000);
-  g_application.m_pPlayer->SetTotalTime(duration * 1000);
+  g_application.GetAppPlayer().SetTime(position * 1000);
+  g_application.GetAppPlayer().SetTotalTime(duration * 1000);
 }
 
 void CAirTunesServer::SetupRemoteControl()

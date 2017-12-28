@@ -62,7 +62,7 @@ namespace XBMCAddon
       //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
       inline virtual ~RenderCapture()
       {
-        g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
+        g_application.GetAppPlayer().RenderCaptureRelease(m_captureId);
         delete [] m_buffer;
       }
 
@@ -111,7 +111,7 @@ namespace XBMCAddon
       ///
       getAspectRatio();
 #else
-      inline float getAspectRatio() { return g_application.m_pPlayer->GetRenderAspectRatio(); }
+      inline float getAspectRatio() { return g_application.GetAppPlayer().GetRenderAspectRatio(); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -179,14 +179,14 @@ namespace XBMCAddon
       {
         if (m_buffer)
         {
-          g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
+          g_application.GetAppPlayer().RenderCaptureRelease(m_captureId);
           delete [] m_buffer;
         }
-        m_captureId = g_application.m_pPlayer->RenderCaptureAlloc();
+        m_captureId = g_application.GetAppPlayer().RenderCaptureAlloc();
         m_width = width;
         m_height = height;
         m_buffer = new uint8_t[m_width*m_height*4];
-        g_application.m_pPlayer->RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
+        g_application.GetAppPlayer().RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
       }
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -211,7 +211,7 @@ namespace XBMCAddon
 #ifndef SWIG
       inline bool GetPixels(unsigned int msec)
       {
-        return g_application.m_pPlayer->RenderCaptureGetPixels(m_captureId, msec, m_buffer, m_width*m_height*4);
+        return g_application.GetAppPlayer().RenderCaptureGetPixels(m_captureId, msec, m_buffer, m_width*m_height*4);
       }
 #endif
 

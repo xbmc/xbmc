@@ -190,7 +190,7 @@ void CSeekHandler::SeekSeconds(int seconds)
   SetSeekSize(seconds);
 
   // perform relative seek
-  g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
+  g_application.GetAppPlayer().SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
 
   Reset();
 }
@@ -202,9 +202,10 @@ int CSeekHandler::GetSeekSize() const
 
 void CSeekHandler::SetSeekSize(double seekSize)
 {
-  int64_t playTime = g_application.m_pPlayer->GetTime();
-  double minSeekSize = (g_application.m_pPlayer->GetMinTime() - playTime) / 1000;
-  double maxSeekSize = (g_application.m_pPlayer->GetMaxTime() - playTime) / 1000;
+  CApplicationPlayer& player = g_application.GetAppPlayer();
+  int64_t playTime = player.GetTime();
+  double minSeekSize = (player.GetMinTime() - playTime) / 1000;
+  double maxSeekSize = (player.GetMaxTime() - playTime) / 1000;
 
   m_seekSize = seekSize > 0
     ? std::min(seekSize, maxSeekSize)
@@ -223,7 +224,7 @@ void CSeekHandler::FrameMove()
     CSingleLock lock(m_critSection);
 
     // perform relative seek
-    g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
+    g_application.GetAppPlayer().SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
     m_seekChanged = true;
 
@@ -271,7 +272,7 @@ void CSeekHandler::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 
 bool CSeekHandler::OnAction(const CAction &action)
 {
-  if (!g_application.m_pPlayer->IsPlaying() || !g_application.m_pPlayer->CanSeek())
+  if (!g_application.GetAppPlayer().IsPlaying() || !g_application.GetAppPlayer().CanSeek())
     return false;
 
   SeekType type = g_application.CurrentFileItem().IsAudio() ? SEEK_TYPE_MUSIC : SEEK_TYPE_VIDEO;
@@ -295,23 +296,23 @@ bool CSeekHandler::OnAction(const CAction &action)
     case ACTION_BIG_STEP_BACK:
     case ACTION_CHAPTER_OR_BIG_STEP_BACK:
     {
-      g_application.m_pPlayer->Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
+      g_application.GetAppPlayer().Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
       return true;
     }
     case ACTION_BIG_STEP_FORWARD:
     case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
     {
-      g_application.m_pPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
+      g_application.GetAppPlayer().Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
       return true;
     }
     case ACTION_NEXT_SCENE:
     {
-      g_application.m_pPlayer->SeekScene(true);
+      g_application.GetAppPlayer().SeekScene(true);
       return true;
     }
     case ACTION_PREV_SCENE:
     {
-      g_application.m_pPlayer->SeekScene(false);
+      g_application.GetAppPlayer().SeekScene(false);
       return true;
     }
     case ACTION_ANALOG_SEEK_FORWARD:
