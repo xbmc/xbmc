@@ -185,15 +185,20 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
     if (isInFullscreen)
     {
       appView->ExitFullScreenMode();
-      appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::Auto;
     }
 
     int viewWidth = appView->VisibleBounds.Width;
     int viewHeight = appView->VisibleBounds.Height;
     if (viewHeight != m_nHeight || viewWidth != m_nWidth)
     {
-      appView->TryResizeView(Windows::Foundation::Size(m_nWidth, m_nHeight));
+      if (!appView->TryResizeView(Windows::Foundation::Size(m_nWidth, m_nHeight)))
+      {
+        CLog::LogF(LOGDEBUG, __FUNCTION__, "resizing ApplicationView failed.");
+      }
     }
+
+    appView->PreferredLaunchViewSize = Windows::Foundation::Size(m_nWidth, m_nHeight);
+    appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::PreferredLaunchViewSize;
   }
 }
 
