@@ -783,7 +783,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    if (Supports(RENDERFEATURE_NONLINSTRETCH) && m_nonLinStretch)
+    if (m_nonLinStretch)
     {
       m_pVideoFilterShader = new StretchFilterShader();
       if (!m_pVideoFilterShader->CompileAndLink())
@@ -803,9 +803,24 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
     return;
 
+  case VS_SCALINGMETHOD_LANCZOS3_FAST:
+    {
+      EShaderFormat fmt = GetShaderFormat();
+      if (fmt == SHADER_NV12 || fmt == SHADER_NV12_RRG || fmt == SHADER_YV12)
+      {
+        unsigned int major, minor;
+        m_renderSystem->GetRenderVersion(major, minor);
+        if (major >= 4)
+        {
+          SetTextureFilter(GL_LINEAR);
+          m_renderQuality = RQ_SINGLEPASS;
+          return;
+        }
+      }
+    }
+
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_SPLINE36_FAST:
-  case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
@@ -890,31 +905,58 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     // create regular progressive scan shader
     // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
+    EShaderFormat shaderFormat = GetShaderFormat();
     GLSLOutput *out = nullptr;
     if (m_renderQuality == RQ_SINGLEPASS)
     {
-      out = new GLSLOutput(3, m_useDithering, m_ditherDepth,
+      out = new GLSLOutput(4, m_useDithering, m_ditherDepth,
                            m_cmsOn ? m_fullRange : false,
                            m_cmsOn ? m_tCLUTTex : 0,
                            m_CLUTsize);
-    }
-    EShaderFormat shaderFormat = GetShaderFormat();
-    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
-                                                m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
+
+      if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST)
+      {
+        m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
+                                                m_iFlags, shaderFormat,
                                                 out);
-    if (!m_cmsOn)
-      m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+        if (!m_cmsOn)
+          m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-    CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
+        CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader with filter");
 
-    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-    {
-      m_renderMethod = RENDER_GLSL;
-      UpdateVideoFilter();
+        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+        {
+          m_renderMethod = RENDER_GLSL;
+          UpdateVideoFilter();
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+          delete m_pYUVShader;
+          m_pYUVShader = nullptr;
+        }
+      }
     }
-    else
+
+    if (!m_pYUVShader)
     {
-      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
+                                                  m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS, out);
+
+      if (!m_cmsOn)
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+
+      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
+
+      if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+      {
+        m_renderMethod = RENDER_GLSL;
+        UpdateVideoFilter();
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+      }
     }
   }
 
@@ -2472,12 +2514,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   if(feature == RENDERFEATURE_SHARPNESS)
   {
     return false;
-  }
-
-  if (feature == RENDERFEATURE_NONLINSTRETCH)
-  {
-    if (m_renderMethod & RENDER_GLSL)
-      return true;
   }
 
   if (feature == RENDERFEATURE_STRETCH         ||

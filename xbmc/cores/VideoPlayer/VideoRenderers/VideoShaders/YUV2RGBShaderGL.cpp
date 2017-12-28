@@ -23,6 +23,7 @@
 #include "../RenderFlags.h"
 #include "YUV2RGBShaderGL.h"
 #include "YUVMatrix.h"
+#include "ConvolutionKernels.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
 #include "utils/log.h"
@@ -191,3 +192,73 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
   PixelShader()->AppendSource("gl_output.glsl");
 }
 
+//------------------------------------------------------------------------------
+// YUV2RGBFilterShader4
+//------------------------------------------------------------------------------
+
+#define SINC(x) sin(M_PI * (x)) / (M_PI * (x))
+
+double LanczosWeight(double x, double radius)
+{
+  double ax = fabs(x);
+
+  if (ax == 0.0)
+    return 1.0;
+  else if (ax < radius)
+    return SINC(ax) * SINC(ax / radius);
+  else
+    return 0.0;
+}
+
+YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
+                                           EShaderFormat format,
+                                           GLSLOutput *output)
+: BaseYUV2RGBGLSLShader(rect, flags, format, false, output)
+{
+  PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
+  PixelShader()->AppendSource("gl_output.glsl");
+}
+
+void YUV2RGBFilterShader4::OnCompiledAndLinked()
+{
+  BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
+  m_hKernTex = glGetUniformLocation(ProgramHandle(), "m_kernelTex");
+
+  CConvolutionKernel kernel(VS_SCALINGMETHOD_LANCZOS3_FAST, 256);
+
+  if (m_kernelTex)
+  {
+    glDeleteTextures(1, &m_kernelTex);
+    m_kernelTex = 0;
+  }
+  glGenTextures(1, &m_kernelTex);
+
+  //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
+  //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+}
+
+bool YUV2RGBFilterShader4::OnEnabled()
+{
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
+  glUniform1i(m_hKernTex, 3);
+
+  return BaseYUV2RGBGLSLShader::OnEnabled();
+}
+
+void YUV2RGBFilterShader4::Free()
+{
+  if (m_kernelTex)
+    glDeleteTextures(1, &m_kernelTex);
+  m_kernelTex = 0;
+  BaseYUV2RGBGLSLShader::Free();
+}

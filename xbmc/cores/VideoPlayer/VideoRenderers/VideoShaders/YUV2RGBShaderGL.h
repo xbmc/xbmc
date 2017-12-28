@@ -21,6 +21,8 @@
 
 #include "guilib/TransformMatrix.h"
 #include "ShaderFormats.h"
+#include "GLSLOutput.h"
+#include "guilib/Shader.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
@@ -29,96 +31,101 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                         , float         contrast
                         , bool          limited);
 
-#include "GLSLOutput.h"
-
-#ifndef __GNUC__
-#pragma warning( push )
-#pragma warning( disable : 4250 )
-#endif
-
-#include "guilib/Shader.h"
-
 namespace Shaders {
 
-  class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
-  {
-  public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=NULL);
-   ~BaseYUV2RGBGLSLShader();
-    void Free() override;
+class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
+{
+public:
+  BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=nullptr);
+  virtual ~BaseYUV2RGBGLSLShader();
+  void Free() override;
 
-    void SetField(int field) { m_field  = field; }
-    void SetWidth(int w) { m_width  = w; }
-    void SetHeight(int h) { m_height = h; }
+  void SetField(int field) { m_field  = field; }
+  void SetWidth(int w) { m_width  = w; }
+  void SetHeight(int h) { m_height = h; }
 
-    void SetBlack(float black) { m_black    = black; }
-    void SetContrast(float contrast) { m_contrast = contrast; }
-    void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+  void SetBlack(float black) { m_black    = black; }
+  void SetContrast(float contrast) { m_contrast = contrast; }
+  void SetNonLinStretch(float stretch) { m_stretch = stretch; }
 
-    void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
+  void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
 
-    GLint GetVertexLoc() { return m_hVertex; }
-    GLint GetYcoordLoc() { return m_hYcoord; }
-    GLint GetUcoordLoc() { return m_hUcoord; }
-    GLint GetVcoordLoc()  { return m_hVcoord; }
+  GLint GetVertexLoc() { return m_hVertex; }
+  GLint GetYcoordLoc() { return m_hYcoord; }
+  GLint GetUcoordLoc() { return m_hUcoord; }
+  GLint GetVcoordLoc()  { return m_hVcoord; }
 
-    void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
-    void SetAlpha(GLfloat alpha)  { m_alpha = alpha; }
+  void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
+  void SetAlpha(GLfloat alpha)  { m_alpha = alpha; }
 
-  protected:
-    void OnCompiledAndLinked() override;
-    bool OnEnabled() override;
-    void OnDisabled() override;
+protected:
 
-    bool m_convertFullRange;
-    unsigned m_flags;
-    EShaderFormat m_format;
-    int m_width;
-    int m_height;
-    int m_field;
+  void OnCompiledAndLinked() override;
+  bool OnEnabled() override;
+  void OnDisabled() override;
 
-    float m_black;
-    float m_contrast;
-    float m_stretch;
+  bool m_convertFullRange;
+  unsigned m_flags;
+  EShaderFormat m_format;
+  int m_width;
+  int m_height;
+  int m_field;
 
-    GLfloat *m_proj = nullptr;
-    GLfloat *m_model = nullptr;
-    GLfloat  m_alpha = 1.0f;
+  float m_black;
+  float m_contrast;
+  float m_stretch;
 
-    std::string m_defines;
+  GLfloat *m_proj = nullptr;
+  GLfloat *m_model = nullptr;
+  GLfloat  m_alpha = 1.0f;
 
-    Shaders::GLSLOutput *m_glslOutput;
+  std::string m_defines;
 
-    // pixel shader attribute handles
-    GLint m_hYTex = -1;
-    GLint m_hUTex = -1;
-    GLint m_hVTex = -1;
-    GLint m_hMatrix = -1;
-    GLint m_hStretch = -1;
-    GLint m_hStep = -1;
+  Shaders::GLSLOutput *m_glslOutput = nullptr;
 
-    // vertex shader attribute handles
-    GLint m_hVertex = -1;
-    GLint m_hYcoord = -1;
-    GLint m_hUcoord = -1;
-    GLint m_hVcoord = -1;
-    GLint m_hProj = -1;
-    GLint m_hModel = -1;
-    GLint m_hAlpha = -1;
-  };
+  // pixel shader attribute handles
+  GLint m_hYTex = -1;
+  GLint m_hUTex = -1;
+  GLint m_hVTex = -1;
+  GLint m_hMatrix = -1;
+  GLint m_hStretch = -1;
+  GLint m_hStep = -1;
 
-  class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
-  {
-  public:
-    YUV2RGBProgressiveShader(bool rect=false,
-                             unsigned flags=0,
-                             EShaderFormat format=SHADER_NONE,
-                             bool stretch = false,
-                             GLSLOutput *output=NULL);
-  };
+  // vertex shader attribute handles
+  GLint m_hVertex = -1;
+  GLint m_hYcoord = -1;
+  GLint m_hUcoord = -1;
+  GLint m_hVcoord = -1;
+  GLint m_hProj = -1;
+  GLint m_hModel = -1;
+  GLint m_hAlpha = -1;
+};
+
+class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
+{
+public:
+  YUV2RGBProgressiveShader(bool rect,
+                           unsigned flags,
+                           EShaderFormat format,
+                           bool stretch,
+                           GLSLOutput *output);
+};
+
+class YUV2RGBFilterShader4 : public BaseYUV2RGBGLSLShader
+{
+public:
+  YUV2RGBFilterShader4(bool rect,
+                       unsigned flags,
+                       EShaderFormat format,
+                       GLSLOutput *output);
+protected:
+  void OnCompiledAndLinked() override;
+  bool OnEnabled() override;
+  void Free() override;
+
+  GLuint m_kernelTex = 0;
+  GLint m_hKernTex = -1;
+};
 
 } // end namespace
 
-#ifndef __GNUC__
-#pragma warning( pop )
-#endif
