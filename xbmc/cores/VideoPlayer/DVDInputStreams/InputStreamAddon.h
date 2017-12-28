@@ -47,6 +47,7 @@ class CInputStreamAddon
   : public ADDON::IAddonInstanceHandler,
     public CDVDInputStream,
     public CDVDInputStream::IDisplayTime,
+    public CDVDInputStream::ITimes,
     public CDVDInputStream::IPosTime,
     public CDVDInputStream::IDemux
 {
@@ -71,6 +72,10 @@ public:
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override;
   int GetTotalTime() override;
   int GetTime() override;
+
+  // ITime
+  CDVDInputStream::ITimes* GetITimes() override;
+  bool GetTimes(Times &times) override;
 
   // IPosTime
   CDVDInputStream::IPosTime* GetIPosTime() override;

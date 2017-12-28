@@ -255,6 +255,33 @@ int CInputStreamAddon::GetTime()
   return m_struct.toAddon.get_time(&m_struct);
 }
 
+// ITime
+CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
+{
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_ITIME) == 0)
+    return nullptr;
+
+  return this;
+}
+
+bool CInputStreamAddon::GetTimes(Times &times)
+{
+  if (!m_struct.toAddon.get_times)
+    return false;
+
+  INPUTSTREAM_TIMES i_times;
+
+  if (m_struct.toAddon.get_times(&m_struct, &i_times))
+  {
+    times.ptsBegin = i_times.ptsBegin;
+    times.ptsEnd = i_times.ptsEnd;
+    times.ptsStart = i_times.ptsStart;
+    times.startTime = i_times.startTime;
+    return true;
+  }
+  return false;
+}
+
 // IPosTime
 CDVDInputStream::IPosTime* CInputStreamAddon::GetIPosTime()
 {
@@ -359,6 +386,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   else
     return nullptr;
 
+  demuxStream->name = stream.m_name;
   demuxStream->codec = codec->id;
   demuxStream->codecName = stream.m_codecInternalName;
   demuxStream->uniqueId = streamId;
