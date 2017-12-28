@@ -141,6 +141,7 @@ CPVRManager::CPVRManager(void) :
     m_bFirstStart(true),
     m_bEpgsCreated(false),
     m_managerState(ManagerStateStopped),
+    m_parentalTimer(new CStopWatch),
     m_settings({
       CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
