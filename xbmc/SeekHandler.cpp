@@ -203,8 +203,8 @@ int CSeekHandler::GetSeekSize() const
 void CSeekHandler::SetSeekSize(double seekSize)
 {
   int64_t playTime = g_application.m_pPlayer->GetTime();
-  double minSeekSize = static_cast<int>((g_application.m_pPlayer->GetMinTime() - playTime) / 1000);
-  double maxSeekSize = static_cast<int>((g_application.m_pPlayer->GetMaxTime() - playTime) / 1000);
+  double minSeekSize = (g_application.m_pPlayer->GetMinTime() - playTime) / 1000;
+  double maxSeekSize = (g_application.m_pPlayer->GetMaxTime() - playTime) / 1000;
 
   m_seekSize = seekSize > 0
     ? std::min(seekSize, maxSeekSize)
