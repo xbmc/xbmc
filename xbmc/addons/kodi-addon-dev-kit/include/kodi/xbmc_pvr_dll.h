@@ -211,14 +211,6 @@ extern "C"
   PVR_ERROR RenameChannel(const PVR_CHANNEL& channel);
 
   /*!
-   * Move a channel to another channel number on the backend.
-   * @param channel The channel to move, containing the new channel number.
-   * @return PVR_ERROR_NO_ERROR if the channel has been moved successfully.
-   * @remarks Optional, and only used if bSupportsChannelSettings is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
-   */
-  PVR_ERROR MoveChannel(const PVR_CHANNEL& channel);
-
-  /*!
    * Show the channel settings dialog, if supported by the backend.
    * @param channel The channel to show the dialog for.
    * @return PVR_ERROR_NO_ERROR if the dialog has been displayed successfully.
@@ -427,12 +419,6 @@ extern "C"
   long long SeekLiveStream(long long iPosition, int iWhence = SEEK_SET);
 
   /*!
-   * @return The position in the stream that's currently being read.
-   * @remarks Optional, and only used if bHandlesInputStream is set to true. Return -1 if this add-on won't provide this function.
-   */
-  long long PositionLiveStream(void);
-
-  /*!
    * @return The total length of the stream that's currently being read.
    * @remarks Optional, and only used if bHandlesInputStream is set to true. Return -1 if this add-on won't provide this function.
    */
@@ -520,12 +506,6 @@ extern "C"
   long long SeekRecordedStream(long long iPosition, int iWhence = SEEK_SET);
 
   /*!
-   * @return The position in the stream that's currently being read.
-   * @remarks Optional, and only used if bSupportsRecordings is set to true. Return -1 if this add-on won't provide this function.
-   */
-  long long PositionRecordedStream(void);
-
-  /*!
    * @return The total length of the stream that's currently being read.
    * @remarks Optional, and only used if bSupportsRecordings is set to true. Return -1 if this add-on won't provide this function.
    */
@@ -606,25 +586,6 @@ extern "C"
   void SetSpeed(int speed);
 
   /*!
-   *  Get actual playing time from addon. With timeshift enabled this is
-   *  different to live.
-   *  @return time as UTC
-   */
-  time_t GetPlayingTime();
-
-  /*!
-   *  Get time of oldest packet in timeshift buffer
-   *  @return time as UTC
-   */
-  time_t GetBufferTimeStart();
-
-  /*!
-   *  Get time of latest packet in timeshift buffer
-   *  @return time as UTC
-   */
-  time_t GetBufferTimeEnd();
-
-  /*!
    *  Get the hostname of the pvr backend server
    *  @return hostname as ip address or alias. If backend does not
    *          utilize a server, return empty string.
@@ -699,7 +660,6 @@ extern "C"
     pClient->toAddon.GetChannels                    = GetChannels;
     pClient->toAddon.DeleteChannel                  = DeleteChannel;
     pClient->toAddon.RenameChannel                  = RenameChannel;
-    pClient->toAddon.MoveChannel                    = MoveChannel;
     pClient->toAddon.OpenDialogChannelSettings      = OpenDialogChannelSettings;
     pClient->toAddon.OpenDialogChannelAdd           = OpenDialogChannelAdd;
 
@@ -726,7 +686,6 @@ extern "C"
     pClient->toAddon.CloseLiveStream                = CloseLiveStream;
     pClient->toAddon.ReadLiveStream                 = ReadLiveStream;
     pClient->toAddon.SeekLiveStream                 = SeekLiveStream;
-    pClient->toAddon.PositionLiveStream             = PositionLiveStream;
     pClient->toAddon.LengthLiveStream               = LengthLiveStream;
     pClient->toAddon.SignalStatus                   = SignalStatus;
     pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
@@ -742,17 +701,12 @@ extern "C"
     pClient->toAddon.CloseRecordedStream            = CloseRecordedStream;
     pClient->toAddon.ReadRecordedStream             = ReadRecordedStream;
     pClient->toAddon.SeekRecordedStream             = SeekRecordedStream;
-    pClient->toAddon.PositionRecordedStream         = PositionRecordedStream;
     pClient->toAddon.LengthRecordedStream           = LengthRecordedStream;
 
     pClient->toAddon.DemuxReset                     = DemuxReset;
     pClient->toAddon.DemuxAbort                     = DemuxAbort;
     pClient->toAddon.DemuxFlush                     = DemuxFlush;
     pClient->toAddon.DemuxRead                      = DemuxRead;
-
-    pClient->toAddon.GetPlayingTime                 = GetPlayingTime;
-    pClient->toAddon.GetBufferTimeStart             = GetBufferTimeStart;
-    pClient->toAddon.GetBufferTimeEnd               = GetBufferTimeEnd;
 
     pClient->toAddon.GetBackendHostname             = GetBackendHostname;
 

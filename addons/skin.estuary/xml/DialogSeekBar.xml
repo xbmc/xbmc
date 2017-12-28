@@ -104,7 +104,20 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)]</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo) | VideoPlayer.HasEpg]</visible>
+				</control>
+				<control type="label">
+					<top>110</top>
+					<right>20</right>
+					<width>400</width>
+					<height>50</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<wrapmultiline>true</wrapmultiline>
+					<animation effect="fade" time="200">VisibleChange</animation>
+					<label>$INFO[PVR.EpgEventRemainingTime,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)] + VideoPlayer.HasEpg</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -173,7 +186,18 @@
 					<info>PVR.timeshiftprogress</info>
 					<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 					<midtexture>colors/white50.png</midtexture>
+					<visible>VideoPlayer.Content(livetv)</visible>
 				</control>
+			</control>
+			<control type="progress">
+				<left>0</left>
+				<top>70</top>
+				<width>100%</width>
+				<height>15</height>
+				<info>PVR.EpgEventProgress</info>
+				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<visible>VideoPlayer.HasEpg</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -183,7 +207,7 @@
 				<info>Player.ProgressCache</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture>colors/white50.png</midtexture>
-				<visible>!Player.ChannelPreviewActive</visible>
+				<visible>!VideoPlayer.Content(livetv)</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -193,6 +217,7 @@
 				<info>Player.Progress</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<visible>!VideoPlayer.HasEpg</visible>
 			</control>
 			<control type="slider" id="401">
 				<left>5</left>
@@ -202,7 +227,7 @@
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
-				<visible>!VideoPlayer.Content(livetv)</visible>
+				<visible>!VideoPlayer.HasEpg</visible>
 			</control>
 		</control>
 		<control type="group">

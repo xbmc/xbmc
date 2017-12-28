@@ -87,7 +87,7 @@ namespace PVR
     bool SupportsChannelScan() const { return m_addonCapabilities.bSupportsChannelScan; }
 
     /*!
-     * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel.
+     * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel.
      * @return True if recordings are supported, false otherwise.
      */
     bool SupportsChannelSettings() const { return m_addonCapabilities.bSupportsChannelSettings; }
@@ -800,27 +800,6 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
     PVR_ERROR IsTimeshifting(bool &bTimeshifting) const;
-
-    /*!
-     * @brief Get the current playing time
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetPlayingTime(time_t &time) const;
-
-    /*!
-     * @brief Get the time of oldest packet in timeshift buffer
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetBufferTimeStart(time_t &time) const;
-
-    /*!
-     * @brief Get the time of latest packet in timeshift buffer
-     * @param time The time.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR GetBufferTimeEnd(time_t &time) const;
 
     /*!
      * @brief Check whether the currently playing stream, if any, is a real-time stream.

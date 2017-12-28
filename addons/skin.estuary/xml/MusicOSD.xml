@@ -220,9 +220,8 @@
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
-				<visible>Player.SeekEnabled</visible>
+				<visible>Player.SeekEnabled + !Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
 				<action>seek</action>
-				<visible>!Control.HasFocus(87)</visible>
 			</control>
 			<control type="slider">
 				<left>0</left>
@@ -235,9 +234,34 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
-				<visible>Player.SeekEnabled</visible>
+				<visible>Player.SeekEnabled + Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
 				<action>seek</action>
-				<visible>Control.HasFocus(87)</visible>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>-5</top>
+				<width>100%</width>
+				<height>25</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+				<info>PVR.EpgEventProgress</info>
+				<visible>Player.SeekEnabled + !Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>-5</top>
+				<width>100%</width>
+				<height>25</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+				<info>PVR.EpgEventProgress</info>
+				<visible>Player.SeekEnabled + Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
 			</control>
 		</control>
 	</controls>

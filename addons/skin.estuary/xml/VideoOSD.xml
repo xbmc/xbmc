@@ -207,7 +207,7 @@
 					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<action>seek</action>
-					<visible>!Control.HasFocus(87)</visible>
+					<visible>!Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
 				</control>
 				<control type="slider">
 					<top>-5</top>
@@ -219,7 +219,29 @@
 					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<action>seek</action>
-					<visible>Control.HasFocus(87)</visible>
+					<visible>Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
+				</control>
+				<control type="slider">
+					<top>-5</top>
+					<left>0</left>
+					<width>100%</width>
+					<height>25</height>
+					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+					<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<info>PVR.EpgEventProgress</info>
+					<visible>!Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
+				</control>
+				<control type="slider">
+					<top>-5</top>
+					<left>0</left>
+					<width>100%</width>
+					<height>25</height>
+					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+					<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<info>PVR.EpgEventProgress</info>
+					<visible>Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
 				</control>
 			</control>
 		</control>

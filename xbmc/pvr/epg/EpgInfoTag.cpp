@@ -22,6 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "cores/DataCacheCore.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -221,17 +222,16 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  CDateTime now = CDateTime::GetUTCDateTime();
-
-  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
-  if (channel == Channel())
+  if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel() &&
+      CServiceBroker::GetPVRManager().Clients()->IsTimeshifting())
   {
-    // Timeshifting active?
-    time_t time = CServiceBroker::GetPVRManager().Clients()->GetPlayingTime();
-    if (time > 0) // returns 0 in case no client is currently playing
-      now = time;
+    // timeshifting
+    return CDateTime(CServiceBroker::GetDataCacheCore().GetStartTime() +
+                     CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
   }
-  return now;
+
+  // not timeshifting
+  return CDateTime::GetUTCDateTime();
 }
 
 bool CPVREpgInfoTag::IsActive(void) const

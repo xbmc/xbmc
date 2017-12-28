@@ -312,7 +312,7 @@ extern "C" {
     bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
-    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, MoveChannel, DialogChannelSettings and DialogAddChannel */
+    bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel */
     bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
@@ -424,6 +424,7 @@ extern "C" {
     char         strGroupName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) name of the channel group to add the channel to */
     unsigned int iChannelUniqueId;                           /*!< @brief (required) unique id of the member */
     unsigned int iChannelNumber;                             /*!< @brief (optional) channel number within the group */
+    unsigned int iSubChannelNumber;                          /*!< @brief (optional) sub channel number within the group (ATSC) */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!
@@ -589,14 +590,14 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
 
   /*!
-   * @brief times of playing stream
+   * @brief times of playing stream (Live TV and recordings)
    */
   typedef struct PVR_STREAM_TIMES
   {
-    time_t startTime; /*!< @brief time (UTC) time elapsed refers to. Ideally start of tv show */
-    int64_t ptsStart; /*!< @brief pts of startTime */
-    int64_t ptsBegin; /*!< @brief erliest pts player can seek back */
-    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward */
+    time_t startTime; /*!< @brief For recordings, this must be zero. For Live TV, this is a reference time in units of time_t (UTC) from which time elapsed starts. Ideally start of tv show, but can be any other value. */
+    int64_t ptsStart; /*!< @brief the pts of startTime */
+    int64_t ptsBegin; /*!< @brief earliest pts player can seek back. Value is seconds, relative to ptsStart. For recordings, this must be zero. For Live TV, this must be zero if not timeshifting and must point to begin of the timeshift buffer, otherwise. */
+    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward. Value is seconds, relative to ptsStart. For recordings, this must be the total length in seconds. For Live TV, this must be zero if not timeshifting and must point to end of the timeshift buffer, otherwise. */
   } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
 
   typedef struct AddonToKodiFuncTable_PVR
@@ -677,7 +678,6 @@ extern "C" {
     void (__cdecl* CloseLiveStream)(void);
     int (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
     long long (__cdecl* SeekLiveStream)(long long, int);
-    long long (__cdecl* PositionLiveStream)(void);
     long long (__cdecl* LengthLiveStream)(void);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
@@ -687,7 +687,6 @@ extern "C" {
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
     long long (__cdecl* SeekRecordedStream)(long long, int);
-    long long (__cdecl* PositionRecordedStream)(void);
     long long (__cdecl* LengthRecordedStream)(void);
     void (__cdecl* DemuxReset)(void);
     void (__cdecl* DemuxAbort)(void);
@@ -698,9 +697,6 @@ extern "C" {
     bool (__cdecl* CanSeekStream)(void);
     bool (__cdecl* SeekTime)(double, bool, double*);
     void (__cdecl* SetSpeed)(int);
-    time_t (__cdecl* GetPlayingTime)(void);
-    time_t (__cdecl* GetBufferTimeStart)(void);
-    time_t (__cdecl* GetBufferTimeEnd)(void);
     const char* (__cdecl* GetBackendHostname)(void);
     bool (__cdecl* IsTimeshifting)(void);
     bool (__cdecl* IsRealTimeStream)(void);

@@ -194,8 +194,10 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    void CharInfoPlayingDuration(std::string &strValue) const;
-    void CharInfoPlayingTime(std::string &strValue) const;
+    void CharInfoEpgEventDuration(std::string &strValue) const;
+    void CharInfoEpgEventElapsedTime(std::string &strValue) const;
+    void CharInfoEpgEventRemainingTime(std::string &strValue) const;
+    void CharInfoEpgEventFinishTime(std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
     void CharInfoSignal(std::string &strValue) const;
@@ -260,6 +262,7 @@ namespace PVR
     std::vector<SBackend>           m_backendProperties;
 
     bool                            m_bIsTimeshifting;
+    time_t                          m_iStartTime;
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
