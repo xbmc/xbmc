@@ -501,7 +501,7 @@ private:
   std::atomic_uint m_WaitingExternalCalls;        /*!< counts threads wich are waiting to be processed in FrameMove */
   unsigned int m_ProcessedExternalCalls;          /*!< counts calls wich are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
-  CApplicationPlayer m_pPlayer;
+  CApplicationPlayer m_appPlayer;
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);

@@ -1191,10 +1191,10 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
   // configure seek handler
-  m_pPlayer.GetSeekHandler().Configure();
+  m_appPlayer.GetSeekHandler().Configure();
 
   // register action listeners
-  RegisterActionListener(&m_pPlayer.GetSeekHandler());
+  RegisterActionListener(&m_appPlayer.GetSeekHandler());
   RegisterActionListener(&CPlayerController::GetInstance());
 
   CServiceBroker::GetRepositoryUpdater().Start();
@@ -1570,12 +1570,12 @@ bool CApplication::LoadSkin(const std::string& skinID)
     GAME,
   } previousRenderingState = RENDERING_STATE::NONE;
 
-  if (m_pPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo())
   {
-    bPreviousPlayingState = !m_pPlayer.IsPausedPlayback();
+    bPreviousPlayingState = !m_appPlayer.IsPausedPlayback();
     if (bPreviousPlayingState)
-      m_pPlayer.Pause();
-    m_pPlayer.FlushRenderer();
+      m_appPlayer.Pause();
+    m_appPlayer.FlushRenderer();
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
       g_windowManager.ActivateWindow(WINDOW_HOME);
@@ -1684,10 +1684,10 @@ bool CApplication::LoadSkin(const std::string& skinID)
   }
 
   // restore player and rendering state
-  if (m_pPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo())
   {
     if (bPreviousPlayingState)
-      m_pPlayer.Pause();
+      m_appPlayer.Pause();
 
     switch (previousRenderingState)
     {
@@ -1853,9 +1853,9 @@ void CApplication::Render()
   bool hasRendered = false;
 
   // Whether externalplayer is playing and we're unfocused
-  bool extPlayerActive = m_pPlayer.IsExternalPlaying() && !m_AppFocused;
+  bool extPlayerActive = m_appPlayer.IsExternalPlaying() && !m_AppFocused;
 
-  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer.IsPausedPlayback())
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback())
   {
     ResetScreenSaver();
   }
@@ -1903,7 +1903,7 @@ void CApplication::Render()
     g_infoManager.UpdateFPS();
   }
 
-  g_graphicsContext.Flip(hasRendered, m_pPlayer.IsRenderingVideoLayer());
+  g_graphicsContext.Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
 }
@@ -1964,7 +1964,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
     g_graphicsContext.ToggleFullScreen();
-    m_pPlayer.TriggerUpdateResolution();
+    m_appPlayer.TriggerUpdateResolution();
     return true;
   }
 
@@ -1984,7 +1984,7 @@ bool CApplication::OnAction(const CAction &action)
   // playing or ACTION_PLAYER_PLAY if we are seeking (FF/RW) or not playing.
   if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
   {
-    if (m_pPlayer.IsPlaying() && m_pPlayer.GetPlaySpeed() == 1)
+    if (m_appPlayer.IsPlaying() && m_appPlayer.GetPlaySpeed() == 1)
       return OnAction(CAction(ACTION_PAUSE));
     else
       return OnAction(CAction(ACTION_PLAYER_PLAY));
@@ -2038,7 +2038,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_pPlayer.IsPlayingAudio())
+  if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
@@ -2071,7 +2071,7 @@ bool CApplication::OnAction(const CAction &action)
     }
     return true;
   }
-  else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_pPlayer.IsPlayingVideo())
+  else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingVideo())
   {
     const CVideoInfoTag *tag = g_infoManager.GetCurrentMovieTag();
     if (tag)
@@ -2107,7 +2107,7 @@ bool CApplication::OnAction(const CAction &action)
 
   // Now check with the playlist player if action can be handled.
   // In case of the action PREV_ITEM, we only allow the playlist player to take it if we're less than 3 seconds into playback.
-  if (!(action.GetID() == ACTION_PREV_ITEM && m_pPlayer.CanSeek() && GetTime() > 3) )
+  if (!(action.GetID() == ACTION_PREV_ITEM && m_appPlayer.CanSeek() && GetTime() > 3) )
   {
     if (CServiceBroker::GetPlaylistPlayer().OnAction(action))
       return true;
@@ -2122,7 +2122,7 @@ bool CApplication::OnAction(const CAction &action)
         (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
       action.GetID() == ACTION_STOP)
   {
-    if (m_pPlayer.OnAction(action))
+    if (m_appPlayer.OnAction(action))
       return true;
     // Player ignored action; popup the OSD
     if ((action.GetID() == ACTION_MOUSE_MOVE && (action.GetAmount(2) || action.GetAmount(3)))  // filter "false" mouse move from touch
@@ -2141,10 +2141,10 @@ bool CApplication::OnAction(const CAction &action)
 
   // In case the playlist player nor the player didn't handle PREV_ITEM, because we are past the 3 secs limit.
   // If so, we just jump to the start of the track.
-  if (action.GetID() == ACTION_PREV_ITEM && m_pPlayer.CanSeek())
+  if (action.GetID() == ACTION_PREV_ITEM && m_appPlayer.CanSeek())
   {
     SeekTime(0);
-    m_pPlayer.SetPlaySpeed(1);
+    m_appPlayer.SetPlaySpeed(1);
     return true;
   }
 
@@ -2152,42 +2152,42 @@ bool CApplication::OnAction(const CAction &action)
   if (CStereoscopicsManager::GetInstance().OnAction(action))
     return true;
 
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
     // forward channel switches to the player - he knows what to do
     if (action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)
     {
-      m_pPlayer.OnAction(action);
+      m_appPlayer.OnAction(action);
       return true;
     }
 
     // pause : toggle pause action
     if (action.GetID() == ACTION_PAUSE)
     {
-      m_pPlayer.Pause();
+      m_appPlayer.Pause();
       // go back to normal play speed on unpause
-      if (!m_pPlayer.IsPaused() && m_pPlayer.GetPlaySpeed() != 1)
-        m_pPlayer.SetPlaySpeed(1);
+      if (!m_appPlayer.IsPaused() && m_appPlayer.GetPlaySpeed() != 1)
+        m_appPlayer.SetPlaySpeed(1);
 
-      g_audioManager.Enable(m_pPlayer.IsPaused());
+      g_audioManager.Enable(m_appPlayer.IsPaused());
       return true;
     }
     // play: unpause or set playspeed back to normal
     if (action.GetID() == ACTION_PLAYER_PLAY)
     {
       // if currently paused - unpause
-      if (m_pPlayer.IsPaused())
+      if (m_appPlayer.IsPaused())
         return OnAction(CAction(ACTION_PAUSE));
       // if we do a FF/RW then go back to normal speed
-      if (m_pPlayer.GetPlaySpeed() != 1)
-        m_pPlayer.SetPlaySpeed(1);
+      if (m_appPlayer.GetPlaySpeed() != 1)
+        m_appPlayer.SetPlaySpeed(1);
       return true;
     }
-    if (!m_pPlayer.IsPaused())
+    if (!m_appPlayer.IsPaused())
     {
       if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
       {
-        float playSpeed = m_pPlayer.GetPlaySpeed();
+        float playSpeed = m_appPlayer.GetPlaySpeed();
 
         if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed == 1)) // Enables Rewinding
           playSpeed *= -2;
@@ -2203,10 +2203,10 @@ bool CApplication::OnAction(const CAction &action)
         if (playSpeed > 32 || playSpeed < -32)
           playSpeed = 1;
 
-        m_pPlayer.SetPlaySpeed(playSpeed);
+        m_appPlayer.SetPlaySpeed(playSpeed);
         return true;
       }
-      else if ((action.GetAmount() || m_pPlayer.GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+      else if ((action.GetAmount() || m_appPlayer.GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
       {
         // calculate the speed based on the amount the button is held down
         int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
@@ -2216,7 +2216,7 @@ bool CApplication::OnAction(const CAction &action)
         int iSpeed = 1 << iPower;
         if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
           iSpeed = -iSpeed;
-        m_pPlayer.SetPlaySpeed(static_cast<float>(iSpeed));
+        m_appPlayer.SetPlaySpeed(static_cast<float>(iSpeed));
         if (iSpeed == 1)
           CLog::Log(LOGDEBUG,"Resetting playspeed");
         return true;
@@ -2228,10 +2228,10 @@ bool CApplication::OnAction(const CAction &action)
       if (action.GetID() == ACTION_PLAYER_PLAY)
       {
         // unpause, and set the playspeed back to normal
-        m_pPlayer.Pause();
-        g_audioManager.Enable(m_pPlayer.IsPaused());
+        m_appPlayer.Pause();
+        g_audioManager.Enable(m_appPlayer.IsPaused());
 
-        m_pPlayer.SetPlaySpeed(1);
+        m_appPlayer.SetPlaySpeed(1);
         return true;
       }
     }
@@ -2240,7 +2240,7 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_SWITCH_PLAYER)
   {
-    if(m_pPlayer.IsPlaying())
+    if(m_appPlayer.IsPlaying())
     {
       std::vector<std::string> players;
       CFileItem item(*m_itemCurrentFile.get());
@@ -2290,7 +2290,7 @@ bool CApplication::OnAction(const CAction &action)
   // Check for global volume control
   if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)) || action.GetID() == ACTION_VOLUME_SET)
   {
-    if (!m_pPlayer.IsPassthrough())
+    if (!m_appPlayer.IsPassthrough())
     {
       if (m_muted)
         UnMute();
@@ -2372,7 +2372,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_RENDERER_FLUSH:
-    m_pPlayer.FlushRenderer();
+    m_appPlayer.FlushRenderer();
     break;
 
   case TMSG_HIBERNATE:
@@ -2470,7 +2470,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_TOGGLEFULLSCREEN:
     g_graphicsContext.ToggleFullScreen();
-    m_pPlayer.TriggerUpdateResolution();
+    m_appPlayer.TriggerUpdateResolution();
     break;
 
   case TMSG_MINIMIZE:
@@ -2510,7 +2510,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (!pSlideShow) return;
 
     // stop playing file
-    if (m_pPlayer.IsPlayingVideo()) g_application.StopPlaying();
+    if (m_appPlayer.IsPlayingVideo()) g_application.StopPlaying();
 
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       g_windowManager.PreviousWindow();
@@ -2555,7 +2555,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow) return;
 
-    if (m_pPlayer.IsPlayingVideo())
+    if (m_appPlayer.IsPlayingVideo())
       g_application.StopPlaying();
 
     pSlideShow->Reset();
@@ -2674,7 +2674,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-      m_pPlayer.GetSeekHandler().FrameMove();
+      m_appPlayer.GetSeekHandler().FrameMove();
     }
 
     // Open the door for external calls e.g python exactly here.
@@ -2685,7 +2685,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       m_frameMoveGuard.unlock();
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
       // WHen not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = m_pPlayer.IsPlayingVideo() && !m_pPlayer.IsPausedPlayback() ? 10 : 80;
+      unsigned int max_sleep = m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPausedPlayback() ? 10 : 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       Sleep(sleepTime);
       m_frameMoveGuard.lock();
@@ -2703,7 +2703,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
     // it makes only sense on architectures with multiple layers
-    if (g_graphicsContext.IsFullScreenVideo() && !m_pPlayer.IsPausedPlayback() && m_pPlayer.IsRenderingVideoLayer())
+    if (g_graphicsContext.IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback() && m_appPlayer.IsRenderingVideoLayer())
       fps = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 
     unsigned int now = XbmcThreads::SystemClockMillis();
@@ -2720,7 +2720,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     g_windowManager.FrameMove();
   }
 
-  m_pPlayer.FrameMove();
+  m_appPlayer.FrameMove();
 
   // this will go away when render systems gets its own thread
   CServiceBroker::GetWinSystem().DriveRenderLoop();
@@ -2860,7 +2860,7 @@ void CApplication::Stop(int exitCode)
     CApplicationMessenger::GetInstance().Cleanup();
 
     CLog::Log(LOGNOTICE, "stop player");
-    m_pPlayer.ClosePlayer();
+    m_appPlayer.ClosePlayer();
 
     StopServices();
 
@@ -2895,7 +2895,7 @@ void CApplication::Stop(int exitCode)
     CServiceBroker::GetServiceAddons().Stop();
 
     // unregister action listeners
-    UnregisterActionListener(&m_pPlayer.GetSeekHandler());
+    UnregisterActionListener(&m_appPlayer.GetSeekHandler());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
     g_audioManager.DeInitialize();
@@ -3028,7 +3028,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   if (!bRestart)
   {
     // bRestart will be true when called from PlayStack(), skipping this block
-    m_pPlayer.SetPlaySpeed(1);
+    m_appPlayer.SetPlaySpeed(1);
 
     m_itemCurrentFile.reset(new CFileItem(item));
 
@@ -3226,8 +3226,8 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   std::string newPlayer;
   if (!player.empty())
     newPlayer = player;
-  else if (bRestart && !m_pPlayer.GetCurrentPlayer().empty())
-    newPlayer = m_pPlayer.GetCurrentPlayer();
+  else if (bRestart && !m_appPlayer.GetCurrentPlayer().empty())
+    newPlayer = m_appPlayer.GetCurrentPlayer();
   else
     newPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
 
@@ -3235,14 +3235,14 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   // one of the players that allows gapless playback (paplayer, VideoPlayer)
   // DVD playback does not support gapless
   if (item.IsDiscImage() || item.IsDVDFile())
-    m_pPlayer.ClosePlayer();
+    m_appPlayer.ClosePlayer();
   else
-    m_pPlayer.ClosePlayerGapless(newPlayer);
+    m_appPlayer.ClosePlayerGapless(newPlayer);
 
-  m_pPlayer.CreatePlayer(newPlayer, *this);
+  m_appPlayer.CreatePlayer(newPlayer, *this);
 
   PlayBackRet iResult;
-  if (m_pPlayer.HasPlayer())
+  if (m_appPlayer.HasPlayer())
   {
     /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
      * This should speed up player startup for files on internet filesystems (eg. webdav) and
@@ -3257,7 +3257,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
 
-    iResult = m_pPlayer.OpenFile(item, options);
+    iResult = m_appPlayer.OpenFile(item, options);
   }
   else
   {
@@ -3267,18 +3267,18 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   if (iResult == PLAYBACK_OK)
   {
-    m_pPlayer.SetVolume(m_volumeLevel);
-    m_pPlayer.SetMute(m_muted);
+    m_appPlayer.SetVolume(m_volumeLevel);
+    m_appPlayer.SetMute(m_muted);
 
-    if(m_pPlayer.IsPlayingAudio())
+    if(m_appPlayer.IsPlayingAudio())
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
     }
-    else if(m_pPlayer.IsPlayingVideo())
+    else if(m_appPlayer.IsPlayingVideo())
     {
       // if player didn't manage to switch to fullscreen by itself do it here
-      if (options.fullscreen && m_pPlayer.IsRenderingVideo() &&
+      if (options.fullscreen && m_appPlayer.IsRenderingVideo() &&
           g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
           g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
        SwitchToFullScreen(true);
@@ -3462,7 +3462,7 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  if (m_pPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
@@ -3494,7 +3494,7 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
   CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  param["player"]["speed"] = (int)m_pPlayer.GetPlaySpeed();
+  param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
@@ -3522,7 +3522,7 @@ void CApplication::RequestVideoSettings(const CFileItem &fileItem)
     if (!dbs.GetVideoSettings(fileItem, vs))
       vs = CMediaSettings::GetInstance().GetDefaultVideoSettings();
 
-    m_pPlayer.SetVideoSettings(vs);
+    m_appPlayer.SetVideoSettings(vs);
 
     dbs.Close();
   }
@@ -3543,7 +3543,7 @@ void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings 
 
 bool CApplication::IsPlayingFullScreenVideo() const
 {
-  return m_pPlayer.IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+  return m_appPlayer.IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
 bool CApplication::IsFullScreen()
@@ -3556,9 +3556,9 @@ bool CApplication::IsFullScreen()
 void CApplication::StopPlaying()
 {
   int iWin = g_windowManager.GetActiveWindow();
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
-    m_pPlayer.ClosePlayer();
+    m_appPlayer.ClosePlayer();
 
     // turn off visualisation window when stopping
     if ((iWin == WINDOW_VISUALISATION ||
@@ -3759,9 +3759,9 @@ void CApplication::CheckScreenSaverAndDPMS()
   // explicit user activity such as input
   bool haveIdleActivity =
     // * Are we playing a video and it is not paused?
-    (m_pPlayer.IsPlayingVideo() && !m_pPlayer.IsPaused())
+    (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
     // * Are we playing some music in fullscreen vis?
-    || (m_pPlayer.IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
+    || (m_appPlayer.IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
         && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty());
 
   // Handle OS screen saver state
@@ -3782,7 +3782,7 @@ void CApplication::CheckScreenSaverAndDPMS()
     maybeScreensaver = false;
   }
 
-  if (m_screensaverActive && m_pPlayer.IsPlayingVideo() && !m_pPlayer.IsPaused())
+  if (m_screensaverActive && m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
   {
     WakeUpScreenSaverAndDPMS();
     return;
@@ -3818,7 +3818,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  if (m_pPlayer.IsPlayingAudio() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
+  if (m_appPlayer.IsPlayingAudio() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
       !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
   { // just activate the visualisation if user toggled the usemusicvisinstead option
     g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
@@ -3832,7 +3832,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
   // set to Dim in the case of a dialog on screen or playing video
   if (!forceType && (g_windowManager.HasModalDialog() ||
-                     (m_pPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
+                     (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
                      CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan()))
     m_screensaverIdInUse = "screensaver.xbmc.builtin.dim";
   else // Get Screensaver Mode
@@ -3873,7 +3873,7 @@ void CApplication::CheckShutdown()
 {
   // first check if we should reset the timer
   if (m_bInhibitIdleShutdown
-      || m_pPlayer.IsPlaying() || m_pPlayer.IsPausedPlayback() // is something playing?
+      || m_appPlayer.IsPlaying() || m_appPlayer.IsPausedPlayback() // is something playing?
       || CMusicLibraryQueue::GetInstance().IsRunning()
       || CVideoLibraryQueue::GetInstance().IsRunning()
       || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
@@ -3992,7 +3992,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
       if (iNext < 0 || iNext >= playlist.size())
       {
-        m_pPlayer.OnNothingToQueueNotify();
+        m_appPlayer.OnNothingToQueueNotify();
         return true; // nothing to do
       }
 
@@ -4004,10 +4004,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
 
       // Don't queue if next media type is different from current one
-      if ((!file.IsVideo() && m_pPlayer.IsPlayingVideo())
-          || ((!file.IsAudio() || file.IsVideo()) && m_pPlayer.IsPlayingAudio()))
+      if ((!file.IsVideo() && m_appPlayer.IsPlayingVideo())
+          || ((!file.IsAudio() || file.IsVideo()) && m_appPlayer.IsPlayingAudio()))
       {
-        m_pPlayer.OnNothingToQueueNotify();
+        m_appPlayer.OnNothingToQueueNotify();
         return true;
       }
 
@@ -4020,7 +4020,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #endif
 
       // ok - send the file to the player, if it accepts it
-      if (m_pPlayer.QueueNextFile(file))
+      if (m_appPlayer.QueueNextFile(file))
       {
         // player accepted the next file
         m_nextPlaylistItem = iNext;
@@ -4061,15 +4061,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
-          m_pPlayer.ClosePlayer();
+          m_appPlayer.ClosePlayer();
       }
 
-      if (!m_pPlayer.IsPlaying())
+      if (!m_appPlayer.IsPlaying())
       {
         g_audioManager.Enable(true);
       }
 
-      if (!m_pPlayer.IsPlayingVideo())
+      if (!m_appPlayer.IsPlayingVideo())
       {
         if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
@@ -4083,7 +4083,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      if (!m_pPlayer.IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!m_appPlayer.IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         m_ServiceManager->GetSettings().Save();  // save vis settings
         WakeUpScreenSaverAndDPMS();
@@ -4091,7 +4091,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!m_pPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         m_ServiceManager->GetSettings().Save();    // save vis settings
@@ -4233,7 +4233,7 @@ void CApplication::Process()
   if (g_application.m_bStop) return; //we're done, everything has been unloaded
 
   // update sound
-  m_pPlayer.DoAudioWork();
+  m_appPlayer.DoAudioWork();
 
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
@@ -4293,7 +4293,7 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  if (!m_pPlayer.IsPlayingVideo())
+  if (!m_appPlayer.IsPlayingVideo())
     CSectionLoader::UnloadDelayed();
 
 #ifdef TARGET_ANDROID
@@ -4310,7 +4310,7 @@ void CApplication::ProcessSlow()
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  if (!m_pPlayer.IsPlayingVideo())
+  if (!m_appPlayer.IsPlayingVideo())
     m_Autorun->HandleAutorun();
 #endif
 
@@ -4386,10 +4386,10 @@ void CApplication::Restart(bool bSamePosition)
   // and which means we gotta close & reopen the current playing file
 
   // first check if we're playing a file
-  if ( !m_pPlayer.IsPlayingVideo() && !m_pPlayer.IsPlayingAudio())
+  if ( !m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingAudio())
     return ;
 
-  if( !m_pPlayer.HasPlayer() )
+  if( !m_appPlayer.HasPlayer() )
     return ;
 
   // do we want to return to the current position in the file
@@ -4404,14 +4404,14 @@ void CApplication::Restart(bool bSamePosition)
   double time = GetTime();
 
   // get player state, needed for dvd's
-  std::string state = m_pPlayer.GetPlayerState();
+  std::string state = m_appPlayer.GetPlayerState();
 
   // set the requested starttime
   m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
 
   // reopen the file
   if ( PlayFile(*m_itemCurrentFile, "", true) == PLAYBACK_OK )
-    m_pPlayer.SetPlayerState(state);
+    m_appPlayer.SetPlayerState(state);
 }
 
 const std::string& CApplication::CurrentFile()
@@ -4530,20 +4530,20 @@ void CApplication::VolumeChanged()
   CAnnouncementManager::GetInstance().Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
-  m_pPlayer.SetVolume(m_volumeLevel);
-  m_pPlayer.SetMute(m_muted);
+  m_appPlayer.SetVolume(m_volumeLevel);
+  m_appPlayer.SetMute(m_muted);
 }
 
 int CApplication::GetSubtitleDelay()
 {
   // converts subtitle delay to a percentage
-  return int(((float)(m_pPlayer.GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+  return int(((float)(m_appPlayer.GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay()
 {
   // converts audio delay to a percentage
-  return int(((float)(m_pPlayer.GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+  return int(((float)(m_appPlayer.GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 // Returns the total time in seconds of the current media.  Fractional
@@ -4554,12 +4554,12 @@ double CApplication::GetTotalTime() const
 {
   double rc = 0.0;
 
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
     if (m_pStackHelper->IsPlayingRegularStack())
       rc = m_pStackHelper->GetStackTotalTimeMs() * 0.001f;
     else
-      rc = static_cast<double>(m_pPlayer.GetTotalTime() * 0.001f);
+      rc = static_cast<double>(m_appPlayer.GetTotalTime() * 0.001f);
   }
 
   return rc;
@@ -4587,15 +4587,15 @@ double CApplication::GetTime() const
 {
   double rc = 0.0;
 
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
     if (m_pStackHelper->IsPlayingRegularStack())
     {
       uint64_t startOfCurrentFile = m_pStackHelper->GetCurrentStackPartStartTimeMs();
-      rc = (startOfCurrentFile + m_pPlayer.GetTime()) * 0.001f;
+      rc = (startOfCurrentFile + m_appPlayer.GetTime()) * 0.001f;
     }
     else
-      rc = static_cast<double>(m_pPlayer.GetTime() * 0.001f);
+      rc = static_cast<double>(m_appPlayer.GetTime() * 0.001f);
   }
 
   return rc;
@@ -4608,9 +4608,9 @@ double CApplication::GetTime() const
 // consistent with GetTime() and GetTotalTime().
 void CApplication::SeekTime( double dTime )
 {
-  if (m_pPlayer.IsPlaying() && (dTime >= 0.0))
+  if (m_appPlayer.IsPlaying() && (dTime >= 0.0))
   {
-    if (!m_pPlayer.CanSeek())
+    if (!m_appPlayer.CanSeek())
       return;
     if (m_pStackHelper->IsPlayingRegularStack())
     {
@@ -4621,7 +4621,7 @@ void CApplication::SeekTime( double dTime )
       int partNumberToPlay = m_pStackHelper->GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
       uint64_t startOfNewFile = m_pStackHelper->GetStackPartStartTimeMs(partNumberToPlay);
       if (partNumberToPlay == m_pStackHelper->GetCurrentPartNumber())
-        m_pPlayer.SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        m_appPlayer.SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
       else
       { // seeking to a new file
         m_pStackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
@@ -4634,15 +4634,15 @@ void CApplication::SeekTime( double dTime )
       return;
     }
     // convert to milliseconds and perform seek
-    m_pPlayer.SeekTime( static_cast<int64_t>( dTime * 1000.0 ) );
+    m_appPlayer.SeekTime( static_cast<int64_t>( dTime * 1000.0 ) );
   }
 }
 
 float CApplication::GetPercentage() const
 {
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
-    if (m_pPlayer.GetTotalTime() == 0 && m_pPlayer.IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
+    if (m_appPlayer.GetTotalTime() == 0 && m_appPlayer.IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
     {
       const CMusicInfoTag& tag = *m_itemCurrentFile->GetMusicInfoTag();
       if (tag.GetDuration() > 0)
@@ -4656,14 +4656,14 @@ float CApplication::GetPercentage() const
         return (float)(GetTime() / totalTime * 100);
     }
     else
-      return m_pPlayer.GetPercentage();
+      return m_appPlayer.GetPercentage();
   }
   return 0.0f;
 }
 
 float CApplication::GetCachePercentage() const
 {
-  if (m_pPlayer.IsPlaying())
+  if (m_appPlayer.IsPlaying())
   {
     // Note that the player returns a relative cache percentage and we want an absolute percentage
     if (m_pStackHelper->IsPlayingRegularStack())
@@ -4671,24 +4671,24 @@ float CApplication::GetCachePercentage() const
       float stackedTotalTime = (float) GetTotalTime();
       // We need to take into account the stack's total time vs. currently playing file's total time
       if (stackedTotalTime > 0.0f)
-        return std::min( 100.0f, GetPercentage() + (m_pPlayer.GetCachePercentage() * m_pPlayer.GetTotalTime() * 0.001f / stackedTotalTime ) );
+        return std::min( 100.0f, GetPercentage() + (m_appPlayer.GetCachePercentage() * m_appPlayer.GetTotalTime() * 0.001f / stackedTotalTime ) );
     }
     else
-      return std::min( 100.0f, m_pPlayer.GetPercentage() + m_pPlayer.GetCachePercentage() );
+      return std::min( 100.0f, m_appPlayer.GetPercentage() + m_appPlayer.GetCachePercentage() );
   }
   return 0.0f;
 }
 
 void CApplication::SeekPercentage(float percent)
 {
-  if (m_pPlayer.IsPlaying() && (percent >= 0.0))
+  if (m_appPlayer.IsPlaying() && (percent >= 0.0))
   {
-    if (!m_pPlayer.CanSeek())
+    if (!m_appPlayer.CanSeek())
       return;
     if (m_pStackHelper->IsPlayingRegularStack())
       SeekTime(percent * 0.01 * GetTotalTime());
     else
-      m_pPlayer.SeekPercentage(percent);
+      m_appPlayer.SeekPercentage(percent);
   }
 }
 
@@ -4709,15 +4709,15 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
   int windowID = WINDOW_INVALID;
 
   // See if we're playing a game, and are in GUI mode
-  if (m_pPlayer.IsPlayingGame() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
+  if (m_appPlayer.IsPlayingGame() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
     windowID = WINDOW_FULLSCREEN_GAME;
 
   // See if we're playing a video, and are in GUI mode
-  else if (m_pPlayer.IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+  else if (m_appPlayer.IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (m_pPlayer.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+  if (m_appPlayer.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
     windowID = WINDOW_VISUALISATION;
 
 
@@ -4740,12 +4740,12 @@ void CApplication::Minimize()
 
 std::string CApplication::GetCurrentPlayer()
 {
-  return m_pPlayer.GetCurrentPlayer();
+  return m_appPlayer.GetCurrentPlayer();
 }
 
 CApplicationPlayer& CApplication::GetAppPlayer()
 {
-  return m_pPlayer;
+  return m_appPlayer;
 }
 
 void CApplication::UpdateLibraries()
