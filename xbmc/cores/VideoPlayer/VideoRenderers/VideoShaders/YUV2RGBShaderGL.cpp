@@ -119,6 +119,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
 
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 {
+  Free();
   delete m_glslOutput;
 }
 
@@ -196,27 +197,21 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
 // YUV2RGBFilterShader4
 //------------------------------------------------------------------------------
 
-#define SINC(x) sin(M_PI * (x)) / (M_PI * (x))
-
-double LanczosWeight(double x, double radius)
-{
-  double ax = fabs(x);
-
-  if (ax == 0.0)
-    return 1.0;
-  else if (ax < radius)
-    return SINC(ax) * SINC(ax / radius);
-  else
-    return 0.0;
-}
-
 YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
                                            EShaderFormat format,
+                                           bool stretch,
                                            GLSLOutput *output)
-: BaseYUV2RGBGLSLShader(rect, flags, format, false, output)
+: BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
+}
+
+YUV2RGBFilterShader4::~YUV2RGBFilterShader4()
+{
+  if (m_kernelTex)
+    glDeleteTextures(1, &m_kernelTex);
+  m_kernelTex = 0;
 }
 
 void YUV2RGBFilterShader4::OnCompiledAndLinked()
@@ -253,12 +248,4 @@ bool YUV2RGBFilterShader4::OnEnabled()
   glUniform1i(m_hKernTex, 3);
 
   return BaseYUV2RGBGLSLShader::OnEnabled();
-}
-
-void YUV2RGBFilterShader4::Free()
-{
-  if (m_kernelTex)
-    glDeleteTextures(1, &m_kernelTex);
-  m_kernelTex = 0;
-  BaseYUV2RGBGLSLShader::Free();
 }

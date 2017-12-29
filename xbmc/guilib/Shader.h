@@ -25,7 +25,6 @@
 #include <vector>
 #include <string>
 
-#if defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
 
 namespace Shaders {
@@ -110,7 +109,6 @@ namespace Shaders {
 
     virtual ~CShaderProgram()
       {
-        Free();
         delete m_pFP;
         delete m_pVP;
       }
@@ -123,9 +121,6 @@ namespace Shaders {
 
     // returns true if shader is compiled and linked
     bool OK() const { return m_ok; }
-
-    // free resources
-    virtual void Free() {}
 
     // return the vertex shader object
     CVertexShader* VertexShader() { return m_pVP; }
@@ -157,25 +152,13 @@ namespace Shaders {
   };
 
 
-  class CGLSLShaderProgram
-    : virtual public CShaderProgram
+  class CGLSLShaderProgram : virtual public CShaderProgram
   {
   public:
-    CGLSLShaderProgram() : 
-      m_validated(false)
-      {
-        m_pFP = new CGLSLPixelShader();
-        m_pVP = new CGLSLVertexShader();
-      }
+    CGLSLShaderProgram();
     CGLSLShaderProgram(const std::string& vert
-                     , const std::string& frag) :
-      m_validated(false)
-      {
-        m_pFP = new CGLSLPixelShader();
-        m_pFP->LoadSource(frag);
-        m_pVP = new CGLSLVertexShader();
-        m_pVP->LoadSource(vert);
-      }
+                       , const std::string& frag);
+    ~CGLSLShaderProgram() override;
 
     // enable the shader
     bool Enable() override;
@@ -183,19 +166,16 @@ namespace Shaders {
     // disable the shader
     void Disable() override;
 
-    // free resources
-    void Free() override;
-
     // compile and link the shaders
     bool CompileAndLink() override;
 
   protected:
+    void Free();
+
     GLint m_lastProgram;
     bool m_validated;
   };
 
 
 } // close namespace
-
-#endif
 

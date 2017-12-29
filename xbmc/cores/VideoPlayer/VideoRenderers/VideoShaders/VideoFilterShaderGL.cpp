@@ -121,6 +121,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
 ConvolutionFilterShader::~ConvolutionFilterShader()
 {
+  Free();
   delete m_glslOutput;
 }
 
@@ -183,7 +184,8 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   VerifyGLState();
 
-  if (m_glslOutput) m_glslOutput->OnCompiledAndLinked(ProgramHandle());
+  if (m_glslOutput)
+    m_glslOutput->OnCompiledAndLinked(ProgramHandle());
 }
 
 bool ConvolutionFilterShader::OnEnabled()

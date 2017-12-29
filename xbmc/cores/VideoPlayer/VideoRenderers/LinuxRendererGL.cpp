@@ -171,7 +171,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_pYUVShader)
   {
-    m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = nullptr;
   }
@@ -898,7 +897,6 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (m_pYUVShader)
     {
-      m_pYUVShader->Free();
       delete m_pYUVShader;
       m_pYUVShader = NULL;
     }
@@ -917,7 +915,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST)
       {
         m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
-                                                m_iFlags, shaderFormat,
+                                                m_iFlags, shaderFormat, m_nonLinStretch,
                                                 out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);

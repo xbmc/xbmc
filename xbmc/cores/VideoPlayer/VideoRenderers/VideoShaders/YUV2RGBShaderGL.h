@@ -38,7 +38,6 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 public:
   BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=nullptr);
   virtual ~BaseYUV2RGBGLSLShader();
-  void Free() override;
 
   void SetField(int field) { m_field  = field; }
   void SetWidth(int w) { m_width  = w; }
@@ -63,6 +62,7 @@ protected:
   void OnCompiledAndLinked() override;
   bool OnEnabled() override;
   void OnDisabled() override;
+  void Free();
 
   bool m_convertFullRange;
   unsigned m_flags;
@@ -117,11 +117,13 @@ public:
   YUV2RGBFilterShader4(bool rect,
                        unsigned flags,
                        EShaderFormat format,
+                       bool stretch,
                        GLSLOutput *output);
+  ~YUV2RGBFilterShader4() override;
+
 protected:
   void OnCompiledAndLinked() override;
   bool OnEnabled() override;
-  void Free() override;
 
   GLuint m_kernelTex = 0;
   GLint m_hKernTex = -1;
