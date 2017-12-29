@@ -144,7 +144,7 @@ common scenario.
 The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
 specifies where the resulting toolchain should be installed (your choice).
 
-[NOTICE] Kodi uses the android API Version 21 and gcc version 4.9!
+[NOTICE] Kodi uses the android API Version 21 and clang version 5.0!
 
 Building for arm architecture:
 
