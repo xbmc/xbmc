@@ -23,6 +23,7 @@
 #include "ShaderFormats.h"
 #include "GLSLOutput.h"
 #include "guilib/Shader.h"
+#include "cores/VideoSettings.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
@@ -118,6 +119,7 @@ public:
                        unsigned flags,
                        EShaderFormat format,
                        bool stretch,
+                       ESCALINGMETHOD method,
                        GLSLOutput *output);
   ~YUV2RGBFilterShader4() override;
 
@@ -127,6 +129,7 @@ protected:
 
   GLuint m_kernelTex = 0;
   GLint m_hKernTex = -1;
+  ESCALINGMETHOD m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
 };
 
 } // end namespace

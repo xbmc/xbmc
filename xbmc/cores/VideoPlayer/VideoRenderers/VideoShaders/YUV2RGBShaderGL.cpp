@@ -198,9 +198,11 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
 YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
                                            EShaderFormat format,
                                            bool stretch,
+                                           ESCALINGMETHOD method,
                                            GLSLOutput *output)
 : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
+  m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
 }
@@ -217,7 +219,13 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
   BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
   m_hKernTex = glGetUniformLocation(ProgramHandle(), "m_kernelTex");
 
-  CConvolutionKernel kernel(VS_SCALINGMETHOD_LANCZOS3_FAST, 256);
+  if (m_scaling != VS_SCALINGMETHOD_LANCZOS3_FAST && m_scaling != VS_SCALINGMETHOD_SPLINE36_FAST)
+  {
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader4 - unsupported scaling %d will fallback", m_scaling);
+    m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
+  }
+
+  CConvolutionKernel kernel(m_scaling, 256);
 
   if (m_kernelTex)
   {

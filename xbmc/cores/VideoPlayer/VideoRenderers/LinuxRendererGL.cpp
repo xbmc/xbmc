@@ -795,6 +795,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     return;
 
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
     {
       EShaderFormat fmt = GetShaderFormat();
       if (fmt == SHADER_NV12 || fmt == SHADER_YV12)
@@ -811,7 +812,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
 
   case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
@@ -904,11 +904,11 @@ void CLinuxRendererGL::LoadShaders(int field)
                            m_cmsOn ? m_tCLUTTex : 0,
                            m_CLUTsize);
 
-      if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST)
+      if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST || m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
       {
         m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
                                                 m_iFlags, shaderFormat, m_nonLinStretch,
-                                                out);
+                                                m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
