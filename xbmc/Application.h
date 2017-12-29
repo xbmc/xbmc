@@ -29,6 +29,7 @@
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
 #include "ServiceManager.h"
+#include "ApplicationStackHelper.h"
 
 #include <atomic>
 #include <deque>
@@ -381,6 +382,8 @@ public:
   */
   void UnlockFrameMoveGuard();
 
+  std::unique_ptr<CApplicationStackHelper> m_pStackHelper;
+
 protected:
   bool OnSettingsSaving() const override;
 
@@ -444,15 +447,12 @@ protected:
   bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
-  std::unique_ptr<CFileItemList> m_currentStack;
-  CFileItemPtr m_stackFileItemToUpdate;
 
   std::string m_prevMedia;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  int m_currentStackPosition;
   int m_nextPlaylistItem;
 
   unsigned int m_lastRenderTime;

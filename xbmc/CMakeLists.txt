@@ -1,5 +1,6 @@
 set(SOURCES Application.cpp
             ApplicationPlayer.cpp
+            ApplicationStackHelper.cpp
             AppParamParser.cpp
             AutoSwitch.cpp
             BackgroundInfoLoader.cpp
@@ -39,6 +40,7 @@ set(SOURCES Application.cpp
 set(HEADERS AppParamParser.h
             Application.h
             ApplicationPlayer.h
+            ApplicationStackHelper.h
             AutoSwitch.h
             BackgroundInfoLoader.h
             CompileInfo.h
