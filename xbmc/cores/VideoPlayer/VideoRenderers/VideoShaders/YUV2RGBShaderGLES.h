@@ -95,7 +95,7 @@ namespace Shaders {
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
     void OnDisabled() override;
-    void Free() override;
+    void Free();
 
     unsigned m_flags;
     EShaderFormat m_format;

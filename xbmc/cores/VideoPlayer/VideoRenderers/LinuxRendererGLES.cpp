@@ -443,7 +443,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   if (m_pVideoFilterShader)
   {
-    m_pVideoFilterShader->Free();
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
@@ -509,7 +508,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
-    m_pVideoFilterShader->Free();
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
@@ -579,13 +577,11 @@ void CLinuxRendererGLES::ReleaseShaders()
 {
   if (m_pYUVProgShader)
   {
-    m_pYUVProgShader->Free();
     delete m_pYUVProgShader;
     m_pYUVProgShader = NULL;
   }
   if (m_pYUVBobShader)
   {
-    m_pYUVBobShader->Free();
     delete m_pYUVBobShader;
     m_pYUVBobShader = NULL;
   }

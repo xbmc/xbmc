@@ -133,6 +133,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags, EShaderFormat forma
 
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 {
+  Free();
   delete m_glslOutput;
 }
 
