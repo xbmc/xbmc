@@ -1,0 +1,33 @@
+package @APP_PACKAGE@.model;
+
+import @APP_PACKAGE@.model.Media;
+
+/**
+ * Created by cbro on 22/12/2017
+ */
+
+public class Movie extends Media
+{
+  private String year;
+  private String plot;
+
+  public String getYear()
+  {
+    return year;
+  }
+
+  public void setYear(String year)
+  {
+    this.year = year;
+  }
+
+  public String getPlot()
+  {
+    return plot;
+  }
+
+  public void setPlot(String plot)
+  {
+    this.plot = plot;
+  }
+}

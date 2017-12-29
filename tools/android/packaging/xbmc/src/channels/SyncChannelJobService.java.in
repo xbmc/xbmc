@@ -1,0 +1,211 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+package @APP_PACKAGE@.channels;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.Context;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.support.media.tv.TvContractCompat;
+import android.util.Log;
+
+import @APP_PACKAGE@.R;
+import @APP_PACKAGE@.XBMCJsonRPC;
+import @APP_PACKAGE@.channels.model.Subscription;
+import @APP_PACKAGE@.channels.model.XBMCDatabase;
+import @APP_PACKAGE@.channels.util.TvUtil;
+import @APP_PACKAGE@.content.XBMCFileContentProvider;
+import @APP_PACKAGE@.model.File;
+
+/**
+ * A service that will populate the TV provider with channels that every user should have. Once a
+ * channel is created, it trigger another service to add programs.
+ */
+public class SyncChannelJobService extends JobService
+{
+
+  private static final String TAG = "RecommendChannelJobSvc";
+
+  private SyncChannelTask mSyncChannelTask;
+
+  @Override
+  public boolean onStartJob(final JobParameters jobParameters)
+  {
+    Log.d(TAG, "Starting channel creation job");
+
+    mSyncChannelTask =
+            new SyncChannelTask(getApplicationContext())
+            {
+              @Override
+              protected void onPostExecute(Boolean success)
+              {
+                super.onPostExecute(success);
+                jobFinished(jobParameters, !success);
+              }
+            };
+    mSyncChannelTask.execute();
+    return true;
+  }
+
+  @Override
+  public boolean onStopJob(JobParameters jobParameters)
+  {
+    if (mSyncChannelTask != null)
+    {
+      mSyncChannelTask.cancel(true);
+    }
+    return true;
+  }
+
+  private static class SyncChannelTask extends AsyncTask<Void, Void, Boolean>
+  {
+
+    private final Context mContext;
+
+    SyncChannelTask(Context context)
+    {
+      this.mContext = context;
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... voids)
+    {
+      XBMCJsonRPC json = new XBMCJsonRPC();
+      if (!json.Ping())
+        return false;
+      json = null;
+
+      List<Subscription> subscriptions = XBMCDatabase.getSubscriptions(mContext);
+      List<Subscription> freshsubscriptions = new ArrayList<>();
+      List<File> playlistsContent = new ArrayList<>();
+
+      try (Cursor cursor =
+                   mContext.getContentResolver()
+                           .query(
+                                   XBMCFileContentProvider.buildUri("/playlists/video"),
+                                   null,
+                                   null,
+                                   null,
+                                   null))
+      {
+        if (cursor != null)
+        {
+          while (cursor.moveToNext())
+            playlistsContent.add(File.fromCursor(cursor));
+        }
+      }
+      try (Cursor cursor =
+                   mContext.getContentResolver()
+                           .query(
+                                   XBMCFileContentProvider.buildUri("/playlists/mixed"),
+                                   null,
+                                   null,
+                                   null,
+                                   null))
+      {
+        if (cursor != null)
+        {
+          while (cursor.moveToNext())
+            playlistsContent.add(File.fromCursor(cursor));
+        }
+      }
+      try (Cursor cursor =
+                   mContext.getContentResolver()
+                           .query(
+                                   XBMCFileContentProvider.buildUri("/playlists/music"),
+                                   null,
+                                   null,
+                                   null,
+                                   null))
+      {
+        if (cursor != null)
+        {
+          while (cursor.moveToNext())
+            playlistsContent.add(File.fromCursor(cursor));
+        }
+      }
+
+      Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.ic_recommendation_80dp);
+      freshsubscriptions.add(sub);
+      if (subscriptions.size() == 0)  // First-run: Add default channel
+      {
+        long channelId = TvUtil.createChannel(mContext, sub);
+        sub.setChannelId(channelId);
+        subscriptions.add(sub);
+
+        TvContractCompat.requestChannelBrowsable(mContext, channelId);
+      }
+
+      for (File file : playlistsContent)
+      {
+        sub = Subscription.createSubscription(file.getName(), file.getUri(), R.drawable.ic_recommendation_80dp);
+        freshsubscriptions.add(sub);
+
+        int subidx = subscriptions.indexOf(sub);
+        if (subidx != -1)
+          continue;
+
+        long channelId = TvUtil.createChannel(mContext, sub);
+        sub.setChannelId(channelId);
+        subscriptions.add(sub);
+      }
+
+      // Kick off a job to update default programs.
+      // The program job should verify if the channel is visible before updating programs.
+      for (Iterator<Subscription> iterator = subscriptions.iterator(); iterator.hasNext();)
+      {
+        Subscription channel = iterator.next();
+
+        if (freshsubscriptions.indexOf(channel) == -1)
+        {
+          // Channel is gone
+          Long chanid = channel.getChannelId();
+          mContext.getContentResolver()
+                  .delete(
+                          TvContractCompat.buildPreviewProgramsUriForChannel(chanid),
+                          null,
+                          null);
+          mContext.getContentResolver()
+                  .delete(
+                          TvContractCompat.buildChannelUri(chanid),
+                          null,
+                          null);
+          XBMCDatabase.removeMedias(mContext, chanid);
+          iterator.remove();
+
+          JobScheduler scheduler =
+                  (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+          if (scheduler.getPendingJob(TvUtil.getTriggeredJobIdForChannelId(chanid)) != null)
+            scheduler.cancel(TvUtil.getTriggeredJobIdForChannelId(chanid));
+          if (scheduler.getPendingJob(TvUtil.getTimedJobIdForChannelId(chanid)) != null)
+            scheduler.cancel(TvUtil.getTimedJobIdForChannelId(chanid));
+
+          continue;
+        }
+        TvUtil.scheduleTriggeredSyncingProgramsForChannel(mContext, channel.getChannelId());
+        TvUtil.scheduleTimedSyncingProgramsForChannel(mContext, channel.getChannelId());
+      }
+      XBMCDatabase.saveSubscriptions(mContext, subscriptions);
+
+      return true;
+    }
+  }
+}

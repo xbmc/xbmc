@@ -39,6 +39,9 @@
     <uses-feature
         android:name="android.hardware.wifi"
         android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
 
     <application
         android:banner="@drawable/banner"
@@ -116,17 +119,26 @@
         </receiver>
 
         <provider
-            android:name=".XBMCImageContentProvider"
+            android:name=".content.XBMCImageContentProvider"
             android:authorities="@APP_PACKAGE@.image"
             android:exported="true" />
 
         <provider
-            android:name=".XBMCMediaContentProvider"
+            android:name=".content.XBMCMediaContentProvider"
             android:authorities="@APP_PACKAGE@.media"
             android:exported="true" />
 
-        <activity android:name=".XBMCSearchableActivity">
-            <intent-filter>
+        <provider
+            android:name=".content.XBMCFileContentProvider"
+            android:authorities="@APP_PACKAGE@.file"
+            android:exported="true" />
+        <provider
+            android:name=".content.XBMCYTDLContentProvider"
+            android:authorities="@APP_PACKAGE@.ytdl"
+            android:exported="true" />
+
+        <activity android:name=".XBMCSearchableActivity" >
+             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -143,6 +155,16 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
+       <service
+           android:name=".channels.SyncChannelJobService"
+           android:exported="false"
+           android:permission="android.permission.BIND_JOB_SERVICE" />
+
+       <service
+           android:name=".channels.SyncProgramsJobService"
+           android:exported="false"
+           android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 

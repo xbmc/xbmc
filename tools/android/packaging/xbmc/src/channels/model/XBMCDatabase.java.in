@@ -1,0 +1,255 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package @APP_PACKAGE@.channels.model;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
+
+import @APP_PACKAGE@.R;
+import @APP_PACKAGE@.channels.util.SharedPreferencesHelper;
+import @APP_PACKAGE@.model.Media;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Mock database stores data in {@link SharedPreferences}.
+ */
+public final class XBMCDatabase
+{
+
+  private XBMCDatabase()
+  {
+    // Do nothing.
+  }
+
+  public static Subscription getSubscription(Context context, String title, String uri)
+  {
+    return findOrCreateSubscription(
+            context,
+            title,
+            uri,
+            R.drawable.ic_recommendation_80dp);
+  }
+
+  private static Subscription findOrCreateSubscription(
+          Context context,
+          String title,
+          String uri,
+          @DrawableRes int logoResource)
+  {
+    // See if we have already created the channel in the TV Provider.
+    Subscription subscription = findSubscriptionByTitle(context, title);
+    if (subscription != null)
+    {
+      return subscription;
+    }
+
+    return Subscription.createSubscription(
+            title,
+            uri,
+            logoResource);
+  }
+
+  @Nullable
+  private static Subscription findSubscriptionByTitle(Context context, String title)
+  {
+    for (Subscription subscription : getSubscriptions(context))
+    {
+      if (subscription.getName().equals(title))
+      {
+        return subscription;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Overrides the subscriptions stored in {@link SharedPreferences}.
+   *
+   * @param context       used for accessing shared preferences.
+   * @param subscriptions stored in shared preferences.
+   */
+  public static void saveSubscriptions(Context context, List<Subscription> subscriptions)
+  {
+    SharedPreferencesHelper.storeSubscriptions(context, subscriptions);
+  }
+
+  /**
+   * Adds the subscription to the list of persisted subscriptions in {@link SharedPreferences}.
+   * Will update the persisted subscription if it already exists.
+   *
+   * @param context      used for accessing shared preferences.
+   * @param subscription to be saved.
+   */
+  public static void saveSubscription(Context context, Subscription subscription)
+  {
+    List<Subscription> subscriptions = getSubscriptions(context);
+    int index = subscriptions.indexOf(subscription);
+    if (index == -1)
+    {
+      subscriptions.add(subscription);
+    } else
+    {
+      subscriptions.set(index, subscription);
+    }
+    saveSubscriptions(context, subscriptions);
+  }
+
+  /**
+   * Returns subscriptions stored in {@link SharedPreferences}.
+   *
+   * @param context used for accessing shared preferences.
+   * @return a list of subscriptions or empty list if none exist.
+   */
+  public static List<Subscription> getSubscriptions(Context context)
+  {
+    return SharedPreferencesHelper.readSubscriptions(context);
+  }
+
+  /**
+   * Finds a subscription given a channel id that the subscription is associated with.
+   *
+   * @param context   used for accessing shared preferences.
+   * @param channelId of the channel that the subscription is associated with.
+   * @return a subscription or null if none exist.
+   */
+  @Nullable
+  public static Subscription findSubscriptionByChannelId(Context context, long channelId)
+  {
+    for (Subscription subscription : getSubscriptions(context))
+    {
+      if (subscription.getChannelId() == channelId)
+      {
+        return subscription;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Finds a subscription with the given name.
+   *
+   * @param context used for accessing shared preferences.
+   * @param name    of the subscription.
+   * @return a subscription or null if none exist.
+   */
+  @Nullable
+  public static Subscription findSubscriptionByName(Context context, String name)
+  {
+    for (Subscription subscription : getSubscriptions(context))
+    {
+      if (subscription.getName().equals(name))
+      {
+        return subscription;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Overrides the Medias stored in {@link SharedPreferences} for a given subscription.
+   *
+   * @param context   used for accessing shared preferences.
+   * @param channelId of the channel that the Medias are associated with.
+   * @param Medias    to be stored.
+   */
+  public static void saveMedias(Context context, long channelId, List<Media> Medias)
+  {
+    SharedPreferencesHelper.storeMedias(context, channelId, Medias);
+  }
+
+  /**
+   * Removes the list of Medias associated with a channel. Overrides the current list with an
+   * empty list in {@link SharedPreferences}.
+   *
+   * @param context   used for accessing shared preferences.
+   * @param channelId of the channel that the Medias are associated with.
+   */
+  public static void removeMedias(Context context, long channelId)
+  {
+    saveMedias(context, channelId, Collections.<Media>emptyList());
+  }
+
+  /**
+   * Finds Media in subscriptions with channel id and updates it. Otherwise will add the new Media
+   * to the subscription.
+   *
+   * @param context   to access shared preferences.
+   * @param channelId of the subscription that the Media is associated with.
+   * @param Media     to be persisted or updated.
+   */
+  public static void saveMedia(Context context, long channelId, Media Media)
+  {
+    List<Media> Medias = getMedias(context, channelId);
+    int index = findMedia(Medias, Media);
+    if (index == -1)
+    {
+      Medias.add(Media);
+    } else
+    {
+      Medias.set(index, Media);
+    }
+    saveMedias(context, channelId, Medias);
+  }
+
+  private static int findMedia(List<Media> Medias, Media Media)
+  {
+    for (int index = 0; index < Medias.size(); ++index)
+    {
+      Media current = Medias.get(index);
+      if (current.getId() == Media.getId())
+      {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * Returns Medias stored in {@link SharedPreferences} for a given subscription.
+   *
+   * @param context   used for accessing shared preferences.
+   * @param channelId of the subscription that the Media is associated with.
+   * @return a list of Medias for a subscription
+   */
+  public static List<Media> getMedias(Context context, long channelId)
+  {
+    return SharedPreferencesHelper.readMedias(context, channelId);
+  }
+
+  /**
+   * Finds a Media in a subscription by its id.
+   *
+   * @param context   to access shared preferences.
+   * @param channelId of the subscription that the Media is associated with.
+   * @param MediaId   of the Media.
+   * @return a Media or null if none exist.
+   */
+  @Nullable
+  public static Media findMediaById(Context context, long channelId, long MediaId)
+  {
+    for (Media Media : getMedias(context, channelId))
+    {
+      if (Media.getId() == MediaId)
+      {
+        return Media;
+      }
+    }
+    return null;
+  }
+}

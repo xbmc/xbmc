@@ -128,6 +128,7 @@ res:
 	cp -fp $(CMAKE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable-xxxhdpi/splash.png
 	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
+	cp -fp $(CMAKE_SOURCE_DIR)/media/icon80x80.png xbmc/res/drawable/ic_recommendation_80dp.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/searchable.xml xbmc/res/xml/
@@ -153,9 +154,8 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
              "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(CORE_SOURCE_DIR)  $(PREFIX)/include jni" >> ./xbmc/lib/$(CPU)/gdb.setup
 
 java: res
-	mkdir -p xbmc/java/$(APP_PACKAGE_DIR) xbmc/java/$(APP_PACKAGE_DIR)/interfaces xbmc/obj
-	@cp xbmc/src/*.java xbmc/java/$(APP_PACKAGE_DIR)/
-	@cp xbmc/src/interfaces/*.java xbmc/java/$(APP_PACKAGE_DIR)/interfaces/
+	mkdir -p xbmc/java/$(APP_PACKAGE_DIR) xbmc/obj
+	@cp -R xbmc/src/* xbmc/java/$(APP_PACKAGE_DIR)/
 
 package: libs python java
 	@echo "Gradle build..."

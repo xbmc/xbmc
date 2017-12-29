@@ -1,5 +1,8 @@
 package @APP_PACKAGE@;
 
+import android.content.Context;
+import android.os.Build.VERSION_CODES;
+import android.os.Build;
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -15,9 +18,11 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 
+import @APP_PACKAGE@.channels.util.TvUtil;
+
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
-  private static final String TAG = "@APP_NAME_LC@";
+  private static final String TAG = "@APP_NAME@";
 
   public static Main MainActivity = null;
 
@@ -107,10 +112,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     if (getPackageManager().hasSystemFeature("android.software.leanback"))
     {
-      // Leanback
-      mJsonRPC = new XBMCJsonRPC();
-      handler.removeCallbacks(leanbackUpdateRunnable);
-      handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+        TvUtil.scheduleSyncingChannel(this);
+      else
+      {
+        // Leanback
+        mJsonRPC = new XBMCJsonRPC();
+        handler.removeCallbacks(leanbackUpdateRunnable);
+        handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
+      }
     }
 
     // register the InputDeviceListener implementation
@@ -206,8 +216,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           catch (UnsatisfiedLinkError e)
           {
             Log.e("Main", "Native not registered");
-          }
-          finally
+          } finally
           {
             mNewIntent = null;
           }
@@ -220,12 +229,16 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onPause()
   {
     super.onPause();
+
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+      TvUtil.scheduleSyncingChannel(this);
   }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode,
                                Intent resultData)
   {
+    super.onActivityResult(requestCode, resultCode, resultData);
     _onActivityResult(requestCode, resultCode, resultData);
   }
 

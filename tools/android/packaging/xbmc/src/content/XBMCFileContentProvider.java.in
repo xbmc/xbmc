@@ -1,0 +1,99 @@
+package @APP_PACKAGE@.content;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.net.Uri;
+
+import @APP_PACKAGE@.XBMCJsonRPC;
+import @APP_PACKAGE@.model.File;
+
+import java.util.List;
+
+public class XBMCFileContentProvider extends XBMCContentProvider
+{
+  private static String TAG = "@APP_NAME@_File_Provider";
+
+  public static final String AUTHORITY = AUTHORITY_ROOT + ".file";
+
+  private XBMCJsonRPC mJsonRPC = null;
+
+  public static Uri buildUri(String path)
+  {
+    Uri.Builder builder = new Uri.Builder();
+    builder.scheme("content")
+            .authority(AUTHORITY)
+            .path(path);
+    return builder.build();
+  }
+
+  @Override
+  public int delete(Uri arg0, String arg1, String[] arg2)
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public String getType(Uri arg0)
+  {
+    return "vnd.android.cursor.dir/xbmc_file";
+  }
+
+  @Override
+  public Uri insert(Uri arg0, ContentValues arg1)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean onCreate()
+  {
+    mJsonRPC = new XBMCJsonRPC();
+
+    return true;
+  }
+
+  @Override
+  public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3)
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public Cursor query(Uri uri, String[] projection, String selection,
+                      String[] selectionArgs, String sortOrder)
+  {
+    String path = uri.getPath();
+    String xbmcURL = "special://profile" + path;
+
+    List<File> files = mJsonRPC.getFiles(xbmcURL);
+    if (files.isEmpty())
+      return null;
+
+    String[] fileCols = new String[]
+            {
+                    File.NAME,
+                    File.CATEGORY,
+                    File.URI,
+                    File.ID,
+                    File.MEDIATYPE
+            };
+    MatrixCursor mc = new MatrixCursor(fileCols);
+
+    for (File file : files)
+    {
+      mc.addRow(new Object[]
+              {
+                      file.getName(),
+                      file.getCategory(),
+                      file.getUri(),
+                      file.getId(),
+                      file.getMediatype()
+              });
+    }
+    return mc;
+  }
+}
