@@ -102,7 +102,6 @@
 #define REMOTE_8                      66
 #define REMOTE_9                      67
 
-#define ACTION_PLAY                   68  //!< Unused at the moment
 #define ACTION_PLAYER_PROCESS_INFO    69 //!< show player process info (video decoder, pixel format, pvr signal strength and the like
 #define ACTION_PLAYER_PROGRAM_SELECT  70
 #define ACTION_SMALL_STEP_BACK        76  //!< jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
