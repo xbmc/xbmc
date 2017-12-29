@@ -413,7 +413,7 @@ include(cmake/scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
 # Add uninstall target
 if(CMAKE_GENERATOR MATCHES Makefile)
-  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/scripts/common/Uninstall.cmake)
+  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/Uninstall.cmake)
   set_target_properties(uninstall PROPERTIES FOLDER "Build Utilities")
 endif()
 
