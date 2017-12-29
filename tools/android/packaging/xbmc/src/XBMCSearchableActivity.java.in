@@ -16,7 +16,7 @@ public class XBMCSearchableActivity extends Activity
   private static final String TAG = "@APP_NAME@Search";
 
   private ListView mListView;
-  
+
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
@@ -36,24 +36,24 @@ public class XBMCSearchableActivity extends Activity
   private void search(String query)
   {
     Cursor c = getContentResolver().query(
-        Uri.parse("content://@APP_PACKAGE@.media/search/" + query), null, null,
-        null, null);
+            Uri.parse("content://@APP_PACKAGE@.media/search/" + query), null, null,
+            null, null);
 
     // Specify the columns we want to display in the result
     String[] from = new String[]
-    { XBMCJsonRPC.COLUMN_TITLE, XBMCJsonRPC.COLUMN_TAGLINE };
+            {XBMCJsonRPC.COLUMN_TITLE, XBMCJsonRPC.COLUMN_TAGLINE};
 
     // Specify the corresponding layout elements where we want the columns to go
     int[] to = new int[]
-    { R.id.title, R.id.tagline };
+            {R.id.title, R.id.tagline};
 
     // Create a simple cursor adapter for the definitions and apply them to the
     // ListView
     SimpleCursorAdapter words = new SimpleCursorAdapter(this, R.layout.result,
-        c, from, to);
+            c, from, to);
     mListView.setAdapter(words);
   }
-  
+
   private void doAction(Intent origIntent)
   {
     Uri data = origIntent.getData();
@@ -65,13 +65,13 @@ public class XBMCSearchableActivity extends Activity
     newIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
     startActivity(newIntent);
     finish();
-}
+  }
 
   private void handleIntent(Intent intent)
   {
     Log.d(TAG, "NEW INTENT: " + intent.getAction() + "; DATA=" + intent.getData().toString());
 
-    if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
+    if (Intent.ACTION_SEARCH.equals(intent.getAction()))
     {
       search(intent.getStringExtra(SearchManager.QUERY));
     }

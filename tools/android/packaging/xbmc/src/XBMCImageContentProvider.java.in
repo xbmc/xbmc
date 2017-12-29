@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -15,31 +16,30 @@ import android.util.Log;
 
 /**
  * Provides a background image for Recommendations for a RecommendationCardView.
- * 
+ * <p>
  * The card view changed to require a content provider be created. It requests
  * items via the openFile(Uri uri) method. This is an example of how to retrieve
  * an image from a web site and provide a ParcelFileDescriptor back that
  * contains the contents.
- * 
+ * <p>
  * This is based on code from the following stackoverflow description on how to
  * populate a ParcelFileDescriptor from any input stream.
- * 
+ * <p>
  * http://stackoverflow.com/a/14734310/1950264
- * 
+ * <p>
  * You still need to setup a ContentProvider entry and Authority in the
  * AndroidManifest.xml
- * 
+ * <p>
  * See
  * http://developer.android.com/reference/android/content/ContentProvider.html
- * 
  */
 public class XBMCImageContentProvider extends ContentProvider
 {
   private static String TAG = "@APP_NAME@";
-  
+
   public static String AUTHORITY = "@APP_PACKAGE@";
   public static String AUTHORITY_IMAGE = AUTHORITY + ".image";
- 
+
   @Override
   public boolean onCreate()
   {
@@ -50,20 +50,20 @@ public class XBMCImageContentProvider extends ContentProvider
   {
     Uri.Builder builder = new Uri.Builder();
     builder.scheme("content")
-    .authority(AUTHORITY_IMAGE)
-    .fragment(surl);
-    
+            .authority(AUTHORITY_IMAGE)
+            .fragment(surl);
+
     Uri out = builder.build();
     // Log.d(TAG, "GetImageUri: in:" + surl + " out:" + out.toString());
-    return out;    
+    return out;
   }
-  
+
   @Override
   public ParcelFileDescriptor openFile(Uri uri, String mode)
-      throws FileNotFoundException
+          throws FileNotFoundException
   {
     // Log.d(TAG, "openFile: " + uri.toString());
-    
+
     ParcelFileDescriptor[] pipe = null;
 
     try
@@ -85,13 +85,13 @@ public class XBMCImageContentProvider extends ContentProvider
       connection.connect();
 
       new TransferThread(connection.getInputStream(),
-          new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])).start();
-    } 
+              new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])).start();
+    }
     catch (IOException e)
     {
       Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
       throw new FileNotFoundException("Could not open pipe for: "
-          + uri.toString());
+              + uri.toString());
     }
 
     return (pipe[0]);
@@ -99,7 +99,7 @@ public class XBMCImageContentProvider extends ContentProvider
 
   @Override
   public Cursor query(Uri uri, String[] projection, String selection,
-      String[] selectionArgs, String sortOrder)
+                      String[] selectionArgs, String sortOrder)
   {
     return null;
   }
@@ -124,7 +124,7 @@ public class XBMCImageContentProvider extends ContentProvider
 
   @Override
   public int update(Uri uri, ContentValues values, String selection,
-      String[] selectionArgs)
+                    String[] selectionArgs)
   {
     return 0;
   }
@@ -156,7 +156,7 @@ public class XBMCImageContentProvider extends ContentProvider
         in.close();
         out.flush();
         out.close();
-      } 
+      }
       catch (IOException e)
       {
         Log.e(getClass().getSimpleName(), "Exception transferring file", e);

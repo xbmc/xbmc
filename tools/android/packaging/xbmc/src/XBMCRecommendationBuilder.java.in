@@ -102,20 +102,20 @@ public class XBMCRecommendationBuilder
     }
 
     Notification notification = new Notification.BigPictureStyle(
-        new Notification.Builder(mContext)
-            .setContentTitle(mTitle)
-            .setContentText(mDescription)
-            .setPriority(mPriority)
-            .setLocalOnly(true)
-            .setOngoing(true)
-            .setColor(mContext.getResources().getColor(R.color.recommendation_color))
-            .setCategory(API_NOTIFICATION_CATEGORY_RECOMMENDATION)
-            .setLargeIcon(mBitmap)
-            .setSmallIcon(mSmallIcon)
-            .setContentIntent(mIntent)
-            .setExtras(extras)
-            .setAutoCancel(false)
-            ).build();
+            new Notification.Builder(mContext)
+                    .setContentTitle(mTitle)
+                    .setContentText(mDescription)
+                    .setPriority(mPriority)
+                    .setLocalOnly(true)
+                    .setOngoing(true)
+                    .setColor(mContext.getResources().getColor(R.color.recommendation_color))
+                    .setCategory(API_NOTIFICATION_CATEGORY_RECOMMENDATION)
+                    .setLargeIcon(mBitmap)
+                    .setSmallIcon(mSmallIcon)
+                    .setContentIntent(mIntent)
+                    .setExtras(extras)
+                    .setAutoCancel(false)
+    ).build();
 
     return notification;
   }
@@ -124,9 +124,9 @@ public class XBMCRecommendationBuilder
   public String toString()
   {
     return "RecommendationBuilder{" + ", mId=" + mId + ", mPriority="
-        + mPriority + ", mSmallIcon=" + mSmallIcon + ", mTitle='" + mTitle
-        + '\'' + ", mDescription='" + mDescription + '\'' + ", mBitmap='"
-        + mBitmap + '\'' + ", mBackgroundUri='" + mBackgroundUri + '\''
-        + ", mIntent=" + mIntent + '}';
+            + mPriority + ", mSmallIcon=" + mSmallIcon + ", mTitle='" + mTitle
+            + '\'' + ", mDescription='" + mDescription + '\'' + ", mBitmap='"
+            + mBitmap + '\'' + ", mBackgroundUri='" + mBackgroundUri + '\''
+            + ", mIntent=" + mIntent + '}';
   }
 }

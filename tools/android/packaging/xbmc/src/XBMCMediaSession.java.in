@@ -18,12 +18,19 @@ import java.util.concurrent.FutureTask;
 public class XBMCMediaSession
 {
   native void _onPlayRequested();
+
   native void _onPauseRequested();
+
   native void _onNextRequested();
+
   native void _onPreviousRequested();
+
   native void _onForwardRequested();
+
   native void _onRewindRequested();
+
   native void _onStopRequested();
+
   native void _onSeekRequested(long pos);
 
   private static final String TAG = "XBMCMediaSession";
@@ -136,7 +143,7 @@ public class XBMCMediaSession
   private void updateIntent(Intent intent)
   {
     PendingIntent pi = PendingIntent.getActivity(Main.MainActivity, 99 /*request code*/,
-        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent, PendingIntent.FLAG_UPDATE_CURRENT);
     mSession.setSessionActivity(pi);
   }
 

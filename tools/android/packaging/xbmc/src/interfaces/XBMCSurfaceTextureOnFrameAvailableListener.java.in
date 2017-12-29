@@ -10,6 +10,6 @@ public class XBMCSurfaceTextureOnFrameAvailableListener implements OnFrameAvaila
   @Override
   public void onFrameAvailable(SurfaceTexture surfaceTexture)
   {
-  _onFrameAvailable(surfaceTexture);
+    _onFrameAvailable(surfaceTexture);
   }
 }
