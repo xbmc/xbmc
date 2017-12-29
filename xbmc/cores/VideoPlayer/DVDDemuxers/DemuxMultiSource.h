@@ -46,7 +46,7 @@ public:
   CDemuxMultiSource();
   ~CDemuxMultiSource() override;
 
-  bool Open(CDVDInputStream* pInput);
+  bool Open(std::shared_ptr<CDVDInputStream> pInput);
 
   // implementation of CDVDDemux
   void Abort() override;
@@ -68,7 +68,7 @@ private:
   void Dispose();
   void SetMissingStreamDetails(DemuxPtr demuxer);
 
-  InputStreamMultiStreams* m_pInput = NULL;
+  std::shared_ptr<InputStreamMultiStreams> m_pInput = NULL;
   std::map<DemuxPtr, InputStreamPtr> m_DemuxerToInputStreamMap;
   DemuxQueue m_demuxerQueue;
   std::map<int64_t, DemuxPtr> m_demuxerMap;

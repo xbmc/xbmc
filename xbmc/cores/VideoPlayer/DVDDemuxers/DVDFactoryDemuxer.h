@@ -20,11 +20,13 @@
  *
  */
 
+#include <memory>
+
 class CDVDDemux;
 class CDVDInputStream;
 
 class CDVDFactoryDemuxer
 {
 public:
-  static CDVDDemux* CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo = false);
+  static CDVDDemux* CreateDemuxer(std::shared_ptr<CDVDInputStream> pInputStream, bool fileinfo = false);
 };
