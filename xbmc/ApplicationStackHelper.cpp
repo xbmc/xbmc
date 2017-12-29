@@ -151,7 +151,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     //!       Also, this is really just a hack for the slow load up times we have
     //!       A much better solution is a fast reader of FPS and fileLength
     //!       that we can use on a file to get it's time.
-    std::vector<int> times;
+    std::vector<uint64_t> times;
     bool haveTimes(false);
 
     if (dbs.Open())
@@ -161,13 +161,13 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     }
 
     // calculate the total time of the stack
-    long totalTime = 0;
+    uint64_t totalTimeMs = 0;
     for (int i = 0; i < m_currentStack->Size(); i++)
     {
       if (haveTimes)
       {
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = times[i];
+        GetStackPartFileItem(i).m_lEndOffset = static_cast<int>( times[i] * 75 / 1000);
       }
       else
       {
@@ -177,20 +177,20 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
           m_currentStack->Clear();
           return PLAYBACK_FAIL;
         }
-        totalTime += duration / 1000;
+        totalTimeMs += duration;
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = totalTime;
-        times.push_back(totalTime);
+        GetStackPartFileItem(i).m_lEndOffset = static_cast<int>(totalTimeMs * 75 / 1000 );
+        times.push_back(totalTimeMs);
       }
       // set start time in every part
-      SetRegisteredStackPartStartTime(GetStackPartFileItem(i), GetStackPartStartTime(i));
+      SetRegisteredStackPartStartTimeMs(GetStackPartFileItem(i), GetStackPartStartTimeMs(i));
     }
     // set total time in every part
-    totalTime = GetStackTotalTime();
+    totalTimeMs = GetStackTotalTimeMs();
     for (int i = 0; i < m_currentStack->Size(); i++)
-      SetRegisteredStackTotalTime(GetStackPartFileItem(i), totalTime);
+      SetRegisteredStackTotalTimeMs(GetStackPartFileItem(i), totalTimeMs);
 
-    double seconds = item.m_lStartOffset / 75.0;
+    uint64_t msecs = item.m_lStartOffset * 1000 / 75;
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
     {
@@ -208,28 +208,28 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
           if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
           if (dbs.GetResumeBookMark(path, bookmark))
-            seconds = bookmark.timeInSeconds;
+            msecs = bookmark.timeInSeconds * 1000;
           else
-            seconds = 0.0f;
+            msecs = 0;
         }
         dbs.Close();
       }
     }
 
-    m_currentStackPosition = GetStackPartNumberAtTime(seconds);
-    startoffset = (seconds - GetStackPartStartTime(m_currentStackPosition)) * 75;
+    m_currentStackPosition = GetStackPartNumberAtTimeMs(msecs);
+    startoffset = static_cast<int>( (msecs - GetStackPartStartTimeMs(m_currentStackPosition)) * 75 / 1000);
   }
   return startoffset;
 }
 
-int CApplicationStackHelper::GetStackPartNumberAtTime(double seconds)
+int CApplicationStackHelper::GetStackPartNumberAtTimeMs(uint64_t msecs)
 {
-  if (seconds > 0)
+  if (msecs > 0)
   {
     // work out where to seek to
     for (int partNumber = 0; partNumber < m_currentStack->Size(); partNumber++)
     {
-      if (seconds < GetStackPartEndTime(partNumber))
+      if (msecs < GetStackPartEndTimeMs(partNumber))
         return partNumber;
     }
   }
@@ -266,24 +266,24 @@ void CApplicationStackHelper::SetRegisteredStackPartNumber(const CFileItem& item
   GetStackPartInformation(item.GetPath())->m_lStackPartNumber = partNumber;
 }
 
-int CApplicationStackHelper::GetRegisteredStackPartStartTime(const CFileItem& item)
+uint64_t CApplicationStackHelper::GetRegisteredStackPartStartTimeMs(const CFileItem& item)
 {
-  return GetStackPartInformation(item.GetPath())->m_lStackPartStartTime;
+  return GetStackPartInformation(item.GetPath())->m_lStackPartStartTimeMs;
 }
 
-void CApplicationStackHelper::SetRegisteredStackPartStartTime(const CFileItem& item, int startTime)
+void CApplicationStackHelper::SetRegisteredStackPartStartTimeMs(const CFileItem& item, uint64_t startTime)
 {
-  GetStackPartInformation(item.GetPath())->m_lStackPartStartTime = startTime;
+  GetStackPartInformation(item.GetPath())->m_lStackPartStartTimeMs = startTime;
 }
 
-int CApplicationStackHelper::GetRegisteredStackTotalTime(const CFileItem& item)
+uint64_t CApplicationStackHelper::GetRegisteredStackTotalTimeMs(const CFileItem& item)
 {
-  return GetStackPartInformation(item.GetPath())->m_lStackTotalTime;
+  return GetStackPartInformation(item.GetPath())->m_lStackTotalTimeMs;
 }
 
-void CApplicationStackHelper::SetRegisteredStackTotalTime(const CFileItem& item, int totalTime)
+void CApplicationStackHelper::SetRegisteredStackTotalTimeMs(const CFileItem& item, uint64_t totalTime)
 {
-  GetStackPartInformation(item.GetPath())->m_lStackTotalTime = totalTime;
+  GetStackPartInformation(item.GetPath())->m_lStackTotalTimeMs = totalTime;
 }
 
 CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(std::string key)

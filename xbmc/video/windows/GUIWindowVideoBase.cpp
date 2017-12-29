@@ -826,7 +826,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         if (URIUtils::IsStack(path))
         {
-          std::vector<int> times;
+          std::vector<uint64_t> times;
           if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
@@ -935,9 +935,9 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     {
       if (selectedFile > 0)
       {
-        std::vector<int> times;
+        std::vector<uint64_t> times;
         if (m_database.GetStackTimes(path,times))
-          stack->m_lStartOffset = times[selectedFile - 1] * 75;
+          stack->m_lStartOffset = static_cast<int>( times[selectedFile - 1] * 75 / 1000);
       }
       else
         stack->m_lStartOffset = 0;
