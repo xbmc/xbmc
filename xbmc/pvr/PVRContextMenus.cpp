@@ -567,7 +567,7 @@ namespace PVR
   {
     m_items =
     {
-      std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
+      std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play program */
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
       std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
       std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
