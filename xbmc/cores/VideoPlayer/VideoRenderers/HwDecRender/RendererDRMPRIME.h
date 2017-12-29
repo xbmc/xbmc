@@ -42,7 +42,6 @@ public:
   bool IsConfigured() override { return m_bConfigured; };
   void AddVideoPicture(const VideoPicture& picture, int index, double currentClock) override;
   void UnInit() override {};
-  void Reset() override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
   bool IsGuiLayer() override { return false; };
@@ -58,6 +57,7 @@ public:
   bool Supports(ESCALINGMETHOD method) override;
 
 private:
+  void Reset();
   void SetVideoPlane(CVideoBufferDRMPRIME* buffer);
 
   bool m_bConfigured = false;

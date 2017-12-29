@@ -38,7 +38,7 @@ vec2 stretch(vec2 pos)
 vec4 process()
 {
   vec4 rgb;
-#if defined(XBMC_YV12) || defined(XBMC_NV12)
+#if defined(XBMC_YV12)
 
   vec4 yuv;
   yuv.rgba = vec4( texture(m_sampY, stretch(m_cordY)).r
@@ -49,12 +49,11 @@ vec4 process()
   rgb   = m_yuvmat * yuv;
   rgb.a = m_alpha;
 
-#elif defined(XBMC_NV12_RRG)
+#elif defined(XBMC_NV12)
 
   vec4 yuv;
   yuv.rgba = vec4( texture(m_sampY, stretch(m_cordY)).r
-                 , texture(m_sampU, stretch(m_cordU)).r
-                 , texture(m_sampV, stretch(m_cordV)).g
+                 , texture(m_sampU, stretch(m_cordU)).rg
                  , 1.0 );
   rgb   = m_yuvmat * yuv;
   rgb.a = m_alpha;

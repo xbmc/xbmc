@@ -114,10 +114,6 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-void CRendererMediaCodecSurface::Reset()
-{
-}
-
 void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   CXBMCApp::get()->WaitVSync(100);

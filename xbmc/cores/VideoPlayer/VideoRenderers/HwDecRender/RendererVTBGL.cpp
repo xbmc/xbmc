@@ -80,7 +80,7 @@ void CRendererVTB::ReleaseBuffer(int idx)
 
 EShaderFormat CRendererVTB::GetShaderFormat()
 {
-  return SHADER_NV12_RRG;
+  return SHADER_NV12;
 }
 
 bool CRendererVTB::LoadShadersHook()

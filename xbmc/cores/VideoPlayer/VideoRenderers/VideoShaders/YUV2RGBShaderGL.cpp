@@ -23,6 +23,7 @@
 #include "../RenderFlags.h"
 #include "YUV2RGBShaderGL.h"
 #include "YUVMatrix.h"
+#include "ConvolutionKernels.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
 #include "utils/log.h"
@@ -100,8 +101,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
-  else if (m_format == SHADER_NV12_RRG)
-    m_defines += "#define XBMC_NV12_RRG\n";
   else if (m_format == SHADER_YUY2)
     m_defines += "#define XBMC_YUY2\n";
   else if (m_format == SHADER_UYVY)
@@ -118,6 +117,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
 
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 {
+  Free();
   delete m_glslOutput;
 }
 
@@ -191,3 +191,67 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ES
   PixelShader()->AppendSource("gl_output.glsl");
 }
 
+//------------------------------------------------------------------------------
+// YUV2RGBFilterShader4
+//------------------------------------------------------------------------------
+
+YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
+                                           EShaderFormat format,
+                                           bool stretch,
+                                           ESCALINGMETHOD method,
+                                           GLSLOutput *output)
+: BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
+{
+  m_scaling = method;
+  PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
+  PixelShader()->AppendSource("gl_output.glsl");
+}
+
+YUV2RGBFilterShader4::~YUV2RGBFilterShader4()
+{
+  if (m_kernelTex)
+    glDeleteTextures(1, &m_kernelTex);
+  m_kernelTex = 0;
+}
+
+void YUV2RGBFilterShader4::OnCompiledAndLinked()
+{
+  BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
+  m_hKernTex = glGetUniformLocation(ProgramHandle(), "m_kernelTex");
+
+  if (m_scaling != VS_SCALINGMETHOD_LANCZOS3_FAST && m_scaling != VS_SCALINGMETHOD_SPLINE36_FAST)
+  {
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader4 - unsupported scaling %d will fallback", m_scaling);
+    m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
+  }
+
+  CConvolutionKernel kernel(m_scaling, 256);
+
+  if (m_kernelTex)
+  {
+    glDeleteTextures(1, &m_kernelTex);
+    m_kernelTex = 0;
+  }
+  glGenTextures(1, &m_kernelTex);
+
+  //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
+  //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+}
+
+bool YUV2RGBFilterShader4::OnEnabled()
+{
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
+  glUniform1i(m_hKernTex, 3);
+
+  return BaseYUV2RGBGLSLShader::OnEnabled();
+}

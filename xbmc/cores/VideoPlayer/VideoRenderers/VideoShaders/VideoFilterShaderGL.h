@@ -77,7 +77,7 @@ namespace Shaders {
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
     void OnDisabled() override;
-    void Free() override;
+    void Free();
 
     bool GetTextureFilter(GLint& filter) override { filter = GL_NEAREST; return true; }
 

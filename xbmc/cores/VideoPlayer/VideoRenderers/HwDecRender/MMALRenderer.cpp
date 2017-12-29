@@ -890,11 +890,6 @@ void CMMALRenderer::ReleaseBuffer(int id)
   m_buffers[id] = nullptr;
 }
 
-void CMMALRenderer::Reset()
-{
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-}
-
 void CMMALRenderer::Flush()
 {
   CSingleLock lock(m_sharedSection);

@@ -31,7 +31,6 @@
 #include "ConvolutionKernels.h"
 #include "rendering/RenderSystem.h"
 
-#define USE1DTEXTURE
 #define TEXTARGET GL_TEXTURE_1D
 
 using namespace Shaders;
@@ -115,13 +114,6 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     defines += m_glslOutput->GetDefines();
   }
 
-  //tell shader if we're using a 1D texture
-#ifdef USE1DTEXTURE
-  defines += "#define USE1DTEXTURE 1\n";
-#else
-  defines += "#define USE1DTEXTURE 0\n";
-#endif
-
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
   PixelShader()->AppendSource("gl_output.glsl");
@@ -129,6 +121,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
 ConvolutionFilterShader::~ConvolutionFilterShader()
 {
+  Free();
   delete m_glslOutput;
 }
 
@@ -185,18 +178,14 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
     data   = (GLvoid*)kernel.GetUint8Pixels();
   }
 
-  //upload as 1D texture or as 2D texture with height of 1
-#ifdef USE1DTEXTURE
   glTexImage1D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, format, data);
-#else
-  glTexImage2D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
-#endif
 
   glActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
 
-  if (m_glslOutput) m_glslOutput->OnCompiledAndLinked(ProgramHandle());
+  if (m_glslOutput)
+    m_glslOutput->OnCompiledAndLinked(ProgramHandle());
 }
 
 bool ConvolutionFilterShader::OnEnabled()

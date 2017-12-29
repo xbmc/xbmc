@@ -171,7 +171,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_pYUVShader)
   {
-    m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = nullptr;
   }
@@ -459,14 +458,6 @@ void CLinuxRendererGL::LoadPlane(YUVPLANE& plane, int type,
   glBindTexture(m_textureTarget, 0);
   if (plane.pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-}
-
-void CLinuxRendererGL::Reset()
-{
-  for(int i=0; i<m_NumYV12Buffers; i++)
-  {
-    ReleaseBuffer(i);
-  }
 }
 
 void CLinuxRendererGL::Flush()
@@ -783,7 +774,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    if (Supports(RENDERFEATURE_NONLINSTRETCH) && m_nonLinStretch)
+    if (m_nonLinStretch)
     {
       m_pVideoFilterShader = new StretchFilterShader();
       if (!m_pVideoFilterShader->CompileAndLink())
@@ -803,9 +794,24 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
     return;
 
-  case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
+    {
+      EShaderFormat fmt = GetShaderFormat();
+      if (fmt == SHADER_NV12 || fmt == SHADER_YV12)
+      {
+        unsigned int major, minor;
+        m_renderSystem->GetRenderVersion(major, minor);
+        if (major >= 4)
+        {
+          SetTextureFilter(GL_LINEAR);
+          m_renderQuality = RQ_SINGLEPASS;
+          return;
+        }
+      }
+    }
+
+  case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
@@ -883,38 +889,64 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (m_pYUVShader)
     {
-      m_pYUVShader->Free();
       delete m_pYUVShader;
       m_pYUVShader = NULL;
     }
 
     // create regular progressive scan shader
     // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
+    EShaderFormat shaderFormat = GetShaderFormat();
     GLSLOutput *out = nullptr;
     if (m_renderQuality == RQ_SINGLEPASS)
     {
-      out = new GLSLOutput(3, m_useDithering, m_ditherDepth,
+      out = new GLSLOutput(4, m_useDithering, m_ditherDepth,
                            m_cmsOn ? m_fullRange : false,
                            m_cmsOn ? m_tCLUTTex : 0,
                            m_CLUTsize);
-    }
-    EShaderFormat shaderFormat = GetShaderFormat();
-    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
-                                                m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                out);
-    if (!m_cmsOn)
-      m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-    CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
+      if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST || m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
+      {
+        m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
+                                                m_iFlags, shaderFormat, m_nonLinStretch,
+                                                m_scalingMethod, out);
+        if (!m_cmsOn)
+          m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-    {
-      m_renderMethod = RENDER_GLSL;
-      UpdateVideoFilter();
+        CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader with filter");
+
+        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+        {
+          m_renderMethod = RENDER_GLSL;
+          UpdateVideoFilter();
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+          delete m_pYUVShader;
+          m_pYUVShader = nullptr;
+        }
+      }
     }
-    else
+
+    if (!m_pYUVShader)
     {
-      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
+                                                  m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS, out);
+
+      if (!m_cmsOn)
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+
+      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
+
+      if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+      {
+        m_renderMethod = RENDER_GLSL;
+        UpdateVideoFilter();
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+      }
     }
   }
 
@@ -1119,12 +1151,14 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
   glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+  if (Vloc != -1)
+    glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glEnableVertexAttribArray(Vloc);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -1136,7 +1170,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glDisableVertexAttribArray(Vloc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
@@ -1318,12 +1353,14 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
   glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+  if (Vloc != -1)
+    glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glEnableVertexAttribArray(Vloc);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -1335,7 +1372,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glDisableVertexAttribArray(Vloc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
@@ -2472,12 +2510,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   if(feature == RENDERFEATURE_SHARPNESS)
   {
     return false;
-  }
-
-  if (feature == RENDERFEATURE_NONLINSTRETCH)
-  {
-    if (m_renderMethod & RENDER_GLSL)
-      return true;
   }
 
   if (feature == RENDERFEATURE_STRETCH         ||

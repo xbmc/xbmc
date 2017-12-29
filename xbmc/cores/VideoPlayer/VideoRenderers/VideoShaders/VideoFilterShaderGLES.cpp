@@ -168,6 +168,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
 ConvolutionFilterShader::~ConvolutionFilterShader()
 {
+  Free();
   delete m_glslOutput;
 }
 

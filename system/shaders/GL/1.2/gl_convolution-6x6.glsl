@@ -23,12 +23,7 @@ uniform vec2      stepxy;
 uniform float     m_stretch;
 uniform float m_alpha;
 varying vec2      m_cord;
-
-#if (USE1DTEXTURE)
-  uniform sampler1D kernelTex;
-#else
-  uniform sampler2D kernelTex;
-#endif
+uniform sampler1D kernelTex;
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
 //without affecting quality
@@ -41,17 +36,9 @@ varying vec2      m_cord;
 half3 weight(float pos)
 {
 #if (HAS_FLOAT_TEXTURE)
-  #if (USE1DTEXTURE)
-    return texture1D(kernelTex, pos).rgb;
-  #else
-    return texture2D(kernelTex, vec2(pos, 0.5)).rgb;
-  #endif
+  return texture1D(kernelTex, pos).rgb;
 #else
-  #if (USE1DTEXTURE)
-    return texture1D(kernelTex, pos).rgb * 2.0 - 1.0;
-  #else
-    return texture2D(kernelTex, vec2(pos, 0.5)).rgb * 2.0 - 1.0;
-  #endif
+  return texture1D(kernelTex, pos).rgb * 2.0 - 1.0;
 #endif
 }
 

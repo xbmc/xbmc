@@ -44,7 +44,6 @@ public:
   virtual bool ConfigChanged(const VideoPicture &picture) { return false; };
   virtual CRenderInfo GetRenderInfo() override;
   virtual void UnInit() override {};
-  virtual void Reset() override;
   virtual void Update() override {};
   virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   virtual bool SupportsMultiPassRendering()override { return false; };
@@ -57,6 +56,8 @@ public:
   virtual bool Supports(ERENDERFEATURE feature) override;
 
 private:
+  void Reset();
+
   static const int m_numRenderBuffers = 4;
 
   struct BUFFER

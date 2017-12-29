@@ -22,7 +22,6 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES >= 2
 #include "system_gl.h"
 
 
@@ -80,7 +79,7 @@ namespace Shaders {
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
     void OnDisabled() override;
-    void Free() override;
+    void Free();
 
     bool GetTextureFilter(GLint& filter) override { filter = GL_NEAREST; return true; }
 
@@ -115,4 +114,3 @@ namespace Shaders {
 
 } // end namespace
 
-#endif

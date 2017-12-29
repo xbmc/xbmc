@@ -77,7 +77,7 @@ public:
 
   void Project(float &x, float &y, float &z) override;
 
-  std::string GetShaderPath() override;
+  std::string GetShaderPath(const std::string &filename) override;
 
   void GetGLVersion(int& major, int& minor);
   void GetGLSLVersion(int& major, int& minor);
