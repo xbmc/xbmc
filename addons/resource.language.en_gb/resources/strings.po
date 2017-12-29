@@ -10446,7 +10446,7 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 #: xbmc/pvr/PVRContextMenus.cpp
 msgctxt "#19190"
-msgid "Play programme"
+msgid "Play program"
 msgstr ""
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
