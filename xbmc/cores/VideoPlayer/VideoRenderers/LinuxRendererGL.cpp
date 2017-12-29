@@ -797,7 +797,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
     {
       EShaderFormat fmt = GetShaderFormat();
-      if (fmt == SHADER_NV12 || fmt == SHADER_NV12_RRG || fmt == SHADER_YV12)
+      if (fmt == SHADER_NV12 || fmt == SHADER_YV12)
       {
         unsigned int major, minor;
         m_renderSystem->GetRenderVersion(major, minor);
@@ -1151,12 +1151,14 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
   glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+  if (Vloc != -1)
+    glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glEnableVertexAttribArray(Vloc);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -1168,7 +1170,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glDisableVertexAttribArray(Vloc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
@@ -1350,12 +1353,14 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
   glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
+  if (Vloc != -1)
+    glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u3)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glEnableVertexAttribArray(Vloc);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -1367,7 +1372,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(Yloc);
   glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
+  if (Vloc != -1)
+    glDisableVertexAttribArray(Vloc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
