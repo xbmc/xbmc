@@ -40,6 +40,6 @@ public:
 
 protected:
   GLuint m_texture = 0;
-  bool m_profile32 = false;
+  bool m_profile30 = false;
 };
 
