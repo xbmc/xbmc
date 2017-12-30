@@ -148,7 +148,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
           {
            case ACTION_SELECT_ITEM:
            case ACTION_MOUSE_LEFT_CLICK:
-           case ACTION_PLAY:
+           case ACTION_PLAYER_PLAY:
              CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(iItem), true);
              break;
            case ACTION_SHOW_INFO:

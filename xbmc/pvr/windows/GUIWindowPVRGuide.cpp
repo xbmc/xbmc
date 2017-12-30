@@ -350,8 +350,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
               bReturn = true;
               break;
-            case ACTION_PLAY:
-              CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
+            case ACTION_PLAYER_PLAY:
+              CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
               bReturn = true;
               break;
             case ACTION_RECORD:
@@ -376,7 +376,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-            case ACTION_PLAY:
+            case ACTION_PLAYER_PLAY:
             {
               // EPG "gap" selected => switch to associated channel.
               CGUIEPGGridContainer *epgGridContainer = GetGridControl();
