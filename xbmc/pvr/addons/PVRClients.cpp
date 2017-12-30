@@ -202,7 +202,6 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
         if (m_clientMap.find(addon.second) == m_clientMap.end())
         {
           m_clientMap.insert(std::make_pair(addon.second, addon.first));
-          m_addonNameIds.insert(make_pair(addon.first->ID(), addon.second));
         }
       }
     }
@@ -294,8 +293,15 @@ bool CPVRClients::GetClient(int iClientId, CPVRClientPtr &addon) const
 int CPVRClients::GetClientId(const std::string& strId) const
 {
   CSingleLock lock(m_critSection);
-  const auto& it = m_addonNameIds.find(strId);
-  return it != m_addonNameIds.end() ? it->second : -1;
+  for (const auto &entry : m_clientMap)
+  {
+    if (entry.second->ID() == strId)
+    {
+      return entry.first;
+    }
+  }
+
+  return -1;
 }
 
 int CPVRClients::CreatedClientAmount(void) const

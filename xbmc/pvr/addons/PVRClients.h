@@ -716,6 +716,5 @@ namespace PVR
     std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
     CPVRClientMap         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;
-    std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
   };
 }
