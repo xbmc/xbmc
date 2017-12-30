@@ -89,29 +89,29 @@ public:
   \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
   \param partNumber the requested part number in the stack
   */
-  double GetStackPartEndTime(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset; }
+  uint64_t GetStackPartEndTimeMs(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset * 1000 / 75; }
 
   /*!
   \brief Returns the start time of a FileItem part of a (non-ISO) stack playback
   \param partNumber the requested part number in the stack
   */
-  double GetStackPartStartTime(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTime(partNumber - 1) : 0; }
+  uint64_t GetStackPartStartTimeMs(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTimeMs(partNumber - 1) : 0; }
 
   /*!
   \brief Returns the start time of the current FileItem part of a (non-ISO) stack playback
   */
-  double GetCurrentStackPartStartTime() const { return GetStackPartStartTime(m_currentStackPosition); }
+  uint64_t GetCurrentStackPartStartTimeMs() const { return GetStackPartStartTimeMs(m_currentStackPosition); }
 
   /*!
   \brief Returns the total time of a (non-ISO) stack playback
   */
-  double GetStackTotalTime() const { return GetStackPartEndTime(m_currentStack->Size() - 1); }
+  uint64_t GetStackTotalTimeMs() const { return GetStackPartEndTimeMs(m_currentStack->Size() - 1); }
 
   /*!
   \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
-  \param seconds the requested timestamp in the stack (in seconds)
+  \param msecs the requested timestamp in the stack (in milliseconds)
   */
-  int GetStackPartNumberAtTime(double seconds);
+  int GetStackPartNumberAtTimeMs(uint64_t msecs);
 
   // Stack information registration methods
 
@@ -155,27 +155,27 @@ public:
   \brief Returns the start time of the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  int GetRegisteredStackPartStartTime(const CFileItem& item);
+  uint64_t GetRegisteredStackPartStartTimeMs(const CFileItem& item);
 
   /*!
   \brief Stores the part start time in the item-stack map.
   \param item the reference to the item that is part of a stack
   \param startTime the start time of the part in other parameter
   */
-  void SetRegisteredStackPartStartTime(const CFileItem& item, int startTime);
+  void SetRegisteredStackPartStartTimeMs(const CFileItem& item, uint64_t startTimeMs);
 
   /*!
   \brief Returns the total time of the stack associated to the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  int GetRegisteredStackTotalTime(const CFileItem& item);
+  uint64_t GetRegisteredStackTotalTimeMs(const CFileItem& item);
 
   /*!
   \brief Stores the stack's total time associated to the part in the item-stack map.
   \param item the reference to the item that is part of a stack
   \param totalTime the total time of the stack
   */
-  void SetRegisteredStackTotalTime(const CFileItem& item, int totalTime);
+  void SetRegisteredStackTotalTimeMs(const CFileItem& item, uint64_t totalTimeMs);
 
   CCriticalSection m_critSection;
 
@@ -187,12 +187,12 @@ protected:
     StackPartInformation()
     {
       m_lStackPartNumber = 0;
-      m_lStackPartStartTime = 0;
-      m_lStackTotalTime = 0;
+      m_lStackPartStartTimeMs = 0;
+      m_lStackTotalTimeMs = 0;
       m_pStack = nullptr;
     };
-    int m_lStackPartStartTime;
-    int m_lStackTotalTime;
+    uint64_t m_lStackPartStartTimeMs;
+    uint64_t m_lStackTotalTimeMs;
     int m_lStackPartNumber;
     CFileItemPtr m_pStack;
   };

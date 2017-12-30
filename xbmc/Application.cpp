@@ -3349,14 +3349,14 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   bool playCountUpdate = false;
   float percent = 0.0f;
 
-  if (m_pStackHelper->GetRegisteredStack(fileItem) != nullptr && m_pStackHelper->GetRegisteredStackTotalTime(fileItem) > 0)
+  if (m_pStackHelper->GetRegisteredStack(fileItem) != nullptr && m_pStackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
   {
     // regular stack case: we have to save the bookmark on the stack
     fileItem = *m_pStackHelper->GetRegisteredStack(file);
     // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes (start time will be 0 for non-stackparts)
-    bookmark.timeInSeconds += m_pStackHelper->GetRegisteredStackPartStartTime(file);
-    if (m_pStackHelper->GetRegisteredStackTotalTime(file) > 0)
-      bookmark.totalTimeInSeconds = m_pStackHelper->GetRegisteredStackTotalTime(file);
+    bookmark.timeInSeconds += m_pStackHelper->GetRegisteredStackPartStartTimeMs(file) / 1000.0;
+    if (m_pStackHelper->GetRegisteredStackTotalTimeMs(file) > 0)
+      bookmark.totalTimeInSeconds = m_pStackHelper->GetRegisteredStackTotalTimeMs(file) / 1000.0;
     bookmark.partNumber = m_pStackHelper->GetRegisteredStackPartNumber(file);
   }
 
@@ -4557,7 +4557,7 @@ double CApplication::GetTotalTime() const
   if (m_pPlayer->IsPlaying())
   {
     if (m_pStackHelper->IsPlayingRegularStack())
-      rc = m_pStackHelper->GetStackTotalTime();
+      rc = m_pStackHelper->GetStackTotalTimeMs() * 0.001f;
     else
       rc = static_cast<double>(m_pPlayer->GetTotalTime() * 0.001f);
   }
@@ -4591,8 +4591,8 @@ double CApplication::GetTime() const
   {
     if (m_pStackHelper->IsPlayingRegularStack())
     {
-      long startOfCurrentFile = m_pStackHelper->GetCurrentStackPartStartTime();
-      rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
+      uint64_t startOfCurrentFile = m_pStackHelper->GetCurrentStackPartStartTimeMs();
+      rc = (startOfCurrentFile + m_pPlayer->GetTime()) * 0.001f;
     }
     else
       rc = static_cast<double>(m_pPlayer->GetTime() * 0.001f);
@@ -4617,15 +4617,15 @@ void CApplication::SeekTime( double dTime )
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      int partNumberToPlay = m_pStackHelper->GetStackPartNumberAtTime(dTime);
-      long startOfNewFile = m_pStackHelper->GetStackPartStartTime(partNumberToPlay);
+      int partNumberToPlay = m_pStackHelper->GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
+      uint64_t startOfNewFile = m_pStackHelper->GetStackPartStartTimeMs(partNumberToPlay);
       if (partNumberToPlay == m_pStackHelper->GetCurrentPartNumber())
-        m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
+        m_pPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
       else
       { // seeking to a new file
         m_pStackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
         CFileItem *item = new CFileItem(m_pStackHelper->GetCurrentStackPartFileItem());
-        item->m_lStartOffset = static_cast<long>((dTime - startOfNewFile) * 75.0);
+        item->m_lStartOffset = (static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile) * 75 / 1000;
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

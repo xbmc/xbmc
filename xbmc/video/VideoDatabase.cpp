@@ -4522,7 +4522,7 @@ bool CVideoDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
 
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
-bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<int> &times)
+bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times)
 {
   try
   {
@@ -4536,13 +4536,14 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<int>
     m_pDS->query( strSQL );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
-      int timeTotal = 0;
+      uint64_t timeTotal = 0;
       std::vector<std::string> timeString = StringUtils::Split(m_pDS->fv("times").get_asString(), ",");
       times.clear();
       for (const auto &i : timeString)
       {
-        times.push_back(atoi(i.c_str()));
-        timeTotal += atoi(i.c_str());
+        uint64_t partTime = static_cast<uint64_t>(atof(i.c_str()) * 1000.0f);
+        times.push_back(partTime); // db stores in secs, convert to msecs
+        timeTotal += partTime;
       }
       m_pDS->close();
       return (timeTotal > 0);
@@ -4557,7 +4558,7 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<int>
 }
 
 /// \brief Sets the stack times for a particular video file
-void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vector<int> &times)
+void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vector<uint64_t> &times)
 {
   try
   {
@@ -4571,9 +4572,9 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vecto
     m_pDS->exec( PrepareSQL("delete from stacktimes where idFile=%i", idFile) );
 
     // add the items
-    std::string timeString = StringUtils::Format("%i", times[0]);
+    std::string timeString = StringUtils::Format("%.3f", times[0] / 1000.0f);
     for (unsigned int i = 1; i < times.size(); i++)
-      timeString += StringUtils::Format(",%i", times[i]);
+      timeString += StringUtils::Format(",%.3f", times[i] / 1000.0f);
 
     m_pDS->exec( PrepareSQL("insert into stacktimes (idFile,times) values (%i,'%s')\n", idFile, timeString.c_str()) );
   }
