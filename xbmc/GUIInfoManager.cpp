@@ -6961,231 +6961,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     }
   }
-  // Ethernet Link state checking
-  // Will check if system has a Ethernet Link connection! [Cable in!]
-  // This can used for the skinner to switch off Network or Inter required functions
-  else if ( condition == SYSTEM_ALWAYS_TRUE)
-    bReturn = true;
-  else if (condition == SYSTEM_ALWAYS_FALSE)
-    bReturn = false;
-  else if (condition == SYSTEM_ETHERNET_LINK_ACTIVE)
-    bReturn = true;
-  else if (condition == WINDOW_IS_MEDIA)
-  { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
-    CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-    bReturn = (pWindow && pWindow->IsMediaWindow());
-  }
-  else if (condition == PLAYER_MUTED)
-    bReturn = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
   else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_COMPILATIONS)
+  {
     bReturn = GetLibraryBool(condition);
-  else if (condition == LIBRARY_IS_SCANNING)
-  {
-    if (g_application.IsMusicScanning() || g_application.IsVideoScanning())
-      bReturn = true;
-    else
-      bReturn = false;
   }
-  else if (condition == LIBRARY_IS_SCANNING_VIDEO)
-  {
-    bReturn = g_application.IsVideoScanning();
-  }
-  else if (condition == LIBRARY_IS_SCANNING_MUSIC)
-  {
-    bReturn = g_application.IsMusicScanning();
-  }
-  else if (condition == SYSTEM_PLATFORM_LINUX)
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_WINDOWS)
-#ifdef TARGET_WINDOWS
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_DARWIN)
-#ifdef TARGET_DARWIN
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_DARWIN_OSX)
-#ifdef TARGET_DARWIN_OSX
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_DARWIN_IOS)
-#ifdef TARGET_DARWIN_IOS
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_ANDROID)
-#if defined(TARGET_ANDROID)
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_LINUX_RASPBERRY_PI)
-#if defined(TARGET_RASPBERRY_PI)
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_MEDIA_DVD)
-    bReturn = g_mediaManager.IsDiscInDrive();
-#ifdef HAS_DVD_DRIVE
-  else if (condition == SYSTEM_DVDREADY)
-    bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
-  else if (condition == SYSTEM_TRAYOPEN)
-    bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
-#endif
-  else if (condition == SYSTEM_CAN_POWERDOWN)
-    bReturn = CServiceBroker::GetPowerManager().CanPowerdown();
-  else if (condition == SYSTEM_CAN_SUSPEND)
-    bReturn = CServiceBroker::GetPowerManager().CanSuspend();
-  else if (condition == SYSTEM_CAN_HIBERNATE)
-    bReturn = CServiceBroker::GetPowerManager().CanHibernate();
-  else if (condition == SYSTEM_CAN_REBOOT)
-    bReturn = CServiceBroker::GetPowerManager().CanReboot();
-  else if (condition == SYSTEM_SCREENSAVER_ACTIVE)
-    bReturn = g_application.IsInScreenSaver();
-  else if (condition == SYSTEM_DPMS_ACTIVE)
-    bReturn = g_application.IsDPMSActive();
-
-  else if (condition == PLAYER_SHOWINFO)
-    bReturn = m_playerShowInfo;
-  else if (condition == PLAYER_IS_CHANNEL_PREVIEW_ACTIVE)
-    bReturn = IsPlayerChannelPreviewActive();
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
-    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
+    bReturn = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
-  else if (condition == SYSTEM_HASLOCKS)
-    bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
-  else if (condition == SYSTEM_HAS_PVR)
-    bReturn = true;
-  else if (condition == SYSTEM_HAS_PVR_ADDON)
-  {
-    VECADDONS pvrAddons;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
-    bReturn = (pvrAddons.size() > 0);
-  }
-  else if (condition == SYSTEM_HAS_ADSP)
-    bReturn = true;
-  else if (condition == SYSTEM_HAS_CMS)
-#if defined(HAS_GL) || defined(HAS_DX)
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_ISMASTER)
-    bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
-  else if (condition == SYSTEM_ISFULLSCREEN)
-    bReturn = CServiceBroker::GetWinSystem().IsFullScreen();
-  else if (condition == SYSTEM_ISSTANDALONE)
-    bReturn = g_application.IsStandAlone();
-  else if (condition == SYSTEM_ISINHIBIT)
-    bReturn = g_application.IsIdleShutdownInhibited();
-  else if (condition == SYSTEM_HAS_SHUTDOWN)
-    bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
-  else if (condition == SYSTEM_LOGGEDON)
-    bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
-  else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
-    bReturn = g_advancedSettings.m_showExitButton;
-  else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = CProfilesManager::GetInstance().UsingLoginScreen();
-  else if (condition == SYSTEM_HAS_ACTIVE_MODAL_DIALOG)
-    bReturn = g_windowManager.HasModalDialog();
-  else if (condition == SYSTEM_HAS_VISIBLE_MODAL_DIALOG)
-    bReturn = g_windowManager.HasVisibleModalDialog();
-  else if (condition == WEATHER_IS_FETCHED)
-    bReturn = CServiceBroker::GetWeatherManager().IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
+  {
     bReturn = CServiceBroker::GetPVRManager().TranslateBoolInfo(condition);
-  else if (condition == SYSTEM_INTERNET_STATE)
-  {
-    g_sysinfo.GetInfo(condition);
-    bReturn = g_sysinfo.HasInternet();
   }
-  else if (condition == SYSTEM_HAS_INPUT_HIDDEN)
-  {
-    CGUIDialogNumeric *pNumeric = g_windowManager.GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
-    CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-
-    if (pNumeric && pNumeric->IsActive())
-      bReturn = pNumeric->IsInputHidden();
-    else if (pKeyboard && pKeyboard->IsActive())
-      bReturn = pKeyboard->IsInputHidden();
-  }
-  else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
-  {
-    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (pWindow)
-    {
-      const CFileItemList& items=static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory();
-      for (int i=0;i<items.Size();++i)
-      {
-        CFileItemPtr item=items.Get(i);
-        if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
-        {
-          bReturn=true;
-          break;
-        }
-        else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
-        {
-          bReturn=true;
-          break;
-        }
-      }
-    }
-  }
-  else if (condition == CONTAINER_STACKED)
-  {
-    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (pWindow)
-      bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().GetProperty("isstacked").asBoolean();
-  }
-  else if (condition == CONTAINER_HAS_THUMB)
-  {
-    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (pWindow)
-      bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().HasArt("thumb");
-  }
-  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS ||
-           condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
-           condition == CONTAINER_HAS_PARENT_ITEM)
-  {
-    auto activeContainer = GetActiveContainer(0, contextWindow);
-    if (activeContainer)
-      bReturn = activeContainer->GetCondition(condition, 0);
-  }
-  else if (condition == CONTAINER_CAN_FILTER)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      bReturn = !static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
-  }
-  else if (condition == CONTAINER_CAN_FILTERADVANCED)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      bReturn = static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
-  }
-  else if (condition == CONTAINER_FILTERED)
-  {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      bReturn = static_cast<CGUIMediaWindow*>(window)->IsFiltered();
-  }
-  else if (condition == VIDEOPLAYER_HAS_INFO)
-    bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||
-               (m_currentFile->HasPVRChannelInfoTag()  && !m_currentFile->GetPVRChannelInfoTag()->IsEmpty()));
   else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -7203,265 +6990,532 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     }
   }
-  else if (condition == SLIDESHOW_ISPAUSED)
-  {
-    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    bReturn = (slideShow && slideShow->IsPaused());
-  }
-  else if (condition == SLIDESHOW_ISRANDOM)
-  {
-    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    bReturn = (slideShow && slideShow->IsShuffled());
-  }
-  else if (condition == SLIDESHOW_ISACTIVE)
-  {
-    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    bReturn = (slideShow && slideShow->InSlideShow());
-  }
-  else if (condition == SLIDESHOW_ISVIDEO)
-  {
-    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
-  }
-  else if (g_application.GetAppPlayer().IsPlaying())
-  {
+  else {
     switch (condition)
     {
-    case PLAYER_HAS_MEDIA:
-      bReturn = true;
-      break;
-    case PLAYER_HAS_AUDIO:
-      bReturn = g_application.GetAppPlayer().IsPlayingAudio();
-      break;
-    case PLAYER_HAS_VIDEO:
-      bReturn = g_application.GetAppPlayer().IsPlayingVideo();
-      break;
-    case PLAYER_HAS_GAME:
-      bReturn = g_application.GetAppPlayer().IsPlayingGame();
-      break;
-    case PLAYER_PLAYING:
-      {
-        float speed = g_application.GetAppPlayer().GetPlaySpeed();
-        bReturn = (speed == 1.0);
-      }
-      break;
-    case PLAYER_PAUSED:
-      bReturn = g_application.GetAppPlayer().IsPausedPlayback();
-      break;
-    case PLAYER_REWINDING:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() < 0;
-      break;
-    case PLAYER_FORWARDING:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() > 1.5;
-      break;
-    case PLAYER_REWINDING_2x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -2;
-      break;
-    case PLAYER_REWINDING_4x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -4;
-      break;
-    case PLAYER_REWINDING_8x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -8;
-      break;
-    case PLAYER_REWINDING_16x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -16;
-      break;
-    case PLAYER_REWINDING_32x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -32;
-      break;
-    case PLAYER_FORWARDING_2x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 2;
-      break;
-    case PLAYER_FORWARDING_4x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 4;
-      break;
-    case PLAYER_FORWARDING_8x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 8;
-      break;
-    case PLAYER_FORWARDING_16x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 16;
-      break;
-    case PLAYER_FORWARDING_32x:
-      bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 32;
-      break;
-    case PLAYER_CAN_PAUSE:
-      bReturn = g_application.GetAppPlayer().CanPause();
-      break;
-    case PLAYER_CAN_SEEK:
-      bReturn = g_application.GetAppPlayer().CanSeek();
-      break;
-    case PLAYER_SUPPORTS_TEMPO:
-      bReturn = g_application.GetAppPlayer().SupportsTempo();
-      break;
-    case PLAYER_IS_TEMPO:
-      {
-        float tempo = g_application.GetAppPlayer().GetPlayTempo();
-        float speed = g_application.GetAppPlayer().GetPlaySpeed();
-        bReturn = (speed == 1.0 && tempo != 1.0);
-      }
-      break;
-    case PLAYER_DISPLAY_AFTER_SEEK:
-      bReturn = GetDisplayAfterSeek();
-    break;
-    case PLAYER_CACHING:
-      bReturn = g_application.GetAppPlayer().IsCaching();
-    break;
-    case PLAYER_SEEKBAR:
-      {
-        CGUIDialog *seekBar = g_windowManager.GetDialog(WINDOW_DIALOG_SEEK_BAR);
-        bReturn = seekBar ? seekBar->IsDialogRunning() : false;
-      }
-    break;
-    case PLAYER_SEEKING:
-      bReturn = g_application.GetAppPlayer().GetSeekHandler().InProgress();
-    break;
-    case PLAYER_SHOWTIME:
-      bReturn = m_playerShowTime;
-    break;
-    case PLAYER_PASSTHROUGH:
-      bReturn = g_application.GetAppPlayer().IsPassthrough();
-      break;
-    case PLAYER_ISINTERNETSTREAM:
-      bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
-      break;
-    case PLAYER_HAS_PROGRAMS:
-      bReturn = (g_application.GetAppPlayer().GetProgramsCount() > 1) ? true : false;
-      break;
-    case MUSICPM_ENABLED:
-      bReturn = g_partyModeManager.IsEnabled();
-    break;
-    case MUSICPLAYER_HASPREVIOUS:
-      {
-        // requires current playlist be PLAYLIST_MUSIC
-        bReturn = false;
-        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-          bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() > 0); // not first song
-      }
-      break;
-    case MUSICPLAYER_HASNEXT:
-      {
-        // requires current playlist be PLAYLIST_MUSIC
-        bReturn = false;
-        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-          bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() < (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
-      }
-      break;
-    case MUSICPLAYER_PLAYLISTPLAYING:
-      {
-        bReturn = false;
-        if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-          bReturn = true;
-      }
-      break;
-    case VIDEOPLAYER_USING_OVERLAYS:
-      bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
-    break;
-    case VIDEOPLAYER_ISFULLSCREEN:
-      bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-                g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
-    break;
-    case VIDEOPLAYER_HASMENU:
-      bReturn = g_application.GetAppPlayer().HasMenu();
-    break;
-    case PLAYLIST_ISRANDOM:
-      bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-    break;
-    case PLAYLIST_ISREPEAT:
-      bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
-    break;
-    case PLAYLIST_ISREPEATONE:
-      bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
-    break;
-    case PLAYER_HASDURATION:
-      bReturn = g_application.GetTotalTime() > 0;
-      break;
-    case VIDEOPLAYER_HASTELETEXT:
-      if (g_application.GetAppPlayer().GetTeletextCache())
+      // Ethernet Link state checking
+      // Will check if system has a Ethernet Link connection! [Cable in!]
+      // This can used for the skinner to switch off Network or Inter required functions
+      case SYSTEM_ALWAYS_TRUE:
         bReturn = true;
-      break;
-    case VIDEOPLAYER_HASSUBTITLES:
-      bReturn = g_application.GetAppPlayer().GetSubtitleCount() > 0;
-      break;
-    case VIDEOPLAYER_SUBTITLESENABLED:
-      bReturn = g_application.GetAppPlayer().GetSubtitleVisible();
-      break;
-    case VISUALISATION_LOCKED:
-      {
-        CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-        g_windowManager.SendMessage(msg);
-        if (msg.GetPointer())
-        {
-          CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
-          bReturn = pVis->IsLocked();
+        break;
+      case SYSTEM_ALWAYS_FALSE:
+        bReturn = false;
+        break;
+      case SYSTEM_ETHERNET_LINK_ACTIVE:
+        bReturn = true;
+        break;
+      case WINDOW_IS_MEDIA:
+        { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
+          CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+          bReturn = (pWindow && pWindow->IsMediaWindow());
         }
-      }
-    break;
-    case VISUALISATION_ENABLED:
-      bReturn = !CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
-    break;
-    case VIDEOPLAYER_HAS_EPG:
-      if (m_currentFile->HasPVRChannelInfoTag())
-        bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
-    break;
-    case VIDEOPLAYER_IS_STEREOSCOPIC:
-      if(g_application.GetAppPlayer().IsPlaying())
-      {
-        bReturn = !m_videoInfo.stereoMode.empty();
-      }
-      break;
-    case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
-      if (m_currentFile->HasPVRRecordingInfoTag())
-      {
-        CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
-        bReturn = (epgTag && epgTag->IsActive() && epgTag->Channel());
-      }
-      break;
-    case VISUALISATION_HAS_PRESETS:
-    {
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
-        bReturn = (viz && viz->HasPresets());
-      }
-    }
-    break;
-    case RDS_HAS_RDS:
-      bReturn = g_application.GetAppPlayer().IsPlayingRDS();
-    break;
-    case RDS_HAS_RADIOTEXT:
-      if (m_currentFile->HasPVRRadioRDSInfoTag())
-        bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotext();
-    break;
-    case RDS_HAS_RADIOTEXT_PLUS:
-      if (m_currentFile->HasPVRRadioRDSInfoTag())
-        bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotextPlus();
-    break;
-    case RDS_HAS_HOTLINE_DATA:
-      if (m_currentFile->HasPVRRadioRDSInfoTag())
-        bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailHotline().empty() ||
-                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneHotline().empty());
-    break;
-    case RDS_HAS_STUDIO_DATA:
-      if (m_currentFile->HasPVRRadioRDSInfoTag())
-        bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailStudio().empty() ||
-                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetSMSStudio().empty() ||
-                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneStudio().empty());
-    break;
-    case PLAYER_PROCESS_VIDEOHWDECODER:
+        break;
+      case PLAYER_MUTED:
+        bReturn = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
+        break;
+      case LIBRARY_IS_SCANNING:
+        bReturn = (g_application.IsMusicScanning() || g_application.IsVideoScanning());
+        break;
+      case LIBRARY_IS_SCANNING_VIDEO:
+        bReturn = g_application.IsVideoScanning();
+        break;
+      case LIBRARY_IS_SCANNING_MUSIC:
+        bReturn = g_application.IsMusicScanning();
+        break;
+      case SYSTEM_PLATFORM_LINUX:
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_WINDOWS:
+#ifdef TARGET_WINDOWS
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_DARWIN:
+#ifdef TARGET_DARWIN
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_DARWIN_OSX:
+#ifdef TARGET_DARWIN_OSX
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_DARWIN_IOS:
+#ifdef TARGET_DARWIN_IOS
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_ANDROID:
+#if defined(TARGET_ANDROID)
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_PLATFORM_LINUX_RASPBERRY_PI:
+#if defined(TARGET_RASPBERRY_PI)
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_MEDIA_DVD:
+        bReturn = g_mediaManager.IsDiscInDrive();
+        break;
+#ifdef HAS_DVD_DRIVE
+      case SYSTEM_DVDREADY:
+        bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
+        break;
+      case SYSTEM_TRAYOPEN:
+        bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
+        break;
+#endif
+      case SYSTEM_CAN_POWERDOWN:
+        bReturn = CServiceBroker::GetPowerManager().CanPowerdown();
+        break;
+      case SYSTEM_CAN_SUSPEND:
+        bReturn = CServiceBroker::GetPowerManager().CanSuspend();
+        break;
+      case SYSTEM_CAN_HIBERNATE:
+        bReturn = CServiceBroker::GetPowerManager().CanHibernate();
+        break;
+      case SYSTEM_CAN_REBOOT:
+        bReturn = CServiceBroker::GetPowerManager().CanReboot();
+        break;
+      case SYSTEM_SCREENSAVER_ACTIVE:
+        bReturn = g_application.IsInScreenSaver();
+        break;
+      case SYSTEM_DPMS_ACTIVE:
+        bReturn = g_application.IsDPMSActive();
+        break;
+      case PLAYER_SHOWINFO:
+        bReturn = m_playerShowInfo;
+        break;
+      case PLAYER_IS_CHANNEL_PREVIEW_ACTIVE:
+        bReturn = IsPlayerChannelPreviewActive();
+        break;
+      case SYSTEM_HASLOCKS:
+        bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+        break;
+      case SYSTEM_HAS_PVR:
+        bReturn = true;
+      case SYSTEM_HAS_PVR_ADDON:
+        {
+          VECADDONS pvrAddons;
+          CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+          addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
+          bReturn = (pvrAddons.size() > 0);
+        }
+        break;
+      case SYSTEM_HAS_ADSP:
+        bReturn = true;
+        break;
+      case SYSTEM_HAS_CMS:
+#if defined(HAS_GL) || defined(HAS_DX)
+        bReturn = true;
+#else
+        bReturn = false;
+#endif
+        break;
+      case SYSTEM_ISMASTER:
+        bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+        break;
+      case SYSTEM_ISFULLSCREEN:
+        bReturn = CServiceBroker::GetWinSystem().IsFullScreen();
+        break;
+      case SYSTEM_ISSTANDALONE:
+        bReturn = g_application.IsStandAlone();
+        break;
+      case SYSTEM_ISINHIBIT:
+        bReturn = g_application.IsIdleShutdownInhibited();
+        break;
+      case SYSTEM_HAS_SHUTDOWN:
+        bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
+        break;
+      case SYSTEM_LOGGEDON:
+        bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
+        break;
+      case SYSTEM_SHOW_EXIT_BUTTON:
+        bReturn = g_advancedSettings.m_showExitButton;
+        break;
+      case SYSTEM_HAS_LOGINSCREEN:
+        bReturn = CProfilesManager::GetInstance().UsingLoginScreen();
+        break;
+      case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
+        bReturn = g_windowManager.HasModalDialog();
+        break;
+      case SYSTEM_HAS_VISIBLE_MODAL_DIALOG:
+        bReturn = g_windowManager.HasVisibleModalDialog();
+        break;
+      case WEATHER_IS_FETCHED:
+        bReturn = CServiceBroker::GetWeatherManager().IsFetched();
+        break;
+      case SYSTEM_INTERNET_STATE:
+        {
+          g_sysinfo.GetInfo(condition);
+          bReturn = g_sysinfo.HasInternet();
+        }
+        break;
+      case SYSTEM_HAS_INPUT_HIDDEN:
+        {
+          CGUIDialogNumeric *pNumeric = g_windowManager.GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
+          CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
+
+          if (pNumeric && pNumeric->IsActive())
+            bReturn = pNumeric->IsInputHidden();
+          else if (pKeyboard && pKeyboard->IsActive())
+            bReturn = pKeyboard->IsInputHidden();
+        }
+        break;
+      case CONTAINER_HASFILES:
+      case CONTAINER_HASFOLDERS:
+        {
+          CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (pWindow)
+          {
+            const CFileItemList& items=static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory();
+            for (int i=0;i<items.Size();++i)
+            {
+              CFileItemPtr item=items.Get(i);
+              if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
+              {
+                bReturn=true;
+                break;
+              }
+              else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
+              {
+                bReturn=true;
+                break;
+              }
+            }
+          }
+        }
+        break;
+      case CONTAINER_STACKED:
+        {
+          CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (pWindow)
+            bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().GetProperty("isstacked").asBoolean();
+        }
+        break;
+      case CONTAINER_HAS_THUMB:
+        {
+          CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (pWindow)
+            bReturn = static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory().HasArt("thumb");
+        }
+        break;
+      case CONTAINER_HAS_NEXT:
+      case CONTAINER_HAS_PREVIOUS:
+      case CONTAINER_SCROLLING:
+      case CONTAINER_ISUPDATING:
+      case CONTAINER_HAS_PARENT_ITEM:
+        {
+          auto activeContainer = GetActiveContainer(0, contextWindow);
+          if (activeContainer)
+            bReturn = activeContainer->GetCondition(condition, 0);
+        }
+        break;
+      case CONTAINER_CAN_FILTER:
+        {
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            bReturn = !static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
+        }
+        break;
+      case CONTAINER_CAN_FILTERADVANCED:
+        {
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            bReturn = static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
+        }
+        break;
+      case CONTAINER_FILTERED:
+        {
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            bReturn = static_cast<CGUIMediaWindow*>(window)->IsFiltered();
+        }
+        break;
+      case VIDEOPLAYER_HAS_INFO:
+        bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||
+                   (m_currentFile->HasPVRChannelInfoTag()  && !m_currentFile->GetPVRChannelInfoTag()->IsEmpty()));
+        break;
+      case SLIDESHOW_ISPAUSED:
+        {
+          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          bReturn = (slideShow && slideShow->IsPaused());
+        }
+        break;
+      case SLIDESHOW_ISRANDOM:
+        {
+          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          bReturn = (slideShow && slideShow->IsShuffled());
+        }
+        break;
+      case SLIDESHOW_ISACTIVE:
+        {
+          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          bReturn = (slideShow && slideShow->InSlideShow());
+        }
+        break;
+      case SLIDESHOW_ISVIDEO:
+        {
+          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
+        }
+        break;
+      case PLAYER_HAS_MEDIA:
+        bReturn = g_application.GetAppPlayer().IsPlaying();
+        break;
+      case PLAYER_HAS_AUDIO:
+        bReturn = g_application.GetAppPlayer().IsPlayingAudio();
+        break;
+      case PLAYER_HAS_VIDEO:
+        bReturn = g_application.GetAppPlayer().IsPlayingVideo();
+        break;
+      case PLAYER_HAS_GAME:
+        bReturn = g_application.GetAppPlayer().IsPlayingGame();
+        break;
+      case PLAYER_PLAYING:
+        {
+          float speed = g_application.GetAppPlayer().GetPlaySpeed();
+          bReturn = (speed == 1.0);
+        }
+        break;
+      case PLAYER_PAUSED:
+        bReturn = g_application.GetAppPlayer().IsPausedPlayback();
+        break;
+      case PLAYER_REWINDING:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() < 0;
+        break;
+      case PLAYER_FORWARDING:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() > 1.5;
+        break;
+      case PLAYER_REWINDING_2x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -2;
+        break;
+      case PLAYER_REWINDING_4x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -4;
+        break;
+      case PLAYER_REWINDING_8x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -8;
+        break;
+      case PLAYER_REWINDING_16x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -16;
+        break;
+      case PLAYER_REWINDING_32x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -32;
+        break;
+      case PLAYER_FORWARDING_2x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 2;
+        break;
+      case PLAYER_FORWARDING_4x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 4;
+        break;
+      case PLAYER_FORWARDING_8x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 8;
+        break;
+      case PLAYER_FORWARDING_16x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 16;
+        break;
+      case PLAYER_FORWARDING_32x:
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 32;
+        break;
+      case PLAYER_CAN_PAUSE:
+        bReturn = g_application.GetAppPlayer().CanPause();
+        break;
+      case PLAYER_CAN_SEEK:
+        bReturn = g_application.GetAppPlayer().CanSeek();
+        break;
+      case PLAYER_SUPPORTS_TEMPO:
+        bReturn = g_application.GetAppPlayer().SupportsTempo();
+        break;
+      case PLAYER_IS_TEMPO:
+        {
+          float tempo = g_application.GetAppPlayer().GetPlayTempo();
+          float speed = g_application.GetAppPlayer().GetPlaySpeed();
+          bReturn = (speed == 1.0 && tempo != 1.0);
+        }
+        break;
+      case PLAYER_DISPLAY_AFTER_SEEK:
+        bReturn = GetDisplayAfterSeek();
+        break;
+      case PLAYER_CACHING:
+        bReturn = g_application.GetAppPlayer().IsCaching();
+        break;
+      case PLAYER_SEEKBAR:
+        {
+          CGUIDialog *seekBar = g_windowManager.GetDialog(WINDOW_DIALOG_SEEK_BAR);
+          bReturn = seekBar ? seekBar->IsDialogRunning() : false;
+        }
+        break;
+      case PLAYER_SEEKING:
+        bReturn = g_application.GetAppPlayer().GetSeekHandler().InProgress();
+        break;
+      case PLAYER_SHOWTIME:
+        bReturn = m_playerShowTime;
+        break;
+      case PLAYER_PASSTHROUGH:
+        bReturn = g_application.GetAppPlayer().IsPassthrough();
+        break;
+      case PLAYER_ISINTERNETSTREAM:
+        bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
+        break;
+      case PLAYER_HAS_PROGRAMS:
+        bReturn = (g_application.GetAppPlayer().GetProgramsCount() > 1) ? true : false;
+        break;
+      case MUSICPM_ENABLED:
+        bReturn = g_partyModeManager.IsEnabled();
+        break;
+      case MUSICPLAYER_HASPREVIOUS:
+        {
+          // requires current playlist be PLAYLIST_MUSIC
+          bReturn = false;
+          if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+            bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() > 0); // not first song
+        }
+        break;
+      case MUSICPLAYER_HASNEXT:
+        {
+          // requires current playlist be PLAYLIST_MUSIC
+          bReturn = false;
+          if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+            bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() < (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+        }
+        break;
+      case MUSICPLAYER_PLAYLISTPLAYING:
+        {
+          bReturn = false;
+          if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+            bReturn = true;
+        }
+        break;
+      case VIDEOPLAYER_USING_OVERLAYS:
+        bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
+        break;
+      case VIDEOPLAYER_ISFULLSCREEN:
+        bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+                  g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
+        break;
+      case VIDEOPLAYER_HASMENU:
+        bReturn = g_application.GetAppPlayer().HasMenu();
+        break;
+      case PLAYLIST_ISRANDOM:
+        bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+        break;
+      case PLAYLIST_ISREPEAT:
+        bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
+        break;
+      case PLAYLIST_ISREPEATONE:
+        bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
+        break;
+      case PLAYER_HASDURATION:
+        bReturn = g_application.GetTotalTime() > 0;
+        break;
+      case VIDEOPLAYER_HASTELETEXT:
+        if (g_application.GetAppPlayer().GetTeletextCache())
+          bReturn = true;
+        break;
+      case VIDEOPLAYER_HASSUBTITLES:
+        bReturn = g_application.GetAppPlayer().GetSubtitleCount() > 0;
+        break;
+      case VIDEOPLAYER_SUBTITLESENABLED:
+        bReturn = g_application.GetAppPlayer().GetSubtitleVisible();
+        break;
+      case VISUALISATION_LOCKED:
+        {
+          CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+          g_windowManager.SendMessage(msg);
+          if (msg.GetPointer())
+          {
+            CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
+            bReturn = pVis->IsLocked();
+          }
+        }
+        break;
+      case VISUALISATION_ENABLED:
+        bReturn = !CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
+        break;
+      case VIDEOPLAYER_HAS_EPG:
+        if (m_currentFile->HasPVRChannelInfoTag())
+          bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
+        break;
+      case VIDEOPLAYER_IS_STEREOSCOPIC:
+        if(g_application.GetAppPlayer().IsPlaying())
+        {
+          bReturn = !m_videoInfo.stereoMode.empty();
+        }
+        break;
+      case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
+        if (m_currentFile->HasPVRRecordingInfoTag())
+        {
+          CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
+          bReturn = (epgTag && epgTag->IsActive() && epgTag->Channel());
+        }
+        break;
+      case VISUALISATION_HAS_PRESETS:
+        {
+          CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+          g_windowManager.SendMessage(msg);
+          if (msg.GetPointer())
+          {
+            CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
+            bReturn = (viz && viz->HasPresets());
+          }
+        }
+        break;
+      case RDS_HAS_RDS:
+        bReturn = g_application.GetAppPlayer().IsPlayingRDS();
+        break;
+      case RDS_HAS_RADIOTEXT:
+        if (m_currentFile->HasPVRRadioRDSInfoTag())
+          bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotext();
+        break;
+      case RDS_HAS_RADIOTEXT_PLUS:
+        if (m_currentFile->HasPVRRadioRDSInfoTag())
+          bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotextPlus();
+        break;
+      case RDS_HAS_HOTLINE_DATA:
+        if (m_currentFile->HasPVRRadioRDSInfoTag())
+          bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailHotline().empty() ||
+                     !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneHotline().empty());
+        break;
+      case RDS_HAS_STUDIO_DATA:
+        {
+          if (m_currentFile->HasPVRRadioRDSInfoTag())
+            bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailStudio().empty() ||
+                       !m_currentFile->GetPVRRadioRDSInfoTag()->GetSMSStudio().empty() ||
+                       !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneStudio().empty());
+        }
+        break;
+      case PLAYER_PROCESS_VIDEOHWDECODER:
         bReturn = CServiceBroker::GetDataCacheCore().IsVideoHwDecoder();
         break;
-    default: // default, use integer value different from 0 as true
-      {
-        int val;
-        bReturn = GetInt(val, condition) && val != 0;
-      }
+      default: // default, use integer value different from 0 as true
+        {
+          int val;
+          bReturn = GetInt(val, condition) && val != 0;
+        }
     }
   }
-  if (condition1 < 0)
-    bReturn = !bReturn;
-  return bReturn;
+
+  return condition1 < 0
+    ? !bReturn
+    : bReturn;
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
