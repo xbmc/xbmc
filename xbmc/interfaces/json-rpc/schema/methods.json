@@ -979,7 +979,8 @@
       { "name": "sortname", "$ref": "Optional.String" },
       { "name": "type", "$ref": "Optional.String" },
       { "name": "gender", "$ref": "Optional.String" },
-      { "name": "disambiguation", "$ref": "Optional.String" }
+      { "name": "disambiguation", "$ref": "Optional.String" },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1007,7 +1008,8 @@
       { "name": "musicbrainzreleasegroupid", "$ref": "Optional.String" },
       { "name": "sortartist", "$ref": "Optional.String" },
       { "name": "displayartist", "$ref": "Optional.String" },
-      { "name": "musicbrainzalbumartistid", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
+      { "name": "musicbrainzalbumartistid", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1035,7 +1037,8 @@
       { "name": "votes", "$ref": "Optional.Integer" },
       { "name": "displayartist", "$ref": "Optional.String" },
       { "name": "sortartist", "$ref": "Optional.String" },
-      { "name": "mood", "$ref": "Optional.String" }
+      { "name": "mood", "$ref": "Optional.String" },
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
