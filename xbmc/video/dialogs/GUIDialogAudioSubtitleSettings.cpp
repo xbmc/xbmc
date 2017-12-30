@@ -79,19 +79,19 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
   if (newVolume != m_volume)
     GetSettingsManager()->SetNumber(SETTING_AUDIO_VOLUME, newVolume);
 
-  if (g_application.m_pPlayer->HasPlayer())
+  if (g_application.GetAppPlayer().HasPlayer())
   {
-    const CVideoSettings videoSettings = g_application.m_pPlayer->GetVideoSettings();
+    const CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
     
     // these settings can change on the fly
-    //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.m_pPlayer->GetAudioStream());
+    //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.GetAppPlayer().GetAudioStream());
     GetSettingsManager()->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
     GetSettingsManager()->SetBool(SETTING_AUDIO_PASSTHROUGH, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
 
-    //! @todo m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
+    //! @todo m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.GetAppPlayer().GetSubtitleVisible());
     //   \-> Unless subtitle visibility can change on the fly, while Dialog is up, this code should be removed.
     GetSettingsManager()->SetNumber(SETTING_SUBTITLE_DELAY, videoSettings.m_SubtitleDelay);
-    //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.m_pPlayer->GetSubtitle());
+    //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.GetAppPlayer().GetSubtitle());
   }
 
   CGUIDialogSettingsManualBase::FrameMove();
@@ -133,20 +133,20 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSe
   else if (settingId == SETTING_AUDIO_VOLUME_AMPLIFICATION)
   {
     float value = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    g_application.m_pPlayer->SetDynamicRangeCompression((long)(value * 100));
+    g_application.GetAppPlayer().SetDynamicRangeCompression((long)(value * 100));
   }
   else if (settingId == SETTING_AUDIO_DELAY)
   {
     float value = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    g_application.m_pPlayer->SetAVDelay(value);
+    g_application.GetAppPlayer().SetAVDelay(value);
   }
   else if (settingId == SETTING_AUDIO_STREAM)
   {
     m_audioStream = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     // only change the audio stream if a different one has been asked for
-    if (g_application.m_pPlayer->GetAudioStream() != m_audioStream)
+    if (g_application.GetAppPlayer().GetAudioStream() != m_audioStream)
     {
-      g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
+      g_application.GetAppPlayer().SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
   }
   else if (settingId == SETTING_AUDIO_PASSTHROUGH)
@@ -157,17 +157,17 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSe
   else if (settingId == SETTING_SUBTITLE_ENABLE)
   {
     bool value = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-    g_application.m_pPlayer->SetSubtitleVisible(value);
+    g_application.GetAppPlayer().SetSubtitleVisible(value);
   }
   else if (settingId == SETTING_SUBTITLE_DELAY)
   {
     float value = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    g_application.m_pPlayer->SetSubTitleDelay(value);
+    g_application.GetAppPlayer().SetSubTitleDelay(value);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
   {
     m_subtitleStream = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-    g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+    g_application.GetAppPlayer().SetSubtitle(m_subtitleStream);
   }
 }
 
@@ -226,7 +226,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(std::shared_ptr<const CSet
     std::string strPath = BrowseForSubtitle();
     if (!strPath.empty())
     {
-      g_application.m_pPlayer->AddSubtitle(strPath);
+      g_application.GetAppPlayer().AddSubtitle(strPath);
       Close();
     }
   }
@@ -252,7 +252,7 @@ void CGUIDialogAudioSubtitleSettings::Save()
   db.EraseVideoSettings();
   db.Close();
 
-  CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.m_pPlayer->GetVideoSettings();
+  CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();
   CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
   CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
   CServiceBroker::GetSettings().Save();
@@ -301,12 +301,12 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  const CVideoSettings videoSettings = g_application.m_pPlayer->GetVideoSettings();
+  const CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
   
-  if (g_application.m_pPlayer->HasPlayer())
+  if (g_application.GetAppPlayer().HasPlayer())
   {
-    g_application.m_pPlayer->GetAudioCapabilities(m_audioCaps);
-    g_application.m_pPlayer->GetSubtitleCapabilities(m_subCaps);
+    g_application.GetAppPlayer().GetAudioCapabilities(m_audioCaps);
+    g_application.GetAppPlayer().GetSubtitleCapabilities(m_subCaps);
   }
 
   // register IsPlayingPassthrough condition
@@ -357,7 +357,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   }
 
   // subtitle settings
-  m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
+  m_subtitleVisible = g_application.GetAppPlayer().GetSubtitleVisible();
   // subtitle enabled setting
   AddToggle(groupSubtitles, SETTING_SUBTITLE_ENABLE, 13397, SettingLevel::Basic, m_subtitleVisible);
 
@@ -407,7 +407,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(std::shared_ptr<CSettingGr
   if (group == NULL || settingId.empty())
     return;
 
-  m_audioStream = g_application.m_pPlayer->GetAudioStream();
+  m_audioStream = g_application.GetAppPlayer().GetAudioStream();
   if (m_audioStream < 0)
     m_audioStream = 0;
 
@@ -419,7 +419,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettin
   if (group == NULL || settingId.empty())
     return;
 
-  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
+  m_subtitleStream = g_application.GetAppPlayer().GetSubtitle();
   if (m_subtitleStream < 0)
     m_subtitleStream = 0;
 
@@ -428,12 +428,12 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettin
 
 bool CGUIDialogAudioSubtitleSettings::IsPlayingPassthrough(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return g_application.m_pPlayer->IsPassthrough();
+  return g_application.GetAppPlayer().IsPassthrough();
 }
 
 void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  int audioStreamCount = g_application.m_pPlayer->GetAudioStreamCount();
+  int audioStreamCount = g_application.GetAppPlayer().GetAudioStreamCount();
 
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
@@ -442,7 +442,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(SettingConstPtr s
     std::string strLanguage;
 
     AudioStreamInfo info;
-    g_application.m_pPlayer->GetAudioStreamInfo(i, info);
+    g_application.GetAppPlayer().GetAudioStreamInfo(i, info);
 
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
@@ -466,13 +466,13 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(SettingConstPtr s
 
 void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  int subtitleStreamCount = g_application.m_pPlayer->GetSubtitleCount();
+  int subtitleStreamCount = g_application.GetAppPlayer().GetSubtitleCount();
 
   // cycle through each subtitle and add it to our entry list
   for (int i = 0; i < subtitleStreamCount; ++i)
   {
     SubtitleStreamInfo info;
-    g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
+    g_application.GetAppPlayer().GetSubtitleStreamInfo(i, info);
 
     std::string strItem;
     std::string strLanguage;

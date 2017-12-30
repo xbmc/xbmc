@@ -652,7 +652,7 @@ AE_DSP_STREAMTYPE CActiveAEDSP::LoadCurrentAudioSettings(void)
 
   AE_DSP_STREAMTYPE type = AE_DSP_ASTREAM_INVALID;
 
-  if (g_application.m_pPlayer->HasPlayer())
+  if (g_application.GetAppPlayer().HasPlayer())
   {
     CFileItem currentFile(g_application.CurrentFileItem());
 

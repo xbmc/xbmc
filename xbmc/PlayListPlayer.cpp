@@ -607,8 +607,8 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
   else if (iPlaylist == m_iCurrentPlayList)
   {
     if (
-      (g_application.m_pPlayer->IsPlayingAudio() && iPlaylist == PLAYLIST_MUSIC) ||
-      (g_application.m_pPlayer->IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
+      (g_application.GetAppPlayer().IsPlayingAudio() && iPlaylist == PLAYLIST_MUSIC) ||
+      (g_application.GetAppPlayer().IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
       )
     {
       CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
@@ -740,8 +740,8 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
 {
   if (strProperty.empty() || value.isNull() ||
-     (iPlaylist == PLAYLIST_VIDEO && !g_application.m_pPlayer->IsPlayingVideo()) ||
-     (iPlaylist == PLAYLIST_MUSIC && !g_application.m_pPlayer->IsPlayingAudio()))
+     (iPlaylist == PLAYLIST_VIDEO && !g_application.GetAppPlayer().IsPlayingVideo()) ||
+     (iPlaylist == PLAYLIST_MUSIC && !g_application.GetAppPlayer().IsPlayingAudio()))
     return;
 
   CVariant data;
@@ -942,34 +942,34 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     g_application.WakeUpScreenSaverAndDPMS();
 
     // stop playing file
-    if (g_application.m_pPlayer->IsPlaying()) g_application.StopPlaying();
+    if (g_application.GetAppPlayer().IsPlaying()) g_application.StopPlaying();
   }
   break;
 
   case TMSG_MEDIA_PAUSE:
-    if (g_application.m_pPlayer->HasPlayer())
+    if (g_application.GetAppPlayer().HasPlayer())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.m_pPlayer->Pause();
+      g_application.GetAppPlayer().Pause();
     }
     break;
 
   case TMSG_MEDIA_UNPAUSE:
-    if (g_application.m_pPlayer->IsPausedPlayback())
+    if (g_application.GetAppPlayer().IsPausedPlayback())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.m_pPlayer->Pause();
+      g_application.GetAppPlayer().Pause();
     }
     break;
 
   case TMSG_MEDIA_PAUSE_IF_PLAYING:
-    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.m_pPlayer->Pause();
+      g_application.GetAppPlayer().Pause();
     }
     break;
   default:

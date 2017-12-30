@@ -106,7 +106,7 @@ bool CGameWindowFullScreen::OnAction(const CAction &action)
   case ACTION_ASPECT_RATIO:
   {
     // Toggle the aspect ratio mode (only if the info is onscreen)
-    //g_application.m_pPlayer->SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
+    //g_application.GetAppPlayer().SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
     return true;
   }
   default:

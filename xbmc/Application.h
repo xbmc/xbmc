@@ -163,7 +163,9 @@ public:
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
   CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
+  CApplicationPlayer& GetAppPlayer();
   std::string GetCurrentPlayer();
+  CApplicationStackHelper& GetAppStackHelper();
   void OnPlayBackEnded() override;
   void OnPlayBackStarted(const CFileItem &file) override;
   void OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmark) override;
@@ -212,8 +214,8 @@ public:
   void ToggleMute(void);
   void SetMute(bool mute);
   void ShowVolumeBar(const CAction *action = NULL);
-  int GetSubtitleDelay() const;
-  int GetAudioDelay() const;
+  int GetSubtitleDelay();
+  int GetAudioDelay();
   void ResetSystemIdleTimer();
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
@@ -284,8 +286,6 @@ public:
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   bool OnEvent(XBMC_Event& newEvent);
-
-  std::unique_ptr<CApplicationPlayer> m_pPlayer;
 
 #ifdef HAS_DVD_DRIVE
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
@@ -382,8 +382,6 @@ public:
   */
   void UnlockFrameMoveGuard();
 
-  std::unique_ptr<CApplicationStackHelper> m_pStackHelper;
-
 protected:
   bool OnSettingsSaving() const override;
 
@@ -473,7 +471,7 @@ protected:
 
   void SetHardwareVolume(float hardwareVolume);
 
-  void VolumeChanged() const;
+  void VolumeChanged();
 
   PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
 
@@ -502,6 +500,8 @@ private:
   std::atomic_uint m_WaitingExternalCalls;        /*!< counts threads wich are waiting to be processed in FrameMove */
   unsigned int m_ProcessedExternalCalls;          /*!< counts calls wich are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
+  CApplicationPlayer m_appPlayer;
+  CApplicationStackHelper m_stackHelper;
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);

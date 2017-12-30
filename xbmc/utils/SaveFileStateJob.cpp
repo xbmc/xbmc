@@ -141,9 +141,11 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
-        // could be part of an ISO stacks. In this case the bookmark is saved onto the part. In order to properly update the the list, we need to refresh the stack's resume point
-        if (g_application.m_pStackHelper->HasRegisteredStack(item) && g_application.m_pStackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
-          videodatabase.GetResumePoint(*(g_application.m_pStackHelper->GetRegisteredStack(item)->GetVideoInfoTag()));
+        // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
+        // In order to properly update the list, we need to refresh the stack's resume point
+        CApplicationStackHelper& stackHelper = g_application.GetAppStackHelper();
+        if (stackHelper.HasRegisteredStack(item) && stackHelper.GetRegisteredStackTotalTimeMs(item) == 0)
+          videodatabase.GetResumePoint(*(stackHelper.GetRegisteredStack(item)->GetVideoInfoTag()));
 
         videodatabase.Close();
 

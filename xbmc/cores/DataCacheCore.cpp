@@ -260,7 +260,7 @@ void CDataCacheCore::SetStateSeeking(bool active)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::CDataCacheCore::IsSeeking()
+bool CDataCacheCore::IsSeeking()
 {
   CSingleLock lock(m_stateSection);
 
@@ -307,7 +307,7 @@ void CDataCacheCore::SetGuiRender(bool gui)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::CDataCacheCore::GetGuiRender()
+bool CDataCacheCore::GetGuiRender()
 {
   CSingleLock lock(m_stateSection);
 
@@ -322,7 +322,7 @@ void CDataCacheCore::SetVideoRender(bool video)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::CDataCacheCore::GetVideoRender()
+bool CDataCacheCore::GetVideoRender()
 {
   CSingleLock lock(m_stateSection);
 

@@ -247,11 +247,11 @@ void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (g_application.m_pPlayer->IsPlaying())
+  if (g_application.GetAppPlayer().IsPlaying())
   {
-    if (g_application.m_pPlayer->HasVideo())
+    if (g_application.GetAppPlayer().HasVideo())
     {
-      if (!g_application.m_pPlayer->IsPaused() && !m_hasReqVisible)
+      if (!g_application.GetAppPlayer().IsPaused() && !m_hasReqVisible)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
@@ -633,7 +633,7 @@ void CXBMCApp::UpdateSessionMetadata()
   builder
       .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
       .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
-      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.m_pPlayer->GetTotalTime())
+      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.GetAppPlayer().GetTotalTime())
 //      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
 //      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
 //      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
@@ -676,16 +676,16 @@ void CXBMCApp::UpdateSessionState()
   float speed = 0.0;
   if (m_playback_state != PLAYBACK_STATE_STOPPED)
   {
-    if (g_application.m_pPlayer->HasVideo())
+    if (g_application.GetAppPlayer().HasVideo())
       m_playback_state |= PLAYBACK_STATE_VIDEO;
     else
       m_playback_state &= ~PLAYBACK_STATE_VIDEO;
-    if (g_application.m_pPlayer->HasAudio())
+    if (g_application.GetAppPlayer().HasAudio())
       m_playback_state |= PLAYBACK_STATE_AUDIO;
     else
       m_playback_state &= ~PLAYBACK_STATE_AUDIO;
-    pos = g_application.m_pPlayer->GetTime();
-    speed = g_application.m_pPlayer->GetPlaySpeed();
+    pos = g_application.GetAppPlayer().GetTime();
+    speed = g_application.GetAppPlayer().GetPlaySpeed();
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
       state = CJNIPlaybackState::STATE_PLAYING;
     else
@@ -705,11 +705,11 @@ void CXBMCApp::OnPlayBackStarted()
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
   m_playback_state = PLAYBACK_STATE_PLAYING;
-  if (g_application.m_pPlayer->HasVideo())
+  if (g_application.GetAppPlayer().HasVideo())
     m_playback_state |= PLAYBACK_STATE_VIDEO;
-  if (g_application.m_pPlayer->HasAudio())
+  if (g_application.GetAppPlayer().HasAudio())
     m_playback_state |= PLAYBACK_STATE_AUDIO;
-  if (!g_application.m_pPlayer->CanPause())
+  if (!g_application.GetAppPlayer().CanPause())
     m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);

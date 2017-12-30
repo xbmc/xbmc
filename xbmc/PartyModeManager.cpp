@@ -711,7 +711,7 @@ bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT
 
 void CPartyModeManager::Announce()
 {
-  if (g_application.m_pPlayer->IsPlaying())
+  if (g_application.GetAppPlayer().IsPlaying())
   {
     CVariant data;
     

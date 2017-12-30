@@ -123,7 +123,7 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
   else if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
   {
     if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_RADIOTEXT &&
-        g_application.m_pPlayer->IsPlaying() &&
+        g_application.GetAppPlayer().IsPlaying() &&
         g_application.CurrentFileItem().HasPVRRadioRDSInfoTag())
     {
       PVR::CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();

@@ -501,10 +501,10 @@ void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool
 std::string CStereoscopicsManager::GetVideoStereoMode()
 {
   std::string playerMode;
-  if (g_application.m_pPlayer->IsPlaying())
+  if (g_application.GetAppPlayer().IsPlaying())
   {
     VideoStreamInfo videoInfo;
-    g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
+    g_application.GetAppPlayer().GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
     playerMode = videoInfo.stereoMode;
   }
   return playerMode;

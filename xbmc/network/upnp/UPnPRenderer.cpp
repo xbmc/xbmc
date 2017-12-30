@@ -314,7 +314,7 @@ CUPnPRenderer::UpdateState()
 
     avt->SetStateVariable("TransportStatus", "OK");
 
-    if (g_application.m_pPlayer->IsPlaying() || g_application.m_pPlayer->IsPausedPlayback()) {
+    if (g_application.GetAppPlayer().IsPlaying() || g_application.GetAppPlayer().IsPausedPlayback()) {
         avt->SetStateVariable("NumberOfTracks", "1");
         avt->SetStateVariable("CurrentTrack", "1");
 
@@ -465,7 +465,7 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
 {
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
-    } else if (!g_application.m_pPlayer->IsPausedPlayback())
+    } else if (!g_application.GetAppPlayer().IsPausedPlayback())
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
     return NPT_SUCCESS;
 }
@@ -478,9 +478,9 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         return NPT_SUCCESS;
-    } else if (g_application.m_pPlayer->IsPausedPlayback()) {
+    } else if (g_application.GetAppPlayer().IsPausedPlayback()) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
-    } else if (!g_application.m_pPlayer->IsPlaying()) {
+    } else if (!g_application.GetAppPlayer().IsPlaying()) {
         NPT_String uri, meta;
         PLT_Service* service;
         // look for value set previously by SetAVTransportURI
@@ -537,7 +537,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    if (!g_application.m_pPlayer->IsPlaying() && g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW) {
+    if (!g_application.GetAppPlayer().IsPlaying() && g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
@@ -571,7 +571,7 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         return NPT_FAILURE;
     }
 
-    if (g_application.m_pPlayer->IsPlaying()) {
+    if (g_application.GetAppPlayer().IsPlaying()) {
 
         int playlist = PLAYLIST_MUSIC;
         if(item->IsVideo())
@@ -677,7 +677,7 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnSeek(PLT_ActionReference& action)
 {
-    if (!g_application.m_pPlayer->IsPlaying()) return NPT_ERROR_INVALID_STATE;
+    if (!g_application.GetAppPlayer().IsPlaying()) return NPT_ERROR_INVALID_STATE;
 
     NPT_String unit, target;
     NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));

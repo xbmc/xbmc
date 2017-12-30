@@ -828,11 +828,11 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   }
 
   // pause game when leaving fullscreen or resume game when entering fullscreen
-  if (g_application.m_pPlayer->IsPlayingGame())
+  if (g_application.GetAppPlayer().IsPlayingGame())
   {
-    if (GetActiveWindow() == WINDOW_FULLSCREEN_GAME && !g_application.m_pPlayer->IsPaused())
+    if (GetActiveWindow() == WINDOW_FULLSCREEN_GAME && !g_application.GetAppPlayer().IsPaused())
       g_application.OnAction(ACTION_PAUSE);
-    else if (iWindowID == WINDOW_FULLSCREEN_GAME && g_application.m_pPlayer->IsPaused())
+    else if (iWindowID == WINDOW_FULLSCREEN_GAME && g_application.GetAppPlayer().IsPaused())
       g_application.OnAction(ACTION_PAUSE);
   }
 
@@ -1514,13 +1514,13 @@ int CGUIWindowManager::GetActiveWindowID() const
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
     // check if we're in a DVD menu
-    if (g_application.m_pPlayer->IsInMenu())
+    if (g_application.GetAppPlayer().IsInMenu())
       iWin = WINDOW_VIDEO_MENU;
     // check for LiveTV and switch to it's virtual window
     else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
     // special casing for numeric seek
-    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
+    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   if (iWin == WINDOW_VISUALISATION)
@@ -1529,7 +1529,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_RADIO;
     // special casing for numeric seek
-    else if (g_application.m_pPlayer->GetSeekHandler().HasTimeCode())
+    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
   // Return the window id

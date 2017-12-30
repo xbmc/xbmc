@@ -157,7 +157,7 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 
 void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (g_application.m_pPlayer->IsPlayingAudio())
+  if (g_application.GetAppPlayer().IsPlayingAudio())
   {
     if (m_bInvalidated)
       FreeResources(true);

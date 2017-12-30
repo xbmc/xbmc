@@ -53,7 +53,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
   static unsigned int min_hold_time = 1000;
   if (action.GetID() == ACTION_NAV_BACK &&
       action.GetHoldTime() < min_hold_time &&
-      g_application.m_pPlayer->IsPlaying())
+      g_application.GetAppPlayer().IsPlaying())
   {
     g_application.SwitchToFullScreen();
     return true;

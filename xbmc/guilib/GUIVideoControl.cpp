@@ -36,7 +36,7 @@ CGUIVideoControl::~CGUIVideoControl(void) = default;
 void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   //! @todo Proper processing which marks when its actually changed. Just mark always for now.
-  if (g_application.m_pPlayer->IsRenderingGuiLayer())
+  if (g_application.GetAppPlayer().IsRenderingGuiLayer())
     MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
@@ -44,9 +44,9 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 void CGUIVideoControl::Render()
 {
-  if (g_application.m_pPlayer->IsRenderingVideo())
+  if (g_application.GetAppPlayer().IsRenderingVideo())
   {
-    if (!g_application.m_pPlayer->IsPausedPlayback())
+    if (!g_application.GetAppPlayer().IsPausedPlayback())
       g_application.ResetScreenSaver();
 
     g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
@@ -54,7 +54,7 @@ void CGUIVideoControl::Render()
     g_graphicsContext.SetTransform(mat, 1.0, 1.0);
 
     color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
-    if (g_application.m_pPlayer->IsRenderingVideoLayer())
+    if (g_application.GetAppPlayer().IsRenderingVideoLayer())
     {
       CRect old = g_graphicsContext.GetScissors();
       CRect region = GetRenderRegion();
@@ -64,7 +64,7 @@ void CGUIVideoControl::Render()
       g_graphicsContext.SetScissors(old);
     }
     else
-      g_application.m_pPlayer->Render(false, alpha);
+      g_application.GetAppPlayer().Render(false, alpha);
 
     g_graphicsContext.RemoveTransform();
   }
@@ -73,15 +73,15 @@ void CGUIVideoControl::Render()
 
 void CGUIVideoControl::RenderEx()
 {
-  if (g_application.m_pPlayer->IsRenderingVideo())
-    g_application.m_pPlayer->Render(false, 255, false);
+  if (g_application.GetAppPlayer().IsRenderingVideo())
+    g_application.GetAppPlayer().Render(false, 255, false);
 
   CGUIControl::RenderEx();
 }
 
 EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (!g_application.m_pPlayer->IsPlayingVideo()) return EVENT_RESULT_UNHANDLED;
+  if (!g_application.GetAppPlayer().IsPlayingVideo()) return EVENT_RESULT_UNHANDLED;
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // switch to fullscreen
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());

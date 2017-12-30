@@ -62,7 +62,7 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
     /* Do not open if no teletext is available */
-    if (!g_application.m_pPlayer->GetTeletextCache())
+    if (!g_application.GetAppPlayer().GetTeletextCache())
     {
       Close();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
