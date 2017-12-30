@@ -203,6 +203,8 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
     m_output = AESINKPI_ANALOGUE;
   else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
     m_output = AESINKPI_BOTH;
+  else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "Default")
+    m_output = AESINKPI_HDMI;
   else assert(0);
 
   // analogue only supports stereo
