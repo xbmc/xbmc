@@ -7060,6 +7060,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case SYSTEM_HAS_PVR:
         bReturn = true;
+        break;
       case SYSTEM_HAS_PVR_ADDON:
         {
           VECADDONS pvrAddons;
