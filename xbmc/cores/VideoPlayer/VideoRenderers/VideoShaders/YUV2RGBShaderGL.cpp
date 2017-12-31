@@ -242,7 +242,7 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
   GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 }
