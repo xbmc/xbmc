@@ -204,8 +204,8 @@ void CSeekHandler::SetSeekSize(double seekSize)
 {
   CApplicationPlayer& player = g_application.GetAppPlayer();
   int64_t playTime = player.GetTime();
-  double minSeekSize = (player.GetMinTime() - playTime) / 1000;
-  double maxSeekSize = (player.GetMaxTime() - playTime) / 1000;
+  double minSeekSize = (player.GetMinTime() - playTime) / 1000.0;
+  double maxSeekSize = (player.GetMaxTime() - playTime) / 1000.0;
 
   m_seekSize = seekSize > 0
     ? std::min(seekSize, maxSeekSize)
