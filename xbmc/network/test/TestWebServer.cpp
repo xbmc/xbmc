@@ -44,10 +44,11 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <random>
+
 using namespace XFILE;
 
 #define WEBSERVER_HOST          "localhost"
-#define WEBSERVER_PORT          23456
 
 #define TEST_URL_JSONRPC        "jsonrpc"
 
@@ -61,9 +62,19 @@ class TestWebServer : public testing::Test
 protected:
   TestWebServer()
     : webserver(),
-      baseUrl(StringUtils::Format("http://" WEBSERVER_HOST ":%d", WEBSERVER_PORT)),
       sourcePath(XBMC_REF_FILE_PATH("xbmc/network/test/data/webserver/"))
-  { }
+  {
+    static uint16_t port;
+    if (port == 0)
+    {
+      std::random_device rd;
+      std::mt19937 mt(rd());
+      std::uniform_int_distribution<uint16_t> dist(49152, 65535);
+      port = dist(mt);
+    }
+    webserverPort = port;
+    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":%u", webserverPort);
+  }
   ~TestWebServer() override = default;
 
 protected:
@@ -71,7 +82,7 @@ protected:
   {
     SetupMediaSources();
 
-    webserver.Start(WEBSERVER_PORT, "", "");
+    webserver.Start(webserverPort, "", "");
     webserver.RegisterRequestHandler(&m_jsonRpcHandler);
     webserver.RegisterRequestHandler(&m_vfsHandler);
   }
@@ -349,6 +360,7 @@ protected:
   CHTTPVfsHandler m_vfsHandler;
   std::string baseUrl;
   std::string sourcePath;
+  uint16_t webserverPort;
 };
 
 TEST_F(TestWebServer, IsStarted)
