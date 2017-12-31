@@ -7060,6 +7060,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case SYSTEM_HAS_PVR:
         bReturn = true;
+        break;
       case SYSTEM_HAS_PVR_ADDON:
         {
           VECADDONS pvrAddons;
@@ -8408,7 +8409,7 @@ const std::string CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
 
 std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */) const
 {
-  if (playlistid <= PLAYLIST_NONE)
+  if (playlistid < PLAYLIST_NONE)
     return "";
 
   int iPlaylist = playlistid == PLAYLIST_NONE ? CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() : playlistid;
