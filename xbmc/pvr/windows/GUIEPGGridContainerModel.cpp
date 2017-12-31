@@ -432,6 +432,16 @@ unsigned int CGUIEPGGridContainerModel::GetPageNowOffset() const
   return GetGridStartPadding() / MINSPERBLOCK; // this is the 'now' block relative to page start
 }
 
+CDateTime CGUIEPGGridContainerModel::GetStartTimeForBlock(int block) const
+{
+  if (block < 0)
+    block = 0;
+  else if (block >= m_blocks)
+    block = m_blocks - 1;
+
+  return m_gridStart + CDateTimeSpan(0, 0 , block * MINSPERBLOCK, 0);
+}
+
 int CGUIEPGGridContainerModel::GetBlock(const CDateTime &datetime) const
 {
   int diff;

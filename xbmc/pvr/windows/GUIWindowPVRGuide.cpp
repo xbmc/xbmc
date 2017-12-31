@@ -24,6 +24,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
@@ -166,6 +167,7 @@ void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons &
 
   buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
   buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
+  buttons.Add(CONTEXT_BUTTON_DATE,  19288); /* Go to date */
   buttons.Add(CONTEXT_BUTTON_END,   19064); /* Go to end */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
@@ -459,6 +461,7 @@ bool CGUIWindowPVRGuideBase::OnContextButton(int itemNumber, CONTEXT_BUTTON butt
   return OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
+      OnContextButtonDate(pItem.get(), button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
@@ -554,6 +557,26 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON 
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     epgGridContainer->GoToNow();
     bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRGuideBase::OnContextButtonDate(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_DATE)
+  {
+    SYSTEMTIME date;
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+    epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
+
+    if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(19288))) /* Go to date */
+    {
+      epgGridContainer->GoToDate(CDateTime(date));
+      bReturn = true;
+    }
   }
 
   return bReturn;
