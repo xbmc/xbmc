@@ -414,6 +414,11 @@ int64_t CVariant::asInteger(int64_t fallback) const
   return fallback;
 }
 
+int32_t CVariant::asInteger32(int32_t fallback) const
+{
+  return static_cast<int32_t>(asInteger(fallback));
+}
+
 uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
   switch (m_type)
@@ -433,6 +438,11 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
   }
   
   return fallback;
+}
+
+uint32_t CVariant::asUnsignedInteger32(uint32_t fallback) const
+{
+  return static_cast<uint32_t>(asUnsignedInteger(fallback));
 }
 
 double CVariant::asDouble(double fallback) const
