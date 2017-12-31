@@ -22,8 +22,6 @@
 
 #include "Texture.h"
 
-#if defined(HAS_GL) || defined(HAS_GLES)
-
 #include "system_gl.h"
 
 /************************************************************************/
@@ -41,7 +39,7 @@ public:
   void BindToUnit(unsigned int unit) override;
 
 protected:
-  GLuint m_texture;
+  GLuint m_texture = 0;
+  bool m_profile30 = false;
 };
 
-#endif
