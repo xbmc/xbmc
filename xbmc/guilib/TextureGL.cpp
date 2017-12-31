@@ -40,7 +40,7 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int for
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem().GetRenderVersion(major, minor);
   if (major >= 3)
-    m_profile30 = true;
+    m_isOglVersion3orNewer = true;
 }
 
 CGLTexture::~CGLTexture()
@@ -87,7 +87,7 @@ void CGLTexture::LoadToGPU()
 #ifndef HAS_GLES
     // Lower LOD bias equals more sharpness, but less smooth animation
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
-    if (!m_profile30)
+    if (!m_isOglVersion3orNewer)
       glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 #endif
   }
@@ -153,7 +153,7 @@ void CGLTexture::LoadToGPU()
                            GetPitch() * GetRows(), m_pixels);
   }
 
-  if (IsMipmapped() && m_profile30)
+  if (IsMipmapped() && m_isOglVersion3orNewer)
   {
     glGenerateMipmap(GL_TEXTURE_2D);
   }
