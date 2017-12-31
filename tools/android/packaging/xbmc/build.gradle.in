@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "@APP_PACKAGE@"
+        minSdkVersion 21
+        targetSdkVersion 22
+        versionCode @APP_VERSION_CODE_ANDROID@
+        versionName "@APP_VERSION@"
+    }
+    buildTypes {
+        releaseUnsigned.initWith(buildTypes.release)
+        releaseUnsigned {
+            signingConfig null
+        }
+
+        debugUnsigned.initWith(buildTypes.debug)
+        debugUnsigned {
+            signingConfig null
+        }
+        
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['java']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['lib']
+        }
+    }
+
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn
+}
+

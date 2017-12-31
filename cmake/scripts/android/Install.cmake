@@ -26,6 +26,16 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/apksign
                ${CMAKE_BINARY_DIR}/tools/android/packaging/apksign COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
                ${CMAKE_BINARY_DIR}/tools/android/packaging/make_symbols.sh COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/build.gradle
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/build.gradle COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradlew
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/gradlew COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/settings.gradle
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/settings.gradle COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.jar
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.jar COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.properties
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.properties COPYONLY)
 file(WRITE ${CMAKE_BINARY_DIR}/tools/depends/Makefile.include
      "$(PREFIX)/lib/${APP_NAME_LC}/lib${APP_NAME_LC}.so: ;\n")
 
@@ -47,6 +57,7 @@ set(package_files strings.xml
                   colors.xml
                   searchable.xml
                   AndroidManifest.xml
+                  build.gradle
                   src/Main.java
                   src/Splash.java
                   src/XBMCBroadcastReceiver.java
