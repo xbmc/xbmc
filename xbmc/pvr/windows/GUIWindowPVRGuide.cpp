@@ -162,9 +162,6 @@ void CGUIWindowPVRGuideBase::SetInvalid()
 
 void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-    return;
-
   buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
   buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
   buttons.Add(CONTEXT_BUTTON_DATE,  19288); /* Go to date */
@@ -393,6 +390,19 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               }
               break;
             }
+            case ACTION_CONTEXT_MENU:
+            {
+              // EPG "gap" selected => create and process special context menu with item independent entries.
+              CContextButtons buttons;
+              GetContextButtons(-1, buttons);
+
+              int iButton = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+              if (iButton >= 0)
+              {
+                bReturn = OnContextButton(-1, static_cast<CONTEXT_BUTTON>(iButton));
+              }
+              break;
+            }
           }
         }
       }
@@ -454,15 +464,28 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowPVRGuideBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
+  switch (button)
+  {
+    case CONTEXT_BUTTON_BEGIN:
+      return OnContextButtonBegin();
+
+    case CONTEXT_BUTTON_NOW:
+      return OnContextButtonNow();
+
+    case CONTEXT_BUTTON_DATE:
+      return OnContextButtonDate();
+
+    case CONTEXT_BUTTON_END:
+      return OnContextButtonEnd();
+
+    default:
+      break;
+  }
+
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonBegin(pItem.get(), button) ||
-      OnContextButtonEnd(pItem.get(), button) ||
-      OnContextButtonNow(pItem.get(), button) ||
-      OnContextButtonDate(pItem.get(), button) ||
-      CGUIMediaWindow::OnContextButton(itemNumber, button);
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
@@ -520,63 +543,36 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
   return false;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRGuideBase::OnContextButtonBegin()
 {
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_BEGIN)
-  {
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    epgGridContainer->GoToBegin();
-    bReturn = true;
-  }
-
-  return bReturn;
+  GetGridControl()->GoToBegin();
+  return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRGuideBase::OnContextButtonEnd()
 {
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_END)
-  {
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    epgGridContainer->GoToEnd();
-    bReturn = true;
-  }
-
-  return bReturn;
+  GetGridControl()->GoToEnd();
+  return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRGuideBase::OnContextButtonNow()
 {
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_NOW)
-  {
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    epgGridContainer->GoToNow();
-    bReturn = true;
-  }
-
-  return bReturn;
+  GetGridControl()->GoToNow();
+  return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonDate(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRGuideBase::OnContextButtonDate()
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_DATE)
-  {
-    SYSTEMTIME date;
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
+  SYSTEMTIME date;
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
 
-    if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(19288))) /* Go to date */
-    {
-      epgGridContainer->GoToDate(CDateTime(date));
-      bReturn = true;
-    }
+  if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(19288))) /* Go to date */
+  {
+    epgGridContainer->GoToDate(CDateTime(date));
+    bReturn = true;
   }
 
   return bReturn;

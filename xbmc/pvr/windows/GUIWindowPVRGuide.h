@@ -69,10 +69,10 @@ namespace PVR
 
     bool SelectPlayingFile(void);
 
-    bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDate(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonBegin();
+    bool OnContextButtonEnd();
+    bool OnContextButtonNow();
+    bool OnContextButtonDate();
 
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
