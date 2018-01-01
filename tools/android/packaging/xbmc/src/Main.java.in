@@ -32,6 +32,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private View thisView = null;
   private Handler handler = new Handler();
   private Intent mNewIntent = null;
+  private int mNewIntentDelay = 0;
 
   native void _onNewIntent(Intent intent);
 
@@ -110,6 +111,14 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
 
+    // Delayed Intent
+    if (getIntent().getData() != null)
+    {
+      mNewIntent = new Intent(getIntent());
+      mNewIntentDelay = 5000;
+      getIntent().setData(null);
+    }
+
     if (getPackageManager().hasSystemFeature("android.software.leanback"))
     {
       if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
@@ -168,6 +177,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     super.onNewIntent(intent);
     // Delay until after Resume
     mNewIntent = intent;
+    mNewIntentDelay = 500;
   }
 
   @Override
@@ -221,7 +231,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
             mNewIntent = null;
           }
         }
-      }, 500);
+      }, mNewIntentDelay);
     }
   }
 
