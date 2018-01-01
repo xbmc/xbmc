@@ -185,6 +185,10 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
 
   if (!channel->IconPath().empty())
     SetIconImage(channel->IconPath());
+  else if (channel->IsRadio())
+    SetIconImage("DefaultAudio.png");
+  else
+    SetIconImage("DefaultTVShows.png");
 
   SetProperty("channelid", channel->ChannelID());
   SetProperty("path", channel->Path());
@@ -1300,12 +1304,12 @@ void CFileItem::FillInDefaultIcon()
         if (GetPVRChannelInfoTag()->IsRadio())
           SetIconImage("DefaultAudio.png");
         else
-          SetIconImage("DefaultVideo.png");
+          SetIconImage("DefaultTVShows.png");
       }
       else if ( IsLiveTV() )
       {
         // Live TV Channel
-        SetIconImage("DefaultVideo.png");
+        SetIconImage("DefaultTVShows.png");
       }
       else if ( URIUtils::IsArchive(m_strPath) )
       { // archive
