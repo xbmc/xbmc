@@ -461,7 +461,7 @@ int CGUIEPGGridContainerModel::GetNowBlock() const
   return GetBlock(CDateTime::GetUTCDateTime()) - GetPageNowOffset();
 }
 
-int CGUIEPGGridContainerModel::GetFirstEventBlock(const CPVREpgInfoTagPtr event) const
+int CGUIEPGGridContainerModel::GetFirstEventBlock(const CPVREpgInfoTagPtr &event) const
 {
   const CDateTime eventStart = event->StartAsUTC();
   int diff;
@@ -479,7 +479,7 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(const CPVREpgInfoTagPtr event)
   return std::ceil(fBlockIndex);
 }
 
-int CGUIEPGGridContainerModel::GetLastEventBlock(const CPVREpgInfoTagPtr event) const
+int CGUIEPGGridContainerModel::GetLastEventBlock(const CPVREpgInfoTagPtr &event) const
 {
   // Last block of a tag is always the block calculated using event's end time, not rounded up.
   // Refer to CGUIEPGGridContainerModel::Refresh, where the model is created, for details!

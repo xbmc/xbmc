@@ -92,8 +92,8 @@ namespace PVR
 
     CDateTime GetStartTimeForBlock(int block) const;
     int GetBlock(const CDateTime &datetime) const;
-    int GetFirstEventBlock(const CPVREpgInfoTagPtr event) const;
-    int GetLastEventBlock(const CPVREpgInfoTagPtr event) const;
+    int GetFirstEventBlock(const CPVREpgInfoTagPtr &event) const;
+    int GetLastEventBlock(const CPVREpgInfoTagPtr &event) const;
 
   private:
     void FreeItemsMemory();
