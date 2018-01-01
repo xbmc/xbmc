@@ -215,6 +215,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
          { true,  true,  true,  true, false, 443,  "davs", 20254},
          { true,  true,  true,  true, false,  80,   "dav", 20253},
          { true,  true,  true,  true, false,  21,   "ftp", 20173},
+         { true,  true,  true,  true, false, 990,  "ftps", 20174},
          {false, false, false, false,  true,   0,  "upnp", 20175},
          { true,  true,  true,  true, false,  80,   "rss", 20304}};
 
@@ -377,7 +378,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     SendMessage(GUI_MSG_SET_TYPE, passControlID, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
   }
 
-  // server browse should be disabled if we are in FTP, HTTP, HTTPS, RSS, DAV or DAVS
+  // server browse should be disabled if we are in FTP, FTPS, HTTP, HTTPS, RSS, DAV or DAVS
   BaseSettingControlPtr browseControl = GetSettingControl(SETTING_SERVER_BROWSE);
   if (browseControl != NULL && browseControl->GetControl() != NULL)
   {
