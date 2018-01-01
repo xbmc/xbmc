@@ -81,6 +81,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bCanRecordPlayingChannel    = false;
   m_bHasTVChannels              = false;
   m_bHasRadioChannels           = false;
+  m_bHasTimeshiftData           = false;
   m_bIsTimeshifting             = false;
   m_iStartTime                  = time_t(0);
   m_iTimeshiftStartTime         = time_t(0);
@@ -246,8 +247,20 @@ void CPVRGUIInfo::UpdateTimeshift(void)
 {
   if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
   {
+    // If nothing is playing (anymore), there is no need to poll the timeshift values from the clients.
     CSingleLock lock(m_critSection);
-    m_iStartTime = 0;
+    if (m_bHasTimeshiftData)
+    {
+      m_bHasTimeshiftData = false;
+      m_bIsTimeshifting = false;
+      m_iStartTime = 0;
+      m_iTimeshiftStartTime = 0;
+      m_iTimeshiftEndTime = 0;
+      m_iTimeshiftPlayTime = 0;
+      m_strTimeshiftStartTime.clear();
+      m_strTimeshiftEndTime.clear();
+      m_strTimeshiftPlayTime.clear();
+    }
     return;
   }
 
@@ -282,6 +295,8 @@ void CPVRGUIInfo::UpdateTimeshift(void)
 
   tmp.SetFromUTCDateTime(m_iTimeshiftPlayTime);
   m_strTimeshiftPlayTime = tmp.GetAsLocalizedTime("", true);
+
+  m_bHasTimeshiftData = true;
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
