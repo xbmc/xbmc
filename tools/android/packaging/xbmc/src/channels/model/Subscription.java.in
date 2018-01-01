@@ -1,0 +1,105 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package @APP_PACKAGE@.channels.model;
+
+import android.net.Uri;
+
+/**
+ * Contains the data about a channel that will be displayed on the launcher.
+ */
+public class Subscription
+{
+  private long channelId;
+  private String name;
+  private String uri;
+  private int channelLogo;
+
+  /**
+   * Constructor for Gson to use.
+   */
+  public Subscription()
+  {
+  }
+
+  private Subscription(
+          String name, String uri, int channelLogo)
+  {
+    this.name = name;
+    this.uri = uri;
+    this.channelLogo = channelLogo;
+  }
+
+  public static Subscription createSubscription(
+          String name, String uri, int channelLogo)
+  {
+    return new Subscription(name, uri, channelLogo);
+  }
+
+  public long getChannelId()
+  {
+    return channelId;
+  }
+
+  public void setChannelId(long channelId)
+  {
+    this.channelId = channelId;
+  }
+
+  public String getName()
+  {
+    return name;
+  }
+
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+
+  public String getUri()
+  {
+    return uri;
+  }
+
+  public void setUri(String uri)
+  {
+    this.uri = uri;
+  }
+
+  public int getChannelLogo()
+  {
+    return channelLogo;
+  }
+
+  public void setChannelLogo(int channelLogo)
+  {
+    this.channelLogo = channelLogo;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Subscription that = (Subscription) o;
+
+    return name != null ? name.equals(that.name) : that.name == null;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return name != null ? name.hashCode() : 0;
+  }
+}

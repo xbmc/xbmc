@@ -6,34 +6,37 @@ import android.util.Log;
 
 public class XBMCNsdManagerRegistrationListener implements NsdManager.RegistrationListener
 {
-  native void _onRegistrationFailed (NsdServiceInfo serviceInfo, int errorCode);
-  native void _onServiceRegistered (NsdServiceInfo serviceInfo);
-  native void _onServiceUnregistered (NsdServiceInfo serviceInfo);
-  native void _onUnregistrationFailed (NsdServiceInfo serviceInfo, int errorCode);
+  native void _onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode);
+
+  native void _onServiceRegistered(NsdServiceInfo serviceInfo);
+
+  native void _onServiceUnregistered(NsdServiceInfo serviceInfo);
+
+  native void _onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode);
 
   @Override
-  public void onRegistrationFailed (NsdServiceInfo serviceInfo, int errorCode)
+  public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode)
   {
     _onRegistrationFailed(serviceInfo, errorCode);
 
   }
 
   @Override
-  public void onServiceRegistered   (NsdServiceInfo serviceInfo)
+  public void onServiceRegistered(NsdServiceInfo serviceInfo)
   {
-    _onServiceRegistered  (serviceInfo);
+    _onServiceRegistered(serviceInfo);
 
   }
 
   @Override
-  public void onServiceUnregistered   (NsdServiceInfo serviceInfo)
+  public void onServiceUnregistered(NsdServiceInfo serviceInfo)
   {
-    _onServiceUnregistered  (serviceInfo);
+    _onServiceUnregistered(serviceInfo);
 
   }
 
   @Override
-  public void onUnregistrationFailed (NsdServiceInfo serviceInfo, int errorCode)
+  public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode)
   {
     _onUnregistrationFailed(serviceInfo, errorCode);
 

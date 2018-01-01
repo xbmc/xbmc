@@ -475,6 +475,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       std::string path, fileName;
       std::string dir = message.GetStringParam(0);
       URIUtils::Split(dir, path, fileName);
+      URIUtils::RemoveExtension(fileName);
       if (StringUtils::IsInteger(fileName))
         dir = path;
       const std::string &ret = message.GetStringParam(1);

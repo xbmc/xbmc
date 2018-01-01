@@ -1,0 +1,33 @@
+package @APP_PACKAGE@.model;
+
+import @APP_PACKAGE@.model.Media;
+
+/**
+ * Created by cbro on 22/12/2017
+ */
+
+public class TVEpisode extends Media
+{
+  private int season;
+  private int episode;
+
+  public int getSeason()
+  {
+    return season;
+  }
+
+  public void setSeason(int season)
+  {
+    this.season = season;
+  }
+
+  public int getEpisode()
+  {
+    return episode;
+  }
+
+  public void setEpisode(int episode)
+  {
+    this.episode = episode;
+  }
+}

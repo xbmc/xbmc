@@ -1,19 +1,19 @@
-package @APP_PACKAGE@;
+package @APP_PACKAGE@.content;
 
 import android.app.SearchManager;
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class XBMCMediaContentProvider extends ContentProvider
+import @APP_PACKAGE@.XBMCJsonRPC;
+
+public class XBMCMediaContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@mediaprovider";
+  private static String TAG = "@APP_NAME@_Media_Provider";
   
-  public static final String AUTHORITY = "@APP_PACKAGE@";
-  public static final String AUTHORITY_MEDIA = AUTHORITY + ".media";
+  public static final String AUTHORITY = AUTHORITY_ROOT + ".media";
   public static final String SUGGEST_PATH = "suggestions";
 
   // UriMatcher stuff
@@ -26,8 +26,8 @@ public class XBMCMediaContentProvider extends ContentProvider
   private static UriMatcher buildUriMatcher()
   {
     UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-    matcher.addURI(AUTHORITY_MEDIA, SUGGEST_PATH + "/" + SearchManager.SUGGEST_URI_PATH_QUERY, SEARCH_SUGGEST);
-    matcher.addURI(AUTHORITY_MEDIA, SUGGEST_PATH + "/" + SearchManager.SUGGEST_URI_PATH_QUERY + "/*", SEARCH_SUGGEST);
+    matcher.addURI(AUTHORITY, SUGGEST_PATH + "/" + SearchManager.SUGGEST_URI_PATH_QUERY, SEARCH_SUGGEST);
+    matcher.addURI(AUTHORITY, SUGGEST_PATH + "/" + SearchManager.SUGGEST_URI_PATH_QUERY + "/*", SEARCH_SUGGEST);
     return matcher;
   }
 

@@ -459,31 +459,11 @@ void CXBMCApp::run()
   SetupEnv();
   XBMC::Context context;
 
-  CJNIIntent startIntent = getIntent();
-
-  android_printf("%s Started with action: %s\n", CCompileInfo::GetAppName(), startIntent.getAction().c_str());
-
-  CAppParamParser appParamParser;
-  std::string filenameToPlay = GetFilenameFromIntent(startIntent);
-  if (!filenameToPlay.empty())
-  {
-    android_printf("-- filename: %s", filenameToPlay.c_str());
-    int argc = 2;
-    const char** argv = (const char**) malloc(argc*sizeof(char*));
-
-    std::string exe_name(CCompileInfo::GetAppName());
-    argv[0] = exe_name.c_str();
-    argv[1] = filenameToPlay.c_str();
-
-    appParamParser.Parse(argv, argc);
-
-    free(argv);
-  }
-
   m_firstrun=false;
   android_printf(" => running XBMC_Run...");
   try
   {
+    CAppParamParser appParamParser;
     status = XBMC_Run(true, appParamParser);
     android_printf(" => XBMC_Run finished with %d", status);
   }
@@ -1047,21 +1027,26 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   std::string action = intent.getAction();
   CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
-  CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
-  if (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT")
+  if (!targetFile.empty() &&  (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT"))
   {
+    CLog::Log(LOGDEBUG, "-- targetFile: %s", targetFile.c_str());
+
     CURL targeturl(targetFile);
     std::string value;
     if (action == "android.intent.action.GET_CONTENT" || (targeturl.GetOption("showinfo", value) && value == "true"))
     {
-      if (targeturl.IsProtocol("videodb"))
+      if (targeturl.IsProtocol("videodb")
+          || (targeturl.IsProtocol("special") && targetFile.find("playlists/video") != std::string::npos)
+          || (targeturl.IsProtocol("special") && targetFile.find("playlists/mixed") != std::string::npos)
+          )
       {
         std::vector<std::string> params;
         params.push_back(targeturl.Get());
         params.push_back("return");
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
       }
-      else if (targeturl.IsProtocol("musicdb"))
+      else if (targeturl.IsProtocol("musicdb")
+               || (targeturl.IsProtocol("special") && targetFile.find("playlists/music") != std::string::npos))
       {
         std::vector<std::string> params;
         params.push_back(targeturl.Get());

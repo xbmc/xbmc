@@ -6,7 +6,9 @@ import android.util.Log;
 public class XBMCInputDeviceListener implements InputDeviceListener
 {
   native void _onInputDeviceAdded(int deviceId);
+
   native void _onInputDeviceChanged(int deviceId);
+
   native void _onInputDeviceRemoved(int deviceId);
 
   @Override

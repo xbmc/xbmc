@@ -17,10 +17,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 public class XBMCVideoView extends SurfaceView implements
-    SurfaceHolder.Callback
+        SurfaceHolder.Callback
 {
   native void _surfaceChanged(SurfaceHolder holder, int format, int width, int height);
+
   native void _surfaceCreated(SurfaceHolder holder);
+
   native void _surfaceDestroyed(SurfaceHolder holder);
 
   private static final String TAG = "XBMCVideoPlayView";
@@ -30,7 +32,8 @@ public class XBMCVideoView extends SurfaceView implements
 
   public static XBMCVideoView createVideoView()
   {
-    FutureTask<XBMCVideoView> futureResult = new FutureTask<XBMCVideoView>(new Callable<XBMCVideoView>() {
+    FutureTask<XBMCVideoView> futureResult = new FutureTask<XBMCVideoView>(new Callable<XBMCVideoView>()
+    {
       @Override
       public XBMCVideoView call() throws Exception
       {
@@ -91,7 +94,8 @@ public class XBMCVideoView extends SurfaceView implements
     if (!mIsCreated)
     {
       return null;
-    } else
+    }
+    else
     {
       Log.d(TAG, "getSurface() = " + getHolder().getSurface());
       return getHolder().getSurface();
@@ -135,7 +139,7 @@ public class XBMCVideoView extends SurfaceView implements
 
   @Override
   public void surfaceChanged(SurfaceHolder holder, int format, int width,
-      int height)
+                             int height)
   {
     if (holder != getHolder())
       return;
@@ -143,7 +147,7 @@ public class XBMCVideoView extends SurfaceView implements
     _surfaceChanged(holder, format, width, height);
 
     Log.d(TAG, "Changed, format:" + format + ", width:" + width
-        + ", height:" + height);
+            + ", height:" + height);
   }
 
   @Override

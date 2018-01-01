@@ -53,29 +53,45 @@ endif()
 unset(patch)
 
 set(package_files strings.xml
-                  activity_main.xml
                   colors.xml
                   searchable.xml
                   AndroidManifest.xml
                   build.gradle
-                  src/Main.java
                   src/Splash.java
+                  src/Main.java
                   src/XBMCBroadcastReceiver.java
-                  src/XBMCImageContentProvider.java
                   src/XBMCInputDeviceListener.java
                   src/XBMCJsonRPC.java
-                  src/XBMCMediaContentProvider.java
                   src/XBMCMediaSession.java
                   src/XBMCRecommendationBuilder.java
                   src/XBMCSearchableActivity.java
                   src/XBMCSettingsContentObserver.java
                   src/XBMCProperties.java
                   src/XBMCVideoView.java
+                  src/channels/SyncChannelJobService.java
+                  src/channels/SyncProgramsJobService.java
+                  src/channels/model/XBMCDatabase.java
+                  src/channels/model/Subscription.java
+                  src/channels/util/SharedPreferencesHelper.java
+                  src/channels/util/TvUtil.java
                   src/interfaces/XBMCAudioManagerOnAudioFocusChangeListener.java
                   src/interfaces/XBMCSurfaceTextureOnFrameAvailableListener.java
-                  src/interfaces/XBMCNsdManagerDiscoveryListener.java
-                  src/interfaces/XBMCNsdManagerRegistrationListener.java
                   src/interfaces/XBMCNsdManagerResolveListener.java
+                  src/interfaces/XBMCNsdManagerRegistrationListener.java
+                  src/interfaces/XBMCNsdManagerDiscoveryListener.java
+                  src/model/TVEpisode.java
+                  src/model/Movie.java
+                  src/model/TVShow.java
+                  src/model/File.java
+                  src/model/Album.java
+                  src/model/Song.java
+                  src/model/MusicVideo.java
+                  src/model/Media.java
+                  src/content/XBMCFileContentProvider.java
+                  src/content/XBMCMediaContentProvider.java
+                  src/content/XBMCContentProvider.java
+                  src/content/XBMCImageContentProvider.java
+                  src/content/XBMCYTDLContentProvider.java
                   )
 foreach(file IN LISTS package_files)
   configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/${file}.in

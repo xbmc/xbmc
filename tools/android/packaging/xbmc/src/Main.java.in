@@ -1,5 +1,8 @@
 package @APP_PACKAGE@;
 
+import android.content.Context;
+import android.os.Build.VERSION_CODES;
+import android.os.Build;
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -15,9 +18,11 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 
+import @APP_PACKAGE@.channels.util.TvUtil;
+
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
-  private static final String TAG = "@APP_NAME_LC@";
+  private static final String TAG = "@APP_NAME@";
 
   public static Main MainActivity = null;
 
@@ -27,12 +32,16 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private View thisView = null;
   private Handler handler = new Handler();
   private Intent mNewIntent = null;
+  private int mNewIntentDelay = 0;
 
   native void _onNewIntent(Intent intent);
+
   native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
+
   native void _doFrame(long frameTimeNanos);
+
   native void _onVisibleBehindCanceled();
-  
+
   private Runnable leanbackUpdateRunnable = new Runnable()
   {
     @Override
@@ -46,7 +55,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           mJsonRPC.updateLeanback(Main.this);
         }
       }.start();
-      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60*60) * 1000);
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000);
     }
   };
 
@@ -69,7 +78,9 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       ret.right = thisView.getRootView().getWidth();
       ret.bottom = thisView.getRootView().getHeight();
     }
-    catch (Exception e) {}
+    catch (Exception e)
+    {
+    }
 
     return ret;
   }
@@ -98,14 +109,27 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
-    getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
+    getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
+
+    // Delayed Intent
+    if (getIntent().getData() != null)
+    {
+      mNewIntent = new Intent(getIntent());
+      mNewIntentDelay = 5000;
+      getIntent().setData(null);
+    }
 
     if (getPackageManager().hasSystemFeature("android.software.leanback"))
     {
-      // Leanback
-      mJsonRPC = new XBMCJsonRPC();
-      handler.removeCallbacks(leanbackUpdateRunnable);
-      handler.postDelayed(leanbackUpdateRunnable, 30*1000);
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+        TvUtil.scheduleSyncingChannel(this);
+      else
+      {
+        // Leanback
+        mJsonRPC = new XBMCJsonRPC();
+        handler.removeCallbacks(leanbackUpdateRunnable);
+        handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
+      }
     }
 
     // register the InputDeviceListener implementation
@@ -115,35 +139,36 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     thisView = getWindow().getDecorView();
     thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
+    {
+      @Override
+      public void onSystemUiVisibilityChange(int visibility)
+      {
+        if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0)
+        {
+          handler.post(new Runnable()
           {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility)
+            public void run()
             {
-              if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0)
+              if (android.os.Build.VERSION.SDK_INT >= 19)
               {
-                handler.post(new Runnable()
-                {
-                  public void run()
-                  {
-                    if (android.os.Build.VERSION.SDK_INT >= 19) {
-                      // Immersive mode
+                // Immersive mode
 
-                      // Constants from API > 17
-                      final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+                // Constants from API > 17
+                final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
 
-                      thisView.setSystemUiVisibility(
-                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                              | View.SYSTEM_UI_FLAG_FULLSCREEN
-                              | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                    }
-                  }
-                });
+                thisView.setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
               }
             }
           });
+        }
+      }
+    });
   }
 
   @Override
@@ -152,6 +177,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     super.onNewIntent(intent);
     // Delay until after Resume
     mNewIntent = intent;
+    mNewIntentDelay = 500;
   }
 
   @Override
@@ -169,19 +195,20 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onResume();
 
-    if (android.os.Build.VERSION.SDK_INT >= 19) {
+    if (android.os.Build.VERSION.SDK_INT >= 19)
+    {
       // Immersive mode
 
       // Constants from API > 17
       final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
 
       thisView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-              | View.SYSTEM_UI_FLAG_FULLSCREEN
-              | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                      | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                      | View.SYSTEM_UI_FLAG_FULLSCREEN
+                      | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     // New intent ?
@@ -192,15 +219,19 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         @Override
         public void run()
         {
-          try {
+          try
+          {
             _onNewIntent(mNewIntent);
-          } catch (UnsatisfiedLinkError e) {
+          }
+          catch (UnsatisfiedLinkError e)
+          {
             Log.e("Main", "Native not registered");
-          } finally {
+          } finally
+          {
             mNewIntent = null;
           }
         }
-      }, 500);
+      }, mNewIntentDelay);
     }
   }
 
@@ -208,12 +239,16 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onPause()
   {
     super.onPause();
+
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+      TvUtil.scheduleSyncingChannel(this);
   }
-  
+
   @Override
   public void onActivityResult(int requestCode, int resultCode,
-      Intent resultData)
+                               Intent resultData)
   {
+    super.onActivityResult(requestCode, resultCode, resultData);
     _onActivityResult(requestCode, resultCode, resultData);
   }
 
@@ -227,14 +262,14 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
   }
-  
+
   @Override
   public void onVisibleBehindCanceled()
   {
     _onVisibleBehindCanceled();
     super.onVisibleBehindCanceled();
   }
-  
+
   @Override
   public void doFrame(long frameTimeNanos)
   {
