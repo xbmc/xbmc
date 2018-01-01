@@ -623,7 +623,7 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     res.iHeight = m_connector->connector->modes[i].vdisplay;
     res.iScreenWidth = m_connector->connector->modes[i].hdisplay;
     res.iScreenHeight = m_connector->connector->modes[i].vdisplay;
-    if (m_connector->connector->modes[i].clock % 10 != 0)
+    if (m_connector->connector->modes[i].clock % 5 != 0)
       res.fRefreshRate = (float)m_connector->connector->modes[i].vrefresh * (1000.0f/1001.0f);
     else
       res.fRefreshRate = m_connector->connector->modes[i].vrefresh;
