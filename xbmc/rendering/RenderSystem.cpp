@@ -22,8 +22,8 @@
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIFontManager.h"
-#include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
+#include "Util.h"
 
 CRenderSystemBase::CRenderSystemBase()
   : m_stereoView(RENDER_STEREO_VIEW_OFF)
@@ -90,12 +90,8 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
 
   if (!m_splashImage)
   {
-    std::string splashImage = "special://home/media/Splash.png";
-    if (!XFILE::CFile::Exists(splashImage))
-      splashImage = "special://xbmc/media/Splash.png";
-
     m_splashImage = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(),
-                                                       g_graphicsContext.GetHeight(), CTextureInfo(splashImage)));
+                                                       g_graphicsContext.GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
     m_splashImage->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 

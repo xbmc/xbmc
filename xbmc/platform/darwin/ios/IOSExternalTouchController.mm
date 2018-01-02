@@ -21,6 +21,7 @@
 #include "input/MouseStat.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "Util.h"
 
 #import "IOSExternalTouchController.h"
 #import "XBMCController.h"
@@ -84,7 +85,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel release];
 
     //load the splash image
-    std::string strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
+    std::string strUserSplash = CUtil::GetSplashPath();
     xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
 
     //make a view with the image
