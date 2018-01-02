@@ -105,25 +105,3 @@ index e52fb5a..1493a50 100644
  
  /*----------------------------------------------------------------------
  |   PLT_MediaContainerListener
-diff --git a/xbmc/network/upnp/UPnP.cpp b/xbmc/network/upnp/UPnP.cpp
-index fc19147..efbb216 100644
---- a/xbmc/network/upnp/UPnP.cpp
-+++ b/xbmc/network/upnp/UPnP.cpp
-@@ -249,8 +249,13 @@ public:
-             if (time < 0) time = 0;
-             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
-                                                  (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
-+            curr_value += "<xbmc:lastPlayerState>";
-+            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->m_resumePoint.playerState.c_str());
-+            curr_value += "</xbmc:lastPlayerState>";
-             new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
--            new_value.Append(NPT_String::Format("<xbmc:lastPlayerState>%s</xbmc:lastPlayerState>", bookmark.playerState.c_str()));
-+            new_value += "<xbmc:lastPlayerState>";
-+            PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
-+            new_value += "</xbmc:lastPlayerState>";
-         }
-         if (updatePlayCount) {
-             CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
--- 
-2.10.2.windows.1
-
