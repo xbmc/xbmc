@@ -62,7 +62,7 @@ public class XBMCJsonRPC
   public final static String REQ_ID_MOVIES_ACTOR = "5";
   public final static String REQ_ID_SHOWS_ACTOR = "6";
 
-  private final static int MAX_ITEMS = 10;
+  private final static int MAX_ITEMS = 20;
 
   private static String TAG = "@APP_NAME@json";
 
@@ -1223,18 +1223,46 @@ public class XBMCJsonRPC
     try
     {
       int nbItems = 0;
-      for (int i = 0; i < files.size() && nbItems < MAX_ITEMS; ++i)
+      String strReq = "[";
+      for (int i = 0; i < files.size()  && nbItems < MAX_ITEMS; ++i)
       {
         File file = files.get(i);
         String mediaType = file.getMediatype();
         long mediaId = file.getId();
         if (mediaType.equals("movie"))
-        {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_MOVIE_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
+          strReq += String.format(RETRIEVE_MOVIE_DETAILS, mediaId, String.valueOf(++nbItems));
+        else if (mediaType.equals("episode"))
+          strReq += String.format(RETRIEVE_EPISODE_DETAILS, mediaId, String.valueOf(++nbItems));
+        else if (mediaType.equals("tvshow"))
+          strReq += String.format(RETRIEVE_TVSHOW_DETAILS, mediaId, String.valueOf(++nbItems));
+        else if (mediaType.equals("album"))
+          strReq += String.format(RETRIEVE_ALBUM_DETAILS, mediaId, String.valueOf(++nbItems));
+        else if (mediaType.equals("song"))
+          strReq += String.format(RETRIEVE_SONG_DETAILS, mediaId, String.valueOf(++nbItems));
+        else if (mediaType.equals("musicvideo"))
+          strReq += String.format(RETRIEVE_MUSICVIDEO_DETAILS, mediaId, String.valueOf(++nbItems));
 
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("moviedetails");
+        if (i+1 < files.size()  && nbItems < MAX_ITEMS)
+          strReq += ",";
+      }
+      strReq += "]";
+
+      JsonArray reqBatch = request_array(strReq);
+      if (reqBatch == null)
+        return medias;
+
+      nbItems = 0;
+      for (int i = 0; i < reqBatch.size(); ++i)
+      {
+        JsonObject req = reqBatch.get(i).getAsJsonObject();
+        if (req == null || !req.has("result"))
+          continue;
+
+        File file = files.get(i);
+        String mediaType = file.getMediatype();
+        if (mediaType.equals("movie"))
+        {
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("moviedetails");
           Movie med = createMovieFromJson(details);
           if (med != null)
           {
@@ -1244,11 +1272,7 @@ public class XBMCJsonRPC
         }
         else if (mediaType.equals("episode"))
         {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_EPISODE_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
-
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("episodedetails");
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
           TVEpisode med = createTVEpisodeFromJson(details);
           if (med != null)
           {
@@ -1258,44 +1282,28 @@ public class XBMCJsonRPC
         }
         else if (mediaType.equals("tvshow"))
         {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_TVSHOW_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
-
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
           TVShow med = createTVShowFromJson(details);
           medias.add(med);
           nbItems++;
         }
         else if (mediaType.equals("album"))
         {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_ALBUM_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
-
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("albumdetails");
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("albumdetails");
           Album med = createAlbumFromJson(details);
           medias.add(med);
           nbItems++;
         }
         else if (mediaType.equals("song"))
         {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_SONG_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
-
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("songdetails");
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("songdetails");
           Song med = createSongFromJson(details);
           medias.add(med);
           nbItems++;
         }
         else if (mediaType.equals("musicvideo"))
         {
-          JsonObject reqMovie = request_object(String.format(RETRIEVE_MUSICVIDEO_DETAILS, mediaId, "1"));
-          if (reqMovie == null || !reqMovie.has("result"))
-            continue;
-
-          JsonObject details = reqMovie.getAsJsonObject("result").getAsJsonObject("musicvideodetails");
+          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("musicvideodetails");
           MusicVideo med = createMusicvideoFromJson(details);
           medias.add(med);
           nbItems++;
