@@ -105,17 +105,17 @@
 		<control type="group">
 			<visible>!ListItem.IsFolder</visible>
 			<control type="image">
-				<left>0</left>
-				<top>120</top>
+				<top>135</top>
+				<left>630</left>
 				<width>200</width>
 				<height>200</height>
-				<aspectratio align="right">keep</aspectratio>
-				<texture fallback="DefaultTVShows.png">$INFO[Listitem.Icon]</texture>
+				<aspectratio align="center" aligny="top">keep</aspectratio>
+				<texture>$INFO[Listitem.Icon]</texture>
 				<fadetime>200</fadetime>
 			</control>
 			<control type="group">
 				<top>120</top>
-				<left>240</left>
+				<left>0</left>
 				<width>590</width>
 				<control type="label">
 					<height>262</height>
