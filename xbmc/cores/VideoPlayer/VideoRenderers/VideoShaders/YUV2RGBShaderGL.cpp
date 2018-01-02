@@ -238,8 +238,8 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
   //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_1D, m_kernelTex);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
   glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
