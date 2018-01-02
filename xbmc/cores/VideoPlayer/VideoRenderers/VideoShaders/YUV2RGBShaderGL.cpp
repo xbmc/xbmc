@@ -59,7 +59,7 @@ static void CalculateYUVMatrixGL(GLfloat      res[4][4]
 //////////////////////////////////////////////////////////////////////
 
 BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
-                                             GLSLOutput *output)
+                                             std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
   m_height = 1;
@@ -118,7 +118,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 {
   Free();
-  delete m_glslOutput;
+  m_glslOutput.reset();
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
@@ -184,7 +184,7 @@ void BaseYUV2RGBGLSLShader::Free()
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
-                                                   GLSLOutput *output)
+                                                   std::shared_ptr<GLSLOutput> output)
   : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
@@ -199,7 +199,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
                                            EShaderFormat format,
                                            bool stretch,
                                            ESCALINGMETHOD method,
-                                           GLSLOutput *output)
+                                           std::shared_ptr<GLSLOutput> output)
 : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
   m_scaling = method;
