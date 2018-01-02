@@ -280,11 +280,20 @@ StorageFile^ CWinLibraryFile::GetFile(const CURL & url)
     std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
     std::wstring wpath = ToW(filePath);
 
+    if (url.GetHostName() == "removable")
+    {
+      // here path has the form e\path where first segment is drive letter
+      // we should make path form like regular e:\path
+      auto index = wpath.find('\\');
+      if (index > 0 && wpath[index - 1] != ':')
+        wpath = wpath.insert(index, 1, ':');
+    }
+
     try
     {
       Platform::String^ pFilePath = ref new Platform::String(wpath.c_str());
       auto item = Wait(rootFolder->TryGetItemAsync(pFilePath));
-      return (item != nullptr && item->IsOfType(StorageItemTypes::File)) ? (StorageFile^)item : nullptr;
+      return (item != nullptr && item->IsOfType(StorageItemTypes::File)) ? dynamic_cast<StorageFile^>(item) : nullptr;
     }
     catch (Platform::Exception^ ex)
     {
