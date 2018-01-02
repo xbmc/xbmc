@@ -205,6 +205,13 @@ public:
    */
   static int GetRandomNumber();
 
+  static int ConvertSecsToOffset(double secs) { return static_cast<int>(secs * 75); }
+  static double ConvertOffsetToSecs(int offset) { return offset / 75.0; }
+  static int ConvertOffsetToSecsInt(int offset) { return offset / 75; }
+  static int ConvertOffsetToSecsIntRounded(int offset) { return ConvertOffsetToSecsInt(offset + 37); }
+  static int ConvertMilliSecsToOffset(int64_t msecs) { return static_cast<int>(msecs * 75 / 1000); }
+  static int64_t ConvertOffsetToMilliSecs(int offset) { return static_cast<int64_t>(offset) * 1000 / 75; }
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;

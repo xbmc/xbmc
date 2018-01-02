@@ -2234,7 +2234,7 @@ bool CApplication::OnAction(const CAction &action)
       std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
       if (!player.empty())
       {
-        item.m_lStartOffset = (int)(GetTime() * 75);
+        item.m_lStartOffset = CUtil::ConvertSecsToOffset(GetTime());
         PlayFile(std::move(item), player, true);
       }
     }
@@ -3078,7 +3078,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
 
-  options.starttime = item.m_lStartOffset / 75.0;
+  options.starttime = CUtil::ConvertOffsetToSecs(item.m_lStartOffset);
 
   if (bRestart)
   {
@@ -4341,7 +4341,7 @@ void CApplication::Restart(bool bSamePosition)
   std::string state = m_appPlayer.GetPlayerState();
 
   // set the requested starttime
-  m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
+  m_itemCurrentFile->m_lStartOffset = CUtil::ConvertSecsToOffset(time);
 
   // reopen the file
   if (PlayFile(*m_itemCurrentFile, "", true))
@@ -4560,7 +4560,7 @@ void CApplication::SeekTime( double dTime )
       { // seeking to a new file
         m_stackHelper.SetStackPartCurrentFileItem(partNumberToPlay);
         CFileItem *item = new CFileItem(m_stackHelper.GetCurrentStackPartFileItem());
-        item->m_lStartOffset = (static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile) * 75 / 1000;
+        item->m_lStartOffset = CUtil::ConvertMilliSecsToOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

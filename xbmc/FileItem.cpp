@@ -1843,7 +1843,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
       if (!song.iDuration && tag.GetDuration() > 0)
       { // must be the last song
-        song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+        song.iDuration = CUtil::ConvertOffsetToSecsIntRounded(CUtil::ConvertSecsToOffset(tag.GetDuration()) - song.iStartOffset);
       }
       if ( tag.Loaded() && oneFilePerTrack && ! ( tag.GetAlbum().empty() || tag.GetArtist().empty() || tag.GetTitle().empty() ) )
       {

@@ -43,6 +43,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "SeekHandler.h"
 #include "utils/Variant.h"
+#include "Util.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -680,7 +681,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           else if (optionResume.isDouble())
             list[0]->SetProperty("StartPercent", optionResume);
           else if (optionResume.isObject())
-            list[0]->m_lStartOffset = (int)(ParseTimeInSeconds(optionResume) * 75.0);
+            list[0]->m_lStartOffset = CUtil::ConvertSecsToOffset(ParseTimeInSeconds(optionResume));
         }
 
         auto l = new CFileItemList(); //don't delete

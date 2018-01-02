@@ -25,6 +25,7 @@
 #include "TextureDatabase.h"
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -117,7 +118,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}",i+1,
                    item->GetMusicInfoTag()->GetAlbum().c_str(),
                    item->GetMusicInfoTag()->GetTitle()).c_str());
-    item->m_lStartOffset = m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base)*75;
+    item->m_lStartOffset = CUtil::ConvertSecsToOffset(m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base));
     item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base);
     int compare = m_fctx->duration / (AV_TIME_BASE);
     if (item->m_lEndOffset < 0 || item->m_lEndOffset > compare)
@@ -127,8 +128,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       else
         item->m_lEndOffset = compare;
     }
-    item->m_lEndOffset *= 75;
-    item->GetMusicInfoTag()->SetDuration((item->m_lEndOffset-item->m_lStartOffset)/75);
+    item->m_lEndOffset = CUtil::ConvertSecsToOffset(item->m_lEndOffset);
+    item->GetMusicInfoTag()->SetDuration(CUtil::ConvertOffsetToSecsInt(item->m_lEndOffset - item->m_lStartOffset));
     item->SetProperty("item_start", item->m_lStartOffset);
     if (!thumb.empty())
       item->SetArt("thumb", thumb);

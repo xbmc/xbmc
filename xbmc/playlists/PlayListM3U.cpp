@@ -184,7 +184,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           newItem->GetMusicInfoTag()->SetLoaded();
           newItem->GetMusicInfoTag()->SetTitle(strInfo);
           if (iEndOffset)
-            lDuration = (iEndOffset - iStartOffset + 37) / 75;
+            lDuration = CUtil::ConvertOffsetToSecsIntRounded(iEndOffset - iStartOffset);
         }
         if (newItem->IsVideo() && !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
           newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation

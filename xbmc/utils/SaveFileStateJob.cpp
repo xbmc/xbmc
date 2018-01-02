@@ -196,7 +196,7 @@ void CSaveFileState::DoWork(CFileItem& item,
       if (item.IsAudioBook())
       {
         musicdatabase.Open();
-        musicdatabase.SetResumeBookmarkForAudioBook(item, item.m_lStartOffset+bookmark.timeInSeconds*75);
+        musicdatabase.SetResumeBookmarkForAudioBook(item, item.m_lStartOffset + CUtil::ConvertSecsToOffset(bookmark.timeInSeconds));
         musicdatabase.Close();
       }
     }

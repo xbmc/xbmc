@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -117,7 +118,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
           path = item.GetProperty("original_listitem_url").asString();
         if (dbs.GetResumeBookMark(path, bookmark))
         {
-          startoffset = (int)(bookmark.timeInSeconds * 75);
+          startoffset = CUtil::ConvertSecsToOffset(bookmark.timeInSeconds);
           selectedFile = bookmark.partNumber;
         }
         dbs.Close();
@@ -167,7 +168,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
       if (haveTimes)
       {
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = static_cast<int>( times[i] * 75 / 1000);
+        GetStackPartFileItem(i).m_lEndOffset = CUtil::ConvertMilliSecsToOffset(times[i]);
       }
       else
       {
@@ -179,7 +180,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         }
         totalTimeMs += duration;
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = static_cast<int>(totalTimeMs * 75 / 1000 );
+        GetStackPartFileItem(i).m_lEndOffset = CUtil::ConvertMilliSecsToOffset(totalTimeMs);
         times.push_back(totalTimeMs);
       }
       // set start time in every part
@@ -190,7 +191,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     for (int i = 0; i < m_currentStack->Size(); i++)
       SetRegisteredStackTotalTimeMs(GetStackPartFileItem(i), totalTimeMs);
 
-    uint64_t msecs = item.m_lStartOffset * 1000 / 75;
+    uint64_t msecs = CUtil::ConvertOffsetToMilliSecs(item.m_lStartOffset);
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
     {
@@ -217,7 +218,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     }
 
     m_currentStackPosition = GetStackPartNumberAtTimeMs(msecs);
-    startoffset = static_cast<int>( (msecs - GetStackPartStartTimeMs(m_currentStackPosition)) * 75 / 1000);
+    startoffset = CUtil::ConvertMilliSecsToOffset(msecs - GetStackPartStartTimeMs(m_currentStackPosition));
   }
   return startoffset;
 }

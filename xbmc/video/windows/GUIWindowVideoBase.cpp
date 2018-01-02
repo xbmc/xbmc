@@ -583,7 +583,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
       }
       if (db.GetResumeBookMark(strPath, bookmark))
       {
-        startoffset = (int)(bookmark.timeInSeconds*75);
+        startoffset = CUtil::ConvertSecsToOffset(bookmark.timeInSeconds);
         partNumber = bookmark.partNumber;
       }
       db.Close();
@@ -748,7 +748,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   if (startOffset > 0)
   {
     resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
-        StringUtils::SecondsToTimeString(startOffset/75, TIME_FORMAT_HH_MM_SS).c_str());
+        StringUtils::SecondsToTimeString(CUtil::ConvertOffsetToSecsInt(startOffset), TIME_FORMAT_HH_MM_SS).c_str());
     if (startPart > 0)
     {
       std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
@@ -937,7 +937,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
       {
         std::vector<uint64_t> times;
         if (m_database.GetStackTimes(path,times))
-          stack->m_lStartOffset = static_cast<int>( times[selectedFile - 1] * 75 / 1000);
+          stack->m_lStartOffset = CUtil::ConvertMilliSecsToOffset(times[selectedFile - 1]);
       }
       else
         stack->m_lStartOffset = 0;
