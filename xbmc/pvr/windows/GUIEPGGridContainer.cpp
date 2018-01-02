@@ -1302,6 +1302,11 @@ CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel() const
   return CPVRChannelPtr();
 }
 
+CDateTime CGUIEPGGridContainer::GetSelectedDate() const
+{
+  return m_gridModel->GetStartTimeForBlock(m_blockOffset + m_blockCursor);
+}
+
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
   if (!m_gridModel->HasGridItems() ||
@@ -1649,6 +1654,13 @@ void CGUIEPGGridContainer::GoToNow()
 {
   ScrollToBlockOffset(m_gridModel->GetNowBlock());
   SetBlock(m_gridModel->GetPageNowOffset());
+}
+
+void CGUIEPGGridContainer::GoToDate(const CDateTime &date)
+{
+  unsigned int offset = m_gridModel->GetPageNowOffset();
+  ScrollToBlockOffset(m_gridModel->GetBlock(date) - offset);
+  SetBlock(offset);
 }
 
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)

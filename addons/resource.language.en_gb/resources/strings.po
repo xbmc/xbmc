@@ -9924,7 +9924,7 @@ msgctxt "#19101"
 msgid "Provider"
 msgstr ""
 
-#. message box text prompting user to switch to nother channel
+#. message box text prompting user to switch to another channel
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -11017,7 +11017,11 @@ msgctxt "#19287"
 msgid "All channels"
 msgstr ""
 
-#empty string with id 19288
+#. Label for epg grid window "go to date" context menu entry
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19288"
+msgid "Go to date"
+msgstr ""
 
 #. Label for button to hide a group in the group manager
 #: addons/skin.estuary/xml/DialogPVRGroupManager.xml

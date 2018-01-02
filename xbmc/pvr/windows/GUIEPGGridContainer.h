@@ -71,6 +71,7 @@ namespace PVR
 
     CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetSelectedChannel() const;
+    CDateTime GetSelectedDate() const;
 
     void LoadLayout(TiXmlElement *layout);
     void SetPageControl(int id);
@@ -85,6 +86,8 @@ namespace PVR
     void GoToBegin();
     void GoToEnd();
     void GoToNow();
+    void GoToDate(const CDateTime &date);
+
     void SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd);
     /*!
      * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
