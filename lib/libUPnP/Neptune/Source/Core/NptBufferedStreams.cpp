@@ -265,7 +265,8 @@ NPT_BufferedInputStream::ReadLine(NPT_String& line,
 
     // read the line
     NPT_Size chars_read = 0;
-    NPT_CHECK_NOLOGTIMEOUT(ReadLine(line.UseChars(), max_chars, &chars_read, break_on_cr));
+    NPT_Result result = ReadLine(line.UseChars(), max_chars, &chars_read, break_on_cr);
+	NPT_CHECK_NOLOGTIMEOUT(result);
 
     // adjust the length of the string object
     line.SetLength(chars_read);
@@ -309,7 +310,9 @@ NPT_BufferedInputStream::Read(void*     buffer,
             NPT_CopyMemory(buffer, 
                            m_Buffer.data + m_Buffer.offset,
                            buffered);
+            buffer = (void*)((NPT_Byte*)buffer+buffered);
             m_Buffer.offset += buffered;
+            bytes_to_read -= buffered;
             total_read += buffered;
             goto done;
         }
@@ -414,7 +417,8 @@ NPT_BufferedInputStream::Seek(NPT_Position offset)
 
     if (offset >= m_Position && 
         offset - m_Position < m_Buffer.valid - m_Buffer.offset) {
-        m_Buffer.offset += offset - m_Position;
+        NPT_Position diff = offset - m_Position;
+        m_Buffer.offset += ((NPT_Size)diff);
         m_Position = offset;
         return NPT_SUCCESS;
     }

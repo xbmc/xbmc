@@ -11,10 +11,12 @@
 |   includes
 +---------------------------------------------------------------------*/
 #define STRICT
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include "NptNetwork.h"
 #include "NptWin32Network.h"
+#include "NptUtils.h"
 
 /*----------------------------------------------------------------------
 |   static initializer
@@ -38,6 +40,78 @@ NPT_WinsockSystem NPT_WinsockSystem::Initializer;
 #else
 #define NPT_NETWORK_USE_SIO_GET_INTERFACE_LIST
 #endif
+
+/*----------------------------------------------------------------------
+|   NPT_IpAddress::Any and NPT_IpAddress::Loopback
++---------------------------------------------------------------------*/
+const NPT_IpAddress NPT_IpAddress::Any;
+const NPT_IpAddress NPT_IpAddress::Loopback(127,0,0,1);
+
+/*----------------------------------------------------------------------
+|   NPT_IpAddress::ToString
++---------------------------------------------------------------------*/
+NPT_String
+NPT_IpAddress::ToString() const
+{
+    NPT_String address;
+    address.Reserve(16);
+    address += NPT_String::FromInteger(m_Address[0]);
+    address += '.';
+    address += NPT_String::FromInteger(m_Address[1]);
+    address += '.';
+    address += NPT_String::FromInteger(m_Address[2]);
+    address += '.';
+    address += NPT_String::FromInteger(m_Address[3]);
+
+    return address;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_IpAddress::Parse
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_IpAddress::Parse(const char* name)
+{
+    // check the name
+    if (name == NULL) return NPT_ERROR_INVALID_PARAMETERS;
+
+    // clear the address
+    NPT_SetMemory(&m_Address[0], 0, sizeof(m_Address));
+
+    // parse
+    unsigned int  fragment;
+    bool          fragment_empty = true;
+    unsigned char address[4];
+    unsigned int  accumulator;
+    for (fragment = 0, accumulator = 0; fragment < 4; ++name) {
+        if (*name == '\0' || *name == '.') {
+            // fragment terminator
+            if (fragment_empty) return NPT_ERROR_INVALID_SYNTAX;
+            address[fragment++] = accumulator;
+            if (*name == '\0') break;
+            accumulator = 0;
+            fragment_empty = true;
+        } else if (*name >= '0' && *name <= '9') {
+            // numerical character
+            accumulator = accumulator*10 + (*name - '0');
+            if (accumulator > 255) return NPT_ERROR_INVALID_SYNTAX;
+            fragment_empty = false; 
+        } else {
+            // invalid character
+            return NPT_ERROR_INVALID_SYNTAX;
+        }
+    }
+
+    if (fragment == 4 && *name == '\0' && !fragment_empty) {
+        m_Address[0] = address[0];
+        m_Address[1] = address[1];
+        m_Address[2] = address[2];
+        m_Address[3] = address[3];
+        return NPT_SUCCESS;
+    } else {
+        return NPT_ERROR_INVALID_SYNTAX;
+    }
+}
 
 #if defined(NPT_NETWORK_USE_SIO_GET_INTERFACE_LIST)
 /*----------------------------------------------------------------------

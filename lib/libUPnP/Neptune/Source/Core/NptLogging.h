@@ -64,7 +64,7 @@ public:
     const char*   m_SourceFile;
     unsigned int  m_SourceLine;
     const char*   m_SourceFunction;
-    unsigned long m_ThreadId;
+    NPT_UInt64    m_ThreadId;
 };
 
 class NPT_LogHandler {
@@ -93,7 +93,11 @@ public:
              unsigned int source_line,
              const char*  source_function,
              const char*  msg, 
-                          ...);
+                          ...)
+#ifdef __GNUC__
+        __attribute__ ((format (printf, 6, 7)))
+#endif
+        ;
 
     NPT_Result AddHandler(NPT_LogHandler* handler, bool transfer_ownership = true);
     NPT_Result DeleteHandlers();
@@ -176,6 +180,7 @@ private:
     // members
     NPT_Mutex                    m_Lock;
     NPT_Thread::ThreadId         m_LockOwner;
+    unsigned int                 m_LockRecursion;
     bool                         m_Enabled;
     bool                         m_Configured;
     NPT_List<NPT_LogConfigEntry> m_Config;
@@ -229,9 +234,8 @@ NPT_Result NPT_GetSystemLogConfig(NPT_String& config);
     }
 
 #if defined(NPT_CONFIG_ENABLE_LOGGING)
-//TODO: volatile makes tons of errors for me
-//#define NPT_DEFINE_LOGGER(_logger, _name) static volatile NPT_LoggerReference _logger = { NULL, (_name) };
-#define NPT_DEFINE_LOGGER(_logger, _name) static NPT_LoggerReference _logger = { NULL, (_name) };
+
+#define NPT_DEFINE_LOGGER(_logger, _name) static volatile NPT_LoggerReference _logger = { NULL, (_name) };
 
 #define NPT_LOG_X(_logger, _level, _argsx)                              \
 do {                                                                    \

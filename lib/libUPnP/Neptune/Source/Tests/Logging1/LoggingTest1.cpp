@@ -119,7 +119,7 @@ TestLargeBuffer(void)
         buffer[i] = 'a';
     }
     buffer[32767] = 0;
-    NPT_LOG_SEVERE(buffer);
+    NPT_LOG_SEVERE_1("%s", buffer);
     delete[] buffer;
 }
 

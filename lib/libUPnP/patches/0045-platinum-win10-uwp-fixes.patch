@@ -32,7 +32,7 @@ index d51f67f94e..130d5cc33b 100644
  #define NPT_CONFIG_HAVE_READDIR_R
  #endif /* NPT_CONFIG_HAS_STD_C */
  
-@@ -225,12 +230,20 @@ typedef long NPT_PointerLong;
+@@ -240,12 +245,20 @@ typedef long NPT_PointerLong;
  #define NPT_strncpy(d,s,c)       strncpy_s(d,c+1,s,c)
  #define NPT_strcpy(d,s)          strcpy_s(d,strlen(s)+1,s)
  #undef NPT_CONFIG_HAVE_GETENV
@@ -70,7 +70,7 @@ index a68a1afeaf..d98710dc12 100644
  /*----------------------------------------------------------------------
  |   constants
  +---------------------------------------------------------------------*/
-@@ -922,3 +928,27 @@ NPT_ParseMimeParameters(const char*                      encoded,
+@@ -925,3 +931,27 @@ NPT_ParseMimeParameters(const char*                      encoded,
      return NPT_SUCCESS;
  }
  
@@ -130,17 +130,17 @@ index ee86dbf4b0..a42dfbfb85 100644
  #endif
  
 +#ifndef TARGET_WINDOWS_STORE
+ #if !defined(EWOULDBLOCK)
  #define EWOULDBLOCK  WSAEWOULDBLOCK
- #define EINPROGRESS  WSAEINPROGRESS
- #define ECONNREFUSED WSAECONNREFUSED
-@@ -142,6 +143,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
- #define ENETDOWN     WSAENETDOWN
- #define ENETUNREACH  WSAENETUNREACH
+ #endif
+@@ -167,6 +168,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
+ #if !defined(ENOTCONN)
  #define ENOTCONN     WSAENOTCONN
+ #endif
 +#endif
  #if !defined(EAGAIN)
  #define EAGAIN       WSAEWOULDBLOCK 
- #define EINTR        WSAEINTR
+ #endif
 diff --git a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp b/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
 index c9f9939d2b..f700b2212b 100644
 --- a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
@@ -208,6 +208,35 @@ index a5f846b016..1d84800586 100644
 +
  #endif // _NPT_WIN32_MESSAGE_QUEUE_
  
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Queue.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Queue.cpp
+@@ -24,7 +24,7 @@
+ #include "NptDebug.h"
+ #include "NptLogging.h"
+ 
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+ // for XBox, Windows 7 Desktop or earlier
+ #include "NptWin32Threads.h"
+ #elif WINAPI_FAMILY == WINAPI_FAMILY_APP
+@@ -55,7 +55,7 @@ private:
+     // members
+     NPT_Cardinal             m_MaxItems;
+ 
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+     // for XBox, Windows 7 Desktop or earlier
+     NPT_Win32CriticalSection m_Mutex;
+     NPT_Win32Event*          m_CanPushCondition;
+@@ -76,7 +76,7 @@ private:
+ NPT_Win32Queue::NPT_Win32Queue(NPT_Cardinal max_items) : 
+     m_MaxItems(max_items)
+ {
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+     // for XBox, Windows 7 Desktop or earlier
+     m_CanPushCondition = new NPT_Win32Event(true, true);
+     m_CanPopCondition  = new NPT_Win32Event(true, false);
 diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
 index 9428648bd7..4dfc23a603 100644
 --- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp

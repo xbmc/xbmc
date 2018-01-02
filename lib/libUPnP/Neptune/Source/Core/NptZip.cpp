@@ -38,7 +38,9 @@
 #include "NptLogging.h"
 #include "NptUtils.h"
 
+#if defined(NPT_CONFIG_ENABLE_ZIP)
 #include "zlib.h"
+#endif
 
 /*----------------------------------------------------------------------
 |   logging
@@ -52,7 +54,7 @@ static const NPT_UInt32 NPT_ZIP_END_OF_CENTRAL_DIRECTORY_SIGNATURE           = 0
 static const NPT_UInt32 NPT_ZIP64_END_OF_CENTRAL_DIRECTORY_SIGNATURE         = 0x06064b50;
 static const NPT_UInt32 NPT_ZIP64_END_OF_CENTRAL_DIRECTORY_LOCATOR_SIGNATURE = 0x07064b50;
 static const NPT_UInt32 NPT_ZIP_CENTRAL_FILE_HEADER_SIGNATURE                = 0x02014b50;
-static const NPT_UInt32 NPT_ZIP_LOCAL_FILE_HEADER_SIGNATURE                  = 0x04034b50;
+//static const NPT_UInt32 NPT_ZIP_LOCAL_FILE_HEADER_SIGNATURE                  = 0x04034b50;
 static const NPT_UInt16 NPT_ZIP_EXT_DATA_TYPE_ZIP64                          = 0x0001;
 
 static const NPT_UInt32 NPT_ZIP_MAX_DIRECTORY_SIZE = 0x1000000; // 16 MB
@@ -236,16 +238,22 @@ NPT_ZipFile::Parse(NPT_InputStream& stream, NPT_ZipFile*& file)
     
     // parse all entries
     const unsigned char* buffer = (const unsigned char*)central_directory_buffer.GetData();
+    NPT_Size buffer_size = central_directory_buffer.GetDataSize();
     for (unsigned int i=0; i<total_entry_count; i++) {
+        if (buffer_size < 4) break;
         NPT_UInt32 signature = NPT_BytesToInt32Le(buffer);
         if (signature != NPT_ZIP_CENTRAL_FILE_HEADER_SIGNATURE) {
             NPT_LOG_WARNING("unexpected signature in central directory");
             break;
         }
         
-        NPT_ZipFile::Entry entry(buffer);
-        
-        if (entry.m_DirectoryEntrySize > central_directory_size) {
+        NPT_ZipFile::Entry entry(buffer, buffer_size);
+        if (entry.m_DirectoryEntrySize == 0) {
+            NPT_LOG_WARNING("invalid entry data");
+            break;
+        }
+        if (entry.m_DirectoryEntrySize > central_directory_size ||
+            entry.m_DirectoryEntrySize > buffer_size) {
             NPT_LOG_WARNING_1("entry size too large (%d)", entry.m_DirectoryEntrySize);
             break;
         }
@@ -254,6 +262,7 @@ NPT_ZipFile::Parse(NPT_InputStream& stream, NPT_ZipFile*& file)
         
         central_directory_size -= entry.m_DirectoryEntrySize;
         buffer                 += entry.m_DirectoryEntrySize;
+        buffer_size            -= entry.m_DirectoryEntrySize;
     }
     
     return NPT_SUCCESS;
@@ -326,8 +335,20 @@ NPT_ZipFile::GetInputStream(Entry& entry, NPT_InputStreamReference& zip_stream, 
 /*----------------------------------------------------------------------
 |   NPT_ZipFile::Entry::Entry
 +---------------------------------------------------------------------*/
-NPT_ZipFile::Entry::Entry(const unsigned char* data)
+NPT_ZipFile::Entry::Entry(const unsigned char* data, NPT_Size data_available) :
+    m_Flags(0),
+    m_CompressionMethod(0),
+    m_Crc32(0),
+    m_CompressedSize(0),
+    m_UncompressedSize(0),
+    m_DiskNumber(0),
+    m_InternalFileAttributes(0),
+    m_ExternalFileAttributes(0),
+    m_RelativeOffset(0),
+    m_DirectoryEntrySize(0)
 {
+    if (data_available < 46) return;
+    
     m_Flags                        = NPT_BytesToInt16Le(data+ 8);
     m_CompressionMethod            = NPT_BytesToInt16Le(data+10);
     m_Crc32                        = NPT_BytesToInt32Le(data+16);
@@ -342,10 +363,14 @@ NPT_ZipFile::Entry::Entry(const unsigned char* data)
     NPT_UInt16 extra_field_length  = NPT_BytesToInt16Le(data+30);
     NPT_UInt16 file_comment_length = NPT_BytesToInt16Le(data+32);
     
+    m_DirectoryEntrySize = 46+file_name_length+extra_field_length+file_comment_length;
+    if (m_DirectoryEntrySize > data_available) {
+        m_DirectoryEntrySize = 0;
+        return;
+    }
+    
     // extract the file name
     m_Name.Assign((const char*)data+46, file_name_length);
-
-    m_DirectoryEntrySize = 46+file_name_length+extra_field_length+file_comment_length;
 
     // check for a zip64 extension
     const unsigned char* ext_data = data+46+file_name_length;

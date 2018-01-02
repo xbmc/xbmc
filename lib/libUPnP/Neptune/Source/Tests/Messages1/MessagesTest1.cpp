@@ -342,7 +342,6 @@ public:
 
 private:
     // members
-    FooServer* m_Server;
     int        m_Id;
 };
 
@@ -350,7 +349,7 @@ private:
 |       FooClient::FooClient
 +---------------------------------------------------------------------*/
 FooClient::FooClient(FooServer* server, int id) :
-    m_Server(server), m_Id(id)
+    m_Id(id)
 {
     // set ourself as the message handler
     SetHandler(this);

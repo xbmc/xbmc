@@ -63,7 +63,7 @@ const NPT_Timeout NPT_HTTP_SERVER_DEFAULT_CONNECTION_TIMEOUT    = NPT_TIMEOUT_IN
 const NPT_Timeout NPT_HTTP_SERVER_DEFAULT_IO_TIMEOUT            = 60000;
 
 const unsigned int NPT_HTTP_CONNECTION_MANAGER_MAX_CONNECTION_POOL_SIZE = 5;
-const unsigned int NPT_HTTP_CONNECTION_MANAGER_MAX_CONNECTION_AGE       = 50; // seconds
+const unsigned int NPT_HTTP_CONNECTION_MANAGER_MAX_CONNECTION_AGE       = 30; // seconds
 const unsigned int NPT_HTTP_MAX_RECONNECTS                              = 10;
 const unsigned int NPT_HTTP_MAX_100_RESPONSES                           = 10;
 
@@ -611,6 +611,12 @@ public:
     virtual NPT_Result SendResponseBody(const NPT_HttpRequestContext& context,
                                         NPT_HttpResponse&             response,
                                         NPT_OutputStream&             output);
+    
+    /**
+     * A notification method called by the server upon completing the 
+     * processing of a request.
+     */
+    virtual void Completed(NPT_Result /*result*/) {}
 };
 
 /*----------------------------------------------------------------------
@@ -639,7 +645,7 @@ private:
 };
 
 /*----------------------------------------------------------------------
-|   NPT_HttpFileRequestHandler_FileTypeMap
+|   NPT_HttpFileRequestHandler_DefaultFileTypeMapEntry
 +---------------------------------------------------------------------*/
 typedef struct NPT_HttpFileRequestHandler_DefaultFileTypeMapEntry {
     const char* extension;
@@ -708,11 +714,10 @@ public:
     };
 
     // constructors and destructor
-    NPT_HttpServer(NPT_UInt16 listen_port = NPT_HTTP_DEFAULT_PORT,
-                   bool       reuse_address = true);
+    NPT_HttpServer(NPT_UInt16 listen_port = NPT_HTTP_DEFAULT_PORT, bool cancellable = false);
     NPT_HttpServer(NPT_IpAddress listen_address, 
                    NPT_UInt16    listen_port = NPT_HTTP_DEFAULT_PORT,
-                   bool          reuse_address = true);
+                   bool          cancellable = false);
     virtual ~NPT_HttpServer();
 
     // methods

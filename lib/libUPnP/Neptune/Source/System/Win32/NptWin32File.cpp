@@ -239,7 +239,7 @@ FILE*
 NPT_fsopen_utf8(const char* path, const char* mode, int sh_flags)
 {
     NPT_WIN32_USE_CHAR_CONVERSION;
-    return _wfsopen(NPT_WIN32_A2W(path), NPT_WIN32_A2W(mode + NPT_String(", ccs=UNICODE")), sh_flags);
+    return _wfsopen(NPT_WIN32_A2W(path), NPT_WIN32_A2W(mode), sh_flags);
 }
 #endif
 
@@ -261,7 +261,7 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
     DWORD drives = GetLogicalDrives();
     for (unsigned int i=0; i<26; i++) {
         if (drives & (1<<i)) {
-            char drive_name[4] = {'A'+i, ':', '\\', 0};
+            char drive_name[4] = {(char)('A'+i), ':', '\\', 0};
             roots.Add(drive_name);
         }
     }

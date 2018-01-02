@@ -216,7 +216,7 @@ NPT_DateTime::FromTimeStamp(const NPT_TimeStamp& ts, bool local)
 
     // adjust for leap years
     bool is_leap_year = false;
-    NPT_UInt32 leap_years_since_1900 = ElapsedLeapYearsSince1900(years_since_1900+1900);
+    NPT_Int64 leap_years_since_1900 = ElapsedLeapYearsSince1900(years_since_1900+1900);
     if (seconds < (leap_years_since_1900 * NPT_SECONDS_PER_DAY)) {
         // not enough seconds in the current year to compensate, move one year back
         seconds += NPT_SECONDS_PER_YEAR;
@@ -526,7 +526,7 @@ NPT_DateTime::FromString(const char* date, Format format)
             if (!no_seconds && input[19] == '.') {
                 char fraction[10];
                 fraction[9] = '\0';
-                unsigned int fraction_size = NPT_StringLength(input+20);
+                unsigned int fraction_size = NPT_StringLength(&input[20]);
                 if (fraction_size == 0) return NPT_ERROR_INVALID_SYNTAX;
                 for (unsigned int i=0; i<9; i++) {
                     if (i < fraction_size) {

@@ -68,8 +68,9 @@ public:
 class CancellerThread : public NPT_Thread
 {
 public:
-    CancellerThread(NPT_Socket* socket, float delay, bool shutdown) :
+    CancellerThread(NPT_Socket* socket, NPT_Thread::ThreadId thread_id, float delay, bool shutdown) :
         m_Socket(socket),
+        m_ThreadId(thread_id),
         m_Delay(delay),
         m_Shutdown(shutdown) {
         Start();
@@ -80,14 +81,20 @@ public:
         NPT_Console::OutputF("[XX] will cancel socket in %f\n", m_Delay);
         m_Ready.SetValue(1);
         NPT_System::Sleep(m_Delay);
-        NPT_Console::OutputF("[XX] cancelling socket (shutdown=%s)\n", m_Shutdown?"yes":"no");
-        m_Socket->Cancel(m_Shutdown);
+        if (m_Socket) {
+            NPT_Console::OutputF("[XX] cancelling socket (shutdown=%s)\n", m_Shutdown?"yes":"no");
+            m_Socket->Cancel(m_Shutdown);
+        } else {
+            NPT_Console::OutputF("[XX] cancelling blocker sockets for thread %p (shutdown=%s)\n", (void*)m_ThreadId, m_Shutdown?"yes":"no");
+            NPT_Socket::CancelBlockerSocket(m_ThreadId);
+        }
     }
 
-    NPT_Socket*        m_Socket;
-    float              m_Delay;
-    bool               m_Shutdown;
-    NPT_SharedVariable m_Ready;
+    NPT_Socket*          m_Socket;
+    NPT_Thread::ThreadId m_ThreadId;
+    float                m_Delay;
+    bool                 m_Shutdown;
+    NPT_SharedVariable   m_Ready;
 };
 
 /*----------------------------------------------------------------------
@@ -115,10 +122,9 @@ main(int /*argc*/, char** /*argv*/)
     CancellerThread*     canceller  = NULL;
     
 	NPT_SocketAddress address(NPT_IpAddress(127,0,0,1), 10000);
-#if 0
-    result = RemoteIpAddress.ResolveName("www.google.com");
+    result = RemoteIpAddress.ResolveName("google.com");
     CHECK(result == NPT_SUCCESS);
-
+#if 0
     NPT_Console::Output("--- test for immediate connection\n");
     NPT_Console::Output("[01] starting write server thread\n");
     server_thread = new TcpServerThread();
@@ -178,13 +184,14 @@ main(int /*argc*/, char** /*argv*/)
     delete tcp_client;
 #endif
 
-    for (int i=0; i<2; i++) {
-        NPT_Console::OutputF("\n--- test for cancelled connection, shutdown=%d\n", i);
+    for (int i=0; i<4; i++) {
+        bool shutdown = (i==1 || i==3);
+        NPT_Console::OutputF("\n--- test for cancelled connection, shutdown=%s\n", shutdown?"yes":"no");
         address.SetIpAddress(NPT_IpAddress(1,1,1,1));
         address.SetPort(89);
         NPT_Console::Output("[01] connecting to 1.1.1.1:89\n");
         tcp_client = new NPT_TcpClientSocket(NPT_SOCKET_FLAG_CANCELLABLE);
-        canceller = new CancellerThread(tcp_client, 3.0f, i==1);
+        canceller = new CancellerThread(i < 2 ? tcp_client:NULL, NPT_Thread::GetCurrentThreadId(), 3.0f, shutdown);
         result = tcp_client->Connect(address);
         NPT_Console::OutputF("[01] connect returns %d : %s\n", result, NPT_ResultText(result));
         CHECK(result == NPT_ERROR_CANCELLED);
@@ -193,8 +200,9 @@ main(int /*argc*/, char** /*argv*/)
         delete tcp_client;
     }
     
-    for (int i=0; i<2; i++) {
-        NPT_Console::OutputF("\n--- testing read cancellation, shutdown=%d\n", i);
+    for (int i=0; i<4; i++) {
+        bool shutdown = (i==1 || i==3);
+        NPT_Console::OutputF("\n--- testing read cancellation, shutdown=%s\n", shutdown?"yes":"no");
         address.SetIpAddress(RemoteIpAddress);
         address.SetPort(80);
         NPT_Console::Output("[01] connecting to www.google.com:80\n");
@@ -202,7 +210,7 @@ main(int /*argc*/, char** /*argv*/)
         result = tcp_client->Connect(address);
         NPT_Console::OutputF("[01] connect returns %d : %s\n", result, NPT_ResultText(result));
         CHECK(result == NPT_SUCCESS);    
-        canceller = new CancellerThread(tcp_client, 3.0f, i==1);
+        canceller = new CancellerThread(i < 2 ? tcp_client:NULL, NPT_Thread::GetCurrentThreadId(), 3.0f, shutdown);
         NPT_InputStreamReference input;
         tcp_client->GetInputStream(input);
         unsigned char buffer[4096];
@@ -215,8 +223,9 @@ main(int /*argc*/, char** /*argv*/)
         delete canceller;
     }
     
-    for (int i=0; i<2; i++) {
-        NPT_Console::OutputF("\n--- testing write cancellation, shutdown=%d\n", i);
+    for (int i=0; i<4; i++) {
+        bool shutdown = (i==1 || i==3);
+        NPT_Console::OutputF("\n--- testing write cancellation, shutdown=%s\n", shutdown?"yes":"no");
         server_thread = new TcpServerThread();
         server_thread->Start();
         NPT_Console::Output("[01] waiting for server to be ready...\n");
@@ -231,7 +240,7 @@ main(int /*argc*/, char** /*argv*/)
         result = tcp_client->Connect(address);
         NPT_Console::OutputF("[01] connect returns %d : %s\n", result, NPT_ResultText(result));
         CHECK(result == NPT_SUCCESS);    
-        canceller = new CancellerThread(tcp_client, 3.0f, i==1);
+        canceller = new CancellerThread(i < 2 ? tcp_client:NULL, NPT_Thread::GetCurrentThreadId(), 3.0f, shutdown);
         NPT_OutputStreamReference output;
         tcp_client->GetOutputStream(output);
         NPT_Size total_written = 0;
@@ -256,15 +265,16 @@ main(int /*argc*/, char** /*argv*/)
         delete server_thread;
     }
 
-    for (int i=0; i<2; i++) {
-        NPT_Console::OutputF("\n--- testing accept cancellation, shutdown=%d\n", i);
+    for (int i=0; i<4; i++) {
+        bool shutdown = (i==1 || i==3);
+        NPT_Console::OutputF("\n--- testing accept cancellation, shutdown=%s\n", shutdown?"yes":"no");
         NPT_Console::Output("{03} waiting for connection on port 10000\n");
         address.SetIpAddress(NPT_IpAddress(127,0,0,1));
         address.SetPort(10000);
         tcp_server = new NPT_TcpServerSocket(NPT_SOCKET_FLAG_CANCELLABLE);
         result = tcp_server->Bind(address, true);
         CHECK(result == NPT_SUCCESS);
-        canceller = new CancellerThread(tcp_server, 3.0f, i==1);
+        canceller = new CancellerThread(i < 2 ? tcp_server:NULL, NPT_Thread::GetCurrentThreadId(), 3.0f, shutdown);
         NPT_Socket* new_client = NULL;
         result = tcp_server->WaitForNewClient(new_client);
         NPT_Console::OutputF("{03} WaitForNewClient returned %d (%s)\n", result, NPT_ResultText(result));

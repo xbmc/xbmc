@@ -90,6 +90,7 @@ typedef struct {
 |       constants
 +---------------------------------------------------------------------*/
 #define PUMP_DEFAULT_PACKET_SIZE 16384
+#define PUMP_MAX_PACKET_SIZE     65536
 #define PUMP_MAX_UNDERFLOW       5000
 #define PUMP_MIN_SLEEP           10
 
@@ -431,6 +432,10 @@ main(int argc, char** argv)
                  
         if (NPT_StringsEqual(arg, "--packet-size")) {
             packet_size = strtoul(*argv++, NULL, 10);
+            if (packet_size == 0 || packet_size > PUMP_MAX_PACKET_SIZE) {
+                fprintf(stderr, "ERROR: invalid packet size\n");
+                return 1;
+            }
             continue;
         } else if (NPT_StringsEqual(arg, "--verbose")) {
             Options.verbose = true;

@@ -195,7 +195,7 @@ public:
         NPT_List<T> right;
         NPT_CHECK(Cut(GetItemCount() >> 1, right));
         
-        // Sort ourselves again
+        // sort the left side
         Sort(function);
         
         // sort the right side
@@ -207,8 +207,7 @@ public:
         } else {
             // append right
             right.m_Head->m_Prev = m_Tail;
-            if (m_Tail) m_Tail->m_Next = right.m_Head;
-            if (!m_Head) m_Head = right.m_Head;
+            m_Tail->m_Next = right.m_Head;
             m_Tail = right.m_Tail;
             m_ItemCount += right.m_ItemCount;
             

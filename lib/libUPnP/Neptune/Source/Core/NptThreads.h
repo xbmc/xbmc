@@ -77,7 +77,7 @@ class NPT_Mutex : public NPT_MutexInterface
 {
  public:
     // methods
-               NPT_Mutex();
+               NPT_Mutex(bool recursive = false);
               ~NPT_Mutex() override { delete m_Delegate; }
     NPT_Result Lock() override   { return m_Delegate->Lock();   }
     NPT_Result Unlock() override { return m_Delegate->Unlock(); }
@@ -224,6 +224,7 @@ class NPT_ThreadInterface: public NPT_Runnable, public NPT_Interruptible
     virtual NPT_Result Start() = 0;
     virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
     virtual NPT_Result SetPriority(int /*priority*/) { return NPT_SUCCESS; } 
+    virtual NPT_Result CancelBlockerSocket() = 0;
     virtual NPT_Result GetPriority(int& priority) = 0;
 };
 
@@ -234,10 +235,10 @@ class NPT_Thread : public NPT_ThreadInterface
 {
  public:
     // types
-    typedef unsigned long ThreadId;
+    typedef NPT_UInt64 ThreadId;
 
     // class methods
-    static ThreadId GetCurrentThreadId();
+    static ThreadId   GetCurrentThreadId();
     static NPT_Result SetCurrentThreadPriority(int priority);
     static NPT_Result GetCurrentThreadPriority(int& priority);
 
@@ -245,6 +246,9 @@ class NPT_Thread : public NPT_ThreadInterface
     explicit NPT_Thread(bool detached = false);
     explicit NPT_Thread(NPT_Runnable& target, bool detached = false);
    ~NPT_Thread() override { delete m_Delegate; }
+
+    // cancel any socket that this thread may be waiting for
+    NPT_Result CancelBlockerSocket() override { return m_Delegate->CancelBlockerSocket(); }
 
     // NPT_ThreadInterface methods
     NPT_Result Start() override { 

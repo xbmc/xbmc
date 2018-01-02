@@ -249,11 +249,11 @@ main(int argc, char** argv)
         unsigned int total_load_time = (unsigned int)(after_body-before_request).ToMillis();
         unsigned int body_throughput = 0;
         if (body_size && body_load_time) {
-            body_throughput = (unsigned int)((8.0 * (double)body_size)/1000.0)/((double)body_load_time/1000.0);
+            body_throughput = (unsigned int)(((8.0 * (double)body_size)/1000.0)/((double)body_load_time/1000.0));
         }
         unsigned int total_throughput = 0;
         if (body_size && total_load_time) {
-            total_throughput = (unsigned int)((8.0*(double)body_size)/1000.0)/((double)total_load_time/1000.0);
+            total_throughput = (unsigned int)(((8.0 * (double)body_size)/1000.0)/((double)total_load_time/1000.0));
         }
         
         printf("\n-----------------------------------------------------------\n");

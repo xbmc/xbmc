@@ -767,11 +767,20 @@ skip_first_empty_line:
     NPT_String line;
     NPT_CHECK_FINER(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
     NPT_LOG_FINEST_1("http request: %s", line.GetChars());
+
+    // cleanup lines that may contain '\0' as first character, clients such
+    // Spotify desktop app send SSDP M-SEARCH requests followed by an extra
+    // '\0' character which stays in the buffered stream and messes up parsing
+    // the next request.
+    while (line.GetLength() > 0 && line[0] == '\0') {
+        line = line.Erase(0, 1);
+    }
+
     // when using keep-alive connections, clients such as XBox 360
     // incorrectly send a few empty lines as body for GET requests
     // so we try to skip them until we find something to parse
     if (line.GetLength() == 0) goto skip_first_empty_line;
-    
+
     // check the request line
     int first_space = line.Find(' ');
     if (first_space < 0) {
@@ -949,18 +958,14 @@ NPT_HttpResponse::Parse(NPT_BufferedInputStream& stream,
 
     // read the response line
     NPT_String line;
-    NPT_Result res = stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH);
-    if (NPT_FAILED(res)) {
-        if (res != NPT_ERROR_TIMEOUT && res != NPT_ERROR_EOS) NPT_CHECK_WARNING(res);
-        return res;
-    }
+    NPT_CHECK_WARNING(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
     
     NPT_LOG_FINER_1("http response: %s", line.GetChars());
 
     // check the response line
     // we are lenient here, as we allow the response to deviate slightly from
     // strict HTTP (for example, ICY servers response with a method equal to
-    // ICY insead of HTTP/1.X
+    // ICY insead of HTTP/1.X)
     int first_space = line.Find(' ');
     if (first_space < 1) return NPT_ERROR_HTTP_INVALID_RESPONSE_LINE;
     int second_space = line.Find(' ', first_space+1);
@@ -1267,6 +1272,7 @@ NPT_HttpStaticProxySelector::GetProxyForUrl(const NPT_HttpUrl&    url,
 |   NPT_HttpConnectionManager::NPT_HttpConnectionManager
 +---------------------------------------------------------------------*/
 NPT_HttpConnectionManager::NPT_HttpConnectionManager() :
+    m_Lock(true),
     m_MaxConnections(NPT_HTTP_CONNECTION_MANAGER_MAX_CONNECTION_POOL_SIZE),
     m_MaxConnectionAge(NPT_HTTP_CONNECTION_MANAGER_MAX_CONNECTION_AGE)
 {
@@ -1408,6 +1414,10 @@ NPT_Result
 NPT_HttpConnectionManager::UntrackConnection(NPT_HttpClient::Connection* connection)
 {
     NPT_AutoLock lock(m_Lock);
+
+    if (!connection) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
     
     // look for connection by enumerating all client connections
     NPT_List<NPT_Map<NPT_HttpClient*, ConnectionList>::Entry*>::Iterator entry =
@@ -1426,7 +1436,7 @@ NPT_HttpConnectionManager::UntrackConnection(NPT_HttpClient::Connection* connect
             // untrack client if no more active connections for it
             if (connections.GetItemCount() == 0) {
                 m_ClientConnections.Erase(client);
-}
+            }
 
             return NPT_SUCCESS;
         }
@@ -1447,7 +1457,7 @@ NPT_HttpConnectionManager::Untrack(NPT_HttpClient::Connection* connection)
     if (Instance == NULL) return NPT_FAILURE;
     
     return GetInstance()->UntrackConnection(connection);
-    }
+}
     
 /*----------------------------------------------------------------------
 |   NPT_HttpConnectionManager::Recycle
@@ -1455,28 +1465,31 @@ NPT_HttpConnectionManager::Untrack(NPT_HttpClient::Connection* connection)
 NPT_Result
 NPT_HttpConnectionManager::Recycle(NPT_HttpConnectionManager::Connection* connection)
 {
-    NPT_AutoLock lock(m_Lock);
-    Cleanup();
-    
-    // remove older connections to make room
-    while (m_Connections.GetItemCount() >= m_MaxConnections) {
-        NPT_List<Connection*>::Iterator head = m_Connections.GetFirstItem();
-        if (!head) break;
-        delete *head;
-        m_Connections.Erase(head);
-        NPT_LOG_FINER("removing connection from pool to make some room");
+    // Untrack connection
+    UntrackConnection(connection);
+
+    {
+        NPT_AutoLock lock(m_Lock);
+        Cleanup();
+
+        // remove older connections to make room
+        while (m_Connections.GetItemCount() >= m_MaxConnections) {
+            NPT_List<Connection*>::Iterator head = m_Connections.GetFirstItem();
+            if (!head) break;
+            delete *head;
+            m_Connections.Erase(head);
+            NPT_LOG_FINER("removing connection from pool to make some room");
         }
-    
-    if (connection) {
-        // Untrack connection
-        UntrackConnection(connection);
         
-        // label this connection with the current timestamp and flag
-        NPT_System::GetCurrentTimeStamp(connection->m_TimeStamp);
-        connection->m_IsRecycled = true;
-        
-        // add the connection to the pool
-        m_Connections.Add(connection);
+        if (connection) {
+            
+            // label this connection with the current timestamp and flag
+            NPT_System::GetCurrentTimeStamp(connection->m_TimeStamp);
+            connection->m_IsRecycled = true;
+            
+            // add the connection to the pool
+            m_Connections.Add(connection);
+        }
     }
     
     return NPT_SUCCESS;
@@ -1490,7 +1503,7 @@ NPT_HttpConnectionManager::AbortConnections(NPT_HttpClient* client)
 {
     NPT_AutoLock lock(m_Lock);
     
-        ConnectionList* connections = NULL;
+    ConnectionList* connections = NULL;
     if (NPT_SUCCEEDED(m_ClientConnections.Get(client, connections))) {
         for (NPT_List<NPT_HttpClient::Connection*>::Iterator i = connections->GetFirstItem();
              i;
@@ -1867,9 +1880,6 @@ NPT_HttpClient::WriteRequest(NPT_OutputStream& output_stream,
         if (!transfer_encoding.IsEmpty()) {
             headers.SetHeader(NPT_HTTP_HEADER_TRANSFER_ENCODING, transfer_encoding);
         }
-    } else {
-        //FIXME: We should only set content length of 0 for methods with expected entities.
-        //headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, "0");
     }
     
     // create a memory stream to buffer the headers
@@ -2126,8 +2136,8 @@ NPT_HttpRequestContext::NPT_HttpRequestContext(const NPT_SocketAddress* local_ad
 /*----------------------------------------------------------------------
 |   NPT_HttpServer::NPT_HttpServer
 +---------------------------------------------------------------------*/
-NPT_HttpServer::NPT_HttpServer(NPT_UInt16 listen_port, 
-                               bool       reuse_address /* = true */) :
+NPT_HttpServer::NPT_HttpServer(NPT_UInt16 listen_port, bool cancellable) :
+    m_Socket(cancellable?NPT_SOCKET_FLAG_CANCELLABLE:0),
     m_BoundPort(0),
     m_ServerHeader("Neptune/" NPT_NEPTUNE_VERSION_STRING),
     m_Run(true)
@@ -2136,15 +2146,16 @@ NPT_HttpServer::NPT_HttpServer(NPT_UInt16 listen_port,
     m_Config.m_ListenPort        = listen_port;
     m_Config.m_IoTimeout         = NPT_HTTP_SERVER_DEFAULT_IO_TIMEOUT;
     m_Config.m_ConnectionTimeout = NPT_HTTP_SERVER_DEFAULT_CONNECTION_TIMEOUT;
-    m_Config.m_ReuseAddress      = reuse_address;
+    m_Config.m_ReuseAddress      = true;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_HttpServer::NPT_HttpServer
 +---------------------------------------------------------------------*/
-NPT_HttpServer::NPT_HttpServer(NPT_IpAddress listen_address, 
-                               NPT_UInt16    listen_port, 
-                               bool          reuse_address /* = true */) :
+NPT_HttpServer::NPT_HttpServer(NPT_IpAddress listen_address,
+                               NPT_UInt16    listen_port,
+                               bool          cancellable) :
+    m_Socket(cancellable?NPT_SOCKET_FLAG_CANCELLABLE:0),
     m_BoundPort(0),
     m_ServerHeader("Neptune/" NPT_NEPTUNE_VERSION_STRING),
     m_Run(true)
@@ -2153,7 +2164,7 @@ NPT_HttpServer::NPT_HttpServer(NPT_IpAddress listen_address,
     m_Config.m_ListenPort        = listen_port;
     m_Config.m_IoTimeout         = NPT_HTTP_SERVER_DEFAULT_IO_TIMEOUT;
     m_Config.m_ConnectionTimeout = NPT_HTTP_SERVER_DEFAULT_CONNECTION_TIMEOUT;
-    m_Config.m_ReuseAddress      = reuse_address;
+    m_Config.m_ReuseAddress      = true;
 }
 
 /*----------------------------------------------------------------------
@@ -2466,11 +2477,15 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&     input,
             response->SetStatus(404, "Not Found");
         }
         response->SetEntity(body);
+        if (handler) {
+            handler->Completed(NPT_ERROR_NO_SUCH_ITEM);
         handler = NULL;
+        }
     } else if (result == NPT_ERROR_PERMISSION_DENIED) {
         body->SetInputStream(NPT_HTTP_DEFAULT_403_HTML);
         body->SetContentType("text/html");
         response->SetStatus(403, "Forbidden");
+        handler->Completed(NPT_ERROR_PERMISSION_DENIED);
         handler = NULL;
     } else if (result == NPT_ERROR_TERMINATED) {
         // mark that we want to exit
@@ -2479,6 +2494,7 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&     input,
         body->SetInputStream(NPT_HTTP_DEFAULT_500_HTML);
         body->SetContentType("text/html");
         response->SetStatus(500, "Internal Error");
+        handler->Completed(result);
         handler = NULL;
     }
 
@@ -2522,6 +2538,10 @@ end:
     // cleanup
     delete response;
     delete request;
+
+    if (handler) {
+        handler->Completed(result);
+    }
 
     return result;
 }

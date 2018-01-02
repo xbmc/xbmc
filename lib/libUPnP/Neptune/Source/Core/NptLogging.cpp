@@ -107,6 +107,9 @@ public:
     void Log(const NPT_LogRecord& record) override;
 
 private:
+    // constructor
+    NPT_LogTcpHandler() : m_Port(0) {}
+
     // methods
     NPT_Result Connect();
 
@@ -184,6 +187,10 @@ private:
 #define NPT_LOG_CONSOLE_HANDLER_DEFAULT_COLOR_MODE false
 #else
 #define NPT_LOG_CONSOLE_HANDLER_DEFAULT_COLOR_MODE true
+#endif
+
+#ifndef NPT_CONFIG_DEFAULT_LOG_CONSOLE_HANDLER_OUTPUTS
+#define NPT_CONFIG_DEFAULT_LOG_CONSOLE_HANDLER_OUTPUTS OUTPUT_TO_DEBUG
 #endif
 
 #define NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE   1000000
@@ -429,6 +436,7 @@ NPT_Log::FormatRecordToStream(const NPT_LogRecord& record,
 +---------------------------------------------------------------------*/
 NPT_LogManager::NPT_LogManager() :
     m_LockOwner(0),
+    m_LockRecursion(0),
     m_Enabled(true),
     m_Configured(false),
     m_Root(NULL)
@@ -468,9 +476,11 @@ void
 NPT_LogManager::Lock()
 {
     NPT_Thread::ThreadId me = NPT_Thread::GetCurrentThreadId();
-    if (m_LockOwner == me) return;
-    m_Lock.Lock();
-    m_LockOwner = me;
+    if (m_LockOwner != me) {
+        m_Lock.Lock();
+        m_LockOwner = me;
+    }
+    ++m_LockRecursion;
 }
 
 /*----------------------------------------------------------------------
@@ -479,8 +489,10 @@ NPT_LogManager::Lock()
 void
 NPT_LogManager::Unlock()
 {
-    m_LockOwner = 0;
-    m_Lock.Unlock();
+    if (--m_LockRecursion == 0) {
+        m_LockOwner = (NPT_Thread::ThreadId)0;
+        m_Lock.Unlock();
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -489,9 +501,11 @@ NPT_LogManager::Unlock()
 NPT_Result
 NPT_LogManager::Configure(const char* config_sources) 
 {
-    //NPT_AutoLock lock(LogManager.m_Lock);
-    
     // exit if we're already initialized
+    if (m_Configured) return NPT_SUCCESS;
+
+    // prevent multiple threads from configuring at the same time
+    NPT_LogManagerAutoLocker lock(*this);
     if (m_Configured) return NPT_SUCCESS;
 
     // we need to be disabled while we configure ourselves
@@ -523,6 +537,7 @@ NPT_LogManager::Configure(const char* config_sources)
                 config_source.Assign(source, (NPT_Size)(cursor-source));
                 config_source.Trim(" \t");
                 ParseConfigSource(config_source);
+                if (*cursor == '|') source = cursor+1;
             }
             if (*cursor == '\0') break;
         }
@@ -808,15 +823,15 @@ NPT_LogManager::GetLogger(const char* name)
     // exit now if the log manager is disabled
     if (!LogManager.m_Enabled) return NULL;
 
-    // auto lock until we return from this method
-    NPT_LogManagerAutoLocker lock(LogManager);
-
     /* check that the manager is initialized */
     if (!LogManager.m_Configured) {
         /* init the manager */
         LogManager.Configure();
         NPT_ASSERT(LogManager.m_Configured);
     }
+
+    // auto lock until we return from this method
+    NPT_LogManagerAutoLocker lock(LogManager);
 
     /* check if this logger is already configured */
     NPT_Logger* logger = LogManager.FindLogger(name);
@@ -958,11 +973,11 @@ NPT_Logger::Log(int          level,
     record.m_SourceLine     = source_line;
     record.m_SourceFunction = source_function;
     NPT_System::GetCurrentTimeStamp(record.m_TimeStamp);
-    record.m_ThreadId       = NPT_Thread::GetCurrentThreadId();
+    record.m_ThreadId       = (NPT_UInt64)NPT_Thread::GetCurrentThreadId();
 
     /* call all handlers for this logger and parents */
     m_Manager.Lock();
-    //m_Manager.SetEnabled(false); // prevent recursion
+    m_Manager.SetEnabled(false); // prevent recursion
     while (logger) {
         /* call all handlers for the current logger */
         for (NPT_List<NPT_LogHandler*>::Iterator i = logger->m_Handlers.GetFirstItem();
@@ -979,7 +994,7 @@ NPT_Logger::Log(int          level,
             break;
         }
     }
-    //m_Manager.SetEnabled(true);
+    m_Manager.SetEnabled(true);
     m_Manager.Unlock();
 
     /* free anything we may have allocated */
@@ -1101,7 +1116,7 @@ NPT_LogConsoleHandler::Create(const char*      logger_name,
     }
 
     NPT_String* outputs;
-    instance->m_Outputs = OUTPUT_TO_DEBUG;
+    instance->m_Outputs = NPT_CONFIG_DEFAULT_LOG_CONSOLE_HANDLER_OUTPUTS;
     outputs = LogManager.GetConfigValue(logger_prefix,".outputs");
     if (outputs) {
         outputs->ToInteger(instance->m_Outputs, true);

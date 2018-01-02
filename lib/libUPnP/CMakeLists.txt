@@ -58,6 +58,7 @@ set(SOURCES Platinum/Source/Core/PltAction.cpp
             Neptune/Source/Core/NptUri.cpp
             Neptune/Source/Core/NptUtils.cpp
             Neptune/Source/Core/NptXml.cpp
+            Neptune/Source/System/Bsd/NptBsdResolver.cpp
             Neptune/Source/System/Bsd/NptBsdSockets.cpp
             Neptune/Source/System/StdC/NptStdcDebug.cpp
             Neptune/Source/System/StdC/NptStdcEnvironment.cpp
@@ -77,6 +78,11 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
                       Neptune/Source/System/Posix/NptPosixThreads.cpp
                       Neptune/Source/System/Posix/NptPosixTime.cpp
                       Neptune/Source/System/Bsd/NptBsdNetwork.cpp)
+  if(APPLE)
+    list(APPEND SOURCES Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm)
+  else()
+    list(APPEND SOURCES Neptune/Source/System/Null/NptNullAutoreleasePool.cpp)
+  endif()
 else()
   list(APPEND SOURCES Neptune/Source/System/Win32/NptWin32Console.cpp
                       Neptune/Source/System/Win32/NptWin32Debug.cpp
@@ -90,10 +96,6 @@ else()
                       Neptune/Source/System/Win32/NptWin32Time.cpp)
 endif()
 
-if(APPLE)
-  list(APPEND SOURCES Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm
-                      Neptune/Source/System/Apple/NptAppleLogConfig.mm)
-endif()
 
 add_library(upnp STATIC ${SOURCES} ${HEADERS})
 target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_ENABLE_LOGGING)

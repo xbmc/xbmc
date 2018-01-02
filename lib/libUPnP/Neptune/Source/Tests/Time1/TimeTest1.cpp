@@ -285,13 +285,13 @@ TestDateFromTimeStringW3C()
     SHOULD_EQUAL_I(date.m_Seconds      , 10);
     SHOULD_EQUAL_I(date.m_NanoSeconds  , 1822000);
     SHOULD_EQUAL_I(date.m_TimeZone     , 300);
-    
-    /* Valid date with no time and m_TimeZone offset */
-    SHOULD_SUCCEED(date.FromString("2006-10-05", NPT_DateTime::FORMAT_W3C));
-    SHOULD_EQUAL_I(date.m_Year         , 2006);
-    SHOULD_EQUAL_I(date.m_Month        , 10);
-    SHOULD_EQUAL_I(date.m_Day          , 5);
-    
+
+	/* Valid date with no time and m_TimeZone offset */
+	SHOULD_SUCCEED(date.FromString("2006-10-05", NPT_DateTime::FORMAT_W3C));
+	SHOULD_EQUAL_I(date.m_Year         , 2006);
+	SHOULD_EQUAL_I(date.m_Month        , 10);
+	SHOULD_EQUAL_I(date.m_Day          , 5);
+
     /* Invalid date with 3 digit year */
     SHOULD_FAIL(date.FromString("206-04-14T12:01:10.003Z", NPT_DateTime::FORMAT_W3C));
 

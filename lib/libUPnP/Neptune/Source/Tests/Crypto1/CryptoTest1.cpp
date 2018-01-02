@@ -43,6 +43,7 @@
         }                                                               \
     } while(0)                                         
 
+#if defined(NPT_CONFIG_ENABLE_CRYPTO)
 /*----------------------------------------------------------------------
 |   TestBlockCiphers
 +---------------------------------------------------------------------*/
@@ -154,6 +155,7 @@ TestBenchmark()
     
     return 0;
 }
+#endif
 
 /*----------------------------------------------------------------------
 |       main
@@ -161,7 +163,9 @@ TestBenchmark()
 int
 main(int /*argc*/, char** /*argv*/)
 {
+#if defined(NPT_CONFIG_ENABLE_CRYPTO)
     TestBlockCiphers();
     TestBenchmark();
+#endif
     return 0;
 }

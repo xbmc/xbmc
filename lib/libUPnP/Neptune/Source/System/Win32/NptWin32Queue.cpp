@@ -22,8 +22,15 @@
 #include "NptThreads.h"
 #include "NptList.h"
 #include "NptDebug.h"
-#include "NptWin32Threads.h"
 #include "NptLogging.h"
+
+#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+// for XBox, Windows 7 Desktop or earlier
+#include "NptWin32Threads.h"
+#elif WINAPI_FAMILY == WINAPI_FAMILY_APP
+// for WinRT Apps
+#include "NptWinRtThreads.h"
+#endif
 
 /*----------------------------------------------------------------------
 |   logging
@@ -47,9 +54,19 @@ public:
 private:
     // members
     NPT_Cardinal             m_MaxItems;
+
+#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+    // for XBox, Windows 7 Desktop or earlier
     NPT_Win32CriticalSection m_Mutex;
     NPT_Win32Event*          m_CanPushCondition;
     NPT_Win32Event*          m_CanPopCondition;
+#elif WINAPI_FAMILY == WINAPI_FAMILY_APP
+    // for WinRT Apps
+    NPT_WinRtCriticalSection m_Mutex;
+    NPT_WinRtEvent*          m_CanPushCondition;
+    NPT_WinRtEvent*          m_CanPopCondition;
+#endif
+
     NPT_List<NPT_QueueItem*> m_Items; // should be volatile ?
 };
 
@@ -59,8 +76,15 @@ private:
 NPT_Win32Queue::NPT_Win32Queue(NPT_Cardinal max_items) : 
     m_MaxItems(max_items)
 {
+#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+    // for XBox, Windows 7 Desktop or earlier
     m_CanPushCondition = new NPT_Win32Event(true, true);
     m_CanPopCondition  = new NPT_Win32Event(true, false);
+#elif WINAPI_FAMILY == WINAPI_FAMILY_APP
+    // for WinRT Apps
+    m_CanPushCondition = new NPT_WinRtEvent(true, true);
+    m_CanPopCondition  = new NPT_WinRtEvent(true, false);
+#endif
 }
 
 /*----------------------------------------------------------------------
@@ -138,7 +162,7 @@ NPT_Win32Queue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can pop
-            NPT_Result result = m_CanPopCondition->Wait(timeout);
+            result = m_CanPopCondition->Wait(timeout);
             if (NPT_FAILED(result)) return result;
 
             // relock the mutex so that we can check the list again
@@ -184,7 +208,7 @@ NPT_Win32Queue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can pop
-            NPT_Result result = m_CanPopCondition->Wait(timeout);
+            result = m_CanPopCondition->Wait(timeout);
             if (NPT_FAILED(result)) return result;
 
             // relock the mutex so that we can check the list again

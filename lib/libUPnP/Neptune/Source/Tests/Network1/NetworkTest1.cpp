@@ -57,6 +57,62 @@ private:
 };
 
 /*----------------------------------------------------------------------
+|       TestAddresses
++---------------------------------------------------------------------*/
+static void
+TestAddresses()
+{
+    NPT_IpAddress a1 = NPT_IpAddress::Loopback;
+    CHECK(a1.IsLooppack());
+    CHECK(!a1.IsUnspecified());
+    NPT_IpAddress a2 = NPT_IpAddress::Any;
+    CHECK(a2.IsUnspecified());
+#if defined(NPT_CONFIG_ENABLE_IPV6)
+    NPT_IpAddress a3;
+    a3.ResolveName("::1");
+    CHECK(a3.IsLooppack());
+    NPT_IpAddress a4;
+    a4.ResolveName("127.0.0.1");
+    CHECK(a4.IsLooppack());
+    
+    NPT_IpAddress a6;
+    a6.ResolveName("::abcd:1234");
+    CHECK(a6.IsV4Compatible());
+
+    NPT_IpAddress a7;
+    a7.ResolveName("::ffff:abcd:1234");
+    CHECK(a7.IsV4Mapped());
+
+    NPT_IpAddress a5;
+    a5.ResolveName("fe80::bae8:56ff:fe45:fc74");
+    CHECK(a5.IsLinkLocal());
+    
+    NPT_IpAddress a8;
+    a8.ResolveName("fec3::bae8:56ff:fe45:fc74");
+    CHECK(a8.IsSiteLocal());
+
+    NPT_IpAddress a9;
+    a9.ResolveName("fd00::bae8:56ff:fe45:fc74");
+    CHECK(a9.IsUniqueLocal());
+
+    NPT_IpAddress a10;
+    a10.ResolveName("ff05::2");
+    CHECK(a10.IsMulticast());
+    
+#endif
+    NPT_IpAddress b1(192, 168, 1, 1);
+    CHECK(b1.IsUniqueLocal());
+    NPT_IpAddress b2(172, 16, 1, 1);
+    CHECK(b2.IsUniqueLocal());
+    NPT_IpAddress b3(10, 1, 1, 1);
+    CHECK(b3.IsUniqueLocal());
+    NPT_IpAddress b4(169, 254, 1, 1);
+    CHECK(b4.IsLinkLocal());
+    NPT_IpAddress b5(239, 255, 255, 251);
+    CHECK(b5.IsMulticast());
+}
+
+/*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
 int
@@ -74,6 +130,7 @@ main(int /*argc*/, char** /*argv*/)
     //freopen("CONOUT$", "w", stdout);
 #endif 
 
+    TestAddresses();
     
     NPT_IpAddress addr;
     NPT_Result result;

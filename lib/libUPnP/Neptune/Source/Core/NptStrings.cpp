@@ -824,7 +824,7 @@ const NPT_String&
 NPT_String::Replace(char a, const char* str) 
 {
     // check args
-    if (m_Chars == NULL || a == '\0' || str == NULL) return *this;
+    if (m_Chars == NULL || a == '\0' || str == NULL || str[0] == '\0') return *this;
 
     // optimization
     if (NPT_StringLength(str) == 1) return Replace(a, str[0]);

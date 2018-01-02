@@ -65,19 +65,9 @@ NPT_AutomaticCleaner::~NPT_AutomaticCleaner()
 NPT_AutomaticCleaner*
 NPT_AutomaticCleaner::GetInstance()
 {
-    if (Instance) return Instance;
-    
-    NPT_SingletonLock::GetInstance().Lock();
-    if (Instance == NULL) {
-        // create the shared instance
-        Instance = new NPT_AutomaticCleaner();
-    }
-    NPT_SingletonLock::GetInstance().Unlock();
-    
-    return Instance;
+    return &Instance;
 }
-NPT_AutomaticCleaner* NPT_AutomaticCleaner::Instance = NULL;
-NPT_AutomaticCleaner::Cleaner NPT_AutomaticCleaner::Cleaner::AutomaticCleaner;
+NPT_AutomaticCleaner NPT_AutomaticCleaner::Instance;
 
 /*----------------------------------------------------------------------
 |   NPT_AutomaticCleaner::RegisterTlsContext

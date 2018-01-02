@@ -260,15 +260,16 @@ class NPT_XmlTextNode : public NPT_XmlNode
     NPT_XmlTextNode(TokenType token_type, const char* text);
 
     // methods
-    const NPT_String& GetString() const { return m_Text; }
-
+    const NPT_String& GetString()    const { return m_Text;      }
+    TokenType         GetTokenType() const { return m_TokenType; }
+    
     // type casting
     NPT_XmlTextNode*       AsTextNode() override       { return this; }
     const NPT_XmlTextNode* AsTextNode() const override { return this; }
 
  private:
     // members  
-//    TokenType  m_TokenType;
+    TokenType  m_TokenType;
     NPT_String m_Text;
 };
 

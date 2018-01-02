@@ -14,9 +14,10 @@
 #include "NptSystem.h"
 
 #import <Foundation/Foundation.h>
-#import <SystemConfiguration/SystemConfiguration.h>
 
-#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+#if !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
+#import <SystemConfiguration/SystemConfiguration.h>
+#else
 #import <UIKit/UIKit.h>
 #endif
 
