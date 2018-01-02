@@ -62,29 +62,31 @@ void CApplicationPlayer::CloseFile(bool reopen)
   }
 }
 
+bool CApplicationPlayer::CanClosePlayerGapless(std::string &playername, CFileItem& item)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (!player)
+    return false;
+
+  bool gaplessSupported = player->m_type == "music" || (player->m_type == "video" && !item.IsDiscImage() && !item.IsDVDFile());
+  gaplessSupported = gaplessSupported && (playername == player->m_name);
+  return gaplessSupported;
+}
+
 void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (!player)
     return;
 
-  bool gaplessSupported = player->m_type == "music" || player->m_type == "video";
-  gaplessSupported = gaplessSupported && (playername == player->m_name);
-  if (!gaplessSupported)
+  if (player->m_type != "video")
   {
-    ClosePlayer();
-  }
-  else
-  {
-    if (player->m_type != "video")
-    {
-      // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
-      // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
-      // but if we do not stop it, we can not distinguish callbacks from previous
-      // item and current item, it will confused us then we can not make correct delay
-      // callback after the starting state.
-      CloseFile(true);
-    }
+    // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
+    // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
+    // but if we do not stop it, we can not distinguish callbacks from previous
+    // item and current item, it will confused us then we can not make correct delay
+    // callback after the starting state.
+    CloseFile(true);
   }
 }
 

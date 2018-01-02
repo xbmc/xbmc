@@ -3011,7 +3011,6 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   int startoffset = m_stackHelper.InitializeStackStartPartAndOffset(item);
 
-  m_itemCurrentFile.reset(new CFileItem(item));
   CFileItem selectedStackPart = m_stackHelper.GetCurrentStackPartFileItem();
   selectedStackPart.m_lStartOffset = startoffset;
 
@@ -3028,8 +3027,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   {
     // bRestart will be true when called from PlayStack(), skipping this block
     m_appPlayer.SetPlaySpeed(1);
-
-    m_itemCurrentFile.reset(new CFileItem(item));
 
     m_nextPlaylistItem = -1;
     m_stackHelper.Clear();
@@ -3101,8 +3098,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // have to be set here due to playstack using this for starting the file
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
-    if (m_stackHelper.IsPlayingRegularStack() && m_itemCurrentFile->m_lStartOffset != 0)
-      m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
   }
   if (!bRestart || m_stackHelper.IsPlayingISOStack())
   {
@@ -3188,12 +3183,10 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   else if(m_stackHelper.IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
-    if(m_stackHelper.GetCurrentPartNumber() == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
+    if(m_stackHelper.GetCurrentPartNumber() == 0 || m_stackHelper.GetRegisteredStack(item)->m_lStartOffset != 0)
       options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
     else
       options.fullscreen = false;
-    // reset this so we don't think we are resuming on seek
-    m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
     options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
@@ -3232,11 +3225,27 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, VideoPlayer)
-  // DVD playback does not support gapless
-  if (item.IsDiscImage() || item.IsDVDFile())
-    m_appPlayer.ClosePlayer();
-  else
-    m_appPlayer.ClosePlayerGapless(newPlayer);
+  if (m_appPlayer.HasPlayer())
+  {
+    if (m_appPlayer.CanClosePlayerGapless(newPlayer, item))
+    {
+      m_appPlayer.ClosePlayerGapless(newPlayer);
+    }
+    else
+    {
+      m_appPlayer.ClosePlayer();
+      if (m_itemCurrentFile != nullptr)
+      {
+        // wait for m_itemCurrentFile being reset to nullptr (asynch job)
+        CSingleLock lock(m_critSection);
+        XbmcThreads::EndTime timer(2000);
+        while (!timer.IsTimePast())
+          m_itemCurrentFileEvent.wait(lock, 5);
+        if (m_itemCurrentFile != nullptr)
+          CLog::Log(LOGERROR, "Timeout occurred >2000ms while waiting for player to close");
+      }
+    }
+  }
 
   m_appPlayer.CreatePlayer(newPlayer, *this);
 
@@ -3317,6 +3326,10 @@ void CApplication::OnPlayBackEnded()
   data["end"] = true;
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
+  m_itemLastFile = m_itemCurrentFile;
+  m_itemCurrentFile.reset();
+  m_itemCurrentFileEvent.notify();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3330,6 +3343,11 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted(file);
 #endif
+
+  if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
+    m_itemCurrentFile.reset(new CFileItem(*m_stackHelper.GetRegisteredStack(file)));
+  else
+    m_itemCurrentFile.reset(new CFileItem(file));
 
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
   m_stackHelper.OnPlayBackStarted(file);
@@ -3427,6 +3445,10 @@ void CApplication::OnPlayBackStopped()
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
+
+  m_itemLastFile = m_itemCurrentFile;
+  m_itemCurrentFile.reset();
+  m_itemCurrentFileEvent.notify();
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
@@ -4042,18 +4064,20 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef TARGET_DARWIN_IOS
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
+      CFileItemPtr lastFile = m_itemLastFile;
+      m_itemLastFile.reset();
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         if (m_stackHelper.IsPlayingRegularStack() && m_stackHelper.HasNextStackPartFileItem())
-        { // just play the next item in the stack
+        { 
+          // just play the next item in the stack
           PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
           return true;
         }
       }
 
       // reset the current playing file
-      m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
       m_stackHelper.Clear();
 
@@ -4090,7 +4114,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!m_appPlayer.IsPlayingAudio() && ((lastFile && lastFile->IsCDDA()) || (lastFile && lastFile->IsOnDVD())) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         m_ServiceManager->GetSettings().Save();    // save vis settings
@@ -4262,8 +4286,8 @@ void CApplication::ProcessSlow()
 
   // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
-  if (CurrentFileItem().IsVideo() ||
-      CurrentFileItem().IsPicture() ||
+  if ((CurrentFileItemPtr() && CurrentFileItemPtr()->IsVideo()) ||
+      (CurrentFileItemPtr() && CurrentFileItemPtr()->IsPicture()) ||
       currentWindow == WINDOW_FULLSCREEN_VIDEO ||
       currentWindow == WINDOW_FULLSCREEN_GAME ||
       currentWindow == WINDOW_SLIDESHOW)
@@ -4415,7 +4439,7 @@ void CApplication::Restart(bool bSamePosition)
 
 const std::string& CApplication::CurrentFile()
 {
-  return m_itemCurrentFile->GetPath();
+  return m_itemCurrentFile ? m_itemCurrentFile->GetPath() : "";
 }
 
 std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()

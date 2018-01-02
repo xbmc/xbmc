@@ -445,6 +445,8 @@ protected:
   bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
+  CFileItemPtr m_itemLastFile;
+  XbmcThreads::ConditionVariable m_itemCurrentFileEvent;
 
   std::string m_prevMedia;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
