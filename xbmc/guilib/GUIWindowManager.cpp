@@ -1631,10 +1631,9 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   { // found window in history
     m_windowHistory = historySave;
   }
-  else if (newWindowID != WINDOW_SPLASH)
+  else
   {
     // didn't find window in history - add it to the stack
-    // but do not add the splash window to history, as we never want to travel back to it
     m_windowHistory.push(newWindowID);
   }
 }
