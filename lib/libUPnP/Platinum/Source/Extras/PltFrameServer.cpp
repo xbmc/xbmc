@@ -55,6 +55,7 @@ public:
     PLT_SocketPolicyServer(const char* policy, 
                            NPT_IpPort  port = 0,
                            const char* authorized_ports = "5900") :
+		m_Socket(NPT_SOCKET_FLAG_CANCELLABLE),
         m_Policy(policy),
         m_Port(port),
         m_AuthorizedPorts(authorized_ports),
@@ -109,7 +110,7 @@ public:
                     
             NPT_SocketInfo client_info;
             client->GetInfo(client_info);
-            NPT_LOG_FINE_2("client connected (%s)",
+            NPT_LOG_FINE_2("client connected (%s -> %s)",
                 client_info.local_address.ToString().GetChars(),
                 client_info.remote_address.ToString().GetChars());
 
@@ -149,7 +150,7 @@ PLT_HttpStreamRequestHandler::SetupResponse(NPT_HttpRequest&              reques
                                             const NPT_HttpRequestContext& context,
                                             NPT_HttpResponse&             response)
 {
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, "PLT_HttpStreamRequestHandler::SetupResponse:", &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, "PLT_HttpStreamRequestHandler::SetupResponse:", &request);
 
     if (request.GetMethod().Compare("GET") && 
         request.GetMethod().Compare("HEAD")) {

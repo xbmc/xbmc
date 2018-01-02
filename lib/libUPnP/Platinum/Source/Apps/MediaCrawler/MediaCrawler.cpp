@@ -495,7 +495,7 @@ CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&              request,
 {
     NPT_COMPILER_UNUSED(context);
 
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, "CMediaCrawler::ProcessFileRequest:", &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, "CMediaCrawler::ProcessFileRequest:", &request);
 
     if (request.GetMethod().Compare("GET", true) && request.GetMethod().Compare("HEAD", true)) {
         response.SetStatus(500, "Internal Server Error");

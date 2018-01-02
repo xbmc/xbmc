@@ -13,6 +13,9 @@
 #include "Neptune.h"
 #include "NptDebug.h"
 
+
+#if defined(NPT_CONFIG_ENABLE_TLS)
+
 #include "TlsClientPrivate1.h"
 #include "TlsClientPrivate2.h"
 
@@ -392,10 +395,15 @@ TestDnsNameMatch()
     CHECK(NPT_Tls::MatchDnsName("a.com", "A.com"));
     CHECK(NPT_Tls::MatchDnsName("a.com", "a.COM"));
 }
+#endif
 
 int 
 main(int argc, char** argv)
 {
+	NPT_COMPILER_UNUSED(argc);
+	NPT_COMPILER_UNUSED(argv);
+	
+#if defined(NPT_CONFIG_ENABLE_TLS)
     /* test dns name matching */
     TestDnsNameMatch();
     
@@ -411,4 +419,5 @@ main(int argc, char** argv)
 
     /* test using the http connector */
     TestHttpConnector(hostname);
+#endif
 }

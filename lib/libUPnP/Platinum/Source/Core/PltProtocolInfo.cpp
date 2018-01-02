@@ -81,7 +81,8 @@ PLT_HttpFileRequestHandler_DefaultDlnaMap[] = {
     {"image/jp2",      "DLNA.ORG_PN=JPEG_LRG"},
     {"image/png",      "DLNA.ORG_PN=PNG_LRG"},
     {"image/bmp",      "DLNA.ORG_PN=BMP_LRG"},
-    {"image/tiff",     "DLNA.ORG_PN=TIFF_LRG"},
+	{"image/tiff",     "DLNA.ORG_PN=TIFF_LRG"},
+	{"audio/L16",		"DLNA.ORG_PN=LPCM;DLNA.ORG_OP=01;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
     {"audio/L16;rate=44100;channels=2", "DLNA.ORG_PN=LPCM;DLNA.ORG_OP=01;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
     {"audio/L16;rate=44100;channels=1", "DLNA.ORG_PN=LPCM;DLNA.ORG_OP=01;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
     {"audio/L16;rate=32000;channels=1", "DLNA.ORG_PN=LPCM;DLNA.ORG_OP=01;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
@@ -108,7 +109,6 @@ PLT_HttpFileRequestHandler_360DlnaMap[] = {
     {"audio/wav",      "DLNA.ORG_OP=01;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
     {"audio/mp4",      "DLNA.ORG_PN=AAC_ISO;DLNA.ORG_OP=01;DLNA.ORG_FLAGS=01500000000000000000000000000000"},
     {"audio/mpeg",     "DLNA.ORG_PN=MP3;DLNA.ORG_OP=01"},
-    {"audio/L16",      "DLNA.ORG_PN=LPCM;DLNA.ORG_OP=01;DLNA.ORG_CI=1"},
     {"audio/x-ms-wma", "DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01;DLNA.ORG_CI=0"}
 };
 
@@ -514,7 +514,7 @@ PLT_ProtocolInfo::GetDlnaExtension(const char*         mime_type,
     
     if (signature != PLT_DEVICE_UNKNOWN) {
         // look for special case for 360
-        if (signature == PLT_DEVICE_XBOX || signature == PLT_DEVICE_WMP) {
+        if (signature == PLT_DEVICE_XBOX_360 || signature == PLT_DEVICE_XBOX_ONE || signature == PLT_DEVICE_WMP) {
 			for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_360DlnaMap); i++) {
                 if (_mime_type.Compare(PLT_HttpFileRequestHandler_360DlnaMap[i].mime_type, true) == 0) {
                     return PLT_HttpFileRequestHandler_360DlnaMap[i].dlna_ext;

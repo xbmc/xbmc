@@ -48,16 +48,6 @@ public:
         virtual ~Singleton() {}
     };
     
-    // singleton management
-    class Cleaner {
-        static Cleaner AutomaticCleaner;
-        ~Cleaner() {
-            if (Instance) {
-                delete Instance;
-                Instance = NULL;
-            }
-        }
-    };
     static NPT_AutomaticCleaner* GetInstance();
     
     // destructor
@@ -70,7 +60,7 @@ public:
     
 private:
     // class members
-    static NPT_AutomaticCleaner* Instance;
+    static NPT_AutomaticCleaner Instance;
     
     // constructor
     NPT_AutomaticCleaner();

@@ -7,7 +7,7 @@
 //
 
 #import "MediaServerCocoaTestController.h"
-#import "Neptune.h"
+#import <Neptune/Neptune.h>
 
 
 @implementation MediaServerCocoaTestController
@@ -39,12 +39,8 @@
     }
 }
 
-- (void)dealloc {
-    [upnp release];
-    [super dealloc];
-}
+#pragma mark - PLT_MediaServerDelegateObject
 
-#pragma mark PLT_MediaServerDelegateObject
 - (NPT_Result)onBrowseMetadata:(PLT_MediaServerBrowseCapsule*)info
 {
     return NPT_FAILURE;

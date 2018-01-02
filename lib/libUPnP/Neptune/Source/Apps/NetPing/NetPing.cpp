@@ -65,7 +65,7 @@ UdpPing(const char* hostname, int port)
     // build ping packet
     NPT_DataBuffer packet;
     const char* packet_data = "PING";
-    packet.SetData((NPT_Byte*)packet_data, sizeof(packet_data));
+    packet.SetData((NPT_Byte*)packet_data, 4);
 
     // resolve hostname
     NPT_IpAddress ip_address;
@@ -86,7 +86,7 @@ UdpPing(const char* hostname, int port)
     //sender.Send(packet, &destination_address);
     NPT_SocketInfo socket_info;
     sender.GetInfo(socket_info);
-    NPT_Debug("sent from %s:%d to %s:%d\n", 
+    printf("send from %s:%d to %s:%d\n",
         socket_info.local_address.GetIpAddress().ToString().GetChars(),
         socket_info.local_address.GetPort(),
         socket_info.remote_address.GetIpAddress().ToString().GetChars(),
@@ -101,7 +101,7 @@ UdpPing(const char* hostname, int port)
     //    socket_info.local_address.GetPort(),
     //    socket_info.remote_address.GetIpAddress().ToString().GetChars(),
     //    socket_info.remote_address.GetPort());
-    NPT_Debug("send %d bytes\n", 4);
+    printf("send %d bytes\n", 4);
 
     // receive response
     NPT_DataBuffer response(32768);
@@ -140,7 +140,11 @@ TcpPing(const char* hostname, int port)
     }
     
     // connect to server
-    sender.Connect(NPT_SocketAddress(ip_address, port));
+    result = sender.Connect(NPT_SocketAddress(ip_address, port));
+    if (NPT_FAILED(result)) {
+        fprintf(stderr, "ERROR: Connect() failed (%d)\n", result);
+        return;
+    }
     NPT_OutputStreamReference output;
 
     // get the current timestamp
@@ -159,7 +163,9 @@ TcpPing(const char* hostname, int port)
     NPT_Size bytes_read;
     result = input->Read(buffer, sizeof(buffer), &bytes_read);
     if (NPT_SUCCEEDED(result)) {
-       NPT_Debug("read %ld bytes\n", bytes_read);
+       printf("read %d bytes\n", bytes_read);
+    } else {
+        fprintf(stderr, "ERROR: Read() failed (%d)\n", result);
     }
 
     NPT_TimeStamp after;

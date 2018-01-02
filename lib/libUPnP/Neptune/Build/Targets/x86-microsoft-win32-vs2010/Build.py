@@ -3,7 +3,7 @@
 
 Visual Studio 2010 Build Script
 
-$Id: Build.py 309 2011-09-21 05:44:28Z soothe $
+$Id: Build.py 87 2008-08-15 19:03:36Z bok $
 
 """
 

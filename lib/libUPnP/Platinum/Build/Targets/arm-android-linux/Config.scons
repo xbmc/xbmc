@@ -18,7 +18,7 @@ if not ANDROID_NDK_ROOT:
 if env.has_key('android_host_system') and env['android_host_system']:
 	ANDROID_HOST_SYSTEM = env['android_host_system']
 else:
-	PLATFORM_TO_TARGET_MAP = { 
+	PLATFORM_TO_TARGET_MAP = {
     	'linux-i386' : 'linux-x86',
     	'linux2'     : 'linux-x86',
     	'win32'      : 'windows',
@@ -46,7 +46,7 @@ if not os.path.exists(os.path.join(ANDROID_NDK_ROOT, 'toolchains', ANDROID_TOOLC
                 ANDROID_CROSS_PREFIX = ANDROID_TOOLCHAIN[:suffix_pos]
             print "Auto-selecting toolchain:", ANDROID_TOOLCHAIN
             break
-        
+
 # override defaults from command line args
 if ARGUMENTS.get('android_toolchain'):
     ANDROID_TOOLCHAIN=ARGUMENTS.get('android_toolchain')
@@ -59,7 +59,7 @@ if ARGUMENTS.get('android_platform'):
 
 if ARGUMENTS.get('android_arch'):
     ANDROID_ARCH=ARGUMENTS.get('android_arch')
-		
+
 print 'Building for Android: '
 print 'ANDROID_HOST_SYSTEM =', ANDROID_HOST_SYSTEM
 print 'ANDROID_TOOLCHAIN   =', ANDROID_TOOLCHAIN
@@ -78,7 +78,7 @@ env['NPT_EXTRA_LIBS'] = ['gcc']
 
 ### Load the tools
 LoadTool('gcc-generic', env, gcc_cross_prefix=ANDROID_CROSS_PREFIX, gcc_strict=False)
-env.AppendUnique(CCFLAGS = ['-I'+ANDROID_NDK_ROOT+'/sources/cxx-stl/system/include' , 
+env.AppendUnique(CCFLAGS = ['-I'+ANDROID_NDK_ROOT+'/sources/cxx-stl/system/include' ,
                             '--sysroot', ANDROID_SYSROOT,
                             '-msoft-float',
                             '-fpic',
@@ -90,18 +90,18 @@ env.AppendUnique(CCFLAGS = ['-I'+ANDROID_NDK_ROOT+'/sources/cxx-stl/system/inclu
 env.AppendUnique(CXXFLAGS = ['-fno-exceptions', '-fno-rtti'])
 env.AppendUnique(CPPDEFINES = ['ANDROID', 'NPT_CONFIG_HAVE_SYSTEM_LOG_CONFIG'])
 env.AppendUnique(LINKFLAGS = ['--sysroot', ANDROID_SYSROOT,
-                			  '-Wl,--no-undefined', 
+                			  '-Wl,--no-undefined',
                               '-Wl,-z,noexecstack',
-                			  '-L'+ANDROID_SYSROOT+'/usr/lib', 
-                			  '-lc', 
-                			  '-lstdc++', 
-                			  '-lm', 
-                			  '-llog', 
+                			  '-L'+ANDROID_SYSROOT+'/usr/lib',
+                			  '-lc',
+                			  '-lstdc++',
+                			  '-lm',
+                			  '-llog',
                 			  '-ldl'])
 
 ### Specific System choices
 env['NPT_SYSTEM_SOURCES']={'System/StdC':'NptStdc[!D]*.cpp',
                            'System/Bsd':'*.cpp',
                            'System/Posix':'*.cpp',
-                           'System/Null':'NptNullSerialPort.cpp',
+                           'System/Null':['NptNullSerialPort.cpp', 'NptNullAutoreleasePool.cpp'],
                            'System/Android':'*.cpp'}

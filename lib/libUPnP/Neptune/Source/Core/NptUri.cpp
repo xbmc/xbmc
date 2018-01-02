@@ -175,7 +175,7 @@ Appendix A.  Collected ABNF for URI
                  / "*" / "+" / "," / ";" / "="
 
 ---------------------------------------------------------------------*/
-                 
+
 #define NPT_URI_ALWAYS_ENCODE " !\"<>\\^`{|}"
 
 /*----------------------------------------------------------------------
@@ -183,7 +183,6 @@ Appendix A.  Collected ABNF for URI
 +---------------------------------------------------------------------*/
 const char* const
 NPT_Uri::PathCharsToEncode = NPT_URI_ALWAYS_ENCODE "?#[]";
-//NPT_Uri::PathCharsToEncode = NPT_URI_ALWAYS_ENCODE "?#[]:/";
 
 /*----------------------------------------------------------------------
 |   NPT_Uri::QueryCharsToEncode
@@ -201,7 +200,7 @@ NPT_Uri::FragmentCharsToEncode = NPT_URI_ALWAYS_ENCODE "[]";
 |   NPT_Uri::UnsafeCharsToEncode
 +---------------------------------------------------------------------*/
 const char* const
-NPT_Uri::UnsafeCharsToEncode = NPT_URI_ALWAYS_ENCODE; // and ' ?
+NPT_Uri::UnsafeCharsToEncode = NPT_URI_ALWAYS_ENCODE;
 
 /*----------------------------------------------------------------------
 |   NPT_Uri::PercentEncode
@@ -314,9 +313,9 @@ NPT_UrlQuery::UrlEncode(const char* str, bool encode_percents)
 NPT_String
 NPT_UrlQuery::UrlDecode(const char* str)
 {
-    NPT_String decoded = NPT_Uri::PercentDecode(str);
+    NPT_String decoded(str);
     decoded.Replace('+', ' ');
-    return decoded;
+    return NPT_Uri::PercentDecode(decoded);
 }
 
 /*----------------------------------------------------------------------
@@ -367,9 +366,7 @@ NPT_UrlQuery::Parse(const char* query)
     bool        in_name = true;
     do {
         if (*cursor == '\0' || *cursor == '&') {
-            if (!name.IsEmpty()) {
-                AddField(name, value, true);   
-            }
+            AddField(name, value, true);   
             name.SetLength(0);
             value.SetLength(0);
             in_name = true;
@@ -452,6 +449,7 @@ typedef enum {
     NPT_URL_PARSER_STATE_SCHEME,
     NPT_URL_PARSER_STATE_LEADING_SLASH,
     NPT_URL_PARSER_STATE_HOST,
+    NPT_URL_PARSER_STATE_HOST_IPV6_ADDR,
     NPT_URL_PARSER_STATE_PORT,
     NPT_URL_PARSER_STATE_PATH,
     NPT_URL_PARSER_STATE_QUERY
@@ -460,7 +458,8 @@ typedef enum {
 /*----------------------------------------------------------------------
 |   NPT_Url::NPT_Url
 +---------------------------------------------------------------------*/
-NPT_Url::NPT_Url() : 
+NPT_Url::NPT_Url() :
+    m_HostIsIpv6Address(false),
     m_Port(NPT_URL_INVALID_PORT),
     m_Path("/"),
     m_HasQuery(false),
@@ -472,6 +471,7 @@ NPT_Url::NPT_Url() :
 |   NPT_Url::NPT_Url
 +---------------------------------------------------------------------*/
 NPT_Url::NPT_Url(const char* url, NPT_UInt16 default_port) : 
+    m_HostIsIpv6Address(false),
     m_Port(NPT_URL_INVALID_PORT),
     m_HasQuery(false),
     m_HasFragment(false)
@@ -535,9 +535,25 @@ NPT_Url::Parse(const char* url, NPT_UInt16 default_port)
             }
             break;
 
+          case NPT_URL_PARSER_STATE_HOST_IPV6_ADDR:
+            if (c == ']') {
+                state = NPT_URL_PARSER_STATE_HOST;
+            }
+            break;
+            
           case NPT_URL_PARSER_STATE_HOST:
-            if (c == ':' || c == '/' || c == '\0' || c == '?' || c == '#') {
-                m_Host.Assign(mark, (NPT_Size)(url-1-mark));
+            if (c == '[' && url == mark+1) {
+                // start of an IPv6 address
+                state = NPT_URL_PARSER_STATE_HOST_IPV6_ADDR;
+            } else if (c == ':' || c == '/' || c == '\0' || c == '?' || c == '#') {
+                NPT_Size host_length = (NPT_Size)(url-1-mark);
+                if (host_length > 2 && mark[0] == '[' && mark[host_length-1] == ']') {
+                    m_Host.Assign(mark+1, host_length-2);
+                    m_HostIsIpv6Address = true;
+                } else {
+                    m_Host.Assign(mark, host_length);
+                    m_HostIsIpv6Address = false;
+                }
                 if (c == ':') {
                     mark = url;
                     m_Port = 0;
@@ -594,6 +610,7 @@ NPT_Url::NPT_Url(const char* scheme,
                  const char* query,
                  const char* fragment) :
     m_Host(host),
+    m_HostIsIpv6Address(false),
     m_Port(port),
     m_Path(path),
     m_HasQuery(query != NULL),
@@ -602,6 +619,12 @@ NPT_Url::NPT_Url(const char* scheme,
     m_Fragment(fragment)
 {
     SetScheme(scheme);
+
+    // deal with IPv6 addresses
+    if (m_Host.StartsWith("[") && m_Host.EndsWith("]")) {
+        m_HostIsIpv6Address = true;
+        m_Host = m_Host.SubString(1, m_Host.GetLength()-2);
+    }
 }    
 
 /*----------------------------------------------------------------------
@@ -611,6 +634,7 @@ void
 NPT_Url::Reset()
 {
     m_Host.SetLength(0);
+    m_HostIsIpv6Address = false;
     m_Port = 0;
     m_Path.SetLength(0);
     m_HasQuery = false;
@@ -642,23 +666,44 @@ NPT_Url::IsValid() const
 NPT_Result 
 NPT_Url::SetHost(const char* host)
 {
-    const char* port = host;
-    while (*port && *port != ':') port++;
-    if (*port) {
-        m_Host.Assign(host, (NPT_Size)(port-host));
-        unsigned int port_number;
-        if (NPT_SUCCEEDED(NPT_ParseInteger(port+1, port_number, false))) {
-            m_Port = (short)port_number;
+    const char* port;
+    if (*host == '[') {
+        const char* host_end = host+1;
+        while (*host_end && *host_end != ']') ++host_end;
+        if (*host_end != ']') {
+            return NPT_ERROR_INVALID_SYNTAX;
         }
+        port = host_end+1;
+        if (*port && *port != ':') {
+            return NPT_ERROR_INVALID_SYNTAX;
+        }
+        m_Host.Assign(host+1, (NPT_Size)(host_end-host-1));
+        m_HostIsIpv6Address = true;
     } else {
-        m_Host = host;
+        port = host;
+        while (*port && *port != ':') port++;
+        m_Host.Assign(host, (NPT_Size)(port-host));
+        m_HostIsIpv6Address = false;
     }
 
+    if (*port) {
+        unsigned int port_number;
+        // parse the port number but ignore errors (be lenient)
+        if (NPT_SUCCEEDED(NPT_ParseInteger(port+1, port_number, false))) {
+            if (port_number > 65535) {
+                return NPT_ERROR_OUT_OF_RANGE;
+            }
+            m_Port = (NPT_UInt16)port_number;
+        } else {
+            return NPT_ERROR_INVALID_SYNTAX;
+        }
+    }
+    
     return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
-|   NPT_Url::SetHost
+|   NPT_Url::SetPort
 +---------------------------------------------------------------------*/
 NPT_Result 
 NPT_Url::SetPort(NPT_UInt16 port)
@@ -802,6 +847,15 @@ NPT_Url::ToRequestString(bool with_fragment) const
     if (m_Path.IsEmpty()) {
         result += "/";
     } else {
+#if defined(_WIN32)
+      	// prepend a '/' if the path starts with the drive letter on Windows
+      	if (((m_Path[0] >= 'a' && m_Path[0] <= 'z') ||
+      		 (m_Path[0] >= 'A' && m_Path[0] <= 'Z')) &&
+      	    m_Path[1] == ':') 
+      	{
+      		result += "/";
+      	}
+#endif
         result += m_Path;
     }
     if (m_HasQuery) {
@@ -825,10 +879,20 @@ NPT_Url::ToStringWithDefaultPort(NPT_UInt16 default_port, bool with_fragment) co
     NPT_String request = ToRequestString(with_fragment);
     NPT_Size   length = m_Scheme.GetLength()+3+m_Host.GetLength()+6+request.GetLength();
 
+    if (m_HostIsIpv6Address) {
+        length += 2;
+    }
+    
     result.Reserve(length);
     result += m_Scheme;
     result += "://";
+    if (m_HostIsIpv6Address) {
+        result += "[";
+    }
     result += m_Host;
+    if (m_HostIsIpv6Address) {
+        result += "]";
+    }
     if (m_Port != default_port) {
         NPT_String port = NPT_String::FromInteger(m_Port);
         result += ":";

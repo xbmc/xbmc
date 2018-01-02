@@ -12,10 +12,6 @@
 /*----------------------------------------------------------------------
 |   PLT_ActionObject
 +---------------------------------------------------------------------*/
-/*@interface PLT_ActionObject (priv)
-- (id)initWithAction:(PLT_Action*)action;
-@end*/
-
 @implementation PLT_ActionObject
 
 - (id)initWithAction:(PLT_Action *)_action
@@ -24,11 +20,6 @@
         action = _action;
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [super dealloc];
 }
 
 - (NPT_Result)setValue:(NSString *)value forArgument:(NSString *)argument
@@ -46,24 +37,22 @@
 /*----------------------------------------------------------------------
 |   PLT_DeviceHostObject
 +---------------------------------------------------------------------*/
-@interface PLT_DeviceHostObject (priv)
-- (PLT_DeviceHostReference&)getDevice;
-@end
-
 @implementation PLT_DeviceHostObject
 
-- (id)initWithDeviceHost:(PLT_DeviceHostReference*)_device
+- (id)init
 {
-    if ((self = [super init])) {
-        device = new PLT_DeviceHostReference(*_device);
-    }
-    return self;
+	return [super init];
+}
+
+- (void)setDevice:(PLT_DeviceHostReference*)_device
+{
+	delete device;
+	device = new PLT_DeviceHostReference(*_device);
 }
 
 - (void)dealloc
 {
     delete device;
-    [super dealloc];
 }
 
 - (PLT_DeviceHostReference&)getDevice 
@@ -76,45 +65,54 @@
 /*----------------------------------------------------------------------
 |   PLT_UPnPObject
 +---------------------------------------------------------------------*/
+
+@interface PLT_UPnPObject () {
+	PLT_UPnP *_upnp;
+	NSMutableArray *_devices;
+}
+@end
+
 @implementation PLT_UPnPObject
 
 - (id)init
 {
     if ((self = [super init])) {
-        upnp = new PLT_UPnP();
+        _upnp = new PLT_UPnP();
+		_devices = [NSMutableArray array];
     }
     return self;
 }
 
 -(void) dealloc
 {
-    delete upnp;
-    [super dealloc];
+    delete _upnp;
 }
 
 - (NPT_Result)start
 {
-    return upnp->Start();
+    return _upnp->Start();
 }
 
 - (NPT_Result)stop
 {
-    return upnp->Stop();
+    return _upnp->Stop();
 }
 
 - (bool)isRunning
 {
-    return upnp->IsRunning();
+    return _upnp->IsRunning();
 }
 
 - (NPT_Result)addDevice:(PLT_DeviceHostObject*)device
 {
-    return upnp->AddDevice([device getDevice]);
+	[_devices addObject:device];
+    return _upnp->AddDevice([device getDevice]);
 }
 
 - (NPT_Result)removeDevice:(PLT_DeviceHostObject*)device
 {
-    return upnp->RemoveDevice([device getDevice]);
+	[_devices removeObject:device];
+    return _upnp->RemoveDevice([device getDevice]);
 }
 
 @end

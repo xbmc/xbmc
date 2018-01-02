@@ -73,6 +73,16 @@ NPT_System::GetProcessId(NPT_UInt32& id)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_GetSystemMachineName
++---------------------------------------------------------------------*/
+#if !defined(NPT_CONFIG_HAVE_SYSTEM_MACHINE_NAME)
+NPT_Result NPT_GetSystemMachineName(NPT_String& /*name*/)
+{
+	return NPT_ERROR_NOT_SUPPORTED;
+}
+#endif
+
+/*----------------------------------------------------------------------
 |   NPT_System::GetMachineName
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -113,7 +123,7 @@ NPT_System::Sleep(const NPT_TimeInterval& duration)
     int             result;
 
     // setup the time value
-    time_req.tv_sec  = duration.ToNanos()/1000000000;
+    time_req.tv_sec  = (time_t)duration.ToNanos()/1000000000;
     time_req.tv_nsec = duration.ToNanos()%1000000000;
 
     // sleep
@@ -147,7 +157,7 @@ NPT_System::SleepUntil(const NPT_TimeStamp& when)
     NPT_UInt64 limit = (NPT_UInt64)now.tv_sec*1000000000 +
                        (NPT_UInt64)now.tv_usec*1000 +
                        when.ToNanos();
-    timeout.tv_sec  = limit/1000000000;
+    timeout.tv_sec  = (time_t)limit/1000000000;
     timeout.tv_nsec = limit%1000000000;
 
     // sleep

@@ -63,12 +63,13 @@ UdpServerLoop(int port)
 
     // info
     if (Options.verbose) {
-        NPT_Debug("listening on port %d\n", port);
+        printf("listening on port %d\n", port);
     }
 
     NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port));
     if (NPT_FAILED(result)) {
-        NPT_Debug("ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
+        fprintf(stderr, "ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
+        return;
     }
 
     // packet loop
@@ -80,7 +81,7 @@ UdpServerLoop(int port)
         if (NPT_SUCCEEDED(result)) {
             if (Options.verbose) {
                 NPT_String ip = address.GetIpAddress().ToString();
-                NPT_Debug("Received %d bytes from %s:%d\n", packet.GetDataSize(), ip.GetChars(), address.GetPort());
+                printf("Received %d bytes from %s:%d\n", packet.GetDataSize(), ip.GetChars(), address.GetPort());
             }
 
             listener.Send(packet, &address);
@@ -98,17 +99,18 @@ TcpServerLoop(int port)
 
     NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port)); 
     if (NPT_FAILED(result)) {
-        NPT_Debug("ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
+        fprintf(stderr, "ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
+        return;
     }
         
     NPT_Socket* client;
 
     for (;;) {
-        NPT_Debug("waiting for client on port %d\n", port);
+        printf("waiting for client on port %d\n", port);
         result = listener.WaitForNewClient(client);
         NPT_SocketInfo socket_info;
         client->GetInfo(socket_info);
-        NPT_Debug("client connected from %s:%d\n",
+        printf("client connected from %s port %d\n",
             socket_info.remote_address.GetIpAddress().ToString().GetChars(),
             socket_info.remote_address.GetPort());
         NPT_InputStreamReference input;
@@ -120,7 +122,7 @@ TcpServerLoop(int port)
             NPT_Size bytes_read;
             result = input->Read(buffer, sizeof(buffer), &bytes_read);
             if (NPT_SUCCEEDED(result)) {
-                NPT_Debug("read %ld bytes\n", bytes_read);
+                printf("read %d bytes\n", bytes_read);
                 output->Write(buffer, bytes_read);
             }
         } while (NPT_SUCCEEDED(result));

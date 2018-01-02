@@ -332,7 +332,10 @@ NPT_File::GetSize(NPT_LargeSize& size)
     
     // get the file info
     NPT_FileInfo info;
-    GetInfo(info);
+    NPT_Result result = GetInfo(info);
+    if (NPT_FAILED(result)) {
+        return result;
+    }
     
     switch (info.m_Type) {
         case NPT_FileInfo::FILE_TYPE_DIRECTORY: {

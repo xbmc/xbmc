@@ -565,9 +565,9 @@ NPT_XmlElementNode::GetNamespacePrefix(const char* uri) const
 /*----------------------------------------------------------------------
 |   NPT_XmlTextNode::NPT_XmlTextNode
 +---------------------------------------------------------------------*/
-NPT_XmlTextNode::NPT_XmlTextNode(TokenType, const char* text) :
+NPT_XmlTextNode::NPT_XmlTextNode(TokenType token_type, const char* text) :
     NPT_XmlNode(TEXT),
-//    m_TokenType(token_type),
+    m_TokenType(token_type),
     m_Text(text)
 {
 }
@@ -1900,7 +1900,7 @@ NPT_XmlParser::OnElementAttribute(const char* name, const char* value)
         name[4] == 's' &&
         (name[5] == '\0' || name[5] == ':')) {
         // namespace definition
-        m_CurrentElement->SetNamespaceUri((name[5] == ':' && name[6] != '\0')?name+6:"", value);
+        m_CurrentElement->SetNamespaceUri((name[5] == ':')?name+6:"", value);
     } else {
         m_CurrentElement->AddAttribute(name, value);
     }

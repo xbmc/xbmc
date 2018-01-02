@@ -150,6 +150,7 @@ public:
      * form, and will thus be encoded automatically.
      *
      * @param scheme The URL scheme
+     * @param host The host name (enclose with [ and ] for IPv6 addresses)
      * @param port The port number
      * @param path The path
      * @param query The query, if any, or NULL
@@ -237,7 +238,7 @@ public:
     /**
      * Sets the host part of the URL.
      *
-     * @param host The host part of the URL
+     * @param host The host part of the URL (enclose with [ and ] for IPv6 addresses)
      */
     NPT_Result SetHost(const char* host);
     
@@ -309,6 +310,7 @@ public:
 protected:
     // members
     NPT_String m_Host;
+    bool       m_HostIsIpv6Address;
     NPT_UInt16 m_Port;
     NPT_String m_Path;
     bool       m_HasQuery;

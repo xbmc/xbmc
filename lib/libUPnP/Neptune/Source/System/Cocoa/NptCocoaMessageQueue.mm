@@ -88,7 +88,8 @@ NPT_CocoaMessageQueue::QueueMessage(NPT_Message*        message,
                                     NPT_MessageHandler* handler)
 {
     // create a capsule to represent the message and handler
-    NPT_CocoaMessageCapsule* capsule = [[NPT_CocoaMessageCapsule alloc] initWithMessage: message andHandler: handler];
+    NPT_CocoaMessageCapsule* capsule = [NPT_CocoaMessageCapsule alloc];
+    [capsule initWithMessage: message andHandler: handler];
     
     // trigger the handling of the message on the main thread
     [capsule performSelectorOnMainThread: @selector(handle)

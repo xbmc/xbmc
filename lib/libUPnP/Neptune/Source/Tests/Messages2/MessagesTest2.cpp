@@ -191,14 +191,13 @@ public:
     void OnReply(int id);
 private:
     // members
-    TestServer* m_Server;
     int         m_Id;
 };
 /*----------------------------------------------------------------------
 |       TestClient::TestClient
 +---------------------------------------------------------------------*/
 TestClient::TestClient(TestServer* server, int id) :
-    m_Server(server), m_Id(id)
+    m_Id(id)
 {
     // set ourself as the message handler
     SetHandler(this);

@@ -248,7 +248,7 @@ void AES_set_key(AES_CTX *ctx, const uint8_t *key,
             tmp2 =(uint32_t)aes_sbox[(tmp    )&0xff]    ;
             tmp2|=(uint32_t)aes_sbox[(tmp>> 8)&0xff]<< 8;
             tmp2|=(uint32_t)aes_sbox[(tmp>>16)&0xff]<<16;
-            tmp2|=(uint32_t)aes_sbox[(tmp>>24)     ]<<24;
+            tmp2|=(uint32_t)aes_sbox[(tmp>>24)&0xff]<<24; /* GBG: added &0xFF to avoid warnings in coverity */
             tmp=tmp2;
         }
 

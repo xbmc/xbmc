@@ -21,28 +21,22 @@ class NPT_NullAtomicVariable : public NPT_AtomicVariableInterface
 {
  public:
     // methods
-    NPT_NullAtomicVariable(NPT_Integer value) : m_Value(value) {}
+    NPT_NullAtomicVariable(int value) : m_Value(value) {}
    ~NPT_NullAtomicVariable() {}
-    NPT_Integer Increment() { return ++m_Value; }
-    NPT_Integer Decrement() { return --m_Value; }
-    NPT_Integer GetValue() { return m_Value; }
-    void        SetValue(NPT_Integer value) { m_Value = value; }
+    int  Increment() { return ++m_Value; }
+    int  Decrement() { return --m_Value; }
+    int  GetValue() { return m_Value; }
+    void SetValue(int value) { m_Value = value; }
 
  private:
     // members
-    volatile NPT_Integer m_Value;
+    volatile int m_Value;
 };
 
 /*----------------------------------------------------------------------
 |       NPT_AtomicVariable::NPT_AtomicVariable
 +---------------------------------------------------------------------*/
-NPT_AtomicVariable::NPT_AtomicVariable(NPT_Integer value)
+NPT_AtomicVariable::NPT_AtomicVariable(int value)
 {
     m_Delegate = new NPT_NullAtomicVariable(value);
 }
-
-
-
-
-
-

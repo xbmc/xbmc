@@ -61,8 +61,10 @@ static ParseTestVector ParseTestVectors[] = {
   {"http://foo.bar/blabla/blibli/?query=1&bla=%20&slash=/&foo=a#fragment",   true,  "http", "foo.bar", 80,  "/blabla/blibli/",     "query=1&bla=%20&slash=/&foo=a", "fragment", "http://foo.bar/blabla/blibli/?query=1&bla=%20&slash=/&foo=a#fragment"},
   {"http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment", true,  "http", "foo.bar", 80,  "/blabla%20foo/blibli/", "query=1&bla=2&slash=/&foo=a","fragment", "http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment"},
   {"http://foo.bar?query",                                                   true,  "http", "foo.bar", 80,  NULL,                  "query",                         NULL,       "http://foo.bar/?query"},
-  {"http://foo.bar#fragment",                                                true,  "http", "foo.bar", 80,  NULL,                   NULL,                           "fragment", "http://foo.bar/#fragment"}
-};
+  {"http://foo.bar#fragment",                                                true,  "http", "foo.bar", 80,  NULL,                   NULL,                           "fragment", "http://foo.bar/#fragment"},
+  {"http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:8080/index.html",       true,  "http", "FEDC:BA98:7654:3210:FEDC:BA98:7654:3210", 8080, "/index.html", NULL,   NULL,       "http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:8080/index.html"},
+  {"http://[::1]/",                                                          true,  "http", "::1",     80,  "/",                    NULL,                           NULL,       "http://[::1]/"}
+ };
  
 typedef struct {
     char* scheme;
@@ -228,6 +230,27 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(url.GetFragment() == "fragment");
     CHECK(url.ToRequestString() == "/?query=1&bla=2&slash=/&foo=a");
 
+    url.Reset();
+    CHECK(url.GetHost().IsEmpty());
+    CHECK(url.GetPath().IsEmpty());
+    CHECK(url.GetPort() == 0);
+    CHECK(url.GetQuery().IsEmpty());
+    CHECK(url.GetFragment().IsEmpty());
+    CHECK(url.SetHost("foobar.com:x1234") == NPT_ERROR_INVALID_SYNTAX);
+    CHECK(url.SetHost("[::1]foo") == NPT_ERROR_INVALID_SYNTAX);
+    CHECK(url.SetHost("[::1]:-1234") == NPT_ERROR_INVALID_SYNTAX);
+    CHECK(url.SetHost("[::1") == NPT_ERROR_INVALID_SYNTAX);
+    CHECK(url.SetHost("a:65536") == NPT_ERROR_OUT_OF_RANGE);
+    CHECK(url.SetHost("foobar.com:1234")  == NPT_SUCCESS);
+    CHECK(url.GetHost() == "foobar.com");
+    CHECK(url.GetPort() == 1234);
+    CHECK(url.SetHost("foobar.com") == NPT_SUCCESS);
+    CHECK(url.SetHost("[::1]") == NPT_SUCCESS);
+    CHECK(url.GetHost() == "::1");
+    CHECK(url.SetHost("[::1]:4567") == NPT_SUCCESS);
+    CHECK(url.GetHost() == "::1");
+    CHECK(url.GetPort() == 4567);
+    
     // url form encoding
     NPT_UrlQuery query;
     query.AddField("url1","http://foo.bar/foo?q=3&bar=+7/3&boo=a%3Db&bli=a b");
@@ -247,7 +270,7 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(NPT_UrlQuery::UrlDecode(a_field) == "1 2 3");
     CHECK(b_field != NULL);
     CHECK(NPT_StringsEqual(b_field, "http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3%26boo%3Da%3Db%26bli%3Da+b"));
-    CHECK(NPT_UrlQuery::UrlDecode(b_field) == "http://foo.bar/foo?q=3&bar= 7/3&boo=a=b&bli=a b");
+    CHECK(NPT_UrlQuery::UrlDecode(b_field) == "http://foo.bar/foo?q=3&bar=+7/3&boo=a=b&bli=a b");
     CHECK(c_field == NULL);
     
     // url query misc
@@ -272,6 +295,14 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(NPT_StringsEqual(b_field, ""));
     CHECK(NPT_StringsEqual(c_field, ""));
 
+    // IPv6 test
+    NPT_String localhost = NPT_IpAddress::Loopback.ToUrlHost();
+    if (NPT_IpAddress::Loopback.GetType() == NPT_IpAddress::IPV4) {
+        CHECK(localhost == "127.0.0.1");
+    } else {
+        CHECK(localhost == "[::1]");
+    }
+    
     printf("--- test done\n");
     
     return 0;

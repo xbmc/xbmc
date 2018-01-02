@@ -59,7 +59,7 @@ public:
     // types
     class Entry {
     public:
-        Entry(const unsigned char* data);
+        Entry(const unsigned char* data, NPT_Size data_available);
         NPT_String    m_Name;
         NPT_UInt16    m_Flags;
         NPT_UInt16    m_CompressionMethod;

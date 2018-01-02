@@ -112,10 +112,14 @@ main(int argc, char** argv)
         return 1;
     }
 
-    // init options
+	// init options
+#if defined(NPT_CONFIG_ENABLE_TLS)
+	unsigned int tls_options = NPT_HttpTlsConnector::OPTION_ACCEPT_SELF_SIGNED_CERTS | NPT_HttpTlsConnector::OPTION_ACCEPT_HOSTNAME_MISMATCH;
+#else
+	unsigned int tls_options = 0;
+#endif
     const char*  tls_cert_filename = NULL;
     const char*  tls_cert_password = NULL;
-    unsigned int tls_options       = NPT_HttpTlsConnector::OPTION_ACCEPT_SELF_SIGNED_CERTS | NPT_HttpTlsConnector::OPTION_ACCEPT_HOSTNAME_MISMATCH;
     const char*  url               = NULL;
     unsigned int threads           = 1;
     unsigned int max_requests      = 0;
@@ -154,6 +158,7 @@ main(int argc, char** argv)
    
     // load a client cert if needed
     NPT_TlsContext* tls_context = NULL;
+#if defined(NPT_CONFIG_ENABLE_TLS)
     if (tls_options || tls_cert_filename) {
         tls_context = new NPT_TlsContext(NPT_TlsContext::OPTION_VERIFY_LATER | NPT_TlsContext::OPTION_ADD_DEFAULT_TRUST_ANCHORS/* | NPT_TlsContext::OPTION_NO_SESSION_CACHE*/);
         if (tls_cert_filename) {
@@ -170,7 +175,8 @@ main(int argc, char** argv)
             }
         }
     }
-    
+#endif
+
     NPT_Array<Worker*> workers;
     for (unsigned int i=0; i<threads; i++) {
         Worker* worker = new Worker(url, tls_context, tls_options);

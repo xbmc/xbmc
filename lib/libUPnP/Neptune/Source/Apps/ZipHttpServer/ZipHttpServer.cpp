@@ -281,7 +281,8 @@ public:
     ZipHttpWorker(unsigned int id, ZipHttpServer* server) :
         m_Id(id),
         m_Server(server),
-        m_State(IDLE) {}
+        m_State(IDLE),
+        m_Verbose(false) {}
     
     // NPT_Runnable methods
     virtual void Run();

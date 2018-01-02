@@ -14,10 +14,10 @@
 #include "NptHttp.h"
 
 /*----------------------------------------------------------------------
-|       NPT_HttpProxySelector::GetSystemDefault
+|       NPT_HttpProxySelector::GetDefault
 +---------------------------------------------------------------------*/
 NPT_HttpProxySelector*
-NPT_HttpProxySelector::GetSystemDefault()
+NPT_HttpProxySelector::GetDefault()
 {
     return NULL;
 }

@@ -36,6 +36,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
 #else
 
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <errno.h>
@@ -57,6 +58,13 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
 const unsigned int NPT_BSD_NETWORK_MAX_ADDR_LIST_LENGTH = 1024;
 
 /*----------------------------------------------------------------------
+|   IPv6 support
++---------------------------------------------------------------------*/
+#if defined(NPT_CONFIG_ENABLE_IPV6)
+#include <arpa/inet.h>
+#endif
+
+/*----------------------------------------------------------------------
 |   MapGetAddrInfoErrorCode
 +---------------------------------------------------------------------*/
 static NPT_Result
@@ -76,7 +84,14 @@ NPT_NetworkNameResolver::Resolve(const char*              name,
     // empty the list first
     addresses.Clear();
     
+    
     // get the addr list
+
+    //struct addrinfo hints;
+    //NPT_SetMemory(&hints, 0, sizeof(hints));
+    //hints.ai_family   = PF_UNSPEC;
+    //hints.ai_socktype = SOCK_STREAM;
+    //hints.ai_flags    = AI_DEFAULT;
     struct addrinfo *infos = NULL;
     int result = getaddrinfo(name,  /* hostname */
                              NULL,  /* servname */
@@ -87,14 +102,33 @@ NPT_NetworkNameResolver::Resolve(const char*              name,
     }
     
     for (struct addrinfo* info = infos; 
-         info && addresses.GetItemCount() < NPT_BSD_NETWORK_MAX_ADDR_LIST_LENGTH; 
-         info = info->ai_next) {
-        if (info->ai_family != AF_INET) continue;
-        if (info->ai_addrlen != sizeof(struct sockaddr_in)) continue;
-        if (info->ai_protocol != 0 && info->ai_protocol != IPPROTO_TCP) continue; 
-        struct sockaddr_in* inet_addr = (struct sockaddr_in*)info->ai_addr;
-        NPT_IpAddress address(ntohl(inet_addr->sin_addr.s_addr));
-        addresses.Add(address);
+                          info && addresses.GetItemCount() < NPT_BSD_NETWORK_MAX_ADDR_LIST_LENGTH;
+                          info = info->ai_next) {
+        unsigned int expected_length;
+        if (info->ai_family == AF_INET) {
+            expected_length = sizeof(struct sockaddr_in);
+#if defined(NPT_CONFIG_ENABLE_IPV6)
+        } else if (info->ai_family == AF_INET6) {
+            expected_length = sizeof(struct sockaddr_in6);
+#endif
+        } else {
+            continue;
+        }
+        if ((unsigned int)info->ai_addrlen < expected_length) continue;
+        if (info->ai_protocol != 0 && info->ai_protocol != IPPROTO_TCP) continue;
+    
+        if (info->ai_family == AF_INET) {
+            struct sockaddr_in* inet_addr = (struct sockaddr_in*)info->ai_addr;
+            NPT_IpAddress address(ntohl(inet_addr->sin_addr.s_addr));
+            addresses.Add(address);
+        }
+#if defined(NPT_CONFIG_ENABLE_IPV6)
+        else if (info->ai_family == AF_INET6) {
+            struct sockaddr_in6* inet_addr = (struct sockaddr_in6*)info->ai_addr;
+            NPT_IpAddress address(NPT_IpAddress::IPV6, inet_addr->sin6_addr.s6_addr, 16, inet_addr->sin6_scope_id);
+            addresses.Add(address);
+        }
+#endif
     }
     freeaddrinfo(infos);
     

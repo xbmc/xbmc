@@ -23,6 +23,14 @@
 /*----------------------------------------------------------------------
 |       macros
 +---------------------------------------------------------------------*/
+#define SHOULD_BE_TRUE(r)                                   \
+    do {                                                    \
+        if (!(r)) {                                         \
+            NPT_Debug("failed line %d (%d)\n", __LINE__, r);\
+            exit(1);                                        \
+        }                                                   \
+    } while(0)                                         
+
 #define SHOULD_SUCCEED(r)                                   \
     do {                                                    \
         if (NPT_FAILED(r)) {                                \
@@ -109,41 +117,41 @@ main(int /*argc*/, char** /*argv*/)
 
     // dynamic cast
     BarA* bar_a = new BarA();
-    NPT_ASSERT(bar_a != NULL);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(BarA, bar_a) == bar_a);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, bar_a) == NULL);
-    NPT_ASSERT(bar_a->bar() == 1);
+    SHOULD_BE_TRUE(bar_a != NULL);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(BarA, bar_a) == bar_a);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooA, bar_a) == NULL);
+    SHOULD_BE_TRUE(bar_a->bar() == 1);
     delete bar_a;
 
     FooA* foo_a = new FooA();
-    NPT_ASSERT(foo_a != NULL);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, foo_a) == foo_a);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooB, foo_a) == NULL);
-    NPT_ASSERT(foo_a->foo() == 2);
+    SHOULD_BE_TRUE(foo_a != NULL);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooA, foo_a) == foo_a);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooB, foo_a) == NULL);
+    SHOULD_BE_TRUE(foo_a->foo() == 2);
     delete foo_a;
 
     FooB* foo_b = new FooB();
-    NPT_ASSERT(foo_b != NULL);
+    SHOULD_BE_TRUE(foo_b != NULL);
     foo_a = NPT_DYNAMIC_CAST(FooA, foo_b);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooB, foo_b) == foo_b);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, foo_b) != NULL);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooC, foo_b) == NULL);
-    NPT_ASSERT(foo_a->foo() == 3);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooB, foo_b) == foo_b);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooA, foo_b) != NULL);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooC, foo_b) == NULL);
+    SHOULD_BE_TRUE(foo_a->foo() == 3);
     delete foo_b;
 
     FooC* foo_c = new FooC();
-    NPT_ASSERT(foo_c != NULL);
+    SHOULD_BE_TRUE(foo_c != NULL);
     foo_a = NPT_DYNAMIC_CAST(FooA, foo_c);
     foo_b = NPT_DYNAMIC_CAST(FooB, foo_c);
     bar_a = NPT_DYNAMIC_CAST(BarA, foo_c);
-    NPT_ASSERT(NPT_DYNAMIC_CAST(FooC, foo_c) == foo_c);
-    NPT_ASSERT(foo_a != NULL);
-    NPT_ASSERT(foo_b != NULL);
-    NPT_ASSERT(bar_a != NULL);
-    NPT_ASSERT(foo_a->foo() == 4);
-    NPT_ASSERT(foo_b->foo() == 4);
-    NPT_ASSERT(foo_c->foo() == 4);
-    NPT_ASSERT(bar_a->bar() == 5);
+    SHOULD_BE_TRUE(NPT_DYNAMIC_CAST(FooC, foo_c) == foo_c);
+    SHOULD_BE_TRUE(foo_a != NULL);
+    SHOULD_BE_TRUE(foo_b != NULL);
+    SHOULD_BE_TRUE(bar_a != NULL);
+    SHOULD_BE_TRUE(foo_a->foo() == 4);
+    SHOULD_BE_TRUE(foo_b->foo() == 4);
+    SHOULD_BE_TRUE(foo_c->foo() == 4);
+    SHOULD_BE_TRUE(bar_a->bar() == 5);
     delete foo_c;
 
     // misc type tests
@@ -154,61 +162,61 @@ main(int /*argc*/, char** /*argv*/)
     NPT_Int64     si64;
     NPT_UInt64    ui64;
     
-    NPT_ASSERT(sizeof(NPT_UInt32) == sizeof(NPT_Int32));
-    NPT_ASSERT(sizeof(NPT_Int32) >= 4);
-    NPT_ASSERT(sizeof(NPT_UInt64) == sizeof(NPT_Int64));
-    NPT_ASSERT(sizeof(NPT_Int64) >= 8);
+    SHOULD_BE_TRUE(sizeof(NPT_UInt32) == sizeof(NPT_Int32));
+    SHOULD_BE_TRUE(sizeof(NPT_Int32) >= 4);
+    SHOULD_BE_TRUE(sizeof(NPT_UInt64) == sizeof(NPT_Int64));
+    SHOULD_BE_TRUE(sizeof(NPT_Int64) >= 8);
     sl = NPT_LONG_MAX;
     sl += 1;
-    NPT_ASSERT(sl == NPT_LONG_MIN);
+    SHOULD_BE_TRUE(sl == NPT_LONG_MIN);
     si = NPT_INT_MAX;
     si += 1;
-    NPT_ASSERT(si == NPT_INT_MIN);
+    SHOULD_BE_TRUE(si == NPT_INT_MIN);
     si64 = NPT_INT64_MAX;
     si64 += 1;
-    NPT_ASSERT(si64 == NPT_INT64_MIN);
+    SHOULD_BE_TRUE(si64 == NPT_INT64_MIN);
     ul = NPT_ULONG_MAX;
     ul += 1;
-    NPT_ASSERT(ul == 0);
+    SHOULD_BE_TRUE(ul == 0);
     ui = NPT_UINT_MAX;
     ui += 1;
-    NPT_ASSERT(ui == 0);
+    SHOULD_BE_TRUE(ui == 0);
     ui64 = NPT_UINT64_MAX;
     ui64 += 1;
-    NPT_ASSERT(ui64 == 0);
+    SHOULD_BE_TRUE(ui64 == 0);
     
     // base64
     NPT_String t = "hello";
     NPT_String base64;
     NPT_DataBuffer data;
     result = NPT_Base64::Encode((const NPT_Byte*)t.GetChars(), t.GetLength(), base64);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(base64 == "aGVsbG8=");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(base64 == "aGVsbG8=");
     result = NPT_Base64::Decode(base64.GetChars(), base64.GetLength(), data);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(data.GetDataSize() == t.GetLength());
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(data.GetDataSize() == t.GetLength());
     NPT_String tt((const char*)data.GetData(), data.GetDataSize());
-    NPT_ASSERT(tt == t);
+    SHOULD_BE_TRUE(tt == t);
 
     t = "hello!";
     result = NPT_Base64::Encode((const NPT_Byte*)t.GetChars(), t.GetLength(), base64);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(base64 == "aGVsbG8h");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(base64 == "aGVsbG8h");
     result = NPT_Base64::Decode(base64.GetChars(), base64.GetLength(), data);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(data.GetDataSize() == t.GetLength());
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(data.GetDataSize() == t.GetLength());
     tt.Assign((const char*)data.GetData(), data.GetDataSize());
-    NPT_ASSERT(tt == t);
+    SHOULD_BE_TRUE(tt == t);
 
     t = "hello!!";
     result = NPT_Base64::Encode((const NPT_Byte*)t.GetChars(), t.GetLength(), base64);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(base64 == "aGVsbG8hIQ==");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(base64 == "aGVsbG8hIQ==");
     result = NPT_Base64::Decode(base64.GetChars(), base64.GetLength(), data);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(data.GetDataSize() == t.GetLength());
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(data.GetDataSize() == t.GetLength());
     tt.Assign((const char*)data.GetData(), data.GetDataSize());
-    NPT_ASSERT(tt == t);
+    SHOULD_BE_TRUE(tt == t);
     
     unsigned char r256_bin[] = {
         0x7d, 0x5f, 0xd0, 0xf4, 0x6a, 0xa8, 0xae, 0x34, 0x6e, 0x32, 0x1d, 0xa1,
@@ -238,8 +246,8 @@ main(int /*argc*/, char** /*argv*/)
     NPT_Base64::Encode(r256_bin, sizeof(r256_bin), b64);
     NPT_DataBuffer r256_out;
     NPT_Base64::Decode(b64.GetChars(), b64.GetLength(), r256_out);
-    NPT_ASSERT(r256_out.GetDataSize() == sizeof(r256_bin));
-    NPT_ASSERT(r256_bin[sizeof(r256_bin)-1] == r256_out.GetData()[sizeof(r256_bin)-1]);
+    SHOULD_BE_TRUE(r256_out.GetDataSize() == sizeof(r256_bin));
+    SHOULD_BE_TRUE(r256_bin[sizeof(r256_bin)-1] == r256_out.GetData()[sizeof(r256_bin)-1]);
 
     unsigned char random_bytes[] = {
         0xc7, 0xee, 0x49, 0x9e, 0x2c, 0x8b, 0x1c, 0x16, 0x9e, 0x7f, 0x30, 0xd0,
@@ -271,135 +279,135 @@ main(int /*argc*/, char** /*argv*/)
         "NxC1dKuQTcTRDY1vAfUsyRp5oUFxK/vz1eQq9a2AegP/X0WM7GpLBeNlGXAFrcS4\r\n"
         "Tp6aNkqGnfWZywC4uaeGGPya5wBqZ/pCnf9NeuToA4j/YOGNCV9v3ms=";
     result = NPT_Base64::Decode(t.GetChars(), t.GetLength(), data);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(data.GetDataSize() == 233);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(data.GetDataSize() == 233);
     NPT_Array<unsigned char> verif(data.GetData(), data.GetDataSize());
-    NPT_ASSERT(verif == random);
+    SHOULD_BE_TRUE(verif == random);
 
     result = NPT_Base64::Encode(&random[0], random.GetItemCount(), base64, NPT_BASE64_PEM_BLOCKS_PER_LINE);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(base64 == t);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(base64 == t);
 
     NPT_String t_url = t;
     t.Replace('/', '_');
     t.Replace('+', '-');
     result = NPT_Base64::Encode(&random[0], random.GetItemCount(), base64, NPT_BASE64_PEM_BLOCKS_PER_LINE, true);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(base64 == t);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(base64 == t);
     
     t = "76768484767685839";
     result = NPT_Base64::Decode(t.GetChars(), t.GetLength(), data);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_FORMAT);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_FORMAT);
 
     t = "76869=978686";
     result = NPT_Base64::Decode(t.GetChars(), t.GetLength(), data);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_FORMAT);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_FORMAT);
 
     t = "7686=8978686";
     result = NPT_Base64::Decode(t.GetChars(), t.GetLength(), data);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_FORMAT);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_FORMAT);
 
     t = "7686==978686";
     result = NPT_Base64::Decode(t.GetChars(), t.GetLength(), data);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_FORMAT);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_FORMAT);
 
     // test IP address parsing
     NPT_IpAddress ip;
-    NPT_ASSERT(NPT_FAILED(ip.Parse("")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("a.b.c.d")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.2.3.4.5")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.2.3.4.")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.2.3.4f")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.g.3.4")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.2..3.4")));
-    NPT_ASSERT(NPT_FAILED(ip.Parse("1.2.300.4")));
-    NPT_ASSERT(NPT_SUCCEEDED(ip.Parse("1.2.3.4")));
-    NPT_ASSERT(ip.AsBytes()[0] == 1);
-    NPT_ASSERT(ip.AsBytes()[1] == 2);
-    NPT_ASSERT(ip.AsBytes()[2] == 3);
-    NPT_ASSERT(ip.AsBytes()[3] == 4);
-    NPT_ASSERT(NPT_SUCCEEDED(ip.Parse("255.255.0.1")));
-    NPT_ASSERT(ip.AsBytes()[0] == 255);
-    NPT_ASSERT(ip.AsBytes()[1] == 255);
-    NPT_ASSERT(ip.AsBytes()[2] == 0);
-    NPT_ASSERT(ip.AsBytes()[3] == 1);
-    NPT_ASSERT(NPT_SUCCEEDED(ip.Parse("0.0.0.0")));
-    NPT_ASSERT(ip.AsBytes()[0] == 0);
-    NPT_ASSERT(ip.AsBytes()[1] == 0);
-    NPT_ASSERT(ip.AsBytes()[2] == 0);
-    NPT_ASSERT(ip.AsBytes()[3] == 0);
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("a.b.c.d")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.2.3.4.5")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.2.3.4.")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.2.3.4f")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.g.3.4")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.2..3.4")));
+    SHOULD_BE_TRUE(NPT_FAILED(ip.Parse("1.2.300.4")));
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(ip.Parse("1.2.3.4")));
+    SHOULD_BE_TRUE(ip.AsBytes()[0] == 1);
+    SHOULD_BE_TRUE(ip.AsBytes()[1] == 2);
+    SHOULD_BE_TRUE(ip.AsBytes()[2] == 3);
+    SHOULD_BE_TRUE(ip.AsBytes()[3] == 4);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(ip.Parse("255.255.0.1")));
+    SHOULD_BE_TRUE(ip.AsBytes()[0] == 255);
+    SHOULD_BE_TRUE(ip.AsBytes()[1] == 255);
+    SHOULD_BE_TRUE(ip.AsBytes()[2] == 0);
+    SHOULD_BE_TRUE(ip.AsBytes()[3] == 1);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(ip.Parse("0.0.0.0")));
+    SHOULD_BE_TRUE(ip.AsBytes()[0] == 0);
+    SHOULD_BE_TRUE(ip.AsBytes()[1] == 0);
+    SHOULD_BE_TRUE(ip.AsBytes()[2] == 0);
+    SHOULD_BE_TRUE(ip.AsBytes()[3] == 0);
 
     // MIME parameter parser
     NPT_Map<NPT_String,NPT_String> params;
     result = NPT_ParseMimeParameters(NULL, params);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_PARAMETERS);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_PARAMETERS);
     
     result = NPT_ParseMimeParameters("", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 0);
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 0);
         
     result = NPT_ParseMimeParameters("foo=bar", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar");
     params.Clear();
 
     result = NPT_ParseMimeParameters(" foo =bar", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar");
     params.Clear();
 
     result = NPT_ParseMimeParameters(" foo= bar", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar");
     params.Clear();
     
     result = NPT_ParseMimeParameters(" foo= bar;", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar");
     params.Clear();
 
     result = NPT_ParseMimeParameters("foo=\"bar\"", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar");
     params.Clear();
 
     result = NPT_ParseMimeParameters("foo=\"ba\"r\"", params);
-    NPT_ASSERT(result == NPT_ERROR_INVALID_SYNTAX);
+    SHOULD_BE_TRUE(result == NPT_ERROR_INVALID_SYNTAX);
     params.Clear();
 
     result = NPT_ParseMimeParameters("foo=\"ba\\\"r\"", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "ba\"r");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "ba\"r");
     params.Clear();
 
     result = NPT_ParseMimeParameters("foo=\"bar\\\"\"", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar\"");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar\"");
     params.Clear();
 
     result = NPT_ParseMimeParameters("foo=\"bar\\\\\"", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 1);
-    NPT_ASSERT(params["foo"] == "bar\\");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 1);
+    SHOULD_BE_TRUE(params["foo"] == "bar\\");
     params.Clear();
 
     result = NPT_ParseMimeParameters("a=1;b=2; c=3; d=4 ; e=\"\\;\"; f=\";\"", params);
-    NPT_ASSERT(NPT_SUCCEEDED(result));
-    NPT_ASSERT(params.GetEntryCount() == 6);
-    NPT_ASSERT(params["a"] == "1");
-    NPT_ASSERT(params["b"] == "2");
-    NPT_ASSERT(params["c"] == "3");
-    NPT_ASSERT(params["d"] == "4");
-    NPT_ASSERT(params["e"] == ";");
-    NPT_ASSERT(params["f"] == ";");
+    SHOULD_BE_TRUE(NPT_SUCCEEDED(result));
+    SHOULD_BE_TRUE(params.GetEntryCount() == 6);
+    SHOULD_BE_TRUE(params["a"] == "1");
+    SHOULD_BE_TRUE(params["b"] == "2");
+    SHOULD_BE_TRUE(params["c"] == "3");
+    SHOULD_BE_TRUE(params["d"] == "4");
+    SHOULD_BE_TRUE(params["e"] == ";");
+    SHOULD_BE_TRUE(params["f"] == ";");
     params.Clear();
 
     // number parsing

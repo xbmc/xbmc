@@ -55,7 +55,7 @@ PLT_EventNotification::Parse(const NPT_HttpRequest&        request,
 {
     NPT_COMPILER_UNUSED(context);
 
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, "PLT_CtrlPoint::ProcessHttpNotify:", request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINER, "PLT_CtrlPoint::ProcessHttpNotify:", &request);
 
     PLT_EventNotification *notification = new PLT_EventNotification();
     notification->m_RequestUrl = request.GetUrl();

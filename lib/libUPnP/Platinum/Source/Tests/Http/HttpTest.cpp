@@ -35,9 +35,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptUtils.h"
 #include "Neptune.h"
-#include "NptLogging.h"
 #include "PltTaskManager.h"
 #include "PltHttpServer.h"
 #include "PltDownloader.h"

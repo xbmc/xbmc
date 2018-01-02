@@ -11,7 +11,7 @@ diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp b/lib/l
 index 9666a4c..8de7d74 100644
 --- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
 +++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
-@@ -521,6 +521,28 @@ NPT_Win32Thread::EntryPoint(void* argument)
+@@ -525,6 +525,28 @@ NPT_Win32Thread::EntryPoint(void* argument)
      NPT_System::GetCurrentTimeStamp(now);
      NPT_System::SetRandomSeed((NPT_UInt32)(now.ToNanos()) + ::GetCurrentThreadId());
  
@@ -37,9 +37,9 @@ index 9666a4c..8de7d74 100644
 +    {
 +    }
 +
-     // run the thread 
-     thread->Run();
-     
+     thread->m_ThreadId = (DWORD)::GetCurrentThreadId();
+ 
+     // run the thread
 -- 
 1.7.11.msysgit.0
 

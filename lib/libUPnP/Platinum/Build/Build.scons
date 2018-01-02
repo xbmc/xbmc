@@ -191,39 +191,50 @@ if os.path.exists(target_config_file):
 # module's implementation only.
 #######################################################
 # Neptune
-NPT_SOURCE_ROOT = '../Neptune'
-
-LibraryModule(name                  = 'Zlib',
-              source_root           = NPT_SOURCE_ROOT,
-              build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
-
-LibraryModule(name                  = 'axTLS',
-              source_root           = NPT_SOURCE_ROOT,
-              build_source_dirs     = ['ThirdParty/axTLS/crypto', 'ThirdParty/axTLS/ssl', 'ThirdParty/axTLS/config/Generic'])
+NPT_SOURCE_ROOT = 'ThirdParty/Neptune'
 
 extra_cpp_flags = []
+neptune_extra_linked_modules = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
     extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
+    neptune_extra_linked_modules += ['Zlib']
+
+    LibraryModule(name                  = 'Zlib',
+                  source_root           = NPT_SOURCE_ROOT,
+                  build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
 
 if not env.has_key('NPT_CONFIG_NO_SSL'):
     extra_cpp_flags += ['NPT_CONFIG_ENABLE_TLS']
     tls_data_dirs  = ['Data/TLS']
     tls_tests      = ['Tls1']
+    neptune_extra_linked_modules += ['axTLS']
+
+    LibraryModule(name                  = 'axTLS',
+                  source_root           = NPT_SOURCE_ROOT,
+                  build_source_dirs     = ['ThirdParty/axTLS/crypto', 'ThirdParty/axTLS/ssl', 'ThirdParty/axTLS/config/Generic'])
 else:
     tls_data_dirs = []
     tls_tests     = []
 
+if not env.has_key('NPT_CONFIG_NO_CRYPTO'):
+    extra_cpp_flags += ['NPT_CONFIG_ENABLE_CRYPTO']
+    neptune_excluded_files = []
+else:
+    neptune_excluded_files = ['NptCrypto.cpp', 'NptDigest.cpp']
+
 LibraryModule(name                  = 'Neptune',
               build_source_dirs     = ['Core']+tls_data_dirs,
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
+              excluded_files        = neptune_excluded_files,
               extra_cpp_defines     = extra_cpp_flags,
-              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib']+['axTLS'],
+              linked_modules        = env['NPT_EXTRA_LIBS']+neptune_extra_linked_modules,
               source_root           = NPT_SOURCE_ROOT + '/Source')
 
 # Platinum
 LibraryModule(name               = 'Platinum',
               build_source_dirs  = ['Core', 'Extras'],
               build_include_dirs = ['Source/Platinum'],
+              extra_cpp_defines  = extra_cpp_flags,
               included_modules   = ['Neptune'])
 
 # Platinum MediaServer

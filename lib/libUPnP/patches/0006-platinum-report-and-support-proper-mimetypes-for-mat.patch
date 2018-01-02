@@ -12,7 +12,7 @@ diff --git a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp b/lib/libUPnP/Neptune/S
 index 132746a..1700afc 100644
 --- a/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
 +++ b/lib/libUPnP/Neptune/Source/Core/NptHttp.cpp
-@@ -2779,12 +2779,14 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
+@@ -2799,12 +2799,14 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
      {"aif",  "audio/x-aiff"},
      {"aifc", "audio/x-aiff"},
      {"aiff", "audio/x-aiff"},
@@ -27,7 +27,7 @@ index 132746a..1700afc 100644
      {"mpeg", "video/mpeg"},
      {"mpg",  "video/mpeg"},
      {"mp4",  "video/mp4"},
-@@ -2797,6 +2799,7 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
+@@ -2817,6 +2819,7 @@ NPT_HttpFileRequestHandler_DefaultFileTypeMap[] = {
      {"wtv",  "video/x-ms-wmv"},
      {"asf",  "video/x-ms-asf"},
      {"mkv",  "video/x-matroska"},

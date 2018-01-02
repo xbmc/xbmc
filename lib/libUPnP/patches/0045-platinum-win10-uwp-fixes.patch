@@ -1,0 +1,259 @@
+From 78d3d7f7abec5e0d76d7efa92b226b5236a7bbea Mon Sep 17 00:00:00 2001
+From: Dale Stammen <dalestam@microsoft.com>
+Date: Fri, 2 Jun 2017 16:34:58 +0300
+Subject: [PATCH] [win10] uwp fixes libUPnP
+
+---
+ lib/libUPnP/CMakeLists.txt                         |  8 ++++--
+ lib/libUPnP/Neptune/Source/Core/NptConfig.h        | 13 ++++++++++
+ lib/libUPnP/Neptune/Source/Core/NptUtils.cpp       | 30 ++++++++++++++++++++++
+ lib/libUPnP/Neptune/Source/Core/NptUtils.h         |  7 +++++
+ .../Neptune/Source/System/Bsd/NptBsdSockets.cpp    |  2 ++
+ .../Source/System/StdC/NptStdcEnvironment.cpp      |  2 +-
+ .../System/Win32/NptWin32DynamicLibraries.cpp      |  4 +++
+ .../Source/System/Win32/NptWin32MessageQueue.cpp   |  3 ++-
+ .../Source/System/Win32/NptWin32MessageQueue.h     |  3 +++
+ .../Source/System/Win32/NptWin32SerialPort.cpp     |  2 ++
+ 10 files changed, 70 insertions(+), 4 deletions(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptConfig.h b/lib/libUPnP/Neptune/Source/Core/NptConfig.h
+index d51f67f94e..130d5cc33b 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptConfig.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptConfig.h
+@@ -60,6 +60,11 @@
+ #define NPT_CONFIG_HAVE_GETENV
+ #define NPT_CONFIG_HAVE_SETENV
+ #define NPT_CONFIG_HAVE_UNSETENV
++#if defined(TARGET_WINDOWS_STORE)
++#undef NPT_CONFIG_HAVE_GETENV
++#undef NPT_CONFIG_HAVE_SETENV
++#undef NPT_CONFIG_HAVE_UNSETENV
++#endif
+ #define NPT_CONFIG_HAVE_READDIR_R
+ #endif /* NPT_CONFIG_HAS_STD_C */
+ 
+@@ -240,12 +245,20 @@ typedef long NPT_PointerLong;
+ #define NPT_strncpy(d,s,c)       strncpy_s(d,c+1,s,c)
+ #define NPT_strcpy(d,s)          strcpy_s(d,strlen(s)+1,s)
+ #undef NPT_CONFIG_HAVE_GETENV
++#ifdef TARGET_WINDOWS_STORE
++#undef NPT_CONFIG_HAVE_GETENV
++#undef NPT_CONFIG_HAVE_DUPENV_S
++#undef NPT_CONFIG_HAVE_SETENV
++#undef NPT_CONFIG_HAVE_UNSETENV
++#undef NPT_CONFIG_HAVE_PUTENV_S
++#else
+ #define NPT_CONFIG_HAVE_DUPENV_S
+ #define dupenv_s _dupenv_s
+ #undef NPT_CONFIG_HAVE_SETENV
+ #undef NPT_CONFIG_HAVE_UNSETENV
+ #define NPT_CONFIG_HAVE_PUTENV_S
+ #define putenv_s _putenv_s
++#endif
+ #else
+ #undef NPT_CONFIG_HAVE_GMTIME_R
+ #undef NPT_CONFIG_HAVE_LOCALTIME_R
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp b/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
+index a68a1afeaf..d98710dc12 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
+@@ -44,6 +44,12 @@
+ #include <limits.h>
+ #endif
+ 
++#ifdef TARGET_WINDOWS_STORE
++#ifndef WIN32_LEAN_AND_MEAN
++#define WIN32_LEAN_AND_MEAN 1
++#endif
++#include <windows.h>
++#endif
+ /*----------------------------------------------------------------------
+ |   constants
+ +---------------------------------------------------------------------*/
+@@ -925,3 +931,27 @@ NPT_ParseMimeParameters(const char*                      encoded,
+     return NPT_SUCCESS;
+ }
+ 
++#ifdef TARGET_WINDOWS_STORE
++std::wstring win32ConvertUtf8ToW(const std::string &text)
++{
++  if (text.empty())
++  {
++    return L"";
++  }
++
++  int bufSize = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text.c_str(), -1, NULL, 0);
++  if (bufSize == 0)
++    return L"";
++  wchar_t *converted = new wchar_t[bufSize];
++  if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text.c_str(), -1, converted, bufSize) != bufSize)
++  {
++    delete[] converted;
++    return L"";
++  }
++
++  std::wstring Wret(converted);
++  delete[] converted;
++
++  return Wret;
++}
++#endif
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptUtils.h b/lib/libUPnP/Neptune/Source/Core/NptUtils.h
+index 3a06d497f4..89b2e29812 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptUtils.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptUtils.h
+@@ -54,6 +54,9 @@
+ #include <stdarg.h>
+ #endif
+ 
++#if defined(TARGET_WINDOWS_STORE)
++#include <string>
++#endif
+ /*----------------------------------------------------------------------
+ |   macros
+ +---------------------------------------------------------------------*/
+@@ -225,4 +228,8 @@ extern void NPT_SetMemory(void* dest, int c, NPT_Size size);
+ extern int NPT_MemoryEqual(const void* s1, const void* s2, unsigned long n); 
+ #endif
+ 
++#if defined(TARGET_WINDOWS_STORE)
++std::wstring win32ConvertUtf8ToW(const std::string &text);
++#endif
++
+ #endif // _NPT_UTILS_H_
+diff --git a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+index ee86dbf4b0..a42dfbfb85 100644
+--- a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+@@ -131,6 +131,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
+ #undef SetPort
+ #endif
+ 
++#ifndef TARGET_WINDOWS_STORE
+ #if !defined(EWOULDBLOCK)
+ #define EWOULDBLOCK  WSAEWOULDBLOCK
+ #endif
+@@ -167,6 +168,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
+ #if !defined(ENOTCONN)
+ #define ENOTCONN     WSAENOTCONN
+ #endif
++#endif
+ #if !defined(EAGAIN)
+ #define EAGAIN       WSAEWOULDBLOCK 
+ #endif
+diff --git a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp b/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
+index c9f9939d2b..f700b2212b 100644
+--- a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
++++ b/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
+@@ -22,7 +22,7 @@
+ NPT_Result 
+ NPT_Environment::Get(const char* name, NPT_String& value)
+ {
+-    char* env;
++    char* env = nullptr;
+ 
+     /* default value */
+     value.SetLength(0);
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
+index caaf6d1903..371aaf5ab9 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
+@@ -97,7 +97,11 @@ NPT_DynamicLibrary::Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*&
+ 
+     // load the lib
+     NPT_LOG_FINE_2("loading library %s, flags=%x", name, flags);
++#ifdef TARGET_WINDOWS_STORE
++    HMODULE handle = LoadPackagedLibrary(NPT_WIN32_A2W(name), NULL);
++#else
+     HMODULE handle = LoadLibraryW(NPT_WIN32_A2W(name));
++#endif
+     if (handle == NULL) {
+         NPT_LOG_FINE("library not found");
+         return NPT_FAILURE;
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
+index f415b851d5..d5ad0b953c 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
+@@ -11,7 +11,7 @@
+ |       includes
+ +---------------------------------------------------------------------*/
+ #include "NptWin32MessageQueue.h"
+-
++#ifndef TARGET_WINDOWS_STORE
+ /*----------------------------------------------------------------------
+ |       platform adaptation
+ +---------------------------------------------------------------------*/
+@@ -181,3 +181,4 @@ NPT_Win32WindowMessageQueue::HandleMessage(NPT_Message*        message,
+     return result;
+ }
+ 
++#endif // ! TARGET_WINDOWS_STORE
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.h b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.h
+index a5f846b016..1d84800586 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.h
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32MessageQueue.h
+@@ -10,6 +10,7 @@
+ #ifndef _NPT_WIN32_MESSAGE_QUEUE_
+ #define _NPT_WIN32_MESSAGE_QUEUE_
+ 
++#ifndef TARGET_WINDOWS_STORE
+ /*----------------------------------------------------------------------
+ |       includes
+ +---------------------------------------------------------------------*/
+@@ -45,5 +46,7 @@ private:
+     HINSTANCE   m_hInstance;
+ };
+ 
++#endif // ! TARGET_WINDOWS_STORE
++
+ #endif // _NPT_WIN32_MESSAGE_QUEUE_
+ 
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Queue.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Queue.cpp
+@@ -24,7 +24,7 @@
+ #include "NptDebug.h"
+ #include "NptLogging.h"
+ 
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+ // for XBox, Windows 7 Desktop or earlier
+ #include "NptWin32Threads.h"
+ #elif WINAPI_FAMILY == WINAPI_FAMILY_APP
+@@ -55,7 +55,7 @@ private:
+     // members
+     NPT_Cardinal             m_MaxItems;
+ 
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+     // for XBox, Windows 7 Desktop or earlier
+     NPT_Win32CriticalSection m_Mutex;
+     NPT_Win32Event*          m_CanPushCondition;
+@@ -76,7 +76,7 @@ private:
+ NPT_Win32Queue::NPT_Win32Queue(NPT_Cardinal max_items) : 
+     m_MaxItems(max_items)
+ {
+-#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
++#if !defined(WINAPI_FAMILY) || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP || defined(TARGET_WINDOWS_STORE)
+     // for XBox, Windows 7 Desktop or earlier
+     m_CanPushCondition = new NPT_Win32Event(true, true);
+     m_CanPopCondition  = new NPT_Win32Event(true, false);
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
+index 9428648bd7..4dfc23a603 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
+@@ -17,6 +17,7 @@
+ #include "NptStrings.h"
+ #include "NptLogging.h"
+ 
++#ifndef TARGET_WINDOWS_STORE
+ /*----------------------------------------------------------------------
+ |   NPT_Win32HandletWrapper
+ +---------------------------------------------------------------------*/
+@@ -338,3 +339,4 @@ NPT_SerialPort::NPT_SerialPort(const char* name)
+ {
+     m_Delegate = new NPT_Win32SerialPort(name);
+ }
++#endif // ! TARGET_WINDOWS_STORE
+-- 
+2.13.2.windows.1
+

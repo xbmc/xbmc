@@ -224,14 +224,6 @@ Test1()
     NPT_Debug("+++ deleting non-detached thread +++\n");
     delete thread1;
     NPT_Debug("+++ done with non-detached thread +++\n");
-
-    NPT_Debug("+++ creating detached thread +++\n");
-    thread1 = new NPT_Thread(runnable, true); // detached
-    NPT_Debug("+++ starting detached thread +++\n");
-    thread1->Start();
-    NPT_Debug("+++ deleting for detached thread +++\n");
-    delete thread1;
-    NPT_Debug("+++ done with detached thread +++\n");
 }
 
 /*----------------------------------------------------------------------

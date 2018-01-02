@@ -105,7 +105,6 @@ private:
 private:
     NPT_List<PLT_ThreadTask*>  m_Tasks;
     NPT_Mutex                  m_TasksLock;
-    NPT_Mutex                  m_CallbackLock;
     NPT_Queue<int>*            m_Queue;
     NPT_Cardinal               m_MaxTasks;
     NPT_Cardinal               m_RunningTasks;

@@ -6,9 +6,7 @@
 //  Copyright 2010 Plutinosoft LLC. All rights reserved.
 //
 
-#import "NptConfig.h"
-#import "NptTypes.h"
-#import "NptResults.h"
+#import "Neptune.h"
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #include <UIKit/UIKit.h>
@@ -44,16 +42,14 @@ typedef struct PLT_DeviceHostReference PLT_DeviceHostReference;
     PLT_DeviceHostReference* device;
 }
 
-- (id)initWithDeviceHost:(PLT_DeviceHostReference*)device;
+- (void)setDevice:(PLT_DeviceHostReference*)_device;
+- (PLT_DeviceHostReference&)getDevice;
 @end
 
 /*----------------------------------------------------------------------
 |   PLT_UPnPObject
 +---------------------------------------------------------------------*/
-@interface PLT_UPnPObject : NSObject {
-@private
-    PLT_UPnP* upnp;
-}
+@interface PLT_UPnPObject : NSObject
 
 - (NPT_Result)start;
 - (NPT_Result)stop;

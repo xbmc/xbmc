@@ -81,7 +81,7 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
                                 // is incorrectly defined, so we'll get a C4244 warning
 #endif // _MSC_VER
     if (m_WindowHandle) {
-        SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+        SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, NPT_POINTER_TO_LONG(this));
     }
 #if defined(_MSC_VER)
 #pragma warning( pop )

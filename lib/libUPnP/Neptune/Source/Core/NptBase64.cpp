@@ -80,11 +80,13 @@ NPT_Base64::Decode(const char*     base64,
         unsigned char c = *base64++;
         if (c >= NPT_ARRAY_SIZE(NPT_Base64_Bytes)) continue;
         if (url_safe) {
-            // remap some characters
+            // remap some characters and forbid the mapped variants
             if (c == '-') {
                 c = '+';
             } else if (c == '_') {
                 c = '/';
+            } else if (c == '+' || c == '/') {
+                c = 0; // will be ignored later
             }
         }
         signed char code = NPT_Base64_Bytes[c];

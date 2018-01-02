@@ -189,7 +189,7 @@ index 8c5d587ff143..af4f6dc9497a 100644
      
  private:
      // methods
-@@ -1007,7 +1007,7 @@ class NPT_HttpEnvProxySelector : public NPT_HttpProxySelector,
+@@ -1012,7 +1012,7 @@ class NPT_HttpEnvProxySelector : public NPT_HttpProxySelector,
      static NPT_HttpEnvProxySelector* GetInstance();
      
      // NPT_HttpProxySelector methods
@@ -198,7 +198,7 @@ index 8c5d587ff143..af4f6dc9497a 100644
  
  private:    
      // class variables
-@@ -1220,7 +1220,7 @@ class NPT_HttpStaticProxySelector : public NPT_HttpProxySelector
+@@ -1225,7 +1225,7 @@ class NPT_HttpStaticProxySelector : public NPT_HttpProxySelector
                                  NPT_UInt16  htts_proxy_port);
  
      // NPT_HttpProxySelector methods
@@ -281,7 +281,7 @@ index 402d515e0e9a..fd5bfd66b733 100644
      
      // methods
      NPT_Result      UntrackConnection(NPT_HttpClient::Connection* connection);
-@@ -629,9 +629,9 @@ class NPT_HttpStaticRequestHandler : public NPT_HttpRequestHandler
+@@ -635,9 +635,9 @@ class NPT_HttpStaticRequestHandler : public NPT_HttpRequestHandler
                                   bool        copy = true);
  
      // NPT_HttpRequestHandler methods
@@ -293,7 +293,7 @@ index 402d515e0e9a..fd5bfd66b733 100644
  
  private:
      NPT_String     m_MimeType;
-@@ -659,9 +659,9 @@ class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
+@@ -665,9 +665,9 @@ class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
                                 const char* auto_index = NULL);
  
      // NPT_HttpRequestHandler methods
@@ -305,7 +305,7 @@ index 402d515e0e9a..fd5bfd66b733 100644
      
      // class methods
      static const char* GetDefaultContentType(const char* extension);
-@@ -816,16 +816,16 @@ class NPT_HttpChunkedInputStream : public NPT_InputStream
+@@ -821,16 +821,16 @@ class NPT_HttpChunkedInputStream : public NPT_InputStream
  public:
      // constructors and destructor
      NPT_HttpChunkedInputStream(NPT_BufferedInputStreamReference& stream);
@@ -328,7 +328,7 @@ index 402d515e0e9a..fd5bfd66b733 100644
  
  protected:
      // members
-@@ -842,15 +842,15 @@ class NPT_HttpChunkedOutputStream : public NPT_OutputStream
+@@ -847,15 +847,15 @@ class NPT_HttpChunkedOutputStream : public NPT_OutputStream
  public:
      // constructors and destructor
      NPT_HttpChunkedOutputStream(NPT_OutputStream& stream);
@@ -379,8 +379,8 @@ index 08037427ab09..5c75afe908d0 100644
 +    void Log(const NPT_LogRecord& record) override;
  
  private:
-     // methods
-@@ -122,7 +122,7 @@ class NPT_LogUdpHandler : public NPT_LogHandler {
+     // constructor
+@@ -125,7 +125,7 @@ class NPT_LogUdpHandler : public NPT_LogHandler {
      static NPT_Result Create(const char* logger_name, NPT_LogHandler*& handler);
  
      // methods
@@ -389,7 +389,7 @@ index 08037427ab09..5c75afe908d0 100644
  
  private:
      // members
-@@ -136,7 +136,7 @@ class NPT_LogNullHandler : public NPT_LogHandler {
+@@ -139,7 +139,7 @@ class NPT_LogNullHandler : public NPT_LogHandler {
      static NPT_Result Create(NPT_LogHandler*& handler);
  
      // methods
@@ -398,7 +398,7 @@ index 08037427ab09..5c75afe908d0 100644
  };
  
  class NPT_LogCustomHandler : public NPT_LogHandler {
-@@ -146,7 +146,7 @@ class NPT_LogCustomHandler : public NPT_LogHandler {
+@@ -149,7 +149,7 @@ class NPT_LogCustomHandler : public NPT_LogHandler {
      static NPT_Result Create(NPT_LogHandler*& handler);
      
      // methods
@@ -411,7 +411,7 @@ diff --git a/lib/libUPnP/Neptune/Source/Core/NptLogging.h b/lib/libUPnP/Neptune/
 index 3168424a3bc8..60966c922e52 100644
 --- a/lib/libUPnP/Neptune/Source/Core/NptLogging.h
 +++ b/lib/libUPnP/Neptune/Source/Core/NptLogging.h
-@@ -189,16 +189,16 @@ class NPT_HttpLoggerConfigurator : NPT_HttpRequestHandler, public NPT_Thread {
+@@ -194,16 +194,16 @@ class NPT_HttpLoggerConfigurator : NPT_HttpRequestHandler, public NPT_Thread {
      // constructor and destructor
      NPT_HttpLoggerConfigurator(NPT_UInt16 port = NPT_HTTP_LOGGER_CONFIGURATOR_DEFAULT_PORT,
                                 bool       detached = true);
@@ -538,8 +538,8 @@ diff --git a/lib/libUPnP/Neptune/Source/Core/NptSockets.h b/lib/libUPnP/Neptune/
 index 789939a5341d..fcd2830715ef 100644
 --- a/lib/libUPnP/Neptune/Source/Core/NptSockets.h
 +++ b/lib/libUPnP/Neptune/Source/Core/NptSockets.h
-@@ -190,35 +190,35 @@ class NPT_Socket : public NPT_SocketInterface
- public:
+@@ -195,35 +195,35 @@ class NPT_Socket : public NPT_SocketInterface
+     
      // constructor and destructor
      explicit NPT_Socket(NPT_SocketInterface* delegate) : m_SocketDelegate(delegate) {}
 -    virtual ~NPT_Socket();
@@ -584,10 +584,10 @@ index 789939a5341d..fcd2830715ef 100644
          return m_SocketDelegate->Cancel(shutdown);                            
      }                                                          
  
-@@ -241,15 +241,15 @@ class NPT_UdpSocket : public NPT_Socket,
+@@ -246,15 +246,15 @@ class NPT_UdpSocket : public NPT_Socket,
   public:
      // constructor and destructor
-              NPT_UdpSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+              NPT_UdpSocket(NPT_Flags flags=0);
 -    virtual ~NPT_UdpSocket();
 +    ~NPT_UdpSocket() override;
  
@@ -603,10 +603,10 @@ index 789939a5341d..fcd2830715ef 100644
          return m_UdpSocketDelegate->Receive(packet, address);           
      }
  
-@@ -270,23 +270,23 @@ class NPT_UdpMulticastSocket : public NPT_UdpSocket,
+@@ -275,23 +275,23 @@ class NPT_UdpMulticastSocket : public NPT_UdpSocket,
  public:
      // constructor and destructor
-              NPT_UdpMulticastSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+              NPT_UdpMulticastSocket(NPT_Flags flags=0);
 -    virtual ~NPT_UdpMulticastSocket();
 +    ~NPT_UdpMulticastSocket() override;
  
@@ -632,19 +632,19 @@ index 789939a5341d..fcd2830715ef 100644
          return m_UdpMulticastSocketDelegate->SetInterface(iface);
      }
  
-@@ -303,7 +303,7 @@ class NPT_TcpClientSocket : public NPT_Socket
+@@ -308,7 +308,7 @@ class NPT_TcpClientSocket : public NPT_Socket
  public:
      // constructors and destructor
-              NPT_TcpClientSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+              NPT_TcpClientSocket(NPT_Flags flags=0);
 -    virtual ~NPT_TcpClientSocket();
 +    ~NPT_TcpClientSocket() override;
  };
  
  /*----------------------------------------------------------------------
-@@ -315,15 +315,15 @@ class NPT_TcpServerSocket : public NPT_Socket,
+@@ -320,15 +320,15 @@ class NPT_TcpServerSocket : public NPT_Socket,
  public:
      // constructors and destructor
-              NPT_TcpServerSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+              NPT_TcpServerSocket(NPT_Flags flags=0);
 -    virtual ~NPT_TcpServerSocket();
 +    ~NPT_TcpServerSocket() override;
  
@@ -810,7 +810,7 @@ index 9a7455f44b28..4bf73c8d5c9b 100644
 @@ -78,9 +78,9 @@ class NPT_Mutex : public NPT_MutexInterface
   public:
      // methods
-                NPT_Mutex();
+                NPT_Mutex(bool recursive = false);
 -              ~NPT_Mutex() { delete m_Delegate; }
 -    NPT_Result Lock()   { return m_Delegate->Lock();   }
 -    NPT_Result Unlock() { return m_Delegate->Unlock(); }
@@ -869,12 +869,16 @@ index 9a7455f44b28..4bf73c8d5c9b 100644
      virtual NPT_Result Start() = 0;
      virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
      virtual NPT_Result SetPriority(int /*priority*/) { return NPT_SUCCESS; } 
-@@ -244,27 +244,27 @@ class NPT_Thread : public NPT_ThreadInterface
+@@ -245,30 +245,30 @@ class NPT_Thread : public NPT_ThreadInterface
      // methods
      explicit NPT_Thread(bool detached = false);
      explicit NPT_Thread(NPT_Runnable& target, bool detached = false);
 -   ~NPT_Thread() { delete m_Delegate; }
 +   ~NPT_Thread() override { delete m_Delegate; }
+ 
+     // cancel any socket that this thread may be waiting for
+-    NPT_Result CancelBlockerSocket() { return m_Delegate->CancelBlockerSocket(); }
++    NPT_Result CancelBlockerSocket() override { return m_Delegate->CancelBlockerSocket(); }
  
      // NPT_ThreadInterface methods
 -    NPT_Result Start() { 
@@ -908,7 +912,7 @@ diff --git a/lib/libUPnP/Neptune/Source/Core/NptTls.cpp b/lib/libUPnP/Neptune/So
 index c622bb78aa2d..9118352ed5de 100644
 --- a/lib/libUPnP/Neptune/Source/Core/NptTls.cpp
 +++ b/lib/libUPnP/Neptune/Source/Core/NptTls.cpp
-@@ -1052,10 +1052,10 @@ NPT_HttpTlsConnector::VerifyPeer(NPT_TlsClientSession& session, const char* host
+@@ -1055,10 +1055,10 @@ NPT_HttpTlsConnector::VerifyPeer(NPT_TlsClientSession& session, const char* host
  class NPT_HttpSimpleTlsConnection : public NPT_HttpClient::Connection
  {
  public:
@@ -934,7 +938,7 @@ index 4a392fdcc7b1..dafe8ef304ba 100644
     
      // methods
      NPT_Result LoadKey(NPT_TlsKeyFormat     key_format, 
-@@ -281,12 +281,12 @@ class NPT_HttpTlsConnector : public NPT_HttpClient::Connector
+@@ -279,12 +279,12 @@ class NPT_HttpTlsConnector : public NPT_HttpClient::Connector
  class NPT_HttpTlsConnector : public NPT_HttpClient::Connector
  {
  public:
@@ -979,9 +983,9 @@ index b5d18ea38148..f76243bff453 100644
      void SetNamespaceParent(NPT_XmlElementNode* parent);
      void RelinkNamespaceMaps();
  
-@@ -263,8 +263,8 @@ class NPT_XmlTextNode : public NPT_XmlNode
-     const NPT_String& GetString() const { return m_Text; }
- 
+@@ -264,8 +264,8 @@ class NPT_XmlTextNode : public NPT_XmlNode
+     TokenType         GetTokenType() const { return m_TokenType; }
+     
      // type casting
 -    NPT_XmlTextNode*       AsTextNode()       { return this; }
 -    const NPT_XmlTextNode* AsTextNode() const { return this; }
@@ -1046,7 +1050,7 @@ diff --git a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp b/lib/libUP
 index 6174ff96f902..ee86dbf4b092 100644
 --- a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
 +++ b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
-@@ -891,14 +891,14 @@ class NPT_BsdSocketInputStream : public NPT_InputStream,
+@@ -1063,14 +1063,14 @@ class NPT_BsdSocketInputStream : public NPT_InputStream,
      // NPT_InputStream methods
      NPT_Result Read(void*     buffer, 
                      NPT_Size  bytes_to_read, 
@@ -1066,7 +1070,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  };
  
  /*----------------------------------------------------------------------
-@@ -1004,13 +1004,13 @@ class NPT_BsdSocketOutputStream : public NPT_OutputStream,
+@@ -1176,13 +1176,13 @@ class NPT_BsdSocketOutputStream : public NPT_OutputStream,
      // NPT_OutputStream methods
      NPT_Result Write(const void* buffer, 
                       NPT_Size    bytes_to_write, 
@@ -1084,7 +1088,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  };
  
  /*----------------------------------------------------------------------
-@@ -1128,21 +1128,21 @@ class NPT_BsdSocket : public NPT_SocketInterface
+@@ -1320,21 +1320,21 @@ class NPT_BsdSocket : public NPT_SocketInterface
   public:
      // constructors and destructor
               NPT_BsdSocket(SocketFd fd, NPT_Flags flags);
@@ -1116,7 +1120,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  
   protected:
      // members
-@@ -1428,18 +1428,18 @@ class NPT_BsdUdpSocket : public    NPT_UdpSocketInterface,
+@@ -1564,18 +1564,18 @@ class NPT_BsdUdpSocket : public    NPT_UdpSocketInterface,
   public:
      // constructor and destructor
               NPT_BsdUdpSocket(NPT_Flags flags);
@@ -1140,7 +1144,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  
      // friends
      friend class NPT_UdpSocket;
-@@ -1696,15 +1696,15 @@ class NPT_BsdUdpMulticastSocket : public    NPT_UdpMulticastSocketInterface,
+@@ -1833,15 +1833,15 @@ class NPT_BsdUdpMulticastSocket : public    NPT_UdpMulticastSocketInterface,
   public:
      // methods
       NPT_BsdUdpMulticastSocket(NPT_Flags flags);
@@ -1161,7 +1165,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  
      // friends 
      friend class NPT_UdpMulticastSocket;
-@@ -1919,12 +1919,12 @@ class NPT_BsdTcpClientSocket : protected NPT_BsdSocket
+@@ -2129,12 +2129,12 @@ class NPT_BsdTcpClientSocket : protected NPT_BsdSocket
   public:
      // methods
       NPT_BsdTcpClientSocket(NPT_Flags flags);
@@ -1177,7 +1181,7 @@ index 6174ff96f902..ee86dbf4b092 100644
  
  protected:
      // friends
-@@ -2030,25 +2030,25 @@ class NPT_BsdTcpServerSocket : public    NPT_TcpServerSocketInterface,
+@@ -2241,25 +2241,25 @@ class NPT_BsdTcpServerSocket : public    NPT_TcpServerSocketInterface,
   public:
      // methods
       NPT_BsdTcpServerSocket(NPT_Flags flags);
@@ -1234,7 +1238,7 @@ index 36eb9978b085..010ba9be0fe9 100644
 @@ -41,11 +41,11 @@ class NPT_PosixMutex : public NPT_MutexInterface
  public:
      // methods
-              NPT_PosixMutex();
+              NPT_PosixMutex(bool recursive = false);
 -    virtual ~NPT_PosixMutex();
 +    ~NPT_PosixMutex() override;
  
@@ -1246,7 +1250,7 @@ index 36eb9978b085..010ba9be0fe9 100644
  
  private:
      // members
-@@ -109,11 +109,11 @@ class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
+@@ -112,11 +112,11 @@ class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
  public:
      // methods
                 NPT_PosixSharedVariable(int value);
@@ -1263,7 +1267,7 @@ index 36eb9978b085..010ba9be0fe9 100644
  
   private:
      // members
-@@ -267,11 +267,11 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
+@@ -270,11 +270,11 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
   public:
      // methods
           NPT_PosixAtomicVariable(int value);
@@ -1280,24 +1284,26 @@ index 36eb9978b085..010ba9be0fe9 100644
  
   private:
      // members
-@@ -365,11 +365,11 @@ class NPT_PosixThread : public NPT_ThreadInterface
+@@ -368,12 +368,12 @@ class NPT_PosixThread : public NPT_ThreadInterface
                  NPT_PosixThread(NPT_Thread*   delegator,
                                  NPT_Runnable& target,
                                  bool          detached);
 -               ~NPT_PosixThread();
 -    NPT_Result  Start(); 
 -    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+-    NPT_Result  CancelBlockerSocket();
 -    NPT_Result  SetPriority(int priority);
 -    NPT_Result  GetPriority(int& priority);
 +               ~NPT_PosixThread() override;
 +    NPT_Result  Start() override; 
 +    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) override;
++    NPT_Result  CancelBlockerSocket() override;
 +    NPT_Result  SetPriority(int priority) override;
 +    NPT_Result  GetPriority(int& priority) override;
      
      // class methods
      static NPT_Result GetPriority(NPT_Thread::ThreadId thread_id, int& priority);
-@@ -380,10 +380,10 @@ class NPT_PosixThread : public NPT_ThreadInterface
+@@ -384,10 +384,10 @@ class NPT_PosixThread : public NPT_ThreadInterface
      static void* EntryPoint(void* argument);
  
      // NPT_Runnable methods
@@ -1542,7 +1548,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttp.h b/lib/libUPnP/Platinum/S
 index fc3d1b55c0ff..00e2b9f570e3 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltHttp.h
 +++ b/lib/libUPnP/Platinum/Source/Core/PltHttp.h
-@@ -155,12 +155,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
+@@ -198,12 +198,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
  public:
      PLT_HttpRequestHandler(NPT_HttpRequestHandler* delegate) : 
          m_Delegate(delegate) {}
@@ -2206,7 +2212,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h b/lib/libU
 index d8ecd11d8eca..e5f98b2f350f 100644
 --- a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
 +++ b/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
-@@ -51,7 +51,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -49,7 +49,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
  public:
      PLT_RingBufferStream(NPT_Size buffer_size = 4096, bool blocking = true);
      PLT_RingBufferStream(NPT_RingBufferReference& buffer, bool blocking = true);
@@ -2215,7 +2221,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
      
      // methods
      bool IsAborted() { return m_Aborted; }
-@@ -59,8 +59,8 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -57,8 +57,8 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
      // NPT_InputStream methods
      NPT_Result Read(void*     buffer, 
                      NPT_Size  bytes_to_read, 
@@ -2226,7 +2232,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
          NPT_COMPILER_UNUSED(size);
          return NPT_ERROR_NOT_SUPPORTED;
      }
-@@ -69,7 +69,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -67,7 +67,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
          space = m_RingBuffer->GetSpace();
          return NPT_SUCCESS;
      }
@@ -2235,7 +2241,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
          NPT_AutoLock autoLock(m_Lock);
          available = m_RingBuffer->GetAvailable();
          return NPT_SUCCESS;
-@@ -78,29 +78,29 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -76,29 +76,29 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
      // NPT_OutputStream methods
      NPT_Result Write(const void* buffer, 
                       NPT_Size    bytes_to_write, 
@@ -2275,7 +2281,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h b/lib/libUPnP/Pl
 index 58ef256581a5..a022b88518e4 100644
 --- a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
 +++ b/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
-@@ -99,9 +99,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
+@@ -98,9 +98,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
  {
  public:
      PLT_PipeInputStreamPump(NPT_OutputStreamReference& output, NPT_Size size = 65535);
@@ -2287,7 +2293,7 @@ index 58ef256581a5..a022b88518e4 100644
  
  protected:
      NPT_OutputStreamReference   m_Output;
-@@ -118,9 +118,9 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
+@@ -117,9 +117,9 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
      PLT_PipeOutputStreamPump(NPT_InputStreamReference& input, 
                               NPT_Size                  size = 65535,
                               NPT_Size                  max_bytes_to_read = 0);

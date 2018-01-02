@@ -41,6 +41,7 @@
 #include "NptStrings.h"
 #include "NptDataBuffer.h"
 #include "NptNetwork.h"
+#include "NptThreads.h"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -60,7 +61,8 @@ const int NPT_ERROR_ACCEPT_FAILED         = NPT_ERROR_BASE_SOCKET - 11;
 const int NPT_ERROR_ADDRESS_IN_USE        = NPT_ERROR_BASE_SOCKET - 12;
 const int NPT_ERROR_NETWORK_DOWN          = NPT_ERROR_BASE_SOCKET - 13;
 const int NPT_ERROR_NETWORK_UNREACHABLE   = NPT_ERROR_BASE_SOCKET - 14;
-const int NPT_ERROR_NOT_CONNECTED         = NPT_ERROR_BASE_SOCKET - 15;
+const int NPT_ERROR_HOST_UNREACHABLE      = NPT_ERROR_BASE_SOCKET - 15;
+const int NPT_ERROR_NOT_CONNECTED         = NPT_ERROR_BASE_SOCKET - 16;
 
 const unsigned int NPT_SOCKET_FLAG_CANCELLABLE = 1; // make the socket cancellable
 
@@ -188,6 +190,9 @@ class NPT_TcpServerSocketInterface
 class NPT_Socket : public NPT_SocketInterface
 {
 public:
+    // static methods
+    static NPT_Result CancelBlockerSocket(NPT_Thread::ThreadId thread_id);
+    
     // constructor and destructor
     explicit NPT_Socket(NPT_SocketInterface* delegate) : m_SocketDelegate(delegate) {}
     ~NPT_Socket() override;
@@ -224,7 +229,7 @@ public:
 
 protected:
     // constructor
-    NPT_Socket() {}
+    NPT_Socket() : m_SocketDelegate(NULL) {}
 
     // members
     NPT_SocketInterface* m_SocketDelegate;
@@ -240,7 +245,7 @@ class NPT_UdpSocket : public NPT_Socket,
 {
  public:
     // constructor and destructor
-             NPT_UdpSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+             NPT_UdpSocket(NPT_Flags flags=0);
     ~NPT_UdpSocket() override;
 
     // delegate NPT_UdpSocketInterface methods
@@ -269,7 +274,7 @@ class NPT_UdpMulticastSocket : public NPT_UdpSocket,
 {
 public:
     // constructor and destructor
-             NPT_UdpMulticastSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+             NPT_UdpMulticastSocket(NPT_Flags flags=0);
     ~NPT_UdpMulticastSocket() override;
 
     // delegate NPT_UdpMulticastSocketInterface methods
@@ -302,7 +307,7 @@ class NPT_TcpClientSocket : public NPT_Socket
 {
 public:
     // constructors and destructor
-             NPT_TcpClientSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+             NPT_TcpClientSocket(NPT_Flags flags=0);
     ~NPT_TcpClientSocket() override;
 };
 
@@ -314,7 +319,7 @@ class NPT_TcpServerSocket : public NPT_Socket,
 {
 public:
     // constructors and destructor
-             NPT_TcpServerSocket(NPT_Flags flags=NPT_SOCKET_FLAG_CANCELLABLE);
+             NPT_TcpServerSocket(NPT_Flags flags=0);
     ~NPT_TcpServerSocket() override;
 
     // delegate NPT_TcpServerSocketInterface methods

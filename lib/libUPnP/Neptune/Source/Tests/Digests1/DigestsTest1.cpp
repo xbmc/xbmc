@@ -43,6 +43,7 @@
         }                                                               \
     } while(0)                                         
 
+#if defined(NPT_CONFIG_ENABLE_CRYPTO)
 /*----------------------------------------------------------------------
 |   TestDigests
 +---------------------------------------------------------------------*/
@@ -215,6 +216,7 @@ TestHmac()
 
     return 0;
 }
+#endif
 
 /*----------------------------------------------------------------------
 |       main
@@ -222,7 +224,9 @@ TestHmac()
 int
 main(int /*argc*/, char** /*argv*/)
 {
+#if defined(NPT_CONFIG_ENABLE_CRYPTO)
     TestDigests();
     TestHmac();
+#endif
     return 0;
 }

@@ -125,7 +125,7 @@ PLT_HttpClientSocketTask::DoRun()
             res = m_Client.SendRequest(*request, response, &context);
 
             NPT_String prefix = NPT_String::Format("PLT_HttpClientSocketTask::DoRun (res = %d):", res);
-            PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, prefix, response);
+            PLT_LOG_HTTP_RESPONSE(NPT_LOG_LEVEL_FINER, prefix, response);
 
             // process response
             ProcessResponse(res, *request, context, response);
