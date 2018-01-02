@@ -261,6 +261,7 @@ namespace PVR
     CPVREpgInfoTagPtr               m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 
+    bool                            m_bHasTimeshiftData;
     bool                            m_bIsTimeshifting;
     time_t                          m_iStartTime;
     time_t                          m_iTimeshiftStartTime;
