@@ -46,6 +46,9 @@
 int
 main(int /* argc */, char** /* argv */)
 {
+	// setup Neptune logging
+	NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=42");
+
     PLT_UPnP upnp;
 
     PLT_DeviceHostReference device(new PLT_LightSampleDevice("Platinum Light Bulb"));

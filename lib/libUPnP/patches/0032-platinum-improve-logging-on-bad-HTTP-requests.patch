@@ -140,7 +140,7 @@ index 4d9524b..6fbe7a7 100644
      return NPT_SUCCESS;
  }
  
-@@ -896,4 +946,3 @@ PLT_DeviceHost::OnAction(PLT_ActionReference&          action,
+@@ -901,4 +951,3 @@ PLT_DeviceHost::OnAction(PLT_ActionReference&          action,
      action->SetError(401, "Invalid Action");
      return NPT_FAILURE;
  }

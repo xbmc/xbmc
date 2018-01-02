@@ -1548,7 +1548,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttp.h b/lib/libUPnP/Platinum/S
 index fc3d1b55c0ff..00e2b9f570e3 100644
 --- a/lib/libUPnP/Platinum/Source/Core/PltHttp.h
 +++ b/lib/libUPnP/Platinum/Source/Core/PltHttp.h
-@@ -155,12 +155,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
+@@ -198,12 +198,12 @@ class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
  public:
      PLT_HttpRequestHandler(NPT_HttpRequestHandler* delegate) : 
          m_Delegate(delegate) {}
@@ -2212,7 +2212,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h b/lib/libU
 index d8ecd11d8eca..e5f98b2f350f 100644
 --- a/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
 +++ b/lib/libUPnP/Platinum/Source/Extras/PltRingBufferStream.h
-@@ -51,7 +51,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -49,7 +49,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
  public:
      PLT_RingBufferStream(NPT_Size buffer_size = 4096, bool blocking = true);
      PLT_RingBufferStream(NPT_RingBufferReference& buffer, bool blocking = true);
@@ -2221,7 +2221,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
      
      // methods
      bool IsAborted() { return m_Aborted; }
-@@ -59,8 +59,8 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -57,8 +57,8 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
      // NPT_InputStream methods
      NPT_Result Read(void*     buffer, 
                      NPT_Size  bytes_to_read, 
@@ -2232,7 +2232,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
          NPT_COMPILER_UNUSED(size);
          return NPT_ERROR_NOT_SUPPORTED;
      }
-@@ -69,7 +69,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -67,7 +67,7 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
          space = m_RingBuffer->GetSpace();
          return NPT_SUCCESS;
      }
@@ -2241,7 +2241,7 @@ index d8ecd11d8eca..e5f98b2f350f 100644
          NPT_AutoLock autoLock(m_Lock);
          available = m_RingBuffer->GetAvailable();
          return NPT_SUCCESS;
-@@ -78,29 +78,29 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
+@@ -76,29 +76,29 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
      // NPT_OutputStream methods
      NPT_Result Write(const void* buffer, 
                       NPT_Size    bytes_to_write, 
@@ -2281,7 +2281,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h b/lib/libUPnP/Pl
 index 58ef256581a5..a022b88518e4 100644
 --- a/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
 +++ b/lib/libUPnP/Platinum/Source/Extras/PltStreamPump.h
-@@ -99,9 +99,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
+@@ -98,9 +98,9 @@ class PLT_PipeInputStreamPump : public PLT_StreamPump,
  {
  public:
      PLT_PipeInputStreamPump(NPT_OutputStreamReference& output, NPT_Size size = 65535);
@@ -2293,7 +2293,7 @@ index 58ef256581a5..a022b88518e4 100644
  
  protected:
      NPT_OutputStreamReference   m_Output;
-@@ -118,9 +118,9 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
+@@ -117,9 +117,9 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
      PLT_PipeOutputStreamPump(NPT_InputStreamReference& input, 
                               NPT_Size                  size = 65535,
                               NPT_Size                  max_bytes_to_read = 0);

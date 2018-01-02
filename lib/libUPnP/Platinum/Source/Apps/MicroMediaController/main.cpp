@@ -57,7 +57,7 @@
 int main(void)
 {
     // setup Neptune logging
-    NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=24");
+    NPT_LogManager::GetDefault().Configure("plist:.level=INFO;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=24");
 
     // Create upnp engine
     PLT_UPnP upnp;
@@ -101,9 +101,9 @@ int main(void)
 
 #ifdef SIMULATE_XBOX_360
     // override default headers
-    NPT_HttpClient::m_UserAgentHeader = "Xbox/2.0.8955.0 UPnP/1.0 Xbox/2.0.8955.0";
-    NPT_HttpServer::m_ServerHeader    = "Xbox/2.0.8955.0 UPnP/1.0 Xbox/2.0.8955.0";
-    
+	PLT_Constants::GetInstance().SetDefaultUserAgent("Xbox/2.0.8955.0 UPnP/1.0 Xbox/2.0.8955.0");
+//    NPT_HttpServer::m_ServerHeader    = "Xbox/2.0.8955.0 UPnP/1.0 Xbox/2.0.8955.0";
+
     // create device
     PLT_DeviceHostReference xbox(new PLT_Xbox360("30848576-1775-2000-0000-00125a8fefad"));
     xbox->SetByeByeFirst(false);
@@ -119,10 +119,10 @@ int main(void)
 
     ctrlPoint->Search(
         NPT_HttpUrl("239.255.255.250", 1900, "*"), 
-        "urn:schemas-microsoft-com:service:MSContentDirectory:1", 2, 10000, NPT_TimeInterval(10, 0));
+        "urn:schemas-microsoft-com:service:MSContentDirectory:1", 2, NPT_TimeInterval(10.), NPT_TimeInterval(10.));
     ctrlPoint->Search(
         NPT_HttpUrl("239.255.255.250", 1900, "*"), 
-        "urn:schemas-upnp-org:service:ContentDirectory:1", 2, 10000, NPT_TimeInterval(10, 0));
+        "urn:schemas-upnp-org:service:ContentDirectory:1", 2, NPT_TimeInterval(10.), NPT_TimeInterval(10.));
     
 #endif
 

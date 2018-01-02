@@ -61,7 +61,7 @@ PLT_SsdpSender::SendSsdp(NPT_HttpRequest&   request,
     NPT_String prefix = NPT_String::Format("Sending SSDP %s packet for %s",
         (const char*)request.GetMethod(), 
         usn);
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, prefix, &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINER, prefix, &request);
 
     // use a memory stream to write all the data
     NPT_MemoryStream stream;
@@ -93,7 +93,7 @@ PLT_SsdpSender::SendSsdp(NPT_HttpResponse&  response,
 
     // logging
     NPT_String prefix = NPT_String::Format("Sending SSDP Response:");
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, prefix, &response);
+    PLT_LOG_HTTP_RESPONSE(NPT_LOG_LEVEL_FINER, prefix, &response);
 
     // use a memory stream to write all the data
     NPT_MemoryStream stream;
@@ -147,7 +147,7 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
     if (!niaddr) return NPT_SUCCESS;
 
     // don't try to bind on port 1900 or connect will fail later
-    NPT_UdpSocket socket;
+    NPT_UdpSocket socket(NPT_SOCKET_FLAG_CANCELLABLE);
     //socket.Bind(NPT_SocketAddress(NPT_IpAddress::Any, 1900), true);
 
     // by connecting, the kernel chooses which interface to use to route to the remote
@@ -238,8 +238,8 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
     }
 
     NPT_HttpUrl            url;
-    NPT_UdpMulticastSocket multicast_socket;
-    NPT_UdpSocket          broadcast_socket;
+    NPT_UdpMulticastSocket multicast_socket(NPT_SOCKET_FLAG_CANCELLABLE);
+    NPT_UdpSocket          broadcast_socket(NPT_SOCKET_FLAG_CANCELLABLE);
     NPT_UdpSocket*         socket;
 
     if (m_Broadcast) {

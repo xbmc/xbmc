@@ -79,7 +79,7 @@ PLT_FileMediaServerDelegate::ProcessFileRequest(NPT_HttpRequest&              re
 {
     NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
     
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, "PLT_FileMediaServerDelegate::ProcessFileRequest:", &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, "PLT_FileMediaServerDelegate::ProcessFileRequest:", &request);
     
     if (request.GetMethod().Compare("GET") && request.GetMethod().Compare("HEAD")) {
         response.SetStatus(500, "Internal Server Error");
@@ -252,7 +252,7 @@ PLT_FileMediaServerDelegate::OnBrowseDirectChildren(PLT_ActionReference&        
     
     didl += didl_footer;
     
-    NPT_LOG_FINE_6("BrowseDirectChildren from %s returning %d-%d/%d objects (%d out of %d requested)",
+    NPT_LOG_FINE_6("BrowseDirectChildren from %s returning %d-%lu/%lu objects (%lu out of %d requested)",
                    (const char*)context.GetLocalAddress().GetIpAddress().ToString(),
                    starting_index, starting_index+num_returned, total_matches, num_returned, requested_count);
     

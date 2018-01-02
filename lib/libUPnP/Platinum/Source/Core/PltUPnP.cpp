@@ -165,7 +165,7 @@ PLT_UPnP::Start()
     
     /* Create multicast socket and bind on 1900. If other apps didn't
        play nicely by setting the REUSE_ADDR flag, this could fail */
-    NPT_Reference<NPT_UdpMulticastSocket> socket(new NPT_UdpMulticastSocket());
+    NPT_Reference<NPT_UdpMulticastSocket> socket(new NPT_UdpMulticastSocket(NPT_SOCKET_FLAG_CANCELLABLE));
     NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, 1900), true));
     
     /* Join multicast group for every ip we found */

@@ -4,6 +4,6 @@ LoadTool('gcc-generic', env, gcc_cross_prefix='arm-linux')
 env['PROGSUFFIX'] = '.gpe'
 
 ### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp'}
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullAutoreleasePool.cpp'}
 env['NPT_EXTRA_LIBS']=['pthread']
 

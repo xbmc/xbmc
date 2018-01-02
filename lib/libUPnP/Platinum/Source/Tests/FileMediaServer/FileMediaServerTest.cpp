@@ -112,7 +112,7 @@ int
 main(int /* argc */, char** argv)
 {
     // setup Neptune logging
-    NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=42");
+    NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=56");
 
     /* parse command line */
     ParseCommandLine(argv+1);

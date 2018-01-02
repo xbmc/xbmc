@@ -24,7 +24,7 @@ public:
                                 NPT_UInt32                    requested_count,
                                 const char*                   sort_criteria,
                                 const PLT_HttpRequestContext& context) {
-        if (![[m_Target delegate] respondsToSelector:@selector(onBrowseMetadata:)]) 
+        if (![m_Target.delegate respondsToSelector:@selector(onBrowseMetadata:)])
             return NPT_FAILURE;
         
         PLT_MediaServerBrowseCapsule* capsule = 
@@ -35,8 +35,7 @@ public:
                                                            count:requested_count
                                                             sort:sort_criteria
                                                          context:(PLT_HttpRequestContext*)&context];
-        NPT_Result result = [[m_Target delegate] onBrowseMetadata:capsule];
-        [capsule release];
+        NPT_Result result = [m_Target.delegate onBrowseMetadata:capsule];
         
         return result;
     }
@@ -48,7 +47,7 @@ public:
                                       NPT_UInt32                    requested_count,
                                       const char*                   sort_criteria, 
                                       const PLT_HttpRequestContext& context) {
-        if (![[m_Target delegate] respondsToSelector:@selector(onBrowseDirectChildren:)]) 
+        if (![m_Target.delegate respondsToSelector:@selector(onBrowseDirectChildren:)]) 
             return NPT_FAILURE;
         
         PLT_MediaServerBrowseCapsule* capsule = 
@@ -59,8 +58,7 @@ public:
                                                            count:requested_count
                                                             sort:sort_criteria
                                                          context:(PLT_HttpRequestContext*)&context];
-        NPT_Result result = [[m_Target delegate] onBrowseDirectChildren:capsule];
-        [capsule release];
+        NPT_Result result = [m_Target.delegate onBrowseDirectChildren:capsule];
         
         return result;
     }
@@ -73,7 +71,7 @@ public:
                                  NPT_UInt32                    requested_count,
                                  const char*                   sort_criteria, 
                                  const PLT_HttpRequestContext& context) {
-        if (![[m_Target delegate] respondsToSelector:@selector(onSearchContainer:)]) 
+        if (![m_Target.delegate respondsToSelector:@selector(onSearchContainer:)]) 
             return NPT_FAILURE;
         
         PLT_MediaServerSearchCapsule* capsule = 
@@ -85,8 +83,7 @@ public:
                                                            count:requested_count
                                                             sort:sort_criteria
                                                          context:(PLT_HttpRequestContext*)&context];
-        NPT_Result result = [[m_Target delegate] onSearchContainer:capsule];
-        [capsule release];
+        NPT_Result result = [m_Target.delegate onSearchContainer:capsule];
         
         return result;
     }
@@ -98,8 +95,7 @@ public:
         PLT_MediaServerFileRequestCapsule* capsule = 
             [[PLT_MediaServerFileRequestCapsule alloc] initWithResponse:&response
                                                                 context:&_context];
-        NPT_Result result = [[m_Target delegate] onFileRequest:capsule];
-        [capsule release];
+        NPT_Result result = [m_Target.delegate onFileRequest:capsule];
         
         return result;
     }
@@ -130,14 +126,6 @@ private:
     return self;
 }
 
-- (void)dealloc
-{
-    [objectId release];
-    [filter release];
-    [sort release];
-    [super dealloc];
-}
-
 @end
 
 /*----------------------------------------------------------------------
@@ -161,12 +149,6 @@ private:
     return self;
 }
 
-- (void)dealloc
-{
-    [search release];
-    [super dealloc];
-}
-
 @end
 
 /*----------------------------------------------------------------------
@@ -183,42 +165,34 @@ private:
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
-
-@end
-
-/*----------------------------------------------------------------------
-|   PLT_DeviceHostObject
-+---------------------------------------------------------------------*/
-@interface PLT_DeviceHostObject (priv)
-- (PLT_DeviceHostReference&)getDevice;
 @end
 
 /*----------------------------------------------------------------------
 |   PLT_MediaServerObject
 +---------------------------------------------------------------------*/
-@implementation PLT_MediaServerObject
+@interface PLT_MediaServerObject () {
+	PLT_MediaServerDelegate_Wrapper *_wrapper;
+}
+@end
 
-@synthesize delegate;
+@implementation PLT_MediaServerObject
 
 - (id)init 
 {
-    PLT_MediaConnect* server = new PLT_MediaConnect("Test");
-    PLT_DeviceHostReference _device(server);
-    if ((self = [super initWithDeviceHost:&_device])) {
-        server->SetDelegate(new PLT_MediaServerDelegate_Wrapper(self));
+	if ((self = [super init])) {
+		PLT_MediaConnect* server = new PLT_MediaConnect("Test");
+		PLT_DeviceHostReference _device(server);
+		[self setDevice:&_device];
+
+		_wrapper = new PLT_MediaServerDelegate_Wrapper(self);
+        server->SetDelegate(_wrapper);
     }
     return self;
 }
 
 - (void)dealloc
 {
-    PLT_DeviceHostReference& host = [self getDevice];
-    delete ((PLT_MediaServer*)host.AsPointer())->GetDelegate();
-    [super dealloc];
+    delete _wrapper;
 }
 
 @end

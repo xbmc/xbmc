@@ -338,7 +338,7 @@ PLT_HttpServerSocketTask::SendResponseHeaders(NPT_HttpResponse* response,
     }
     headers.SetHeader(NPT_HTTP_HEADER_SERVER, PLT_HTTP_DEFAULT_SERVER, false); // set but don't replace
 
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, "PLT_HttpServerSocketTask::Write", response);
+    PLT_LOG_HTTP_RESPONSE(NPT_LOG_LEVEL_FINE, "PLT_HttpServerSocketTask::Write", response);
 
     // create a memory stream to buffer the headers
     NPT_MemoryStream header_stream;

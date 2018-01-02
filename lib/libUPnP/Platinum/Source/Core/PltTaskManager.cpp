@@ -190,7 +190,7 @@ PLT_TaskManager::AddTask(PLT_ThreadTask* task)
         return result;
     }
 
-    NPT_LOG_FINER_3("[TaskManager 0x%08x] %d/%d running tasks", this, ++m_RunningTasks, m_MaxTasks);
+    NPT_LOG_FINER_3("[TaskManager 0x%p] %d/%d running tasks", (void*)this, ++m_RunningTasks, m_MaxTasks);
 
     // keep track of running task
     result = m_Tasks.Add(task);
@@ -223,7 +223,7 @@ PLT_TaskManager::RemoveTask(PLT_ThreadTask* task)
             }
         }
         
-        NPT_LOG_FINER_3("[TaskManager 0x%08x] %d/%d running tasks", this, --m_RunningTasks, m_MaxTasks);
+        NPT_LOG_FINER_3("[TaskManager 0x%p] %d/%d running tasks", (void*)this, --m_RunningTasks, m_MaxTasks);
         m_Tasks.Remove(task);
     }
     

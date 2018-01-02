@@ -117,7 +117,7 @@ PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
     
     PLT_DeviceSignature signature = PLT_HttpHelper::GetDeviceSignature(request);
 
-    if (signature == PLT_DEVICE_XBOX /*|| signature == PLT_SONOS*/) {
+    if (signature == PLT_DEVICE_XBOX_360 || signature == PLT_DEVICE_XBOX_ONE /*|| signature == PLT_SONOS*/) {
         // XBox needs to see something behind a ':' to even show it
         if (m_AddHostname && hostname.GetLength() > 0) {
             m_FriendlyName += ": " + hostname;
@@ -130,7 +130,7 @@ PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
     }
 
     // change some things based on device signature from request
-    if (signature == PLT_DEVICE_XBOX || signature == PLT_DEVICE_WMP /*|| signature == PLT_SONOS*/) {
+    if (signature == PLT_DEVICE_XBOX_360  || signature == PLT_DEVICE_XBOX_ONE || signature == PLT_DEVICE_WMP /*|| signature == PLT_SONOS*/) {
         m_ModelName        = "Windows Media Player Sharing";
         m_ModelNumber      = (signature == PLT_DEVICE_SONOS)?"3.0":"12.0";
         m_ModelURL         = "http://www.microsoft.com/";//"http://go.microsoft.com/fwlink/?LinkId=105926";
@@ -183,7 +183,10 @@ PLT_MediaConnect::ProcessGetSCPD(PLT_Service*                  service,
     // Override SCPD response by providing an SCPD without a Search action
     // to all devices except XBox or WMP which need it
     if (service->GetServiceType() == "urn:schemas-upnp-org:service:ContentDirectory:1" &&
-        signature != PLT_DEVICE_XBOX && signature != PLT_DEVICE_WMP && signature != PLT_DEVICE_SONOS) {
+        signature != PLT_DEVICE_XBOX_360 &&
+		signature != PLT_DEVICE_XBOX_ONE &&
+		signature != PLT_DEVICE_WMP &&
+		signature != PLT_DEVICE_SONOS) {
         NPT_HttpEntity* entity;
         PLT_HttpHelper::SetBody(response, (const char*) MS_ContentDirectorySCPD, &entity);    
         entity->SetContentType("text/xml; charset=\"utf-8\"");

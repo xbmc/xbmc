@@ -37,7 +37,7 @@
 +---------------------------------------------------------------------*/
 #include "PltDownloader.h"
 #include "PltTaskManager.h"
-#include "NptLogging.h"
+#include "Neptune.h"
 
 
 NPT_SET_LOCAL_LOGGER("platinum.extra.downloader")

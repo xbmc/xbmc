@@ -53,6 +53,7 @@ PLT_HttpServer::PLT_HttpServer(NPT_IpAddress address,
                                bool          allow_random_port_on_bind_failure,   /* = false */
                                NPT_Cardinal  max_clients,                         /* = 50 */
                                bool          reuse_address) :                     /* = false */
+    NPT_HttpServer(address, port, true),
     m_TaskManager(new PLT_TaskManager(max_clients)),
     m_Address(address),
     m_Port(port),
@@ -159,7 +160,7 @@ PLT_HttpServer::SetupResponse(NPT_HttpRequest&              request,
         (const char*) request.GetMethod(),
         (const char*) context.GetRemoteAddress().ToString(),
         (const char*) request.GetUrl().ToString());
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, prefix, &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, prefix, &request);
 
     NPT_List<NPT_HttpRequestHandler*> handlers = FindRequestHandlers(request);
     if (handlers.GetItemCount() == 0) return NPT_ERROR_NO_SUCH_ITEM;

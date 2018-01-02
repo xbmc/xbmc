@@ -392,7 +392,7 @@ PLT_DeviceHost::SetupResponse(NPT_HttpRequest&              request,
     NPT_String method     = request.GetMethod();
     NPT_String protocol   = request.GetProtocol(); 
 
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, "PLT_DeviceHost::SetupResponse:", &request);
+    PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINER, "PLT_DeviceHost::SetupResponse:", &request);
 
     if (method.Compare("POST") == 0) {
         return ProcessHttpPostRequest(request, context, response);
@@ -807,7 +807,7 @@ PLT_DeviceHost::OnSsdpPacket(const NPT_HttpRequest&        request,
 		NPT_String prefix = NPT_String::Format("PLT_DeviceHost::OnSsdpPacket M-SEARCH for %s from %s:%d", 
 			st?st->GetChars():"Unknown",
 			(const char*) ip_address, remote_port);
-		PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, prefix, request);
+		PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, prefix, &request);
 
         /*
         // DLNA 7.2.3.5 support
@@ -836,7 +836,12 @@ PLT_DeviceHost::OnSsdpPacket(const NPT_HttpRequest&        request,
         PLT_SsdpDeviceSearchResponseTask* task = new PLT_SsdpDeviceSearchResponseTask(this, context.GetRemoteAddress(), *st);
         m_TaskManager->StartTask(task, &timer);
         return NPT_SUCCESS;
-    }
+	} else {
+		NPT_String prefix = NPT_String::Format("Ignoring %s request from %s:%d",
+											   method.GetChars(),
+											   (const char*) ip_address, remote_port);
+		PLT_LOG_HTTP_REQUEST(NPT_LOG_LEVEL_FINE, prefix, &request);
+	}
 
     return NPT_FAILURE;
 }

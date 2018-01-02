@@ -6,7 +6,7 @@
 //  Copyright 2010 Plutinosoft LLC. All rights reserved.
 //
 
-#import "NptConfig.h"
+#import "Neptune.h"
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #include <UIKit/UIKit.h>
@@ -25,11 +25,8 @@ typedef class NPT_HttpResponse NPT_HttpResponse;
 /*----------------------------------------------------------------------
 |   PLT_MediaServerObject
 +---------------------------------------------------------------------*/
-@interface PLT_MediaServerObject : PLT_DeviceHostObject {
-    id delegate;
-}
-
-@property (nonatomic, assign) id delegate; // we do not retain to avoid circular ref count
+@interface PLT_MediaServerObject : PLT_DeviceHostObject
+@property (nonatomic, assign) id delegate;
 @end
 
 /*----------------------------------------------------------------------
@@ -46,11 +43,11 @@ typedef class NPT_HttpResponse NPT_HttpResponse;
 
 - (id)initWithAction:(PLT_Action*)action objectId:(const char*)objectId filter:(const char*)filter start:(NPT_UInt32)start count:(NPT_UInt32)count sort:(const char*)sort context:(PLT_HttpRequestContext*)context;
 
-@property (readonly, assign) NSString* objectId;
+@property (readonly, copy) NSString* objectId;
 @property (readonly) NPT_UInt32 start;
 @property (readonly) NPT_UInt32 count;
-@property (readonly, assign) NSString* filter;
-@property (readonly, assign) NSString* sort;
+@property (readonly, copy) NSString* filter;
+@property (readonly, copy) NSString* sort;
 @end
 
 /*----------------------------------------------------------------------
@@ -62,7 +59,7 @@ typedef class NPT_HttpResponse NPT_HttpResponse;
 
 - (id)initWithAction:(PLT_Action*)action objectId:(const char*)objectId search:(const char*)search filter:(const char*)filter start:(NPT_UInt32)start count:(NPT_UInt32)count sort:(const char*)sort context:(PLT_HttpRequestContext*)context;
 
-@property (readonly, assign) NSString* search;
+@property (readonly, copy) NSString* search;
 @end
 
 /*----------------------------------------------------------------------

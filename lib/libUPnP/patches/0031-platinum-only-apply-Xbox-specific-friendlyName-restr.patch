@@ -21,7 +21,7 @@ index f948dd1..32503fe 100644
 -        m_FriendlyName += ": " + hostname;
 -    } else if (m_FriendlyName.Find(":") == -1) {
 -        m_FriendlyName += ": 1";
-+    if (signature == PLT_DEVICE_XBOX /*|| signature == PLT_SONOS*/) {
++    if (signature == PLT_DEVICE_XBOX_360 || signature == PLT_DEVICE_XBOX_ONE /*|| signature == PLT_SONOS*/) {
 +        // XBox needs to see something behind a ':' to even show it
 +        if (m_AddHostname && hostname.GetLength() > 0) {
 +            m_FriendlyName += ": " + hostname;

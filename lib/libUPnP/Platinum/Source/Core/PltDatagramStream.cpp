@@ -36,6 +36,9 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltDatagramStream.h"
+#include "NptLogging.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.inputdatagramstream")
 
 /*----------------------------------------------------------------------
 |   PLT_InputDatagramStream::PLT_InputDatagramStream
@@ -76,6 +79,8 @@ PLT_InputDatagramStream::Read(void*     buffer,
         // update info
         m_Socket->GetInfo(m_Info);
         m_Info.remote_address = addr;
+
+		NPT_LOG_FINE_1("PLT_InputDatagramStream received %d", m_Buffer.GetDataSize());
     }
         
     if (bytes_to_read == 0) return res;
@@ -93,6 +98,8 @@ PLT_InputDatagramStream::Read(void*     buffer,
             m_BufferOffset = 0;
             m_Buffer.SetDataSize(0);
         }
+
+		NPT_LOG_FINE_3("PLT_InputDatagramStream requested %d, consumed %d, left %d", bytes_to_read, _bytes_to_read, m_Buffer.GetDataSize());
     }
 
     return res;

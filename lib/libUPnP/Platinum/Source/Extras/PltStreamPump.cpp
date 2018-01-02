@@ -36,7 +36,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltStreamPump.h"
-#include "NptUtils.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   PLT_StreamPump::PLT_StreamPump
