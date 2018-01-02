@@ -21,7 +21,9 @@
 #include "VideoInfoTagLoaderFactory.h"
 #include "VideoTagLoaderFFmpeg.h"
 #include "VideoTagLoaderNFO.h"
-#include "addons/AudioDecoder.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
 
 using namespace VIDEO;
 
@@ -38,7 +40,8 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     return nfo;
   delete nfo;
 
-  if (item.IsType(".mkv") || item.IsType(".mp4"))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_USETAGS) &&
+      (item.IsType(".mkv") || item.IsType(".mp4")))
   {
     CVideoTagLoaderFFmpeg* ff = new CVideoTagLoaderFFmpeg(item, info, lookInFolder);
     if (ff->HasInfo())

@@ -998,6 +998,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="myvideos.usetags" type="boolean" label="21343" help="21344">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="myvideos.extractflags" type="boolean" label="20433" help="36178">
           <level>2</level>
           <default>true</default>
