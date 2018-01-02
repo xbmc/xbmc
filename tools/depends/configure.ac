@@ -101,8 +101,17 @@ AC_ARG_ENABLE([wayland],
 OLD_PATH="${PATH}"
 if test -n "$use_toolchain"; then
   PATH="${use_toolchain}/bin:${use_toolchain}/usr/bin:$PATH"
+  case $host in
+    arm*-*linux-android*|aarch64*-*linux-android*)
+      COMPILER_LIST="clang++ gcc g++"
+    ;;
+    *)
+      COMPILER_LIST=""
+    ;;
+  esac
 fi
-AX_CXX_COMPILE_STDCXX_11(,[mandatory])
+AC_PROG_CXX([$COMPILER_LIST])
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 PATH="${OLD_PATH}"
@@ -179,7 +188,7 @@ case $host in
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -Wl,--exclude-libs,libunwind.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
@@ -200,7 +209,7 @@ case $host in
       platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
     fi
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
@@ -218,7 +227,7 @@ case $host in
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes  -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
-    platform_cxxflags="$platform_cflags -std=c++11 -frtti"
+    platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     #android builds are always cross
