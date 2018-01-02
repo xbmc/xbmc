@@ -21,15 +21,41 @@
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/win10/WinLibraryDirectory.h"
+#include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 
+using namespace Windows::Foundation;
+using namespace Windows::Devices::Enumeration;
+
+CStorageProvider::~CStorageProvider()
+{
+  if (m_watcher && m_watcher->Status == DeviceWatcherStatus::Started)
+    m_watcher->Stop();
+}
+
 void CStorageProvider::Initialize()
 {
+  m_changed = false;
   // TODO check for a optical drive (available on desktop)
   g_mediaManager.SetHasOpticalDrive(false);
+  
+  m_watcher = DeviceInformation::CreateWatcher(DeviceClass::PortableStorageDevice);
+  auto handler = [this](DeviceWatcher^, DeviceInformation^)
+  {
+    m_changed = true;
+  };
+  auto handler2 = [this](DeviceWatcher^, DeviceInformationUpdate^)
+  {
+    m_changed = true;
+  };
+
+  m_watcher->Added += ref new TypedEventHandler<DeviceWatcher^, DeviceInformation^>(handler);
+  m_watcher->Removed += ref new TypedEventHandler<DeviceWatcher^, DeviceInformationUpdate^>(handler2);
+  m_watcher->Updated += ref new TypedEventHandler<DeviceWatcher^, DeviceInformationUpdate^>(handler2);
+  m_watcher->Start();
 }
 
 void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
@@ -45,6 +71,19 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
+
+  auto devicesView = Wait(Windows::Storage::KnownFolders::RemovableDevices->GetFoldersAsync());
+  for (unsigned i = 0; i < devicesView->Size; i++)
+  {
+    CMediaSource source;
+    auto device = devicesView->GetAt(i);
+    source.strName = FromW(device->DisplayName->Data());
+    source.strPath = "win-lib://removable/" + FromW(device->Name->Data()).substr(0, 1) + "/";
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+
+    removableDrives.push_back(source);
+  }
 }
 
 std::string CStorageProvider::GetFirstOpticalDeviceFileName()
@@ -57,7 +96,7 @@ bool CStorageProvider::Eject(const std::string& mountpath)
   return false;
 }
 
-std::vector<std::string > CStorageProvider::GetDiskUsage()
+std::vector<std::string> CStorageProvider::GetDiskUsage()
 {
   std::vector<std::string> result;
   ULARGE_INTEGER ULTotal = { { 0 } };
@@ -76,6 +115,8 @@ std::vector<std::string > CStorageProvider::GetDiskUsage()
 
 bool CStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  return false;
+  bool res = m_changed.load();
+  m_changed = false;
+  return res;
 }
 
