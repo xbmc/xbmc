@@ -45,7 +45,7 @@ public:
   bool OnAction(const CAction &action) override;
 
   void PlayMovie(const CFileItem *item, const std::string &player = "");
-  static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber);
+  static void GetResumeItemOffset(const CFileItem *item, int64_t& startoffset, int& partNumber);
   static bool HasResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);

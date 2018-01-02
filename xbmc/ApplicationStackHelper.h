@@ -90,7 +90,7 @@ public:
   \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
   \param partNumber the requested part number in the stack
   */
-  uint64_t GetStackPartEndTimeMs(int partNumber) const { return CUtil::ConvertOffsetToMilliSecs(GetStackPartFileItem(partNumber).m_lEndOffset); }
+  uint64_t GetStackPartEndTimeMs(int partNumber) const { return GetStackPartFileItem(partNumber).m_lEndOffset; }
 
   /*!
   \brief Returns the start time of a FileItem part of a (non-ISO) stack playback

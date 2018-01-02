@@ -98,7 +98,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
 int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& item)
 {
   CVideoDatabase dbs;
-  int startoffset = 0;
+  int64_t startoffset = 0;
 
   // case 1: stacked ISOs
   if (m_currentStackIsDiscImageStack)
@@ -168,7 +168,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
       if (haveTimes)
       {
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = CUtil::ConvertMilliSecsToOffset(times[i]);
+        GetStackPartFileItem(i).m_lEndOffset = times[i];
       }
       else
       {
@@ -180,7 +180,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         }
         totalTimeMs += duration;
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = CUtil::ConvertMilliSecsToOffset(totalTimeMs);
+        GetStackPartFileItem(i).m_lEndOffset = totalTimeMs;
         times.push_back(totalTimeMs);
       }
       // set start time in every part
@@ -191,7 +191,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     for (int i = 0; i < m_currentStack->Size(); i++)
       SetRegisteredStackTotalTimeMs(GetStackPartFileItem(i), totalTimeMs);
 
-    uint64_t msecs = CUtil::ConvertOffsetToMilliSecs(item.m_lStartOffset);
+    uint64_t msecs = item.m_lStartOffset;
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
     {
@@ -209,7 +209,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
           if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
           if (dbs.GetResumeBookMark(path, bookmark))
-            msecs = bookmark.timeInSeconds * 1000;
+            msecs = static_cast<uint64_t>(bookmark.timeInSeconds * 1000);
           else
             msecs = 0;
         }
@@ -218,7 +218,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     }
 
     m_currentStackPosition = GetStackPartNumberAtTimeMs(msecs);
-    startoffset = CUtil::ConvertMilliSecsToOffset(msecs - GetStackPartStartTimeMs(m_currentStackPosition));
+    startoffset = msecs - GetStackPartStartTimeMs(m_currentStackPosition);
   }
   return startoffset;
 }

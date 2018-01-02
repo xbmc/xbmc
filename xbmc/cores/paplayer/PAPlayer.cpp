@@ -336,7 +336,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 
   StreamInfo *si = new StreamInfo();
   si->m_fileItem = file;
-  if (!si->m_decoder.Create(file, CUtil::ConvertOffsetToMilliSecs(si->m_fileItem.m_lStartOffset)))
+  if (!si->m_decoder.Create(file, si->m_fileItem.m_lStartOffset))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
@@ -375,8 +375,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 
   /* init the streaminfo struct */
   si->m_audioFormat = si->m_decoder.GetFormat();
-  si->m_startOffset = CUtil::ConvertOffsetToMilliSecs(file.m_lStartOffset);
-  si->m_endOffset = CUtil::ConvertOffsetToMilliSecs(file.m_lEndOffset);
+  si->m_startOffset = file.m_lStartOffset;
+  si->m_endOffset = file.m_lEndOffset;
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(si->m_audioFormat.m_dataFormat) >> 3;
   si->m_bytesPerFrame = si->m_bytesPerSample * si->m_audioFormat.m_channelLayout.Count();
   si->m_started = false;
@@ -771,9 +771,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (si == m_currentStream && m_continueStream)
     {
       // update current stream with info of next track
-      si->m_startOffset = CUtil::ConvertOffsetToMilliSecs(si->m_fileItem.m_lStartOffset);
+      si->m_startOffset = si->m_fileItem.m_lStartOffset;
       if (si->m_fileItem.m_lEndOffset)
-        si->m_endOffset = CUtil::ConvertOffsetToMilliSecs(si->m_fileItem.m_lEndOffset);
+        si->m_endOffset = si->m_fileItem.m_lEndOffset;
       else
         si->m_endOffset = 0;
       si->m_framesSent = 0;

@@ -4560,7 +4560,7 @@ void CApplication::SeekTime( double dTime )
       { // seeking to a new file
         m_stackHelper.SetStackPartCurrentFileItem(partNumberToPlay);
         CFileItem *item = new CFileItem(m_stackHelper.GetCurrentStackPartFileItem());
-        item->m_lStartOffset = CUtil::ConvertMilliSecsToOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        item->m_lStartOffset = static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile;
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

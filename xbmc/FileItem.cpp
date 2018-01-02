@@ -3622,12 +3622,12 @@ double CFileItem::GetCurrentResumeTime() const
   return lrint(GetResumePoint().timeInSeconds);
 }
 
-bool CFileItem::GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const
+bool CFileItem::GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const
 {
   CBookmark resumePoint(GetResumePoint());
   if (resumePoint.IsSet())
   {
-    startOffset = lrint(resumePoint.timeInSeconds);
+    startOffset = llrint(resumePoint.timeInSeconds);
     partNumber = resumePoint.partNumber;
     return true;
   }
