@@ -30,8 +30,8 @@ index 0f7c892..a5015db 100644
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
 @@ -99,6 +99,7 @@
  #define PLT_FILTER_MASK_XBMC_RATING                 NPT_UINT64_C(0x0000200000000000)
- #define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000300000000000)
- #define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000400000000000)
+ #define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000400000000000)
+ #define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000800000000000)
 +#define PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER      NPT_UINT64_C(0x0001000000000000)
  
  #define PLT_FILTER_FIELD_TITLE                      "dc:title"
@@ -48,7 +48,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/
 index 0c6830f..f8ddd85 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
-@@ -268,6 +268,7 @@ PLT_MediaObject::Reset()
+@@ -260,6 +260,7 @@ PLT_MediaObject::Reset()
      m_XbmcInfo.rating = 0.0f;
      m_XbmcInfo.votes = "";
      m_XbmcInfo.artwork.Clear();
@@ -56,7 +56,7 @@ index 0c6830f..f8ddd85 100644
  
      m_Didl = "";
  
-@@ -567,6 +568,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+@@ -559,6 +560,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
          m_XbmcInfo.artwork.ToDidl(didl, "artwork");
      }
  
@@ -70,7 +70,7 @@ index 0c6830f..f8ddd85 100644
      // class is required
      didl += "<upnp:class";
  	if (!m_ObjectClass.friendly_name.IsEmpty()) {
-@@ -789,6 +797,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+@@ -781,6 +789,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
      PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
      m_XbmcInfo.artwork.FromDidl(children);
  
@@ -83,7 +83,7 @@ diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/li
 index 18a094f..dd7f8ae 100644
 --- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
 +++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
-@@ -170,6 +170,7 @@ typedef struct {
+@@ -169,6 +169,7 @@ typedef struct {
    NPT_Float rating;
    NPT_String votes;
    PLT_Artworks artwork;
