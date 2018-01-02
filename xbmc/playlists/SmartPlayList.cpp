@@ -690,7 +690,12 @@ std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &param
   int iRes = (int)std::strtol(parameter.c_str(), NULL, 10);
 
   int min, max;
-  if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
+  if (iRes >= 2160)
+  {
+    min = 1921;
+    max = INT_MAX;
+  }
+  else if (iRes >= 1080) { min = 1281; max = 1920; }
   else if (iRes >= 720) { min =  961; max = 1280; }
   else if (iRes >= 540) { min =  721; max =  960; }
   else                  { min =    0; max =  720; }
