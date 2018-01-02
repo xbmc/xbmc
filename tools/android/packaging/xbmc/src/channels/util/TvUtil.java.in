@@ -202,9 +202,6 @@ public class TvUtil
   {
     JobScheduler scheduler =
             (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(getTriggeredJobIdForChannelId(channelId)) != null)
-      return;
-
     ComponentName componentName = new ComponentName(context, SyncProgramsJobService.class);
 
     JobInfo.Builder builder =
@@ -222,6 +219,7 @@ public class TvUtil
     bundle.putLong(TvContractCompat.EXTRA_CHANNEL_ID, channelId);
     builder.setExtras(bundle);
 
+    scheduler.cancel(getTriggeredJobIdForChannelId(channelId));
     scheduler.schedule(builder.build());
   }
 

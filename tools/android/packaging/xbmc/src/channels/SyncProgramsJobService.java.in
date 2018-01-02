@@ -74,6 +74,9 @@ public class SyncProgramsJobService extends JobService
               protected void onPostExecute(Boolean finished)
               {
                 super.onPostExecute(finished);
+                // Daisy chain listening for the next change to the channel.
+                TvUtil.scheduleTriggeredSyncingProgramsForChannel(
+                        SyncProgramsJobService.this, channelId);
                 mSyncProgramsTask = null;
                 jobFinished(jobParameters, !finished);
               }
