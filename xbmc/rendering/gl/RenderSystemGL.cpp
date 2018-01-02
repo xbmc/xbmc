@@ -195,6 +195,15 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   m_width = width;
   m_height = height;
 
+  if (m_RenderVersionMajor > 3 ||
+      (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
+  {
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &m_vertexArray);
+    glGenVertexArrays(1, &m_vertexArray);
+    glBindVertexArray(m_vertexArray);
+  }
+
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
   CalculateMaxTexturesize();

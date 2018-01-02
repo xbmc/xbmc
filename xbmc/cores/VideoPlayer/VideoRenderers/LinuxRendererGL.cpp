@@ -896,13 +896,13 @@ void CLinuxRendererGL::LoadShaders(int field)
     // create regular progressive scan shader
     // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
     EShaderFormat shaderFormat = GetShaderFormat();
-    GLSLOutput *out = nullptr;
+    std::shared_ptr<GLSLOutput> out;
     if (m_renderQuality == RQ_SINGLEPASS)
     {
-      out = new GLSLOutput(4, m_useDithering, m_ditherDepth,
-                           m_cmsOn ? m_fullRange : false,
-                           m_cmsOn ? m_tCLUTTex : 0,
-                           m_CLUTsize);
+      out = std::make_shared<GLSLOutput>(GLSLOutput(4, m_useDithering, m_ditherDepth,
+                                                    m_cmsOn ? m_fullRange : false,
+                                                    m_cmsOn ? m_tCLUTTex : 0,
+                                                    m_CLUTsize));
 
       if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST || m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
       {

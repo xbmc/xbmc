@@ -25,6 +25,8 @@
 #include "guilib/Shader.h"
 #include "cores/VideoSettings.h"
 
+#include <memory>
+
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
                         , EShaderFormat format
@@ -37,7 +39,7 @@ namespace Shaders {
 class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 {
 public:
-  BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=nullptr);
+  BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, std::shared_ptr<GLSLOutput> output);
   virtual ~BaseYUV2RGBGLSLShader();
 
   void SetField(int field) { m_field  = field; }
@@ -82,7 +84,7 @@ protected:
 
   std::string m_defines;
 
-  Shaders::GLSLOutput *m_glslOutput = nullptr;
+  std::shared_ptr<Shaders::GLSLOutput> m_glslOutput;
 
   // pixel shader attribute handles
   GLint m_hYTex = -1;
@@ -109,7 +111,7 @@ public:
                            unsigned flags,
                            EShaderFormat format,
                            bool stretch,
-                           GLSLOutput *output);
+                           std::shared_ptr<GLSLOutput> output);
 };
 
 class YUV2RGBFilterShader4 : public BaseYUV2RGBGLSLShader
@@ -120,7 +122,7 @@ public:
                        EShaderFormat format,
                        bool stretch,
                        ESCALINGMETHOD method,
-                       GLSLOutput *output);
+                       std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;
 
 protected:

@@ -20,8 +20,20 @@ out vec4 fragColor;
 
 vec2 stretch(vec2 pos)
 {
-  float x = pos.x - 0.5;
-  return vec2(mix(x * abs(x) * 2.0, x, m_stretch) + 0.5, pos.y);
+#if (XBMC_STRETCH)
+  // our transform should map [0..1] to itself, with f(0) = 0, f(1) = 1, f(0.5) = 0.5, and f'(0.5) = b.
+  // a simple curve to do this is g(x) = b(x-0.5) + (1-b)2^(n-1)(x-0.5)^n + 0.5
+  // where the power preserves sign. n = 2 is the simplest non-linear case (required when b != 1)
+  #if(XBMC_texture_rectangle)
+    float x = (pos.x * m_step.x) - 0.5;
+    return vec2((mix(2.0 * x * abs(x), x, m_stretch) + 0.5) / m_step.x, pos.y);
+  #else
+    float x = pos.x - 0.5;
+    return vec2(mix(2.0 * x * abs(x), x, m_stretch) + 0.5, pos.y);
+  #endif
+#else
+  return pos;
+#endif
 }
 
 vec4[4] load4x4_0(sampler2D sampler, vec2 pos)
@@ -44,16 +56,13 @@ vec4[4] load4x4_0(sampler2D sampler, vec2 pos)
 
 float filter_0(sampler2D sampler, vec2 coord)
 {
-#if (XBMC_STRETCH)
-  vec2 pos = stretch(coord) + m_step * 0.5;
-#else
   vec2 pos = coord + m_step * 0.5;
-#endif
-
   vec2 f = fract(pos / m_step);
 
   vec4 linetaps = texture(m_kernelTex, 1.0 - f.x);
   vec4 coltaps = texture(m_kernelTex, 1.0 - f.y);
+  linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
+  columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
   mat4 conv;
   conv[0] = linetaps * coltaps.x;
   conv[1] = linetaps * coltaps.y;
@@ -78,9 +87,9 @@ vec4 process()
   vec4 rgb;
 #if defined(XBMC_YV12)
 
-  vec4 yuv = vec4(filter_0(m_sampY, m_cordY),
-                  texture(m_sampU, m_cordU).r,
-                  texture(m_sampV, m_cordV).r,
+  vec4 yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
+                  texture(m_sampU, stretch(m_cordU)).r,
+                  texture(m_sampV, stretch(m_cordV)).r,
                   1.0);
 
   rgb = m_yuvmat * yuv;
@@ -88,8 +97,8 @@ vec4 process()
 
 #elif defined(XBMC_NV12)
 
-  vec4 yuv = vec4(filter_0(m_sampY, m_cordY),
-                  texture(m_sampU, m_cordU).rg,
+  vec4 yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
+                  texture(m_sampU, stretch(m_cordU)).rg,
                   1.0);
   rgb = m_yuvmat * yuv;
   rgb.a = m_alpha;

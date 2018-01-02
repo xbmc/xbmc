@@ -59,7 +59,7 @@ static void CalculateYUVMatrixGL(GLfloat      res[4][4]
 //////////////////////////////////////////////////////////////////////
 
 BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
-                                             GLSLOutput *output)
+                                             std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
   m_height = 1;
@@ -118,7 +118,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 {
   Free();
-  delete m_glslOutput;
+  m_glslOutput.reset();
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
@@ -184,7 +184,7 @@ void BaseYUV2RGBGLSLShader::Free()
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
-                                                   GLSLOutput *output)
+                                                   std::shared_ptr<GLSLOutput> output)
   : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
@@ -199,7 +199,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect, unsigned flags,
                                            EShaderFormat format,
                                            bool stretch,
                                            ESCALINGMETHOD method,
-                                           GLSLOutput *output)
+                                           std::shared_ptr<GLSLOutput> output)
 : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
   m_scaling = method;
@@ -238,8 +238,8 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
   //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_1D, m_kernelTex);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
   glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
