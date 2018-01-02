@@ -277,8 +277,8 @@ bool CDRMUtils::GetPreferredMode()
 bool CDRMUtils::GetPlanes()
 {
   drmModePlaneResPtr plane_resources;
-  uint32_t primary_plane_id = -1;
-  uint32_t overlay_plane_id = -1;
+  uint32_t primary_plane_id = 0;
+  uint32_t overlay_plane_id = 0;
   uint32_t fourcc = 0;
 
   plane_resources = drmModeGetPlaneResources(m_fd);
@@ -306,14 +306,14 @@ bool CDRMUtils::GetPlanes()
       {
         drmModePropertyPtr p = drmModeGetProperty(m_fd, props->props[j]);
 
-        if ((strcmp(p->name, "type") == 0) && (props->prop_values[j] == DRM_PLANE_TYPE_PRIMARY))
+        if ((strcmp(p->name, "type") == 0) && (props->prop_values[j] == DRM_PLANE_TYPE_PRIMARY) && (primary_plane_id == 0))
         {
-          CLog::Log(LOGDEBUG, "CDRMUtils::%s - found primary plane: %d", __FUNCTION__, id);
+          CLog::Log(LOGDEBUG, "CDRMUtils::%s - found primary plane: %u", __FUNCTION__, id);
           primary_plane_id = id;
         }
-        else if ((strcmp(p->name, "type") == 0) && (props->prop_values[j] == DRM_PLANE_TYPE_OVERLAY))
+        else if ((strcmp(p->name, "type") == 0) && (props->prop_values[j] == DRM_PLANE_TYPE_OVERLAY) && (overlay_plane_id == 0))
         {
-          CLog::Log(LOGDEBUG, "CDRMUtils::%s - found overlay plane: %d", __FUNCTION__, id);
+          CLog::Log(LOGDEBUG, "CDRMUtils::%s - found overlay plane: %u", __FUNCTION__, id);
           overlay_plane_id = id;
         }
 
@@ -332,7 +332,7 @@ bool CDRMUtils::GetPlanes()
   m_primary_plane->plane = drmModeGetPlane(m_fd, primary_plane_id);
   if (!m_primary_plane->plane)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get primary plane %i: %s", __FUNCTION__, primary_plane_id, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get primary plane %u: %s", __FUNCTION__, primary_plane_id, strerror(errno));
     return false;
   }
 
@@ -377,7 +377,7 @@ bool CDRMUtils::GetPlanes()
   m_overlay_plane->plane = drmModeGetPlane(m_fd, overlay_plane_id);
   if (!m_overlay_plane->plane)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %i: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
     return false;
   }
 
@@ -623,7 +623,7 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     res.iHeight = m_connector->connector->modes[i].vdisplay;
     res.iScreenWidth = m_connector->connector->modes[i].hdisplay;
     res.iScreenHeight = m_connector->connector->modes[i].vdisplay;
-    if (m_connector->connector->modes[i].clock % 10 != 0)
+    if (m_connector->connector->modes[i].clock % 5 != 0)
       res.fRefreshRate = (float)m_connector->connector->modes[i].vrefresh * (1000.0f/1001.0f);
     else
       res.fRefreshRate = m_connector->connector->modes[i].vrefresh;
