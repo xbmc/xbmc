@@ -47,9 +47,8 @@ struct ExternalStreamInfo
 
 class CUtil
 {
+  CUtil() = delete;
 public:
-  CUtil(void);
-  virtual ~CUtil(void);
   static void CleanString(const std::string& strFileName,
                           std::string& strTitle,
                           std::string& strTitleAndYear,

@@ -308,9 +308,6 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 }
 #endif
 }
-CUtil::CUtil(void) = default;
-
-CUtil::~CUtil(void) = default;
 
 std::string CUtil::GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder /* = false */)
 {
