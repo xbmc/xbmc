@@ -36,7 +36,12 @@ COutput::COutput(std::uint32_t globalName, wayland::output_t const & output, std
   {
     CSingleLock lock(m_geometryCriticalSection);
     m_position = {x, y};
-    m_physicalSize = {physWidth, physHeight};
+    // Some monitors report invalid (negative) values that would cause an exception
+    // with CSizeInt
+    if (physWidth < 0 || physHeight < 0)
+      m_physicalSize = {};
+    else
+      m_physicalSize = {physWidth, physHeight};
     m_make = make;
     m_model = model;
   };
@@ -118,13 +123,22 @@ float COutput::GetPixelRatioForMode(const Mode& mode) const
 
 float COutput::GetDpiForMode(const Mode& mode) const
 {
-  constexpr float INCH_MM_RATIO{25.4f};
+  CSingleLock lock(m_geometryCriticalSection);
+  if (m_physicalSize.IsZero())
+  {
+    // We really have no idea, so use a "sane" default
+    return 96.0;
+  }
+  else
+  {
+    constexpr float INCH_MM_RATIO{25.4f};
 
-  float diagonalPixels = std::sqrt(mode.size.Width() * mode.size.Width() + mode.size.Height() * mode.size.Height());
-  // physicalWidth/physicalHeight is in millimeters
-  float diagonalInches = std::sqrt(m_physicalSize.Width() * m_physicalSize.Width() + m_physicalSize.Height() * m_physicalSize.Height()) / INCH_MM_RATIO;
+    float diagonalPixels = std::sqrt(mode.size.Width() * mode.size.Width() + mode.size.Height() * mode.size.Height());
+    // physicalWidth/physicalHeight is in millimeters
+    float diagonalInches = std::sqrt(m_physicalSize.Width() * m_physicalSize.Width() + m_physicalSize.Height() * m_physicalSize.Height()) / INCH_MM_RATIO;
 
-  return diagonalPixels / diagonalInches;
+    return diagonalPixels / diagonalInches;
+  }
 }
 
 float COutput::GetCurrentDpi() const
