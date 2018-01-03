@@ -457,7 +457,7 @@ int CCueDocument::ExtractTimeFromIndex(const std::string &index)
   int secs = atoi(time[1].c_str());
   int frames = atoi(time[2].c_str());
 
-  return CUtil::ConvertSecsToOffset(mins*60 + secs) + frames;
+  return CUtil::ConvertSecsToOffset(mins*60 + secs) + frames * 1000 / 75;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
