@@ -616,7 +616,7 @@ void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
 {
   CSingleLock lock(g_graphicsContext);
   Add(pWindow);
-  m_vecCustomWindows.push_back(pWindow);
+  m_vecCustomWindows.emplace_back(pWindow);
 }
 
 void CGUIWindowManager::RegisterDialog(CGUIWindow* dialog)
@@ -628,7 +628,7 @@ void CGUIWindowManager::RegisterDialog(CGUIWindow* dialog)
     if (window->GetID() == dialog->GetID())
       return;
   }
-  m_activeDialogs.push_back(dialog);
+  m_activeDialogs.emplace_back(dialog);
 }
 
 void CGUIWindowManager::Remove(int id)
@@ -639,6 +639,10 @@ void CGUIWindowManager::Remove(int id)
   if (it != m_mapWindows.end())
   {
     CGUIWindow *window = it->second;
+    m_windowHistory.erase(std::remove_if(m_windowHistory.begin(),
+                                         m_windowHistory.end(),
+                                         [id](int winId){ return winId == id; }),
+                          m_windowHistory.end());
     m_activeDialogs.erase(std::remove_if(m_activeDialogs.begin(),
                                          m_activeDialogs.end(),
                                          [window](CGUIWindow* w){ return w == window; }),
@@ -662,7 +666,7 @@ void CGUIWindowManager::Delete(int id)
   if (pWindow)
   {
     Remove(id);
-    m_deleteWindows.push_back(pWindow);
+    m_deleteWindows.emplace_back(pWindow);
   }
 }
 
@@ -699,9 +703,9 @@ void CGUIWindowManager::PreviousWindow()
     }
     return;
   }
-  m_windowHistory.pop();
+  m_windowHistory.pop_back();
   int previousWindow = GetActiveWindow();
-  m_windowHistory.push(currentWindow);
+  m_windowHistory.emplace_back(currentWindow);
 
   CGUIWindow *pNewWindow = GetWindow(previousWindow);
   if (!pNewWindow)
@@ -725,7 +729,7 @@ void CGUIWindowManager::PreviousWindow()
   g_infoManager.SetPreviousWindow(currentWindow);
 
   // remove the current window off our window stack
-  m_windowHistory.pop();
+  m_windowHistory.pop_back();
 
   // ok, initialize the new window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
@@ -740,7 +744,7 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const std::string& str
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(newWindow, params, true);
 }
 
@@ -748,7 +752,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::string& strPath
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(iWindowID, params, false);
 }
 
@@ -756,7 +760,7 @@ void CGUIWindowManager::ForceActivateWindow(int iWindowID, const std::string& st
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(iWindowID, params, false, true);
 }
 
@@ -850,7 +854,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   // topmost window).  If we are swapping windows, we pop the old window
   // off the history stack
   if (swappingWindows && !m_windowHistory.empty())
-    m_windowHistory.pop();
+    m_windowHistory.pop_back();
   AddToWindowHistory(iWindowID);
 
   g_infoManager.SetPreviousWindow(currentWindow);
@@ -1416,7 +1420,7 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0
   CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( std::pair<CGUIMessage*,int>(msg,window) );
+  m_vecThreadMessages.emplace_back(std::pair<CGUIMessage*, int>(msg,window));
 }
 
 void CGUIWindowManager::DispatchThreadMessages()
@@ -1489,15 +1493,15 @@ int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
   return removedMsgCount;
 }
 
-void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
+void CGUIWindowManager::AddMsgTarget(IMsgTargetCallback* pMsgTarget)
 {
-  m_vecMsgTargets.push_back( pMsgTarget );
+  m_vecMsgTargets.emplace_back(pMsgTarget);
 }
 
 int CGUIWindowManager::GetActiveWindow() const
 {
   if (!m_windowHistory.empty())
-    return m_windowHistory.top();
+    return m_windowHistory.back();
   return WINDOW_INVALID;
 }
 
@@ -1620,42 +1624,41 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   // Check the window stack to see if this window is in our history,
   // and if so, pop all the other windows off the stack so that we
   // always have a predictable "Back" behaviour for each window
-  std::stack<int> historySave = m_windowHistory;
-  while (!historySave.empty())
+  std::deque<int> history = m_windowHistory;
+  while (!history.empty())
   {
-    if (historySave.top() == newWindowID)
+    if (history.back() == newWindowID)
       break;
-    historySave.pop();
+    history.pop_back();
   }
-  if (!historySave.empty())
+  if (!history.empty())
   { // found window in history
-    m_windowHistory = historySave;
+    m_windowHistory.swap(history);
   }
-  else if (newWindowID != WINDOW_SPLASH)
+  else
   {
     // didn't find window in history - add it to the stack
-    // but do not add the splash window to history, as we never want to travel back to it
-    m_windowHistory.push(newWindowID);
+    m_windowHistory.emplace_back(newWindowID);
   }
 }
 
 void CGUIWindowManager::RemoveFromWindowHistory(int windowID)
 {
-  std::stack<int> stack = m_windowHistory;
+  std::deque<int> history = m_windowHistory;
 
   // pop windows from stack until we found the window
-  while (!stack.empty())
+  while (!history.empty())
   {
-    if (stack.top() == windowID)
+    if (history.back() == windowID)
       break;
-    stack.pop();
+    history.pop_back();
   }
 
   // found window in history
-  if (!stack.empty())
+  if (!history.empty())
   {
-    stack.pop(); // remove window from stack
-    m_windowHistory = stack;
+    history.pop_back(); // remove window from stack
+    m_windowHistory.swap(history);
   }
 }
 
@@ -1705,7 +1708,7 @@ bool CGUIWindowManager::HasVisibleControls()
 void CGUIWindowManager::ClearWindowHistory()
 {
   while (!m_windowHistory.empty())
-    m_windowHistory.pop();
+    m_windowHistory.pop_back();
 }
 
 void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*= 0*/)

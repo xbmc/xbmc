@@ -261,7 +261,7 @@ private:
   std::vector<CGUIWindow*> m_activeDialogs;
   std::vector<CGUIWindow*> m_deleteWindows;
 
-  std::stack<int> m_windowHistory;
+  std::deque<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
   std::list< std::pair<CGUIMessage*,int> > m_vecThreadMessages;
