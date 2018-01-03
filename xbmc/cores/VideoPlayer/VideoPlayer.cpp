@@ -2466,6 +2466,7 @@ void CVideoPlayer::OnExit()
   SAFE_DELETE(m_pDemuxer);
   SAFE_DELETE(m_pSubtitleDemuxer);
   SAFE_DELETE(m_pCCDemuxer);
+  m_pInputStream.reset();
 
   // clean up all selection streams
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);

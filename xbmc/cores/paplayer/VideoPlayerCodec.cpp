@@ -124,6 +124,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
     if (!m_pDemuxer)
     {
+      m_pInputStream.reset();
       CLog::Log(LOGERROR, "%s: Error creating demuxer", __FUNCTION__);
       return false;
     }
@@ -288,6 +289,8 @@ void VideoPlayerCodec::DeInit()
     delete m_pDemuxer;
     m_pDemuxer = NULL;
   }
+
+  m_pInputStream.reset();
 
   if (m_pAudioCodec != NULL)
   {
