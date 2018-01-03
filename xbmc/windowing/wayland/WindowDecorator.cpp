@@ -427,18 +427,18 @@ void CWindowDecorator::HandleSeatPointer(Seat& seat)
   seat.pointer.on_enter() = [this, &seat](std::uint32_t serial, wayland::surface_t surface, float x, float y)
   {
     // Reset first so we ignore events for surfaces we don't handle
-   seat.currentSurface = SURFACE_COUNT;
-   CSingleLock lock(m_mutex);
-   for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
-   {
-     if (m_borderSurfaces[i].surface.wlSurface == surface)
+    seat.currentSurface = SURFACE_COUNT;
+    CSingleLock lock(m_mutex);
+    for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
+    {
+      if (m_borderSurfaces[i].surface.wlSurface == surface)
       {
-       seat.pointerEnterSerial = serial;
-       seat.currentSurface = static_cast<SurfaceIndex> (i);
-       seat.pointerPosition = {x, y};
-       UpdateSeatCursor(seat);
-       UpdateButtonHoverState();
-       break;
+        seat.pointerEnterSerial = serial;
+        seat.currentSurface = static_cast<SurfaceIndex> (i);
+        seat.pointerPosition = {x, y};
+        UpdateSeatCursor(seat);
+        UpdateButtonHoverState();
+        break;
       }
     }
   };
@@ -472,14 +472,14 @@ void CWindowDecorator::HandleSeatTouch(Seat& seat)
 {
   seat.touch.on_down() = [this, &seat](std::uint32_t serial, std::uint32_t, wayland::surface_t surface, std::int32_t id, float x, float y)
   {
-   CSingleLock lock(m_mutex);
-   for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
-   {
-     if (m_borderSurfaces[i].surface.wlSurface == surface)
-     {
-       HandleSeatClick(seat.seat, static_cast<SurfaceIndex> (i), serial, BTN_LEFT, {x, y});
-     }
-   }
+    CSingleLock lock(m_mutex);
+    for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
+    {
+      if (m_borderSurfaces[i].surface.wlSurface == surface)
+      {
+        HandleSeatClick(seat.seat, static_cast<SurfaceIndex> (i), serial, BTN_LEFT, {x, y});
+      }
+    }
   };
 }
 
