@@ -631,7 +631,7 @@ args:
     msg = "Invalid args";
 
 failure:
-    NPT_LOG_WARNING(msg);
+    NPT_LOG_WARNING_1("%s", msg);
     action->SetError(err, msg);
     return NPT_FAILURE;
 }
