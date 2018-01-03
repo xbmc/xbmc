@@ -3,7 +3,7 @@ DEPS=Makefile
 
 # lib name, version
 LIBNAME=waylandpp
-VERSION=0.1.0
+VERSION=0.1.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -12,23 +12,22 @@ CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
-	CXX_FOR_BUILD := $(CXX)
 	ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 	PLATFORM = native
 	TARBALLS_LOCATION = $(ROOT_DIR)
 	BASE_URL := http://mirrors.kodi.tv/build-deps/sources
 	RETRIEVE_TOOL := curl -Ls --create-dirs -f -O
 	ARCHIVE_TOOL := tar --strip-components=1 -xf
+	CMAKE := cmake
+	CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_SCANNER=ON $(CMAKE_OPTIONS)
 else
 	# Building as part of depends
 	DEPS += ../../Makefile.include
-	export PKG_CONFIG=$(NATIVEPREFIX)/bin/pkg-config
-	export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
+	CMAKE_OPTIONS := -DBUILD_SCANNER=OFF -DWAYLAND_SCANNERPP=$(NATIVEPREFIX)/bin/wayland-scanner++ $(CMAKE_OPTIONS)
 endif
 
-SCONS=scons
-export CROSSCXX:=$(CXX)
-export CXX=$(CXX_FOR_BUILD)
+CMAKE_OPTIONS := -DBUILD_DOCUMENTATION=OFF -DBUILD_LIBRARIES=ON -DBUILD_EXAMPLES=OFF $(CMAKE_OPTIONS)
+BUILDDIR = $(PLATFORM)/build
 
 all: .installed-$(PLATFORM)
 
@@ -43,16 +42,18 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	mkdir -p $(BUILDDIR)
+	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
-	$(SCONS) -C $(PLATFORM)
+	$(MAKE) -C $(BUILDDIR)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	PREFIX=$(PREFIX) $(SCONS) -C $(PLATFORM) install
+	$(MAKE) -C $(BUILDDIR) install
 	touch $@
 
 clean:
-	$(SCONS) -C $(PLATFORM) clean
+	$(MAKE) -C $(BUILDDIR) clean
 	rm -f .installed-$(PLATFORM)
 
 distclean:
