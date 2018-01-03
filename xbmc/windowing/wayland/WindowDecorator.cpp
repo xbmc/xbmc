@@ -204,7 +204,7 @@ void FillRectangle(CWindowDecorator::Buffer& buffer, std::uint32_t color, CRectI
 {
   for (int y{rect.y1}; y <= rect.y2; y++)
   {
-    DrawHorizontalLine(buffer, color, {rect.x1, y}, rect.Width());
+    DrawHorizontalLine(buffer, color, {rect.x1, y}, rect.Width() + 1);
   }
 }
 
@@ -236,13 +236,13 @@ void DrawRectangle(CWindowDecorator::Surface& surface, std::uint32_t color, CRec
 {
   for (int i{0}; i < surface.scale; i++)
   {
-    DrawRectangle(surface.buffer, color, {rect.P1() * surface.scale + CPointInt{i, i}, rect.P2() * surface.scale - CPointInt{i, i}});
+    DrawRectangle(surface.buffer, color, {rect.P1() * surface.scale + CPointInt{i, i}, (rect.P2() + CPointInt{1, 1}) * surface.scale - CPointInt{i, i} - CPointInt{1, 1}});
   }
 }
 
 void FillRectangle(CWindowDecorator::Surface& surface, std::uint32_t color, CRectInt rect)
 {
-  FillRectangle(surface.buffer, color, {rect.P1() * surface.scale, rect.P2() * surface.scale});
+  FillRectangle(surface.buffer, color, {rect.P1() * surface.scale, (rect.P2() + CPointInt{1, 1}) * surface.scale - CPointInt{1, 1}});
 }
 
 void DrawButton(CWindowDecorator::Surface& surface, std::uint32_t lineColor, CRectInt rect, bool hover)
