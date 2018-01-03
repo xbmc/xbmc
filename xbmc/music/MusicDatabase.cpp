@@ -64,6 +64,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include <inttypes.h>
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;

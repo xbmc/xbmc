@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include <inttypes.h>
 
 using namespace PLAYLIST;
 using namespace XFILE;
