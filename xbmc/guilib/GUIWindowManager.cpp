@@ -616,7 +616,7 @@ void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
 {
   CSingleLock lock(g_graphicsContext);
   Add(pWindow);
-  m_vecCustomWindows.push_back(pWindow);
+  m_vecCustomWindows.emplace_back(pWindow);
 }
 
 void CGUIWindowManager::RegisterDialog(CGUIWindow* dialog)
@@ -628,7 +628,7 @@ void CGUIWindowManager::RegisterDialog(CGUIWindow* dialog)
     if (window->GetID() == dialog->GetID())
       return;
   }
-  m_activeDialogs.push_back(dialog);
+  m_activeDialogs.emplace_back(dialog);
 }
 
 void CGUIWindowManager::Remove(int id)
@@ -666,7 +666,7 @@ void CGUIWindowManager::Delete(int id)
   if (pWindow)
   {
     Remove(id);
-    m_deleteWindows.push_back(pWindow);
+    m_deleteWindows.emplace_back(pWindow);
   }
 }
 
@@ -705,7 +705,7 @@ void CGUIWindowManager::PreviousWindow()
   }
   m_windowHistory.pop_back();
   int previousWindow = GetActiveWindow();
-  m_windowHistory.push_back(currentWindow);
+  m_windowHistory.emplace_back(currentWindow);
 
   CGUIWindow *pNewWindow = GetWindow(previousWindow);
   if (!pNewWindow)
@@ -744,7 +744,7 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const std::string& str
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(newWindow, params, true);
 }
 
@@ -752,7 +752,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::string& strPath
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(iWindowID, params, false);
 }
 
@@ -760,7 +760,7 @@ void CGUIWindowManager::ForceActivateWindow(int iWindowID, const std::string& st
 {
   std::vector<std::string> params;
   if (!strPath.empty())
-    params.push_back(strPath);
+    params.emplace_back(strPath);
   ActivateWindow(iWindowID, params, false, true);
 }
 
@@ -1420,7 +1420,7 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0
   CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( std::pair<CGUIMessage*,int>(msg,window) );
+  m_vecThreadMessages.emplace_back(std::pair<CGUIMessage*, int>(msg,window));
 }
 
 void CGUIWindowManager::DispatchThreadMessages()
@@ -1493,9 +1493,9 @@ int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
   return removedMsgCount;
 }
 
-void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
+void CGUIWindowManager::AddMsgTarget(IMsgTargetCallback* pMsgTarget)
 {
-  m_vecMsgTargets.push_back( pMsgTarget );
+  m_vecMsgTargets.emplace_back(pMsgTarget);
 }
 
 int CGUIWindowManager::GetActiveWindow() const
@@ -1638,7 +1638,7 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   else
   {
     // didn't find window in history - add it to the stack
-    m_windowHistory.push_back(newWindowID);
+    m_windowHistory.emplace_back(newWindowID);
   }
 }
 
