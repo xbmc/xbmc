@@ -123,6 +123,8 @@ public:
   void SetCoreWindow(Windows::UI::Core::CoreWindow^ window);
   Windows::UI::Core::CoreWindow^ GetCoreWindow() { return m_coreWindow.Get(); }
 
+  bool CanDoWindowed() override;
+
 protected:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override = 0;
   virtual void UpdateStates(bool fullScreen);

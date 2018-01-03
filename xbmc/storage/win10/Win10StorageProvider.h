@@ -19,6 +19,7 @@
  *
  */
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -28,7 +29,7 @@
 class CStorageProvider : public IStorageProvider
 {
 public:
-  virtual ~CStorageProvider() { }
+  virtual ~CStorageProvider();
 
   void Initialize() override;
   void Stop() override { }
@@ -39,4 +40,8 @@ public:
   bool Eject(const std::string& mountpath) override;
   std::vector<std::string> GetDiskUsage() override;
   bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
+
+private:
+  Windows::Devices::Enumeration::DeviceWatcher^ m_watcher{ nullptr };
+  std::atomic<bool> m_changed;
 };

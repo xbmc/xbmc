@@ -26,37 +26,27 @@
 
 inline void Wait(Windows::Foundation::IAsyncAction^ asyncOp)
 {
-  auto _sync = std::make_shared<Concurrency::event>();
-
-  auto workItem = ref new Windows::System::Threading::WorkItemHandler(
-    [&](Windows::Foundation::IAsyncAction^ workItem)
+  auto __sync = std::make_shared<Concurrency::event>();
+  asyncOp->Completed = ref new Windows::Foundation::AsyncActionCompletedHandler(
+    [&](Windows::Foundation::IAsyncAction^ op, Windows::Foundation::AsyncStatus st)
   {
-    Concurrency::task<void>(asyncOp).then(
-      [&]()
-    {
-      _sync->set();
-    });
+    __sync->set();
   });
-  Windows::System::Threading::ThreadPool::RunAsync(workItem);
-  _sync->wait();
+
+  __sync->wait();
 }
 
 template <typename TResult, typename TProgress> inline
 TResult Wait(Windows::Foundation::IAsyncOperationWithProgress<TResult, TProgress>^ asyncOp)
 {
-  auto _sync = std::make_shared<Concurrency::event>();
+  auto __sync = std::make_shared<Concurrency::event>();
 
-  auto workItem = ref new Windows::System::Threading::WorkItemHandler(
-    [&](Windows::Foundation::IAsyncAction^ workItem)
+  asyncOp->Completed = ref new Windows::Foundation::AsyncOperationWithProgressCompletedHandler<TResult, TProgress>(
+    [&](Windows::Foundation::IAsyncOperationWithProgress<TResult, TProgress>^ op, Windows::Foundation::AsyncStatus st)
   {
-    Concurrency::task<TResult>(asyncOp).then(
-      [&](TResult result)
-    {
-      _sync->set();
-    });
+    __sync->set();
   });
-  Windows::System::Threading::ThreadPool::RunAsync(workItem);
-  _sync->wait();
+  __sync->wait();
 
   return asyncOp->GetResults();
 }
@@ -64,19 +54,16 @@ TResult Wait(Windows::Foundation::IAsyncOperationWithProgress<TResult, TProgress
 template <typename TResult> inline
 TResult Wait(Windows::Foundation::IAsyncOperation<TResult>^ asyncOp)
 {
-  auto _sync = std::make_shared<Concurrency::event>();
+  auto __sync = std::make_shared<Concurrency::event>();
+  Windows::Foundation::AsyncStatus __status;
 
-  auto workItem = ref new Windows::System::Threading::WorkItemHandler(
-    [&](Windows::Foundation::IAsyncAction^ workItem)
+  asyncOp->Completed = ref new Windows::Foundation::AsyncOperationCompletedHandler<TResult>(
+    [&](Windows::Foundation::IAsyncOperation<TResult>^ op, Windows::Foundation::AsyncStatus st)
   {
-    Concurrency::task<TResult>(asyncOp).then(
-      [&](TResult result)
-    {
-      _sync->set();
-    });
+    __status = st;
+    __sync->set();
   });
-  Windows::System::Threading::ThreadPool::RunAsync(workItem);
-  _sync->wait();
+  __sync->wait();
 
   return asyncOp->GetResults();
 }

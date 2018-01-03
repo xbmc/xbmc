@@ -20,7 +20,7 @@
   </Dependencies>
 
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="en-us" />
   </Resources>
 
   <Applications>
@@ -40,128 +40,183 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="kodi">
-            <uap:DisplayName>@APP_NAME@</uap:DisplayName>
+          <uap:FileTypeAssociation Name="kodi.video">
             <uap:SupportedFileTypes>
               <uap:FileType>.3g2</uap:FileType>
               <uap:FileType>.3gp</uap:FileType>
+              <uap:FileType>.asf</uap:FileType>
+              <uap:FileType>.asx</uap:FileType>
+              <uap:FileType>.avc</uap:FileType>
+              <uap:FileType>.avi</uap:FileType>
+              <uap:FileType>.avs</uap:FileType>
+              <uap:FileType>.bdmv</uap:FileType>
+              <uap:FileType>.bin</uap:FileType>
+              <uap:FileType>.bivx</uap:FileType>
+              <uap:FileType>.dat</uap:FileType>
+              <uap:FileType>.divx</uap:FileType>
+              <uap:FileType>.dv</uap:FileType>
+              <uap:FileType>.dvr-ms</uap:FileType>
+              <uap:FileType>.evo</uap:FileType>
+              <uap:FileType>.f4v</uap:FileType>
+              <uap:FileType>.fli</uap:FileType>
+              <uap:FileType>.flv</uap:FileType>
+              <uap:FileType>.h264</uap:FileType>
+              <uap:FileType>.m2t</uap:FileType>
+              <uap:FileType>.m2ts</uap:FileType>
+              <uap:FileType>.m2v</uap:FileType>
+              <uap:FileType>.m4v</uap:FileType>
+              <uap:FileType>.mk3d</uap:FileType>
+              <uap:FileType>.mkv</uap:FileType>
+              <uap:FileType>.mov</uap:FileType>
+              <uap:FileType>.mp4</uap:FileType>
+              <uap:FileType>.mpd</uap:FileType>
+              <uap:FileType>.mpeg</uap:FileType>
+              <uap:FileType>.mpg</uap:FileType>
+              <uap:FileType>.mts</uap:FileType>
+              <uap:FileType>.nrg</uap:FileType>
+              <uap:FileType>.nsv</uap:FileType>
+              <uap:FileType>.nuv</uap:FileType>
+              <uap:FileType>.ogm</uap:FileType>
+              <uap:FileType>.ogv</uap:FileType>
+              <uap:FileType>.pva</uap:FileType>
+              <uap:FileType>.pxml</uap:FileType>
+              <uap:FileType>.qt</uap:FileType>
+              <uap:FileType>.rcv</uap:FileType>
+              <uap:FileType>.rec</uap:FileType>
+              <uap:FileType>.sdp</uap:FileType>
+              <uap:FileType>.svq3</uap:FileType>
+              <uap:FileType>.tp</uap:FileType>
+              <uap:FileType>.trp</uap:FileType>
+              <uap:FileType>.ts</uap:FileType>
+              <uap:FileType>.ty</uap:FileType>
+              <uap:FileType>.vc1</uap:FileType>
+              <uap:FileType>.vdr</uap:FileType>
+              <uap:FileType>.viv</uap:FileType>
+              <uap:FileType>.vob</uap:FileType>
+              <uap:FileType>.vp3</uap:FileType>
+              <uap:FileType>.webm</uap:FileType>
+              <uap:FileType>.wmv</uap:FileType>
+              <uap:FileType>.wpl</uap:FileType>
+              <uap:FileType>.wtv</uap:FileType>
+              <uap:FileType>.xsp</uap:FileType>
+              <uap:FileType>.xvid</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="kodi.picture">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.apng</uap:FileType>
+              <uap:FileType>.bmp</uap:FileType>
+              <uap:FileType>.cbr</uap:FileType>
+              <uap:FileType>.cbz</uap:FileType>
+              <uap:FileType>.gif</uap:FileType>
+              <uap:FileType>.ico</uap:FileType>
+              <uap:FileType>.jp2</uap:FileType>
+              <uap:FileType>.jpeg</uap:FileType>
+              <uap:FileType>.jpg</uap:FileType>
+              <uap:FileType>.pcx</uap:FileType>
+              <uap:FileType>.png</uap:FileType>
+              <uap:FileType>.tga</uap:FileType>
+              <uap:FileType>.tif</uap:FileType>
+              <uap:FileType>.tiff</uap:FileType>
+              <uap:FileType>.webp</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="kodi.music">
+            <uap:SupportedFileTypes>
               <uap:FileType>.aac</uap:FileType>
               <uap:FileType>.ac3</uap:FileType>
               <uap:FileType>.aif</uap:FileType>
               <uap:FileType>.aiff</uap:FileType>
               <uap:FileType>.ape</uap:FileType>
-              <uap:FileType>.asf</uap:FileType>
-              <uap:FileType>.asx</uap:FileType>
-              <uap:FileType>.avi</uap:FileType>
-              <uap:FileType>.avc</uap:FileType>
-              <uap:FileType>.avs</uap:FileType>
-              <uap:FileType>.bdmv</uap:FileType>
-              <uap:FileType>.bin</uap:FileType>
-              <uap:FileType>.bivx</uap:FileType>
               <uap:FileType>.cmc</uap:FileType>
               <uap:FileType>.cmr</uap:FileType>
               <uap:FileType>.cue</uap:FileType>
-              <uap:FileType>.dat</uap:FileType>
-              <uap:FileType>.divx</uap:FileType>
               <uap:FileType>.dff</uap:FileType>
-              <uap:FileType>.dsf</uap:FileType>
               <uap:FileType>.dmc</uap:FileType>
+              <uap:FileType>.dsf</uap:FileType>
               <uap:FileType>.dsp</uap:FileType>
               <uap:FileType>.dts</uap:FileType>
-              <uap:FileType>.dv</uap:FileType>
-              <uap:FileType>.dvr-ms</uap:FileType>
-              <uap:FileType>.evo</uap:FileType>
               <uap:FileType>.flac</uap:FileType>
-              <uap:FileType>.fli</uap:FileType>
-              <uap:FileType>.flv</uap:FileType>
               <uap:FileType>.gcm</uap:FileType>
               <uap:FileType>.gdm</uap:FileType>
-              <uap:FileType>.h264</uap:FileType>
               <uap:FileType>.idsp</uap:FileType>
-              <uap:FileType>.ifo</uap:FileType>
               <uap:FileType>.imf</uap:FileType>
-              <uap:FileType>.img</uap:FileType>
-              <uap:FileType>.iso</uap:FileType>
-              <uap:FileType>.m15</uap:FileType>
-              <uap:FileType>.m2v</uap:FileType>
-              <uap:FileType>.m2t</uap:FileType>
-              <uap:FileType>.m2ts</uap:FileType>
-              <uap:FileType>.m3u</uap:FileType>
-              <uap:FileType>.m3u8</uap:FileType>
               <uap:FileType>.m4a</uap:FileType>
               <uap:FileType>.m4b</uap:FileType>
+              <uap:FileType>.m15</uap:FileType>
               <uap:FileType>.mac</uap:FileType>
-              <uap:FileType>.mk3d</uap:FileType>
               <uap:FileType>.mka</uap:FileType>
-              <uap:FileType>.mkv</uap:FileType>
-              <uap:FileType>.mov</uap:FileType>
               <uap:FileType>.mp2</uap:FileType>
-              <uap:FileType>.mp4</uap:FileType>
-              <uap:FileType>.m4v</uap:FileType>
-              <uap:FileType>.mp4v</uap:FileType>
-              <uap:FileType>.mp+</uap:FileType>
               <uap:FileType>.mp3</uap:FileType>
               <uap:FileType>.mpa</uap:FileType>
               <uap:FileType>.mpc</uap:FileType>
-              <uap:FileType>.mpd</uap:FileType>
               <uap:FileType>.mpdsp</uap:FileType>
-              <uap:FileType>.mpeg</uap:FileType>
-              <uap:FileType>.mpg</uap:FileType>
-              <uap:FileType>.mpls</uap:FileType>
               <uap:FileType>.mpp</uap:FileType>
+              <uap:FileType>.mp+</uap:FileType>
               <uap:FileType>.mpt</uap:FileType>
               <uap:FileType>.mss</uap:FileType>
-              <uap:FileType>.mts</uap:FileType>
-              <uap:FileType>.nrg</uap:FileType>
-              <uap:FileType>.nsv</uap:FileType>
-              <uap:FileType>.nuv</uap:FileType>
               <uap:FileType>.oga</uap:FileType>
               <uap:FileType>.ogg</uap:FileType>
-              <uap:FileType>.ogm</uap:FileType>
-              <uap:FileType>.ogv</uap:FileType>
               <uap:FileType>.opus</uap:FileType>
-              <uap:FileType>.pls</uap:FileType>
-              <uap:FileType>.pxml</uap:FileType>
-              <uap:FileType>.rcv</uap:FileType>
-              <uap:FileType>.rec</uap:FileType>
               <uap:FileType>.rsd</uap:FileType>
-              <uap:FileType>.rss</uap:FileType>
-              <uap:FileType>.pva</uap:FileType>
-              <uap:FileType>.qt</uap:FileType>
               <uap:FileType>.sap</uap:FileType>
               <uap:FileType>.sfx</uap:FileType>
               <uap:FileType>.shn</uap:FileType>
-              <uap:FileType>.sdp</uap:FileType>
               <uap:FileType>.spt</uap:FileType>
-              <uap:FileType>.strm</uap:FileType>
-              <uap:FileType>.svq3</uap:FileType>
               <uap:FileType>.tak</uap:FileType>
               <uap:FileType>.tm2</uap:FileType>
               <uap:FileType>.tm8</uap:FileType>
               <uap:FileType>.tmc</uap:FileType>
-              <uap:FileType>.tp</uap:FileType>
-              <uap:FileType>.ts</uap:FileType>
               <uap:FileType>.tta</uap:FileType>
-              <uap:FileType>.ty</uap:FileType>
               <uap:FileType>.uni</uap:FileType>
-              <uap:FileType>.vc1</uap:FileType>
-              <uap:FileType>.vdr</uap:FileType>
-              <uap:FileType>.viv</uap:FileType>
-              <uap:FileType>.vp3</uap:FileType>
-              <uap:FileType>.vob</uap:FileType>
               <uap:FileType>.waa</uap:FileType>
               <uap:FileType>.wam</uap:FileType>
               <uap:FileType>.wav</uap:FileType>
-              <uap:FileType>.webm</uap:FileType>
               <uap:FileType>.wma</uap:FileType>
-              <uap:FileType>.wmv</uap:FileType>
-              <uap:FileType>.wpl</uap:FileType>
-              <uap:FileType>.wtv</uap:FileType>
               <uap:FileType>.wv</uap:FileType>
               <uap:FileType>.wvs</uap:FileType>
-              <uap:FileType>.xsp</uap:FileType>
-              <uap:FileType>.xvid</uap:FileType>
               <uap:FileType>.xwav</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="kodi.subtitle">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.aqt</uap:FileType>
+              <uap:FileType>.ass</uap:FileType>
+              <uap:FileType>.idx</uap:FileType>
+              <uap:FileType>.jss</uap:FileType>
+              <uap:FileType>.rt</uap:FileType>
+              <uap:FileType>.smi</uap:FileType>
+              <uap:FileType>.srt</uap:FileType>
+              <uap:FileType>.ssa</uap:FileType>
+              <uap:FileType>.sub</uap:FileType>
+              <uap:FileType>.text</uap:FileType>
+              <uap:FileType>.txt</uap:FileType>
+              <uap:FileType>.utf</uap:FileType>
+              <uap:FileType>.utf-8</uap:FileType>
+              <uap:FileType>.utf8</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="kodi.other">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.ifo</uap:FileType>
+              <uap:FileType>.img</uap:FileType>
+              <uap:FileType>.iso</uap:FileType>
+              <uap:FileType>.m3u</uap:FileType>
+              <uap:FileType>.m3u8</uap:FileType>
+              <uap:FileType>.mpls</uap:FileType>
+              <uap:FileType>.pls</uap:FileType>
+              <uap:FileType>.rar</uap:FileType>
+              <uap:FileType>.rss</uap:FileType>
+              <uap:FileType>.strm</uap:FileType>
+              <uap:FileType>.udf</uap:FileType>
               <uap:FileType>.zip</uap:FileType>
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
@@ -173,6 +228,7 @@
     <Capability Name="internetClient" />
     <Capability Name="internetClientServer" />
     <Capability Name="codeGeneration" />
+    <Capability Name="privateNetworkClientServer" />
     <uap:Capability Name="musicLibrary" />
     <uap:Capability Name="picturesLibrary" />
     <uap:Capability Name="removableStorage" />

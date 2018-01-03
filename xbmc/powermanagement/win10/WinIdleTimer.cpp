@@ -20,21 +20,30 @@
 #include "powermanagement/WinIdleTimer.h"
 #include "Application.h"
 
+using namespace Windows::ApplicationModel::Core;
+using namespace Windows::Foundation;
+using namespace Windows::System::Display;
+using namespace Windows::System::Threading;
+using namespace Windows::UI::Core;
+
 void CWinIdleTimer::StartZero()
 {
   if (!g_application.IsDPMSActive())
   {
-    try
+    auto workItem = ref new DispatchedHandler([]()
     {
-      auto displayRequest = ref new Windows::System::Display::DisplayRequest();
-      // this couple of calls activate and deactivate a display-required
-      // request in other words they reset display idle timer
-      displayRequest->RequestActive();
-      displayRequest->RequestRelease();
-    }
-    catch (Platform::Exception^ ex)
-    {
-    }
+      try
+      {
+        auto displayRequest = ref new DisplayRequest();
+        // this couple of calls activate and deactivate a display-required
+        // request in other words they reset display idle timer
+        displayRequest->RequestActive();
+        displayRequest->RequestRelease();
+      }
+      catch (Platform::Exception^ ex) { }
+    });
+    CoreWindow^ window = CoreApplication::MainView->CoreWindow;
+    window->Dispatcher->RunAsync(CoreDispatcherPriority::High, workItem);
   }
   CStopWatch::StartZero();
 }

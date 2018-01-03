@@ -67,6 +67,8 @@ StorageFolder^ CWinLibraryDirectory::GetRootFolder(const CURL& url)
     return KnownFolders::CameraRoll;
   if (lib == "documents")
     return KnownFolders::DocumentsLibrary;
+  if (lib == "removable")
+    return KnownFolders::RemovableDevices;
 
   return nullptr;
 }
@@ -83,7 +85,8 @@ bool CWinLibraryDirectory::IsValid(const CURL & url)
     || lib == "video"
     || lib == "pictures"
     || lib == "photos"
-    || lib == "documents")
+    || lib == "documents"
+    || lib == "removable")
     return true;
   else
     return false;
@@ -112,13 +115,18 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
     return false;
 
   auto vectorView = Wait(folder->GetItemsAsync());
-  for (int i = 0; i < vectorView->Size; i++)
+  for (unsigned i = 0; i < vectorView->Size; i++)
   {
     IStorageItem^ item = vectorView->GetAt(i);
     std::string itemName = FromW(std::wstring(item->Name->Data()));
 
     CFileItemPtr pItem(new CFileItem(itemName));
     pItem->m_bIsFolder = (item->Attributes & FileAttributes::Directory) == FileAttributes::Directory;
+    IStorageItemProperties^ storageItemProperties = dynamic_cast<IStorageItemProperties^>(item);
+    if (item != nullptr)
+    {
+      pItem->m_strTitle = FromW(storageItemProperties->DisplayName->Data());
+    }
 
     if (pItem->m_bIsFolder)
       pItem->SetPath(path + itemName + "/");
@@ -187,6 +195,15 @@ StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
   if (!folderPath.empty())
   {
     std::wstring wStrPath = ToW(folderPath);
+    if (url.GetHostName() == "removable")
+    {
+      // here path has the form e\path where first segment is drive letter
+      // we should make path form like regular e:\path
+      auto index = wStrPath.find('\\');
+      if (index > 0 && wStrPath[index-1] != ':')
+        wStrPath = wStrPath.insert(index, 1, ':');
+    }
+
     try
     {
       Platform::String^ pPath = ref new Platform::String(wStrPath.c_str());

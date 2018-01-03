@@ -96,6 +96,11 @@ void CWinSystemWin10::SetCoreWindow(Windows::UI::Core::CoreWindow^ window)
   dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
 }
 
+bool CWinSystemWin10::CanDoWindowed()
+{
+  return CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Desktop;
+}
+
 bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   UpdateStates(fullScreen);

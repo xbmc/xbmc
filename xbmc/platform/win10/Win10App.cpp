@@ -112,7 +112,7 @@ void App::Run()
   }
 
   WSACleanup();
-  CoUninitialize();
+  //CoUninitialize();
 }
 
 // Required for IFrameworkView.
