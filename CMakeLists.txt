@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.4)
 project(kodi LANGUAGES CXX C ASM)
 
 if(POLICY CMP0069)
