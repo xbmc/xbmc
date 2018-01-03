@@ -2234,7 +2234,7 @@ bool CApplication::OnAction(const CAction &action)
       std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
       if (!player.empty())
       {
-        item.m_lStartOffset = CUtil::ConvertSecsToOffset(GetTime());
+        item.m_lStartOffset = CUtil::ConvertSecsToMilliSecs(GetTime());
         PlayFile(std::move(item), player, true);
       }
     }
@@ -3078,7 +3078,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
 
-  options.starttime = CUtil::ConvertOffsetToSecs(item.m_lStartOffset);
+  options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);
 
   if (bRestart)
   {
@@ -4341,7 +4341,7 @@ void CApplication::Restart(bool bSamePosition)
   std::string state = m_appPlayer.GetPlayerState();
 
   // set the requested starttime
-  m_itemCurrentFile->m_lStartOffset = CUtil::ConvertSecsToOffset(time);
+  m_itemCurrentFile->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(time);
 
   // reopen the file
   if (PlayFile(*m_itemCurrentFile, "", true))

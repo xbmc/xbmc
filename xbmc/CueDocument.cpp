@@ -219,7 +219,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     aSong.iEndOffset = track.iEndTime;
     if (aSong.iEndOffset)
       // Convert offset in frames (75 per second) to duration in whole seconds with rounding 
-      aSong.iDuration = CUtil::ConvertOffsetToSecsIntRounded(aSong.iEndOffset - aSong.iStartOffset);
+      aSong.iDuration = CUtil::ConvertMilliSecsToSecsIntRounded(aSong.iEndOffset - aSong.iStartOffset);
     else
       aSong.iDuration = 0;
 
@@ -457,7 +457,7 @@ int CCueDocument::ExtractTimeFromIndex(const std::string &index)
   int secs = atoi(time[1].c_str());
   int frames = atoi(time[2].c_str());
 
-  return CUtil::ConvertSecsToOffset(mins*60 + secs) + frames * 1000 / 75;
+  return CUtil::ConvertSecsToMilliSecs(mins*60 + secs) + frames * 1000 / 75;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

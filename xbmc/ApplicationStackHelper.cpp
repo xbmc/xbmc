@@ -118,7 +118,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
           path = item.GetProperty("original_listitem_url").asString();
         if (dbs.GetResumeBookMark(path, bookmark))
         {
-          startoffset = CUtil::ConvertSecsToOffset(bookmark.timeInSeconds);
+          startoffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
           selectedFile = bookmark.partNumber;
         }
         dbs.Close();
