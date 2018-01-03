@@ -2466,6 +2466,8 @@ void CVideoPlayer::OnExit()
   SAFE_DELETE(m_pDemuxer);
   SAFE_DELETE(m_pSubtitleDemuxer);
   SAFE_DELETE(m_pCCDemuxer);
+  if (m_pInputStream.use_count() > 1)
+    throw std::runtime_error("m_pInputStream reference count is greater than 1");
   m_pInputStream.reset();
 
   // clean up all selection streams
