@@ -21,7 +21,7 @@ find_library(XKBCOMMON_LIBRARY NAMES xkbcommon
                                PATHS ${PC_XKBCOMMON_LIBRARIES} ${PC_XKBCOMMON_LIBRARY_DIRS})
 
 include (FindPackageHandleStandardArgs)
-find_package_handle_standard_args (XKBCOMMON
+find_package_handle_standard_args (Xkbcommon
   REQUIRED_VARS
   XKBCOMMON_INCLUDE_DIR
   XKBCOMMON_LIBRARY)
