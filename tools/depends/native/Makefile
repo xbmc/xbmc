@@ -39,7 +39,6 @@ distribute-native: python27-native
 distutilscross-native: python27-native distribute-native
 tar-native: xz-native automake-native
 python27-native: zlib-native
-scons-native: python27-native
 wayland-scanner-native: expat-native
 waylandpp-scanner-native: cmake-native
 
