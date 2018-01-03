@@ -3227,7 +3227,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   // one of the players that allows gapless playback (paplayer, VideoPlayer)
   if (m_appPlayer.HasPlayer())
   {
-    if (m_appPlayer.CanClosePlayerGapless(newPlayer, item))
+    if (m_appPlayer.SupportsGaplessClose(newPlayer, item))
     {
       m_appPlayer.ClosePlayerGapless(newPlayer);
     }

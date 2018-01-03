@@ -54,7 +54,7 @@ public:
   // player management
   void CloseFile(bool reopen = false);
   void ClosePlayer();
-  bool CanClosePlayerGapless(std::string &playername, CFileItem& item);
+  bool SupportsGaplessClose(std::string &playername, CFileItem& item);
   void ClosePlayerGapless(std::string &playername);
   void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();

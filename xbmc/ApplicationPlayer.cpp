@@ -62,7 +62,7 @@ void CApplicationPlayer::CloseFile(bool reopen)
   }
 }
 
-bool CApplicationPlayer::CanClosePlayerGapless(std::string &playername, CFileItem& item)
+bool CApplicationPlayer::SupportsGaplessClose(std::string &playername, CFileItem& item)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (!player)
