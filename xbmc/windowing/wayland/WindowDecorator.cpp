@@ -28,6 +28,7 @@
 #include <linux/input-event-codes.h>
 
 #include "threads/SingleLock.h"
+#include "Util.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
 
@@ -513,7 +514,7 @@ void CWindowDecorator::UpdateSeatCursor(Seat& seat)
   wayland::cursor_t cursor;
   try
   {
-    cursor = m_cursorTheme.get_cursor(cursorName);
+    cursor = CCursorUtil::LoadFromTheme(m_cursorTheme, cursorName);
   }
   catch (std::exception const& e)
   {
