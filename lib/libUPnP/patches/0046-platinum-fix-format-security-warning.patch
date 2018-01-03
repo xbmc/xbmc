@@ -1,0 +1,22 @@
+From 75dca8c816de2d65aee5117876b3c7110ad4cd47 Mon Sep 17 00:00:00 2001
+From: Rechi <Rechi@users.noreply.github.com>
+Date: Wed, 3 Jan 2018 10:31:43 +0100
+Subject: [PATCH] [libUPnP][platinum] fix format-security warning
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+index 0a43dab603..feeb537648 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+@@ -631,7 +631,7 @@ args:
+     msg = "Invalid args";
+ 
+ failure:
+-    NPT_LOG_WARNING(msg);
++    NPT_LOG_WARNING_1("%s", msg);
+     action->SetError(err, msg);
+     return NPT_FAILURE;
+ }
