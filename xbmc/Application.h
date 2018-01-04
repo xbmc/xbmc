@@ -186,7 +186,7 @@ public:
 
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
-  PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
+  bool PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -473,7 +473,7 @@ protected:
 
   void VolumeChanged();
 
-  PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
+  bool PlayStack(const CFileItem& item, bool bRestart);
 
   float NavigationIdleTime();
   bool InitDirectoriesLinux();

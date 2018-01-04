@@ -2973,7 +2973,7 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
       {
         CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
         if(pPlayList->size())
-          return PlayFile(*(*pPlayList)[0], "", false) == PLAYBACK_OK;
+          return PlayFile(*(*pPlayList)[0], "", false);
       }
     }
   }
@@ -2989,12 +2989,12 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
     if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
     {
       CFileItem addonItem(addon);
-      return PlayFile(addonItem, player, false) == PLAYBACK_OK;
+      return PlayFile(addonItem, player, false);
     }
   }
 
   //nothing special just play
-  return PlayFile(item, player, false) == PLAYBACK_OK;
+  return PlayFile(item, player, false);
 }
 
 // PlayStack()
@@ -3004,21 +3004,20 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
 // A faster calculation of video time would improve this
 // substantially.
 // return value: same with PlayFile()
-PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
+bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 {
   if (!m_stackHelper.InitializeStack(item))
-    return PLAYBACK_FAIL;
+    return false;
 
   int startoffset = m_stackHelper.InitializeStackStartPartAndOffset(item);
 
-  m_itemCurrentFile.reset(new CFileItem(item));
   CFileItem selectedStackPart = m_stackHelper.GetCurrentStackPartFileItem();
   selectedStackPart.m_lStartOffset = startoffset;
 
   return PlayFile(selectedStackPart, "", true);
 }
 
-PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
+bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
@@ -3028,8 +3027,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   {
     // bRestart will be true when called from PlayStack(), skipping this block
     m_appPlayer.SetPlaySpeed(1);
-
-    m_itemCurrentFile.reset(new CFileItem(item));
 
     m_nextPlaylistItem = -1;
     m_stackHelper.Clear();
@@ -3047,17 +3044,17 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       if (CGUIDialogPlayEject::ShowAndGetInput(item))
         // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
         // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume() ? PLAYBACK_OK : PLAYBACK_FAIL;
+        return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
     }
     else
 #endif
       HELPERS::ShowOKDialogText(CVariant{435}, CVariant{436});
 
-    return PLAYBACK_OK;
+    return true;
   }
 
   if (item.IsPlayList())
-    return PLAYBACK_FAIL;
+    return false;
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
@@ -3065,7 +3062,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new, resume))
       return PlayFile(std::move(item_new), player, false);
-    return PLAYBACK_FAIL;
+    return false;
   }
 
 #ifdef HAS_UPNP
@@ -3074,7 +3071,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     CFileItem item_new(item);
     if (XFILE::CUPnPDirectory::GetResource(item.GetURL(), item_new))
       return PlayFile(std::move(item_new), player, false);
-    return PLAYBACK_FAIL;
+    return false;
   }
 #endif
 
@@ -3101,8 +3098,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // have to be set here due to playstack using this for starting the file
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
-    if (m_stackHelper.IsPlayingRegularStack() && m_itemCurrentFile->m_lStartOffset != 0)
-      m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
   }
   if (!bRestart || m_stackHelper.IsPlayingISOStack())
   {
@@ -3174,7 +3169,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   {
     //check if we must show the simplified bd menu
     if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
-      return PLAYBACK_CANCELED;
+      return false;
   }
 
   // this really aught to be inside !bRestart, but since PlayStack
@@ -3188,12 +3183,10 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   else if(m_stackHelper.IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
-    if(m_stackHelper.GetCurrentPartNumber() == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
+    if(m_stackHelper.GetCurrentPartNumber() == 0 || m_stackHelper.GetRegisteredStack(item)->m_lStartOffset != 0)
       options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
     else
       options.fullscreen = false;
-    // reset this so we don't think we are resuming on seek
-    m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
     options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
@@ -3222,83 +3215,18 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
 
-  std::string newPlayer;
-  if (!player.empty())
-    newPlayer = player;
-  else if (bRestart && !m_appPlayer.GetCurrentPlayer().empty())
-    newPlayer = m_appPlayer.GetCurrentPlayer();
-  else
-    newPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
-
-  // We should restart the player, unless the previous and next tracks are using
-  // one of the players that allows gapless playback (paplayer, VideoPlayer)
-  // DVD playback does not support gapless
-  if (item.IsDiscImage() || item.IsDVDFile())
-    m_appPlayer.ClosePlayer();
-  else
-    m_appPlayer.ClosePlayerGapless(newPlayer);
-
-  m_appPlayer.CreatePlayer(newPlayer, *this);
-
-  PlayBackRet iResult;
-  if (m_appPlayer.HasPlayer())
-  {
-    /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
-     * This should speed up player startup for files on internet filesystems (eg. webdav) and
-     * increase performance on low powered systems (Atom/ARM).
-     */
-    if (item.IsVideo() || item.IsGame())
-    {
-      CJobManager::GetInstance().PauseJobs();
-    }
-
-    // don't hold graphicscontext here since player
-    // may wait on another thread, that requires gfx
-    CSingleExit ex(g_graphicsContext);
-
-    iResult = m_appPlayer.OpenFile(item, options);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath().c_str());
-    iResult = PLAYBACK_FAIL;
-  }
-
-  if (iResult == PLAYBACK_OK)
-  {
-    m_appPlayer.SetVolume(m_volumeLevel);
-    m_appPlayer.SetMute(m_muted);
-
-    if(m_appPlayer.IsPlayingAudio())
-    {
-      if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
-    }
-    else if(m_appPlayer.IsPlayingVideo())
-    {
-      // if player didn't manage to switch to fullscreen by itself do it here
-      if (options.fullscreen && m_appPlayer.IsRenderingVideo() &&
-          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
-          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
-       SwitchToFullScreen(true);
-    }
-    else
-    {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
-          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
-        g_windowManager.PreviousWindow();
-    }
+  m_appPlayer.SetVolume(m_volumeLevel);
+  m_appPlayer.SetMute(m_muted);
+  m_appPlayer.OpenFile(item, options, player, *this);
 
 #if !defined(TARGET_POSIX)
-    g_audioManager.Enable(false);
+  g_audioManager.Enable(false);
 #endif
 
-    if (item.HasPVRChannelInfoTag())
-      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
-  }
+  if (item.HasPVRChannelInfoTag())
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
 
-  return iResult;
+  return true;
 }
 
 void CApplication::OnPlayBackEnded()
@@ -3330,6 +3258,20 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted(file);
 #endif
+
+  if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
+    m_itemCurrentFile.reset(new CFileItem(*m_stackHelper.GetRegisteredStack(file)));
+  else
+    m_itemCurrentFile.reset(new CFileItem(file));
+
+  /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
+   * This should speed up player startup for files on internet filesystems (eg. webdav) and
+   * increase performance on low powered systems (Atom/ARM).
+   */
+  if (file.IsVideo() || file.IsGame())
+  {
+    CJobManager::GetInstance().PauseJobs();
+  }
 
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
   m_stackHelper.OnPlayBackStarted(file);
@@ -4066,6 +4008,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!m_appPlayer.IsPlaying())
       {
         g_audioManager.Enable(true);
+        m_appPlayer.OpenNext();
       }
 
       if (!m_appPlayer.IsPlayingVideo())
@@ -4096,6 +4039,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_ServiceManager->GetSettings().Save();    // save vis settings
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
+      }
+
+      if (!m_appPlayer.IsPlaying())
+      {
+        m_itemCurrentFile.reset(new CFileItem());
       }
 
       if (IsEnableTestMode())
@@ -4385,10 +4333,10 @@ void CApplication::Restart(bool bSamePosition)
   // and which means we gotta close & reopen the current playing file
 
   // first check if we're playing a file
-  if ( !m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingAudio())
+  if (!m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingAudio())
     return ;
 
-  if( !m_appPlayer.HasPlayer() )
+  if (!m_appPlayer.HasPlayer())
     return ;
 
   // do we want to return to the current position in the file
@@ -4409,7 +4357,7 @@ void CApplication::Restart(bool bSamePosition)
   m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
 
   // reopen the file
-  if ( PlayFile(*m_itemCurrentFile, "", true) == PLAYBACK_OK )
+  if (PlayFile(*m_itemCurrentFile, "", true))
     m_appPlayer.SetPlayerState(state);
 }
 

@@ -1408,7 +1408,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   if (pItem->IsInternetStream() || pItem->IsPlayList())
     bResult = g_application.PlayMedia(*pItem, player, m_guiState->GetPlaylist());
   else
-    bResult = g_application.PlayFile(*pItem, player) == PLAYBACK_OK;
+    bResult = g_application.PlayFile(*pItem, player);
 
   if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
     pItem->m_lStartOffset = 0;

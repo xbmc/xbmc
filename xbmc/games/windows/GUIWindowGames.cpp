@@ -335,5 +335,5 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 
 bool CGUIWindowGames::PlayGame(const CFileItem &item)
 {
-  return g_application.PlayFile(item, "") == PLAYBACK_OK;
+  return g_application.PlayFile(item, "");
 }

@@ -30,13 +30,6 @@
 #include "cores/IPlayer.h"
 #include "SeekHandler.h"
 
-typedef enum
-{
-  PLAYBACK_CANCELED = -1,
-  PLAYBACK_FAIL = 0,
-  PLAYBACK_OK = 1,
-} PlayBackRet;
-
 class CAction;
 class CPlayerOptions;
 class CStreamDetails;
@@ -52,15 +45,14 @@ public:
   CApplicationPlayer();
 
   // player management
-  void CloseFile(bool reopen = false);
   void ClosePlayer();
-  void ClosePlayerGapless(std::string &playername);
-  void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();
   float GetPlaySpeed();
   float GetPlayTempo();
   bool HasPlayer() const;
-  PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
+  bool OpenFile(const CFileItem& item, const CPlayerOptions& options,
+                const std::string &playerName, IPlayerCallback& callback);
+  void OpenNext();
   void SetPlaySpeed(float speed);
   void SetTempo(float tempo);
   void FrameAdvance(int frames);
@@ -165,12 +157,13 @@ public:
   void SetVideoSettings(CVideoSettings& settings);
 
   CSeekHandler& GetSeekHandler();
+
 protected:
   std::shared_ptr<IPlayer> GetInternal() const;
+  void CreatePlayer(const std::string &player, IPlayerCallback& callback);
+  void CloseFile(bool reopen = false);
 
-private:
   std::shared_ptr<IPlayer> m_pPlayer;
-  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
   CCriticalSection m_playerLock;
   CSeekHandler m_seekHandler;
 
@@ -181,4 +174,12 @@ private:
   int m_iVideoStream;
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
+
+  struct SNextItem
+  {
+    std::shared_ptr<CFileItem> pItem;
+    CPlayerOptions options = {};
+    std::string playerName;
+    IPlayerCallback *callback = nullptr;
+  } m_nextItem;
 };
