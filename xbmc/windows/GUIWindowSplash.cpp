@@ -19,10 +19,12 @@
  */
 
 #include "GUIWindowSplash.h"
+
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/AdvancedSettings.h"
 #include "Util.h"
 #include "utils/log.h"
 
@@ -36,6 +38,9 @@ CGUIWindowSplash::~CGUIWindowSplash(void) = default;
 
 void CGUIWindowSplash::OnInitWindow()
 {
+  if (!g_advancedSettings.m_splashImage)
+    return;
+
   m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
   m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
 }
@@ -43,6 +48,10 @@ void CGUIWindowSplash::OnInitWindow()
 void CGUIWindowSplash::Render()
 {
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), true);
+
+  if (!m_image)
+    return;
+
   m_image->SetWidth(g_graphicsContext.GetWidth());
   m_image->SetHeight(g_graphicsContext.GetHeight());
   m_image->AllocResources();
