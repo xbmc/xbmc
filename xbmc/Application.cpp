@@ -3997,7 +3997,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
-      m_stackHelper.Clear();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4044,6 +4043,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!m_appPlayer.IsPlaying())
       {
         m_itemCurrentFile.reset(new CFileItem());
+        m_stackHelper.Clear();
       }
 
       if (IsEnableTestMode())
