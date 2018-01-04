@@ -108,7 +108,7 @@ bool CActiveAESink::HasPassthroughDevice()
     for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
     {
       CAEDeviceInfo& info = *itt2;
-      if (info.m_deviceType != AE_DEVTYPE_PCM)
+      if (info.m_deviceType != AE_DEVTYPE_PCM && !info.m_streamTypes.empty())
         return true;
     }
   }
