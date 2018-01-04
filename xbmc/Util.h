@@ -47,9 +47,8 @@ struct ExternalStreamInfo
 
 class CUtil
 {
+  CUtil() = delete;
 public:
-  CUtil(void);
-  virtual ~CUtil(void);
   static void CleanString(const std::string& strFileName,
                           std::string& strTitle,
                           std::string& strTitleAndYear,
@@ -70,6 +69,8 @@ public:
   static int GetDVDIfoTitle(const std::string& strPathFile);
 
   static bool IsPicture(const std::string& strFile);
+  /// Get resolved filesystem location of splash image
+  static std::string GetSplashPath();
 
   /*! \brief retrieve MD5sum of a file
    \param strPath - path to the file to MD5sum

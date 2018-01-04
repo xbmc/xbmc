@@ -3,7 +3,7 @@ xbmc/assets/*
 xbmc/lib/*
 xbmc/libs/*
 xbmc/obj/*
-xbmc/res/drawable/splash.png
+xbmc/res/drawable*/splash.*
 xbmc/src/R.java
 xbmc/src/org/xbmc/kodi/*.class
 xbmc/classes.dex

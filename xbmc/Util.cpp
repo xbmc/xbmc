@@ -45,6 +45,7 @@
 #endif
 #include <stdlib.h>
 #include <algorithm>
+#include <array>
 
 #include "addons/VFSEntry.h"
 #include "ServiceBroker.h"
@@ -307,9 +308,6 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 }
 #endif
 }
-CUtil::CUtil(void) = default;
-
-CUtil::~CUtil(void) = default;
 
 std::string CUtil::GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder /* = false */)
 {
@@ -545,6 +543,15 @@ bool CUtil::IsPicture(const std::string& strFile)
 {
   return URIUtils::HasExtension(strFile,
                   CServiceBroker::GetFileExtensionProvider().GetPictureExtensions()+ "|.tbn|.dds");
+}
+
+std::string CUtil::GetSplashPath()
+{
+  std::array<std::string, 4> candidates {{ "special://home/media/splash.jpg", "special://home/media/splash.png", "special://xbmc/media/splash.jpg", "special://xbmc/media/splash.png" }};
+  auto it = std::find_if(candidates.begin(), candidates.end(), [](std::string const& file) { return XFILE::CFile::Exists(file); });
+  if (it == candidates.end())
+    throw std::runtime_error("No splash image found");
+  return CSpecialProtocol::TranslatePathConvertCase(*it);
 }
 
 bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)

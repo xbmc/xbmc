@@ -119,13 +119,13 @@ python: | xbmc/assets
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
 	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
-	cp -fp $(CMAKE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
+	cp -fp $(CMAKE_SOURCE_DIR)/media/splash.* xbmc/res/drawable/
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
 	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
-	cp -fp $(CMAKE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable-xxxhdpi/splash.png
+	cp -fp $(CMAKE_SOURCE_DIR)/media/splash.* xbmc/res/drawable-xxxhdpi/
 	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp -fp $(CMAKE_SOURCE_DIR)/media/icon80x80.png xbmc/res/drawable/ic_recommendation_80dp.png
@@ -182,7 +182,8 @@ apk-clean:
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/raw
 	rm -rf xbmc/res/values
-	rm -f xbmc/res/drawable/splash.png
+	rm -f xbmc/res/drawable/splash.*
+	rm -f xbmc/res/drawable-xxxhdpi/splash.*
 	rm -rf assets
 
 .PHONY: force libs assets python sharedapk sharedobb res package
