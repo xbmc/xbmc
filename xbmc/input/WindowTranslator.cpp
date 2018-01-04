@@ -137,6 +137,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "videoosd"                 , WINDOW_DIALOG_VIDEO_OSD },
     { "videomenu"                , WINDOW_VIDEO_MENU },
     { "videotimeseek"            , WINDOW_VIDEO_TIME_SEEK },
+    { "splash"                   , WINDOW_SPLASH },
     { "startwindow"              , WINDOW_START },
     { "startup"                  , WINDOW_STARTUP_ANIM },
     { "peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS },
