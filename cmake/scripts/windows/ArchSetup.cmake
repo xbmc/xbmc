@@ -12,6 +12,7 @@ endif()
 # -------- Paths (mainly for find_package) ---------
 
 set(PLATFORM_DIR platform/win32)
+set(APP_RENDER_SYSTEM dx11)
 
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
 

@@ -5,8 +5,10 @@ set(WAYLAND_RENDER_SYSTEM "" CACHE STRING "Render system to use with Wayland: \"
 
 if(WAYLAND_RENDER_SYSTEM STREQUAL "gl")
   list(APPEND PLATFORM_REQUIRED_DEPS OpenGl)
+  set(APP_RENDER_SYSTEM gl)
 elseif(WAYLAND_RENDER_SYSTEM STREQUAL "gles")
   list(APPEND PLATFORM_REQUIRED_DEPS OpenGLES)
+  set(APP_RENDER_SYSTEM gles)
 else()
   message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering in combination with the Wayland windowing system. Please set WAYLAND_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
 endif()
