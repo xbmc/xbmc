@@ -88,6 +88,7 @@ namespace JOYSTICK
     HARDWARE, // A button or functionality on the console
     WHEEL,
     JOYSTICK,
+    PADDLE,
   };
 
   /*!

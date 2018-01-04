@@ -76,6 +76,7 @@ const char* CControllerTranslator::TranslateFeatureCategory(FEATURE_CATEGORY cat
     case FEATURE_CATEGORY::HARDWARE:      return FEATURE_CATEGORY_HARDWARE;
     case FEATURE_CATEGORY::WHEEL:         return FEATURE_CATEGORY_WHEEL;
     case FEATURE_CATEGORY::JOYSTICK:      return FEATURE_CATEGORY_JOYSTICK;
+    case FEATURE_CATEGORY::PADDLE:        return FEATURE_CATEGORY_PADDLE;
     default:
       break;
   }
@@ -99,6 +100,7 @@ FEATURE_CATEGORY CControllerTranslator::TranslateFeatureCategory(const std::stri
   if (strCategory == FEATURE_CATEGORY_HARDWARE)       return FEATURE_CATEGORY::HARDWARE;
   if (strCategory == FEATURE_CATEGORY_WHEEL)          return FEATURE_CATEGORY::WHEEL;
   if (strCategory == FEATURE_CATEGORY_JOYSTICK)       return FEATURE_CATEGORY::JOYSTICK;
+  if (strCategory == FEATURE_CATEGORY_PADDLE)         return FEATURE_CATEGORY::PADDLE;
 
   return FEATURE_CATEGORY::UNKNOWN;
 }

@@ -53,3 +53,4 @@
 #define FEATURE_CATEGORY_HARDWARE          "hardware"
 #define FEATURE_CATEGORY_WHEEL             "wheel"
 #define FEATURE_CATEGORY_JOYSTICK          "joysticks"
+#define FEATURE_CATEGORY_PADDLE            "paddles"
