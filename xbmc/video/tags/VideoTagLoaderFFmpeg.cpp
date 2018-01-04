@@ -224,5 +224,19 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.SetPlot(avtag->value);
   }
 
+  for (size_t i = 0; i < m_fctx->nb_streams; ++i)
+  {
+    if ((m_fctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
+      continue;
+
+    size_t size = m_fctx->streams[i]->attached_pic.size;
+    const std::string type = "poster";
+    if (art)
+      art->emplace_back(EmbeddedArt(m_fctx->streams[i]->attached_pic.data,
+                                    size, "image/png", type));
+    else
+      tag.m_coverArt.emplace_back(EmbeddedArtInfo(size, "image/png", type));
+  }
+
   return CInfoScanner::FULL_NFO;
 }
