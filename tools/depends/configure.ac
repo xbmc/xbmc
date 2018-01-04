@@ -97,6 +97,10 @@ AC_ARG_ENABLE([wayland],
   [enable_wayland=$enableval],
   [enable_wayland=no])
 
+AC_ARG_WITH([rendersystem],
+  [AS_HELP_STRING([--with-rendersystem],
+  [render system to use])],
+  [app_rendersystem=$withval])
 
 OLD_PATH="${PATH}"
 if test -n "$use_toolchain"; then
@@ -556,6 +560,12 @@ fi
 if test "$platform_os" != "linux"; then
   if test "x$enable_wayland" != "xno"; then
     AC_MSG_ERROR([Wayland is only supported on the Linux platform])
+  fi
+fi
+
+if test -n "$app_rendersystem"; then
+  if test "$app_rendersystem" != "gl" && test "$app_rendersystem" != "gles"; then
+    AC_MSG_ERROR(Rendersystem must be gl or gles)
   fi
 fi
 

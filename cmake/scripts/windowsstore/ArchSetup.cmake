@@ -24,6 +24,7 @@ unset(_ARM_)
 # -------- Paths (mainly for find_package) ---------
 
 set(PLATFORM_DIR platform/win32)
+set(APP_RENDER_SYSTEM dx11)
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win10/main.cpp)
 
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
