@@ -409,9 +409,8 @@
 		<value condition="ListItem.HasTimer">icons/pvr/PVR-HasTimer.png</value>
 	</variable>
 	<variable name="SeasonEpisodeLabel">
-		<value condition="String.IsEmpty(ListItem.Season) + String.IsEmpty(ListItem.Episode)">$INFO[ListItem.EpisodeName,[B],[/B]]</value>
-		<value condition="String.IsEmpty(ListItem.EpisodeName)">$INFO[ListItem.Season,[COLOR grey]S,[/COLOR]]$INFO[ListItem.Episode,[COLOR grey]E,[/COLOR]]</value>
-		<value>$INFO[ListItem.Season,[COLOR grey]S,[/COLOR]]$INFO[ListItem.Episode,[COLOR grey]E,[/COLOR]]: [B]$INFO[ListItem.EpisodeName][/B]</value>
+		<value condition="String.IsEmpty(ListItem.EpisodeName)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E]</value>
+		<value>$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E,: ]</value>
 	</variable>
 	<variable name="ExpirationDateTimeLabel">
 		<value condition="!String.IsEmpty(ListItem.ExpirationDate)">[COLOR grey]$LOCALIZE[19299]:[/COLOR] $INFO[ListItem.ExpirationDate] $INFO[ListItem.ExpirationTime][CR]</value>
