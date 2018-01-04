@@ -1,4 +1,4 @@
-set(PLATFORM_REQUIRED_DEPS EGL Waylandpp LibDRM Xkbcommon)
+set(PLATFORM_REQUIRED_DEPS EGL WaylandProtocols>=1.7 Waylandpp LibDRM Xkbcommon)
 set(PLATFORM_OPTIONAL_DEPS VAAPI)
 
 set(WAYLAND_RENDER_SYSTEM "" CACHE STRING "Render system to use with Wayland: \"gl\" or \"gles\"")
