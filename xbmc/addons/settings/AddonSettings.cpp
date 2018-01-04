@@ -1462,7 +1462,6 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
 
 bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpression& expression)
 {
-  StringUtils::ToLower(str);
   StringUtils::Trim(str);
 
   size_t posOpen = str.find('(');
