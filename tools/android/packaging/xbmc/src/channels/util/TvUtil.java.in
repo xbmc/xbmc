@@ -52,7 +52,7 @@ public class TvUtil
   private static final int CHANNEL_JOB_ID = 500;
   private static final int CHANNEL_TRIGGERED_JOB_ID_OFFSET = 1000;
   private static final int CHANNEL_TIMED_JOB_ID_OFFSET = 2000;
-  private static final int CHANNEL_IMMEDIATE_JOB_ID_OFFSET = 2000;
+  private static final int CHANNEL_IMMEDIATE_JOB_ID_OFFSET = 3000;
 
   private static final String[] CHANNELS_PROJECTION = {
           TvContractCompat.Channels._ID,
@@ -202,9 +202,6 @@ public class TvUtil
   {
     JobScheduler scheduler =
             (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(getTriggeredJobIdForChannelId(channelId)) != null)
-      return;
-
     ComponentName componentName = new ComponentName(context, SyncProgramsJobService.class);
 
     JobInfo.Builder builder =
@@ -222,6 +219,7 @@ public class TvUtil
     bundle.putLong(TvContractCompat.EXTRA_CHANNEL_ID, channelId);
     builder.setExtras(bundle);
 
+    scheduler.cancel(getTriggeredJobIdForChannelId(channelId));
     scheduler.schedule(builder.build());
   }
 

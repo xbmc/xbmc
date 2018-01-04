@@ -240,7 +240,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onPause();
 
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+    if (getPackageManager().hasSystemFeature("android.software.leanback") && Build.VERSION.SDK_INT >= VERSION_CODES.O)
       TvUtil.scheduleSyncingChannel(this);
   }
 
