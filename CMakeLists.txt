@@ -346,6 +346,7 @@ endif()
 # testing
 copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
 add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
+set_target_properties(${APP_NAME_LC}-test PROPERTIES ENABLE_EXPORTS ON)
 whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
 target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
