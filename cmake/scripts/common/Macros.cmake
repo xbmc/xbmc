@@ -338,15 +338,54 @@ macro(export_dep)
   mark_as_advanced(${depup}_LIBRARIES)
 endmacro()
 
-# add a required dependency of main application
+# split dependency specification to name and version
 # Arguments:
-#   dep_list name of find rule for dependency, used uppercased for variable prefix
-#            also accepts a list of multiple dependencies
+#   depspec dependency specification that can optionally include a required
+#           package version
+#           syntax: [package name], [package name]>=[version] (minimum version),
+#                   or [package name]=[version] (exact version)
+#   name_outvar variable that should receive the package name
+#   version_outvar variable that should receive the package version part (>=[version])
 # On return:
-#   dependency added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
+#   ${name_outvar} and ${version_outvar} in caller scope are set to respective values.
+#   ${version_outvar} may be unset if there is no specific version requested.
+function(split_dependency_specification depspec name_outvar version_outvar)
+  if(${depspec} MATCHES "^([^>]*)(>?=[0-9.]+)$")
+    set(${name_outvar} ${CMAKE_MATCH_1} PARENT_SCOPE)
+    set(${version_outvar} ${CMAKE_MATCH_2} PARENT_SCOPE)
+  else()
+    set(${name_outvar} ${depspec} PARENT_SCOPE)
+    unset(${version_outvar} PARENT_SCOPE)
+  endif()
+endfunction()
+
+# helper macro to split version info from req and call find_package
+macro(find_package_with_ver package)
+  set(_find_arguments "${ARGN}")
+  if("${ARGV1}" MATCHES "^(>)?=([0-9.]+)$")
+    # We have a version spec, parse it
+    list(REMOVE_AT _find_arguments 0)
+    # ">" not present? -> exact match
+    if(NOT CMAKE_MATCH_1)
+      list(INSERT _find_arguments 0 "EXACT")
+    endif()
+    find_package(${package} ${CMAKE_MATCH_2} ${_find_arguments})
+  else()
+    find_package(${package} ${_find_arguments})
+  endif()
+  unset(_find_arguments)
+endmacro()
+
+# add required dependencies of main application
+# Arguments:
+#   dep_list One or many dependency specifications (see split_dependency_specification)
+#            for syntax). The dependency name is used uppercased as variable prefix.
+# On return:
+#   dependencies added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
 function(core_require_dep)
-  foreach(dep ${ARGN})
-    find_package(${dep} REQUIRED)
+  foreach(depspec ${ARGN})
+    split_dependency_specification(${depspec} dep version)
+    find_package_with_ver(${dep} ${version} REQUIRED)
     string(TOUPPER ${dep} depup)
     list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
     list(APPEND DEPLIBS ${${depup}_LIBRARIES})
@@ -355,15 +394,16 @@ function(core_require_dep)
   endforeach()
 endfunction()
 
-# add a required dyloaded dependency of main application
+# add required dyloaded dependencies of main application
 # Arguments:
-#   dep_list name of find rule for dependency, used uppercased for variable prefix
-#            also accepts a list of multiple dependencies
+#   dep_list One or many dependency specifications (see split_dependency_specification)
+#            for syntax). The dependency name is used uppercased as variable prefix.
 # On return:
 #   dependency added to ${SYSTEM_INCLUDES}, ${dep}_SONAME is set up
 function(core_require_dyload_dep)
-  foreach(dep ${ARGN})
-    find_package(${dep} REQUIRED)
+  foreach(depspec ${ARGN})
+    split_dependency_specification(${depspec} dep version)
+    find_package_with_ver(${dep} ${version} REQUIRED)
     string(TOUPPER ${dep} depup)
     list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
     list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
@@ -385,20 +425,21 @@ macro(setup_enable_switch)
   set(${enable_switch} "AUTO" CACHE STRING "Enable ${depup} support?")
 endmacro()
 
-# add an optional dependency of main application
+# add optional dependencies of main application
 # Arguments:
-#   dep_list name of find rule for dependency, used uppercased for variable prefix
-#            also accepts a list of multiple dependencies
+#   dep_list One or many dependency specifications (see split_dependency_specification)
+#            for syntax). The dependency name is used uppercased as variable prefix.
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
 function(core_optional_dep)
-  foreach(dep ${ARGN})
+  foreach(depspec ${ARGN})
     set(_required False)
+    split_dependency_specification(${depspec} dep version)
     setup_enable_switch()
     if(${enable_switch} STREQUAL AUTO)
-      find_package(${dep})
+      find_package_with_ver(${dep} ${version})
     elseif(${${enable_switch}})
-      find_package(${dep} REQUIRED)
+      find_package_with_ver(${dep} ${version} REQUIRED)
       set(_required True)
     endif()
 
@@ -417,20 +458,21 @@ function(core_optional_dep)
   set(final_message ${final_message} PARENT_SCOPE)
 endfunction()
 
-# add an optional dyloaded dependency of main application
+# add optional dyloaded dependencies of main application
 # Arguments:
-#   dep_list name of find rule for dependency, used uppercased for variable prefix
-#            also accepts a list of multiple dependencies
+#   dep_list One or many dependency specifications (see split_dependency_specification)
+#            for syntax). The dependency name is used uppercased as variable prefix.
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEP_DEFINES}, ${dep}_SONAME is set up
 function(core_optional_dyload_dep)
-  foreach(dep ${ARGN})
+  foreach(depspec ${ARGN})
     set(_required False)
-    setup_enable_switch()
+    split_dependency_specification(${depspec} dep version)
+    setup_enable_switch()    
     if(${enable_switch} STREQUAL AUTO)
-      find_package(${dep})
+      find_package_with_ver(${dep} ${version})
     elseif(${${enable_switch}})
-      find_package(${dep} REQUIRED)
+      find_package_with_ver(${dep} ${version} REQUIRED)
       set(_required True)
     endif()
 

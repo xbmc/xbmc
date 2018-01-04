@@ -102,9 +102,10 @@ find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 
-foreach(dep ${PLATFORM_REQUIRED_DEPS})
+foreach(depspec ${PLATFORM_REQUIRED_DEPS})
   # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the
   # optional subdirectory for the specified platform to get built.
+  split_dependency_specification(${depspec} dep version)
   string(TOUPPER ${dep} depup)
   set(ENABLE_${depup} "ON" CACHE BOOL "Force enabling required ${depup} support" FORCE)
 endforeach()
