@@ -182,7 +182,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             break;
           }
           StringUtils::Trim(share.strName);
-          if (share.strName.empty() || share.strName == "?" || StringUtils::CompareNoCase(share.strName, "null") == 0)
+          if (share.strName.empty() || share.strName == "?" || StringUtils::EqualsNoCase(share.strName, "null"))
             share.strName = URIUtils::GetFileName(share.strPath);
           share.m_ignore = true;
           droidDrives.push_back(share);
