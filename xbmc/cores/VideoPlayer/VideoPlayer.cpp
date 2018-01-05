@@ -775,6 +775,8 @@ void CVideoPlayer::OnStartup()
 
 bool CVideoPlayer::OpenInputStream()
 {
+  if (m_pInputStream.use_count() > 1)
+    throw std::runtime_error("m_pInputStream reference count is greater than 1");
   m_pInputStream.reset();
 
   CLog::Log(LOGNOTICE, "Creating InputStream");
@@ -2536,6 +2538,8 @@ void CVideoPlayer::HandleMessages()
       SAFE_DELETE(m_pDemuxer);
       SAFE_DELETE(m_pSubtitleDemuxer);
       SAFE_DELETE(m_pCCDemuxer);
+      if (m_pInputStream.use_count() > 1)
+        throw std::runtime_error("m_pInputStream reference count is greater than 1");
       m_pInputStream.reset();
 
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);

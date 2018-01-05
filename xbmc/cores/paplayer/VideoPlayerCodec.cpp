@@ -114,6 +114,9 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   if (!m_pInputStream->Open())
   {
     CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
+    if (m_pInputStream.use_count() > 1)
+      throw std::runtime_error("m_pInputStream reference count is greater than 1");
+    m_pInputStream.reset();
     return false;
   }
 
@@ -161,6 +164,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     CLog::Log(LOGERROR, "%s: Could not find audio stream", __FUNCTION__);
     delete m_pDemuxer;
     m_pDemuxer = NULL;
+    if (m_pInputStream.use_count() > 1)
+      throw std::runtime_error("m_pInputStream reference count is greater than 1");
     m_pInputStream.reset();
     return false;
   }
@@ -174,6 +179,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);
     delete m_pDemuxer;
     m_pDemuxer = NULL;
+    if (m_pInputStream.use_count() > 1)
+      throw std::runtime_error("m_pInputStream reference count is greater than 1");
     m_pInputStream.reset();
     return false;
   }
