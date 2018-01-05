@@ -5254,7 +5254,12 @@ void CMusicDatabase::UpdateTables(int version)
   {
     // Remove album_genre table
     m_pDS->exec("DROP TABLE album_genre");
-  }    
+  } 
+  if (version < 70)
+  {
+    // Update all songs iStartOffset and iEndOffset to milliseconds instead of frames (* 1000 / 75)
+    m_pDS->exec("UPDATE song SET iStartOffset = iStartOffset * 40 / 3, iEndOffset = iEndOffset * 40 / 3 \n");
+  }
 
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
@@ -5275,7 +5280,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 69;
+  return 70;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
