@@ -9872,30 +9872,25 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasPVRChannelInfoTag())
       {
         CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-        if (tag)
+        if (tag && tag->EpisodeNumber() > 0)
         {
-          if (tag->SeriesNumber() > 0)
-            iSeason = tag->SeriesNumber();
-          if (tag->EpisodeNumber() > 0)
-            iEpisode = tag->EpisodeNumber();
+          iEpisode = tag->EpisodeNumber();
+          iSeason = tag->SeriesNumber();
         }
       }
-      else if (item->HasEPGInfoTag())
+      else if (item->HasEPGInfoTag() &&
+               item->GetEPGInfoTag()->EpisodeNumber() > 0)
       {
-        if (item->GetEPGInfoTag()->SeriesNumber() > 0)
-          iSeason = item->GetEPGInfoTag()->SeriesNumber();
-        if (item->GetEPGInfoTag()->EpisodeNumber() > 0)
-          iEpisode = item->GetEPGInfoTag()->EpisodeNumber();
+        iSeason = item->GetEPGInfoTag()->SeriesNumber();
+        iEpisode = item->GetEPGInfoTag()->EpisodeNumber();
       }
       else if (item->HasPVRTimerInfoTag())
       {
         const CPVREpgInfoTagPtr tag(item->GetPVRTimerInfoTag()->GetEpgInfoTag());
-        if (tag)
+        if (tag && tag->EpisodeNumber() > 0)
         {
-          if (tag->SeriesNumber() > 0)
-            iSeason = tag->SeriesNumber();
-          if (tag->EpisodeNumber() > 0)
-            iEpisode = tag->EpisodeNumber();
+          iSeason = tag->SeriesNumber();
+          iEpisode = tag->EpisodeNumber();
         }
       }
       else if (item->HasVideoInfoTag() &&
