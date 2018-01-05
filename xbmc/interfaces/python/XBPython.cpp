@@ -35,6 +35,7 @@
 #include "Util.h"
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
+#include "utils/SystemInfo.h"
 #endif
 #include "settings/AdvancedSettings.h"
 
@@ -603,6 +604,10 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     CEnvironment::putenv(buf);
     buf = "OS=win32";
     CEnvironment::putenv(buf);
+#ifdef _DEBUG
+    if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
+      CEnvironment::putenv("PYTHONCASEOK=1");
+#endif
 #endif
 
     if (PyEval_ThreadsInitialized())

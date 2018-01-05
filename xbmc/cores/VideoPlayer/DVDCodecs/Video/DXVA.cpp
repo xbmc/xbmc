@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 
@@ -850,8 +851,32 @@ static bool HasATIMP2Bug(AVCodecContext *avctx)
       && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
+// UHD HEVC Main10 causes crash on Xbox One S/X
+static bool HasXbox4kHevcMain10Bug(AVCodecContext *avctx)
+{
+  if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
+    return false;
+
+  if (avctx->codec_id != AV_CODEC_ID_HEVC)
+    return false;
+
+  if (avctx->profile != FF_PROFILE_HEVC_MAIN_10)
+    return false;
+
+  if (avctx->height <= 1080 || avctx->width <= 1920)
+    return false;
+
+  return true;
+}
+
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
+  if (HasXbox4kHevcMain10Bug(avctx))
+  {
+    CLog::LogFunction(LOGWARNING, "DXVA", "UHD hevc main10 is not supported on Xbox One S/X. DXVA will not be used.");
+    return false;
+  }
+
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && HasATIMP2Bug(avctx))
     return false;
 
