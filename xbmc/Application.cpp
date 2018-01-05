@@ -1126,8 +1126,7 @@ bool CApplication::Initialize()
     // initialize splash window after splash screen disappears
     // because we need a real window in the background which gets
     // rendered while we load the main window or enter the master lock key
-    if (g_advancedSettings.m_splashImage)
-      g_windowManager.ActivateWindow(WINDOW_SPLASH);
+    g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
