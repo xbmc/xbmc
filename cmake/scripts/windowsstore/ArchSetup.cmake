@@ -103,6 +103,9 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG /OP
 # remove warning
 set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4264")
 
+# Minimum SDK version we support
+set(VS_MINIMUM_SDK_VERSION 10.0.14393.0)
+
 
 # -------- Visual Studio options ---------
 

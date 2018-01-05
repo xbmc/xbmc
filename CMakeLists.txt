@@ -332,7 +332,8 @@ if(WIN32)
   if(NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
     target_sources(${APP_NAME_LC} PRIVATE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/app.manifest)
   else()
-    set_target_properties(${APP_NAME_LC} PROPERTIES VS_USER_PROPS ${VCPROJECT_PROPS_FILE})
+    set_target_properties(${APP_NAME_LC} PROPERTIES VS_USER_PROPS ${VCPROJECT_PROPS_FILE}
+                          VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION ${VS_MINIMUM_SDK_VERSION})
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
