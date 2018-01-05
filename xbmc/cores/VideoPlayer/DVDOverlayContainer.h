@@ -20,6 +20,8 @@
  *
  */
 
+#include <memory>
+
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "threads/CriticalSection.h"
 
@@ -41,7 +43,7 @@ public:
   void CleanUp(double pts); // validates all overlays against current pts
   int GetSize();
 
-  void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction);
+  void UpdateOverlayInfo(std::shared_ptr<CDVDInputStreamNavigator> pStream, CDVDDemuxSPU *pSpu, int iAction);
 private:
   VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
 

@@ -125,12 +125,12 @@ int CDemuxMultiSource::GetStreamLength()
   return length;
 }
 
-bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
+bool CDemuxMultiSource::Open(std::shared_ptr<CDVDInputStream> pInput)
 {
   if (!pInput)
     return false;
 
-  m_pInput = dynamic_cast<InputStreamMultiStreams*>(pInput);
+  m_pInput = std::dynamic_pointer_cast<InputStreamMultiStreams>(pInput);
 
   if (!m_pInput)
     return false;
@@ -138,7 +138,7 @@ bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
   auto iter = m_pInput->m_InputStreams.begin();
   while (iter != m_pInput->m_InputStreams.end())
   {
-    DemuxPtr demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer(iter->get()));
+    DemuxPtr demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer((*iter)));
     if (!demuxer)
     {
       iter = m_pInput->m_InputStreams.erase(iter);

@@ -35,7 +35,7 @@
 
 using namespace PVR;
 
-CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo)
+CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(std::shared_ptr<CDVDInputStream> pInputStream, bool fileinfo)
 {
   if (!pInputStream)
     return NULL;

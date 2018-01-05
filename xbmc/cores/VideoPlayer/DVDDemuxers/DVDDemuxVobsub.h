@@ -69,7 +69,7 @@ private:
   } STimestamp;
 
   std::string m_Filename;
-  std::unique_ptr<CDVDInputStream> m_Input;
+  std::shared_ptr<CDVDInputStream> m_Input;
   std::unique_ptr<CDVDDemuxFFmpeg> m_Demuxer;
   std::vector<STimestamp> m_Timestamps;
   std::vector<STimestamp>::iterator m_Timestamp;

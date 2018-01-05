@@ -145,7 +145,7 @@ static int dvd_file_read(void *h, uint8_t* buf, int size)
   if(interrupt_cb(h))
     return AVERROR_EXIT;
 
-  CDVDInputStream* pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
+  std::shared_ptr<CDVDInputStream> pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
   return pInputStream->Read(buf, size);
 }
 /*
@@ -159,7 +159,7 @@ static int64_t dvd_file_seek(void *h, int64_t pos, int whence)
   if(interrupt_cb(h))
     return AVERROR_EXIT;
 
-  CDVDInputStream* pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
+  std::shared_ptr<CDVDInputStream> pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
   else
@@ -198,14 +198,14 @@ bool CDVDDemuxFFmpeg::Aborted()
   if(m_timeout.IsTimePast())
     return true;
 
-  CDVDInputStreamFFmpeg * input = dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
+  std::shared_ptr<CDVDInputStreamFFmpeg> input = std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
   if(input && input->Aborted())
     return true;
 
   return false;
 }
 
-bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool fileinfo)
+bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streaminfo, bool fileinfo)
 {
   AVInputFormat* iformat = NULL;
   std::string strFile;
@@ -610,7 +610,7 @@ void CDVDDemuxFFmpeg::Dispose()
 
 bool CDVDDemuxFFmpeg::Reset()
 {
-  CDVDInputStream* pInputStream = m_pInput;
+  std::shared_ptr<CDVDInputStream> pInputStream = m_pInput;
   Dispose();
   return Open(pInputStream, m_streaminfo);
 }
@@ -680,8 +680,8 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
 {
-  const CDVDInputStreamFFmpeg *const input =
-    dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
+  const std::shared_ptr<CDVDInputStreamFFmpeg> input =
+    std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
 
   CURL url = m_pInput->GetURL();
   AVDictionary *options = nullptr;
@@ -863,7 +863,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double timestamp = (double)pts * num / den;
   double starttime = 0.0f;
 
-  CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInput);
   if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
@@ -1632,7 +1632,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 #ifdef HAVE_LIBBLURAY
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
-      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
+      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
       stream->dvdNavId = pStream->id;
     }
 #endif
@@ -1706,7 +1706,7 @@ std::string CDVDDemuxFFmpeg::GetFileName()
 
 int CDVDDemuxFFmpeg::GetChapterCount()
 {
-  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if(ich)
     return ich->GetChapterCount();
 
@@ -1718,7 +1718,7 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
 int CDVDDemuxFFmpeg::GetChapter()
 {
-  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if(ich)
     return ich->GetChapter();
 
@@ -1741,7 +1741,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx
 {
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
     chapterIdx = GetChapter();
-  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if(ich)  
     ich->GetChapterName(strChapterName, chapterIdx);
   else
@@ -1763,7 +1763,7 @@ int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
   if(chapterIdx <= 0)
     return 0;
 
-  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if(ich)  
     return ich->GetChapterPos(chapterIdx);
 
@@ -1775,7 +1775,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(chapter < 1)
     chapter = 1;
 
-  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if(ich)
   {
     CLog::Log(LOGDEBUG, "%s - chapter seeking using input stream", __FUNCTION__);

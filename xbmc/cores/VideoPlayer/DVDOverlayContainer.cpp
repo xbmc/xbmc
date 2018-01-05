@@ -154,7 +154,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 /*
  * iAction should be LIBDVDNAV_BUTTON_NORMAL or LIBDVDNAV_BUTTON_CLICKED
  */
-void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction)
+void CDVDOverlayContainer::UpdateOverlayInfo(std::shared_ptr<CDVDInputStreamNavigator> pStream, CDVDDemuxSPU *pSpu, int iAction)
 {
   CSingleLock lock(*this);
 

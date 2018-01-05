@@ -22,7 +22,9 @@
 
 #include "system.h"
 
-bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, CDVDInputStream* m_pInputStream, CSelectionStreams &m_SelectionStreams);
+#include <memory>
+
+bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, std::shared_ptr<CDVDInputStream> m_pInputStream, CSelectionStreams &m_SelectionStreams);
 bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, IDVDStreamPlayerVideo *m_VideoPlayerVideo, IDVDStreamPlayerAudio *m_VideoPlayerAudio,
                      CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio, CProcessInfo &processInfo);
 bool OMXStillPlaying(bool waitVideo, bool waitAudio, bool eosVideo, bool eosAudio);

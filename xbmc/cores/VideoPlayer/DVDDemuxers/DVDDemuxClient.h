@@ -35,7 +35,7 @@ public:
   CDVDDemuxClient();
   ~CDVDDemuxClient() override;
 
-  bool Open(CDVDInputStream* pInput);
+  bool Open(std::shared_ptr<CDVDInputStream> pInput);
   void Dispose();
   bool Reset() override;
   void Abort() override;
@@ -59,8 +59,8 @@ protected:
   void DisposeStreams();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
   
-  CDVDInputStream* m_pInput;
-  CDVDInputStream::IDemux *m_IDemux;
+  std::shared_ptr<CDVDInputStream> m_pInput;
+  std::shared_ptr<CDVDInputStream::IDemux> m_IDemux;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streams;
   int m_displayTime;
   double m_dtsAtDisplayTime;

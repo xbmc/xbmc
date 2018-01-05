@@ -20,6 +20,7 @@
  *
  */
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,6 +32,6 @@ class IVideoPlayer;
 class CDVDFactoryInputStream
 {
 public:
-  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio = false);
-  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames);
+  static std::shared_ptr<CDVDInputStream> CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio = false);
+  static std::shared_ptr<CDVDInputStream> CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames);
 };

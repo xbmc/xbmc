@@ -54,7 +54,7 @@ public:
   CDVDDemuxBXA();
   ~CDVDDemuxBXA() override;
 
-  bool Open(CDVDInputStream* pInput);
+  bool Open(std::shared_ptr<CDVDInputStream> pInput);
   void Dispose();
   bool Reset() override;
   void Abort() override;
@@ -70,7 +70,7 @@ public:
 
 protected:
   friend class CDemuxStreamAudioBXA;
-  CDVDInputStream* m_pInput;
+  std::shared_ptr<CDVDInputStream> m_pInput;
   int64_t m_bytes;
 
   CDemuxStreamAudioBXA *m_stream;

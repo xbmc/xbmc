@@ -79,12 +79,12 @@ CDVDDemuxClient::~CDVDDemuxClient()
   Dispose();
 }
 
-bool CDVDDemuxClient::Open(CDVDInputStream* pInput)
+bool CDVDDemuxClient::Open(std::shared_ptr<CDVDInputStream> pInput)
 {
   Abort();
 
   m_pInput = pInput;
-  m_IDemux = dynamic_cast<CDVDInputStream::IDemux*>(m_pInput);
+  m_IDemux = std::dynamic_pointer_cast<CDVDInputStream::IDemux>(m_pInput);
   if (!m_IDemux)
     return false;
 
@@ -113,7 +113,7 @@ void CDVDDemuxClient::DisposeStreams()
 
 bool CDVDDemuxClient::Reset()
 {
-  CDVDInputStream* pInputStream = m_pInput;
+  std::shared_ptr<CDVDInputStream> pInputStream = m_pInput;
   Dispose();
   return Open(pInputStream);
 }

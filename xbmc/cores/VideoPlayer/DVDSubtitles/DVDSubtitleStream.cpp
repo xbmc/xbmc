@@ -40,7 +40,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
 {
   CFileItem item(strFile, false);
   item.SetContentLookup(false);
-  std::unique_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(NULL, item));
+  std::shared_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(NULL, item));
   if (pInputStream && pInputStream->Open())
   {
     // prepare buffer
