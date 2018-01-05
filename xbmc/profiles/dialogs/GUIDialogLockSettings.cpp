@@ -285,12 +285,12 @@ void CGUIDialogLockSettings::InitializeSettings()
     AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, SettingLevel::Basic, m_locks.files);
 
     TranslatableIntegerSettingOptions settingsLevelOptions;
-    settingsLevelOptions.push_back(std::make_pair(106,    LOCK_LEVEL::NONE));
-    settingsLevelOptions.push_back(std::make_pair(593,    LOCK_LEVEL::ALL));
-    settingsLevelOptions.push_back(std::make_pair(10037,  LOCK_LEVEL::STANDARD));
-    settingsLevelOptions.push_back(std::make_pair(10038,  LOCK_LEVEL::ADVANCED));
-    settingsLevelOptions.push_back(std::make_pair(10039,  LOCK_LEVEL::EXPERT));
-    AddSpinner(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions);
+    settingsLevelOptions.push_back(std::make_pair(106, LOCK_LEVEL::NONE));
+    settingsLevelOptions.push_back(std::make_pair(593, LOCK_LEVEL::ALL));
+    settingsLevelOptions.push_back(std::make_pair(10037, LOCK_LEVEL::STANDARD));
+    settingsLevelOptions.push_back(std::make_pair(10038, LOCK_LEVEL::ADVANCED));
+    settingsLevelOptions.push_back(std::make_pair(10039, LOCK_LEVEL::EXPERT));
+    AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions, 20043);
     
     AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);
   }
