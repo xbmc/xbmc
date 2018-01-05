@@ -39,9 +39,25 @@ static CEvent keyboardFinishedEvent;
 @synthesize text;
 @synthesize _confirmed;
 @synthesize _iosKeyboard;
+@synthesize _frame;
 
 - (id)initWithFrame:(CGRect)frame
 {
+  _frame = frame;
+  if([NSThread currentThread] != [NSThread mainThread])
+  {
+    [self performSelectorOnMainThread:@selector(initWithFrameInternal) withObject:nil  waitUntilDone:YES];
+  }
+  else
+  {
+    [self initWithFrameInternal];
+  }
+  return self;
+}
+
+- (id)initWithFrameInternal
+{
+  CGRect frame = _frame;
   self = [super initWithFrame:frame];
   if (self) 
   {
