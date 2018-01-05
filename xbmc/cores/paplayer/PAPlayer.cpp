@@ -582,6 +582,7 @@ void PAPlayer::Process()
 
     GetTimeInternal(); //update for GUI
   }
+  m_isPlaying = false;
 }
 
 inline void PAPlayer::ProcessStreams(double &freeBufferTime)

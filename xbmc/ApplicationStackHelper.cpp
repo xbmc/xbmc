@@ -175,7 +175,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetPath(), duration))
         {
           m_currentStack->Clear();
-          return PLAYBACK_FAIL;
+          return false;
         }
         totalTimeMs += duration;
         // set end time in every part

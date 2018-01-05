@@ -31,7 +31,7 @@
 
 CApplicationPlayer::CApplicationPlayer()
 {
-  m_iPlayerOPSeq = 0;
+
 }
 
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
@@ -42,6 +42,7 @@ std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 
 void CApplicationPlayer::ClosePlayer()
 {
+  m_nextItem.pItem.reset();
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
@@ -57,34 +58,7 @@ void CApplicationPlayer::CloseFile(bool reopen)
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
-    ++m_iPlayerOPSeq;
     player->CloseFile(reopen);
-  }
-}
-
-void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (!player)
-    return;
-
-  bool gaplessSupported = player->m_type == "music" || player->m_type == "video";
-  gaplessSupported = gaplessSupported && (playername == player->m_name);
-  if (!gaplessSupported)
-  {
-    ClosePlayer();
-  }
-  else
-  {
-    if (player->m_type != "video")
-    {
-      // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
-      // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
-      // but if we do not stop it, we can not distinguish callbacks from previous
-      // item and current item, it will confused us then we can not make correct delay
-      // callback after the starting state.
-      CloseFile(true);
-    }
   }
 }
 
@@ -108,26 +82,72 @@ std::string CApplicationPlayer::GetCurrentPlayer()
   return "";
 }
 
-PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& options)
+bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& options,
+                                         const std::string &playerName, IPlayerCallback& callback)
 {
+  // get player type
+  std::string newPlayer;
+  if (!playerName.empty())
+    newPlayer = playerName;
+  else
+    newPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
+
+  // check if we need to close current player
+  // VideoPlayer can open a new file while playing
   std::shared_ptr<IPlayer> player = GetInternal();
-  PlayBackRet iResult = PLAYBACK_FAIL;
-  if (player)
+  if (player && player->IsPlaying())
   {
-    // op seq for detect cancel (CloseFile be called or OpenFile be called again) during OpenFile.
-    unsigned int startingSeq = ++m_iPlayerOPSeq;
+    bool needToClose = false;
 
-    iResult = player->OpenFile(item, options) ? PLAYBACK_OK : PLAYBACK_FAIL;
-    // check whether the OpenFile was canceled by either CloseFile or another OpenFile.
-    if (m_iPlayerOPSeq != startingSeq)
-      iResult = PLAYBACK_CANCELED;
+    if (item.IsDiscImage() || item.IsDVDFile())
+      needToClose = true;
 
-    // reset caching timers
-    m_audioStreamUpdate.SetExpired();
-    m_videoStreamUpdate.SetExpired();
-    m_subtitleStreamUpdate.SetExpired();
+    if (player->m_name != newPlayer)
+      needToClose = true;
+
+    if (player->m_type != "video")
+      needToClose = true;
+
+    if (needToClose)
+    {
+      m_nextItem.pItem = std::make_shared<CFileItem>(item);
+      m_nextItem.options = options;
+      m_nextItem.playerName = newPlayer;
+      m_nextItem.callback = &callback;
+
+      CloseFile();
+      return true;
+    }
   }
-  return iResult;
+
+  if (!player)
+  {
+    CreatePlayer(newPlayer, callback);
+    player = GetInternal();
+    if (!player)
+      return false;
+  }
+
+  bool ret = player->OpenFile(item, options);
+
+  m_nextItem.pItem.reset();
+
+  // reset caching timers
+  m_audioStreamUpdate.SetExpired();
+  m_videoStreamUpdate.SetExpired();
+  m_subtitleStreamUpdate.SetExpired();
+
+  return ret;
+}
+
+void CApplicationPlayer::OpenNext()
+{
+  if (m_nextItem.pItem)
+  {
+    OpenFile(*m_nextItem.pItem, m_nextItem.options,
+             m_nextItem.playerName, *m_nextItem.callback);
+    m_nextItem.pItem.reset();
+  }
 }
 
 bool CApplicationPlayer::HasPlayer() const

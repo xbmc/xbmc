@@ -556,7 +556,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
       if (g_application.GetAppPlayer().IsPlayingVideo())
-        g_application.GetAppPlayer().CloseFile();
+        g_application.GetAppPlayer().ClosePlayer();
       m_bPlayingVideo = false;
       m_iVideoSlide = -1;
 
@@ -770,7 +770,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
     if (g_application.GetAppPlayer().IsPlayingVideo())
-      g_application.GetAppPlayer().CloseFile();
+      g_application.GetAppPlayer().ClosePlayer();
     Close();
     break;
 
@@ -1099,16 +1099,14 @@ bool CGUIWindowSlideShow::PlayVideo()
   CLog::Log(LOGDEBUG, "Playing current video slide %s", item->GetPath().c_str());
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
-  PlayBackRet ret = g_application.PlayFile(*item, "");
-  if (ret == PLAYBACK_OK)
+  bool ret = g_application.PlayFile(*item, "");
+  if (ret == true)
     return true;
-  if (ret == PLAYBACK_FAIL)
+  else
   {
     CLog::Log(LOGINFO, "set video %s unplayable", item->GetPath().c_str());
     item->SetProperty("unplayable", true);
   }
-  else if (ret == PLAYBACK_CANCELED)
-    m_bPause = true;
   m_bPlayingVideo = false;
   m_iVideoSlide = -1;
   return false;
