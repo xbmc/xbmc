@@ -22,7 +22,7 @@ libiconv-1.15-win10-Win32-v140.7z
 libmicrohttpd-0.9.55-win10-Win32-v140.7z
 libnfs-1.11.0-win10-Win32-v140.7z
 libplist-1.12-win10-Win32-v140.7z
-libssh-0.7.0-win10-Win32-v140.7z
+libssh-0.7.0-v1-win10-Win32-v140.7z
 libxml2-2.9.4-win10-Win32-v140.7z
 libxslt-1.1.29-win10-Win32-v140.7z
 lzo2-2.09-win10-Win32-v140.7z
@@ -32,7 +32,7 @@ openssl-1.0.2k-win10-Win32-v140.7z
 pcre-8.40-win10-Win32-v140.7z
 pillow-4.2.1-v1-win10-Win32-v140.7z
 pycryptodome-3.4.7-v1-win10-Win32-v140.7z
-python-2.7.13-v3-win10-Win32-v140.7z
+python-2.7.13-v4-win10-Win32-v140.7z
 rapidjson-1.1.0-win32.7z
 shairplay-ce80e00-win10-Win32-v140.7z
 sqlite-3170000-win10-Win32-v140.7z

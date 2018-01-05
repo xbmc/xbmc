@@ -352,11 +352,12 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
-    if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+    if (FAILED(hr))
     {
-      if (FAILED(hr))
-        CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription.c_str());
-
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription.c_str());
+    }
+    else
+    {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
       add192 = true;
     }
@@ -366,11 +367,12 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
 
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
-    if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+    if (FAILED(hr))
     {
-      if (FAILED(hr))
-        CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription.c_str());
-
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription.c_str());
+    }
+    else 
+    {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       add192 = true;
     }
@@ -387,11 +389,12 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
-    if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+    if (FAILED(hr))
     {
-      if (FAILED(hr))
-        CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription.c_str());
-
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription.c_str());
+    }
+    else 
+    {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
       add192 = true;
     }
@@ -408,11 +411,12 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
-    if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+    if (FAILED(hr))
     {
-      if (FAILED(hr))
-        CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", "STREAM_TYPE_DTS", details.strDescription.c_str());
-
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", "STREAM_TYPE_DTS", details.strDescription.c_str());
+    }
+    else
+    {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
@@ -424,11 +428,12 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
 
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
-    if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+    if (FAILED(hr))
     {
-      if (FAILED(hr))
-        CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
-
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
+    }
+    else
+    {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
     }
 
