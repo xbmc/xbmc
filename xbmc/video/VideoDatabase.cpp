@@ -339,6 +339,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM settings WHERE idFile=old.idFile; "
               "DELETE FROM stacktimes WHERE idFile=old.idFile; "
               "DELETE FROM streamdetails WHERE idFile=old.idFile; "
+              "DELETE FROM history WHERE idFile=old.idFile; "
               "END");
 
   CreateViews();
@@ -351,7 +352,7 @@ void CVideoDatabase::CreateViews()
                                       "  episode.*,"
                                       "  files.strFileName AS strFileName,"
                                       "  path.strPath AS strPath,"
-                                      "  files.playCount AS playCount,"
+                                      "  COUNT(history.idFile) AS playCount,"
                                       "  files.lastPlayed AS lastPlayed,"
                                       "  files.dateAdded AS dateAdded,"
                                       "  tvshow.c%02d AS strTitle,"
@@ -380,8 +381,12 @@ void CVideoDatabase::CreateViews()
                                       "    bookmark.idFile=episode.idFile AND bookmark.type=1"
                                       "  LEFT JOIN rating ON"
                                       "    rating.rating_id=episode.c%02d"
+                                      "  LEFT JOIN history ON"
+                                      "    history.idFile=files.idFile"
                                       "  LEFT JOIN uniqueid ON"
-                                      "    uniqueid.uniqueid_id=episode.c%02d",
+                                      "    uniqueid.uniqueid_id=episode.c%02d "
+                                      "GROUP BY"
+                                      "  history.idFile",
                                       VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE,
                                       VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
                                       VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID,
@@ -391,17 +396,19 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create tvshowcounts");
   std::string tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                                        "      tvshow.idShow AS idShow,"
-                                       "      MAX(files.lastPlayed) AS lastPlayed,"
+                                       "      MAX(history.dateWatched) AS lastPlayed,"
                                        "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                                       "      COUNT(files.playCount) AS watchedcount,"
+                                       "      COUNT(history.idFile) AS watchedcount,"
                                        "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
                                        "      MAX(files.dateAdded) as dateAdded "
                                        "    FROM tvshow"
                                        "      LEFT JOIN episode ON"
                                        "        episode.idShow=tvshow.idShow"
+                                       "      LEFT JOIN history ON"
+                                       "        history.idFile=episode.idFile"
                                        "      LEFT JOIN files ON"
                                        "        files.idFile=episode.idFile "
-                                       "    GROUP BY tvshow.idShow");
+                                       "    GROUP BY tvshow.idShow, history.idFile");
   m_pDS->exec(tvshowcounts);
 
   CLog::Log(LOGINFO, "create tvshow_view");
@@ -441,16 +448,18 @@ void CVideoDatabase::CreateViews()
                                      "  tvshow_view.c%02d AS studio,"
                                      "  tvshow_view.c%02d AS mpaa,"
                                      "  count(DISTINCT episode.idEpisode) AS episodes,"
-                                     "  count(files.playCount) AS playCount,"
+                                     "  count(history.idFile) AS playCount,"
                                      "  min(episode.c%02d) AS aired "
                                      "FROM seasons"
                                      "  JOIN tvshow_view ON"
                                      "    tvshow_view.idShow = seasons.idShow"
                                      "  JOIN episode ON"
                                      "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
+                                     "  LEFT JOIN history ON"
+                                     "    history.idFile = episode.idFile "
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
-                                     "GROUP BY seasons.idSeason",
+                                     "GROUP BY seasons.idSeason, history.idFile",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
                                      VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON);
@@ -461,8 +470,8 @@ void CVideoDatabase::CreateViews()
               "  musicvideo.*,"
               "  files.strFileName as strFileName,"
               "  path.strPath as strPath,"
-              "  files.playCount as playCount,"
-              "  files.lastPlayed as lastPlayed,"
+              "  COUNT(history.idFile) as playCount,"
+              "  MAX(history.dateWatched) as lastPlayed,"
               "  files.dateAdded as dateAdded, "
               "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
               "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
@@ -472,6 +481,8 @@ void CVideoDatabase::CreateViews()
               "    files.idFile=musicvideo.idFile"
               "  JOIN path ON"
               "    path.idPath=files.idPath"
+              "  LEFT JOIN history ON"
+              "    history.idFile=musicvideo.idFile"
               "  LEFT JOIN bookmark ON"
               "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1");
 
@@ -483,8 +494,8 @@ void CVideoDatabase::CreateViews()
                                       "  sets.strOverview AS strSetOverview,"
                                       "  files.strFileName AS strFileName,"
                                       "  path.strPath AS strPath,"
-                                      "  files.playCount AS playCount,"
-                                      "  files.lastPlayed AS lastPlayed, "
+                                      "  COUNT(history.idFile) AS playCount,"
+                                      "  MAX(history.dateWatched) AS lastPlayed, "
                                       "  files.dateAdded AS dateAdded, "
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
@@ -505,8 +516,12 @@ void CVideoDatabase::CreateViews()
                                       "    bookmark.idFile=movie.idFile AND bookmark.type=1"
                                       "  LEFT JOIN rating ON"
                                       "    rating.rating_id=movie.c%02d"
+                                      "  LEFT JOIN history ON"
+                                      "    history.idFile=files.idFile"
                                       "  LEFT JOIN uniqueid ON"
-                                      "    uniqueid.uniqueid_id=movie.c%02d",
+                                      "    uniqueid.uniqueid_id=movie.c%02d "
+                                      "GROUP BY"
+                                      "  history.idFile",
                                       VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
@@ -5255,22 +5270,29 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 110)
   {
-    m_pDS->exec("CREATE TABLE `history` (`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,`dateWatched` TEXT NOT NULL, `idFile` INTEGER NOT NULL);");
-    
+    m_pDS->exec("CREATE TABLE history(id INTEGER PRIMARY KEY AUTOINCREMENT, dateWatched TEXT NOT NULL, idFile INTEGER NOT NULL)");
 
-    m_pDS->exec("INSERT INTO history(dateWatched, idFile) SELECT lastPlayed, idFile FROM files AS f WHERE f.playCount = 1;");
-    m_pDS->exec("SELECT MAX(playCount) FROM files AS f;");
-    
+    m_pDS->query("SELECT lastPlayed, idFile FROM files AS f WHERE f.playCount is not NULL");
+    while (!m_pDS->eof())
+    {
+      std::string lastPlayed = m_pDS->fv(0).get_asString();
+      int idFile = m_pDS->fv(1).get_asInt();
 
-    // don't run for playcount == 1 as we already migrated those
-    for (auto i = m_pDS->fv(0).get_asInt(); i > 1; i--) {
-      // as we have no dates for these, we'll add them with an empty string - shouldn't be the case otherwise - ever!
-      m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT "", idFile FROM files AS f WHERE f.playCount = %i;", i));
+      m_pDS2->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) VALUES ('%s', %i)", lastPlayed.c_str(), idFile));
+      m_pDS->next();
     }
-}
 
+    m_pDS->query("SELECT MAX(playCount) FROM files AS f");
+    // don't run for playcount == 1 as we already migrated those
+    for (auto playCountIterator = m_pDS->fv(0).get_asInt(); playCountIterator > 1; playCountIterator--) {
+      // as we have no dates for these, we'll add them with an empty string - shouldn't be the case otherwise - ever!
+      // add the item as often as we have a playcount, we've added the first item above, so we're skipping that one now
+      for (auto i = 1; i < playCountIterator; i++)
+      {
+        m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT '', idFile FROM files AS f WHERE f.playCount = %i;", playCountIterator));
+      }
+    }
   }
-
 }
 
 int CVideoDatabase::GetSchemaVersion() const
