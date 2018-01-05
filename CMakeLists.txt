@@ -151,7 +151,6 @@ set(optional_deps Alsa
                   LCMS2
                   MDNS
                   MicroHttpd
-                  MySqlClient
                   PulseAudio
                   Python
                   SmbClient
@@ -178,6 +177,17 @@ core_require_dep(${required_deps})
 core_optional_dep(${optional_deps})
 core_require_dyload_dep(${required_dyload})
 core_optional_dyload_dep(${dyload_optional})
+
+if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
+  MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")
+elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
+  set(ENABLE_MARIADBCLIENT OFF CACHE BOOL "")
+endif()
+
+core_optional_dep(MariaDBClient)
+if(NOT MARIADBCLIENT_FOUND)
+  core_optional_dep(MySqlClient)
+endif()
 
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
