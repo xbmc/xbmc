@@ -17,6 +17,7 @@ set(SOURCES Connection.cpp
             ShellSurface.cpp
             ShellSurfaceWlShell.cpp
             ShellSurfaceXdgShellUnstableV6.cpp
+            Util.cpp
             VideoSyncWpPresentation.cpp
             ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp
             WindowDecorator.cpp

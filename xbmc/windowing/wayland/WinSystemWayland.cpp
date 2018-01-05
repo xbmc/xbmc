@@ -46,6 +46,7 @@
 #include "ShellSurfaceWlShell.h"
 #include "ShellSurfaceXdgShellUnstableV6.h"
 #include "threads/SingleLock.h"
+#include "Util.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
@@ -1070,7 +1071,7 @@ void CWinSystemWayland::LoadDefaultCursor()
     wayland::cursor_t cursor;
     try
     {
-      cursor = m_cursorTheme.get_cursor("default");
+      cursor = CCursorUtil::LoadFromTheme(m_cursorTheme, "default");
     }
     catch (std::exception const& e)
     {

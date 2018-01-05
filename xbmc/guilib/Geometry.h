@@ -321,6 +321,30 @@ public:
     return {x1 + point.x, y1 + point.y, x2 + point.x, y2 + point.y};
   }
 
+  this_type& operator-=(const size_type &size)
+  {
+    x2 -= size.Width();
+    y2 -= size.Height();
+    return *this;
+  };
+
+  this_type operator-(const size_type &size) const
+  {
+    return {x1, y1, x2 - size.Width(), y2 - size.Height()};
+  }
+
+  this_type& operator+=(const size_type &size)
+  {
+    x2 += size.Width();
+    y2 += size.Height();
+    return *this;
+  };
+
+  this_type operator+(const size_type &size) const
+  {
+    return {x1, y1, x2 + size.Width(), y2 + size.Height()};
+  }
+
   this_type& Intersect(const this_type &rect)
   {
     x1 = clamp_range(x1, rect.x1, rect.x2);

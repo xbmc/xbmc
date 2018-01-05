@@ -21,7 +21,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(ENABLE_WAYLAND),yes)
-  NATIVE += expat-native wayland-scanner-native scons-native
+  NATIVE += expat-native wayland-scanner-native waylandpp-scanner-native
 endif
 
 .PHONY: $(NATIVE) native
@@ -40,7 +40,7 @@ distutilscross-native: python27-native distribute-native
 tar-native: xz-native automake-native
 python27-native: zlib-native
 wayland-scanner-native: expat-native
-scons-native: python27-native
+waylandpp-scanner-native: cmake-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
