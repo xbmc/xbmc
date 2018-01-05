@@ -1,0 +1,26 @@
+From 2425d7329fdccfa9954faba748f3865151354f0c Mon Sep 17 00:00:00 2001
+From: Janne Grunau <janne-libav@jannau.net>
+Date: Thu, 8 Dec 2016 20:40:34 +0100
+Subject: [PATCH] arm64: replace 'bic' with immediate with 'and' with inverted
+ immediate
+
+The former is not an official pseudo instruction although gas and llvm's
+internal assembler support it. Fixes a build error with xcode 6.2
+reported by Memphiz on github.
+---
+ libavcodec/aarch64/synth_filter_neon.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavcodec/aarch64/synth_filter_neon.S b/libavcodec/aarch64/synth_filter_neon.S
+index 9551bff8e33..b001c737da9 100644
+--- a/libavcodec/aarch64/synth_filter_neon.S
++++ b/libavcodec/aarch64/synth_filter_neon.S
+@@ -50,7 +50,7 @@ function ff_synth_filter_float_neon, export=1
+         add             x1,  x1,  x7,  lsl #2   // synth_buf
+         sub             w8,  w7,  #32
+         stp             x5,  x1,  [sp, #16]
+-        bic             x7,  x7,  #63
++        and             x7,  x7,  #~63
+         and             w8,  w8,  #511
+         stp             x7,  x30, [sp, #32]
+         str             w8,  [x2]
