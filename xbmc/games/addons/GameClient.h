@@ -23,11 +23,11 @@
 #include "GameClientTiming.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
-#include "games/controllers/ControllerTypes.h"
 #include "games/GameTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>
+#include <memory>
 #include <set>
 #include <stdint.h>
 #include <string>
@@ -40,17 +40,17 @@ namespace KODI
 namespace GAME
 {
 
-class CGameClientHardware;
 class CGameClientInGameSaves;
-class CGameClientJoystick;
-class CGameClientKeyboard;
-class CGameClientMouse;
+class CGameClientInput;
 class IGameAudioCallback;
 class IGameClientPlayback;
 class IGameInputCallback;
 class IGameVideoCallback;
 
-// --- CGameClient -------------------------------------------------------------
+struct GameClientSubsystems
+{
+  std::unique_ptr<CGameClientInput> Input;
+};
 
 /*!
  * \ingroup games
@@ -65,6 +65,12 @@ public:
 
   virtual ~CGameClient(void);
 
+  // Game subsystems (immutable)
+  const CGameClientInput &Input() const { return *m_subsystems.Input; }
+
+  // Game subsystems (mutable)
+  CGameClientInput &Input() { return *m_subsystems.Input; }
+
   // Implementation of IAddon via CAddonDll
   virtual std::string     LibPath() const override;
   virtual ADDON::AddonPtr GetRunningInstance() const override;
@@ -73,6 +79,8 @@ public:
   bool                         SupportsStandalone() const { return m_bSupportsStandalone; }
   bool                         SupportsPath() const;
   bool                         SupportsVFS() const { return m_bSupportsVFS; }
+  bool                         SupportsKeyboard() const { return m_bSupportsKeyboard; }
+  bool                         SupportsMouse() const { return m_bSupportsMouse; }
   const std::set<std::string>& GetExtensions() const { return m_extensions; }
   bool                         SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
   bool                         IsExtensionValid(const std::string& strExtension) const;
@@ -105,14 +113,6 @@ public:
   bool Serialize(uint8_t* data, size_t size);
   bool Deserialize(const uint8_t* data, size_t size);
 
-  // Input callbacks
-  bool OpenPort(unsigned int port);
-  void ClosePort(unsigned int port);
-  bool ReceiveInputEvent(const game_input_event& eventStruct);
-
-  // Input functions
-  bool AcceptsInput(void) const;
-
   /*!
     * @brief To get the interface table used between addon and kodi
     * @todo This function becomes removed after old callback library system
@@ -120,7 +120,22 @@ public:
     */
   AddonInstance_Game* GetInstanceInterface() { return &m_struct; }
 
+  // Helper functions
+  bool LogError(GAME_ERROR error, const char* strMethod) const;
+  void LogException(const char* strFunctionName) const;
+
 private:
+  /*!
+   * \brief Create a struct with the allocated subsystems
+   *
+   * \param gameClient The owner of the subsystems
+   * \param gameStruct The game client's add-on function table
+   * \param clientAccess Mutex guarding client function access
+   *
+   * \return A fully-allocated GameClientSubsystems struct
+   */
+  static GameClientSubsystems CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess);
+
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
   bool LoadGameInfo();
@@ -130,23 +145,11 @@ private:
   void CreatePlayback();
   void ResetPlayback();
 
-  // Private input functions
-  void UpdatePort(unsigned int port, const ControllerPtr& controller);
-  void ClearPorts(void);
-  bool SetRumble(unsigned int port, const std::string& feature, float magnitude);
-  void OpenKeyboard(void);
-  void CloseKeyboard(void);
-  void OpenMouse(void);
-  void CloseMouse(void);
-  ControllerVector GetControllers(void) const;
-
   // Private memory stream functions
   size_t GetSerializeSize();
 
   // Helper functions
   void LogAddonProperties(void) const;
-  bool LogError(GAME_ERROR error, const char* strMethod) const;
-  void LogException(const char* strFunctionName) const;
 
   /*!
    * @brief Callback functions from addon to kodi
@@ -167,6 +170,9 @@ private:
   static void cb_close_port(void* kodiInstance, unsigned int port);
   static bool cb_input_event(void* kodiInstance, const game_input_event* event);
   //@}
+
+  // Game subsystems
+  GameClientSubsystems m_subsystems;
 
   // Add-on properties
   CGameClientProperties m_libraryProps;        // Properties to pass to the DLL
@@ -193,12 +199,6 @@ private:
 
   // In-game saves
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
-
-  // Input
-  std::map<int, std::unique_ptr<CGameClientJoystick>> m_ports;
-  std::unique_ptr<CGameClientKeyboard> m_keyboard;
-  std::unique_ptr<CGameClientMouse> m_mouse;
-  std::unique_ptr<CGameClientHardware> m_hardware;
 
   CCriticalSection m_critSection;
 

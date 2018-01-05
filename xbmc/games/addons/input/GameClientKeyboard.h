@@ -49,7 +49,9 @@ namespace GAME
      * \param dllStruct The emulator or game to which the events are sent.
      * \param inputProvider The interface providing us with keyboard input.
      */
-    CGameClientKeyboard(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct, KEYBOARD::IKeyboardInputProvider *inputProvider);
+    CGameClientKeyboard(const CGameClient &gameClient,
+                        const KodiToAddonFuncTable_Game &dllStruct,
+                        KEYBOARD::IKeyboardInputProvider *inputProvider);
 
     /*!
      * \brief Destructor unregisters from keyboard events from CInputManager.
@@ -62,8 +64,8 @@ namespace GAME
 
   private:
     // Construction parameters
-    const CGameClient* const m_gameClient;
-    const KodiToAddonFuncTable_Game* const m_dllStruct;
+    const CGameClient &m_gameClient;
+    const KodiToAddonFuncTable_Game &m_dllStruct;
     KEYBOARD::IKeyboardInputProvider *const m_inputProvider;
   };
 }
