@@ -41,7 +41,6 @@ public:
   int LabelID(void) const { return m_labelId; }
   const std::string& Icon(void) const { return m_icon; }
   const std::string& Image(void) const   { return m_strImage; }
-  const std::string Models() const { return m_models; }
 
   /*!
    * \brief Ensures the layout was deserialized correctly, and optionally logs if not
@@ -80,7 +79,6 @@ private:
   int m_labelId = -1;
   std::string m_icon;
   std::string  m_strImage;
-  std::string m_models;
 };
 
 }
