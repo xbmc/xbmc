@@ -4614,7 +4614,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       state.time = (m_clock.GetClock(false) - times.ptsStart) * 1000 / DVD_TIME_BASE;
       state.timeMax = (times.ptsEnd - times.ptsStart) * 1000 / DVD_TIME_BASE;
       state.timeMin = (times.ptsBegin - times.ptsStart) * 1000 / DVD_TIME_BASE;
-      state.time_offset = 0;
+      state.time_offset = -times.ptsStart;
     }
     else if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
     {
