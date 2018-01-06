@@ -106,6 +106,7 @@ public:
   static CInputManager& GetInputManager();
   static CFileExtensionProvider &GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
+  static bool IsServiceManagerUp();
   static CNetwork& GetNetwork();
   static CWinSystemBase& GetWinSystem();
   static CRenderSystemBase& GetRenderSystem();
