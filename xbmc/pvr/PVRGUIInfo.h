@@ -68,7 +68,7 @@ namespace PVR
      * @brief Get the current position in milliseconds since the start of a LiveTV item.
      * @return The position in milliseconds or NULL if no channel is playing.
      */
-    int GetStartTime(void) const;
+    int GetPlayingTime(void) const;
 
     /*!
      * @brief Clear the playing EPG tag.
