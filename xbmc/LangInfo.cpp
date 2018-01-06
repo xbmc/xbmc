@@ -992,8 +992,10 @@ void CLangInfo::SetTemperatureUnit(CTemperature::Unit temperatureUnit)
 
   m_temperatureUnit = temperatureUnit;
 
-  // need to reset our weather as temperatures need re-translating
-  CServiceBroker::GetWeatherManager().Refresh();
+  // refresh weather manager as temperatures need re-translating
+  // NOTE: this could be called before our service manager is up
+  if (CServiceBroker::IsServiceManagerUp())
+    CServiceBroker::GetWeatherManager().Refresh();
 }
 
 void CLangInfo::SetTemperatureUnit(const std::string& temperatureUnit)
@@ -1034,8 +1036,10 @@ void CLangInfo::SetSpeedUnit(CSpeed::Unit speedUnit)
 
   m_speedUnit = speedUnit;
 
-  // need to reset our weather as speeds need re-translating
-  CServiceBroker::GetWeatherManager().Refresh();
+  // refresh weather manager as speeds need re-translating
+  // NOTE: this could be called before our service manager is up
+  if (CServiceBroker::IsServiceManagerUp())
+    CServiceBroker::GetWeatherManager().Refresh();
 }
 
 void CLangInfo::SetSpeedUnit(const std::string& speedUnit)
