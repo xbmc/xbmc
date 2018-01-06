@@ -44,6 +44,7 @@ public:
   bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
+  static bool WebServerSupportsSSL();
   void SetCredentials(const std::string &username, const std::string &password);
 
   void RegisterRequestHandler(IHTTPRequestHandler *handler);
@@ -139,6 +140,8 @@ private:
                              unsigned int size);
 #endif
 
+  bool LoadCert(std::string &skey, std::string &scert);
+
   uint16_t m_port;
   struct MHD_Daemon *m_daemon_ip6;
   struct MHD_Daemon *m_daemon_ip4;
@@ -147,6 +150,8 @@ private:
   bool m_authenticationRequired;
   std::string m_authenticationUsername;
   std::string m_authenticationPassword;
+  std::string m_key;
+  std::string m_cert;
   CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };

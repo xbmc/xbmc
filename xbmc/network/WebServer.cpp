@@ -35,6 +35,7 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
 #include "Util.h"
@@ -83,7 +84,9 @@ CWebServer::CWebServer()
     m_thread_stacksize(0),
     m_authenticationRequired(false),
     m_authenticationUsername("kodi"),
-    m_authenticationPassword("")
+    m_authenticationPassword(""),
+    m_key(),
+    m_cert()
 {
 #if defined(TARGET_DARWIN)
   void *stack_addr;
@@ -1110,14 +1113,96 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
   }
 }
 
+bool CWebServer::LoadCert(std::string &skey, std::string &scert)
+{
+  XFILE::CFile file;
+  XFILE::auto_buffer buf;
+  const char* keyFile = "special://userdata/server.key";
+  const char* certFile = "special://userdata/server.pem";
+
+  if (!file.Exists(keyFile) || !file.Exists(certFile))
+    return false;
+
+  if (file.LoadFile(keyFile, buf) > 0)
+  {
+    skey.resize(buf.length());
+    skey.assign(buf.get());
+    file.Close();
+  }
+  else
+    CLog::Log(LOGDEBUG, "WebServer %s: Error loading: %s", __FUNCTION__, keyFile);
+
+  if (file.LoadFile(certFile, buf) > 0)
+  {
+    scert.resize(buf.length());
+    scert.assign(buf.get());
+    file.Close();
+  }
+  else
+    CLog::Log(LOGDEBUG, "WebServer %s: Error loading: %s", __FUNCTION__, certFile);
+
+  if (!skey.empty() && !scert.empty())
+  {
+    CLog::Log(LOGERROR, "WebServer %s: found server key: %s, certificate: %s, HTTPS support enabled", __FUNCTION__, keyFile, certFile);
+    return true;
+  }
+  return false;
+}
+
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 {
   unsigned int timeout = 60 * 60 * 24;
+  const char* ciphers = "NORMAL:-VERS-TLS1.0";
 
 #if MHD_VERSION >= 0x00040500
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 #endif
 
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVERSSL) &&
+      MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES &&
+      LoadCert(m_key, m_cert))
+    // SSL enabled
+    return MHD_start_daemon(flags |
+#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
+                          // use main thread for each connection, can only handle one request at a
+                          // time [unless you set the thread pool size]
+                          MHD_USE_SELECT_INTERNALLY
+#else
+                          // one thread per connection
+                          // WARNING: set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
+                          // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
+                          MHD_USE_THREAD_PER_CONNECTION
+#endif
+#if (MHD_VERSION >= 0x00095207)
+                          | MHD_USE_INTERNAL_POLLING_THREAD /* MHD_USE_THREAD_PER_CONNECTION must be used only with MHD_USE_INTERNAL_POLLING_THREAD since 0.9.54 */
+#endif
+#if (MHD_VERSION >= 0x00040001)
+                          | MHD_USE_DEBUG /* Print MHD error messages to log */
+#endif
+                          | MHD_USE_SSL
+                          ,
+                          port,
+                          0,
+                          0,
+                          &CWebServer::AnswerToConnection,
+                          this,
+
+#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
+                          MHD_OPTION_THREAD_POOL_SIZE, 4,
+#endif
+                          MHD_OPTION_CONNECTION_LIMIT, 512,
+                          MHD_OPTION_CONNECTION_TIMEOUT, timeout,
+                          MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
+#if (MHD_VERSION >= 0x00040001)
+                          MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0,
+#endif // MHD_VERSION >= 0x00040001
+                          MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
+                          MHD_OPTION_HTTPS_MEM_KEY, m_key.c_str(),
+                          MHD_OPTION_HTTPS_MEM_CERT, m_cert.c_str(),
+                          MHD_OPTION_HTTPS_PRIORITIES, ciphers,
+                          MHD_OPTION_END);
+
+  // No SSL
   return MHD_start_daemon(flags |
 #if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
                           // use main thread for each connection, can only handle one request at a
@@ -1134,11 +1219,11 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif
 #if (MHD_VERSION >= 0x00040001)
                           | MHD_USE_DEBUG /* Print MHD error messages to log */
-#endif 
+#endif
                           ,
                           port,
-                          NULL,
-                          NULL,
+                          0,
+                          0,
                           &CWebServer::AnswerToConnection,
                           this,
 
@@ -1149,7 +1234,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
                           MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
 #if (MHD_VERSION >= 0x00040001)
-                          MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, NULL,
+                          MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0,
 #endif // MHD_VERSION >= 0x00040001
                           MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
                           MHD_OPTION_END);
@@ -1166,7 +1251,6 @@ bool CWebServer::Start(uint16_t port, const std::string &username, const std::st
       closesocket(v6testSock);
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
     }
-    
     m_daemon_ip4 = StartMHD(0, port);
     
     m_running = (m_daemon_ip6 != nullptr) || (m_daemon_ip4 != nullptr);
@@ -1203,6 +1287,11 @@ bool CWebServer::Stop()
 bool CWebServer::IsStarted()
 {
   return m_running;
+}
+
+bool CWebServer::WebServerSupportsSSL()
+{
+  return MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES;
 }
 
 void CWebServer::SetCredentials(const std::string &username, const std::string &password)

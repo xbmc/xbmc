@@ -3253,7 +3253,10 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr ""
 
-#empty string with id 729
+#: system/settings/settings.xml
+msgctxt "#729"
+msgid "Enable SSL"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#730"
@@ -20400,7 +20403,13 @@ msgctxt "#36627"
 msgid "Client"
 msgstr ""
 
-#empty strings from id 36628 to 36899
+#empty strings from id 36628 to 36898
+
+#. Description of setting with label #729 "Enable SSL"
+#: system/settings/settings.xml
+msgctxt "#36899"
+msgid "Enables SSL encryption in the webserver. Certificate special://userdata/server.key and Key special://userdata/server.pem must be created manually"
+msgstr ""
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"
