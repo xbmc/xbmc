@@ -2491,33 +2491,15 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
-  if(feature == RENDERFEATURE_BRIGHTNESS)
-  {
-    return (m_renderMethod & RENDER_GLSL);
-  }
-  
-  if(feature == RENDERFEATURE_CONTRAST)
-  {
-    return (m_renderMethod & RENDER_GLSL);
-  }
-
-  if(feature == RENDERFEATURE_GAMMA)
-    return false;
-  
-  if(feature == RENDERFEATURE_NOISE)
-    return false;
-
-  if(feature == RENDERFEATURE_SHARPNESS)
-  {
-    return false;
-  }
-
-  if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_ZOOM            ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-      feature == RENDERFEATURE_PIXEL_RATIO     ||
-      feature == RENDERFEATURE_POSTPROCESS     ||
-      feature == RENDERFEATURE_ROTATION)
+  if (feature == RENDERFEATURE_STRETCH ||
+      feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_ZOOM ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_PIXEL_RATIO ||
+      feature == RENDERFEATURE_POSTPROCESS ||
+      feature == RENDERFEATURE_ROTATION ||
+      feature == RENDERFEATURE_BRIGHTNESS ||
+      feature == RENDERFEATURE_CONTRAST)
     return true;
 
   return false;
