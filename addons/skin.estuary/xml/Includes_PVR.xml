@@ -167,7 +167,7 @@
 				<top>435</top>
 				<width>830</width>
 				<height>70</height>
-				<label>[I]$INFO[ListItem.EpisodeName][/I]</label>
+				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
 			</control>
 			<control type="textbox">
 				<top>490</top>

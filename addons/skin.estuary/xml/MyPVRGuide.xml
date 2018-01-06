@@ -64,11 +64,18 @@
 						<left>300</left>
 						<right>60</right>
 						<height>30</height>
-						<label>[COLOR button_focus]$INFO[ListItem.StartTime][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]] $INFO[ListItem.EpgEventTitle]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Genre,      [COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
+						<label>[COLOR button_focus]$INFO[ListItem.StartTime][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]] $INFO[ListItem.EpgEventTitle]$INFO[ListItem.Genre,      [COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
+					</control>
+					<control type="label">
+						<top>29</top>
+						<left>300</left>
+						<right>60</right>
+						<height>30</height>
+						<label>[COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]]</label>
 					</control>
 					<control type="textbox">
 						<left>300</left>
-						<top>38</top>
+						<top>67</top>
 						<right>60</right>
 						<height>173</height>
 						<label>$INFO[ListItem.Plot]</label>
