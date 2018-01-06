@@ -61,9 +61,7 @@
 						<visible>System.Loggedon</visible>
 					</item>
 					<item>
-						<label>$LOCALIZE[20046]</label>
-						<altlabel>$LOCALIZE[20045]</altlabel>
-						<usealttexture>!System.IsMaster</usealttexture>
+						<label>$VAR[MasterModeLabel]</label>
 						<onclick>mastermode</onclick>
 						<visible>System.HasLocks</visible>
 					</item>
