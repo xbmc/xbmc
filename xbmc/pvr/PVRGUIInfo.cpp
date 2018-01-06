@@ -284,7 +284,17 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   m_iStartTime = iStartTime;
   m_iTimeshiftStartTime = iStartTime + iMinTime;
   m_iTimeshiftEndTime = iStartTime + iMaxTime;
-  m_iTimeshiftPlayTime = iStartTime + iPlayTime;
+
+  if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
+  {
+    // getstreamtimes api
+    m_iTimeshiftPlayTime = iStartTime + iPlayTime;
+  }
+  else
+  {
+    // legacy api
+    m_iTimeshiftPlayTime = std::time(nullptr);
+  }
 
   CDateTime tmp;
   tmp.SetFromUTCDateTime(m_iTimeshiftStartTime);
