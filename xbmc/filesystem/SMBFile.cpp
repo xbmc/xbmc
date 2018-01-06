@@ -118,6 +118,15 @@ void CSMB::Init()
 
         fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
+        // set minimum smbclient protocol version
+        if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MINPROTOCOL) > 0)
+        {
+          if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1)
+            fprintf(f, "\tclient min protocol = NT1\n");
+          else
+            fprintf(f, "\tclient min protocol = SMB%d\n", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MINPROTOCOL));
+        }
+
         // set maximum smbclient protocol version
         if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) > 0)
         {
@@ -125,6 +134,13 @@ void CSMB::Init()
             fprintf(f, "\tclient max protocol = NT1\n");
           else
             fprintf(f, "\tclient max protocol = SMB%d\n", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL));
+        }
+
+        // set legacy security options
+        if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SMB_LEGACYSECURITY) && (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1))
+        {
+          fprintf(f, "\tclient NTLMv2 auth = no\n");
+          fprintf(f, "\tclient use spnego = no\n");
         }
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
