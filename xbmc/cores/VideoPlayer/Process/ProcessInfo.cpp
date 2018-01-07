@@ -20,6 +20,7 @@
 
 #include "ProcessInfo.h"
 #include "cores/DataCacheCore.h"
+#include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 
 CCriticalSection createSection;
@@ -528,9 +529,20 @@ float CProcessInfo::GetNewTempo()
   return m_newTempo;
 }
 
+float CProcessInfo::MinTempoPlatform()
+{
+  return 0.75f;
+}
+
+float CProcessInfo::MaxTempoPlatform()
+{
+  return 1.55f;
+}
+
 bool CProcessInfo::IsTempoAllowed(float tempo)
 {
-  if (tempo > 0.75 && tempo < 1.55)
+  if (tempo > MinTempoPlatform() &&
+      (tempo < MaxTempoPlatform() || tempo < g_advancedSettings.m_maxTempo))
     return true;
 
   return false;

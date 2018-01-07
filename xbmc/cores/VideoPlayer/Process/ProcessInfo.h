@@ -98,7 +98,9 @@ public:
   void SetTempo(float tempo);
   void SetNewTempo(float tempo);
   float GetNewTempo();
-  virtual bool IsTempoAllowed(float tempo);
+  bool IsTempoAllowed(float tempo);
+  virtual float MinTempoPlatform();
+  virtual float MaxTempoPlatform();
   void SetLevelVQ(int level);
   int GetLevelVQ();
   void SetGuiRender(bool gui);

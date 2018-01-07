@@ -191,6 +191,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAAllowHqScaling;
     int  m_videoFpsDetect;
     bool m_mediacodecForceSoftwareRendering;
+    float m_maxTempo;
 
     std::string m_videoDefaultPlayer;
     float m_videoPlayCountMinimumPercent;
