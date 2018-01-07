@@ -15,6 +15,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -191,29 +192,17 @@ public class XBMCJsonRPC
     }
   }
 
-  public Bitmap getBitmap(String src)
+  public Bitmap getBitmap(Context ctx, String src)
   {
     try
     {
-      JsonObject req = request_object("{\"jsonrpc\": \"2.0\", \"method\": \"Files.PrepareDownload\", \"params\": { \"path\": \""
-          + src + "\"}, \"id\": \"1\"}");
-      if (req == null || !req.has("result"))
-        return null;
-
-      JsonObject result = req.getAsJsonObject("result");
-      String surl = result.getAsJsonObject("details").get("path").getAsString();
-
-      URL url = new URL(m_xbmc_web_url + "/" + surl);
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      String auth = XBMCProperties.getJsonAuthorization();
-      if (!auth.isEmpty())
-        connection.setRequestProperty("Authorization", auth);
-      connection.setDoInput(true);
-      connection.connect();
-      InputStream input = connection.getInputStream();
-      Bitmap myBitmap = BitmapFactory.decodeStream(input);
-      return myBitmap;
-    } catch (Exception e)
+      ContentResolver resolver = ctx.getContentResolver();
+      InputStream input = resolver.openInputStream(XBMCFileContentProvider.buildUri(src));
+      Bitmap bitmap = BitmapFactory.decodeStream(input);
+      input.close();
+      return bitmap;
+    }
+    catch (Exception e)
     {
       e.printStackTrace();
       return null;
@@ -568,10 +557,6 @@ public class XBMCJsonRPC
       mNotificationManager.cancel(id);
     mRecomendationIds.clear();
 
-    XBMCRecommendationBuilder builder = new XBMCRecommendationBuilder()
-        .setContext(ctx)
-        .setSmallIcon(R.drawable.notif_icon);
-
     JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
     if (rep != null && rep.has("result"))
     {
@@ -588,17 +573,22 @@ public class XBMCJsonRPC
             JsonObject movie = movies.get(i).getAsJsonObject();
             int id = movie.get("movieid").getAsInt() + 1000000;
 
-            final XBMCRecommendationBuilder notificationBuilder = builder
-                .setBackground(
-                    XBMCFileContentProvider.buildUri(
-                        getDownloadUrl(movie.get("fanart").getAsString())).toString())
-                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                .setTitle(movie.get("title").getAsString())
-                .setDescription(movie.get("tagline").getAsString())
-                .setIntent(buildPendingMovieIntent(ctx, movie));
+            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                    .setContext(ctx)
+                    .setSmallIcon(R.drawable.notif_icon)
+                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                    .setTitle(movie.get("title").getAsString())
+                    .setDescription(movie.get("tagline").getAsString())
+                    .setIntent(buildPendingMovieIntent(ctx, movie));
 
-            Bitmap bitmap = getBitmap(movie.get("thumbnail").getAsString());
-            notificationBuilder.setBitmap(bitmap);
+            if (movie.has("fanart") && !movie.get("fanart").getAsString().isEmpty())
+              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                      getDownloadUrl(movie.get("fanart").getAsString())).toString());
+            if (movie.has("thumbnail") && !movie.get("thumbnail").getAsString().isEmpty())
+            {
+              Bitmap bitmap = getBitmap(ctx, movie.get("thumbnail").getAsString());
+              notificationBuilder.setBitmap(bitmap);
+            }
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
             mRecomendationIds.add(id);
@@ -630,17 +620,22 @@ public class XBMCJsonRPC
             JsonObject tvshow = tvshows.get(i).getAsJsonObject();
             int id = tvshow.get("tvshowid").getAsInt() + 2000000;
 
-            final XBMCRecommendationBuilder notificationBuilder = builder
-                .setBackground(
-                    XBMCFileContentProvider.buildUri(
-                        getDownloadUrl(tvshow.get("fanart").getAsString())).toString())
-                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                .setTitle(tvshow.get("title").getAsString())
-                .setDescription(tvshow.get("plot").getAsString())
-                .setIntent(buildPendingShowIntent(ctx, tvshow));
+            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                    .setContext(ctx)
+                    .setSmallIcon(R.drawable.notif_icon)
+                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                    .setTitle(tvshow.get("title").getAsString())
+                    .setDescription(tvshow.get("plot").getAsString())
+                    .setIntent(buildPendingShowIntent(ctx, tvshow));
 
-            Bitmap bitmap = getBitmap(tvshow.get("thumbnail").getAsString());
-            notificationBuilder.setBitmap(bitmap);
+            if (tvshow.has("fanart") && !tvshow.get("fanart").getAsString().isEmpty())
+              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                      getDownloadUrl(tvshow.get("fanart").getAsString())).toString());
+            if (tvshow.has("thumbnail") && !tvshow.get("thumbnail").getAsString().isEmpty())
+            {
+              Bitmap bitmap = getBitmap(ctx, tvshow.get("thumbnail").getAsString());
+              notificationBuilder.setBitmap(bitmap);
+            }
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
             mRecomendationIds.add(id);
@@ -673,17 +668,22 @@ public class XBMCJsonRPC
             JsonObject album = albums.get(i).getAsJsonObject();
             int id = album.get("albumid").getAsInt() + 3000000;
 
-            final XBMCRecommendationBuilder notificationBuilder = builder
-                .setBackground(
-                    XBMCFileContentProvider.buildUri(
-                        getDownloadUrl(album.get("fanart").getAsString())).toString())
-                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                .setTitle(album.get("title").getAsString())
-                .setDescription(album.get("displayartist").getAsString())
-                .setIntent(buildPendingAlbumIntent(ctx, album));
+            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                    .setContext(ctx)
+                    .setSmallIcon(R.drawable.notif_icon)
+                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                    .setTitle(album.get("title").getAsString())
+                    .setDescription(album.get("displayartist").getAsString())
+                    .setIntent(buildPendingAlbumIntent(ctx, album));
 
-            Bitmap bitmap = getBitmap(album.get("thumbnail").getAsString());
-            notificationBuilder.setBitmap(bitmap);
+            if (album.has("fanart") && !album.get("fanart").getAsString().isEmpty())
+              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                      getDownloadUrl(album.get("fanart").getAsString())).toString());
+            if (album.has("thumbnail") && !album.get("thumbnail").getAsString().isEmpty())
+            {
+              Bitmap bitmap = getBitmap(ctx, album.get("thumbnail").getAsString());
+              notificationBuilder.setBitmap(bitmap);
+            }
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
             mRecomendationIds.add(id);
