@@ -156,6 +156,7 @@ void CAdvancedSettings::Initialize()
   m_DXVAForceProcessorRenderer = true;
   m_DXVAAllowHqScaling = true;
   m_videoFpsDetect = 1;
+  m_maxTempo = 1.55f;
 
   m_mediacodecForceSoftwareRendering = false;
 
@@ -678,6 +679,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "usedisplaycontrolhwstereo", m_useDisplayControlHWStereo);
     //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
+    XMLUtils::GetFloat(pElement, "maxtempo", m_maxTempo, 1.5, 2.1);
 
     // Store global display latency settings
     TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
