@@ -1017,11 +1017,6 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&g_timezone, settingSet);
 #endif
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_WEATHER_ADDON);
-  settingSet.insert(CSettings::SETTING_WEATHER_ADDONSETTINGS);
-  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetWeatherManager(), settingSet);
-
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
@@ -1079,7 +1074,6 @@ void CSettings::UninitializeISettingCallbacks()
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
-  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetWeatherManager());
 #if defined(TARGET_DARWIN_OSX)
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif

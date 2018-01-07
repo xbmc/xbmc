@@ -27,6 +27,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -38,10 +39,18 @@ using namespace ADDON;
 
 CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
+  CServiceBroker::GetSettings().GetSettingsManager()->RegisterCallback(this, {
+    CSettings::SETTING_WEATHER_ADDON,
+    CSettings::SETTING_WEATHER_ADDONSETTINGS
+  });
+
   Reset();
 }
 
-CWeatherManager::~CWeatherManager(void) = default;
+CWeatherManager::~CWeatherManager(void)
+{
+  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterCallback(this);
+}
 
 std::string CWeatherManager::BusyInfo(int info) const
 {
