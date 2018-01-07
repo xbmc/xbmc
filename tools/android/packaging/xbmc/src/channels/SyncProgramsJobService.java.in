@@ -190,8 +190,7 @@ public class SyncProgramsJobService extends JobService
             {
               Log.d(TAG, "Channel is browsable: " + channelId);
 
-              String path = Uri.parse(uri).getPath();
-              String xbmcURL = "special://profile" + path;
+              String xbmcURL = Uri.parse(uri).getFragment();
               List<File> files = jsonrpc.getFiles(xbmcURL);
 
               deletePrograms(channelId, medias);

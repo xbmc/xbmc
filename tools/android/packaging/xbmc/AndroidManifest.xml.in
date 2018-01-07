@@ -119,11 +119,6 @@
         </receiver>
 
         <provider
-            android:name=".content.XBMCImageContentProvider"
-            android:authorities="@APP_PACKAGE@.image"
-            android:exported="true" />
-
-        <provider
             android:name=".content.XBMCMediaContentProvider"
             android:authorities="@APP_PACKAGE@.media"
             android:exported="true" />

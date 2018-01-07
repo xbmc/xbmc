@@ -104,7 +104,7 @@ public class TvUtil
     else
     {
       playlistIntent.setAction(Intent.ACTION_GET_CONTENT);
-      playlistIntent.setData(Uri.parse("special://profile" + Uri.parse(subscription.getUri()).getPath()));
+      playlistIntent.setData(Uri.parse(Uri.parse(subscription.getUri()).getFragment()));
     }
 
     Channel.Builder builder = new Channel.Builder();

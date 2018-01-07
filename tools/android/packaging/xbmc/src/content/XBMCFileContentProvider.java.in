@@ -4,10 +4,16 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
+import @APP_PACKAGE@.XBMCFile;
 import @APP_PACKAGE@.XBMCJsonRPC;
 import @APP_PACKAGE@.model.File;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public class XBMCFileContentProvider extends XBMCContentProvider
@@ -18,13 +24,21 @@ public class XBMCFileContentProvider extends XBMCContentProvider
 
   private XBMCJsonRPC mJsonRPC = null;
 
-  public static Uri buildUri(String path)
+  public static Uri buildUri(String surl)
   {
+    if (surl == null)
+      return null;
+    if (surl.isEmpty())
+      return null;
+
     Uri.Builder builder = new Uri.Builder();
     builder.scheme("content")
             .authority(AUTHORITY)
-            .path(path);
-    return builder.build();
+            .fragment(surl);
+
+    Uri out = builder.build();
+    // Log.d(TAG, "GetImageUri: in:" + surl + " out:" + out.toString());
+    return out;
   }
 
   @Override
@@ -66,8 +80,7 @@ public class XBMCFileContentProvider extends XBMCContentProvider
   public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sortOrder)
   {
-    String path = uri.getPath();
-    String xbmcURL = "special://profile" + path;
+    String xbmcURL = uri.getFragment();
 
     List<File> files = mJsonRPC.getFiles(xbmcURL);
     if (files.isEmpty())
@@ -96,4 +109,77 @@ public class XBMCFileContentProvider extends XBMCContentProvider
     }
     return mc;
   }
+
+  @Override
+  public ParcelFileDescriptor openFile(Uri uri, String mode)
+          throws FileNotFoundException
+  {
+    // Log.d(TAG, "openFile: " + uri.toString());
+
+    ParcelFileDescriptor[] pipe = null;
+
+    try
+    {
+      String decodedUrl = uri.getFragment();
+      // Log.d(TAG, "  decodedUrl: " + decodedUrl);
+      if (decodedUrl == null)
+        return null;
+
+      pipe = ParcelFileDescriptor.createPipe();
+
+      new XBMCFileContentProvider.TransferThread(decodedUrl,
+              new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])).start();
+    }
+    catch (IOException e)
+    {
+      Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
+      throw new FileNotFoundException("Could not open pipe for: "
+              + uri.toString());
+    }
+
+    return (pipe[0]);
+  }
+
+
+  static class TransferThread extends Thread
+  {
+    String path;
+    OutputStream out;
+
+    TransferThread(String path, OutputStream out)
+    {
+      this.path = path;
+      this.out = out;
+    }
+
+    @Override
+    public void run()
+    {
+      try
+      {
+        XBMCFile in = new XBMCFile();
+        if (!in.Open(path))
+        {
+          out.flush();
+          out.close();
+          return;
+        }
+
+        while (!in.Eof())
+        {
+          byte[] buf = in.Read();
+          out.write(buf, 0, buf.length);
+        }
+
+        in.Close();
+        out.flush();
+        out.close();
+      }
+      catch (Exception e)
+      {
+        Log.e(getClass().getSimpleName(), "Exception transferring file", e);
+      }
+    }
+  }
+
 }
