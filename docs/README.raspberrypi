@@ -39,6 +39,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
        --with-firmware=$RPI_DEV/firmware \
        --with-platform=raspberry-pi2 \
        --build=i686-linux
+       --disable-debug
 
     $ make
     $ cd ../..
