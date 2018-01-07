@@ -353,7 +353,7 @@ void CVideoDatabase::CreateViews()
                                       "  files.strFileName AS strFileName,"
                                       "  path.strPath AS strPath,"
                                       "  (SELECT COUNT(history.idFile) FROM history WHERE history.idFile = files.idFile) AS playCount,"
-                                      "  files.lastPlayed AS lastPlayed,"
+                                      "  (SELECT MAX(history.dateWatched) FROM history WHERE history.idFile = files.idFile) AS lastPlayed,"
                                       "  files.dateAdded AS dateAdded,"
                                       "  tvshow.c%02d AS strTitle,"
                                       "  tvshow.c%02d AS genre,"
@@ -5276,6 +5276,12 @@ void CVideoDatabase::UpdateTables(int iVersion)
         m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT '', idFile FROM files AS f WHERE f.playCount = %i;", playCountIterator));
       }
     }
+
+    // Remove old columns
+    m_pDS->exec("CREATE TABLE filesnew(idFile INTEGER PRIMARY KEY, idPath INTEGER, strFilename TEXT, dateAdded TEXT)");
+    m_pDS->exec("INSERT INTO filesnew SELECT idFile, idPath, strFilename, dateAdded FROM files");
+    m_pDS->exec("DROP TABLE files");
+    m_pDS->exec("ALTER TABLE filesnew RENAME TO files");
   }
 }
 
