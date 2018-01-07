@@ -147,6 +147,11 @@ public class XBMCJsonRPC
       e.printStackTrace();
       return null;
     }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "_requestJSON: Not available");
+      return null;
+    }
   }
 
   public JsonObject request_object(String jsonRequest)
@@ -222,22 +227,7 @@ public class XBMCJsonRPC
 
   public String getDownloadUrl(String src)
   {
-    try
-    {
-      JsonObject req = request_object("{\"jsonrpc\": \"2.0\", \"method\": \"Files.PrepareDownload\", \"params\": { \"path\": \""
-          + src + "\"}, \"id\": \"1\"}");
-      if (req == null || !req.has("result"))
-        return null;
-
-      JsonObject result = req.getAsJsonObject("result");
-      String surl = result.getAsJsonObject("details").get("path").getAsString();
-
-      return (m_xbmc_web_url + "/" + surl);
-    } catch (Exception e)
-    {
-      e.printStackTrace();
-      return "";
-    }
+    return src;
   }
 
   public boolean Ping()

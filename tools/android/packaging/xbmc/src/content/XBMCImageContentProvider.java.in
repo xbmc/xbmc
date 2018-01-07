@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import @APP_PACKAGE@.XBMCFile;
 import @APP_PACKAGE@.XBMCProperties;
 
 /**
@@ -76,20 +77,11 @@ public class XBMCImageContentProvider extends XBMCContentProvider
       String decodedUrl = uri.getFragment();
       // Log.d(TAG, "  decodedUrl: " + decodedUrl);
       if (decodedUrl == null)
-      {
         return null;
-      }
+
       pipe = ParcelFileDescriptor.createPipe();
 
-      URL url = new URL(decodedUrl);
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      String auth = XBMCProperties.getJsonAuthorization();
-      if (!auth.isEmpty())
-        connection.setRequestProperty("Authorization", auth);
-      connection.setDoInput(true);
-      connection.connect();
-
-      new TransferThread(connection.getInputStream(),
+      new TransferThread(decodedUrl,
           new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])).start();
     }
     catch (IOException e)
@@ -136,33 +128,39 @@ public class XBMCImageContentProvider extends XBMCContentProvider
 
   static class TransferThread extends Thread
   {
-    InputStream in;
+    String path;
     OutputStream out;
 
-    TransferThread(InputStream in, OutputStream out)
+    TransferThread(String path, OutputStream out)
     {
-      this.in = in;
+      this.path = path;
       this.out = out;
     }
 
     @Override
     public void run()
     {
-      byte[] buf = new byte[8192];
-      int len;
-
       try
       {
-        while ((len = in.read(buf)) >= 0)
+        XBMCFile in = new XBMCFile();
+        if (!in.Open(path))
         {
-          out.write(buf, 0, len);
+          out.flush();
+          out.close();
+          return;
         }
 
-        in.close();
+        while (!in.Eof())
+        {
+          byte[] buf = in.Read();
+          out.write(buf, 0, buf.length);
+        }
+
+        in.Close();
         out.flush();
         out.close();
       }
-      catch (IOException e)
+      catch (Exception e)
       {
         Log.e(getClass().getSimpleName(), "Exception transferring file", e);
       }

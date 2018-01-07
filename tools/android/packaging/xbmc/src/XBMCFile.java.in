@@ -1,0 +1,99 @@
+package @APP_PACKAGE@;
+
+import android.util.Log;
+
+/**
+ * Created by koyin on 07/01/2018.
+ */
+
+public class XBMCFile
+{
+  native boolean _open(String path);
+  native void _close();
+  native byte[] _read();
+  native boolean _eof();
+
+  private static String TAG = "@APP_NAME@file";
+
+  public XBMCFile()
+  {
+
+  }
+
+  public boolean Open(String path)
+  {
+    try
+    {
+      return _open(path);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      Log.e(TAG, "Open: Exception");
+      return false;
+    }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "Open: Not available");
+      return false;
+    }
+  }
+
+  public void Close()
+  {
+    try
+    {
+      _close();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      Log.e(TAG, "Close: Exception");
+      return;
+    }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "Close: Not available");
+      return;
+    }
+  }
+
+  public byte[] Read()
+  {
+    try
+    {
+      return _read();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      Log.e(TAG, "Read: Exception");
+      return new byte[0];
+    }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "Read: Not available");
+      return new byte[0];
+    }
+  }
+
+  public boolean Eof()
+  {
+    try
+    {
+      return _eof();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      Log.e(TAG, "Eof: Exception");
+      return false;
+    }
+    catch (UnsatisfiedLinkError e)
+    {
+      Log.e(TAG, "Eof: Not available");
+      return false;
+    }
+  }
+
+}
