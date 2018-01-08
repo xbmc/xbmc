@@ -222,6 +222,12 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.SetPlotOutline(avtag->value);
     else if (strcmp(avtag->key, "synopsis") == 0)
       tag.SetPlot(avtag->value);
+    else if (strcmp(avtag->key, "track") == 0)
+      tag.m_iTrack = std::stoi(avtag->value);
+    else if (strcmp(avtag->key, "album") == 0)
+      tag.SetAlbum(avtag->value);
+    else if (strcmp(avtag->key, "artist") == 0)
+      tag.SetArtist(StringUtils::Split(avtag->value, " / "));
   }
 
   for (size_t i = 0; i < m_fctx->nb_streams; ++i)
