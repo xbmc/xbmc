@@ -511,7 +511,7 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByWaylandOutput(wayland::o
 {
   CSingleLock lock(m_outputsMutex);
   auto outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
-                               [this, &output](decltype(m_outputs)::value_type const& entry)
+                               [&output](decltype(m_outputs)::value_type const& entry)
                                {
                                  return (output == entry.second->GetWaylandOutput());
                                });
