@@ -294,12 +294,12 @@ CActiveAE::CActiveAE() :
   m_stats.Reset(44100, true);
   m_streamIdGen = 0;
 
-  CActiveAESettings::m_hasAE = true;
+  m_settingsHandler.reset(new CActiveAESettings(*this));
 }
 
 CActiveAE::~CActiveAE()
 {
-  CActiveAESettings::m_hasAE = false;
+  m_settingsHandler.reset();
 
   Dispose();
 }
@@ -2657,30 +2657,9 @@ void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   m_sink.EnumerateOutputDevices(devices, passthrough);
 }
 
-void CActiveAE::OnSettingsChange(const std::string& setting)
+void CActiveAE::OnSettingsChange()
 {
-  if (setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE      ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE            ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_CONFIG                 ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH         ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE           ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH        ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH         ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH      ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH       ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_CHANNELS               ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX            ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE          ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY         ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD        ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH            ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE             ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE           ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE)
-  {
-    m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
-  }
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
 }
 
 bool CActiveAE::SupportsRaw(AEAudioFormat &format)
@@ -2904,11 +2883,6 @@ void CActiveAE::SetMute(const bool enabled)
 bool CActiveAE::IsMuted()
 {
   return m_aeMuted;
-}
-
-void CActiveAE::SetSoundMode(const int mode)
-{
-  return;
 }
 
 void CActiveAE::KeepConfiguration(unsigned int millis)

@@ -616,7 +616,6 @@ bool CApplication::Create(const CAppParamParser &params)
   // restore AE's previous volume state
   SetHardwareVolume(m_volumeLevel);
   m_ServiceManager->GetActiveAE().SetMute(m_muted);
-  m_ServiceManager->GetActiveAE().SetSoundMode(m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE));
 
   // initialize m_replayGainSettings
   m_replayGainSettings.iType = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
@@ -1359,25 +1358,14 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   {
     CheckOSScreenSaverInhibitionSetting();
   }
-  else if (StringUtils::StartsWithNoCase(settingId, "audiooutput."))
-  { // AE is master of audio settings and needs to be informed first
-    m_ServiceManager->GetActiveAE().OnSettingsChange(settingId);
-
-    if (settingId == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE)
-    {
-      m_ServiceManager->GetActiveAE().SetSoundMode((std::static_pointer_cast<const CSettingInt>(setting))->GetValue());
-    }
-    // this tells player whether to open an audio stream passthrough or PCM
-    // if this is changed, audio stream has to be reopened
-    else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
-    {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART);
-    }
-  }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
   {
     if (g_graphicsContext.IsFullScreenRoot())
       g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
+  {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART);
   }
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
     m_replayGainSettings.iType = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();

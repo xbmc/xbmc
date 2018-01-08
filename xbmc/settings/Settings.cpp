@@ -28,8 +28,6 @@
 #include "events/EventLog.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
@@ -678,10 +676,6 @@ void CSettings::InitializeOptionFillers()
 #ifdef HAS_DVD_DRIVE
   GetSettingsManager()->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
 #endif
-  GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels", ActiveAE::CActiveAESettings::SettingOptionsAudioQualityLevelsFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence", ActiveAE::CActiveAESettings::SettingOptionsAudioStreamsilenceFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);
@@ -727,10 +721,6 @@ void CSettings::UninitializeOptionFillers()
 {
   GetSettingsManager()->UnregisterSettingOptionsFiller("audiocdactions");
   GetSettingsManager()->UnregisterSettingOptionsFiller("audiocdencoders");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
   GetSettingsManager()->UnregisterSettingOptionsFiller("charsets");
   GetSettingsManager()->UnregisterSettingOptionsFiller("fontheights");
   GetSettingsManager()->UnregisterSettingOptionsFiller("fonts");
@@ -903,26 +893,7 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&CStereoscopicsManager::GetInstance(), settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CONFIG);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKIN);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);

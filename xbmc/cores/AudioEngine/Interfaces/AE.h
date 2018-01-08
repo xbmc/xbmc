@@ -115,12 +115,6 @@ public:
   virtual bool IsSuspended() {return true;}
 
   /**
-   * Callback to alert the AudioEngine of setting changes
-   * @param setting The name of the setting that was changed
-   */
-  virtual void OnSettingsChange(const std::string& setting) {}
-
-  /**
    * Returns the current master volume level of the AudioEngine
    * @return The volume level between 0.0 and 1.0
    */
@@ -143,12 +137,6 @@ public:
    * @return The current mute state
    */
   virtual bool IsMuted() = 0;
-
-  /**
-   * Sets the sound mode
-   * @param mode One of AE_SOUND_OFF, AE_SOUND_IDLE or AE_SOUND_ALWAYS
-   */
-  virtual void SetSoundMode(const int mode) = 0;
 
   /**
    * Creates and returns a new IAEStream in the format specified, this function should never fail
