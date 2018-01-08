@@ -34,10 +34,27 @@ using namespace GAME;
 
 #define SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX  "gameskeyboard.keyboardplayerconfig" //! @todo
 
-CGameSettings& CGameSettings::GetInstance()
+CGameSettings::CGameSettings(CSettings &settings) :
+  m_settings(settings)
 {
-  static CGameSettings gameSettingsInstance;
-  return gameSettingsInstance;
+  m_settings.RegisterCallback(this, {
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERS,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7,
+    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8,
+    CSettings::SETTING_GAMES_ENABLEREWIND,
+    CSettings::SETTING_GAMES_REWINDTIME,
+  });
+}
+
+CGameSettings::~CGameSettings()
+{
+  m_settings.UnregisterCallback(this);
 }
 
 void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)

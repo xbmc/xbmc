@@ -192,6 +192,7 @@ bool CServiceManager::InitStageThree()
 
   m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
     *m_gameRenderManager,
+    *m_settings,
     *m_peripherals));
 
   m_contextMenuManager->Init();
