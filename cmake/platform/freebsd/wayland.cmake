@@ -1,1 +1,1 @@
-include(../linux/wayland.cmake)
+include(cmake/platform/linux/wayland.cmake)
