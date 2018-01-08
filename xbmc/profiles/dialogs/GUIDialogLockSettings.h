@@ -49,8 +49,9 @@ protected:
   void InitializeSettings() override;
 
 private:
-  void setDetailSettingsEnabled(bool enabled);
-  void setLockCodeLabel();
+  std::string GetLockModeLabel();
+  void SetDetailSettingsEnabled(bool enabled);
+  void SetSettingLockCodeLabel();
 
   bool m_changed;
 
