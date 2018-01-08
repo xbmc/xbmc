@@ -12,9 +12,15 @@
 
 pkg_check_modules(WAYLANDPP wayland-client++ wayland-egl++ wayland-cursor++)
 pkg_check_modules(PC_WAYLANDPP_SCANNER wayland-scanner++)
+if(WAYLANDPP_FOUND)
+  pkg_get_variable(PC_WAYLANDPP_PKGDATADIR wayland-client++ pkgdatadir)
+endif()
 if(PC_WAYLANDPP_SCANNER_FOUND)
   pkg_get_variable(PC_WAYLANDPP_SCANNER wayland-scanner++ wayland_scannerpp)
 endif()
+
+# Promote to cache variables so all code can access it
+set(WAYLANDPP_PROTOCOLS_DIR "${PC_WAYLANDPP_PKGDATADIR}/protocols" CACHE INTERNAL "")
 
 # wayland-scanner++ is from native/host system in case of cross-compilation, so
 # it's ok if we don't find it with pkgconfig
