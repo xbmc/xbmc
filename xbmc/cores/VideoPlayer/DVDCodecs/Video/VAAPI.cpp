@@ -64,7 +64,6 @@ CVAAPIContext::CVAAPIContext()
 {
   m_context = 0;
   m_refCount = 0;
-  m_attributes = NULL;
   m_profiles = NULL;
   m_display = NULL;
 }
@@ -200,15 +199,11 @@ bool CVAAPIContext::CreateContext()
   if (!m_profileCount)
     return false;
 
-  if (!m_attributeCount)
-    CLog::Log(LOGWARNING, "VAAPI - driver did not return anything from vlVaQueryDisplayAttributes");
-
   return true;
 }
 
 void CVAAPIContext::DestroyContext()
 {
-  delete[] m_attributes;
   delete[] m_profiles;
   if (m_display)
     CheckSuccess(vaTerminate(m_display));
@@ -216,26 +211,7 @@ void CVAAPIContext::DestroyContext()
 
 void CVAAPIContext::QueryCaps()
 {
-  m_attributeCount = 0;
   m_profileCount = 0;
-
-  int max_attributes = vaMaxNumDisplayAttributes(m_display);
-  m_attributes = new VADisplayAttribute[max_attributes];
-
-  if (!CheckSuccess(vaQueryDisplayAttributes(m_display, m_attributes, &m_attributeCount)))
-    return;
-
-  for(int i = 0; i < m_attributeCount; i++)
-  {
-    VADisplayAttribute * const display_attr = &m_attributes[i];
-    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
-                         , display_attr->type
-                         ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
-                         ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
-                         , display_attr->min_value
-                         , display_attr->max_value
-                         , display_attr->value);
-  }
 
   int max_profiles = vaMaxNumProfiles(m_display);
   m_profiles = new VAProfile[max_profiles];

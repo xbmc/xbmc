@@ -344,8 +344,6 @@ private:
   static CCriticalSection m_section;
   VADisplay m_display;
   int m_refCount;
-  int m_attributeCount;
-  VADisplayAttribute *m_attributes;
   int m_profileCount;
   VAProfile *m_profiles;
   std::vector<CDecoder*> m_decoders;
