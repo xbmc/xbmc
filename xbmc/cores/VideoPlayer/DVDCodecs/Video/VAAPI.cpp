@@ -1054,17 +1054,23 @@ bool CDecoder::ConfigVAAPI()
     return false;
 
   // create surfaces
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  std::int32_t pixelFormat = VA_FOURCC_NV12;
+
+  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
+  {
+    format = VA_RT_FORMAT_YUV420_10BPP;
+    pixelFormat = VA_FOURCC_P010;
+  }
+
   VASurfaceAttrib attribs[1], *attrib;
   attrib = attribs;
   attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
   attrib->type = VASurfaceAttribPixelFormat;
   attrib->value.type = VAGenericValueTypeInteger;
-  attrib->value.value.i = VA_FOURCC_NV12;
+  attrib->value.value.i = pixelFormat;
 
   VASurfaceID surfaces[32];
-  unsigned int format = VA_RT_FORMAT_YUV420;
-  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
-    format = VA_RT_FORMAT_YUV420_10BPP;
   int nb_surfaces = m_vaapiConfig.maxReferences;
   if (!CheckSuccess(vaCreateSurfaces(m_vaapiConfig.dpy,
                                      format,
