@@ -75,7 +75,7 @@ void CPVRClient::StopRunningInstance()
   const ADDON::AddonPtr addon(GetRunningInstance());
   if (addon)
   {
-    // stop the pvr manager and stop and unload the running pvr addon
+    // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
     CServiceBroker::GetPVRManager().Stop();
     CServiceBroker::GetPVRManager().Clients()->StopClient(addon, false);
   }
@@ -88,23 +88,10 @@ void CPVRClient::OnPreInstall()
   CAddon::OnPreInstall();
 }
 
-void CPVRClient::OnPostInstall(bool update, bool modal)
-{
-  CAddon::OnPostInstall(update, modal);
-  CServiceBroker::GetPVRManager().Clients()->UpdateAddons();
-}
-
 void CPVRClient::OnPreUnInstall()
 {
   StopRunningInstance();
   CAddon::OnPreUnInstall();
-}
-
-void CPVRClient::OnPostUnInstall()
-{
-  CAddon::OnPostUnInstall();
-  CServiceBroker::GetPVRManager().Clients()->UpdateAddons();
-  CServiceBroker::GetPVRManager().GetTVDatabase()->Delete(*this);
 }
 
 ADDON::AddonPtr CPVRClient::GetRunningInstance() const

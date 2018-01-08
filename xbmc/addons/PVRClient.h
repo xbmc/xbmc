@@ -213,9 +213,7 @@ namespace PVR
     ~CPVRClient(void) override;
 
     void OnPreInstall() override;
-    void OnPostInstall(bool update, bool modal) override;
     void OnPreUnInstall() override;
-    void OnPostUnInstall() override;
     ADDON::AddonPtr GetRunningInstance() const override;
 
     /** @name PVR add-on methods */
