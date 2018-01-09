@@ -66,7 +66,7 @@ void CJNIXBMCSurfaceTextureOnFrameAvailableListener::_onFrameAvailable(JNIEnv* e
 {
   (void)env;
 
-  CJNIXBMCSurfaceTextureOnFrameAvailableListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCSurfaceTextureOnFrameAvailableListener *inst = find_instance(thiz);
   if (inst)
-    inst->onFrameAvailable(CJNISurfaceTexture(jhobject(surface)));
+    inst->onFrameAvailable(CJNISurfaceTexture(jhobject::fromJNI(surface)));
 }

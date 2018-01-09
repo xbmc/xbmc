@@ -91,23 +91,23 @@ void CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStopped(JNIEnv* env, jobje
 
 void CJNIXBMCNsdManagerDiscoveryListener::_onServiceFound(JNIEnv* env, jobject thiz, jobject serviceInfo)
 {
-  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(thiz);
   if (inst)
-    inst->onServiceFound(CJNINsdServiceInfo(jhobject(serviceInfo)));
+    inst->onServiceFound(CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo)));
 }
 
 void CJNIXBMCNsdManagerDiscoveryListener::_onServiceLost(JNIEnv* env, jobject thiz, jobject serviceInfo)
 {
-  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(thiz);
   if (inst)
-    inst->onServiceLost(CJNINsdServiceInfo(jhobject(serviceInfo)));
+    inst->onServiceLost(CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo)));
 }
 
 void CJNIXBMCNsdManagerDiscoveryListener::_onStartDiscoveryFailed(JNIEnv* env, jobject thiz, jstring serviceType, jint errorCode)
 {
   (void)env;
 
-  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(thiz);
   if (inst)
     inst->onStartDiscoveryFailed(jcast<std::string>(jhstring(serviceType)), errorCode);
 }
@@ -116,7 +116,7 @@ void CJNIXBMCNsdManagerDiscoveryListener::_onStopDiscoveryFailed(JNIEnv* env, jo
 {
   (void)env;
 
-  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(jhobject(thiz));
+  CJNIXBMCNsdManagerDiscoveryListener *inst = find_instance(thiz);
   if (inst)
     inst->onStopDiscoveryFailed(jcast<std::string>(jhstring(serviceType)), errorCode);
 }
