@@ -116,6 +116,11 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
       m_nextItem.callback = &callback;
 
       CloseFile();
+      if (player->m_name != newPlayer)
+      {
+        CSingleLock lock(m_playerLock);
+        m_pPlayer.reset();
+      }
       return true;
     }
   }
