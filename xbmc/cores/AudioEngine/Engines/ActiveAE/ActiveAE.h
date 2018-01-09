@@ -50,6 +50,7 @@ namespace ActiveAE
 
 class CActiveAESound;
 class CActiveAEStream;
+class CActiveAESettings;
 
 struct AudioSettings
 {
@@ -241,13 +242,12 @@ public:
   bool Suspend() override;
   bool Resume() override;
   bool IsSuspended() override;
-  void OnSettingsChange(const std::string& setting) override;
+  void OnSettingsChange();
 
   float GetVolume() override;
   void SetVolume(const float volume) override;
   void SetMute(const bool enabled) override;
   bool IsMuted() override;
-  void SetSoundMode(const int mode) override;
 
   /* returns a new stream for data in the specified format */
   IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
@@ -363,6 +363,7 @@ protected:
   CEngineStats m_stats;
   IAEEncoder *m_encoder;
   std::string m_currDevice;
+  std::unique_ptr<CActiveAESettings> m_settingsHandler;
 
   // buffers
   CActiveAEBufferPoolResample *m_sinkBuffers;
