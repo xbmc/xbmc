@@ -146,6 +146,13 @@
 						<info>ListItem.Progress</info>
 					</control>
 				</control>
+				<control type="progress">
+					<top>200</top>
+					<height>12</height>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<info>ListItem.PercentPlayed</info>
+					<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+				</control>
 			</control>
 			<control type="label">
 				<top>390</top>
