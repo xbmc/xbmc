@@ -114,3 +114,46 @@ void CScreenShot::TakeScreenshot()
     }
   }
 }
+
+std::string CScreenShot::TakeScreenshotBase64()
+{
+  //Create a filename in order not to have to re-implement all function calls
+  std::string filename = "special://temp/base64.jpg";
+  std::string base64data;
+
+  auto surface = m_screenShotSurfaces.back()();
+
+  if (!surface)
+  {
+    CLog::Log(LOGERROR, "failed to create screenshot surface");
+    return;
+  }
+
+  if (!surface->Capture())
+  {
+    CLog::Log(LOGERROR, "Screenshot %s failed", CURL::GetRedacted(filename).c_str());
+    return;
+  }
+
+  surface->CaptureVideo(true);
+
+  //set alpha byte to 0xFF
+  for (int y = 0; y < surface->GetHeight(); y++)
+  {
+    unsigned char* alphaptr = surface->GetBuffer() - 1 + y * surface->GetStride();
+    for (int x = 0; x < surface->GetWidth(); x++)
+      *(alphaptr += 4) = 0xFF;
+  }
+
+
+  if (!CPicture::CreateBase64ThumbnailFromSurface(surface->GetBuffer(), surface->GetWidth(),
+                                                  surface->GetHeight(), surface->GetStride(),
+                                                  filename, base64data))
+  {
+    base64data.clear();
+  }
+
+  surface->ReleaseBuffer();
+
+  return base64data;
+}

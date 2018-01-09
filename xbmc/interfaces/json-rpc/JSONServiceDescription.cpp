@@ -194,6 +194,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
   { "System.Reboot",                                CSystemOperations::Reboot },
+  { "System.Screenshot",                            CSystemOperations::Screenshot },
 
 // Input operations
   { "Input.SendText",                               CInputOperations::SendText },

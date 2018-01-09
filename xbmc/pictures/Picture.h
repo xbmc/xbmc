@@ -20,6 +20,12 @@ class CPicture
 {
 public:
   static bool GetThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile, uint8_t* &result, size_t& result_size);
+  static bool CreateBase64ThumbnailFromSurface(const unsigned char* buffer,
+                                               int width,
+                                               int height,
+                                               int stride,
+                                               const std::string& thumbFile,
+                                               std::string& base64buffer);
   static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile);
 
   /*! \brief Create a tiled thumb of the given files

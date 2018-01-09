@@ -2321,6 +2321,13 @@
     "params": [],
     "returns": "string"
   },
+  "System.Screenshot": {
+    "type": "method",
+    "description": "Retrieves an base64 encoded screenshot",
+    "transport": "Response",
+    "permission": "ReadData",
+    "returns": "string"
+  },
   "Input.SendText": {
     "type": "method",
     "description": "Send a generic (unicode) text",

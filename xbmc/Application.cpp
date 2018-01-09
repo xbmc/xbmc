@@ -2258,6 +2258,16 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     }
 
     break;
+    
+  case TMSG_BASE64_SCREENSHOT:
+  {
+    if (pMsg->lpVoid)
+    {
+      std::string* data = static_cast<std::string*>(pMsg->lpVoid);
+      *data = CScreenShot::TakeScreenshotBase64();
+    }
+  }
+  break;
 
   default:
     CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);

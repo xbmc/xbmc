@@ -85,6 +85,24 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
     return FailedToExecute;
 }
 
+JSONRPC_STATUS CSystemOperations::Screenshot(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result)
+{
+  std::string* data(new std::string());
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_BASE64_SCREENSHOT, -1, -1,
+                                               static_cast<void*>(data));
+  result["data"] = *data;
+  delete data;
+
+  if (result["data"].empty())
+    return InternalError;
+
+  return OK;
+}
+
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
 {
   if (property == "canshutdown")

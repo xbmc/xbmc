@@ -22,6 +22,7 @@ public:
 
   static void TakeScreenshot();
   static void TakeScreenshot(const std::string &filename, bool sync);
+  static std::string TakeScreenshotBase64();
 
 private:
   static std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> m_screenShotSurfaces;
