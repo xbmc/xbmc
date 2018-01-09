@@ -78,9 +78,11 @@ using namespace XFILE;
 using namespace KODI::MESSAGING;
 
 CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
-                           CInputManager &inputManager) :
+                           CInputManager &inputManager,
+                           GAME::CControllerManager &controllerProfiles) :
   m_announcements(announcements),
   m_inputManager(inputManager),
+  m_controllerProfiles(controllerProfiles),
   m_eventScanner(this)
 {
   // Register settings

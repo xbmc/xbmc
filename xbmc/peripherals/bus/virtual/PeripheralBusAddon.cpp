@@ -417,7 +417,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
     BinaryAddonBaseList::iterator it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
     if (it != newAddons.end())
     {
-      PeripheralAddonPtr newAddon = std::make_shared<CPeripheralAddon>(*it);
+      PeripheralAddonPtr newAddon = std::make_shared<CPeripheralAddon>(*it, m_manager);
       if (newAddon)
       {
         bool bCreated;

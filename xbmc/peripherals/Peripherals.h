@@ -42,6 +42,11 @@ class CKey;
 
 namespace KODI
 {
+namespace GAME
+{
+  class CControllerManager;
+}
+
 namespace JOYSTICK
 {
   class IButtonMapper;
@@ -63,7 +68,8 @@ namespace PERIPHERALS
   {
   public:
     explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
-                          CInputManager &inputManager);
+                          CInputManager &inputManager,
+                          KODI::GAME::CControllerManager &controllerProfiles);
 
     ~CPeripherals() override;
 
@@ -320,6 +326,11 @@ namespace PERIPHERALS
      */
     CInputManager &GetInputManager() { return m_inputManager; }
 
+    /*!
+     * \brief Access controller profiles through the construction parameter
+     */
+    KODI::GAME::CControllerManager &GetControllerProfiles() { return m_controllerProfiles; }
+
   private:
     bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
@@ -330,6 +341,7 @@ namespace PERIPHERALS
     // Construction parameters
     ANNOUNCEMENT::CAnnouncementManager &m_announcements;
     CInputManager &m_inputManager;
+    KODI::GAME::CControllerManager &m_controllerProfiles;
 
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed = false;
