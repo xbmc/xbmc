@@ -43,7 +43,6 @@ namespace GAME
 {
   class CControllerManager;
   class CGameSettings;
-  class CPortManager;
 
   class CGameServices
   {
@@ -64,7 +63,6 @@ namespace GAME
     std::string GetSavestatesFolder() const;
 
     CGameSettings& GameSettings() { return *m_gameSettings; }
-    CPortManager& PortManager();
 
     RETRO::CGUIGameRenderManager &GameRenderManager() { return m_gameRenderManager; }
 
@@ -76,7 +74,6 @@ namespace GAME
 
     // Game services
     std::unique_ptr<CGameSettings> m_gameSettings;
-    std::unique_ptr<CPortManager> m_portManager;
   };
 }
 }

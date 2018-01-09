@@ -19,15 +19,13 @@
  */
 
 #include "InputSink.h"
-#include "games/addons/GameClient.h"
 #include "games/controllers/ControllerIDs.h"
-#include "games/addons/input/GameClientInput.h"
 
 using namespace KODI;
 using namespace GAME;
 
-CInputSink::CInputSink(CGameClient &gameClient) :
-  m_gameClient(gameClient)
+CInputSink::CInputSink(JOYSTICK::IInputHandler* gameInput) :
+  m_gameInput(gameInput)
 {
 }
 
@@ -38,7 +36,7 @@ std::string CInputSink::ControllerID(void) const
 
 bool CInputSink::AcceptsInput(const std::string& feature) const
 {
-  return m_gameClient.Input().AcceptsInput();
+  return m_gameInput->AcceptsInput(feature);
 }
 
 bool CInputSink::OnButtonPress(const std::string& feature, bool bPressed)

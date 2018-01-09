@@ -33,7 +33,6 @@
 #include "games/addons/playback/GameClientRealtimePlayback.h"
 #include "games/addons/playback/GameClientReversiblePlayback.h"
 #include "games/controllers/Controller.h"
-#include "games/ports/PortManager.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

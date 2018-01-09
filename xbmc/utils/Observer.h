@@ -44,7 +44,6 @@ typedef enum
   ObservableMessagePeripheralsChanged,
   ObservableMessageChannelGroupsLoaded,
   ObservableMessageManagerStopped,
-  ObservableMessagePortsChanged,
   ObservableMessageSettingsChanged,
   ObservableMessageButtonMapsChanged,
 } ObservableMessage;

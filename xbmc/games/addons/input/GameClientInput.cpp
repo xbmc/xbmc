@@ -26,7 +26,6 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "games/ports/PortManager.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -96,12 +95,8 @@ bool CGameClientInput::OpenPort(unsigned int port)
 
     m_joysticks[port].reset(new CGameClientJoystick(m_gameClient, port, controller, m_struct.toAddon));
 
-    // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
-    PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;
-    if (m_gameClient.SupportsKeyboard())
-      device = PERIPHERALS::PERIPHERAL_JOYSTICK;
-
-    CServiceBroker::GetGameServices().PortManager().OpenPort(m_joysticks[port].get(), m_hardware.get(), &m_gameClient, port, device);
+    //! @todo
+    //CServiceBroker::GetGameServices().PortManager().OpenPort(m_joysticks[port].get(), m_hardware.get(), &m_gameClient, port, device);
 
     UpdatePort(port, controller);
 
@@ -117,7 +112,8 @@ void CGameClientInput::ClosePort(unsigned int port)
   if (m_joysticks.find(port) == m_joysticks.end())
     return;
 
-  CServiceBroker::GetGameServices().PortManager().ClosePort(m_joysticks[port].get());
+  //! @todo
+  //CServiceBroker::GetGameServices().PortManager().ClosePort(m_joysticks[port].get());
 
   m_joysticks.erase(port);
 
