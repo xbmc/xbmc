@@ -266,6 +266,11 @@ unsigned int CButtonTranslator::GetActionCode(int window, const CKey &key, std::
 {
   uint32_t code = key.GetButtonCode();
 
+  // Keymaps don't use locking modifiers
+  code &= ~CKey::MODIFIER_CAPSLOCK;
+  code &= ~CKey::MODIFIER_NUMLOCK;
+  code &= ~CKey::MODIFIER_SCROLLLOCK;
+
   std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
     return ACTION_NONE;
