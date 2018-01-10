@@ -31,7 +31,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickTypes.h"
-#include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/PeripheralTypes.h" //! @todo
 //#include "threads/SingleLock.h"
@@ -251,19 +250,7 @@ void CGameClientInput::CloseKeyboard()
 
 void CGameClientInput::OpenMouse()
 {
-  m_mouse.reset(new CGameClientMouse(m_gameClient, m_struct.toAddon, &CServiceBroker::GetInputManager()));
-
-  CSingleLock lock(m_clientAccess);
-
-  if (m_gameClient.Initialized())
-  {
-    std::string strId = m_mouse->ControllerID();
-
-    game_controller controllerStruct = { strId.c_str() };
-
-    try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
-    catch (...) { m_gameClient.LogException("UpdatePort()"); }
-  }
+  //! @todo
 }
 
 void CGameClientInput::CloseMouse()

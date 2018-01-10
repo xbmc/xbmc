@@ -61,9 +61,7 @@ namespace KEYBOARD
 
 namespace MOUSE
 {
-  class IMouseButtonMap;
   class IMouseDriverHandler;
-  class IMouseInputHandler;
 }
 }
 
@@ -82,7 +80,6 @@ namespace MOUSE
  */
 class CInputManager : public ISettingCallback,
                       public IActionListener,
-                      public KODI::MOUSE::IMouseInputProvider,
                       public Observable
 {
 public:
@@ -288,9 +285,8 @@ public:
   void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
   void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
 
-  // implementation of IMouseInputProvider
-  virtual std::string RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
-  virtual void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
+  virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
+  virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
 
 private:
 
@@ -364,15 +360,7 @@ private:
   std::unique_ptr<CJoystickMapper> m_joystickTranslator;
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
-
-  struct MouseHandlerHandle
-  {
-    KODI::MOUSE::IMouseInputHandler*                  inputHandler;
-    std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> driverHandler;
-  };
-
-  std::vector<MouseHandlerHandle> m_mouseHandlers;
-  std::unique_ptr<KODI::MOUSE::IMouseButtonMap> m_mouseButtonMap;
+  std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
 };

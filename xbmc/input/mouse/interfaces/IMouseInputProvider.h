@@ -38,17 +38,13 @@ namespace MOUSE
      * \brief Registers a handler to be called on mouse input
      *
      * \param handler The handler to receive mouse input provided by this class
-     *
-     * \return The controller ID that serves as a context for incoming mouse events
-     *
-     * \sa IMouseButtonMap
      */
-    virtual std::string RegisterMouseHandler(IMouseInputHandler* handler) = 0;
+    virtual void RegisterMouseHandler(IMouseInputHandler* handler) = 0;
 
     /*!
      * \brief Unregisters handler from mouse input
      *
-     * \param[in] handler The handler that was receiving mouse input
+     * \param handler The handler that was receiving mouse input
      */
     virtual void UnregisterMouseHandler(IMouseInputHandler* handler) = 0;
   };

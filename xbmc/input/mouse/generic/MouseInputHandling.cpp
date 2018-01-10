@@ -19,13 +19,13 @@
  */
 
 #include "MouseInputHandling.h"
-#include "input/mouse/interfaces/IMouseButtonMap.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
 
 using namespace KODI;
 using namespace MOUSE;
 
-CMouseInputHandling::CMouseInputHandling(IMouseInputHandler* handler, IMouseButtonMap* buttonMap) :
+CMouseInputHandling::CMouseInputHandling(IMouseInputHandler* handler, JOYSTICK::IButtonMap* buttonMap) :
   m_handler(handler),
   m_buttonMap(buttonMap),
   m_x(0),
@@ -40,9 +40,7 @@ bool CMouseInputHandling::OnPosition(int x, int y)
 
   bool bHandled = false;
 
-  std::string featureName;
-  if (m_buttonMap->GetRelativePointer(featureName))
-    bHandled = m_handler->OnMotion(featureName, dx, dy);
+  //! @todo
 
   m_x = x;
   m_y = y;
@@ -54,16 +52,12 @@ bool CMouseInputHandling::OnButtonPress(unsigned int button)
 {
   bool bHandled = false;
 
-  std::string featureName;
-  if (m_buttonMap->GetButton(button, featureName))
-    bHandled = m_handler->OnButtonPress(featureName);
+  //! @todo
 
   return bHandled;
 }
 
 void CMouseInputHandling::OnButtonRelease(unsigned int button)
 {
-  std::string featureName;
-  if (m_buttonMap->GetButton(button, featureName))
-    m_handler->OnButtonRelease(featureName);
+  //! @todo
 }

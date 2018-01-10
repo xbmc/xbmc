@@ -25,10 +25,6 @@ set(SOURCES Action.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS hardware/IHardwareInput.h
-            mouse/interfaces/IMouseButtonMap.h
-            mouse/interfaces/IMouseDriverHandler.h
-            mouse/interfaces/IMouseInputHandler.h
-            mouse/interfaces/IMouseInputProvider.h
             Action.h
             ActionIDs.h
             ActionTranslator.h

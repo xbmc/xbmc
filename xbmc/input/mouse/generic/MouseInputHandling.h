@@ -23,11 +23,14 @@
 
 namespace KODI
 {
+namespace JOYSTICK
+{
+  class IButtonMap;
+}
+
 namespace MOUSE
 {
   class IMouseInputHandler;
-  class IMouseButtonMap;
-  class CRelativePointer;
 
   /*!
    * \ingroup mouse
@@ -36,7 +39,7 @@ namespace MOUSE
   class CMouseInputHandling : public IMouseDriverHandler
   {
   public:
-    CMouseInputHandling(IMouseInputHandler* handler, IMouseButtonMap* buttonMap);
+    CMouseInputHandling(IMouseInputHandler* handler, JOYSTICK::IButtonMap* buttonMap);
 
     ~CMouseInputHandling(void) override = default;
 
@@ -48,7 +51,7 @@ namespace MOUSE
   private:
     // Construction parameters
     IMouseInputHandler* const m_handler;
-    IMouseButtonMap* const    m_buttonMap;
+    JOYSTICK::IButtonMap* const m_buttonMap;
 
     // Mouse parameters
     int m_x;
