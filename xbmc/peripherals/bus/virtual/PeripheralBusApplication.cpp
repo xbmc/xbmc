@@ -41,24 +41,6 @@ void CPeripheralBusApplication::Initialise(void)
 
 bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results)
 {
-  const unsigned int controllerCount = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_GAMES_KEYBOARD_PLAYERS);
-
-  for (unsigned int i = 1; i <= controllerCount; i++)
-  {
-    PeripheralScanResult result(Type());
-    result.m_type          = PERIPHERAL_JOYSTICK_EMULATION;
-    result.m_strDeviceName = g_localizeStrings.Get(35165); // "Keyboard player"
-    result.m_strLocation   = MakeLocation(i);
-    result.m_iVendorId     = 0;
-    result.m_iProductId    = 0;
-    result.m_mappedType    = PERIPHERAL_JOYSTICK_EMULATION;
-    result.m_mappedBusType = Type();
-    result.m_iSequence     = 0;
-
-    if (!results.ContainsResult(result))
-      results.m_results.push_back(result);
-  }
-
   return true;
 }
 

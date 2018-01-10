@@ -19,34 +19,16 @@
  */
 
 #include "GameSettings.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/WindowIDs.h"
-#include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "utils/StringUtils.h"
-#include "ServiceBroker.h"
-
-#include <cstring>
 
 using namespace KODI;
 using namespace GAME;
-
-#define SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX  "gameskeyboard.keyboardplayerconfig" //! @todo
 
 CGameSettings::CGameSettings(CSettings &settings) :
   m_settings(settings)
 {
   m_settings.RegisterCallback(this, {
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERS,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7,
-    CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8,
     CSettings::SETTING_GAMES_ENABLEREWIND,
     CSettings::SETTING_GAMES_REWINDTIME,
   });
@@ -63,27 +45,11 @@ void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_GAMES_KEYBOARD_PLAYERS)
-  {
-    CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_APPLICATION);
-  }
-  else if (settingId == CSettings::SETTING_GAMES_ENABLEREWIND ||
-           settingId == CSettings::SETTING_GAMES_REWINDTIME)
+
+  if (settingId == CSettings::SETTING_GAMES_ENABLEREWIND ||
+      settingId == CSettings::SETTING_GAMES_REWINDTIME)
   {
     SetChanged();
     NotifyObservers(ObservableMessageSettingsChanged);
-  }
-}
-
-void CGameSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
-{
-  if (setting == nullptr)
-    return;
-
-  const std::string& settingId = setting->GetId();
-  if (StringUtils::StartsWith(settingId, SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX))
-  {
-    std::string strControllerIndex = settingId.substr(std::strlen(SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX));
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS, strControllerIndex);
   }
 }

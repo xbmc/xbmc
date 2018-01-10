@@ -24,7 +24,6 @@
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
-#include "peripherals/devices/PeripheralJoystickEmulation.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
@@ -126,15 +125,6 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
 
         // Sort joystick by requested port
         return i->RequestedPort() < j->RequestedPort();
-      }
-
-      if (lhs->Type() == PERIPHERAL_JOYSTICK_EMULATION && rhs->Type() == PERIPHERAL_JOYSTICK_EMULATION)
-      {
-        std::shared_ptr<CPeripheralJoystickEmulation> i = std::static_pointer_cast<CPeripheralJoystickEmulation>(lhs);
-        std::shared_ptr<CPeripheralJoystickEmulation> j = std::static_pointer_cast<CPeripheralJoystickEmulation>(rhs);
-
-        // Sort emulated joysticks by player number
-        return i->ControllerNumber() < j->ControllerNumber();
       }
 
       return false;

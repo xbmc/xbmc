@@ -65,8 +65,6 @@ PeripheralType CPeripheralAddonTranslator::TranslateType(PERIPHERAL_TYPE type)
   {
     case PERIPHERAL_TYPE_JOYSTICK:
       return PERIPHERAL_JOYSTICK;
-    case PERIPHERAL_TYPE_KEYBOARD:
-      return PERIPHERAL_JOYSTICK_EMULATION;
     default:
       break;
   }
@@ -79,8 +77,6 @@ PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
   {
     case PERIPHERAL_JOYSTICK:
       return PERIPHERAL_TYPE_JOYSTICK;
-    case PERIPHERAL_JOYSTICK_EMULATION:
-      return PERIPHERAL_TYPE_KEYBOARD;
     default:
       break;
   }

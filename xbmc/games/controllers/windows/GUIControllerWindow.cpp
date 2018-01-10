@@ -101,12 +101,6 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
 
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      //! @todo Process params here, don't just record them for later
-      m_param = message.GetStringParam();
-      break;
-    }
     case GUI_MSG_CLICKED:
     {
       int controlId = message.GetSenderId();
@@ -210,7 +204,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   if (!m_featureList)
   {
-    m_featureList = new CGUIFeatureList(this, m_param);
+    m_featureList = new CGUIFeatureList(this);
     if (!m_featureList->Initialize())
     {
       delete m_featureList;

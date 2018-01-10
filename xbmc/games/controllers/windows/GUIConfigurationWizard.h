@@ -51,7 +51,7 @@ namespace GAME
                                   protected CThread
   {
   public:
-    CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber = 0);
+    CGUIConfigurationWizard();
 
     virtual ~CGUIConfigurationWizard(void);
 
@@ -63,8 +63,6 @@ namespace GAME
     // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
     virtual bool NeedsCooldown(void) const override { return true; }
-    virtual bool Emulation(void) const override { return m_bEmulation; }
-    virtual unsigned int ControllerNumber(void) const override { return m_controllerNumber; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                               IKeymap* keymap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
@@ -100,10 +98,6 @@ namespace GAME
     void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
 
     bool OnKeyAction(unsigned int actionId);
-
-    // Construction parameters
-    const bool                           m_bEmulation;
-    const unsigned int                   m_controllerNumber;
 
     // Run() parameters
     std::string                          m_strControllerId;

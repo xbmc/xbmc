@@ -76,7 +76,6 @@ namespace PERIPHERALS
     PERIPHERAL_TUNER,
     PERIPHERAL_IMON,
     PERIPHERAL_JOYSTICK,
-    PERIPHERAL_JOYSTICK_EMULATION,
   };
 
   class CPeripheral;
@@ -137,8 +136,6 @@ namespace PERIPHERALS
         return "imon";
       case PERIPHERAL_JOYSTICK:
         return "joystick";
-      case PERIPHERAL_JOYSTICK_EMULATION:
-        return "joystickemulation";
       default:
         return "unknown";
       }
@@ -167,8 +164,6 @@ namespace PERIPHERALS
         return PERIPHERAL_IMON;
       else if (strTypeLowerCase == "joystick")
         return PERIPHERAL_JOYSTICK;
-      else if (strTypeLowerCase == "joystickemulation")
-        return PERIPHERAL_JOYSTICK_EMULATION;
 
       return PERIPHERAL_UNKNOWN;
     };

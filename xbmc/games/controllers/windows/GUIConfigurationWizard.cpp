@@ -43,10 +43,8 @@ using namespace GAME;
 // Duration to wait for axes to neutralize after mapping is finished
 #define POST_MAPPING_WAIT_TIME_MS  (5 * 1000)
 
-CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber /* = 0 */) :
+CGUIConfigurationWizard::CGUIConfigurationWizard() :
   CThread("GUIConfigurationWizard"),
-  m_bEmulation(bEmulation),
-  m_controllerNumber(controllerNumber),
   m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
@@ -238,12 +236,6 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     // Discard input
     bHandled = true;
   }
-  else if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
-           primitive.Index() == ESC_KEY_CODE)
-  {
-    // Handle esc key
-    bHandled = Abort(false);
-  }
   else if (m_history.find(primitive) != m_history.end())
   {
     // Primitive has already been mapped this round, ignore it
@@ -429,21 +421,14 @@ void CGUIConfigurationWizard::InstallHooks(void)
 {
   CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
   CServiceBroker::GetPeripherals().RegisterObserver(this);
-
-  // If we're not using emulation, allow keyboard input to abort prompt
-  if (!m_bEmulation)
-    CServiceBroker::GetInputManager().RegisterKeyboardHandler(this);
-
+  CServiceBroker::GetInputManager().RegisterKeyboardHandler(this);
   CServiceBroker::GetInputManager().RegisterMouseHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
   CServiceBroker::GetInputManager().UnregisterMouseHandler(this);
-
-  if (!m_bEmulation)
-    CServiceBroker::GetInputManager().UnregisterKeyboardHandler(this);
-
+  CServiceBroker::GetInputManager().UnregisterKeyboardHandler(this);
   CServiceBroker::GetPeripherals().UnregisterObserver(this);
   CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }

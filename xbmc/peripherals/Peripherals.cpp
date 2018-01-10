@@ -39,7 +39,6 @@
 #include "devices/PeripheralHID.h"
 #include "devices/PeripheralImon.h"
 #include "devices/PeripheralJoystick.h"
-#include "devices/PeripheralJoystickEmulation.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
@@ -354,10 +353,6 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
     peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
     break;
 
-  case PERIPHERAL_JOYSTICK_EMULATION:
-    peripheral = PeripheralPtr(new CPeripheralJoystickEmulation(*this, mappedResult, &bus));
-    break;
-
   default:
     break;
   }
@@ -387,10 +382,6 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
   if (!bus.IsInitialised())
     bNotify = false;
 
-  // don't show a notification for emulated peripherals
-  if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
-    bNotify = false;
-
   if (bNotify)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 #endif
@@ -403,10 +394,6 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   //! @todo Improve device notifications in v18
 #if 0
   bool bNotify = true;
-
-  // don't show a notification for emulated peripherals
-  if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
-    bNotify = false;
 
   if (bNotify)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
@@ -879,25 +866,7 @@ void CPeripherals::RegisterJoystickButtonMapper(IButtonMapper* mapper)
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
 
   for (auto& peripheral : peripherals)
-  {
-    if (mapper->Emulation())
-    {
-      if (peripheral->Type() != PERIPHERAL_JOYSTICK_EMULATION)
-        continue;
-
-      unsigned int controllerNumber = std::static_pointer_cast<CPeripheralJoystickEmulation>(peripheral)->ControllerNumber();
-
-      if (mapper->ControllerNumber() != controllerNumber)
-        continue;
-    }
-    else
-    {
-      if (peripheral->Type() != PERIPHERAL_JOYSTICK)
-        continue;
-    }
-
     peripheral->RegisterJoystickButtonMapper(mapper);
-  }
 }
 
 void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
