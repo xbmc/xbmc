@@ -149,7 +149,7 @@ public:
   CKey(void);
   CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
   CKey(uint32_t buttonCode, unsigned int held);
-  CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
+  CKey(uint32_t keycode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
   CKey(const CKey& key);
   void Reset();
 
@@ -169,6 +169,7 @@ public:
   bool GetFromService() const { return m_fromService; }
 
   inline uint32_t GetButtonCode() const { return m_buttonCode; }
+  inline uint32_t GetKeycode() const    { return m_keycode; } // XBMCKey enum in XBMC_keysym.h
   inline uint8_t  GetVKey() const       { return m_vkey; }
   inline wchar_t  GetUnicode() const    { return m_unicode; }
   inline char     GetAscii() const      { return m_ascii; }
@@ -187,6 +188,7 @@ public:
 
 private:
   uint32_t m_buttonCode;
+  uint32_t m_keycode;
   uint8_t  m_vkey;
   wchar_t  m_unicode;
   char     m_ascii;
