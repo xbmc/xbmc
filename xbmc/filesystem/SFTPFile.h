@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_FILESYSTEM_SFTP
 #include "IFile.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
@@ -121,4 +119,3 @@ namespace XFILE
     sftp_file m_sftp_handle;
   };
 }
-#endif

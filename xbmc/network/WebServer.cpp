@@ -20,7 +20,6 @@
 
 #include "WebServer.h"
 
-#ifdef HAS_WEB_SERVER
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -1383,4 +1382,3 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
 
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
-#endif

@@ -18,10 +18,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_CDDA_RIPPER
-
 #include "CDDARipper.h"
 #include "CDDARipJob.h"
 #include "ServiceBroker.h"
@@ -316,5 +312,3 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 
   CancelJobs();
 }
-
-#endif

@@ -18,9 +18,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
 
 #ifdef TARGET_WINDOWS
@@ -360,5 +357,3 @@ bool CNFSDirectory::Exists(const CURL& url2)
   }
   return S_ISDIR(info.st_mode) ? true : false;
 }
-
-#endif

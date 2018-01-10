@@ -18,12 +18,12 @@
  *
  */
 
-#include "system.h"
-#if defined(HAS_LIBAMCODEC)
 #include "utils/ScreenshotAML.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
 
 #include <sys/ioctl.h>
 
@@ -95,4 +95,3 @@ void CScreenshotAML::CaptureVideoFrame(unsigned char *buffer, int iWidth, int iH
     delete [] videoBuffer;
   }
 }
-#endif //defined(HAS_LIBAMCODEC)

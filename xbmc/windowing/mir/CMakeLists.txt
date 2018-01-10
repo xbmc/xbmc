@@ -1,11 +1,16 @@
 set(SOURCES GLContextEGL.cpp
             WinEventsMir.cpp
-            WinSystemMir.cpp
-            WinSystemMirGLContext.cpp
-            WinSystemMirGLESContext.cpp)
+            WinSystemMir.cpp)
 
-set(HEADERS WinSystemMir.h
-            WinSystemMirGLContext.h
-            WinSystemMirGLESContext.h)
+set(HEADERS WinSystemMir.h)
+
+if(OPENGL_FOUND)
+  list(APPEND SOURCES WinSystemMirGLContext.cpp)
+  list(APPEND HEADERS WinSystemMirGLContext.h)
+endif()
+elseif(OPENGLES_FOUND)
+  list(APPEND SOURCES WinSystemMirGLESContext.cpp)
+  list(APPEND HEADERS WinSystemMirGLESContext.h)
+endif()
 
 core_add_library(windowing_MIR)

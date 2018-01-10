@@ -10,7 +10,6 @@ set(SOURCES DNSNameCache.cpp
             TCPServer.cpp
             UdpClient.cpp
             WakeOnAccess.cpp
-            WebServer.cpp
             ZeroconfBrowser.cpp
             Zeroconf.cpp)
 
@@ -26,7 +25,6 @@ set(HEADERS DNSNameCache.h
             TCPServer.h
             UdpClient.h
             WakeOnAccess.h
-            WebServer.h
             Zeroconf.h
             ZeroconfBrowser.h)
 
@@ -45,6 +43,11 @@ if(SHAIRPLAY_FOUND)
   list(APPEND SOURCES AirTunesServer.cpp)
   list(APPEND HEADERS AirTunesServer.h
                       DllLibShairplay.h)
+endif()
+
+if(MICROHTTPD_FOUND)
+  list(APPEND SOURCES WebServer.cpp)
+  list(APPEND HEADERS WebServer.h)
 endif()
 
 core_add_library(network)

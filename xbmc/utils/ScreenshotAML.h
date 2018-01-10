@@ -19,7 +19,6 @@
  *
  */
 
-#if defined(HAS_LIBAMCODEC)
 class CScreenshotAML
 {
   public:
@@ -27,4 +26,3 @@ class CScreenshotAML
     // the passed overlay. The buffer format is BGRA (4 byte)
     static void CaptureVideoFrame(unsigned char *buffer, int iWidth, int iHeight, bool bBlendToBuffer = true);
 };
-#endif//HAS_LIBAMCODEC

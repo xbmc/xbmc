@@ -35,7 +35,9 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
+#if defined(HAS_WEB_SERVER)
 #include "network/WebServer.h"
+#endif
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRGUIActions.h"
