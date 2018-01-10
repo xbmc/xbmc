@@ -46,7 +46,10 @@ namespace GAME
      * \param controller The game controller which is used (for controller mapping).
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientJoystick(CGameClient* addon, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game* dllStruct);
+    CGameClientJoystick(const CGameClient &addon,
+                        int port,
+                        const ControllerPtr& controller,
+                        const KodiToAddonFuncTable_Game &dllStruct);
 
     virtual ~CGameClientJoystick() = default;
 
@@ -65,10 +68,10 @@ namespace GAME
     bool SetRumble(const std::string& feature, float magnitude);
 
   private:
-    const CGameClient* const  m_gameClient;
+    const CGameClient &m_gameClient;
     const int                 m_port;
     const ControllerPtr       m_controller;
-    const KodiToAddonFuncTable_Game* const m_dllStruct;
+    const KodiToAddonFuncTable_Game &m_dllStruct;
   };
 }
 }

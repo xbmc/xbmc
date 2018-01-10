@@ -19,22 +19,19 @@
  */
 
 #include "GameClientHardware.h"
-#include "GameClient.h"
+#include "games/addons/GameClient.h"
 #include "utils/log.h"
-
-#include <assert.h>
 
 using namespace KODI;
 using namespace GAME;
 
-CGameClientHardware::CGameClientHardware(CGameClient* gameClient) :
+CGameClientHardware::CGameClientHardware(CGameClient &gameClient) :
   m_gameClient(gameClient)
 {
-  assert(m_gameClient != nullptr);
 }
 
 void CGameClientHardware::OnResetButton(unsigned int port)
 {
-  CLog::Log(LOGDEBUG, "%s: Port %d sending hardware reset", m_gameClient->ID().c_str(), port);
-  m_gameClient->Reset(port);
+  CLog::Log(LOGDEBUG, "%s: Port %d sending hardware reset", m_gameClient.ID().c_str(), port);
+  m_gameClient.Reset(port);
 }

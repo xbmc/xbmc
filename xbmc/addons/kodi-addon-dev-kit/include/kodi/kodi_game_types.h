@@ -203,9 +203,9 @@ typedef enum GAME_REGION
 } GAME_REGION;
 
 /*!
-* Special game types passed into game_load_game_special(). Only used when
-* multiple ROMs are required.
-*/
+ * Special game types passed into game_load_game_special(). Only used when
+ * multiple ROMs are required.
+ */
 typedef enum SPECIAL_GAME_TYPE
 {
   SPECIAL_GAME_TYPE_BSX,

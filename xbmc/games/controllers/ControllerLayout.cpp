@@ -38,7 +38,6 @@ void CControllerLayout::Reset(void)
   m_labelId = -1;
   m_icon.clear();
   m_strImage.clear();
-  m_models.clear();
 }
 
 bool CControllerLayout::IsValid(bool bLog) const
@@ -106,11 +105,6 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   std::string image = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
   if (!image.empty())
     m_strImage = image;
-
-  // Models
-  std::string models = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_MODELS);
-  if (!models.empty())
-    m_models = models;
 
   // Features
   for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
