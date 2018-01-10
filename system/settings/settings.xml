@@ -2615,7 +2615,7 @@
           <control type="toggle" />
         </setting>
         <setting id="audiooutput.dspaddonsenabled" type="boolean">
-          <hidden>true</hidden>
+          <visible>false</visible>
           <default>false</default>
           <control type="toggle"/>
         </setting>
