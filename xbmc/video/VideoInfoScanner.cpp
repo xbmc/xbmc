@@ -1432,17 +1432,17 @@ namespace VIDEO
     }
 
     // add online art
-    for (const auto& i : pItem->GetVideoInfoTag()->m_strPictureURL.m_url)
+    for (const auto& url : pItem->GetVideoInfoTag()->m_strPictureURL.m_url)
     {
-      if (i.m_type != CScraperUrl::URLTYPES::URL_TYPE_GENERAL)
+      if (url.m_type != CScraperUrl::URLTYPES::URL_TYPE_GENERAL)
         continue;
-      std::string aspect = i.m_aspect;
+      std::string aspect = url.m_aspect;
       if (aspect.empty())
         // temporary support for XML music video scrapers that share music album scraper bits
         aspect = content == CONTENT_MUSICVIDEOS ? "poster" : "thumb";
       if (art.find(aspect) != art.end())
         continue;
-      std::string image = GetImage(i, pItem->GetPath());
+      std::string image = GetImage(url, pItem->GetPath());
       if (!image.empty())
         art.insert(std::make_pair(aspect, image));
     }
@@ -1846,9 +1846,9 @@ namespace VIDEO
       CRegExp reg;
       if (items.Size() && reg.RegComp("season([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
       {
-        for (int i = 0; i < items.Size(); i++)
+        for (const auto& item : items)
         {
-          std::string name = URIUtils::GetFileName(items[i]->GetPath());
+          std::string name = URIUtils::GetFileName(item->GetPath());
           if (reg.RegFind(name) > -1)
           {
             int season = atoi(reg.GetMatch(1).c_str());
@@ -1900,17 +1900,17 @@ namespace VIDEO
       }
     }
     // add online art
-    for (const auto& i : show.m_strPictureURL.m_url)
+    for (const auto& url : show.m_strPictureURL.m_url)
     {
-      if (i.m_type != CScraperUrl::URLTYPES::URL_TYPE_SEASON)
+      if (url.m_type != CScraperUrl::URLTYPES::URL_TYPE_SEASON)
         continue;
-      std::string aspect = i.m_aspect;
+      std::string aspect = url.m_aspect;
       if (aspect.empty())
         aspect = "thumb";
-      std::map<std::string, std::string>& art = seasonArt[i.m_season];
+      std::map<std::string, std::string>& art = seasonArt[url.m_season];
       if (art.find(aspect) != art.end())
         continue;
-      std::string image = CScraperUrl::GetThumbURL(i);
+      std::string image = CScraperUrl::GetThumbURL(url);
       if (!image.empty())
         art.insert(std::make_pair(aspect, image));
     }
