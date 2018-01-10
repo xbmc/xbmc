@@ -19,9 +19,6 @@
  */
 #pragma once
 
-#include "system.h"
-
-#ifdef HAS_SDL
 #include <SDL/SDL_events.h>
 
 #include "windowing/WinEvents.h"
@@ -32,12 +29,5 @@ public:
   bool MessagePump() override;
 
 private:
-#ifdef TARGET_DARWIN
   static bool ProcessOSXShortcuts(SDL_Event& event);
-#elif defined(TARGET_POSIX)
-  static bool ProcessLinuxShortcuts(SDL_Event& event);
-#endif
 };
-
-#endif
-

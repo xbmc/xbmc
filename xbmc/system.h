@@ -60,9 +60,6 @@
 #include "dxgi.h"
 #include "d3dcompiler.h"
 #include "directxmath.h"
-#ifdef HAS_SDL
-#include "SDL\SDL.h"
-#endif
 #endif
 
 #if defined(TARGET_POSIX)

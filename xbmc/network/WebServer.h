@@ -19,9 +19,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_WEB_SERVER
 #include <memory>
 #include <vector>
 
@@ -155,4 +152,3 @@ private:
   CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };
-#endif

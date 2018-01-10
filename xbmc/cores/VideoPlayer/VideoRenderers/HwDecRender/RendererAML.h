@@ -20,10 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
-#if defined(HAS_LIBAMCODEC)
-
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 
 class CRendererAML : public CBaseRenderer
@@ -70,5 +66,3 @@ private:
   int m_prevVPts;
   bool m_bConfigured;
 };
-
-#endif

@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_FILESYSTEM_SFTP
 #include "IDirectory.h"
 
 class CURL;
@@ -37,4 +35,3 @@ namespace XFILE
     bool Exists(const CURL& url) override;
   };
 }
-#endif

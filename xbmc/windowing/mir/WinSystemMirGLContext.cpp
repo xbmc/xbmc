@@ -21,8 +21,6 @@
 
 #include "WinSystemMirGLContext.h"
 
-#if defined(HAS_GL)
-
 bool CWinSystemMirGLContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
                                                RESOLUTION_INFO& res)
@@ -102,5 +100,3 @@ bool CWinSystemMirGLContext::IsExtSupported(const char* extension)
 {
   return false;
 }
-
-#endif

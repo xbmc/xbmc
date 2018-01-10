@@ -29,7 +29,6 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 
-#ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
 
@@ -1744,5 +1743,3 @@ void MysqlDataset::interrupt() {
 }
 
 }//namespace
-#endif //HAS_MYSQL
-

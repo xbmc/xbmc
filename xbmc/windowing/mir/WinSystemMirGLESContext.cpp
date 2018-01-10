@@ -21,8 +21,6 @@
 
 #include "WinSystemMirGLESContext.h"
 
-#if defined(HAS_GLES)
-
 bool CWinSystemMirGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
                                                RESOLUTION_INFO& res)
@@ -103,5 +101,3 @@ bool CWinSystemMirGLESContext::IsExtSupported(const char* extension)
 {
   return false;
 }
-
-#endif

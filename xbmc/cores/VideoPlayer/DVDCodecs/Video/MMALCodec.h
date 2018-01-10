@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAS_MMAL)
-
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 #include "threads/Event.h"
@@ -127,5 +125,3 @@ protected:
 };
 
 };
-// defined(HAS_MMAL)
-#endif

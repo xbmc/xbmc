@@ -18,9 +18,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_MMAL
-
 #include <interface/mmal/util/mmal_default_components.h>
 
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -339,5 +336,3 @@ void CDecoder::Register()
 {
   CDVDFactoryCodec::RegisterHWAccel("mmalffmpeg", CDecoder::Create);
 }
-
-#endif

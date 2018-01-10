@@ -20,7 +20,6 @@
 
 #include "threads/SystemClock.h"
 #include "SFTPFile.h"
-#ifdef HAS_FILESYSTEM_SFTP
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -729,5 +728,3 @@ int CSFTPFile::IoControl(EIoControl request, void* param)
 
   return -1;
 }
-
-#endif

@@ -19,7 +19,7 @@
  */
 
 #include "SFTPDirectory.h"
-#ifdef HAS_FILESYSTEM_SFTP
+
 #include "SFTPFile.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -47,4 +47,3 @@ bool CSFTPDirectory::Exists(const CURL& url)
     return false;
   }
 }
-#endif

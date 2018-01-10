@@ -20,9 +20,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_GL
 #include "system_gl.h"
 #include "GUIWindowTestPatternGL.h"
 
@@ -198,5 +195,3 @@ void CGUIWindowTestPatternGL::EndRender()
 {
 
 }
-
-#endif

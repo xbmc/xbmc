@@ -33,8 +33,6 @@ set(SOURCES AddonsDirectory.cpp
             MusicDatabaseFile.cpp
             MusicFileDirectory.cpp
             MusicSearchDirectory.cpp
-            NFSDirectory.cpp
-            NFSFile.cpp
             OverrideDirectory.cpp
             OverrideFile.cpp
             PipeFile.cpp
@@ -46,8 +44,6 @@ set(SOURCES AddonsDirectory.cpp
             ResourceDirectory.cpp
             ResourceFile.cpp
             RSSDirectory.cpp
-            SFTPDirectory.cpp
-            SFTPFile.cpp
             ShoutcastFile.cpp
             SmartPlaylistDirectory.cpp
             SourcesDirectory.cpp
@@ -82,7 +78,6 @@ set(HEADERS AddonsDirectory.h
             DirectoryFactory.h
             DirectoryHistory.h
             DllLibCurl.h
-            DllLibNfs.h
             EventsDirectory.h
             FTPDirectory.h
             FTPParse.h
@@ -107,8 +102,6 @@ set(HEADERS AddonsDirectory.h
             MusicDatabaseFile.h
             MusicFileDirectory.h
             MusicSearchDirectory.h
-            NFSDirectory.h
-            NFSFile.h
             OverrideDirectory.h
             OverrideFile.h
             PVRDirectory.h
@@ -120,8 +113,6 @@ set(HEADERS AddonsDirectory.h
             RSSDirectory.h
             ResourceDirectory.h
             ResourceFile.h
-            SFTPDirectory.h
-            SFTPFile.h
             ShoutcastFile.h
             SmartPlaylistDirectory.h
             SourcesDirectory.h
@@ -172,6 +163,21 @@ if(ENABLE_OPTICAL)
                       CDDAFile.cpp)
   list(APPEND HEADERS CDDADirectory.h
                       CDDAFile.h)
+endif()
+
+if(NFS_FOUND)
+  list(APPEND SOURCES NFSDirectory.cpp
+                      NFSFile.cpp)
+  list(APPEND HEADERS DllLibNfs.h
+                      NFSDirectory.h
+                      NFSFile.h)
+endif()
+
+if(SSH_FOUND)
+  list(APPEND SOURCES SFTPDirectory.cpp
+                      SFTPFile.cpp)
+  list(APPEND SOURCES SFTPDirectory.h
+                      SFTPFile.h)
 endif()
 
 if(ENABLE_UPNP)
