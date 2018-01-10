@@ -57,6 +57,13 @@ namespace GAME
     ControllerPtr GetDefaultController();
 
     /*!
+     * \brief Get the default keyboard
+     *
+     * \return The keyboard controller, or empty if the controller failed to load
+     */
+    ControllerPtr GetDefaultKeyboard();
+
+    /*!
      * \brief Get installed controllers
      *
      * \return The installed controllers that loaded successfully

@@ -33,7 +33,6 @@
 
 #include "Action.h"
 #include "windowing/XBMC_events.h"
-#include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
@@ -83,7 +82,6 @@ namespace MOUSE
  */
 class CInputManager : public ISettingCallback,
                       public IActionListener,
-                      public KODI::KEYBOARD::IKeyboardInputProvider,
                       public KODI::MOUSE::IMouseInputProvider,
                       public Observable
 {
@@ -287,8 +285,8 @@ public:
   // implementation of IActionListener
   virtual bool OnAction(const CAction& action) override;
 
-  void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) override;
-  void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) override;
+  void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
+  void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
 
   // implementation of IMouseInputProvider
   virtual std::string RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;

@@ -156,6 +156,16 @@ void UpdatePort(int port, bool connected, const game_controller* controller);
 bool HasFeature(const char* controller_id, const char* feature_name);
 
 /*!
+ * \brief Enable/disable keyboard input using the specified controller
+ *
+ * \param enable True to enable input, false otherwise
+ * \param controller The controller info if enabling, or unused if disabling
+ *
+ * \return True if keyboard input was enabled, false otherwise
+ */
+bool EnableKeyboard(bool enable, const game_controller* controller);
+
+/*!
  * \brief Notify the add-on of an input event
  *
  * \param event The input event
@@ -249,6 +259,7 @@ void __declspec(dllexport) get_addon(void* ptr)
   pClient->toAddon.HwContextDestroy         = HwContextDestroy;
   pClient->toAddon.UpdatePort               = UpdatePort;
   pClient->toAddon.HasFeature               = HasFeature;
+  pClient->toAddon.EnableKeyboard           = EnableKeyboard;
   pClient->toAddon.InputEvent               = InputEvent;
   pClient->toAddon.SerializeSize            = SerializeSize;
   pClient->toAddon.Serialize                = Serialize;

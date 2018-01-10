@@ -23,6 +23,8 @@
 #include "input/joysticks/generic/InputHandling.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/joysticks/interfaces/IDriverReceiver.h"
+#include "input/keyboard/generic/KeyboardInputHandling.h"
+#include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/Peripherals.h"
@@ -62,10 +64,33 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* per
   }
 }
 
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, KEYBOARD::IKeyboardInputHandler* handler)
+{
+  PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
+
+  if (!addon)
+  {
+    CLog::Log(LOGDEBUG, "Failed to locate add-on for \"%s\"", peripheral->DeviceName().c_str());
+  }
+  else
+  {
+    m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
+    if (m_buttonMap->Load())
+    {
+      m_keyboardHandler.reset(new KEYBOARD::CKeyboardInputHandling(handler, m_buttonMap.get()));
+    }
+    else
+    {
+      m_buttonMap.reset();
+    }
+  }
+}
+
 CAddonInputHandling::~CAddonInputHandling(void)
 {
   m_driverHandler.reset();
   m_inputReceiver.reset();
+  m_keyboardHandler.reset();
   m_buttonMap.reset();
 }
 
@@ -97,6 +122,20 @@ void CAddonInputHandling::ProcessAxisMotions(void)
 {
   if (m_driverHandler)
     m_driverHandler->ProcessAxisMotions();
+}
+
+bool CAddonInputHandling::OnKeyPress(const CKey& key)
+{
+  if (m_keyboardHandler)
+    return m_keyboardHandler->OnKeyPress(key);
+
+  return false;
+}
+
+void CAddonInputHandling::OnKeyRelease(const CKey& key)
+{
+  if (m_keyboardHandler)
+    m_keyboardHandler->OnKeyRelease(key);
 }
 
 bool CAddonInputHandling::SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude)

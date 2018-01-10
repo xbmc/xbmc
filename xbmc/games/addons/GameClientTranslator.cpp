@@ -136,15 +136,21 @@ AVCodecID CGameClientTranslator::TranslateAudioCodec(GAME_AUDIO_CODEC codec)
   return AV_CODEC_ID_NONE;
 }
 
-GAME_KEY_MOD CGameClientTranslator::GetModifiers(CKey::Modifier modifier)
+GAME_KEY_MOD CGameClientTranslator::GetModifiers(KEYBOARD::Modifier modifier)
 {
+  using namespace KEYBOARD;
+
   unsigned int mods = GAME_KEY_MOD_NONE;
 
-  if (modifier & CKey::MODIFIER_CTRL)  mods |= GAME_KEY_MOD_CTRL;
-  if (modifier & CKey::MODIFIER_SHIFT) mods |= GAME_KEY_MOD_SHIFT;
-  if (modifier & CKey::MODIFIER_ALT)   mods |= GAME_KEY_MOD_ALT;
-  if (modifier & CKey::MODIFIER_RALT)  mods |= GAME_KEY_MOD_RALT;
-  if (modifier & CKey::MODIFIER_META)  mods |= GAME_KEY_MOD_META;
+  if (modifier & Modifier::MODIFIER_CTRL)  mods |= GAME_KEY_MOD_CTRL;
+  if (modifier & Modifier::MODIFIER_SHIFT) mods |= GAME_KEY_MOD_SHIFT;
+  if (modifier & Modifier::MODIFIER_ALT)   mods |= GAME_KEY_MOD_ALT;
+  if (modifier & Modifier::MODIFIER_RALT)  mods |= GAME_KEY_MOD_ALT;
+  if (modifier & Modifier::MODIFIER_META)  mods |= GAME_KEY_MOD_META;
+  if (modifier & Modifier::MODIFIER_SUPER) mods |= GAME_KEY_MOD_SUPER;
+  if (modifier & Modifier::MODIFIER_NUMLOCK) mods |= GAME_KEY_MOD_NUMLOCK;
+  if (modifier & Modifier::MODIFIER_CAPSLOCK) mods |= GAME_KEY_MOD_CAPSLOCK;
+  if (modifier & Modifier::MODIFIER_SCROLLLOCK) mods |= GAME_KEY_MOD_SCROLLOCK;
 
   return static_cast<GAME_KEY_MOD>(mods);
 }
