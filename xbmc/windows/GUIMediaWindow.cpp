@@ -67,6 +67,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "view/GUIViewState.h"
+#include <inttypes.h>
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -1297,7 +1298,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString = StringUtils::Format("%i%i",
+    strHistoryString = StringUtils::Format("%" PRIi64 "%" PRIi64,
                                            pItem->m_lStartOffset,
                                            pItem->m_lEndOffset);
     strHistoryString += pItem->GetPath();

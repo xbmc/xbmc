@@ -366,7 +366,7 @@ public:
    \param partNumber will be filled with the part number if item has a resume point set, is unchanged otherwise
    \return True if the item has a resume point set, false otherwise.
    */
-  bool GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const;
+  bool GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const;
 
   inline bool HasPictureInfoTag() const
   {
@@ -547,9 +547,9 @@ public:
   std::string m_strTitle;
   int m_iprogramCount;
   int m_idepth;
-  int m_lStartOffset;
+  int64_t m_lStartOffset;
   int m_lStartPartNumber;
-  int m_lEndOffset;
+  int64_t m_lEndOffset;
   LockType m_iLockMode;
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked

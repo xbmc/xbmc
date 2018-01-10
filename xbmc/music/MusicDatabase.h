@@ -190,7 +190,7 @@ public:
                  const CDateTime& dtLastPlayed, float rating, int userrating, int votes, const ReplayGain& replayGain);
 
   //// Misc Song
-  bool GetSongByFileName(const std::string& strFileName, CSong& song, int startOffset = 0);
+  bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
   bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
