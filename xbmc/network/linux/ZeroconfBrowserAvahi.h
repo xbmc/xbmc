@@ -19,9 +19,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_AVAHI
-
 #include <memory>
 #include <map>
 #include <vector>
@@ -106,5 +103,3 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     CZeroconfBrowser::ZeroconfService m_resolving_service;
     CEvent m_resolved_event;
 };
-
-#endif //HAS_AVAHI

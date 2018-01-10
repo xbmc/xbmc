@@ -20,7 +20,6 @@
 
 #include "RendererAML.h"
 
-#if defined(HAS_LIBAMCODEC)
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
 #include "utils/log.h"
@@ -168,5 +167,3 @@ void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int 
   }
   CAMLCodec::PollFrame();
 }
-
-#endif

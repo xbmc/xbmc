@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_SNDIO
 #include "AESinkSNDIO.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -327,5 +325,3 @@ void CAESinkSNDIO::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     list.push_back(info);
   }
 }
-
-#endif

@@ -19,10 +19,6 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_AVAHI
-
 #include <memory>
 #include <map>
 #include <vector>
@@ -92,6 +88,3 @@ private:
   bool m_shutdown;
   pthread_t m_thread_id;
 };
-
-#endif // HAS_AVAHI
-
