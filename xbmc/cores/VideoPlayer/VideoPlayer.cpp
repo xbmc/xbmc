@@ -835,8 +835,6 @@ bool CVideoPlayer::OpenInputStream()
     } // end loop over all subtitle files
   }
 
-  SetAVDelay(m_processInfo->GetVideoSettings().m_AudioDelay);
-  SetSubTitleDelay(m_processInfo->GetVideoSettings().m_SubtitleDelay);
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
@@ -4739,6 +4737,8 @@ void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
 {
   m_processInfo->SetVideoSettings(settings);
   m_renderManager.SetVideoSettings(settings);
+  m_renderManager.SetDelay(static_cast<int>(settings.m_AudioDelay * 1000.0f));
+  m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
 }
 
 void CVideoPlayer::FrameMove()
