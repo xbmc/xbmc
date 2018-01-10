@@ -272,52 +272,60 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     {
       const CControllerFeature& feature = currentButton->Feature();
 
-      CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
-        m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
-
-      switch (feature.Type())
+      if (feature.Type() == JOYSTICK::FEATURE_TYPE::UNKNOWN)
       {
-        case FEATURE_TYPE::SCALAR:
-        {
-          buttonMap->AddScalar(feature.Name(), primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::ANALOG_STICK:
-        {
-          buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::RELPOINTER:
-        {
-          buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::WHEEL:
-        {
-          buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::THROTTLE:
-        {
-          buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        default:
-          break;
+        // Unknown feature, absorb input
+        bHandled = true;
       }
-
-      if (bHandled)
+      else
       {
-        m_history.insert(primitive);
+        CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
+          m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
 
-        OnMotion(buttonMap);
-        m_inputEvent.Set();
-        m_deviceName = buttonMap->DeviceName();
+        switch (feature.Type())
+        {
+          case FEATURE_TYPE::SCALAR:
+          {
+            buttonMap->AddScalar(feature.Name(), primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::ANALOG_STICK:
+          {
+            buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::RELPOINTER:
+          {
+            buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::WHEEL:
+          {
+            buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::THROTTLE:
+          {
+            buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          default:
+            break;
+        }
+
+        if (bHandled)
+        {
+          m_history.insert(primitive);
+
+          OnMotion(buttonMap);
+          m_inputEvent.Set();
+          m_deviceName = buttonMap->DeviceName();
+        }
       }
     }
   }
