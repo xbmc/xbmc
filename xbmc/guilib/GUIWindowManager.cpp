@@ -1671,7 +1671,7 @@ CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
   return *renderList.rbegin();
 }
 
-bool CGUIWindowManager::IsWindowTopMost(int id) const
+bool CGUIWindowManager::IsDialogTopmost(int id) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
   if (topMost && (topMost->GetID() & WINDOW_ID_MASK) == id)
@@ -1679,7 +1679,7 @@ bool CGUIWindowManager::IsWindowTopMost(int id) const
   return false;
 }
 
-bool CGUIWindowManager::IsWindowTopMost(const std::string &xmlFile) const
+bool CGUIWindowManager::IsDialogTopmost(const std::string &xmlFile) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
   if (topMost && StringUtils::EqualsNoCase(URIUtils::GetFileName(topMost->GetProperty("xmlfile").asString()), xmlFile))

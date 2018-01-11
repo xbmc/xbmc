@@ -7693,9 +7693,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case WINDOW_IS_TOPMOST:
         if (info.GetData1())
-          bReturn = g_windowManager.IsWindowTopMost(info.GetData1());
+          bReturn = g_windowManager.IsDialogTopmost(info.GetData1());
         else
-          bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
+          bReturn = g_windowManager.IsDialogTopmost(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())

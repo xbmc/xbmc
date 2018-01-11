@@ -199,12 +199,12 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
   bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
+  bool IsDialogTopmost(int id) const;
+  bool IsDialogTopmost(const std::string &xmlFile) const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
-  bool IsWindowTopMost(int id) const;
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
   bool IsWindowVisible(const std::string &xmlFile) const;
-  bool IsWindowTopMost(const std::string &xmlFile) const;
   /*! \brief Checks if the given window is an addon window.
    *
    * \return true if the given window is an addon window, otherwise false.
