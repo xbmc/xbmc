@@ -68,6 +68,7 @@ set(package_files strings.xml
                   src/XBMCSettingsContentObserver.java
                   src/XBMCProperties.java
                   src/XBMCVideoView.java
+                  src/XBMCFile.java
                   src/channels/SyncChannelJobService.java
                   src/channels/SyncProgramsJobService.java
                   src/channels/model/XBMCDatabase.java
@@ -90,7 +91,6 @@ set(package_files strings.xml
                   src/content/XBMCFileContentProvider.java
                   src/content/XBMCMediaContentProvider.java
                   src/content/XBMCContentProvider.java
-                  src/content/XBMCImageContentProvider.java
                   src/content/XBMCYTDLContentProvider.java
                   )
 foreach(file IN LISTS package_files)

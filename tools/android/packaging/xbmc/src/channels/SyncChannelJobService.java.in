@@ -100,7 +100,7 @@ public class SyncChannelJobService extends JobService
       try (Cursor cursor =
                    mContext.getContentResolver()
                            .query(
-                                   XBMCFileContentProvider.buildUri("/playlists/video"),
+                                   XBMCFileContentProvider.buildUri("special://profile/playlists/video/"),
                                    null,
                                    null,
                                    null,
@@ -115,7 +115,7 @@ public class SyncChannelJobService extends JobService
       try (Cursor cursor =
                    mContext.getContentResolver()
                            .query(
-                                   XBMCFileContentProvider.buildUri("/playlists/mixed"),
+                                   XBMCFileContentProvider.buildUri("special://profile/playlists/mixed/"),
                                    null,
                                    null,
                                    null,
@@ -130,7 +130,7 @@ public class SyncChannelJobService extends JobService
       try (Cursor cursor =
                    mContext.getContentResolver()
                            .query(
-                                   XBMCFileContentProvider.buildUri("/playlists/music"),
+                                   XBMCFileContentProvider.buildUri("special://profile/playlists/music/"),
                                    null,
                                    null,
                                    null,
@@ -157,15 +157,18 @@ public class SyncChannelJobService extends JobService
       for (File file : playlistsContent)
       {
         sub = Subscription.createSubscription(file.getName(), file.getUri(), R.drawable.ic_recommendation_80dp);
-        freshsubscriptions.add(sub);
 
         int subidx = subscriptions.indexOf(sub);
-        if (subidx != -1)
-          continue;
+        if (subidx == -1)
+        {
+          long channelId = TvUtil.createChannel(mContext, sub);
+          sub.setChannelId(channelId);
+          subscriptions.add(sub);
+        }
+        else
+          sub.setChannelId(subscriptions.get(subidx).getChannelId());
 
-        long channelId = TvUtil.createChannel(mContext, sub);
-        sub.setChannelId(channelId);
-        subscriptions.add(sub);
+        freshsubscriptions.add(sub);
       }
 
       // Kick off a job to update default programs.
@@ -203,7 +206,7 @@ public class SyncChannelJobService extends JobService
         TvUtil.scheduleTriggeredSyncingProgramsForChannel(mContext, channel.getChannelId());
         TvUtil.scheduleTimedSyncingProgramsForChannel(mContext, channel.getChannelId());
       }
-      XBMCDatabase.saveSubscriptions(mContext, subscriptions);
+      XBMCDatabase.saveSubscriptions(mContext, freshsubscriptions);
 
       return true;
     }
