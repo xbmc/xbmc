@@ -1,0 +1,66 @@
+@ECHO OFF
+
+
+REM Trick to make the path absolute
+PUSHD %~dp0\..\..\..\project\BuildDependencies
+SET builddeps=%CD%
+POPD
+
+SET arch=%1
+SET vcarch=amd64
+SET vcstore=%2
+SET vcvars=no
+SET sdkver=
+
+SET vsver=
+SET toolsdir=%arch%
+
+IF "%arch%" NEQ "x64" (
+  SET vcarch=%vcarch%_%arch%
+)
+
+IF "%arch%"=="x86" (
+  SET toolsdir=win32
+)
+
+IF "%vcstore%"=="store" (
+  SET sdkver=10.0.14393.0
+  SET toolsdir="win10-%toolsdir%"
+)
+
+SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
+
+FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
+  IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (
+    SET vcvars="%%i\VC\Auxiliary\Build\vcvarsall.bat"
+    SET vsver=15
+  )
+)
+
+IF %vcvars%==no (
+  FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -legacy -property installationPath`) do (
+    ECHO %%i | findstr "14" >NUL 2>NUL
+    IF NOT ERRORLEVEL 1 (
+      IF EXIST "%%i\VC\vcvarsall.bat" (
+        SET vcvars="%%i\VC\vcvarsall.bat"
+        SET vsver=14
+      )
+    )
+  )
+)
+
+IF %vcvars%==no (
+  ECHO "ERROR! Could not find vcvarsall.bat"
+  EXIT /B 1
+)
+
+REM vcvars changes the cwd so we need to store it and restore it
+PUSHD %~dp0
+CALL %vcvars% %vcarch% %vcstore% %sdkver%
+POPD
+
+IF ERRORLEVEL 1 (
+  ECHO "ERROR! something went wrong when calling"
+  ECHO %vcvars% %vcarch% %vcstore% %sdkver%
+  EXIT /B 1
+)

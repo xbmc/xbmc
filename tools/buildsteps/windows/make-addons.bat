@@ -1,7 +1,5 @@
 @ECHO OFF
 
-SETLOCAL
-
 SET EXITCODE=0
 
 SET install=false

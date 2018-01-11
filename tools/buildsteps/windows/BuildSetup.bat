@@ -1,5 +1,4 @@
 @ECHO OFF
-SETLOCAL ENABLEDELAYEDEXPANSION
 REM setup all paths
 PUSHD %~dp0\..\..\..
 SET base_dir=%CD%
