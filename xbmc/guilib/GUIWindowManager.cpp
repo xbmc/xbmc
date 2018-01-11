@@ -1663,17 +1663,27 @@ void CGUIWindowManager::RemoveFromWindowHistory(int windowID)
   }
 }
 
-bool CGUIWindowManager::IsDialogTopmost(int id) const
+bool CGUIWindowManager::IsModalDialogTopmost(int id) const
 {
-  CGUIWindow *topmost = GetWindow(GetTopmostDialog(false));
+  return IsDialogTopmost(id, true);
+}
+
+bool CGUIWindowManager::IsModalDialogTopmost(const std::string &xmlFile) const
+{
+  return IsDialogTopmost(xmlFile, true);
+}
+
+bool CGUIWindowManager::IsDialogTopmost(int id, bool modal /* = false */) const
+{
+  CGUIWindow *topmost = GetWindow(GetTopmostDialog(modal, false));
   if (topmost && (topmost->GetID() & WINDOW_ID_MASK) == id)
     return true;
   return false;
 }
 
-bool CGUIWindowManager::IsDialogTopmost(const std::string &xmlFile) const
+bool CGUIWindowManager::IsDialogTopmost(const std::string &xmlFile, bool modal /* = false */) const
 {
-  CGUIWindow *topmost = GetWindow(GetTopmostDialog(false));
+  CGUIWindow *topmost = GetWindow(GetTopmostDialog(modal, false));
   if (topmost && StringUtils::EqualsNoCase(URIUtils::GetFileName(topmost->GetProperty("xmlfile").asString()), xmlFile))
     return true;
   return false;

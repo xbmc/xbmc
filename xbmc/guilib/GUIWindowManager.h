@@ -212,8 +212,10 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
   bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
-  bool IsDialogTopmost(int id) const;
-  bool IsDialogTopmost(const std::string &xmlFile) const;
+  bool IsDialogTopmost(int id, bool modal = false) const;
+  bool IsDialogTopmost(const std::string &xmlFile, bool modal = false) const;
+  bool IsModalDialogTopmost(int id) const;
+  bool IsModalDialogTopmost(const std::string &xmlFile) const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
