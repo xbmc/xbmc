@@ -1394,11 +1394,6 @@ bool CGUIWindowManager::HasVisibleModalDialog(const std::vector<DialogModalityTy
   return HasModalDialog(types, false);
 }
 
-bool CGUIWindowManager::HasDialogOnScreen() const
-{
-  return (m_activeDialogs.size() > 0);
-}
-
 /// \brief Get the ID of the top most routed window
 /// \return id ID of the window or WINDOW_INVALID if no routed window available
 int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) const
