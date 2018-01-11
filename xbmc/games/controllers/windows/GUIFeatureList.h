@@ -45,11 +45,11 @@ namespace GAME
     virtual void Deinitialize(void) override;
     virtual bool HasButton(JOYSTICK::FEATURE_TYPE type) const override;
     virtual void Load(const ControllerPtr& controller) override;
-    virtual void OnFocus(unsigned int index) override { }
-    virtual void OnSelect(unsigned int index) override;
+    virtual void OnFocus(unsigned int buttonIndex) override { }
+    virtual void OnSelect(unsigned int buttonIndex) override;
 
   private:
-    IFeatureButton* GetButtonControl(unsigned int featureIndex);
+    IFeatureButton* GetButtonControl(unsigned int buttonIndex);
 
     void CleanupButtons(void);
 
@@ -65,6 +65,7 @@ namespace GAME
 
     // GUI stuff
     CGUIWindow* const       m_window;
+    unsigned int            m_buttonCount = 0;
     CGUIControlGroupList*   m_guiList;
     CGUIButtonControl*      m_guiButtonTemplate;
     CGUILabelControl*       m_guiGroupTitle;
