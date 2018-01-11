@@ -4634,7 +4634,7 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
     return false;
 
   // if playing from the video info window, close it first!
-  if (g_windowManager.HasModalDialog() && g_windowManager.GetTopmostModalDialogID() == WINDOW_DIALOG_VIDEO_INFO)
+  if (g_windowManager.HasModalDialog() && g_windowManager.GetTopmostModalDialog() == WINDOW_DIALOG_VIDEO_INFO)
   {
     CGUIDialogVideoInfo* pDialog = g_windowManager.GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);

@@ -7673,7 +7673,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (!window)
           {
             // try topmost dialog
-            window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialogID());
+            window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
             if (!window)
             {
               // try active window
@@ -10712,7 +10712,7 @@ CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condi
     return window;
 
   // try topmost dialog
-  window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialogID());
+  window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
   if (CheckWindowCondition(window, condition))
     return window;
 

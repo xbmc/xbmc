@@ -129,7 +129,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
       {
         // do not consume action if a python modal is the top most dialog
         // as a python modal can't return that it consumed the action.
-        if (g_windowManager.IsPythonWindow(g_windowManager.GetTopmostModalDialogID()))
+        if (g_windowManager.IsPythonWindow(g_windowManager.GetTopmostModalDialog()))
           return false;
 
         char cCharacter;

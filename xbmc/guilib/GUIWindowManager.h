@@ -186,7 +186,20 @@ public:
    */
   void RegisterDialog(CGUIWindow* dialog);
   void RemoveDialog(int id);
-  int GetTopmostModalDialogID(bool ignoreClosing = false) const;
+
+  /*! \brief Get the ID of the topmost dialog
+   *
+   * \param ignoreClosing ignore dialog is closing
+   * \return the ID of the topmost dialog or WINDOW_INVALID if no dialog is active
+   */
+  int GetTopmostDialog(bool ignoreClosing = false) const;
+
+  /*! \brief Get the ID of the topmost modal dialog
+   *
+   * \param ignoreClosing ignore dialog is closing
+   * \return the ID of the topmost modal dialog or WINDOW_INVALID if no modal dialog is active
+   */
+  int GetTopmostModalDialog(bool ignoreClosing = false) const;
 
   void SendThreadMessage(CGUIMessage& message, int window = 0);
   void DispatchThreadMessages();
@@ -238,7 +251,7 @@ private:
   void RemoveFromWindowHistory(int windowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
-  CGUIWindow *GetTopmostDialog() const;
+  int GetTopmostDialog(bool modal, bool ignoreClosing) const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
   

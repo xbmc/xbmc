@@ -208,7 +208,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(void* kodiBase)
   }
 
   CSingleLock gl(g_graphicsContext);
-  return g_windowManager.GetTopmostModalDialogID();
+  return g_windowManager.GetTopmostModalDialog();
 }
 
 int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
