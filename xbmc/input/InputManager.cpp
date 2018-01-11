@@ -30,7 +30,7 @@
 #include "TouchTranslator.h"
 #include "input/keyboard/interfaces/IKeyboardHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
-#include "input/mouse/IMouseDriverHandler.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "input/mouse/MouseWindowingButtonMap.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/Key.h"

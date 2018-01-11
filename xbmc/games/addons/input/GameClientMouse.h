@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/mouse/IMouseInputHandler.h"
+#include "input/mouse/interfaces/IMouseInputHandler.h"
 
 struct KodiToAddonFuncTable_Game;
 

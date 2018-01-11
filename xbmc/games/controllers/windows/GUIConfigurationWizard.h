@@ -23,7 +23,7 @@
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
 #include "input/keyboard/interfaces/IKeyboardHandler.h"
-#include "input/mouse/IMouseInputHandler.h"
+#include "input/mouse/interfaces/IMouseInputHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"

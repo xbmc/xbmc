@@ -34,7 +34,7 @@
 #include "Action.h"
 #include "windowing/XBMC_events.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
-#include "input/mouse/IMouseInputProvider.h"
+#include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
 #include "interfaces/IActionListener.h"
