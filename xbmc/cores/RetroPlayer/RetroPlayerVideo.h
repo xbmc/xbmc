@@ -30,6 +30,11 @@ namespace RETRO
   class CRPProcessInfo;
   class CRPRenderManager;
 
+  /*!
+   * \brief Renders video frames provided by the game loop
+   *
+   * \sa CRPRenderManager
+   */
   class CRetroPlayerVideo : public GAME::IGameVideoCallback
   {
   public:

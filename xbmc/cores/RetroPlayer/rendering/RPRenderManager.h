@@ -49,6 +49,27 @@ namespace RETRO
   class IRenderBuffer;
   class IRenderBufferPool;
 
+  /*!
+   * \brief Renders video frames provided by the game loop
+   *
+   * Generally, buffer pools are registered by the windowing subsystem. A buffer
+   * pool provides a software or hardware buffer to store the added frame. When
+   * RenderManager is created, it instantiates all registered buffer pools.
+   *
+   * When a frame arrives, it is copied into a buffer from each buffer pool with
+   * a visible renderer. For example, if a GLES and MMAL renderer are both
+   * visible in the GUI, then the frame will be copied into two buffers.
+   *
+   * When it is time to render the frame, the GUI control or window calls into
+   * this class through the IRenderManager interface. RenderManager selects an
+   * appropriate renderer to use to render the frame. The renderer is then
+   * given the buffer that came from its buffer pool.
+   *
+   * Special behavior is needed when the game is paused. As no new frames are
+   * delivered, a newly created renderer will stay black. For this scenario,
+   * when we detect a pause event, the frame is premptively cached so that a
+   * newly created renderer will have something to display.
+   */
   class CRPRenderManager : public IRenderManager,
                            public IRenderCallback
   {
@@ -59,6 +80,9 @@ namespace RETRO
     void Initialize();
     void Deinitialize();
 
+    /*!
+     * \brief Access the factory for creating GUI render targets
+     */
     CGUIRenderTargetFactory *GetGUIRenderTargetFactory() { return m_renderControlFactory.get(); }
 
     // Functions called from game loop
@@ -83,17 +107,41 @@ namespace RETRO
     bool SupportsScalingMethod(ESCALINGMETHOD method) const override;
 
   private:
+    /*!
+     * \brief Get or create a renderer compatible with the given render settings
+     */
     std::shared_ptr<CRPBaseRenderer> GetRenderer(const IGUIRenderSettings *renderSettings);
+
+    /*!
+     * \brief Get or create a renderer for the given buffer pool and render settings
+     */
     std::shared_ptr<CRPBaseRenderer> GetRenderer(IRenderBufferPool *bufferPool, const CRenderSettings &renderSettings);
 
+    /*!
+     * \brief Render a frame using the given renderer
+     */
     void RenderInternal(const std::shared_ptr<CRPBaseRenderer> &renderer, bool bClear, uint32_t alpha);
 
+    /*!
+     * \brief Return true if we have a render buffer belonging to the specified pool
+     */
     bool HasRenderBuffer(IRenderBufferPool *bufferPool);
+
+    /*!
+     * \brief Get a render buffer belonging to the specified pool
+     */
     IRenderBuffer *GetRenderBuffer(IRenderBufferPool *bufferPool);
+
+    /*!
+     * \brief Create a render buffer for the specified pool from a cached frame
+     */
     void CreateRenderBuffer(IRenderBufferPool *bufferPool);
 
     void UpdateResolution();
 
+    /*!
+     * \brief Utility function to copy a frame and rescale pixels if necessary
+     */
     void CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *data, size_t size, AVPixelFormat format);
 
     CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings *settings) const;
