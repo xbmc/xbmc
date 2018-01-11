@@ -1,5 +1,4 @@
 @ECHO OFF
-SETLOCAL
 
 rem batch file to compile mingw libs via BuildSetup
 PUSHD %~dp0\..\..\..
@@ -15,7 +14,7 @@ SET buildArm=no
 SET vcarch=x86
 SET msys2=msys64
 SET win10=no
-SET UWPSDKVer=
+SET TARGETPLATFORM=win32
 
 FOR %%b in (%*) DO (
   IF %%b==noprompt SET PROMPTLEVEL=noprompt
@@ -27,12 +26,14 @@ FOR %%b in (%*) DO (
     SET build32=no
     SET buildArm=no
     SET vcarch=amd64
+    SET TARGETPLATFORM=x64
     )
   IF %%b==buildArm ( 
     SET build64=no 
     SET build32=no
     SET buildArm=yes
     SET vcarch=arm
+    SET TARGETPLATFORM=arm
     )
   IF %%b==win10 (
     SET win10=yes
@@ -40,19 +41,6 @@ FOR %%b in (%*) DO (
 )
 :: Export full current PATH from environment into MSYS2
 set MSYS2_PATH_TYPE=inherit
-
-:: setup MSVC env
-SET vcstore=
-IF %win10%==yes (
-  SET vcstore=store
-  SET UWPSDKVer=10.0.14393.0
-)
-
-IF %vcarch%==amd64 goto SetupMSVC
-if exist "%VS140COMNTOOLS%..\..\VC\bin\amd64_%vcarch%" set vcarch=amd64_%vcarch%
-:SetupMSVC
-echo setup MSVC for %vcarch% %vcstore% %UWPSDKVer%
-call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" %vcarch% %vcstore% %UWPSDKVer% || exit /b 1
 
 REM Prepend the msys and mingw paths onto %PATH%
 SET MSYS_INSTALL_PATH=%WORKDIR%\project\BuildDependencies\msys
