@@ -166,7 +166,7 @@ namespace JOYSTICK
   /*!
   * \brief Type of driver primitive
   */
-  enum PRIMITIVE_TYPE
+  enum class PRIMITIVE_TYPE
   {
     UNKNOWN = 0, // primitive has no type (invalid)
     BUTTON,      // a digital button

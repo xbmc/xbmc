@@ -105,7 +105,13 @@ namespace JOYSTICK
     PRIMITIVE_TYPE Type(void) const { return m_type; }
 
     /*!
-     * \brief The index used by the driver (valid for all types)
+     * \brief The index used by the joystick driver
+     *
+     * Valid for:
+     *   - buttons
+     *   - hats
+     *   - semiaxes
+     *   - motors
      */
     unsigned int Index(void) const { return m_driverIndex; }
 
@@ -140,12 +146,12 @@ namespace JOYSTICK
     bool IsValid(void) const;
 
   private:
-    PRIMITIVE_TYPE     m_type;
-    unsigned int       m_driverIndex;
-    HAT_DIRECTION      m_hatDirection;
-    int                m_center;
-    SEMIAXIS_DIRECTION m_semiAxisDirection;
-    unsigned int       m_range;
+    PRIMITIVE_TYPE     m_type = PRIMITIVE_TYPE::UNKNOWN;
+    unsigned int       m_driverIndex = 0;
+    HAT_DIRECTION      m_hatDirection = HAT_DIRECTION::UNKNOWN;
+    int                m_center = 0;
+    SEMIAXIS_DIRECTION m_semiAxisDirection = SEMIAXIS_DIRECTION::ZERO;
+    unsigned int       m_range = 1;
   };
 }
 }
