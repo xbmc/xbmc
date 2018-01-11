@@ -1,7 +1,6 @@
-index dffc0b9..efc79ab 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -245,6 +245,7 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
+@@ -240,6 +240,7 @@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -9,7 +8,7 @@ index dffc0b9..efc79ab 100644
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -543,9 +544,9 @@ sharedmods: $(BUILDPYTHON) pybuilddir.txt Modules/_math.o
+@@ -514,9 +515,9 @@
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
@@ -21,7 +20,7 @@ index dffc0b9..efc79ab 100644
  
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
-@@ -1120,12 +1121,12 @@ libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
+@@ -1114,12 +1115,12 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
@@ -36,7 +35,7 @@ index dffc0b9..efc79ab 100644
  		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
  		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
-@@ -1253,11 +1254,13 @@ libainstall:	all python-config
+@@ -1247,11 +1248,13 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -53,11 +52,9 @@ index dffc0b9..efc79ab 100644
  	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata.py*
  
  # Here are a couple of targets for MacOSX again, to install a full
-diff --git a/configure.ac b/configure.ac
-index 06c877b..de26012 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -329,7 +329,6 @@ then
+@@ -328,7 +328,6 @@
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
@@ -65,7 +62,7 @@ index 06c877b..de26012 100644
  	esac
  	ac_sys_release=
      else
-@@ -375,7 +374,6 @@ if test "$cross_compiling" = yes; then
+@@ -374,7 +373,6 @@
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
@@ -73,11 +70,9 @@ index 06c877b..de26012 100644
  	esac
  	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
  fi
-diff --git a/setup.py b/Python-2.7.12/setup.py
-index aa08ada..f21e349 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -17,7 +17,7 @@ from distutils.command.install import install
+@@ -17,7 +17,7 @@
  from distutils.command.install_lib import install_lib
  from distutils.spawn import find_executable
  
@@ -86,7 +81,7 @@ index aa08ada..f21e349 100644
  
  def get_platform():
      # cross build
-@@ -178,6 +178,7 @@ class PyBuildExt(build_ext):
+@@ -178,6 +178,7 @@
  
      def build_extensions(self):
  
@@ -94,7 +89,7 @@ index aa08ada..f21e349 100644
          # Detect which modules should be compiled
          missing = self.detect_modules()
  
-@@ -342,6 +343,9 @@ class PyBuildExt(build_ext):
+@@ -342,6 +343,9 @@
  
          # Don't try to load extensions for cross builds
          if cross_compiling:
@@ -104,7 +99,7 @@ index aa08ada..f21e349 100644
              return
  
          try:
-@@ -496,7 +500,7 @@ class PyBuildExt(build_ext):
+@@ -496,7 +500,7 @@
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
@@ -113,7 +108,7 @@ index aa08ada..f21e349 100644
                  and not sysconfig.get_config_var('PYTHONFRAMEWORK'):
              # OSX note: Don't add LIBDIR and INCLUDEDIR to building a framework
              # (PYTHONFRAMEWORK is set) to avoid # linking problems when
-@@ -572,6 +576,11 @@ class PyBuildExt(build_ext):
+@@ -572,6 +576,11 @@
          if host_platform in ['darwin', 'beos']:
              math_libs = []
  
@@ -125,7 +120,7 @@ index aa08ada..f21e349 100644
          # XXX Omitted modules: gl, pure, dl, SGI-specific modules
  
          #
-@@ -2048,8 +2057,13 @@ class PyBuildExt(build_ext):
+@@ -2051,8 +2060,13 @@
  
                  # Pass empty CFLAGS because we'll just append the resulting
                  # CFLAGS to Python's; -g or -O2 is to be avoided.

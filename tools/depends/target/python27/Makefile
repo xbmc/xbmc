@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile crosscompile.patch android.patch no-export
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.13
+VERSION=2.7.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 

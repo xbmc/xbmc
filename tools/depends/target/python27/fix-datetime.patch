@@ -13,6 +13,6 @@
 +#else
 +#include "datetime.h"
 +#endif
- 
- #ifdef WITH_THREAD
- #include "pythread.h"
+ #include <signal.h>
+ #ifdef MS_WINDOWS
+ #  include <crtdbg.h>
