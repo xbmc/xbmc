@@ -28,7 +28,7 @@
 #include "JoystickMapper.h"
 #include "KeymapEnvironment.h"
 #include "TouchTranslator.h"
-#include "input/keyboard/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/IMouseDriverHandler.h"
 #include "input/mouse/MouseWindowingButtonMap.h"

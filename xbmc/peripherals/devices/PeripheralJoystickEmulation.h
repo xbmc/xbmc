@@ -20,7 +20,7 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/keyboard/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardHandler.h"
 #include "threads/CriticalSection.h"
 
 #include <vector>

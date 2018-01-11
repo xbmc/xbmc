@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/keyboard/IActionMap.h"
+#include "input/keyboard/interfaces/IActionMap.h"
 
 namespace KODI
 {

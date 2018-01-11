@@ -23,7 +23,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientTranslator.h"
-#include "input/keyboard/IKeyboardInputProvider.h"
+#include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "input/Key.h"
 #include "utils/log.h"
 
