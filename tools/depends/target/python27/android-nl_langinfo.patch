@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3029,7 +3029,7 @@
+@@ -3092,7 +3092,7 @@
   getentropy \
   getpriority getresuid getresgid getpwent getspnam getspent getsid getwd \
   initgroups kill killpg lchmod lchown lstat mkfifo mknod mktime mmap \
