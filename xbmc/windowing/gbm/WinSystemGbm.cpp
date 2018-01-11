@@ -205,11 +205,11 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return result;
 }
 
-void CWinSystemGbm::FlipPage()
+void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
 {
   struct gbm_bo *bo = m_GBM->LockFrontBuffer();
 
-  m_DRM->FlipPage(bo);
+  m_DRM->FlipPage(bo, rendered, videoLayer);
 
   m_GBM->ReleaseBuffer();
 }

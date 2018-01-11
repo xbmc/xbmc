@@ -27,7 +27,7 @@ class CDRMLegacy : public CDRMUtils
 public:
   CDRMLegacy() = default;
   ~CDRMLegacy() { DestroyDrm(); };
-  virtual void FlipPage(struct gbm_bo *bo) override;
+  virtual void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) override;
   virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) override;
   virtual bool InitDrm() override;
 
