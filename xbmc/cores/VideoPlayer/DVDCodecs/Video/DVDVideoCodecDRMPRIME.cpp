@@ -206,6 +206,8 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_pCodecContext->coded_width = hints.width;
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
+  m_pCodecContext->time_base.num = 1;
+  m_pCodecContext->time_base.den = DVD_TIME_BASE;
 
   if (hints.extradata && hints.extrasize > 0)
   {

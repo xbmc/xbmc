@@ -23,6 +23,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 
@@ -115,58 +116,85 @@ bool CDRMAtomic::AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, cons
   return true;
 }
 
-bool CDRMAtomic::DrmAtomicCommit(int fb_id, int flags)
+void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
   uint32_t blob_id;
+  struct plane *plane;
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
     if (!AddConnectorProperty(m_req, m_connector->connector->connector_id, "CRTC_ID", m_crtc->crtc->crtc_id))
     {
-      return false;
+      return;
     }
 
     if (drmModeCreatePropertyBlob(m_fd, m_mode, sizeof(*m_mode), &blob_id) != 0)
     {
-      return false;
+      return;
     }
 
     if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "MODE_ID", blob_id))
     {
-      return false;
+      return;
     }
 
     if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", 1))
     {
-      return false;
+      return;
+    }
+
+    if (!videoLayer)
+    {
+      // disable overlay plane on modeset
+      AddPlaneProperty(m_req, m_overlay_plane, "FB_ID", 0);
+      AddPlaneProperty(m_req, m_overlay_plane, "CRTC_ID", 0);
     }
   }
 
-  AddPlaneProperty(m_req, m_primary_plane, "FB_ID", fb_id);
-  AddPlaneProperty(m_req, m_primary_plane, "CRTC_ID", m_crtc->crtc->crtc_id);
-  AddPlaneProperty(m_req, m_primary_plane, "SRC_X", 0);
-  AddPlaneProperty(m_req, m_primary_plane, "SRC_Y", 0);
-  AddPlaneProperty(m_req, m_primary_plane, "SRC_W", m_mode->hdisplay << 16);
-  AddPlaneProperty(m_req, m_primary_plane, "SRC_H", m_mode->vdisplay << 16);
-  AddPlaneProperty(m_req, m_primary_plane, "CRTC_X", 0);
-  AddPlaneProperty(m_req, m_primary_plane, "CRTC_Y", 0);
-  AddPlaneProperty(m_req, m_primary_plane, "CRTC_W", m_mode->hdisplay);
-  AddPlaneProperty(m_req, m_primary_plane, "CRTC_H", m_mode->vdisplay);
+  if (videoLayer)
+    plane = m_overlay_plane;
+  else
+    plane = m_primary_plane;
 
-  auto ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
-  if (ret)
+  if (rendered)
   {
-    return false;
+    AddPlaneProperty(m_req, plane, "FB_ID", fb_id);
+    AddPlaneProperty(m_req, plane, "CRTC_ID", m_crtc->crtc->crtc_id);
+    AddPlaneProperty(m_req, plane, "SRC_X", 0);
+    AddPlaneProperty(m_req, plane, "SRC_Y", 0);
+    AddPlaneProperty(m_req, plane, "SRC_W", m_mode->hdisplay << 16);
+    AddPlaneProperty(m_req, plane, "SRC_H", m_mode->vdisplay << 16);
+    AddPlaneProperty(m_req, plane, "CRTC_X", 0);
+    AddPlaneProperty(m_req, plane, "CRTC_Y", 0);
+    AddPlaneProperty(m_req, plane, "CRTC_W", m_mode->hdisplay);
+    AddPlaneProperty(m_req, plane, "CRTC_H", m_mode->vdisplay);
+  }
+  else if (videoLayer && !g_windowManager.HasVisibleControls())
+  {
+    // disable gui plane when video layer is active and gui has no visible controls
+    AddPlaneProperty(m_req, plane, "FB_ID", 0);
+    AddPlaneProperty(m_req, plane, "CRTC_ID", 0);
+  }
+
+  auto ret = drmModeAtomicCommit(m_fd, m_req, flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CDRMAtomic::%s - test commit failed: %s", __FUNCTION__, strerror(errno));
+  }
+  else if (ret == 0)
+  {
+    ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CDRMAtomic::%s - atomic commit failed: %s", __FUNCTION__, strerror(errno));
+    }
   }
 
   drmModeAtomicFree(m_req);
-
   m_req = drmModeAtomicAlloc();
-
-  return true;
 }
 
-void CDRMAtomic::FlipPage(struct gbm_bo *bo)
+void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 {
   uint32_t flags = 0;
 
@@ -176,18 +204,19 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo)
     m_need_modeset = false;
   }
 
-  struct drm_fb *drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
-  if (!drm_fb)
+  struct drm_fb *drm_fb = nullptr;
+
+  if (rendered)
   {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - Failed to get a new FBO", __FUNCTION__);
-    return;
+    drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
+    if (!drm_fb)
+    {
+      CLog::Log(LOGERROR, "CDRMAtomic::%s - Failed to get a new FBO", __FUNCTION__);
+      return;
+    }
   }
 
-  auto ret = DrmAtomicCommit(drm_fb->fb_id, flags);
-  if (!ret) {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - failed to commit: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
+  DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
 }
 
 bool CDRMAtomic::InitDrm()

@@ -27,16 +27,17 @@ class CDRMAtomic : public CDRMUtils
 public:
   CDRMAtomic() = default;
   ~CDRMAtomic() { DestroyDrm(); };
-  virtual void FlipPage(struct gbm_bo *bo) override;
+  virtual void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) override;
   virtual bool SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo) override;
   virtual bool InitDrm() override;
   virtual void DestroyDrm() override;
 
+  bool AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, const char *name, int value);
+
 private:
   bool AddConnectorProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
   bool AddCrtcProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
-  bool AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, const char *name, int value);
-  bool DrmAtomicCommit(int fb_id, int flags);
+  void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset;
 };
