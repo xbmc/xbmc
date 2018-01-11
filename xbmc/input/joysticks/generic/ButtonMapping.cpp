@@ -45,10 +45,25 @@ using namespace XbmcThreads;
 #define AXIS_THRESHOLD       0.75f // Axis must exceed this value to be mapped
 #define TRIGGER_DELAY_MS     200   // Delay trigger detection to handle anomalous triggers with non-zero center
 
+// --- CPrimitiveDetector ------------------------------------------------------
+
+CPrimitiveDetector::CPrimitiveDetector(CButtonMapping* buttonMapping) :
+  m_buttonMapping(buttonMapping)
+{
+}
+
+bool CPrimitiveDetector::MapPrimitive(const CDriverPrimitive &primitive)
+{
+  if (primitive.IsValid())
+    return m_buttonMapping->MapPrimitive(primitive);
+
+  return false;
+}
+
 // --- CButtonDetector ---------------------------------------------------------
 
 CButtonDetector::CButtonDetector(CButtonMapping* buttonMapping, unsigned int buttonIndex) :
-  m_buttonMapping(buttonMapping),
+  CPrimitiveDetector(buttonMapping),
   m_buttonIndex(buttonIndex)
 {
 }
@@ -56,13 +71,7 @@ CButtonDetector::CButtonDetector(CButtonMapping* buttonMapping, unsigned int but
 bool CButtonDetector::OnMotion(bool bPressed)
 {
   if (bPressed)
-  {
-    CDriverPrimitive buttonPrimitive(PRIMITIVE_TYPE::BUTTON, m_buttonIndex);
-    if (buttonPrimitive.IsValid())
-    {
-      return m_buttonMapping->MapPrimitive(buttonPrimitive);
-    }
-  }
+    return MapPrimitive(CDriverPrimitive(PRIMITIVE_TYPE::BUTTON, m_buttonIndex));
 
   return false;
 }
@@ -70,27 +79,20 @@ bool CButtonDetector::OnMotion(bool bPressed)
 // --- CHatDetector ------------------------------------------------------------
 
 CHatDetector::CHatDetector(CButtonMapping* buttonMapping, unsigned int hatIndex) :
-  m_buttonMapping(buttonMapping),
+  CPrimitiveDetector(buttonMapping),
   m_hatIndex(hatIndex)
 {
 }
 
 bool CHatDetector::OnMotion(HAT_STATE state)
 {
-  CDriverPrimitive hatPrimitive(m_hatIndex, static_cast<HAT_DIRECTION>(state));
-  if (hatPrimitive.IsValid())
-  {
-    m_buttonMapping->MapPrimitive(hatPrimitive);
-    return true;
-  }
-
-  return false;
+  return MapPrimitive(CDriverPrimitive(m_hatIndex, static_cast<HAT_DIRECTION>(state)));
 }
 
 // --- CAxisDetector -----------------------------------------------------------
 
 CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping, unsigned int axisIndex, const AxisConfiguration& config) :
-  m_buttonMapping(buttonMapping),
+  CPrimitiveDetector(buttonMapping),
   m_axisIndex(axisIndex),
   m_config(config),
   m_state(AXIS_STATE::INACTIVE),
@@ -166,7 +168,7 @@ void CAxisDetector::ProcessMotion()
       }
 
       // Map primitive
-      if (!m_buttonMapping->MapPrimitive(m_activatedPrimitive))
+      if (!MapPrimitive(m_activatedPrimitive))
       {
         if (m_type == AXIS_TYPE::OFFSET)
           CLog::Log(LOGDEBUG, "Mapping offset axis %u failed", m_axisIndex);
