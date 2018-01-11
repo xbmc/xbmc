@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/joysticks/IInputReceiver.h"
+#include "input/joysticks/interfaces/IInputReceiver.h"
 #include "input/joysticks/JoystickTypes.h"
 
 #include <map>

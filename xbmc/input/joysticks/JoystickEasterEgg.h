@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "IButtonSequence.h"
+#include "input/joysticks/interfaces/IButtonSequence.h"
 
 #include <map>
 #include <string>

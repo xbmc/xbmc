@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "guilib/LocalizeStrings.h"
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/Peripherals.h"

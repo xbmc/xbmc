@@ -22,7 +22,7 @@
 #include "GameClientInput.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "input/joysticks/IInputReceiver.h"
+#include "input/joysticks/interfaces/IInputReceiver.h"
 #include "utils/log.h"
 
 #include <assert.h>

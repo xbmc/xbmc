@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/KeymapEnvironment.h"
 
 #include <memory>

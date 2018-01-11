@@ -19,8 +19,8 @@
  */
 #pragma once
 
-#include "input/joysticks/IDriverHandler.h"
-#include "input/joysticks/IInputReceiver.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
+#include "input/joysticks/interfaces/IInputReceiver.h"
 
 #include <memory>
 

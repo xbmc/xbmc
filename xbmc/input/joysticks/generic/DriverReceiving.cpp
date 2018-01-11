@@ -19,9 +19,9 @@
  */
 
 #include "DriverReceiving.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/joysticks/interfaces/IDriverReceiver.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IButtonMap.h"
-#include "input/joysticks/IDriverReceiver.h"
 
 using namespace KODI;
 using namespace JOYSTICK;

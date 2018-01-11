@@ -20,8 +20,8 @@
 
 #include "KeymapHandling.h"
 #include "KeymapHandler.h"
-#include "input/joysticks/IInputHandler.h"
-#include "input/joysticks/IInputProvider.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputProvider.h"
 #include "input/Keymap.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"

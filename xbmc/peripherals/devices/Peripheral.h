@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "input/joysticks/IInputProvider.h"
+#include "input/joysticks/interfaces/IInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;

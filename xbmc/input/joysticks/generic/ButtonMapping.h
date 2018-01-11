@@ -19,9 +19,9 @@
  */
 #pragma once
 
+#include "input/joysticks/interfaces/IButtonMapCallback.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IButtonMapCallback.h"
-#include "input/joysticks/IDriverHandler.h"
 
 #include <map>
 #include <stdint.h>
