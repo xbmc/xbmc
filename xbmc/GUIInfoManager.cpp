@@ -4093,8 +4093,8 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///     Returns true if the window with id or title _window_ is active (excludes
 ///     fade out time on dialogs) \ref modules__General__Window_IDs "See here for a list of windows"
 ///   }
-///   \table_row3{   <b>`Window.IsTopMost(window)`</b>,
-///                  \anchor Window_IsTopMost
+///   \table_row3{   <b>`Window.IsTopmost(window)`</b>,
+///                  \anchor Window_IsTopmost
 ///                  _boolean_,
 ///     Returns true if the window with id or title _window_ is on top of the
 ///     window stack (excludes fade out time on dialogs)
@@ -7673,7 +7673,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (!window)
           {
             // try topmost dialog
-            window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+            window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialogID());
             if (!window)
             {
               // try active window
@@ -10712,7 +10712,7 @@ CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condi
     return window;
 
   // try topmost dialog
-  window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+  window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialogID());
   if (CheckWindowCondition(window, condition))
     return window;
 

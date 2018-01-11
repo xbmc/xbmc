@@ -186,7 +186,7 @@ public:
    */
   void RegisterDialog(CGUIWindow* dialog);
   void RemoveDialog(int id);
-  int GetTopMostModalDialogID(bool ignoreClosing = false) const;
+  int GetTopmostModalDialogID(bool ignoreClosing = false) const;
 
   void SendThreadMessage(CGUIMessage& message, int window = 0);
   void DispatchThreadMessages();
@@ -238,7 +238,7 @@ private:
   void RemoveFromWindowHistory(int windowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
-  CGUIWindow *GetTopMostDialog() const;
+  CGUIWindow *GetTopmostDialog() const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
   
