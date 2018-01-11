@@ -20,7 +20,7 @@
 
 #include "RPProcessInfo.h"
 #include "ServiceBroker.h"
-#include "cores/RetroPlayer/process/RenderBufferManager.h"
+#include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/DataCacheCore.h"
 #include "windowing/GraphicContext.h"

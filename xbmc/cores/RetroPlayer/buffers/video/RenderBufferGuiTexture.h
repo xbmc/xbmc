@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "BaseRenderBuffer.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 #include "cores/IPlayer.h"
 #include "guilib/Texture.h"
 #include "guilib/TextureFormats.h"

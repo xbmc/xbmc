@@ -20,7 +20,7 @@
 
 #include "RenderBufferManager.h"
 #include "IRenderBufferPool.h"
-#include "RPProcessInfo.h"
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "threads/SingleLock.h"
 

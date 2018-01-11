@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "cores/RetroPlayer/process/BaseRenderBufferPool.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "threads/CriticalSection.h"
 
 extern "C" {
