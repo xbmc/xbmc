@@ -116,7 +116,7 @@ bool CDRMAtomic::AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, cons
   return true;
 }
 
-bool CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
+void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
   uint32_t blob_id;
   struct plane *plane;
@@ -125,22 +125,22 @@ bool CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   {
     if (!AddConnectorProperty(m_req, m_connector->connector->connector_id, "CRTC_ID", m_crtc->crtc->crtc_id))
     {
-      return false;
+      return;
     }
 
     if (drmModeCreatePropertyBlob(m_fd, m_mode, sizeof(*m_mode), &blob_id) != 0)
     {
-      return false;
+      return;
     }
 
     if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "MODE_ID", blob_id))
     {
-      return false;
+      return;
     }
 
     if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", 1))
     {
-      return false;
+      return;
     }
 
     if (!videoLayer)
@@ -176,17 +176,22 @@ bool CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddPlaneProperty(m_req, plane, "CRTC_ID", 0);
   }
 
-  auto ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
-  if (ret)
+  auto ret = drmModeAtomicCommit(m_fd, m_req, flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
+  if (ret < 0)
   {
-    return false;
+    CLog::Log(LOGERROR, "CDRMAtomic::%s - test commit failed: %s", __FUNCTION__, strerror(errno));
+  }
+  else if (ret == 0)
+  {
+    ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CDRMAtomic::%s - atomic commit failed: %s", __FUNCTION__, strerror(errno));
+    }
   }
 
   drmModeAtomicFree(m_req);
-
   m_req = drmModeAtomicAlloc();
-
-  return true;
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
@@ -211,11 +216,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
     }
   }
 
-  auto ret = DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
-  if (!ret) {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - failed to commit: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
+  DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
 }
 
 bool CDRMAtomic::InitDrm()

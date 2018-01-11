@@ -37,7 +37,7 @@ public:
 private:
   bool AddConnectorProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
   bool AddCrtcProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
-  bool DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
+  void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset;
 };
