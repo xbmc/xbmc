@@ -518,6 +518,30 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         break;
       }
 
+      case JOYSTICK_FEATURE_TYPE_WHEEL:
+      {
+        std::vector<JOYSTICK_FEATURE_PRIMITIVE> primitives = {
+          JOYSTICK_WHEEL_LEFT,
+          JOYSTICK_WHEEL_RIGHT,
+        };
+
+        for (auto primitive : primitives)
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+        break;
+      }
+
+      case JOYSTICK_FEATURE_TYPE_THROTTLE:
+      {
+        std::vector<JOYSTICK_FEATURE_PRIMITIVE> primitives = {
+          JOYSTICK_THROTTLE_UP,
+          JOYSTICK_THROTTLE_DOWN,
+        };
+
+        for (auto primitive : primitives)
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+        break;
+      }
+
       default:
         break;
     }
