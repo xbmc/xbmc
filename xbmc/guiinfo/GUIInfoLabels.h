@@ -614,13 +614,14 @@
 #define PLAYER_PROCESS_AUDIOBITSPERSAMPLE (PLAYER_PROCESS + 11)
 
 #define WINDOW_PROPERTY             9993
-#define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
 #define WINDOW_IS                   10000
+#define WINDOW_IS_DIALOG_TOPMOST    10001
+#define WINDOW_IS_MODAL_DIALOG_TOPMOST 10002
 
 #define CONTROL_GET_LABEL           29996
 #define CONTROL_IS_ENABLED          29997
