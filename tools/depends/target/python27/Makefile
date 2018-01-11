@@ -1,10 +1,10 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
-       Python-setup.patch fix-datetime.patch fix-ffi.patch python-android-binmodule.patch Python-no-abort.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+DEPS= ../../Makefile.include Makefile crosscompile.patch android.patch no-export-path.patch android-nl_langinfo.patch \
+       setup.patch fix-datetime.patch fix-ffi.patch android-binmodule.patch no-abort.patch urllib.patch modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.13
+VERSION=2.7.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -20,7 +20,7 @@ endif
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \
   ./configure --prefix=$(PREFIX) --host=$(HOST) \
-  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6 
+  --disable-toolbox-glue --disable-framework --with-system-expat --with-system-ffi --without-pymalloc --enable-ipv6 
 
 LIBDYLIB=$(PLATFORM)/libpython2.7.a
 
@@ -33,18 +33,18 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../Python-2.7.12-crosscompile.patch
-	cd $(PLATFORM); patch -p0 < ../Python-setup.patch
+	cd $(PLATFORM); patch -p1 < ../crosscompile.patch
+	cd $(PLATFORM); patch -p0 < ../setup.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-android.patch
-	cd $(PLATFORM); patch -p0 < ../Python-no-export-path.patch
+	cd $(PLATFORM); patch -p0 < ../android.patch
+	cd $(PLATFORM); patch -p0 < ../no-export-path.patch
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
-	cd $(PLATFORM); patch -l -p0 < ../python-android-binmodule.patch
-	cd $(PLATFORM); patch -p1 < ../Python-no-abort.patch
-	cd $(PLATFORM); patch -p1 < ../python-android-nl_langinfo.patch
+	cd $(PLATFORM); patch -p0 < ../android-binmodule.patch
+	cd $(PLATFORM); patch -p1 < ../no-abort.patch
+	cd $(PLATFORM); patch -p1 < ../android-nl_langinfo.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
+	cd $(PLATFORM); patch -p0 < ../urllib.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist

@@ -6,7 +6,7 @@
              return
 +        #if os.environ.get('CROSS_COMPILE_TARGET') == 'yes':
 +        #    return
-+	
++   
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
@@ -62,7 +62,6 @@
          except:
              exc_type, why, tb = sys.exc_info()
              self.announce('*** WARNING: importing extension "%s" '
-
 --- Modules/makesetup.orig	2015-10-08 09:53:38.787333151 +0200
 +++ Modules/makesetup	2015-10-08 11:28:50.939355966 +0200
 @@ -212,6 +212,7 @@
@@ -73,4 +72,3 @@
  			/*) ;;
  			\$*) ;;
  			*) src='$(srcdir)/'"$srcdir/$src";;
-
