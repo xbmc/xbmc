@@ -33,7 +33,11 @@ struct space_info {
   std::uintmax_t available;
 };
 
-space_info space(const std::string& path, std::error_code& ec);
+space_info space(const std::string &path, std::error_code &ec);
+
+std::string temp_directory_path(std::error_code &ec);
+std::string create_temp_directory(std::error_code &ec);
+std::string temp_file_path(std::string suffix, std::error_code &ec);
 }
 }
 }
