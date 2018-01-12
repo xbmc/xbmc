@@ -414,7 +414,7 @@
         </setting>
         <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
           <level>0</level>
-          <default>visualization.spectrum</default>
+          <default></default>
           <constraints>
             <addontype>xbmc.player.musicviz</addontype>
             <allowempty>true</allowempty>
