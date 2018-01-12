@@ -3203,9 +3203,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
 
+  m_appPlayer.OpenFile(item, options, player, *this);
   m_appPlayer.SetVolume(m_volumeLevel);
   m_appPlayer.SetMute(m_muted);
-  m_appPlayer.OpenFile(item, options, player, *this);
 
 #if !defined(TARGET_POSIX)
   g_audioManager.Enable(false);
