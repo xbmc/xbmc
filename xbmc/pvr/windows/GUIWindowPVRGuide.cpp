@@ -18,6 +18,8 @@
  *
  */
 
+#include <iterator>
+
 #include "GUIWindowPVRGuide.h"
 
 #include "ContextMenuManager.h"
@@ -29,15 +31,12 @@
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "view/GUIViewState.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIEPGGridContainer.h"
 
 using namespace PVR;
@@ -63,7 +62,7 @@ CGUIEPGGridContainer* CGUIWindowPVRGuideBase::GetGridControl()
   return dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
 }
 
-void CGUIWindowPVRGuideBase::Init()
+void CGUIWindowPVRGuideBase::InitEpgGridControl()
 {
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
@@ -98,7 +97,7 @@ void CGUIWindowPVRGuideBase::OnInitWindow()
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
 
   if (InitChannelGroup()) // no channels -> lazy init
-    Init();
+    InitEpgGridControl();
 
   CGUIWindowPVRBase::OnInitWindow();
 }
@@ -184,6 +183,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
 void CGUIWindowPVRGuideBase::UpdateButtons(void)
 {
   CGUIWindowPVRBase::UpdateButtons();
+
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
 }
@@ -425,7 +425,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         CSingleLock lock(m_critSection);
         m_bRefreshTimelineItems = true;
       }
-      Init();
+      InitEpgGridControl();
 
       Refresh(true);
       bReturn = true;
@@ -438,7 +438,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         {
           // late init
           InitChannelGroup();
-          Init();
+          InitEpgGridControl();
           break;
         }
         case ObservableMessageChannelGroupReset:
