@@ -155,12 +155,15 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void)
 CNetworkWin10::CNetworkWin10(void)
 {
   queryInterfaceList();
+  NetworkInformation::NetworkStatusChanged += ref new NetworkStatusChangedEventHandler([this](Platform::Object^) {
+	  CSingleLock lock(m_critSection);
+	  queryInterfaceList();
+  });
 }
 
 CNetworkWin10::~CNetworkWin10(void)
 {
   CleanInterfaceList();
-  m_netrefreshTimer.Stop();
 }
 
 void CNetworkWin10::CleanInterfaceList()
@@ -177,16 +180,12 @@ void CNetworkWin10::CleanInterfaceList()
 std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
 {
   CSingleLock lock (m_critSection);
-  if (m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
-    queryInterfaceList();
-
   return m_interfaces;
 }
 
 void CNetworkWin10::queryInterfaceList()
 {
   CleanInterfaceList();
-  m_netrefreshTimer.StartZero();
 
   auto connectionProfiles = NetworkInformation::GetConnectionProfiles();
   std::for_each(begin(connectionProfiles), end(connectionProfiles), [this](ConnectionProfile^ connectionProfile)
