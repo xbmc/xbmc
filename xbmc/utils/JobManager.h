@@ -39,6 +39,24 @@ private:
   CJobManager  *m_jobManager;
 };
 
+template<typename F>
+class CLambdaJob : public CJob
+{
+public:
+  CLambdaJob(F&& f) : m_f(std::forward<F>(f)) {};
+  bool DoWork() override
+  {
+    m_f();
+    return true;
+  }
+  bool operator==(const CJob *job) const override
+  {
+    return this == job;
+  };
+private:
+  F m_f;
+};
+
 /*!
  \ingroup jobs
  \brief Job Queue class to handle a queue of unique jobs to be processed sequentially
@@ -101,6 +119,15 @@ public:
    \sa CJob
    */
   bool AddJob(CJob *job);
+
+  /*!
+   \brief Add a function f to this job queue
+   */
+  template<typename F>
+  void Submit(F&& f)
+  {
+    AddJob(new CLambdaJob<F>(std::forward<F>(f)));
+  }
 
   /*!
    \brief Cancel a job in the queue
@@ -205,20 +232,6 @@ class CJobManager
     unsigned int  m_id;
     IJobCallback *m_callback;
     CJob::PRIORITY m_priority;
-  };
-
-  template<typename F>
-  class CLambdaJob : public CJob
-  {
-  public:
-    CLambdaJob(F&& f) : m_f(std::forward<F>(f)) {};
-    bool DoWork() override
-    {
-      m_f();
-      return true;
-    }
-  private:
-    F m_f;
   };
 
 public:
