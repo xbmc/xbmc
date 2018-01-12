@@ -186,7 +186,20 @@ public:
    */
   void RegisterDialog(CGUIWindow* dialog);
   void RemoveDialog(int id);
-  int GetTopMostModalDialogID(bool ignoreClosing = false) const;
+
+  /*! \brief Get the ID of the topmost dialog
+   *
+   * \param ignoreClosing ignore dialog is closing
+   * \return the ID of the topmost dialog or WINDOW_INVALID if no dialog is active
+   */
+  int GetTopmostDialog(bool ignoreClosing = false) const;
+
+  /*! \brief Get the ID of the topmost modal dialog
+   *
+   * \param ignoreClosing ignore dialog is closing
+   * \return the ID of the topmost modal dialog or WINDOW_INVALID if no modal dialog is active
+   */
+  int GetTopmostModalDialog(bool ignoreClosing = false) const;
 
   void SendThreadMessage(CGUIMessage& message, int window = 0);
   void DispatchThreadMessages();
@@ -199,13 +212,14 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
   bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
-  bool HasDialogOnScreen() const;
+  bool IsDialogTopmost(int id, bool modal = false) const;
+  bool IsDialogTopmost(const std::string &xmlFile, bool modal = false) const;
+  bool IsModalDialogTopmost(int id) const;
+  bool IsModalDialogTopmost(const std::string &xmlFile) const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
-  bool IsWindowTopMost(int id) const;
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
   bool IsWindowVisible(const std::string &xmlFile) const;
-  bool IsWindowTopMost(const std::string &xmlFile) const;
   /*! \brief Checks if the given window is an addon window.
    *
    * \return true if the given window is an addon window, otherwise false.
@@ -239,7 +253,7 @@ private:
   void RemoveFromWindowHistory(int windowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
-  CGUIWindow *GetTopMostDialog() const;
+  int GetTopmostDialog(bool modal, bool ignoreClosing) const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
   

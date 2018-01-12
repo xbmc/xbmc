@@ -4093,17 +4093,32 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///     Returns true if the window with id or title _window_ is active (excludes
 ///     fade out time on dialogs) \ref modules__General__Window_IDs "See here for a list of windows"
 ///   }
-///   \table_row3{   <b>`Window.IsTopMost(window)`</b>,
-///                  \anchor Window_IsTopMost
-///                  _boolean_,
-///     Returns true if the window with id or title _window_ is on top of the
-///     window stack (excludes fade out time on dialogs)
-///     \ref modules__General__Window_IDs "See here for a list of windows"
-///   }
 ///   \table_row3{   <b>`Window.IsVisible(window)`</b>,
 ///                  \anchor Window_IsVisible
 ///                  _boolean_,
 ///     Returns true if the window is visible (includes fade out time on dialogs)
+///   }
+///   \table_row3{   <b>`Window.IsTopmost(window)`</b>,
+///                  \anchor Window_IsTopmost
+///                  _boolean_,
+///     Returns true if the window with id or title _window_ is on top of the
+///     window stack (excludes fade out time on dialogs)
+///     \ref modules__General__Window_IDs "See here for a list of windows"
+///     \deprecated use `Window.IsDialogTopmost(dialog)` instead
+///   }
+///   \table_row3{   <b>`Window.IsDialogTopmost(dialog)`</b>,
+///                  \anchor Window_IsDialogTopmost
+///                  _boolean_,
+///     Returns true if the dialog with id or title _dialog_ is on top of the
+///     dialog stack (excludes fade out time on dialogs)
+///     \ref modules__General__Window_IDs "See here for a list of windows"
+///   }
+///   \table_row3{   <b>`Window.IsModalDialogTopmost(dialog)`</b>,
+///                  \anchor Window_IsModalDialogTopmost
+///                  _boolean_,
+///     Returns true if the dialog with id or title _dialog_ is on top of the
+///     modal dialog stack (excludes fade out time on dialogs)
+///     \ref modules__General__Window_IDs "See here for a list of windows"
 ///   }
 ///   \table_row3{   <b>`Window.Previous(window)`</b>,
 ///                  \anchor Window_Previous
@@ -4126,8 +4141,10 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "is",               WINDOW_IS },
                                   { "isactive",         WINDOW_IS_ACTIVE },
-                                  { "istopmost",        WINDOW_IS_TOPMOST },
                                   { "isvisible",        WINDOW_IS_VISIBLE },
+                                  { "istopmost",        WINDOW_IS_DIALOG_TOPMOST }, // deprecated, remove in v19
+                                  { "isdialogtopmost",  WINDOW_IS_DIALOG_TOPMOST },
+                                  { "ismodaldialogtopmost", WINDOW_IS_MODAL_DIALOG_TOPMOST },
                                   { "previous",         WINDOW_PREVIOUS },
                                   { "next",             WINDOW_NEXT }};
 
@@ -7673,7 +7690,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (!window)
           {
             // try topmost dialog
-            window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+            window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
             if (!window)
             {
               // try active window
@@ -7691,17 +7708,23 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
           bReturn = g_windowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
         break;
-      case WINDOW_IS_TOPMOST:
-        if (info.GetData1())
-          bReturn = g_windowManager.IsWindowTopMost(info.GetData1());
-        else
-          bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
-        break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())
           bReturn = g_windowManager.IsWindowActive(info.GetData1());
         else
           bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+        break;
+      case WINDOW_IS_DIALOG_TOPMOST:
+        if (info.GetData1())
+          bReturn = g_windowManager.IsDialogTopmost(info.GetData1());
+        else
+          bReturn = g_windowManager.IsDialogTopmost(m_stringParameters[info.GetData2()]);
+        break;
+      case WINDOW_IS_MODAL_DIALOG_TOPMOST:
+        if (info.GetData1())
+          bReturn = g_windowManager.IsModalDialogTopmost(info.GetData1());
+        else
+          bReturn = g_windowManager.IsModalDialogTopmost(m_stringParameters[info.GetData2()]);
         break;
       case SYSTEM_HAS_ALARM:
         bReturn = g_alarmClock.HasAlarm(m_stringParameters[info.GetData1()]);
@@ -10712,7 +10735,7 @@ CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condi
     return window;
 
   // try topmost dialog
-  window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+  window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
   if (CheckWindowCondition(window, condition))
     return window;
 
