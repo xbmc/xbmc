@@ -283,6 +283,7 @@ protected:
 //------------------------------------------------------------------------------
 
 class CProcessInfo;
+class CJobQueue;
 
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer,
                      public IDispResource, public IRenderLoop, public IRenderMsg
@@ -532,19 +533,20 @@ protected:
   int m_errorCount;
   double m_offset_pts;
 
-  CDVDMessageQueue m_messenger;     // thread messenger
+  CDVDMessageQueue m_messenger;
+  std::unique_ptr<CJobQueue> m_outboundEvents;
 
-  IDVDStreamPlayerVideo *m_VideoPlayerVideo; // video part
-  IDVDStreamPlayerAudio *m_VideoPlayerAudio; // audio part
-  CVideoPlayerSubtitle *m_VideoPlayerSubtitle; // subtitle part
-  CDVDTeletextData *m_VideoPlayerTeletext; // teletext part
-  CDVDRadioRDSData *m_VideoPlayerRadioRDS; // rds part
+  IDVDStreamPlayerVideo *m_VideoPlayerVideo;
+  IDVDStreamPlayerAudio *m_VideoPlayerAudio;
+  CVideoPlayerSubtitle *m_VideoPlayerSubtitle;
+  CDVDTeletextData *m_VideoPlayerTeletext;
+  CDVDRadioRDSData *m_VideoPlayerRadioRDS;
 
-  CDVDClock m_clock;                // master clock
+  CDVDClock m_clock;
   CDVDOverlayContainer m_overlayContainer;
 
-  std::shared_ptr<CDVDInputStream> m_pInputStream;  // input stream for current playing file
-  CDVDDemux* m_pDemuxer;            // demuxer for current playing file
+  std::shared_ptr<CDVDInputStream> m_pInputStream;
+  CDVDDemux* m_pDemuxer;
   CDVDDemux* m_pSubtitleDemuxer;
   CDVDDemuxCC* m_pCCDemuxer;
 
