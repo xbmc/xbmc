@@ -598,7 +598,7 @@ namespace addon
     JoystickFeature(const std::string& name = "", JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN) :
       m_name(name),
       m_type(type),
-      m_primitives()
+      m_primitives{}
     {
     }
 
