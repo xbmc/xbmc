@@ -87,7 +87,8 @@ std::string create_temp_directory(std::error_code &ec)
 
   auto path = temp_directory_path(ec);
 
-  strcpy(buf, (path + "xbmctempXXXXXX").c_str());
+  strncpy(buf, (path + "xbmctempXXXXXX").c_str(), sizeof(buf) - 1);
+  buf[sizeof(buf) - 1] = '\0';
 
   auto tmp = mkdtemp(buf);
   if (!tmp)
@@ -115,7 +116,8 @@ std::string temp_file_path(std::string suffix, std::error_code &ec)
     return std::string();
   }
 
-  strcpy(tmp, tempPath.c_str());
+  strncpy(tmp, tempPath.c_str(), sizeof(tmp) - 1);
+  tmp[sizeof(tmp) - 1] = '\0';
 
   auto fd = mkstemps(tmp, suffix.length());
   if (fd < 0)
