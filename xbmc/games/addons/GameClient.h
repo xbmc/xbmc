@@ -136,6 +136,13 @@ private:
    */
   static GameClientSubsystems CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess);
 
+  /*!
+   * \brief Deallocate subsystems
+   *
+   * \param subsystems The subsystems created by CreateSubsystems()
+   */
+  static void DestroySubsystems(GameClientSubsystems &subsystems);
+
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
   bool LoadGameInfo();
