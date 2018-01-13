@@ -62,12 +62,12 @@
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
-#include "utils/JobManager.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
 #include "utils/Variant.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "video/Bookmark.h"
 #include "Util.h"
@@ -628,11 +628,12 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_messenger("player"),
       m_renderManager(m_clock, this)
 {
+  m_outboundEvents.reset(new CJobQueue(false, 1, CJob::PRIORITY_NORMAL));
   m_players_created = false;
-  m_pDemuxer = NULL;
-  m_pSubtitleDemuxer = NULL;
-  m_pCCDemuxer = NULL;
-  m_pInputStream = NULL;
+  m_pDemuxer = nullptr;
+  m_pSubtitleDemuxer = nullptr;
+  m_pCCDemuxer = nullptr;
+  m_pInputStream = nullptr;
 
   m_dvd.Clear();
   m_State.Clear();
@@ -684,6 +685,11 @@ CVideoPlayer::~CVideoPlayer()
 
   CloseFile();
   DestroyPlayers();
+
+  while (m_outboundEvents->IsProcessing())
+  {
+    Sleep(10);
+  }
 }
 
 bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
@@ -1240,9 +1246,9 @@ void CVideoPlayer::Prepare()
 
   IPlayerCallback *cb = &m_callback;
   CFileItem fileItem = m_item;
-  CJobManager::GetInstance().Submit([=]() {
+  m_outboundEvents->Submit([=]() {
     cb->RequestVideoSettings(fileItem);
-  }, CJob::PRIORITY_NORMAL);
+  });
 
   if (!OpenInputStream())
   {
@@ -2449,18 +2455,18 @@ void CVideoPlayer::OnExit()
   IPlayerCallback *cb = &m_callback;
   CFileItem fileItem(m_item);
   CVideoSettings vs = m_processInfo->GetVideoSettings();
-  CJobManager::GetInstance().Submit([=]() {
+  m_outboundEvents->Submit([=]() {
     cb->StoreVideoSettings(fileItem, vs);
-  }, CJob::PRIORITY_NORMAL);
+  });
 
   CBookmark bookmark;
   bookmark.totalTimeInSeconds = m_processInfo->GetMaxTime() / 1000;
   bookmark.timeInSeconds = GetTime() / 1000;
   bookmark.player = m_name;
   bookmark.playerState = GetPlayerState();
-  CJobManager::GetInstance().Submit([=]() {
+  m_outboundEvents->Submit([=]() {
     cb->OnPlayerCloseFile(fileItem, bookmark);
-  }, CJob::PRIORITY_NORMAL);
+  });
     
   // destroy objects
   SAFE_DELETE(m_pDemuxer);
@@ -2487,14 +2493,14 @@ void CVideoPlayer::OnExit()
 
   bool error = m_error;
   bool abort = m_bAbortRequest;
-  CJobManager::GetInstance().Submit([=]() {
+  m_outboundEvents->Submit([=]() {
     if (error)
       cb->OnPlayBackError();
     else if (abort)
       cb->OnPlayBackStopped();
     else
       cb->OnPlayBackEnded();
-  }, CJob::PRIORITY_NORMAL);
+  });
 }
 
 void CVideoPlayer::HandleMessages()
@@ -2511,25 +2517,25 @@ void CVideoPlayer::HandleMessages()
       IPlayerCallback *cb = &m_callback;
       CFileItem fileItem(m_item);
       CVideoSettings vs = m_processInfo->GetVideoSettings();
-      CJobManager::GetInstance().Submit([=]() {
+      m_outboundEvents->Submit([=]() {
         cb->StoreVideoSettings(fileItem, vs);
-      }, CJob::PRIORITY_NORMAL);
+      });
 
       CBookmark bookmark;
       bookmark.totalTimeInSeconds = m_processInfo->GetMaxTime() / 1000;
       bookmark.timeInSeconds = GetTime() / 1000;
       bookmark.player = m_name;
       bookmark.playerState = GetPlayerState();
-      CJobManager::GetInstance().Submit([=]() {
+      m_outboundEvents->Submit([=]() {
         cb->OnPlayerCloseFile(fileItem, bookmark);
-      }, CJob::PRIORITY_NORMAL);
+      });
 
       m_item = msg.GetItem();
       m_playerOptions = msg.GetOptions();
 
-      CJobManager::GetInstance().Submit([this]() {
+      m_outboundEvents->Submit([this]() {
         m_callback.OnPlayBackStarted(m_item);
-      }, CJob::PRIORITY_NORMAL);
+      });
 
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
       m_renderManager.Flush(false);
@@ -2961,9 +2967,9 @@ void CVideoPlayer::HandleMessages()
       CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
       CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
       IPlayerCallback *cb = &m_callback;
-      CJobManager::GetInstance().Submit([=]() {
+      m_outboundEvents->Submit([=]() {
         cb->OnAVChange();
-      }, CJob::PRIORITY_NORMAL);
+      });
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_ABORT))
     {
