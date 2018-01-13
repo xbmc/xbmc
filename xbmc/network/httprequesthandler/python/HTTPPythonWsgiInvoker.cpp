@@ -77,6 +77,7 @@
 
 namespace PythonBindings {
   void initModule_xbmc(void);
+  void initModule_xbmcaddon(void);
   void initModule_xbmcwsgi(void);
 }
 
@@ -91,6 +92,7 @@ typedef struct
 static PythonModule PythonModules[] =
 {
   { "xbmc",           initModule_xbmc },
+  { "xbmcaddon",      initModule_xbmcaddon  },
   { "xbmcwsgi",       initModule_xbmcwsgi }
 };
 
@@ -351,8 +353,11 @@ std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
   environment.insert(std::make_pair("PATH_INFO", pathInfo));
 
   // QUERY_STRING
-  CURL url(httpRequest->url);
-  environment.insert(std::make_pair("QUERY_STRING", url.GetOptions()));
+  size_t iOptions = httpRequest->url.find_first_of('?');
+  if (iOptions != std::string::npos)
+    environment.insert(std::make_pair("QUERY_STRING", httpRequest->url.substr(iOptions+1)));
+  else
+    environment.insert(std::make_pair("QUERY_STRING", ""));
 
   // CONTENT_TYPE
   std::string headerValue;
