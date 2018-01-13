@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "GameClientProperties.h"
+#include "GameClientSubsystem.h"
 #include "GameClientTiming.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
@@ -42,15 +42,11 @@ namespace GAME
 
 class CGameClientInGameSaves;
 class CGameClientInput;
+class CGameClientProperties;
 class IGameAudioCallback;
 class IGameClientPlayback;
 class IGameInputCallback;
 class IGameVideoCallback;
-
-struct GameClientSubsystems
-{
-  std::unique_ptr<CGameClientInput> Input;
-};
 
 /*!
  * \ingroup games
@@ -65,11 +61,13 @@ public:
 
   virtual ~CGameClient(void);
 
-  // Game subsystems (immutable)
+  // Game subsystems (const)
   const CGameClientInput &Input() const { return *m_subsystems.Input; }
+  const CGameClientProperties &AddonProperties() const { return *m_subsystems.AddonProperties; }
 
   // Game subsystems (mutable)
   CGameClientInput &Input() { return *m_subsystems.Input; }
+  CGameClientProperties &AddonProperties() { return *m_subsystems.AddonProperties; }
 
   // Implementation of IAddon via CAddonDll
   virtual std::string     LibPath() const override;
@@ -125,24 +123,6 @@ public:
   void LogException(const char* strFunctionName) const;
 
 private:
-  /*!
-   * \brief Create a struct with the allocated subsystems
-   *
-   * \param gameClient The owner of the subsystems
-   * \param gameStruct The game client's add-on function table
-   * \param clientAccess Mutex guarding client function access
-   *
-   * \return A fully-allocated GameClientSubsystems struct
-   */
-  static GameClientSubsystems CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess);
-
-  /*!
-   * \brief Deallocate subsystems
-   *
-   * \param subsystems The subsystems created by CreateSubsystems()
-   */
-  static void DestroySubsystems(GameClientSubsystems &subsystems);
-
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video, IGameInputCallback *input);
   bool LoadGameInfo();
@@ -180,9 +160,6 @@ private:
 
   // Game subsystems
   GameClientSubsystems m_subsystems;
-
-  // Add-on properties
-  CGameClientProperties m_libraryProps;        // Properties to pass to the DLL
 
   // Game API xml parameters
   bool                  m_bSupportsVFS;

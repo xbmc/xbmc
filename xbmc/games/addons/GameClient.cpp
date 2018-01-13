@@ -21,6 +21,7 @@
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
 #include "GameClientInGameSaves.h"
+#include "GameClientProperties.h"
 #include "GameClientTranslator.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
@@ -117,8 +118,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonI
 
 CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
   CAddonDll(std::move(addonInfo)),
-  m_subsystems(CreateSubsystems(*this, m_struct, m_critSection)),
-  m_libraryProps(this, m_struct.props),
+  m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, m_struct, m_critSection)),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),
   m_bSupportsKeyboard(false),
@@ -170,21 +170,7 @@ CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
 CGameClient::~CGameClient(void)
 {
   CloseFile();
-  DestroySubsystems(m_subsystems);
-}
-
-GameClientSubsystems CGameClient::CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess)
-{
-  GameClientSubsystems subsystems = { };
-
-  subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
-
-  return subsystems;
-}
-
-void CGameClient::DestroySubsystems(GameClientSubsystems &subsystems)
-{
-  subsystems.Input.reset();
+  CGameClientSubsystem::DestroySubsystems(m_subsystems);
 }
 
 std::string CGameClient::LibPath() const
@@ -234,7 +220,7 @@ bool CGameClient::Initialize(void)
   if (!CDirectory::Exists(savestatesDir))
     CDirectory::Create(savestatesDir);
 
-  m_libraryProps.InitializeProperties();
+  AddonProperties().InitializeProperties();
 
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.CloseGame = cb_close_game;
