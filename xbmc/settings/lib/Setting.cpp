@@ -763,8 +763,6 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         if (!m_optionsFillerName.empty())
         {
           m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
-          if (m_optionsFiller == nullptr)
-            CLog::Log(LOGWARNING, "CSettingInt: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
         }
       }
       else
@@ -911,7 +909,10 @@ IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
   {
     m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
     if (m_optionsFiller == nullptr)
+    {
+      CLog::Log(LOGERROR, "CSettingInt: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
       return options;
+    }
   }
 
   int bestMatchingValue = m_value;
@@ -1193,8 +1194,6 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
         if (!m_optionsFillerName.empty())
         {
           m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
-          if (m_optionsFiller == nullptr)
-            CLog::Log(LOGWARNING, "CSettingString: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
         }
       }
       else
@@ -1314,7 +1313,10 @@ StringSettingOptions CSettingString::UpdateDynamicOptions()
   {
     m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
     if (m_optionsFiller == nullptr)
+    {
+      CLog::Log(LOGERROR, "CSettingString: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
       return options;
+    }
   }
 
   std::string bestMatchingValue = m_value;
