@@ -204,6 +204,11 @@ bool CPVRChannelGroup::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
+std::string CPVRChannelGroup::GetPath() const
+{
+  return StringUtils::Format("pvr://channels/%s/%s/", m_bRadio ? "radio" : "tv", GroupName().c_str());
+}
+
 bool CPVRChannelGroup::SetChannelNumber(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber)
 {
   bool bReturn(false);

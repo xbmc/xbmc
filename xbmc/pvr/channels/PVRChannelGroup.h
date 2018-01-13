@@ -118,6 +118,12 @@ namespace PVR
     virtual bool Update(void);
 
     /*!
+     * @brief Get the path of this group.
+     * @return the path.
+     */
+    std::string GetPath() const;
+
+    /*!
      * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager. Call SortByChannelNumber() and Renumber() after all changes are done.
      * @param channel The channel to change the channel number for.
      * @param channelNumber The new channel number.
