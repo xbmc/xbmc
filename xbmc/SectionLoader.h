@@ -53,6 +53,5 @@ protected:
 
 };
 
-XBMC_GLOBAL_REF(CSectionLoader,g_sectionLoader);
-#define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
+extern  CSectionLoader g_sectionLoader;
 

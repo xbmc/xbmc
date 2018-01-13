@@ -59,6 +59,7 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
   CPartyModeManager     g_partyModeManager;
 
   CAlarmClock        g_alarmClock;
+  CSectionLoader     g_sectionLoader;
 
 #ifdef TARGET_RASPBERRY_PI
   CRBP               g_RBP;

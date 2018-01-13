@@ -37,11 +37,7 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 //dllLoadLibraryA, dllFreeLibrary, dllGetProcAddress are from dllLoader,
 //they are wrapper functions of COFF/PE32 loader.
 extern "C" HMODULE WINAPI dllLoadLibraryA(LPCSTR libname);
-extern "C" HMODULE WINAPI dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
-extern "C" FARPROC WINAPI dllGetProcAddress(HMODULE hModule, LPCSTR function);
-extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName);
-extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
 
 // our exports
 Export win32_exports[] =
@@ -241,10 +237,9 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const std::string &dll)
 {
-#ifdef TARGET_WINDOWS_DESKTOP
   using KODI::PLATFORM::WINDOWS::ToW;
   auto strdllW = ToW(CSpecialProtocol::TranslatePath(dll));
-  auto image_base = reinterpret_cast<BYTE*>(GetModuleHandleW(strdllW.c_str()));
+  auto image_base = reinterpret_cast<BYTE*>(m_dllHandle);
 
   if (!image_base)
   {
@@ -323,7 +318,6 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
       }
     }
   }
-#endif
 }
 
 bool Win32DllLoader::NeedsHooking(const char *dllName)
