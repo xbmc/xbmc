@@ -169,6 +169,7 @@ CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
 CGameClient::~CGameClient(void)
 {
   CloseFile();
+  DestroySubsystems(m_subsystems);
 }
 
 GameClientSubsystems CGameClient::CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess)
@@ -178,6 +179,11 @@ GameClientSubsystems CGameClient::CreateSubsystems(CGameClient &gameClient, Addo
   subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
 
   return subsystems;
+}
+
+void CGameClient::DestroySubsystems(GameClientSubsystems &subsystems)
+{
+  subsystems.Input.reset();
 }
 
 std::string CGameClient::LibPath() const
