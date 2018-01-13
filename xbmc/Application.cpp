@@ -324,6 +324,7 @@ void CApplication::HandleWinEvents()
         break;
       case XBMC_APPCOMMAND:
         g_application.OnAppCommand(newEvent.appcommand.action);
+        break;
       case XBMC_SETFOCUS:
         // Reset the screensaver
         g_application.ResetScreenSaver();
