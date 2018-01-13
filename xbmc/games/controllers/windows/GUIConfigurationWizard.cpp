@@ -198,8 +198,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
   bool bHandled = false;
 
-  // Handle esc key separately
-  if (!m_deviceName.empty() && m_deviceName != buttonMap->DeviceName())
+  // Abort if another controller cancels the prompt
+  if (IsMapping() && !IsMapping(buttonMap->DeviceName()))
   {
     bool bIsCancelAction = false;
 
@@ -324,7 +324,9 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
           OnMotion(buttonMap);
           m_inputEvent.Set();
-          m_deviceName = buttonMap->DeviceName();
+
+          if (m_deviceName.empty())
+            m_deviceName = buttonMap->DeviceName();
         }
       }
     }
@@ -366,14 +368,20 @@ void CGUIConfigurationWizard::OnMotionless(const JOYSTICK::IButtonMap* buttonMap
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 {
-  using namespace KEYBOARD;
-
   bool bHandled = false;
 
   if (!m_bStop)
+    bHandled = OnKeyAction(m_actionMap->GetActionID(key));
+
+  return bHandled;
+}
+
+bool CGUIConfigurationWizard::OnKeyAction(unsigned int actionId)
+{
+  bool bHandled = false;
+
+  switch (actionId)
   {
-    switch (m_actionMap->GetActionID(key))
-    {
     case ACTION_MOVE_LEFT:
     case ACTION_MOVE_RIGHT:
     case ACTION_MOVE_UP:
@@ -397,7 +405,6 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
       // Absorb keypress
       bHandled = true;
       break;
-    }
   }
 
   return bHandled;
@@ -406,6 +413,16 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 bool CGUIConfigurationWizard::OnButtonPress(const std::string& button)
 {
   return Abort(false);
+}
+
+bool CGUIConfigurationWizard::IsMapping() const
+{
+  return !m_deviceName.empty();
+}
+
+bool CGUIConfigurationWizard::IsMapping(const std::string &deviceName) const
+{
+  return m_deviceName == deviceName;
 }
 
 void CGUIConfigurationWizard::InstallHooks(void)

@@ -90,11 +90,16 @@ namespace GAME
   private:
     void InitializeState(void);
 
+    bool IsMapping() const;
+    bool IsMapping(const std::string &deviceName) const;
+
     void InstallHooks(void);
     void RemoveHooks(void);
 
     void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
     void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
+
+    bool OnKeyAction(unsigned int actionId);
 
     // Construction parameters
     const bool                           m_bEmulation;
