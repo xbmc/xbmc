@@ -63,7 +63,7 @@ CWinSystemAmlogic::CWinSystemAmlogic()
   }
 
   m_nativeDisplay = EGL_NO_DISPLAY;
-  m_nativeWindow = nullptr;
+  m_nativeWindow = static_cast<EGLNativeWindowType>(NULL);
 
   m_displayWidth = 0;
   m_displayHeight = 0;
@@ -84,7 +84,7 @@ CWinSystemAmlogic::~CWinSystemAmlogic()
 {
   if(m_nativeWindow)
   {
-    m_nativeWindow = nullptr;
+    m_nativeWindow = static_cast<EGLNativeWindowType>(NULL);
   }
 }
 
@@ -149,10 +149,12 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
 
+#ifdef _FBDEV_WINDOW_H_
   fbdev_window *nativeWindow = new fbdev_window;
   nativeWindow->width = res.iWidth;
   nativeWindow->height = res.iHeight;
   m_nativeWindow = static_cast<EGLNativeWindowType>(nativeWindow);
+#endif
 
   aml_set_native_resolution(res, m_framebuffer_name, stereo_mode);
 
@@ -171,7 +173,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAmlogic::DestroyWindow()
 {
-  m_nativeWindow = nullptr;
+  m_nativeWindow = static_cast<EGLNativeWindowType>(NULL);
 
   return true;
 }
