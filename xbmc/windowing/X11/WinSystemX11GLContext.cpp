@@ -305,7 +305,10 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
   {
     pVSync.reset(new CVideoSyncDRM(clock, *this));
   }
-  pVSync.reset(X11::GLXVideoSyncCreate(clock, *this));
+  else
+  {
+    pVSync.reset(X11::GLXVideoSyncCreate(clock, *this));
+  }
 
   return pVSync;
 }
