@@ -53,10 +53,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_isFinished(false),
   m_defaultCrossfadeMS (0),
   m_upcomingCrossfadeMS(0),
-  m_currentStream(NULL ),
   m_audioCallback(NULL ),
   m_jobCounter(0),
-  m_continueStream(false),
   m_newForcedPlayerTime(-1),
   m_newForcedTotalTime (-1)
 {
@@ -318,21 +316,19 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   {
     // check if we advance a track of a CUE sheet
     // if this is the case we don't need to open a new stream
-    std::string newURL = file.GetMusicInfoTag() ? file.GetMusicInfoTag()->GetURL() : file.GetPath();
-    std::string oldURL = m_currentStream->m_fileItem.GetMusicInfoTag() ?
-                           m_currentStream->m_fileItem.GetMusicInfoTag()->GetURL() : m_currentStream->m_fileItem.GetPath();
+    std::string newURL = file.GetDynURL().GetFileName();
+    std::string oldURL = m_currentStream->m_fileItem.GetDynURL().GetFileName();
     if (newURL.compare(oldURL) == 0 &&
         file.m_lStartOffset &&
         file.m_lStartOffset == m_currentStream->m_fileItem.m_lEndOffset &&
         m_currentStream && m_currentStream->m_prepareTriggered)
     {
-      m_continueStream = true;
+      m_currentStream->m_nextFileItem.reset(new CFileItem(file));
       m_upcomingCrossfadeMS = 0;
       return true;
     }
+    m_currentStream->m_nextFileItem.reset();
   }
-
-  m_continueStream = false;
 
   StreamInfo *si = new StreamInfo();
   si->m_fileItem = file;
@@ -471,7 +467,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
     return false;
   }
 
-  si->m_stream->SetVolume    (si->m_volume);
+  si->m_stream->SetVolume(si->m_volume);
   float peak = 1.0;
   float gain = si->m_decoder.GetReplayGain(peak);
   if (peak * gain <= 1.0)
@@ -676,15 +672,15 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
     if (!si->m_started)
       continue;
 
-    /* is it time to prepare the next stream? */
+    // is it time to prepare the next stream?
     if (si->m_prepareNextAtFrame > 0 && !si->m_prepareTriggered && si->m_framesSent >= si->m_prepareNextAtFrame)
     {
       si->m_prepareTriggered = true;
       m_callback.OnQueueNextItem();
     }
 
-    /* it is time to start playing the next stream? */
-    if (si->m_playNextAtFrame > 0 && !si->m_playNextTriggered && !m_continueStream && si->m_framesSent >= si->m_playNextAtFrame)
+    // it is time to start playing the next stream?
+    if (si->m_playNextAtFrame > 0 && !si->m_playNextTriggered && !si->m_nextFileItem && si->m_framesSent >= si->m_playNextAtFrame)
     {
       if (!si->m_prepareTriggered)
       {
@@ -768,15 +764,18 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR ||
       ((si->m_endOffset) && (si->m_framesSent / si->m_audioFormat.m_sampleRate >= (si->m_endOffset - si->m_startOffset) / 1000)))
   {
-    if (si == m_currentStream && m_continueStream)
+    if (si == m_currentStream && si->m_nextFileItem)
     {
       // update current stream with info of next track
-      si->m_startOffset = si->m_fileItem.m_lStartOffset;
-      if (si->m_fileItem.m_lEndOffset)
-        si->m_endOffset = si->m_fileItem.m_lEndOffset;
+      si->m_startOffset = si->m_nextFileItem->m_lStartOffset;
+      if (si->m_nextFileItem->m_lEndOffset)
+        si->m_endOffset = si->m_nextFileItem->m_lEndOffset;
       else
         si->m_endOffset = 0;
       si->m_framesSent = 0;
+
+      si->m_fileItem = *si->m_nextFileItem;
+      si->m_nextFileItem.reset();
 
       int64_t streamTotalTime = si->m_decoder.TotalTime() - si->m_startOffset;
       if (si->m_endOffset)
@@ -797,7 +796,6 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
 
       UpdateGUIData(si);
       m_callback.OnPlayBackStarted(si->m_fileItem);
-      m_continueStream = false;
     }
     else
     {
