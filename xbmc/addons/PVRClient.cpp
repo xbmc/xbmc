@@ -684,7 +684,7 @@ public:
     m_strDirector(kodiTag->DeTokenize(kodiTag->Directors())),
     m_strWriter(kodiTag->DeTokenize(kodiTag->Writers())),
     m_strIMDBNumber(kodiTag->IMDBNumber()),
-    m_strEpisodeName(kodiTag->EpisodeName()),
+    m_strEpisodeName(kodiTag->EpisodeName(true)),
     m_strIconPath(kodiTag->Icon()),
     m_strSeriesLink(kodiTag->SeriesLink())
   {

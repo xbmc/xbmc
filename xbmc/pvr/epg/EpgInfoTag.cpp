@@ -534,9 +534,14 @@ int CPVREpgInfoTag::EpisodePart(void) const
   return m_iEpisodePart;
 }
 
-std::string CPVREpgInfoTag::EpisodeName(void) const
+std::string CPVREpgInfoTag::EpisodeName(bool bOverrideParental /* = false */) const
 {
-  return m_strEpisodeName;
+  std::string retVal;
+
+  if (bOverrideParental || !IsParentalLocked())
+    retVal = m_strEpisodeName;
+
+  return retVal;
 }
 
 std::string CPVREpgInfoTag::Icon(void) const
