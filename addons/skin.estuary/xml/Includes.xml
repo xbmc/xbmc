@@ -936,6 +936,7 @@
 					<height>100</height>
 					<label></label>
 					<onclick>Action(Back)</onclick>
+					<visible>!Window.IsActive(home)</visible>
 					<texturefocus />
 					<texturenofocus />
 				</control>
