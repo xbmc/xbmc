@@ -742,6 +742,7 @@ AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)
+AC_SUBST(app_rendersystem)
 
 AC_OUTPUT
 echo -e "ccache:\t $use_ccache"
