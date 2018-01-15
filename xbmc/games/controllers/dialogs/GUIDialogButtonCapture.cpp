@@ -19,11 +19,11 @@
  */
 
 #include "GUIDialogButtonCapture.h"
+#include "games/controllers/ControllerIDs.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
-#include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/ActionIDs.h"

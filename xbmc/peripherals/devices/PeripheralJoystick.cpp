@@ -19,10 +19,10 @@
  */
 
 #include "PeripheralJoystick.h"
+#include "games/controllers/ControllerIDs.h"
 #include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/keymaps/KeymapHandling.h"
 #include "input/joysticks/DeadzoneFilter.h"
-#include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/RumbleGenerator.h"

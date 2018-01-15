@@ -20,8 +20,8 @@
 
 #include "InputSink.h"
 #include "games/addons/GameClient.h"
+#include "games/controllers/ControllerIDs.h"
 #include "games/addons/input/GameClientInput.h"
-#include "input/joysticks/JoystickIDs.h"
 
 using namespace KODI;
 using namespace GAME;

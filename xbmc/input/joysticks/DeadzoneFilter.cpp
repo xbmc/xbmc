@@ -20,6 +20,7 @@
 
 #include "DeadzoneFilter.h"
 #include "JoystickIDs.h"
+#include "games/controllers/ControllerIDs.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"

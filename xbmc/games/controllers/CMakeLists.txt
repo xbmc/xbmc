@@ -7,6 +7,7 @@ set(SOURCES Controller.cpp
 set(HEADERS Controller.h
             ControllerDefinitions.h
             ControllerFeature.h
+            ControllerIDs.h
             ControllerLayout.h
             ControllerManager.h
             ControllerTranslator.h
