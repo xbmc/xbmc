@@ -32,13 +32,9 @@ namespace WAYLAND
 {
 
 /**
- * Shell surface implementation for unstable xdg_shell in version 6
- *
- * xdg_shell was accepted as a stable protocol in wayland-protocols, which
- * means this class is deprecated and can be safely removed once the relevant
- * compositors have made the switch.
+ * Shell surface implementation for stable xdg_shell
  */
-class CShellSurfaceXdgShellUnstableV6 : public IShellSurface
+class CShellSurfaceXdgShell : public IShellSurface
 {
 public:
   /**
@@ -46,16 +42,16 @@ public:
    *
    * \param handler the shell surface handler
    * \param display the wl_display global (for initial roundtrip)
-   * \param shell the zxdg_shell_v6 global
+   * \param shell the xdg_wm_base global
    * \param surface surface to make shell surface for
    * \param title title of the surfae
    * \param class_ class of the surface, which should match the name of the
    *               .desktop file of the application
    */
-  CShellSurfaceXdgShellUnstableV6(IShellSurfaceHandler& handler, wayland::display_t& display, wayland::zxdg_shell_v6_t const& shell, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
-  virtual ~CShellSurfaceXdgShellUnstableV6() noexcept;
+  CShellSurfaceXdgShell(IShellSurfaceHandler& handler, wayland::display_t& display, wayland::xdg_wm_base_t const& shell, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
+  virtual ~CShellSurfaceXdgShell() noexcept;
 
-  static CShellSurfaceXdgShellUnstableV6* TryCreate(IShellSurfaceHandler& handler, CConnection& connection, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
+  static CShellSurfaceXdgShell* TryCreate(IShellSurfaceHandler& handler, CConnection& connection, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
 
   void Initialize() override;
 
@@ -74,10 +70,10 @@ public:
 private:
   IShellSurfaceHandler& m_handler;
   wayland::display_t& m_display;
-  wayland::zxdg_shell_v6_t m_shell;
+  wayland::xdg_wm_base_t m_shell;
   wayland::surface_t m_surface;
-  wayland::zxdg_surface_v6_t m_xdgSurface;
-  wayland::zxdg_toplevel_v6_t m_xdgToplevel;
+  wayland::xdg_surface_t m_xdgSurface;
+  wayland::xdg_toplevel_t m_xdgToplevel;
 
   CSizeInt m_configuredSize;
   StateBitset m_configuredState;

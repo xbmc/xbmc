@@ -5,7 +5,7 @@ DEPS=../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=waylandpp
-VERSION=0.1.5
+VERSION=0.2.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

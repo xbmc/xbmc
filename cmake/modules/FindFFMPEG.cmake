@@ -67,7 +67,6 @@ endif()
 # external FFMPEG
 if(NOT ENABLE_INTERNAL_FFMPEG OR KODI_DEPENDSBUILD)
   if(FFMPEG_PATH)
-    set(ENV{PKG_CONFIG_PATH} "${FFMPEG_PATH}/lib/pkgconfig")
     list(APPEND CMAKE_PREFIX_PATH ${FFMPEG_PATH})
   endif()
 

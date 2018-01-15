@@ -29,6 +29,7 @@
 
 #include <wayland-client.hpp>
 #include <wayland-cursor.hpp>
+#include <wayland-extra-protocols.hpp>
 
 #include "Connection.h"
 #include "Output.h"
