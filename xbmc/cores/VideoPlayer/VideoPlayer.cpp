@@ -3906,6 +3906,9 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
 int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 {
+  if (!m_pInputStream)
+    return 0;
+
 #if defined(HAVE_LIBBLURAY)
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
