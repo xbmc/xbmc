@@ -34,13 +34,7 @@ using namespace JOYSTICK;
 
 void CControllerFeature::Reset(void)
 {
-  m_controller = nullptr;
-  m_type = FEATURE_TYPE::UNKNOWN;
-  m_category = FEATURE_CATEGORY::UNKNOWN;
-  m_categoryLabelId = -1;
-  m_strName.clear();
-  m_labelId = -1;
-  m_inputType = INPUT_TYPE::UNKNOWN;
+  *this = CControllerFeature();
 }
 
 CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
@@ -48,12 +42,12 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   if (this != &rhs)
   {
     m_controller = rhs.m_controller;
-    m_type       = rhs.m_type;
-    m_category   = rhs.m_category;
+    m_type = rhs.m_type;
+    m_category = rhs.m_category;
     m_categoryLabelId = rhs.m_categoryLabelId;
-    m_strName    = rhs.m_strName;
-    m_labelId    = rhs.m_labelId;
-    m_inputType  = rhs.m_inputType;
+    m_strName = rhs.m_strName;
+    m_labelId = rhs.m_labelId;
+    m_inputType = rhs.m_inputType;
   }
   return *this;
 }

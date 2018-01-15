@@ -31,7 +31,7 @@ namespace GAME
   class CGUIFeatureGroupTitle : public CGUILabelControl
   {
   public:
-    CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int featureIndex);
+    CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int buttonIndex);
 
     virtual ~CGUIFeatureGroupTitle() = default;
   };
@@ -39,7 +39,7 @@ namespace GAME
   class CGUIFeatureSeparator : public CGUIImage
   {
   public:
-    CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int featureIndex);
+    CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int buttonIndex);
 
     virtual ~CGUIFeatureSeparator() = default;
   };

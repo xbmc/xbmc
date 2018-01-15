@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/mouse/IMouseButtonMap.h"
+#include "input/mouse/interfaces/IMouseButtonMap.h"
 
 #include <string>
 #include <utility>

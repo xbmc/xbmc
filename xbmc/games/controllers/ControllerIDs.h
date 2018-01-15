@@ -19,6 +19,6 @@
  */
 #pragma once
 
- // Analog sticks on the default controller
-#define DEFAULT_LEFT_STICK_NAME   "leftstick"
-#define DEFAULT_RIGHT_STICK_NAME  "rightstick"
+// Default controller IDs
+#define DEFAULT_CONTROLLER_ID    "game.controller.default"
+#define DEFAULT_REMOTE_ID        "game.controller.remote"

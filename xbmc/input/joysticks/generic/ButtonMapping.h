@@ -19,9 +19,9 @@
  */
 #pragma once
 
+#include "input/joysticks/interfaces/IButtonMapCallback.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IButtonMapCallback.h"
-#include "input/joysticks/IDriverHandler.h"
 
 #include <map>
 #include <stdint.h>
@@ -36,7 +36,35 @@ namespace JOYSTICK
   class IButtonMap;
   class IButtonMapper;
 
-  class CButtonDetector
+  /*!
+   * \brief Detects and dispatches mapping events
+   *
+   * A mapping event usually occurs when a driver primitive is pressed or
+   * exceeds a certain threshold.
+   *
+   * Detection can be quite complicated due to driver bugs, so each type of
+   * driver primitive is given its own detector class inheriting from this one.
+   */
+  class CPrimitiveDetector
+  {
+  protected:
+    CPrimitiveDetector(CButtonMapping* buttonMapping);
+
+    /*!
+     * \brief Dispatch a mapping event
+     *
+     * \return True if the primitive was mapped, false otherwise
+     */
+    bool MapPrimitive(const CDriverPrimitive &primitive);
+
+  private:
+    CButtonMapping* const m_buttonMapping;
+  };
+
+  /*!
+   * \brief Detects when a button should be mapped
+   */
+  class CButtonDetector : public CPrimitiveDetector
   {
   public:
     CButtonDetector(CButtonMapping* buttonMapping, unsigned int buttonIndex);
@@ -46,18 +74,20 @@ namespace JOYSTICK
      *
      * \param bPressed The new state
      *
-     * \return True if this press was absorbed, false if it should fall through
+     * \return True if this press was handled, false if it should fall through
      *         to the next driver handler
      */
     bool OnMotion(bool bPressed);
 
   private:
     // Construction parameters
-    CButtonMapping* const m_buttonMapping;
     const unsigned int m_buttonIndex;
   };
 
-  class CHatDetector
+  /*!
+   * \brief Detects when a D-pad direction should be mapped
+   */
+  class CHatDetector : public CPrimitiveDetector
   {
   public:
     CHatDetector(CButtonMapping* buttonMapping, unsigned int hatIndex);
@@ -73,7 +103,6 @@ namespace JOYSTICK
 
   private:
     // Construction parameters
-    CButtonMapping* const m_buttonMapping;
     const unsigned int m_hatIndex;
   };
 
@@ -85,7 +114,10 @@ namespace JOYSTICK
     bool bLateDiscovery = false;
   };
 
-  class CAxisDetector
+  /*!
+   * \brief Detects when an axis should be mapped
+   */
+  class CAxisDetector : public CPrimitiveDetector
   {
   public:
     CAxisDetector(CButtonMapping* buttonMapping, unsigned int axisIndex, const AxisConfiguration& config);
@@ -178,7 +210,6 @@ namespace JOYSTICK
     void DetectType(float position);
 
     // Construction parameters
-    CButtonMapping* const m_buttonMapping;
     const unsigned int m_axisIndex;
     AxisConfiguration m_config; // mutable
 

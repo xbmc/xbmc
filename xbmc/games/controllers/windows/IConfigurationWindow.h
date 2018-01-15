@@ -139,20 +139,20 @@ namespace GAME
     virtual void Load(const ControllerPtr& controller) = 0;
 
     /*!
-     * \brief  Focus has been set to the specified feature
-     * \param  featureIndex The index of the feature being focused
+     * \brief  Focus has been set to the specified GUI button
+     * \param  buttonIndex The index of the button being focused
      */
-    virtual void OnFocus(unsigned int index) = 0;
+    virtual void OnFocus(unsigned int buttonIndex) = 0;
 
     /*!
-     * \brief  The specified feature has been selected
-     * \param  featureIndex The index of the feature being selected
+     * \brief  The specified GUI button has been selected
+     * \param  buttonIndex The index of the button being selected
      */
-    virtual void OnSelect(unsigned int index) = 0;
+    virtual void OnSelect(unsigned int buttonIndex) = 0;
   };
 
   /*!
-   * \brief A button in a feature list
+   * \brief A GUI button in a feature list
    */
   class IFeatureButton
   {
@@ -216,8 +216,9 @@ namespace GAME
     virtual ~IConfigurationWizard() = default;
 
     /*!
-     * \brief Start the wizard at the specified feature
-     * \param featureIndex The index of the feature to start at
+     * \brief Start the wizard for the specified buttons
+     * \param controllerId The controller ID being mapped
+     * \param buttons The buttons to map
      */
     virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) = 0;
 

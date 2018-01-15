@@ -19,8 +19,8 @@
  */
 
 #include "JoystickMonitor.h"
-#include "JoystickIDs.h"
 #include "Application.h"
+#include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
 

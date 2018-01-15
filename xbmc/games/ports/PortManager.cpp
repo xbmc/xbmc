@@ -21,7 +21,7 @@
 #include "PortManager.h"
 #include "PortMapper.h"
 #include "input/hardware/IHardwareInput.h"
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/devices/PeripheralJoystickEmulation.h"

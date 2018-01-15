@@ -21,9 +21,9 @@
 
 #include "IConfigurationWindow.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IButtonMapper.h"
-#include "input/keyboard/IKeyboardHandler.h"
-#include "input/mouse/IMouseInputHandler.h"
+#include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/mouse/interfaces/IMouseInputHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -90,11 +90,16 @@ namespace GAME
   private:
     void InitializeState(void);
 
+    bool IsMapping() const;
+    bool IsMapping(const std::string &deviceName) const;
+
     void InstallHooks(void);
     void RemoveHooks(void);
 
     void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
     void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
+
+    bool OnKeyAction(unsigned int actionId);
 
     // Construction parameters
     const bool                           m_bEmulation;

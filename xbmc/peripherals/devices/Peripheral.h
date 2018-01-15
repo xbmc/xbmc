@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "input/joysticks/IInputProvider.h"
+#include "input/joysticks/interfaces/IInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;
@@ -44,6 +44,7 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
+  class CAddonButtonMapping;
   class CGUIDialogPeripheralSettings;
   class CPeripheralBus;
   class CPeripherals;
@@ -237,6 +238,6 @@ namespace PERIPHERALS
     std::set<std::string>             m_changedSettings;
     CPeripheralBus*                  m_bus;
     std::map<KODI::JOYSTICK::IInputHandler*, std::unique_ptr<KODI::JOYSTICK::IDriverHandler>> m_inputHandlers;
-    std::map<KODI::JOYSTICK::IButtonMapper*, KODI::JOYSTICK::IDriverHandler*> m_buttonMappers;
+    std::map<KODI::JOYSTICK::IButtonMapper*, std::unique_ptr<CAddonButtonMapping>> m_buttonMappers;
   };
 }

@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardHandler.h"
 #include "input/XBMC_vkeys.h"
 
 #include <vector>

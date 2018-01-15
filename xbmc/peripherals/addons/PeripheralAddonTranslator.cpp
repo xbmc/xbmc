@@ -126,22 +126,22 @@ kodi::addon::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(cons
 
   switch (primitive.Type())
   {
-    case BUTTON:
+    case PRIMITIVE_TYPE::BUTTON:
     {
       retVal = kodi::addon::DriverPrimitive::CreateButton(primitive.Index());
       break;
     }
-    case HAT:
+    case PRIMITIVE_TYPE::HAT:
     {
       retVal = kodi::addon::DriverPrimitive(primitive.Index(), TranslateHatDirection(primitive.HatDirection()));
       break;
     }
-    case SEMIAXIS:
+    case PRIMITIVE_TYPE::SEMIAXIS:
     {
       retVal = kodi::addon::DriverPrimitive(primitive.Index(), primitive.Center(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()), primitive.Range());
       break;
     }
-    case MOTOR:
+    case PRIMITIVE_TYPE::MOTOR:
     {
       retVal = kodi::addon::DriverPrimitive::CreateMotor(primitive.Index());
       break;

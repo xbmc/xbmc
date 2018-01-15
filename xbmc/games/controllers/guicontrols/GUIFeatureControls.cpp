@@ -24,21 +24,21 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIFeatureGroupTitle::CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int featureIndex) :
+CGUIFeatureGroupTitle::CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int buttonIndex) :
   CGUILabelControl(groupTitleTemplate)
 {
   // Initialize CGUILabelControl
   SetLabel(groupName);
-  SetID(CONTROL_FEATURE_GROUPS_START + featureIndex);
+  SetID(CONTROL_FEATURE_GROUPS_START + buttonIndex);
   SetVisible(true);
   AllocResources();
 }
 
-CGUIFeatureSeparator::CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int featureIndex) :
+CGUIFeatureSeparator::CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int buttonIndex) :
   CGUIImage(separatorTemplate)
 {
   // Initialize CGUIImage
-  SetID(CONTROL_FEATURE_SEPARATORS_START + featureIndex);
+  SetID(CONTROL_FEATURE_SEPARATORS_START + buttonIndex);
   SetVisible(true);
   AllocResources();
 }

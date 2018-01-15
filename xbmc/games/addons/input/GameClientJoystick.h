@@ -20,7 +20,7 @@
 #pragma once
 
 #include "games/controllers/ControllerTypes.h"
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 
 struct KodiToAddonFuncTable_Game;
 

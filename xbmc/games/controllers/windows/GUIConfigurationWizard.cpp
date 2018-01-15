@@ -23,8 +23,8 @@
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "input/joysticks/IButtonMap.h"
-#include "input/joysticks/IButtonMapCallback.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/keyboard/KeymapActionMap.h"
 #include "input/InputManager.h"
@@ -198,8 +198,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
   bool bHandled = false;
 
-  // Handle esc key separately
-  if (!m_deviceName.empty() && m_deviceName != buttonMap->DeviceName())
+  // Abort if another controller cancels the prompt
+  if (IsMapping() && !IsMapping(buttonMap->DeviceName()))
   {
     bool bIsCancelAction = false;
 
@@ -272,52 +272,62 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     {
       const CControllerFeature& feature = currentButton->Feature();
 
-      CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
-        m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
-
-      switch (feature.Type())
+      if (feature.Type() == JOYSTICK::FEATURE_TYPE::UNKNOWN)
       {
-        case FEATURE_TYPE::SCALAR:
-        {
-          buttonMap->AddScalar(feature.Name(), primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::ANALOG_STICK:
-        {
-          buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::RELPOINTER:
-        {
-          buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::WHEEL:
-        {
-          buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        case FEATURE_TYPE::THROTTLE:
-        {
-          buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
-          bHandled = true;
-          break;
-        }
-        default:
-          break;
+        // Unknown feature, absorb input
+        bHandled = true;
       }
-
-      if (bHandled)
+      else
       {
-        m_history.insert(primitive);
+        CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
+          m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
 
-        OnMotion(buttonMap);
-        m_inputEvent.Set();
-        m_deviceName = buttonMap->DeviceName();
+        switch (feature.Type())
+        {
+          case FEATURE_TYPE::SCALAR:
+          {
+            buttonMap->AddScalar(feature.Name(), primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::ANALOG_STICK:
+          {
+            buttonMap->AddAnalogStick(feature.Name(), analogStickDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::RELPOINTER:
+          {
+            buttonMap->AddRelativePointer(feature.Name(), analogStickDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::WHEEL:
+          {
+            buttonMap->AddWheel(feature.Name(), wheelDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          case FEATURE_TYPE::THROTTLE:
+          {
+            buttonMap->AddThrottle(feature.Name(), throttleDirection, primitive);
+            bHandled = true;
+            break;
+          }
+          default:
+            break;
+        }
+
+        if (bHandled)
+        {
+          m_history.insert(primitive);
+
+          OnMotion(buttonMap);
+          m_inputEvent.Set();
+
+          if (m_deviceName.empty())
+            m_deviceName = buttonMap->DeviceName();
+        }
       }
     }
   }
@@ -358,14 +368,20 @@ void CGUIConfigurationWizard::OnMotionless(const JOYSTICK::IButtonMap* buttonMap
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 {
-  using namespace KEYBOARD;
-
   bool bHandled = false;
 
   if (!m_bStop)
+    bHandled = OnKeyAction(m_actionMap->GetActionID(key));
+
+  return bHandled;
+}
+
+bool CGUIConfigurationWizard::OnKeyAction(unsigned int actionId)
+{
+  bool bHandled = false;
+
+  switch (actionId)
   {
-    switch (m_actionMap->GetActionID(key))
-    {
     case ACTION_MOVE_LEFT:
     case ACTION_MOVE_RIGHT:
     case ACTION_MOVE_UP:
@@ -389,7 +405,6 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
       // Absorb keypress
       bHandled = true;
       break;
-    }
   }
 
   return bHandled;
@@ -398,6 +413,16 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 bool CGUIConfigurationWizard::OnButtonPress(const std::string& button)
 {
   return Abort(false);
+}
+
+bool CGUIConfigurationWizard::IsMapping() const
+{
+  return !m_deviceName.empty();
+}
+
+bool CGUIConfigurationWizard::IsMapping(const std::string &deviceName) const
+{
+  return m_deviceName == deviceName;
 }
 
 void CGUIConfigurationWizard::InstallHooks(void)

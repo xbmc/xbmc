@@ -19,8 +19,8 @@
  */
 #pragma once
 
-#include "input/joysticks/IButtonSequence.h"
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IButtonSequence.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/joysticks/interfaces/IKeymapHandler.h"
 #include "input/joysticks/JoystickTypes.h"
 

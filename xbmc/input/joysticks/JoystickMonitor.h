@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 
 namespace KODI
 {

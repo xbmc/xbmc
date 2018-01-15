@@ -22,7 +22,7 @@
 #include "GameClientInput.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/addons/GameClient.h"
-#include "input/mouse/IMouseInputProvider.h"
+#include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "input/Key.h"
 #include "utils/log.h"
 

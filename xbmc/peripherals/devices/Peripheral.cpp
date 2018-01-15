@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "guilib/LocalizeStrings.h"
-#include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/Peripherals.h"
@@ -586,22 +586,24 @@ void CPeripheral::UnregisterInputHandler(IInputHandler* handler)
 
 void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 {
-  std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  auto it = m_buttonMappers.find(mapper);
   if (it == m_buttonMappers.end())
   {
-    IDriverHandler* addonMapping = new CAddonButtonMapping(m_manager, this, mapper);
-    RegisterJoystickDriverHandler(addonMapping, false);
-    m_buttonMappers[mapper] = addonMapping;
+    std::unique_ptr<CAddonButtonMapping> addonMapping(new CAddonButtonMapping(m_manager, this, mapper));
+
+    RegisterJoystickDriverHandler(addonMapping.get(), false);
+
+    m_buttonMappers[mapper] = std::move(addonMapping);
   }
 }
 
 void CPeripheral::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 {
-  std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  auto it = m_buttonMappers.find(mapper);
   if (it != m_buttonMappers.end())
   {
-    UnregisterJoystickDriverHandler(it->second);
-    delete it->second;
+    UnregisterJoystickDriverHandler(it->second.get());
+
     m_buttonMappers.erase(it);
   }
 }

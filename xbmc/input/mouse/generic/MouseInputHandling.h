@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/mouse/IMouseDriverHandler.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
 
 namespace KODI
 {

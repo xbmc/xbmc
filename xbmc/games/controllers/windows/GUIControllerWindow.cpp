@@ -269,16 +269,16 @@ void CGUIControllerWindow::OnControllerSelected(unsigned int controllerIndex)
     m_controllerList->OnSelect(controllerIndex);
 }
 
-void CGUIControllerWindow::OnFeatureFocused(unsigned int featureIndex)
+void CGUIControllerWindow::OnFeatureFocused(unsigned int buttonIndex)
 {
   if (m_featureList)
-    m_featureList->OnFocus(featureIndex);
+    m_featureList->OnFocus(buttonIndex);
 }
 
-void CGUIControllerWindow::OnFeatureSelected(unsigned int featureIndex)
+void CGUIControllerWindow::OnFeatureSelected(unsigned int buttonIndex)
 {
   if (m_featureList)
-    m_featureList->OnSelect(featureIndex);
+    m_featureList->OnSelect(buttonIndex);
 }
 
 void CGUIControllerWindow::UpdateButtons(void)

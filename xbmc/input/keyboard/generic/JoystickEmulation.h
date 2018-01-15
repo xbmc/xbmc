@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "input/keyboard/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardHandler.h"
 
 #include <vector>
 

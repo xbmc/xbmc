@@ -19,7 +19,7 @@
  */
 
 #include "JoystickEmulation.h"
-#include "input/joysticks/IDriverHandler.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/Key.h"
 
 #include <algorithm>

@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "JoystickTypes.h"
+#include "input/joysticks/JoystickTypes.h"
 
 #include <string>
 
