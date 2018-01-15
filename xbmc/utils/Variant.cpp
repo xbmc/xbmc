@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <sstream>
 #include <utility>
 
 #ifndef strtoll
@@ -523,18 +522,11 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
     case VariantTypeBoolean:
       return m_data.boolean ? "true" : "false";
     case VariantTypeInteger:
+      return std::to_string(m_data.integer);
     case VariantTypeUnsignedInteger:
+      return std::to_string(m_data.unsignedinteger);
     case VariantTypeDouble:
-    {
-      std::ostringstream strStream;
-      if (m_type == VariantTypeInteger)
-        strStream << m_data.integer;
-      else if (m_type == VariantTypeUnsignedInteger)
-        strStream << m_data.unsignedinteger;
-      else
-        strStream << m_data.dvalue;
-      return strStream.str();
-    }
+      return std::to_string(m_data.dvalue);
     default:
       return fallback;
   }
@@ -551,18 +543,11 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
     case VariantTypeBoolean:
       return m_data.boolean ? L"true" : L"false";
     case VariantTypeInteger:
+      return std::to_wstring(m_data.integer);
     case VariantTypeUnsignedInteger:
+      return std::to_wstring(m_data.unsignedinteger);
     case VariantTypeDouble:
-    {
-      std::wostringstream strStream;
-      if (m_type == VariantTypeInteger)
-        strStream << m_data.integer;
-      else if (m_type == VariantTypeUnsignedInteger)
-        strStream << m_data.unsignedinteger;
-      else
-        strStream << m_data.dvalue;
-      return strStream.str();
-    }
+      return std::to_wstring(m_data.dvalue);
     default:
       return fallback;
   }
