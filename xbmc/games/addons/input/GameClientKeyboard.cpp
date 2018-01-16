@@ -39,12 +39,12 @@ CGameClientKeyboard::CGameClientKeyboard(const CGameClient &gameClient,
   m_dllStruct(dllStruct),
   m_inputProvider(inputProvider)
 {
-  m_inputProvider->RegisterKeyboardHandler(this);
+  m_inputProvider->RegisterKeyboardDriverHandler(this);
 }
 
 CGameClientKeyboard::~CGameClientKeyboard()
 {
-  m_inputProvider->UnregisterKeyboardHandler(this);
+  m_inputProvider->UnregisterKeyboardDriverHandler(this);
 }
 
 bool CGameClientKeyboard::OnKeyPress(const CKey& key)

@@ -23,7 +23,7 @@ namespace KODI
 {
 namespace KEYBOARD
 {
-  class IKeyboardHandler;
+  class IKeyboardDriverHandler;
 
   /*!
    * \ingroup mouse
@@ -39,14 +39,14 @@ namespace KEYBOARD
      *
      * \param handler The handler to receive keyboard input provided by this class
      */
-    virtual void RegisterKeyboardHandler(IKeyboardHandler* handler) = 0;
+    virtual void RegisterKeyboardDriverHandler(IKeyboardDriverHandler* handler) = 0;
 
     /*!
      * \brief Unregisters handler from keyboard input
      *
      * \param handler The handler that was receiving keyboard input
      */
-    virtual void UnregisterKeyboardHandler(IKeyboardHandler* handler) = 0;
+    virtual void UnregisterKeyboardDriverHandler(IKeyboardDriverHandler* handler) = 0;
   };
 }
 }

@@ -43,7 +43,7 @@ namespace JOYSTICK
 
 namespace KEYBOARD
 {
-  class IKeyboardHandler;
+  class IKeyboardDriverHandler;
 }
 }
 
@@ -207,8 +207,8 @@ namespace PERIPHERALS
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler, bool bPromiscuous) { }
-    virtual void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler) { }
+    virtual void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) { }
 
     // implementation of IInputProvider
     void RegisterInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous) override;

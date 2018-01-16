@@ -22,7 +22,7 @@
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 
 #include <map>
 #include <stdint.h>
@@ -259,7 +259,7 @@ namespace JOYSTICK
    * activation.
    */
   class CButtonMapping : public IDriverHandler,
-                         public KEYBOARD::IKeyboardHandler,
+                         public KEYBOARD::IKeyboardDriverHandler,
                          public IButtonMapCallback
   {
   public:
@@ -279,7 +279,7 @@ namespace JOYSTICK
     virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
     virtual void ProcessAxisMotions(void) override;
 
-    // implementation of IKeyboardHandler
+    // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
     void OnKeyRelease(const CKey& key) override { }
 

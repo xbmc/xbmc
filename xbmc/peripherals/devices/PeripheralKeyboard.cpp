@@ -37,7 +37,7 @@ CPeripheralKeyboard::CPeripheralKeyboard(CPeripherals& manager, const Peripheral
 
 CPeripheralKeyboard::~CPeripheralKeyboard(void)
 {
-  m_manager.GetInputManager().UnregisterKeyboardHandler(this);
+  m_manager.GetInputManager().UnregisterKeyboardDriverHandler(this);
 }
 
 bool CPeripheralKeyboard::InitialiseFeature(const PeripheralFeature feature)
@@ -50,7 +50,7 @@ bool CPeripheralKeyboard::InitialiseFeature(const PeripheralFeature feature)
     {
       case FEATURE_KEYBOARD:
       {
-        m_manager.GetInputManager().RegisterKeyboardHandler(this);
+        m_manager.GetInputManager().RegisterKeyboardDriverHandler(this);
         break;
       }
       default:
@@ -63,7 +63,7 @@ bool CPeripheralKeyboard::InitialiseFeature(const PeripheralFeature feature)
   return bSuccess;
 }
 
-void CPeripheralKeyboard::RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler, bool bPromiscuous)
+void CPeripheralKeyboard::RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous)
 {
   CSingleLock lock(m_mutex);
 
@@ -71,7 +71,7 @@ void CPeripheralKeyboard::RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandl
   m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handle);
 }
 
-void CPeripheralKeyboard::UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler)
+void CPeripheralKeyboard::UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler)
 {
   CSingleLock lock(m_mutex);
 

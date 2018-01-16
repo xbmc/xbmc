@@ -20,7 +20,7 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "threads/CriticalSection.h"
 
 #include <vector>
@@ -28,7 +28,7 @@
 namespace PERIPHERALS
 {
   class CPeripheralKeyboard : public CPeripheral,
-                              public KODI::KEYBOARD::IKeyboardHandler
+                              public KODI::KEYBOARD::IKeyboardDriverHandler
   {
   public:
     CPeripheralKeyboard(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
@@ -37,17 +37,17 @@ namespace PERIPHERALS
 
     // implementation of CPeripheral
     bool InitialiseFeature(const PeripheralFeature feature) override;
-    void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler, bool bPromiscuous) override;
-    void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler) override;
+    void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous) override;
+    void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) override;
 
-    // implementation of IKeyboardHandler
+    // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
     void OnKeyRelease(const CKey& key) override;
 
   private:
     struct KeyboardHandle
     {
-      KODI::KEYBOARD::IKeyboardHandler* handler;
+      KODI::KEYBOARD::IKeyboardDriverHandler* handler;
       bool bPromiscuous;
     };
 
