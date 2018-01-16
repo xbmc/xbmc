@@ -117,7 +117,7 @@ public:
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
 
-  void ShowSplash(const std::string& message);
+  virtual void ShowSplash(const std::string& message);
 
 protected:
   bool                m_bRenderCreated;

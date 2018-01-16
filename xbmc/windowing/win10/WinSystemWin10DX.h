@@ -72,6 +72,8 @@ public:
   void Register(IDispResource *resource) override { CWinSystemWin10::Register(resource); };
   void Unregister(IDispResource *resource) override { CWinSystemWin10::Unregister(resource); };
 
+  void ShowSplash(const std::string& message) override;
+
 protected:
   void UpdateMonitor() const;
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
