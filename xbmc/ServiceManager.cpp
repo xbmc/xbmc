@@ -51,7 +51,15 @@ CServiceManager::CServiceManager()
 {
 }
 
-CServiceManager::~CServiceManager() = default;
+CServiceManager::~CServiceManager()
+{
+  if (init_level > 2)
+    DeinitStageThree();
+  if (init_level > 1)
+    DeinitStageTwo();
+  if (init_level > 0)
+    DeinitStageOne();
+}
 
 bool CServiceManager::InitForTesting()
 {
