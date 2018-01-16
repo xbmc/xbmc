@@ -29,6 +29,7 @@
 						<width>100%</width>
 						<height>44</height>
 						<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
+						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
 					</control>
 					<control type="wraplist" id="11">
 						<top>0</top>
