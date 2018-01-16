@@ -29,6 +29,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "../RenderFactory.h"
 
 #include <thread>
@@ -95,7 +96,7 @@ void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, in
   {
     int64_t nanodiff(static_cast<int64_t>((picture.pts - currentClock) * 1000));
     dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)->RenderUpdate(m_surfDestRect,
-      std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() + nanodiff);
+      CurrentHostCounter() + nanodiff);
   }
 }
 
