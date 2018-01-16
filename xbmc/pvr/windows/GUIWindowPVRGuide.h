@@ -63,11 +63,8 @@ namespace PVR
     void ClearData() override;
 
   private:
-    void Init();
-
     CGUIEPGGridContainer* GetGridControl();
-
-    bool SelectPlayingFile(void);
+    void InitEpgGridControl();
 
     bool OnContextButtonBegin();
     bool OnContextButtonEnd();

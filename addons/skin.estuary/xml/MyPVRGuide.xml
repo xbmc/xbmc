@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>50,51</views>
+	<views>50,51,52,53</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
 		<include>DefaultBackground</include>
@@ -10,7 +10,7 @@
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<description>Guide Timeline</description>
-				<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(52) | Control.IsVisible(53)</visible>
 				<include>OpenClose_Right</include>
 				<include>Visible_Right</include>
 				<control type="group">
@@ -23,30 +23,115 @@
 						<bottom>336</bottom>
 						<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 					</control>
-					<include content="EpgGrid">
-						<param name="control_id" value="50"/>
-						<param name="control_orientation" value="vertical"/>
-						<param name="viewtype_label" value="19297"/>
-						<param name="progress_texture_border" value="0,60,18,14"/>
-						<param name="progress_texture" value="windows/pvr/epg_progress_vertical.png"/>
-						<param name="has_rulerdate_layout" value="false"/>
-						<param name="ruler_width" value="1400"/>
-						<param name="ruler_label_width" value="365"/>
-						<param name="channel_width" value="350"/>
-						<param name="scrollbar_top" value="47"/>
-					</include>
-					<include content="EpgGrid">
-						<param name="control_id" value="51"/>
-						<param name="control_orientation" value="horizontal"/>
-						<param name="viewtype_label" value="19298"/>
-						<param name="progress_texture_border" value="5,10,5,10"/>
-						<param name="progress_texture" value="windows/pvr/epg_progress_horizontal.png"/>
-						<param name="has_rulerdate_layout" value="true"/>
-						<param name="ruler_width" value="150"/>
-						<param name="ruler_label_width" value="150"/>
-						<param name="channel_width" value="310"/>
-						<param name="scrollbar_top" value="105"/>
-					</include>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>100%</width>
+						<height>44</height>
+						<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
+					</control>
+					<control type="wraplist" id="11">
+						<top>0</top>
+						<left>0</left>
+						<width>100%</width>
+						<onup>63</onup>
+						<ondown>63</ondown>
+						<orientation>horizontal</orientation>
+						<scrolltime>200</scrolltime>
+						<focusposition>3</focusposition>
+						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
+						<itemlayout height="44" width="300">
+							<control type="label">
+								<left>-140</left>
+								<width>280</width>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<textcolor>grey</textcolor>
+							</control>
+						</itemlayout>
+						<focusedlayout height="44" width="300">
+							<control type="image">
+								<top>2</top>
+								<left>-148</left>
+								<width>296</width>
+								<height>42</height>
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<visible>Control.HasFocus(11)</visible>
+							</control>
+							<control type="image">
+								<left>-150</left>
+								<width>300</width>
+								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							</control>
+							<control type="label">
+								<left>-140</left>
+								<width>280</width>
+								<align>center</align>
+								<aligny>center</aligny>
+								<scroll>true</scroll>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="group" id="63">
+						<include content="EpgGrid">
+							<param name="control_id" value="50"/>
+							<param name="control_orientation" value="vertical"/>
+							<param name="control_top" value="55"/>
+							<param name="control_onup_id" value="11"/>
+							<param name="viewtype_label" value="19298"/>
+							<param name="progress_texture_border" value="0,60,18,14"/>
+							<param name="progress_texture" value="windows/pvr/epg_progress_vertical.png"/>
+							<param name="has_rulerdate_layout" value="false"/>
+							<param name="ruler_width" value="1400"/>
+							<param name="ruler_label_width" value="365"/>
+							<param name="channel_width" value="350"/>
+							<param name="scrollbar_top" value="47"/>
+						</include>
+						<include content="EpgGrid">
+							<param name="control_id" value="51"/>
+							<param name="control_orientation" value="horizontal"/>
+							<param name="control_top" value="55"/>
+							<param name="control_onup_id" value="11"/>
+							<param name="viewtype_label" value="19297"/>
+							<param name="progress_texture_border" value="5,10,5,10"/>
+							<param name="progress_texture" value="windows/pvr/epg_progress_horizontal.png"/>
+							<param name="has_rulerdate_layout" value="true"/>
+							<param name="ruler_width" value="150"/>
+							<param name="ruler_label_width" value="150"/>
+							<param name="channel_width" value="310"/>
+							<param name="scrollbar_top" value="105"/>
+						</include>
+						<include content="EpgGrid">
+							<param name="control_id" value="52"/>
+							<param name="control_orientation" value="vertical"/>
+							<param name="control_top" value="0"/>
+							<param name="control_onup_id" value="52"/>
+							<param name="viewtype_label" value="19301"/>
+							<param name="progress_texture_border" value="0,60,18,14"/>
+							<param name="progress_texture" value="windows/pvr/epg_progress_vertical.png"/>
+							<param name="has_rulerdate_layout" value="false"/>
+							<param name="ruler_width" value="1400"/>
+							<param name="ruler_label_width" value="365"/>
+							<param name="channel_width" value="350"/>
+							<param name="scrollbar_top" value="47"/>
+						</include>
+						<include content="EpgGrid">
+							<param name="control_id" value="53"/>
+							<param name="control_orientation" value="horizontal"/>
+							<param name="control_top" value="0"/>
+							<param name="control_onup_id" value="53"/>
+							<param name="viewtype_label" value="19300"/>
+							<param name="progress_texture_border" value="5,10,5,10"/>
+							<param name="progress_texture" value="windows/pvr/epg_progress_horizontal.png"/>
+							<param name="has_rulerdate_layout" value="true"/>
+							<param name="ruler_width" value="150"/>
+							<param name="ruler_label_width" value="150"/>
+							<param name="channel_width" value="310"/>
+							<param name="scrollbar_top" value="105"/>
+						</include>
+					</control>
 				</control>
 				<control type="group">
 					<bottom>0</bottom>

@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "utils/Observer.h"
 #include "windows/GUIMediaWindow.h"
 
@@ -32,6 +34,7 @@
 #define CONTROL_BTNSHOWDELETED            7
 #define CONTROL_BTNHIDEDISABLEDTIMERS     8
 #define CONTROL_BTNSHOWMODE               10
+#define CONTROL_LSTCHANNELGROUPS          11
 
 #define CONTROL_BTNCHANNELGROUPS          28
 #define CONTROL_BTNFILTERCHANNELS         31
@@ -112,6 +115,12 @@ namespace PVR
   private:
     bool OpenChannelGroupSelectionDialog(void);
 
+    bool HasChannelGroupsControl();
+    bool IsChannelGroupsControlFocused();
+    void InitChannelGroupsControl();
+    bool SelectActiveChannelGroup();
+    bool ActivateSelectedChannelGroup();
+
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.
@@ -125,6 +134,7 @@ namespace PVR
     void HideProgressDialog(void);
 
     CPVRChannelGroupPtr m_channelGroup;
+    std::vector<CPVRChannelGroupPtr> m_channelGroups;
     XbmcThreads::EndTime m_refreshTimeout;
     CGUIDialogProgressBarHandle *m_progressHandle; /*!< progress dialog that is displayed while the pvr manager is loading */
   };

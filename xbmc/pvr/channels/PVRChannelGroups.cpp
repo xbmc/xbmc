@@ -133,25 +133,23 @@ void CPVRChannelGroups::SortGroups()
   }
 }
 
-CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
+CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strInPath) const
 {
-  // get the filename from curl
-  CURL url(strPath);
-  std::string strFileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(strFileName);
+  std::string strPath = strInPath;
+  URIUtils::RemoveSlashAtEnd(strPath);
 
   std::string strCheckPath;
-  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+  for (const auto& group: m_groups)
   {
     // check if the path matches
-    strCheckPath = StringUtils::Format("channels/%s/%s/", (*it)->IsRadio() ? "radio" : "tv", (*it)->GroupName().c_str());
-    if (URIUtils::PathHasParent(strFileName, strCheckPath))
+    strCheckPath = group->GetPath();
+    if (URIUtils::PathHasParent(strPath, strCheckPath))
     {
-      strFileName.erase(0, strCheckPath.length());
-      std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));
+      strPath.erase(0, strCheckPath.size());
+      std::vector<std::string> split(StringUtils::Split(strPath, '_', 2));
       if (split.size() == 2)
       {
-        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0])));
+        const CPVRChannelPtr channel = group->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0]));
         if (channel)
           return CFileItemPtr(new CFileItem(channel));
       }
@@ -159,8 +157,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
   }
 
   // no match
-  CFileItemPtr retVal(new CFileItem);
-  return retVal;
+  return CFileItemPtr(new CFileItem());
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const
@@ -392,15 +389,13 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results, bool bExcludeHidden 
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
-  std::string strPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
     // exclude hidden groups if desired
     if (bExcludeHidden && (*it)->IsHidden())
       continue;
 
-    strPath = StringUtils::Format("pvr://channels/%s/%s/", m_bRadio ? "radio" : "tv", (*it)->GroupName().c_str());
-    CFileItemPtr group(new CFileItem(strPath, true));
+    CFileItemPtr group(new CFileItem((*it)->GetPath(), true));
     group->m_strTitle = (*it)->GroupName();
     group->SetLabel((*it)->GroupName());
     results->Add(group);
