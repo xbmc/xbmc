@@ -45,6 +45,7 @@ namespace PERIPHERALS
 {
   class CPeripheral;
   class CPeripheralJoystick;
+  class CPeripherals;
 
   typedef std::vector<kodi::addon::DriverPrimitive> PrimitiveVector;
   typedef std::map<KODI::JOYSTICK::FeatureName, kodi::addon::JoystickFeature> FeatureMap;
@@ -52,7 +53,7 @@ namespace PERIPHERALS
   class CPeripheralAddon : public ADDON::IAddonInstanceHandler
   {
   public:
-    explicit CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo);
+    explicit CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo, CPeripherals &manager);
     ~CPeripheralAddon(void) override;
 
     /*!
@@ -100,7 +101,6 @@ namespace PERIPHERALS
 
     void RegisterButtonMap(CPeripheral* device, KODI::JOYSTICK::IButtonMap* buttonMap);
     void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
-    void RefreshButtonMaps(const std::string& strDeviceName = "");
 
     static inline bool ProvidesJoysticks(const ADDON::BinaryAddonBasePtr& addonInfo)
     {
@@ -114,6 +114,12 @@ namespace PERIPHERALS
 
   private:
     void UnregisterButtonMap(CPeripheral* device);
+
+    // Binary add-on callbacks
+    void TriggerDeviceScan();
+    void RefreshButtonMaps(const std::string& strDeviceName = "");
+    unsigned int FeatureCount(const std::string &controllerId, JOYSTICK_FEATURE_TYPE type) const;
+    JOYSTICK_FEATURE_TYPE FeatureType(const std::string &controllerId, const std::string &featureName) const;
 
     /*!
      * @brief Helper functions
@@ -137,6 +143,9 @@ namespace PERIPHERALS
 
     static std::string GetDeviceName(PeripheralType type);
     static std::string GetProvider(PeripheralType type);
+
+    // Construction parameters
+    CPeripherals &m_manager;
 
     /* @brief Cache for const char* members in PERIPHERAL_PROPERTIES */
     std::string         m_strUserPath;    /*!< @brief translated path to the user profile */

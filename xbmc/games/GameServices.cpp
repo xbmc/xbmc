@@ -22,16 +22,18 @@
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/ports/PortManager.h"
-#include "ServiceBroker.h"
+#include "games/GameSettings.h"
 
 using namespace KODI;
 using namespace GAME;
 
 CGameServices::CGameServices(CControllerManager &controllerManager,
                              RETRO:: CGUIGameRenderManager &renderManager,
+                             CSettings &settings,
                              PERIPHERALS::CPeripherals &peripheralManager) :
   m_controllerManager(controllerManager),
   m_gameRenderManager(renderManager),
+  m_gameSettings(new CGameSettings(settings)),
   m_portManager(new CPortManager(peripheralManager))
 {
 }

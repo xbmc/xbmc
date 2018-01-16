@@ -23,6 +23,7 @@
 #include "utils/Observer.h"
 
 class CSetting;
+class CSettings;
 
 namespace KODI
 {
@@ -33,15 +34,16 @@ class CGameSettings : public ISettingCallback,
                       public Observable
 {
 public:
-  static CGameSettings& GetInstance();
-  virtual ~CGameSettings() = default;
+  CGameSettings(CSettings &settings);
+  ~CGameSettings() override;
 
   // Inherited from ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
-  CGameSettings() = default;
+  // Construction parameters
+  CSettings &m_settings;
 };
 
 } // namespace GAME

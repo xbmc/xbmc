@@ -20,7 +20,6 @@
 
 #include "PeripheralAddon.h"
 #include "PeripheralAddonTranslator.h"
-#include "ServiceBroker.h"
 #include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
@@ -58,8 +57,9 @@ using namespace XFILE;
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
 
-CPeripheralAddon::CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo)
+CPeripheralAddon::CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo, CPeripherals &manager)
   : IAddonInstanceHandler(ADDON_INSTANCE_PERIPHERAL, addonInfo),
+    m_manager(manager),
     m_bSupportsJoystickRumble(false),
     m_bSupportsJoystickPowerOff(false)
 {
@@ -774,6 +774,39 @@ void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "
   }
 }
 
+void CPeripheralAddon::TriggerDeviceScan()
+{
+  m_manager.TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
+}
+
+unsigned int CPeripheralAddon::FeatureCount(const std::string &controllerId, JOYSTICK_FEATURE_TYPE type) const
+{
+  using namespace GAME;
+
+  unsigned int count = 0;
+
+  CControllerManager& controllerProfiles = m_manager.GetControllerProfiles();
+  ControllerPtr controller = controllerProfiles.GetController(controllerId);
+  if (controller)
+    count = controller->FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
+
+  return count;
+}
+
+JOYSTICK_FEATURE_TYPE CPeripheralAddon::FeatureType(const std::string &controllerId, const std::string &featureName) const
+{
+  using namespace GAME;
+
+  JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN;
+
+  CControllerManager& controllerProfiles = m_manager.GetControllerProfiles();
+  ControllerPtr controller = controllerProfiles.GetController(controllerId);
+  if (controller)
+    type = CPeripheralAddonTranslator::TranslateFeatureType(controller->FeatureType(featureName));
+
+  return type;
+}
+
 void CPeripheralAddon::GetPeripheralInfo(const CPeripheral* device, kodi::addon::Peripheral& peripheralInfo)
 {
   peripheralInfo.SetType(CPeripheralAddonTranslator::TranslateType(device->Type()));
@@ -855,7 +888,10 @@ std::string CPeripheralAddon::GetProvider(PeripheralType type)
 
 void CPeripheralAddon::cb_trigger_scan(void* kodiInstance)
 {
-  CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
+  if (kodiInstance == nullptr)
+    return;
+
+  static_cast<CPeripheralAddon*>(kodiInstance)->TriggerDeviceScan();
 }
 
 void CPeripheralAddon::cb_refresh_button_maps(void* kodiInstance, const char* deviceName, const char* controllerId)
@@ -868,28 +904,16 @@ void CPeripheralAddon::cb_refresh_button_maps(void* kodiInstance, const char* de
 
 unsigned int CPeripheralAddon::cb_feature_count(void* kodiInstance, const char* controllerId, JOYSTICK_FEATURE_TYPE type)
 {
-  using namespace GAME;
+  if (kodiInstance == nullptr || controllerId == nullptr)
+    return 0;
 
-  unsigned int count = 0;
-
-  CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
-  ControllerPtr controller = controllerManager.GetController(controllerId);
-  if (controller)
-    count = controller->FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
-
-  return count;
+  return static_cast<CPeripheralAddon*>(kodiInstance)->FeatureCount(controllerId, type);
 }
 
 JOYSTICK_FEATURE_TYPE CPeripheralAddon::cb_feature_type(void* kodiInstance, const char* controllerId, const char* featureName)
 {
-  using namespace GAME;
+  if (kodiInstance == nullptr || controllerId == nullptr || featureName == nullptr)
+    return JOYSTICK_FEATURE_TYPE_UNKNOWN;
 
-  JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE::JOYSTICK_FEATURE_TYPE_UNKNOWN;
-
-  CControllerManager& controllerManager = CServiceBroker::GetGameControllerManager();
-  ControllerPtr controller = controllerManager.GetController(controllerId);
-  if (controller)
-    type = CPeripheralAddonTranslator::TranslateFeatureType(controller->FeatureType(featureName));
-
-  return type;
+  return static_cast<CPeripheralAddon*>(kodiInstance)->FeatureType(controllerId, featureName);
 }

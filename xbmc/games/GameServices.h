@@ -24,6 +24,8 @@
 #include <memory>
 #include <string>
 
+class CSettings;
+
 namespace PERIPHERALS
 {
   class CPeripherals;
@@ -39,6 +41,7 @@ namespace RETRO
 namespace GAME
 {
   class CControllerManager;
+  class CGameSettings;
   class CPortManager;
 
   class CGameServices
@@ -46,6 +49,7 @@ namespace GAME
   public:
     CGameServices(CControllerManager &controllerManager,
                   RETRO::CGUIGameRenderManager &renderManager,
+                  CSettings &settings,
                   PERIPHERALS::CPeripherals &peripheralManager);
     ~CGameServices();
 
@@ -53,6 +57,7 @@ namespace GAME
     ControllerPtr GetDefaultController();
     ControllerVector GetControllers();
 
+    CGameSettings& GameSettings() { return *m_gameSettings; }
     CPortManager& PortManager();
 
     RETRO::CGUIGameRenderManager &GameRenderManager() { return m_gameRenderManager; }
@@ -63,6 +68,7 @@ namespace GAME
     RETRO::CGUIGameRenderManager &m_gameRenderManager;
 
     // Game services
+    std::unique_ptr<CGameSettings> m_gameSettings;
     std::unique_ptr<CPortManager> m_portManager;
   };
 }

@@ -34,7 +34,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Application.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 
@@ -93,7 +92,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        m_appInput.reset(new CKeymapHandling(this, false, CServiceBroker::GetInputManager().KeymapEnvironment()));
+        m_appInput.reset(new CKeymapHandling(this, false, m_manager.GetInputManager().KeymapEnvironment()));
         m_joystickMonitor.reset(new CJoystickMonitor);
         RegisterInputHandler(m_joystickMonitor.get(), false);
       }
