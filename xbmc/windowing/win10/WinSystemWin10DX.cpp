@@ -93,6 +93,15 @@ bool CWinSystemWin10DX::DestroyRenderSystem()
   return true;
 }
 
+void CWinSystemWin10DX::ShowSplash(const std::string & message)
+{
+  CRenderSystemBase::ShowSplash(message);
+
+  // this will prevent killing the app by watchdog timeout during loading
+  if (m_coreWindow.Get())
+    m_coreWindow->Dispatcher->ProcessEvents(Windows::UI::Core::CoreProcessEventsOption::ProcessAllIfPresent);
+}
+
 void CWinSystemWin10DX::UpdateMonitor() const
 {
   //const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
