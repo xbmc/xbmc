@@ -31,7 +31,7 @@
 						<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
 					</control>
-					<control type="wraplist" id="11">
+					<control type="list" id="11">
 						<top>0</top>
 						<left>0</left>
 						<width>100%</width>
@@ -39,35 +39,32 @@
 						<ondown>63</ondown>
 						<orientation>horizontal</orientation>
 						<scrolltime>200</scrolltime>
-						<focusposition>3</focusposition>
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
-						<itemlayout height="44" width="300">
+						<itemlayout height="44" width="384">
 							<control type="label">
-								<left>-140</left>
-								<width>280</width>
+								<left>5</left>
+								<width>374</width>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
 								<textcolor>grey</textcolor>
 							</control>
 						</itemlayout>
-						<focusedlayout height="44" width="300">
+						<focusedlayout height="44" width="384">
 							<control type="image">
 								<top>2</top>
-								<left>-148</left>
-								<width>296</width>
+								<left>2</left>
 								<height>42</height>
+								<width>380</width>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
 								<visible>Control.HasFocus(11)</visible>
 							</control>
 							<control type="image">
-								<left>-150</left>
-								<width>300</width>
 								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 							</control>
 							<control type="label">
-								<left>-140</left>
-								<width>280</width>
+								<left>5</left>
+								<width>374</width>
 								<align>center</align>
 								<aligny>center</aligny>
 								<scroll>true</scroll>
