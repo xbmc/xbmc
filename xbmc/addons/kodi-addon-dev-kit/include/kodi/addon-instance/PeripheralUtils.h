@@ -164,62 +164,70 @@ namespace addon
   class PeripheralEvent
   {
   public:
-    PeripheralEvent(void) :
-      m_event()
+    PeripheralEvent(void)
     {
     }
 
     PeripheralEvent(unsigned int peripheralIndex, unsigned int buttonIndex, JOYSTICK_STATE_BUTTON state) :
-      m_event()
+      m_type(PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON),
+      m_peripheralIndex(peripheralIndex),
+      m_driverIndex(buttonIndex),
+      m_buttonState(state)
     {
-      SetType(PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON);
-      SetPeripheralIndex(peripheralIndex);
-      SetDriverIndex(buttonIndex);
-      SetButtonState(state);
     }
 
     PeripheralEvent(unsigned int peripheralIndex, unsigned int hatIndex, JOYSTICK_STATE_HAT state) :
-      m_event()
+      m_type(PERIPHERAL_EVENT_TYPE_DRIVER_HAT),
+      m_peripheralIndex(peripheralIndex),
+      m_driverIndex(hatIndex),
+      m_hatState(state)
     {
-      SetType(PERIPHERAL_EVENT_TYPE_DRIVER_HAT);
-      SetPeripheralIndex(peripheralIndex);
-      SetDriverIndex(hatIndex);
-      SetHatState(state);
     }
 
     PeripheralEvent(unsigned int peripheralIndex, unsigned int axisIndex, JOYSTICK_STATE_AXIS state) :
-      m_event()
+      m_type(PERIPHERAL_EVENT_TYPE_DRIVER_AXIS),
+      m_peripheralIndex(peripheralIndex),
+      m_driverIndex(axisIndex),
+      m_axisState(state)
     {
-      SetType(PERIPHERAL_EVENT_TYPE_DRIVER_AXIS);
-      SetPeripheralIndex(peripheralIndex);
-      SetDriverIndex(axisIndex);
-      SetAxisState(state);
     }
 
     explicit PeripheralEvent(const PERIPHERAL_EVENT& event) :
-      m_event(event)
+      m_type(event.type),
+      m_peripheralIndex(event.peripheral_index),
+      m_driverIndex(event.driver_index),
+      m_buttonState(event.driver_button_state),
+      m_hatState(event.driver_hat_state),
+      m_axisState(event.driver_axis_state),
+      m_motorState(event.motor_state)
     {
     }
 
-    PERIPHERAL_EVENT_TYPE Type(void) const            { return m_event.type; }
-    unsigned int          PeripheralIndex(void) const { return m_event.peripheral_index; }
-    unsigned int          DriverIndex(void) const     { return m_event.driver_index; }
-    JOYSTICK_STATE_BUTTON ButtonState(void) const     { return m_event.driver_button_state; }
-    JOYSTICK_STATE_HAT    HatState(void) const        { return m_event.driver_hat_state; }
-    JOYSTICK_STATE_AXIS   AxisState(void) const       { return m_event.driver_axis_state; }
-    JOYSTICK_STATE_MOTOR  MotorState(void) const      { return m_event.motor_state; }
+    PERIPHERAL_EVENT_TYPE Type(void) const            { return m_type; }
+    unsigned int          PeripheralIndex(void) const { return m_peripheralIndex; }
+    unsigned int          DriverIndex(void) const     { return m_driverIndex; }
+    JOYSTICK_STATE_BUTTON ButtonState(void) const     { return m_buttonState; }
+    JOYSTICK_STATE_HAT    HatState(void) const        { return m_hatState; }
+    JOYSTICK_STATE_AXIS   AxisState(void) const       { return m_axisState; }
+    JOYSTICK_STATE_MOTOR  MotorState(void) const      { return m_motorState; }
 
-    void SetType(PERIPHERAL_EVENT_TYPE type)         { m_event.type                = type; }
-    void SetPeripheralIndex(unsigned int index)      { m_event.peripheral_index    = index; }
-    void SetDriverIndex(unsigned int index)          { m_event.driver_index        = index; }
-    void SetButtonState(JOYSTICK_STATE_BUTTON state) { m_event.driver_button_state = state; }
-    void SetHatState(JOYSTICK_STATE_HAT state)       { m_event.driver_hat_state    = state; }
-    void SetAxisState(JOYSTICK_STATE_AXIS state)     { m_event.driver_axis_state   = state; }
-    void SetMotorState(JOYSTICK_STATE_MOTOR state)   { m_event.motor_state         = state; }
+    void SetType(PERIPHERAL_EVENT_TYPE type)         { m_type            = type; }
+    void SetPeripheralIndex(unsigned int index)      { m_peripheralIndex = index; }
+    void SetDriverIndex(unsigned int index)          { m_driverIndex     = index; }
+    void SetButtonState(JOYSTICK_STATE_BUTTON state) { m_buttonState     = state; }
+    void SetHatState(JOYSTICK_STATE_HAT state)       { m_hatState        = state; }
+    void SetAxisState(JOYSTICK_STATE_AXIS state)     { m_axisState       = state; }
+    void SetMotorState(JOYSTICK_STATE_MOTOR state)   { m_motorState      = state; }
 
     void ToStruct(PERIPHERAL_EVENT& event) const
     {
-      event = m_event;
+      event.type                = m_type;
+      event.peripheral_index    = m_peripheralIndex;
+      event.driver_index        = m_driverIndex;
+      event.driver_button_state = m_buttonState;
+      event.driver_hat_state    = m_hatState;
+      event.driver_axis_state   = m_axisState;
+      event.motor_state         = m_motorState;
     }
 
     static void FreeStruct(PERIPHERAL_EVENT& event)
@@ -228,7 +236,13 @@ namespace addon
     }
 
   private:
-    PERIPHERAL_EVENT m_event;
+    PERIPHERAL_EVENT_TYPE m_type = PERIPHERAL_EVENT_TYPE_NONE;
+    unsigned int          m_peripheralIndex = 0;
+    unsigned int          m_driverIndex = 0;
+    JOYSTICK_STATE_BUTTON m_buttonState = JOYSTICK_STATE_BUTTON_UNPRESSED;
+    JOYSTICK_STATE_HAT    m_hatState = JOYSTICK_STATE_HAT_UNPRESSED;
+    JOYSTICK_STATE_AXIS   m_axisState = 0.0f;
+    JOYSTICK_STATE_MOTOR  m_motorState = 0.0f;
   };
 
   typedef PeripheralVector<PeripheralEvent, PERIPHERAL_EVENT> PeripheralEvents;
