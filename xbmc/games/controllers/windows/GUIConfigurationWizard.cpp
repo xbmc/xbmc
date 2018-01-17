@@ -216,8 +216,6 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   // Abort if another controller cancels the prompt
   if (IsMapping() && !IsMapping(buttonMap->DeviceName()))
   {
-    bool bIsCancelAction = false;
-
     //! @todo This only succeeds for game.controller.default; no actions are
     //        currently defined for other controllers
     if (keymap)
@@ -229,26 +227,10 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         if (!actions.empty())
         {
           //! @todo Handle multiple actions mapped to the same key
-          switch (actions.begin()->actionId)
-          {
-          case ACTION_NAV_BACK:
-          case ACTION_PREVIOUS_MENU:
-            bIsCancelAction = true;
-            break;
-          default:
-            break;
-          }
+          OnAction(actions.begin()->actionId);
         }
       }
     }
-
-    if (bIsCancelAction)
-    {
-      CLog::Log(LOGDEBUG, "%s: device \"%s\" is cancelling prompt", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
-      Abort(false);
-    }
-    else
-      CLog::Log(LOGDEBUG, "%s: ignoring input for device \"%s\"", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
 
     // Discard input
     bHandled = true;
@@ -410,7 +392,7 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 
     if (bIsMappingController)
     {
-      bHandled = OnKeyAction(m_actionMap->GetActionID(key));
+      bHandled = OnAction(m_actionMap->GetActionID(key));
     }
     else
     {
@@ -421,7 +403,7 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
   return bHandled;
 }
 
-bool CGUIConfigurationWizard::OnKeyAction(unsigned int actionId)
+bool CGUIConfigurationWizard::OnAction(unsigned int actionId)
 {
   bool bHandled = false;
 
@@ -441,6 +423,7 @@ bool CGUIConfigurationWizard::OnKeyAction(unsigned int actionId)
     case ACTION_PARENT_DIR:
     case ACTION_PREVIOUS_MENU:
     case ACTION_STOP:
+    case ACTION_NAV_BACK:
       // Abort and prevent action
       Abort(false);
       bHandled = true;

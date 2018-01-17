@@ -95,7 +95,7 @@ namespace GAME
     void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
     void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
 
-    bool OnKeyAction(unsigned int actionId);
+    bool OnAction(unsigned int actionId);
 
     // Run() parameters
     std::string                          m_strControllerId;
