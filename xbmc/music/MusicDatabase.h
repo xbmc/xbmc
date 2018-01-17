@@ -208,6 +208,7 @@ public:
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
   bool SetSongUserrating(const std::string &filePath, int userrating);
+  bool SetSongUserrating(int idSong, int userrating);
   bool SetSongVotes(const std::string &filePath, int votes);
   int  GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle);
 
@@ -321,6 +322,7 @@ public:
   std::string GetArtistById(int id);
   int GetArtistByName(const std::string& strArtist);
   int GetArtistByMatch(const CArtist& artist);
+  bool GetArtistFromSong(int idSong, CArtist &artist);
   std::string GetRoleById(int id);
 
   /*! \brief Propagate artist sort name into the concatenated artist sort name strings
@@ -551,6 +553,13 @@ public:
   \sa RemoveArtForItem
   */
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
+
+  /*! \brief Fetch the distinct types of art held in the database for a type of media.
+  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+  \param artTypes [out] the types of art e.g. "thumb", "fanart", etc. 
+  \return true if art is found, false if no art is found.
+  */
+  bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
 
   /////////////////////////////////////////////////
   // Tag Scan Version

@@ -5724,6 +5724,39 @@ int CMusicDatabase::GetArtistByMatch(const CArtist& artist)
   return -1;
 }
 
+bool CMusicDatabase::GetArtistFromSong(int idSong, CArtist &artist)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string strSQL = PrepareSQL(
+      "SELECT artistview.* FROM song_artist "
+      "JOIN artistview ON song_artist.idArtist = artistview.idArtist "
+      "WHERE song_artist.idSong= %i AND song_artist.idRole = 1 AND song_artist.iOrder = 0", 
+      idSong);
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    artist = GetArtistFromDataset(m_pDS.get());
+
+    m_pDS->close();
+    return true;
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::string& strArtist)
 {
   try
@@ -6185,15 +6218,31 @@ bool CMusicDatabase::SetSongUserrating(const std::string &filePath, int userrati
     if (NULL == m_pDS.get()) return false;
 
     int songID = GetSongIDFromPath(filePath);
-    if (-1 == songID) return false;
+    if (-1 == songID) return false;    
+    
+    return SetSongUserrating(songID, userrating);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s,%i) failed", __FUNCTION__, filePath.c_str(), userrating);
+  }
+  return false;
+}
 
-    std::string sql = PrepareSQL("UPDATE song SET userrating='%i' WHERE idSong = %i", userrating, songID);
+bool CMusicDatabase::SetSongUserrating(int idSong, int userrating)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string sql = PrepareSQL("UPDATE song SET userrating='%i' WHERE idSong = %i", userrating, idSong);
     m_pDS->exec(sql);
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s,%i) failed", __FUNCTION__, filePath.c_str(), userrating);
+    CLog::Log(LOGERROR, "%s (%i,%i) failed", __FUNCTION__, idSong, userrating);
   }
   return false;
 }
@@ -7228,6 +7277,38 @@ bool CMusicDatabase::RemoveArtForItem(int mediaId, const MediaType & mediaType, 
     result &= RemoveArtForItem(mediaId, mediaType, i);
 
   return result;
+}
+
+bool CMusicDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string strSQL = PrepareSQL("SELECT DISTINCT type FROM art WHERE media_type='%s'", mediaType.c_str());
+
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    while (!m_pDS->eof())
+    {
+      artTypes.emplace_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, mediaType.c_str());
+  }
+  return false;
 }
 
 bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription &sorting)
