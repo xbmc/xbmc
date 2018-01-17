@@ -766,6 +766,8 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
   {
     if (si == m_currentStream && si->m_nextFileItem)
     {
+      CloseFileCB(*si);
+
       // update current stream with info of next track
       si->m_startOffset = si->m_nextFileItem->m_lStartOffset;
       if (si->m_nextFileItem->m_lEndOffset)
