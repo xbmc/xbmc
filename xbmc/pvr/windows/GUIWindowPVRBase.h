@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include <vector>
 
 #include "utils/Observer.h"
@@ -55,6 +56,8 @@ namespace PVR
     EPG_SELECT_ACTION_PLAY_RECORDING = 4,
     EPG_SELECT_ACTION_SMART_SELECT   = 5
   };
+
+  class CGUIPVRChannelGroupsSelector;
 
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
   {
@@ -115,12 +118,6 @@ namespace PVR
   private:
     bool OpenChannelGroupSelectionDialog(void);
 
-    bool HasChannelGroupsControl();
-    bool IsChannelGroupsControlFocused();
-    void InitChannelGroupsControl();
-    bool SelectActiveChannelGroup();
-    bool ActivateSelectedChannelGroup();
-
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.
@@ -133,8 +130,8 @@ namespace PVR
      */
     void HideProgressDialog(void);
 
+    std::unique_ptr<CGUIPVRChannelGroupsSelector> m_channelGroupsSelector;
     CPVRChannelGroupPtr m_channelGroup;
-    std::vector<CPVRChannelGroupPtr> m_channelGroups;
     XbmcThreads::EndTime m_refreshTimeout;
     CGUIDialogProgressBarHandle *m_progressHandle; /*!< progress dialog that is displayed while the pvr manager is loading */
   };
