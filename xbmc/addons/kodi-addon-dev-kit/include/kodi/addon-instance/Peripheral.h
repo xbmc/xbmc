@@ -34,6 +34,10 @@ extern "C"
 
   /// @name Peripheral types
   ///{
+
+  /*!
+   * @brief API error codes
+   */
   typedef enum PERIPHERAL_ERROR
   {
     PERIPHERAL_NO_ERROR                      =  0, // no error occurred
@@ -45,6 +49,9 @@ extern "C"
     PERIPHERAL_ERROR_CONNECTION_FAILED       = -6, // peripherals are connected, but command was interrupted
   } PERIPHERAL_ERROR;
 
+  /*!
+   * @brief Peripheral types
+   */
   typedef enum PERIPHERAL_TYPE
   {
     PERIPHERAL_TYPE_UNKNOWN,
@@ -52,6 +59,9 @@ extern "C"
     PERIPHERAL_TYPE_KEYBOARD,
   } PERIPHERAL_TYPE;
 
+  /*!
+   * @brief Information shared between peripherals
+   */
   typedef struct PERIPHERAL_INFO
   {
     PERIPHERAL_TYPE type;           /*!< @brief type of peripheral */
@@ -63,8 +73,6 @@ extern "C"
 
   /*!
    * @brief Peripheral add-on capabilities.
-   * If a capability is set to true, then the corresponding methods from
-   * kodi_peripheral_dll.h need to be implemented.
    */
   typedef struct PERIPHERAL_CAPABILITIES
   {
@@ -77,6 +85,10 @@ extern "C"
 
   /// @name Event types
   ///{
+
+  /*!
+   * @brief Types of events that can be sent and received
+   */
   typedef enum PERIPHERAL_EVENT_TYPE
   {
     PERIPHERAL_EVENT_TYPE_NONE,           /*!< @brief unknown event */
@@ -86,12 +98,18 @@ extern "C"
     PERIPHERAL_EVENT_TYPE_SET_MOTOR,      /*!< @brief set the state for joystick rumble motor */
   } PERIPHERAL_EVENT_TYPE;
 
+  /*!
+   * @brief States a button can have
+   */
   typedef enum JOYSTICK_STATE_BUTTON
   {
     JOYSTICK_STATE_BUTTON_UNPRESSED = 0x0,    /*!< @brief button is released */
     JOYSTICK_STATE_BUTTON_PRESSED   = 0x1,    /*!< @brief button is pressed */
   } JOYSTICK_STATE_BUTTON;
 
+  /*!
+   * @brief States a D-pad (also called a hat) can have
+   */
   typedef enum JOYSTICK_STATE_HAT
   {
     JOYSTICK_STATE_HAT_UNPRESSED  = 0x0,    /*!< @brief no directions are pressed */
@@ -106,7 +124,7 @@ extern "C"
   } JOYSTICK_STATE_HAT;
 
   /*!
-   * @brief value in the closed interval [-1.0, 1.0]
+   * @brief Axis value in the closed interval [-1.0, 1.0]
    *
    * The axis state uses the XInput coordinate system:
    *   - Negative values signify down or to the left
@@ -114,13 +132,25 @@ extern "C"
    */
   typedef float JOYSTICK_STATE_AXIS;
 
+  /*!
+   * @brief Motor value in the closed interval [0.0, 1.0]
+   */
   typedef float JOYSTICK_STATE_MOTOR;
 
+  /*!
+   * @brief Event information
+   */
   typedef struct PERIPHERAL_EVENT
   {
-    unsigned int             peripheral_index;
-    PERIPHERAL_EVENT_TYPE    type;
-    unsigned int             driver_index;
+    /*! @brief Index of the peripheral handling/receiving the event */
+    unsigned int peripheral_index;
+
+    /*! @brief Type of the event used to determine which enum field to access below */
+    PERIPHERAL_EVENT_TYPE type;
+
+    /*! @brief The index of the event source */
+    unsigned int driver_index;
+
     JOYSTICK_STATE_BUTTON    driver_button_state;
     JOYSTICK_STATE_HAT       driver_hat_state;
     JOYSTICK_STATE_AXIS      driver_axis_state;
@@ -130,6 +160,10 @@ extern "C"
 
   /// @name Joystick types
   ///{
+
+  /*!
+   * @brief Info specific to joystick peripherals
+   */
   typedef struct JOYSTICK_INFO
   {
     PERIPHERAL_INFO peripheral;         /*!< @brief peripheral info for this joystick */
@@ -142,6 +176,15 @@ extern "C"
     bool            supports_poweroff;  /*!< @brief whether the joystick supports being powered off */
   } ATTRIBUTE_PACKED JOYSTICK_INFO;
 
+  /*!
+   * @brief Driver input primitives
+   *
+   * Mapping lower-level driver values to higher-level controller features is
+   * non-injective; two triggers can share a single axis.
+   *
+   * To handle this, driver values are subdivided into "primitives" that map
+   * injectively to higher-level features.
+   */
   typedef enum JOYSTICK_DRIVER_PRIMITIVE_TYPE
   {
     JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN,
@@ -152,11 +195,17 @@ extern "C"
     JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY,
   } JOYSTICK_DRIVER_PRIMITIVE_TYPE;
 
+  /*!
+   * @brief Button primitive
+   */
   typedef struct JOYSTICK_DRIVER_BUTTON
   {
     int              index;
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_BUTTON;
 
+  /*!
+   * @brief Hat direction
+   */
   typedef enum JOYSTICK_DRIVER_HAT_DIRECTION
   {
     JOYSTICK_DRIVER_HAT_UNKNOWN,
@@ -166,12 +215,18 @@ extern "C"
     JOYSTICK_DRIVER_HAT_DOWN,
   } JOYSTICK_DRIVER_HAT_DIRECTION;
 
+  /*!
+   * @brief Hat direction primitive
+   */
   typedef struct JOYSTICK_DRIVER_HAT
   {
     int                           index;
     JOYSTICK_DRIVER_HAT_DIRECTION direction;
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_HAT;
 
+  /*!
+   * @brief Semiaxis direction
+   */
   typedef enum JOYSTICK_DRIVER_SEMIAXIS_DIRECTION
   {
     JOYSTICK_DRIVER_SEMIAXIS_NEGATIVE = -1, /*!< @brief negative half of the axis */
@@ -179,6 +234,9 @@ extern "C"
     JOYSTICK_DRIVER_SEMIAXIS_POSITIVE =  1, /*!< @brief positive half of the axis */
   } JOYSTICK_DRIVER_SEMIAXIS_DIRECTION;
 
+  /*!
+   * @brief Semiaxis primitive
+   */
   typedef struct JOYSTICK_DRIVER_SEMIAXIS
   {
     int                                index;
@@ -187,16 +245,25 @@ extern "C"
     unsigned int                       range;
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_SEMIAXIS;
 
+  /*!
+   * @brief Motor primitive
+   */
   typedef struct JOYSTICK_DRIVER_MOTOR
   {
     int              index;
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_MOTOR;
 
+  /*!
+   * @brief Keyboard key primitive
+   */
   typedef struct JOYSTICK_DRIVER_KEY
   {
     char keycode[16];
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_KEY;
 
+  /*!
+   * @brief Driver primitive struct
+   */
   typedef struct JOYSTICK_DRIVER_PRIMITIVE
   {
     JOYSTICK_DRIVER_PRIMITIVE_TYPE    type;
@@ -210,6 +277,12 @@ extern "C"
     };
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_PRIMITIVE;
 
+  /*!
+   * @brief Controller feature
+   *
+   * Controller features are an abstraction over driver values. Each feature
+   * maps to one or more driver primitives.
+   */
   typedef enum JOYSTICK_FEATURE_TYPE
   {
     JOYSTICK_FEATURE_TYPE_UNKNOWN,
@@ -224,9 +297,12 @@ extern "C"
     JOYSTICK_FEATURE_TYPE_KEY,
   } JOYSTICK_FEATURE_TYPE;
 
+  /*!
+   * @brief Indices used to access a feature's driver primitives
+   */
   typedef enum JOYSTICK_FEATURE_PRIMITIVE
   {
-    // Scalar feature
+    // Scalar feature (a button, hat direction or semiaxis)
     JOYSTICK_SCALAR_PRIMITIVE = 0,
 
     // Analog stick
@@ -258,6 +334,9 @@ extern "C"
     JOYSTICK_PRIMITIVE_MAX = 4,
   } JOYSTICK_FEATURE_PRIMITIVE;
 
+  /*!
+   * @brief Mapping between higher-level controller feature and its driver primitives
+   */
   typedef struct JOYSTICK_FEATURE
   {
     char*                                   name;
