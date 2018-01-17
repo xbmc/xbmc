@@ -298,9 +298,6 @@ namespace addon
     unsigned int       MotorCount(void) const    { return m_motorCount; }
     bool               SupportsPowerOff(void) const { return m_supportsPowerOff; }
 
-    // Derived property: Counts are unknown if all are zero
-    bool AreElementCountsKnown(void) const { return m_buttonCount != 0 || m_hatCount != 0 || m_axisCount != 0; }
-
     void SetProvider(const std::string& provider)     { m_provider      = provider; }
     void SetRequestedPort(int requestedPort)          { m_requestedPort = requestedPort; }
     void SetButtonCount(unsigned int buttonCount)     { m_buttonCount   = buttonCount; }
