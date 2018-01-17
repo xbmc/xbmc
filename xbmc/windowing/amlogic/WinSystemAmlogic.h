@@ -51,7 +51,7 @@ public:
 protected:
   std::string m_framebuffer_name;
   EGLDisplay m_nativeDisplay;
-  fbdev_window *m_nativeWindow;
+  EGLNativeWindowType m_nativeWindow;
 
   int m_displayWidth;
   int m_displayHeight;
