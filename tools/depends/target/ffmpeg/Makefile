@@ -20,15 +20,13 @@ ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
 ffmpg_config += --enable-gnutls
 ffmpg_config += --enable-encoder=png --enable-encoder=mjpeg
+ffmpg_config += $(FFMPEG_CONFIGURE_OPTIONS)
 
 ifeq ($(CROSS_COMPILING), yes)
   ffmpg_config += --arch=$(CPU) --enable-cross-compile
 endif
 ifeq ($(OS), linux)
-  ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
-  ifneq ($(TARGET_PLATFORM),raspberry-pi)
-    ffmpg_config += --enable-vdpau --enable-vaapi
-  endif
+  ffmpg_config += --target-os=$(OS)
   ffmpg_config += --enable-pic
 endif
 ifeq ($(OS), android)

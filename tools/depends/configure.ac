@@ -6,12 +6,6 @@ AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include t
                  target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
 
-# save flags before autotools checks the compiler, since
-# it will automatically include -g in c/cxxflags
-passed_cflags="$CFLAGS"
-passed_ldflags="$LDFLAGS"
-passed_cxxflags="$CXXFLAGS"
-
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
 
@@ -48,7 +42,8 @@ AC_ARG_WITH([toolchain],
 AC_ARG_WITH([platform],
   [AS_HELP_STRING([--with-platform],
   [target platform [auto]])],
-  [use_platform=$withval])
+  [use_platform=$withval],
+  [use_platform=auto])
 
 AC_ARG_WITH([firmware],
   [AS_HELP_STRING([--with-firmware],
@@ -63,7 +58,8 @@ AC_ARG_WITH([tarballs],
 AC_ARG_WITH([cpu],
   [AS_HELP_STRING([--with-cpu],
   [optional. specify target cpu. guessed if not specified])],
-  [use_cpu=$withval],use_cpu=auto)
+  [use_cpu=$withval],
+  [use_cpu=auto])
 
 AC_ARG_WITH([ndk-path],
   [AS_HELP_STRING([--with-ndk-path],
@@ -82,7 +78,7 @@ AC_ARG_WITH([sdk],
 
 AC_ARG_WITH([ndk-api],
   [AS_HELP_STRING([--with-ndk-api],
-  [spcify ndk level (optional for android). default is 21])],
+  [specify ndk level (optional for android). default is 21])],
   [use_ndk_api=$withval])
 
 AC_ARG_ENABLE([gplv3],
@@ -101,6 +97,29 @@ AC_ARG_WITH([rendersystem],
   [AS_HELP_STRING([--with-rendersystem],
   [render system to use])],
   [app_rendersystem=$withval])
+
+AC_ARG_WITH([target-cflags],
+  [AS_HELP_STRING([--with-target-cflags],
+  [C compiler flags (target)])],
+  [target_cflags=$withval])
+
+AC_ARG_WITH([target-cxxflags],
+  [AS_HELP_STRING([--with-target-cxxflags],
+  [C++ compiler flags (target)])],
+  [target_cxxflags=$withval],
+  [target_cxxflags=$target_cflags])
+
+AC_ARG_WITH([target-ldflags],
+  [AS_HELP_STRING([--with-target-ldflags],
+  [linker flags. Use e.g. for -l<lib> (target)])],
+  [target_ldflags=$withval])
+
+AC_ARG_WITH([ffmpeg-options],
+  [AS_HELP_STRING([--with-ffmpeg-options],
+  [FFmpeg configure options, e.g. --enable-vaapi (target)])],
+  [ffmpeg_options=$withval],
+  [ffmpeg_options=default])
+
 
 OLD_PATH="${PATH}"
 if test -n "$use_toolchain"; then
@@ -270,6 +289,7 @@ case $host in
     optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
+    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
   ;;
   x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
@@ -278,6 +298,7 @@ case $host in
     optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
+    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
   ;;
   *darwin*)
     if test "x$prefix" = "xNONE"; then
@@ -457,6 +478,7 @@ case $use_platform in
      target_platform=raspberry-pi
      use_neon=no
      use_cpu=arm1176jzf-s
+     ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      optimize_flags="-Os"
@@ -466,6 +488,7 @@ case $use_platform in
      target_platform=raspberry-pi
      use_neon=yes
      use_cpu=cortex-a7
+     ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      optimize_flags="-Os"
@@ -670,7 +693,6 @@ if test "$platform_os" == "android"; then
   fi
 fi
 
-
 # remove unwanted optimization flags
 tmp_cflags=$(echo $c11_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
 tmp_cxxflags=$(echo $cxx11_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
@@ -689,11 +711,11 @@ else
 fi
 
 # add user supplied flags to the end, so they override our defaults
-platform_cflags_release="$tmp_cflags $relase_cflags $optimize_flags $passed_cflags"
-platform_cxxflags_release="$tmp_cxxflags $relase_cflags $optimize_flags $passed_cxxflags"
-platform_cflags_debug="$tmp_cflags $debug_cflags $passed_cflags"
-platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $passed_cxxflags"
-platform_ldflags+=" $passed_ldflags $LIBS"
+platform_cflags_release="$tmp_cflags $relase_cflags $optimize_flags $target_cflags"
+platform_cxxflags_release="$tmp_cxxflags $relase_cflags $optimize_flags $target_cxxflags"
+platform_cflags_debug="$tmp_cflags $debug_cflags $target_cflags"
+platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $target_cxxflags"
+platform_ldflags+=" $target_ldflags $LIBS"
 
 if test "$use_debug" = "yes"; then
   platform_cflags="$platform_cflags_debug"
@@ -701,6 +723,10 @@ if test "$use_debug" = "yes"; then
 else
   platform_cflags="$platform_cflags_release"
   platform_cxxflags="$platform_cxxflags_release"
+fi
+
+if test "$ffmpeg_options" == "default"; then
+  ffmpeg_options="$ffmpeg_options_default"
 fi
 
 if test "$platform_os" == "android"; then
@@ -743,6 +769,7 @@ AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)
 AC_SUBST(app_rendersystem)
+AC_SUBST(ffmpeg_options)
 
 AC_OUTPUT
 echo -e "ccache:\t $use_ccache"
@@ -783,6 +810,7 @@ echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t $platform_cxxflags"
 echo -e "ldflags:\t $platform_ldflags"
+echo -e "ffmpeg options:\t $ffmpeg_options"
 echo -e "prefix:\t\t  $prefix"
 echo -e "depends:\t $prefix/$deps_dir"
 if test "$platform_os" == "android"; then
