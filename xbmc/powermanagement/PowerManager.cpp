@@ -257,7 +257,7 @@ void CPowerManager::OnSleep()
 #endif
 
   CServiceBroker::GetPVRManager().OnSleep();
-
+  StorePlayerState();
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
@@ -298,8 +298,9 @@ void CPowerManager::OnWake()
   CServiceBroker::GetActiveAE().Resume();
   g_application.UpdateLibraries();
   CServiceBroker::GetWeatherManager().Refresh();
-
   CServiceBroker::GetPVRManager().OnWake();
+  RestorePlayerState();
+
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }
 
@@ -310,6 +311,33 @@ void CPowerManager::OnLowBattery()
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
+}
+
+void CPowerManager::StorePlayerState()
+{
+  CApplicationPlayer &appPlayer = g_application.GetAppPlayer();
+  if (appPlayer.IsPlaying())
+  {
+    m_lastUsedPlayer = appPlayer.GetCurrentPlayer();
+    m_lastPlayedFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
+    // set the actual offset instead of store and load it from database
+    m_lastPlayedFileItem->m_lStartOffset = appPlayer.GetTime();
+    CLog::Log(LOGDEBUG, "CPowerManager::StorePlayerState - store last played item (startOffset: %i ms)", m_lastPlayedFileItem->m_lStartOffset);
+  }
+  else
+  {
+    m_lastUsedPlayer.clear();
+    m_lastPlayedFileItem.reset();
+  }
+}
+
+void CPowerManager::RestorePlayerState()
+{
+  if (!m_lastPlayedFileItem)
+    return;
+
+  CLog::Log(LOGDEBUG, "CPowerManager::RestorePlayerState - resume last played item (startOffset: %i ms)", m_lastPlayedFileItem->m_lStartOffset);
+  g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
