@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "windowing/windows/WinKeyMap.h"
+#include "xbmc/GUIUserMessages.h"
 #include "WinEventsWin10.h"
 
 using namespace PERIPHERALS;
@@ -38,6 +39,7 @@ using namespace KODI::MESSAGING;
 using namespace Windows::Devices::Input;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
+using namespace Windows::Media;
 using namespace Windows::System;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Input;
@@ -134,6 +136,17 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   // system
   SystemNavigationManager^ sysNavManager = SystemNavigationManager::GetForCurrentView();
   sysNavManager->BackRequested += ref new EventHandler<BackRequestedEventArgs^>(CWinEventsWin10::OnBackRequested);
+  // requirement for backgroup playback
+  m_smtc = SystemMediaTransportControls::GetForCurrentView();
+  if (m_smtc)
+  {
+    m_smtc->IsPlayEnabled = true;
+    m_smtc->IsPauseEnabled = true;
+    m_smtc->IsStopEnabled = true;
+    m_smtc->ButtonPressed += ref new TypedEventHandler<SystemMediaTransportControls^, SystemMediaTransportControlsButtonPressedEventArgs^>
+      (CWinEventsWin10::OnSystemMediaButtonPressed);
+    m_smtc->IsEnabled = true;
+  }
 }
 
 void CWinEventsWin10::UpdateWindowSize()
@@ -465,4 +478,46 @@ void CWinEventsWin10::OnBackRequested(Platform::Object^ sender, Windows::UI::Cor
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NAV_BACK)));
   }
   args->Handled = true;
+}
+
+void CWinEventsWin10::OnSystemMediaButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args)
+{
+  int action = ACTION_NONE;
+  switch (args->Button)
+  {
+  case SystemMediaTransportControlsButton::ChannelDown:
+    action = ACTION_CHANNEL_DOWN;
+    break;
+  case SystemMediaTransportControlsButton::ChannelUp:
+    action = ACTION_CHANNEL_UP;
+    break;
+  case SystemMediaTransportControlsButton::FastForward:
+    action = ACTION_PLAYER_FORWARD;
+    break;
+  case SystemMediaTransportControlsButton::Rewind:
+    action = ACTION_PLAYER_REWIND;
+    break;
+  case SystemMediaTransportControlsButton::Next:
+    action = ACTION_NEXT_ITEM;
+    break;
+  case SystemMediaTransportControlsButton::Previous:
+    action = ACTION_PREV_ITEM;
+    break;
+  case SystemMediaTransportControlsButton::Pause:
+  case SystemMediaTransportControlsButton::Play:
+    action = ACTION_PLAYER_PLAYPAUSE;
+    break;
+  case SystemMediaTransportControlsButton::Stop:
+    action = ACTION_STOP;
+    break;
+  case SystemMediaTransportControlsButton::Record:
+    action = ACTION_RECORD;
+    break;
+  default:
+    break;
+  }
+  if (action != ACTION_NONE)
+  {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
+  }
 }

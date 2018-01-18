@@ -3,7 +3,8 @@
 	xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
 	xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" 
 	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
-	IgnorableNamespaces="uap mp">
+	xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
+	IgnorableNamespaces="mp uap uap3">
 
   <Identity Name="@APP_PACKAGE_IDENTITY@" ProcessorArchitecture="@SDK_TARGET_ARCH@" Publisher="CN=@APP_PACKAGE_PUBLISHER@" Version="@APP_VERSION_CODE@.0" />
   <mp:PhoneIdentity PhoneProductId="0175E9D8-B885-4F34-BE46-F3BA2C70C00C" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
@@ -234,5 +235,6 @@
     <uap:Capability Name="removableStorage" />
     <uap:Capability Name="userAccountInformation" />
     <uap:Capability Name="videosLibrary" />
+    <uap3:Capability Name="backgroundMediaPlayback" />
   </Capabilities>
 </Package>
