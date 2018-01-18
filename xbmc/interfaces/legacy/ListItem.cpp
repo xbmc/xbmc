@@ -152,6 +152,16 @@ namespace XBMCAddon
       }
     }
 
+    void ListItem::setIsFolder(bool isFolder)
+    {
+      if (!item)
+        return;
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        item->m_bIsFolder = isFolder;
+      }
+    }
+
     void ListItem::setUniqueIDs(const Properties& dictionary, const String& defaultrating /* = "" */)
     {
       if (!item) return;
