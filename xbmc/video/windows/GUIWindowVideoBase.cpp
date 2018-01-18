@@ -566,7 +566,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
   {
     if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {
-      startoffset *= 75;
+      startoffset = CUtil::ConvertSecsToMilliSecs(startoffset);
     }
     else
     {
