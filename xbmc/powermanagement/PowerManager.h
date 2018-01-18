@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "IPowerSyscall.h"
+#include "FileItem.h"
 
 class CSetting;
 
@@ -95,4 +96,6 @@ private:
   void OnLowBattery() override;
 
   IPowerSyscall *m_instance;
+  std::unique_ptr<CFileItem> m_lastFileItem;
+  std::string m_lastPlayer;
 };
