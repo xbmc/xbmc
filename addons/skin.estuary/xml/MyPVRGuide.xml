@@ -23,48 +23,85 @@
 						<bottom>336</bottom>
 						<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 					</control>
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>100%</width>
-						<height>44</height>
-						<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
+					<control type="group">
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>100%</width>
+							<height>44</height>
+							<texture colordiffuse="border_alpha">colors/white50.png</texture>
+						</control>
+						<control type="image">
+							<left>42</left>
+							<top>0</top>
+							<width>364</width>
+							<height>44</height>
+							<texture colordiffuse="button_focus">colors/white.png</texture>
+							<visible>Control.HasFocus(11)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>7</top>
+							<width>20</width>
+							<height>30</height>
+							<texture>icons/keyboard/arrowleft.png</texture>
+							<animation effect="fade" start="0" end="100" time="150">VisibleChange</animation>
+							<visible>Control.HasFocus(11) + Container(11).HasPrevious</visible>
+						</control>
+						<control type="image">
+							<right>10</right>
+							<top>7</top>
+							<width>20</width>
+							<height>30</height>
+							<texture>icons/keyboard/arrowright.png</texture>
+							<animation effect="fade" start="0" end="100" time="150">VisibleChange</animation>
+							<visible>Control.HasFocus(11) + !String.IsEqual(Container(11).CurrentItem, Container(11).NumItems)</visible>
+						</control>
 					</control>
-					<control type="list" id="11">
+					<control type="fixedlist" id="11">
 						<top>0</top>
-						<left>0</left>
-						<width>100%</width>
+						<left>40</left>
+						<right>40</right>
+						<onleft>noop</onleft>
+						<onright>noop</onright>
 						<onup>63</onup>
 						<ondown>63</ondown>
 						<orientation>horizontal</orientation>
 						<scrolltime>200</scrolltime>
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
-						<itemlayout height="44" width="384">
+						<itemlayout height="44" width="368">
+							<control type="image">
+								<left>1</left>
+								<top>0</top>
+								<width>366</width>
+								<height>44</height>
+								<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
+							</control>
 							<control type="label">
 								<left>5</left>
-								<width>374</width>
+								<width>358</width>
+								<height>42</height>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
-								<textcolor>grey</textcolor>
+								<textcolor>lightgrey</textcolor>
 							</control>
 						</itemlayout>
-						<focusedlayout height="44" width="384">
+						<focusedlayout height="44" width="368">
 							<control type="image">
-								<top>2</top>
-								<left>2</left>
-								<height>42</height>
-								<width>380</width>
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(11)</visible>
-							</control>
-							<control type="image">
-								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+								<left>1</left>
+								<top>0</top>
+								<width>366</width>
+								<height>44</height>
+								<texture colordiffuse="button_focus">colors/white.png</texture>
+								<animation effect="fade" end="30" condition="true">Conditional</animation>
+								<visible>!Control.HasFocus(11)</visible>
 							</control>
 							<control type="label">
 								<left>5</left>
-								<width>374</width>
+								<width>358</width>
+								<height>42</height>
 								<align>center</align>
 								<aligny>center</aligny>
 								<scroll>true</scroll>
