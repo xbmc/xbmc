@@ -18,9 +18,10 @@
  *
  */
 
+#include "DllLibCurl.h"
+
 #include "threads/SystemClock.h"
 #include "system.h"
-#include "DllLibCurl.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -59,37 +60,123 @@ unsigned long ssl_thread_id(void)
 
 #endif // HAVE_OPENSSL
 
-using namespace XCURL;
-
-/* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
-static long g_curlReferences = 0;
-#if(0)
-static unsigned int g_curlTimeout = 0;
-#endif
-
-bool DllLibCurlGlobal::Load()
+namespace XCURL
 {
-  CSingleLock lock(m_critSection);
-  if(g_curlReferences > 0)
-  {
-    g_curlReferences++;
-    return true;
-  }
+#define CURL CURL_HANDLE
+#include <curl/curl.h>
+#undef CURL
 
+CURLcode DllLibCurl::global_init(long flags)
+{
+  return curl_global_init(flags);
+}
+
+void DllLibCurl::global_cleanup()
+{
+  curl_global_cleanup();
+}
+
+CURL_HANDLE * DllLibCurl::easy_init()
+{
+  return curl_easy_init();
+}
+
+CURLcode DllLibCurl::easy_perform(CURL_HANDLE * handle)
+{
+  return curl_easy_perform(handle);
+}
+
+CURLcode DllLibCurl::easy_pause(CURL_HANDLE * handle, int bitmask)
+{
+  return curl_easy_pause(handle, bitmask);
+}
+
+void DllLibCurl::easy_reset(CURL_HANDLE * handle)
+{
+  curl_easy_reset(handle);
+}
+
+void DllLibCurl::easy_cleanup(CURL_HANDLE * handle)
+{
+  curl_easy_cleanup(handle);
+}
+
+CURL_HANDLE * DllLibCurl::easy_duphandle(CURL_HANDLE * handle)
+{
+  return curl_easy_duphandle(handle);
+}
+
+CURLM * DllLibCurl::multi_init()
+{
+  return curl_multi_init();
+}
+
+CURLMcode DllLibCurl::multi_add_handle(CURLM * multi_handle, CURL_HANDLE * easy_handle)
+{
+  return curl_multi_add_handle(multi_handle, easy_handle);
+}
+
+CURLMcode DllLibCurl::multi_perform(CURLM * multi_handle, int * running_handles)
+{
+  return curl_multi_perform(multi_handle, running_handles);
+}
+
+CURLMcode DllLibCurl::multi_remove_handle(CURLM * multi_handle, CURL_HANDLE * easy_handle)
+{
+  return curl_multi_remove_handle(multi_handle, easy_handle);
+}
+
+CURLMcode DllLibCurl::multi_fdset(CURLM * multi_handle, fd_set * read_fd_set, fd_set * write_fd_set, fd_set * exc_fd_set, int * max_fd)
+{
+  return curl_multi_fdset(multi_handle, read_fd_set, write_fd_set, exc_fd_set, max_fd);
+}
+
+CURLMcode DllLibCurl::multi_timeout(CURLM * multi_handle, long * timeout)
+{
+  return curl_multi_timeout(multi_handle, timeout);
+}
+
+CURLMsg * DllLibCurl::multi_info_read(CURLM * multi_handle, int * msgs_in_queue)
+{
+  return curl_multi_info_read(multi_handle, msgs_in_queue);
+}
+
+CURLMcode DllLibCurl::multi_cleanup(CURLM * handle)
+{
+  return curl_multi_cleanup(handle);
+}
+
+curl_slist * DllLibCurl::slist_append(curl_slist *list, const char *to_append)
+{
+  return curl_slist_append(list, to_append);
+}
+
+void DllLibCurl::slist_free_all(curl_slist *list)
+{
+  curl_slist_free_all(list);
+}
+
+const char * DllLibCurl::easy_strerror(CURLcode code)
+{
+  return curl_easy_strerror(code);
+}
+#if defined(HAS_CURL_STATIC)
+void DllLibCurl::crypto_set_id_callback(unsigned long(*cb)(void))
+{
+  curl_crypto_set_id_callback(cb);
+}
+void DllLibCurl::crypto_set_locking_callback(void(*cb)(int, int, const char *, int))
+{
+  curl_crypto_set_locking_callback(cb);
+}
+#endif
+DllLibCurlGlobal::DllLibCurlGlobal()
+{
   /* we handle this ourself */
-  DllDynamic::EnableDelayedUnload(false);
-  if (!DllDynamic::Load())
-    return false;
-
-  if (global_init(CURL_GLOBAL_ALL))
+  if (curl_global_init(CURL_GLOBAL_ALL))
   {
-    DllDynamic::Unload();
     CLog::Log(LOGERROR, "Error initializing libcurl");
-    return false;
   }
-
-  /* check idle will clean up the last one */
-  g_curlReferences = 2;
 
 #if defined(HAS_CURL_STATIC)
   // Initialize ssl locking array
@@ -100,47 +187,26 @@ bool DllLibCurlGlobal::Load()
   crypto_set_id_callback((unsigned long (*)())ssl_thread_id);
   crypto_set_locking_callback((void (*)(int, int, const char*, int))ssl_lock_callback);
 #endif
-
-  return true;
 }
 
-void DllLibCurlGlobal::Unload()
+DllLibCurlGlobal::~DllLibCurlGlobal()
 {
-  CSingleLock lock(m_critSection);
-  if (--g_curlReferences == 0)
-  {
-    if (!IsLoaded())
-      return;
-
-    // close libcurl
-    global_cleanup();
+  // close libcurl
+  curl_global_cleanup();
 
 #if defined(HAS_CURL_STATIC)
-    // Cleanup ssl locking array
-    crypto_set_id_callback(NULL);
-    crypto_set_locking_callback(NULL);
-    for (int i=0; i<CRYPTO_num_locks(); i++)
-      delete m_sslLockArray[i];
- 
-    delete[] m_sslLockArray;
-#endif
-    
-    DllDynamic::Unload();
-  }
+  // Cleanup ssl locking array
+  curl_crypto_set_id_callback(NULL);
+  curl_crypto_set_locking_callback(NULL);
+  for (int i=0; i<CRYPTO_num_locks(); i++)
+    delete m_sslLockArray[i];
 
-  /* CheckIdle will clear this one up */
-#if(0)
-  if(g_curlReferences == 1)
-    g_curlTimeout = XbmcThreads::SystemClockMillis();
+  delete[] m_sslLockArray;
 #endif
 }
 
 void DllLibCurlGlobal::CheckIdle()
 {
-  /* avoid locking section here, to avoid stalling gfx thread on loads*/
-  if(g_curlReferences == 0)
-    return;
-
   CSingleLock lock(m_critSection);
   /* 20 seconds idle time before closing handle */
   const unsigned int idletime = 30000;
@@ -159,19 +225,11 @@ void DllLibCurlGlobal::CheckIdle()
       if(it->m_multi)
         multi_cleanup(it->m_multi);
 
-      Unload();
-
       it = m_sessions.erase(it);
       continue;
     }
     ++it;
   }
-
-  /* check if we should unload the dll */
-#if(0) // we never unload libcurl, since libssl can break when python unloads then
-  if(g_curlReferences == 1 && XbmcThreads::SystemClockMillis() - g_curlTimeout > idletime)
-    Unload();
-#endif
 }
 
 void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)
@@ -215,9 +273,6 @@ void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, 
   session.m_busy = true;
   session.m_protocol = protocol;
   session.m_hostname = hostname;
-
-  /* count up global interface counter */
-  Load();
 
   if(easy_handle)
   {
@@ -285,7 +340,6 @@ CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
     {
       SSession session = *it;
       session.m_easy = DllLibCurl::easy_duphandle(easy_handle);
-      Load();
       m_sessions.push_back(session);
       return session.m_easy;
     }
@@ -319,10 +373,10 @@ void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HAND
       else
         session.m_multi = NULL;
 
-      Load();
       m_sessions.push_back(session);
       return;
     }
   }
   return;
+}
 }

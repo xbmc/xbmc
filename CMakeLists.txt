@@ -114,6 +114,7 @@ endforeach()
 set(required_deps Cdio
                   Cpluff
                   CrossGUID
+                  Curl
                   FFMPEG
                   Fmt
                   FreeType
@@ -161,8 +162,7 @@ set(optional_deps Alsa
                   ${PLATFORM_OPTIONAL_DEPS})
 
 # Required, dyloaded deps. Keep in alphabetical order please
-set(required_dyload ASS
-                    Curl)
+set(required_dyload ASS)
 
 # Optional, dyloaded deps. Keep in alphabetical order please
 set(dyload_optional Bluray
