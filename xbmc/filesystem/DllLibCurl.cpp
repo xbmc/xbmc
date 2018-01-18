@@ -49,7 +49,7 @@ extern "C"
       m_sslLockArray[type]->unlock();
   }
 
-  unsigned long ssl_thread_id() { return static_cast<unsigned long>(CThread::GetCurrentThreadId()); }
+  unsigned long ssl_thread_id() { return (unsigned long) CThread::GetCurrentThreadId(); }
 
 #ifdef __cplusplus
 }
@@ -158,11 +158,11 @@ const char* DllLibCurl::easy_strerror(CURLcode code)
 #if defined(HAS_CURL_STATIC)
 void DllLibCurl::crypto_set_id_callback(unsigned long (*cb)())
 {
-  curl_crypto_set_id_callback(cb);
+  CRYPTO_set_id_callback(cb);
 }
 void DllLibCurl::crypto_set_locking_callback(void (*cb)(int, int, const char*, int))
 {
-  curl_crypto_set_locking_callback(cb);
+  CRYPTO_set_locking_callback(cb);
 }
 #endif
 
@@ -192,8 +192,8 @@ DllLibCurlGlobal::~DllLibCurlGlobal()
 
 #if defined(HAS_CURL_STATIC)
   // Cleanup ssl locking array
-  curl_crypto_set_id_callback(NULL);
-  curl_crypto_set_locking_callback(NULL);
+  crypto_set_id_callback(NULL);
+  crypto_set_locking_callback(NULL);
   for (int i = 0; i < CRYPTO_num_locks(); i++)
     delete m_sslLockArray[i];
 

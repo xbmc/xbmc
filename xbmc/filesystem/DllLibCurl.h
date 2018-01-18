@@ -20,8 +20,11 @@
  */
 
 #include "threads/CriticalSection.h"
+
 #include <stdio.h>
 #include <string>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <type_traits>
 #include <vector>
 
