@@ -533,6 +533,9 @@ char** Interface_Filesystem::get_property_values(void* kodiBase, void* file, int
   case ADDON_FILE_PROPERTY_MIME_TYPE:
     internalType = XFILE::FILE_PROPERTY_MIME_TYPE;
     break;
+  case ADDON_FILE_PROPERTY_EFFECTIVE_URL:
+    internalType = XFILE::FILE_PROPERTY_EFFECTIVE_URL;
+    break;
   default:
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, addon, file);
     return nullptr;
