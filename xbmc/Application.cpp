@@ -1044,18 +1044,6 @@ bool CApplication::Initialize()
 
   m_ServiceManager->GetNetwork().WaitForNet();
 
-  // Load curl so curl_global_init gets called before any service threads
-  // are started. Unloading will have no effect as curl is never fully unloaded.
-  // To quote man curl_global_init:
-  //  "This function is not thread safe. You must not call it when any other
-  //  thread in the program (i.e. a thread sharing the same memory) is running.
-  //  This doesn't just mean no other thread that is using libcurl. Because
-  //  curl_global_init() calls functions of other libraries that are similarly
-  //  thread unsafe, it could conflict with any other thread that
-  //  uses these other libraries."
-  g_curlInterface.Load();
-  g_curlInterface.Unload();
-
   // initialize (and update as needed) our databases
   CEvent event(true);
   CJobManager::GetInstance().Submit([&event]() {

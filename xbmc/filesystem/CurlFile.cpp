@@ -409,7 +409,6 @@ CCurlFile::~CCurlFile()
   Close();
   delete m_state;
   delete m_oldState;
-  g_curlInterface.Unload();
 }
 
 CCurlFile::CCurlFile()
@@ -419,7 +418,6 @@ CCurlFile::CCurlFile()
  , m_overflowBuffer(NULL)
  , m_overflowSize(0)
 {
-  g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
@@ -990,12 +988,6 @@ void CCurlFile::SetProxy(const std::string &type, const std::string &host,
 
 bool CCurlFile::Open(const CURL& url)
 {
-  if (!g_curlInterface.IsLoaded())
-  {
-    CLog::Log(LOGERROR, "CurlFile::Open: curl interface not loaded");
-    return false;
-  }
-
   m_opened = true;
   m_seekable = true;
 
