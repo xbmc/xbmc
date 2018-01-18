@@ -825,7 +825,7 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
   int index = 0;
   while (true)
   {
-    hr = dxgiFactory->EnumAdapters1(index, &adapter);
+    hr = dxgiFactory->EnumAdapters1(index++, &adapter);
     if (hr == DXGI_ERROR_NOT_FOUND)
       break;
 
