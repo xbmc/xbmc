@@ -3,8 +3,7 @@ include ../../depends/Makefile.include
 BUILD_TYPE:=@CMAKE_BUILD_TYPE@
 BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
-OBJS = libcurl.so \
-  libplist.so libshairplay.so \
+OBJS = libplist.so libshairplay.so \
   libnfs.so libass.so \
   libbluray.so libsmbclient.so
 
