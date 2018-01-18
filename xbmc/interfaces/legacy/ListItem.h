@@ -275,6 +275,33 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setIsFolder(isFolder) }
+      ///-----------------------------------------------------------------------
+      /// Sets if this listitem is a folder.
+      ///
+      /// @param isFolder            bool - True=folder / False=not a folder (default).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # setIsFolder(isFolder)
+      /// listitem.setIsFolder(True)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setIsFolder(...);
+#else
+      void setIsFolder(bool isFolder);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setUniqueIDs(values, defaultrating) }
       ///-----------------------------------------------------------------------
       /// Sets the listitem's uniqueID
