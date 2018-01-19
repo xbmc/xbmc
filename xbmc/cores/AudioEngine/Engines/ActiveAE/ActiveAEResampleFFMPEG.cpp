@@ -184,8 +184,8 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
   int distance = 0;
   if (ratio != 1.0)
   {
-    delta = (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate;
-    distance = dst_samples*m_dst_rate/m_src_rate;
+    delta = (src_samples*ratio-src_samples)*m_dst_rate/m_src_rate;
+    distance = src_samples*m_dst_rate/m_src_rate;
     m_doesResample = true;
   }
 
