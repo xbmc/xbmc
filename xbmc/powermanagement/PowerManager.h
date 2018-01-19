@@ -27,6 +27,7 @@
 
 #include "IPowerSyscall.h"
 
+class CFileItem;
 class CSetting;
 
 enum PowerState
@@ -91,8 +92,11 @@ public:
 private:
   void OnSleep() override;
   void OnWake() override;
-
   void OnLowBattery() override;
+  void RestorePlayerState();
+  void StorePlayerState();
 
   IPowerSyscall *m_instance;
+  std::unique_ptr<CFileItem> m_lastPlayedFileItem;
+  std::string m_lastUsedPlayer;
 };
