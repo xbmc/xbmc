@@ -98,39 +98,6 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
     {
       pItem->SetArt("fanart", art);
     }
-    else if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
-    {
-      std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
-      m_musicDatabase->Open();
-      int idArtist = m_musicDatabase->GetArtistByName(artist);
-      if (idArtist >= 0)
-      {
-        std::string fanart = m_musicDatabase->GetArtForItem(idArtist, MediaTypeArtist, "fanart");
-        if (!fanart.empty())
-        {
-          pItem->SetArt("artist.fanart", fanart);
-          pItem->SetArtFallback("fanart", "artist.fanart");
-        }
-        else if (!pItem->GetMusicInfoTag()->GetAlbumArtist().empty() &&
-                 pItem->GetMusicInfoTag()->GetAlbumArtist()[0] != artist)
-        {
-          // If no artist fanart and the album artist is different to the artist,
-          // try to get fanart from the album artist
-          artist = pItem->GetMusicInfoTag()->GetAlbumArtist()[0];
-          idArtist = m_musicDatabase->GetArtistByName(artist);
-          if (idArtist >= 0)
-          {
-            fanart = m_musicDatabase->GetArtForItem(idArtist, MediaTypeArtist, "fanart");
-            if (!fanart.empty())
-            {
-              pItem->SetArt("albumartist.fanart", fanart);
-              pItem->SetArtFallback("fanart", "albumartist.fanart");
-            }
-          }
-        }
-      }
-      m_musicDatabase->Close();
-    }
   }
 
   return false;
@@ -196,44 +163,58 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
   {
     m_musicDatabase->Open();
-    std::map<std::string, std::string> artwork;
-    if (m_musicDatabase->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
-      item.SetArt(artwork);
-    else if (tag.GetType() == MediaTypeSong)
-    { // no art for the song, try the album
-      ArtCache::const_iterator i = m_albumArt.find(tag.GetAlbumId());
-      if (i == m_albumArt.end())
-      {
-        m_musicDatabase->GetArtForItem(tag.GetAlbumId(), MediaTypeAlbum, artwork);
-        i = m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork)).first;
-      }
-      if (i != m_albumArt.end())
-      {
-        item.AppendArt(i->second, MediaTypeAlbum);
-        for (std::map<std::string, std::string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
-          item.SetArtFallback(j->first, "album." + j->first);
-      }
-    }
-    if (tag.GetType() == MediaTypeSong || tag.GetType() == MediaTypeAlbum)
-    { // fanart from the artist
-      std::string fanart = m_musicDatabase->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
-      if (!fanart.empty())
-      {
-        item.SetArt("artist.fanart", fanart);
-        item.SetArtFallback("fanart", "artist.fanart");
-      }
-      else if (tag.GetType() == MediaTypeSong)
-      {
-        // If no artist fanart, try for album artist fanart
-        fanart = m_musicDatabase->GetArtistArtForItem(tag.GetAlbumId(), MediaTypeAlbum, "fanart");
-        if (!fanart.empty())
-        {
-          item.SetArt("albumartist.fanart", fanart);
-          item.SetArtFallback("fanart", "albumartist.fanart");
-        }
-      }
-    }
+    std::vector<ArtForThumbLoader> art;
+    bool artfound;
+    if (tag.GetType() == MediaTypeSong)
+      artfound = m_musicDatabase->GetArtForItem(tag.GetDatabaseId(), tag.GetAlbumId(), -1, false, art);
+    else if (tag.GetType() == MediaTypeAlbum)
+      artfound = m_musicDatabase->GetArtForItem(-1, tag.GetDatabaseId(), -1, false, art);
+    else //Artist
+      artfound = m_musicDatabase->GetArtForItem(-1, -1, tag.GetDatabaseId(), true, art);
+    
     m_musicDatabase->Close();
+    if (artfound)
+    {
+      std::string fanartfallback;
+      std::map<std::string, std::string> artmap;
+      for (auto artitem : art)
+      {
+        /* Add art to artmap, naming according to media type. 
+           For example: artists have "thumb", "fanart", "poster" etc.,
+           albums have "thumb", "artist.thumb", "artist.fanart",... "artist1.thumb", "artist1.fanart" etc.,
+           songs have "thumb", "album.thumb", "artist.thumb", "albumartist.thumb", "albumartist1.thumb" etc.
+        */
+        std::string artname;
+        if (tag.GetType() == artitem.mediaType)
+          artname = artitem.artType;
+        else if (artitem.prefix.empty())
+          artname = artitem.mediaType + "." + artitem.artType;
+        else
+        {
+          if (tag.GetType() == MediaTypeAlbum)
+            StringUtils::Replace(artitem.prefix, "albumartist", "artist");
+          artname = artitem.prefix + "." + artitem.artType;
+        }
+
+        artmap.insert(std::make_pair(artname, artitem.url));
+
+        // Add fallback art for "thumb" and "fanart" art types only
+        // Set album thumb as the fallback used when song thumb is missing
+        if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum && artitem.artType == "thumb")
+          item.SetArtFallback(artitem.artType, artname);
+
+        // For albums and songs set fallback fanart from the artist.
+        // For songs prefer primary song artist over primary albumartist fanart as fallback fanart 
+        if (artitem.prefix == "artist" && artitem.artType == "fanart")
+          fanartfallback = artname;
+        if (artitem.prefix == "albumartist" && artitem.artType == "fanart" && fanartfallback.empty())
+          fanartfallback = artname;
+      }
+      if (!fanartfallback.empty())
+        item.SetArtFallback("fanart", fanartfallback);
+
+      item.SetArt(artmap);
+    }       
   }
   return !item.GetArt().empty();
 }
