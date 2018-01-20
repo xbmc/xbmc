@@ -170,10 +170,11 @@ namespace PVR
 
     /*!
      * @brief Get a GUIInfoManager integer.
+     * @param item The item to get the value for.
      * @param dwInfo The integer to get.
      * @return The requested integer or 0 if it wasn't found.
      */
-    int TranslateIntInfo(DWORD dwInfo) const;
+    int TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const;
 
     /*!
      * @brief Get a GUIInfoManager boolean.
