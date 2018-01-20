@@ -6865,7 +6865,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PVR_ACTUAL_STREAM_SNR_PROGR:
     case PVR_BACKEND_DISKSPACE_PROGR:
     case PVR_TIMESHIFT_PROGRESS:
-      value = CServiceBroker::GetPVRManager().TranslateIntInfo(info);
+      value = CServiceBroker::GetPVRManager().TranslateIntInfo(*m_currentFile, info);
       return true;
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
