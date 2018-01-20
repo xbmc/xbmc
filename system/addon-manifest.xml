@@ -28,7 +28,6 @@
   <addon>metadata.common.imdb.com</addon>
   <addon>metadata.common.musicbrainz.org</addon>
   <addon>metadata.common.theaudiodb.com</addon>
-  <addon>metadata.common.themoviedb.org</addon>
   <addon>metadata.local</addon>
   <addon>metadata.themoviedb.org</addon>
   <addon>metadata.tvdb.com</addon>
