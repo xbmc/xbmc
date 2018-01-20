@@ -169,35 +169,54 @@
 					</control>
 				</control>
 				<control type="group">
-					<bottom>0</bottom>
+					<bottom>30</bottom>
 					<height>300</height>
 					<control type="image">
-						<left>10</left>
-						<width>240</width>
-						<height>200</height>
-						<aspectratio align="right">keep</aspectratio>
+						<top>10</top>
+						<left>30</left>
+						<width>290</width>
+						<height>250</height>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<fadetime>400</fadetime>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
-					<control type="label">
-						<top>-9</top>
-						<left>300</left>
-						<right>60</right>
-						<height>30</height>
-						<label>[COLOR button_focus]$INFO[ListItem.StartTime][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]] $INFO[ListItem.EpgEventTitle]$INFO[ListItem.Genre,      [COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
-					</control>
-					<control type="label">
-						<top>29</top>
-						<left>300</left>
-						<right>60</right>
-						<height>30</height>
-						<label>[COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]]</label>
+					<control type="group">
+						<top>0</top>
+						<left>350</left>
+						<control type="label">
+							<width>70%</width>
+							<height>30</height>
+							<label>[B]$INFO[ListItem.EpgEventTitle][/B]</label>
+						</control>
+						<control type="label">
+							<top>0</top>
+							<right>30</right>
+							<width>30%</width>
+							<height>30</height>
+							<align>right</align>
+							<label>[COLOR button_focus]$INFO[ListItem.StartTime,[COLOR grey]$LOCALIZE[555]:[/COLOR] ][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]]</label>
+						</control>
+						<control type="label">
+							<top>35</top>
+							<width>60%</width>
+							<height>30</height>
+							<label>[I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
+						</control>
+						<control type="label">
+							<top>35</top>
+							<right>30</right>
+							<width>40%</width>
+							<height>30</height>
+							<align>right</align>
+							<label>$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
+						</control>
 					</control>
 					<control type="textbox">
-						<left>300</left>
-						<top>67</top>
-						<right>60</right>
-						<height>173</height>
+						<left>350</left>
+						<top>85</top>
+						<right>30</right>
+						<height>170</height>
+						<align>justify</align>
 						<label>$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					</control>
