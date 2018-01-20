@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.module.tmdbsimple" name="tmdbsimple" version="1.5.0" provider-name="phate89">
+	<requires>
+		<import addon="xbmc.python" version="2.14.0"/>
+		<import addon="script.module.requests" version="2.9.1"/>
+	</requires>
+	<extension point="xbmc.python.module" library="lib" />
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">tmdbsimple module</summary>
+		<description lang="en">Helper module for themoviedb site access</description>
+		<platform>all</platform>
+		<license>GPL-3.0</license>
+		<source>https://github.com/celiao/tmdbsimple</source>
+	</extension>
+</addon>

@@ -26,6 +26,7 @@ addons/script.module.pil/*
 addons/script.module.pycryptodome/*
 addons/script.module.pysqlite/*
 addons/script.module.requests/*
+addons/script.module.tmdbsimple/*
 addons/resource.language.en_gb/*
 addons/resource.uisounds.kodi/*
 addons/resource.images.weathericons.default/*
