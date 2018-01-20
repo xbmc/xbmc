@@ -440,6 +440,27 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   if (IsNoop())
     return scurlRet;
 
+  if (m_isPython)
+  {
+    std::stringstream str;
+    str << "plugin://" << ID() << "?action=NfoUrl&nfo="
+      << CURL::Encode(sNfoContent);
+    CFileItemList items;
+    if (!XFILE::CDirectory::GetDirectory(str.str(), items))
+      return scurlRet;
+
+    if (items.Size() == 0)
+      return scurlRet;
+    if (items.Size() > 1)
+      CLog::Log(LOGWARNING, "%s: scraper returned multiple results; using first", __FUNCTION__);
+
+    CScraperUrl::SUrlEntry surl;
+    surl.m_type = CScraperUrl::URL_TYPE_GENERAL;
+    surl.m_url = items[0]->GetPath();
+    scurlRet.m_url.emplace_back(surl);
+    return scurlRet;
+  }
+    
   // scraper function takes contents of .nfo file, returns XML (see below)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(sNfoContent);

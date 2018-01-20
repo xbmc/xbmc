@@ -112,5 +112,10 @@ elif action == 'getartwork':
         liz.setProperty('video.fanart2.preview', '/home/akva/Pictures/hawaii-shirt.png')
         liz.setProperty('video.fanart2.dim', '1080')
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
+    elif action == 'nfourl':
+        nfo=urllib.unquote_plus(params["nfo"])
+        print 'Find url from nfo file'
+        liz=xbmcgui.ListItem('Demo movie 1', offscreen=True)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/movie1", listitem=liz, isFolder=True)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
