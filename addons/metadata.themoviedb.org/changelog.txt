@@ -1,3 +1,7 @@
+[B]6.0.0[/B]
+- reworked the addon to use the new python api
+- added: support for multiple ratings/onlineids
+
 [B]5.0.2[/B]
 - changed: made tmdb uniqueid consistent with documentation
 

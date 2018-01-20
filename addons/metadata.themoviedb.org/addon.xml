@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.themoviedb.org"
        name="The Movie Database"
-       version="5.0.2"
+       version="6.0.0"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
-    <import addon="metadata.common.imdb.com" version="2.9.2"/>
-    <import addon="metadata.common.themoviedb.org" version="2.17.6"/>
+    <import addon="xbmc.python" version="2.25.0"/>
+    <import addon="script.module.tmdbsimple" version="1.5.0"/>
     <import addon="plugin.video.youtube" version="4.4.10" optional="true"/>
   </requires>
   <extension point="xbmc.metadata.scraper.movies"
              language="en"
-             library="tmdb.xml"/>
+             library="scraper.py"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af">TMDB Fliek Skraper</summary>
     <summary lang="be">TMDB Movie Scraper</summary>
