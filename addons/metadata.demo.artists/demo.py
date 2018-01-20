@@ -38,12 +38,12 @@ if action == 'find':
 
     print('Find artist with name %s' %(artist))
     liz=xbmcgui.ListItem('Demo artist 1', thumbnailImage='DefaultAlbum.png', offscreen=True)
-    liz.setProperty('artist.genre', 'rock / pop')
+    liz.setInfo('music', {'genre': 'rock / pop'})
     liz.setProperty('artist.born', '2002')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/artist", listitem=liz, isFolder=True)
 
     liz=xbmcgui.ListItem('Demo artist 2', thumbnailImage='DefaultAlbum.png', offscreen=True)
-    liz.setProperty('artist.genre', 'classical / jazz')
+    liz.setInfo('music', {'genre': 'classical / jazz'})
     liz.setProperty('artist.born', '2012')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/artist2", listitem=liz, isFolder=True)
 elif action == 'resolveid':
@@ -54,8 +54,10 @@ elif action == 'getdetails':
     print('Artist with url %s' %(url))
     if url == '/path/to/artist':
         liz=xbmcgui.ListItem('Demo artist 1', offscreen=True)
-        liz.setProperty('artist.musicbrainzid', '123')
-        liz.setProperty('artist.genre', 'rock / pop')
+        liz.setInfo('music',
+                    {'musicbrainzartistid': '123',
+                     'genre': 'rock / pop'
+                    })
         liz.setProperty('artist.styles', 'heavy / light')
         liz.setProperty('artist.moods', 'angry / happy')
         liz.setProperty('artist.years_active', '1980 / 2012')
@@ -85,8 +87,10 @@ elif action == 'getdetails':
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
     if url == '/path/to/artist2':
         liz=xbmcgui.ListItem('Demo artist 2', thumbnailImage='DefaultAlbum.png', offscreen=True)
-        liz.setProperty('artist.musicbrainzid', '456')
-        liz.setProperty('artist.genre', 'classical / jazz')
+        liz.setInfo('music',
+                    {'musicbrainzartistid': '456',
+                     'genre': 'classical / jazz'
+                    })
         liz.setProperty('artist.styles', 'morbid / funny')
         liz.setProperty('artist.moods', 'fast / dance')
         liz.setProperty('artist.years_active', '1990 / 2016')

@@ -25,6 +25,7 @@
 
 #include "addons/Addon.h"
 #include "XBDateTime.h"
+#include "music/tags/MusicInfoTag.h"
 #include "utils/ScraperUrl.h"
 #include "utils/ScraperParser.h"
 #include "video/Episode.h"
@@ -32,6 +33,11 @@
 class CAlbum;
 class CArtist;
 class CVideoInfoTag;
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 namespace MUSIC_GRABBER
 {

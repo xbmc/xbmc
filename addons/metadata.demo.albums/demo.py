@@ -42,15 +42,19 @@ if action == 'find':
 
     print('Find album with title %s from artist %s' %(album, artist))
     liz=xbmcgui.ListItem('Demo album 1', thumbnailImage='DefaultAlbum.png', offscreen=True)
+        liz.setInfo('music',
+                    {'artist': artist,
+                     'year': '2005'
+                    })
     liz.setProperty('relevance', '0.5')
-    liz.setProperty('album.artist', artist)
-    liz.setProperty('album.year', '2005')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/album", listitem=liz, isFolder=True)
 
     liz=xbmcgui.ListItem('Demo album 2', thumbnailImage='DefaultVideo.png', offscreen=True)
+        liz.setInfo('music',
+                    {'artist':'spiff',
+                     'year': '2016'
+                    })
     liz.setProperty('relevance', '0.3')
-    liz.setProperty('album.artist', 'spiff')
-    liz.setProperty('album.year', '2016')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/album2", listitem=liz, isFolder=True)
 elif action == 'getdetails':
     try:
@@ -60,14 +64,16 @@ elif action == 'getdetails':
 
     if url == '/path/to/album':
         liz=xbmcgui.ListItem('Demo album 1', offscreen=True)
-        liz.setProperty('album.musicbrainzid', '123')
-        liz.setProperty('album.artists', '2')
-        liz.setProperty('album.artist1.name', 'Jan')
-        liz.setProperty('album.artist1.musicbrainzid', '456')
-        liz.setProperty('album.artist2.name', 'Banan')
-        liz.setProperty('album.artist2.musicbrainzid', '789')
+        liz.setInfo('music',
+                    {'artist':'Jan / Banan',
+                     'musicbrainzalbumartistid': '456 / 789',
+                     'musicbrainzalbumid': '123',
+                     'genre': 'rock / pop',
+                     'year': '2005',
+                     'rating': '2.5',
+                     'userrating': '4.5'
+                    })
         liz.setProperty('album.artist_description', 'I hate this album.')
-        liz.setProperty('album.genre', 'rock / pop')
         liz.setProperty('album.styles', 'light / heavy')
         liz.setProperty('album.moods', 'angry / happy')
         liz.setProperty('album.themes', 'Morbid sexual things.. And urmumz.')
@@ -77,9 +83,6 @@ elif action == 'getdetails':
         liz.setProperty('album.label', 'ArtistExploitation inc')
         liz.setProperty('album.type', 'what is this?')
         liz.setProperty('album.release_type', 'single')
-        liz.setProperty('album.year', '2005')
-        liz.setProperty('album.rating', '2.5')
-        liz.setProperty('album.userrating', '4.5')
         liz.setProperty('album.votes', '100')
         liz.setProperty('album.thumbs', '2')
         liz.setProperty('album.thumb1.url', 'DefaultBackFanart.png')
@@ -89,12 +92,15 @@ elif action == 'getdetails':
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
     elif url == '/path/to/album2':
         liz=xbmcgui.ListItem('Demo album 2', offscreen=True)
-        liz.setProperty('album.musicbrainzid', '123')
-        liz.setProperty('album.artists', '2')
-        liz.setProperty('album.artist1.name', 'Heise')
-        liz.setProperty('album.artist1.musicbrainzid', '456')
-        liz.setProperty('album.artist2.name', 'Kran')
-        liz.setProperty('album.artist2.musicbrainzid', '789')
+        liz.setInfo('music',
+                    {'artist':'Heise / Kran',
+                     'musicbrainzalbumartistid': '456 / 789',
+                     'musicbrainzalbumid': '123',
+                     'genre': 'classical / jazz',
+                     'year': '2015',
+                     'rating': '4.5',
+                     'userrating': '3.5'
+                    })
         liz.setProperty('album.artist_description', 'I love this album.')
         liz.setProperty('album.genre', 'classical / jazz')
         liz.setProperty('album.styles', 'yay / hurrah')
@@ -106,9 +112,6 @@ elif action == 'getdetails':
         liz.setProperty('album.label', 'Artists inc')
         liz.setProperty('album.type', 'what is that?')
         liz.setProperty('album.release_type', 'album')
-        liz.setProperty('album.year', '2015')
-        liz.setProperty('album.rating', '4.5')
-        liz.setProperty('album.userrating', '3.5')
         liz.setProperty('album.votes', '200')
         liz.setProperty('album.thumbs', '2')
         liz.setProperty('album.thumb1.url', 'DefaultBackFanart.png')

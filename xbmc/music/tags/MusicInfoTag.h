@@ -51,6 +51,7 @@ public:
   const std::string& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
   const std::string& GetArtistSort() const;
+  const std::vector<CArtistCredit> GetArtistCredits() const;
   const std::string GetArtistString() const;
   const std::string& GetComposerSort() const;
   const std::string& GetAlbum() const;

@@ -143,6 +143,19 @@ const std::vector<std::string>& CMusicInfoTag::GetArtist() const
   return m_artist;
 }
 
+const std::vector<CArtistCredit> MUSIC_INFO::CMusicInfoTag::GetArtistCredits() const
+{
+  std::vector<CArtistCredit> credits;
+  for (unsigned int i = 0; i < m_artist.size(); ++i)
+  {
+    CArtistCredit artistCredit(m_artist[i]);
+    if (i < m_musicBrainzAlbumArtistID.size())
+      artistCredit.SetMusicBrainzArtistID(m_musicBrainzAlbumArtistID[i]);
+    credits.emplace_back(artistCredit);
+  }
+  return credits;
+}
+
 const std::string CMusicInfoTag::GetArtistString() const
 {
   if (!m_strArtistDesc.empty())
