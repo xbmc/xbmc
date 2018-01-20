@@ -1,0 +1,39 @@
+[B]Version 2.12.4[/B]
+
+- Synchonize with requests 2.12.4
+
+[B]Version 2.9.1[/B]
+
+- Synchonize with requests 2.9.1
+
+[B]Version 2.9.0[/B]
+
+- Synchonize with requests 2.9.0
+
+[B]Version 2.8.1[/B]
+
+- Synchonize with requests 2.8.1
+
+[B]Version 2.7.0[/B]
+
+- Synchonize with requests 2.7.0
+
+[B]Version 2.6.0[/B]
+
+- Synchonize with requests 2.6.0
+
+[B]Version 2.5.3[/B]
+
+- Synchonize with requests 2.5.3
+
+[B]Version 2.4.3[/B]
+
+- Synchonize with requests 2.4.3
+
+[B]Version 2.3.0[/B]
+
+- Synchonize with requests 2.3.0
+
+[B]Version 1.1.0[/B]
+
+- requests v1.1.0
