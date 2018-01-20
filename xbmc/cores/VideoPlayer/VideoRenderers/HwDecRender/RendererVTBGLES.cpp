@@ -239,7 +239,6 @@ bool CRendererVTB::UploadTexture(int index)
   planes[1].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
   planes[2].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
 
-  glEnable(m_textureTarget);
 
   for (int p=0; p<2; p++)
   {
