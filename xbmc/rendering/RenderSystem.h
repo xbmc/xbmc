@@ -24,7 +24,7 @@
 #pragma once
 
 #include "RenderSystemTypes.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "guilib/TransformMatrix.h"
 #include "guilib/DirtyRegion.h"
 #include <memory>

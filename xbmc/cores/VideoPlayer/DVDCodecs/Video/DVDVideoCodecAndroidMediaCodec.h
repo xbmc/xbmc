@@ -34,7 +34,7 @@
 #include "platform/android/activity/JNIXBMCVideoView.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 #include <media/NdkMediaCodec.h>

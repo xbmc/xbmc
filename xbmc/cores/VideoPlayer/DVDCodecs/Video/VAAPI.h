@@ -27,7 +27,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include <list>
 #include <map>
 #include <memory>

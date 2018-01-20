@@ -23,7 +23,7 @@
 #include <map>
 #include <d3dx11effect.h>
 #include <DirectXMath.h>
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include "GUIColorManager.h"
 
 using namespace DirectX;

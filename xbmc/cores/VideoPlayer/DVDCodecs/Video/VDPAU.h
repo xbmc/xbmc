@@ -49,7 +49,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include <deque>
 #include <list>
 #include <map>

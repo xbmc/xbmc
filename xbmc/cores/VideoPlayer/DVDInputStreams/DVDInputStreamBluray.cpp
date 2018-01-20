@@ -35,7 +35,7 @@
 #include "filesystem/Directory.h"
 #include "DllLibbluray.h"
 #include "URL.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
 #include "utils/LangCodeExpander.h"

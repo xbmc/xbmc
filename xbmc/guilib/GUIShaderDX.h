@@ -19,7 +19,7 @@
 */
 #pragma once
 
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include "Texture.h"
 #include "D3DResource.h"
 #include <DirectXMath.h>

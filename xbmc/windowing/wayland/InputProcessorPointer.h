@@ -23,8 +23,8 @@
 
 #include <wayland-client-protocol.hpp>
 
-#include "guilib/Geometry.h"
 #include "input/XBMC_keysym.h"
+#include "utils/Geometry.h"
 #include "windowing/XBMC_events.h"
 
 namespace KODI

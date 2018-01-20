@@ -98,6 +98,7 @@ set(HEADERS ActorProtocol.h
             FileOperationJob.h
             FileUtils.h
             fstrcmp.h
+            Geometry.h
             GlobalsHandling.h
             GroupUtils.h
             HTMLUtil.h

@@ -19,9 +19,9 @@
  */
 #pragma once
 
-#include "guilib/Geometry.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
+#include "utils/Geometry.h"
 
 #include <interface/mmal/mmal.h>
 

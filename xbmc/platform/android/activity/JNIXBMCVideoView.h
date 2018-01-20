@@ -26,8 +26,8 @@
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceHolder.h>
 
-#include "guilib/Geometry.h"
 #include "threads/Event.h"
+#include "utils/Geometry.h"
 
 class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCVideoView>
 {

@@ -22,8 +22,8 @@
 
 
 #include "cores/IPlayer.h"
-#include "guilib/Geometry.h"
 #include "guilib/D3DResource.h"
+#include "utils/Geometry.h"
 
 #include <DirectXMath.h>
 #include <vector>

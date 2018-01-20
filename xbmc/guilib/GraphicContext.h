@@ -26,7 +26,7 @@
 #include <map>
 #include "threads/CriticalSection.h"
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
-#include "Geometry.h"               // for CRect/CPoint
+#include "utils/Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"

@@ -28,7 +28,7 @@
 #include <semaphore.h>
 #include <memory>
 #include <string>
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "rendering/RenderSystem.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"

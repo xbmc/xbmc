@@ -77,7 +77,6 @@ set(HEADERS DDSImage.h
             DirtyRegionTracker.h
             DispResource.h
             FFmpegImage.h
-            Geometry.h
             GraphicContext.h
             gui3d.h
             GUIAction.h

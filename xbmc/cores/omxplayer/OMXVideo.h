@@ -26,7 +26,7 @@
 
 #include "OMXClock.h"
 
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "xbmc/cores/VideoSettings.h"
 #include "threads/CriticalSection.h"

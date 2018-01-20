@@ -21,7 +21,7 @@
 
 #include "cores/IPlayer.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 #include "libavutil/pixfmt.h"
 

@@ -27,7 +27,7 @@
 
 #include "FileItem.h"
 #include "URL.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 enum DVDStreamType
 {

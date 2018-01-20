@@ -25,7 +25,7 @@
 #include "../IVideoPlayer.h"
 #include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include <string>
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 #include "DllDvdNav.h"
 #include "DVDInputStreamFile.h"

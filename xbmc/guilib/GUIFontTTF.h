@@ -32,7 +32,7 @@
 #include <vector>
 
 #include "utils/auto_buffer.h"
-#include "Geometry.h"
+#include "utils/Geometry.h"
 
 #ifdef HAS_DX
 #include "DirectXMath.h"
