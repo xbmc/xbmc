@@ -181,6 +181,8 @@ class CVaapiRenderPicture : public CVideoBuffer
 {
 public:
   explicit CVaapiRenderPicture(int id) : CVideoBuffer(id) { }
+  void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
+  void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
   VideoPicture DVDPic;
   CVaapiProcessedPicture procPic;
   AVFrame *avFrame = nullptr;
