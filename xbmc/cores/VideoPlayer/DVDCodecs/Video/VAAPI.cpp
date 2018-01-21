@@ -2306,8 +2306,8 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create vaapi decoder context
   if (!CheckSuccess(vaCreateContext(m_config.dpy,
                                     m_configId,
-                                    0,
-                                    0,
+                                    m_config.surfaceWidth,
+                                    m_config.surfaceHeight,
                                     0,
                                     surfaces,
                                     nb_surfaces,
