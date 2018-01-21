@@ -565,9 +565,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     case AV_CODEC_ID_H264:
     {
-      if (avctx->profile == FF_PROFILE_H264_BASELINE)
+      if (avctx->profile == FF_PROFILE_H264_CONSTRAINED_BASELINE)
       {
-        profile = VAProfileH264Baseline;
+        profile = VAProfileH264ConstrainedBaseline;
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
