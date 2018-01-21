@@ -392,16 +392,8 @@ void CStereoscopicsManager::OnSettingChanged(std::shared_ptr<const CSetting> set
 
 bool CStereoscopicsManager::OnMessage(CGUIMessage &message)
 {
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_PLAYBACK_STARTED:
-    OnPlaybackStarted();
-    break;
-  case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+  if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED || message.GetMessage() == GUI_MSG_PLAYLISTPLAYER_STOPPED)
     OnPlaybackStopped();
-    break;
-  }
 
   return false;
 }
@@ -516,7 +508,7 @@ bool CStereoscopicsManager::IsVideoStereoscopic()
   return !mode.empty() && mode != "mono";
 }
 
-void CStereoscopicsManager::OnPlaybackStarted(void)
+void CStereoscopicsManager::OnStreamChange(void)
 {
   STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
   RENDER_STEREO_MODE mode = GetStereoMode();
