@@ -473,7 +473,7 @@ protected:
 
   void VolumeChanged();
 
-  bool PlayStack(const CFileItem& item, bool bRestart);
+  bool PlayStack(CFileItem& item, bool bRestart);
 
   float NavigationIdleTime();
   bool InitDirectoriesLinux();
