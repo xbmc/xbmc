@@ -234,7 +234,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<content sortby="date" sortorder=$PARAM[folder_sortorder]>$INFO[ListItem.FilenameAndPath]</content>
+					<content sortby="date" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
 				</control>
 			</control>
 		</control>
@@ -307,7 +307,7 @@
 						<left>68</left>
 						<top>-2</top>
 						<height>60</height>
-						<font>font12</font>
+						<font>font13</font>
 						<label>$INFO[ListItem.ChannelName]</label>
 						<aligny>center</aligny>
 						<textoffsetx>10</textoffsetx>
@@ -329,7 +329,7 @@
 						<left>68</left>
 						<top>-2</top>
 						<height>60</height>
-						<font>font12</font>
+						<font>font13</font>
 						<label>$INFO[ListItem.ChannelName]</label>
 						<textcolor>button_focus</textcolor>
 						<aligny>center</aligny>
@@ -347,7 +347,7 @@
 						<top>0</top>
 						<height>36</height>
 						<aligny>center</aligny>
-						<font>font12</font>
+						<font>font13</font>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
@@ -384,7 +384,7 @@
 						<top>0</top>
 						<height>36</height>
 						<aligny>center</aligny>
-						<font>font12</font>
+						<font>font13</font>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
