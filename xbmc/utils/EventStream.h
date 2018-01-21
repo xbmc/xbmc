@@ -75,6 +75,8 @@ template<typename Event>
 class CEventSource : public CEventStream<Event>
 {
 public:
+  explicit CEventSource() : m_queue(false, 1, CJob::PRIORITY_HIGH) {};
+
   template<typename A>
   void Publish(A event)
   {
@@ -85,8 +87,11 @@ public:
         s->HandleEvent(event);
     };
     lock.Leave();
-    CJobManager::GetInstance().Submit(std::move(task));
+    m_queue.Submit(std::move(task));
   }
+
+private:
+  CJobQueue m_queue;
 };
 
 template<typename Event>
