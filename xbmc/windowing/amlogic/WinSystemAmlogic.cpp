@@ -98,6 +98,8 @@ bool CWinSystemAmlogic::InitWindowSystem()
   RETRO::CRPProcessInfoAmlogic::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
   CRendererAML::Register();
 
+  aml_set_framebuffer_resolution(1920, 1080, m_framebuffer_name);
+
   return CWinSystemBase::InitWindowSystem();
 }
 
