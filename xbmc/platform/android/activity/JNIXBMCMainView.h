@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2016 Christian Browet
+ *      Copyright (C) 2017 Christian Browet
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,47 +22,38 @@
 #include <androidjni/JNIBase.h>
 
 #include <androidjni/Context.h>
-#include <androidjni/Rect.h>
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceHolder.h>
 
 #include "guilib/Geometry.h"
 #include "threads/Event.h"
 
-class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCVideoView>
+class CJNIXBMCMainView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCMainView>
 {
 public:
-  CJNIXBMCVideoView(const jni::jhobject &object);
-  ~CJNIXBMCVideoView();
+  CJNIXBMCMainView(CJNISurfaceHolderCallback* callback);
+  ~CJNIXBMCMainView();
 
   static void RegisterNatives(JNIEnv* env);
-  
-  static CJNIXBMCVideoView* createVideoView(CJNISurfaceHolderCallback* callback);
 
   // CJNISurfaceHolderCallback interface
   void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height);
   void surfaceCreated(CJNISurfaceHolder holder);
   void surfaceDestroyed(CJNISurfaceHolder holder);
 
-  static void _surfaceChanged(JNIEnv* env, jobject thiz, jobject holder, jint format, jint width, jint height);
-  static void _surfaceCreated(JNIEnv* env, jobject thiz, jobject holder);
-  static void _surfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder);
-
+  void attach(const jobject& thiz);
   bool waitForSurface(unsigned int millis);
   bool isActive() { return m_surfaceCreated.Signaled(); }
   CJNISurface getSurface();
-  const CRect& getSurfaceRect();
-  void setSurfaceRect(const CRect& rect);
-  void add();
-  void release();
-  int ID() const;
   bool isCreated() const;
 
 protected:
+  static CJNIXBMCMainView* m_instance;
   CJNISurfaceHolderCallback* m_callback;
-  CEvent m_surfaceCreated;
-  CRect m_surfaceRect;
+  static CEvent m_surfaceCreated;
 
-private:
-  CJNIXBMCVideoView();
-  };
+  static void _attach(JNIEnv* env, jobject thiz);
+  static void _surfaceChanged(JNIEnv* env, jobject thiz, jobject holder, jint format, jint width, jint height);
+  static void _surfaceCreated(JNIEnv* env, jobject thiz, jobject holder);
+  static void _surfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder);
+};

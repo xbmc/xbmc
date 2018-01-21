@@ -33,6 +33,7 @@
 #include <androidjni/Activity.h>
 #include <androidjni/AudioManager.h>
 #include <androidjni/BroadcastReceiver.h>
+#include <androidjni/SurfaceHolder.h>
 #include <androidjni/View.h>
 
 #include "threads/Event.h"
@@ -43,6 +44,7 @@
 #include "IInputHandler.h"
 #include "JNIMainActivity.h"
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "JNIXBMCMainView.h"
 #include "JNIXBMCMediaSession.h"
 #include "platform/xbmc.h"
 
@@ -92,6 +94,7 @@ class CXBMCApp
     , public CJNIMainActivity
     , public CJNIBroadcastReceiver
     , public ANNOUNCEMENT::IAnnouncer
+    , public CJNISurfaceHolderCallback
 {
 public:
   explicit CXBMCApp(ANativeActivity *nativeActivity);
@@ -209,6 +212,7 @@ protected:
 private:
   static CXBMCApp* m_xbmcappinstance;
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
+  static std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
@@ -234,7 +238,6 @@ private:
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   static ANativeWindow* m_window;
-  static CEvent m_windowCreated;
 
   static CVideoSyncAndroid* m_syncImpl;
   static CEvent m_vsyncEvent;
@@ -245,4 +248,10 @@ private:
   bool XBMC_SetupDisplay();
 
   static uint32_t m_playback_state;
+
+public:
+  // CJNISurfaceHolderCallback interface
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  void surfaceCreated(CJNISurfaceHolder holder) override;
+  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 };
