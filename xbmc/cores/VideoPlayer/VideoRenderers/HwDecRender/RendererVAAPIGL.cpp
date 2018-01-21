@@ -90,7 +90,8 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
 bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
-  if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer)
+  if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer ||
+      pic->procPic.videoSurface == VA_INVALID_ID && m_isVAAPIBuffer)
     return true;
 
   return false;
@@ -108,11 +109,7 @@ bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
 
 EShaderFormat CRendererVAAPI::GetShaderFormat()
 {
-  EShaderFormat ret = SHADER_NONE;
-
-  ret = SHADER_NV12;
-
-  return ret;
+  return SHADER_NV12;
 }
 
 bool CRendererVAAPI::LoadShadersHook()
@@ -168,18 +165,24 @@ void CRendererVAAPI::DeleteTexture(int index)
 
 bool CRendererVAAPI::UploadTexture(int index)
 {
-  if (!m_isVAAPIBuffer)
-  {
-    return UploadNV12Texture(index);
-  }
-
   YUVBUFFER &buf = m_buffers[index];
-
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(buf.videoBuffer);
 
   if (!pic || !pic->valid)
   {
     return false;
+  }
+
+  if (!m_isVAAPIBuffer)
+  {
+    YuvImage &dst = m_buffers[index].image;
+    YuvImage src;
+    pic->GetPlanes(src.plane);
+    pic->GetStrides(src.stride);
+    UnBindPbo(m_buffers[index]);
+    CVideoBuffer::CopyNV12Picture(&dst, &src);
+    BindPbo(m_buffers[index]);
+    return UploadNV12Texture(index);
   }
 
   m_vaapiTextures[index].Map(pic);
