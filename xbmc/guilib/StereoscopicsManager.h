@@ -87,10 +87,10 @@ public:
    * @return True if action could be handled, false otherwise.
    */
   bool OnAction(const CAction &action);
+  void OnStreamChange(void);
 
 private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
-  void OnPlaybackStarted(void);
   void OnPlaybackStopped(void);
   std::string GetVideoStereoMode();
   bool IsVideoStereoscopic();
