@@ -2687,6 +2687,12 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       m_skipGuiRender = true;
 #endif
 
+    if (g_advancedSettings.m_guiSmartRedraw && m_guiRefreshTimer.IsTimePast())
+    {
+      g_windowManager.SendMessage(GUI_MSG_REFRESH_TIMER, 0, 0);
+      m_guiRefreshTimer.Set(500);
+    }
+
     if (!m_bStop)
     {
       if (!m_skipGuiRender)
@@ -4273,8 +4279,6 @@ void CApplication::ProcessSlow()
   g_mediaManager.ProcessEvents();
 
   m_ServiceManager->GetActiveAE().GarbageCollect();
-
-  g_windowManager.SendMessage(GUI_MSG_REFRESH_TIMER,0,0);
 
   // if we don't render the gui there's no reason to start the screensaver.
   // that way the screensaver won't kick in if we maximize the XBMC window
