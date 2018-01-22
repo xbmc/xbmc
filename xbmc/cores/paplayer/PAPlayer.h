@@ -99,6 +99,7 @@ private:
     CAudioDecoder m_decoder;             /* the stream decoder */
     int64_t m_startOffset;               /* the stream start offset */
     int64_t m_endOffset;                 /* the stream end offset */
+    int64_t m_decoderTotal = 0;
     AEAudioFormat m_audioFormat;
     unsigned int m_bytesPerSample;       /* number of bytes per audio sample */
     unsigned int m_bytesPerFrame;        /* number of bytes per audio frame */
