@@ -39,7 +39,6 @@
 #include "threads/Event.h"
 #include "interfaces/IAnnouncer.h"
 
-#include "guilib/Geometry.h"
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
 #include "JNIMainActivity.h"
@@ -47,6 +46,7 @@
 #include "JNIXBMCMainView.h"
 #include "JNIXBMCMediaSession.h"
 #include "platform/xbmc.h"
+#include "utils/Geometry.h"
 
 // forward declares
 class CJNIWakeLock;

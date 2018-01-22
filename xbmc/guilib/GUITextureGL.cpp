@@ -24,7 +24,7 @@
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "windowing/WinSystem.h"
 

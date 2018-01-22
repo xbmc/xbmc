@@ -28,7 +28,7 @@
 #include "GUITextLayout.h"
 #include "GUIInfoTypes.h"
 #include "GUIFont.h"
-#include "Geometry.h"
+#include "utils/Geometry.h"
 
 class CLabelInfo
 {

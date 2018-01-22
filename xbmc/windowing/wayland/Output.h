@@ -26,9 +26,9 @@
 
 #include <wayland-client-protocol.hpp>
 
-#include "guilib/Geometry.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
+#include "utils/Geometry.h"
 
 namespace KODI
 {

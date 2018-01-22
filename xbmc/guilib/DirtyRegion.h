@@ -19,7 +19,7 @@
  *
  */
 
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include <vector>
 
 class CDirtyRegion : public CRect

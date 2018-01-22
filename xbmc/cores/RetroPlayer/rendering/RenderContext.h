@@ -19,9 +19,9 @@
  */
 #pragma once
 
-#include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "rendering/RenderSystemTypes.h"
+#include "utils/Geometry.h"
 
 class CCriticalSection;
 class CDisplaySettings;

@@ -23,7 +23,7 @@
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDCodecs/Video/DXVA.h"
 #include "guilib/D3DResource.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 class CRenderBuffer;
 

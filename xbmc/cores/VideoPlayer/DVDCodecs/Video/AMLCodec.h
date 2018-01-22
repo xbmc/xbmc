@@ -22,9 +22,9 @@
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/IPlayer.h"
-#include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "rendering/RenderSystem.h"
+#include "utils/Geometry.h"
 
 #include <deque>
 #include <atomic>

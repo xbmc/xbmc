@@ -21,7 +21,7 @@
 */
 
 #include <string>
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;

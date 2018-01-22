@@ -30,8 +30,8 @@
 #include "../RenderCapture.h"
 #include "cores/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "guilib/Geometry.h"
 #include "threads/Thread.h"
+#include "utils/Geometry.h"
 
 // worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
 // Note, generally these won't necessarily result in allocated pictures

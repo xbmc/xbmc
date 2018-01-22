@@ -25,7 +25,7 @@
 
 #include "RenderInfo.h"
 #include "guilib/Resolution.h"
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"

@@ -27,7 +27,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 namespace KODI
 {

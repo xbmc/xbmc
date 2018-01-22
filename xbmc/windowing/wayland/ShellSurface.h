@@ -24,7 +24,7 @@
 
 #include <wayland-client.hpp>
 
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 
 namespace KODI
 {

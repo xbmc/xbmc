@@ -22,7 +22,7 @@
 
 #include <deque>
 
-#include "guilib/Geometry.h"
+#include "utils/Geometry.h"
 #include "utils/Vector.h"
 
 class CApplication;
