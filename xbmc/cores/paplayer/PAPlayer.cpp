@@ -385,7 +385,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   si->m_fadeOutTriggered = false;
   si->m_isSlaved = false;
 
-  int64_t streamTotalTime = si->m_decoder.TotalTime();
+  si->m_decoderTotal = si->m_decoder.TotalTime();
+  int64_t streamTotalTime = si->m_decoderTotal;
   if (si->m_endOffset)
     streamTotalTime = si->m_endOffset - si->m_startOffset;
   
@@ -1118,7 +1119,7 @@ void PAPlayer::CloseFileCB(StreamInfo &si)
   IPlayerCallback *cb = &m_callback;
   CFileItem fileItem(si.m_fileItem);
   CBookmark bookmark;
-  double total = si.m_decoder.TotalTime();
+  double total = si.m_decoderTotal;
   if (si.m_endOffset)
     total = si.m_endOffset;
   total -= si.m_startOffset;
