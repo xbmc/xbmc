@@ -2162,7 +2162,7 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
 
     std::string sql = PrepareSQL("SELECT files.idFile, files.strFilename, files.dateAdded, path.strPath, "
                                 "bookmark.timeInSeconds, bookmark.totalTimeInSeconds, "
-                                "MAX(history.dateWatched), COUNT(history.idFile) FROM files "
+                                "MAX(history.dateWatched) lastPlayed, COUNT(history.idFile) playCount FROM files "
                                 "JOIN path ON path.idPath = files.idPath "
                                 "LEFT JOIN history ON history.idFile = files.idFile "
                                 "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
@@ -2176,9 +2176,9 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
     details.m_strPath = m_pDS->fv("path.strPath").get_asString();
     std::string strFileName = m_pDS->fv("files.strFilename").get_asString();
     ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
-    details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv("COUNT(history.idFile)").get_asInt()));
+    details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv("playCount").get_asInt()));
     if (!details.m_lastPlayed.IsValid())
-      details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("MAX(history.dateWatched)").get_asString());
+      details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("lastPlayed").get_asString());
     if (!details.m_dateAdded.IsValid())
       details.m_dateAdded.SetFromDBDateTime(m_pDS->fv("files.dateAdded").get_asString());
     if (!details.GetResumePoint().IsSet())
@@ -5268,10 +5268,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     m_pDS->query("SELECT MAX(playCount) FROM files AS f");
     // don't run for playcount == 1 as we already migrated those
-    for (auto playCountIterator = m_pDS->fv(0).get_asInt(); playCountIterator > 1; playCountIterator--) {
+    for (int playCountIterator = m_pDS->fv(0).get_asInt(); playCountIterator > 1; playCountIterator--) {
       // as we have no dates for these, we'll add them with an empty string - shouldn't be the case otherwise - ever!
       // add the item as often as we have a playcount, we've added the first item above, so we're skipping that one now
-      for (auto i = 1; i < playCountIterator; i++)
+      for (int i = 1; i < playCountIterator; i++)
       {
         m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT '', idFile FROM files AS f WHERE f.playCount = %i;", playCountIterator));
       }
