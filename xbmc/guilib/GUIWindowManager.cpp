@@ -522,7 +522,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   while (topWindow)
   {
     CGUIWindow* dialog = m_activeDialogs[--topWindow];
-    lock.Leave();
+
     if (!modalAcceptedMessage && dialog->IsModalDialog())
     { // modal window
       hasModalDialog = true;
@@ -536,11 +536,10 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
       if (dialog->OnMessage( message ))
         handled = true;
     }
-    lock.Enter();
+
     if (topWindow > m_activeDialogs.size())
       topWindow = m_activeDialogs.size();
   }
-  lock.Leave();
 
   // now send to the underlying window
   CGUIWindow* window = GetWindow(GetActiveWindow());
