@@ -13,7 +13,8 @@ ARCHIVE=$(SOURCE).tar.bz2
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --disable-ldap \
-          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp
+          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp \
+          --with-ssl=$(PREFIX)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
