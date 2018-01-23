@@ -22,19 +22,11 @@
 #include "guilib/TransformMatrix.h"
 #include "ShaderFormats.h"
 
-void CalculateYUVMatrix(TransformMatrix &matrix
-                        , unsigned int  flags
-                        , EShaderFormat format
-                        , float         black
-                        , float         contrast
-                        , bool          limited);
-
-#include "GLSLOutputGLES.h"
-
-#ifndef __GNUC__
-#pragma warning( push )
-#pragma warning( disable : 4250 )
-#endif
+void CalculateYUVMatrixGLES(TransformMatrix &matrix
+                          , unsigned int  flags
+                          , EShaderFormat format
+                          , float         black
+                          , float         contrast);
 
 #include "guilib/Shader.h"
 
@@ -43,7 +35,7 @@ namespace Shaders {
   class BaseYUV2RGBShader : virtual public CShaderProgram
   {
   public:
-    BaseYUV2RGBShader() : m_convertFullRange(false) {};
+    BaseYUV2RGBShader() {};
     ~BaseYUV2RGBShader() override = default;
     virtual void SetField(int field) {};
     virtual void SetWidth(int width) {};
@@ -51,7 +43,6 @@ namespace Shaders {
 
     virtual void SetBlack(float black) {};
     virtual void SetContrast(float contrast) {};
-    virtual void SetNonLinStretch(float stretch) {};
 
     virtual GLint GetVertexLoc() { return 0; };
     virtual GLint GetYcoordLoc() { return 0; };
@@ -60,11 +51,6 @@ namespace Shaders {
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha) {};
-
-    void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
-
-  protected:
-    bool m_convertFullRange;
   };
 
 
@@ -73,7 +59,7 @@ namespace Shaders {
     , public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=NULL);
+    BaseYUV2RGBGLSLShader(unsigned flags, EShaderFormat format);
    ~BaseYUV2RGBGLSLShader() override;
     void SetField(int field) override { m_field  = field; }
     void SetWidth(int w) override { m_width  = w; }
@@ -81,7 +67,6 @@ namespace Shaders {
 
     void SetBlack(float black) override { m_black    = black; }
     void SetContrast(float contrast) override { m_contrast = contrast; }
-    void SetNonLinStretch(float stretch) override { m_stretch = stretch; }
 
     GLint GetVertexLoc() override { return m_hVertex; }
     GLint GetYcoordLoc() override { return m_hYcoord; }
@@ -105,18 +90,14 @@ namespace Shaders {
 
     float m_black;
     float m_contrast;
-    float m_stretch;
 
     std::string m_defines;
-
-    Shaders::GLSLOutput *m_glslOutput;
 
     // shader attribute handles
     GLint m_hYTex;
     GLint m_hUTex;
     GLint m_hVTex;
     GLint m_hMatrix;
-    GLint m_hStretch;
     GLint m_hStep;
 
     GLint m_hVertex;
@@ -136,9 +117,7 @@ namespace Shaders {
   {
   public:
     YUV2RGBProgressiveShader(unsigned flags=0,
-                             EShaderFormat format=SHADER_NONE,
-                             bool stretch = false,
-                             GLSLOutput *output=NULL);
+                             EShaderFormat format=SHADER_NONE);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
@@ -154,7 +133,3 @@ namespace Shaders {
   };
 
 } // end namespace
-
-#ifndef __GNUC__
-#pragma warning( pop )
-#endif
