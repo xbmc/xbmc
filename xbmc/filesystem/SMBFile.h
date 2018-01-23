@@ -89,7 +89,7 @@ public:
   bool OpenForWrite(const CURL& url, bool bOverWrite = false) override;
   bool Delete(const CURL& url) override;
   bool Rename(const CURL& url, const CURL& urlnew) override;
-  int GetChunkSize() override { return 1; }
+  int GetChunkSize() override { return 2048*1024; }
   int IoControl(EIoControl request, void* param) override;
 
 protected:
