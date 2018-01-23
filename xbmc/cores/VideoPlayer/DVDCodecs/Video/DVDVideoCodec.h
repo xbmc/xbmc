@@ -28,6 +28,7 @@
 
 extern "C" {
 #include "libavcodec/avcodec.h"
+#include "libavutil/mastering_display_metadata.h"
 }
 
 #include <vector>
@@ -72,6 +73,11 @@ public:
   int qstride;
   int qscale_type;
   int pict_type;
+
+  bool hasDisplayMetadata = false;
+  AVMasteringDisplayMetadata displayMetadata;
+  bool hasLightMetadata = false;
+  AVContentLightMetadata lightMetadata;
 
   unsigned int iWidth;
   unsigned int iHeight;
