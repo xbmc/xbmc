@@ -23,7 +23,7 @@
 #include "system.h"
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
-#include "xbmc/guilib/GUIShader.h"
+#include "GLESShader.h"
 
 enum ESHADERMETHOD
 {
@@ -81,6 +81,8 @@ public:
 
   void Project(float &x, float &y, float &z) override;
 
+  std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
+
   void InitialiseGUIShader();
   void EnableGUIShader(ESHADERMETHOD method);
   void DisableGUIShader();
@@ -110,7 +112,7 @@ protected:
 
   std::string m_RenderExtensions;
 
-  CGUIShader  **m_pGUIshader = nullptr; // One GUI shader for each method
+  CGLESShader  **m_pGUIshader = nullptr; // One GUI shader for each method
   ESHADERMETHOD m_method = SM_DEFAULT; // Current GUI Shader method
 
   GLint      m_viewPort[4];

@@ -174,13 +174,11 @@ endif()
 
 if(OPENGLES_FOUND)
   list(APPEND SOURCES GUIFontTTFGL.cpp
-                      GUIShader.cpp
                       GUITextureGLES.cpp
                       MatrixGLES.cpp
                       Shader.cpp
                       TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
-                      GUIShader.h
                       GUITextureGLES.h
                       MatrixGLES.h
                       Shader.h

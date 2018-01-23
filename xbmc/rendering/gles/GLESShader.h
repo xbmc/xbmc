@@ -18,17 +18,14 @@
  *
  */
 
-#ifndef GUI_SHADER_H
-#define GUI_SHADER_H
-
 #pragma once
 
-#include "Shader.h"
+#include "xbmc/guilib/Shader.h"
 
-class CGUIShader : public Shaders::CGLSLShaderProgram
+class CGLESShader : public Shaders::CGLSLShaderProgram
 {
 public:
-  CGUIShader( const char *shader = 0 );
+  CGLESShader( const char *shader = 0 );
   void OnCompiledAndLinked();
   bool OnEnabled();
   void Free();
@@ -75,5 +72,3 @@ protected:
   GLfloat m_clipYFactor;
   GLfloat m_clipYOffset;
 };
-
-#endif // GUI_SHADER_H
