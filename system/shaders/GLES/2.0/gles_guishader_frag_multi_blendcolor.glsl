@@ -18,21 +18,17 @@
  *
  */
 
-attribute vec4 m_attrpos;
-attribute vec2 m_attrcordY;
-attribute vec2 m_attrcordU;
-attribute vec2 m_attrcordV;
-varying vec2 m_cordY;
-varying vec2 m_cordU;
-varying vec2 m_cordV;
-uniform mat4 m_proj;
-uniform mat4 m_model;
+#version 100
 
+precision mediump   float;
+uniform   sampler2D m_samp0;
+uniform   sampler2D m_samp1;
+varying   vec4      m_cord0;
+varying   vec4      m_cord1;
+uniform   lowp vec4 m_unicol;
+
+// SM_MULTI shader
 void main ()
 {
-  mat4 mvp    = m_proj * m_model;
-  gl_Position = mvp * m_attrpos;
-  m_cordY     = m_attrcordY;
-  m_cordU     = m_attrcordU;
-  m_cordV     = m_attrcordV;
+  gl_FragColor.rgba = m_unicol * texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy);
 }

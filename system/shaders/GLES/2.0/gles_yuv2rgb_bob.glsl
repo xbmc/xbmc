@@ -18,6 +18,8 @@
  *
  */
 
+#version 100
+
 precision highp float;
 uniform sampler2D m_sampY;
 uniform sampler2D m_sampU;
