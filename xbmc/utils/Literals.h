@@ -1,7 +1,11 @@
 #pragma once
 /*
  *      Copyright (C) 2014 Team XBMC
+<<<<<<< HEAD
  *      http://xbmc.org
+=======
+ *      http://kodi.tv
+>>>>>>> A mass change from xbmc.org to kodi.tv.
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,4 +41,8 @@ constexpr unsigned long long int operator"" _mib (unsigned long long int val)
 constexpr unsigned long long int operator"" _mb (unsigned long long int val)
 {
     return val * 1000ull * 1000ull;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> A mass change from xbmc.org to kodi.tv.

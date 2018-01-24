@@ -1,6 +1,10 @@
 /*
  *      Copyright (C) 2005-2017 Team Kodi
+<<<<<<< HEAD
  *      http://xbmc.org
+=======
+ *      http://kodi.tv
+>>>>>>> A mass change from xbmc.org to kodi.tv.
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -126,4 +130,8 @@ std::string temp_file_path(std::string, std::error_code &ec)
 
 }
 }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> A mass change from xbmc.org to kodi.tv.
