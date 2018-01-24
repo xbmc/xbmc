@@ -55,6 +55,8 @@
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "settings/Settings.h"
 
+#include "utils/TimeUtils.h"
+
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
@@ -67,6 +69,7 @@
 #define XMEDIAFORMAT_KEY_CROP_RIGHT "crop-right"
 #define XMEDIAFORMAT_KEY_CROP_TOP "crop-top"
 #define XMEDIAFORMAT_KEY_CROP_BOTTOM "crop-bottom"
+#define XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK "feature-tunneled-playback"
 
 using namespace KODI::MESSAGING;
 
@@ -199,7 +202,11 @@ void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTim
     if (m_frameready)
       m_frameready->Reset();
 
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CMediaCodecVideoBuffer::ReleaseOutputBuffer index(%d), render(%d)", m_bufferId, render);
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  {
+    int64_t diff = displayTime ? displayTime - CurrentHostCounter() : 0;
+    CLog::Log(LOGDEBUG, "CMediaCodecVideoBuffer::ReleaseOutputBuffer index(%d), render(%d), time:%lld, offset:%lld", m_bufferId, render, displayTime, diff);
+  }
 
   media_status_t mstat;
   if (!render || displayTime == 0)
@@ -1029,6 +1036,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   {
     // Handle rotation
     AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_ROTATION, m_hints.orientation);
+    AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK, 0);
   }
 
 
