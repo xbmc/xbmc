@@ -1507,14 +1507,15 @@ int CGUIWindowManager::GetActiveWindow() const
 
 int CGUIWindowManager::GetActiveWindowID() const
 {
-  // Get the currently active window
-  int iWin = GetActiveWindow() & WINDOW_ID_MASK;
+  // if there is a dialog active get the dialog id instead
+  int iWin = GetTopmostModalDialog() & WINDOW_ID_MASK;
+  if (iWin != WINDOW_INVALID)
+    return iWin;
 
-  // If there is a dialog active get the dialog id instead
-  if (HasModalDialog())
-    iWin = GetTopmostModalDialog() & WINDOW_ID_MASK;
+  // get the currently active window
+  iWin = GetActiveWindow() & WINDOW_ID_MASK;
 
-  // If the window is FullScreenVideo check for special cases
+  // if the window is FullScreenVideo check for special cases
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
     // check if we're in a DVD menu
@@ -1527,7 +1528,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
-  if (iWin == WINDOW_VISUALISATION)
+  else if (iWin == WINDOW_VISUALISATION)
   {
     // special casing for PVR radio
     if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
@@ -1536,7 +1537,7 @@ int CGUIWindowManager::GetActiveWindowID() const
     else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
       iWin = WINDOW_VIDEO_TIME_SEEK;
   }
-  // Return the window id
+
   return iWin;
 }
 
