@@ -5905,7 +5905,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
     }
     if (info.name == "art")
       return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
-    if (info.name == "ratings")
+    if (info.name == "rating")
       return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
     if (info.name == "votes")
       return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
