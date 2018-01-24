@@ -60,9 +60,9 @@ void CGUIDialogSeekBar::FrameMove()
     return;
   }
 
-  unsigned int percent((!g_application.GetAppPlayer().GetSeekHandler().InProgress() && g_infoManager.GetTotalPlayTime())
-    ? lrintf(g_application.GetPercentage())
-    : lrintf(g_infoManager.GetSeekPercent()));
+  unsigned int percent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
+    ? lrintf(g_infoManager.GetSeekPercent())
+    : lrintf(g_application.GetPercentage());
 
   if (percent != m_lastPercent)
     CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastPercent = percent);
