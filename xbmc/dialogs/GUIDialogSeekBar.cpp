@@ -26,7 +26,6 @@
 #include "SeekHandler.h"
 
 #define POPUP_SEEK_PROGRESS     401
-#define POPUP_SEEK_LABEL        402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
   : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml", DialogModalityType::MODELESS)
@@ -43,12 +42,6 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
   case GUI_MSG_WINDOW_DEINIT:
     return CGUIDialog::OnMessage(message);
-
-  case GUI_MSG_LABEL_SET:
-    if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_LABEL)
-      return CGUIDialog::OnMessage(message);
-    break;
-
   case GUI_MSG_ITEM_SELECT:
     if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
       return CGUIDialog::OnMessage(message);
@@ -69,7 +62,7 @@ void CGUIDialogSeekBar::FrameMove()
 
   unsigned int percent((!g_application.GetAppPlayer().GetSeekHandler().InProgress() && g_infoManager.GetTotalPlayTime())
     ? lrintf(g_application.GetPercentage())
-    : (unsigned int)g_infoManager.GetSeekPercent());
+    : lrintf(g_infoManager.GetSeekPercent()));
 
   if (percent != m_lastPercent)
     CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastPercent = percent);
