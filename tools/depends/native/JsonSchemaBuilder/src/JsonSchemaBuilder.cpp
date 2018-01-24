@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 
   out << "namespace JSONRPC" << endl;
   out << "{" << endl;
-  out << "  const char* const JSONRPC_SERVICE_ID          = \"http://kodi.tv/jsonrpc/ServiceDescription.json\";" << endl;
+  out << "  const char* const JSONRPC_SERVICE_ID          = \"http://xbmc.org/jsonrpc/ServiceDescription.json\";" << endl;
   out << "  const char* const JSONRPC_SERVICE_VERSION     = \""; print_version(version, out); out << "\";" << endl;
   out << "  const char* const JSONRPC_SERVICE_DESCRIPTION = \"JSON-RPC API of XBMC\";" << endl;
   out << endl;
