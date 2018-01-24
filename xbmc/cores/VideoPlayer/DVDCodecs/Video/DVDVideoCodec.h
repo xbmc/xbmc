@@ -67,7 +67,7 @@ public:
   unsigned int chroma_position;
   unsigned int color_primaries;
   unsigned int color_transfer;
-  char stereo_mode[32];
+  std::string stereoMode;
 
   int8_t* qp_table;                //< Quantization parameters, primarily used by filters
   int qstride;

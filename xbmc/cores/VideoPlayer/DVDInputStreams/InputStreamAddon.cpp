@@ -373,7 +373,6 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     videoStream->iWidth = stream.m_Width;
     videoStream->iHeight = stream.m_Height;
     videoStream->fAspect = stream.m_Aspect;
-    videoStream->stereo_mode = "mono";
     videoStream->iBitRate = stream.m_BitRate;
     videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
     demuxStream = videoStream;

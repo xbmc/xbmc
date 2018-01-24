@@ -39,7 +39,7 @@ public:
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
 
-  bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
 
   // Player functions
   bool ConfigChanged(const VideoPicture &picture) override;

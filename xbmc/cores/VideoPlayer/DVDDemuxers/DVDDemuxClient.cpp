@@ -438,7 +438,6 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->iFpsRate        = source->iFpsRate;
     streamVideo->fAspect         = source->fAspect;
     streamVideo->iBitRate = source->iBitRate;
-    streamVideo->stereo_mode     = "mono";
     if (source->ExtraSize > 0 && source->ExtraData)
     {
       delete[] streamVideo->ExtraData;

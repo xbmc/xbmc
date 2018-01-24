@@ -846,7 +846,7 @@ void CMMALRenderer::AddVideoPicture(const VideoPicture& pic, int id, double curr
   UpdateFramerateStats(pic.pts);
 }
 
-bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
@@ -857,8 +857,13 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned f
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsColorTransfer(picture.color_transfer) |
+             GetFlagsStereoMode(picture.stereoMode);
+
   m_fps = fps;
-  m_iFlags = flags;
   m_error = 0.0;
   m_lastPts = DVD_NOPTS_VALUE;
   m_frameInterval = 0.0;

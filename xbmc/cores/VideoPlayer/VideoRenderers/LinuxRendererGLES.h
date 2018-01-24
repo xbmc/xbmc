@@ -109,7 +109,7 @@ public:
   static bool Register();
 
   // Player functions
-  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   virtual void UnInit() override;

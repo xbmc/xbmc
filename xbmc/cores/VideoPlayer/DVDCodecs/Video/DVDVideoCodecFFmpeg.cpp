@@ -964,9 +964,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   AVDictionaryEntry * entry = av_dict_get(av_frame_get_metadata(m_pFrame), "stereo_mode", NULL, 0);
   if(entry && entry->value)
   {
-    strncpy(pVideoPicture->stereo_mode, (const char*)entry->value, sizeof(pVideoPicture->stereo_mode));
-    pVideoPicture->stereo_mode[sizeof(pVideoPicture->stereo_mode)-1] = '\0';
+    pVideoPicture->stereoMode = (const char*)entry->value;
   }
+  else
+    pVideoPicture->stereoMode.clear();
 
   pVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pVideoPicture->iFlags = 0;

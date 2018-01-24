@@ -55,7 +55,7 @@ CRendererVDPAU::~CRendererVDPAU()
   m_interopState.Finish();
 }
 
-bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   CVdpauRenderPicture *pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.isYuv)
@@ -75,7 +75,7 @@ bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned 
     fence = GL_NONE;
   }
 
-  return CLinuxRendererGL::Configure(picture, fps, flags, orientation);
+  return CLinuxRendererGL::Configure(picture, fps, orientation);
 }
 
 bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)

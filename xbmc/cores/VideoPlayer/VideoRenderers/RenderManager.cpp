@@ -97,7 +97,7 @@ void CRenderManager::SetVideoSettings(CVideoSettings settings)
   }
 }
 
-bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(const VideoPicture& picture, float fps, bool fullscreen, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -109,8 +109,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
         m_dwidth == picture.iDisplayWidth &&
         m_dheight == picture.iDisplayHeight &&
         m_fps == fps &&
-        (m_flags & ~CONF_FLAGS_FULLSCREEN) == (flags & ~CONF_FLAGS_FULLSCREEN) &&
         m_orientation == orientation &&
+        m_stereomode == picture.stereoMode &&
         m_NumberBuffers == buffers &&
         m_pRenderer != nullptr &&
         !m_pRenderer->ConfigChanged(picture))
@@ -146,8 +146,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_dwidth = picture.iDisplayWidth;
     m_dheight = picture.iDisplayHeight;
     m_fps = fps;
-    m_flags = flags;
     m_orientation = orientation;
+    m_stereomode = picture.stereoMode;
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
@@ -155,6 +155,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_dvdClock.SetVsyncAdjust(0);
     m_pConfigPicture.reset(new VideoPicture());
     m_pConfigPicture->CopyRef(picture);
+    m_fullscreen = fullscreen;
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -198,7 +199,7 @@ bool CRenderManager::Configure()
   }
 
   m_pRenderer->SetVideoSettings(m_playerPort->GetVideoSettings());
-  bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_flags, m_orientation);
+  bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_orientation);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
@@ -301,9 +302,10 @@ void CRenderManager::FrameMove()
       firstFrame = true;
       FrameWait(50);
 
-      if (m_flags & CONF_FLAGS_FULLSCREEN)
+      if (m_fullscreen)
       {
         CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+        m_fullscreen = false;
       }
     }
 
@@ -679,7 +681,7 @@ RESOLUTION CRenderManager::GetResolution()
     return res;
 
   if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-    res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags) != 0);
+    res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, !m_stereomode.empty());
 
   return res;
 }
@@ -868,7 +870,7 @@ void CRenderManager::UpdateResolution()
     {
       if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
-        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags) != 0);
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, !m_stereomode.empty());
         g_graphicsContext.SetVideoResolution(res, false);
         UpdateLatencyTweak();
       }
@@ -878,13 +880,13 @@ void CRenderManager::UpdateResolution()
   }
 }
 
-void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
+void CRenderManager::TriggerUpdateResolution(float fps, int width, std::string &stereomode)
 {
   if (width)
   {
     m_fps = fps;
     m_width = width;
-    m_flags = flags;
+    m_stereomode = stereomode;
   }
   m_bTriggerUpdateResolution = true;
 }

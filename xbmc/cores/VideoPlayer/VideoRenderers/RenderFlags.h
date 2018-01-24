@@ -80,16 +80,10 @@
 #define CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT 0x000000
 #define CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT 0x008000
 
+unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
+unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
+unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
+unsigned int GetFlagsColorTransfer(unsigned int color_transfer);
+unsigned int GetFlagsStereoMode(const std::string& mode);
 
-
-namespace RenderManager {
-
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
-  unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
-  unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
-  unsigned int GetFlagsColorTransfer(unsigned int color_transfer);
-  unsigned int GetStereoModeFlags(const std::string& mode);
-  std::string  GetStereoModeInvert(const std::string& mode);
-
-}
 

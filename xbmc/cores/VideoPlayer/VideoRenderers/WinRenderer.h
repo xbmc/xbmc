@@ -56,7 +56,7 @@ public:
   bool RenderCapture(CRenderCapture* capture) override;
 
   // Player functions
-  bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void UnInit() override;
   bool IsConfigured() override { return m_bConfigured; }
