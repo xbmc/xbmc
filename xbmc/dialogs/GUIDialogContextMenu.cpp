@@ -644,7 +644,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
 
 void CGUIDialogContextMenu::PositionAtCurrentFocus()
 {
-  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowID());
   if (window)
   {
     const CGUIControl *focusedControl = window->GetFocusedControl();

@@ -1541,16 +1541,6 @@ int CGUIWindowManager::GetActiveWindowID() const
   return iWin;
 }
 
-// same as GetActiveWindow() except it first grabs dialogs
-int CGUIWindowManager::GetFocusedWindow() const
-{
-  int dialog = GetTopmostModalDialog(true);
-  if (dialog != WINDOW_INVALID)
-    return dialog;
-
-  return GetActiveWindow();
-}
-
 bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) const
 {
   // mask out multiple instances of the same window

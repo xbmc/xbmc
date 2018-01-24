@@ -31,7 +31,7 @@
  */
 static int ControlMove(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(),
+  CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetActiveWindowID(),
                       atoi(params[0].c_str()), atoi(params[1].c_str()));
   g_windowManager.SendMessage(message);
 
@@ -54,7 +54,7 @@ static int SendClick(const std::vector<std::string>& params)
   }
   else
   { // single param - assume you meant the focused window
-    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetFocusedWindow());
+    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindowID());
     g_windowManager.SendMessage(message);
   }
 
@@ -98,7 +98,7 @@ static int SetFocus(const std::vector<std::string>& params)
   int absID = 0;
   if (params.size() > 2 && StringUtils::EqualsNoCase(params[2].c_str(), "absolute"))
     absID = 1;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem, absID);
+  CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindowID(), controlID, subItem, absID);
   g_windowManager.SendMessage(msg);
 
   return 0;
@@ -114,7 +114,7 @@ static int SetFocus(const std::vector<std::string>& params)
 static int ShiftPage(const std::vector<std::string>& params)
 {
   int id = atoi(params[0].c_str());
-  CGUIMessage message(Message, g_windowManager.GetFocusedWindow(), id);
+  CGUIMessage message(Message, g_windowManager.GetActiveWindowID(), id);
   g_windowManager.SendMessage(message);
 
   return 0;

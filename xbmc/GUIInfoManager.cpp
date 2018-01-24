@@ -6576,7 +6576,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
-    return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
+    return g_localizeStrings.Get(g_windowManager.GetActiveWindowID());
     break;
   case SYSTEM_STARTUP_WINDOW:
     strLabel = StringUtils::Format("%i", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
@@ -6584,7 +6584,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_CURRENT_CONTROL:
   case SYSTEM_CURRENT_CONTROL_ID:
     {
-      CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+      CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowID());
       if (window)
       {
         CGUIControl *control = window->GetFocusedControl();

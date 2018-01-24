@@ -139,7 +139,7 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
       unsigned int iPtr = 1;
       while (params.size() > iPtr + 1)
       {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
+        CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindowID(),
                         atol(params[iPtr].c_str()),
                         (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
         g_windowManager.SendMessage(msg);
@@ -229,7 +229,7 @@ static int CancelAlarm(const std::vector<std::string>& params)
  */
 static int ClearProperty(const std::vector<std::string>& params)
 {
-  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? CWindowTranslator::TranslateWindow(params[1]) : g_windowManager.GetFocusedWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? CWindowTranslator::TranslateWindow(params[1]) : g_windowManager.GetActiveWindowID());
   if (window)
     window->SetProperty(params[0],"");
 
@@ -379,7 +379,7 @@ static int SetResolution(const std::vector<std::string>& params)
  */
 static int SetProperty(const std::vector<std::string>& params)
 {
-  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? CWindowTranslator::TranslateWindow(params[2]) : g_windowManager.GetFocusedWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? CWindowTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindowID());
   if (window)
     window->SetProperty(params[0],params[1]);
 

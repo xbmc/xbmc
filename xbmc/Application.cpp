@@ -4635,7 +4635,7 @@ void CApplication::SeekPercentage(float percent)
 bool CApplication::SwitchToFullScreen(bool force /* = false */)
 {
   // don't switch if the slideshow is active
-  if (g_windowManager.GetFocusedWindow() == WINDOW_SLIDESHOW)
+  if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     return false;
 
   // if playing from the video info window, close it first!
