@@ -34,7 +34,7 @@
 #include "utils/Variant.h"
 #include "Util.h"
 #ifdef TARGET_WINDOWS
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #include "utils/SystemInfo.h"
 #endif
 #include "settings/AdvancedSettings.h"

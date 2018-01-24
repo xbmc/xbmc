@@ -77,7 +77,7 @@
 #if !defined(TARGET_WINDOWS)
 #include <dlfcn.h>
 #endif
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #include "utils/StringUtils.h"
 
 #if defined(TARGET_WINDOWS)

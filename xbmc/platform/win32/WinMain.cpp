@@ -27,7 +27,7 @@
 #include "platform/XbmcContext.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/CPUInfo.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
 
 

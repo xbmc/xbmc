@@ -86,7 +86,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"

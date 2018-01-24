@@ -21,7 +21,7 @@
 #include "PlatformWin10.h"
 #include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
