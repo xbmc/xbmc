@@ -745,21 +745,18 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   // default buffer construction
   // align with AE's max buffer
-  unsigned int latency = m_BytesPerSecond / 2.5; // 400 ms
-  unsigned int process_time = latency / 4; // 100 ms
+  uint32_t latency = m_BytesPerSecond / 2.5; // 400 ms
   if(sinkStruct.isHWDevice)
   {
     // on hw devices buffers can be further reduced
     // 200ms max latency
-    // 50ms min packet size
     latency = m_BytesPerSecond / 5;
-    process_time = latency / 4;
   }
 
   pa_buffer_attr buffer_attr;
-  buffer_attr.fragsize = latency;
+  buffer_attr.fragsize = (uint32_t) -1;
   buffer_attr.maxlength = (uint32_t) -1;
-  buffer_attr.minreq = process_time;
+  buffer_attr.minreq = (uint32_t) -1;
   buffer_attr.prebuf = (uint32_t) -1;
   buffer_attr.tlength = latency;
   int flags = (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY);
