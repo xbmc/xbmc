@@ -1,4 +1,4 @@
-﻿/*
+/*
  *      Copyright (C) 2011-2013 Team XBMC
  *      http://xbmc.org
  *

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <scraper framework="1.1" date="2012-01-16">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;https://api.tmdb.org/3/search/movie?api_key=ecbc86c92da237cb9faff6d3ddc4be6d&amp;amp;query=\1&amp;amp;year=$$4&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="3">
