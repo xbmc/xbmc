@@ -34,6 +34,7 @@
 #include "input/mouse/MouseWindowingButtonMap.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIControl.h"
@@ -361,6 +362,8 @@ bool CInputManager::Process(int windowId, float frameTime)
   // Read the input from a remote
   m_RemoteControl.Update();
 #endif
+
+  windowId = CWindowTranslator::GetVirtualWindow(windowId);
 
   // process input actions
   ProcessRemote(windowId);

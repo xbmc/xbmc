@@ -6577,7 +6577,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetActiveWindowOrDialog());
-    break;
   case SYSTEM_STARTUP_WINDOW:
     strLabel = StringUtils::Format("%i", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
     break;

@@ -128,6 +128,8 @@ bool CTouchTranslator::TranslateAction(int window, unsigned int touchCommand, in
 
 unsigned int CTouchTranslator::GetActionID(WindowID window, TouchActionKey touchActionKey, std::string &actionString)
 {
+  window = CWindowTranslator::GetVirtualWindow(window);
+
   auto windowIt = m_touchMap.find(window);
   if (windowIt == m_touchMap.end())
     return ACTION_NONE;

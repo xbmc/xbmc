@@ -1513,32 +1513,7 @@ int CGUIWindowManager::GetActiveWindowOrDialog() const
     return iWin;
 
   // get the currently active window
-  iWin = GetActiveWindow() & WINDOW_ID_MASK;
-
-  // if the window is FullScreenVideo check for special cases
-  if (iWin == WINDOW_FULLSCREEN_VIDEO)
-  {
-    // check if we're in a DVD menu
-    if (g_application.GetAppPlayer().IsInMenu())
-      iWin = WINDOW_VIDEO_MENU;
-    // check for LiveTV and switch to it's virtual window
-    else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      iWin = WINDOW_FULLSCREEN_LIVETV;
-    // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
-      iWin = WINDOW_VIDEO_TIME_SEEK;
-  }
-  else if (iWin == WINDOW_VISUALISATION)
-  {
-    // special casing for PVR radio
-    if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      iWin = WINDOW_FULLSCREEN_RADIO;
-    // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
-      iWin = WINDOW_VIDEO_TIME_SEEK;
-  }
-
-  return iWin;
+  return GetActiveWindow() & WINDOW_ID_MASK;
 }
 
 bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) const

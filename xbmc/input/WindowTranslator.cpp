@@ -19,7 +19,10 @@
  */
 
 #include "WindowTranslator.h"
+#include "Application.h"
 #include "guilib/WindowIDs.h"
+#include "pvr/PVRManager.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -231,6 +234,8 @@ std::string CWindowTranslator::TranslateWindow(int windowId)
 {
   static auto reverseWindowMapping = CreateWindowMappingByID();
 
+  windowId = GetVirtualWindow(windowId);
+
   auto it = reverseWindowMapping.find(WindowMapItem{ "", windowId });
   if (it != reverseWindowMapping.end())
     return it->windowName;
@@ -263,4 +268,31 @@ CWindowTranslator::WindowMapByID CWindowTranslator::CreateWindowMappingByID()
   reverseWindowMapping.insert(WindowMappingByName.begin(), WindowMappingByName.end());
 
   return reverseWindowMapping;
+}
+
+int CWindowTranslator::GetVirtualWindow(int windowId)
+{
+  if (windowId == WINDOW_FULLSCREEN_VIDEO)
+  {
+    // check if we're in a DVD menu
+    if (g_application.GetAppPlayer().IsInMenu())
+      return WINDOW_VIDEO_MENU;
+    // check for LiveTV and switch to it's virtual window
+    else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+      return WINDOW_FULLSCREEN_LIVETV;
+    // special casing for numeric seek
+    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
+      return WINDOW_VIDEO_TIME_SEEK;
+  }
+  else if (windowId == WINDOW_VISUALISATION)
+  {
+    // special casing for PVR radio
+    if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+      return WINDOW_FULLSCREEN_RADIO;
+    // special casing for numeric seek
+    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
+      return WINDOW_VIDEO_TIME_SEEK;
+  }
+
+  return windowId;
 }
