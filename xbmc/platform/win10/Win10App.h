@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 /*
  *      Copyright (C) 2005-2017 Team Kodi
  *      http://kodi.tv

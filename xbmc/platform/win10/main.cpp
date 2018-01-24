@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "platform/win10/Win10Main.h"
 
 #pragma comment(lib, "libkodi.lib")
