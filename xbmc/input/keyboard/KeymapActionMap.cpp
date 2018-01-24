@@ -30,6 +30,6 @@ using namespace KEYBOARD;
 
 unsigned int CKeymapActionMap::GetActionID(const CKey& key)
 {
-  CAction action = CServiceBroker::GetInputManager().GetAction(g_windowManager.GetActiveWindowID(), key);
+  CAction action = CServiceBroker::GetInputManager().GetAction(g_windowManager.GetActiveWindowOrDialog(), key);
   return action.GetID();
 }

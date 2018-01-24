@@ -52,7 +52,7 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
 //  CLog::Log(LOGDEBUG, "SendEditingText(%s, %u, %u)", text, location, length);
 //  CGUIMessage msg(GUI_MSG_INPUT_TEXT_EDIT, 0, 0, location, length);
 //  msg.SetLabel(text);
-//  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowID());
+//  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowOrDialog());
 }
 
 @implementation OSXTextInputResponder

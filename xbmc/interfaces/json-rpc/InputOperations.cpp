@@ -74,7 +74,7 @@ JSONRPC_STATUS CInputOperations::SendText(const std::string &method, ITransportL
   if (CGUIKeyboardFactory::SendTextToActiveKeyboard(parameterObject["text"].asString(), parameterObject["done"].asBoolean()))
     return ACK;
 
-  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowID());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowOrDialog());
   if (!window)
     return ACK;
 

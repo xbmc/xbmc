@@ -454,7 +454,7 @@ void CRetroPlayer::FrameMove()
 
   if (m_gameClient)
   {
-    const bool bFullscreen = (g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME);
+    const bool bFullscreen = (g_windowManager.GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_GAME);
 
     switch (m_state)
     {

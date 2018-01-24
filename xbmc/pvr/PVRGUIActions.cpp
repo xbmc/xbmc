@@ -1821,7 +1821,7 @@ namespace PVR
   CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()
   {
     // window/dialog specific input handler
-    CPVRChannelNumberInputHandler *windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(g_windowManager.GetWindow(g_windowManager.GetActiveWindowID()));
+    CPVRChannelNumberInputHandler *windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(g_windowManager.GetWindow(g_windowManager.GetActiveWindowOrDialog()));
     if (windowInputHandler)
       return *windowInputHandler;
 

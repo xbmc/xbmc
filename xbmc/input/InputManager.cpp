@@ -422,7 +422,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     if (!handled)
     {
       m_Mouse.HandleEvent(newEvent);
-      ProcessMouse(g_windowManager.GetActiveWindowID());
+      ProcessMouse(g_windowManager.GetActiveWindowOrDialog());
     }
     break;
   }
@@ -438,7 +438,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       actionId = newEvent.touch.action;
     else
     {
-      int iWin = g_windowManager.GetActiveWindowID();
+      int iWin = g_windowManager.GetActiveWindowOrDialog();
       m_touchTranslator->TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
     }
 
@@ -502,7 +502,7 @@ bool CInputManager::OnKey(const CKey& key)
     }
     else
     {
-      if (!m_buttonTranslator->HasLongpressMapping(g_windowManager.GetActiveWindowID(), key))
+      if (!m_buttonTranslator->HasLongpressMapping(g_windowManager.GetActiveWindowOrDialog(), key))
       {
         m_LastKey.Reset();
         bHandled = HandleKey(key);
@@ -529,7 +529,7 @@ bool CInputManager::HandleKey(const CKey& key)
   m_Mouse.SetActive(false);
 
   // get the current active window
-  int iWin = g_windowManager.GetActiveWindowID();
+  int iWin = g_windowManager.GetActiveWindowOrDialog();
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active

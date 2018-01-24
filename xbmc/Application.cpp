@@ -1140,7 +1140,7 @@ bool CApplication::Initialize()
       int firstWindow = g_SkinInfo->GetFirstWindow();
       g_windowManager.ActivateWindow(firstWindow);
 
-      if (g_windowManager.GetActiveWindowID() == WINDOW_STARTUP_ANIM)
+      if (g_windowManager.GetActiveWindowOrDialog() == WINDOW_STARTUP_ANIM)
       {
         CLog::Log(LOGWARNING, "CApplication::Initialize - startup.xml taints init process");
       }
@@ -2644,7 +2644,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     HandleWinEvents();
-    CServiceBroker::GetInputManager().Process(g_windowManager.GetActiveWindowID(), frameTime);
+    CServiceBroker::GetInputManager().Process(g_windowManager.GetActiveWindowOrDialog(), frameTime);
 
     if (processGUI && m_renderGUI)
     {

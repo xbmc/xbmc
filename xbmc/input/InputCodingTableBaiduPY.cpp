@@ -99,7 +99,7 @@ void CInputCodingTableBaiduPY::HandleResponse(const std::string& strCode, const 
   CGUIMessage msg(GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED, 0, 0, m_messageCounter);
   msg.SetStringParam(strCode);
   lock.Leave();
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowID());
+  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowOrDialog());
 }
 
 std::wstring CInputCodingTableBaiduPY::UnicodeToWString(const std::string& unicode)
