@@ -802,13 +802,13 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   if (!pNewWindow)
   { // nothing to see here - move along
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
-    if (GetActiveWindowID() == WINDOW_STARTUP_ANIM)
+    if (IsWindowActive(WINDOW_STARTUP_ANIM))
       ActivateWindow(WINDOW_HOME);
     return ;
   }
   else if (!pNewWindow->CanBeActivated())
   {
-    if (GetActiveWindowID() == WINDOW_STARTUP_ANIM)
+    if (IsWindowActive(WINDOW_STARTUP_ANIM))
       ActivateWindow(WINDOW_HOME);
     return;
   }
@@ -1505,56 +1505,23 @@ int CGUIWindowManager::GetActiveWindow() const
   return WINDOW_INVALID;
 }
 
-int CGUIWindowManager::GetActiveWindowID() const
+int CGUIWindowManager::GetActiveWindowOrDialog() const
 {
-  // Get the currently active window
-  int iWin = GetActiveWindow() & WINDOW_ID_MASK;
+  // if there is a dialog active get the dialog id instead
+  int iWin = GetTopmostModalDialog() & WINDOW_ID_MASK;
+  if (iWin != WINDOW_INVALID)
+    return iWin;
 
-  // If there is a dialog active get the dialog id instead
-  if (HasModalDialog())
-    iWin = GetTopmostModalDialog() & WINDOW_ID_MASK;
-
-  // If the window is FullScreenVideo check for special cases
-  if (iWin == WINDOW_FULLSCREEN_VIDEO)
-  {
-    // check if we're in a DVD menu
-    if (g_application.GetAppPlayer().IsInMenu())
-      iWin = WINDOW_VIDEO_MENU;
-    // check for LiveTV and switch to it's virtual window
-    else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      iWin = WINDOW_FULLSCREEN_LIVETV;
-    // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
-      iWin = WINDOW_VIDEO_TIME_SEEK;
-  }
-  if (iWin == WINDOW_VISUALISATION)
-  {
-    // special casing for PVR radio
-    if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      iWin = WINDOW_FULLSCREEN_RADIO;
-    // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
-      iWin = WINDOW_VIDEO_TIME_SEEK;
-  }
-  // Return the window id
-  return iWin;
-}
-
-// same as GetActiveWindow() except it first grabs dialogs
-int CGUIWindowManager::GetFocusedWindow() const
-{
-  int dialog = GetTopmostModalDialog(true);
-  if (dialog != WINDOW_INVALID)
-    return dialog;
-
-  return GetActiveWindow();
+  // get the currently active window
+  return GetActiveWindow() & WINDOW_ID_MASK;
 }
 
 bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) const
 {
   // mask out multiple instances of the same window
   id &= WINDOW_ID_MASK;
-  if ((GetActiveWindow() & WINDOW_ID_MASK) == id) return true;
+  if ((GetActiveWindow() & WINDOW_ID_MASK) == id)
+    return true;
   // run through the dialogs
   CSingleLock lock(g_graphicsContext);
   for (const auto& window : m_activeDialogs)

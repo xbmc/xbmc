@@ -271,7 +271,7 @@ unsigned int CButtonTranslator::GetActionCode(int window, const CKey &key, std::
   code &= ~CKey::MODIFIER_NUMLOCK;
   code &= ~CKey::MODIFIER_SCROLLLOCK;
 
-  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(CWindowTranslator::GetVirtualWindow(window));
   if (it == m_translatorMap.end())
     return ACTION_NONE;
 

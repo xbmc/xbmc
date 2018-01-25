@@ -127,7 +127,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
   {
     if (!info.empty())
       info += "\n";
-    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowOrDialog());
     CGUIWindow *pointer = g_windowManager.GetWindow(WINDOW_DIALOG_POINTER);
     CPoint point;
     if (pointer)

@@ -134,7 +134,7 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   if (property == "currentwindow")
   {
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentWindow"));
-    result["id"] = g_windowManager.GetFocusedWindow();
+    result["id"] = g_windowManager.GetActiveWindowOrDialog();
   }
   else if (property == "currentcontrol")
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
