@@ -179,7 +179,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   // The A-Z keys are exempted because shift-A-Z is used for navigation in lists.
   // The function keys are exempted because function keys have no shifted value and
   // the Nyxboard remote uses keys like Shift-F3 for some buttons.
-  if (modifiers & CKey::MODIFIER_SHIFT)
+  if (modifiers == CKey::MODIFIER_SHIFT)
     if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z') && (vkey < XBMCVK_F1 || vkey > XBMCVK_F24))
       modifiers = 0;
 
