@@ -88,6 +88,7 @@ namespace PERIPHERALS
 class CInputManager;
 class CFileExtensionProvider;
 class CPlayerCoreFactory;
+class CDatabaseManager;
 
 class CServiceManager
 {
@@ -146,6 +147,8 @@ public:
 
   CPlayerCoreFactory &GetPlayerCoreFactory();
 
+  CDatabaseManager &GetDatabaseManager();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -199,4 +202,5 @@ protected:
   std::unique_ptr<CPowerManager> m_powerManager;
   std::unique_ptr<CWeatherManager> m_weatherManager;
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
+  std::unique_ptr<CDatabaseManager> m_databaseManager;
 };

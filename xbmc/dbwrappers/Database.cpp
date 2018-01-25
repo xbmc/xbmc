@@ -29,6 +29,7 @@
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
+#include "ServiceBroker.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -363,7 +364,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   }
 
   // check our database manager to see if this database can be opened
-  if (!CDatabaseManager::GetInstance().CanOpen(GetBaseDBName()))
+  if (!CServiceBroker::GetDatabaseManager().CanOpen(GetBaseDBName()))
     return false;
 
   DatabaseSettings dbSettings = settings;

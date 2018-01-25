@@ -594,9 +594,6 @@ bool CApplication::Create(const CAppParamParser &params)
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
-  // initialize the addon database (must be before the addon manager is init'd)
-  CDatabaseManager::GetInstance().Initialize(true);
-
   if (!m_ServiceManager->InitStageTwo(params))
   {
     return false;
@@ -1045,17 +1042,21 @@ bool CApplication::Initialize()
   m_ServiceManager->GetNetwork().WaitForNet();
 
   // initialize (and update as needed) our databases
+  CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
+
   CEvent event(true);
-  CJobManager::GetInstance().Submit([&event]() {
-    CDatabaseManager::GetInstance().Initialize();
+  CJobManager::GetInstance().Submit([&databaseManager, &event]() {
+    databaseManager.Initialize();
     event.Set();
   });
+
   std::string localizedStr = g_localizeStrings.Get(24150);
   int iDots = 1;
   while (!event.WaitMSec(1000))
   {
-    if (CDatabaseManager::GetInstance().m_bIsUpgrading)
+    if (databaseManager.IsUpgrading())
       CServiceBroker::GetRenderSystem().ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+
     if (iDots == 3)
       iDots = 1;
     else

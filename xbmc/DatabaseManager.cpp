@@ -34,28 +34,27 @@
 using namespace PVR;
 using namespace ActiveAE;
 
-CDatabaseManager &CDatabaseManager::GetInstance()
+CDatabaseManager::CDatabaseManager() :
+  m_bIsUpgrading(false)
 {
-  static CDatabaseManager s_manager;
-  return s_manager;
-}
-
-CDatabaseManager::CDatabaseManager(): m_bIsUpgrading(false)
-{
+  // Initialize the addon database (must be before the addon manager is init'd)
+  CAddonDatabase db;
+  UpdateDatabase(db);
 }
 
 CDatabaseManager::~CDatabaseManager() = default;
 
-void CDatabaseManager::Initialize(bool addonsOnly)
+void CDatabaseManager::Initialize()
 {
-  Deinitialize();
-  { CAddonDatabase db; UpdateDatabase(db); }
-  if (addonsOnly)
-    return;
+  CSingleLock lock(m_section);
+
+  m_dbStatus.clear();
+
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
 
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
+  { CAddonDatabase db; UpdateDatabase(db); }
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
@@ -63,14 +62,10 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CPVREpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
-  CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
-  m_bIsUpgrading = false;
-}
 
-void CDatabaseManager::Deinitialize()
-{
-  CSingleLock lock(m_section);
-  m_dbStatus.clear();
+  CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
+
+  m_bIsUpgrading = false;
 }
 
 bool CDatabaseManager::CanOpen(const std::string &name)
