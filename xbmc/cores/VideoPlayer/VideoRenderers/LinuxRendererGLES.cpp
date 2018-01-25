@@ -707,17 +707,14 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   // Y
   glActiveTexture(GL_TEXTURE0);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[0].id);
 
   // U
   glActiveTexture(GL_TEXTURE1);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[1].id);
 
   // V
   glActiveTexture(GL_TEXTURE2);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[2].id);
 
   glActiveTexture(GL_TEXTURE0);
@@ -790,15 +787,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glDisableVertexAttribArray(Uloc);
   glDisableVertexAttribArray(Vloc);
 
-  glActiveTexture(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-
-  glActiveTexture(GL_TEXTURE2);
-  glDisable(m_textureTarget);
-
-  glActiveTexture(GL_TEXTURE0);
-  glDisable(m_textureTarget);
-
   VerifyGLState();
 }
 
@@ -829,20 +817,17 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   glDisable(GL_DEPTH_TEST);
 
   // Y
-  glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
   VerifyGLState();
 
   // U
   glActiveTexture(GL_TEXTURE1);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[1].id);
   VerifyGLState();
 
   // V
   glActiveTexture(GL_TEXTURE2);
-  glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[2].id);
   VerifyGLState();
 
@@ -965,15 +950,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
 
   m_fbo.fbo.EndRender();
 
-  glActiveTexture(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-
-  glActiveTexture(GL_TEXTURE2);
-  glDisable(m_textureTarget);
-
-  glActiveTexture(GL_TEXTURE0);
-  glDisable(m_textureTarget);
-
   VerifyGLState();
 }
 
@@ -1057,7 +1033,6 @@ void CLinuxRendererGLES::RenderFromFBO()
   VerifyGLState();
 
   glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
   VerifyGLState();
 }
 
@@ -1124,7 +1099,6 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
   YUVBUFFER& buf = m_buffers[source];
   YuvImage* im = &buf.image;
 
-  glEnable(m_textureTarget);
   VerifyGLState();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -1148,7 +1122,6 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
 
   CalculateTextureSourceRects(source, 3);
 
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1226,7 +1199,6 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   for (int i = 0; i < 3; i++)
     im.plane[i] = new BYTE[im.planesize[i]];
 
-  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(p = 0;p<YuvImage::MAX_PLANES;p++)
@@ -1289,7 +1261,6 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
       VerifyGLState();
     }
   }
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1307,7 +1278,6 @@ bool CLinuxRendererGLES::UploadNV12Texture(int source)
   else
     deinterlacing = true;
 
-  glEnable(m_textureTarget);
   VerifyGLState();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, im->bpp);
@@ -1352,7 +1322,6 @@ bool CLinuxRendererGLES::UploadNV12Texture(int source)
 
   CalculateTextureSourceRects(source, 3);
 
-  glDisable(m_textureTarget);
   return true;
 }
 
@@ -1389,7 +1358,6 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
   for (int i = 0; i < 2; i++)
     im.plane[i] = new BYTE[im.planesize[i]];
 
-  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<2;p++)
@@ -1443,7 +1411,6 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
       VerifyGLState();
     }
   }
-  glDisable(m_textureTarget);
 
   return true;
 }
