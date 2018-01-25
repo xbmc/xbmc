@@ -24,6 +24,7 @@
 #include "MediaSource.h"
 #include "settings/lib/ISettingsHandler.h"
 
+class CProfilesManager;
 class TiXmlNode;
 
 class CMediaSourceSettings : public ISettingsHandler

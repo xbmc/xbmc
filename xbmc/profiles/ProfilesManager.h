@@ -30,13 +30,17 @@
 
 class CEventLog;
 class CEventLogManager;
+class CSettings;
 class TiXmlNode;
 
-class CProfilesManager : public ISettingsHandler,
-                         public ISettingCallback
+class CProfilesManager : protected ISettingsHandler,
+                         protected ISettingCallback
 {
 public:
-  static CProfilesManager& GetInstance();
+  CProfilesManager(CSettings &settings);
+  CProfilesManager(const CProfilesManager&) = delete;
+  CProfilesManager& operator=(CProfilesManager const&) = delete;
+  ~CProfilesManager() override;
 
   void OnSettingsLoaded() override;
   void OnSettingsSaved() const override;
@@ -186,11 +190,6 @@ public:
   CEventLog &GetEventLog();
 
 protected:
-  CProfilesManager();
-  CProfilesManager(const CProfilesManager&) = delete;
-  CProfilesManager& operator=(CProfilesManager const&) = delete;
-  ~CProfilesManager() override;
-
   // implementation of ISettingCallback
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
@@ -199,6 +198,9 @@ private:
     \param profileId profile index
     */
   void SetCurrentProfileId(size_t profileId);
+
+  // Construction parameters
+  CSettings &m_settings;
 
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen;

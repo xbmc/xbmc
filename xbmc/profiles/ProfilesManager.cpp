@@ -43,6 +43,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
+#include "settings/lib/SettingsManager.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -71,8 +72,9 @@ using namespace XFILE;
 
 static CProfile EmptyProfile;
 
-CProfilesManager::CProfilesManager()
-  : m_usingLoginScreen(false),
+CProfilesManager::CProfilesManager(CSettings &settings) :
+    m_settings(settings),
+    m_usingLoginScreen(false),
     m_profileLoadedForLogin(false),
     m_autoLoginProfile(-1),
     m_lastUsedProfile(0),
@@ -80,26 +82,32 @@ CProfilesManager::CProfilesManager()
     m_nextProfileId(0),
     m_eventLogs(new CEventLogManager)
 {
+  if (m_settings.IsLoaded())
+    OnSettingsLoaded();
+
+  m_settings.GetSettingsManager()->RegisterSettingsHandler(this);
+
+  std::set<std::string> settingSet = {
+    CSettings::SETTING_EVENTLOG_SHOW
+  };
+
+  m_settings.GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
 CProfilesManager::~CProfilesManager()
 {
-}
-
-CProfilesManager& CProfilesManager::GetInstance()
-{
-  static CProfilesManager sProfilesManager;
-  return sProfilesManager;
+  m_settings.GetSettingsManager()->UnregisterCallback(this);
+  m_settings.GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  std::string strDir = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string strDir = m_settings.GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
+    m_settings.SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -336,7 +344,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (index == m_currentProfile)
   {
     LoadProfile(0);
-    CServiceBroker::GetSettings().Save();
+    m_settings.Save();
   }
 
   CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));

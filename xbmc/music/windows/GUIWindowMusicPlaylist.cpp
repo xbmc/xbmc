@@ -603,7 +603,9 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    std::string playlist = CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp");
+    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+    std::string playlist = profileManager.GetUserDataItem("PartyMode.xsp");
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

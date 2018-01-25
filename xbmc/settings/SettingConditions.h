@@ -24,10 +24,16 @@
 
 #include "settings/lib/SettingConditions.h"
 
+class CProfile;
+class CProfilesManager;
+
 class CSettingConditions
 {
 public:
-  static void Initialize();
+  static void Initialize(const CProfilesManager &profileManager);
+  static void Deinitialize();
+
+  static const CProfile& GetCurrentProfile();
 
   static const std::set<std::string>& GetSimpleConditions() { return m_simpleConditions; }
   static const std::map<std::string, SettingConditionCheck>& GetComplexConditions() { return m_complexConditions; }
@@ -35,6 +41,9 @@ public:
   static bool Check(const std::string &condition, const std::string &value = "", std::shared_ptr<const CSetting> setting = NULL);
 
 private:
+  // Initialization parameters
+  static const CProfilesManager *m_profileManager;
+
   static std::set<std::string> m_simpleConditions;
   static std::map<std::string, SettingConditionCheck> m_complexConditions;
 };

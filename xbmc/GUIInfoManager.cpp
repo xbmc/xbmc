@@ -5987,6 +5987,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     return strLabel;
   }
 
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   switch (info)
   {
   case PVR_NEXT_RECORDING_CHANNEL:
@@ -6615,15 +6617,15 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
+    strLabel = profileManager.GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("{0}", CProfilesManager::GetInstance().GetNumberOfProfiles());
+    strLabel = StringUtils::Format("{0}", profileManager.GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
-      int profileId = CProfilesManager::GetInstance().GetAutoLoginProfileId();
-      if ((profileId < 0) || (!CProfilesManager::GetInstance().GetProfileName(profileId, strLabel)))
+      int profileId = profileManager.GetAutoLoginProfileId();
+      if ((profileId < 0) || (!profileManager.GetProfileName(profileId, strLabel)))
         strLabel = g_localizeStrings.Get(37014); // Last used profile
     }
     break;
@@ -6954,7 +6956,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     }
   }
-  else {
+  else
+  {
+    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
     switch (condition)
     {
       // Ethernet Link state checking
@@ -7072,7 +7077,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = IsPlayerChannelPreviewActive();
         break;
       case SYSTEM_HASLOCKS:
-        bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+        bReturn = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
         break;
       case SYSTEM_HAS_PVR:
         bReturn = true;
@@ -7096,7 +7101,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
         break;
       case SYSTEM_ISMASTER:
-        bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+        bReturn = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
         break;
       case SYSTEM_ISFULLSCREEN:
         bReturn = CServiceBroker::GetWinSystem().IsFullScreen();
@@ -7117,7 +7122,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = g_advancedSettings.m_showExitButton;
         break;
       case SYSTEM_HAS_LOGINSCREEN:
-        bReturn = CProfilesManager::GetInstance().UsingLoginScreen();
+        bReturn = profileManager.UsingLoginScreen();
         break;
       case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
         bReturn = g_windowManager.HasModalDialog();
@@ -8252,7 +8257,9 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     return CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
+    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+    std::string thumb = profileManager.GetCurrentProfile().getThumb();
     if (thumb.empty())
       thumb = "DefaultUser.png";
     return thumb;

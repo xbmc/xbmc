@@ -900,6 +900,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   CVideoDatabaseDirectory dir;
   NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems->GetPath());
 
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   if (!item)
   {
     // nothing to do here
@@ -909,7 +911,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // get the usual shares
     CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
-        (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+        (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       CVideoDatabase database;
       database.Open();
@@ -967,7 +969,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       GetScraperForItem(item.get(), info, settings);
 
       // can we update the database?
-      if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
            (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
@@ -1128,7 +1130,10 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
-    if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+
+    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+    if (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
     {
       if (!CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(item, true))
         return true;

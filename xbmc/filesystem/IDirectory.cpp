@@ -25,11 +25,13 @@
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 using namespace XFILE;
 
-IDirectory::IDirectory(void)
+IDirectory::IDirectory() :
+  m_profileManager(CServiceBroker::GetProfileManager())
 {
   m_flags = DIR_FLAG_DEFAULTS;
 }

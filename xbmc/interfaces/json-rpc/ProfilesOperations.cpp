@@ -24,17 +24,20 @@
 #include "profiles/ProfilesManager.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   CFileItemList listItems;
 
-  for (unsigned int i = 0; i < CProfilesManager::GetInstance().GetNumberOfProfiles(); ++i)
+  for (unsigned int i = 0; i < profileManager.GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = CProfilesManager::GetInstance().GetProfile(i);
+    const CProfile *profile = profileManager.GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetArt("thumb", profile->getThumb());
     listItems.Add(item);
@@ -50,11 +53,11 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
       for (CVariant::iterator_array profileiter = result["profiles"].begin_array(); profileiter != result["profiles"].end_array(); ++profileiter)
       {
         std::string profilename = (*profileiter)["label"].asString();
-        int index = CProfilesManager::GetInstance().GetProfileIndex(profilename);
-        const CProfile *profile = CProfilesManager::GetInstance().GetProfile(index);
+        int index = profileManager.GetProfileIndex(profilename);
+        const CProfile *profile = profileManager.GetProfile(index);
         LockType locktype = LOCK_MODE_UNKNOWN;
         if (index == 0)
-          locktype = CProfilesManager::GetInstance().GetMasterProfile().getLockMode();
+          locktype = profileManager.GetMasterProfile().getLockMode();
         else
           locktype = profile->getLockMode();
         (*profileiter)["lockmode"] = locktype;
@@ -67,7 +70,9 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
 
 JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  const CProfile& currentProfile = CProfilesManager::GetInstance().GetCurrentProfile();
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  const CProfile& currentProfile = profileManager.GetCurrentProfile();
   CVariant profileVariant = CVariant(CVariant::VariantTypeObject);
   profileVariant["label"] = currentProfile.getName();
   for (CVariant::const_iterator_array propertyiter = parameterObject["properties"].begin_array(); propertyiter != parameterObject["properties"].end_array(); ++propertyiter)
@@ -88,14 +93,16 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method,
 
 JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   std::string profilename = parameterObject["profile"].asString();
-  int index = CProfilesManager::GetInstance().GetProfileIndex(profilename);
+  int index = profileManager.GetProfileIndex(profilename);
   
   if (index < 0)
     return InvalidParams;
 
   // get the profile
-  const CProfile *profile = CProfilesManager::GetInstance().GetProfile(index);
+  const CProfile *profile = profileManager.GetProfile(index);
   if (profile == NULL)
     return InvalidParams;
 

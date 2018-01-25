@@ -70,10 +70,11 @@ using EVENTSERVER::CEventServer;
 using namespace KODI;
 using namespace MESSAGING;
 
-CInputManager::CInputManager(const CAppParamParser &params) :
+CInputManager::CInputManager(const CAppParamParser &params,
+                             const CProfilesManager &profileManager) :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
-  m_irTranslator(new CIRTranslator),
+  m_irTranslator(new CIRTranslator(profileManager)),
   m_customControllerTranslator(new CCustomControllerTranslator),
   m_touchTranslator(new CTouchTranslator),
   m_joystickTranslator(new CJoystickMapper),

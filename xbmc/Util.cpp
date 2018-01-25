@@ -668,7 +668,9 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
 void CUtil::RemoveTempFiles()
 {
-  std::string searchPath = CProfilesManager::GetInstance().GetDatabaseFolder();
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  std::string searchPath = profileManager.GetDatabaseFolder();
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", DIR_FLAG_NO_FILE_DIRS))
     return;

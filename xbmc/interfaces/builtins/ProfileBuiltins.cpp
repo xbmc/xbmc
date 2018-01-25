@@ -45,11 +45,13 @@ using namespace KODI::MESSAGING;
  */
 static int LoadProfile(const std::vector<std::string>& params)
 {
-  int index = CProfilesManager::GetInstance().GetProfileIndex(params[0]);
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  int index = profileManager.GetProfileIndex(params[0]);
   bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
   bool bCanceled;
   if (index >= 0
-      && (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+      && (profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
         || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
@@ -77,7 +79,11 @@ static int LogOff(const std::vector<std::string>& params)
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
   CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-  CProfilesManager::GetInstance().LoadMasterProfileForLogin();
+
+
+  CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  profileManager.LoadMasterProfileForLogin();
+
   g_passwordManager.bMasterUser = false;
 
   g_application.WakeUpScreenSaverAndDPMS();

@@ -32,6 +32,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "network/WakeOnAccess.h"
+#include "ServiceBroker.h"
 
 #define SOURCES_FILE  "sources.xml"
 #define XML_SOURCES   "sources"
@@ -54,11 +55,13 @@ CMediaSourceSettings& CMediaSourceSettings::GetInstance()
 
 std::string CMediaSourceSettings::GetSourcesFile()
 {
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   std::string file;
-  if (CProfilesManager::GetInstance().GetCurrentProfile().hasSources())
-    file = CProfilesManager::GetInstance().GetProfileUserDataFolder();
+  if (profileManager.GetCurrentProfile().hasSources())
+    file = profileManager.GetProfileUserDataFolder();
   else
-    file = CProfilesManager::GetInstance().GetUserDataFolder();
+    file = profileManager.GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(file, SOURCES_FILE);
 }

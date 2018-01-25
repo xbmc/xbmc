@@ -461,7 +461,10 @@ bool CApplication::Create(const CAppParamParser &params)
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  CProfilesManager::GetInstance().Load();
+  if (!m_ServiceManager->InitStageOnePointFive())
+    return false;
+
+  CSpecialProtocol::RegisterProfileManager(m_ServiceManager->GetProfileManager());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(), CSysInfo::GetVersion().c_str(),
@@ -580,12 +583,12 @@ bool CApplication::Create(const CAppParamParser &params)
   m_ServiceManager->GetSettings().SetLoaded();
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(CProfilesManager::GetInstance().GetProfileUserDataFolder()).c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(m_ServiceManager->GetProfileManager().GetProfileUserDataFolder()).c_str());
   CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
   CLog::Log(LOGINFO, "screenshots folder: %s", CURL::GetRedacted(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
-  CDirectory::Create(CProfilesManager::GetInstance().GetUserDataFolder());
-  CDirectory::Create(CProfilesManager::GetInstance().GetProfileUserDataFolder());
-  CProfilesManager::GetInstance().CreateProfileFolders();
+  CDirectory::Create(m_ServiceManager->GetProfileManager().GetUserDataFolder());
+  CDirectory::Create(m_ServiceManager->GetProfileManager().GetProfileUserDataFolder());
+  m_ServiceManager->GetProfileManager().CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
 
@@ -1118,14 +1121,14 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
-        CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !CProfilesManager::GetInstance().GetMasterProfile().getLockCode().empty())
+        m_ServiceManager->GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+       !m_ServiceManager->GetProfileManager().GetMasterProfile().getLockCode().empty())
     {
        g_passwordManager.CheckStartUpLock();
     }
 
     // check if we should use the login screen
-    if (CProfilesManager::GetInstance().UsingLoginScreen())
+    if (m_ServiceManager->GetProfileManager().UsingLoginScreen())
     {
       // the login screen still needs to perform additional initialization
       uiInitializationFinished = false;
@@ -1169,7 +1172,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (!CProfilesManager::GetInstance().UsingLoginScreen())
+  if (!m_ServiceManager->GetProfileManager().UsingLoginScreen())
   {
     UpdateLibraries();
     SetLoggingIn(false);
@@ -2761,6 +2764,9 @@ bool CApplication::Cleanup()
     m_ServiceManager->GetSettings().Uninitialize();
     g_advancedSettings.Clear();
 
+    CSpecialProtocol::UnregisterProfileManager();
+    m_ServiceManager->DeinitStageOnePointFive();
+
 #ifdef TARGET_POSIX
     CXHandle::DumpObjectTracker();
 
@@ -2808,7 +2814,7 @@ void CApplication::Stop(int exitCode)
     g_sysinfo.SetTotalUptime(g_sysinfo.GetTotalUptime() + (int)(CTimeUtils::GetFrameTime() / 60000));
 
     // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(CProfilesManager::GetInstance().GetSettingsFile()))
+    if (CFile::Exists(m_ServiceManager->GetProfileManager().GetSettingsFile()))
     {
       CLog::Log(LOGNOTICE, "Saving settings");
       m_ServiceManager->GetSettings().Save();
@@ -3328,7 +3334,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
     resumeBookmark.timeInSeconds = 0.0f;
   }
 
-  if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
+  if (m_ServiceManager->GetProfileManager().GetCurrentProfile().canWriteDatabases())
   {
     CSaveFileState::DoWork(fileItem, resumeBookmark, playCountUpdate);
   }
@@ -3608,9 +3614,9 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
   if (m_screensaverActive && !m_screensaverIdInUse.empty())
   {
     if (m_iScreenSaveLock == 0)
-      if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          (CProfilesManager::GetInstance().UsingLoginScreen() || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
-          CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      if (m_ServiceManager->GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          (m_ServiceManager->GetProfileManager().UsingLoginScreen() || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
+          m_ServiceManager->GetProfileManager().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           m_screensaverIdInUse != "screensaver.xbmc.builtin.dim" && m_screensaverIdInUse != "screensaver.xbmc.builtin.black" && m_screensaverIdInUse != "visualization")
       {
         m_iScreenSaveLock = 2;

@@ -201,8 +201,10 @@ void CGUIDialogVideoSettings::OnSettingAction(std::shared_ptr<const CSetting> se
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_VIDEO_CALIBRATION)
   {
+    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
     // launch calibration window
-    if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
+    if (profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
         g_passwordManager.CheckSettingLevelLock(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
       return;
     g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
@@ -214,7 +216,9 @@ void CGUIDialogVideoSettings::OnSettingAction(std::shared_ptr<const CSetting> se
 
 void CGUIDialogVideoSettings::Save()
 {
-  if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  if (profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
       !g_passwordManager.CheckSettingLevelLock(::SettingLevel::Expert))
     return;
 

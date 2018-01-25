@@ -106,8 +106,11 @@ void CRssManager::Stop()
 
 bool CRssManager::Load()
 {
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   CSingleLock lock(m_critical);
-  std::string rssXML = CProfilesManager::GetInstance().GetUserDataItem("RssFeeds.xml");
+
+  std::string rssXML = profileManager.GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
 

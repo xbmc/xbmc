@@ -68,6 +68,8 @@ bool CServiceManager::InitForTesting()
   m_settings.reset(new CSettings());
   m_network.reset(SetupNetwork());
 
+  m_profileManager.reset(new CProfilesManager(*m_settings));
+
   m_databaseManager.reset(new CDatabaseManager);
 
   m_fileExtensionProvider.reset(new CFileExtensionProvider());
@@ -89,6 +91,7 @@ void CServiceManager::DeinitTesting()
   m_addonMgr.reset();
   m_fileExtensionProvider.reset();
   m_databaseManager.reset();
+  m_profileManager.reset();
   m_network.reset();
   m_settings.reset();
 }
@@ -109,6 +112,15 @@ bool CServiceManager::InitStageOne()
   m_network.reset(SetupNetwork());
 
   init_level = 1;
+  return true;
+}
+
+bool CServiceManager::InitStageOnePointFive()
+{
+  m_profileManager.reset(new CProfilesManager(*m_settings));
+  if (!m_profileManager->Load())
+    return false;
+
   return true;
 }
 
@@ -146,14 +158,15 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
-  m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
+  m_favouritesService.reset(new CFavouritesService(m_profileManager->GetProfileUserDataFolder()));
 
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
   m_gameControllerManager.reset(new GAME::CControllerManager);
-  m_inputManager.reset(new CInputManager(params));
+  m_inputManager.reset(new CInputManager(params,
+                                         *m_profileManager));
   m_inputManager->InitializeInputs();
 
   m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager,
@@ -212,13 +225,14 @@ bool CServiceManager::InitStageThree()
   m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
     *m_gameRenderManager,
     *m_settings,
-    *m_peripherals));
+    *m_peripherals,
+    *m_profileManager));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*m_settings,
-                                                   CProfilesManager::GetInstance()));
+                                                   *m_profileManager));
 
   init_level = 3;
   return true;
@@ -258,6 +272,11 @@ void CServiceManager::DeinitStageTwo()
   m_addonMgr.reset();
   m_Platform.reset();
   m_databaseManager.reset();
+}
+
+void CServiceManager::DeinitStageOnePointFive()
+{
+  m_profileManager.reset();
 }
 
 void CServiceManager::DeinitStageOne()
@@ -458,7 +477,12 @@ CDatabaseManager &CServiceManager::GetDatabaseManager()
   return *m_databaseManager;
 }
 
+CProfilesManager &CServiceManager::GetProfileManager()
+{
+  return *m_profileManager;
+}
+
 CEventLog &CServiceManager::GetEventLog()
 {
-  return CProfilesManager::GetInstance().GetEventLog();
+  return m_profileManager->GetEventLog();
 }

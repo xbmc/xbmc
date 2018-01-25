@@ -40,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 using namespace PLAYLIST;
@@ -65,12 +66,15 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   bool playlistLoaded;
 
   m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
+
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   if (!strXspPath.empty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
-    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp");
+    partyModePath = profileManager.GetUserDataItem("PartyMode-Video.xsp");
   else
-    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp");
+    partyModePath = profileManager.GetUserDataItem("PartyMode.xsp");
 
   playlistLoaded=playlist.Load(partyModePath);
 

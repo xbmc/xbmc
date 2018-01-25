@@ -54,7 +54,9 @@ bool CVideoLibraryResetResumePointJob::operator==(const CJob* job) const
 
 bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
 {
-  if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  if (!profileManager.GetCurrentProfile().canWriteDatabases())
     return false;
 
   CFileItemList items;

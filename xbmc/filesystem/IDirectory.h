@@ -23,6 +23,7 @@
 #include "utils/Variant.h"
 
 class CFileItemList;
+class CProfilesManager;
 class CURL;
 
 namespace XFILE
@@ -59,7 +60,7 @@ namespace XFILE
 class IDirectory
 {
 public:
-  IDirectory(void);
+  IDirectory();
   virtual ~IDirectory(void);
   /*!
    \brief Get the \e items of the directory \e strPath.
@@ -169,6 +170,9 @@ protected:
    \sa ProcessRequirements
    */
   void RequireAuthentication(const CURL& url);
+
+  // Construction parameters
+  const CProfilesManager &m_profileManager;
 
   std::string m_strFileMask;  ///< Holds the file mask specified by SetMask()
 

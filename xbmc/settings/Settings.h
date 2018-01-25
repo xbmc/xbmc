@@ -466,6 +466,7 @@ protected:
   void InitializeOptionFillers() override;
   void UninitializeOptionFillers() override;
   void InitializeConditions() override;
+  void UninitializeConditions() override;
   void InitializeVisibility() override;
   void InitializeDefaults() override;
   void InitializeISettingsHandlers() override;

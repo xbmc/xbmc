@@ -167,16 +167,24 @@ bool CGUIWindowLoginScreen::OnBack(int actionID)
 void CGUIWindowLoginScreen::FrameMove()
 {
   if (GetFocusedControlID() == CONTROL_BIG_LIST && !g_windowManager.HasModalDialog())
+  {
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, CProfilesManager::GetInstance().GetNumberOfProfiles());
+  }
+
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profileManager.GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  m_iSelectedItem = (int)CProfilesManager::GetInstance().GetLastUsedProfileIndex();
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  m_iSelectedItem = static_cast<int>(profileManager.GetLastUsedProfileIndex());
+
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
@@ -204,20 +212,27 @@ void CGUIWindowLoginScreen::OnWindowUnload()
 void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
-  for (unsigned int i=0;i<CProfilesManager::GetInstance().GetNumberOfProfiles(); ++i)
+
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  for (unsigned int i = 0; i < profileManager.GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = CProfilesManager::GetInstance().GetProfile(i);
+    const CProfile *profile = profileManager.GetProfile(i);
+
     CFileItemPtr item(new CFileItem(profile->getName()));
+
     std::string strLabel;
     if (profile->getDate().empty())
       strLabel = g_localizeStrings.Get(20113);
     else
       strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
+
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().empty())
       item->SetArt("thumb", "DefaultUser.png");
     item->SetLabelPreformatted(true);
+
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
@@ -226,10 +241,14 @@ void CGUIWindowLoginScreen::Update()
 
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   bool bSelect = pItem->IsSelected();
+
   // mark the item
   pItem->Select(true);
 
@@ -242,7 +261,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
-    if (g_passwordManager.CheckLock(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(),CProfilesManager::GetInstance().GetMasterProfile().getLockCode(),20075))
+    if (g_passwordManager.CheckLock(profileManager.GetMasterProfile().getLockMode(), profileManager.GetMasterProfile().getLockCode(), 20075))
       g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
@@ -255,7 +274,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
 
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
+  if (iItem < static_cast<int>(profileManager.GetNumberOfProfiles()))
     m_vecItems->Get(iItem)->Select(bSelect);
 
   return false;
@@ -280,10 +299,12 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   CServiceBroker::GetPVRManager().Stop();
 
-  if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
+  CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  if (profile != 0 || !profileManager.IsMasterProfile())
   {
     CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 1);
-    CProfilesManager::GetInstance().LoadProfile(profile);
+    profileManager.LoadProfile(profile);
   }
   else
   {
@@ -293,10 +314,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
   CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_UP, 1);
 
-  CProfilesManager::GetInstance().UpdateCurrentProfileDate();
-  CProfilesManager::GetInstance().Save();
+  profileManager.UpdateCurrentProfileDate();
+  profileManager.Save();
 
-  if (CProfilesManager::GetInstance().GetLastUsedProfileIndex() != profile)
+  if (profileManager.GetLastUsedProfileIndex() != profile)
   {
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
@@ -311,7 +332,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   if (!g_application.LoadLanguage(true))
   {
-    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::GetInstance().GetCurrentProfile().getName().c_str());
+    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", profileManager.GetCurrentProfile().getName().c_str());
     return;
   }
 
@@ -325,7 +346,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // restart PVR services
   CServiceBroker::GetPVRManager().Init();
 
-  CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
+  CServiceBroker::GetFavouritesService().ReInit(profileManager.GetProfileUserDataFolder());
 
   CServiceBroker::GetServiceAddons().Start();
 

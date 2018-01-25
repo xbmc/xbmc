@@ -178,6 +178,11 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
   return g_application.m_ServiceManager->GetDatabaseManager();
 }
 
+CProfilesManager& CServiceBroker::GetProfileManager()
+{
+  return g_application.m_ServiceManager->GetProfileManager();
+}
+
 CEventLog& CServiceBroker::GetEventLog()
 {
   return g_application.m_ServiceManager->GetEventLog();

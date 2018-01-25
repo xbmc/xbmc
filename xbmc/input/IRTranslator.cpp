@@ -31,6 +31,11 @@
 #include <stdlib.h>
 #include <vector>
 
+CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
+  m_profileManager(profileManager)
+{
+}
+
 void CIRTranslator::Load()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
@@ -51,7 +56,7 @@ void CIRTranslator::Load()
   else
     CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system %s found, skipping", irMapName.c_str());
 
-  irMapPath = CProfilesManager::GetInstance().GetUserDataItem(irMapName);
+  irMapPath = m_profileManager.GetUserDataItem(irMapName);
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else

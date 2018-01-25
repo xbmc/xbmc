@@ -41,9 +41,15 @@ bool CFavouritesDirectory::Exists(const CURL& url)
 {
   if (url.IsProtocol("favourites"))
   {
-    return XFILE::CFile::Exists("special://xbmc/system/favourites.xml")
-        || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml"));
+    if (XFILE::CFile::Exists("special://xbmc/system/favourites.xml"))
+      return true;
+
+    std::string favouritesXml = URIUtils::AddFileToFolder(m_profileManager.GetProfileUserDataFolder(),
+        "favourites.xml");
+
+    return XFILE::CFile::Exists(favouritesXml);
   }
+
   return XFILE::CDirectory::Exists(url);
 }
 } // namespace XFILE

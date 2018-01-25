@@ -236,8 +236,10 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(std::shared_ptr<const CSet
 
 void CGUIDialogAudioSubtitleSettings::Save()
 {
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     return;
 
   // prompt user if they are sure

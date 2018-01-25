@@ -63,6 +63,7 @@ class CPowerManager;
 class CWeatherManager;
 class CPlayerCoreFactory;
 class CDatabaseManager;
+class CProfilesManager;
 class CEventLog;
 
 namespace KODI
@@ -117,5 +118,6 @@ public:
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();
   static CDatabaseManager &GetDatabaseManager();
+  static CProfilesManager &GetProfileManager();
   static CEventLog &GetEventLog();
 };

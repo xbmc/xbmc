@@ -429,8 +429,8 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   OnSort();
 
   if (m_Directory->GetPath().empty() && m_addNetworkShareEnabled &&
-     (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
-      CProfilesManager::GetInstance().IsMasterProfile() || g_passwordManager.bMasterUser))
+     (CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+      CServiceBroker::GetProfileManager().IsMasterProfile() || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->SetPath("net://");
