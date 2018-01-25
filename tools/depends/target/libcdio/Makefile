@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include configure.patch Makefile
+DEPS= ../../Makefile.include Makefile configure.patch cross.patch
 
 # lib name, version
 LIBNAME=libcdio

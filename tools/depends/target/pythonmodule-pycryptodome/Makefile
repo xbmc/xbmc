@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile #pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile 01-nosetuptool.patch 02-android-dlopen.patch 03-obey-crosscompileflags.patch
 
 VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
@@ -24,7 +24,10 @@ LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
 CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/" LDSHARED="$(LDSHARED)"
 endif
 
-LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py2.7.egg
+LIBDYLIB=$(PLATFORM)/build/lib.$(OS)-$(CPU)-2.7/Cryptodome
+ifeq ($(NATIVE_OS), osx)
+	LIBDYLIB=$(PLATFORM)/build/lib.macosx-10.4-x86_64-2.7/Cryptodome
+endif
 
 all: .installed-$(PLATFORM)
 

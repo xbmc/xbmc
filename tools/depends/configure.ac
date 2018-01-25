@@ -406,8 +406,8 @@ case $host in
 
           found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
-	  platform_cflags+=" -fembed-bitcode"
-	  platform_cxxflags+=" -fembed-bitcode"
+          platform_cflags+=" -fembed-bitcode"
+          platform_cxxflags+=" -fembed-bitcode"
           sdk_name=$target_platform$use_sdk
           platform_min_version="$target_platform-version-min=9.0"
         else
@@ -423,7 +423,7 @@ case $host in
           sdk_name=$target_platform$use_sdk
           platform_min_version="$target_platform-version-min=6.0"
         fi
-	case $use_sdk in
+        case $use_sdk in
           4.*);;
           5.*);;
           6.*);;
@@ -476,7 +476,6 @@ esac
 case $use_platform in
   raspberry-pi)
      target_platform=raspberry-pi
-     use_neon=no
      use_cpu=arm1176jzf-s
      ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
@@ -486,7 +485,6 @@ case $use_platform in
      ;;
   raspberry-pi2)
      target_platform=raspberry-pi
-     use_neon=yes
      use_cpu=cortex-a7
      ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
@@ -562,7 +560,6 @@ AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
 
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
 AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
-AC_CHECK_LIB([crystax],   [main], has_libcrystax=1, has_libcrystax=0)
 
 if test "$link_iconv" = "none required"; then
   link_iconv=
@@ -764,7 +761,6 @@ AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(enable_wayland)
-AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)

@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile fix-32bits-on-64bits.patch sqlite3.c.patch
 
 # lib name, version
 LIBNAME=sqlite

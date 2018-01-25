@@ -10,7 +10,6 @@
 /native/*/x86_64-darwin*.*.*-native/
 /native/*/armeabi-v7a-native/*
 
-/target/*/.patched-*
 /target/*/.installed-*
 /target/*/native/*
 /target/*/x86/*
@@ -42,6 +41,7 @@ config.site.native
 /native/*/*native/
 /JsonSchemaBuilder/bin/
 /TexturePacker/bin/
+/target/ffmpeg/.build-*
 /target/ffmpeg/.ffmpeg-installed
 /target/ffmpeg/ffmpeg-*-*.tar.gz
 /target/ffmpeg/ffmpeg-*-*/

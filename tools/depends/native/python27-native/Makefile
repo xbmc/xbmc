@@ -1,6 +1,6 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=Python
@@ -13,6 +13,9 @@ HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-toolbox-glue --disable-framework
 
 LIBDYLIB=$(PLATFORM)/python
+ifeq ($(NATIVE_OS), osx)
+	LIBDYLIB=$(PLATFORM)/python.exe
+endif
 
 all: .installed-$(PLATFORM)
 
@@ -31,6 +34,7 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	cd $(PLATFORM); $(MAKE) install
 	install $(PLATFORM)/Parser/pgen $(NATIVEPREFIX)/bin
+	touch $(LIBDYLIB)
 	touch $@
 
 clean:

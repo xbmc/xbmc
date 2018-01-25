@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile 01-fix_fpermissive.patch 02-fixandroid.patch 03-fixtvos.patch
 
 #hint for building a fat lib - "lipo -arch i386 libboblight-i386.dylib -arch x86_64 libboblight-x86_64.dylib -output libboblight-fat.dylib"
 

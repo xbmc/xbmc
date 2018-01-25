@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 01-SDL_SetWidthHeight.patch 02-OSX_interpretKeyEvents.patch 03-mavericks-compile.patch 05-x11-xdata32.patch Makefile
+DEPS= ../../Makefile.include Makefile 01-SDL_SetWidthHeight.patch 02-OSX_interpretKeyEvents.patch 03-mavericks-compile.patch 04-fix_external_screen_crash.patch 05-x11-xdata32.patch
 
 # lib name, version
 LIBNAME=SDL

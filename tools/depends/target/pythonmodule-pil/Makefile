@@ -25,9 +25,11 @@ LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
 CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/" LDSHARED="$(LDSHARED)"
 endif
 
-LIBDYLIB=$(PLATFORM)/dist/PIL-$(VERSION)-py2.7-$(OS)-$(CPU).egg
+LIBDYLIB=$(PLATFORM)/dist/Pillow-$(VERSION)-py2.7-$(OS)-$(CPU).egg
 ifeq ($(OS),android)
 LIBDYLIB=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/_imaging.so
+else ifeq (darwin, $(findstring darwin, $(HOST)))
+LIBDYLIB=$(PLATFORM)/dist/Pillow-$(VERSION)-py2.7-macosx-10.4-x86_64.egg
 endif
 
 all: .installed-$(PLATFORM)

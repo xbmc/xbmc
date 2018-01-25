@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile
+DEPS= ../../Makefile.include Makefile fix_xattrs_configure.patch
 
 # app name, version
 APPNAME=tar
@@ -21,7 +21,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-dependency-tracking ac_cv_func_fdopendir=no \
   $(PLATFORM_CONFIGURE)
 
-APP=$(SOURCE)/src/tar
+APP=$(PLATFORM)/src/tar
 APPBIN=$(PREFIX)/bin/tar
 
 all: .installed-$(PLATFORM)

@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared
 
-LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME)15.a
+LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME)16.a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 

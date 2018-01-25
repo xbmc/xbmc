@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=shairplay

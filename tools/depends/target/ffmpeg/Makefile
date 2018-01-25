@@ -85,10 +85,11 @@ ifeq ($(OS), ios)
 	cd $(PLATFORM); sed -i -- 's/HAVE_CLOCK_GETTIME 1/HAVE_CLOCK_GETTIME 0/g' config.h
 endif
 
-build: $(PLATFORM)
+.build-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
+	touch $@
 
-.installed-$(PLATFORM): build
+.installed-$(PLATFORM): .build-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
