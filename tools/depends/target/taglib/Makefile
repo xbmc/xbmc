@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile ID3v2Lookup.patch
+DEPS= ../../Makefile.include Makefile ID3v2Lookup.patch remove-boost.patch
 
 LIBNAME=taglib
 VERSION=1.11.1

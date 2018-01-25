@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile osx.patch
+DEPS= ../../Makefile.include Makefile osx.patch osx2.patch
 
 # lib name, version
 LIBNAME=libcdio

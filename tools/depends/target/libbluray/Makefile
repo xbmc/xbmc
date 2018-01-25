@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile tvos.patch
 
 # lib name, version
 LIBNAME=libbluray

@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile tvos-bitcode-fix.patch
+DEPS= ../../Makefile.include Makefile tvos-bitcode-fix.patch jit_aarch64.patch
 
 # lib name, version
 LIBNAME=pcre

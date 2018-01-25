@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile no-Werror.patch
 
 # lib name, version
 LIBNAME=libusb

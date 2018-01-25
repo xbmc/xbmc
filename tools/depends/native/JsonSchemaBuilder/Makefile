@@ -1,5 +1,6 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 -include ../../Makefile.include
+DEPS=Makefile
 
 ifeq ($(NATIVEPREFIX),)
   PREFIX = $(ROOT_DIR)
@@ -11,6 +12,7 @@ ifeq ($(NATIVEPLATFORM),)
   PLATFORM = native
 else
   PLATFORM = $(NATIVEPLATFORM)
+  DEPS += ../../Makefile.include
 endif
 
 SOURCE=$(ROOT_DIR)/src
@@ -21,7 +23,7 @@ APPBIN=$(PREFIX)/bin/JsonSchemaBuilder
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM):
+$(PLATFORM): $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); cp -a $(SOURCE)/* .
 	cd $(PLATFORM); ./autogen.sh

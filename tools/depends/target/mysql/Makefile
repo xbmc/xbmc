@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 01-mysqlclient-cross-compile.patch 02-mysqlclient-ios.patch 03-mysqlclient-android.patch 04-strnlen.patch 05-mysqlclient-ios64.patch Makefile
+DEPS= ../../Makefile.include Makefile 01-mysqlclient-cross-compile.patch 02-mysqlclient-ios.patch 03-mysqlclient-android.patch 04-strnlen.patch 05-mysqlclient-ios64.patch 06-fixsslcheck.patch 07-no-endpwent.patch
 
 # lib name, version
 LIBNAME=mysql

@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch ntohl.patch md5.patch pkg-config.patch
+DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch darwin.patch darwin-no-fork.patch fix-gcc-5-compile.patch ntohl.patch md5.patch pkg-config.patch
 
 # lib name, version
 LIBNAME=libssh

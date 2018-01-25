@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile fix_xattrs_configure.patch
 
 # app name, version
 APPNAME=tar

@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile visibility.patch
 
 # lib name, version
 LIBNAME=zlib

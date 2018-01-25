@@ -1,5 +1,6 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 -include ../../Makefile.include
+DEPS=Makefile
 
 ifeq ($(NATIVEPREFIX),)
   PREFIX = $(ROOT_DIR)
@@ -12,6 +13,7 @@ ifeq ($(NATIVEPLATFORM),)
   EXTRA_CONFIGURE = --enable-static
 else
   PLATFORM = $(NATIVEPLATFORM)
+  DEPS += ../../Makefile.include
 endif
 
 ifeq ($(NATIVE_OS), linux)
@@ -32,7 +34,7 @@ APPBIN=$(PREFIX)/bin/TexturePacker
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM):
+$(PLATFORM): $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); cp -a $(SOURCE)/* .
 	cd $(PLATFORM); ./autogen.sh
