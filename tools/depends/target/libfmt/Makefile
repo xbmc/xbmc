@@ -30,11 +30,9 @@ endif
 
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libfmt.a
 
-.PHONY: .installed-$(PLATFORM)
+.PHONY: .installed-native
 
 all: .installed-$(PLATFORM)
-$(PREFIX)/lib/lib$(LIBNAME).a:
-	@make .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
