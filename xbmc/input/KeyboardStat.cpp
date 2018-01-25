@@ -79,6 +79,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
+  uint32_t lockingModifiers;
   unsigned int held;
   XBMCKEYTABLE keytable;
 
@@ -93,12 +94,14 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
     modifiers |= CKey::MODIFIER_SUPER;
   if (keysym.mod & XBMCKMOD_META)
     modifiers |= CKey::MODIFIER_META;
+
+  lockingModifiers = 0;
   if (keysym.mod & XBMCKMOD_NUM)
-    modifiers |= CKey::MODIFIER_NUMLOCK;
+    lockingModifiers |= CKey::MODIFIER_NUMLOCK;
   if (keysym.mod & XBMCKMOD_CAPS)
-    modifiers |= CKey::MODIFIER_CAPSLOCK;
+    lockingModifiers |= CKey::MODIFIER_CAPSLOCK;
   if (keysym.mod & XBMCKMOD_MODE)
-    modifiers |= CKey::MODIFIER_SCROLLLOCK;
+    lockingModifiers |= CKey::MODIFIER_SCROLLLOCK;
 
   CLog::Log(LOGDEBUG, "Keyboard: scancode: 0x%02x, sym: 0x%04x, unicode: 0x%04x, modifier: 0x%x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
@@ -185,7 +188,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
 
   // Create and return a CKey
 
-  CKey key(keycode, vkey, unicode, ascii, modifiers, held);
+  CKey key(keycode, vkey, unicode, ascii, modifiers, lockingModifiers, held);
 
   return key;
 }

@@ -58,6 +58,8 @@ bool CGameClientKeyboard::OnKeyPress(const CKey& key)
 
   bool bHandled = false;
 
+  CKey::Modifier mod = static_cast<CKey::Modifier>(key.GetModifiers() | key.GetLockingModifiers());
+
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
@@ -66,7 +68,7 @@ bool CGameClientKeyboard::OnKeyPress(const CKey& key)
   event.feature_name    = ""; //! @todo
   event.key.pressed     = true;
   event.key.character   = static_cast<XBMCVKey>(key.GetButtonCode() & BUTTON_INDEX_MASK);
-  event.key.modifiers   = CGameClientTranslator::GetModifiers(static_cast<CKey::Modifier>(key.GetModifiers()));
+  event.key.modifiers   = CGameClientTranslator::GetModifiers(mod);
 
   if (event.key.character != 0)
   {
@@ -85,6 +87,8 @@ bool CGameClientKeyboard::OnKeyPress(const CKey& key)
 
 void CGameClientKeyboard::OnKeyRelease(const CKey& key)
 {
+  CKey::Modifier mod = static_cast<CKey::Modifier>(key.GetModifiers() | key.GetLockingModifiers());
+
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
@@ -93,7 +97,7 @@ void CGameClientKeyboard::OnKeyRelease(const CKey& key)
   event.feature_name    = ""; //! @todo
   event.key.pressed     = false;
   event.key.character   = static_cast<XBMCVKey>(key.GetButtonCode() & BUTTON_INDEX_MASK);
-  event.key.modifiers   = CGameClientTranslator::GetModifiers(static_cast<CKey::Modifier>(key.GetModifiers()));
+  event.key.modifiers   = CGameClientTranslator::GetModifiers(mod);
 
   if (event.key.character != 0)
   {
