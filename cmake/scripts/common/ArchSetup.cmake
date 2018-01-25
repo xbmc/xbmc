@@ -153,6 +153,10 @@ if(NOT DEFINED NEON OR NEON)
   endif()
 endif()
 
+if(PLATFORM_DEFINES)
+  add_options(ALL_LANGUAGES ALL_BUILDS ${PLATFORM_DEFINES})
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_options (ALL_LANGUAGES DEBUG "-g" "-D_DEBUG" "-Wall")
 endif()
