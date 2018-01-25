@@ -30,8 +30,6 @@
 
 // --------------------- Internal Function ---------------------
 
-typedef int (_cdecl * wputenvPtr) (const wchar_t *envstring);
-
 /**
  * \fn int CEnvironment::win32_setenv(const std::wstring &name, const std::wstring &value = L"",
  *     updateAction action = autoDetect)
@@ -64,49 +62,6 @@ int CEnvironment::win_setenv(const std::string &name, const std::string &value /
     EnvString = Wname + L"=";
   else
     EnvString = Wname + L"=" + Wvalue;
-
-  static const wchar_t *modulesList[] =
-  {
-  /*{ L"msvcrt20.dll" }, // Visual C++ 2.0 / 2.1 / 2.2
-    { L"msvcrt40.dll" }, // Visual C++ 4.0 / 4.1 */ // too old and no UNICODE support - ignoring
-    { L"msvcrt.dll" },   // Visual Studio 6.0 / MinGW[-w64]
-    { L"msvcr70.dll" },  // Visual Studio 2002
-    { L"msvcr71.dll" },  // Visual Studio 2003
-    { L"msvcr80.dll" },  // Visual Studio 2005
-    { L"msvcr90.dll" },  // Visual Studio 2008
-    { L"msvcr100.dll" }, // Visual Studio 2010
-#ifdef _DEBUG
-    { L"msvcr100d.dll" },// Visual Studio 2010 (debug)
-#endif
-    { L"msvcr110.dll" }, // Visual Studio 2012
-#ifdef _DEBUG
-    { L"msvcr110d.dll" },// Visual Studio 2012 (debug)
-#endif
-    { L"msvcr120.dll" }, // Visual Studio 2013
-#ifdef _DEBUG
-    { L"msvcr120d.dll" },// Visual Studio 2013 (debug)
-#endif
-    { L"vcruntime140.dll" },
-    { L"ucrtbase.dll" },
-#ifdef _DEBUG
-    { L"vcruntime140d.dll" },
-    { L"ucrtbased.dll" },
-#endif
-    { nullptr }             // Terminating nullptr for list
-  };
-
-  // Check all modules each function run, because modules can be loaded/unloaded at runtime
-  for (int i = 0; modulesList[i]; i++)
-  {
-    HMODULE hModule;
-    if (!GetModuleHandleExW(0, modulesList[i], &hModule) || hModule == nullptr) // Flag 0 ensures that module will be kept loaded until it'll be freed
-      continue; // Module not loaded
-
-    wputenvPtr wputenvFunc = (wputenvPtr) GetProcAddress(hModule, "_wputenv");
-    if (wputenvFunc != nullptr && wputenvFunc(EnvString.c_str()) != 0)
-      retValue |= 2; // At lest one external runtime library Environment update failed
-    FreeLibrary(hModule);
-  }
 
   // Update process Environment used for current process and for future new child processes
   if (action == deleteVariable || value.empty())
