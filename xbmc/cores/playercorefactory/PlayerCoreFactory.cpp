@@ -22,11 +22,14 @@
 #include "threads/SingleLock.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
+#include "cores/IPlayerCallback.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
@@ -36,26 +39,31 @@
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
-CPlayerCoreFactory::CPlayerCoreFactory() = default;
+CPlayerCoreFactory::CPlayerCoreFactory(CSettings &settings,
+                                       const CProfilesManager &profileManager) :
+  m_settings(settings),
+  m_profileManager(profileManager)
+{
+  if (m_settings.IsLoaded())
+    OnSettingsLoaded();
+
+  m_settings.GetSettingsManager()->RegisterSettingsHandler(this);
+}
 
 CPlayerCoreFactory::~CPlayerCoreFactory()
 {
+  m_settings.GetSettingsManager()->UnregisterSettingsHandler(this);
+
   for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecPlayerConfigs.begin(); it != m_vecPlayerConfigs.end(); ++it)
     delete *it;
   for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
     delete *it;
 }
 
-CPlayerCoreFactory& CPlayerCoreFactory::GetInstance()
-{
-  static CPlayerCoreFactory sPlayerCoreFactory;
-  return sPlayerCoreFactory;
-}
-
 void CPlayerCoreFactory::OnSettingsLoaded()
 {
   LoadConfiguration("special://xbmc/system/" PLAYERCOREFACTORY_XML, true);
-  LoadConfiguration(CProfilesManager::GetInstance().GetUserDataItem(PLAYERCOREFACTORY_XML), false);
+  LoadConfiguration(m_profileManager.GetUserDataItem(PLAYERCOREFACTORY_XML), false);
 }
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const std::string& nameId, IPlayerCallback& callback) const

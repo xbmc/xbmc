@@ -383,7 +383,9 @@ public:
     if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
       return false;
 
-    CPlayerCoreFactory::GetInstance().OnPlayerDiscovered((const char*)device->GetUUID()
+    CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
+    playerCoreFactory.OnPlayerDiscovered((const char*)device->GetUUID()
                                           ,(const char*)device->GetFriendlyName());
     
     m_registeredRenderers.insert(std::string(device->GetUUID().GetChars()));
@@ -403,7 +405,9 @@ public:
 private:
   void unregisterRenderer(const std::string &deviceUUID)
   {
-    CPlayerCoreFactory::GetInstance().OnPlayerRemoved(deviceUUID);
+    CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
+    playerCoreFactory.OnPlayerRemoved(deviceUUID);
   }
 
   std::set<std::string> m_registeredRenderers;

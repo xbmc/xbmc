@@ -2215,12 +2215,14 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_SWITCH_PLAYER)
   {
+    const CPlayerCoreFactory &playerCoreFactory = m_ServiceManager->GetPlayerCoreFactory();
+
     if(m_appPlayer.IsPlaying())
     {
       std::vector<std::string> players;
       CFileItem item(*m_itemCurrentFile.get());
-      CPlayerCoreFactory::GetInstance().GetPlayers(item, players);
-      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      playerCoreFactory.GetPlayers(item, players);
+      std::string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
       {
         item.m_lStartOffset = CUtil::ConvertSecsToMilliSecs(GetTime());
@@ -2230,8 +2232,8 @@ bool CApplication::OnAction(const CAction &action)
     else
     {
       std::vector<std::string> players;
-      CPlayerCoreFactory::GetInstance().GetRemotePlayers(players);
-      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      playerCoreFactory.GetRemotePlayers(players);
+      std::string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
       {
         PlayFile(CFileItem(), player, false);
@@ -3209,7 +3211,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
 
-  m_appPlayer.OpenFile(item, options, player, *this);
+  m_appPlayer.OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), player, *this);
   m_appPlayer.SetVolume(m_volumeLevel);
   m_appPlayer.SetMute(m_muted);
 
@@ -4001,7 +4003,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!m_appPlayer.IsPlaying())
       {
         g_audioManager.Enable(true);
-        m_appPlayer.OpenNext();
+        m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
       }
 
       if (!m_appPlayer.IsPlayingVideo())

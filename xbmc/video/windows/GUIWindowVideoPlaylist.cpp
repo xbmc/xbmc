@@ -405,15 +405,19 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
     if (itemNumber > -1)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
+
+      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
       // check what players we have, if we have multiple display play with option
       std::vector<std::string> players;
       if (item->IsVideoDb())
       {
         CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-        CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
+        playerCoreFactory.GetPlayers(item2, players);
       }
       else
-        CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+        playerCoreFactory.GetPlayers(*item, players);
+
       if (players.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
@@ -451,15 +455,18 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       if (!item)
         break;
 
+      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
       std::vector<std::string> players;
       if (item->IsVideoDb())
       {
         CFileItem item2(*item->GetVideoInfoTag());
-        CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
+        playerCoreFactory.GetPlayers(item2, players);
       }
       else
-        CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
-      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+        playerCoreFactory.GetPlayers(*item, players);
+
+      std::string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
         OnClick(itemNumber, player);
       return true;

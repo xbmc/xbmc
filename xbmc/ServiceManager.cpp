@@ -25,6 +25,7 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
@@ -208,6 +209,9 @@ bool CServiceManager::InitStageThree()
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
+  m_playerCoreFactory.reset(new CPlayerCoreFactory(*m_settings,
+                                                   CProfilesManager::GetInstance()));
+
   init_level = 3;
   return true;
 }
@@ -216,6 +220,7 @@ void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
 
+  m_playerCoreFactory.reset();
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
@@ -434,3 +439,7 @@ CWeatherManager& CServiceManager::GetWeatherManager()
   return *m_weatherManager;
 }
 
+CPlayerCoreFactory &CServiceManager::GetPlayerCoreFactory()
+{
+  return *m_playerCoreFactory;
+}

@@ -1000,6 +1000,9 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pItem->Select(false);
     return ;
   }
+
+  const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
   // popup the context menu
 
   bool showEntry = false;
@@ -1009,7 +1012,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
 
   // determine available players
   std::vector<std::string>players;
-  CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, players);
+  playerCoreFactory.GetPlayers(*pItem, players);
 
   // add the needed buttons
   CContextButtons choices;
@@ -1057,8 +1060,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (btnid == CONTROL_BTNPLAYWITH)
   {
     std::vector<std::string>players;
-    CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, players);
-    std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+    playerCoreFactory.GetPlayers(*pItem, players);
+    std::string player = playerCoreFactory.SelectPlayerDialog(players);
     if (!player.empty())
       OnStart(pItem.get(), player);
   }

@@ -763,9 +763,12 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
         }
         else
-        { // check what players we have, if we have multiple display play with option
+        {
+          const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
+          // check what players we have, if we have multiple display play with option
           std::vector<std::string> players;
-          CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+          playerCoreFactory.GetPlayers(*item, players);
           if (players.size() >= 1)
             buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
         }
@@ -868,9 +871,11 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_WITH:
     {
+      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
       std::vector<std::string> players;
-      CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
-      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      playerCoreFactory.GetPlayers(*item, players);
+      std::string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
         OnClick(itemNumber, player);
       return true;

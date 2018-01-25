@@ -782,7 +782,6 @@ void CSettings::InitializeISettingsHandlers()
   // The order of these matters! Handlers are processed in the order they were registered.
   GetSettingsManager()->RegisterSettingsHandler(&g_advancedSettings);
   GetSettingsManager()->RegisterSettingsHandler(&CMediaSourceSettings::GetInstance());
-  GetSettingsManager()->RegisterSettingsHandler(&CPlayerCoreFactory::GetInstance());
   GetSettingsManager()->RegisterSettingsHandler(&CProfilesManager::GetInstance());
 #ifdef HAS_UPNP
   GetSettingsManager()->RegisterSettingsHandler(&CUPnPSettings::GetInstance());

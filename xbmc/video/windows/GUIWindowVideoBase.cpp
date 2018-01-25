@@ -848,15 +848,19 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
-      { // get players
+      {
+        const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
+        // get players
         std::vector<std::string> players;
         if (item->IsVideoDb())
         {
           CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-          CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
+          playerCoreFactory.GetPlayers(item2, players);
         }
         else
-          CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+          playerCoreFactory.GetPlayers(*item, players);
+
         if (players.size() > 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
@@ -984,15 +988,18 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_WITH:
     {
+      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
       std::vector<std::string> players;
       if (item->IsVideoDb())
       {
         CFileItem item2(*item->GetVideoInfoTag());
-        CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
+        playerCoreFactory.GetPlayers(item2, players);
       }
       else
-        CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
-      std:: string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+        playerCoreFactory.GetPlayers(*item, players);
+
+      std:: string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
       {
         // any other select actions but play or resume, resume, play or playpart

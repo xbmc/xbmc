@@ -304,7 +304,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
             // get playername
-            std::string hdVideoPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
+            std::string hdVideoPlayer = CServiceBroker::GetPlayerCoreFactory().GetDefaultPlayer(item);
             
             // Single *.xpl or *.ifo files require an external player to handle playback.
             // If no matching rule was found, VideoPlayer will be default player.
