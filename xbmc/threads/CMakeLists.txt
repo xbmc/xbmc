@@ -2,8 +2,7 @@ set(SOURCES Atomics.cpp
             Event.cpp
             Thread.cpp
             Timer.cpp
-            SystemClock.cpp
-            platform/Implementation.cpp)
+            SystemClock.cpp)
 
 set(HEADERS Atomics.h
             Condition.h
@@ -22,5 +21,9 @@ set(HEADERS Atomics.h
             platform/CriticalSection.h
             platform/ThreadImpl.h
             platform/ThreadLocal.h)
+
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+  list(APPEND SOURCES platform/pthreads/Implementation.cpp)
+endif()
 
 core_add_library(threads)

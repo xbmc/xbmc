@@ -18,8 +18,6 @@
 *
 */
 
-#ifdef TARGET_WINDOWS_DESKTOP
-
 #include "Win32SMBDirectory.h"
 #include "FileItem.h"
 #include "platform/win32/WIN32Util.h"
@@ -711,5 +709,3 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   CLog::LogF(LOGWARNING, "Can't connect to \"%s\" %s. Error code: %lu", serverShareName.c_str(), loginDescr.c_str(), (unsigned long)connRes);
   return false;
 }
-
-#endif // TARGET_WINDOWS

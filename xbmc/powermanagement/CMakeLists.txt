@@ -1,5 +1,4 @@
 set(SOURCES DPMSSupport.cpp
-            IPowerSyscall.cpp
             PowerManager.cpp)
 
 set(HEADERS DPMSSupport.h
