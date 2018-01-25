@@ -476,7 +476,6 @@ esac
 case $use_platform in
   raspberry-pi)
      target_platform=raspberry-pi
-     use_neon=no
      use_cpu=arm1176jzf-s
      ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
@@ -486,7 +485,6 @@ case $use_platform in
      ;;
   raspberry-pi2)
      target_platform=raspberry-pi
-     use_neon=yes
      use_cpu=cortex-a7
      ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
