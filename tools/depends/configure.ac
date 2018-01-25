@@ -406,8 +406,8 @@ case $host in
 
           found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
-	  platform_cflags+=" -fembed-bitcode"
-	  platform_cxxflags+=" -fembed-bitcode"
+          platform_cflags+=" -fembed-bitcode"
+          platform_cxxflags+=" -fembed-bitcode"
           sdk_name=$target_platform$use_sdk
           platform_min_version="$target_platform-version-min=9.0"
         else
@@ -423,7 +423,7 @@ case $host in
           sdk_name=$target_platform$use_sdk
           platform_min_version="$target_platform-version-min=6.0"
         fi
-	case $use_sdk in
+        case $use_sdk in
           4.*);;
           5.*);;
           6.*);;
