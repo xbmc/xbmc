@@ -560,7 +560,6 @@ AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
 
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
 AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
-AC_CHECK_LIB([crystax],   [main], has_libcrystax=1, has_libcrystax=0)
 
 if test "$link_iconv" = "none required"; then
   link_iconv=
@@ -762,7 +761,6 @@ AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(enable_wayland)
-AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)
