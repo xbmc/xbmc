@@ -18,8 +18,6 @@
  *
  */
 
-#if defined(TARGET_ANDROID)
-
 #include "RendererMediaCodecSurface.h"
 
 #include "../RenderCapture.h"
@@ -164,5 +162,3 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
       break;
   }
 }
-
-#endif

@@ -20,9 +20,6 @@
 
 #pragma once
 
-#if defined(TARGET_ANDROID)
-
-#include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 
 class CMediaCodecVideoBuffer;
@@ -62,5 +59,3 @@ private:
   bool m_bConfigured;
   CRect m_surfDestRect;
 };
-
-#endif

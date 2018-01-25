@@ -20,7 +20,6 @@
 
 #include "RendererMediaCodec.h"
 
-#if defined(TARGET_ANDROID)
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
@@ -254,5 +253,3 @@ bool CRendererMediaCodec::UploadTexture(int index)
   CalculateTextureSourceRects(index, 1);
   return true;
 }
-
-#endif

@@ -20,10 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
-#if defined(TARGET_ANDROID)
-
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 
 class CRendererMediaCodec : public CLinuxRendererGLES
@@ -56,5 +52,3 @@ protected:
 private:
   float m_textureMatrix[16];
 };
-
-#endif
