@@ -34,6 +34,7 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	cd $(PLATFORM); $(MAKE) install
 	install $(PLATFORM)/Parser/pgen $(NATIVEPREFIX)/bin
+	touch $(LIBDYLIB)
 	touch $@
 
 clean:
