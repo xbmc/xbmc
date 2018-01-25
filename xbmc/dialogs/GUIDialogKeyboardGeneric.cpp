@@ -198,7 +198,8 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   bool handled = true;
   if (actionId == (KEY_VKEY | XBMCVK_BACK))
     Backspace();
-  else if (actionId == ACTION_ENTER || (m_isKeyboardNavigationMode && actionId == ACTION_SELECT_ITEM))
+  else if (actionId == ACTION_ENTER ||
+           (actionId == ACTION_SELECT_ITEM && (m_isKeyboardNavigationMode || GetFocusedControlID() == CTL_EDIT)))
     OnOK();
   else if (actionId == ACTION_SHIFT)
     OnShift();
