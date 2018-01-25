@@ -21,7 +21,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-dependency-tracking ac_cv_func_fdopendir=no \
   $(PLATFORM_CONFIGURE)
 
-APP=$(SOURCE)/src/tar
+APP=$(PLATFORM)/src/tar
 APPBIN=$(PREFIX)/bin/tar
 
 all: .installed-$(PLATFORM)

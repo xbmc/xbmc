@@ -13,7 +13,7 @@ export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-APP=$(SOURCE)/src/xz/xz
+APP=$(PLATFORM)/src/xz/xz
 
 all: .installed-$(PLATFORM)
 

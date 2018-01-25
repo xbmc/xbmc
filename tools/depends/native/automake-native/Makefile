@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX)
 
-LIBDYLIB=$(PLATFORM)/automake
+LIBDYLIB=$(PLATFORM)/bin/automake
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 

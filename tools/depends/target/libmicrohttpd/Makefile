@@ -13,7 +13,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
             --disable-doc --disable-examples --disable-curl \
             --disable-spdy
 
-LIBDYLIB=$(PLATFORM)/src/daemon/.libs/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/src/microhttpd/.libs/$(LIBNAME).a
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 

@@ -11,7 +11,10 @@ VERSION=$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME).la
+LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME)/$(LIBNAME).so
+ifeq (darwin, $(findstring darwin, $(HOST)))
+	LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME)/$(LIBNAME).dylib
+endif
 
 all: .installed-$(PLATFORM)
 

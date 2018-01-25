@@ -12,7 +12,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
   --disable-examples --disable-doxygen-doc \
   --disable-bdjava-jar --without-libxml2 --without-freetype
 
-LIBDYLIB=$(PLATFORM)/src/.libs/libbluray.la
+LIBDYLIB=$(PLATFORM)/.libs/libbluray.la
 
 all: .installed-$(PLATFORM)
 

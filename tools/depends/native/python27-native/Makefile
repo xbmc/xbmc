@@ -13,6 +13,9 @@ HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-toolbox-glue --disable-framework
 
 LIBDYLIB=$(PLATFORM)/python
+ifeq ($(NATIVE_OS), osx)
+	LIBDYLIB=$(PLATFORM)/python.exe
+endif
 
 all: .installed-$(PLATFORM)
 

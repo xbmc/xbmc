@@ -7,7 +7,7 @@ VERSION=1.0.10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
