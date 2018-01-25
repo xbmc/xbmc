@@ -280,7 +280,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
   {
-    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
+    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
         StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
         "special://xbmc/media/icon256x256.png", EventLevel::Error)));
     return false;
@@ -290,7 +290,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (CServiceBroker::GetAddonMgr().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr());
 
-  CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
+  CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
       StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
       "special://xbmc/media/icon256x256.png", EventLevel::Error)));
   return false;
@@ -637,14 +637,14 @@ bool CAddonInstallJob::DoWork()
 
   bool notify = (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
         || !m_isAutoUpdate) && !IsModal();
-  CEventLog::GetInstance().Add(
+  CServiceBroker::GetEventLog().Add(
       EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 
   if (m_isAutoUpdate && !m_addon->Broken().empty())
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: auto-disabling due to being marked as broken", m_addon->ID().c_str());
     CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID());
-    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
+    CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
   }
 
   // and we're done!
@@ -829,7 +829,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
       HELPERS::ShowOKDialogText(CVariant{fileName}, CVariant{msg});
   }
 
-  CEventLog::GetInstance().Add(activity, !IsModal(), false);
+  CServiceBroker::GetEventLog().Add(activity, !IsModal(), false);
 }
 
 CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon, bool removeData)
@@ -865,7 +865,7 @@ bool CAddonUnInstallJob::DoWork()
   // if that doesn't work fall back to the local one
   if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
     addon = m_addon;
-  CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
+  CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
 
   CServiceBroker::GetAddonMgr().OnPostUnInstall(m_addon->ID());
   database.OnPostUnInstall(m_addon->ID());

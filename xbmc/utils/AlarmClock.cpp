@@ -30,6 +30,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 
@@ -72,9 +73,9 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
   EventPtr alarmClockActivity(new CNotificationEvent(labelAlarmClock,
     StringUtils::Format(g_localizeStrings.Get(labelStarted).c_str(), static_cast<int>(event.m_fSecs) / 60, static_cast<int>(event.m_fSecs) % 60)));
   if (bSilent)
-    CEventLog::GetInstance().Add(alarmClockActivity);
+    CServiceBroker::GetEventLog().Add(alarmClockActivity);
   else
-    CEventLog::GetInstance().AddWithNotification(alarmClockActivity);
+    CServiceBroker::GetEventLog().AddWithNotification(alarmClockActivity);
 
   event.watch.StartZero();
   CSingleLock lock(m_events);
@@ -117,9 +118,9 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   {
     EventPtr alarmClockActivity(new CNotificationEvent(labelAlarmClock, strMessage));
     if (bSilent)
-      CEventLog::GetInstance().Add(alarmClockActivity);
+      CServiceBroker::GetEventLog().Add(alarmClockActivity);
     else
-      CEventLog::GetInstance().AddWithNotification(alarmClockActivity);
+      CServiceBroker::GetEventLog().AddWithNotification(alarmClockActivity);
   }
   else
   {

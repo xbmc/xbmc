@@ -89,6 +89,7 @@ class CInputManager;
 class CFileExtensionProvider;
 class CPlayerCoreFactory;
 class CDatabaseManager;
+class CEventLog;
 
 class CServiceManager
 {
@@ -148,6 +149,9 @@ public:
   CPlayerCoreFactory &GetPlayerCoreFactory();
 
   CDatabaseManager &GetDatabaseManager();
+
+
+  CEventLog &GetEventLog();
 
 protected:
   struct delete_dataCacheCore

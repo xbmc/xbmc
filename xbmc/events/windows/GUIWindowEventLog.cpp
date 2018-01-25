@@ -55,7 +55,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     // check if we should clear all items
     if (iControl == CONTROL_BUTTON_CLEAR)
     {
-      CEventLog::GetInstance().Clear(CViewStateSettings::GetInstance().GetEventLevel(), CViewStateSettings::GetInstance().ShowHigherEventLevels());
+      CServiceBroker::GetEventLog().Clear(CViewStateSettings::GetInstance().GetEventLevel(), CViewStateSettings::GetInstance().ShowHigherEventLevels());
 
       // refresh the list
       Refresh(true);
@@ -153,7 +153,7 @@ void CGUIWindowEventLog::GetContextButtons(int itemNumber, CContextButtons &butt
   if (eventIdentifier.empty())
     return;
 
-  EventPtr eventPtr = CEventLog::GetInstance().Get(eventIdentifier);
+  EventPtr eventPtr = CServiceBroker::GetEventLog().Get(eventIdentifier);
   if (eventPtr == nullptr)
     return;
 
@@ -218,7 +218,7 @@ bool CGUIWindowEventLog::GetDirectory(const std::string &strDirectory, CFileItem
     if (!item->HasProperty(PROPERTY_EVENT_LEVEL))
       continue;
 
-    EventLevel level = CEventLog::GetInstance().EventLevelFromString(item->GetProperty(PROPERTY_EVENT_LEVEL).asString());
+    EventLevel level = CEventLog::EventLevelFromString(item->GetProperty(PROPERTY_EVENT_LEVEL).asString());
     if (level == currentLevel ||
       (level > currentLevel && showHigherLevels))
       filteredItems.Add(item);
@@ -248,7 +248,7 @@ bool CGUIWindowEventLog::OnDelete(CFileItemPtr item)
   if (eventIdentifier.empty())
     return false;
 
-  CEventLog::GetInstance().Remove(eventIdentifier);
+  CServiceBroker::GetEventLog().Remove(eventIdentifier);
   return true;
 }
 
@@ -261,7 +261,7 @@ bool CGUIWindowEventLog::OnExecute(CFileItemPtr item)
   if (eventIdentifier.empty())
     return false;
 
-  const EventPtr eventPtr = CEventLog::GetInstance().Get(eventIdentifier);
+  const EventPtr eventPtr = CServiceBroker::GetEventLog().Get(eventIdentifier);
   if (eventPtr == nullptr)
     return false;
 

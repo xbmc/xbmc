@@ -102,7 +102,7 @@ bool CPVREventlogJob::DoWork()
         event.m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, event.m_label.c_str(), event.m_msg, 5000, true);
 
     // Write event log entry.
-    CEventLog::GetInstance().Add(
+    CServiceBroker::GetEventLog().Add(
       EventPtr(new CNotificationEvent(event.m_label, event.m_msg, event.m_icon, event.m_bError ? EventLevel::Error : EventLevel::Information)));
   }
   return true;

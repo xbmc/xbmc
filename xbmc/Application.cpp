@@ -1034,7 +1034,7 @@ bool CApplication::Initialize()
   if (!LoadLanguage(false))
     return false;
 
-  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
+  m_ServiceManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
     StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));

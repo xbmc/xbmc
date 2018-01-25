@@ -25,7 +25,6 @@
 #include "Autorun.h"
 #include "LangInfo.h"
 #include "Util.h"
-#include "events/EventLog.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -799,7 +798,7 @@ void CSettings::InitializeISettingsHandlers()
 void CSettings::UninitializeISettingsHandlers()
 {
   // unregister ISettingCallback implementations
-  GetSettingsManager()->UnregisterCallback(&CEventLog::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&CProfilesManager::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
@@ -848,7 +847,7 @@ void CSettings::InitializeISettingCallbacks()
   // register any ISettingCallback implementations
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_EVENTLOG_SHOW);
-  GetSettingsManager()->RegisterCallback(&CEventLog::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CProfilesManager::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
@@ -1009,7 +1008,7 @@ void CSettings::InitializeISettingCallbacks()
 
 void CSettings::UninitializeISettingCallbacks()
 {
-  GetSettingsManager()->UnregisterCallback(&CEventLog::GetInstance());
+  GetSettingsManager()->UnregisterCallback(&CProfilesManager::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());

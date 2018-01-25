@@ -33,6 +33,8 @@
 #include "Util.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "events/EventLog.h"
+#include "events/EventLogManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
@@ -75,10 +77,14 @@ CProfilesManager::CProfilesManager()
     m_autoLoginProfile(-1),
     m_lastUsedProfile(0),
     m_currentProfile(0),
-    m_nextProfileId(0)
-{ }
+    m_nextProfileId(0),
+    m_eventLogs(new CEventLogManager)
+{
+}
 
-CProfilesManager::~CProfilesManager() = default;
+CProfilesManager::~CProfilesManager()
+{
+}
 
 CProfilesManager& CProfilesManager::GetInstance()
 {
@@ -533,6 +539,21 @@ std::string CProfilesManager::GetUserDataItem(const std::string& strFile) const
     path = "special://masterprofile/" + strFile;
 
   return path;
+}
+
+CEventLog& CProfilesManager::GetEventLog()
+{
+  return m_eventLogs->GetEventLog(GetCurrentProfileId());
+}
+
+void CProfilesManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_EVENTLOG_SHOW)
+    GetEventLog().ShowFullEventLog();
 }
 
 void CProfilesManager::SetCurrentProfileId(size_t profileId)

@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 
 // Global addon callback handle classes
@@ -458,7 +459,8 @@ bool CAddonDll::CheckAPIVersion(int type)
                             kodiMinVersion.asString().c_str(),
                             addonVersion.asString().c_str());
 
-    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
+    CEventLog &eventLog = CServiceBroker::GetEventLog();
+    eventLog.AddWithNotification(EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
 
     return false;
   }

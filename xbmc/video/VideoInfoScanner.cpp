@@ -465,7 +465,7 @@ namespace VIDEO
           mediaType = MediaTypeTvShow;
         else if (info2->Content() == CONTENT_MUSICVIDEOS)
           mediaType = MediaTypeMusicVideo;
-        CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
           mediaType, pItem->GetPath(), 24145,
           StringUtils::Format(g_localizeStrings.Get(24147).c_str(), mediaType.c_str(), URIUtils::GetFileName(pItem->GetPath()).c_str()),
           pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));

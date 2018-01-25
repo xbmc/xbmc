@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "events/IEvent.h"
-#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define NOTIFICATION_DISPLAY_TIME 5000
@@ -32,12 +31,13 @@
 
 typedef std::vector<EventPtr> Events;
 
-class CEventLog : public ISettingCallback
+class CEventLog
 {
 public:
-  ~CEventLog() override = default;
-
-  static CEventLog& GetInstance();
+  CEventLog() = default;
+  CEventLog(const CEventLog&) = delete;
+  CEventLog& operator=(CEventLog const&) = delete;
+  ~CEventLog() = default;
 
   Events Get() const;
   Events Get(EventLevel level, bool includeHigherLevels = false) const;
@@ -57,18 +57,10 @@ public:
 
   bool Execute(const std::string& eventIdentifier);
 
-  std::string EventLevelToString(EventLevel level);
-  EventLevel EventLevelFromString(const std::string& level);
+  static std::string EventLevelToString(EventLevel level);
+  static EventLevel EventLevelFromString(const std::string& level);
 
   void ShowFullEventLog(EventLevel level = EventLevel::Basic, bool includeHigherLevels = true);
-
-protected:
-  CEventLog() = default;
-  CEventLog(const CEventLog&) = delete;
-  CEventLog& operator=(CEventLog const&) = delete;
-
-  // implementation of ISettingCallback
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
   void SendMessage(const EventPtr& event, int message);
@@ -78,7 +70,4 @@ private:
   EventsList m_events;
   EventsMap m_eventsMap;
   CCriticalSection m_critical;
-
-  static std::map<int, std::unique_ptr<CEventLog> > s_eventLogs;
-  static CCriticalSection s_critical;
 };

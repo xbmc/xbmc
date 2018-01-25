@@ -23,6 +23,7 @@
 #include "URL.h"
 #include "events/EventLog.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
@@ -31,7 +32,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   items.ClearProperties();
   items.SetContent("events");
 
-  CEventLog& log = CEventLog::GetInstance();
+  CEventLog& log = CServiceBroker::GetEventLog();
   Events events;
 
   std::string hostname = url.GetHostName();
@@ -50,7 +51,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       hostname = hostname.substr(0, hostname.size() - 1);
     }
 
-    EventLevel level = CEventLog::GetInstance().EventLevelFromString(hostname);
+    EventLevel level = CEventLog::EventLevelFromString(hostname);
 
     // get the events of the specified level(s)
     events = log.Get(level, includeHigherLevels);
@@ -70,7 +71,7 @@ CFileItemPtr CEventsDirectory::EventToFileItem(const EventPtr& eventItem)
   CFileItemPtr item(new CFileItem(eventItem));
 
   item->SetProperty(PROPERTY_EVENT_IDENTIFIER, eventItem->GetIdentifier());
-  item->SetProperty(PROPERTY_EVENT_LEVEL, CEventLog::GetInstance().EventLevelToString(eventItem->GetLevel()));
+  item->SetProperty(PROPERTY_EVENT_LEVEL, CEventLog::EventLevelToString(eventItem->GetLevel()));
   item->SetProperty(PROPERTY_EVENT_DESCRIPTION, eventItem->GetDescription());
 
   return item;

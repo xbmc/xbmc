@@ -457,3 +457,8 @@ CDatabaseManager &CServiceManager::GetDatabaseManager()
 {
   return *m_databaseManager;
 }
+
+CEventLog &CServiceManager::GetEventLog()
+{
+  return CProfilesManager::GetInstance().GetEventLog();
+}
