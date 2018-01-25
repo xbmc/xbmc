@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile endian-c++11-narrowing.patch
+DEPS= ../../Makefile.include Makefile endian-c++11-narrowing.patch
 
 # lib name, version
 LIBNAME=autoconf
