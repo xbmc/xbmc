@@ -1,4 +1,5 @@
-set(SOURCES Win10Main.cpp
+set(SOURCES Environment.cpp
+            Win10Main.cpp
             Win10App.cpp
             MessagePrinter.cpp        
             ../win32/CharsetConverter.cpp

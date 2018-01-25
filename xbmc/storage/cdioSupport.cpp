@@ -23,7 +23,7 @@
 #include "cdioSupport.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #include <cdio/cdio.h>
 #include <cdio/logging.h>
 #include <cdio/util.h>

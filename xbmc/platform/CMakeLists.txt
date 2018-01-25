@@ -1,12 +1,14 @@
 file(GLOB OVERRIDES_CPP overrides/${CORE_SYSTEM_NAME}/*.cpp)
 file(GLOB OVERRIDES_H overrides/${CORE_SYSTEM_NAME}/*.h)
 
-set(SOURCES Platform.cpp
+set(SOURCES Environment.cpp
+            Platform.cpp
             XbmcContext.cpp
             xbmc.cpp
             ${OVERRIDES_CPP})
 
-set(HEADERS Filesystem.h
+set(HEADERS Environment.h
+            Filesystem.h
             MessagePrinter.h
             Platform.h
             xbmc.h

@@ -27,7 +27,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #include "utils/log.h"
 #include "windowing/win10/WinEventsWin10.h"
 #include "Win10App.h"

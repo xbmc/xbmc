@@ -196,7 +196,7 @@
 #endif
 
 #ifdef TARGET_WINDOWS
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #endif
 
 #if defined(HAS_LIBAMCODEC)

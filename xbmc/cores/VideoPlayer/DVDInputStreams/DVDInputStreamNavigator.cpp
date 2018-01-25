@@ -35,7 +35,7 @@
 #endif
 #if defined(TARGET_WINDOWS_STORE)
 #include "filesystem/SpecialProtocol.h"
-#include "utils/Environment.h"
+#include "platform/Environment.h"
 #endif
 
 #define HOLDMODE_NONE 0

@@ -15,7 +15,6 @@ set(SOURCES ActorProtocol.cpp
             Crc32.cpp
             DatabaseUtils.cpp
             EndianSwap.cpp
-            Environment.cpp
             EmbeddedArt.cpp
             FileExtensionProvider.cpp
             Fanart.cpp
@@ -90,7 +89,6 @@ set(HEADERS ActorProtocol.h
             Crc32.h
             DatabaseUtils.h
             EndianSwap.h
-            Environment.h
             EventStream.h
             EventStreamDetail.h
             FileExtensionProvider.h
