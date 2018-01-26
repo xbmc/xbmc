@@ -54,7 +54,6 @@ bool DX::DeviceResources::CBackBuffer::Acquire(ID3D11Texture2D* pTexture)
   m_usage = desc.Usage;
 
   m_texture = pTexture;
-  m_texture->AddRef();
   return true;
 }
 
@@ -369,8 +368,8 @@ void DX::DeviceResources::ReleaseBackBuffer()
   CLog::LogF(LOGDEBUG, "release buffers.");
 
   // Clear the previous window size specific context.
-  ID3D11RenderTargetView* nullViews[] = { nullptr };
-  m_deferrContext->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
+  ID3D11RenderTargetView* nullViews[] = { nullptr, nullptr, nullptr, nullptr };
+  m_deferrContext->OMSetRenderTargets(4, nullViews, nullptr);
   FinishCommandList(false);
 
   m_backBufferTex.Release();
