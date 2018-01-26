@@ -26,16 +26,15 @@ void main()
 #if defined(XBMC_YV12)
 
   yuv = vec4(texture(m_sampY, m_cordY).r,
-             texture(m_sampU, m_cordU).g,
-             texture(m_sampV, m_cordV).a,
-             1.0);
-
-#elif defined(XBMC_NV12_RRG)
-
-  yuv = vec4(texture(m_sampY, m_cordY).r,
              texture(m_sampU, m_cordU).r,
-             texture(m_sampV, m_cordV).g,
+             texture(m_sampV, m_cordV).r,
              1.0);
+
+#elif defined(XBMC_NV12)
+
+  yuv= vec4(texture(m_sampY, m_cordY).r,
+            texture(m_sampU, m_cordU).rg,
+            1.0 );
 
 #endif
 

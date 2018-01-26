@@ -49,13 +49,6 @@ void main()
              texture2D(m_sampV, m_cordV).a,
              1.0);
 
-#elif defined(XBMC_NV12_RRG)
-
-  yuv = vec4(texture2D(m_sampY, m_cordY).r,
-             texture2D(m_sampU, m_cordU).r,
-             texture2D(m_sampV, m_cordV).g,
-             1.0);
-
 #endif
 
   rgb = m_yuvmat * yuv;
