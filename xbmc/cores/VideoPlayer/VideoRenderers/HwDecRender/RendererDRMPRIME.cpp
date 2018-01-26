@@ -61,7 +61,7 @@ bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsign
   m_renderOrientation = orientation;
 
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
 

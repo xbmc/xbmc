@@ -1102,7 +1102,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
     static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
-    pic.DVDPic.color_matrix = avctx->colorspace;
+    pic.DVDPic.color_space = avctx->colorspace;
     m_bufferStats.IncDecoded();
     m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
 
@@ -1877,12 +1877,12 @@ void CMixer::CheckFeatures()
   }
   if (m_Brightness != m_config.processInfo->GetVideoSettings().m_Brightness ||
       m_Contrast   != m_config.processInfo->GetVideoSettings().m_Contrast ||
-      m_ColorMatrix != m_mixerInput[1].DVDPic.color_matrix)
+      m_ColorMatrix != m_mixerInput[1].DVDPic.color_space)
   {
     SetColor();
     m_Brightness = m_config.processInfo->GetVideoSettings().m_Brightness;
     m_Contrast = m_config.processInfo->GetVideoSettings().m_Contrast;
-    m_ColorMatrix = m_mixerInput[1].DVDPic.color_matrix;
+    m_ColorMatrix = m_mixerInput[1].DVDPic.color_space;
   }
   if (m_NoiseReduction != m_config.processInfo->GetVideoSettings().m_NoiseReduction)
   {
@@ -2031,7 +2031,7 @@ void CMixer::SetColor()
     m_Procamp.contrast = (float)((m_config.processInfo->GetVideoSettings().m_Contrast)+50) / 100;
 
   VdpColorStandard colorStandard;
-  switch(m_mixerInput[1].DVDPic.color_matrix)
+  switch(m_mixerInput[1].DVDPic.color_space)
   {
     case AVCOL_SPC_BT709:
       colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;

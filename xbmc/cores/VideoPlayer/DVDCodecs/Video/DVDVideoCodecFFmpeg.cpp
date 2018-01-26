@@ -982,9 +982,23 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc;
-  pVideoPicture->color_matrix = m_pCodecContext->colorspace;
-  if(m_pCodecContext->color_range == AVCOL_RANGE_JPEG
-  || m_pCodecContext->pix_fmt     == AV_PIX_FMT_YUVJ420P)
+  pVideoPicture->color_space = m_pCodecContext->colorspace;
+  pVideoPicture->colorBits = 8;
+  // determine how number of bits of encoded video
+  if (m_pCodecContext->pix_fmt == AV_PIX_FMT_YUV420P12)
+    pVideoPicture->colorBits = 12;
+  else if (m_pCodecContext->pix_fmt == AV_PIX_FMT_YUV420P10)
+    pVideoPicture->colorBits = 10;
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_HEVC &&
+           m_pCodecContext->profile == FF_PROFILE_HEVC_MAIN_10)
+    pVideoPicture->colorBits = 10;
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_H264 &&
+           (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10||
+            m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
+    pVideoPicture->colorBits = 10;
+
+  if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||
+    m_pCodecContext->pix_fmt == AV_PIX_FMT_YUVJ420P)
     pVideoPicture->color_range = 1;
   else
     pVideoPicture->color_range = 0;

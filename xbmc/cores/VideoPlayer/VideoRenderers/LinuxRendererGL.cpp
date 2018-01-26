@@ -248,10 +248,11 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_fps = fps;
 
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
-             GetFlagsColorPrimaries(picture.color_primaries) |
-             GetFlagsColorTransfer(picture.color_transfer) |
              GetFlagsStereoMode(picture.stereoMode);
+
+  m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+  m_srcFullRange = picture.color_range == 1;
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -320,6 +321,11 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, d
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
   buf.loaded = false;
+
+  m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+  m_srcFullRange = picture.color_range == 1;
+  m_srcBits = picture.colorBits;
 }
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
@@ -910,7 +916,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST || m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
       {
         m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
-                                                m_iFlags, shaderFormat, m_nonLinStretch,
+                                                shaderFormat, m_nonLinStretch,
                                                 m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -933,7 +939,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (!m_pYUVShader)
     {
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, shaderFormat,
                                                   m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS, out);
 
       if (!m_cmsOn)
@@ -1074,6 +1080,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
+  m_pYUVShader->SetColSpace(m_srcColSpace, m_srcPrimaries, m_srcBits, !m_srcFullRange,
+                            m_srcTextureBits, AVCOL_PRI_BT709);
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
@@ -1247,6 +1255,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
+  m_pYUVShader->SetColSpace(m_srcColSpace, m_srcPrimaries, m_srcBits, !m_srcFullRange,
+                            m_srcTextureBits, AVCOL_PRI_BT709);
 
   if (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
@@ -1791,11 +1801,27 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  if(m_format == AV_PIX_FMT_YUV420P16 ||
-     m_format == AV_PIX_FMT_YUV420P14 ||
-     m_format == AV_PIX_FMT_YUV420P12 ||
-     m_format == AV_PIX_FMT_YUV420P10 ||
-     m_format == AV_PIX_FMT_YUV420P9)
+  switch (m_format)
+  {
+    case AV_PIX_FMT_YUV420P16:
+      m_srcTextureBits = 16;
+      break;
+    case AV_PIX_FMT_YUV420P14:
+      m_srcTextureBits = 14;
+      break;
+    case AV_PIX_FMT_YUV420P12:
+      m_srcTextureBits = 12;
+      break;
+    case AV_PIX_FMT_YUV420P10:
+      m_srcTextureBits = 10;
+      break;
+    case AV_PIX_FMT_YUV420P9:
+      m_srcTextureBits = 9;
+      break;
+    default:
+      break;
+  }
+  if (m_srcTextureBits > 8)
     im.bpp = 2;
   else
     im.bpp = 1;

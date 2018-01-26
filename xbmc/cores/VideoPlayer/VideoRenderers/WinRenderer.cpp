@@ -236,7 +236,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
 
   m_fps = fps;
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
   m_format = picture.videoBuffer->GetFormat();
@@ -270,7 +270,7 @@ int CWinRenderer::NextBuffer() const
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   unsigned flags = GetFlagsChromaPosition(picture.chroma_position)
-    | GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight)
+    | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
     | GetFlagsColorPrimaries(picture.color_primaries);
   if (picture.color_range == 1)
     flags |= CONF_FLAGS_YUV_FULLRANGE;
