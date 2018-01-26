@@ -19,6 +19,7 @@
  */
 #pragma once
 #include "DVDCodecs/Video/DXVA.h"
+#include <wrl/client.h>
 
 class CVideoBuffer;
 struct VideoPicture;
@@ -90,7 +91,7 @@ private:
   unsigned int m_activePlanes;
   D3D11_MAP m_mapType;
   CD3D11_TEXTURE2D_DESC m_sDesc;
-  ID3D11Texture2D* m_staging;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> m_staging;
 
   D3D11_MAPPED_SUBRESOURCE m_rects[YuvImage::MAX_PLANES];
   CD3DTexture m_textures[YuvImage::MAX_PLANES];

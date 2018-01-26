@@ -17,8 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <DirectXPackedVector.h>
-
+#include "RenderSystemDX.h"
 #include "Application.h"
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include "cores/RetroPlayer/process/windows/RPProcessInfoWin.h"
@@ -42,13 +41,15 @@
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
-#include "RenderSystemDX.h"
+
+#include <DirectXPackedVector.h>
 
 extern "C" {
 #include "libavutil/pixfmt.h"
 }
 
 using namespace KODI;
+using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 

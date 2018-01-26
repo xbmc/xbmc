@@ -162,6 +162,9 @@ namespace DX
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_deferrContext;
     Microsoft::WRL::ComPtr<IDXGISwapChain1> m_swapChain;
+#ifdef _DEBUG
+    Microsoft::WRL::ComPtr<ID3D11Debug> m_d3dDebug;
+#endif
 
     CBackBuffer m_backBufferTex;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_d3dDepthStencilView;

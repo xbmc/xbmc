@@ -54,7 +54,6 @@ bool DX::DeviceResources::CBackBuffer::Acquire(ID3D11Texture2D* pTexture)
   m_usage = desc.Usage;
 
   m_texture = pTexture;
-  m_texture->AddRef();
   return true;
 }
 
@@ -103,6 +102,13 @@ void DX::DeviceResources::Release()
   m_d3dContext = nullptr;
   m_d3dDevice = nullptr;
   m_bDeviceCreated = false;
+#ifdef _DEBUG
+  if (m_d3dDebug)
+  {
+    m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
+    m_d3dDebug = nullptr;
+  }
+#endif
 }
 
 void DX::DeviceResources::GetOutput(IDXGIOutput** pOutput) const
@@ -317,6 +323,28 @@ void DX::DeviceResources::CreateDeviceResources()
   hr = m_d3dDevice.As(&d3dMultiThread); CHECK_ERR();
   d3dMultiThread->SetMultithreadProtected(1);
 
+#ifdef _DEBUG
+  if (SUCCEEDED(m_d3dDevice.As(&m_d3dDebug)))
+  {
+    ComPtr<ID3D11InfoQueue> d3dInfoQueue;
+    if (SUCCEEDED(m_d3dDebug.As(&d3dInfoQueue)))
+    {
+      D3D11_MESSAGE_ID hide[] =
+      {
+        D3D11_MESSAGE_ID_GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED,        // avoid GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED (dx bug)
+        D3D11_MESSAGE_ID_DEVICE_RSSETSCISSORRECTS_NEGATIVESCISSOR         // avoid warning for some labels out of screen
+                                                                          // Add more message IDs here as needed
+      };
+
+      D3D11_INFO_QUEUE_FILTER filter;
+      ZeroMemory(&filter, sizeof(filter));
+      filter.DenyList.NumIDs = _countof(hide);
+      filter.DenyList.pIDList = hide;
+      d3dInfoQueue->AddStorageFilterEntries(&filter);
+    }
+  }
+#endif
+
   hr = context.As(&m_d3dContext); CHECK_ERR();
   hr = m_d3dDevice->CreateDeferredContext1(0, &m_deferrContext); CHECK_ERR();
 
@@ -340,8 +368,8 @@ void DX::DeviceResources::ReleaseBackBuffer()
   CLog::LogF(LOGDEBUG, "release buffers.");
 
   // Clear the previous window size specific context.
-  ID3D11RenderTargetView* nullViews[] = { nullptr };
-  m_deferrContext->OMSetRenderTargets(ARRAYSIZE(nullViews), nullViews, nullptr);
+  ID3D11RenderTargetView* nullViews[] = { nullptr, nullptr, nullptr, nullptr };
+  m_deferrContext->OMSetRenderTargets(4, nullViews, nullptr);
   FinishCommandList(false);
 
   m_backBufferTex.Release();
