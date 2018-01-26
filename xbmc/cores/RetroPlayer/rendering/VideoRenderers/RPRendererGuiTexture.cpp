@@ -25,6 +25,8 @@
 
 #if defined(HAS_DX)
 #include "guilib/GUIShaderDX.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 #endif
 
 using namespace KODI;

@@ -18,11 +18,11 @@
 *
 */
 
-#include <d3dcompiler.h>
 #include "GUIShaderDX.h"
 #include "guilib/GraphicContext.h"
-#include "utils/log.h"
+#include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#include "utils/log.h"
 
 // shaders bytecode includes
 #include "guishader_vert.h"
@@ -35,7 +35,11 @@
 #include "guishader_multi_texture_blend.h"
 #include "guishader_texture.h"
 #include "guishader_texture_noblend.h"
-#include "rendering/dx/DeviceResources.h"
+
+#include <d3dcompiler.h>
+
+using namespace DirectX;
+using namespace Microsoft::WRL;
 
 // shaders bytecode holder
 static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
@@ -116,11 +120,11 @@ bool CGUIShaderDX::Initialize()
 
 bool CGUIShaderDX::CreateBuffers()
 {
-  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   // create vertex buffer
   CD3D11_BUFFER_DESC bufferDesc(sizeof(Vertex) * 4, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-  if (FAILED(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pVertexBuffer)))
+  if (FAILED(pDevice->CreateBuffer(&bufferDesc, NULL, m_pVertexBuffer.ReleaseAndGetAddressOf())))
   {
     CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create GUI vertex buffer.");
     return false;
@@ -129,7 +133,7 @@ bool CGUIShaderDX::CreateBuffers()
   // Create the constant buffer for WVP
   size_t buffSize = (sizeof(cbWorld) + 15) & ~15;
   CD3D11_BUFFER_DESC cbbd(buffSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE); // it can change very frequently
-  if (FAILED(pDevice->CreateBuffer(&cbbd, NULL, &m_pWVPBuffer)))
+  if (FAILED(pDevice->CreateBuffer(&cbbd, NULL, m_pWVPBuffer.ReleaseAndGetAddressOf())))
   {
     CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create the constant buffer.");
     return false;
@@ -148,7 +152,7 @@ bool CGUIShaderDX::CreateBuffers()
   cbbd.ByteWidth = sizeof(cbViewPort);
   D3D11_SUBRESOURCE_DATA initData = { &m_cbViewPort, 0, 0 };
   // create viewport buffer
-  if (FAILED(pDevice->CreateBuffer(&cbbd, &initData, &m_pVPBuffer)))
+  if (FAILED(pDevice->CreateBuffer(&cbbd, &initData, m_pVPBuffer.ReleaseAndGetAddressOf())))
     return false;
 
   return true;
@@ -158,7 +162,7 @@ bool CGUIShaderDX::CreateSamplers()
 {
   // Describe the Sampler State
   D3D11_SAMPLER_DESC sampDesc;
-  ZeroMemory(&sampDesc, sizeof(D3D11_SAMPLER_DESC));
+  memset(&sampDesc, 0, sizeof(D3D11_SAMPLER_DESC));
   sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
   sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
   sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -167,10 +171,10 @@ bool CGUIShaderDX::CreateSamplers()
   sampDesc.MinLOD = 0;
   sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-  if (FAILED(DX::DeviceResources::Get()->GetD3DDevice()->CreateSamplerState(&sampDesc, &m_pSampLinear)))
+  if (FAILED(DX::DeviceResources::Get()->GetD3DDevice()->CreateSamplerState(&sampDesc, m_pSampLinear.ReleaseAndGetAddressOf())))
     return false;
 
-  DX::DeviceResources::Get()->GetD3DContext()->PSSetSamplers(0, 1, &m_pSampLinear);
+  DX::DeviceResources::Get()->GetD3DContext()->PSSetSamplers(0, 1, m_pSampLinear.GetAddressOf());
 
   return true;
 }
@@ -180,16 +184,16 @@ void CGUIShaderDX::ApplyStateBlock(void)
   if (!m_bCreated)
     return;
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
 
   m_vertexShader.BindShader();
-  pContext->VSSetConstantBuffers(0, 1, &m_pWVPBuffer);
+  pContext->VSSetConstantBuffers(0, 1, m_pWVPBuffer.GetAddressOf());
 
   m_pixelShader[m_currentShader].BindShader();
-  pContext->PSSetConstantBuffers(0, 1, &m_pWVPBuffer);
-  pContext->PSSetConstantBuffers(1, 1, &m_pVPBuffer);
+  pContext->PSSetConstantBuffers(0, 1, m_pWVPBuffer.GetAddressOf());
+  pContext->PSSetConstantBuffers(1, 1, m_pVPBuffer.GetAddressOf());
 
-  pContext->PSSetSamplers(0, 1, &m_pSampLinear);
+  pContext->PSSetSamplers(0, 1, m_pSampLinear.GetAddressOf());
 
   RestoreBuffers();
 }
@@ -220,16 +224,16 @@ void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4)
 
   ApplyChanges();
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
 
   // update vertex buffer
   D3D11_MAPPED_SUBRESOURCE resource;
-  if (SUCCEEDED(pContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
+  if (SUCCEEDED(pContext->Map(m_pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
   {
     // we are using strip topology
     Vertex vertices[4] = { v2, v3, v1, v4 };
     memcpy(resource.pData, &vertices, sizeof(Vertex) * 4);
-    pContext->Unmap(m_pVertexBuffer, 0);
+    pContext->Unmap(m_pVertexBuffer.Get(), 0);
     // Draw primitives
     pContext->Draw(4, 0);
   }
@@ -263,10 +267,10 @@ void CGUIShaderDX::SetShaderViews(unsigned int numViews, ID3D11ShaderResourceVie
 
 void CGUIShaderDX::Release()
 {
-  SAFE_RELEASE(m_pVertexBuffer);
-  SAFE_RELEASE(m_pWVPBuffer);
-  SAFE_RELEASE(m_pVPBuffer);
-  SAFE_RELEASE(m_pSampLinear);
+  m_pVertexBuffer = nullptr;
+  m_pWVPBuffer = nullptr;
+  m_pVPBuffer = nullptr;
+  m_pSampLinear = nullptr;
   m_bCreated = false;
 }
 
@@ -331,12 +335,12 @@ void CGUIShaderDX::SetProjection(const XMMATRIX &value)
 
 void CGUIShaderDX::ApplyChanges(void)
 {
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   D3D11_MAPPED_SUBRESOURCE res;
 
   if (m_bIsWVPDirty)
   {
-    if (SUCCEEDED(pContext->Map(m_pWVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    if (SUCCEEDED(pContext->Map(m_pWVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
       XMMATRIX worldView = XMMatrixMultiply(m_cbWorldViewProj.world, m_cbWorldViewProj.view);
       XMMATRIX worldViewProj = XMMatrixMultiplyTranspose(worldView, m_cbWorldViewProj.projection);
@@ -346,7 +350,7 @@ void CGUIShaderDX::ApplyChanges(void)
       buffer->blackLevel = (DX::Windowing().UseLimitedColor() ? 16.f / 255.f : 0.f);
       buffer->colorRange = (DX::Windowing().UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
 
-      pContext->Unmap(m_pWVPBuffer, 0);
+      pContext->Unmap(m_pWVPBuffer.Get(), 0);
       m_bIsWVPDirty = false;
     }
   }
@@ -354,10 +358,10 @@ void CGUIShaderDX::ApplyChanges(void)
   // update view port buffer
   if (m_bIsVPDirty)
   {
-    if (SUCCEEDED(pContext->Map(m_pVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    if (SUCCEEDED(pContext->Map(m_pVPBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
       *(cbViewPort*)res.pData = m_cbViewPort;
-      pContext->Unmap(m_pVPBuffer, 0);
+      pContext->Unmap(m_pVPBuffer.Get(), 0);
       m_bIsVPDirty = false;
     }
   }
@@ -368,9 +372,9 @@ void CGUIShaderDX::RestoreBuffers(void)
   const unsigned stride = sizeof(Vertex);
   const unsigned offset = 0;
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   // Set the vertex buffer to active in the input assembler so it can be rendered.
-  pContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }

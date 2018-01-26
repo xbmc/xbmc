@@ -39,6 +39,8 @@
 #elif defined(TARGET_WINDOWS)
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 #endif
 
 #define IMMEDIATE_TRANSITION_TIME          20

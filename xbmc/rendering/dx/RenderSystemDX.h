@@ -23,14 +23,14 @@
 
 #pragma once
 
-#include <vector>
-#include <wrl.h>
-#include <wrl/client.h>
-
 #include "DeviceResources.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "rendering/RenderSystem.h"
+
+#include <vector>
+#include <wrl.h>
+#include <wrl/client.h>
 
 enum PCI_Vendors
 {
