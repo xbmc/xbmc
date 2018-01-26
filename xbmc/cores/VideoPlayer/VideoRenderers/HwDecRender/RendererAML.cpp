@@ -64,7 +64,6 @@ bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned in
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
-             GetFlagsColorTransfer(picture.color_transfer) |
              GetFlagsStereoMode(picture.stereoMode);
 
   // Calculate the input frame aspect ratio.

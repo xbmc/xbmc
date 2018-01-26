@@ -73,17 +73,6 @@ unsigned int GetFlagsColorPrimaries(unsigned int color_primaries)
   return 0;
 }
 
-unsigned int GetFlagsColorTransfer(unsigned int color_transfer)
-{
-  switch(color_transfer)
-  {
-    case 1: return CONF_FLAGS_TRC_BT709;
-    case 4: return CONF_FLAGS_TRC_GAMMA22;
-    case 5: return CONF_FLAGS_TRC_GAMMA28;
-  }
-  return 0;
-}
-
 unsigned int GetFlagsStereoMode(const std::string& mode)
 {
   static std::map<std::string, unsigned int> convert;

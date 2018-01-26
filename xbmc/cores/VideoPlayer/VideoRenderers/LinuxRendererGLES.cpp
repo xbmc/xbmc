@@ -169,7 +169,6 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
-             GetFlagsColorTransfer(picture.color_transfer) |
              GetFlagsStereoMode(picture.stereoMode);
 
   // Calculate the input frame aspect ratio.
@@ -1553,4 +1552,3 @@ bool CLinuxRendererGLES::IsGuiLayer()
 {
   return true;
 }
-
