@@ -38,6 +38,8 @@
 #define PLANE_UV 1
 #define PLANE_D3D11 0
 
+using namespace Microsoft::WRL;
+
 CRenderBuffer::CRenderBuffer()
   : loaded(false)
   , frameIdx(0)
@@ -66,8 +68,12 @@ CRenderBuffer::~CRenderBuffer()
 void CRenderBuffer::Release()
 {
   loaded = false;
-  SAFE_RELEASE(videoBuffer);
-  SAFE_RELEASE(m_staging);
+  if (videoBuffer)
+  {
+    videoBuffer->Release();
+    videoBuffer = nullptr;
+  }
+  m_staging.Reset();
   for (unsigned i = 0; i < m_activePlanes; i++)
   {
     // unlock before release
@@ -413,7 +419,7 @@ void CRenderBuffer::QueueCopyBuffer()
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && format < BUFFER_FMT_D3D11_BYPASS)
   {
     DXVA::CDXVAOutputBuffer *buf = static_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
-    CopyToStaging(reinterpret_cast<ID3D11VideoDecoderOutputView*>(buf->view));
+    CopyToStaging(buf->view);
   }
 }
 
@@ -487,27 +493,23 @@ bool CRenderBuffer::CopyToD3D11()
 
 bool CRenderBuffer::CopyToStaging(ID3D11View* view)
 {
-  HRESULT hr = S_OK;
-
   if (!view)
     return false;
 
   ID3D11VideoDecoderOutputView* pView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
   D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vpivd;
   pView->GetDesc(&vpivd);
-  ID3D11Resource* resource = nullptr;
-  pView->GetResource(&resource);
+  ComPtr<ID3D11Resource> resource;
+  pView->GetResource(resource.GetAddressOf());
 
   if (!m_staging)
   {
     // create staging texture
-    ID3D11Texture2D* surface = nullptr;
-    hr = resource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&surface));
-    if (SUCCEEDED(hr))
+    ComPtr<ID3D11Texture2D> surface;
+    if (SUCCEEDED(resource.As(&surface)))
     {
       D3D11_TEXTURE2D_DESC tDesc;
       surface->GetDesc(&tDesc);
-      SAFE_RELEASE(surface);
 
       CD3D11_TEXTURE2D_DESC sDesc(tDesc);
       sDesc.ArraySize = 1;
@@ -515,28 +517,26 @@ bool CRenderBuffer::CopyToStaging(ID3D11View* view)
       sDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
       sDesc.BindFlags = 0;
 
-      hr = DX::DeviceResources::Get()->GetD3DDevice()->CreateTexture2D(&sDesc, nullptr, &m_staging);
-      if (SUCCEEDED(hr))
+      if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateTexture2D(&sDesc, nullptr, m_staging.GetAddressOf())))
         m_sDesc = sDesc;
     }
   }
 
   if (m_staging)
   {
-    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetImmediateContext();
+    ComPtr<ID3D11DeviceContext> pContext(DX::DeviceResources::Get()->GetImmediateContext());
     // queue copying content from decoder texture to temporary texture.
     // actual data copying will be performed before rendering
-    pContext->CopySubresourceRegion(m_staging,
+    pContext->CopySubresourceRegion(m_staging.Get(),
                                     D3D11CalcSubresource(0, 0, 1),
                                     0, 0, 0,
-                                    resource,
+                                    resource.Get(),
                                     D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, 1),
                                     nullptr);
     m_bPending = true;
   }
-  SAFE_RELEASE(resource);
 
-  return SUCCEEDED(hr);
+  return m_staging != nullptr;
 }
 
 void CRenderBuffer::CopyFromStaging() const
@@ -544,9 +544,9 @@ void CRenderBuffer::CopyFromStaging() const
   if (!m_locked)
     return;
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetImmediateContext();
+  ComPtr<ID3D11DeviceContext> pContext(DX::DeviceResources::Get()->GetImmediateContext());
   D3D11_MAPPED_SUBRESOURCE rectangle;
-  if (SUCCEEDED(pContext->Map(m_staging, 0, D3D11_MAP_READ, 0, &rectangle)))
+  if (SUCCEEDED(pContext->Map(m_staging.Get(), 0, D3D11_MAP_READ, 0, &rectangle)))
   {
     void* (*copy_func)(void* d, const void* s, size_t size) =
 #if defined(HAVE_SSE2)
@@ -590,7 +590,7 @@ void CRenderBuffer::CopyFromStaging() const
           }
         });
     }
-    pContext->Unmap(m_staging, 0);
+    pContext->Unmap(m_staging.Get(), 0);
   }
 }
 
