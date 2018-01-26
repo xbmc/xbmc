@@ -171,7 +171,6 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               DEPENDS_PATH=${DEPENDS_PATH}
               NDKROOT=${NDKROOT}
               SDKROOT=${SDKROOT}
-              SDK_PLATFORM=${SDK_PLATFORM}
               STRIP=${CMAKE_STRIP}
               AAPT=${AAPT_EXECUTABLE}
               DX=${DX_EXECUTABLE}

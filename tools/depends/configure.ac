@@ -73,13 +73,14 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [specify sdk platform version (optional for android). default is android-24])],
+  [specify sdk platform version.])],
   [use_sdk=$withval])
 
 AC_ARG_WITH([ndk-api],
   [AS_HELP_STRING([--with-ndk-api],
-  [specify ndk level (optional for android). default is 21])],
-  [use_ndk_api=$withval])
+  [specify ndk level (optional for android), default is 21.])],
+  [use_ndk_api=$withval],
+  [use_ndk_api=21])
 
 AC_ARG_ENABLE([gplv3],
   [AS_HELP_STRING([--enable-gplv3],
@@ -202,8 +203,6 @@ case $host in
     fi
     platform_cc=clang
     platform_cxx=clang++
-    use_sdk="${use_sdk:-android-24}"
-    use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
@@ -223,8 +222,6 @@ case $host in
     fi
     platform_cc=clang
     platform_cxx=clang++
-    use_sdk="${use_sdk:-android-24}"
-    use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes  -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
@@ -244,8 +241,6 @@ case $host in
     fi
     platform_cc=clang
     platform_cxx=clang++
-    use_sdk="${use_sdk:-android-24}"
-    use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes  -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
     optimize_flags="-Os"
@@ -678,18 +673,6 @@ if [ ! `mkdir -p $use_tarballs` ]; then
   AC_MSG_ERROR(unable to create tarballs dir. verify that the path and permissions are correct.)
 fi
 
-if test "$platform_os" == "android"; then
-  echo
-
-  if [ ! `mkdir -p $prefix/$deps_dir/include/$use_sdk` ]; then
-    AC_MSG_ERROR(unable to create $prefix/$deps_dir/include/$use_sdk. verify that the path and permissions are correct.)
-  fi
-
-  if [ ! `mkdir -p $prefix/$deps_dir/lib/$use_sdk` ]; then
-    AC_MSG_ERROR(unable to create $prefix/$deps_dir/lib/$use_sdk. verify that the path and permissions are correct.)
-  fi
-fi
-
 # remove unwanted optimization flags
 tmp_cflags=$(echo $c11_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
 tmp_cxxflags=$(echo $cxx11_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
@@ -730,7 +713,6 @@ if test "$platform_os" == "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
   AC_SUBST(use_ndk_path)
-  AC_SUBST(use_sdk)
   AC_SUBST(use_ndk_api)
   AC_SUBST(build_tools_path)
 fi
@@ -768,14 +750,6 @@ AC_SUBST(app_rendersystem)
 AC_SUBST(ffmpeg_options)
 
 AC_OUTPUT
-echo -e "ccache:\t $use_ccache"
-echo -e "toolchain:\t $use_toolchain"
-echo -e "cpu:\t\t $use_cpu"
-echo -e "host:\t\t $use_host"
-if test "$platform_os" == "android"; then
-  echo -e "sdk-platform:\t $use_sdk"
-  echo -e "build-tools:\t $build_tools_path"
-fi
 
 if test "$platform_os" == "ios"; then
   if test "$use_platform" = "tvos"; then
@@ -799,6 +773,7 @@ cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
 
 
 echo -e "\n\n#------- configuration -------#"
+echo -e "ccache:\t\t $use_ccache"
 echo -e "build type:\t $build_type"
 echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"
@@ -807,10 +782,10 @@ echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t $platform_cxxflags"
 echo -e "ldflags:\t $platform_ldflags"
 echo -e "ffmpeg options:\t $ffmpeg_options"
-echo -e "prefix:\t\t  $prefix"
+echo -e "prefix:\t\t $prefix"
 echo -e "depends:\t $prefix/$deps_dir"
 if test "$platform_os" == "android"; then
-  echo -e "sdk-platform:\t $use_sdk"
+  echo -e "ndk-api-level:\t $use_ndk_api"
   echo -e "build-tools:\t $build_tools_path"
 fi
 

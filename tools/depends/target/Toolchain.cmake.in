@@ -83,7 +83,6 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   set(SDKROOT @use_sdk_path@)
   set(TOOLCHAIN @use_toolchain@)
   set(HOST @use_host@)
-  set(SDK_PLATFORM @use_sdk@)
   string(REPLACE ":" ";" SDK_BUILDTOOLS_PATH "@build_tools_path@")
 endif()
 

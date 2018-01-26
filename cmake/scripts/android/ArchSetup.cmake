@@ -1,7 +1,5 @@
 if(NOT CMAKE_TOOLCHAIN_FILE)
   message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for android. See ${CMAKE_SOURCE_DIR}/cmake/README.md")
-elseif(NOT SDK_PLATFORM)
-  message(FATAL_ERROR "Toolchain did not define SDK_PLATFORM. Possibly outdated depends.")
 endif()
 
 set(ARCH_DEFINES -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID)
