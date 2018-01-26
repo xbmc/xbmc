@@ -311,8 +311,6 @@ void CVideoPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
-  memset(&m_picture, 0, sizeof(VideoPicture));
-
   double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
