@@ -328,8 +328,9 @@ bool CPVREpg::Load(void)
     return bReturn;
   }
 
-  CSingleLock lock(m_critSection);
   int iEntriesLoaded = database->Get(*this);
+
+  CSingleLock lock(m_critSection);
   if (iEntriesLoaded <= 0)
   {
     CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
