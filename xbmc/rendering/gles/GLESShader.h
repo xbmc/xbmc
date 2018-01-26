@@ -26,6 +26,7 @@ class CGLESShader : public Shaders::CGLSLShaderProgram
 {
 public:
   CGLESShader( const char *shader = 0 );
+  CGLESShader(const char *vshader, const char *fshader);
   void OnCompiledAndLinked();
   bool OnEnabled();
   void Free();
@@ -48,20 +49,20 @@ public:
   GLfloat GetClipYOffset() { return m_clipYOffset; }
 
 protected:
-  GLint m_hTex0;
-  GLint m_hTex1;
-  GLint m_hUniCol;
-  GLint m_hProj;
-  GLint m_hModel;
-  GLint m_hPos;
-  GLint m_hCol;
-  GLint m_hCord0;
-  GLint m_hCord1;
-  GLint m_hCoord0Matrix;
-  GLint m_hField;
-  GLint m_hStep;
-  GLint m_hContrast;
-  GLint m_hBrightness;
+  GLint m_hTex0 = 0;
+  GLint m_hTex1 = 0;
+  GLint m_hUniCol = 0;
+  GLint m_hProj = 0;
+  GLint m_hModel = 0;
+  GLint m_hPos = 0;
+  GLint m_hCol = 0;
+  GLint m_hCord0 = 0;
+  GLint m_hCord1 = 0;
+  GLint m_hCoord0Matrix = 0;
+  GLint m_hField = 0;
+  GLint m_hStep = 0;
+  GLint m_hContrast = 0;
+  GLint m_hBrightness = 0;
 
   GLfloat *m_proj;
   GLfloat *m_model;

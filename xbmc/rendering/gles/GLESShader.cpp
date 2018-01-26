@@ -30,26 +30,17 @@
 
 using namespace Shaders;
 
-CGLESShader::CGLESShader( const char *shader ) : CGLSLShaderProgram("gles_guishader_vert.glsl", shader)
+CGLESShader::CGLESShader( const char *shader ) : CGLSLShaderProgram("gles_shader.vert", shader)
 {
-  // Initialise values
-  m_hTex0   = 0;
-  m_hTex1   = 0;
-  m_hProj   = 0;
-  m_hModel  = 0;
-  m_hPos    = 0;
-  m_hCol    = 0;
-  m_hCord0  = 0;
-  m_hCord1  = 0;
-  m_hUniCol = 0;
-  m_hCoord0Matrix = 0;
-  m_hField  = 0;
-  m_hStep   = 0;
-  m_hContrast = 0;
-  m_hBrightness = 0;
+  m_proj = nullptr;
+  m_model = nullptr;
+  m_clipPossible = false;
+}
 
-  m_proj   = NULL;
-  m_model  = NULL;
+CGLESShader::CGLESShader(const char *vshader, const char *fshader) : CGLSLShaderProgram(vshader, fshader)
+{
+  m_proj = nullptr;
+  m_model  = nullptr;
   m_clipPossible = false;
 }
 
