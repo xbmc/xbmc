@@ -1634,7 +1634,7 @@ void CGUIMediaWindow::SetupShares()
 
 bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
 {
-  auto InRange = [](int i, std::pair<int, int> range){ return i >= range.first && i < range.second; };
+  auto InRange = [](size_t i, std::pair<size_t, size_t> range){ return i >= range.first && i < range.second; };
 
   if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
     return false;
@@ -1650,28 +1650,28 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
     int i = 0;
     while (item->HasProperty(StringUtils::Format("contextmenulabel(%i)", i)))
     {
-      buttons.emplace_back(-buttons.size(), item->GetProperty(StringUtils::Format("contextmenulabel(%i)", i)).asString());
+      buttons.emplace_back(~buttons.size(), item->GetProperty(StringUtils::Format("contextmenulabel(%i)", i)).asString());
       ++i;
     }
   }
-  auto pluginMenuRange = std::make_pair(0, buttons.size());
+  auto pluginMenuRange = std::make_pair(static_cast<size_t>(0), buttons.size());
 
   //Add the global menu
   auto globalMenu = CContextMenuManager::GetInstance().GetItems(*item, CContextMenuManager::MAIN);
   auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
   for (const auto& menu : globalMenu)
-    buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
 
   //Add legacy items from windows
-  auto windowMenuRange = std::make_pair(buttons.size(), -1);
+  auto buttonsSize = buttons.size();
   GetContextButtons(itemIdx, buttons);
-  windowMenuRange.second = buttons.size();
+  auto windowMenuRange = std::make_pair(buttonsSize, buttons.size());
 
   //Add addon menus
   auto addonMenu = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MAIN);
   auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
   for (const auto& menu : addonMenu)
-    buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
 
   if (buttons.empty())
     return true;
@@ -1680,7 +1680,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   if (idx < 0 || idx >= static_cast<int>(buttons.size()))
     return false;
 
-  if (InRange(idx, pluginMenuRange))
+  if (InRange(static_cast<size_t>(idx), pluginMenuRange))
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
         item->GetProperty(StringUtils::Format("contextmenuaction(%i)", idx - pluginMenuRange.first)).asString());

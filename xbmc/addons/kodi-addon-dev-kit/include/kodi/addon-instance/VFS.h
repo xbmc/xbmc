@@ -547,7 +547,7 @@ namespace addon
             entries[i].properties = nullptr;
         }
         *retEntries = entries;
-        *num_entries = addonEntries.size();
+        *num_entries = static_cast<int>(addonEntries.size());
       }
       return ret;
     }
@@ -586,7 +586,7 @@ namespace addon
         strncpy(rootpath, cppRootPath.c_str(), ADDON_STANDARD_STRING_LENGTH);
 
         VFSDirEntry* entries = static_cast<VFSDirEntry*>(malloc(sizeof(VFSDirEntry) * addonEntries.size()));
-        for (unsigned int i = 0; i < addonEntries.size(); ++i)
+        for (size_t i = 0; i < addonEntries.size(); ++i)
         {
           entries[i].label = strdup(addonEntries[i].Label().c_str());
           entries[i].title = strdup(addonEntries[i].Title().c_str());
@@ -610,7 +610,7 @@ namespace addon
             entries[i].properties = nullptr;
         }
         *retEntries = entries;
-        *num_entries = addonEntries.size();
+        *num_entries = static_cast<int>(addonEntries.size());
       }
       return ret;
     }

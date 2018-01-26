@@ -39,7 +39,7 @@ namespace XFILE
     void SetSources(const VECSOURCES& vecSources);
     inline unsigned int GetNumberOfSources() 
     {
-      return m_vecSources.size();
+      return static_cast<uint32_t>(m_vecSources.size());
     }
 
     bool IsSource(const std::string& strPath, VECSOURCES *sources = NULL, std::string *name = NULL) const;

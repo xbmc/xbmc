@@ -93,7 +93,7 @@ namespace XBMCAddon
       return pAddon->GetSetting(id);
     }
 
-    bool Addon::getSettingBool(const char* id) throw(XBMCAddon::WrongTypeException)
+    bool Addon::getSettingBool(const char* id)
     {
       bool value = false;
       if (!pAddon->GetSettingBool(id, value))
@@ -102,7 +102,7 @@ namespace XBMCAddon
       return value;
     }
 
-    int Addon::getSettingInt(const char* id) throw(XBMCAddon::WrongTypeException)
+    int Addon::getSettingInt(const char* id)
     {
       int value = 0;
       if (!pAddon->GetSettingInt(id, value))
@@ -111,7 +111,7 @@ namespace XBMCAddon
       return value;
     }
 
-    double Addon::getSettingNumber(const char* id) throw(XBMCAddon::WrongTypeException)
+    double Addon::getSettingNumber(const char* id)
     {
       double value = 0.0;
       if (!pAddon->GetSettingNumber(id, value))
@@ -120,7 +120,7 @@ namespace XBMCAddon
       return value;
     }
 
-    String Addon::getSettingString(const char* id) throw(XBMCAddon::WrongTypeException)
+    String Addon::getSettingString(const char* id)
     {
       std::string value;
       if (!pAddon->GetSettingString(id, value))
@@ -140,7 +140,7 @@ namespace XBMCAddon
       }
     }
 
-    bool Addon::setSettingBool(const char* id, bool value) throw(XBMCAddon::WrongTypeException)
+    bool Addon::setSettingBool(const char* id, bool value)
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
@@ -155,7 +155,7 @@ namespace XBMCAddon
       return true;
     }
 
-    bool Addon::setSettingInt(const char* id, int value) throw(XBMCAddon::WrongTypeException)
+    bool Addon::setSettingInt(const char* id, int value)
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
@@ -170,7 +170,7 @@ namespace XBMCAddon
       return true;
     }
 
-    bool Addon::setSettingNumber(const char* id, double value) throw(XBMCAddon::WrongTypeException)
+    bool Addon::setSettingNumber(const char* id, double value)
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
@@ -185,7 +185,7 @@ namespace XBMCAddon
       return true;
     }
 
-    bool Addon::setSettingString(const char* id, const String& value) throw(XBMCAddon::WrongTypeException)
+    bool Addon::setSettingString(const char* id, const String& value)
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
