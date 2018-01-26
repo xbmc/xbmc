@@ -858,7 +858,6 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned i
   m_renderOrientation = orientation;
 
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
 
@@ -872,7 +871,7 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned i
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
 
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d orient:%d", CLASSNAME, __func__, picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, flags, m_format, orientation);
+  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d orient:%d", CLASSNAME, __func__, picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, m_iFlags, m_format, orientation);
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);

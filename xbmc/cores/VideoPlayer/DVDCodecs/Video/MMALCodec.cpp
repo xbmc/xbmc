@@ -785,7 +785,6 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
     picture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
     assert(picture->videoBuffer);
     picture->color_range  = 0;
-    picture->color_matrix = 4;
     picture->iWidth = buffer->Width() ? buffer->Width() : m_decoded_width;
     picture->iHeight = buffer->Height() ? buffer->Height() : m_decoded_height;
     picture->iDisplayWidth  = picture->iWidth;
