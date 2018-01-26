@@ -186,6 +186,7 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   m_vaapiTextures[index].Map(pic);
+  m_srcTextureBits = m_vaapiTextures[index].GetBits();
 
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[3] = buf.fields[0];

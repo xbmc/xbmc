@@ -842,10 +842,8 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
 
     // send frame to output for processing
     CVaapiDecodedPicture pic;
-    memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
     static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
-    pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
     m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
 
