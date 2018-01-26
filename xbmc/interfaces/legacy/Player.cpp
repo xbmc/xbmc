@@ -365,7 +365,7 @@ namespace XBMCAddon
       g_windowManager.SendMessage(msg);
     }
 
-    InfoTagRadioRDS* Player::getRadioRDSInfoTag() throw (PlayerException)
+    InfoTagRadioRDS* Player::getRadioRDSInfoTag()
     {
       XBMC_TRACE;
       if (g_application.GetAppPlayer().IsPlayingVideo() || !g_application.GetAppPlayer().IsPlayingRDS())

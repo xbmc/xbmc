@@ -660,7 +660,7 @@ namespace XBMCAddon
       ///
       getRadioRDSInfoTag();
 #else
-      InfoTagRadioRDS* getRadioRDSInfoTag() throw (PlayerException);
+      InfoTagRadioRDS* getRadioRDSInfoTag();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

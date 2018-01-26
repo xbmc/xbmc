@@ -32,8 +32,8 @@
 
       <%  if (ispointer) print("${api} = new std::vector<${swigTypeParser.SwigType_str(vectype)}>();") %>
       PyObject *pyentry${seq} = NULL;
-      int vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
-      for(int i = 0; i < vecSize; i++)
+      auto vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
+      for(Py_ssize_t i = 0; i < vecSize; i++)
       {
         pyentry${seq} = (isTuple ? PyTuple_GetItem(${slarg}, i) : PyList_GetItem(${slarg}, i));
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(vectype))} entry${seq};

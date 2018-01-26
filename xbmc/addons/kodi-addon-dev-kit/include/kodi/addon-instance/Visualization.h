@@ -745,7 +745,7 @@ namespace addon
           addon->toAddon.addonInstance->m_instanceData->toKodi.transfer_preset(addon->toKodi.kodiInstance, it.c_str());
       }
 
-      return presets.size();
+      return static_cast<unsigned int>(presets.size());
     }
 
     inline static int ADDON_GetActivePreset(const AddonInstance_Visualization* addon)

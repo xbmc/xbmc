@@ -94,7 +94,7 @@ namespace XbmcCommons
     size_t mcapacity;
     size_t mlimit;
 
-    inline void check(int count) const
+    inline void check(size_t count) const
     { 
       if ((mposition + count) > mlimit) 
         throw BufferException("Buffer buffer overflow: Cannot add more data to the Buffer's buffer.");

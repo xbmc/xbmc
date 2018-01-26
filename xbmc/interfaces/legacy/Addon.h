@@ -166,7 +166,7 @@ namespace XBMCAddon
       ///
       getSettingBool(...);
 #else
-      bool getSettingBool(const char* id) throw(XBMCAddon::WrongTypeException);
+      bool getSettingBool(const char* id);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -195,7 +195,7 @@ namespace XBMCAddon
       ///
       getSettingInt(...);
 #else
-      int getSettingInt(const char* id) throw(XBMCAddon::WrongTypeException);
+      int getSettingInt(const char* id);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -224,7 +224,7 @@ namespace XBMCAddon
       ///
       getSettingNumber(...);
 #else
-      double getSettingNumber(const char* id) throw(XBMCAddon::WrongTypeException);
+      double getSettingNumber(const char* id);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -253,7 +253,7 @@ namespace XBMCAddon
       ///
       getSettingString(...);
 #else
-      String getSettingString(const char* id) throw(XBMCAddon::WrongTypeException);
+      String getSettingString(const char* id);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -316,7 +316,7 @@ namespace XBMCAddon
       ///
       setSettingBool(...);
 #else
-      bool setSettingBool(const char* id, bool value) throw(XBMCAddon::WrongTypeException);
+      bool setSettingBool(const char* id, bool value);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -348,7 +348,7 @@ namespace XBMCAddon
       ///
       setSettingInt(...);
 #else
-      bool setSettingInt(const char* id, int value) throw(XBMCAddon::WrongTypeException);
+      bool setSettingInt(const char* id, int value);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -380,7 +380,7 @@ namespace XBMCAddon
       ///
       setSettingNumber(...);
 #else
-      bool setSettingNumber(const char* id, double value) throw(XBMCAddon::WrongTypeException);
+      bool setSettingNumber(const char* id, double value);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -412,7 +412,7 @@ namespace XBMCAddon
       ///
       setSettingString(...);
 #else
-      bool setSettingString(const char* id, const String& value) throw(XBMCAddon::WrongTypeException);
+      bool setSettingString(const char* id, const String& value);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
