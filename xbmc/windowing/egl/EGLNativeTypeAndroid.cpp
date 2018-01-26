@@ -176,7 +176,14 @@ void CEGLNativeTypeAndroid::Initialize()
   }
 
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: maximum/current resolution: %dx%d", m_width, m_height);
+
   int limit = CSettings::GetInstance().GetInt("videoscreen.limitgui");
+  if (CJNIBuild::SDK_INT >= 26)
+  {
+    // Breaking change in Oreo; Disable GUI limiter
+    limit = 0;
+  }
+
   switch (limit)
   {
     case 0: // auto
