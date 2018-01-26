@@ -299,10 +299,10 @@ ControllerVector CGameClientInput::GetControllers(const CGameClient &gameClient)
 
   CGameServices& gameServices = CServiceBroker::GetGameServices();
 
-  const ADDONDEPS& dependencies = gameClient.GetDeps();
-  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
+  const auto& dependencies = gameClient.GetDependencies();
+  for (auto it = dependencies.begin(); it != dependencies.end(); ++it)
   {
-    ControllerPtr controller = gameServices.GetController(it->first);
+    ControllerPtr controller = gameServices.GetController(it->id);
     if (controller)
       controllers.push_back(controller);
   }

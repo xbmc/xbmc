@@ -644,12 +644,11 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
 
 void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)
 {
-  ADDON::ADDONDEPS deps = addon->GetDeps();
-  for (ADDON::ADDONDEPS::const_iterator it = deps.begin(); it != deps.end(); ++it)
+  for (const auto& it : addon->GetDependencies())
   {
     //Check if dependency is a module addon
     ADDON::AddonPtr dependency;
-    if (CServiceBroker::GetAddonMgr().GetAddon(it->first, dependency, ADDON::ADDON_SCRIPT_MODULE))
+    if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
       if (paths.find(path) == paths.end())

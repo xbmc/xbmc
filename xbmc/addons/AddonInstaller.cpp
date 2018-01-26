@@ -323,12 +323,11 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   if (!database.Open())
     return false;
 
-  ADDONDEPS deps = addon->GetDeps();
-  for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
+  for (const auto& it : addon->GetDependencies())
   {
-    const std::string &addonID = i->first;
-    const AddonVersion &version = i->second.first;
-    bool optional = i->second.second;
+    const std::string &addonID = it.id;
+    const AddonVersion &version = it.requiredVersion;
+    bool optional = it.optional;
     AddonPtr dep;
     bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dep);
     if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
@@ -705,20 +704,20 @@ bool CAddonInstallJob::DoFileOperation(FileAction action, CFileItemList &items, 
 bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& repo)
 {
   SetText(g_localizeStrings.Get(24079));
-  ADDONDEPS deps = m_addon->GetDeps();
+  auto deps = m_addon->GetDependencies();
 
   unsigned int totalSteps = static_cast<unsigned int>(deps.size());
   if (ShouldCancel(0, totalSteps))
     return false;
 
   // The first thing we do is install dependencies
-  for (ADDONDEPS::iterator it = deps.begin(); it != deps.end(); ++it)
+  for (auto it = deps.begin(); it != deps.end(); ++it)
   {
-    if (it->first != "xbmc.metadata")
+    if (it->id != "xbmc.metadata")
     {
-      const std::string &addonID = it->first;
-      const AddonVersion &version = it->second.first;
-      bool optional = it->second.second;
+      const std::string &addonID = it->id;
+      const AddonVersion &version = it->requiredVersion;
+      bool optional = it->optional;
       AddonPtr dependency;
       bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
       if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
@@ -776,7 +775,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
     }
 
     if (ShouldCancel(std::distance(deps.begin(), it), totalSteps))
-      return false;
+        return false;
   }
 
   SetText(g_localizeStrings.Get(24086));

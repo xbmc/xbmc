@@ -61,13 +61,13 @@ static std::string SerializeMetadata(const IAddon& addon)
   variant["extensions"].push_back(ADDON::CAddonInfo::TranslateType(addon.Type(), false));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : addon.GetDeps())
+  for (const auto& dep : addon.GetDependencies())
   {
-    CVariant dep(CVariant::VariantTypeObject);
-    dep["addonId"] = kv.first;
-    dep["version"] = kv.second.first.asString();
-    dep["optional"] = kv.second.second;
-    variant["dependencies"].push_back(std::move(dep));
+    CVariant info(CVariant::VariantTypeObject);
+    info["addonId"] = dep.id;
+    info["version"] = dep.requiredVersion.asString();
+    info["optional"] = dep.optional;
+    variant["dependencies"].push_back(std::move(info));
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
@@ -110,13 +110,17 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
 
   builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
 
-  ADDONDEPS deps;
-  for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
   {
-    AddonVersion version((*it)["version"].asString());
-    deps.emplace((*it)["addonId"].asString(), std::make_pair(std::move(version), (*it)["optional"].asBoolean()));
+    std::vector<DependencyInfo> deps;
+    for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
+    {
+      deps.emplace_back(
+          (*it)["addonId"].asString(),
+          AddonVersion((*it)["version"].asString()),
+          (*it)["optional"].asBoolean());
+    }
+    builder.SetDependencies(std::move(deps));
   }
-  builder.SetDependencies(std::move(deps));
 
   InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)

@@ -285,7 +285,7 @@ namespace ADDON
 
     /*! \brief Recursively get dependencies for an add-on
      */
-    ADDONDEPS GetDepsRecursive(const std::string& id);
+    std::vector<DependencyInfo> GetDepsRecursive(const std::string& id);
 
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions = false);

@@ -83,7 +83,27 @@ namespace ADDON
     ADDON_MAX
   } TYPE;
 
-  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
+  struct DependencyInfo
+  {
+    std::string id;
+    AddonVersion requiredVersion;
+    bool optional;
+    DependencyInfo(std::string id, AddonVersion requiredVersion, bool optional)
+        : id(id), requiredVersion(requiredVersion), optional(optional) {}
+
+    bool operator==(const DependencyInfo &rhs) const
+    {
+      return id == rhs.id &&
+             requiredVersion == rhs.requiredVersion &&
+             optional == rhs.optional;
+    }
+
+    bool operator!=(const DependencyInfo &rhs) const
+    {
+      return !(rhs == *this);
+    }
+  };
+
   typedef std::map<std::string, std::string> InfoMap;
   typedef std::map<std::string, std::string> ArtMap;
 
@@ -117,7 +137,7 @@ namespace ADDON
     const ArtMap& Art() const { return m_art; }
     const std::vector<std::string>& Screenshots() const { return m_screenshots; }
     const std::string& Disclaimer() const { return m_disclaimer; }
-    const ADDONDEPS& GetDeps() const { return m_dependencies; }
+    const std::vector<DependencyInfo>& GetDependencies() const { return m_dependencies; }
     const std::string& Broken() const { return m_broken; }
     const CDateTime& InstallDate() const { return m_installDate; }
     const CDateTime& LastUpdated() const { return m_lastUpdated; }
@@ -158,7 +178,7 @@ namespace ADDON
     ArtMap m_art;
     std::vector<std::string> m_screenshots;
     std::string m_disclaimer;
-    ADDONDEPS m_dependencies;
+    std::vector<DependencyInfo> m_dependencies;
     std::string m_broken;
     CDateTime m_installDate;
     CDateTime m_lastUpdated;
