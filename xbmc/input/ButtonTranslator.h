@@ -102,5 +102,7 @@ private:
 
   bool LoadKeymap(const std::string &keymapPath);
 
+  bool HasLongpressMapping_Internal(int window, const CKey &key);
+
   std::map<std::string, IButtonMapper*> m_buttonMappers;
 };

@@ -19,6 +19,7 @@
  */
 
 #include "WindowKeymap.h"
+#include "WindowTranslator.h"
 
 using namespace KODI;
 
@@ -37,6 +38,9 @@ void CWindowKeymap::MapAction(int windowId, const std::string &keyName, JOYSTICK
 
 const JOYSTICK::KeymapActionGroup &CWindowKeymap::GetActions(int windowId, const std::string& keyName) const
 {
+  // handle virtual windows
+  windowId = CWindowTranslator::GetVirtualWindow(windowId);
+
   auto it = m_windowKeymap.find(windowId);
   if (it != m_windowKeymap.end())
   {
