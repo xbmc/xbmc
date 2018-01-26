@@ -41,6 +41,7 @@
 #include "rendering/dx/RenderContext.h"
 #include <DirectXMath.h>
 using namespace DirectX;
+using namespace Microsoft::WRL;
 #endif
 
 #define IMMEDIATE_TRANSITION_TIME          20
@@ -66,9 +67,6 @@ CSlideShowPic::CSlideShowPic() : m_alpha(0)
 
   m_bCanMoveHorizontally = false;
   m_bCanMoveVertically = false;
-#ifdef HAS_DX
-  m_vb = NULL;
-#endif
 }
 
 CSlideShowPic::~CSlideShowPic()
@@ -82,7 +80,7 @@ void CSlideShowPic::Close()
   if (m_pImage)
   {
     delete m_pImage;
-    m_pImage = NULL;
+    m_pImage = nullptr;
   }
   m_bIsLoaded = false;
   m_bIsFinished = false;
@@ -91,7 +89,7 @@ void CSlideShowPic::Close()
   m_bIsDirty = true;
   m_alpha = 0;
 #ifdef HAS_DX
-  SAFE_RELEASE(m_vb);
+  m_vb = nullptr;
 #endif
 }
 
@@ -270,7 +268,7 @@ void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture)
   if (m_pImage)
   {
     delete m_pImage;
-    m_pImage = NULL;
+    m_pImage = nullptr;
   }
   m_pImage = pTexture;
   m_fWidth = (float)pTexture->GetWidth();
@@ -776,17 +774,17 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = vertices;
     initData.SysMemPitch = sizeof(Vertex) * 5;
-    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, &m_vb)))
+    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, m_vb.ReleaseAndGetAddressOf())))
       return true;
   }
   else // update 
   {
     ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
-    if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    if (SUCCEEDED(pContext->Map(m_vb.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
       memcpy(res.pData, vertices, sizeof(Vertex) * 5);
-      pContext->Unmap(m_vb, 0);
+      pContext->Unmap(m_vb.Get(), 0);
       return true;
     }
   }
@@ -836,11 +834,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     if (!UpdateVertexBuffer(vertex))
       return;
 
-    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+    ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
 
     unsigned stride = sizeof(Vertex);
     unsigned offset = 0;
-    pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+    pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
     pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
     pGUIShader->Draw(5, 0);
