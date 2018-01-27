@@ -23,7 +23,6 @@
 #include "Application.h"
 #include "AppParamParser.h"
 #include "platform/xbmc.h"
-#include "platform/XbmcContext.h"
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/AdvancedSettings.h"
@@ -96,7 +95,6 @@ void App::Load(Platform::String^ entryPoint)
 void App::Run()
 {
   {
-    XBMC::Context context;
     // Initialize before CAppParamParser so it can set the log level
     g_advancedSettings.Initialize();
     // fix the case then window opened in FS, but current setting is RES_WINDOW

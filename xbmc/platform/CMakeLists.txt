@@ -3,7 +3,6 @@ file(GLOB OVERRIDES_H overrides/${CORE_SYSTEM_NAME}/*.h)
 
 set(SOURCES Environment.cpp
             Platform.cpp
-            XbmcContext.cpp
             xbmc.cpp
             ${OVERRIDES_CPP})
 
@@ -12,7 +11,6 @@ set(HEADERS Environment.h
             MessagePrinter.h
             Platform.h
             xbmc.h
-            XbmcContext.h
             ${OVERRIDES_H})
 
 core_add_library(platform_common)

@@ -96,7 +96,6 @@
 #include "windowing/android/VideoSyncAndroid.h"
 #include "windowing/WinEvents.h"
 #include "platform/xbmc.h"
-#include "platform/XbmcContext.h"
 
 #define GIGABYTES       1073741824
 
@@ -439,7 +438,6 @@ void CXBMCApp::run()
   int status = 0;
 
   SetupEnv();
-  XBMC::Context context;
 
   // Wait for main window
   ANativeWindow* nativeWindow = CXBMCApp::GetNativeWindow(30000);

@@ -74,15 +74,4 @@ protected:
   static bool WriteLogString(int logLevel, const std::string& logString);
 };
 
-
-namespace XbmcUtils
-{
-  class LogImplementation : public XbmcCommons::ILogger
-  {
-  public:
-    ~LogImplementation() override = default;
-    inline void log(int logLevel, IN_STRING const char* message) override { CLog::Log(logLevel, "%s", message); }
-  };
-}
-
 XBMC_GLOBAL_REF(CLog, g_log);

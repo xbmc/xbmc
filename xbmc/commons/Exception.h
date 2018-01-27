@@ -26,8 +26,8 @@
 // a header.
 #include "utils/StringUtils.h"
 //---------------------------------------------------------
-#include "ilog.h"
 #include <stdarg.h>
+
 
 #ifdef __GNUC__
 // The 'this' pointer counts as a parameter on member methods.
@@ -61,7 +61,6 @@ namespace XbmcCommons
     std::string message;
 
   protected:
-    static ILogger* logger;
 
     inline explicit Exception(const char* classname_) : classname(classname_) { }
     inline Exception(const char* classname_, const char* message_) : classname(classname_), message(message_) { }
@@ -91,15 +90,9 @@ namespace XbmcCommons
   public:
     virtual ~Exception();
 
-    inline virtual void LogThrowMessage(const char* prefix = NULL) const
-    {
-      if (logger)
-        logger->Log(LOGERROR,"EXCEPTION Thrown (%s) : %s", classname.c_str(), message.c_str());
-    }
+    virtual void LogThrowMessage(const char* prefix = NULL) const;
 
     inline virtual const char* GetMessage() const { return message.c_str(); }
-
-    inline static void SetLogger(ILogger* exceptionLogger) { logger = exceptionLogger; }
   };
 
   /**
