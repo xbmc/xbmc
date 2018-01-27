@@ -24,7 +24,6 @@
 #include "threads/platform/win/Win32Exception.h"
 #include "platform/win32/CharsetConverter.h"
 #include "platform/xbmc.h"
-#include "platform/XbmcContext.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/CPUInfo.h"
 #include "platform/Environment.h"
@@ -126,8 +125,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   int status;
   {
-    // set up some xbmc specific relationships
-    XBMC::Context context;
     // Initialize before CAppParamParser so it can set the log level
     g_advancedSettings.Initialize();
     

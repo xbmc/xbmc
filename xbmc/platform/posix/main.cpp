@@ -40,7 +40,6 @@
 #include "PlayListPlayer.h"
 #include "platform/MessagePrinter.h"
 #include "platform/xbmc.h"
-#include "platform/XbmcContext.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
@@ -87,9 +86,6 @@ void XBMC_POSIX_HandleSignal(int sig)
 
 int main(int argc, char* argv[])
 {
-  // set up some xbmc specific relationships
-  XBMC::Context context;
-
 #if defined(_DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
