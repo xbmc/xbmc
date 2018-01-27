@@ -159,15 +159,17 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   m_format = picture.videoBuffer->GetFormat();
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
-  // Save the flags.
-  m_iFlags = flags;
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsStereoMode(picture.stereoMode);
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -1550,4 +1552,3 @@ bool CLinuxRendererGLES::IsGuiLayer()
 {
   return true;
 }
-

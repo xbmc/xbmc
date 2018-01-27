@@ -216,9 +216,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
         CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
-        VideoPicture picture;
-
-        memset(&picture, 0, sizeof(picture));
+        VideoPicture picture = {};
 
         // num streams * 160 frames, should get a valid frame, if not abort.
         int abort_index = pDemuxer->GetNrOfStreams() * 160;
@@ -242,7 +240,6 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
           iDecoderState = CDVDVideoCodec::VC_NONE;
           while (iDecoderState == CDVDVideoCodec::VC_NONE)
           {
-            memset(&picture, 0, sizeof(VideoPicture));
             iDecoderState = pVideoCodec->GetPicture(&picture);
           }
 

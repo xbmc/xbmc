@@ -65,12 +65,6 @@
 #define CONF_FLAGS_CHROMA_CENTER  0x0200
 #define CONF_FLAGS_CHROMA_TOPLEFT 0x0300
 
-/* defines color transfer function */
-#define CONF_FLAGS_TRC_MASK(a) ((a) & 0x0c00)
-#define CONF_FLAGS_TRC_BT709      0x0400
-#define CONF_FLAGS_TRC_GAMMA22    0x0800
-#define CONF_FLAGS_TRC_GAMMA28    0x0c00
-
 /* defines 3d modes */
 #define CONF_FLAGS_STEREO_MODE_MASK(a) ((a) & 0x007000)
 #define CONF_FLAGS_STEREO_MODE_SBS     0x001000
@@ -80,16 +74,7 @@
 #define CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT 0x000000
 #define CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT 0x008000
 
-
-
-namespace RenderManager {
-
-  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
-  unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
-  unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
-  unsigned int GetFlagsColorTransfer(unsigned int color_transfer);
-  unsigned int GetStereoModeFlags(const std::string& mode);
-  std::string  GetStereoModeInvert(const std::string& mode);
-
-}
-
+unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
+unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
+unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
+unsigned int GetFlagsStereoMode(const std::string& mode);

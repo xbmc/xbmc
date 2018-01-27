@@ -60,7 +60,7 @@ CRendererVAAPI::~CRendererVAAPI()
   }
 }
 
-bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.videoSurface != VA_INVALID_ID)
@@ -84,7 +84,7 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
     fence = GL_NONE;
   }
 
-  return CLinuxRendererGL::Configure(picture, fps, flags, orientation);
+  return CLinuxRendererGL::Configure(picture, fps, orientation);
 }
 
 bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
@@ -186,6 +186,7 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   m_vaapiTextures[index].Map(pic);
+  m_srcTextureBits = m_vaapiTextures[index].GetBits();
 
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[3] = buf.fields[0];

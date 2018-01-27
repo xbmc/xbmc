@@ -846,7 +846,7 @@ void CMMALRenderer::AddVideoPicture(const VideoPicture& pic, int id, double curr
   UpdateFramerateStats(pic.pts);
 }
 
-bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
@@ -857,8 +857,11 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned f
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsStereoMode(picture.stereoMode);
+
   m_fps = fps;
-  m_iFlags = flags;
   m_error = 0.0;
   m_lastPts = DVD_NOPTS_VALUE;
   m_frameInterval = 0.0;
@@ -868,7 +871,7 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned f
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
 
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d orient:%d", CLASSNAME, __func__, picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, flags, m_format, orientation);
+  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d orient:%d", CLASSNAME, __func__, picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, m_iFlags, m_format, orientation);
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);

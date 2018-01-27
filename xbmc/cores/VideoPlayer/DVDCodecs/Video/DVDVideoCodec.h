@@ -62,12 +62,13 @@ public:
   double iRepeatPicture;
   double iDuration;
   unsigned int iFrameType         : 4;  //< see defines above // 1->I, 2->P, 3->B, 0->Undef
-  unsigned int color_matrix       : 4;
+  unsigned int color_space;
   unsigned int color_range        : 1;  //< 1 indicate if we have a full range of color
   unsigned int chroma_position;
   unsigned int color_primaries;
   unsigned int color_transfer;
-  char stereo_mode[32];
+  unsigned int colorBits = 8;
+  std::string stereoMode;
 
   int8_t* qp_table;                //< Quantization parameters, primarily used by filters
   int qstride;

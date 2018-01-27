@@ -430,7 +430,6 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
       streamVideo->iHeight = stream.iHeight;
       streamVideo->iWidth = stream.iWidth;
       streamVideo->fAspect = stream.fAspect;
-      streamVideo->stereo_mode = "mono";
 
       dStream = streamVideo;
     }

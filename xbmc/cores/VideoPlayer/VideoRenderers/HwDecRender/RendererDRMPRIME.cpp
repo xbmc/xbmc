@@ -22,6 +22,7 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "utils/log.h"
 #include "windowing/gbm/DRMAtomic.h"
 
@@ -52,15 +53,17 @@ bool CRendererDRMPRIME::Register(CWinSystemGbmGLESContext *winSystem)
   return true;
 }
 
-bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation)
+bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
   m_format = picture.videoBuffer->GetFormat();
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
-  // Save the flags.
-  m_iFlags = flags;
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsStereoMode(picture.stereoMode);
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);

@@ -62,7 +62,7 @@ float filter_0(sampler2D sampler, vec2 coord)
   vec4 linetaps = texture(m_kernelTex, 1.0 - f.x);
   vec4 coltaps = texture(m_kernelTex, 1.0 - f.y);
   linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
-  columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
+  coltaps /= coltaps.r + coltaps.g + coltaps.b + coltaps.a;
   mat4 conv;
   conv[0] = linetaps * coltaps.x;
   conv[1] = linetaps * coltaps.y;

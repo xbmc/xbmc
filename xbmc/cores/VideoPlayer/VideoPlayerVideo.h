@@ -113,7 +113,6 @@ protected:
   void ResetFrameRateCalc();
   void CalcFrameRate();
   int CalcDropRequirement(double pts);
-  std::string GetStereoMode();
 
   double m_iSubtitleDelay;
 

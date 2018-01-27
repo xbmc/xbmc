@@ -686,7 +686,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_videobuffer.dts = DVD_NOPTS_VALUE;
   m_videobuffer.pts = DVD_NOPTS_VALUE;
   m_videobuffer.color_range  = 0;
-  m_videobuffer.color_matrix = 4;
+  m_videobuffer.color_space = 4;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
   // these will get reset to crop values later

@@ -199,7 +199,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->pts = static_cast<double>(picture.pts);
     pVideoPicture->dts = DVD_NOPTS_VALUE;
     pVideoPicture->color_range = 0;
-    pVideoPicture->color_matrix = 4;
+    pVideoPicture->color_space = 4;
     pVideoPicture->iFlags = 0;
     if (m_codecFlags & DVD_CODEC_CTRL_DROP)
       pVideoPicture->iFlags |= DVP_FLAG_DROPPED;

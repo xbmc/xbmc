@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "windowing/WinSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -38,8 +37,6 @@
 #include <numeric>
 #include <iterator>
 #include "utils/log.h"
-
-using namespace RenderManager;
 
 class CDVDMsgVideoCodecChange : public CDVDMsg
 {
@@ -313,8 +310,6 @@ inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(CDVDMsg** pMsg, unsigned
 void CVideoPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
-
-  memset(&m_picture, 0, sizeof(VideoPicture));
 
   double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
@@ -682,8 +677,34 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       m_picture.pts = m_picture.dts;
 
     // use forced aspect if any
-    if( m_fForcedAspectRatio != 0.0f )
+    if (m_fForcedAspectRatio != 0.0f)
       m_picture.iDisplayWidth = (int) (m_picture.iDisplayHeight * m_fForcedAspectRatio);
+
+    // set stereo mode if not set by decoder
+    if (m_picture.stereoMode.empty())
+    {
+      std::string stereoMode;
+      switch(m_processInfo.GetVideoSettings().m_StereoMode)
+      {
+        case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+          stereoMode = "left_right";
+          if (m_processInfo.GetVideoSettings().m_StereoInvert)
+            stereoMode = "right_left";
+          break;
+        case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+          stereoMode = "top_bottom";
+          if (m_processInfo.GetVideoSettings().m_StereoInvert)
+            stereoMode = "bottom_top";
+          break;
+        default:
+          stereoMode = m_hints.stereo_mode;
+          break;
+      }
+      if (!stereoMode.empty())
+      {
+        m_picture.stereoMode = stereoMode;
+      }
+    }
 
     // if frame has a pts (usually originiating from demux packet), use that
     if (m_picture.pts != DVD_NOPTS_VALUE)
@@ -803,75 +824,30 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
   }
 }
 
-std::string CVideoPlayerVideo::GetStereoMode()
-{
-  std::string  stereoMode;
-
-  switch(m_processInfo.GetVideoSettings().m_StereoMode)
-  {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-      stereoMode = "left_right";
-      break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-      stereoMode = "top_bottom";
-      break;
-    default:
-      stereoMode = m_processInfo.GetVideoStereoMode();
-      break;
-  }
-
-  if (m_processInfo.GetVideoSettings().m_StereoInvert)
-    stereoMode = GetStereoModeInvert(stereoMode);
-
-  return stereoMode;
-}
-
 CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
 {
   m_bAbortOutput = false;
 
-  if (m_syncState == ESyncState::SYNC_STARTING)
-    m_processInfo.SetVideoStereoMode(m_hints.stereo_mode);
-  // grab stereo mode from image if available
-  if (pPicture->stereo_mode[0] && m_processInfo.GetVideoStereoMode().compare(pPicture->stereo_mode) != 0)
+  if (m_processInfo.GetVideoStereoMode() != pPicture->stereoMode)
   {
-    m_processInfo.SetVideoStereoMode(pPicture->stereo_mode);
+    m_processInfo.SetVideoStereoMode(pPicture->stereoMode);
     // signal about changes in video parameters
     m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
   }
 
-  /* figure out steremode expected based on user settings and hints */
-  unsigned int stereo_flags = GetStereoModeFlags(GetStereoMode());
-
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
-
-  unsigned flags = 0;
-  if (pPicture->color_range == 1)
-    flags |= CONF_FLAGS_YUV_FULLRANGE;
-
-  flags |= GetFlagsChromaPosition(pPicture->chroma_position)
-              |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight)
-              |  GetFlagsColorPrimaries(pPicture->color_primaries)
-              |  GetFlagsColorTransfer(pPicture->color_transfer);
-
-
-  if(m_bAllowFullscreen)
-  {
-    flags |= CONF_FLAGS_FULLSCREEN;
-    m_bAllowFullscreen = false; // only allow on first configure
-  }
-
-  flags |= stereo_flags;
 
   if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),
-                                flags,
+                                m_bAllowFullscreen,
                                 m_hints.orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return OUTPUT_ABORT;
   }
+
+  m_bAllowFullscreen = false;
 
   //try to calculate the framerate
   m_ptsTracker.Add(pPicture->pts);

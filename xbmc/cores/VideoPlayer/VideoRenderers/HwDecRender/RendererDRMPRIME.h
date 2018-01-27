@@ -38,7 +38,7 @@ public:
   static bool Register(CWinSystemGbmGLESContext *winSystem);
 
   // Player functions
-  bool Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
   bool IsConfigured() override { return m_bConfigured; };
   void AddVideoPicture(const VideoPicture& picture, int index, double currentClock) override;
   void UnInit() override {};

@@ -303,7 +303,7 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->color_range = m_pFrame->color_range;
   pVideoPicture->color_primaries = m_pFrame->color_primaries;
   pVideoPicture->color_transfer = m_pFrame->color_trc;
-  pVideoPicture->color_matrix = m_pFrame->colorspace;
+  pVideoPicture->color_space = m_pFrame->colorspace;
 
   pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;

@@ -35,7 +35,7 @@ public:
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   virtual void ReleaseBuffer(int idx) override;
-  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; };
   virtual bool ConfigChanged(const VideoPicture &picture) { return false; };
   virtual CRenderInfo GetRenderInfo() override;

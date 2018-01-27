@@ -53,12 +53,14 @@ public:
   void Unmap();
   void Init(InteropInfo &interop);
   static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
+  int GetBits();
 
   GLuint m_texture = 0;
   GLuint m_textureY = 0;
   GLuint m_textureVU = 0;
   int m_texWidth = 0;
   int m_texHeight = 0;
+  int m_bits = 0;
 
 protected:
   static bool TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay);

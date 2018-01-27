@@ -223,7 +223,7 @@ void CWinRenderer::SelectRenderMethod()
   CLog::Log(LOGDEBUG, "%s: selected buffer format %d", __FUNCTION__, m_bufferFormat);
 }
 
-bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   m_sourceWidth       = picture.iWidth;
   m_sourceHeight      = picture.iHeight;
@@ -235,7 +235,10 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned fl
   m_bFilterInitialized = false;
 
   m_fps = fps;
-  m_iFlags = flags;
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsStereoMode(picture.stereoMode);
   m_format = picture.videoBuffer->GetFormat();
   if (m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
@@ -266,10 +269,9 @@ int CWinRenderer::NextBuffer() const
 
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  unsigned flags = RenderManager::GetFlagsChromaPosition(picture.chroma_position)
-    | RenderManager::GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight)
-    | RenderManager::GetFlagsColorPrimaries(picture.color_primaries)
-    | RenderManager::GetFlagsColorTransfer(picture.color_transfer);
+  unsigned flags = GetFlagsChromaPosition(picture.chroma_position)
+    | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
+    | GetFlagsColorPrimaries(picture.color_primaries);
   if (picture.color_range == 1)
     flags |= CONF_FLAGS_YUV_FULLRANGE;
 

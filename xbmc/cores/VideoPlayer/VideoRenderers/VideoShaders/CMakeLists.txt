@@ -1,21 +1,23 @@
-set(SOURCES ConvolutionKernels.cpp
-            YUVMatrix.cpp)
+set(SOURCES ConvolutionKernels.cpp)
 
 set(HEADERS ConvolutionKernels.h
-            YUVMatrix.h
             dither.h
             ShaderFormats.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES WinVideoFilter.cpp)
-  list(APPEND HEADERS WinVideoFilter.h)
+  list(APPEND SOURCES WinVideoFilter.cpp
+                      YUVMatrix.cpp)
+  list(APPEND HEADERS WinVideoFilter.h
+                      YUVMatrix.h)
 endif()
 
 if(OPENGL_FOUND)
-  list(APPEND SOURCES GLSLOutput.cpp
+  list(APPEND SOURCES ConversionMatrix.cpp
+                      GLSLOutput.cpp
                       VideoFilterShaderGL.cpp
                       YUV2RGBShaderGL.cpp)
-  list(APPEND HEADERS GLSLOutput.h
+  list(APPEND HEADERS ConversionMatrix.h
+                      GLSLOutput.h
                       VideoFilterShaderGL.h
                       YUV2RGBShaderGL.h)
 endif()
@@ -28,9 +30,11 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                        CORE_PLATFORM_NAME_LC STREQUAL wayland))
   list(APPEND SOURCES GLSLOutputGLES.cpp
                       VideoFilterShaderGLES.cpp
+                      YUVMatrix.cpp
                       YUV2RGBShaderGLES.cpp)
   list(APPEND HEADERS GLSLOutputGLES.h
                       VideoFilterShaderGLES.h
+                      YUVMatrix.h
                       YUV2RGBShaderGLES.h)
 endif()
 

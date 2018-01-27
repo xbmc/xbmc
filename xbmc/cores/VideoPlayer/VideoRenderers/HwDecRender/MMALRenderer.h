@@ -149,7 +149,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool         Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool         Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   virtual void         ReleaseBuffer(int idx) override;
   virtual void         UnInit();
   virtual void         Flush() override;
