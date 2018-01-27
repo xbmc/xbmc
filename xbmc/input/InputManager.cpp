@@ -363,8 +363,6 @@ bool CInputManager::Process(int windowId, float frameTime)
   m_RemoteControl.Update();
 #endif
 
-  windowId = CWindowTranslator::GetVirtualWindow(windowId);
-
   // process input actions
   ProcessRemote(windowId);
   ProcessEventServer(windowId, frameTime);

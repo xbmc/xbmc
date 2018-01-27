@@ -78,6 +78,9 @@ bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, 
 {
   unsigned int actionId = ACTION_NONE;
 
+  // handle virtual windows
+  windowId = CWindowTranslator::GetVirtualWindow(windowId);
+
   // Try to get the action from the current window
   if (!TranslateString(windowId, controllerName, buttonId, actionId, strAction))
   {
