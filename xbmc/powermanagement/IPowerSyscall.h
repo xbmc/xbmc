@@ -31,9 +31,19 @@ public:
   virtual void OnLowBattery() = 0;
 };
 
+class IPowerSyscall;
+using CreatePowerSyscallFunc = IPowerSyscall* (*)();
+
 class IPowerSyscall
 {
 public:
+  /**\brief Called by power manager to create platform power system adapter
+  *
+  * This method used to create platfrom specified power system adapter
+  */
+  static IPowerSyscall* CreateInstance();
+  static void RegisterPowerSyscall(CreatePowerSyscallFunc createFunc);
+
   virtual ~IPowerSyscall() = default;
   virtual bool Powerdown()    = 0;
   virtual bool Suspend()      = 0;
@@ -64,6 +74,9 @@ public:
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback) = 0;
 
   static const int MAX_COUNT_POWER_FEATURES = 4;
+
+private:
+  static CreatePowerSyscallFunc m_createFunc;
 };
 
 class CAbstractPowerSyscall : public IPowerSyscall

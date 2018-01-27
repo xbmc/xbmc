@@ -49,6 +49,9 @@ public:
   CWin32PowerSyscall();
   ~CWin32PowerSyscall();
 
+  static IPowerSyscall* CreateInstance();
+  static void Register();
+
   virtual bool Powerdown();
   virtual bool Suspend();
   virtual bool Hibernate();

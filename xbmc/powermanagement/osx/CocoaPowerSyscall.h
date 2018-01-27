@@ -37,6 +37,9 @@ public:
   CCocoaPowerSyscall();
   ~CCocoaPowerSyscall();
 
+  static IPowerSyscall* CreateInstance();
+  static void Register();
+
   virtual bool Powerdown(void);
   virtual bool Suspend(void);
   virtual bool Hibernate(void);

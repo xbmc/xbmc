@@ -43,6 +43,7 @@
 #include "WinEventsX11.h"
 #include "input/InputManager.h"
 #include "OSScreenSaverX11.h"
+#include "powermanagement/linux/LinuxPowerSyscall.h"
 
 using namespace KODI::MESSAGING;
 using namespace KODI::WINDOWING;
@@ -65,6 +66,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 
   m_winEventsX11 = new CWinEventsX11(*this);
   m_winEvents.reset(m_winEventsX11);
+  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemX11::~CWinSystemX11() = default;

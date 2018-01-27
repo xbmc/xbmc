@@ -40,6 +40,16 @@ typedef unsigned char BYTE;
 
 #include "platform/darwin/osx/CocoaInterface.h"
 
+IPowerSyscall* CCocoaPowerSyscall::CreateInstance()
+{
+  return new CCocoaPowerSyscall();
+}
+
+void CCocoaPowerSyscall::Register()
+{
+  IPowerSyscall::RegisterPowerSyscall(CCocoaPowerSyscall::CreateInstance);
+}
+
 #if defined(TARGET_DARWIN_OSX)
 OSStatus SendAppleEventToSystemProcess(AEEventID eventToSendID)
 {

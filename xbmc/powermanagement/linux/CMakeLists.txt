@@ -1,6 +1,7 @@
-set(SOURCES "")
+set(SOURCES LinuxPowerSyscall.cpp)
 
-set(HEADERS FallbackPowerSyscall.h)
+set(HEADERS FallbackPowerSyscall.h
+            LinuxPowerSyscall.h)
 
 if(DBUS_FOUND)
   list(APPEND SOURCES ConsoleUPowerSyscall.cpp

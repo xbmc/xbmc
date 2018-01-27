@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2015 Team Kodi
+ *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,33 +14,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Kodi; see the file COPYING.  If not, see
+ *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "powermanagement/IPowerSyscall.h"
-#include "powermanagement/PowerManager.h"
 
-class CPowerSyscall : public CAbstractPowerSyscall
+class CLinuxPowerSyscall
 {
 public:
-  CPowerSyscall();
-  ~CPowerSyscall();
-
   static IPowerSyscall* CreateInstance();
   static void Register();
-
-  bool Powerdown() override;
-  bool Suspend() override;
-  bool Hibernate() override;
-  bool Reboot() override;
-
-  bool CanPowerdown() override;
-  bool CanSuspend() override;
-  bool CanHibernate() override;
-  bool CanReboot() override;
-  int  BatteryLevel() override;
-
-  bool PumpPowerEvents(IPowerEventsCallback *callback) override;
 };

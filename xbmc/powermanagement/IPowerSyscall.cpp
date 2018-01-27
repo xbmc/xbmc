@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,36 +17,20 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
-#if defined (TARGET_ANDROID)
 
-#include "AndroidPowerSyscall.h"
-#include "platform/android/activity/XBMCApp.h"
+#include "IPowerSyscall.h"
 
-IPowerSyscall* CAndroidPowerSyscall::CreateInstance()
+CreatePowerSyscallFunc IPowerSyscall::m_createFunc = nullptr;
+
+IPowerSyscall* IPowerSyscall::CreateInstance()
 {
-  return new CAndroidPowerSyscall();
+  if (m_createFunc)
+    return m_createFunc();
+
+  return nullptr;
 }
 
-void CAndroidPowerSyscall::Register()
+void IPowerSyscall::RegisterPowerSyscall(CreatePowerSyscallFunc createFunc)
 {
-  IPowerSyscall::RegisterPowerSyscall(CAndroidPowerSyscall::CreateInstance);
+  m_createFunc = createFunc;
 }
-
-CAndroidPowerSyscall::CAndroidPowerSyscall()
-{ }
-
-CAndroidPowerSyscall::~CAndroidPowerSyscall()
-{ }
-
-int CAndroidPowerSyscall::BatteryLevel(void)
-{
-  return CXBMCApp::GetBatteryLevel();
-}
-
-bool CAndroidPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
-{    
-  return true;
-}
-
-#endif

@@ -38,6 +38,7 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGL.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
+#include "powermanagement/osx/CocoaPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
@@ -617,6 +618,7 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkDARWINOSX::Register();
+  CCocoaPowerSyscall::Register();
 }
 
 CWinSystemOSX::~CWinSystemOSX()

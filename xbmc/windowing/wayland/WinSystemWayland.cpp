@@ -34,6 +34,7 @@
 #include "input/InputManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "powermanagement/linux/LinuxPowerSyscall.h"
 #include "platform/linux/PlatformConstants.h"
 #include "platform/linux/TimeUtils.h"
 #include "messaging/ApplicationMessenger.h"
@@ -172,6 +173,7 @@ CWinSystemWayland::CWinSystemWayland()
     }
   }
   m_winEvents.reset(new CWinEventsWayland());
+  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemWayland::~CWinSystemWayland() noexcept

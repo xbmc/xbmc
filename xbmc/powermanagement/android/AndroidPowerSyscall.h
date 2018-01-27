@@ -28,6 +28,9 @@ public:
   CAndroidPowerSyscall();
   ~CAndroidPowerSyscall();
 
+  static IPowerSyscall* CreateInstance();
+  static void Register();
+
   virtual bool Powerdown(void) { return false; }
   virtual bool Suspend(void) { return false; }
   virtual bool Hibernate(void) { return false; }

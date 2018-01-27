@@ -29,6 +29,16 @@
 bool CWin32PowerSyscall::m_OnResume = false;
 bool CWin32PowerSyscall::m_OnSuspend = false;
 
+IPowerSyscall* CWin32PowerSyscall::CreateInstance()
+{
+  return new CWin32PowerSyscall();
+}
+
+void CWin32PowerSyscall::Register()
+{
+  IPowerSyscall::RegisterPowerSyscall(CWin32PowerSyscall::CreateInstance);
+}
+
 bool CWin32PowerStateWorker::QueryStateChange(PowerState state)
 {
   if (!IsRunning())
