@@ -62,4 +62,10 @@ public:
   virtual std::vector<std::string> GetDiskUsage() = 0;
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback) = 0;
+
+  /**\brief Called by media manager to create platform storage provider
+  *
+  * This method used to create platfrom specified storage provider
+  */
+  static IStorageProvider* CreateInstance();
 };

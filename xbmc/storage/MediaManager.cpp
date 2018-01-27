@@ -52,25 +52,12 @@
 #include "AutorunMediaJob.h"
 
 #include "filesystem/File.h"
-
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
-#if defined(TARGET_DARWIN)
-#include "osx/DarwinStorageProvider.h"
-#elif defined(TARGET_ANDROID)
-#include "android/AndroidStorageProvider.h"
-#elif defined(TARGET_FREEBSD)
-#include "linux/LinuxStorageProvider.h"
-#elif defined(TARGET_POSIX)
-#include "linux/LinuxStorageProvider.h"
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
-#elif TARGET_WINDOWS_DESKTOP
-#include "windows/Win32StorageProvider.h"
-#elif TARGET_WINDOWS_STORE
-#include "win10/Win10StorageProvider.h"
 #endif
-
 #include <string>
 #include <vector>
 
@@ -107,17 +94,7 @@ void CMediaManager::Initialize()
 {
   if (!m_platformStorage)
   {
-    #if defined(TARGET_DARWIN)
-      m_platformStorage = new CDarwinStorageProvider();
-    #elif defined(TARGET_ANDROID)
-      m_platformStorage = new CAndroidStorageProvider();
-    #elif defined(TARGET_POSIX)
-      m_platformStorage = new CLinuxStorageProvider();
-    #elif TARGET_WINDOWS_DESKTOP
-      m_platformStorage = new CWin32StorageProvider();
-    #elif TARGET_WINDOWS_STORE
-      m_platformStorage = new CStorageProvider();
-    #endif
+    m_platformStorage = IStorageProvider::CreateInstance();
   }
 #ifdef HAS_DVD_DRIVE
   m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();

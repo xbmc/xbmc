@@ -30,6 +30,11 @@
 
 bool CWin32StorageProvider::xbevent = false;
 
+IStorageProvider* IStorageProvider::CreateInstance()
+{
+  return new CWin32StorageProvider();
+}
+
 void CWin32StorageProvider::Initialize()
 {
   // check for a DVD drive

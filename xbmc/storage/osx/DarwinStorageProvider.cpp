@@ -35,6 +35,11 @@
 
 bool CDarwinStorageProvider::m_event = false;
 
+IStorageProvider* IStorageProvider::CreateInstance()
+{
+  return new CDarwinStorageProvider();
+}
+
 CDarwinStorageProvider::CDarwinStorageProvider()
 {
   PumpDriveChangeEvents(NULL);
