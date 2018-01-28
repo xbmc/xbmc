@@ -322,6 +322,7 @@ public:
 protected:
   friend class CJobWorker;
   friend class CJob;
+  friend class CJobQueue;
 
   /*!
    \brief Get a new job to process. Blocks until a new job is available, or a timeout has occurred.
