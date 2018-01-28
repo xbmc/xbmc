@@ -76,7 +76,6 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    example the hdd image is mounted on /Volumes/android-dev.
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-                  --with-sdk=android-21 \
                   --with-ndk-path=/Volumes/android-dev/android/android-ndk-r16 \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
@@ -152,7 +151,7 @@ Building for arm architecture:
     $ ls platforms
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
+      --install-dir=<android-toolchain-arm> --platform=android-21 \
       --toolchain=arm-linux-androideabi-4.9 --stl=libc++
 
 Building for aarch64 architecture:
@@ -161,7 +160,7 @@ Building for aarch64 architecture:
     $ ls platforms
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
+      --install-dir=<android-toolchain-aarch64> --platform=android-21 \
       --toolchain=aarch64-linux-android-4.9 --stl=libc++
 
 Building for x86 architecture:
@@ -170,7 +169,7 @@ Building for x86 architecture:
     $ ls platforms
     $ cd build/tools
     $ ./make-standalone-toolchain.sh \
-      --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
+      --install-dir=<android-toolchain-x86> --platform=android-21 \
       --toolchain=x86-4.9 --arch=x86 --stl=libc++
 
 Make sure to pick a toolchain for your desired architecture. If an error about

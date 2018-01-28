@@ -14,7 +14,6 @@ then
     --host=i686-linux-android \
     --with-sdk-path=$SDK_PATH \
     --with-ndk-path=$NDK_PATH \
-    $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     $(if [ "$NDK_API" != "Default" ]; then echo --with-ndk-api=$NDK_API;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
