@@ -18,6 +18,8 @@
  *
  */
 
+#version 100
+
 precision highp float;
 uniform sampler2D m_samp0;
 uniform sampler2D m_samp1;
@@ -35,7 +37,7 @@ void main ()
 {
   vec2 source;
   source = m_cord0.xy;
-  
+
   float temp1 = mod(source.y, 2.0*m_step);
   float temp2 = source.y - temp1;
   source.y = temp2 + m_step/2.0 - float(m_field)*m_step;

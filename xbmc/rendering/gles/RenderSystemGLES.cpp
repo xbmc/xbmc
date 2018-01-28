@@ -35,17 +35,17 @@
 #endif
 
 static const char* ShaderNames[SM_ESHADERCOUNT] =
-    {"guishader_frag_default.glsl",
-     "guishader_frag_texture.glsl",
-     "guishader_frag_multi.glsl",
-     "guishader_frag_fonts.glsl",
-     "guishader_frag_texture_noblend.glsl",
-     "guishader_frag_multi_blendcolor.glsl",
-     "guishader_frag_rgba.glsl",
-     "guishader_frag_rgba_oes.glsl",
-     "guishader_frag_rgba_blendcolor.glsl",
-     "guishader_frag_rgba_bob.glsl",
-     "guishader_frag_rgba_bob_oes.glsl"
+    {"gles_guishader_frag_default.glsl",
+     "gles_guishader_frag_texture.glsl",
+     "gles_guishader_frag_multi.glsl",
+     "gles_guishader_frag_fonts.glsl",
+     "gles_guishader_frag_texture_noblend.glsl",
+     "gles_guishader_frag_multi_blendcolor.glsl",
+     "gles_guishader_frag_rgba.glsl",
+     "gles_guishader_frag_rgba_oes.glsl",
+     "gles_guishader_frag_rgba_blendcolor.glsl",
+     "gles_guishader_frag_rgba_bob.glsl",
+     "gles_guishader_frag_rgba_bob_oes.glsl"
     };
 
 CRenderSystemGLES::CRenderSystemGLES()
@@ -81,7 +81,7 @@ bool CRenderSystemGLES::InitRenderSystem()
       sscanf(ver, "%*s %*s %d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     m_RenderVersion = ver;
   }
-  
+
   // Get our driver vendor and renderer
   const char *tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
@@ -104,7 +104,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_RenderExtensions += " ";
 
   LogGraphicsInfo();
-  
+
   m_renderCaps |= RENDER_CAPS_NPOT;
 
   if (IsExtSupported("GL_EXT_texture_format_BGRA8888"))
@@ -125,7 +125,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 
 
   m_bRenderCreated = true;
-  
+
   InitialiseGUIShader();
 
   return true;
@@ -135,14 +135,14 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
 {
   m_width = width;
   m_height = height;
-  
+
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
   CalculateMaxTexturesize();
 
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_SCISSOR_TEST); 
+  glEnable(GL_SCISSOR_TEST);
 
   glMatrixProject.Clear();
   glMatrixProject->LoadIdentity();
@@ -159,8 +159,8 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);  
-    
+  glDisable(GL_DEPTH_TEST);
+
   return true;
 }
 
@@ -282,7 +282,7 @@ void CRenderSystemGLES::SetVSync(bool enable)
 
   if (!m_bRenderCreated)
     return;
-  
+
   if (enable)
     CLog::Log(LOGINFO, "GLES: Enabling VSYNC");
   else
@@ -294,7 +294,7 @@ void CRenderSystemGLES::SetVSync(bool enable)
   m_bVsyncInit   = true;
 
   SetVSyncImpl(enable);
-  
+
   if (!enable)
     return;
 
@@ -329,17 +329,17 @@ void CRenderSystemGLES::ApplyStateBlock()
   glMatrixTexture.PopLoad();
   glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
-  glEnable(GL_SCISSOR_TEST);  
+  glEnable(GL_SCISSOR_TEST);
   glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
-{ 
+{
   if (!m_bRenderCreated)
     return;
-  
+
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
-  
+
   float w = (float)m_viewPort[2]*0.5f;
   float h = (float)m_viewPort[3]*0.5f;
 
@@ -410,7 +410,7 @@ bool CRenderSystemGLES::TestRender()
 }
 
 void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
-{ 
+{
   if (!m_bRenderCreated)
     return;
 
@@ -510,7 +510,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
 {
   if (!m_pGUIshader)
   {
-    m_pGUIshader = new CGUIShader*[SM_ESHADERCOUNT];
+    m_pGUIshader = new CGLESShader*[SM_ESHADERCOUNT];
     for (int i = 0; i < SM_ESHADERCOUNT; i++)
     {
       if (i == SM_TEXTURE_RGBA_OES || i == SM_TEXTURE_RGBA_BOB_OES)
@@ -522,7 +522,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
         }
       }
 
-      m_pGUIshader[i] = new CGUIShader( ShaderNames[i] );
+      m_pGUIshader[i] = new CGLESShader( ShaderNames[i] );
 
       if (!m_pGUIshader[i]->CompileAndLink())
       {

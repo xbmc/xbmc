@@ -18,15 +18,9 @@
  *
  */
 
-#if(XBMC_texture_rectangle)
-# extension GL_ARB_texture_rectangle : enable
-# define texture2D texture2DRect
-# define sampler2D sampler2DRect
-#endif
+#version 100
 
-#ifdef GL_ES
-  precision mediump float;
-#endif
+precision mediump float;
 
 uniform sampler2D m_sampY;
 uniform sampler2D m_sampU;
@@ -37,47 +31,22 @@ varying vec2      m_cordV;
 uniform vec2      m_step;
 uniform mat4      m_yuvmat;
 uniform float     m_stretch;
+uniform float     m_alpha;
 
-#ifdef GL_ES
-  uniform float     m_alpha;
-#endif
-
-vec2 stretch(vec2 pos)
-{
-#if (XBMC_STRETCH)
-  // our transform should map [0..1] to itself, with f(0) = 0, f(1) = 1, f(0.5) = 0.5, and f'(0.5) = b.
-  // a simple curve to do this is g(x) = b(x-0.5) + (1-b)2^(n-1)(x-0.5)^n + 0.5
-  // where the power preserves sign. n = 2 is the simplest non-linear case (required when b != 1)
-  #if(XBMC_texture_rectangle)
-    float x = (pos.x * m_step.x) - 0.5;
-    return vec2((mix(2.0 * x * abs(x), x, m_stretch) + 0.5) / m_step.x, pos.y);
-  #else
-    float x = pos.x - 0.5;
-    return vec2(mix(2.0 * x * abs(x), x, m_stretch) + 0.5, pos.y);
-  #endif
-#else
-  return pos;
-#endif
-}
-
-vec4 process()
+void main()
 {
   vec4 rgb;
 #if defined(XBMC_YV12) || defined(XBMC_NV12)
 
   vec4 yuv;
-  yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
-                 , texture2D(m_sampU, stretch(m_cordU)).g
-                 , texture2D(m_sampV, stretch(m_cordV)).a
+  yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
+                 , texture2D(m_sampU, m_cordU).g
+                 , texture2D(m_sampV, m_cordV).a
                  , 1.0 );
 
   rgb   = m_yuvmat * yuv;
 
-#ifdef GL_ES
   rgb.a = m_alpha;
-#else
-  rgb.a = gl_Color.a;
-#endif
 
 #elif defined(XBMC_NV12_RRG)
 
@@ -89,25 +58,14 @@ vec4 process()
 
   rgb   = m_yuvmat * yuv;
 
-#ifdef GL_ES
   rgb.a = m_alpha;
-#else
-  rgb.a = gl_Color.a;
-#endif
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
-#if(XBMC_texture_rectangle)
-  vec2 stepxy = vec2(1.0, 1.0);
-  vec2 pos    = stretch(m_cordY);
-  pos         = vec2(pos.x - 0.25, pos.y);
-  vec2 f      = fract(pos);
-#else
   vec2 stepxy = m_step;
-  vec2 pos    = stretch(m_cordY);
+  vec2 pos    = m_cordY;
   pos         = vec2(pos.x - stepxy.x * 0.25, pos.y);
   vec2 f      = fract(pos / stepxy);
-#endif
 
   //y axis will be correctly interpolated by opengl
   //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
@@ -132,14 +90,9 @@ vec4 process()
   vec4  yuv     = vec4(outY, outUV, 1.0);
   rgb           = m_yuvmat * yuv;
 
-#ifdef GL_ES
   rgb.a = m_alpha;
-#else
-  rgb.a = gl_Color.a;
 #endif
 
-#endif
-
-  return rgb;
+  gl_FragColor = rgb;
 }
 

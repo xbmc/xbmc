@@ -477,7 +477,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
       }
     }
 
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, false);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -738,7 +738,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     pYUVShader->SetField(0);
 
   pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
-  pYUVShader->SetConvertFullColorRange(!CServiceBroker::GetWinSystem().UseLimitedColor());
   pYUVShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -851,13 +850,10 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
-  pYUVShader->SetNonLinStretch(1.0);
   if (field == FIELD_TOP)
     pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
     pYUVShader->SetField(0);
-
-  pYUVShader->SetConvertFullColorRange(!CServiceBroker::GetWinSystem().UseLimitedColor());
 
   VerifyGLState();
 
@@ -976,14 +972,6 @@ void CLinuxRendererGLES::RenderFromFBO()
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
     m_pVideoFilterShader->SetAlpha(1.0f);
-
-    //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
-    //having non-linear stretch on breaks the alignment
-    if (g_application.GetAppPlayer().IsInMenu())
-      m_pVideoFilterShader->SetNonLinStretch(1.0);
-    else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
-
     m_pVideoFilterShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
     m_pVideoFilterShader->Enable();
   }

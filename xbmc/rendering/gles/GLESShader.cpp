@@ -21,8 +21,8 @@
 
 #include "system.h"
 
-#include "GUIShader.h"
-#include "MatrixGLES.h"
+#include "GLESShader.h"
+#include "xbmc/guilib/MatrixGLES.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
@@ -30,7 +30,7 @@
 
 using namespace Shaders;
 
-CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader)
+CGLESShader::CGLESShader( const char *shader ) : CGLSLShaderProgram("gles_guishader_vert.glsl", shader)
 {
   // Initialise values
   m_hTex0   = 0;
@@ -53,7 +53,7 @@ CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_ver
   m_clipPossible = false;
 }
 
-void CGUIShader::OnCompiledAndLinked()
+void CGLESShader::OnCompiledAndLinked()
 {
   // This is called after CompileAndLink()
 
@@ -94,7 +94,7 @@ void CGUIShader::OnCompiledAndLinked()
   glUseProgram( 0 );
 }
 
-bool CGUIShader::OnEnabled()
+bool CGLESShader::OnEnabled()
 {
   // This is called after glUseProgram()
 
@@ -187,7 +187,7 @@ bool CGUIShader::OnEnabled()
   return true;
 }
 
-void CGUIShader::Free()
+void CGLESShader::Free()
 {
   // Do Cleanup here
   CGLSLShaderProgram::Free();

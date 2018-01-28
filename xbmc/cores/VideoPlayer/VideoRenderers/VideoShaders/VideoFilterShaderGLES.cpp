@@ -31,8 +31,6 @@
 #include "ConvolutionKernels.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
-#define TEXTARGET GL_TEXTURE_2D
-
 using namespace Shaders;
 
 //////////////////////////////////////////////////////////////////////
@@ -48,8 +46,6 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   m_stepY = 0;
   m_sourceTexUnit = 0;
   m_hSourceTex = 0;
-
-  m_stretch = 0.0f;
 
   m_hVertex = -1;
   m_hcoord = -1;
@@ -104,7 +100,7 @@ bool BaseVideoFilterShader::OnEnabled()
   return true;
 }
 
-ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output)
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
 {
   m_method = method;
   m_kernelTex1 = 0;
@@ -127,12 +123,12 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
       m_method == VS_SCALINGMETHOD_SPLINE36_FAST ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
   {
-    shadername = "convolution-4x4.glsl";
+    shadername = "gles_convolution-4x4.glsl";
   }
   else if (m_method == VS_SCALINGMETHOD_SPLINE36 ||
            m_method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    shadername = "convolution-6x6.glsl";
+    shadername = "gles_convolution-6x6.glsl";
   }
 
   if (m_floattex)
@@ -146,30 +142,13 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     defines = "#define HAS_FLOAT_TEXTURE 0\n";
   }
 
-  //don't compile in stretch support when it's not needed
-  if (stretch)
-    defines += "#define XBMC_STRETCH 1\n";
-  else
-    defines += "#define XBMC_STRETCH 0\n";
-
-  // get defines from the output stage if used
-  m_glslOutput = output;
-  if (m_glslOutput) {
-    defines += m_glslOutput->GetDefines();
-  }
-
-  //tell shader if we're not using a 1D texture
-  defines += "#define USE1DTEXTURE 0\n";
-
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
-  PixelShader()->AppendSource("output.glsl");
 }
 
 ConvolutionFilterShader::~ConvolutionFilterShader()
 {
   Free();
-  delete m_glslOutput;
 }
 
 void ConvolutionFilterShader::OnCompiledAndLinked()
@@ -180,7 +159,6 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
   m_hStepXY    = glGetUniformLocation(ProgramHandle(), "stepxy");
   m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
-  m_hStretch   = glGetUniformLocation(ProgramHandle(), "m_stretch");
 
   CConvolutionKernel kernel(m_method, 256);
 
@@ -199,13 +177,12 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
-  //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(TEXTARGET, m_kernelTex1);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   //if float textures are supported, we can load the kernel as a float texture
   //if not we load it as 8 bit unsigned which gets converted back to float in the shader
@@ -223,13 +200,11 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   //upload as 2D texture with height of 1
-  glTexImage2D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
+  glTexImage2D(GL_TEXTURE_2D, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
 
   glActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
-
-  if (m_glslOutput) m_glslOutput->OnCompiledAndLinked(ProgramHandle());
 }
 
 bool ConvolutionFilterShader::OnEnabled()
@@ -238,21 +213,19 @@ bool ConvolutionFilterShader::OnEnabled()
 
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(TEXTARGET, m_kernelTex1);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
   glUniform1i(m_hKernTex, 2);
   glUniform2f(m_hStepXY, m_stepX, m_stepY);
-  glUniform1f(m_hStretch, m_stretch);
   VerifyGLState();
-  if (m_glslOutput) m_glslOutput->OnEnabled();
+
   return true;
 }
 
 void ConvolutionFilterShader::OnDisabled()
 {
-  if (m_glslOutput) m_glslOutput->OnDisabled();
 }
 
 void ConvolutionFilterShader::Free()
@@ -260,31 +233,7 @@ void ConvolutionFilterShader::Free()
   if (m_kernelTex1)
     glDeleteTextures(1, &m_kernelTex1);
   m_kernelTex1 = 0;
-  if (m_glslOutput) m_glslOutput->Free();
   BaseVideoFilterShader::Free();
-}
-
-StretchFilterShader::StretchFilterShader()
-{
-  PixelShader()->LoadSource("stretch.glsl");
-}
-
-void StretchFilterShader::OnCompiledAndLinked()
-{
-  BaseVideoFilterShader::OnCompiledAndLinked();
-
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStretch   = glGetUniformLocation(ProgramHandle(), "m_stretch");
-}
-
-bool StretchFilterShader::OnEnabled()
-{
-  BaseVideoFilterShader::OnEnabled();
-
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
-  glUniform1f(m_hStretch, m_stretch);
-  VerifyGLState();
-  return true;
 }
 
 void DefaultFilterShader::OnCompiledAndLinked()
