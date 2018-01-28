@@ -18,7 +18,7 @@
  *
  */
 
- #version 100
+#version 100
 
 attribute vec4 m_attrpos;
 attribute vec2 m_attrcordY;
