@@ -27,7 +27,8 @@
 #include "utils/ScreenshotAML.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
-#include "../RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "settings/AdvancedSettings.h"
 
 CRendererAML::CRendererAML()
@@ -62,7 +63,6 @@ bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned in
   m_renderOrientation = orientation;
 
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_matrix, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
 

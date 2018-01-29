@@ -2248,18 +2248,26 @@ bool CAMLCodec::SetVideo3dMode(const int mode3d)
 
 std::string CAMLCodec::GetStereoMode()
 {
-  std::string  stereo_mode;
+  std::string stereoMode;
 
   switch(m_processInfo.GetVideoSettings().m_StereoMode)
   {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
-    default:                                  stereo_mode = m_hints.stereo_mode; break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      stereoMode = "left_right";
+      if (m_processInfo.GetVideoSettings().m_StereoInvert)
+        stereoMode = "right_left";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      stereoMode = "top_bottom";
+      if (m_processInfo.GetVideoSettings().m_StereoInvert)
+        stereoMode = "bottom_top";
+      break;
+    default:
+      stereoMode = m_hints.stereo_mode;
+      break;
   }
 
-  if(m_processInfo.GetVideoSettings().m_StereoInvert)
-    stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
-  return stereo_mode;
+  return stereoMode;
 }
 
 void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
