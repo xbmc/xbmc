@@ -38,7 +38,7 @@ enum ESHADERMETHOD
   SM_TEXTURE_RGBA_BLENDCOLOR,
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
-  SM_ESHADERCOUNT
+  SM_MAX
 };
 
 class CRenderSystemGLES : public CRenderSystemBase
@@ -83,7 +83,7 @@ public:
 
   std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
 
-  void InitialiseGUIShader();
+  void InitialiseShader();
   void EnableGUIShader(ESHADERMETHOD method);
   void DisableGUIShader();
 
@@ -112,8 +112,8 @@ protected:
 
   std::string m_RenderExtensions;
 
-  CGLESShader  **m_pGUIshader = nullptr; // One GUI shader for each method
-  ESHADERMETHOD m_method = SM_DEFAULT; // Current GUI Shader method
+  std::unique_ptr<CGLESShader*[]> m_pShader;
+  ESHADERMETHOD m_method = SM_DEFAULT;
 
   GLint      m_viewPort[4];
 };

@@ -106,7 +106,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags, EShaderFormat forma
   else
     CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
-  VertexShader()->LoadSource("gles_yuv2rgb_vertex.glsl", m_defines);
+  VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
   CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
 }
@@ -170,7 +170,7 @@ void BaseYUV2RGBGLSLShader::Free()
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(unsigned flags, EShaderFormat format)
   : BaseYUV2RGBGLSLShader(flags, format)
 {
-  PixelShader()->LoadSource("gles_yuv2rgb_basic.glsl", m_defines);
+  PixelShader()->LoadSource("gles_yuv2rgb_basic.frag", m_defines);
 }
 
 
@@ -185,7 +185,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(unsigned flags, EShaderFormat format)
   m_hStepY = -1;
   m_hField = -1;
 
-  PixelShader()->LoadSource("gles_yuv2rgb_bob.glsl", m_defines);
+  PixelShader()->LoadSource("gles_yuv2rgb_bob.frag", m_defines);
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()

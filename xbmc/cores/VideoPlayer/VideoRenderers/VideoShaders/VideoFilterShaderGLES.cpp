@@ -57,30 +57,9 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   m_model = nullptr;
   m_alpha = -1;
 
-  std::string shaderv =
-    "attribute vec4 m_attrpos;"
-    "attribute vec2 m_attrcord;"
-    "varying vec2 cord;"
-    "uniform mat4 m_proj;"
-    "uniform mat4 m_model;"
+  VertexShader()->LoadSource("gles_videofilter.vert");
 
-    "void main ()"
-    "{"
-    "mat4 mvp = m_proj * m_model;"
-    "gl_Position = mvp * m_attrpos;"
-    "cord = m_attrcord.xy;"
-    "}";
-  VertexShader()->SetSource(shaderv);
-
-  std::string shaderp =
-    "precision mediump float;"
-    "uniform sampler2D img;"
-    "varying vec2 cord;"
-    "void main()"
-    "{"
-    "gl_FragColor = texture2D(img, cord);"
-    "}";
-  PixelShader()->SetSource(shaderp);
+  PixelShader()->LoadSource("gles_videofilter.frag");
 }
 
 void BaseVideoFilterShader::OnCompiledAndLinked()
@@ -123,12 +102,12 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
       m_method == VS_SCALINGMETHOD_SPLINE36_FAST ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
   {
-    shadername = "gles_convolution-4x4.glsl";
+    shadername = "gles_convolution-4x4.frag";
   }
   else if (m_method == VS_SCALINGMETHOD_SPLINE36 ||
            m_method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    shadername = "gles_convolution-6x6.glsl";
+    shadername = "gles_convolution-6x6.frag";
   }
 
   if (m_floattex)
