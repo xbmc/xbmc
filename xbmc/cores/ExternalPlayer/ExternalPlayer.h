@@ -75,20 +75,19 @@ private:
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;
-  bool m_paused;
   int64_t m_playbackStartTime;
   float m_speed;
-  int m_totalTime;
   int m_time;
   std::string m_launchFilename;
-  HWND m_hwndXbmc;
 #if defined(TARGET_WINDOWS_DESKTOP)
   POINT m_ptCursorpos;
   PROCESS_INFORMATION m_processInfo;
 #endif
   CGUIDialogOK* m_dialog;
+#if defined(TARGET_WINDOWS_DESKTOP)
   int m_xPos;
   int m_yPos;
+#endif
   std::string m_filename;
   std::string m_args;
   bool m_hideconsole;

@@ -603,64 +603,6 @@ bool DllLoader::Load()
   if (!EntryAddress)
     ResolveExport("DllMain", (void**)&EntryAddress);
 
-  // patch some unwanted calls in memory
-  if (strstr(GetName(), "QuickTime.qts"))
-  {
-    int i;
-    uintptr_t dispatch_addr;
-    uintptr_t imagebase_addr;
-    uintptr_t dispatch_rva;
-
-    ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
-    imagebase_addr = (uintptr_t)hModule;
-    CLog::Log(LOGDEBUG,
-              "Virtual Address of theQuickTimeDispatcher = %p",
-              (void *)dispatch_addr);
-    CLog::Log(LOGDEBUG, "ImageBase of %s = %p",
-              GetName(), (void *)imagebase_addr);
-
-    dispatch_rva = dispatch_addr - imagebase_addr;
-
-    CLog::Log(LOGDEBUG,
-              "Relative Virtual Address of theQuickTimeDispatcher = %p",
-              (void *)dispatch_rva);
-
-    uintptr_t base = imagebase_addr;
-    if (dispatch_rva == 0x124C30)
-    {
-      CLog::Log(LOGINFO, "QuickTime5 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e842)[i] = 0x90; // make_new_region ?
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x19e86d)[i] = 0x90; // call__call_CreateCompatibleDC ?
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e898)[i] = 0x90; // jmp_to_call_loadbitmap ?
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x19e8ac)[i] = 0x90; // call__calls_OLE_shit ?
-      for (i = 0;i < 106;i++) ((BYTE*)base + 0x261B10)[i] = 0x90; // disable threads
-    }
-    else if (dispatch_rva == 0x13B330)
-    {
-      CLog::Log(LOGINFO, "QuickTime6 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x2730CC)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x2730f7)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x273122)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x273131)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2AC852)[i] = 0x90; // disable threads
-    }
-    else if (dispatch_rva == 0x13C3E0)
-    {
-      CLog::Log(LOGINFO, "QuickTime6.3 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268F6C)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x268F97)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268FC2)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x268FD1)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2B4722)[i] = 0x90; // disable threads
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Unsupported QuickTime version");
-    }
-
-    CLog::Log(LOGINFO, "QuickTime.qts patched!!!\n");
-  }
-
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "Executing EntryPoint with DLL_PROCESS_ATTACH at: 0x%x - Dll: %s", pLoader->EntryAddress, sName);
 #endif

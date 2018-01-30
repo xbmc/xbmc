@@ -68,10 +68,8 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
 {
   m_bAbortRequest = false;
   m_bIsPlaying = false;
-  m_paused = false;
   m_playbackStartTime = 0;
   m_speed = 1;
-  m_totalTime = 1;
   m_time = 0;
 
   m_hideconsole = false;
@@ -82,12 +80,10 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_playOneStackItem = false;
 
   m_dialog = NULL;
-  m_hwndXbmc = NULL;
+#if defined(TARGET_WINDOWS_DESKTOP)
   m_xPos = 0;
   m_yPos = 0;
 
-
-#if defined(TARGET_WINDOWS_DESKTOP)
   memset(&m_processInfo, 0, sizeof(m_processInfo));
 #endif
 }
