@@ -53,7 +53,7 @@ public:
   ~VideoPicture();
   VideoPicture& CopyRef(const VideoPicture &pic);
   VideoPicture& SetParams(const VideoPicture &pic);
-  void Reset(); // reinitialize members, videoBuffer will NOT released if set!
+  void Reset(); // reinitialize members, videoBuffer will be released if set!
 
   CVideoBuffer *videoBuffer = nullptr;
 

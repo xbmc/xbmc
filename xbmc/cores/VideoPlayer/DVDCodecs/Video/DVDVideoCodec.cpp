@@ -44,15 +44,17 @@ VideoPicture::~VideoPicture()
 
 void VideoPicture::Reset()
 {
+  if (videoBuffer)
+    videoBuffer->Reset();
   videoBuffer = nullptr;
-  pts = AV_NOPTS_VALUE;
-  dts = AV_NOPTS_VALUE;
+  pts = DVD_NOPTS_VALUE;
+  dts = DVD_NOPTS_VALUE;
   iFlags = 0;
   iRepeatPicture = 0;
   iDuration = 0;
   iFrameType = 0;
   color_space = AVCOL_SPC_UNSPECIFIED;
-  color_range = 1;
+  color_range = 0;
   chroma_position = 0;
   color_primaries = 0;
   color_transfer = 0;
