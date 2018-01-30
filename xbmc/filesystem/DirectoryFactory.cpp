@@ -169,7 +169,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_UPNP
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
-    if (url.IsProtocol("rss")) return new CRSSDirectory();
+    if (url.IsProtocol("rss") || url.IsProtocol("rsss")) return new CRSSDirectory();
     if (url.IsProtocol("pvr")) return new CPVRDirectory();
 #ifdef HAS_ZEROCONF
     if (url.IsProtocol("zeroconf")) return new CZeroconfDirectory();

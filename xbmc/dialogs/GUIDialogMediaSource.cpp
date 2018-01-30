@@ -448,6 +448,7 @@ void CGUIDialogMediaSource::OnOK()
     m_confirmed = true;
     Close();
     if (!StringUtils::StartsWithNoCase(share.strPath, "rss://") &&
+      !StringUtils::StartsWithNoCase(share.strPath, "rsss://") &&
       !StringUtils::StartsWithNoCase(share.strPath, "upnp://"))
     {
       if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath))

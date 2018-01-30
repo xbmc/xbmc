@@ -330,7 +330,7 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = CUPnPDirectory::GetFriendlyName(url);
 #endif
 
-  if (url.IsProtocol("rss"))
+  if (url.IsProtocol("rss") || url.IsProtocol("rsss"))
   {
     CRSSDirectory dir;
     CFileItemList items;

@@ -148,6 +148,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     if (url.IsProtocol("ftp")
     ||  url.IsProtocol("ftps")
     ||  url.IsProtocol("rss")
+    ||  url.IsProtocol("rsss")
     ||  url.IsProtocol("http") 
     ||  url.IsProtocol("https")) return new CCurlFile();
     else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();

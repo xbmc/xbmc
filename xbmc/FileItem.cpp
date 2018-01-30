@@ -1139,6 +1139,7 @@ bool CFileItem::IsCBR() const
 bool CFileItem::IsRSS() const
 {
   return StringUtils::StartsWithNoCase(m_strPath, "rss://") || URIUtils::HasExtension(m_strPath, ".rss")
+      || StringUtils::StartsWithNoCase(m_strPath, "rsss://")
       || m_mimetype == "application/rss+xml";
 }
 

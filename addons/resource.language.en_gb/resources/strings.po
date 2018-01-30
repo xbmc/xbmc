@@ -12721,10 +12721,15 @@ msgstr ""
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20304"
-msgid "RSS Feed"
+msgid "RSS Feed (HTTP)"
 msgstr ""
 
-#empty strings from id 20305 to 20306
+#: xbmc/network/GUIDialogNetworkSetup.cpp
+msgctxt "#20305"
+msgid "RSS Feed (HTTPS)"
+msgstr ""
+
+#empty string with id 20306
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#20307"
