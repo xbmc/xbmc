@@ -42,6 +42,37 @@ VideoPicture::~VideoPicture()
   }
 }
 
+void VideoPicture::Reset()
+{
+  videoBuffer = nullptr;
+  pts = AV_NOPTS_VALUE;
+  dts = AV_NOPTS_VALUE;
+  iFlags = 0;
+  iRepeatPicture = 0;
+  iDuration = 0;
+  iFrameType = 0;
+  color_space = AVCOL_SPC_UNSPECIFIED;
+  color_range = 1;
+  chroma_position = 0;
+  color_primaries = 0;
+  color_transfer = 0;
+  colorBits = 8;
+  stereoMode.clear();
+
+  qp_table = nullptr;
+  qstride = 0;
+  qscale_type = 0;
+  pict_type = 0;
+
+  hasDisplayMetadata = false;
+  hasLightMetadata = false;
+
+  iWidth = 0;
+  iHeight = 0;
+  iDisplayWidth = 0;
+  iDisplayHeight = 0;
+}
+
 VideoPicture& VideoPicture::CopyRef(const VideoPicture &pic)
 {
   if (videoBuffer)

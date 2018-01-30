@@ -355,7 +355,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
 {
-  memset(&m_videobuffer, 0x00, sizeof(VideoPicture));
+  m_videobuffer.Reset();
 }
 
 CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
@@ -681,12 +681,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   // setup a YUV420P VideoPicture buffer.
   // first make sure all properties are reset.
-  memset(&m_videobuffer, 0x00, sizeof(VideoPicture));
+  m_videobuffer.Reset();
 
-  m_videobuffer.dts = DVD_NOPTS_VALUE;
-  m_videobuffer.pts = DVD_NOPTS_VALUE;
-  m_videobuffer.color_range  = 0;
-  m_videobuffer.color_space = 4;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
   // these will get reset to crop values later
