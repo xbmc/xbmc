@@ -45,7 +45,7 @@ VideoPicture::~VideoPicture()
 void VideoPicture::Reset()
 {
   if (videoBuffer)
-    videoBuffer->Reset();
+    videoBuffer->Release();
   videoBuffer = nullptr;
   pts = DVD_NOPTS_VALUE;
   dts = DVD_NOPTS_VALUE;
