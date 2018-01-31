@@ -55,7 +55,8 @@
 
 // amcodec include
 extern "C" {
-#include <amcodec/codec.h>
+#include <codec.h>
+#include <amports/amstream.h>
 }  // extern "C"
 
 CEvent g_aml_sync_event;
@@ -345,10 +346,43 @@ typedef struct vframe_states
   int buf_avail_num;
 } vframe_states_t;
 
-#ifndef AMSTREAM_IOC_VF_STATUS
+static int aml_ioctl_get(CODEC_HANDLE h, int subcmd, unsigned long paramter)
+{
+  struct am_ioctl_parm parm;
+  memset(&parm, 0, sizeof(parm));
+  parm.cmd = subcmd;
+  parm.data_32 = *(unsigned int *)paramter;
+  if (ioctl(h, AMSTREAM_IOC_GET, (unsigned long)&parm) < 0)
+  {
+    CLog::Log(LOGERROR, "aml_ioctl_get failed: subcmd=%x, errno=%d", subcmd, errno);
+    return -1;
+  }
+  *(unsigned int *)paramter = parm.data_32;
+  return 0;
+}
+
+
+#ifndef AMSTREAM_IOC_MAGIC
 #define AMSTREAM_IOC_MAGIC  'S'
+#endif
+
+#ifndef AMSTREAM_IOC_VF_STATUS
 #define AMSTREAM_IOC_VF_STATUS  _IOR(AMSTREAM_IOC_MAGIC, 0x60, unsigned long)
 #endif
+
+#ifndef AMSTREAM_IOC_GET_3D_TYPE
+#define AMSTREAM_IOC_GET_3D_TYPE _IOW((AMSTREAM_IOC_MAGIC), 0x3d, unsigned int)
+#endif
+
+
+enum
+{
+  VPP_3D_MODE_NULL = 0,
+  VPP_3D_MODE_LR,
+  VPP_3D_MODE_TB,
+  VPP_3D_MODE_LA,
+  VPP_3D_MODE_FA
+};
 
 /*************************************************************************/
 /*************************************************************************/
@@ -1478,8 +1512,8 @@ CAMLCodec::CAMLCodec(CProcessInfo &processInfo)
   , m_ptsIs64us(false)
   , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_cur_pts(INT64_0)
-  , m_ptsOverflow(0)
   , m_last_pts(0)
+  , m_ptsOverflow(0)
   , m_bufferIndex(-1)
   , m_state(0)
   , m_frameSizeSum(0)
@@ -2248,18 +2282,45 @@ bool CAMLCodec::SetVideo3dMode(const int mode3d)
 
 std::string CAMLCodec::GetStereoMode()
 {
-  std::string  stereo_mode;
+  std::string stereoMode;
 
-  switch(m_processInfo.GetVideoSettings().m_StereoMode)
+  //Get Decoder Stereo mode
+  int decoder_sm(VPP_3D_MODE_NULL);
+  aml_ioctl_get(am_private->vcodec.handle, AMSTREAM_IOC_GET_3D_TYPE, (unsigned long)&decoder_sm);
+
+  switch (decoder_sm)
   {
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
-    default:                                  stereo_mode = m_hints.stereo_mode; break;
+  case VPP_3D_MODE_LR:
+    stereoMode = "left_right";
+    break;
+  case VPP_3D_MODE_TB:
+    stereoMode = "top_bottom";
+    break;
+  case VPP_3D_MODE_LA:
+  case VPP_3D_MODE_FA:
+  default:
+    switch(m_processInfo.GetVideoSettings().m_StereoMode)
+    {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      stereoMode = "left_right";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      stereoMode = "top_bottom";
+      break;
+    default:
+      stereoMode = m_hints.stereo_mode;
+      break;
+    }
   }
 
-  if(m_processInfo.GetVideoSettings().m_StereoInvert)
-    stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
-  return stereo_mode;
+  if (m_processInfo.GetVideoSettings().m_StereoInvert)
+  {
+    if (stereoMode == "top_bottom")
+      stereoMode = "bottom_top";
+    else if (stereoMode == "left_right")
+        stereoMode = "right_left";
+  }
+  return stereoMode;
 }
 
 void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
