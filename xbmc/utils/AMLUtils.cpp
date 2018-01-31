@@ -683,7 +683,7 @@ void aml_disable_freeScale()
 
 void aml_set_framebuffer_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name)
 {
-  aml_set_framebuffer_resolution(res.iScreenWidth, res.iScreenHeight, framebuffer_name);
+  aml_set_framebuffer_resolution(res.iWidth, res.iHeight, framebuffer_name);
 }
 
 void aml_set_framebuffer_resolution(int width, int height, std::string framebuffer_name)
