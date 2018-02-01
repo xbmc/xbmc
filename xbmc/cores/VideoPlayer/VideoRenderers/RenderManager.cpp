@@ -870,7 +870,7 @@ void CRenderManager::UpdateResolution()
     {
       if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
-        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, !m_stereomode.empty());
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, !m_stereomode.empty() && m_stereomode != "mono");
         g_graphicsContext.SetVideoResolution(res, false);
         UpdateLatencyTweak();
       }
