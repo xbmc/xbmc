@@ -217,7 +217,8 @@ void CGUIDialogNetworkSetup::InitializeSettings()
          { true,  true,  true,  true, false,  21,   "ftp", 20173},
          { true,  true,  true,  true, false, 990,  "ftps", 20174},
          {false, false, false, false,  true,   0,  "upnp", 20175},
-         { true,  true,  true,  true, false,  80,   "rss", 20304}};
+         { true,  true,  true,  true, false,  80,   "rss", 20304},
+         { true,  true,  true,  true, false, 443,  "rsss", 20305}};
 
  m_protocols.insert(m_protocols.end(), defaults.begin(), defaults.end());
 #ifdef HAS_FILESYSTEM_NFS
@@ -378,7 +379,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     SendMessage(GUI_MSG_SET_TYPE, passControlID, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
   }
 
-  // server browse should be disabled if we are in FTP, FTPS, HTTP, HTTPS, RSS, DAV or DAVS
+  // server browse should be disabled if we are in FTP, FTPS, HTTP, HTTPS, RSS, RSSS, DAV or DAVS
   BaseSettingControlPtr browseControl = GetSettingControl(SETTING_SERVER_BROWSE);
   if (browseControl != NULL && browseControl->GetControl() != NULL)
   {
