@@ -124,7 +124,7 @@ namespace DX
     bool IsStereoEnabled() const { return m_stereoEnabled; }
     void SetStereoIdx(byte idx) { m_backBufferTex.SetViewIdx(idx); }
 
-    void SetMonitor(HMONITOR monitor) const;
+    void SetMonitor(HMONITOR monitor);
     HMONITOR GetMonitor() const;
 #if defined(TARGET_WINDOWS_DESKTOP)
     void SetWindow(HWND window);
