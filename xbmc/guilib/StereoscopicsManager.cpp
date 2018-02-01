@@ -162,7 +162,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
 
 std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &needle)
 {
-  std::string stereoMode = "mono";
+  std::string stereoMode;
   std::string searchString(needle);
   CRegExp re(true);
 

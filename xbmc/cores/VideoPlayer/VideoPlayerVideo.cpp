@@ -700,7 +700,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
           stereoMode = m_hints.stereo_mode;
           break;
       }
-      if (!stereoMode.empty())
+      if (!stereoMode.empty() && stereoMode != "mono")
       {
         m_picture.stereoMode = stereoMode;
       }
