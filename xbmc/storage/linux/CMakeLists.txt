@@ -1,4 +1,4 @@
-set(SOURCES "")
+set(SOURCES LinuxStorageProvider.cpp)
 
 set(HEADERS LinuxStorageProvider.h)
 

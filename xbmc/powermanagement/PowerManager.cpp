@@ -41,89 +41,19 @@
 #include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"
 
-#if defined(TARGET_DARWIN)
-#include "osx/CocoaPowerSyscall.h"
-#elif defined(TARGET_ANDROID)
-#include "android/AndroidPowerSyscall.h"
-#elif defined(TARGET_POSIX)
-#include "linux/FallbackPowerSyscall.h"
-#if defined(HAS_DBUS)
-#include "linux/ConsoleUPowerSyscall.h"
-#include "linux/LogindUPowerSyscall.h"
-#include "linux/UPowerSyscall.h"
-#endif // HAS_DBUS
-#elif defined(TARGET_WINDOWS_DESKTOP)
-#include "powermanagement/windows/Win32PowerSyscall.h"
+#if defined(TARGET_WINDOWS_DESKTOP)
 extern HWND g_hWnd;
-#elif defined(TARGET_WINDOWS_STORE)
-#include "powermanagement/win10/Win10PowerSyscall.h"
 #endif
 
 using namespace ANNOUNCEMENT;
 
-CPowerManager::CPowerManager()
-{
-  m_instance = NULL;
-}
+CPowerManager::CPowerManager() = default;
 
-CPowerManager::~CPowerManager()
-{
-  delete m_instance;
-}
+CPowerManager::~CPowerManager() = default;
 
 void CPowerManager::Initialize()
 {
-  SAFE_DELETE(m_instance);
-
-#if defined(TARGET_DARWIN)
-  m_instance = new CCocoaPowerSyscall();
-#elif defined(TARGET_ANDROID)
-  m_instance = new CAndroidPowerSyscall();
-#elif defined(TARGET_POSIX)
-#if defined(HAS_DBUS)
-  std::unique_ptr<IPowerSyscall> bestPowerManager;
-  std::unique_ptr<IPowerSyscall> currPowerManager;
-  int bestCount = -1;
-  int currCount = -1;
-
-  std::list< std::pair< std::function<bool()>,
-                        std::function<IPowerSyscall*()> > > powerManagers =
-  {
-    std::make_pair(CConsoleUPowerSyscall::HasConsoleKitAndUPower,
-                   [] { return new CConsoleUPowerSyscall(); }),
-    std::make_pair(CLogindUPowerSyscall::HasLogind,
-                   [] { return new CLogindUPowerSyscall(); }),
-    std::make_pair(CUPowerSyscall::HasUPower,
-                   [] { return new CUPowerSyscall(); })
-  };
-  for(const auto& powerManager : powerManagers)
-  {
-    if (powerManager.first())
-    {
-      currPowerManager.reset(powerManager.second());
-      currCount = currPowerManager->CountPowerFeatures();
-      if (currCount > bestCount)
-      {
-        bestCount = currCount;
-        bestPowerManager = std::move(currPowerManager);
-      }
-      if (bestCount == IPowerSyscall::MAX_COUNT_POWER_FEATURES)
-        break;
-    }
-  }
-  if (bestPowerManager)
-    m_instance = bestPowerManager.release();
-  else
-#endif // HAS_DBUS
-    m_instance = new CFallbackPowerSyscall();
-#elif defined(TARGET_WINDOWS_DESKTOP)
-  m_instance = new CWin32PowerSyscall();
-#elif defined(TARGET_WINDOWS_STORE)
-  m_instance = new CPowerSyscall();
-#endif
-
-  if (m_instance == NULL)
-    m_instance = new CNullPowerSyscall();
+  m_instance.reset(IPowerSyscall::CreateInstance());
 }
 
 void CPowerManager::SetDefaults()
@@ -232,6 +162,9 @@ int CPowerManager::BatteryLevel()
 }
 void CPowerManager::ProcessEvents()
 {
+  if (!m_instance)
+    return;
+
   static int nesting = 0;
 
   if (++nesting == 1)

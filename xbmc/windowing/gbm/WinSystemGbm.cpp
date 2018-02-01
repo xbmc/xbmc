@@ -24,6 +24,7 @@
 
 #include "OptionalsReg.h"
 #include "guilib/GraphicContext.h"
+#include "powermanagement/linux/LinuxPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -64,6 +65,7 @@ CWinSystemGbm::CWinSystemGbm() :
   }
 
   m_winEvents.reset(new CWinEventsLinux());
+  CLinuxPowerSyscall::Register();
 }
 
 bool CWinSystemGbm::InitWindowSystem()

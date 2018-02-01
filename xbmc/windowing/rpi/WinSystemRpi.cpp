@@ -35,6 +35,7 @@
 #include "../WinEventsLinux.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkPi.h"
+#include "powermanagement/linux/LinuxPowerSyscall.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
@@ -55,6 +56,7 @@ CWinSystemRpi::CWinSystemRpi()
   m_winEvents.reset(new CWinEventsLinux());
   AE::CAESinkFactory::ClearSinks();
   CAESinkPi::Register();
+  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemRpi::~CWinSystemRpi()

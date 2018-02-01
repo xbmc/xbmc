@@ -22,6 +22,16 @@
 
 using namespace Windows::Devices::Power;
 
+IPowerSyscall* CPowerSyscall::CreateInstance()
+{
+  return new CPowerSyscall();
+}
+
+void CPowerSyscall::Register()
+{
+  IPowerSyscall::RegisterPowerSyscall(CPowerSyscall::CreateInstance);
+}
+
 CPowerSyscall::CPowerSyscall() = default;
 
 CPowerSyscall::~CPowerSyscall() = default;

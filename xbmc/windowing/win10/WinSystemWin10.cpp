@@ -26,6 +26,7 @@
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
+#include "powermanagement/win10/Win10PowerSyscall.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
@@ -64,6 +65,7 @@ CWinSystemWin10::CWinSystemWin10()
   {
     CAESinkWASAPI::Register();
   }
+  CPowerSyscall::Register();
 }
 
 CWinSystemWin10::~CWinSystemWin10()

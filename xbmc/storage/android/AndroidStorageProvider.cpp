@@ -59,6 +59,11 @@ static const char * deviceWL[] = {
   "/mnt/media_rw"
 };
 
+IStorageProvider* IStorageProvider::CreateInstance()
+{
+  return new CAndroidStorageProvider();
+}
+
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
   PumpDriveChangeEvents(NULL);

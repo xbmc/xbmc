@@ -42,26 +42,6 @@ enum PowerState
   POWERSTATE_ASK
 };
 
-// For systems without PowerSyscalls we have a NullObject
-class CNullPowerSyscall : public CAbstractPowerSyscall
-{
-public:
-  bool Powerdown() override { return false; }
-  bool Suspend() override { return false; }
-  bool Hibernate() override { return false; }
-  bool Reboot() override { return false; }
-
-  bool CanPowerdown() override { return true; }
-  bool CanSuspend() override { return true; }
-  bool CanHibernate() override { return true; }
-  bool CanReboot() override { return true; }
-
-  int  BatteryLevel() override { return 0; }
-
-
-  bool PumpPowerEvents(IPowerEventsCallback *callback) override { return false; }
-};
-
 // This class will wrap and handle PowerSyscalls.
 // It will handle and decide if syscalls are needed.
 class CPowerManager : public IPowerEventsCallback
@@ -96,7 +76,7 @@ private:
   void RestorePlayerState();
   void StorePlayerState();
 
-  IPowerSyscall *m_instance;
+  std::unique_ptr<IPowerSyscall> m_instance;
   std::unique_ptr<CFileItem> m_lastPlayedFileItem;
   std::string m_lastUsedPlayer;
 };

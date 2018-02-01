@@ -30,6 +30,11 @@
 using namespace Windows::Foundation;
 using namespace Windows::Devices::Enumeration;
 
+IStorageProvider* IStorageProvider::CreateInstance()
+{
+  return new CStorageProvider();
+}
+
 CStorageProvider::~CStorageProvider()
 {
   if (m_watcher && m_watcher->Status == DeviceWatcherStatus::Started)

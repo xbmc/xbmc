@@ -20,84 +20,21 @@
  */
 
 #include <vector>
-
 #include "storage/IStorageProvider.h"
-#include "UDevProvider.h"
-#ifdef HAS_DBUS
-#include "UDisksProvider.h"
-#endif
-#include "PosixMountProvider.h"
 
 class CLinuxStorageProvider : public IStorageProvider
 {
 public:
-  CLinuxStorageProvider()
-  {
-    m_instance = NULL;
+  CLinuxStorageProvider();
+  virtual ~CLinuxStorageProvider();
 
-#ifdef HAS_DBUS
-    if (CUDisksProvider::HasUDisks())
-      m_instance = new CUDisksProvider();
-#endif
-#ifdef HAVE_LIBUDEV
-    if (m_instance == NULL)
-      m_instance = new CUDevProvider();
-#endif
-
-    if (m_instance == NULL)
-      m_instance = new CPosixMountProvider();
-  }
-
-  ~CLinuxStorageProvider() override
-  {
-    delete m_instance;
-  }
-
-  void Initialize() override
-  {
-    m_instance->Initialize();
-  }
-
-  void Stop() override
-  {
-    m_instance->Stop();
-  }
-
-  void GetLocalDrives(VECSOURCES &localDrives) override
-  {
-    // Home directory
-    CMediaSource share;
-    share.strPath = getenv("HOME");
-    share.strName = g_localizeStrings.Get(21440);
-    share.m_ignore = true;
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    localDrives.push_back(share);
-    share.strPath = "/";
-    share.strName = g_localizeStrings.Get(21453);
-    localDrives.push_back(share);
-
-    m_instance->GetLocalDrives(localDrives);
-  }
-
-  void GetRemovableDrives(VECSOURCES &removableDrives) override
-  {
-    m_instance->GetRemovableDrives(removableDrives);
-  }
-
-  bool Eject(const std::string& mountpath) override
-  {
-    return m_instance->Eject(mountpath);
-  }
-
-  std::vector<std::string> GetDiskUsage() override
-  {
-    return m_instance->GetDiskUsage();
-  }
-
-  bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override
-  {
-    return m_instance->PumpDriveChangeEvents(callback);
-  }
+  void Initialize() override;
+  void Stop() override;
+  void GetLocalDrives(VECSOURCES &localDrives) override;
+  void GetRemovableDrives(VECSOURCES &removableDrives) override;
+  bool Eject(const std::string& mountpath) override;
+  std::vector<std::string> GetDiskUsage() override;
+  bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 
 private:
   IStorageProvider *m_instance;
