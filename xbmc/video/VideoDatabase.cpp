@@ -347,7 +347,7 @@ void CVideoDatabase::CreateAnalytics()
 
 void CVideoDatabase::CreateViews()
 {
-  CLog::Log(LOGINFO, "create episode_view");
+  CLog::Log(LOGINFO, "CREATE episode_view");
   std::string episodeview = PrepareSQL("CREATE VIEW episode_view AS SELECT "
                                       "  episode.*,"
                                       "  files.strFileName AS strFileName,"
@@ -389,7 +389,7 @@ void CVideoDatabase::CreateViews()
                                       VIDEODB_ID_EPISODE_IDENT_ID);
   m_pDS->exec(episodeview);
 
-  CLog::Log(LOGINFO, "create tvshowcounts");
+  CLog::Log(LOGINFO, "CREATE tvshowcounts");
   std::string tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                                        "      tvshow.idShow AS idShow,"
                                        "      (SELECT MAX(history.dateWatched) FROM history WHERE history.idFile = episode.idFile) AS lastPlayed,"
@@ -405,7 +405,7 @@ void CVideoDatabase::CreateViews()
                                        "    GROUP BY tvshow.idShow");
   m_pDS->exec(tvshowcounts);
 
-  CLog::Log(LOGINFO, "create tvshow_view");
+  CLog::Log(LOGINFO, "CREATE tvshow_view");
   std::string tvshowview = PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
                                      "  tvshow.*,"
                                      "  path.idParentPath AS idParentPath,"
@@ -431,7 +431,7 @@ void CVideoDatabase::CreateViews()
                                      "GROUP BY tvshow.idShow",
                                      VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
   m_pDS->exec(tvshowview);
-  CLog::Log(LOGINFO, "create season_view");
+  CLog::Log(LOGINFO, "CREATE season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.*, "
                                      "  tvshow_view.strPath AS strPath,"
@@ -457,7 +457,7 @@ void CVideoDatabase::CreateViews()
                                      VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(seasonview);
 
-  CLog::Log(LOGINFO, "create musicvideo_view");
+  CLog::Log(LOGINFO, "CREATE musicvideo_view");
   m_pDS->exec("CREATE VIEW musicvideo_view AS SELECT"
               "  musicvideo.*,"
               "  files.strFileName as strFileName,"
@@ -476,8 +476,7 @@ void CVideoDatabase::CreateViews()
               "  LEFT JOIN bookmark ON"
               "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1");
 
-  CLog::Log(LOGINFO, "create movie_view");
-  
+  CLog::Log(LOGINFO, "CREATE movie_view");
   std::string movieview = PrepareSQL("CREATE VIEW movie_view AS SELECT"
                                       "  movie.*,"
                                       "  sets.strSet AS strSet,"
@@ -2162,13 +2161,12 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
 
     std::string sql = PrepareSQL("SELECT files.idFile, files.strFilename, files.dateAdded, path.strPath, "
                                 "bookmark.timeInSeconds, bookmark.totalTimeInSeconds, "
-                                "MAX(history.dateWatched) lastPlayed, COUNT(history.idFile) playCount FROM files "
+                                "MAX(history.dateWatched) AS lastPlayed, COUNT(history.idFile) AS playCount FROM files "
                                 "JOIN path ON path.idPath = files.idPath "
                                 "LEFT JOIN history ON history.idFile = files.idFile "
                                 "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
-                                "WHERE files.idFile = %i "
-                                "GROUP BY "
-                                "history.idFile", CBookmark::RESUME, idFile);
+                                "WHERE files.idFile = %i"
+      , CBookmark::RESUME, idFile);
     if (!m_pDS->query(sql))
       return false;
 
@@ -2359,7 +2357,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
       if (!m_pDS->eof())
       {
         CDateTime lastPlayed;
-        lastPlayed.SetFromDBDateTime(m_pDS->fv("history.dateWatched").get_asString());
+        lastPlayed.SetFromDBDateTime(m_pDS->fv("dateWatched").get_asString());
 
         int idFile = GetFileId(strFilenameAndPath);
 
@@ -2769,7 +2767,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
       if (!m_pDS->eof())
       {
         CDateTime lastPlayed;
-        lastPlayed.SetFromDBDateTime(m_pDS->fv("history.dateWatched").get_asString());
+        lastPlayed.SetFromDBDateTime(m_pDS->fv("dateWatched").get_asString());
 
         int idFile = GetFileId(strFilenameAndPath);
 
@@ -5333,16 +5331,15 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     //! @todo also test a single query for the above and below
     std::string sql = PrepareSQL(
       "SELECT"
-      "  files.strFilename, COUNT(history.idFile),"
+      "  files.strFilename, COUNT(history.idFile) AS playCount,"
       "  bookmark.timeInSeconds, bookmark.totalTimeInSeconds "
       "FROM files"
       "  LEFT JOIN bookmark ON"
       "    files.idFile = bookmark.idFile AND bookmark.type = %i"
       "  LEFT JOIN history ON"
       "    files.idFile = history.idFile"
-      "  WHERE files.idPath=%i "
-      "GROUP BY"
-      "  history.idFile", (int)CBookmark::RESUME, pathID);
+      "  WHERE files.idPath=%i"
+      , (int)CBookmark::RESUME, pathID);
 
     if (RunQuery(sql) <= 0)
       return false;
@@ -5386,7 +5383,7 @@ int CVideoDatabase::GetPlayCount(int iFileId)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    std::string strSQL = PrepareSQL("SELECT COUNT(idFile) FROM history WHERE idFile=%i", iFileId);
+    std::string strSQL = PrepareSQL("SELECT COUNT(idFile) AS playCount FROM history WHERE idFile=%i", iFileId);
     int count = 0;
     if (m_pDS->query(strSQL))
     {
@@ -5636,8 +5633,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "COUNT(history.idFile)";
-        extraJoin = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("%s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS) //this will not get tvshows with 0 episodes
       {
@@ -5653,8 +5649,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "COUNT(history.idFile)";
-        extraJoin = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("%s_view.playCount", view.c_str());
       }
       else
         return false;
@@ -5676,8 +5671,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "count(1), COUNT(history.idFile)";
-        extraJoin  = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), %s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -5690,8 +5684,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), COUNT(history.idFile)";
-        extraJoin  = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), %s_view.playCount", view.c_str());
       }
       else
         return false;
@@ -6044,8 +6037,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "COUNT(history.idFile)";
-        extraJoin = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("%s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -6060,16 +6052,14 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeEpisode;
         view_id    = "idEpisode";
         media_type = MediaTypeEpisode;
-        extraField = "COUNT(history.idFile)";
-        extraJoin = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("%s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "COUNT(history.idFile)";
-        extraJoin = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("%s_view.playCount", view.c_str());
       }
       else
         return false;
@@ -6092,8 +6082,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeMovie;
         view_id    = "idMovie";
         media_type = MediaTypeMovie;
-        extraField = "count(1), COUNT(history.idFile)";
-        extraJoin  = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), %s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -6107,16 +6096,14 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeEpisode;
         view_id    = "idEpisode";
         media_type = MediaTypeEpisode;
-        extraField = "count(1), COUNT(history.idFile)";
-        extraJoin  = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), %s_view.playCount", view.c_str());
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
         view       = MediaTypeMusicVideo;
         view_id    = "idMVideo";
         media_type = MediaTypeMusicVideo;
-        extraField = "count(1), COUNT(history.idFile)";
-        extraJoin  = PrepareSQL("JOIN history ON history.idFile = %s_view.idFile", view.c_str());
+        extraField = PrepareSQL("count(1), %s_view.playCount", view.c_str());
       }
       else
         return false;
@@ -6276,20 +6263,15 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL = "SELECT movie_view.premiered, path.strPath, COUNT(history.idFile) FROM movie_view ";
-        extFilter.AppendJoin("JOIN files ON files.idFile = movie_view.idFile JOIN path ON files.idPath = path.idPath");
-        extFilter.AppendJoin("JOIN history ON history.idFile = movie_view.idFile");
+        strSQL = "SELECT movie_view.premiered, movie_view.strPath, movie_view.playCount FROM movie_view ";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL = PrepareSQL("select tvshow_view.c%02d, path.strPath from tvshow_view ", VIDEODB_ID_TV_PREMIERED);
-        extFilter.AppendJoin("join episode_view on episode_view.idShow = tvshow_view.idShow join files on files.idFile = episode_view.idFile join path on files.idPath = path.idPath");
+        strSQL = PrepareSQL("SELECT tvshow_view.c%02d, tvshow_view.strPath FROM tvshow_view ", VIDEODB_ID_TV_PREMIERED);
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = "select musicvideo_view.premiered, path.strPath, COUNT(history.idFile) from musicvideo_view ";
-        extFilter.AppendJoin("join files on files.idFile = musicvideo_view.idFile join path on files.idPath = path.idPath");
-        extFilter.AppendJoin("JOIN history ON history.idFile = movie_view.idFile");
+        strSQL = "SELECT musicvideo_view.premiered, musicvideo_view.strPath, musicvideo_view.playCount FROM musicvideo_view ";
       }
       else
         return false;
@@ -6299,19 +6281,17 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
       std::string group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL = "SELECT movie_view.premiered, COUNT(1), COUNT(history.idFile) FROM movie_view ";
-        extFilter.AppendJoin("JOIN history ON history.idFile = movie_view.idFile");
+        strSQL = "SELECT movie_view.premiered, COUNT(1), movie_view.playCount FROM movie_view ";
         extFilter.AppendGroup("movie_view.premiered");
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL = PrepareSQL("select distinct tvshow_view.c%02d from tvshow_view", VIDEODB_ID_TV_PREMIERED);
+        strSQL = PrepareSQL("SELECT DISTINCT tvshow_view.c%02d FROM tvshow_view", VIDEODB_ID_TV_PREMIERED);
         extFilter.AppendGroup(PrepareSQL("tvshow_view.c%02d", VIDEODB_ID_TV_PREMIERED));
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = "SELECT musicvideo_view.premiered, COUNT(1), COUNT(history.idFile) FROM musicvideo_view ";
-        extFilter.AppendJoin("JOIN history ON history.idFile = musicvideo_view.idFile");
+        strSQL = "SELECT musicvideo_view.premiered, COUNT(1), musicvideo_view.playCount FROM musicvideo_view ";
         extFilter.AppendGroup("musicvideo_view.premiered");
       }
       else
