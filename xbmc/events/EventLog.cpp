@@ -32,9 +32,6 @@
 
 #include <utility>
 
-std::map<int, std::unique_ptr<CEventLog> > CEventLog::s_eventLogs;
-CCriticalSection CEventLog::s_critical;
-
 std::string CEventLog::EventLevelToString(EventLevel level)
 {
   switch (level)
@@ -66,21 +63,6 @@ EventLevel CEventLog::EventLevelFromString(const std::string& level)
     return EventLevel::Error;
 
   return EventLevel::Information;
-}
-
-CEventLog& CEventLog::GetInstance()
-{
-  int currentProfileId = CProfilesManager::GetInstance().GetCurrentProfileId();
-
-  CSingleLock lock(s_critical);
-  auto eventLog = s_eventLogs.find(currentProfileId);
-  if (eventLog == s_eventLogs.end())
-  {
-    s_eventLogs.insert(std::make_pair(currentProfileId, std::unique_ptr<CEventLog>(new CEventLog())));
-    eventLog = s_eventLogs.find(currentProfileId);
-  }
-
-  return *eventLog->second;
 }
 
 Events CEventLog::Get() const
@@ -247,16 +229,6 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevel::Basic */, boo
   params.push_back(path);
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_EVENT_LOG, params);
-}
-
-void CEventLog::OnSettingAction(std::shared_ptr<const CSetting> setting)
-{
-  if (setting == nullptr)
-    return;
-
-  const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_EVENTLOG_SHOW)
-    ShowFullEventLog();
 }
 
 void CEventLog::SendMessage(const EventPtr& eventPtr, int message)

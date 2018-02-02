@@ -35,6 +35,18 @@
 #include "utils/StringUtils.h"
 #endif
 
+const CProfilesManager *CSpecialProtocol::m_profileManager = nullptr;
+
+void CSpecialProtocol::RegisterProfileManager(const CProfilesManager &profileManager)
+{
+  m_profileManager = &profileManager;
+}
+
+void CSpecialProtocol::UnregisterProfileManager()
+{
+  m_profileManager = nullptr;
+}
+
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
   SetPath("profile", dir);
@@ -149,12 +161,12 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
 
   if (RootDir == "subtitles")
     translatedPath = URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH), FileName);
-  else if (RootDir == "userdata")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetUserDataFolder(), FileName);
-  else if (RootDir == "database")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetDatabaseFolder(), FileName);
-  else if (RootDir == "thumbnails")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetThumbnailsFolder(), FileName);
+  else if (RootDir == "userdata" && m_profileManager)
+    translatedPath = URIUtils::AddFileToFolder(m_profileManager->GetUserDataFolder(), FileName);
+  else if (RootDir == "database" && m_profileManager)
+    translatedPath = URIUtils::AddFileToFolder(m_profileManager->GetDatabaseFolder(), FileName);
+  else if (RootDir == "thumbnails" && m_profileManager)
+    translatedPath = URIUtils::AddFileToFolder(m_profileManager->GetThumbnailsFolder(), FileName);
   else if (RootDir == "recordings" || RootDir == "cdrips")
     translatedPath = URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH), FileName);
   else if (RootDir == "screenshots")

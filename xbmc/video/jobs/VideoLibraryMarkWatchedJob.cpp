@@ -55,7 +55,9 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
 
 bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
 {
-  if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases())
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  if (!profileManager.GetCurrentProfile().canWriteDatabases())
     return false;
 
   CFileItemList items;

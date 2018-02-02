@@ -22,6 +22,8 @@
 #include <map>
 #include <string>
 
+class CProfilesManager;
+
 // static class for path translation from our special:// URLs.
 
 /* paths are as follows:
@@ -53,6 +55,9 @@ class CURL;
 class CSpecialProtocol
 {
 public:
+  static void RegisterProfileManager(const CProfilesManager &profileManager);
+  static void UnregisterProfileManager();
+
   static void SetProfilePath(const std::string &path);
   static void SetXBMCPath(const std::string &path);
   static void SetXBMCBinPath(const std::string &path);
@@ -74,6 +79,8 @@ public:
   static std::string TranslatePathConvertCase(const std::string& path);
 
 private:
+  static const CProfilesManager *m_profileManager;
+
   static void SetPath(const std::string &key, const std::string &path);
   static std::string GetPath(const std::string &key);
 

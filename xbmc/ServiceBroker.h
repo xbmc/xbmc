@@ -61,6 +61,10 @@ class CWinSystemBase;
 class CRenderSystemBase;
 class CPowerManager;
 class CWeatherManager;
+class CPlayerCoreFactory;
+class CDatabaseManager;
+class CProfilesManager;
+class CEventLog;
 
 namespace KODI
 {
@@ -112,4 +116,8 @@ public:
   static CRenderSystemBase& GetRenderSystem();
   static CPowerManager& GetPowerManager();
   static CWeatherManager& GetWeatherManager();
+  static CPlayerCoreFactory &GetPlayerCoreFactory();
+  static CDatabaseManager &GetDatabaseManager();
+  static CProfilesManager &GetProfileManager();
+  static CEventLog &GetEventLog();
 };

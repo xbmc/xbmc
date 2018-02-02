@@ -87,6 +87,10 @@ namespace PERIPHERALS
 
 class CInputManager;
 class CFileExtensionProvider;
+class CPlayerCoreFactory;
+class CDatabaseManager;
+class CProfilesManager;
+class CEventLog;
 
 class CServiceManager
 {
@@ -96,6 +100,7 @@ public:
 
   bool InitForTesting();
   bool InitStageOne();
+  bool InitStageOnePointFive(); // Services that need our DllLoaders emu env
   bool InitStageTwo(const CAppParamParser &params);
   bool CreateAudioEngine();
   bool DestroyAudioEngine();
@@ -104,6 +109,7 @@ public:
   void DeinitTesting();
   void DeinitStageThree();
   void DeinitStageTwo();
+  void DeinitStageOnePointFive();
   void DeinitStageOne();
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonManager& GetBinaryAddonManager();
@@ -142,6 +148,14 @@ public:
   CPowerManager &GetPowerManager();
 
   CWeatherManager &GetWeatherManager();
+
+  CPlayerCoreFactory &GetPlayerCoreFactory();
+
+  CDatabaseManager &GetDatabaseManager();
+
+  CProfilesManager &GetProfileManager();
+
+  CEventLog &GetEventLog();
 
 protected:
   struct delete_dataCacheCore
@@ -195,4 +209,7 @@ protected:
   std::unique_ptr<CWinSystemBase> m_winSystem;
   std::unique_ptr<CPowerManager> m_powerManager;
   std::unique_ptr<CWeatherManager> m_weatherManager;
+  std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
+  std::unique_ptr<CDatabaseManager> m_databaseManager;
+  std::unique_ptr<CProfilesManager> m_profileManager;
 };

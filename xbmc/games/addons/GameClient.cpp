@@ -39,7 +39,6 @@
 #include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -228,7 +227,8 @@ bool CGameClient::Initialize(void)
     CDirectory::Create(Profile());
 
   // Ensure directory exists for savestates
-  std::string savestatesDir = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetSavestatesFolder(), ID());
+  const CGameServices &gameServices = CServiceBroker::GetGameServices();
+  std::string savestatesDir = URIUtils::AddFileToFolder(gameServices.GetSavestatesFolder(), ID());
   if (!CDirectory::Exists(savestatesDir))
     CDirectory::Create(savestatesDir);
 

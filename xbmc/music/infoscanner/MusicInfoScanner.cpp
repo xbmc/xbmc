@@ -1221,7 +1221,7 @@ loop:
     }
     else
     {
-      CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
+      CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
         MediaTypeAlbum, album.strPath, 24146,
         StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeAlbum, album.strAlbum.c_str()),
         CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb()), CURL::GetRedacted(album.strPath), EventLevel::Warning)));
@@ -1263,7 +1263,7 @@ loop:
     }
     else
     {
-      CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
+      CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
         MediaTypeArtist, artist.strPath, 24146,
         StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeArtist, artist.strArtist.c_str()),
         CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb()), CURL::GetRedacted(artist.strPath), EventLevel::Warning)));

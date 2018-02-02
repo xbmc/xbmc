@@ -24,6 +24,7 @@
 #include <memory>
 #include <string>
 
+class CProfilesManager;
 class CSettings;
 
 namespace PERIPHERALS
@@ -50,12 +51,15 @@ namespace GAME
     CGameServices(CControllerManager &controllerManager,
                   RETRO::CGUIGameRenderManager &renderManager,
                   CSettings &settings,
-                  PERIPHERALS::CPeripherals &peripheralManager);
+                  PERIPHERALS::CPeripherals &peripheralManager,
+                  const CProfilesManager &profileManager);
     ~CGameServices();
 
     ControllerPtr GetController(const std::string& controllerId);
     ControllerPtr GetDefaultController();
     ControllerVector GetControllers();
+
+    std::string GetSavestatesFolder() const;
 
     CGameSettings& GameSettings() { return *m_gameSettings; }
     CPortManager& PortManager();
@@ -66,6 +70,7 @@ namespace GAME
     // Construction parameters
     CControllerManager &m_controllerManager;
     RETRO::CGUIGameRenderManager &m_gameRenderManager;
+    const CProfilesManager &m_profileManager;
 
     // Game services
     std::unique_ptr<CGameSettings> m_gameSettings;

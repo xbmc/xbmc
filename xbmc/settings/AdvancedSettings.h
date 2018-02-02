@@ -35,6 +35,7 @@
 #define CACHE_BUFFER_MODE_NONE          3
 #define CACHE_BUFFER_MODE_REMOTE        4
 
+class CProfilesManager;
 class CVariant;
 
 class TiXmlElement;
@@ -116,8 +117,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
   public:
     CAdvancedSettings();
 
-    static CAdvancedSettings* getInstance();
-
     void OnSettingsLoaded() override;
     void OnSettingsUnloaded() override;
 
@@ -126,7 +125,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Initialize();
     bool Initialized() { return m_initialized; };
     void AddSettingsFile(const std::string &filename);
-    bool Load();
+    bool Load(const CProfilesManager &profileManager);
     void Clear();
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);

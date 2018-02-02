@@ -31,6 +31,7 @@
 #include "SeekHandler.h"
 
 class CAction;
+class CPlayerCoreFactory;
 class CPlayerOptions;
 class CStreamDetails;
 
@@ -51,8 +52,9 @@ public:
   float GetPlayTempo();
   bool HasPlayer() const;
   bool OpenFile(const CFileItem& item, const CPlayerOptions& options,
+                const CPlayerCoreFactory &factory,
                 const std::string &playerName, IPlayerCallback& callback);
-  void OpenNext();
+  void OpenNext(const CPlayerCoreFactory &factory);
   void SetPlaySpeed(float speed);
   void SetTempo(float tempo);
   void FrameAdvance(int frames);
@@ -158,9 +160,9 @@ public:
 
   CSeekHandler& GetSeekHandler();
 
-protected:
+private:
   std::shared_ptr<IPlayer> GetInternal() const;
-  void CreatePlayer(const std::string &player, IPlayerCallback& callback);
+  void CreatePlayer(const CPlayerCoreFactory &factory, const std::string &player, IPlayerCallback& callback);
   void CloseFile(bool reopen = false);
 
   std::shared_ptr<IPlayer> m_pPlayer;

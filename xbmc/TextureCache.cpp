@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
@@ -62,14 +63,19 @@ bool CTextureCache::IsCachedImage(const std::string &url) const
 {
   if (url.empty())
     return false;
+
   if (!CURL::IsFullPath(url))
     return true;
+
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
   if (URIUtils::PathHasParent(url, "special://skin", true) ||
       URIUtils::PathHasParent(url, "special://temp", true) ||
       URIUtils::PathHasParent(url, "resource://", true) ||
       URIUtils::PathHasParent(url, "androidapp://", true)   ||
-      URIUtils::PathHasParent(url, CProfilesManager::GetInstance().GetThumbnailsFolder(), true))
+      URIUtils::PathHasParent(url, profileManager.GetThumbnailsFolder(), true))
     return true;
+
   return false;
 }
 
@@ -261,7 +267,9 @@ std::string CTextureCache::GetCacheFile(const std::string &url)
 
 std::string CTextureCache::GetCachedPath(const std::string &file)
 {
-  return URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetThumbnailsFolder(), file);
+  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+
+  return URIUtils::AddFileToFolder(profileManager.GetThumbnailsFolder(), file);
 }
 
 void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)

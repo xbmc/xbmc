@@ -31,9 +31,25 @@
 #include <stdlib.h>
 #include <vector>
 
-void CIRTranslator::Load()
+CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
+  m_profileManager(profileManager)
+{
+}
+
+bool CIRTranslator::HasIR()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return true;
+#else
+  return false;
+#endif
+}
+
+void CIRTranslator::Load()
+{
+  if (!HasIR())
+    return;
+
   Clear();
 
   std::string irMapName;
@@ -51,7 +67,7 @@ void CIRTranslator::Load()
   else
     CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system %s found, skipping", irMapName.c_str());
 
-  irMapPath = CProfilesManager::GetInstance().GetUserDataItem(irMapName);
+  irMapPath = m_profileManager.GetUserDataItem(irMapName);
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else
@@ -59,7 +75,6 @@ void CIRTranslator::Load()
 
   if (!success)
     CLog::Log(LOGERROR, "CIRTranslator::Load - unable to load remote map %s", irMapName.c_str());
-#endif
 }
 
 bool CIRTranslator::LoadIRMap(const std::string &irMapPath)

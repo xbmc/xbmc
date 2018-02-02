@@ -64,7 +64,7 @@ bool CSettingsBase::Initialize()
 
   m_settingsManager->SetInitialized();
 
-  InitializeISettingsHandlers();  
+  InitializeISettingsHandlers();
   InitializeISubSettings();
   InitializeISettingCallbacks();
 
@@ -147,6 +147,10 @@ void CSettingsBase::Uninitialize()
 
   // unregister setting option fillers
   UninitializeOptionFillers();
+
+  // unregister setting conditions
+  UninitializeConditions();
+
   // unregister ISettingCallback implementations
   UninitializeISettingCallbacks();
 

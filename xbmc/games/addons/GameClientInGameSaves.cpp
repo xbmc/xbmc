@@ -24,9 +24,10 @@
 #include "GameClientTranslator.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
-#include "profiles/ProfilesManager.h"
+#include "games/GameServices.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 #include <assert.h>
 
@@ -59,7 +60,8 @@ void CGameClientInGameSaves::Save()
 
 std::string CGameClientInGameSaves::GetPath(GAME_MEMORY memoryType)
 {
-  std::string path = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetSavestatesFolder(), INGAME_SAVES_DIRECTORY);
+  const CGameServices &gameServices = CServiceBroker::GetGameServices();
+  std::string path = URIUtils::AddFileToFolder(gameServices.GetSavestatesFolder(), INGAME_SAVES_DIRECTORY);
   if (!XFILE::CDirectory::Exists(path))
     XFILE::CDirectory::Create(path);
 

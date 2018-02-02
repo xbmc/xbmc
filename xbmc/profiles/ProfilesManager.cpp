@@ -33,6 +33,8 @@
 #include "Util.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "events/EventLog.h"
+#include "events/EventLogManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
@@ -41,6 +43,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
+#include "settings/lib/SettingsManager.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -69,31 +72,42 @@ using namespace XFILE;
 
 static CProfile EmptyProfile;
 
-CProfilesManager::CProfilesManager()
-  : m_usingLoginScreen(false),
+CProfilesManager::CProfilesManager(CSettings &settings) :
+    m_settings(settings),
+    m_usingLoginScreen(false),
     m_profileLoadedForLogin(false),
     m_autoLoginProfile(-1),
     m_lastUsedProfile(0),
     m_currentProfile(0),
-    m_nextProfileId(0)
-{ }
-
-CProfilesManager::~CProfilesManager() = default;
-
-CProfilesManager& CProfilesManager::GetInstance()
+    m_nextProfileId(0),
+    m_eventLogs(new CEventLogManager)
 {
-  static CProfilesManager sProfilesManager;
-  return sProfilesManager;
+  if (m_settings.IsLoaded())
+    OnSettingsLoaded();
+
+  m_settings.GetSettingsManager()->RegisterSettingsHandler(this);
+
+  std::set<std::string> settingSet = {
+    CSettings::SETTING_EVENTLOG_SHOW
+  };
+
+  m_settings.GetSettingsManager()->RegisterCallback(this, settingSet);
+}
+
+CProfilesManager::~CProfilesManager()
+{
+  m_settings.GetSettingsManager()->UnregisterCallback(this);
+  m_settings.GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  std::string strDir = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string strDir = m_settings.GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
+    m_settings.SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -262,7 +276,7 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   CreateProfileFolders();
 
-  CDatabaseManager::GetInstance().Initialize();
+  CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 
   CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
@@ -330,7 +344,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (index == m_currentProfile)
   {
     LoadProfile(0);
-    CServiceBroker::GetSettings().Save();
+    m_settings.Save();
   }
 
   CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));
@@ -533,6 +547,21 @@ std::string CProfilesManager::GetUserDataItem(const std::string& strFile) const
     path = "special://masterprofile/" + strFile;
 
   return path;
+}
+
+CEventLog& CProfilesManager::GetEventLog()
+{
+  return m_eventLogs->GetEventLog(GetCurrentProfileId());
+}
+
+void CProfilesManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_EVENTLOG_SHOW)
+    GetEventLog().ShowFullEventLog();
 }
 
 void CProfilesManager::SetCurrentProfileId(size_t profileId)

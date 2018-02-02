@@ -235,6 +235,7 @@ protected:
   virtual void InitializeOptionFillers() { }
   virtual void UninitializeOptionFillers() { }
   virtual void InitializeConditions() { }
+  virtual void UninitializeConditions() { }
   virtual bool InitializeDefinitions() = 0;
   virtual void InitializeVisibility() { }
   virtual void InitializeDefaults() { }

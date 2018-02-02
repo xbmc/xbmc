@@ -100,7 +100,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
               TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
 
         for (const auto &addon : updates)
-          CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
+          CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
       }
     }
 
