@@ -50,6 +50,8 @@ private:
   bool LoadIRMap(const std::string &irMapPath);
   void MapRemote(TiXmlNode *pRemote, const std::string &szDevice);
 
+  static bool HasIR();
+
   // Construction parameters
   const CProfilesManager &m_profileManager;
 

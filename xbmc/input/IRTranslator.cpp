@@ -36,9 +36,20 @@ CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
 {
 }
 
-void CIRTranslator::Load()
+bool CIRTranslator::HasIR()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return true;
+#else
+  return false;
+#endif
+}
+
+void CIRTranslator::Load()
+{
+  if (!HasIR())
+    return;
+
   Clear();
 
   std::string irMapName;
@@ -64,7 +75,6 @@ void CIRTranslator::Load()
 
   if (!success)
     CLog::Log(LOGERROR, "CIRTranslator::Load - unable to load remote map %s", irMapName.c_str());
-#endif
 }
 
 bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
