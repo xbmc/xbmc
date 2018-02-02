@@ -153,6 +153,9 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
+  // we need to bump init_level before the file extension provider is created
+  // or it will not obtain add-on extensions.
+  init_level = 2;
   m_fileExtensionProvider.reset(new CFileExtensionProvider());
 
   m_powerManager.reset(new CPowerManager());
@@ -161,7 +164,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_weatherManager.reset(new CWeatherManager());
 
-  init_level = 2;
   return true;
 }
 
