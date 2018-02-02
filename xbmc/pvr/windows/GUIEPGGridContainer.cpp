@@ -450,11 +450,13 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     case ACTION_NEXT_ITEM:
       // skip +12h
       ScrollToBlockOffset(m_blockOffset + (12 * 60  / CGUIEPGGridContainerModel::MINSPERBLOCK));
+      SetBlock(m_blockCursor);
       return true;
 
     case ACTION_PREV_ITEM:
       // skip -12h
       ScrollToBlockOffset(m_blockOffset - (12 * 60 / CGUIEPGGridContainerModel::MINSPERBLOCK));
+      SetBlock(m_blockCursor);
       return true;
 
     case REMOTE_0:
@@ -631,10 +633,15 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         if (message.GetSenderId() == m_pageControl && IsVisible())
         {
           if (m_orientation == VERTICAL)
+          {
             ScrollToChannelOffset(message.GetParam1());
+            SetChannel(m_channelCursor);
+          }
           else
+          {
             ScrollToBlockOffset(message.GetParam1());
-
+            SetBlock(m_blockCursor);
+          }
           return true;
         }
         break;
@@ -831,12 +838,14 @@ void CGUIEPGGridContainer::ChannelScroll(int amount)
     offset = 0;
 
   ScrollToChannelOffset(offset);
+  SetChannel(m_channelCursor);
 }
 
 void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 {
   // increase or decrease the horizontal offset
   ScrollToBlockOffset(m_blockOffset + amount);
+  SetBlock(m_blockCursor);
 }
 
 void CGUIEPGGridContainer::OnUp()
@@ -1211,7 +1220,9 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);
       ScrollToChannelOffset(MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
+      SetChannel(m_channelCursor);
       ScrollToBlockOffset(MathUtils::round_int(m_programmeScrollOffset / m_blockSize));
+      SetBlock(m_blockCursor);
       return EVENT_RESULT_HANDLED;
     }
   case ACTION_GESTURE_PAN:
