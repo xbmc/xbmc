@@ -72,14 +72,22 @@ bool CServiceManager::InitForTesting()
 
   m_databaseManager.reset(new CDatabaseManager);
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider());
-
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager());
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to start CAddonMgr", __FUNCTION__);
     return false;
   }
+
+  if (!m_binaryAddonManager->Init())
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
+    return false;
+  }
+
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
+                                                           *m_binaryAddonManager));
 
   init_level = 1;
   return true;
@@ -88,8 +96,9 @@ bool CServiceManager::InitForTesting()
 void CServiceManager::DeinitTesting()
 {
   init_level = 0;
-  m_addonMgr.reset();
   m_fileExtensionProvider.reset();
+  m_binaryAddonManager.reset();
+  m_addonMgr.reset();
   m_databaseManager.reset();
   m_profileManager.reset();
   m_network.reset();
@@ -175,7 +184,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider());
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
+                                                           *m_binaryAddonManager));
 
   m_powerManager.reset(new CPowerManager());
   m_powerManager->Initialize();

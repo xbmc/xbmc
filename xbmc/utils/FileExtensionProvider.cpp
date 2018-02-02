@@ -25,7 +25,6 @@
 
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
-#include "ServiceBroker.h"
 
 using namespace ADDON;
 
@@ -35,20 +34,21 @@ const std::vector<TYPE> ADDON_TYPES = {
   ADDON_AUDIODECODER
 };
 
-CFileExtensionProvider::CFileExtensionProvider()
+CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
+                                               ADDON::CBinaryAddonManager &binaryAddonManager) :
+  m_addonManager(addonManager),
+  m_binaryAddonManager(binaryAddonManager)
 {
   m_advancedSettings = g_advancedSettingsRef;
 
   SetAddonExtensions();
 
-  if (CServiceBroker::IsBinaryAddonCacheUp())
-    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
+  m_addonManager.Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
 }
 
 CFileExtensionProvider::~CFileExtensionProvider()
 {
-  if (CServiceBroker::IsBinaryAddonCacheUp())
-    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  m_addonManager.Events().Unsubscribe(this);
 
   m_advancedSettings.reset();
   m_addonExtensions.clear();
@@ -133,13 +133,10 @@ void CFileExtensionProvider::SetAddonExtensions()
 
 void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
 {
-  if (!CServiceBroker::IsBinaryAddonCacheUp())
-    return;
-
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
   BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, type);
+  m_binaryAddonManager.GetAddonInfos(addonInfos, true, type);
   for (const auto& addonInfo : addonInfos)
   {
     std::string info = ADDON_VFS == type ? "@extensions" : "@extension";
@@ -169,7 +166,7 @@ void CFileExtensionProvider::OnAddonEvent(const AddonEvent& event)
   {
     for (auto &type : ADDON_TYPES)
     {
-      if (CServiceBroker::GetAddonMgr().HasType(event.id, type))
+      if (m_addonManager.HasType(event.id, type))
       {
         SetAddonExtensions(type);
         break;
