@@ -116,7 +116,7 @@ void CGUIFontTTFDX::LastEnd()
       return;
 
     // Set the dynamic vertex buffer to active in the input assembler
-    pContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+    pContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 
     // Do the actual drawing operation, split into groups of characters no
     // larger than the pre-determined size of the element array
