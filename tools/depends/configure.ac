@@ -315,10 +315,6 @@ case $host in
     platform_cxxflags="-no_compact_linkedit -no-cpp-precomp"
 
     case $use_xcode in
-      3.*.*)
-        platform_cc=gcc-4.2
-        platform_cxx=g++-4.2
-        ;;
       4.* | 4.*.*)
         platform_cc=llvm-gcc-4.2
         platform_cxx=llvm-g++-4.2
@@ -358,9 +354,6 @@ case $host in
 
         # now that we know which sdk, error check sdk_name
         case $use_sdk in
-          10.5);;
-          10.6);;
-          10.7);;
           10.8);;
           10.9);;
           10.10);;
