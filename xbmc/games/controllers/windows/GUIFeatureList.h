@@ -37,7 +37,7 @@ namespace GAME
   class CGUIFeatureList : public IFeatureList
   {
   public:
-    CGUIFeatureList(CGUIWindow* window, const std::string& windowParam);
+    CGUIFeatureList(CGUIWindow* window);
     virtual ~CGUIFeatureList(void);
 
     // implementation of IFeatureList
@@ -57,11 +57,16 @@ namespace GAME
     struct FeatureGroup
     {
       std::string groupName;
-      JOYSTICK::FEATURE_CATEGORY category = JOYSTICK::FEATURE_CATEGORY::UNKNOWN;
       std::vector<CControllerFeature> features;
+      /*!
+       * True if this group is a button that allows the user to map a key of
+       * their choosing.
+       */
+      bool bIsVirtualKey = false;
     };
     static std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CControllerFeature>& features);
     std::vector<CGUIButtonControl*> GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex);
+    CGUIButtonControl* GetSelectKeyButton(const std::vector<CControllerFeature>& features, unsigned int buttonIndex);
 
     // GUI stuff
     CGUIWindow* const       m_window;

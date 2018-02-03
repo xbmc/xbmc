@@ -90,6 +90,20 @@ void CAddonButtonMapping::ProcessAxisMotions(void)
     m_buttonMapping->ProcessAxisMotions();
 }
 
+bool CAddonButtonMapping::OnKeyPress(const CKey& key)
+{
+  if (m_buttonMapping)
+    return m_buttonMapping->OnKeyPress(key);
+
+  return false;
+}
+
+void CAddonButtonMapping::OnKeyRelease(const CKey& key)
+{
+  if (m_buttonMapping)
+    m_buttonMapping->OnKeyRelease(key);
+}
+
 void CAddonButtonMapping::SaveButtonMap()
 {
   if (m_buttonMapping)

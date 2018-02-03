@@ -21,6 +21,7 @@
 
 #include "ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/XBMC_keysym.h"
 
 #include <string>
 
@@ -35,6 +36,7 @@ class CControllerFeature
 {
 public:
   CControllerFeature() = default;
+  CControllerFeature(int labelId);
   CControllerFeature(const CControllerFeature& other) { *this = other; }
 
   void Reset(void);
@@ -52,6 +54,7 @@ public:
 
   // Input properties
   JOYSTICK::INPUT_TYPE InputType(void) const { return m_inputType; }
+  XBMCKey Keycode() const { return m_keycode; }
 
   bool Deserialize(const TiXmlElement* pElement,
                    const CController* controller,
@@ -66,6 +69,7 @@ private:
   std::string m_strName;
   int m_labelId = -1;
   JOYSTICK::INPUT_TYPE m_inputType = JOYSTICK::INPUT_TYPE::UNKNOWN;
+  XBMCKey m_keycode = XBMCK_UNKNOWN;
 };
 
 }

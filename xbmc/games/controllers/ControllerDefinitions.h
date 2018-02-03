@@ -19,6 +19,7 @@
  */
 #pragma once
 
+// XML definitions
 #define LAYOUT_XML_ROOT                    "layout"
 #define LAYOUT_XML_ELM_CATEGORY            "category"
 #define LAYOUT_XML_ELM_BUTTON              "button"
@@ -29,6 +30,7 @@
 #define LAYOUT_XML_ELM_ABSPOINTER          "abspointer"
 #define LAYOUT_XML_ELM_WHEEL               "wheel"
 #define LAYOUT_XML_ELM_THROTTLE            "throttle"
+#define LAYOUT_XML_ELM_KEY                 "key"
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_ICON        "icon"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"
@@ -37,7 +39,9 @@
 #define LAYOUT_XML_ATTR_FEATURE_NAME       "name"
 #define LAYOUT_XML_ATTR_FEATURE_LABEL      "label"
 #define LAYOUT_XML_ATTR_INPUT_TYPE         "type"
+#define LAYOUT_XML_ATTR_KEY_SYMBOL         "symbol"
 
+// Controller definitions
 #define FEATURE_CATEGORY_FACE              "face"
 #define FEATURE_CATEGORY_SHOULDER          "shoulder"
 #define FEATURE_CATEGORY_TRIGGER           "triggers"

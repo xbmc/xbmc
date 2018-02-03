@@ -19,6 +19,7 @@
  */
 
 #include "PeripheralAddonTranslator.h"
+#include "games/controllers/ControllerTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 
 #include <algorithm>
@@ -65,8 +66,6 @@ PeripheralType CPeripheralAddonTranslator::TranslateType(PERIPHERAL_TYPE type)
   {
     case PERIPHERAL_TYPE_JOYSTICK:
       return PERIPHERAL_JOYSTICK;
-    case PERIPHERAL_TYPE_KEYBOARD:
-      return PERIPHERAL_JOYSTICK_EMULATION;
     default:
       break;
   }
@@ -79,8 +78,6 @@ PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
   {
     case PERIPHERAL_JOYSTICK:
       return PERIPHERAL_TYPE_JOYSTICK;
-    case PERIPHERAL_JOYSTICK_EMULATION:
-      return PERIPHERAL_TYPE_KEYBOARD;
     default:
       break;
   }
@@ -111,6 +108,12 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const kodi::addo
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
     {
       retVal = CDriverPrimitive(PRIMITIVE_TYPE::MOTOR, primitive.DriverIndex());
+      break;
+    }
+    case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
+    {
+      XBMCKey keycode = GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
+      retVal = CDriverPrimitive(keycode);
       break;
     }
     default:
@@ -144,6 +147,12 @@ kodi::addon::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(cons
     case PRIMITIVE_TYPE::MOTOR:
     {
       retVal = kodi::addon::DriverPrimitive::CreateMotor(primitive.Index());
+      break;
+    }
+    case PRIMITIVE_TYPE::KEY:
+    {
+      std::string keysym = GAME::CControllerTranslator::TranslateKeycode(primitive.Keycode());
+      retVal = kodi::addon::DriverPrimitive(keysym);
       break;
     }
     default:
@@ -251,6 +260,7 @@ JOYSTICK::FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK
     case JOYSTICK_FEATURE_TYPE_ABSPOINTER:    return JOYSTICK::FEATURE_TYPE::ABSPOINTER;
     case JOYSTICK_FEATURE_TYPE_WHEEL:         return JOYSTICK::FEATURE_TYPE::WHEEL;
     case JOYSTICK_FEATURE_TYPE_THROTTLE:      return JOYSTICK::FEATURE_TYPE::THROTTLE;
+    case JOYSTICK_FEATURE_TYPE_KEY:           return JOYSTICK::FEATURE_TYPE::KEY;
     default:
       break;
   }
@@ -269,6 +279,7 @@ JOYSTICK_FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK:
     case JOYSTICK::FEATURE_TYPE::ABSPOINTER:    return JOYSTICK_FEATURE_TYPE_ABSPOINTER;
     case JOYSTICK::FEATURE_TYPE::WHEEL:         return JOYSTICK_FEATURE_TYPE_WHEEL;
     case JOYSTICK::FEATURE_TYPE::THROTTLE:      return JOYSTICK_FEATURE_TYPE_THROTTLE;
+    case JOYSTICK::FEATURE_TYPE::KEY:           return JOYSTICK_FEATURE_TYPE_KEY;
     default:
       break;
   }

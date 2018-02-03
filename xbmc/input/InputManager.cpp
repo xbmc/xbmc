@@ -28,7 +28,7 @@
 #include "JoystickMapper.h"
 #include "KeymapEnvironment.h"
 #include "TouchTranslator.h"
-#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "input/mouse/MouseWindowingButtonMap.h"
@@ -85,7 +85,7 @@ CInputManager::CInputManager(const CAppParamParser &params,
   m_buttonTranslator->RegisterMapper("customcontroller", m_customControllerTranslator.get());
   m_buttonTranslator->RegisterMapper("joystick", m_joystickTranslator.get());
 
-  RegisterKeyboardHandler(m_keyboardEasterEgg.get());
+  RegisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
   if (!params.RemoteControlName().empty())
     SetRemoteControlName(params.RemoteControlName());
@@ -106,7 +106,7 @@ CInputManager::~CInputManager()
   // Unregister settings
   CServiceBroker::GetSettings().UnregisterCallback(this);
 
-  UnregisterKeyboardHandler(m_keyboardEasterEgg.get());
+  UnregisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
   m_buttonTranslator->UnregisterMapper(m_touchTranslator.get());
   m_buttonTranslator->UnregisterMapper(m_customControllerTranslator.get());
@@ -483,9 +483,9 @@ bool CInputManager::OnKey(const CKey& key)
 {
   bool bHandled = false;
 
-  for (std::vector<KEYBOARD::IKeyboardHandler*>::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
+  for (auto handler : m_keyboardHandlers)
   {
-    if ((*it)->OnKeyPress(key))
+    if (handler->OnKeyPress(key))
     {
       bHandled = true;
       break;
@@ -673,8 +673,8 @@ bool CInputManager::HandleKey(const CKey& key)
 
 void CInputManager::OnKeyUp(const CKey& key)
 {
-  for (std::vector<KEYBOARD::IKeyboardHandler*>::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
-    (*it)->OnKeyRelease(key);
+  for (auto handler : m_keyboardHandlers)
+    handler->OnKeyRelease(key);
 
   if (m_LastKey.GetButtonCode() != KEY_INVALID && !(m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
   {
@@ -995,13 +995,13 @@ int CInputManager::TranslateLircRemoteString(const std::string &szDevice, const 
   return m_irTranslator->TranslateButton(szDevice, szButton);
 }
 
-void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
+void CInputManager::RegisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHandler* handler)
 {
   if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())
     m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handler);
 }
 
-void CInputManager::UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
+void CInputManager::UnregisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHandler* handler)
 {
   m_keyboardHandlers.erase(std::remove(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler), m_keyboardHandlers.end());
 }

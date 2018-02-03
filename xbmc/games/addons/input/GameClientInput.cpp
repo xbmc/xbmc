@@ -33,6 +33,7 @@
 #include "input/joysticks/JoystickTypes.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/PeripheralTypes.h" //! @todo
 //#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
@@ -160,7 +161,7 @@ void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& contro
       controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
       controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
       controllerStruct.accelerometer_count  = controller->FeatureCount(FEATURE_TYPE::ACCELEROMETER);
-      controllerStruct.key_count            = 0; //! @todo
+      controllerStruct.key_count            = controller->FeatureCount(FEATURE_TYPE::KEY);
       controllerStruct.rel_pointer_count    = controller->FeatureCount(FEATURE_TYPE::RELPOINTER);
       controllerStruct.abs_pointer_count    = controller->FeatureCount(FEATURE_TYPE::ABSPOINTER);
       controllerStruct.motor_count          = controller->FeatureCount(FEATURE_TYPE::MOTOR);
@@ -178,12 +179,74 @@ void CGameClientInput::UpdatePort(unsigned int port, const ControllerPtr& contro
 
 void CGameClientInput::OpenKeyboard()
 {
-  m_keyboard.reset(new CGameClientKeyboard(m_gameClient, m_struct.toAddon, &CServiceBroker::GetInputManager()));
+  using namespace JOYSTICK;
+
+  //! @todo Move to player manager
+  PERIPHERALS::PeripheralVector keyboards;
+  CServiceBroker::GetPeripherals().GetPeripheralsWithFeature(keyboards, PERIPHERALS::FEATURE_KEYBOARD);
+
+  if (keyboards.empty())
+    return;
+
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+
+  ControllerPtr controller = gameServices.GetDefaultKeyboard(); //! @todo
+
+  std::string controllerId = controller->ID();
+
+  game_controller controllerStruct{};
+
+  controllerStruct.controller_id        = controllerId.c_str();
+  controllerStruct.digital_button_count = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
+  controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
+  controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
+  controllerStruct.accelerometer_count  = controller->FeatureCount(FEATURE_TYPE::ACCELEROMETER);
+  controllerStruct.key_count            = controller->FeatureCount(FEATURE_TYPE::KEY);
+  controllerStruct.rel_pointer_count    = controller->FeatureCount(FEATURE_TYPE::RELPOINTER);
+  controllerStruct.abs_pointer_count    = controller->FeatureCount(FEATURE_TYPE::ABSPOINTER);
+  controllerStruct.motor_count          = controller->FeatureCount(FEATURE_TYPE::MOTOR);
+
+  bool bSuccess = false;
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        bSuccess = m_struct.toAddon.EnableKeyboard(true, &controllerStruct);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableKeyboard()");
+      }
+    }
+  }
+
+  if (bSuccess)
+    m_keyboard.reset(new CGameClientKeyboard(m_gameClient, controllerId, m_struct.toAddon, keyboards.at(0).get()));
 }
 
 void CGameClientInput::CloseKeyboard()
 {
   m_keyboard.reset();
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        m_struct.toAddon.EnableKeyboard(false, nullptr);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableKeyboard()");
+      }
+    }
+  }
 }
 
 void CGameClientInput::OpenMouse()

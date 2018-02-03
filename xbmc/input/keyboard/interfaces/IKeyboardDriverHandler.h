@@ -29,24 +29,24 @@ namespace KEYBOARD
    * \ingroup keyboard
    * \brief Interface for handling keyboard events
    */
-  class IKeyboardHandler
+  class IKeyboardDriverHandler
   {
   public:
-    virtual ~IKeyboardHandler() = default;
+    virtual ~IKeyboardDriverHandler() = default;
 
     /*!
      * \brief A key has been pressed
      *
-     * \param key      The pressed key
+     * \param key The pressed key
      *
-     * \return True if the event was handled otherwise false
+     * \return True if the event was handled, false otherwise
      */
     virtual bool OnKeyPress(const CKey& key) = 0;
 
     /*!
      * \brief A key has been released
      *
-     * \param key      The released key
+     * \param key The released key
      */
     virtual void OnKeyRelease(const CKey& key) = 0;
   };

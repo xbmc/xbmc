@@ -35,7 +35,6 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
-#include "peripherals/devices/PeripheralJoystickEmulation.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -50,8 +49,8 @@ using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
 
-#define JOYSTICK_EMULATION_BUTTON_MAP_NAME  "Keyboard"
-#define JOYSTICK_EMULATION_PROVIDER         "application"
+#define KEYBOARD_BUTTON_MAP_NAME  "Keyboard"
+#define KEYBOARD_PROVIDER         "application"
 
 #ifndef SAFE_DELETE
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
@@ -829,12 +828,10 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device, kodi::addon::J
     joystickInfo.SetMotorCount(joystick->MotorCount());
     joystickInfo.SetSupportsPowerOff(joystick->SupportsPowerOff());
   }
-  else if (device->Type() == PERIPHERAL_JOYSTICK_EMULATION)
+  else if (device->Type() == PERIPHERAL_KEYBOARD)
   {
-    const CPeripheralJoystickEmulation* joystick = static_cast<const CPeripheralJoystickEmulation*>(device);
-    joystickInfo.SetName(GetDeviceName(PERIPHERAL_JOYSTICK_EMULATION)); // Override name with non-localized version
-    joystickInfo.SetProvider(GetProvider(PERIPHERAL_JOYSTICK_EMULATION));
-    joystickInfo.SetIndex(joystick->ControllerNumber());
+    joystickInfo.SetName(GetDeviceName(PERIPHERAL_KEYBOARD)); // Override name with non-localized version
+    joystickInfo.SetProvider(GetProvider(PERIPHERAL_KEYBOARD));
   }
 }
 
@@ -864,8 +861,8 @@ std::string CPeripheralAddon::GetDeviceName(PeripheralType type)
 {
   switch (type)
   {
-  case PERIPHERAL_JOYSTICK_EMULATION:
-    return JOYSTICK_EMULATION_BUTTON_MAP_NAME;
+  case PERIPHERAL_KEYBOARD:
+    return KEYBOARD_BUTTON_MAP_NAME;
   default:
     break;
   }
@@ -877,8 +874,8 @@ std::string CPeripheralAddon::GetProvider(PeripheralType type)
 {
   switch (type)
   {
-  case PERIPHERAL_JOYSTICK_EMULATION:
-    return JOYSTICK_EMULATION_PROVIDER;
+  case PERIPHERAL_KEYBOARD:
+    return KEYBOARD_PROVIDER;
   default:
     break;
   }

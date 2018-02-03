@@ -23,8 +23,8 @@
 
 #include <array> // Requires c++11
 #include <cstring>
-#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define PERIPHERAL_SAFE_DELETE(x)        do { delete   (x); (x) = NULL; } while (0)
@@ -445,6 +445,20 @@ namespace addon
       return DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR, motorIndex);
     }
 
+    /*!
+     * \brief Construct a driver primitive representing a key on a keyboard
+     */
+    DriverPrimitive(std::string keycode) :
+      m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY),
+      m_driverIndex(0),
+      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1),
+      m_keycode(std::move(keycode))
+    {
+    }
+
     explicit DriverPrimitive(const JOYSTICK_DRIVER_PRIMITIVE& primitive) :
       m_type(primitive.type),
       m_driverIndex(0),
@@ -479,6 +493,11 @@ namespace addon
           m_driverIndex = primitive.motor.index;
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
+        {
+          m_keycode = primitive.key.keycode;
+          break;
+        }
         default:
           break;
       }
@@ -490,6 +509,7 @@ namespace addon
     int                                Center(void) const { return m_center; }
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION SemiAxisDirection(void) const { return m_semiAxisDirection; }
     unsigned int                       Range(void) const { return m_range; }
+    const std::string&                 Keycode(void) const { return m_keycode; }
 
     bool operator==(const DriverPrimitive& other) const
     {
@@ -513,6 +533,10 @@ namespace addon
                    m_center            == other.m_center &&
                    m_semiAxisDirection == other.m_semiAxisDirection &&
                    m_range             == other.m_range;
+          }
+          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
+          {
+            return m_keycode == other.m_keycode;
           }
           default:
             break;
@@ -550,6 +574,13 @@ namespace addon
           driver_primitive.motor.index = m_driverIndex;
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
+        {
+          const size_t size = sizeof(driver_primitive.key.keycode);
+          std::strncpy(driver_primitive.key.keycode, m_keycode.c_str(), size - 1);
+          driver_primitive.key.keycode[size - 1] = '\0';
+          break;
+        }
         default:
           break;
       }
@@ -567,6 +598,7 @@ namespace addon
     int                                m_center;
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_semiAxisDirection;
     unsigned int                       m_range;
+    std::string                        m_keycode;
   };
 
   typedef PeripheralVector<DriverPrimitive, JOYSTICK_DRIVER_PRIMITIVE> DriverPrimitives;
@@ -584,6 +616,7 @@ namespace addon
    *   6) absolute pointer
    *   7) wheel
    *   8) throttle
+   *   9) keyboard key
    *
    * [1] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,
@@ -598,7 +631,7 @@ namespace addon
     JoystickFeature(const std::string& name = "", JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN) :
       m_name(name),
       m_type(type),
-      m_primitives()
+      m_primitives{}
     {
     }
 

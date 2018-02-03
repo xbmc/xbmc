@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,46 +20,38 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "threads/CriticalSection.h"
 
 #include <vector>
 
 namespace PERIPHERALS
 {
-  class CPeripheralJoystickEmulation : public CPeripheral,
-                                       public KODI::KEYBOARD::IKeyboardHandler
+  class CPeripheralKeyboard : public CPeripheral,
+                              public KODI::KEYBOARD::IKeyboardDriverHandler
   {
   public:
-    CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralKeyboard(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
-    ~CPeripheralJoystickEmulation(void) override;
+    ~CPeripheralKeyboard(void) override;
 
     // implementation of CPeripheral
     bool InitialiseFeature(const PeripheralFeature feature) override;
-    void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
-    void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
+    void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous) override;
+    void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) override;
 
-    // implementation of IKeyboardHandler
+    // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
     void OnKeyRelease(const CKey& key) override;
-
-    /*!
-     * \brief Number of the emulated controller (1-indexed)
-     */
-    unsigned int ControllerNumber(void) const;
 
   private:
     struct KeyboardHandle
     {
-      KODI::JOYSTICK::IDriverHandler* joystickHandler;
-      KODI::KEYBOARD::IKeyboardHandler* handler;
+      KODI::KEYBOARD::IKeyboardDriverHandler* handler;
       bool bPromiscuous;
     };
 
-    using KeyboardHandlers = std::vector<KeyboardHandle>;
-
-    KeyboardHandlers m_keyboardHandlers;
+    std::vector<KeyboardHandle> m_keyboardHandlers;
     CCriticalSection m_mutex;
   };
 }

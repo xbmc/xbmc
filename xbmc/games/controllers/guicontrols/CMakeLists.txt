@@ -6,6 +6,7 @@ set(SOURCES GUIAnalogStickButton.cpp
             GUIFeatureTranslator.cpp
             GUIGameController.cpp
             GUIScalarFeatureButton.cpp
+            GUISelectKeyButton.cpp
             GUIThrottleButton.cpp
             GUIWheelButton.cpp
 )
@@ -19,6 +20,7 @@ set(HEADERS GUIAnalogStickButton.h
             GUIFeatureTranslator.h
             GUIGameController.h
             GUIScalarFeatureButton.h
+            GUISelectKeyButton.h
             GUIThrottleButton.h
             GUIWheelButton.h
 )

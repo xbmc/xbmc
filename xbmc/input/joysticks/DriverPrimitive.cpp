@@ -20,6 +20,8 @@
 
 #include "DriverPrimitive.h"
 
+#include <utility>
+
 using namespace KODI;
 using namespace JOYSTICK;
 
@@ -47,6 +49,12 @@ CDriverPrimitive::CDriverPrimitive(unsigned int axisIndex, int center, SEMIAXIS_
 {
 }
 
+CDriverPrimitive::CDriverPrimitive(XBMCKey keycode) :
+  m_type(PRIMITIVE_TYPE::KEY),
+  m_keycode(keycode)
+{
+}
+
 bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
 {
   if (m_type == rhs.m_type)
@@ -63,6 +71,8 @@ bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
              m_center            == rhs.m_center &&
              m_semiAxisDirection == rhs.m_semiAxisDirection &&
              m_range             == rhs.m_range;
+    case PRIMITIVE_TYPE::KEY:
+      return m_keycode == rhs.m_keycode;
     default:
       return true;
     }
@@ -100,6 +110,12 @@ bool CDriverPrimitive::operator<(const CDriverPrimitive& rhs) const
 
     if (m_range < rhs.m_range) return true;
     if (m_range > rhs.m_range) return false;
+  }
+
+  if (m_type == PRIMITIVE_TYPE::KEY)
+  {
+    if (m_keycode < rhs.m_keycode) return true;
+    if (m_keycode > rhs.m_keycode) return false;
   }
 
   return false;
@@ -152,6 +168,9 @@ bool CDriverPrimitive::IsValid(void) const
 
     return 1 <= m_range && m_range <= maxRange;
   }
+
+  if (m_type == PRIMITIVE_TYPE::KEY)
+    return m_keycode != XBMCK_UNKNOWN;
 
   return false;
 }

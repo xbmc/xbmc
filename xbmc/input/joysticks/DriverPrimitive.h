@@ -20,6 +20,7 @@
 #pragma once
 
 #include "JoystickTypes.h"
+#include "input/XBMC_keysym.h"
 
 #include <stdint.h>
 
@@ -63,6 +64,9 @@ namespace JOYSTICK
    *    Motor:
    *       - driver index
    *
+   *    Key:
+   *       - keycode
+   *
    * For more info, see "Chapter 2. Joystick drivers" in the documentation
    * thread: http://forum.kodi.tv/showthread.php?tid=257764
    */
@@ -90,6 +94,11 @@ namespace JOYSTICK
      *        half of an axis
      */
     CDriverPrimitive(unsigned int axisIndex, int center, SEMIAXIS_DIRECTION direction, unsigned int range);
+
+    /*!
+     * \brief Construct a driver primitive representing a key on a keyboard
+     */
+    CDriverPrimitive(XBMCKey keycode);
 
     bool operator==(const CDriverPrimitive& rhs) const;
     bool operator<(const CDriverPrimitive& rhs) const;
@@ -136,12 +145,18 @@ namespace JOYSTICK
     unsigned int Range() const { return m_range; }
 
     /*!
+     * \brief The keybord symbol (valid for keys)
+     */
+    XBMCKey Keycode() const { return m_keycode; }
+
+    /*!
      * \brief Test if an driver primitive is valid
      *
      * A driver primitive is valid if it has a known type and:
      *
      *   1) for hats, it is a cardinal direction
      *   2) for semi-axes, it is a positive or negative direction
+     *   3) for keys, the keycode is non-empty
      */
     bool IsValid(void) const;
 
@@ -152,6 +167,7 @@ namespace JOYSTICK
     int                m_center = 0;
     SEMIAXIS_DIRECTION m_semiAxisDirection = SEMIAXIS_DIRECTION::ZERO;
     unsigned int       m_range = 1;
+    XBMCKey            m_keycode = XBMCK_UNKNOWN;
   };
 }
 }

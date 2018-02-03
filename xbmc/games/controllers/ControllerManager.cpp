@@ -48,6 +48,11 @@ ControllerPtr CControllerManager::GetDefaultController()
   return GetController(DEFAULT_CONTROLLER_ID);
 }
 
+ControllerPtr CControllerManager::GetDefaultKeyboard()
+{
+  return GetController(DEFAULT_KEYBOARD_ID);
+}
+
 ControllerVector CControllerManager::GetControllers()
 {
   using namespace ADDON;

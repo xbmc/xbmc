@@ -20,15 +20,18 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
+#include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
-#include "input/keyboard/interfaces/IKeyboardHandler.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
+#include "input/XBMC_keysym.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -45,13 +48,13 @@ namespace GAME
 {
   class CGUIConfigurationWizard : public IConfigurationWizard,
                                   public JOYSTICK::IButtonMapper,
-                                  public KEYBOARD::IKeyboardHandler,
+                                  public KEYBOARD::IKeyboardDriverHandler,
                                   public MOUSE::IMouseInputHandler,
                                   public Observer,
                                   protected CThread
   {
   public:
-    CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber = 0);
+    CGUIConfigurationWizard();
 
     virtual ~CGUIConfigurationWizard(void);
 
@@ -59,19 +62,19 @@ namespace GAME
     virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) override;
     virtual void OnUnfocus(IFeatureButton* button) override;
     virtual bool Abort(bool bWait = true) override;
+    void RegisterKey(const CControllerFeature &key) override;
+    void UnregisterKeys() override;
 
     // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
     virtual bool NeedsCooldown(void) const override { return true; }
-    virtual bool Emulation(void) const override { return m_bEmulation; }
-    virtual unsigned int ControllerNumber(void) const override { return m_controllerNumber; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                               IKeymap* keymap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
     virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
     virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
-    // implementation of IKeyboardHandler
+    // implementation of IKeyboardDriverHandler
     virtual bool OnKeyPress(const CKey& key) override;
     virtual void OnKeyRelease(const CKey& key) override { }
 
@@ -101,10 +104,6 @@ namespace GAME
 
     bool OnKeyAction(unsigned int actionId);
 
-    // Construction parameters
-    const bool                           m_bEmulation;
-    const unsigned int                   m_controllerNumber;
-
     // Run() parameters
     std::string                          m_strControllerId;
     std::vector<IFeatureButton*>         m_buttons;
@@ -116,7 +115,8 @@ namespace GAME
     JOYSTICK::THROTTLE_DIRECTION         m_throttleDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
     bool                                 m_lateAxisDetected; // Set to true if an axis is detected during button mapping
-    std::string                          m_deviceName;
+    std::string                          m_deviceName; // Name of device that we're mapping
+    bool                                 m_bIsKeyboard = false; // True if we're mapping keyboard keys
     CCriticalSection                     m_stateMutex;
 
     // Synchronization events
@@ -127,6 +127,7 @@ namespace GAME
 
     // Keyboard handling
     std::unique_ptr<KEYBOARD::IActionMap> m_actionMap;
+    std::map<XBMCKey, CControllerFeature> m_keyMap; // Keycode -> feature
   };
 }
 }

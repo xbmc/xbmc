@@ -27,19 +27,23 @@
 #include "input/Key.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI;
 using namespace GAME;
 
 #define BUTTON_INDEX_MASK  0x01ff
 
 CGameClientKeyboard::CGameClientKeyboard(const CGameClient &gameClient,
+                                         std::string controllerId,
                                          const KodiToAddonFuncTable_Game &dllStruct,
                                          KEYBOARD::IKeyboardInputProvider *inputProvider) :
   m_gameClient(gameClient),
+  m_controllerId(std::move(controllerId)),
   m_dllStruct(dllStruct),
   m_inputProvider(inputProvider)
 {
-  m_inputProvider->RegisterKeyboardHandler(this);
+  m_inputProvider->RegisterKeyboardHandler(this, false);
 }
 
 CGameClientKeyboard::~CGameClientKeyboard()
@@ -47,7 +51,26 @@ CGameClientKeyboard::~CGameClientKeyboard()
   m_inputProvider->UnregisterKeyboardHandler(this);
 }
 
-bool CGameClientKeyboard::OnKeyPress(const CKey& key)
+std::string CGameClientKeyboard::ControllerID() const
+{
+  return m_controllerId;
+}
+
+bool CGameClientKeyboard::HasKey(const KEYBOARD::KeyName &key) const
+{
+  try
+  {
+    return m_dllStruct.HasFeature(ControllerID().c_str(), key.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in HasFeature()", m_gameClient.ID().c_str());
+  }
+
+  return false;
+}
+
+bool CGameClientKeyboard::OnKeyPress(const KEYBOARD::KeyName &key, KEYBOARD::Modifier mod, uint32_t unicode)
 {
   // Only allow activated input in fullscreen game
   if (!m_gameClient.Input().AcceptsInput())
@@ -58,56 +81,46 @@ bool CGameClientKeyboard::OnKeyPress(const CKey& key)
 
   bool bHandled = false;
 
-  CKey::Modifier mod = static_cast<CKey::Modifier>(key.GetModifiers() | key.GetLockingModifiers());
-
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
-  event.port            = GAME_INPUT_PORT_KEYBOARD;
-  event.controller_id   = ""; //! @todo
-  event.feature_name    = ""; //! @todo
+  event.port            = 0; //! @todo Remove in port refactor
+  event.controller_id   = m_controllerId.c_str();
+  event.feature_name    = key.c_str();
   event.key.pressed     = true;
-  event.key.character   = static_cast<XBMCVKey>(key.GetButtonCode() & BUTTON_INDEX_MASK);
+  event.key.unicode     = unicode;
   event.key.modifiers   = CGameClientTranslator::GetModifiers(mod);
 
-  if (event.key.character != 0)
+  try
   {
-    try
-    {
-      bHandled = m_dllStruct.InputEvent(&event);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
-    }
+    bHandled = m_dllStruct.InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
   }
 
   return bHandled;
 }
 
-void CGameClientKeyboard::OnKeyRelease(const CKey& key)
+void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName &key, KEYBOARD::Modifier mod, uint32_t unicode)
 {
-  CKey::Modifier mod = static_cast<CKey::Modifier>(key.GetModifiers() | key.GetLockingModifiers());
-
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_KEY;
-  event.port            = GAME_INPUT_PORT_KEYBOARD;
-  event.controller_id   = ""; //! @todo
-  event.feature_name    = ""; //! @todo
+  event.port            = 0; //! @todo Remove in port refactor
+  event.controller_id   = m_controllerId.c_str();
+  event.feature_name    = key.c_str();
   event.key.pressed     = false;
-  event.key.character   = static_cast<XBMCVKey>(key.GetButtonCode() & BUTTON_INDEX_MASK);
+  event.key.unicode     = unicode;
   event.key.modifiers   = CGameClientTranslator::GetModifiers(mod);
 
-  if (event.key.character != 0)
+  try
   {
-    try
-    {
-      m_dllStruct.InputEvent(&event);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
-    }
+    m_dllStruct.InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
   }
 }

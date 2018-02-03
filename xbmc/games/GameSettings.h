@@ -39,7 +39,6 @@ public:
 
   // Inherited from ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
   // Construction parameters

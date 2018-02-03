@@ -3,9 +3,11 @@ set(SOURCES KeyboardEasterEgg.cpp
 )
 
 set(HEADERS interfaces/IActionMap.h
-            interfaces/IKeyboardHandler.h
+            interfaces/IKeyboardDriverHandler.h
+            interfaces/IKeyboardInputHandler.h
             interfaces/IKeyboardInputProvider.h
             KeyboardEasterEgg.h
+            KeyboardTypes.h
             KeymapActionMap.h
 )
 

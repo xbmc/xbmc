@@ -32,6 +32,12 @@ using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
 
+CControllerFeature::CControllerFeature(int labelId)
+{
+  Reset();
+  m_labelId = labelId;
+}
+
 void CControllerFeature::Reset(void)
 {
   *this = CControllerFeature();
@@ -48,6 +54,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
     m_strName = rhs.m_strName;
     m_labelId = rhs.m_labelId;
     m_inputType = rhs.m_inputType;
+    m_keycode = rhs.m_keycode;
   }
   return *this;
 }
@@ -71,6 +78,9 @@ std::string CControllerFeature::Label() const
 
   if (m_labelId >= 0 && m_controller != nullptr)
     label = g_localizeStrings.GetAddonString(m_controller->ID(), m_labelId);
+
+  if (label.empty())
+    label = g_localizeStrings.Get(m_labelId);
 
   return label;
 }
@@ -130,6 +140,27 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
       {
         CLog::Log(LOGERROR, "<%s> tag - attribute \"%s\" is invalid: \"%s\"",
                   strType.c_str(), LAYOUT_XML_ATTR_INPUT_TYPE, strInputType.c_str());
+        return false;
+      }
+    }
+  }
+
+  // Keycode
+  if (m_type == FEATURE_TYPE::KEY)
+  {
+    std::string strSymbol = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_KEY_SYMBOL);
+    if (strSymbol.empty())
+    {
+      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_KEY_SYMBOL);
+      return false;
+    }
+    else
+    {
+      m_keycode = CControllerTranslator::TranslateKeysym(strSymbol);
+      if (m_keycode == XBMCK_UNKNOWN)
+      {
+        CLog::Log(LOGERROR, "<%s> tag - attribute \"%s\" is invalid: \"%s\"",
+                  strType.c_str(), LAYOUT_XML_ATTR_KEY_SYMBOL, strSymbol.c_str());
         return false;
       }
     }

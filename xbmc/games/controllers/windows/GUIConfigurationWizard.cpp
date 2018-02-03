@@ -23,6 +23,7 @@
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
+#include "games/controllers/ControllerTranslator.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/JoystickUtils.h"
@@ -43,10 +44,8 @@ using namespace GAME;
 // Duration to wait for axes to neutralize after mapping is finished
 #define POST_MAPPING_WAIT_TIME_MS  (5 * 1000)
 
-CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber /* = 0 */) :
+CGUIConfigurationWizard::CGUIConfigurationWizard() :
   CThread("GUIConfigurationWizard"),
-  m_bEmulation(bEmulation),
-  m_controllerNumber(controllerNumber),
   m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
@@ -111,6 +110,17 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
   return bWasRunning;
 }
 
+void CGUIConfigurationWizard::RegisterKey(const CControllerFeature &key)
+{
+  if (key.Keycode() != XBMCK_UNKNOWN)
+    m_keyMap[key.Keycode()] = key;
+}
+
+void CGUIConfigurationWizard::UnregisterKeys()
+{
+  m_keyMap.clear();
+}
+
 void CGUIConfigurationWizard::Process(void)
 {
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
@@ -135,9 +145,14 @@ void CGUIConfigurationWizard::Process(void)
 
         // Wait for input
         {
+          using namespace JOYSTICK;
+
           CSingleExit exit(m_stateMutex);
 
-          CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"", m_strControllerId.c_str(), button->Feature().Name().c_str());
+          if (button->Feature().Type() == FEATURE_TYPE::UNKNOWN)
+            CLog::Log(LOGDEBUG, "%s: Waiting for input", m_strControllerId.c_str());
+          else
+            CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"", m_strControllerId.c_str(), button->Feature().Name().c_str());
 
           if (!button->PromptForInput(m_inputEvent))
             Abort(false);
@@ -238,12 +253,6 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     // Discard input
     bHandled = true;
   }
-  else if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
-           primitive.Index() == ESC_KEY_CODE)
-  {
-    // Handle esc key
-    bHandled = Abort(false);
-  }
   else if (m_history.find(primitive) != m_history.end())
   {
     // Primitive has already been mapped this round, ignore it
@@ -270,15 +279,29 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
     if (currentButton)
     {
-      const CControllerFeature& feature = currentButton->Feature();
-
-      if (feature.Type() == JOYSTICK::FEATURE_TYPE::UNKNOWN)
+      // Check if we were expecting a keyboard key
+      if (currentButton->NeedsKey())
       {
-        // Unknown feature, absorb input
+        if (primitive.Type() == PRIMITIVE_TYPE::KEY)
+        {
+          auto it = m_keyMap.find(primitive.Keycode());
+          if (it != m_keyMap.end())
+          {
+            const CControllerFeature &key = it->second;
+            currentButton->SetKey(key);
+            m_inputEvent.Set();
+          }
+        }
+        else
+        {
+          //! @todo Check if primitive is a cancel or motion action
+        }
         bHandled = true;
       }
       else
       {
+        const CControllerFeature& feature = currentButton->Feature();
+
         CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
           m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
 
@@ -314,6 +337,12 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
             bHandled = true;
             break;
           }
+          case FEATURE_TYPE::KEY:
+          {
+            buttonMap->AddKey(feature.Name(), primitive);
+            bHandled = true;
+            break;
+          }
           default:
             break;
         }
@@ -326,7 +355,10 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
           m_inputEvent.Set();
 
           if (m_deviceName.empty())
+          {
             m_deviceName = buttonMap->DeviceName();
+            m_bIsKeyboard = (primitive.Type() == PRIMITIVE_TYPE::KEY);
+          }
         }
       }
     }
@@ -371,7 +403,20 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
   bool bHandled = false;
 
   if (!m_bStop)
-    bHandled = OnKeyAction(m_actionMap->GetActionID(key));
+  {
+    // Only allow key to abort the prompt if we know for sure that we're mapping
+    // a controller
+    const bool bIsMappingController = (IsMapping() && !m_bIsKeyboard);
+
+    if (bIsMappingController)
+    {
+      bHandled = OnKeyAction(m_actionMap->GetActionID(key));
+    }
+    else
+    {
+      // Allow key press to fall through to the button mapper
+    }
+  }
 
   return bHandled;
 }
@@ -429,21 +474,14 @@ void CGUIConfigurationWizard::InstallHooks(void)
 {
   CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
   CServiceBroker::GetPeripherals().RegisterObserver(this);
-
-  // If we're not using emulation, allow keyboard input to abort prompt
-  if (!m_bEmulation)
-    CServiceBroker::GetInputManager().RegisterKeyboardHandler(this);
-
+  CServiceBroker::GetInputManager().RegisterKeyboardDriverHandler(this);
   CServiceBroker::GetInputManager().RegisterMouseHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
   CServiceBroker::GetInputManager().UnregisterMouseHandler(this);
-
-  if (!m_bEmulation)
-    CServiceBroker::GetInputManager().UnregisterKeyboardHandler(this);
-
+  CServiceBroker::GetInputManager().UnregisterKeyboardDriverHandler(this);
   CServiceBroker::GetPeripherals().UnregisterObserver(this);
   CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }

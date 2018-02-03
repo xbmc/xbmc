@@ -298,6 +298,34 @@ namespace JOYSTICK
     ) = 0;
 
     /*!
+     * \brief Get the driver primitive for a keyboard key
+     *
+     * \param feature        Must be a key
+     * \param primitive      The resolved driver primitive
+     *
+     * \return True if the feature resolved to a driver primitive, false if the
+     *         feature didn't resolve or isn't a scalar feature
+     */
+    virtual bool GetKey(
+      const FeatureName& feature,
+      CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
+     * \brief Add or update a key
+     *
+     * \param feature        Must be a key
+     * \param primitive      The feature's driver primitive
+     *
+     * \return True if the feature was updated, false if the feature is
+     *         unchanged or failure occurs
+     */
+    virtual void AddKey(
+      const FeatureName& feature,
+      const CDriverPrimitive& primitive
+    ) = 0;
+
+    /*!
      * \brief Set a list of driver primitives to be ignored
      *
      * This is necessary to prevent features from interfering with the button

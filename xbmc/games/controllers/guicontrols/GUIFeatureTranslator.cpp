@@ -28,6 +28,7 @@ BUTTON_TYPE CGUIFeatureTranslator::GetButtonType(JOYSTICK::FEATURE_TYPE featureT
   switch (featureType)
   {
   case JOYSTICK::FEATURE_TYPE::SCALAR:
+  case JOYSTICK::FEATURE_TYPE::KEY:
     return BUTTON_TYPE::BUTTON;
 
   case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:

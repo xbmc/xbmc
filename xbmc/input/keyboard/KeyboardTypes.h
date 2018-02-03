@@ -19,7 +19,22 @@
  */
 #pragma once
 
-// Default controller IDs
-#define DEFAULT_CONTROLLER_ID    "game.controller.default"
-#define DEFAULT_KEYBOARD_ID      "game.controller.keyboard"
-#define DEFAULT_REMOTE_ID        "game.controller.remote"
+#include "input/Key.h"
+
+#include <string>
+
+namespace KODI
+{
+namespace KEYBOARD
+{
+  /*!
+   * \brief Name of a hardware-indendent symbol representing a key
+   *
+   * Names are defined in the keyboard's controller profile.
+   */
+  using KeyName = std::string;
+
+  //! @todo Move CKey enum to this file
+  using Modifier = CKey::Modifier;
+}
+}

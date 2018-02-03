@@ -162,7 +162,6 @@ typedef enum GAME_HW_CONTEXT_TYPE
 typedef enum GAME_INPUT_PORT
 {
   GAME_INPUT_PORT_JOYSTICK_START = 0, // Non-negative values are for joystick ports
-  GAME_INPUT_PORT_KEYBOARD = -1,
   GAME_INPUT_PORT_MOUSE = -2,
 } GAME_INPUT_PORT;
 
@@ -181,17 +180,17 @@ typedef enum GAME_INPUT_EVENT_SOURCE
 
 typedef enum GAME_KEY_MOD
 {
-  GAME_KEY_MOD_NONE = 0x00,
+  GAME_KEY_MOD_NONE = 0x0000,
 
-  GAME_KEY_MOD_SHIFT = 0x01,
-  GAME_KEY_MOD_CTRL = 0x02,
-  GAME_KEY_MOD_ALT = 0x04,
-  GAME_KEY_MOD_RALT = 0x08,
-  GAME_KEY_MOD_META = 0x10,
+  GAME_KEY_MOD_SHIFT = 0x0001,
+  GAME_KEY_MOD_CTRL = 0x0002,
+  GAME_KEY_MOD_ALT = 0x0004,
+  GAME_KEY_MOD_META = 0x0008,
+  GAME_KEY_MOD_SUPER = 0x0010,
 
-  GAME_KEY_MOD_NUMLOCK = 0x20,
-  GAME_KEY_MOD_CAPSLOCK = 0x40,
-  GAME_KEY_MOD_SCROLLOCK = 0x80,
+  GAME_KEY_MOD_NUMLOCK = 0x0100,
+  GAME_KEY_MOD_CAPSLOCK = 0x0200,
+  GAME_KEY_MOD_SCROLLOCK = 0x0400,
 } GAME_KEY_MOD;
 
 /*! Returned from game_get_region() */
@@ -321,7 +320,14 @@ typedef struct game_accelerometer_event
 typedef struct game_key_event
 {
   bool         pressed;
-  XBMCVKey     character;
+
+  /*!
+   * If the keypress generates a printing character, the unicode value
+   * contains the character generated. If the key is a non-printing character,
+   * e.g. a function or arrow key, the unicode value is zero.
+   */
+  uint32_t unicode;
+
   GAME_KEY_MOD modifiers;
 } ATTRIBUTE_PACKED game_key_event;
 
@@ -495,6 +501,7 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* HwContextDestroy)(void);
   void        (__cdecl* UpdatePort)(int, bool, const game_controller*);
   bool        (__cdecl* HasFeature)(const char* controller_id, const char* feature_name);
+  bool        (__cdecl* EnableKeyboard)(bool, const game_controller*);
   bool        (__cdecl* InputEvent)(const game_input_event*);
   size_t      (__cdecl* SerializeSize)(void);
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);
