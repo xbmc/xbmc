@@ -33,7 +33,7 @@ codecs that support a multitude of music and video formats.
 
 The minimum version of iOS you need to run(!) Kodi is 9.0 atm.
 
-- On El Capitan (OSX 10.11.x) we recommend using Xcode 7.x or Xcode 8.x.
+- On El Capitan (OSX 10.11.x) we recommend using Xcode 8.x.
 - On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
 - On High Sierra (macOS 10.13.x) we recommend using Xcode 9.x.
 
@@ -52,9 +52,6 @@ it either from the macOS AppStore (Xcode) or from the Apple Developer Homepage.
 As far as we know the compilation for iOS should work with the following
 constellations of Xcode and macOS versions (to be updated once we know more):
 
-5. Xcode 7.x against iOS SDK 9.x on 10.10 (Yosemite)
-6. Xcode 7.x against iOS SDK 9.x on 10.11 (El Capitan)
-7. Xcode 7.x against iOS SDK 9.x on 10.12 (Sierra)
 8. Xcode 8.x against iOS SDK 10.x on 10.11 (El Capitan)
 9. Xcode 8.x against iOS SDK 10.x on 10.12 (Sierra)
 10. Xcode 9.x against iOS SDK 11.x on 10.12 (Sierra)

@@ -26,6 +26,7 @@
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace Windows::Foundation;
 using namespace Windows::Devices::Enumeration;

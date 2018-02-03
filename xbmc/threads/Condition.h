@@ -20,13 +20,58 @@
 
 #pragma once
 
-#include "threads/platform/Condition.h"
-
+#include "threads/SingleLock.h"
+#include "threads/Helpers.h"
 #include "threads/SystemClock.h"
-#include <stdio.h>
+
+#include <condition_variable>
+#include <chrono>
 
 namespace XbmcThreads
 {
+
+  /**
+   * This is a thin wrapper around std::condition_variable_any. It is subject
+   *  to "spurious returns" as it is built on boost which is built on posix
+   *  on many of our platforms.
+   */
+  class ConditionVariable : public NonCopyable
+  {
+  private:
+    std::condition_variable_any cond;
+
+  public:
+
+    inline void wait(CCriticalSection& lock) 
+    {
+      int count  = lock.count;
+      lock.count = 0;
+      cond.wait(lock.get_underlying());
+      lock.count = count;
+    }
+
+    inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
+    { 
+      int count  = lock.count;
+      lock.count = 0;
+      std::cv_status res = cond.wait_for(lock.get_underlying(), std::chrono::milliseconds(milliseconds));
+      lock.count = count;
+      return res == std::cv_status::no_timeout;
+    }
+
+    inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
+    inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return wait(lock.get_underlying(), milliseconds); }
+
+    inline void notifyAll() 
+    { 
+      cond.notify_all();
+    }
+
+    inline void notify() 
+    { 
+      cond.notify_one();
+    }
+  };
 
   /**
    * This is a condition variable along with its predicate. This allows the use of a 

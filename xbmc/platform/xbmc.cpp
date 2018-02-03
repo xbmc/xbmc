@@ -36,6 +36,7 @@
 
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
+#include "commons/Exception.h"
 
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
