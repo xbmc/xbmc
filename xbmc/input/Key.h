@@ -149,7 +149,7 @@ public:
   CKey(void);
   CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
   CKey(uint32_t buttonCode, unsigned int held);
-  CKey(uint32_t keycode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
+  CKey(uint32_t keycode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, uint32_t lockingModifiers, unsigned int held);
   CKey(const CKey& key);
   void Reset();
 
@@ -174,6 +174,7 @@ public:
   inline wchar_t  GetUnicode() const    { return m_unicode; }
   inline char     GetAscii() const      { return m_ascii; }
   inline uint32_t GetModifiers() const  { return m_modifiers; };
+  inline uint32_t GetLockingModifiers() const { return m_lockingModifiers; };
   inline unsigned int GetHeld() const   { return m_held; }
 
   enum Modifier {
@@ -196,6 +197,7 @@ private:
   wchar_t  m_unicode;
   char     m_ascii;
   uint32_t m_modifiers;
+  uint32_t m_lockingModifiers;
   unsigned int m_held;
 
   uint8_t m_leftTrigger;

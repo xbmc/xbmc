@@ -79,6 +79,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
+  uint32_t lockingModifiers;
   unsigned int held;
   XBMCKEYTABLE keytable;
 
@@ -93,12 +94,14 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
     modifiers |= CKey::MODIFIER_SUPER;
   if (keysym.mod & XBMCKMOD_META)
     modifiers |= CKey::MODIFIER_META;
+
+  lockingModifiers = 0;
   if (keysym.mod & XBMCKMOD_NUM)
-    modifiers |= CKey::MODIFIER_NUMLOCK;
+    lockingModifiers |= CKey::MODIFIER_NUMLOCK;
   if (keysym.mod & XBMCKMOD_CAPS)
-    modifiers |= CKey::MODIFIER_CAPSLOCK;
+    lockingModifiers |= CKey::MODIFIER_CAPSLOCK;
   if (keysym.mod & XBMCKMOD_MODE)
-    modifiers |= CKey::MODIFIER_SCROLLLOCK;
+    lockingModifiers |= CKey::MODIFIER_SCROLLLOCK;
 
   CLog::Log(LOGDEBUG, "Keyboard: scancode: 0x%02x, sym: 0x%04x, unicode: 0x%04x, modifier: 0x%x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
@@ -179,13 +182,13 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   // The A-Z keys are exempted because shift-A-Z is used for navigation in lists.
   // The function keys are exempted because function keys have no shifted value and
   // the Nyxboard remote uses keys like Shift-F3 for some buttons.
-  if (modifiers & CKey::MODIFIER_SHIFT)
+  if (modifiers == CKey::MODIFIER_SHIFT)
     if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z') && (vkey < XBMCVK_F1 || vkey > XBMCVK_F24))
       modifiers = 0;
 
   // Create and return a CKey
 
-  CKey key(keycode, vkey, unicode, ascii, modifiers, held);
+  CKey key(keycode, vkey, unicode, ascii, modifiers, lockingModifiers, held);
 
   return key;
 }
