@@ -15,15 +15,7 @@ set(HEADERS Atomics.h
             SystemClock.h
             Thread.h
             ThreadImpl.h
-            ThreadLocal.h
             Timer.h
-            platform/Condition.h
-            platform/CriticalSection.h
-            platform/ThreadImpl.h
-            platform/ThreadLocal.h)
-
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES platform/pthreads/Implementation.cpp)
-endif()
+            platform/ThreadImpl.h)
 
 core_add_library(threads)

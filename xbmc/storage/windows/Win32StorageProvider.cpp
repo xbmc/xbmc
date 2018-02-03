@@ -24,6 +24,7 @@
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include <SetupAPI.h>
 #include <ShlObj.h>

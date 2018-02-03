@@ -25,7 +25,6 @@
 #include "LanguageHook.h"
 #ifdef ENABLE_XBMC_TRACE_API
 #include "utils/log.h"
-#include "threads/ThreadLocal.h"
 #endif
 
 namespace XBMCAddonUtils
@@ -82,7 +81,7 @@ namespace XBMCAddonUtils
   }
 
 #ifdef ENABLE_XBMC_TRACE_API
-  static XbmcThreads::ThreadLocal<TraceGuard> tlParent;
+  static thread_local TraceGuard* tlParent;
 
   static char** getSpacesArray(int size)
   {
@@ -105,19 +104,19 @@ namespace XBMCAddonUtils
 
   TraceGuard::TraceGuard(const char* _function) :function(_function) 
   {
-    parent = tlParent.get();
+    parent = tlParent;
     depth = parent == NULL ? 0 : parent->depth + 1;
 
-    tlParent.set(this);
+    tlParent = this;
 
     CLog::Log(LOGDEBUG, "%sNEWADDON Entering %s", spaces[depth], function); 
   }
 
   TraceGuard::TraceGuard() :function(NULL) 
   {
-    parent = tlParent.get();
+    parent = tlParent;
     depth = parent == NULL ? 0 : parent->depth + 1;
-    tlParent.set(this);
+    tlParent = this;
     // silent
   }
 
@@ -127,7 +126,7 @@ namespace XBMCAddonUtils
       CLog::Log(LOGDEBUG, "%sNEWADDON Leaving %s", spaces[depth], function);
 
     // need to pop the stack
-    tlParent.set(this->parent);
+    tlParent = this->parent;
   }
 #endif
 
