@@ -363,6 +363,9 @@ namespace addon
    *   2) a hat direction
    *   3) a semiaxis (either the positive or negative half of an axis)
    *   4) a motor
+   *   5) a keyboard key
+   *   6) a mouse button
+   *   7) a relative pointer direction
    *
    * The type determines the fields in use:
    *
@@ -381,6 +384,15 @@ namespace addon
    *
    *    Motor:
    *       - driver index
+   *
+   *    Key:
+   *       - key code
+   *
+   *    Mouse button:
+   *       - driver index
+   *
+   *    Relative pointer direction:
+   *       - relative pointer direction
    */
   struct DriverPrimitive
   {
@@ -394,7 +406,8 @@ namespace addon
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_center(0),
       m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1)
+      m_range(1),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
     {
     }
 
@@ -408,12 +421,13 @@ namespace addon
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_center(0),
       m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1)
+      m_range(1),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
     {
     }
 
     /*!
-     * \brief Construct a driver primitive representing a button
+     * \brief Construct a driver primitive representing a joystick button
      */
     static DriverPrimitive CreateButton(unsigned int buttonIndex)
     {
@@ -430,7 +444,8 @@ namespace addon
       m_hatDirection(direction),
       m_center(0),
       m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1)
+      m_range(1),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
     {
     }
 
@@ -444,7 +459,8 @@ namespace addon
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_center(center),
       m_semiAxisDirection(direction),
-      m_range(range)
+      m_range(range),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
     {
     }
 
@@ -466,7 +482,31 @@ namespace addon
       m_center(0),
       m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
       m_range(1),
-      m_keycode(std::move(keycode))
+      m_keycode(std::move(keycode)),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+    {
+    }
+
+    /*!
+     * \brief Construct a driver primitive representing a mouse button
+     */
+    static DriverPrimitive CreateMouseButton(JOYSTICK_DRIVER_MOUSE_INDEX buttonIndex)
+    {
+      return DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOUSE_BUTTON, static_cast<unsigned int>(buttonIndex));
+    }
+
+    /*!
+     * \brief Construct a driver primitive representing one of the four
+     *        direction in which a relative pointer can move
+     */
+    DriverPrimitive(JOYSTICK_DRIVER_RELPOINTER_DIRECTION direction) :
+      m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION),
+      m_driverIndex(0),
+      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1),
+      m_relPointerDirection(direction)
     {
     }
 
@@ -476,7 +516,8 @@ namespace addon
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_center(0),
       m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1)
+      m_range(1),
+      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
     {
       switch (m_type)
       {
@@ -509,6 +550,16 @@ namespace addon
           m_keycode = primitive.key.keycode;
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOUSE_BUTTON:
+        {
+          m_driverIndex = primitive.mouse.button;
+          break;
+        }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION:
+        {
+          m_relPointerDirection = primitive.relpointer.direction;
+          break;
+        }
         default:
           break;
       }
@@ -521,6 +572,8 @@ namespace addon
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION SemiAxisDirection(void) const { return m_semiAxisDirection; }
     unsigned int                       Range(void) const { return m_range; }
     const std::string&                 Keycode(void) const { return m_keycode; }
+    JOYSTICK_DRIVER_MOUSE_INDEX        MouseIndex(void) const { return static_cast<JOYSTICK_DRIVER_MOUSE_INDEX>(m_driverIndex); }
+    JOYSTICK_DRIVER_RELPOINTER_DIRECTION RelPointerDirection(void) const { return m_relPointerDirection; }
 
     bool operator==(const DriverPrimitive& other) const
     {
@@ -529,7 +582,6 @@ namespace addon
         switch (m_type)
         {
           case JOYSTICK_DRIVER_PRIMITIVE_TYPE_BUTTON:
-          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
           {
             return m_driverIndex == other.m_driverIndex;
           }
@@ -548,6 +600,18 @@ namespace addon
           case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
           {
             return m_keycode == other.m_keycode;
+          }
+          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
+          {
+            return m_driverIndex == other.m_driverIndex;
+          }
+          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOUSE_BUTTON:
+          {
+            return m_driverIndex == other.m_driverIndex;
+          }
+          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION:
+          {
+            return m_relPointerDirection == other.m_relPointerDirection;
           }
           default:
             break;
@@ -592,6 +656,16 @@ namespace addon
           driver_primitive.key.keycode[size - 1] = '\0';
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOUSE_BUTTON:
+        {
+          driver_primitive.mouse.button = static_cast<JOYSTICK_DRIVER_MOUSE_INDEX>(m_driverIndex);
+          break;
+        }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION:
+        {
+          driver_primitive.relpointer.direction = m_relPointerDirection;
+          break;
+        }
         default:
           break;
       }
@@ -610,6 +684,7 @@ namespace addon
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_semiAxisDirection;
     unsigned int                       m_range;
     std::string                        m_keycode;
+    JOYSTICK_DRIVER_RELPOINTER_DIRECTION m_relPointerDirection;
   };
 
   typedef PeripheralVector<DriverPrimitive, JOYSTICK_DRIVER_PRIMITIVE> DriverPrimitives;
@@ -716,4 +791,3 @@ namespace addon
 
 } /* namespace addon */
 } /* namespace kodi */
-
