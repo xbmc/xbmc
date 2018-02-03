@@ -86,7 +86,7 @@ java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/ca
 
 17. Install xcode 6.1.1 to /Applications/Xcode6.1.1.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
 
-18. Install xcode 7.2 to /Applications/Xcode.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
+18. Install xcode 9.0 to /Applications/Xcode9.0.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
 
 19. install brew
 

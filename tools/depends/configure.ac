@@ -315,10 +315,6 @@ case $host in
     platform_cxxflags="-no_compact_linkedit -no-cpp-precomp"
 
     case $use_xcode in
-      3.*.*)
-        platform_cc=gcc-4.2
-        platform_cxx=g++-4.2
-        ;;
       4.* | 4.*.*)
         platform_cc=llvm-gcc-4.2
         platform_cxx=llvm-g++-4.2
@@ -358,9 +354,6 @@ case $host in
 
         # now that we know which sdk, error check sdk_name
         case $use_sdk in
-          10.5);;
-          10.6);;
-          10.7);;
           10.8);;
           10.9);;
           10.10);;
@@ -416,14 +409,9 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=$target_platform$use_sdk
-          platform_min_version="$target_platform-version-min=6.0"
+          platform_min_version="$target_platform-version-min=9.0"
         fi
         case $use_sdk in
-          4.*);;
-          5.*);;
-          6.*);;
-          7.*);;
-          8.*);;
           9.*);;
           10.*);;
           11.*);;
@@ -432,15 +420,7 @@ case $host in
             ;;
         esac
 
-        # find the matching toolchain
-        case $use_xcode in
-          3.*.* | 4.* | 4.*.*)
-            use_toolchain="${use_toolchain:-`$use_xcodebuild -version -sdk $sdk_name PlatformPath`/Developer}"
-            ;;
-          *)
-            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
-            ;;
-        esac
+        use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
 
         platform_os="ios"
 
