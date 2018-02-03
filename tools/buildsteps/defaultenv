@@ -27,10 +27,10 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   osx64)
-    DEFAULT_SDK_VERSION=10.10
+    DEFAULT_SDK_VERSION=10.13
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
-    DEFAULT_XCODE_APP="Xcode6.1.1.app"
+    DEFAULT_XCODE_APP="Xcode9.0.app"
     ;;
 
   android)
