@@ -40,7 +40,7 @@ public:
   CMatrix Invert();
   CMatrix operator*(const CMatrix& other);
   CMatrix operator*=(const CMatrix& other);
-  CMatrix operator*(const float (&other)[Order][Order]);
+  virtual CMatrix operator*(const float (&other)[Order][Order]);
 
 protected:
   CMatrix() = default;
@@ -51,14 +51,23 @@ protected:
   float m_mat[Order][Order] = {};
 };
 
-class CScale : public CMatrix<4>
+class CGlMatrix : public CMatrix<4>
+{
+public:
+  CGlMatrix() = default;
+  CGlMatrix(float (&src)[3][3]);
+  virtual ~CGlMatrix() = default;
+  CMatrix operator*(const float (&other)[4][4]) override;
+};
+
+class CScale : public CGlMatrix
 {
 public:
   CScale(float x, float y, float z);
   virtual ~CScale() = default;
 };
 
-class CTranslate : public CMatrix<4>
+class CTranslate : public CGlMatrix
 {
 public:
   CTranslate(float x, float y, float z);
@@ -116,7 +125,7 @@ public:
 protected:
   void GenMat();
 
-  std::unique_ptr<CMatrix<4>> m_pMat;
+  std::unique_ptr<CGlMatrix> m_pMat;
   AVColorSpace m_colSpace = AVCOL_SPC_BT709;
   AVColorPrimaries m_colPrimariesSrc = AVCOL_PRI_BT709;
   bool m_limitedSrc = true;
