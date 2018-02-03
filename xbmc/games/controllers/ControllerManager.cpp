@@ -53,6 +53,11 @@ ControllerPtr CControllerManager::GetDefaultKeyboard()
   return GetController(DEFAULT_KEYBOARD_ID);
 }
 
+ControllerPtr CControllerManager::GetDefaultMouse()
+{
+  return GetController(DEFAULT_MOUSE_ID);
+}
+
 ControllerVector CControllerManager::GetControllers()
 {
   using namespace ADDON;

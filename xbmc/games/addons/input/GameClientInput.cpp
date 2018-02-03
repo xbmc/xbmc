@@ -250,22 +250,74 @@ void CGameClientInput::CloseKeyboard()
 
 void CGameClientInput::OpenMouse()
 {
-  //! @todo
-}
+  using namespace JOYSTICK;
 
-void CGameClientInput::CloseMouse()
-{
+  //! @todo Move to player manager
+  PERIPHERALS::PeripheralVector mice;
+  CServiceBroker::GetPeripherals().GetPeripheralsWithFeature(mice, PERIPHERALS::FEATURE_MOUSE);
+
+  if (mice.empty())
+    return;
+
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+
+  ControllerPtr controller = gameServices.GetDefaultMouse(); //! @todo
+
+  std::string controllerId = controller->ID();
+
+  game_controller controllerStruct{};
+
+  controllerStruct.controller_id        = controllerId.c_str();
+  controllerStruct.digital_button_count = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
+  controllerStruct.analog_button_count  = controller->FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
+  controllerStruct.analog_stick_count   = controller->FeatureCount(FEATURE_TYPE::ANALOG_STICK);
+  controllerStruct.accelerometer_count  = controller->FeatureCount(FEATURE_TYPE::ACCELEROMETER);
+  controllerStruct.key_count            = controller->FeatureCount(FEATURE_TYPE::KEY);
+  controllerStruct.rel_pointer_count    = controller->FeatureCount(FEATURE_TYPE::RELPOINTER);
+  controllerStruct.abs_pointer_count    = controller->FeatureCount(FEATURE_TYPE::ABSPOINTER);
+  controllerStruct.motor_count          = controller->FeatureCount(FEATURE_TYPE::MOTOR);
+
+  bool bSuccess = false;
+
   {
     CSingleLock lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
-      try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
-      catch (...) { m_gameClient.LogException("UpdatePort()"); }
+      try
+      {
+        bSuccess = m_struct.toAddon.EnableMouse(true, &controllerStruct);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableMouse()");
+      }
     }
   }
 
+  if (bSuccess)
+    m_mouse.reset(new CGameClientMouse(m_gameClient, controllerId, m_struct.toAddon, mice.at(0).get()));
+}
+
+void CGameClientInput::CloseMouse()
+{
   m_mouse.reset();
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        m_struct.toAddon.EnableMouse(false, nullptr);
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("EnableMouse()");
+      }
+    }
+  }
 }
 
 bool CGameClientInput::SetRumble(unsigned int port, const std::string& feature, float magnitude)

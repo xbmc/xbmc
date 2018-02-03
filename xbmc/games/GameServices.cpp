@@ -58,6 +58,11 @@ ControllerPtr CGameServices::GetDefaultKeyboard()
   return m_controllerManager.GetDefaultKeyboard();
 }
 
+ControllerPtr CGameServices::GetDefaultMouse()
+{
+  return m_controllerManager.GetDefaultMouse();
+}
+
 ControllerVector CGameServices::GetControllers()
 {
   return m_controllerManager.GetControllers();

@@ -26,16 +26,19 @@
 #include "input/Key.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI;
 using namespace GAME;
 
 CGameClientMouse::CGameClientMouse(const CGameClient &gameClient,
+                                   std::string controllerId,
                                    const KodiToAddonFuncTable_Game &dllStruct,
                                    MOUSE::IMouseInputProvider *inputProvider) :
   m_gameClient(gameClient),
+  m_controllerId(std::move(controllerId)),
   m_dllStruct(dllStruct),
-  m_inputProvider(inputProvider),
-  m_controllerId() //! @todo
+  m_inputProvider(inputProvider)
 {
   inputProvider->RegisterMouseHandler(this, false);
 }
@@ -60,10 +63,12 @@ bool CGameClientMouse::OnMotion(const std::string& relpointer, int dx, int dy)
 
   bool bHandled = false;
 
+  const std::string controllerId = ControllerID();
+
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_RELATIVE_POINTER;
-  event.port            = GAME_INPUT_PORT_MOUSE;
+  event.port            = -1; //! @todo Remove in port refactor
   event.controller_id   = m_controllerId.c_str();
   event.feature_name    = relpointer.c_str();
   event.rel_pointer.x   = dx;
@@ -94,7 +99,7 @@ bool CGameClientMouse::OnButtonPress(const std::string& button)
   game_input_event event;
 
   event.type                   = GAME_INPUT_EVENT_DIGITAL_BUTTON;
-  event.port                   = GAME_INPUT_PORT_MOUSE;
+  event.port                   = -1; //! @todo Remove in port refactor
   event.controller_id          = m_controllerId.c_str();
   event.feature_name           = button.c_str();
   event.digital_button.pressed = true;
@@ -116,7 +121,7 @@ void CGameClientMouse::OnButtonRelease(const std::string& button)
   game_input_event event;
 
   event.type                   = GAME_INPUT_EVENT_DIGITAL_BUTTON;
-  event.port                   = GAME_INPUT_PORT_MOUSE;
+  event.port                   = -1; //! @todo Remove in port refactor
   event.controller_id          = m_controllerId.c_str();
   event.feature_name           = button.c_str();
   event.digital_button.pressed = false;

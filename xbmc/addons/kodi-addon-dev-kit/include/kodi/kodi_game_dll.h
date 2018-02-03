@@ -166,6 +166,16 @@ bool HasFeature(const char* controller_id, const char* feature_name);
 bool EnableKeyboard(bool enable, const game_controller* controller);
 
 /*!
+ * \brief Enable/disable mouse input using the specified controller
+ *
+ * \param enable True to enable input, false otherwise
+ * \param controller The controller info if enabling, or unused if disabling
+ *
+ * \return True if mouse input was enabled, false otherwise
+ */
+bool EnableMouse(bool enable, const game_controller* controller);
+
+/*!
  * \brief Notify the add-on of an input event
  *
  * \param event The input event
@@ -260,6 +270,7 @@ void __declspec(dllexport) get_addon(void* ptr)
   pClient->toAddon.UpdatePort               = UpdatePort;
   pClient->toAddon.HasFeature               = HasFeature;
   pClient->toAddon.EnableKeyboard           = EnableKeyboard;
+  pClient->toAddon.EnableMouse              = EnableMouse;
   pClient->toAddon.InputEvent               = InputEvent;
   pClient->toAddon.SerializeSize            = SerializeSize;
   pClient->toAddon.Serialize                = Serialize;

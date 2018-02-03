@@ -162,7 +162,6 @@ typedef enum GAME_HW_CONTEXT_TYPE
 typedef enum GAME_INPUT_PORT
 {
   GAME_INPUT_PORT_JOYSTICK_START = 0, // Non-negative values are for joystick ports
-  GAME_INPUT_PORT_MOUSE = -2,
 } GAME_INPUT_PORT;
 
 typedef enum GAME_INPUT_EVENT_SOURCE
@@ -502,6 +501,7 @@ typedef struct KodiToAddonFuncTable_Game
   void        (__cdecl* UpdatePort)(int, bool, const game_controller*);
   bool        (__cdecl* HasFeature)(const char* controller_id, const char* feature_name);
   bool        (__cdecl* EnableKeyboard)(bool, const game_controller*);
+  bool        (__cdecl* EnableMouse)(bool, const game_controller*);
   bool        (__cdecl* InputEvent)(const game_input_event*);
   size_t      (__cdecl* SerializeSize)(void);
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);
