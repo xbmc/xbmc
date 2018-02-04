@@ -101,14 +101,9 @@ AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type
 
 void CBinaryAddonCache::OnEvent(const AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::ReInstalled) ||
-      typeid(event) == typeid(AddonEvents::UnInstalled))
-  {
-    Update();
-  }
-  else if (typeid(event) == typeid(AddonEvents::Enabled) ||
-           typeid(event) == typeid(AddonEvents::Disabled) ||
-           typeid(event) == typeid(AddonEvents::ReInstalled))
+  if (typeid(event) == typeid(AddonEvents::Enabled) ||
+      typeid(event) == typeid(AddonEvents::Disabled) ||
+      typeid(event) == typeid(AddonEvents::ReInstalled))
   {
     for (auto &type : ADDONS_TO_CACHE)
     {
@@ -118,6 +113,10 @@ void CBinaryAddonCache::OnEvent(const AddonEvent& event)
         break;
       }
     }
+  }
+  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+  {
+    Update();
   }
 }
 
