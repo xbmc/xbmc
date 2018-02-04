@@ -226,6 +226,34 @@ void CMatrix<Order>::Invert(float (&dst)[Order][Order], float (&src)[Order][Orde
   }
 }
 
+CGlMatrix::CGlMatrix(float (&src)[3][3]) : CMatrix<4>(src)
+{
+
+}
+
+CGlMatrix::CMatrix CGlMatrix::operator*(const float (&other)[4][4])
+{
+  CGlMatrix ret;
+
+  float (&left)[4][4] = m_mat;
+  const float (&right)[4][4] = other;
+
+  ret.m_mat[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] + left[0][2] * right[2][0];
+  ret.m_mat[0][1] = left[0][0] * right[0][1] + left[0][1] * right[1][1] + left[0][2] * right[2][1];
+  ret.m_mat[0][2] = left[0][0] * right[0][2] + left[0][1] * right[1][2] + left[0][2] * right[2][2];
+  ret.m_mat[0][3] = left[0][0] * right[0][3] + left[0][1] * right[1][3] + left[0][2] * right[2][3] + left[0][3];
+  ret.m_mat[1][0] = left[1][0] * right[0][0] + left[1][1] * right[1][0] + left[1][2] * right[2][0];
+  ret.m_mat[1][1] = left[1][0] * right[0][1] + left[1][1] * right[1][1] + left[1][2] * right[2][1];
+  ret.m_mat[1][2] = left[1][0] * right[0][2] + left[1][1] * right[1][2] + left[1][2] * right[2][2];
+  ret.m_mat[1][3] = left[1][0] * right[0][3] + left[1][1] * right[1][3] + left[1][2] * right[2][3] + left[1][3];
+  ret.m_mat[2][0] = left[2][0] * right[0][0] + left[2][1] * right[1][0] + left[2][2] * right[2][0];
+  ret.m_mat[2][1] = left[2][0] * right[0][1] + left[2][1] * right[1][1] + left[2][2] * right[2][1];
+  ret.m_mat[2][2] = left[2][0] * right[0][2] + left[2][1] * right[1][2] + left[2][2] * right[2][2];
+  ret.m_mat[2][3] = left[2][0] * right[0][3] + left[2][1] * right[1][3] + left[2][2] * right[2][3] + left[2][3];
+
+  return ret;
+}
+
 CScale::CScale(float x, float y, float z)
 {
   m_mat[0][0] = x;
@@ -426,7 +454,7 @@ void CConvertMatrix::GenMat()
     mConvRGB = tmp.Get();
   }
 
-  m_pMat.reset(new CMatrix<4>(mConvRGB.Get()));
+  m_pMat.reset(new CGlMatrix(mConvRGB.Get()));
 
   CTranslate trans(0, -0.5, -0.5);
   *m_pMat *= trans;
@@ -438,22 +466,22 @@ void CConvertMatrix::GenMat()
     {
       CScale scale(4080.0f / (3760 - 256), 4080.0f / (3840 - 256), 4080.0f / (3840 - 256));
       CTranslate trans(- 256.0f / 4080, - 256.0f / 4080, - 256.0f / 4080);
-      *m_pMat *= trans;
       *m_pMat *= scale;
+      *m_pMat *= trans;
     }
     else if (m_srcBits == 10)
     {
       CScale scale(1020.0f / (940 - 64), 1020.0f / (960 - 64), 1020.0f / (960 - 64));
       CTranslate trans(- 64.0f / 1020, - 64.0f / 1020, - 64.0f / 1020);
-      *m_pMat *= trans;
       *m_pMat *= scale;
+      *m_pMat *= trans;
     }
     else
     {
       CScale scale(255.0f / (235 - 16), 255.0f / (240 - 16), 255.0f / (240 - 16));
       CTranslate trans(- 16.0f / 255, - 16.0f / 255, - 16.0f / 255);
-      *m_pMat *= trans;
       *m_pMat *= scale;
+      *m_pMat *= trans;
     }
   }
 
@@ -473,7 +501,8 @@ void CConvertMatrix::GetColMajor(float (&mat)[4][4])
   CScale contrast(m_contrast, m_contrast, m_contrast);
   CTranslate black(m_black, m_black, m_black);
 
-  CMatrix<4> ret = contrast*black;
+  CGlMatrix ret = contrast;
+  ret *= black;
   if (m_limitedDst)
   {
     float valScale = (235 - 16) / 255.0f;
