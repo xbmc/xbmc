@@ -38,7 +38,8 @@ build for the first Raspberry Pi, the commands have to be adapted to use
        --with-toolchain=$RPI_DEV/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf \
        --with-firmware=$RPI_DEV/firmware \
        --with-platform=raspberry-pi2 \
-       --build=i686-linux
+       --build=i686-linux \
+       --disable-debug
 
     $ make
     $ cd ../..
