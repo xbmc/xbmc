@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile size-max.patch
+DEPS= ../../Makefile.include Makefile size-max.patch 02-darwin-getentropy.patch
 
 # lib name, version
 LIBNAME=gnutls
@@ -33,10 +33,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../size-max.patch
+	cd $(PLATFORM); patch -p1 -i ../02-darwin-getentropy.patch
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq (darwin, $(findstring darwin, $(HOST)))
-	cd $(PLATFORM); sed -ie "s/HAVE_GETENTROPY/HAVE_GETENTROPY_NOPE/" config.h
-endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
