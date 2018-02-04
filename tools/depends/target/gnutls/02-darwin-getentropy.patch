@@ -1,0 +1,18 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -220,6 +220,7 @@
+ 		   rnd_variant=getrandom],
+ 		  [AC_MSG_RESULT(no)])
+ 
++if test "x$have_macosx" != "xyes"; then
+ AC_MSG_CHECKING([for getentropy])
+ AC_LINK_IFELSE([AC_LANG_PROGRAM([
+ 	   #include <unistd.h>
+@@ -233,6 +234,7 @@
+ 		   AC_DEFINE([HAVE_GETENTROPY], 1, [Enable the OpenBSD getentropy function])
+ 		   rnd_variant=getentropy],
+ 		  [AC_MSG_RESULT(no)])
++fi
+ 
+ AM_CONDITIONAL(HAVE_GETENTROPY, test "$rnd_variant" = "getentropy")
+ 
