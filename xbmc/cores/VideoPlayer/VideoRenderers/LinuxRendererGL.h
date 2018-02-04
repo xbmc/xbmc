@@ -132,6 +132,7 @@ protected:
   virtual void LoadShaders(int field=FIELD_FULL);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
   // textures
   virtual bool UploadTexture(int index);
@@ -213,6 +214,12 @@ protected:
 
     CVideoBuffer *videoBuffer;
     bool loaded;
+
+    AVColorPrimaries m_srcPrimaries;
+    AVColorSpace m_srcColSpace;
+    int m_srcBits = 8;
+    int m_srcTextureBits = 8;
+    bool m_srcFullRange;
   };
 
   // YV12 decoder textures
@@ -233,10 +240,6 @@ protected:
   unsigned int m_ditherDepth;
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
-  AVColorSpace m_srcColSpace;
-  int m_srcBits = 8;
-  int m_srcTextureBits = 8;
-  bool m_srcFullRange;
 
   // clear colour for "black" bars
   float m_clearColour;

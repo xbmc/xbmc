@@ -250,9 +250,8 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsStereoMode(picture.stereoMode);
 
-  m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
-  m_srcFullRange = picture.color_range == 1;
+  m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries),
+                                   picture.iWidth, picture.iHeight);
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -321,11 +320,10 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, d
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
   buf.loaded = false;
-
-  m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
-  m_srcFullRange = picture.color_range == 1;
-  m_srcBits = picture.colorBits;
+  buf.m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  buf.m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+  buf.m_srcFullRange = picture.color_range == 1;
+  buf.m_srcBits = picture.colorBits;
 }
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
@@ -917,6 +915,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       {
         m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
                                                 shaderFormat, m_nonLinStretch,
+                                                AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
                                                 m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -940,7 +939,8 @@ void CLinuxRendererGL::LoadShaders(int field)
     if (!m_pYUVShader)
     {
       m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, shaderFormat,
-                                                  m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS, out);
+                                                  m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
+                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, out);
 
       if (!m_cmsOn)
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -1052,7 +1052,15 @@ bool CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
+  YUVBUFFER &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
 
   if (m_reloadShaders)
   {
@@ -1080,8 +1088,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
-  m_pYUVShader->SetColSpace(m_srcColSpace, m_srcPrimaries, m_srcBits, !m_srcFullRange,
-                            m_srcTextureBits, AVCOL_PRI_BT709);
+  m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
@@ -1197,7 +1204,15 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
+  YUVBUFFER &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
 
   if (m_reloadShaders)
   {
@@ -1255,8 +1270,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
-  m_pYUVShader->SetColSpace(m_srcColSpace, m_srcPrimaries, m_srcBits, !m_srcFullRange,
-                            m_srcTextureBits, AVCOL_PRI_BT709);
+  m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
 
   if (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
@@ -1791,6 +1805,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
+  YUVBUFFER &buf = m_buffers[index];
   YuvImage &im = m_buffers[index].image;
   GLuint *pbo = m_buffers[index].pbo;
 
@@ -1804,24 +1819,24 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   switch (m_format)
   {
     case AV_PIX_FMT_YUV420P16:
-      m_srcTextureBits = 16;
+      buf.m_srcTextureBits = 16;
       break;
     case AV_PIX_FMT_YUV420P14:
-      m_srcTextureBits = 14;
+      buf.m_srcTextureBits = 14;
       break;
     case AV_PIX_FMT_YUV420P12:
-      m_srcTextureBits = 12;
+      buf.m_srcTextureBits = 12;
       break;
     case AV_PIX_FMT_YUV420P10:
-      m_srcTextureBits = 10;
+      buf.m_srcTextureBits = 10;
       break;
     case AV_PIX_FMT_YUV420P9:
-      m_srcTextureBits = 9;
+      buf.m_srcTextureBits = 9;
       break;
     default:
       break;
   }
-  if (m_srcTextureBits > 8)
+  if (buf.m_srcTextureBits > 8)
     im.bpp = 2;
   else
     im.bpp = 1;
@@ -2687,3 +2702,15 @@ void CLinuxRendererGL::DeleteCLUT()
   }
 }
 
+AVColorPrimaries CLinuxRendererGL::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height)
+{
+  AVColorPrimaries ret = srcPrimaries;
+  if (ret == AVCOL_PRI_UNSPECIFIED)
+  {
+    if (width > 1024 || height >= 600)
+      ret = AVCOL_PRI_BT709;
+    else
+      ret = AVCOL_PRI_BT470BG;
+  }
+  return ret;
+}

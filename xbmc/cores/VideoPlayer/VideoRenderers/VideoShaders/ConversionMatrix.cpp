@@ -349,27 +349,90 @@ PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]) : P
 
 //------------------------------------------------------------------------------
 
-void CConvertMatrix::SetColSpace(AVColorSpace colSpace, AVColorPrimaries colPrimaries, int bits, bool limited,
-                                 int textuteBits,
-                                 AVColorPrimaries destPrimaries)
+void CConvertMatrix::SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits)
 {
   if (m_colSpace == colSpace &&
-      m_colPrimariesSrc == colPrimaries &&
       m_srcBits == bits &&
       m_limitedSrc == limited &&
       m_srcTextureBits == textuteBits &&
-      m_colPrimariesDst == destPrimaries &&
       m_pMat)
     return;
   
   m_colSpace = colSpace;
-  m_colPrimariesSrc = colPrimaries;
   m_srcBits = bits;
   m_limitedSrc = limited;
   m_srcTextureBits = textuteBits;
-  m_colPrimariesDst = destPrimaries;
 
   GenMat();
+}
+
+void CConvertMatrix::SetColPrimaries(AVColorPrimaries dst, AVColorPrimaries src)
+{
+  m_colPrimariesDst = dst;
+  m_colPrimariesSrc = src;
+
+  if (m_colPrimariesDst != m_colPrimariesSrc)
+  {
+    Primaries primToRGB;
+    Primaries primToXYZ;
+    switch (m_colPrimariesSrc)
+    {
+      case AVCOL_PRI_BT709:
+        primToXYZ = PrimariesBT709;
+        m_gammaSrc = 2.2;
+        break;
+      case AVCOL_PRI_BT470BG:
+        primToXYZ = PrimariesBT610_625;
+        m_gammaSrc = 2.2;
+        break;
+      case AVCOL_PRI_SMPTE170M:
+      case AVCOL_PRI_SMPTE240M:
+        primToXYZ = PrimariesBT610_525;
+        m_gammaSrc = 2.2;
+        break;
+      case AVCOL_PRI_BT2020:
+        primToXYZ = PrimariesBT2020;
+        m_gammaSrc = 2.4;
+        break;
+      default:
+        primToXYZ = PrimariesBT709;
+        m_gammaSrc = 2.2;
+        break;
+    }
+    switch (m_colPrimariesDst)
+    {
+      case AVCOL_PRI_BT709:
+        primToRGB = PrimariesBT709;
+        m_gammaDst = 2.2;
+        break;
+      case AVCOL_PRI_BT470BG:
+        primToRGB = PrimariesBT610_625;
+        m_gammaDst = 2.2;
+        break;
+      case AVCOL_PRI_SMPTE170M:
+      case AVCOL_PRI_SMPTE240M:
+        primToRGB = PrimariesBT610_525;
+        m_gammaDst = 2.2;
+        break;
+      case AVCOL_PRI_BT2020:
+        primToRGB = PrimariesBT2020;
+        m_gammaDst = 2.4;
+        break;
+      default:
+        primToRGB = PrimariesBT709;
+        m_gammaDst = 2.2;
+        break;
+    }
+    PrimaryToXYZ toXYZ(primToXYZ.primaries, primToXYZ.whitepoint);
+    PrimaryToRGB toRGB(primToRGB.primaries, primToRGB.whitepoint);
+
+    CMatrix<3> tmp = toRGB*toXYZ;
+    m_pMatPrim.reset(new CMatrix<3>(tmp));
+  }
+  else
+  {
+    m_pMatPrim.reset();
+  }
 }
 
 void CConvertMatrix::SetParams(float contrast, float black, bool limited)
@@ -404,55 +467,6 @@ void CConvertMatrix::GenMat()
   }
 
   ConversionToRGB mConvRGB(convYCbCr.Kr, convYCbCr.Kb);
-
-  if (m_colPrimariesDst != m_colPrimariesSrc)
-  {
-    Primaries primToRGB;
-    Primaries primToXYZ;
-    switch (m_colPrimariesSrc)
-    {
-      case AVCOL_PRI_BT709:
-        primToXYZ = PrimariesBT709;
-        break;
-      case AVCOL_PRI_BT470BG:
-        primToXYZ = PrimariesBT610_625;
-        break;
-      case AVCOL_PRI_SMPTE170M:
-      case AVCOL_PRI_SMPTE240M:
-        primToXYZ = PrimariesBT610_525;
-        break;
-      case AVCOL_PRI_BT2020:
-        primToXYZ = PrimariesBT2020;
-        break;
-      default:
-        primToXYZ = PrimariesBT709;
-        break;
-    }
-    switch (m_colPrimariesDst)
-    {
-      case AVCOL_PRI_BT709:
-        primToRGB = PrimariesBT709;
-        break;
-      case AVCOL_PRI_BT470BG:
-        primToRGB = PrimariesBT610_625;
-        break;
-      case AVCOL_PRI_SMPTE170M:
-      case AVCOL_PRI_SMPTE240M:
-        primToRGB = PrimariesBT610_525;
-        break;
-      case AVCOL_PRI_BT2020:
-        primToRGB = PrimariesBT2020;
-        break;
-      default:
-        primToRGB = PrimariesBT709;
-        break;
-    }
-    PrimaryToXYZ toXYZ(primToXYZ.primaries, primToXYZ.whitepoint);
-    PrimaryToRGB toRGB(primToRGB.primaries, primToRGB.whitepoint);
-
-    CMatrix<3> tmp = toRGB*toXYZ*mConvRGB;
-    mConvRGB = tmp.Get();
-  }
 
   m_pMat.reset(new CGlMatrix(mConvRGB.Get()));
 
@@ -493,7 +507,7 @@ void CConvertMatrix::GenMat()
   }
 }
 
-void CConvertMatrix::GetColMajor(float (&mat)[4][4])
+void CConvertMatrix::GetYuvMat(float (&mat)[4][4])
 {
   if (!m_pMat)
     return;
@@ -529,4 +543,28 @@ void CConvertMatrix::GetColMajor(float (&mat)[4][4])
   mat[1][3] = 0.0f;
   mat[2][3] = 0.0f;
   mat[3][3] = 1.0f;
+}
+
+bool CConvertMatrix::GetPrimMat(float (&mat)[3][3])
+{
+  if (!m_pMatPrim)
+    return false;
+
+  float (&src)[3][3] = m_pMatPrim->Get();
+
+  for (int i=0; i<3; ++i)
+    for (int j=0; j<3; ++j)
+      mat[i][j] = src[j][i];
+
+  return true;
+}
+
+float CConvertMatrix::GetGammaSrc()
+{
+  return m_gammaSrc;
+}
+
+float CConvertMatrix::GetGammaDst()
+{
+  return m_gammaDst;
 }
