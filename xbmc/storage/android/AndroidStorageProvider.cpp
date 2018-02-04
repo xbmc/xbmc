@@ -285,28 +285,47 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
 
         // What mount points are rejected
         for (unsigned int i=0; i < ARRAY_SIZE(mountBL); ++i)
+        {
           if (StringUtils::StartsWithNoCase(mountStr, mountBL[i]))
+          {
             bl_ok = false;
+            break;
+          }
+        }
 
         if (bl_ok)
         {
           // What filesystems are accepted
           bool fsok = false;
           for (unsigned int i=0; i < ARRAY_SIZE(typeWL); ++i)
+          {
             if (StringUtils::StartsWithNoCase(fsStr, typeWL[i]))
-              continue;
-
+            {
+              fsok = true;
+              break;
+            }
+          }
           // What devices are accepted
           bool devok = false;
           for (unsigned int i=0; i < ARRAY_SIZE(deviceWL); ++i)
+          {
             if (StringUtils::StartsWithNoCase(deviceStr, deviceWL[i]))
+            {
               devok = true;
+              break;
+            }
+          }
 
           // What mount points are accepted
           bool mountok = false;
           for (unsigned int i=0; i < ARRAY_SIZE(mountWL); ++i)
+          {
             if (StringUtils::StartsWithNoCase(mountStr, mountWL[i]))
+            {
               mountok = true;
+              break;
+            }
+          }
 
           if(devok && (fsok || mountok))
           {
