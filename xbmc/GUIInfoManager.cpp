@@ -1578,17 +1578,17 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.RatingAndVotes`</b>,
 ///                  \anchor MusicPlayer_RatingAndVotes
 ///                  _string_,
-///     IMDb user rating and votes of currently playing song, if it's in the database
+///     Returns the scraped rating and votes of currently playing song\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.UserRating`</b>,
 ///                  \anchor MusicPlayer_UserRating
 ///                  _string_,
-///     Returns the user rating of the currently playing song
+///     Returns the scraped rating of the currently playing song
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Votes`</b>,
 ///                  \anchor MusicPlayer_Votes
 ///                  _string_,
-///     IMDb votes of currently playing song, if it's in the database
+///     Returns the scraped votes of currently playing song\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.DiscNumber`</b>,
 ///                  \anchor MusicPlayer_DiscNumber
@@ -1619,7 +1619,8 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.Exists(relative,position)`</b>,
 ///                  \anchor MusicPlayer_Exists
 ///                  _boolean_,
-///     Returns true if the music players playlist has a song queued in position (number).
+///     Returns true if the currently playing playlist has a song queued at the given position.
+///     It is possible to define whether the position is relative or not, default is false.
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.HasPrevious`</b>,
 ///                  \anchor MusicPlayer_HasPrevious
@@ -1634,12 +1635,12 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.PlayCount`</b>,
 ///                  \anchor MusicPlayer_PlayCount
 ///                  _integer_,
-///     Playcount of  , if it's in the database
+///     Returns the play count of currently playing song\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.LastPlayed`</b>,
 ///                  \anchor MusicPlayer_LastPlayed
 ///                  _string_,
-///     Last play date of currently playing song, if it's in the database
+///     Returns the last play date of currently playing song\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.TrackNumber`</b>,
 ///                  \anchor MusicPlayer_TrackNumber
@@ -1874,7 +1875,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.Rating`</b>,
 ///                  \anchor VideoPlayer_Rating
 ///                  _string_,
-///     IMDb user rating of current movie\, if it's in the database
+///     Returns the scraped rating of current movie\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.UserRating`</b>,
 ///                  \anchor VideoPlayer_UserRating
@@ -1884,12 +1885,12 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.Votes`</b>,
 ///                  \anchor VideoPlayer_Votes
 ///                  _string_,
-///     IMDb votes of current movie\, if it's in the database
+///     Returns the scraped votes of current movie\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.RatingAndVotes`</b>,
 ///                  \anchor VideoPlayer_RatingAndVotes
 ///                  _string_,
-///     IMDb user rating and votes of current movie\, if it's in the database
+///     Returns the scraped rating and votes of current movie\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.mpaa`</b>,
 ///                  \anchor VideoPlayer_mpaa
@@ -1899,7 +1900,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.IMDBNumber`</b>,
 ///                  \anchor VideoPlayer_IMDBNumber
 ///                  _string_,
-///     The IMDB iD of the current movie\, if it's in the database
+///     The IMDb ID of the current movie\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Top250`</b>,
 ///                  \anchor VideoPlayer_Top250
@@ -3298,7 +3299,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Rating`</b>,
 ///                  \anchor ListItem_Rating
 ///                  _string_,
-///     Returns the IMDB rating of the currently selected movie in a container
+///     Returns the scraped rating of the currently selected movie in a container
 ///   }
 ///   \table_row3{   <b>`ListItem.Set`</b>,
 ///                  \anchor ListItem_Set
@@ -3318,12 +3319,12 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Votes`</b>,
 ///                  \anchor ListItem_Votes
 ///                  _string_,
-///     Returns the IMDB votes of the currently selected movie in a container
+///     Returns the scraped votes of the currently selected movie in a container
 ///   }
 ///   \table_row3{   <b>`ListItem.RatingAndVotes`</b>,
 ///                  \anchor ListItem_RatingAndVotes
 ///                  _string_,
-///     Returns the IMDB rating and votes of the currently selected movie in a
+///     Returns the scraped rating and votes of the currently selected movie in a
 ///     container
 ///   }
 ///   \table_row3{   <b>`ListItem.Mood`</b>,
@@ -3418,7 +3419,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.IMDBNumber`</b>,
 ///                  \anchor ListItem_IMDBNumber
 ///                  _string_,
-///     The IMDB iD of the selected Video in a container
+///     The IMDb ID of the selected Video in a container
 ///   }
 ///   \table_row3{   <b>`ListItem.EpisodeName`</b>,
 ///                  \anchor ListItem_EpisodeName
@@ -4034,7 +4035,7 @@ const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
 ///   \table_row3{   <b>`Fanart.Image`</b>,
 ///                  \anchor Fanart_Image
 ///                  _string_,
-///     Returns the fanart image for the parent TV Show
+///     Returns the fanart image\, if any
 ///   }
 /// \table_end
 ///
