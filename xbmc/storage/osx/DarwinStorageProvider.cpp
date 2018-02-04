@@ -181,9 +181,9 @@ std::vector<std::string> CDarwinStorageProvider::GetDiskUsage()
   char line[1024];
 
 #ifdef TARGET_DARWIN_IOS
-  FILE* pipe = popen("df -ht hfs", "r");
+  FILE* pipe = popen("df -ht hfs,apfs", "r");
 #else
-  FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
+  FILE* pipe = popen("df -HT ufs,cd9660,hfs,apfs,udf", "r");
 #endif
 
   if (pipe)
