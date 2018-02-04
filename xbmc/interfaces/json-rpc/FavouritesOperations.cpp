@@ -21,6 +21,7 @@
 #include "FavouritesOperations.h"
 #include "favourites/FavouritesService.h"
 #include "input/WindowTranslator.h"
+#include "URL.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
@@ -53,7 +54,12 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
 
     std::string function;
     std::vector<std::string> parameters;
-    CUtil::SplitExecFunction(item->GetPath(), function, parameters);
+
+    //FIXME: this path is internal to the favourites system and should not be parsed and exposed
+    CURL url(item->GetPath());
+    std::string internalPath = CURL::Decode(url.GetHostName());
+
+    CUtil::SplitExecFunction(internalPath, function, parameters);
     if (parameters.empty())
       continue;
 
