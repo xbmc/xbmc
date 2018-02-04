@@ -370,20 +370,20 @@ bool CScraper::Load()
     //! @todo this routine assumes that deps are a single level, and assumes the dep is installed.
     //!       1. Does it make sense to have recursive dependencies?
     //!       2. Should we be checking the dep versions or do we assume it is ok?
-    ADDONDEPS deps = GetDeps();
-    ADDONDEPS::iterator itr = deps.begin();
+    auto deps = GetDependencies();
+    auto itr = deps.begin();
     while (itr != deps.end())
     {
-      if (itr->first == "xbmc.metadata")
+      if (itr->id == "xbmc.metadata")
       {
         ++itr;
         continue;
       }
       AddonPtr dep;
 
-      bool bOptional = itr->second.second;
+      bool bOptional = itr->optional;
 
-      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).first, dep))
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))

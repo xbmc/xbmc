@@ -94,9 +94,9 @@ TEST_F(TestAddonFactory, ShouldReturnDependencyInfoWhenNoExtensions)
   plugin.num_imports = 1;
   plugin.imports = &import;
 
-  ADDONDEPS expected = {{"a.b", {AddonVersion{"1.2.3"}, false}}};
+  std::vector<DependencyInfo> expected = {{"a.b", AddonVersion{"1.2.3"}, false}};
   auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);
-  EXPECT_EQ(expected, addon->GetDeps());
+  EXPECT_EQ(expected, addon->GetDependencies());
 }
 
 
@@ -108,9 +108,9 @@ TEST_F(TestAddonFactory, ShouldAcceptUnversionedDependencies)
   plugin.num_imports = 1;
   plugin.imports = &import;
 
-  ADDONDEPS expected = {{"a.b", {AddonVersion{"0.0.0"}, false}}};
+  std::vector<DependencyInfo> expected = {{"a.b", AddonVersion{"0.0.0"}, false}};
   auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);
-  EXPECT_EQ(expected, addon->GetDeps());
+  EXPECT_EQ(expected, addon->GetDependencies());
 }
 
 

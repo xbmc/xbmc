@@ -93,10 +93,10 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
   {
     // Add all game client dependencies
     //! @todo Compare helper version with required dependency
-    const ADDONDEPS& dependencies = m_parent->GetDeps();
-    for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
+    const auto& dependencies = m_parent->GetDependencies();
+    for (auto it = dependencies.begin(); it != dependencies.end(); ++it)
     {
-      const std::string& strAddonId = it->first;
+      const std::string& strAddonId = it->id;
       AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
       {
@@ -128,10 +128,10 @@ const char** CGameClientProperties::GetResourceDirectories(void)
   if (m_resourceDirectories.empty())
   {
     // Add all other game resources
-    const ADDONDEPS& dependencies = m_parent->GetDeps();
-    for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
+    const auto& dependencies = m_parent->GetDependencies();
+    for (auto it = dependencies.begin(); it != dependencies.end(); ++it)
     {
-      const std::string& strAddonId = it->first;
+      const std::string& strAddonId = it->id;
       AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES))
       {

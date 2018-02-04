@@ -73,7 +73,7 @@ public:
   std::string Origin() const override { return m_addonInfo.Origin(); }
   uint64_t PackageSize() const override { return m_addonInfo.PackageSize(); }
   const InfoMap& ExtraInfo() const override { return m_addonInfo.ExtraInfo(); }
-  const ADDONDEPS& GetDeps() const override { return m_addonInfo.GetDeps(); }
+  const std::vector<DependencyInfo>& GetDependencies() const override { return m_addonInfo.GetDependencies(); }
 
   std::string FanArt() const override
   {

@@ -237,13 +237,13 @@ static CVariant Serialize(const AddonPtr& addon)
   variant["fanart"] = addon->FanArt();
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : addon->GetDeps())
+  for (const auto& dep : addon->GetDependencies())
   {
-    CVariant dep(CVariant::VariantTypeObject);
-    dep["addonid"] = kv.first;
-    dep["version"] = kv.second.first.asString();
-    dep["optional"] = kv.second.second;
-    variant["dependencies"].push_back(std::move(dep));
+    CVariant info(CVariant::VariantTypeObject);
+    info["addonid"] = dep.id;
+    info["version"] = dep.requiredVersion.asString();
+    info["optional"] = dep.optional;
+    variant["dependencies"].push_back(std::move(info));
   }
   if (addon->Broken().empty())
     variant["broken"] = false;

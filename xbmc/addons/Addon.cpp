@@ -386,10 +386,11 @@ std::string CAddon::LibPath() const
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
 {
-  const ADDON::ADDONDEPS &deps = GetDeps();
-  ADDONDEPS::const_iterator it = deps.find(dependencyID);
+  const auto& deps = GetDependencies();
+  auto it = std::find_if(deps.begin(), deps.end(), [&](const DependencyInfo& other) { return other.id == dependencyID; });
+
   if (it != deps.end())
-    return it->second.first;
+    return it->requiredVersion;
   return AddonVersion("0.0.0");
 }
 
