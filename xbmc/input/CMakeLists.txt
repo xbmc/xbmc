@@ -19,8 +19,6 @@ set(SOURCES Action.cpp
             KeyboardTranslator.cpp
             Keymap.cpp
             KeymapEnvironment.cpp
-            MouseStat.cpp
-            MouseTranslator.cpp
             TouchTranslator.cpp
             WindowKeymap.cpp
             WindowTranslator.cpp
@@ -57,8 +55,6 @@ set(HEADERS hardware/IHardwareInput.h
             KeyboardTranslator.h
             Keymap.h
             KeymapEnvironment.h
-            MouseStat.h
-            MouseTranslator.h
             TouchTranslator.h
             WindowTranslator.h
             WindowKeymap.h

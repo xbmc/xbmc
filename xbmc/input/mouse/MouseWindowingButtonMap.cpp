@@ -19,7 +19,7 @@
  */
 
 #include "MouseWindowingButtonMap.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 
 #include <algorithm>
 

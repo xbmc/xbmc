@@ -23,7 +23,7 @@
 #include "XBMCApp.h"
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 #include "ServiceBroker.h"
 #include "windowing/android/WinSystemAndroid.h"
 

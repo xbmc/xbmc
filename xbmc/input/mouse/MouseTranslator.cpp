@@ -19,8 +19,8 @@
  */
 
 #include "MouseTranslator.h"
-#include "Key.h"
 #include "MouseStat.h"
+#include "input/Key.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"

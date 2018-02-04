@@ -24,7 +24,7 @@
 
 #include <linux/input-event-codes.h>
 
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

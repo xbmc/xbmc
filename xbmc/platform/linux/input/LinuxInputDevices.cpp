@@ -90,11 +90,11 @@ typedef unsigned long kernel_ulong_t;
 #include <stdio.h>
 
 #include "guilib/GraphicContext.h"
+#include "input/mouse/MouseStat.h"
+#include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/XBMC_keysym.h"
 #include "LinuxInputDevices.h"
-#include "input/MouseStat.h"
 #include "utils/log.h"
-#include "input/touch/generic/GenericTouchActionHandler.h"
 #include "settings/AdvancedSettings.h"
 
 #ifndef BITS_PER_LONG

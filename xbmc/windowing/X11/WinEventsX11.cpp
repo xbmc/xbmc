@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
 

@@ -32,14 +32,14 @@
 #include "IButtonMapper.h"
 #include "Key.h"
 #include "KeyboardTranslator.h"
-#include "MouseTranslator.h"
 #include "WindowTranslator.h"
-#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
-#include "Util.h"
+#include "input/mouse/MouseTranslator.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "FileItem.h"
+#include "Util.h"
 
 using namespace KODI;
 
