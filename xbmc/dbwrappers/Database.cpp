@@ -31,7 +31,7 @@
 #include "DbUrl.h"
 #include "ServiceBroker.h"
 
-#ifdef HAS_MYSQL
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB) 
 #include "mysqldataset.h"
 #endif
 
@@ -380,7 +380,7 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 {
   m_sqlite = true;
 
-#ifdef HAS_MYSQL
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
   if (dbSettings.type == "mysql")
   {
     // check we have all information before we cancel the fallback
@@ -423,7 +423,7 @@ bool CDatabase::Connect(const std::string &dbName, const DatabaseSettings &dbSet
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
-#ifdef HAS_MYSQL
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
   else if (dbSettings.type == "mysql")
   {
     m_pDB.reset( new MysqlDatabase() ) ;

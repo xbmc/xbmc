@@ -10,7 +10,7 @@ set(HEADERS Database.h
             qry_dat.h
             sqlitedataset.h)
 
-if(MYSQLCLIENT_FOUND)
+if(MYSQLCLIENT_FOUND OR MARIADBCLIENT_FOUND)
   list(APPEND SOURCES mysqldataset.cpp)
   list(APPEND HEADERS mysqldataset.h)
 endif()

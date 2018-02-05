@@ -30,7 +30,11 @@
 #include "utils/StringUtils.h"
 
 #include "mysqldataset.h"
+#ifdef HAS_MYSQL
 #include "mysql/errmsg.h"
+#elif defined(HAS_MARIADB)
+#include <mariadb/errmsg.h>
+#endif
 
 #ifdef TARGET_POSIX
 #include "platform/linux/ConvUtils.h"
