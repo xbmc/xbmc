@@ -1,4 +1,4 @@
-set(SOURCES GUIAnalogStickButton.cpp
+set(SOURCES GUICardinalFeatureButton.cpp
             GUIControllerButton.cpp
             GUIFeatureButton.cpp
             GUIFeatureControls.cpp
@@ -11,7 +11,7 @@ set(SOURCES GUIAnalogStickButton.cpp
             GUIWheelButton.cpp
 )
 
-set(HEADERS GUIAnalogStickButton.h
+set(HEADERS GUICardinalFeatureButton.h
             GUIControllerButton.h
             GUIControlTypes.h
             GUIFeatureButton.h

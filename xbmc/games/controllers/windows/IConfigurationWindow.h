@@ -187,11 +187,12 @@ namespace GAME
     virtual bool IsFinished(void) const = 0;
 
     /*!
-     * \brief Get the direction of the next analog stick prompt
-     * \return The next direction to be prompted, or UNKNOWN if this isn't an
-     *         analog stick or the prompt is finished
+     * \brief Get the direction of the next analog stick or relative pointer
+     *        prompt
+     * \return The next direction to be prompted, or UNKNOWN if this isn't a
+     *         cardinal feature or the prompt is finished
      */
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetAnalogStickDirection(void) const = 0;
+    virtual JOYSTICK::CARDINAL_DIRECTION GetCardinalDirection(void) const = 0;
 
     /*!
      * \brief Get the direction of the next wheel prompt

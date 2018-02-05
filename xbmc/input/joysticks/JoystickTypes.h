@@ -94,11 +94,11 @@ namespace JOYSTICK
   };
 
   /*!
-   * \brief Direction arrows on the hat (directional pad)
+   * \brief Cardinal directions
    */
-  enum class HAT_DIRECTION
+  enum class CARDINAL_DIRECTION
   {
-    UNKNOWN = 0x0,
+    NONE    = 0x0,
     UP      = 0x1,
     DOWN    = 0x2,
     RIGHT   = 0x4,
@@ -106,16 +106,26 @@ namespace JOYSTICK
   };
 
   /*!
-   * \brief Typedef for analog stick directions
+   * \brief Direction arrows on the hat (directional pad)
    */
-  using ANALOG_STICK_DIRECTION = HAT_DIRECTION;
+  using HAT_DIRECTION = CARDINAL_DIRECTION;
 
   /*!
-   * \brief States in which a hat can be
+   * \brief Typedef for analog stick directions
    */
-  enum class HAT_STATE
+  using ANALOG_STICK_DIRECTION = CARDINAL_DIRECTION;
+
+  /*!
+   * \brief Directions of motion for a relative pointer
+   */
+  using RELATIVE_POINTER_DIRECTION = CARDINAL_DIRECTION;
+
+  /*!
+   * \brief Cardinal and intercardinal directions
+   */
+  enum class INTERCARDINAL_DIRECTION
   {
-    UNPRESSED = 0x0,    /*!< @brief no directions are pressed */
+    NONE      = 0x0,    /*!< @brief no directions are pressed */
     UP        = 0x1,    /*!< @brief only up is pressed */
     DOWN      = 0x2,    /*!< @brief only down is pressed */
     RIGHT     = 0x4,    /*!< @brief only right is pressed */
@@ -125,6 +135,11 @@ namespace JOYSTICK
     LEFTUP    = LEFT  | UP,
     LEFTDOWN  = LEFT  | DOWN,
   };
+
+  /*!
+   * \brief States in which a hat can be
+   */
+  using HAT_STATE = INTERCARDINAL_DIRECTION;
 
   /*!
    * \brief Directions in which a semiaxis can point
@@ -141,7 +156,7 @@ namespace JOYSTICK
    */
   enum class WHEEL_DIRECTION
   {
-    UNKNOWN,
+    NONE,
     RIGHT,
     LEFT,
   };
@@ -151,7 +166,7 @@ namespace JOYSTICK
    */
   enum class THROTTLE_DIRECTION
   {
-    UNKNOWN,
+    NONE,
     UP,
     DOWN,
   };
@@ -176,9 +191,9 @@ namespace JOYSTICK
     HAT,         // one of the four direction arrows on a D-pad
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
-    KEY          // a keyboard key
+    KEY,         // a keyboard key
   };
-  
+
   /*!
    * \ingroup joystick
    * \brief Action entry in joystick.xml

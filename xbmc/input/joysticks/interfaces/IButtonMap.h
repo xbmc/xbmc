@@ -182,7 +182,7 @@ namespace JOYSTICK
      */
     virtual bool GetRelativePointer(
       const FeatureName& feature,
-      ANALOG_STICK_DIRECTION direction,
+      RELATIVE_POINTER_DIRECTION direction,
       CDriverPrimitive& primitive
     ) = 0;
 
@@ -197,7 +197,7 @@ namespace JOYSTICK
      */
     virtual void AddRelativePointer(
       const FeatureName& feature,
-      ANALOG_STICK_DIRECTION direction,
+      RELATIVE_POINTER_DIRECTION direction,
       const CDriverPrimitive& primitive
     ) = 0;
 

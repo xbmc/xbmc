@@ -132,10 +132,10 @@ namespace JOYSTICK
      * \param x  The x component of the vector
      * \param y  The y component of the vector
      *
-     * \return The closest analog stick direction (up, down, right or left), or
-     *         ANALOG_STICK_DIRECTION::UNKNOWN if x and y are both 0
+     * \return The closest cardinal direction (up, down, right or left), or
+     *         CARDINAL_DIRECTION::UNKNOWN if x and y are both 0
      */
-    static ANALOG_STICK_DIRECTION VectorToAnalogStickDirection(float x, float y);
+    static CARDINAL_DIRECTION VectorToCardinalDirection(float x, float y);
 
     /*!
      * \brief Get the localized name of the primitive

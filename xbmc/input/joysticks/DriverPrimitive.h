@@ -163,7 +163,7 @@ namespace JOYSTICK
   private:
     PRIMITIVE_TYPE     m_type = PRIMITIVE_TYPE::UNKNOWN;
     unsigned int       m_driverIndex = 0;
-    HAT_DIRECTION      m_hatDirection = HAT_DIRECTION::UNKNOWN;
+    HAT_DIRECTION      m_hatDirection = HAT_DIRECTION::NONE;
     int                m_center = 0;
     SEMIAXIS_DIRECTION m_semiAxisDirection = SEMIAXIS_DIRECTION::ZERO;
     unsigned int       m_range = 1;

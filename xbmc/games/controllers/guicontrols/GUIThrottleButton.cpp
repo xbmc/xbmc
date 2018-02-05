@@ -89,7 +89,7 @@ JOYSTICK::THROTTLE_DIRECTION CGUIThrottleButton::GetThrottleDirection(void) cons
       break;
   }
 
-  return THROTTLE_DIRECTION::UNKNOWN;
+  return THROTTLE_DIRECTION::NONE;
 }
 
 void CGUIThrottleButton::Reset(void)

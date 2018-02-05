@@ -18,7 +18,7 @@
  *
  */
 
-#include "GUIAnalogStickButton.h"
+#include "GUICardinalFeatureButton.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
@@ -27,16 +27,16 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIAnalogStickButton::CGUIAnalogStickButton(const CGUIButtonControl& buttonTemplate,
-                                             IConfigurationWizard* wizard,
-                                             const CControllerFeature& feature,
-                                             unsigned int index) :
+CGUICardinalFeatureButton::CGUICardinalFeatureButton(const CGUIButtonControl& buttonTemplate,
+                                                     IConfigurationWizard* wizard,
+                                                     const CControllerFeature& feature,
+                                                     unsigned int index) :
   CGUIFeatureButton(buttonTemplate, wizard, feature, index)
 {
   Reset();
 }
 
-bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
+bool CGUICardinalFeatureButton::PromptForInput(CEvent& waitEvent)
 {
   using namespace JOYSTICK;
 
@@ -47,19 +47,19 @@ bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
   std::string strWarn;
   switch (m_state)
   {
-    case STATE::ANALOG_STICK_UP:
+    case STATE::CARDINAL_DIRECTION_UP:
       strPrompt = g_localizeStrings.Get(35092); // "Move %s up"
       strWarn   = g_localizeStrings.Get(35093); // "Move %s up (%d)"
       break;
-    case STATE::ANALOG_STICK_RIGHT:
+    case STATE::CARDINAL_DIRECTION_RIGHT:
       strPrompt = g_localizeStrings.Get(35096); // "Move %s right"
       strWarn   = g_localizeStrings.Get(35097); // "Move %s right (%d)"
       break;
-    case STATE::ANALOG_STICK_DOWN:
+    case STATE::CARDINAL_DIRECTION_DOWN:
       strPrompt = g_localizeStrings.Get(35094); // "Move %s down"
       strWarn   = g_localizeStrings.Get(35095); // "Move %s down (%d)"
       break;
-    case STATE::ANALOG_STICK_LEFT:
+    case STATE::CARDINAL_DIRECTION_LEFT:
       strPrompt = g_localizeStrings.Get(35098); // "Move %s left"
       strWarn   = g_localizeStrings.Get(35099); // "Move %s left (%d)"
       break;
@@ -80,29 +80,29 @@ bool CGUIAnalogStickButton::PromptForInput(CEvent& waitEvent)
   return bInterrupted;
 }
 
-bool CGUIAnalogStickButton::IsFinished(void) const
+bool CGUICardinalFeatureButton::IsFinished(void) const
 {
   return m_state >= STATE::FINISHED;
 }
 
-JOYSTICK::ANALOG_STICK_DIRECTION CGUIAnalogStickButton::GetAnalogStickDirection(void) const
+JOYSTICK::CARDINAL_DIRECTION CGUICardinalFeatureButton::GetCardinalDirection(void) const
 {
   using namespace JOYSTICK;
 
   switch (m_state)
   {
-    case STATE::ANALOG_STICK_UP:    return ANALOG_STICK_DIRECTION::UP;
-    case STATE::ANALOG_STICK_RIGHT: return ANALOG_STICK_DIRECTION::RIGHT;
-    case STATE::ANALOG_STICK_DOWN:  return ANALOG_STICK_DIRECTION::DOWN;
-    case STATE::ANALOG_STICK_LEFT:  return ANALOG_STICK_DIRECTION::LEFT;
+    case STATE::CARDINAL_DIRECTION_UP:    return CARDINAL_DIRECTION::UP;
+    case STATE::CARDINAL_DIRECTION_RIGHT: return CARDINAL_DIRECTION::RIGHT;
+    case STATE::CARDINAL_DIRECTION_DOWN:  return CARDINAL_DIRECTION::DOWN;
+    case STATE::CARDINAL_DIRECTION_LEFT:  return CARDINAL_DIRECTION::LEFT;
     default:
       break;
   }
 
-  return ANALOG_STICK_DIRECTION::UNKNOWN;
+  return CARDINAL_DIRECTION::NONE;
 }
 
-void CGUIAnalogStickButton::Reset(void)
+void CGUICardinalFeatureButton::Reset(void)
 {
-  m_state = STATE::ANALOG_STICK_UP;
+  m_state = STATE::CARDINAL_DIRECTION_UP;
 }
