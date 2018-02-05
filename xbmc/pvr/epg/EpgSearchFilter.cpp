@@ -34,7 +34,8 @@
 
 using namespace PVR;
 
-CPVREpgSearchFilter::CPVREpgSearchFilter()
+CPVREpgSearchFilter::CPVREpgSearchFilter(bool bRadio)
+: m_bIsRadio(bRadio)
 {
   Reset();
 }
@@ -51,17 +52,22 @@ void CPVREpgSearchFilter::Reset()
 
   m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate());
   if (!m_startDateTime.IsValid())
+  {
+    CLog::Log(LOGWARNING, "%s - No valid epg start time. Defaulting search start time to 'now'", __FUNCTION__);
     m_startDateTime.SetFromUTCDateTime(CDateTime::GetUTCDateTime()); // default to 'now'
+  }
 
   m_endDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate());
   if (!m_endDateTime.IsValid())
+  {
+    CLog::Log(LOGWARNING, "%s - No valid epg end time. Defaulting search end time to search start time plus 10 days", __FUNCTION__);
     m_endDateTime.SetFromUTCDateTime(m_startDateTime + CDateTimeSpan(10, 0, 0, 0)); // default to start + 10 days
+  }
 
   m_bIncludeUnknownGenres    = false;
   m_bRemoveDuplicates        = false;
 
   /* pvr specific filters */
-  m_bIsRadio                 = false;
   m_channelNumber = CPVRChannelNumber();
   m_bFreeToAirOnly           = false;
   m_iChannelGroup            = EPG_SEARCH_UNSET;

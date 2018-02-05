@@ -35,7 +35,13 @@ namespace PVR
   class CPVREpgSearchFilter
   {
   public:
-    CPVREpgSearchFilter();
+    CPVREpgSearchFilter() = delete;
+
+    /*!
+     * @brief ctor.
+     * @param bRadio the type of channels to search - if true, 'radio'. 'tv', otherwise.
+     */
+    CPVREpgSearchFilter(bool bRadio);
 
     /*!
      * @brief Clear this filter.
@@ -55,6 +61,12 @@ namespace PVR
      * @return the number of items in the list after removing duplicates.
      */
     static int RemoveDuplicates(CFileItemList &results);
+
+    /*!
+     * @brief Get the type of channels to search.
+     * @return true, if 'radio'. false, otherwise.
+     */
+    bool IsRadio() const { return m_bIsRadio; }
 
     const std::string &GetSearchTerm() const { return m_strSearchTerm; }
     void SetSearchTerm(const std::string &strSearchTerm) { m_strSearchTerm = strSearchTerm; }
@@ -89,9 +101,6 @@ namespace PVR
 
     bool ShouldRemoveDuplicates() const { return m_bRemoveDuplicates; }
     void SetRemoveDuplicates(bool bRemoveDuplicates) { m_bRemoveDuplicates = bRemoveDuplicates; }
-
-    bool IsRadio() const { return m_bIsRadio; }
-    void SetIsRadio(bool bIsRadio) { m_bIsRadio = bIsRadio; }
 
     const CPVRChannelNumber& GetChannelNumber() const { return m_channelNumber; }
     void SetChannelNumber(const CPVRChannelNumber& channelNumber) { m_channelNumber = channelNumber; }
@@ -135,7 +144,7 @@ namespace PVR
     CDateTime     m_endDateTime;              /*!< The maximum end time for an entry */
     bool          m_bIncludeUnknownGenres;    /*!< Include unknown genres or not */
     bool          m_bRemoveDuplicates;        /*!< True to remove duplicate events, false if not */
-    bool          m_bIsRadio;                 /*!< True to filter radio channels only, false to tv only */
+    const bool    m_bIsRadio;                 /*!< True to filter radio channels only, false to tv only */
 
     /* PVR specific filters */
     CPVRChannelNumber  m_channelNumber;       /*!< The channel number in the selected channel group */

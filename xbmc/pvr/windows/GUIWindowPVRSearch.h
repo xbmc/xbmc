@@ -19,11 +19,14 @@
  *
  */
 
-#include "pvr/epg/EpgSearchFilter.h"
+#include <memory>
+
 #include "pvr/windows/GUIWindowPVRBase.h"
 
 namespace PVR
 {
+  class CPVREpgSearchFilter;
+
   class CGUIWindowPVRSearchBase : public CGUIWindowPVRBase
   {
   public:
@@ -50,7 +53,7 @@ namespace PVR
     void OpenDialogSearch();
 
     bool m_bSearchConfirmed;
-    CPVREpgSearchFilter m_searchfilter;
+    std::unique_ptr<CPVREpgSearchFilter> m_searchfilter;
   };
 
   class CGUIWindowPVRTVSearch : public CGUIWindowPVRSearchBase
