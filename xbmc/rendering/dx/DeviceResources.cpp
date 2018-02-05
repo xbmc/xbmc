@@ -128,6 +128,7 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   ComPtr<IDXGIOutput> pOutput;
 
   m_swapChain->GetContainingOutput(&pOutput);
+  if (pOutput != nullptr) //*FIXME! During MultiGPU screen switching fall to last working renderer*//
   pOutput->GetDesc(&outDesc);
 
   DXGI_SWAP_CHAIN_DESC scDesc;
@@ -281,8 +282,8 @@ void DX::DeviceResources::CreateDeviceResources()
   ComPtr<ID3D11DeviceContext> context;
 
   HRESULT hr = D3D11CreateDevice(
-      nullptr,                   // Specify nullptr to use the default adapter.
-      D3D_DRIVER_TYPE_HARDWARE,  // Create a device using the hardware graphics driver.
+      m_adapter.Get(),           // Specify nullptr to use the default adapter.
+      D3D_DRIVER_TYPE_UNKNOWN,   // Create a device using the hardware graphics driver.
       nullptr,                   // Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
       creationFlags,             // Set debug and Direct2D compatibility flags.
       featureLevels,             // List of feature levels this app can support.
@@ -347,13 +348,6 @@ void DX::DeviceResources::CreateDeviceResources()
 
   hr = context.As(&m_d3dContext); CHECK_ERR();
   hr = m_d3dDevice->CreateDeferredContext1(0, &m_deferrContext); CHECK_ERR();
-
-  ComPtr<IDXGIDevice1> dxgiDevice;
-  ComPtr<IDXGIAdapter> adapter;
-  hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
-  hr = dxgiDevice->GetAdapter(&adapter); CHECK_ERR();
-  hr = adapter.As(&m_adapter); CHECK_ERR();
-  hr = m_adapter->GetParent(IID_PPV_ARGS(&m_dxgiFactory)); CHECK_ERR();
 
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
@@ -829,14 +823,11 @@ void DX::DeviceResources::ClearRenderTarget(ID3D11RenderTargetView* pRTView, flo
   m_deferrContext->ClearRenderTargetView(pRTView, color);
 }
 
-void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
+void DX::DeviceResources::SetMonitor(HMONITOR monitor)
 {
   HRESULT hr;
   DXGI_ADAPTER_DESC currentDesc = { 0 };
   DXGI_ADAPTER_DESC foundDesc = { 0 };
-
-  ComPtr<IDXGIFactory1> dxgiFactory;
-  ComPtr<IDXGIAdapter1> adapter;
 
   if (m_d3dDevice)
   {
@@ -848,19 +839,19 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
     deviceAdapter->GetDesc(&currentDesc);
   }
 
-  CreateDXGIFactory1(IID_IDXGIFactory1, &dxgiFactory);
+  CreateDXGIFactory1(IID_IDXGIFactory1, &m_dxgiFactory);
 
   int index = 0;
   while (true)
   {
-    hr = dxgiFactory->EnumAdapters1(index++, &adapter);
+    hr = m_dxgiFactory->EnumAdapters1(index++, &m_adapter);
     if (hr == DXGI_ERROR_NOT_FOUND)
       break;
 
     ComPtr<IDXGIOutput> output;
-    adapter->GetDesc(&foundDesc);
+    m_adapter->GetDesc(&foundDesc);
 
-    for (int j = 0; adapter->EnumOutputs(j, &output) != DXGI_ERROR_NOT_FOUND; j++)
+    for (int j = 0; m_adapter->EnumOutputs(j, &output) != DXGI_ERROR_NOT_FOUND; j++)
     {
       DXGI_OUTPUT_DESC outputDesc;
       output->GetDesc(&outputDesc);
