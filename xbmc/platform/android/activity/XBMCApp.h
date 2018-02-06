@@ -146,6 +146,7 @@ public:
   static bool EnableWakeLock(bool on);
   static bool HasFocus() { return m_hasFocus; }
   static bool IsHeadsetPlugged();
+  static bool IsHDMIPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
@@ -226,6 +227,7 @@ private:
   static int m_batteryLevel;
   static bool m_hasFocus;
   static bool m_headsetPlugged;
+  static bool m_hdmiPlugged;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   static bool m_hasReqVisible;
