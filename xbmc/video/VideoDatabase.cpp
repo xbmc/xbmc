@@ -237,6 +237,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX ix_path ON path ( strPath(255) )");
   m_pDS->exec("CREATE INDEX ix_path2 ON path ( idParentPath )");
   m_pDS->exec("CREATE INDEX ix_files ON files ( idPath, strFilename(255) )");
+  m_pDS->exec("CREATE INDEX ix_history ON history ( idFile )");
 
   m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
@@ -5264,15 +5265,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     m_pDS->exec("INSERT INTO history(dateWatched, idFile) SELECT lastPlayed, idFile FROM files AS f WHERE f.playCount is not NULL");
 
-    m_pDS->query("SELECT MAX(playCount) FROM files AS f");
+    m_pDS->query("SELECT idFile, playCount FROM files WHERE playCount > 1");
     // don't run for playcount == 1 as we already migrated those
-    for (int playCountIterator = m_pDS->fv(0).get_asInt(); playCountIterator > 1; playCountIterator--) {
+    while (!m_pDS->eof())
+    {
+      int idFile = m_pDS->fv(0).get_asInt();
+      int playCount = m_pDS->fv(1).get_asInt();
       // as we have no dates for these, we'll add them with an empty string - shouldn't be the case otherwise - ever!
       // add the item as often as we have a playcount, we've added the first item above, so we're skipping that one now
-      for (int i = 1; i < playCountIterator; i++)
+      for (int i = 1; i < playCount; i++)
       {
-        m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT '', idFile FROM files AS f WHERE f.playCount = %i;", playCountIterator));
+        m_pDS->exec(PrepareSQL("INSERT INTO history(dateWatched, idFile) SELECT '', %i;", idFile));
       }
+      m_pDS->next();
     }
 
     // Remove old columns
