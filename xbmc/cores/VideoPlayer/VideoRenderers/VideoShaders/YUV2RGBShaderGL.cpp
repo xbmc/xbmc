@@ -39,6 +39,7 @@ using namespace Shaders;
 //////////////////////////////////////////////////////////////////////
 
 BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
+                                             AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                                              std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
@@ -56,12 +57,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
     m_defines += m_glslOutput->GetDefines();
   }
 
-  if(rect)
+  if (rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
   else
     m_defines += "#define XBMC_texture_rectangle 0\n";
 
-  if(g_advancedSettings.m_GLRectangleHack)
+  if (g_advancedSettings.m_GLRectangleHack)
     m_defines += "#define XBMC_texture_rectangle_hack 1\n";
   else
     m_defines += "#define XBMC_texture_rectangle_hack 0\n";
@@ -90,11 +91,17 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
+  if (dstPrimaries != srcPrimaries)
+  {
+    m_defines += "#define XBMC_COL_CONVERSION\n";
+  }
+
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
   CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
 
   m_pConvMatrix.reset(new CConvertMatrix());
+  m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);
 }
 
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
@@ -108,7 +115,7 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hYTex = glGetUniformLocation(ProgramHandle(), "m_sampY");
   m_hUTex = glGetUniformLocation(ProgramHandle(), "m_sampU");
   m_hVTex = glGetUniformLocation(ProgramHandle(), "m_sampV");
-  m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
+  m_hYuvMat = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
   m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
   m_hStep = glGetUniformLocation(ProgramHandle(), "m_step");
   m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
@@ -118,6 +125,9 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hPrimMat = glGetUniformLocation(ProgramHandle(), "m_primMat");
+  m_hGammaSrc = glGetUniformLocation(ProgramHandle(), "m_gammaSrc");
+  m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
   VerifyGLState();
 
   if (m_glslOutput)
@@ -133,14 +143,22 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1f(m_hStretch, m_stretch);
   glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
-  GLfloat matrix[4][4];
+  GLfloat yuvMat[4][4];
   m_pConvMatrix->SetParams(m_contrast, m_black, !m_convertFullRange);
-  m_pConvMatrix->GetColMajor(matrix);
+  m_pConvMatrix->GetYuvMat(yuvMat);
 
-  glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
+  glUniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, (GLfloat*)yuvMat);
   glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
+
+  GLfloat primMat[3][3];
+  if (m_pConvMatrix->GetPrimMat(primMat))
+  {
+    glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, (GLfloat*)primMat);
+    glUniform1f(m_hGammaSrc, m_pConvMatrix->GetGammaSrc());
+    glUniform1f(m_hGammaDstInv, 1/m_pConvMatrix->GetGammaDst());
+  }
 
   VerifyGLState();
   if (m_glslOutput)
@@ -160,9 +178,8 @@ void BaseYUV2RGBGLSLShader::Free()
     m_glslOutput->Free();
 }
 
-void BaseYUV2RGBGLSLShader::SetColSpace(AVColorSpace colSpace, AVColorPrimaries colPrimaries, int bits, bool limited,
-                                        int textureBits,
-                                        AVColorPrimaries destPrimaries)
+void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
+                                        int textureBits)
 {
   if (colSpace == AVCOL_SPC_UNSPECIFIED)
   {
@@ -171,14 +188,7 @@ void BaseYUV2RGBGLSLShader::SetColSpace(AVColorSpace colSpace, AVColorPrimaries 
     else
       colSpace = AVCOL_SPC_BT470BG;
   }
-  if (colPrimaries == AVCOL_PRI_UNSPECIFIED)
-  {
-    if (m_width > 1024 || m_height >= 600)
-      colPrimaries = AVCOL_PRI_BT709;
-    else
-      colPrimaries = AVCOL_PRI_BT470BG;
-  }
-  m_pConvMatrix->SetColSpace(colSpace, colPrimaries, bits, limited, textureBits, destPrimaries);
+  m_pConvMatrix->SetColParams(colSpace, bits, limited, textureBits);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -187,8 +197,9 @@ void BaseYUV2RGBGLSLShader::SetColSpace(AVColorSpace colSpace, AVColorPrimaries 
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat format, bool stretch,
+                                                   AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                                                    std::shared_ptr<GLSLOutput> output)
-  : BaseYUV2RGBGLSLShader(rect, format, stretch, output)
+  : BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, output)
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
@@ -201,9 +212,10 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat form
 YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            EShaderFormat format,
                                            bool stretch,
+                                           AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
-: BaseYUV2RGBGLSLShader(rect, format, stretch, output)
+: BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, output)
 {
   m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);

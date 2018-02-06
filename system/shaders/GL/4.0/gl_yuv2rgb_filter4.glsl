@@ -13,6 +13,9 @@ uniform mat4 m_yuvmat;
 uniform float m_stretch;
 uniform float m_alpha;
 uniform sampler1D m_kernelTex;
+uniform mat3 m_primMat;
+uniform float m_gammaDstInv;
+uniform float m_gammaSrc;
 in vec2 m_cordY;
 in vec2 m_cordU;
 in vec2 m_cordV;
@@ -104,5 +107,14 @@ vec4 process()
   rgb.a = m_alpha;
 #endif
 
+#if defined(XBMC_COL_CONVERSION)
+  rgb.r = pow(rgb.r, m_gammaSrc);
+  rgb.g = pow(rgb.g, m_gammaSrc);
+  rgb.b = pow(rgb.b, m_gammaSrc);
+  rgb.rgb = m_primMat * rgb.rgb;
+  rgb.r = pow(rgb.r, m_gammaDstInv);
+  rgb.g = pow(rgb.g, m_gammaDstInv);
+  rgb.b = pow(rgb.b, m_gammaDstInv);
+#endif
   return rgb;
 }

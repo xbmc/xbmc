@@ -38,16 +38,16 @@ namespace Shaders {
 class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 {
 public:
-  BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch, std::shared_ptr<GLSLOutput> output);
+  BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
+                        AVColorPrimaries dst, AVColorPrimaries src,
+                        std::shared_ptr<GLSLOutput> output);
   virtual ~BaseYUV2RGBGLSLShader();
 
   void SetField(int field) { m_field  = field; }
   void SetWidth(int w) { m_width  = w; }
   void SetHeight(int h) { m_height = h; }
 
-  void SetColSpace(AVColorSpace colSpace, AVColorPrimaries colPrimaries, int bits, bool limited,
-                   int textureBits,
-                   AVColorPrimaries destPrimaries);
+  void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textureBits);
   void SetBlack(float black) { m_black = black; }
   void SetContrast(float contrast) { m_contrast = contrast; }
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
@@ -81,7 +81,7 @@ protected:
 
   GLfloat *m_proj = nullptr;
   GLfloat *m_model = nullptr;
-  GLfloat  m_alpha = 1.0f;
+  GLfloat m_alpha = 1.0f;
 
   std::string m_defines;
 
@@ -92,9 +92,12 @@ protected:
   GLint m_hYTex = -1;
   GLint m_hUTex = -1;
   GLint m_hVTex = -1;
-  GLint m_hMatrix = -1;
+  GLint m_hYuvMat = -1;
   GLint m_hStretch = -1;
   GLint m_hStep = -1;
+  GLint m_hGammaSrc = -1;
+  GLint m_hGammaDstInv = -1;
+  GLint m_hPrimMat = -1;
 
   // vertex shader attribute handles
   GLint m_hVertex = -1;
@@ -112,6 +115,7 @@ public:
   YUV2RGBProgressiveShader(bool rect,
                            EShaderFormat format,
                            bool stretch,
+                           AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                            std::shared_ptr<GLSLOutput> output);
 };
 
@@ -121,6 +125,7 @@ public:
   YUV2RGBFilterShader4(bool rect,
                        EShaderFormat format,
                        bool stretch,
+                       AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                        ESCALINGMETHOD method,
                        std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;

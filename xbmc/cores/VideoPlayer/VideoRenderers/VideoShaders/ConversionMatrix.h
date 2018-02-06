@@ -116,20 +116,25 @@ public:
   CConvertMatrix() = default;
   virtual ~CConvertMatrix() = default;
 
-  void SetColSpace(AVColorSpace colSpace, AVColorPrimaries colPrimaries, int bits, bool limited,
-                   int textuteBits,
-                   AVColorPrimaries destPrimaries);
+  void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits);
+  void SetColPrimaries(AVColorPrimaries dst, AVColorPrimaries src);
   void SetParams(float contrast, float black, bool limited);
-  void GetColMajor(float (&mat)[4][4]);
+  void GetYuvMat(float (&mat)[4][4]);
+  bool GetPrimMat(float (&mat)[3][3]);
+  float GetGammaSrc();
+  float GetGammaDst();
   
 protected:
   void GenMat();
 
   std::unique_ptr<CGlMatrix> m_pMat;
+  std::unique_ptr<CMatrix<3>> m_pMatPrim;
   AVColorSpace m_colSpace = AVCOL_SPC_BT709;
   AVColorPrimaries m_colPrimariesSrc = AVCOL_PRI_BT709;
+  float m_gammaSrc = 2.2f;
   bool m_limitedSrc = true;
   AVColorPrimaries m_colPrimariesDst = AVCOL_PRI_BT709;
+  float m_gammaDst = 2.2f;
   bool m_limitedDst = false;
   int m_srcBits = 8;
   int m_srcTextureBits = 8;
