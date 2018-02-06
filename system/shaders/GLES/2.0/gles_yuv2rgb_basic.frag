@@ -30,7 +30,6 @@ varying vec2      m_cordU;
 varying vec2      m_cordV;
 uniform vec2      m_step;
 uniform mat4      m_yuvmat;
-uniform float     m_stretch;
 uniform float     m_alpha;
 
 void main()
@@ -51,9 +50,9 @@ void main()
 #elif defined(XBMC_NV12_RRG)
 
   vec4 yuv;
-  yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
-                 , texture2D(m_sampU, stretch(m_cordU)).r
-                 , texture2D(m_sampV, stretch(m_cordV)).g
+  yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
+                 , texture2D(m_sampU, m_cordU).r
+                 , texture2D(m_sampV, m_cordV).g
                  , 1.0 );
 
   rgb   = m_yuvmat * yuv;
