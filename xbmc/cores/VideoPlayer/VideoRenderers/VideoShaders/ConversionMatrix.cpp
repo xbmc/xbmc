@@ -521,11 +521,6 @@ void CConvertMatrix::GetYuvMat(float (&mat)[4][4])
   {
     float valScale = (235 - 16) / 255.0f;
     float valTrans = 16.0f / 255;
-    if (m_srcTextureBits > 8 && m_dstBits == 8)
-    {
-      valScale *= 256;
-      valTrans *= 256;
-    }
     CScale scale(valScale, valScale, valScale);
     CTranslate trans(valTrans, valTrans, valTrans);
     ret *= trans;
