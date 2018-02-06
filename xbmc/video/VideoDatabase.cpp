@@ -5260,7 +5260,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 110)
   {
-    m_pDS->exec("CREATE TABLE history(id INTEGER PRIMARY KEY AUTOINCREMENT, dateWatched TEXT NOT NULL, idFile INTEGER NOT NULL)");
+    m_pDS->exec("CREATE TABLE history(id INTEGER PRIMARY KEY, dateWatched TEXT NOT NULL, idFile INTEGER NOT NULL)");
 
     m_pDS->exec("INSERT INTO history(dateWatched, idFile) SELECT lastPlayed, idFile FROM files AS f WHERE f.playCount is not NULL");
 
