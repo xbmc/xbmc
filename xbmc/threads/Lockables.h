@@ -46,9 +46,12 @@ namespace XbmcThreads
    *
    * All xbmc code expects Lockables to be recursive.
    */
-  template<class L> class CountingLockable : public NonCopyable
+  template<class L> class CountingLockable
   {
     friend class ConditionVariable;
+
+    CountingLockable(const CountingLockable&) = delete;
+    CountingLockable& operator=(const CountingLockable&) = delete;
   protected:
     L mutex;
     unsigned int count;
@@ -119,8 +122,10 @@ namespace XbmcThreads
    * This template can be used to define the base implementation for any UniqueLock
    * (such as CSingleLock) that uses a Lockable as its mutex/critical section.
    */
-  template<typename L> class UniqueLock : public NonCopyable
+  template<typename L> class UniqueLock
   {
+    UniqueLock(const UniqueLock&) = delete;
+    UniqueLock& operator=(const UniqueLock&) = delete;
   protected:
     L& mutex;
     bool owns;
@@ -154,8 +159,10 @@ namespace XbmcThreads
    * bool try_lock_shared();
    * void unlock_shared();
    */
-  template<typename L> class SharedLock : public NonCopyable
+  template<typename L> class SharedLock
   {
+    SharedLock(const SharedLock&) = delete;
+    SharedLock& operator=(const SharedLock&) = delete;
   protected:
     L& mutex;
     bool owns;

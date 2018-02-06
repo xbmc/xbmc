@@ -43,7 +43,7 @@ namespace XbmcThreads
  *
  * This class manages 'spurious returns' from the condition variable.
  */
-class CEvent : public XbmcThreads::NonCopyable
+class CEvent
 {
   bool manualReset;
   volatile bool signaled;
@@ -68,6 +68,9 @@ class CEvent : public XbmcThreads::NonCopyable
 
   // helper for the two wait methods
   inline bool prepReturn() { bool ret = signaled; if (!manualReset && numWaits == 0) signaled = false; return ret; }
+
+  CEvent(const CEvent&) = delete;
+  CEvent& operator=(const CEvent&) = delete;
 
 public:
   inline CEvent(bool manual = false, bool signaled_ = false) : 
@@ -110,7 +113,7 @@ namespace XbmcThreads
    * It is equivalent to WaitOnMultipleObject that returns when "any" Event
    * in the group signaled.
    */
-  class CEventGroup : public NonCopyable
+  class CEventGroup
   {
     std::vector<CEvent*> events;
     CEvent* signaled{};
@@ -124,6 +127,9 @@ namespace XbmcThreads
     inline void Set(CEvent* child) { CSingleLock l(mutex); signaled = child; condVar.notifyAll(); }
 
     friend class ::CEvent;
+
+    CEventGroup(const CEventGroup&) = delete;
+    CEventGroup& operator=(const CEventGroup&) = delete;
 
   public:
     /**

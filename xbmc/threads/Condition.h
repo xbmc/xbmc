@@ -35,12 +35,15 @@ namespace XbmcThreads
    *  to "spurious returns" as it is built on boost which is built on posix
    *  on many of our platforms.
    */
-  class ConditionVariable : public NonCopyable
+  class ConditionVariable
   {
   private:
     std::condition_variable_any cond;
+    ConditionVariable(const ConditionVariable&) = delete;
+    ConditionVariable& operator=(const ConditionVariable&) = delete;
 
   public:
+    ConditionVariable() = default;
 
     inline void wait(CCriticalSection& lock) 
     {
