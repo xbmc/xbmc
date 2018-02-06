@@ -23,17 +23,6 @@
 namespace XbmcThreads
 {
   /**
-   * Any class that inherits from NonCopyable will ... not be copyable (Duh!)
-   */
-  class NonCopyable
-  {
-    inline NonCopyable(const NonCopyable&) = default;
-    inline NonCopyable& operator=(const NonCopyable&) { return *this; }
-  public:
-    inline NonCopyable() = default;
-  };
-
-  /**
    * This will create a new predicate from an old predicate P with 
    *  inverse truth value. This predicate is safe to use in a 
    *  TightConditionVariable<P>
