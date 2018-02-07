@@ -85,7 +85,6 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo)
   , m_pFormatName("amcodec")
   , m_opened(false)
   , m_codecControlFlags(0)
-  , m_last_pts(0.0)
   , m_frame_queue(NULL)
   , m_queue_depth(0)
   , m_framerate(0.0)
@@ -565,69 +564,6 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
       cur_pts = m_frame_queue->dts;
 
     pthread_mutex_unlock(&m_queue_mutex);
-
-    float duration = cur_pts - m_last_pts;
-    m_last_pts = cur_pts;
-
-    // clamp duration to sensible range,
-    // 66 fsp to 20 fsp
-    if (duration >= 15000.0 && duration <= 50000.0)
-    {
-      double framerate;
-      switch((int)(0.5 + duration))
-      {
-        // 59.940 (16683.333333)
-        case 16000 ... 17000:
-          framerate = 60000.0 / 1001.0;
-          break;
-
-        // 50.000 (20000.000000)
-        case 20000:
-          framerate = 50000.0 / 1000.0;
-          break;
-
-        // 49.950 (20020.000000)
-        case 20020:
-          framerate = 50000.0 / 1001.0;
-          break;
-
-        // 29.970 (33366.666656)
-        case 32000 ... 35000:
-          framerate = 30000.0 / 1001.0;
-          break;
-
-        // 25.000 (40000.000000)
-        case 39900 ... 40100:
-          framerate = 25000.0 / 1000.0;
-          break;
-
-        // 23.976 (41708.33333)
-        case 40200 ... 43200:
-          // 23.976 seems to have the crappiest encodings :)
-          framerate = 24000.0 / 1001.0;
-          break;
-
-        default:
-          framerate = 0.0;
-          //CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
-          //  __MODULE_NAME__, duration, cur_pts);
-          break;
-      }
-
-      if (framerate > 0.0 && (int)m_framerate != (int)framerate)
-      {
-        m_framerate = framerate;
-        m_video_rate = (int)(0.5 + (96000.0 / framerate));
-
-        if (m_Codec)
-          m_Codec->SetVideoRate(m_video_rate);
-
-        m_processInfo.SetVideoFps(m_framerate);
-
-        CLog::Log(LOGDEBUG, "%s: detected new framerate(%f), video_rate(%d)",
-          __MODULE_NAME__, m_framerate, m_video_rate);
-      }
-    }
 
     FrameQueuePop();
   }
