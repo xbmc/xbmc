@@ -148,7 +148,6 @@ typedef UInt32          ULONG;
 typedef unsigned long   ULONG;
 #endif
 typedef void*         PVOID;
-typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
@@ -286,7 +285,7 @@ typedef struct _WIN32_FIND_DATA
 
 typedef struct _SECURITY_ATTRIBUTES {
   DWORD nLength;
-  LPVOID lpSecurityDescriptor;
+  void* lpSecurityDescriptor;
   int bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 

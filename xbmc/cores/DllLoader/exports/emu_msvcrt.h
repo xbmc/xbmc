@@ -132,7 +132,7 @@ extern "C"
   int dll_initterm(PFV * start, PFV * end);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
+                           LPTHREAD_START_ROUTINE lpStartAddress, void* lpParameter, DWORD dwCreationFlags,
 #ifdef TARGET_FREEBSD
                            long* lpThreadId);
 #else
