@@ -35,7 +35,7 @@ DWORD GetLastError()
   return errno;
 }
 
-VOID SetLastError(DWORD dwErrCode)
+void SetLastError(DWORD dwErrCode)
 {
   errno = dwErrCode;
 }

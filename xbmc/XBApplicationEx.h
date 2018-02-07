@@ -52,7 +52,7 @@ public:
 
 public:
   int Run(const CAppParamParser &params);
-  VOID Destroy();
+  void Destroy();
 
 private:
 };

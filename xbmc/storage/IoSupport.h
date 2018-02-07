@@ -47,7 +47,7 @@ public:
   static int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
   static int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
   static int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  static VOID CloseCDROM(HANDLE hDevice);
+  static void CloseCDROM(HANDLE hDevice);
 
 private:
   static void* m_rawXferBuffer;

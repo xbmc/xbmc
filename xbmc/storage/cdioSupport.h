@@ -285,7 +285,7 @@ public:
   int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
   int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
   int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  VOID CloseCDROM(HANDLE hDevice);
+  void CloseCDROM(HANDLE hDevice);
 
   void PrintAnalysis(int fs, int num_audio);
 

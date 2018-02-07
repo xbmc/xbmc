@@ -326,7 +326,7 @@ int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffe
   return -1;
 }
 
-VOID CCdIoSupport::CloseCDROM(HANDLE hDevice)
+void CCdIoSupport::CloseCDROM(HANDLE hDevice)
 {
   CSingleLock lock(*m_cdio);
 

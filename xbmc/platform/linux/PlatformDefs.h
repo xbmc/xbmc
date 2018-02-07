@@ -117,8 +117,6 @@
 #define _atoi64(x) atoll(x)
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
-#define VOID    void
-
 #define __stdcall
 #define __cdecl
 #define WINAPI      __stdcall

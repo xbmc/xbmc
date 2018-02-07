@@ -286,7 +286,7 @@ int CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
   return -1;
 }
 
-VOID CIoSupport::CloseCDROM(HANDLE hDevice)
+void CIoSupport::CloseCDROM(HANDLE hDevice)
 {
   CloseHandle(hDevice);
 }
