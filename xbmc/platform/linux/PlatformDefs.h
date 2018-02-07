@@ -161,7 +161,6 @@ typedef LPCWSTR       LPCTSTR;
 #else
 typedef LPCSTR      LPCTSTR;
 #endif
-typedef unsigned __int64 ULONGLONG;
 
 #define MAXWORD   0xffff
 
@@ -179,7 +178,7 @@ typedef union _LARGE_INTEGER
       DWORD LowPart;
       DWORD HighPart;
   } u;
-  ULONGLONG QuadPart;
+  unsigned long long QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
 void OutputDebugString(LPCTSTR lpOutputString);
