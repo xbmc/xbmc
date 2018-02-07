@@ -292,7 +292,7 @@ char* Interface_Filesystem::get_cache_thumb_name(void* kodiBase, const char* fil
 
   Crc32 crc;
   crc.ComputeFromLowerCase(filename);
-  std::string string = StringUtils::Format("%08x.tbn", (unsigned __int32)crc);
+  std::string string = StringUtils::Format("%08x.tbn", static_cast<unsigned int>(crc));
   char* buffer = strdup(string.c_str());
   return buffer;
 }

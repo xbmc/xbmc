@@ -118,7 +118,6 @@
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define VOID    void
-#define __int32   int
 
 #define __stdcall
 #define __cdecl
