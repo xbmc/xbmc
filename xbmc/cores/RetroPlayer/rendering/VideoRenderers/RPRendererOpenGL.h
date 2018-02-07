@@ -45,12 +45,6 @@ namespace RETRO
   public:
     CRenderBufferOpenGL(AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height);
     ~CRenderBufferOpenGL() override = default;
-
-    // implementation of IRenderBuffer via CRenderBufferOpenGLES
-    bool UploadTexture() override;
-
-  private:
-    void CreateTexture();
   };
 
   class CRenderBufferPoolOpenGL : public CRenderBufferPoolOpenGLES
@@ -68,15 +62,6 @@ namespace RETRO
   public:
     CRPRendererOpenGL(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
     ~CRPRendererOpenGL() override = default;
-
-  protected:
-    // implementation of CRPBaseRenderer via CRPRendererOpenGLES
-    void RenderInternal(bool clear, uint8_t alpha) override;
-
-  private:
-    void Render();
-
-    void DrawBlackBars();
   };
 }
 }
