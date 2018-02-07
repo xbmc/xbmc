@@ -228,7 +228,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define THREAD_PRIORITY_ABOVE_NORMAL    (THREAD_PRIORITY_HIGHEST-1)
 
 // Network
-#define SOCKADDR_IN struct sockaddr_in
 #define SOCKET_ERROR (-1)
 #define INVALID_SOCKET (~0)
 #define closesocket(s)  close(s)
