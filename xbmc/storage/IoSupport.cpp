@@ -168,7 +168,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
   }
 #endif
   LARGE_INTEGER Displacement;
-  Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
+  Displacement.QuadPart = static_cast<long long>(dwSector) * dwSectorSize;
 
   for (int i = 0; i < 5; i++)
   {
