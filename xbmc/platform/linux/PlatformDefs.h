@@ -132,7 +132,6 @@ typedef void* HINSTANCE;
 typedef void* HMODULE;
 
 typedef unsigned int  DWORD;
-typedef unsigned short  WORD;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST wchar_t*       LPCTSTR;
@@ -165,14 +164,14 @@ void OutputDebugString(LPCTSTR lpOutputString);
 
 typedef struct _SYSTEMTIME
 {
-  WORD wYear;
-  WORD wMonth;
-  WORD wDayOfWeek;
-  WORD wDay;
-  WORD wHour;
-  WORD wMinute;
-  WORD wSecond;
-  WORD wMilliseconds;
+  unsigned short wYear;
+  unsigned short wMonth;
+  unsigned short wDayOfWeek;
+  unsigned short wDay;
+  unsigned short wHour;
+  unsigned short wMinute;
+  unsigned short wSecond;
+  unsigned short wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
 typedef struct _TIME_ZONE_INFORMATION {

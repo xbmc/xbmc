@@ -141,7 +141,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   DWORD iso9660searchpointer;
   struct iso9660_Directory isodir;
   struct iso9660_Directory curr_dir;
-  WORD wSectorSize = from_723(m_info.iso.logical_block_size);
+  unsigned short wSectorSize = from_723(m_info.iso.logical_block_size);
 
 
   struct iso_directories *point = m_lastpath;
@@ -489,7 +489,7 @@ void iso9660::Scan()
     m_info.HeaderPos = 0x8000;
     int current = 0x8000;
 
-    WORD wSectorSize = from_723(m_info.iso.logical_block_size);
+    unsigned short wSectorSize = from_723(m_info.iso.logical_block_size);
 
     // first check if first file in the current VD has a rock-ridge NM. if it has, disable joliet
     iso9660_Directory *dirPointer = reinterpret_cast<iso9660_Directory*>(&m_info.iso.szRootDir);

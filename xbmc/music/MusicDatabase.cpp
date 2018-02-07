@@ -2035,7 +2035,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetDuration(record->at(song_iDuration).get_asInt());
   item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt(), MediaTypeSong);
   SYSTEMTIME stTime;
-  stTime.wYear = (WORD)record->at(song_iYear).get_asInt();
+  stTime.wYear = static_cast<unsigned short>(record->at(song_iYear).get_asInt());
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(record->at(song_strTitle).get_asString());
   item->SetLabel(record->at(song_strTitle).get_asString());
@@ -3702,7 +3702,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
       SYSTEMTIME stTime;
-      stTime.wYear = (WORD)m_pDS->fv(0).get_asInt();
+      stTime.wYear = static_cast<unsigned short>(m_pDS->fv(0).get_asInt());
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
 
       CMusicDbUrl itemUrl = musicUrl;

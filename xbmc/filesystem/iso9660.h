@@ -47,10 +47,10 @@ struct iso9660_VolumeDescriptor
   DWORD dwTotalSectorsLE;       //80-83
   DWORD dwTotalSectorsBE;       //84-87
   unsigned char byZero3[32];         //88-119
-  WORD wVolumeSetSizeLE;       //120-121
-  WORD wVolumeSetSizeBE;       //122-123
-  WORD wVolumeSequenceNumberLE;   //124-125
-  WORD wVolumeSequenceNumberBE;   //126-127
+  unsigned short wVolumeSetSizeLE;       //120-121
+  unsigned short wVolumeSetSizeBE;       //122-123
+  unsigned short wVolumeSequenceNumberLE;   //124-125
+  unsigned short wVolumeSequenceNumberBE;   //126-127
   iso723_t logical_block_size;    // sector size, e.g. 2048 (128-129 LE - 130-131 BE)
   DWORD dwPathTableLengthLE;     //132-135
   DWORD dwPathTableLengthBE;     //136-139
@@ -105,8 +105,8 @@ struct iso9660_Directory
   unsigned char byFlags;         //25     flags
   unsigned char UnitSize;         //26     file unit size for an interleaved file
   unsigned char InterleaveGapSize;    //27     interleave gap size for an interleaved file
-  WORD VolSequenceLE;      //28..29 volume sequence number
-  WORD VolSequenceBE;            //30..31
+  unsigned short VolSequenceLE;      //28..29 volume sequence number
+  unsigned short VolSequenceBE;            //30..31
   unsigned char Len_Fi;          //32     N, the identifier length
   unsigned char FileName[512];      //33     identifier
 

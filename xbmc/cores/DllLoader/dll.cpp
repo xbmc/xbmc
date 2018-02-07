@@ -29,7 +29,7 @@
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)
-#define LOW_WORD(a) ((WORD)(((uintptr_t)(a)) & MAXWORD))
+#define LOW_WORD(a) ((unsigned short)(((uintptr_t)(a)) & MAXWORD))
 
 //#define API_DEBUG
 
