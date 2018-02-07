@@ -273,6 +273,9 @@ void CMMALPool::SetDimensions(int width, int height, const int (&strides)[YuvIma
   int alignedWidth = strides[0] ? strides[0] / m_geo.getBytesPerPixel() : width;
   int alignedHeight = planeOffsets[1] ? planeOffsets[1] / strides[0] : height;
   Configure(AV_PIX_FMT_NONE, width, height, alignedWidth, alignedHeight, 0);
+  // libwv side-by-side UV format
+  if (planeOffsets[2] - planeOffsets[1] == strides[1] >> 1)
+    m_mmal_format = MMAL_ENCODING_I420_S;
 }
 
 inline bool CMMALPool::IsConfigured()
@@ -285,6 +288,8 @@ bool CMMALPool::IsCompatible(AVPixelFormat format, int size)
 {
   CSingleLock lock(m_critSection);
   uint32_t mmal_format = TranslateFormat(format);
+  if (m_mmal_format == MMAL_ENCODING_I420_S && mmal_format == MMAL_ENCODING_I420)
+    return true;
   if (m_mmal_format == mmal_format &&
       m_size == size)
     return true;

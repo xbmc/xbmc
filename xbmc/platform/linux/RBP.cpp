@@ -444,6 +444,7 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     geo.setHeightY(video_height);
     break;
   case MMAL_ENCODING_I420:
+  case MMAL_ENCODING_I420_S:
     geo.setStrideY((video_width + 31) & ~31);
     geo.setStrideC(geo.getStrideY() >> 1);
     geo.setHeightY((video_height + 15) & ~15);
