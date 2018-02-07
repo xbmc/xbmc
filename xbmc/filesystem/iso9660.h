@@ -181,7 +181,7 @@ public:
   HANDLE FindFirstFile9660( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
   int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
   bool FindClose( HANDLE szLocalFolder );
-  DWORD SetFilePointer(HANDLE hFile, LONG lDistanceToMove, long* lpDistanceToMoveHigh, DWORD dwMoveMethod );
+  DWORD SetFilePointer(HANDLE hFile, long lDistanceToMove, long* lpDistanceToMoveHigh, DWORD dwMoveMethod );
   int64_t GetFileSize(HANDLE hFile);
   int64_t GetFilePosition(HANDLE hFile);
   int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);

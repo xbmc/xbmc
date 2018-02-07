@@ -140,7 +140,6 @@ typedef int         INT;
 typedef unsigned int  UINT;
 typedef long long     INT64;
 typedef unsigned long long    UINT64;
-typedef long        LONG;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
@@ -184,13 +183,13 @@ typedef struct _SYSTEMTIME
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
 typedef struct _TIME_ZONE_INFORMATION {
-  LONG Bias;
+  long Bias;
   WCHAR StandardName[32];
   SYSTEMTIME StandardDate;
-  LONG StandardBias;
+  long StandardBias;
   WCHAR DaylightName[32];
   SYSTEMTIME DaylightDate;
-  LONG DaylightBias;
+  long DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
 #define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
