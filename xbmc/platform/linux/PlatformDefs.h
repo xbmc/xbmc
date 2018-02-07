@@ -150,7 +150,6 @@ typedef unsigned long   ULONG;
 typedef void*         PVOID;
 typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-typedef BYTE*       LPBYTE;
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
 #else

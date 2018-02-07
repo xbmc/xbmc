@@ -129,7 +129,7 @@ bool CUdpClient::Send(struct sockaddr_in aAddress, const std::string& aMessage)
   return true;
 }
 
-bool CUdpClient::Send(struct sockaddr_in aAddress, LPBYTE pMessage, DWORD dwSize)
+bool CUdpClient::Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWORD dwSize)
 {
   CSingleLock lock(critical_section);
 
@@ -192,7 +192,7 @@ void CUdpClient::Process()
         CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'",
                   XbmcThreads::SystemClockMillis(), message.c_str() );
 
-        OnMessage(remoteAddress, message, (LPBYTE)messageBuffer, messageLength);
+        OnMessage(remoteAddress, message, (unsigned char*)messageBuffer, messageLength);
       }
       else
       {
