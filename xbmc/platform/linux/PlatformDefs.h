@@ -142,11 +142,6 @@ typedef long long     INT64;
 typedef unsigned long long    UINT64;
 typedef long        LONG;
 typedef long long     LONGLONG;
-#if defined(TARGET_DARWIN_OSX)
-typedef UInt32          ULONG;
-#else
-typedef unsigned long   ULONG;
-#endif
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;

@@ -3490,7 +3490,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
     pDlg->Reset();
 
-    std::map<ULONG, std::string> mapCDDBIds;
+    std::map<uint32_t, std::string> mapCDDBIds;
     for (int i = 0; i < items.Size(); ++i)
     {
       if (items[i]->m_bIsFolder)
@@ -3498,7 +3498,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 
       std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
       strFile.erase(strFile.size() - 5, 5);
-      ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
+      uint32_t lDiscId = strtoul(strFile.c_str(), NULL, 16);
       Xcddb cddb;
       cddb.setCacheDir(m_profileManager.GetCDDBFolder());
 
@@ -3516,7 +3516,7 @@ void CMusicDatabase::DeleteCDDBInfo()
         str = strDiskTitle + " - " + strDiskArtist;
 
       pDlg->Add(str);
-      mapCDDBIds.insert(std::pair<ULONG, std::string>(lDiscId, str));
+      mapCDDBIds.insert(std::pair<uint32_t, std::string>(lDiscId, str));
     }
 
     pDlg->Sort();
