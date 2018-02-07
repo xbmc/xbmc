@@ -910,7 +910,7 @@ bool CCurlFile::ReadData(std::string& strHTML)
   return true;
 }
 
-bool CCurlFile::Download(const std::string& strURL, const std::string& strFileName, LPDWORD pdwSize)
+bool CCurlFile::Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize)
 {
   CLog::Log(LOGINFO, "CCurlFile::Download - %s->%s", strURL.c_str(), strFileName.c_str());
 

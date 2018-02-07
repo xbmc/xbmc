@@ -136,7 +136,7 @@ extern "C"
 #ifdef TARGET_FREEBSD
                            long* lpThreadId);
 #else
-                           LPDWORD lpThreadId);
+                           unsigned int lpThreadId);
 #endif
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);

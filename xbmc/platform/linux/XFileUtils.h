@@ -28,8 +28,8 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
             LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
             DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
 
-int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped);
-int ReadFile( HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, void* unsupportedlpOverlapped);
+int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  unsigned int* lpNumberOfBytesWritten, LPVOID lpOverlapped);
+int ReadFile( HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, unsigned int* lpNumberOfBytesRead, void* unsupportedlpOverlapped);
 
 uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod);

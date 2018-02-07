@@ -165,7 +165,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
 }
 
 int ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-  LPDWORD lpNumberOfBytesRead, LPVOID lpOverlapped)
+  unsigned int* lpNumberOfBytesRead, LPVOID lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -184,7 +184,7 @@ int ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
 }
 
 int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
-  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped)
+  unsigned int* lpNumberOfBytesWritten, LPVOID lpOverlapped)
 {
   if (lpOverlapped)
   {

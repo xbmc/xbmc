@@ -151,7 +151,6 @@ typedef void*         PVOID;
 typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef BYTE*       LPBYTE;
-typedef DWORD*        LPDWORD;
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
 #else
