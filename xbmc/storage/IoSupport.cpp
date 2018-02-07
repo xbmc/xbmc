@@ -111,7 +111,7 @@ void CIoSupport::FreeReadBuffer()
 #endif
 }
 
-INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 
 {
   DWORD dwRead;
@@ -187,7 +187,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 }
 
 
-INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
 #if defined(TARGET_DARWIN)
@@ -281,7 +281,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer
   return -1;
 }
 
-INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
   return -1;
 }
