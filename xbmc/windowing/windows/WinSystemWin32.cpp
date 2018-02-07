@@ -486,6 +486,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     RestoreDesktopResolution(m_nScreen);
 
     // notify about screen change (it may require recreate rendering device)
+    m_fRefreshRate = res.fRefreshRate; // use desired refresh for driver hook
     OnScreenChange(res.iScreen);
   }
 
