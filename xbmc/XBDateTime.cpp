@@ -174,10 +174,10 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
   ULARGE_INTEGER time;
   ToULargeInt(time);
 
-  time.QuadPart=(LONGLONG)day*SECONDS_PER_DAY*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)hour*SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)minute*SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)second*SECONDS_TO_FILETIME;
+  time.QuadPart= static_cast<long long>(day) *SECONDS_PER_DAY*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(hour) *SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(minute) *SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(second) *SECONDS_TO_FILETIME;
 
   FromULargeInt(time);
 }
@@ -654,7 +654,7 @@ bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 {
-  LONGLONG ll = time;
+  long long ll = time;
   ll *= 10000000ll;
   ll += 0x19DB1DED53E8000LL;
 
@@ -829,8 +829,7 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 #define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
-  LONGLONG ll;
-  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
+  long long ll = (static_cast<long long>(m_time.dwHighDateTime) << 32) + m_time.dwLowDateTime;
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 

@@ -141,7 +141,6 @@ typedef unsigned int  UINT;
 typedef long long     INT64;
 typedef unsigned long long    UINT64;
 typedef long        LONG;
-typedef long long     LONGLONG;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
@@ -157,7 +156,7 @@ typedef union _LARGE_INTEGER
     DWORD LowPart;
     int32_t HighPart;
   } u;
-  LONGLONG QuadPart;
+  long long QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
  typedef union _ULARGE_INTEGER {

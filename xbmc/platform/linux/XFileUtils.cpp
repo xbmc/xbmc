@@ -208,10 +208,10 @@ uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
   if (hFile == NULL)
     return 0;
 
-  LONGLONG offset = lDistanceToMove;
+  long long offset = lDistanceToMove;
   if (lpDistanceToMoveHigh)
   {
-    LONGLONG helper = *lpDistanceToMoveHigh;
+    long long helper = *lpDistanceToMoveHigh;
     helper <<= 32;
     offset &= 0xFFFFFFFF;   // Zero out the upper half (sign ext)
     offset |= helper;
