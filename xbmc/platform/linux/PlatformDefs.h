@@ -183,8 +183,6 @@ typedef union _LARGE_INTEGER
   ULONGLONG QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
-LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand);
-
 void OutputDebugString(LPCTSTR lpOutputString);
 
 // Date / Time
