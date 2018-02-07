@@ -155,6 +155,13 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
     int i = (((sDevMode.dmDisplayFrequency + 1) % 24) == 0 || ((sDevMode.dmDisplayFrequency + 1) % 30) == 0) ? 1 : 0;
     mode->RefreshRate.Numerator = (sDevMode.dmDisplayFrequency + i) * 1000;
     mode->RefreshRate.Denominator = 1000 + i;
+    if (sDevMode.dmDisplayFlags & DM_INTERLACED)
+    {
+      mode->RefreshRate.Numerator *= 2;
+      mode->ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST; // guessing
+    }
+    else
+      mode->ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
   }
 #endif
 }
@@ -187,7 +194,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 
   critical_section::scoped_lock lock(m_criticalSection);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": switching to/from fullscreen (%f x %f)", m_outputSize.Width, m_outputSize.Height);
+  CLog::LogF(LOGDEBUG, "switching to/from fullscreen (%f x %f)", m_outputSize.Width, m_outputSize.Height);
 
   BOOL bFullScreen;
   bool recreate = m_stereoEnabled != (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
@@ -195,7 +202,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
   if (!!bFullScreen && !fullscreen)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": switching to windowed");
+    CLog::LogF(LOGDEBUG, "switching to windowed");
     recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(false, nullptr));
   }
   else if (fullscreen)
@@ -205,15 +212,24 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
     {
       DXGI_MODE_DESC currentMode;
       GetDisplayMode(&currentMode);
+      DXGI_SWAP_CHAIN_DESC scDesc;
+      m_swapChain->GetDesc(&scDesc);
+
+      bool is_interlaced = scDesc.BufferDesc.ScanlineOrdering > DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
+      float refreshRate = res.fRefreshRate;
+      if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+        refreshRate *= 2;
 
       if (currentMode.Width != res.iWidth
         || currentMode.Height != res.iHeight
-        || DX::RationalToFloat(currentMode.RefreshRate) != res.fRefreshRate
+        || DX::RationalToFloat(currentMode.RefreshRate) != refreshRate
+        || is_interlaced != (res.dwFlags & D3DPRESENTFLAG_INTERLACED ? true : false)
         // force resolution change for stereo mode
         // some drivers unable to create stereo swapchain if mode does not match @23.976
         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate);
+        CLog::LogF(LOGDEBUG, "changing display mode to %dx%d@%0.3f%s", res.iWidth, res.iHeight, res.fRefreshRate,
+                             res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         int refresh = static_cast<int>(res.fRefreshRate);
         int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
@@ -222,7 +238,11 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         currentMode.Height = res.iHeight;
         currentMode.RefreshRate.Numerator = (refresh + i) * 1000;
         currentMode.RefreshRate.Denominator = 1000 + i;
-
+        if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+        {
+          currentMode.RefreshRate.Numerator *= 2;
+          currentMode.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST; // guessing;
+        }
         recreate |= SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
       }
     }
@@ -231,7 +251,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
       ComPtr<IDXGIOutput> pOutput;
       GetOutput(pOutput.GetAddressOf());
 
-      CLog::Log(LOGDEBUG, __FUNCTION__": switching to fullscreen");
+      CLog::LogF(LOGDEBUG, "switching to fullscreen");
       recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(true, pOutput.Get()));
     }
   }
@@ -240,7 +260,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
   if (recreate)
     ResizeBuffers();
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": switching done.");
+  CLog::LogF(LOGDEBUG, "switching done.");
 
   return true;
 }
@@ -473,10 +493,10 @@ void DX::DeviceResources::ResizeBuffers()
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == g_graphicsContext.GetStereoMode();
   bool windowed = true;
 
+  DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
   if (m_swapChain)
   {
     // check if swapchain needs to be recreated
-    DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
     m_swapChain->GetDesc1(&scDesc);
     if ((scDesc.Stereo == TRUE) != bHWStereoEnabled)
     {
@@ -498,11 +518,12 @@ void DX::DeviceResources::ResizeBuffers()
   if (m_swapChain != nullptr)
   {
     // If the swap chain already exists, resize it.
+    m_swapChain->GetDesc1(&scDesc);
     HRESULT hr = m_swapChain->ResizeBuffers(
-      2, // Double-buffered swap chain.
+      scDesc.BufferCount,
       lround(m_outputSize.Width),
       lround(m_outputSize.Height),
-      DXGI_FORMAT_B8G8R8A8_UNORM,
+      scDesc.Format,
       0
     );
 
