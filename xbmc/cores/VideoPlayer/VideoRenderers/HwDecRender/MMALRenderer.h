@@ -111,7 +111,6 @@ public:
   CMMALBuffer(int id);
   virtual ~CMMALBuffer();
   MMAL_BUFFER_HEADER_T *mmal_buffer = nullptr;
-  uint32_t m_encoding = MMAL_ENCODING_UNKNOWN;
   float m_aspect_ratio = 0.0f;
   MMALState m_state = MMALStateNone;
   bool m_rendered = false;
