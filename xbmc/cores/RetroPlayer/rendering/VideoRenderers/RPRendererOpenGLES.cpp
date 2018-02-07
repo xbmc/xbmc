@@ -62,7 +62,7 @@ void CRenderBufferOpenGLES::CreateTexture()
 
   glBindTexture(m_textureTarget, m_textureId);
 
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_width, m_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(m_textureTarget, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL);
 
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -75,16 +75,13 @@ bool CRenderBufferOpenGLES::UploadTexture()
   if (!glIsTexture(m_textureId))
     CreateTexture();
 
-  const unsigned int bpp = 1;
-  glPixelStorei(GL_UNPACK_ALIGNMENT, bpp);
-
-  const unsigned datatype = GL_UNSIGNED_BYTE;
-
   glBindTexture(m_textureTarget, m_textureId);
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, GL_LUMINANCE, datatype, m_textureBuffer.data());
 
-  glBindTexture(m_textureTarget, 0);
+  const int stride = GetFrameSize() / m_height;
+  const uint8_t* src = m_data.data();
 
+  for (unsigned int y = 0; y < m_height; ++y, src += stride)
+    glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, src);
 
   return true;
 }
@@ -136,7 +133,7 @@ CRPRendererOpenGLES::~CRPRendererOpenGLES()
 
 bool CRPRendererOpenGLES::ConfigureInternal()
 {
-  AVPixelFormat targetFormat = AV_PIX_FMT_BGRA; //! @todo
+  AVPixelFormat targetFormat = AV_PIX_FMT_RGB565LE;
 
   static_cast<CRenderBufferPoolOpenGLES*>(m_bufferPool.get())->SetTargetFormat(targetFormat);
 
@@ -207,31 +204,10 @@ void CRPRendererOpenGLES::ClearBackBuffer()
 
 void CRPRendererOpenGLES::Render(uint8_t alpha)
 {
-  if (m_renderBuffer == nullptr)
-    return;
-
   CRenderBufferOpenGLES *renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
 
-  glDisable(GL_DEPTH_TEST);
-
-  // Render texture
-  glActiveTexture(GL_TEXTURE0);
-  glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, renderBuffer->TextureID());
-
-  // Try some clamping or wrapping
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  GLint filter = (m_renderSettings.VideoSettings().GetScalingMethod() == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-
-  //! @todo Translate OpenGL code to GLES
-  /*
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  glBegin(GL_QUADS);
+  if (renderBuffer == nullptr)
+    return;
 
   CRect rect = m_sourceRect;
 
@@ -240,14 +216,65 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   rect.y1 /= m_sourceHeight;
   rect.y2 /= m_sourceHeight;
 
-  glTexCoord2f(rect.x1, rect.y1);  glVertex2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y);
-  glTexCoord2f(rect.x2, rect.y1);  glVertex2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y);
-  glTexCoord2f(rect.x2, rect.y2);  glVertex2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y);
-  glTexCoord2f(rect.x1, rect.y2);  glVertex2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y);
+  float u1 = rect.x1;
+  float u2 = rect.x2;
+  float v1 = rect.y1;
+  float v2 = rect.y2;
 
-  glEnd();
-  */
+  const uint32_t color = (alpha << 24) | 0xFFFFFF;
 
-  glBindTexture (m_textureTarget, 0);
-  glDisable(m_textureTarget);
+  glBindTexture(m_textureTarget, renderBuffer->TextureID());
+
+  GLint filter = GL_NEAREST;
+  if (GetRenderSettings().VideoSettings().GetScalingMethod() == VS_SCALINGMETHOD_LINEAR)
+    filter = GL_LINEAR;
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  m_context.EnableGUIShader();
+
+  GLubyte colour[4];
+  GLfloat ver[4][3];
+  GLfloat tex[4][2];
+  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
+
+  GLint posLoc = m_context.GUIShaderGetPos();
+  GLint tex0Loc = m_context.GUIShaderGetCoord0();
+  GLint uniColLoc = m_context.GUIShaderGetUniCol();
+
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  // Setup color values
+  colour[0] = static_cast<GLubyte>(GET_R(color));
+  colour[1] = static_cast<GLubyte>(GET_G(color));
+  colour[2] = static_cast<GLubyte>(GET_B(color));
+  colour[3] = static_cast<GLubyte>(GET_A(color));
+
+  for (unsigned int i = 0; i < 4; i++)
+  {
+    // Setup vertex position values
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;
+  }
+
+  // Setup texture coordinates
+  tex[0][0] = tex[3][0] = u1;
+  tex[0][1] = tex[1][1] = v1;
+  tex[1][0] = tex[2][0] = u2;
+  tex[2][1] = tex[3][1] = v2;
+
+  glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  m_context.DisableGUIShader();
 }
