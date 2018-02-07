@@ -104,8 +104,6 @@
 
 #ifdef TARGET_POSIX
 
-#define CONST   const
-
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
 #define _stricmp  strcasecmp
@@ -127,9 +125,9 @@ typedef void* HMODULE;
 typedef unsigned int  DWORD;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
-typedef CONST wchar_t*       LPCTSTR;
+typedef const wchar_t*       LPCTSTR;
 #else
-typedef CONST char*      LPCTSTR;
+typedef const char*      LPCTSTR;
 #endif
 
 #define MAXWORD   0xffff
