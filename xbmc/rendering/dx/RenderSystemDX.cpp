@@ -566,12 +566,12 @@ void CRenderSystemDX::ResetScissors()
 
 void CRenderSystemDX::OnDXDeviceLost()
 {
-  DestroyRenderSystem();
+  CRenderSystemDX::DestroyRenderSystem();
 }
 
 void CRenderSystemDX::OnDXDeviceRestored()
 {
-  InitRenderSystem();
+  CRenderSystemDX::InitRenderSystem();
 }
 
 void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)

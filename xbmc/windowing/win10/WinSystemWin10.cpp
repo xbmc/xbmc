@@ -123,7 +123,7 @@ bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, 
   AdjustWindow();
   // dispatch all events currently pending in the queue to show window's content
   // and hide UWP splash, without this the Kodi's splash will not be shown
-  m_coreWindow->Dispatcher->ProcessEvents(Windows::UI::Core::CoreProcessEventsOption::ProcessAllIfPresent);
+  m_coreWindow->Dispatcher->ProcessEvents(Windows::UI::Core::CoreProcessEventsOption::ProcessOneAndAllPending);
 
   return true;
 }

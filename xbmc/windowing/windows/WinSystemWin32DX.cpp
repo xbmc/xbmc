@@ -123,6 +123,11 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 
 void CWinSystemWin32DX::OnMove(int x, int y)
 {
+  // do not handle moving at window creation because MonitorFromWindow 
+  // returns default system monitor in case of m_hWnd is null
+  if (!m_hWnd) 
+    return;
+
   HMONITOR newMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);
   const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
   if (newMonitor != monitor->hMonitor)
@@ -159,6 +164,16 @@ void CWinSystemWin32DX::ResizeDeviceBuffers()
 bool CWinSystemWin32DX::IsStereoEnabled()
 {
   return m_deviceResources->IsStereoEnabled();
+}
+
+void CWinSystemWin32DX::OnScreenChange(int screen)
+{
+  const MONITOR_DETAILS* new_monitor = GetMonitor(screen);
+  const MONITOR_DETAILS* old_monitor = GetMonitor(m_nScreen);
+  if (old_monitor->hMonitor != new_monitor->hMonitor)
+  {
+    m_deviceResources->SetMonitor(new_monitor->hMonitor);
+  }
 }
 
 void CWinSystemWin32DX::OnResize(int width, int height)
@@ -297,16 +312,22 @@ void CWinSystemWin32DX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOUR
     float refreshRate = RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate);
     if (refreshRate > 10.0f && refreshRate < 300.0f)
     {
+      // interlaced
+      if (pResource->pPrimaryDesc->ModeDesc.ScanlineOrdering > DXGI_DDI_MODE_SCANLINE_ORDER_PROGRESSIVE)
+        refreshRate /= 2;
+
       uint32_t refreshNum, refreshDen;
       DX::GetRefreshRatio(floor(m_fRefreshRate), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - static_cast<float>(refreshNum) / static_cast<float>(refreshDen)) / refreshRate;
-      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s",
-        refreshRate, m_fRefreshRate, diff, (diff > 0.0005) ? "true" : "false");
-      if (diff > 0.0005)
+      CLog::LogF(LOGDEBUG, "refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s, %d",
+        refreshRate, m_fRefreshRate, diff, (diff > 0.0005 && diff < 0.1) ? "yes" : "no", pResource->pPrimaryDesc->Flags);
+      if (diff > 0.0005 && diff < 0.1)
       {
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator = refreshNum;
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Denominator = refreshDen;
-        CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate fix applied -> %0.3f", RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
+        if (pResource->pPrimaryDesc->ModeDesc.ScanlineOrdering > DXGI_DDI_MODE_SCANLINE_ORDER_PROGRESSIVE)
+          pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator *= 2;
+        CLog::LogF(LOGDEBUG, "refreshRate fix applied -> %0.3f", RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
       }
     }
   }

@@ -876,7 +876,7 @@ void CD3DBuffer::OnDestroyDevice(bool fatal)
   }
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
 
   if (!pDevice || !pContext || !m_buffer)
     return;
