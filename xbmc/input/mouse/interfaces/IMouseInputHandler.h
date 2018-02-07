@@ -50,6 +50,9 @@ namespace MOUSE
      * \param dx           The relative x coordinate of motion
      * \param dy           The relative y coordinate of motion
      *
+     * The mouse uses a left-handed (graphics) cartesian coordinate system.
+     * Positive X is right, positive Y is down.
+     *
      * \return True if the event was handled, otherwise false
      */
     virtual bool OnMotion(const PointerName& relpointer, int dx, int dy) = 0;

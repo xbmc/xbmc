@@ -31,6 +31,9 @@ namespace INPUT
     /*!
      * \brief Get the closest cardinal direction to the given vector
      *
+     * This function assumes a right-handed cartesian coordinate system; postive
+     * X is right, positive Y is up.
+     *
      * Ties are resolved in the clockwise direction: (0.5, 0.5) will resolve to
      * RIGHT.
      *
@@ -45,6 +48,9 @@ namespace INPUT
     /*!
      * \brief Get the closest cardinal or intercardinal direction to the given
      *        vector
+     *
+     * This function assumes a right-handed cartesian coordinate system; postive
+     * X is right, positive Y is up.
      *
      * Ties are resolved in the clockwise direction.
      *

@@ -40,6 +40,9 @@ namespace MOUSE
      * \param x  The new x coordinate of the pointer
      * \param y  The new y coordinate of the pointer
      *
+     * The mouse uses a left-handed (graphics) cartesian coordinate system.
+     * Positive X is right, positive Y is down.
+     *
      * \return True if the event was handled, false otherwise
      */
     virtual bool OnPosition(int x, int y) = 0;

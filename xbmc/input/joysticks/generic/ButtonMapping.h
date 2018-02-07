@@ -293,6 +293,9 @@ namespace JOYSTICK
     bool OnMotion(int x, int y);
 
   private:
+    // Utility function
+    static INPUT::INTERCARDINAL_DIRECTION GetPointerDirection(int x, int y);
+
     static const unsigned int MIN_FRAME_COUNT = 10;
 
     // State variables

@@ -287,8 +287,6 @@ CPointerDetector::CPointerDetector(CButtonMapping* buttonMapping) :
 
 bool CPointerDetector::OnMotion(int x, int y)
 {
-  using namespace INPUT;
-
   if (!m_bStarted)
   {
     m_bStarted = true;
@@ -302,7 +300,7 @@ bool CPointerDetector::OnMotion(int x, int y)
     int dx = x - m_startX;
     int dy = y - m_startY;
 
-    INTERCARDINAL_DIRECTION dir = CInputTranslator::VectorToIntercardinalDirection(static_cast<float>(dx), static_cast<float>(dy));
+    INPUT::INTERCARDINAL_DIRECTION dir = GetPointerDirection(dx, dy);
 
     CDriverPrimitive primitive(static_cast<RELATIVE_POINTER_DIRECTION>(dir));
     if (primitive.IsValid())
@@ -313,6 +311,16 @@ bool CPointerDetector::OnMotion(int x, int y)
   }
 
   return true;
+}
+
+KODI::INPUT::INTERCARDINAL_DIRECTION CPointerDetector::GetPointerDirection(int x, int y)
+{
+  using namespace INPUT;
+
+  // Translate from left-handed coordinate system to right-handed coordinate system
+  y *= -1;
+
+  return CInputTranslator::VectorToIntercardinalDirection(static_cast<float>(x), static_cast<float>(y));
 }
 
 // --- CButtonMapping ----------------------------------------------------------
