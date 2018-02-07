@@ -108,22 +108,8 @@ bool DPMSSupport::DisablePowerSaving()
 #include "windowing/X11/WinSystemX11.h"
 //// X Windows
 
-// Here's a sad story: our Windows-inspired BOOL type from linux/PlatformDefs.h
-// is incompatible with the BOOL in X11's Xmd.h (int vs. unsigned char).
-// This is not a good idea for a X11 app and it should
-// probably be fixed. Meanwhile, we can work around it rather cleanly with
-// the preprocessor (which is partly to blame for this needless conflict
-// anyway). BOOL is not used in the DPMS APIs that we need. Try not to use
-// BOOL in the remaining X11-specific code in this file, since X might
-// someday use a #define instead of a typedef.
-// Addendum: INT64 apparently hhas the same problem on x86_64. Oh well.
-// Once again, INT64 is not used in the APIs we need, so we can #ifdef it away.
-#define BOOL __X11_SPECIFIC_BOOL
-#define INT64 __X11_SPECIFIC_INT64
 #include <X11/Xlib.h>
 #include <X11/extensions/dpms.h>
-#undef INT64
-#undef BOOL
 
 // Mapping of PowerSavingMode to X11's mode constants.
 static const CARD16 X_DPMS_MODES[] =

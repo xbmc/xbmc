@@ -175,7 +175,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
+void CGUIAddonWindow::AllocResources(bool forceLoad /*= false */)
 {
   std::string tmpDir = URIUtils::GetDirectory(GetProperty("xmlfile").asString());
   std::string fallbackMediaPath;
@@ -189,7 +189,7 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
-void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= FALSE */)
+void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= false */)
 {
   CGUIMediaWindow::FreeResources(forceUnLoad);
 }

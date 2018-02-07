@@ -105,8 +105,8 @@ void CXHandle::Init()
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
-  m_bManualEvent=FALSE;
-  m_bEventSet=FALSE;
+  m_bManualEvent=false;
+  m_bEventSet=false;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
   m_tmCreation = time(NULL);

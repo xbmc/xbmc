@@ -24,6 +24,6 @@
 
 extern "C" void tracker_library_free_all(DllTrackInfo* pInfo);
 
-extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file);
-extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
+extern "C" HMODULE __stdcall track_LoadLibraryA(const char* file);
+extern "C" HMODULE __stdcall track_LoadLibraryExA(const char* lpLibFileName, HANDLE hFile, DWORD dwFlags);
 extern "C" int __stdcall track_FreeLibrary(HINSTANCE hLibModule);

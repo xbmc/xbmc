@@ -397,7 +397,7 @@ public:
   {
     if (server.upnpUuid.empty())
     {
-      ULONG dst_ip = HostToIP(server.host);
+      unsigned long dst_ip = HostToIP(server.host);
 
       return CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, timeOutMs, server.ping_mode & 1);
     }

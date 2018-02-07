@@ -88,7 +88,7 @@ int FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTi
   FileTimeToTimeT(lpFileTime, &ft);
   localtime_r(&ft, &tm_ft);
 
-  l.QuadPart += (ULONGLONG)tm_ft.tm_gmtoff * 10000000;
+  l.QuadPart += static_cast<unsigned long long>(tm_ft.tm_gmtoff) * 10000000;
 
   lpLocalFileTime->dwLowDateTime = l.u.LowPart;
   lpLocalFileTime->dwHighDateTime = l.u.HighPart;

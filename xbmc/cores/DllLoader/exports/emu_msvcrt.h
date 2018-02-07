@@ -116,7 +116,7 @@ extern "C"
   long dll_ftell(FILE *stream);
   off64_t dll_ftell64(FILE *stream);
   long dll_tell ( int fd );
-  __int64 dll_telli64 ( int fd );
+  long long dll_telli64 ( int fd );
   size_t dll_fwrite ( const void * buffer, size_t size, size_t count, FILE * stream );
   int dll_fflush (FILE * stream);
   int dll_ferror (FILE * stream);
@@ -132,11 +132,11 @@ extern "C"
   int dll_initterm(PFV * start, PFV * end);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
+                           LPTHREAD_START_ROUTINE lpStartAddress, void* lpParameter, DWORD dwCreationFlags,
 #ifdef TARGET_FREEBSD
-                           LPLONG lpThreadId);
+                           long* lpThreadId);
 #else
-                           LPDWORD lpThreadId);
+                           unsigned int lpThreadId);
 #endif
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);

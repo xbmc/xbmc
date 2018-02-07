@@ -675,10 +675,10 @@ extern "C"
       // let the operating system handle it
       // not supported: return lseeki64(fd, lPos, iWhence);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_lseeki64 called, TODO: add 'int64 -> long' type checking");      //warning
-      return (__int64)lseek(fd, (long)lPos, iWhence);
+      return static_cast<long long>(lseek(fd, (long)lPos, iWhence));
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return (__int64)-1;
+    return -1ll;
   }
 
   __off_t dll_lseek(int fd, __off_t lPos, int iWhence)
@@ -1315,12 +1315,12 @@ extern "C"
     return -1;
   }
 
-  __int64 dll_telli64(int fd)
+  long long dll_telli64(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return (__int64)pFile->GetPosition();
+       return static_cast<long long>(pFile->GetPosition());
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1329,7 +1329,7 @@ extern "C"
       // not supported return telli64(fd);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
 #ifndef TARGET_POSIX
-      return (__int64)tell(fd);
+      return static_cast<long long>(tell(fd));
 #elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
       return lseek(fd, 0, SEEK_CUR);
 #else

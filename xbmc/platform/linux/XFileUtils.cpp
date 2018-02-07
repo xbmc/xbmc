@@ -164,8 +164,8 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   return result;
 }
 
-int ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-  LPDWORD lpNumberOfBytesRead, LPVOID lpOverlapped)
+int ReadFile(HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead,
+  unsigned int* lpNumberOfBytesRead, void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -184,7 +184,7 @@ int ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
 }
 
 int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
-  LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped)
+  unsigned int* lpNumberOfBytesWritten, void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -208,10 +208,10 @@ uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
   if (hFile == NULL)
     return 0;
 
-  LONGLONG offset = lDistanceToMove;
+  long long offset = lDistanceToMove;
   if (lpDistanceToMoveHigh)
   {
-    LONGLONG helper = *lpDistanceToMoveHigh;
+    long long helper = *lpDistanceToMoveHigh;
     helper <<= 32;
     offset &= 0xFFFFFFFF;   // Zero out the upper half (sign ext)
     offset |= helper;
@@ -259,13 +259,13 @@ int GetDiskFreeSpaceEx(
 #endif
 
   if (lpFreeBytesAvailable)
-    lpFreeBytesAvailable->QuadPart =  (ULONGLONG)fsInfo.f_bavail * (ULONGLONG)fsInfo.f_bsize;
+    lpFreeBytesAvailable->QuadPart =  static_cast<unsigned long long>(fsInfo.f_bavail) * static_cast<unsigned long long>(fsInfo.f_bsize);
 
   if (lpTotalNumberOfBytes)
-    lpTotalNumberOfBytes->QuadPart = (ULONGLONG)fsInfo.f_blocks * (ULONGLONG)fsInfo.f_bsize;
+    lpTotalNumberOfBytes->QuadPart = static_cast<unsigned long long>(fsInfo.f_blocks) * static_cast<unsigned long long>(fsInfo.f_bsize);
 
   if (lpTotalNumberOfFreeBytes)
-    lpTotalNumberOfFreeBytes->QuadPart = (ULONGLONG)fsInfo.f_bfree * (ULONGLONG)fsInfo.f_bsize;
+    lpTotalNumberOfFreeBytes->QuadPart = static_cast<unsigned long long>(fsInfo.f_bfree) * static_cast<unsigned long long>(fsInfo.f_bsize);
 
   return 1;
 }

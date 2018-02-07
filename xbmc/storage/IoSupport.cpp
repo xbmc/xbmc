@@ -69,7 +69,7 @@
 using namespace MEDIA_DETECT;
 #endif
 
-PVOID CIoSupport::m_rawXferBuffer;
+void* CIoSupport::m_rawXferBuffer;
 
 HANDLE CIoSupport::OpenCDROM()
 {
@@ -111,7 +111,7 @@ void CIoSupport::FreeReadBuffer()
 #endif
 }
 
-INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 
 {
   DWORD dwRead;
@@ -168,7 +168,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   }
 #endif
   LARGE_INTEGER Displacement;
-  Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
+  Displacement.QuadPart = static_cast<long long>(dwSector) * dwSectorSize;
 
   for (int i = 0; i < 5; i++)
   {
@@ -187,7 +187,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 }
 
 
-INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
 #if defined(TARGET_DARWIN)
@@ -281,12 +281,12 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
   return -1;
 }
 
-INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+int CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
   return -1;
 }
 
-VOID CIoSupport::CloseCDROM(HANDLE hDevice)
+void CIoSupport::CloseCDROM(HANDLE hDevice)
 {
   CloseHandle(hDevice);
 }

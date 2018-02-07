@@ -141,7 +141,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   DWORD iso9660searchpointer;
   struct iso9660_Directory isodir;
   struct iso9660_Directory curr_dir;
-  WORD wSectorSize = from_723(m_info.iso.logical_block_size);
+  unsigned short wSectorSize = from_723(m_info.iso.logical_block_size);
 
 
   struct iso_directories *point = m_lastpath;
@@ -489,7 +489,7 @@ void iso9660::Scan()
     m_info.HeaderPos = 0x8000;
     int current = 0x8000;
 
-    WORD wSectorSize = from_723(m_info.iso.logical_block_size);
+    unsigned short wSectorSize = from_723(m_info.iso.logical_block_size);
 
     // first check if first file in the current VD has a rock-ridge NM. if it has, disable joliet
     iso9660_Directory *dirPointer = reinterpret_cast<iso9660_Directory*>(&m_info.iso.szRootDir);
@@ -708,7 +708,7 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 
 
 //******************************************************************************************************************
-std::string iso9660::GetThinText(BYTE* strTxt, int iLen )
+std::string iso9660::GetThinText(unsigned char* strTxt, int iLen )
 {
   // convert from "fat" text (UTF-16BE) to "thin" text (UTF-8)
   std::u16string strTxtUnicode((char16_t*)strTxt, iLen / 2);
@@ -1059,8 +1059,7 @@ bool iso9660::IsScanned()
 //************************************************************************************
 void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime)
 {
-  tm t;
-  ZeroMemory(&t, sizeof(tm));
+  tm t = { 0 };
   t.tm_year=isoDateTime->year;
   t.tm_mon=isoDateTime->month-1;
   t.tm_mday=isoDateTime->day;

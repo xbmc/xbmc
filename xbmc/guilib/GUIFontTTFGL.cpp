@@ -394,7 +394,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
     break;
   }
   
-  return TRUE;
+  return true;
 }
 
 void CGUIFontTTFGL::DeleteHardwareTexture()

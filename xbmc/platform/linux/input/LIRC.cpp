@@ -305,7 +305,7 @@ void CRemoteControl::Update()
   }
 }
 
-WORD CRemoteControl::GetButton()
+unsigned short CRemoteControl::GetButton()
 {
   return m_button;
 }

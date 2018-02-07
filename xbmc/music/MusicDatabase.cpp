@@ -2035,7 +2035,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetDuration(record->at(song_iDuration).get_asInt());
   item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt(), MediaTypeSong);
   SYSTEMTIME stTime;
-  stTime.wYear = (WORD)record->at(song_iYear).get_asInt();
+  stTime.wYear = static_cast<unsigned short>(record->at(song_iYear).get_asInt());
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(record->at(song_strTitle).get_asString());
   item->SetLabel(record->at(song_strTitle).get_asString());
@@ -3490,7 +3490,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
     pDlg->Reset();
 
-    std::map<ULONG, std::string> mapCDDBIds;
+    std::map<uint32_t, std::string> mapCDDBIds;
     for (int i = 0; i < items.Size(); ++i)
     {
       if (items[i]->m_bIsFolder)
@@ -3498,7 +3498,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 
       std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
       strFile.erase(strFile.size() - 5, 5);
-      ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
+      uint32_t lDiscId = strtoul(strFile.c_str(), NULL, 16);
       Xcddb cddb;
       cddb.setCacheDir(m_profileManager.GetCDDBFolder());
 
@@ -3516,7 +3516,7 @@ void CMusicDatabase::DeleteCDDBInfo()
         str = strDiskTitle + " - " + strDiskArtist;
 
       pDlg->Add(str);
-      mapCDDBIds.insert(std::pair<ULONG, std::string>(lDiscId, str));
+      mapCDDBIds.insert(std::pair<uint32_t, std::string>(lDiscId, str));
     }
 
     pDlg->Sort();
@@ -3702,7 +3702,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
       SYSTEMTIME stTime;
-      stTime.wYear = (WORD)m_pDS->fv(0).get_asInt();
+      stTime.wYear = static_cast<unsigned short>(m_pDS->fv(0).get_asInt());
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
 
       CMusicDbUrl itemUrl = musicUrl;

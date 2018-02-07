@@ -51,8 +51,8 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
-  INT Run(const CAppParamParser &params);
-  VOID Destroy();
+  int Run(const CAppParamParser &params);
+  void Destroy();
 
 private:
 };

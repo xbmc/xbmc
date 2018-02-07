@@ -30,19 +30,12 @@ void OutputDebugString(LPCTSTR lpOutputString)
 {
 }
 
-LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)
-{
-  LONGLONG result = Multiplier;
-  result *= Multiplicand;
-  return result;
-}
-
 DWORD GetLastError()
 {
   return errno;
 }
 
-VOID SetLastError(DWORD dwErrCode)
+void SetLastError(DWORD dwErrCode)
 {
   errno = dwErrCode;
 }

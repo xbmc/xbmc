@@ -105,7 +105,7 @@ bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newCo
     {
       glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glxContext);
-      XSync(m_dpy, FALSE);
+      XSync(m_dpy, False);
     }
 
     if ((m_glxContext = glXCreateContext(m_dpy, vInfo, NULL, True)))

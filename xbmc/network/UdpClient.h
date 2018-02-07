@@ -47,18 +47,18 @@ protected:
 
   bool Broadcast(int aPort, const std::string& aMessage);
   bool Send(const std::string& aIpAddress, int aPort, const std::string& aMessage);
-  bool Send(SOCKADDR_IN aAddress, const std::string& aMessage);
-  bool Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize);
+  bool Send(struct sockaddr_in aAddress, const std::string& aMessage);
+  bool Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWORD dwSize);
 
-  virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, const std::string& aMessage, LPBYTE pMessage, DWORD dwMessageLength){};
+  virtual void OnMessage(struct sockaddr_in& aRemoteAddress, const std::string& aMessage, unsigned char* pMessage, DWORD dwMessageLength){};
 
 protected:
 
   struct UdpCommand
   {
-    SOCKADDR_IN address;
+    struct sockaddr_in address;
     std::string message;
-    LPBYTE binary;
+    unsigned char* binary;
     DWORD binarySize;
   };
 

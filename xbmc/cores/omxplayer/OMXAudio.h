@@ -45,20 +45,20 @@ extern "C" {
 typedef struct tGUID
 {
   DWORD Data1;
-  WORD  Data2, Data3;
-  BYTE  Data4[8];
+  unsigned short  Data2, Data3;
+  unsigned char  Data4[8];
 } __attribute__((__packed__)) GUID;
 
 // Audio stuff
 typedef struct tWAVEFORMATEX
 {
-  WORD    wFormatTag;
-  WORD    nChannels;
+  unsigned short wFormatTag;
+  unsigned short nChannels;
   DWORD   nSamplesPerSec;
   DWORD   nAvgBytesPerSec;
-  WORD    nBlockAlign;
-  WORD    wBitsPerSample;
-  WORD    cbSize;
+  unsigned short nBlockAlign;
+  unsigned short wBitsPerSample;
+  unsigned short cbSize;
  } __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
 
  #define WAVE_FORMAT_UNKNOWN           0x0000
@@ -72,9 +72,9 @@ typedef struct tWAVEFORMATEXTENSIBLE
   WAVEFORMATEX Format;
   union
   {
-    WORD wValidBitsPerSample;
-    WORD wSamplesPerBlock;
-    WORD wReserved;
+    unsigned short wValidBitsPerSample;
+    unsigned short wSamplesPerBlock;
+    unsigned short wReserved;
   } Samples;
   DWORD dwChannelMask;
   GUID SubFormat;

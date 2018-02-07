@@ -282,10 +282,10 @@ public:
 
   HANDLE OpenCDROM();
   HANDLE OpenIMAGE( std::string& strFilename );
-  INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  VOID CloseCDROM(HANDLE hDevice);
+  int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  void CloseCDROM(HANDLE hDevice);
 
   void PrintAnalysis(int fs, int num_audio);
 
@@ -305,7 +305,7 @@ protected:
 
   uint32_t CddbDiscId();
   int CddbDecDigitSum(int n);
-  UINT MsfSeconds(msf_t *msf);
+  unsigned int MsfSeconds(msf_t *msf);
 
 private:
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */

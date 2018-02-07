@@ -413,7 +413,7 @@ namespace XBMCAddon
       return A(CGUIMediaWindow::OnMessage(message));
     }
 
-    void WindowXML::AllocResources(bool forceLoad /*= FALSE */)
+    void WindowXML::AllocResources(bool forceLoad /*= false */)
     {
       XBMC_TRACE;
       std::string tmpDir = URIUtils::GetDirectory(ref(window)->GetProperty("xmlfile").asString());
@@ -428,7 +428,7 @@ namespace XBMCAddon
       g_TextureManager.RemoveTexturePath(m_mediaDir);
     }
 
-    void WindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
+    void WindowXML::FreeResources(bool forceUnLoad /*= false */)
     {
       XBMC_TRACE;
 

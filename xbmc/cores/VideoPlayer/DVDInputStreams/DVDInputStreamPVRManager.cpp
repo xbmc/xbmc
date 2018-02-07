@@ -160,7 +160,7 @@ void CDVDInputStreamPVRManager::Close()
 
 int CDVDInputStreamPVRManager::Read(uint8_t* buf, int buf_size)
 {
-  int ret = CServiceBroker::GetPVRManager().Clients()->ReadStream((BYTE*)buf, buf_size);
+  int ret = CServiceBroker::GetPVRManager().Clients()->ReadStream(buf, buf_size);
   if (ret < 0)
     ret = -1;
 

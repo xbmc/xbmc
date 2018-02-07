@@ -1187,7 +1187,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   for (int i = 0; i < 3; i++)
-    im.plane[i] = new BYTE[im.planesize[i]];
+    im.plane[i] = new uint8_t[im.planesize[i]];
 
   for(int f = 0;f<MAX_FIELDS;f++)
   {
@@ -1346,7 +1346,7 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
   im.planesize[2] = 0;
 
   for (int i = 0; i < 2; i++)
-    im.plane[i] = new BYTE[im.planesize[i]];
+    im.plane[i] = new uint8_t[im.planesize[i]];
 
   for(int f = 0;f<MAX_FIELDS;f++)
   {

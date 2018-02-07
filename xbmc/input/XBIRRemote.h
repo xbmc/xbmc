@@ -107,10 +107,10 @@
 
 typedef struct _XINPUT_IR_REMOTE
 {
-  BYTE wButtons;
-  BYTE region;   // just a guess
-  BYTE counter;  // some value that is changing while a button is pressed... could be the state of the buffer
-  BYTE firstEvent;  // > 0 - first event triggered after a button was pressed on the remote; 0 - not first event
+  unsigned char wButtons;
+  unsigned char region;   // just a guess
+  unsigned char counter;  // some value that is changing while a button is pressed... could be the state of the buffer
+  unsigned char firstEvent;  // > 0 - first event triggered after a button was pressed on the remote; 0 - not first event
 }
 XINPUT_IR_REMOTE, *PIR_REMOTE;
 

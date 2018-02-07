@@ -40,8 +40,8 @@ public:
   virtual ~COMXAudioCodecOMX();
   bool Open(CDVDStreamInfo &hints);
   void Dispose();
-  int Decode(BYTE* pData, int iSize, double dts, double pts);
-  int GetData(BYTE** dst, double &dts, double &pts);
+  int Decode(unsigned char* pData, int iSize, double dts, double pts);
+  int GetData(unsigned char** dst, double &dts, double &pts);
   void Reset();
   int GetChannels();
   void BuildChannelMap();
@@ -61,7 +61,7 @@ protected:
 
   AVFrame* m_pFrame1;
 
-  BYTE *m_pBufferOutput;
+  unsigned char *m_pBufferOutput;
   int   m_iBufferOutputUsed;
   int   m_iBufferOutputAlloced;
 

@@ -174,10 +174,10 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
   ULARGE_INTEGER time;
   ToULargeInt(time);
 
-  time.QuadPart=(LONGLONG)day*SECONDS_PER_DAY*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)hour*SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)minute*SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
-  time.QuadPart+=(LONGLONG)second*SECONDS_TO_FILETIME;
+  time.QuadPart= static_cast<long long>(day) *SECONDS_PER_DAY*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(hour) *SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(minute) *SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
+  time.QuadPart+= static_cast<long long>(second) *SECONDS_TO_FILETIME;
 
   FromULargeInt(time);
 }
@@ -648,13 +648,15 @@ bool CDateTime::IsValid() const
 
 bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 {
-  return SystemTimeToFileTime(&time, &fileTime) == TRUE &&
+  return SystemTimeToFileTime(&time, &fileTime) == 1 &&
          (fileTime.dwLowDateTime > 0 || fileTime.dwHighDateTime > 0);
 }
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 {
-  LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000LL;
+  long long ll = time;
+  ll *= 10000000ll;
+  ll += 0x19DB1DED53E8000LL;
 
   fileTime.dwLowDateTime  = (DWORD)(ll & 0xFFFFFFFF);
   fileTime.dwHighDateTime = (DWORD)(ll >> 32);
@@ -664,8 +666,7 @@ bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
 {
-  SYSTEMTIME st;
-  ZeroMemory(&st, sizeof(SYSTEMTIME));
+  SYSTEMTIME st = { 0 };
 
   st.wYear=time.tm_year+1900;
   st.wMonth=time.tm_mon+1;
@@ -675,7 +676,7 @@ bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
   st.wMinute=time.tm_min;
   st.wSecond=time.tm_sec;
 
-  return SystemTimeToFileTime(&st, &fileTime)==TRUE;
+  return SystemTimeToFileTime(&st, &fileTime) == 1;
 }
 
 void CDateTime::ToULargeInt(ULARGE_INTEGER& time) const
@@ -794,8 +795,7 @@ int CDateTime::GetMinuteOfDay() const
 
 bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
-  SYSTEMTIME st;
-  ZeroMemory(&st, sizeof(SYSTEMTIME));
+  SYSTEMTIME st = { 0 };
 
   st.wYear=year;
   st.wMonth=month;
@@ -827,8 +827,7 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 #define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
-  LONGLONG ll;
-  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
+  long long ll = (static_cast<long long>(m_time.dwHighDateTime) << 32) + m_time.dwLowDateTime;
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 

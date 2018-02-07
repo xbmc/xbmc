@@ -129,7 +129,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       }
       eglTerminate(m_eglDisplay);
       m_eglDisplay = EGL_NO_DISPLAY;
-      XSync(m_dpy, FALSE);
+      XSync(m_dpy, False);
       newContext = true;
     }
 
