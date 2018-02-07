@@ -305,7 +305,7 @@ protected:
 
   uint32_t CddbDiscId();
   int CddbDecDigitSum(int n);
-  UINT MsfSeconds(msf_t *msf);
+  unsigned int MsfSeconds(msf_t *msf);
 
 private:
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */

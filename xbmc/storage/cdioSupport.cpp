@@ -468,7 +468,7 @@ int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, tra
   unsigned int track_sec_count = ::cdio_get_track_sec_count(cdio, track_num);
   memset(buffer[bufnum], 0, CDIO_CD_FRAMESIZE);
 
-  if ( track_sec_count < (UINT)superblock)
+  if ( track_sec_count < static_cast<unsigned int>(superblock))
   {
     ::cdio_debug("reading block %u skipped track %d has only %u sectors\n",
                superblock, track_num, track_sec_count);
@@ -908,7 +908,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 }
 
 // Return the number of seconds (discarding frame portion) of an MSF
-UINT CCdIoSupport::MsfSeconds(msf_t *msf)
+unsigned int CCdIoSupport::MsfSeconds(msf_t *msf)
 {
   CSingleLock lock(*m_cdio);
 

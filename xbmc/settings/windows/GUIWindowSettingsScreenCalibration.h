@@ -43,7 +43,7 @@ protected:
   void ResetControls();
   void EnableControl(int iControl);
   void UpdateFromControl(int iControl);
-  UINT m_iCurRes;
+  unsigned int m_iCurRes;
   std::vector<RESOLUTION> m_Res;
   int m_iControl;
   float m_fPixelRatioBoxHeight;

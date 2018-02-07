@@ -137,7 +137,6 @@ typedef unsigned char   BYTE;
 typedef char        CHAR;
 typedef wchar_t     WCHAR;
 typedef int         INT;
-typedef unsigned int  UINT;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
