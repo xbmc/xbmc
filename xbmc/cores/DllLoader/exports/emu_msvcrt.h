@@ -134,7 +134,7 @@ extern "C"
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
 #ifdef TARGET_FREEBSD
-                           LPLONG lpThreadId);
+                           long* lpThreadId);
 #else
                            LPDWORD lpThreadId);
 #endif

@@ -155,7 +155,6 @@ typedef DWORD*        LPDWORD;
 typedef CONST CHAR*   LPCSTR;
 typedef CONST WCHAR*    LPCWSTR;
 typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
-typedef LONG        *PLONG, *LPLONG;
 #ifdef UNICODE
 typedef LPCWSTR       LPCTSTR;
 #else
