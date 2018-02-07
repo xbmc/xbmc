@@ -28,6 +28,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/IKeymapEnvironment.h"
+#include "input/InputTranslator.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -113,10 +114,12 @@ bool CKeymapHandler::OnButtonMotion(const FeatureName& feature, float magnitude,
 
 bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
 {
+  using namespace INPUT;
+
   bool bHandled = false;
 
   // Calculate the direction of the stick's position
-  const ANALOG_STICK_DIRECTION analogStickDir = CJoystickTranslator::VectorToCardinalDirection(x, y);
+  const ANALOG_STICK_DIRECTION analogStickDir = CInputTranslator::VectorToCardinalDirection(x, y);
 
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::max(std::fabs(x), std::fabs(y));

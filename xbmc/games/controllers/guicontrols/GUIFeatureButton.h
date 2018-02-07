@@ -45,7 +45,7 @@ namespace GAME
 
     // partial implementation of IFeatureButton
     virtual const CControllerFeature& Feature(void) const override { return m_feature; }
-    virtual JOYSTICK::CARDINAL_DIRECTION GetCardinalDirection(void) const override { return JOYSTICK::CARDINAL_DIRECTION::NONE; }
+    virtual INPUT::CARDINAL_DIRECTION GetCardinalDirection(void) const override { return INPUT::CARDINAL_DIRECTION::NONE; }
     virtual JOYSTICK::WHEEL_DIRECTION GetWheelDirection(void) const override { return JOYSTICK::WHEEL_DIRECTION::NONE; }
     virtual JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection(void) const override { return JOYSTICK::THROTTLE_DIRECTION::NONE; }
 

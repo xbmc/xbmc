@@ -10,6 +10,7 @@ set(SOURCES Action.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
+            InputTranslator.cpp
             IRTranslator.cpp
             JoystickMapper.cpp
             Key.cpp
@@ -42,6 +43,8 @@ set(HEADERS hardware/IHardwareInput.h
             InputCodingTableFactory.h
             InputCodingTableKorean.h
             InputManager.h
+            InputTranslator.h
+            InputTypes.h
             IRTranslator.h
             JoystickMapper.h
             Key.h

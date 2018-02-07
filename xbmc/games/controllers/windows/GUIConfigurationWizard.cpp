@@ -56,7 +56,7 @@ CGUIConfigurationWizard::~CGUIConfigurationWizard(void) = default;
 void CGUIConfigurationWizard::InitializeState(void)
 {
   m_currentButton = nullptr;
-  m_cardinalDirection = JOYSTICK::CARDINAL_DIRECTION::NONE;
+  m_cardinalDirection = INPUT::CARDINAL_DIRECTION::NONE;
   m_wheelDirection = JOYSTICK::WHEEL_DIRECTION::NONE;
   m_throttleDirection = JOYSTICK::THROTTLE_DIRECTION::NONE;
   m_history.clear();
@@ -209,6 +209,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                                            IKeymap* keymap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
+  using namespace INPUT;
   using namespace JOYSTICK;
 
   bool bHandled = false;

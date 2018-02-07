@@ -19,48 +19,36 @@
  */
 #pragma once
 
-#include "input/InputTypes.h"
-
-#include <string>
-
 namespace KODI
 {
-namespace MOUSE
+namespace INPUT
 {
   /*!
-   * \brief Buttons on a mouse
+   * \brief Cardinal directions, used for input device motions
    */
-  enum class BUTTON_ID
+  enum class CARDINAL_DIRECTION
   {
-    UNKNOWN,
-    LEFT,
-    RIGHT,
-    MIDDLE,
-    BUTTON4,
-    BUTTON5,
-    WHEEL_UP,
-    WHEEL_DOWN,
-    HORIZ_WHEEL_LEFT,
-    HORIZ_WHEEL_RIGHT,
+    NONE    = 0x0,
+    UP      = 0x1,
+    DOWN    = 0x2,
+    RIGHT   = 0x4,
+    LEFT    = 0x8,
   };
 
   /*!
-   * \brief Name of a mouse button
-   *
-   * Names are defined in the mouse's controller profile.
+   * \brief Cardinal and intercardinal directions, used for input device motions
    */
-  using ButtonName = std::string;
-
-  /*!
-   * \brief Directions of motion for a mouse pointer
-   */
-  using POINTER_DIRECTION = INPUT::CARDINAL_DIRECTION;
-
-  /*!
-   * \brief Name of the mouse pointer
-   *
-   * Names are defined in the mouse's controller profile.
-   */
-  using PointerName = std::string;
+  enum class INTERCARDINAL_DIRECTION
+  {
+    NONE      = static_cast<unsigned int>(CARDINAL_DIRECTION::NONE),
+    UP        = static_cast<unsigned int>(CARDINAL_DIRECTION::UP),
+    DOWN      = static_cast<unsigned int>(CARDINAL_DIRECTION::DOWN),
+    RIGHT     = static_cast<unsigned int>(CARDINAL_DIRECTION::RIGHT),
+    LEFT      = static_cast<unsigned int>(CARDINAL_DIRECTION::LEFT),
+    RIGHTUP   = RIGHT | UP,
+    RIGHTDOWN = RIGHT | DOWN,
+    LEFTUP    = LEFT  | UP,
+    LEFTDOWN  = LEFT  | DOWN,
+  };
 }
 }

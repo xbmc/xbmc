@@ -21,6 +21,7 @@
 
 #include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/InputTypes.h"
 
 #include <string>
 #include <vector>
@@ -192,7 +193,7 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't a
      *         cardinal feature or the prompt is finished
      */
-    virtual JOYSTICK::CARDINAL_DIRECTION GetCardinalDirection(void) const = 0;
+    virtual INPUT::CARDINAL_DIRECTION GetCardinalDirection(void) const = 0;
 
     /*!
      * \brief Get the direction of the next wheel prompt

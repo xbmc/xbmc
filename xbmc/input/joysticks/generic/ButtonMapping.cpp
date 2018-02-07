@@ -27,6 +27,7 @@
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
+#include "input/InputTranslator.h"
 #include "input/IKeymap.h"
 #include "input/Key.h"
 #include "threads/SystemClock.h"
@@ -286,6 +287,8 @@ CPointerDetector::CPointerDetector(CButtonMapping* buttonMapping) :
 
 bool CPointerDetector::OnMotion(int x, int y)
 {
+  using namespace INPUT;
+
   if (!m_bStarted)
   {
     m_bStarted = true;
@@ -299,7 +302,7 @@ bool CPointerDetector::OnMotion(int x, int y)
     int dx = x - m_startX;
     int dy = y - m_startY;
 
-    INTERCARDINAL_DIRECTION dir = CJoystickTranslator::VectorToIntercardinalDirection(static_cast<float>(dx), static_cast<float>(dy));
+    INTERCARDINAL_DIRECTION dir = CInputTranslator::VectorToIntercardinalDirection(static_cast<float>(dx), static_cast<float>(dy));
 
     CDriverPrimitive primitive(static_cast<RELATIVE_POINTER_DIRECTION>(dir));
     if (primitive.IsValid())

@@ -20,6 +20,7 @@
 #pragma once
 
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
+#include "input/mouse/MouseTypes.h"
 
 namespace KODI
 {
@@ -49,6 +50,9 @@ namespace MOUSE
     void OnButtonRelease(BUTTON_ID button) override;
 
   private:
+    // Utility function
+    static POINTER_DIRECTION GetPointerDirection(int x, int y);
+
     // Construction parameters
     IMouseInputHandler* const m_handler;
     JOYSTICK::IButtonMap* const m_buttonMap;

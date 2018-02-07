@@ -20,8 +20,8 @@
 
 #include "MouseInputHandling.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
-#include "input/joysticks/JoystickTranslator.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
+#include "input/InputTranslator.h"
 
 using namespace KODI;
 using namespace MOUSE;
@@ -45,7 +45,7 @@ bool CMouseInputHandling::OnPosition(int x, int y)
 
   //! @todo Handle axis mapping
 
-  auto dir = CJoystickTranslator::VectorToCardinalDirection(static_cast<float>(dx), static_cast<float>(dy));
+  POINTER_DIRECTION dir = GetPointerDirection(dx, dy);
 
   CDriverPrimitive source(dir);
   if (source.IsValid())
@@ -81,4 +81,11 @@ void CMouseInputHandling::OnButtonRelease(BUTTON_ID button)
   ButtonName buttonName;
   if (m_buttonMap->GetFeature(source, buttonName))
     m_handler->OnButtonRelease(buttonName);
+}
+
+POINTER_DIRECTION CMouseInputHandling::GetPointerDirection(int x, int y)
+{
+  using namespace INPUT;
+
+  return CInputTranslator::VectorToCardinalDirection(static_cast<float>(x), static_cast<float>(y));
 }

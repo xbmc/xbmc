@@ -85,9 +85,9 @@ bool CGUICardinalFeatureButton::IsFinished(void) const
   return m_state >= STATE::FINISHED;
 }
 
-JOYSTICK::CARDINAL_DIRECTION CGUICardinalFeatureButton::GetCardinalDirection(void) const
+KODI::INPUT::CARDINAL_DIRECTION CGUICardinalFeatureButton::GetCardinalDirection(void) const
 {
-  using namespace JOYSTICK;
+  using namespace INPUT;
 
   switch (m_state)
   {

@@ -24,6 +24,8 @@
  \ingroup joystick
  */
 
+#include "input/InputTypes.h"
+
 #include <set>
 #include <string>
 
@@ -94,52 +96,24 @@ namespace JOYSTICK
   };
 
   /*!
-   * \brief Cardinal directions
-   */
-  enum class CARDINAL_DIRECTION
-  {
-    NONE    = 0x0,
-    UP      = 0x1,
-    DOWN    = 0x2,
-    RIGHT   = 0x4,
-    LEFT    = 0x8,
-  };
-
-  /*!
    * \brief Direction arrows on the hat (directional pad)
    */
-  using HAT_DIRECTION = CARDINAL_DIRECTION;
-
-  /*!
-   * \brief Typedef for analog stick directions
-   */
-  using ANALOG_STICK_DIRECTION = CARDINAL_DIRECTION;
-
-  /*!
-   * \brief Directions of motion for a relative pointer
-   */
-  using RELATIVE_POINTER_DIRECTION = CARDINAL_DIRECTION;
-
-  /*!
-   * \brief Cardinal and intercardinal directions
-   */
-  enum class INTERCARDINAL_DIRECTION
-  {
-    NONE      = 0x0,    /*!< @brief no directions are pressed */
-    UP        = 0x1,    /*!< @brief only up is pressed */
-    DOWN      = 0x2,    /*!< @brief only down is pressed */
-    RIGHT     = 0x4,    /*!< @brief only right is pressed */
-    LEFT      = 0x8,    /*!< @brief only left is pressed */
-    RIGHTUP   = RIGHT | UP,
-    RIGHTDOWN = RIGHT | DOWN,
-    LEFTUP    = LEFT  | UP,
-    LEFTDOWN  = LEFT  | DOWN,
-  };
+  using HAT_DIRECTION = INPUT::CARDINAL_DIRECTION;
 
   /*!
    * \brief States in which a hat can be
    */
-  using HAT_STATE = INTERCARDINAL_DIRECTION;
+  using HAT_STATE = INPUT::INTERCARDINAL_DIRECTION;
+
+  /*!
+   * \brief Typedef for analog stick directions
+   */
+  using ANALOG_STICK_DIRECTION = INPUT::CARDINAL_DIRECTION;
+
+  /*!
+   * \brief Directions of motion for a relative pointer
+   */
+  using RELATIVE_POINTER_DIRECTION = INPUT::CARDINAL_DIRECTION;
 
   /*!
    * \brief Directions in which a semiaxis can point
