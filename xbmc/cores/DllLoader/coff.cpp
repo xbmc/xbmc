@@ -489,7 +489,7 @@ char *CoffLoader::GetStringTblOff(int Offset)
 
 char *CoffLoader::GetSymbolName(SymbolTable_t *sym)
 {
-  __int64 index = sym->Name.Offset;
+  long long index = sym->Name.Offset;
   int low = (int)(index & 0xFFFFFFFF);
   int high = (int)((index >> 32) & 0xFFFFFFFF);
 

@@ -116,7 +116,7 @@ extern "C"
   long dll_ftell(FILE *stream);
   off64_t dll_ftell64(FILE *stream);
   long dll_tell ( int fd );
-  __int64 dll_telli64 ( int fd );
+  long long dll_telli64 ( int fd );
   size_t dll_fwrite ( const void * buffer, size_t size, size_t count, FILE * stream );
   int dll_fflush (FILE * stream);
   int dll_ferror (FILE * stream);

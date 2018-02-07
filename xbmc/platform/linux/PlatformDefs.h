@@ -119,7 +119,6 @@
 
 #define VOID    void
 #define __int32   int
-#define __int64   long long
 
 #define __stdcall
 #define __cdecl
@@ -239,7 +238,7 @@ struct _stati64 {
   short          st_uid;
   short          st_gid;
   dev_t st_rdev;
-  __int64  st_size;
+  long long  st_size;
   time_t _st_atime;
   time_t _st_mtime;
   time_t _st_ctime;
