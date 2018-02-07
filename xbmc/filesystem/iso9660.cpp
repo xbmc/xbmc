@@ -1059,8 +1059,7 @@ bool iso9660::IsScanned()
 //************************************************************************************
 void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime)
 {
-  tm t;
-  ZeroMemory(&t, sizeof(tm));
+  tm t = { 0 };
   t.tm_year=isoDateTime->year;
   t.tm_mon=isoDateTime->month-1;
   t.tm_mday=isoDateTime->day;

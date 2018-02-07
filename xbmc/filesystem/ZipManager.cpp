@@ -198,7 +198,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
       std::string tmp(strName);
       g_charsetConverter.ToUtf8("CP437", tmp, strName);
     }
-    ZeroMemory(ze.name, 255);
+    memset(ze.name, 0, 255);
     strncpy(ze.name, strName.c_str(), strName.size() > 254 ? 254 : strName.size());
 
     // Jump after central file header extra field and file comment

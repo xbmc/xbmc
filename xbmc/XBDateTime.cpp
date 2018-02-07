@@ -666,8 +666,7 @@ bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
 {
-  SYSTEMTIME st;
-  ZeroMemory(&st, sizeof(SYSTEMTIME));
+  SYSTEMTIME st = { 0 };
 
   st.wYear=time.tm_year+1900;
   st.wMonth=time.tm_mon+1;
@@ -796,8 +795,7 @@ int CDateTime::GetMinuteOfDay() const
 
 bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
-  SYSTEMTIME st;
-  ZeroMemory(&st, sizeof(SYSTEMTIME));
+  SYSTEMTIME st = { 0 };
 
   st.wYear=year;
   st.wMonth=month;

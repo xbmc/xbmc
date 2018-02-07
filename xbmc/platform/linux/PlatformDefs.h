@@ -115,7 +115,6 @@
 #define strcmpi strcasecmp
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
-#define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define __stdcall
 #define __cdecl
