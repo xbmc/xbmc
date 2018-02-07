@@ -1,0 +1,60 @@
+--- a/cmake/CheckIncludeFiles.cmake
++++ b/cmake/CheckIncludeFiles.cmake
+@@ -74,3 +74,12 @@
+ CHECK_INCLUDE_FILES (unistd.h HAVE_UNISTD_H)
+ CHECK_INCLUDE_FILES (utime.h HAVE_UTIME_H)
+ CHECK_INCLUDE_FILES (ucontext.h HAVE_UCONTEXT_H)
++IF(HAVE_UCONTEXT_H)
++  CHECK_FUNCTION_EXISTS (getcontext HAVE_GETCONTEXT)
++  CHECK_FUNCTION_EXISTS (makecontext HAVE_MAKECONTEXT)
++  CHECK_FUNCTION_EXISTS (setcontext HAVE_SETCONTEXT)
++  CHECK_FUNCTION_EXISTS (swapcontext HAVE_SWAPCONTEXT)
++  IF(NOT HAVE_GETCONTEXT OR NOT HAVE_MAKECONTEXT OR NOT HAVE_SETCONTEXT OR NOT HAVE_SWAPCONTEXT)
++    SET(HAVE_UCONTEXT_H 0 CACHE INTERNAL "")
++  ENDIF()
++ENDIF(HAVE_UCONTEXT_H)
+--- a/cmake/CheckTypes.cmake
++++ b/cmake/CheckTypes.cmake
+@@ -25,6 +25,7 @@
+ CHECK_TYPE_SIZE(off_t SIZEOF_OFF_T)
+ CHECK_TYPE_SIZE(uchar SIZEOF_UCHAR)
+ CHECK_TYPE_SIZE(uint SIZEOF_UINT)
++CHECK_TYPE_SIZE(ushort SIZEOF_USHORT)
+ CHECK_TYPE_SIZE(ulong SIZEOF_ULONG)
+ CHECK_TYPE_SIZE(int8 SIZEOF_INT8)
+ CHECK_TYPE_SIZE(uint8 SIZEOF_UINT8)
+--- a/include/ma_config.h.in
++++ b/include/ma_config.h.in
+@@ -217,6 +217,11 @@
+ # define HAVE_UINT 1
+ #endif
+ 
++#cmakedefine SIZEOF_USHORT @SIZEOF_USHORT@
++#if SIZEOF_USHORT
++# define HAVE_USHORT 1
++#endif
++
+ #cmakedefine SIZEOF_ULONG @SIZEOF_ULONG@
+ #if SIZEOF_ULONG
+ # define HAVE_ULONG 1
+--- a/include/ma_global.h
++++ b/include/ma_global.h
+@@ -272,6 +272,8 @@
+ 
+ #if defined(__EMX__) || !defined(HAVE_UINT)
+ typedef unsigned int uint;
++#endif
++#if defined(__EMX__) || !defined(HAVE_USHORT)
+ typedef unsigned short ushort;
+ #endif
+ 
+--- a/libmariadb/CMakeLists.txt
++++ b/libmariadb/CMakeLists.txt
+@@ -291,7 +291,6 @@ ELSE()
+   IF(ICONV_INCLUDE_DIR)
+      INCLUDE_DIRECTORIES(BEFORE ${ICONV_INCLUDE_DIR}) 
+   ENDIF()
+-  ADD_DEFINITIONS(-DLIBICONV_PLUG)
+ ENDIF()
+ 
+ IF(ZLIB_FOUND AND WITH_EXTERNAL_ZLIB)
