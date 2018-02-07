@@ -69,9 +69,11 @@ bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen
     return false;
 
   m_deviceResources = DX::DeviceResources::Get();
-  m_deviceResources->SetWindow(m_coreWindow.Get());
 
-  bool created = CWinSystemWin10::CreateNewWindow(name, fullScreen, res) && m_deviceResources->HasValidDevice();
+  bool created = CWinSystemWin10::CreateNewWindow(name, fullScreen, res);
+  m_deviceResources->SetWindow(m_coreWindow.Get());
+  created &= m_deviceResources->HasValidDevice();
+
   if (created)
   {
     CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());

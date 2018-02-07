@@ -29,6 +29,7 @@
 #include <dxgi1_2.h>
 #include <easyhook/easyhook.h>
 #endif
+#include <functional>
 #include <memory>
 
 #include "DirectXHelper.h"
@@ -98,7 +99,7 @@ namespace DX
     D3D_FEATURE_LEVEL GetDeviceFeatureLevel() const { return m_d3dFeatureLevel; }
     CD3DTexture* GetBackBuffer() { return &m_backBufferTex; }
 
-    void GetOutput(IDXGIOutput** pOutput) const;
+    void GetOutput(IDXGIOutput** ppOutput) const;
     void GetAdapterDesc(DXGI_ADAPTER_DESC *desc) const;
     void GetDisplayMode(DXGI_MODE_DESC *mode) const;
     
@@ -124,13 +125,14 @@ namespace DX
     bool IsStereoEnabled() const { return m_stereoEnabled; }
     void SetStereoIdx(byte idx) { m_backBufferTex.SetViewIdx(idx); }
 
-    void SetMonitor(HMONITOR monitor) const;
+    void SetMonitor(HMONITOR monitor);
     HMONITOR GetMonitor() const;
 #if defined(TARGET_WINDOWS_DESKTOP)
     void SetWindow(HWND window);
 #elif defined(TARGET_WINDOWS_STORE)
     void Trim() const;
     void SetWindow(Windows::UI::Core::CoreWindow^ window);
+    void SetWindowPos(Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
 
   private:
@@ -149,6 +151,7 @@ namespace DX
     void UpdateRenderTargetSize();
     void OnDeviceLost(bool removed);
     void OnDeviceRestored();
+    void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WINDOWS_STORE)

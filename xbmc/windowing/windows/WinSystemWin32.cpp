@@ -151,11 +151,16 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
     return false;
   }
 
+  // put the window at desired display
+  RECT screenRect = ScreenRect(m_nScreen);
+  m_nLeft = screenRect.left;
+  m_nTop = screenRect.top;
+
   if (state == WINDOW_STATE_WINDOWED)
   {
-    RECT newScreenRect = ScreenRect(m_nScreen);
-    m_nLeft = newScreenRect.left + ((newScreenRect.right - newScreenRect.left) / 2) - (m_nWidth / 2);
-    m_nTop = newScreenRect.top + ((newScreenRect.bottom - newScreenRect.top) / 2) - (m_nHeight / 2);
+    // centering window at desktop
+    m_nLeft += (screenRect.right - screenRect.left) / 2 - m_nWidth / 2;
+    m_nTop += (screenRect.bottom - screenRect.top) / 2 - m_nHeight / 2;
     m_ValidWindowedPosition = true;
   }
 
@@ -479,6 +484,9 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
     // restoring native resolution on "old" display
     RestoreDesktopResolution(m_nScreen);
+
+    // notify about screen change (it may require recreate rendering device)
+    OnScreenChange(res.iScreen);
   }
 
   m_bFullScreen = fullScreen;

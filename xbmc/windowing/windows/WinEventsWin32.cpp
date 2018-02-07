@@ -548,6 +548,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.move.x = g_sizeMoveX;
           newEvent.move.y = g_sizeMoveY;
 
+          // tell the device about new position
+          DX::Windowing().OnMove(newEvent.move.x, newEvent.move.y);
           // tell the application about new position
           if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow())
             g_application.OnEvent(newEvent);
@@ -630,6 +632,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.move.y = g_sizeMoveY;
 
           CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
+
+          // tell the device about new position
+          DX::Windowing().OnMove(newEvent.move.x, newEvent.move.y);
           if (g_application.GetRenderGUI() && !DX::Windowing().IsAlteringWindow())
             g_application.OnEvent(newEvent);
         }

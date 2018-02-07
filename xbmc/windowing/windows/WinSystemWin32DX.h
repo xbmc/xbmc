@@ -84,6 +84,7 @@ protected:
   void CreateBackBuffer() override;
   void ResizeDeviceBuffers() override;
   bool IsStereoEnabled() override;
+  void OnScreenChange(int screen) override;
 
   HMODULE m_hDriverModule;
   TRACED_HOOK_HANDLE m_hHook;

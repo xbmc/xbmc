@@ -123,6 +123,11 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 
 void CWinSystemWin32DX::OnMove(int x, int y)
 {
+  // do not handle moving at window creation because MonitorFromWindow 
+  // returns default system monitor in case of m_hWnd is null
+  if (!m_hWnd) 
+    return;
+
   HMONITOR newMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);
   const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
   if (newMonitor != monitor->hMonitor)
@@ -159,6 +164,16 @@ void CWinSystemWin32DX::ResizeDeviceBuffers()
 bool CWinSystemWin32DX::IsStereoEnabled()
 {
   return m_deviceResources->IsStereoEnabled();
+}
+
+void CWinSystemWin32DX::OnScreenChange(int screen)
+{
+  const MONITOR_DETAILS* new_monitor = GetMonitor(screen);
+  const MONITOR_DETAILS* old_monitor = GetMonitor(m_nScreen);
+  if (old_monitor->hMonitor != new_monitor->hMonitor)
+  {
+    m_deviceResources->SetMonitor(new_monitor->hMonitor);
+  }
 }
 
 void CWinSystemWin32DX::OnResize(int width, int height)

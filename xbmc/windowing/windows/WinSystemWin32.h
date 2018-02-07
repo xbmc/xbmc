@@ -221,6 +221,7 @@ protected:
   virtual void CreateBackBuffer() = 0;
   virtual void ResizeDeviceBuffers() = 0;
   virtual bool IsStereoEnabled() = 0;
+  virtual void OnScreenChange(int screen) = 0;
   virtual void AdjustWindow(bool forceResize = false);
   void CenterCursor() const;
 
