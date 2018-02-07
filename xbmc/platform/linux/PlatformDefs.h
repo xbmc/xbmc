@@ -139,7 +139,6 @@ typedef wchar_t     WCHAR;
 typedef int         INT;
 typedef unsigned int  UINT;
 typedef long long     INT64;
-typedef unsigned long long    UINT64;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
