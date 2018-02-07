@@ -69,7 +69,7 @@
 using namespace MEDIA_DETECT;
 #endif
 
-PVOID CIoSupport::m_rawXferBuffer;
+void* CIoSupport::m_rawXferBuffer;
 
 HANDLE CIoSupport::OpenCDROM()
 {

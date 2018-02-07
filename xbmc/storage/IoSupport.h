@@ -50,7 +50,7 @@ public:
   static VOID CloseCDROM(HANDLE hDevice);
 
 private:
-  static PVOID m_rawXferBuffer;
+  static void* m_rawXferBuffer;
 };
 
 #endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)

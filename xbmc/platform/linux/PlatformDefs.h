@@ -147,7 +147,6 @@ typedef UInt32          ULONG;
 #else
 typedef unsigned long   ULONG;
 #endif
-typedef void*         PVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;

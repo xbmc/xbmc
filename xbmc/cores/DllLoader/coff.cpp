@@ -962,7 +962,7 @@ void CoffLoader::PerformFixups(void)
 
   EntryAddress = (unsigned long)RVA2Data(EntryAddress);
 
-  if( (PVOID)WindowsHeader->ImageBase == hModule )
+  if( reinterpret_cast<void*>(WindowsHeader->ImageBase) == hModule )
     return;
 
   if ( !Directory )

@@ -124,7 +124,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
 void XBPython::OnPlayBackStarted(const CFileItem &file)
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -136,7 +136,7 @@ void XBPython::OnPlayBackStarted(const CFileItem &file)
 void XBPython::OnPlayBackPaused()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -148,7 +148,7 @@ void XBPython::OnPlayBackPaused()
 void XBPython::OnPlayBackResumed()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -160,7 +160,7 @@ void XBPython::OnPlayBackResumed()
 void XBPython::OnPlayBackEnded()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -172,7 +172,7 @@ void XBPython::OnPlayBackEnded()
 void XBPython::OnPlayBackStopped()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -184,7 +184,7 @@ void XBPython::OnPlayBackStopped()
 void XBPython::OnPlayBackError()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -196,7 +196,7 @@ void XBPython::OnPlayBackError()
 void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -208,7 +208,7 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 void XBPython::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -220,7 +220,7 @@ void XBPython::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 void XBPython::OnPlayBackSeekChapter(int iChapter)
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
@@ -232,7 +232,7 @@ void XBPython::OnPlayBackSeekChapter(int iChapter)
 void XBPython::OnQueueNextItem()
 {
   XBMC_TRACE;
-  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  LOCK_AND_COPY(std::vector<void*>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
