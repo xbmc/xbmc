@@ -70,16 +70,34 @@ void CRenderContext::ApplyStateBlock()
   m_rendering->ApplyStateBlock();
 }
 
-void CRenderContext::EnableGUIShader()
+#if defined(HAS_GL) || defined(HAS_GLES)
+namespace
+{
+static ESHADERMETHOD TranslateShaderMethod(GL_SHADER_METHOD method)
+{
+  switch (method)
+  {
+  case GL_SHADER_METHOD::DEFAULT: return SM_DEFAULT;
+  case GL_SHADER_METHOD::TEXTURE: return SM_TEXTURE;
+  default:
+    break;
+  }
+
+  return SM_DEFAULT;
+}
+}
+#endif
+
+void CRenderContext::EnableGUIShader(GL_SHADER_METHOD method)
 {
 #if defined(HAS_GL)
   CRenderSystemGL *rendering = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (rendering != nullptr)
-    rendering->EnableShader(SM_TEXTURE);
+    rendering->EnableShader(TranslateShaderMethod(method));
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    renderingGLES->EnableGUIShader(SM_TEXTURE);
+    renderingGLES->EnableGUIShader(TranslateShaderMethod(method));
 #endif
 }
 

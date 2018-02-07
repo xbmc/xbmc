@@ -233,7 +233,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  m_context.EnableGUIShader();
+  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
   GLubyte colour[4];
   GLfloat ver[4][3];
