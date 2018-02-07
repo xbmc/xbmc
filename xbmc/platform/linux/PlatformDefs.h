@@ -134,12 +134,11 @@ typedef void* HMODULE;
 typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
-typedef char        CHAR;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST wchar_t*       LPCTSTR;
 #else
-typedef CONST CHAR*      LPCTSTR;
+typedef CONST char*      LPCTSTR;
 #endif
 
 #define MAXWORD   0xffff
@@ -264,8 +263,8 @@ typedef struct _WIN32_FIND_DATA
     DWORD     nFileSizeLow;
     DWORD     dwReserved0;
     DWORD     dwReserved1;
-    CHAR      cFileName[260];
-    CHAR      cAlternateFileName[14];
+    char      cFileName[260];
+    char      cAlternateFileName[14];
 } WIN32_FIND_DATA, *PWIN32_FIND_DATA, *LPWIN32_FIND_DATA;
 
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010
