@@ -149,7 +149,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII && m_edit.empty())
     {
       // input from the keyboard (vkey, not ascii)
-      BYTE b = action.GetID() & 0xFF;
+      unsigned char b = action.GetID() & 0xFF;
       if (b == XBMCVK_HOME)
       {
         m_cursorPos = 0;

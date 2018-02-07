@@ -46,7 +46,7 @@ typedef struct tGUID
 {
   DWORD Data1;
   WORD  Data2, Data3;
-  BYTE  Data4[8];
+  unsigned char  Data4[8];
 } __attribute__((__packed__)) GUID;
 
 // Audio stuff

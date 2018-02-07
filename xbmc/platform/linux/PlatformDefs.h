@@ -133,7 +133,6 @@ typedef void* HMODULE;
 
 typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
-typedef unsigned char   BYTE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
 typedef CONST wchar_t*       LPCTSTR;

@@ -78,13 +78,13 @@ struct iso9660_VolumeDescriptor
 
 
 struct  iso9660_Datetime {
-  BYTE year;   /* Number of years since 1900 */
-  BYTE month;  /* Has value in range 1..12. Note starts
+  unsigned char year;   /* Number of years since 1900 */
+  unsigned char month;  /* Has value in range 1..12. Note starts
                               at 1, not 0 like a tm struct. */
-  BYTE day;    /* Day of the month from 1 to 31 */
-  BYTE hour;   /* Hour of the day from 0 to 23 */
-  BYTE minute; /* Minute of the hour from 0 to 59 */
-  BYTE second; /* Second of the minute from 0 to 59 */
+  unsigned char day;    /* Day of the month from 1 to 31 */
+  unsigned char hour;   /* Hour of the day from 0 to 23 */
+  unsigned char minute; /* Minute of the hour from 0 to 59 */
+  unsigned char second; /* Second of the minute from 0 to 59 */
   char gmtoff; /* GMT values -48 .. + 52 in 15 minute intervals */
 };
 
@@ -97,18 +97,18 @@ struct iso9660_Directory
  #define Flag_Protection 0x04     /* 0-normal access */
  #define Flag_Multi   0x07     /* 0-final Directory Record for the file */
 
-  BYTE ucRecordLength;      //0      the number of bytes in the record (which must be even)
-  BYTE ucExtendAttributeSectors; //1      [number of sectors in extended attribute record]
+  unsigned char ucRecordLength;      //0      the number of bytes in the record (which must be even)
+  unsigned char ucExtendAttributeSectors; //1      [number of sectors in extended attribute record]
   iso733_t extent;        // LBA of first local block allocated to the extent (2..5 LE - 6..9 BE)
   iso733_t size;          // data length of File Section.  This does not include the length of any XA Records. (10..13 LE - 14..17 BE)
   iso9660_Datetime DateTime;      //18..24 date
-  BYTE byFlags;         //25     flags
-  BYTE UnitSize;         //26     file unit size for an interleaved file
-  BYTE InterleaveGapSize;    //27     interleave gap size for an interleaved file
+  unsigned char byFlags;         //25     flags
+  unsigned char UnitSize;         //26     file unit size for an interleaved file
+  unsigned char InterleaveGapSize;    //27     interleave gap size for an interleaved file
   WORD VolSequenceLE;      //28..29 volume sequence number
   WORD VolSequenceBE;            //30..31
-  BYTE Len_Fi;          //32     N, the identifier length
-  BYTE FileName[512];      //33     identifier
+  unsigned char Len_Fi;          //32     N, the identifier length
+  unsigned char FileName[512];      //33     identifier
 
 };
 #pragma pack()
@@ -172,7 +172,7 @@ public:
     DWORD m_dwStartBlock;
     DWORD m_dwCurrentBlock;    // Current being read Block
     int64_t m_dwFilePos;
-    BYTE* m_pBuffer;
+    unsigned char* m_pBuffer;
     int64_t m_dwFileSize;
   };
   iso9660( );
@@ -196,7 +196,7 @@ protected:
   void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime);
   struct iso_dirtree* ReadRecursiveDirFromSector( DWORD sector, const char * );
   struct iso_dirtree* FindFolder( char *Folder );
-  std::string GetThinText(BYTE* strTxt, int iLen );
+  std::string GetThinText(unsigned char* strTxt, int iLen );
   bool ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, uint8_t** ppBuffer);
   void ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector);
   const std::string ParseName(struct iso9660_Directory& isodir);
@@ -226,7 +226,7 @@ protected:
    DWORD    m_dwStartBlock;
    DWORD    m_dwCurrentBlock;    // Current being read Block
    int64_t   m_dwFilePos;
-   BYTE*       m_pBuffer;
+   unsigned char*  m_pBuffer;
    int64_t   m_dwFileSize;
   */
 

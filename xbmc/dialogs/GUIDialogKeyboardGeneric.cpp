@@ -228,7 +228,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
         handled = edit->OnAction(action);
       if (!handled && actionId >= KEY_VKEY && actionId < KEY_ASCII)
       {
-        BYTE b = actionId & 0xFF;
+        unsigned char b = actionId & 0xFF;
         if (b == XBMCVK_TAB)
         {
           // Toggle left/right key mode

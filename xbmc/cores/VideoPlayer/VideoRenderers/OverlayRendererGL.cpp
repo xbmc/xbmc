@@ -198,7 +198,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , &m_u, &m_v
             , false
             , rgba);
-  if((BYTE*)rgba != o->data)
+  if(reinterpret_cast<uint8_t*>(rgba) != o->data)
     free(rgba);
 
   glBindTexture(GL_TEXTURE_2D, 0);

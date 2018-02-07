@@ -50,13 +50,13 @@ public:
    * returns bytes used or -1 on error
    *
    */
-  virtual int Decode(BYTE* pData, int iSize) = 0;
+  virtual int Decode(unsigned char* pData, int iSize) = 0;
 
   /*
    * returns nr of bytes used or -1 on error
    * the data is valid until the next Decode call
    */
-  virtual int GetData(BYTE** dst) = 0;
+  virtual int GetData(unsigned char** dst) = 0;
 
   /*
    * resets the decoder

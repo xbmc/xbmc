@@ -192,7 +192,7 @@ void CUdpClient::Process()
         CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'",
                   XbmcThreads::SystemClockMillis(), message.c_str() );
 
-        OnMessage(remoteAddress, message, (unsigned char*)messageBuffer, messageLength);
+        OnMessage(remoteAddress, message, reinterpret_cast<unsigned char*>(messageBuffer), messageLength);
       }
       else
       {
