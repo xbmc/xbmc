@@ -162,7 +162,6 @@ typedef LPCWSTR       LPCTSTR;
 typedef LPCSTR      LPCTSTR;
 #endif
 typedef unsigned __int64 ULONGLONG;
-typedef intptr_t (*FARPROC)(void);
 
 #define MAXWORD   0xffff
 

@@ -152,7 +152,7 @@ extern "C" int __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   return 1;
 }
 
-extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
+extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function))(void)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
@@ -218,7 +218,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     }
   }
 
-  return (FARPROC)address;
+  return (intptr_t(*)(void)) address;
 }
 
 extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
