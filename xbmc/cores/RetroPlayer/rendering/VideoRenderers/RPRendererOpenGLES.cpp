@@ -58,8 +58,6 @@ CRenderBufferOpenGLES::~CRenderBufferOpenGLES()
 
 void CRenderBufferOpenGLES::CreateTexture()
 {
-  glEnable(m_textureTarget);
-
   glGenTextures(1, &m_textureId);
 
   glBindTexture(m_textureTarget, m_textureId);
@@ -70,16 +68,12 @@ void CRenderBufferOpenGLES::CreateTexture()
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  glDisable(m_textureTarget);
 }
 
 bool CRenderBufferOpenGLES::UploadTexture()
 {
   if (!glIsTexture(m_textureId))
     CreateTexture();
-
-  glEnable(m_textureTarget);
 
   const unsigned int bpp = 1;
   glPixelStorei(GL_UNPACK_ALIGNMENT, bpp);
@@ -91,7 +85,6 @@ bool CRenderBufferOpenGLES::UploadTexture()
 
   glBindTexture(m_textureTarget, 0);
 
-  glDisable(m_textureTarget);
 
   return true;
 }
