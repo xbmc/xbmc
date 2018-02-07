@@ -252,7 +252,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         {
           ClearMD5();
           m_edit.clear();
-          m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
+          m_text2.insert(m_text2.begin() + m_cursorPos++, static_cast<wchar_t>(action.GetUnicode()));
           break;
         }
       }

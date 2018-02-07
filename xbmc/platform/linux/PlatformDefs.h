@@ -135,10 +135,9 @@ typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
 typedef char        CHAR;
-typedef wchar_t     WCHAR;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 #ifdef UNICODE
-typedef CONST WCHAR*       LPCTSTR;
+typedef CONST wchar_t*       LPCTSTR;
 #else
 typedef CONST CHAR*      LPCTSTR;
 #endif
@@ -180,10 +179,10 @@ typedef struct _SYSTEMTIME
 
 typedef struct _TIME_ZONE_INFORMATION {
   long Bias;
-  WCHAR StandardName[32];
+  wchar_t StandardName[32];
   SYSTEMTIME StandardDate;
   long StandardBias;
-  WCHAR DaylightName[32];
+  wchar_t DaylightName[32];
   SYSTEMTIME DaylightDate;
   long DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
