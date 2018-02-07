@@ -153,9 +153,8 @@ typedef void*         LPVOID;
 typedef BYTE*       LPBYTE;
 typedef DWORD*        LPDWORD;
 typedef CONST CHAR*   LPCSTR;
-typedef CONST WCHAR*    LPCWSTR;
 #ifdef UNICODE
-typedef LPCWSTR       LPCTSTR;
+typedef CONST WCHAR*       LPCTSTR;
 #else
 typedef LPCSTR      LPCTSTR;
 #endif
