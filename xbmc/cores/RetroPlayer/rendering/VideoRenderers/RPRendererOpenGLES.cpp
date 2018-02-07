@@ -24,10 +24,6 @@
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
-extern "C" {
-#include "libswscale/swscale.h"
-}
-
 #include <cstring>
 
 using namespace KODI;
@@ -53,16 +49,11 @@ CRenderBufferOpenGLES::CRenderBufferOpenGLES(AVPixelFormat format, AVPixelFormat
   m_width(width),
   m_height(height)
 {
-  size_t targetSize = m_width * m_height * glFormatElementByteCount(GL_RGBA); //! @todo: Get GLenum format from renderer
-  m_textureBuffer.resize(targetSize);
 }
 
 CRenderBufferOpenGLES::~CRenderBufferOpenGLES()
 {
   DeleteTexture();
-
-  if (m_swsContext != nullptr)
-    sws_freeContext(m_swsContext);
 }
 
 void CRenderBufferOpenGLES::CreateTexture()
@@ -85,19 +76,8 @@ void CRenderBufferOpenGLES::CreateTexture()
 
 bool CRenderBufferOpenGLES::UploadTexture()
 {
-  if (m_textureBuffer.empty())
-  {
-    CLog::Log(LOGERROR, "Renderer: Unknown target texture size");
-    return false;
-  }
-
-  if (!CreateScalingContext())
-    return false;
-
   if (!glIsTexture(m_textureId))
     CreateTexture();
-
-  ScalePixels(m_data.data(), m_data.size(), m_textureBuffer.data(), m_textureBuffer.size());
 
   glEnable(m_textureTarget);
 
@@ -122,33 +102,6 @@ void CRenderBufferOpenGLES::DeleteTexture()
     glDeleteTextures(1, &m_textureId);
 
   m_textureId = 0;
-}
-
-bool CRenderBufferOpenGLES::CreateScalingContext()
-{
-  m_swsContext = sws_getContext(m_width, m_height, m_format, m_width, m_height, m_targetFormat,
-    SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-  if (m_swsContext == nullptr)
-  {
-    CLog::Log(LOGERROR, "Renderer: Failed to create swscale context");
-    return false;
-  }
-
-  return true;
-}
-
-void CRenderBufferOpenGLES::ScalePixels(uint8_t *source, size_t sourceSize, uint8_t *target, size_t targetSize)
-{
-  const int sourceStride = sourceSize / m_height;
-  const int targetStride = targetSize / m_height;
-
-  uint8_t* src[] =       { source,        nullptr,   nullptr,   nullptr };
-  int      srcStride[] = { sourceStride,  0,         0,         0       };
-  uint8_t *dst[] =       { target,        nullptr,   nullptr,   nullptr };
-  int      dstStride[] = { targetStride,  0,         0,         0       };
-
-  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
 }
 
 // --- CRenderBufferPoolOpenGLES -----------------------------------------------
@@ -186,8 +139,6 @@ CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings &renderSettings, 
 CRPRendererOpenGLES::~CRPRendererOpenGLES()
 {
   Deinitialize();
-  if (m_swsContext)
-    sws_freeContext(m_swsContext);
 }
 
 bool CRPRendererOpenGLES::ConfigureInternal()
