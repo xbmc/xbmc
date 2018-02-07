@@ -105,8 +105,6 @@
 #ifdef TARGET_POSIX
 
 #define CONST   const
-#define FALSE   0
-#define TRUE    1
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf

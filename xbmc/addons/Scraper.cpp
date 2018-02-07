@@ -1296,7 +1296,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
           scurlEp.ParseElement(pxeLink);
 
         // date must be the format of yyyy-mm-dd
-        ep.cDate.SetValid(FALSE);
+        ep.cDate.SetValid(false);
         std::string sDate;
         if (XMLUtils::GetString(pxeMovie, "aired", sDate) && sDate.length() == 10)
         {

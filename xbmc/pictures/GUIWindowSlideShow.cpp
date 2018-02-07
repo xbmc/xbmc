@@ -243,7 +243,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
   if (m_Resolution != CDisplaySettings::GetInstance().GetCurrentResolution())
   {
     //FIXME: Use GUI resolution for now
-    //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), TRUE);
+    //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), true);
   }
 
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO &&
