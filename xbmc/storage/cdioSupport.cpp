@@ -284,7 +284,7 @@ HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
   return reinterpret_cast<HANDLE>(cdio);
 }
 
-INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 
@@ -298,7 +298,7 @@ INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   return -1;
 }
 
-INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 
@@ -312,7 +312,7 @@ INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuff
   return -1;
 }
 
-INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
+INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
   CSingleLock lock(*m_cdio);
 

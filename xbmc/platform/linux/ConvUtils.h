@@ -20,7 +20,7 @@
  *
  */
 
-#include "PlatformDefs.h" // UINT DWORD LPCSTR LPSTR LPBOOL ...
+#include "PlatformDefs.h" // UINT DWORD LPCSTR ...
 
 DWORD GetLastError();
 VOID  SetLastError(DWORD dwErrCode);

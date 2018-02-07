@@ -44,9 +44,9 @@ public:
   static void FreeReadBuffer();
 
   static HANDLE OpenCDROM();
-  static INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  static INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  static INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+  static INT ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  static INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  static INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
   static VOID CloseCDROM(HANDLE hDevice);
 
 private:
