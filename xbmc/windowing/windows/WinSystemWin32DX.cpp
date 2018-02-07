@@ -312,16 +312,22 @@ void CWinSystemWin32DX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOUR
     float refreshRate = RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate);
     if (refreshRate > 10.0f && refreshRate < 300.0f)
     {
+      // interlaced
+      if (pResource->pPrimaryDesc->ModeDesc.ScanlineOrdering > DXGI_DDI_MODE_SCANLINE_ORDER_PROGRESSIVE)
+        refreshRate /= 2;
+
       uint32_t refreshNum, refreshDen;
       DX::GetRefreshRatio(floor(m_fRefreshRate), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - static_cast<float>(refreshNum) / static_cast<float>(refreshDen)) / refreshRate;
-      CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s",
-        refreshRate, m_fRefreshRate, diff, (diff > 0.0005) ? "true" : "false");
-      if (diff > 0.0005)
+      CLog::LogF(LOGDEBUG, "refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s, %d",
+        refreshRate, m_fRefreshRate, diff, (diff > 0.0005 && diff < 0.1) ? "yes" : "no", pResource->pPrimaryDesc->Flags);
+      if (diff > 0.0005 && diff < 0.1)
       {
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator = refreshNum;
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Denominator = refreshDen;
-        CLog::Log(LOGDEBUG, __FUNCTION__": refreshRate fix applied -> %0.3f", RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
+        if (pResource->pPrimaryDesc->ModeDesc.ScanlineOrdering > DXGI_DDI_MODE_SCANLINE_ORDER_PROGRESSIVE)
+          pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator *= 2;
+        CLog::LogF(LOGDEBUG, "refreshRate fix applied -> %0.3f", RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
       }
     }
   }
