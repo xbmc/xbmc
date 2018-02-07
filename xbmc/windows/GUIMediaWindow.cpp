@@ -516,7 +516,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         // ensure our directory is valid
         dir = GetStartFolder(dir);
         bool resetHistory = false;
-        if (!returning || !m_history.IsInHistory(dir))
+        if (!returning || !URIUtils::PathEquals(dir, m_startDirectory, true))
         { // we're not returning to the same path, so set our directory to the requested path
           m_vecItems->SetPath(dir);
           resetHistory = true;
