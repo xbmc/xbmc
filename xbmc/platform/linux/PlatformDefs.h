@@ -152,11 +152,10 @@ typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef BYTE*       LPBYTE;
 typedef DWORD*        LPDWORD;
-typedef CONST CHAR*   LPCSTR;
 #ifdef UNICODE
 typedef CONST WCHAR*       LPCTSTR;
 #else
-typedef LPCSTR      LPCTSTR;
+typedef CONST CHAR*      LPCTSTR;
 #endif
 
 #define MAXWORD   0xffff
