@@ -119,22 +119,9 @@ void CRenderSystemDX::OnResize()
   CheckInterlacedStereoView();
 }
 
-inline void DXWait(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-  ID3D11Query* wait = nullptr;
-  CD3D11_QUERY_DESC qd(D3D11_QUERY_EVENT);
-  if (SUCCEEDED(pDevice->CreateQuery(&qd, &wait)))
-  {
-    pContext->End(wait);
-    while (S_FALSE == pContext->GetData(wait, nullptr, 0, 0))
-      Sleep(1);
-  }
-  SAFE_RELEASE(wait);
-}
-
 bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage) const
 {
-  auto pD3DDev = m_deviceResources->GetD3DDevice();
+  ComPtr<ID3D11Device1> pD3DDev = m_deviceResources->GetD3DDevice();
   UINT supported;
   pD3DDev->CheckFormatSupport(format, &supported);
   return (supported & usage) != 0;
@@ -147,7 +134,8 @@ bool CRenderSystemDX::DestroyRenderSystem()
   if (m_pGUIShader)
   {
     m_pGUIShader->End();
-    SAFE_DELETE(m_pGUIShader);
+    delete m_pGUIShader;
+    m_pGUIShader = nullptr;
   }
   m_rightEyeTex.Release();
   m_BlendEnableState = nullptr;
@@ -670,7 +658,9 @@ void CRenderSystemDX::FlushGPU() const
 
 bool CRenderSystemDX::InitGUIShader()
 {
-  SAFE_DELETE(m_pGUIShader);
+  delete m_pGUIShader;
+  m_pGUIShader = nullptr;
+
   m_pGUIShader = new CGUIShaderDX();
   if (!m_pGUIShader->Initialize())
   {
