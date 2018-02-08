@@ -5,10 +5,10 @@ set(HEADERS ConvolutionKernels.h
             ShaderFormats.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES WinVideoFilter.cpp
-                      YUVMatrix.cpp)
-  list(APPEND HEADERS WinVideoFilter.h
-                      YUVMatrix.h)
+  list(APPEND SOURCES ConversionMatrix.cpp
+                      WinVideoFilter.cpp)
+  list(APPEND HEADERS ConversionMatrix.h
+                      WinVideoFilter.h)
 endif()
 
 if(OPENGL_FOUND)

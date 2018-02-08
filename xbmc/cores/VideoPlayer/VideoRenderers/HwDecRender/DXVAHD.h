@@ -25,6 +25,8 @@
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
+#include <wrl/client.h>
+
 class CRenderBuffer;
 
 namespace DXVA {
@@ -84,10 +86,10 @@ protected:
     D3D11_VIDEO_PROCESSOR_FILTER_RANGE Range;
   };
   ProcAmpInfo m_Filters[NUM_FILTERS];
-  ID3D11VideoDevice *m_pVideoDevice;
-  ID3D11VideoContext *m_pVideoContext;
-  ID3D11VideoProcessorEnumerator *m_pEnumerator;
-  ID3D11VideoProcessor *m_pVideoProcessor;
+  Microsoft::WRL::ComPtr<ID3D11VideoDevice> m_pVideoDevice;
+  Microsoft::WRL::ComPtr<ID3D11VideoContext> m_pVideoContext;
+  Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
+  Microsoft::WRL::ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
 };
 
 };

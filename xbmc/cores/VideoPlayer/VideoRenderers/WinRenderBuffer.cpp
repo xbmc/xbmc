@@ -21,16 +21,17 @@
 #include <ppl.h>
 #include <ppltasks.h>
 
+#include "WinRenderBuffer.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #if defined(HAVE_SSE2)
 #include "utils/win32/gpu_memcpy_sse4.h"
 #endif
 #include "utils/win32/memcpy_sse2.h"
 #include "utils/CPUInfo.h"
-#include "rendering/dx/DeviceResources.h"
-#include "rendering/dx/RenderContext.h"
-#include "WinRenderer.h"
-#include "WinRenderBuffer.h"
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -43,9 +44,12 @@ using namespace Microsoft::WRL;
 CRenderBuffer::CRenderBuffer()
   : loaded(false)
   , frameIdx(0)
-  , flags(0)
   , format(BUFFER_FMT_NONE)
   , videoBuffer(nullptr)
+  , primaries(AVCOL_PRI_UNSPECIFIED)
+  , color_space(AVCOL_SPC_BT709)
+  , full_range(false)
+  , bits(8)
   , m_locked(false)
   , m_bPending(false)
   , m_soft(false)
@@ -327,6 +331,22 @@ bool CRenderBuffer::UploadBuffer()
 
   loaded = ret;
   return loaded;
+}
+
+void CRenderBuffer::AppendPicture(const VideoPicture & picture)
+{
+  videoBuffer = picture.videoBuffer;
+  videoBuffer->Acquire();
+
+  primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  color_space = static_cast<AVColorSpace>(picture.color_space);
+  color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  full_range = picture.color_range == 1;
+  bits = picture.colorBits;
+
+  if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    QueueCopyBuffer();
+  loaded = false;
 }
 
 ID3D11View* CRenderBuffer::GetView(unsigned idx)
@@ -647,7 +667,13 @@ bool CRenderBuffer::CopyBuffer()
       tasks.push_back(task);
     }
 
-    when_all(tasks.begin(), tasks.end()).wait();//.then([this]() { StartRender(); });
+    // event based await is required on WinRT because 
+    // blocking WinRT STA threads with task.wait() isn't allowed
+    auto sync = std::make_shared<Concurrency::event>();
+    when_all(tasks.begin(), tasks.end()).then([&sync]() {
+      sync->set();
+    });
+    sync->wait();
     return true;
   }
   return false;

@@ -51,6 +51,7 @@ public:
 
   bool CreateBuffer(EBufferFormat format, unsigned width, unsigned height, bool software);
   bool UploadBuffer();
+  void AppendPicture(const VideoPicture &picture);
 
   unsigned int GetActivePlanes() const { return m_activePlanes; }
   ID3D11View* GetView(unsigned idx = 0);
@@ -69,9 +70,14 @@ public:
 
   bool loaded;
   unsigned int frameIdx;
-  unsigned int flags;
   EBufferFormat format;
   CVideoBuffer* videoBuffer;
+  AVColorPrimaries primaries;
+  AVColorSpace color_space;
+  AVColorTransferCharacteristic color_transfer;
+  bool full_range;
+  int bits;
+  DXGI_FORMAT dxva_format;
 
 private:
   bool CopyToD3D11();

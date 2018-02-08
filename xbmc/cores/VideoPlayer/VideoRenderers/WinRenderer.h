@@ -27,6 +27,8 @@
 #include "RenderCapture.h"
 #include "WinRenderBuffer.h"
 
+#include <wrl/client.h>
+
 #define AUTOSOURCE -1
 
 class CYUV2RGBShader;
@@ -94,6 +96,7 @@ protected:
   void ColorManagmentUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
   EBufferFormat SelectBufferFormat(AVPixelFormat format, const RenderMethod method) const;
+  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height) const;
 
   bool LoadCLUT();
 
@@ -130,7 +133,8 @@ protected:
   std::unique_ptr<COutputShader> m_outputShader;
   CRenderCapture* m_capture;
   std::unique_ptr<CColorManager> m_colorManager;
-  ID3D11ShaderResourceView *m_pCLUTView;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 
   CD3DTexture m_IntermediateTarget;
+  AVColorPrimaries m_srcPrimaries;
 };

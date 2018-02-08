@@ -169,7 +169,7 @@ public:
   bool Create(const std::string &effectString, DefinesMap* defines);
   void Release();
   bool SetFloatArray(LPCSTR handle, const float* val, unsigned int count);
-  bool SetMatrix(LPCSTR handle, const DirectX::XMFLOAT4X4* mat);
+  bool SetMatrix(LPCSTR handle, const float* mat);
   bool SetTechnique(LPCSTR handle);
   bool SetTexture(LPCSTR handle, CD3DTexture &texture);
   bool SetResources(LPCSTR handle, ID3D11ShaderResourceView** ppSRViews, size_t count);
