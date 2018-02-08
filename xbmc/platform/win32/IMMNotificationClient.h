@@ -19,28 +19,26 @@
  *
  */
 
-#include <mmdeviceapi.h>
-#include "system.h" // for SAFE_RELEASE
-#include "utils/log.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "powermanagement/windows/Win32PowerSyscall.h"
+#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <mmdeviceapi.h>
+#include <wrl/client.h>
 
 class CMMNotificationClient : public IMMNotificationClient
 {
   LONG _cRef;
-  IMMDeviceEnumerator *_pEnumerator;
+  Microsoft::WRL::ComPtr<IMMDeviceEnumerator> _pEnumerator;
 
 
 public:
-  CMMNotificationClient() : _cRef(1), _pEnumerator(NULL)
+  CMMNotificationClient() : _cRef(1), _pEnumerator(nullptr)
   {
   }
 
-  ~CMMNotificationClient()
-  {
-    SAFE_RELEASE(_pEnumerator);
-  }
+  ~CMMNotificationClient() = default;
 
   // IUnknown methods -- AddRef, Release, and QueryInterface
 
@@ -59,7 +57,7 @@ public:
     return ulRef;
   }
 
-  HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, VOID **ppvInterface)
+  HRESULT STDMETHODCALLTYPE QueryInterface(const IID & riid, void **ppvInterface)
   {
     if (IID_IUnknown == riid)
     {
@@ -73,7 +71,7 @@ public:
     }
     else
     {
-      *ppvInterface = NULL;
+      *ppvInterface = nullptr;
       return E_NOINTERFACE;
     }
     return S_OK;
