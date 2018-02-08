@@ -302,8 +302,8 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
   else
     cData = clutData;
 
-  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetImmediateContext();
+  ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
   CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
                                D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_IMMUTABLE);
 
@@ -313,7 +313,7 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
   texData.SysMemPitch = clutSize * sizeof(uint16_t) * 4;
   texData.SysMemSlicePitch = texData.SysMemPitch * clutSize;
 
-  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, &pCLUTTex);
+  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, pCLUTTex.GetAddressOf());
   if (isRGB)
     _aligned_free(cData);
 
@@ -323,8 +323,9 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
     return false;
   }
 
+  ComPtr<ID3D11ShaderResourceView> clutView;
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
-  hr = pDevice->CreateShaderResourceView(pCLUTTex.Get(), &srvDesc, ppCLUTView);
+  hr = pDevice->CreateShaderResourceView(pCLUTTex.Get(), &srvDesc, clutView.GetAddressOf());
   pContext->Flush();
 
   if (FAILED(hr))
@@ -333,6 +334,7 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
     return false;
   }
 
+  *ppCLUTView = clutView.Detach();
   return true;
 }
 

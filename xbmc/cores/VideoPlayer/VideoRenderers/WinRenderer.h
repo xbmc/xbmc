@@ -27,6 +27,8 @@
 #include "RenderCapture.h"
 #include "WinRenderBuffer.h"
 
+#include <wrl/client.h>
+
 #define AUTOSOURCE -1
 
 class CYUV2RGBShader;
@@ -131,7 +133,7 @@ protected:
   std::unique_ptr<COutputShader> m_outputShader;
   CRenderCapture* m_capture;
   std::unique_ptr<CColorManager> m_colorManager;
-  ID3D11ShaderResourceView *m_pCLUTView;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 
   CD3DTexture m_IntermediateTarget;
   AVColorPrimaries m_srcPrimaries;

@@ -344,7 +344,7 @@ void CWinRenderer::UnInit()
     m_processor->UnInit();
     SAFE_DELETE(m_processor);
   }
-  SAFE_RELEASE(m_pCLUTView);
+  m_pCLUTView = nullptr;
   m_outputShader.reset();
 }
 
@@ -654,7 +654,7 @@ void CWinRenderer::UpdateVideoFilter()
       m_outputShader.reset();
     }
     else if (m_pCLUTView && m_CLUTSize)
-      m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView);
+      m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView.Get());
   }
 
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
@@ -1157,8 +1157,7 @@ bool CWinRenderer::LoadCLUT()
     bool success = m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGBA, clutSize, clutData);
     if (success)
     {
-      SAFE_RELEASE(m_pCLUTView);
-      success = COutputShader::CreateCLUTView(clutSize, clutData, false, &m_pCLUTView);
+      success = COutputShader::CreateCLUTView(clutSize, clutData, false, m_pCLUTView.ReleaseAndGetAddressOf());
     }
     else
       CLog::Log(LOGERROR, "%s: unable to loading the 3dlut data.", __FUNCTION__);
@@ -1173,7 +1172,7 @@ bool CWinRenderer::LoadCLUT()
   loadLutTask.then([&](int clutSize){
     m_CLUTSize = clutSize;
     if (m_outputShader)
-        m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView);
+        m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView.Get());
     m_clutLoaded = true;
   });
   return true;
