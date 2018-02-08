@@ -22,8 +22,9 @@
 #include <stdint.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-
 #include "threads/CriticalSection.h"
+
+#include <wrl/client.h>
 
 class CAESinkDirectSound : public IAESink
 {
@@ -55,8 +56,8 @@ private:
   unsigned int  GetSpace();
   const char    *dserr2str(int err);
 
-  LPDIRECTSOUNDBUFFER m_pBuffer;
-  LPDIRECTSOUND8      m_pDSound;
+  Microsoft::WRL::ComPtr<IDirectSoundBuffer> m_pBuffer;
+  Microsoft::WRL::ComPtr<IDirectSound> m_pDSound;
 
   AEAudioFormat       m_format;
   enum AEDataFormat   m_encodedFormat;

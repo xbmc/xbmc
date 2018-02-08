@@ -43,12 +43,24 @@ DEFINE_PROPERTYKEY(PKEY_Device_EnumeratorName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80,
 extern const char *WASAPIErrToStr(HRESULT err);
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
 
+template<class T>
+inline void SafeRelease(T **ppT)
+{
+  if (*ppT)
+  {
+    (*ppT)->Release();
+    *ppT = nullptr;
+  }
+}
+
+using namespace Microsoft::WRL;
+
 CAESinkWASAPI::CAESinkWASAPI() :
   m_needDataEvent(0),
-  m_pDevice(NULL),
-  m_pAudioClient(NULL),
-  m_pRenderClient(NULL),
-  m_pAudioClock(NULL),
+  m_pDevice(nullptr),
+  m_pAudioClient(nullptr),
+  m_pRenderClient(nullptr),
+  m_pAudioClock(nullptr),
   m_encodedChannels(0),
   m_encodedSampleRate(0),
   sinkReqFormat(AE_FMT_INVALID),
@@ -62,7 +74,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_sinkLatency(0.0),
   m_sinkFrames(0),
   m_clockFreq(0),
-  m_pBuffer(NULL),
+  m_pBuffer(nullptr),
   m_bufferPtr(0)
 {
   m_channelLayout.Reset();
@@ -132,7 +144,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     device = defaultId;
   }
 
-  hr = m_pDevice->Activate(&m_pAudioClient);
+  hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
   EXIT_ON_FAILURE(hr, __FUNCTION__": Activating the WASAPI endpoint device failed.")
 
   if (!InitializeExclusive(format))
@@ -148,10 +160,10 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   m_format              = format;
   sinkRetFormat         = format.m_dataFormat;
 
-  hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
+  hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
 
-  hr = m_pAudioClient->GetService(IID_IAudioClock, (void**)&m_pAudioClock);
+  hr = m_pAudioClient->GetService(IID_IAudioClock, reinterpret_cast<void**>(m_pAudioClock.ReleaseAndGetAddressOf()));
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI audio clock interface.")
 
   hr = m_pAudioClock->GetFrequency(&m_clockFreq);
@@ -176,10 +188,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
 failed:
   CLog::Log(LOGERROR, __FUNCTION__": WASAPI initialization failed.");
-  SAFE_RELEASE(m_pRenderClient);
-  SAFE_RELEASE(m_pAudioClient);
-  SAFE_RELEASE(m_pAudioClock);
-  SAFE_RELEASE(m_pDevice);
+  SafeRelease(&m_pDevice);
   if(m_needDataEvent)
   {
     CloseHandle(m_needDataEvent);
@@ -211,10 +220,10 @@ void CAESinkWASAPI::Deinitialize()
 
   CloseHandle(m_needDataEvent);
 
-  SAFE_RELEASE(m_pRenderClient);
-  SAFE_RELEASE(m_pAudioClient);
-  SAFE_RELEASE(m_pAudioClock);
-  SAFE_RELEASE(m_pDevice);
+  m_pRenderClient = nullptr;
+  m_pAudioClient = nullptr;
+  m_pAudioClock = nullptr;
+  SafeRelease(&m_pDevice);
 
   m_initialized = false;
 
@@ -414,8 +423,8 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       goto failed;
     }
 
-    IAudioClient *pClient = nullptr;
-    hr = pDevice->Activate(&pClient);
+    ComPtr<IAudioClient> pClient = nullptr;
+    hr = pDevice->Activate(pClient.GetAddressOf());
     if (SUCCEEDED(hr))
     {
       /* Test format DTS-HD */
@@ -433,8 +442,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
       {
         CLog::Log(LOGNOTICE, __FUNCTION__": Exclusive mode is not allowed on device \"%s\", check device settings.", details.strDescription.c_str());
-        SAFE_RELEASE(pClient);
-        SAFE_RELEASE(pDevice);
+        SafeRelease(&pDevice);
         continue; 
       }
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
@@ -558,7 +566,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", details.strDescription.c_str());
         }
       }
-      pClient->Release();
+      pClient = nullptr;
     }
     else
     {
@@ -588,7 +596,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       deviceInfoList.push_back(deviceInfo);
     }
 
-    SAFE_RELEASE(pDevice);
+    SafeRelease(&pDevice);
   }
   return;
 
@@ -807,10 +815,8 @@ initialize:
     audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
 
     /* Release the previous allocations */
-    SAFE_RELEASE(m_pAudioClient);
-
     /* Create a new audio client */
-    hr = m_pDevice->Activate(&m_pAudioClient);
+    hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Device Activation Failed : %s", WASAPIErrToStr(hr));

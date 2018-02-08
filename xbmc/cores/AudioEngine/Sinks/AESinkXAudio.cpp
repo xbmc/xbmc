@@ -44,8 +44,17 @@ using namespace Microsoft::WRL;
 extern const char *WASAPIErrToStr(HRESULT err);
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
-#define SAFE_DESTROY_VOICE(x) do { if(x) { x->DestroyVoice(); x = nullptr; } }while(0);
 #define XAUDIO_BUFFERS_IN_QUEUE 2
+
+template <class TVoice>
+inline void SafeDestroyVoice(TVoice **ppVoice)
+{
+  if (*ppVoice)
+  {
+    (*ppVoice)->DestroyVoice();
+    *ppVoice = nullptr;
+  }
+}
 
 ///  ----------------- CAESinkXAudio ------------------------
 
@@ -165,8 +174,8 @@ void CAESinkXAudio::Deinitialize()
   }
   m_running = false;
 
-  SAFE_DESTROY_VOICE(m_sourceVoice);
-  SAFE_DESTROY_VOICE(m_masterVoice);
+  SafeDestroyVoice(&m_sourceVoice);
+  SafeDestroyVoice(&m_masterVoice);
 
   m_initialized = false;
 }
@@ -361,7 +370,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
       add192 = true;
     }
-    SAFE_DESTROY_VOICE(mSourceVoice);
+    SafeDestroyVoice(&mSourceVoice);
 
     /* Test format Dolby TrueHD */
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
@@ -383,8 +392,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-    SAFE_DESTROY_VOICE(mSourceVoice);
-    SAFE_DESTROY_VOICE(mMasterVoice);
+    SafeDestroyVoice(&mSourceVoice);
+    SafeDestroyVoice(&mMasterVoice);
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
@@ -406,8 +415,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-    SAFE_DESTROY_VOICE(mSourceVoice);
-    SAFE_DESTROY_VOICE(mMasterVoice);
+    SafeDestroyVoice(&mSourceVoice);
+    SafeDestroyVoice(&mMasterVoice);
     hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
                                         0, deviceId.c_str(), nullptr, AudioCategory_Media);
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
@@ -422,7 +431,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
     }
-    SAFE_DESTROY_VOICE(mSourceVoice);
+    SafeDestroyVoice(&mSourceVoice);
 
     /* Test format Dolby AC3 */
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
@@ -464,7 +473,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
       }
 
-      SAFE_DESTROY_VOICE(mSourceVoice);
+      SafeDestroyVoice(&mSourceVoice);
       hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
       if (SUCCEEDED(hr))
@@ -484,8 +493,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     for (int j = 0; j < WASAPISampleRateCount; j++)
     {
-      SAFE_DESTROY_VOICE(mSourceVoice);
-      SAFE_DESTROY_VOICE(mMasterVoice);
+      SafeDestroyVoice(&mSourceVoice);
+      SafeDestroyVoice(&mMasterVoice);
 
       wfxex.Format.nSamplesPerSec = WASAPISampleRates[j];
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
@@ -501,8 +510,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", details.strDescription.c_str());
       }
     }
-    SAFE_DESTROY_VOICE(mSourceVoice);
-    SAFE_DESTROY_VOICE(mMasterVoice);
+    SafeDestroyVoice(&mSourceVoice);
+    SafeDestroyVoice(&mMasterVoice);
 
     deviceInfo.m_deviceName = details.strDeviceId;
     deviceInfo.m_displayName = details.strWinDevType.append(details.strDescription);

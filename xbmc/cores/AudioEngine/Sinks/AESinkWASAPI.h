@@ -26,37 +26,37 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
+#include <wrl/client.h>
 
 class CAESinkWASAPI : public IAESink
 {
 public:
-    virtual const char *GetName() { return "WASAPI"; }
-
     CAESinkWASAPI();
     virtual ~CAESinkWASAPI();
 
     static void Register();
     static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+    static void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
 
-    virtual bool Initialize(AEAudioFormat &format, std::string &device);
-    virtual void Deinitialize();
-
-    virtual void GetDelay(AEDelayStatus& status);
-    virtual double GetCacheTotal();
-    virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
-    virtual void Drain();
-    static  void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
+    // IAESink overrides
+    const char *GetName() override { return "WASAPI"; }
+    bool Initialize(AEAudioFormat &format, std::string &device) override;
+    void Deinitialize() override;
+    void GetDelay(AEDelayStatus& status) override;
+    double GetCacheTotal() override;
+    unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
+    void Drain() override;
 
 private:
-    bool         InitializeExclusive(AEAudioFormat &format);
-    static void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+    bool InitializeExclusive(AEAudioFormat &format);
+    static void BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
     bool IsUSBDevice();
 
-    HANDLE              m_needDataEvent;
-    IAEWASAPIDevice    *m_pDevice;
-    IAudioClient       *m_pAudioClient;
-    IAudioRenderClient *m_pRenderClient;
-    IAudioClock        *m_pAudioClock;
+    HANDLE m_needDataEvent;
+    IAEWASAPIDevice* m_pDevice;
+    Microsoft::WRL::ComPtr<IAudioClient> m_pAudioClient;
+    Microsoft::WRL::ComPtr<IAudioRenderClient> m_pRenderClient;
+    Microsoft::WRL::ComPtr<IAudioClock> m_pAudioClock;
 
     AEAudioFormat       m_format;
     unsigned int        m_encodedChannels;
