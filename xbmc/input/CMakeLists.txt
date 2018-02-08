@@ -10,6 +10,7 @@ set(SOURCES Action.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
+            InputTranslator.cpp
             IRTranslator.cpp
             JoystickMapper.cpp
             Key.cpp
@@ -19,18 +20,12 @@ set(SOURCES Action.cpp
             KeyboardTranslator.cpp
             Keymap.cpp
             KeymapEnvironment.cpp
-            MouseStat.cpp
-            MouseTranslator.cpp
             TouchTranslator.cpp
             WindowKeymap.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS hardware/IHardwareInput.h
-            mouse/interfaces/IMouseButtonMap.h
-            mouse/interfaces/IMouseDriverHandler.h
-            mouse/interfaces/IMouseInputHandler.h
-            mouse/interfaces/IMouseInputProvider.h
             Action.h
             ActionIDs.h
             ActionTranslator.h
@@ -48,6 +43,8 @@ set(HEADERS hardware/IHardwareInput.h
             InputCodingTableFactory.h
             InputCodingTableKorean.h
             InputManager.h
+            InputTranslator.h
+            InputTypes.h
             IRTranslator.h
             JoystickMapper.h
             Key.h
@@ -57,8 +54,6 @@ set(HEADERS hardware/IHardwareInput.h
             KeyboardTranslator.h
             Keymap.h
             KeymapEnvironment.h
-            MouseStat.h
-            MouseTranslator.h
             TouchTranslator.h
             WindowTranslator.h
             WindowKeymap.h

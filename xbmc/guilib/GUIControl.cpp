@@ -25,7 +25,7 @@
 #include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
 #include "GUITexture.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
 #include "ServiceBroker.h"

@@ -19,7 +19,7 @@
  */
 
 #include "GUIWindowPointer.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
 #include "windowing/WinSystem.h"

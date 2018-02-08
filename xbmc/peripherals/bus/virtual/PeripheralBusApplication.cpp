@@ -56,6 +56,28 @@ bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results
       results.m_results.push_back(result);
   }
 
+  bool bHasMouse = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
+
+  //! @todo Fix game clients to handle mouse disconnecting
+  //! For now mouse is always connected
+  bHasMouse = true;
+
+  if (bHasMouse)
+  {
+    PeripheralScanResult result(Type());
+    result.m_type          = PERIPHERAL_MOUSE;
+    result.m_strDeviceName = g_localizeStrings.Get(35171); // "Mouse"
+    result.m_strLocation   = PeripheralTypeTranslator::TypeToString(PERIPHERAL_MOUSE);
+    result.m_iVendorId     = 0;
+    result.m_iProductId    = 0;
+    result.m_mappedType    = PERIPHERAL_MOUSE;
+    result.m_mappedBusType = Type();
+    result.m_iSequence     = 0;
+
+    if (!results.ContainsResult(result))
+      results.m_results.push_back(result);
+  }
+
   return true;
 }
 

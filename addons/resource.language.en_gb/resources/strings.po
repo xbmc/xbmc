@@ -17412,7 +17412,13 @@ msgctxt "#35170"
 msgid "Press a key ({1:d})"
 msgstr ""
 
-#empty strings from id 35171 to 35199
+#. Name of mouse connected to the computer
+#: xbmc/peripherals/bus/virtual/PeripheralBusApplication.cpp
+msgctxt "#35171"
+msgid "Mouse"
+msgstr ""
+
+#empty strings from id 35172 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml

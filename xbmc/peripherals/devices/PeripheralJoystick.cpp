@@ -241,7 +241,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
             DeviceName().c_str(), CJoystickTranslator::HatStateToString(state));
 
   // Avoid sending activated input if the app is in the background
-  if (state != HAT_STATE::UNPRESSED && !g_application.IsAppFocused())
+  if (state != HAT_STATE::NONE && !g_application.IsAppFocused())
     return false;
 
   CSingleLock lock(m_handlerMutex);
@@ -264,7 +264,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
       // If hat is centered, force bHandled to false to notify all handlers.
       // This avoids "sticking".
-      if (state == HAT_STATE::UNPRESSED)
+      if (state == HAT_STATE::NONE)
         bHandled = false;
 
       // Once a hat is handled, we're done

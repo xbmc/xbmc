@@ -24,6 +24,8 @@
  \ingroup joystick
  */
 
+#include "input/InputTypes.h"
+
 #include <set>
 #include <string>
 
@@ -96,35 +98,22 @@ namespace JOYSTICK
   /*!
    * \brief Direction arrows on the hat (directional pad)
    */
-  enum class HAT_DIRECTION
-  {
-    UNKNOWN = 0x0,
-    UP      = 0x1,
-    DOWN    = 0x2,
-    RIGHT   = 0x4,
-    LEFT    = 0x8,
-  };
-
-  /*!
-   * \brief Typedef for analog stick directions
-   */
-  using ANALOG_STICK_DIRECTION = HAT_DIRECTION;
+  using HAT_DIRECTION = INPUT::CARDINAL_DIRECTION;
 
   /*!
    * \brief States in which a hat can be
    */
-  enum class HAT_STATE
-  {
-    UNPRESSED = 0x0,    /*!< @brief no directions are pressed */
-    UP        = 0x1,    /*!< @brief only up is pressed */
-    DOWN      = 0x2,    /*!< @brief only down is pressed */
-    RIGHT     = 0x4,    /*!< @brief only right is pressed */
-    LEFT      = 0x8,    /*!< @brief only left is pressed */
-    RIGHTUP   = RIGHT | UP,
-    RIGHTDOWN = RIGHT | DOWN,
-    LEFTUP    = LEFT  | UP,
-    LEFTDOWN  = LEFT  | DOWN,
-  };
+  using HAT_STATE = INPUT::INTERCARDINAL_DIRECTION;
+
+  /*!
+   * \brief Typedef for analog stick directions
+   */
+  using ANALOG_STICK_DIRECTION = INPUT::CARDINAL_DIRECTION;
+
+  /*!
+   * \brief Directions of motion for a relative pointer
+   */
+  using RELATIVE_POINTER_DIRECTION = INPUT::CARDINAL_DIRECTION;
 
   /*!
    * \brief Directions in which a semiaxis can point
@@ -141,7 +130,7 @@ namespace JOYSTICK
    */
   enum class WHEEL_DIRECTION
   {
-    UNKNOWN,
+    NONE,
     RIGHT,
     LEFT,
   };
@@ -151,7 +140,7 @@ namespace JOYSTICK
    */
   enum class THROTTLE_DIRECTION
   {
-    UNKNOWN,
+    NONE,
     UP,
     DOWN,
   };
@@ -176,9 +165,11 @@ namespace JOYSTICK
     HAT,         // one of the four direction arrows on a D-pad
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
-    KEY          // a keyboard key
+    KEY,         // a keyboard key
+    MOUSE_BUTTON, // a mouse button
+    RELATIVE_POINTER, // a relative pointer, such as on a mouse
   };
-  
+
   /*!
    * \ingroup joystick
    * \brief Action entry in joystick.xml

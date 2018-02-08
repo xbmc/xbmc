@@ -24,7 +24,6 @@
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
-#include "input/mouse/interfaces/IMouseInputHandler.h"
 #include "input/XBMC_keysym.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -49,7 +48,6 @@ namespace GAME
   class CGUIConfigurationWizard : public IConfigurationWizard,
                                   public JOYSTICK::IButtonMapper,
                                   public KEYBOARD::IKeyboardDriverHandler,
-                                  public MOUSE::IMouseInputHandler,
                                   public Observer,
                                   protected CThread
   {
@@ -78,11 +76,6 @@ namespace GAME
     virtual bool OnKeyPress(const CKey& key) override;
     virtual void OnKeyRelease(const CKey& key) override { }
 
-    // implementation of IMouseInputHandler
-    virtual bool OnMotion(const std::string& relpointer, int dx, int dy) override { return false; }
-    virtual bool OnButtonPress(const std::string& button) override;
-    virtual void OnButtonRelease(const std::string& button) override { }
-
     // implementation of Observer
     virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
 
@@ -102,7 +95,7 @@ namespace GAME
     void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
     void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
 
-    bool OnKeyAction(unsigned int actionId);
+    bool OnAction(unsigned int actionId);
 
     // Run() parameters
     std::string                          m_strControllerId;
@@ -110,7 +103,7 @@ namespace GAME
 
     // State variables and mutex
     IFeatureButton*                      m_currentButton;
-    JOYSTICK::ANALOG_STICK_DIRECTION     m_analogStickDirection;
+    INPUT::CARDINAL_DIRECTION            m_cardinalDirection;
     JOYSTICK::WHEEL_DIRECTION            m_wheelDirection;
     JOYSTICK::THROTTLE_DIRECTION         m_throttleDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features

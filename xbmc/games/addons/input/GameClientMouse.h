@@ -46,10 +46,12 @@ namespace GAME
     /*!
      * \brief Constructor registers for mouse events at CInputManager.
      * \param gameClient The game client implementation.
+     * \param controllerId The controller profile used for input
      * \param dllStruct The emulator or game to which the events are sent.
      * \param inputProvider The interface providing us with mouse input.
      */
     CGameClientMouse(const CGameClient &gameClient,
+                     std::string controllerId,
                      const KodiToAddonFuncTable_Game &dllStruct,
                      MOUSE::IMouseInputProvider *inputProvider);
 
@@ -67,9 +69,9 @@ namespace GAME
   private:
     // Construction parameters
     const CGameClient &m_gameClient;
+    const std::string m_controllerId;
     const KodiToAddonFuncTable_Game &m_dllStruct;
     MOUSE::IMouseInputProvider *const m_inputProvider;
-    const std::string m_controllerId;
   };
 }
 }

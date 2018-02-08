@@ -25,6 +25,8 @@
 #include "input/joysticks/interfaces/IDriverReceiver.h"
 #include "input/keyboard/generic/KeyboardInputHandling.h"
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"
+#include "input/mouse/generic/MouseInputHandling.h"
+#include "input/mouse/interfaces/IMouseInputHandler.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/Peripherals.h"
@@ -86,6 +88,28 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* per
   }
 }
 
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, MOUSE::IMouseInputHandler* handler)
+{
+  PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
+
+  if (!addon)
+  {
+    CLog::Log(LOGDEBUG, "Failed to locate add-on for \"%s\"", peripheral->DeviceName().c_str());
+  }
+  else
+  {
+    m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
+    if (m_buttonMap->Load())
+    {
+      m_mouseHandler.reset(new MOUSE::CMouseInputHandling(handler, m_buttonMap.get()));
+    }
+    else
+    {
+      m_buttonMap.reset();
+    }
+  }
+}
+
 CAddonInputHandling::~CAddonInputHandling(void)
 {
   m_driverHandler.reset();
@@ -136,6 +160,29 @@ void CAddonInputHandling::OnKeyRelease(const CKey& key)
 {
   if (m_keyboardHandler)
     m_keyboardHandler->OnKeyRelease(key);
+}
+
+
+bool CAddonInputHandling::OnPosition(int x, int y)
+{
+  if (m_mouseHandler)
+    return m_mouseHandler->OnPosition(x, y);
+
+  return false;
+}
+
+bool CAddonInputHandling::OnButtonPress(MOUSE::BUTTON_ID button)
+{
+  if (m_mouseHandler)
+    return m_mouseHandler->OnButtonPress(button);
+
+  return false;
+}
+
+void CAddonInputHandling::OnButtonRelease(MOUSE::BUTTON_ID button)
+{
+  if (m_mouseHandler)
+    m_mouseHandler->OnButtonRelease(button);
 }
 
 bool CAddonInputHandling::SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude)

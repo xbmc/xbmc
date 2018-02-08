@@ -20,6 +20,7 @@
 #pragma once
 
 #include "JoystickTypes.h"
+#include "input/mouse/MouseTypes.h"
 
 namespace KODI
 {
@@ -122,20 +123,6 @@ namespace JOYSTICK
      * \return UP, DOWN, or UNKNOWN if position is 0
      */
     static THROTTLE_DIRECTION PositionToThrottleDirection(float position);
-
-    /*!
-     * \brief Get the closest cardinal direction to the given vector
-     *
-     * Ties are resolved in the clockwise direction: (0.5, 0.5) will resolve to
-     * RIGHT.
-     *
-     * \param x  The x component of the vector
-     * \param y  The y component of the vector
-     *
-     * \return The closest analog stick direction (up, down, right or left), or
-     *         ANALOG_STICK_DIRECTION::UNKNOWN if x and y are both 0
-     */
-    static ANALOG_STICK_DIRECTION VectorToAnalogStickDirection(float x, float y);
 
     /*!
      * \brief Get the localized name of the primitive

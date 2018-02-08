@@ -31,6 +31,7 @@ namespace GAME
     UNKNOWN,
     BUTTON,
     ANALOG_STICK,
+    RELATIVE_POINTER,
     WHEEL,
     THROTTLE,
     SELECT_KEY,

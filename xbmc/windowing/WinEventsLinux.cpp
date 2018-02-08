@@ -23,7 +23,7 @@
 #include "XBMC_events.h"
 #include "input/XBMC_keysym.h"
 #include "Application.h"
-#include "input/MouseStat.h"
+#include "input/mouse/MouseStat.h"
 #include "utils/log.h"
 #include "powermanagement/PowerManager.h"
 #include "peripherals/Peripherals.h"

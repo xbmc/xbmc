@@ -89,7 +89,7 @@ JOYSTICK::WHEEL_DIRECTION CGUIWheelButton::GetWheelDirection(void) const
       break;
   }
 
-  return WHEEL_DIRECTION::UNKNOWN;
+  return WHEEL_DIRECTION::NONE;
 }
 
 void CGUIWheelButton::Reset(void)

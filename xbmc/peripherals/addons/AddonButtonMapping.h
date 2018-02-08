@@ -22,6 +22,7 @@
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
 
 #include <memory>
 
@@ -42,6 +43,7 @@ namespace PERIPHERALS
 
   class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
                               public KODI::KEYBOARD::IKeyboardDriverHandler,
+                              public KODI::MOUSE::IMouseDriverHandler,
                               public KODI::JOYSTICK::IButtonMapCallback
   {
   public:
@@ -58,6 +60,11 @@ namespace PERIPHERALS
     // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
     void OnKeyRelease(const CKey& key) override;
+
+    // implementation of IMouseDriverHandler
+    bool OnPosition(int x, int y) override;
+    bool OnButtonPress(KODI::MOUSE::BUTTON_ID button) override;
+    void OnButtonRelease(KODI::MOUSE::BUTTON_ID button) override;
 
     // implementation of IButtonMapCallback
     void SaveButtonMap() override;

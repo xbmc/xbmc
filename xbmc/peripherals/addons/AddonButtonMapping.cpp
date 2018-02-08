@@ -104,6 +104,28 @@ void CAddonButtonMapping::OnKeyRelease(const CKey& key)
     m_buttonMapping->OnKeyRelease(key);
 }
 
+bool CAddonButtonMapping::OnPosition(int x, int y)
+{
+  if (m_buttonMapping)
+    return m_buttonMapping->OnPosition(x, y);
+
+  return false;
+}
+
+bool CAddonButtonMapping::OnButtonPress(MOUSE::BUTTON_ID button)
+{
+  if (m_buttonMapping)
+    return m_buttonMapping->OnButtonPress(button);
+
+  return false;
+}
+
+void CAddonButtonMapping::OnButtonRelease(MOUSE::BUTTON_ID button)
+{
+  if (m_buttonMapping)
+    m_buttonMapping->OnButtonRelease(button);
+}
+
 void CAddonButtonMapping::SaveButtonMap()
 {
   if (m_buttonMapping)

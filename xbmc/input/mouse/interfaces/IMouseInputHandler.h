@@ -19,6 +19,8 @@
  */
 #pragma once
 
+#include "input/mouse/MouseTypes.h"
+
 #include <string>
 
 namespace KODI
@@ -48,9 +50,12 @@ namespace MOUSE
      * \param dx           The relative x coordinate of motion
      * \param dy           The relative y coordinate of motion
      *
+     * The mouse uses a left-handed (graphics) cartesian coordinate system.
+     * Positive X is right, positive Y is down.
+     *
      * \return True if the event was handled, otherwise false
      */
-    virtual bool OnMotion(const std::string& relpointer, int dx, int dy) = 0;
+    virtual bool OnMotion(const PointerName& relpointer, int dx, int dy) = 0;
 
     /*!
      * \brief A mouse button has been pressed
@@ -59,14 +64,14 @@ namespace MOUSE
      *
      * \return True if the event was handled, otherwise false
      */
-    virtual bool OnButtonPress(const std::string& button) = 0;
+    virtual bool OnButtonPress(const ButtonName& button) = 0;
 
     /*!
      * \brief A mouse button has been released
      *
      * \param button      The name of the feature being released
      */
-    virtual void OnButtonRelease(const std::string& button) = 0;
+    virtual void OnButtonRelease(const ButtonName& button) = 0;
   };
 }
 }

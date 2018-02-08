@@ -28,6 +28,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/IKeymapEnvironment.h"
+#include "input/InputTranslator.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -113,10 +114,12 @@ bool CKeymapHandler::OnButtonMotion(const FeatureName& feature, float magnitude,
 
 bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
 {
+  using namespace INPUT;
+
   bool bHandled = false;
 
   // Calculate the direction of the stick's position
-  const ANALOG_STICK_DIRECTION analogStickDir = CJoystickTranslator::VectorToAnalogStickDirection(x, y);
+  const ANALOG_STICK_DIRECTION analogStickDir = CInputTranslator::VectorToCardinalDirection(x, y);
 
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::max(std::fabs(x), std::fabs(y));
@@ -129,7 +132,7 @@ bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, fl
   }
 
   // Now activate direction the analog stick is pointing
-  if (analogStickDir != ANALOG_STICK_DIRECTION::UNKNOWN)
+  if (analogStickDir != ANALOG_STICK_DIRECTION::NONE)
     bHandled = ActivateDirection(feature, magnitude, analogStickDir, motionTimeMs);
 
   return bHandled;
@@ -153,7 +156,7 @@ bool CKeymapHandler::OnWheelMotion(const FeatureName& feature, float position, u
   }
 
   // Now activate direction in which the wheel is positioned
-  if (direction != WHEEL_DIRECTION::UNKNOWN)
+  if (direction != WHEEL_DIRECTION::NONE)
     bHandled = ActivateDirection(feature, magnitude, direction, motionTimeMs);
 
   return bHandled;
@@ -177,7 +180,7 @@ bool CKeymapHandler::OnThrottleMotion(const FeatureName& feature, float position
   }
 
   // Now activate direction in which the throttle is positioned
-  if (direction != THROTTLE_DIRECTION::UNKNOWN)
+  if (direction != THROTTLE_DIRECTION::NONE)
     bHandled = ActivateDirection(feature, magnitude, direction, motionTimeMs);
 
   return bHandled;

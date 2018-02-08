@@ -58,6 +58,7 @@ namespace GAME
     ControllerPtr GetController(const std::string& controllerId);
     ControllerPtr GetDefaultController();
     ControllerPtr GetDefaultKeyboard();
+    ControllerPtr GetDefaultMouse();
     ControllerVector GetControllers();
 
     std::string GetSavestatesFolder() const;

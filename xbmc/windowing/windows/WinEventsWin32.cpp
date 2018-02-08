@@ -29,10 +29,10 @@
 #include "Application.h"
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "guilib/GUIWindowManager.h"
-#include "input/MouseStat.h"
-#include "input/InputManager.h"
+#include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchSwipeDetector.h"
+#include "input/InputManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"

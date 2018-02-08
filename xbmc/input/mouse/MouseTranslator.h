@@ -19,6 +19,8 @@
  */
 #pragma once
 
+#include "MouseTypes.h"
+
 #include <stdint.h>
 
 class TiXmlElement;
@@ -26,5 +28,18 @@ class TiXmlElement;
 class CMouseTranslator
 {
 public:
+  /*!
+   * \brief Translate a keymap element to a key ID
+   */
   static uint32_t TranslateCommand(const TiXmlElement *pButton);
+
+  /*!
+   * \brief Translate a mouse event ID to a mouse button index
+   *
+   * \param eventId The event ID from MouseStat.h
+   * \param[out] buttonId The button ID from MouseTypes.h, or unmodified if unsuccessful
+   *
+   * \return True if successful, false otherwise
+   */
+  static bool TranslateEventID(unsigned int eventId, KODI::MOUSE::BUTTON_ID &buttonId);
 };

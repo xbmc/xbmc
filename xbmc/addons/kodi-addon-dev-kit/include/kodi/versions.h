@@ -91,8 +91,8 @@
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_XML_ID    "kodi.binary.instance.audioencoder"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "addon-instance/AudioEncoder.h"
 
-#define ADDON_INSTANCE_VERSION_GAME                   "1.0.34"
-#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.34"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.35"
+#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.35"
 #define ADDON_INSTANCE_VERSION_GAME_XML_ID            "kodi.binary.instance.game"
 #define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "kodi_game_dll.h" \
                                                       "kodi_game_types.h" \
@@ -108,7 +108,7 @@
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
 
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.6"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.7"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.4"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \

@@ -20,14 +20,18 @@
 #pragma once
 
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
+#include "input/mouse/MouseTypes.h"
 
 namespace KODI
 {
+namespace JOYSTICK
+{
+  class IButtonMap;
+}
+
 namespace MOUSE
 {
   class IMouseInputHandler;
-  class IMouseButtonMap;
-  class CRelativePointer;
 
   /*!
    * \ingroup mouse
@@ -36,23 +40,34 @@ namespace MOUSE
   class CMouseInputHandling : public IMouseDriverHandler
   {
   public:
-    CMouseInputHandling(IMouseInputHandler* handler, IMouseButtonMap* buttonMap);
+    CMouseInputHandling(IMouseInputHandler* handler, JOYSTICK::IButtonMap* buttonMap);
 
     ~CMouseInputHandling(void) override = default;
 
     // implementation of IMouseDriverHandler
     bool OnPosition(int x, int y) override;
-    bool OnButtonPress(unsigned int button) override;
-    void OnButtonRelease(unsigned int button) override;
+    bool OnButtonPress(BUTTON_ID button) override;
+    void OnButtonRelease(BUTTON_ID button) override;
 
   private:
+    // Utility functions
+    static POINTER_DIRECTION GetPointerDirection(int x, int y);
+    static POINTER_DIRECTION GetOrthogonalDirectionCCW(POINTER_DIRECTION direction);
+
+    static void GetRotation(POINTER_DIRECTION source, POINTER_DIRECTION target, int (&rotation)[2][2]);
+    static void GetRotation(int deg, int (&rotation)[2][2]);
+
+    static void GetReflectionCCW(POINTER_DIRECTION source, POINTER_DIRECTION target, int (&reflection)[2][2]);
+    static void GetReflection(int deg, int (&reflection)[2][2]);
+
     // Construction parameters
     IMouseInputHandler* const m_handler;
-    IMouseButtonMap* const    m_buttonMap;
+    JOYSTICK::IButtonMap* const m_buttonMap;
 
     // Mouse parameters
-    int m_x;
-    int m_y;
+    bool m_bHasPosition = false;
+    int m_x = 0;
+    int m_y = 0;
   };
 }
 }

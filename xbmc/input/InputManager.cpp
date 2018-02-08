@@ -29,10 +29,9 @@
 #include "KeymapEnvironment.h"
 #include "TouchTranslator.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
-#include "input/mouse/generic/MouseInputHandling.h"
-#include "input/mouse/interfaces/IMouseDriverHandler.h"
-#include "input/mouse/MouseWindowingButtonMap.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
+#include "input/mouse/MouseTranslator.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
@@ -78,7 +77,6 @@ CInputManager::CInputManager(const CAppParamParser &params,
   m_customControllerTranslator(new CCustomControllerTranslator),
   m_touchTranslator(new CTouchTranslator),
   m_joystickTranslator(new CJoystickMapper),
-  m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
   m_keyboardEasterEgg(new KEYBOARD::CKeyboardEasterEgg)
 {
   m_buttonTranslator->RegisterMapper("touch", m_touchTranslator.get());
@@ -397,24 +395,35 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   {
     bool handled = false;
 
-    for (auto it = m_mouseHandlers.begin(); it != m_mouseHandlers.end(); ++it)
+    for (auto driverHandler : m_mouseHandlers)
     {
-      if (newEvent.type == XBMC_MOUSEMOTION)
+      switch (newEvent.type)
       {
-        if (it->driverHandler->OnPosition(newEvent.motion.x, newEvent.motion.y))
+      case XBMC_MOUSEMOTION:
+      {
+        if (driverHandler->OnPosition(newEvent.motion.x, newEvent.motion.y))
           handled = true;
+        break;
       }
-      else
+      case XBMC_MOUSEBUTTONDOWN:
       {
-        if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
+        MOUSE::BUTTON_ID buttonId;
+        if (CMouseTranslator::TranslateEventID(newEvent.button.button, buttonId))
         {
-          if (it->driverHandler->OnButtonPress(newEvent.button.button))
+          if (driverHandler->OnButtonPress(buttonId))
             handled = true;
         }
-        else if (newEvent.type == XBMC_MOUSEBUTTONUP)
-        {
-          it->driverHandler->OnButtonRelease(newEvent.button.button);
-        }
+        break;
+      }
+      case XBMC_MOUSEBUTTONUP:
+      {
+        MOUSE::BUTTON_ID buttonId;
+        if (CMouseTranslator::TranslateEventID(newEvent.button.button, buttonId))
+          driverHandler->OnButtonRelease(buttonId);
+        break;
+      }
+      default:
+        break;
       }
 
       if (handled)
@@ -1006,29 +1015,13 @@ void CInputManager::UnregisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHan
   m_keyboardHandlers.erase(std::remove(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler), m_keyboardHandlers.end());
 }
 
-std::string CInputManager::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler)
+void CInputManager::RegisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handler)
 {
-  auto it = std::find_if(m_mouseHandlers.begin(), m_mouseHandlers.end(),
-    [handler](const MouseHandlerHandle& element)
-    {
-      return element.inputHandler == handler;
-    });
-
-  if (it == m_mouseHandlers.end())
-  {
-    std::unique_ptr<MOUSE::IMouseDriverHandler> driverHandler(new MOUSE::CMouseInputHandling(handler, m_mouseButtonMap.get()));
-    MouseHandlerHandle handle = { handler, std::move(driverHandler) };
-    m_mouseHandlers.insert(m_mouseHandlers.begin(), std::move(handle));
-  }
-
-  return m_mouseButtonMap->ControllerID();
+  if (std::find(m_mouseHandlers.begin(), m_mouseHandlers.end(), handler) == m_mouseHandlers.end())
+    m_mouseHandlers.insert(m_mouseHandlers.begin(), handler);
 }
 
-void CInputManager::UnregisterMouseHandler(MOUSE::IMouseInputHandler* handler)
+void CInputManager::UnregisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handler)
 {
-  m_mouseHandlers.erase(std::remove_if(m_mouseHandlers.begin(), m_mouseHandlers.end(),
-    [handler](const MouseHandlerHandle& handle)
-    {
-      return handle.inputHandler == handler;
-    }), m_mouseHandlers.end());
+  m_mouseHandlers.erase(std::remove(m_mouseHandlers.begin(), m_mouseHandlers.end(), handler), m_mouseHandlers.end());
 }

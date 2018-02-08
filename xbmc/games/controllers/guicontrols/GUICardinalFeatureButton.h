@@ -25,33 +25,36 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIAnalogStickButton : public CGUIFeatureButton
+  class CGUICardinalFeatureButton : public CGUIFeatureButton
   {
   public:
-    CGUIAnalogStickButton(const CGUIButtonControl& buttonTemplate,
-                          IConfigurationWizard* wizard,
-                          const CControllerFeature& feature,
-                          unsigned int index);
+    CGUICardinalFeatureButton(const CGUIButtonControl& buttonTemplate,
+                              IConfigurationWizard* wizard,
+                              const CControllerFeature& feature,
+                              unsigned int index);
 
-    virtual ~CGUIAnalogStickButton() = default;
+    virtual ~CGUICardinalFeatureButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;
     virtual bool IsFinished(void) const override;
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetAnalogStickDirection(void) const override;
+    virtual INPUT::CARDINAL_DIRECTION GetCardinalDirection(void) const override;
     virtual void Reset(void) override;
 
   private:
     enum class STATE
     {
-      ANALOG_STICK_UP,
-      ANALOG_STICK_RIGHT,
-      ANALOG_STICK_DOWN,
-      ANALOG_STICK_LEFT,
+      CARDINAL_DIRECTION_UP,
+      CARDINAL_DIRECTION_RIGHT,
+      CARDINAL_DIRECTION_DOWN,
+      CARDINAL_DIRECTION_LEFT,
       FINISHED,
     };
 
     STATE m_state;
   };
+
+  using CGUIAnalogStickButton = CGUICardinalFeatureButton;
+  using CGUIRelativePointerButton = CGUICardinalFeatureButton;
 }
 }

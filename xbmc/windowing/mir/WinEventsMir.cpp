@@ -26,8 +26,8 @@
 #include <xkbcommon/xkbcommon-keysyms.h>
 
 #include "Application.h"
+#include "input/mouse/MouseStat.h"
 #include "input/Key.h"
-#include "input/MouseStat.h"
 
 namespace
 {

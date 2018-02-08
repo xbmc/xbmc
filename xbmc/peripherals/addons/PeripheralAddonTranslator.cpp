@@ -116,6 +116,16 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const kodi::addo
       retVal = CDriverPrimitive(keycode);
       break;
     }
+    case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOUSE_BUTTON:
+    {
+      retVal = CDriverPrimitive(TranslateMouseButton(primitive.MouseIndex()));
+      break;
+    }
+    case JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION:
+    {
+      retVal = CDriverPrimitive(TranslateRelPointerDirection(primitive.RelPointerDirection()));
+      break;
+    }
     default:
       break;
   }
@@ -153,6 +163,16 @@ kodi::addon::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(cons
     {
       std::string keysym = GAME::CControllerTranslator::TranslateKeycode(primitive.Keycode());
       retVal = kodi::addon::DriverPrimitive(keysym);
+      break;
+    }
+    case PRIMITIVE_TYPE::MOUSE_BUTTON:
+    {
+      retVal = kodi::addon::DriverPrimitive::CreateMouseButton(TranslateMouseButton(primitive.MouseButton()));
+      break;
+    }
+    case PRIMITIVE_TYPE::RELATIVE_POINTER:
+    {
+      retVal = kodi::addon::DriverPrimitive(TranslateRelPointerDirection(primitive.PointerDirection()));
       break;
     }
     default:
@@ -195,7 +215,7 @@ HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(JOYSTICK_DRIVER_
     default:
       break;
   }
-  return HAT_DIRECTION::UNKNOWN;
+  return HAT_DIRECTION::NONE;
 }
 
 JOYSTICK_DRIVER_HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(HAT_DIRECTION dir)
@@ -214,7 +234,7 @@ JOYSTICK_DRIVER_HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(
 
 HAT_STATE CPeripheralAddonTranslator::TranslateHatState(JOYSTICK_STATE_HAT state)
 {
-  HAT_STATE translatedState = HAT_STATE::UNPRESSED;
+  HAT_STATE translatedState = HAT_STATE::NONE;
 
   if (state & JOYSTICK_STATE_HAT_UP)    translatedState |= HAT_STATE::UP;
   if (state & JOYSTICK_STATE_HAT_DOWN)  translatedState |= HAT_STATE::DOWN;
@@ -246,6 +266,75 @@ JOYSTICK_DRIVER_SEMIAXIS_DIRECTION CPeripheralAddonTranslator::TranslateSemiAxis
       break;
   }
   return JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN;
+}
+
+MOUSE::BUTTON_ID CPeripheralAddonTranslator::TranslateMouseButton(JOYSTICK_DRIVER_MOUSE_INDEX button)
+{
+  switch (button)
+  {
+    case JOYSTICK_DRIVER_MOUSE_INDEX_LEFT: return MOUSE::BUTTON_ID::LEFT;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_RIGHT: return MOUSE::BUTTON_ID::RIGHT;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_MIDDLE: return MOUSE::BUTTON_ID::MIDDLE;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_BUTTON4: return MOUSE::BUTTON_ID::BUTTON4;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_BUTTON5: return MOUSE::BUTTON_ID::BUTTON5;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_WHEEL_UP: return MOUSE::BUTTON_ID::WHEEL_UP;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_WHEEL_DOWN: return MOUSE::BUTTON_ID::WHEEL_DOWN;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_HORIZ_WHEEL_LEFT: return MOUSE::BUTTON_ID::HORIZ_WHEEL_LEFT;
+    case JOYSTICK_DRIVER_MOUSE_INDEX_HORIZ_WHEEL_RIGHT: return MOUSE::BUTTON_ID::HORIZ_WHEEL_RIGHT;
+    default:
+      break;
+  }
+
+  return MOUSE::BUTTON_ID::UNKNOWN;
+}
+
+JOYSTICK_DRIVER_MOUSE_INDEX CPeripheralAddonTranslator::TranslateMouseButton(MOUSE::BUTTON_ID button)
+{
+  switch (button)
+  {
+    case MOUSE::BUTTON_ID::LEFT: return JOYSTICK_DRIVER_MOUSE_INDEX_LEFT;
+    case MOUSE::BUTTON_ID::RIGHT: return JOYSTICK_DRIVER_MOUSE_INDEX_RIGHT;
+    case MOUSE::BUTTON_ID::MIDDLE: return JOYSTICK_DRIVER_MOUSE_INDEX_MIDDLE;
+    case MOUSE::BUTTON_ID::BUTTON4: return JOYSTICK_DRIVER_MOUSE_INDEX_BUTTON4;
+    case MOUSE::BUTTON_ID::BUTTON5: return JOYSTICK_DRIVER_MOUSE_INDEX_BUTTON5;
+    case MOUSE::BUTTON_ID::WHEEL_UP: return JOYSTICK_DRIVER_MOUSE_INDEX_WHEEL_UP;
+    case MOUSE::BUTTON_ID::WHEEL_DOWN: return JOYSTICK_DRIVER_MOUSE_INDEX_WHEEL_DOWN;
+    case MOUSE::BUTTON_ID::HORIZ_WHEEL_LEFT: return JOYSTICK_DRIVER_MOUSE_INDEX_HORIZ_WHEEL_LEFT;
+    case MOUSE::BUTTON_ID::HORIZ_WHEEL_RIGHT: return JOYSTICK_DRIVER_MOUSE_INDEX_HORIZ_WHEEL_RIGHT;
+    default:
+      break;
+  }
+
+  return JOYSTICK_DRIVER_MOUSE_INDEX_UNKNOWN;
+}
+
+RELATIVE_POINTER_DIRECTION CPeripheralAddonTranslator::TranslateRelPointerDirection(JOYSTICK_DRIVER_RELPOINTER_DIRECTION dir)
+{
+  switch (dir)
+  {
+    case JOYSTICK_DRIVER_RELPOINTER_LEFT:   return RELATIVE_POINTER_DIRECTION::LEFT;
+    case JOYSTICK_DRIVER_RELPOINTER_RIGHT:  return RELATIVE_POINTER_DIRECTION::RIGHT;
+    case JOYSTICK_DRIVER_RELPOINTER_UP:     return RELATIVE_POINTER_DIRECTION::UP;
+    case JOYSTICK_DRIVER_RELPOINTER_DOWN:   return RELATIVE_POINTER_DIRECTION::DOWN;
+    default:
+      break;
+  }
+
+  return RELATIVE_POINTER_DIRECTION::NONE;
+}
+
+JOYSTICK_DRIVER_RELPOINTER_DIRECTION CPeripheralAddonTranslator::TranslateRelPointerDirection(RELATIVE_POINTER_DIRECTION dir)
+{
+  switch (dir)
+  {
+    case RELATIVE_POINTER_DIRECTION::UP:     return JOYSTICK_DRIVER_RELPOINTER_UP;
+    case RELATIVE_POINTER_DIRECTION::DOWN:   return JOYSTICK_DRIVER_RELPOINTER_DOWN;
+    case RELATIVE_POINTER_DIRECTION::RIGHT:  return JOYSTICK_DRIVER_RELPOINTER_RIGHT;
+    case RELATIVE_POINTER_DIRECTION::LEFT:   return JOYSTICK_DRIVER_RELPOINTER_LEFT;
+    default:
+      break;
+  }
+  return JOYSTICK_DRIVER_RELPOINTER_UNKNOWN;
 }
 
 JOYSTICK::FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK_FEATURE_TYPE type)

@@ -23,8 +23,11 @@
 #include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
+#include "input/mouse/MouseTypes.h"
 
 #include <map>
+#include <memory>
 #include <stdint.h>
 
 class IKeymap;
@@ -248,6 +251,61 @@ namespace JOYSTICK
   };
 
   /*!
+   * \brief Detects when a mouse button should be mapped
+   */
+  class CMouseButtonDetector : public CPrimitiveDetector
+  {
+  public:
+    CMouseButtonDetector(CButtonMapping* buttonMapping, MOUSE::BUTTON_ID buttonIndex);
+
+    /*!
+     * \brief Button state has been updated
+     *
+     * \param bPressed The new state
+     *
+     * \return True if this press was handled, false if it should fall through
+     *         to the next driver handler
+     */
+    bool OnMotion(bool bPressed);
+
+  private:
+    // Construction parameters
+    const MOUSE::BUTTON_ID m_buttonIndex;
+  };
+
+  /*!
+   * \brief Detects when a mouse button should be mapped
+   */
+  class CPointerDetector : public CPrimitiveDetector
+  {
+  public:
+    CPointerDetector(CButtonMapping* buttonMapping);
+
+    /*!
+     * \brief Pointer position has been updated
+     *
+     * \param x The new x coordinate
+     * \param y The new y coordinate
+     *
+     * \return Always true - pointer motion events are always absorbed while
+     *         button mapping
+     */
+    bool OnMotion(int x, int y);
+
+  private:
+    // Utility function
+    static INPUT::INTERCARDINAL_DIRECTION GetPointerDirection(int x, int y);
+
+    static const unsigned int MIN_FRAME_COUNT = 10;
+
+    // State variables
+    bool m_bStarted = false;
+    int m_startX = 0;
+    int m_startY = 0;
+    unsigned int m_frameCount = 0;
+  };
+
+  /*!
    * \ingroup joystick
    * \brief Generic implementation of a class that provides button mapping by
    *        translating driver events to button mapping commands
@@ -260,6 +318,7 @@ namespace JOYSTICK
    */
   class CButtonMapping : public IDriverHandler,
                          public KEYBOARD::IKeyboardDriverHandler,
+                         public MOUSE::IMouseDriverHandler,
                          public IButtonMapCallback
   {
   public:
@@ -282,6 +341,11 @@ namespace JOYSTICK
     // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
     void OnKeyRelease(const CKey& key) override { }
+
+    // implementation of IMouseDriverHandler
+    bool OnPosition(int x, int y) override;
+    bool OnButtonPress(MOUSE::BUTTON_ID button) override;
+    void OnButtonRelease(MOUSE::BUTTON_ID button) override;
 
     // implementation of IButtonMapCallback
     virtual void SaveButtonMap() override;
@@ -310,6 +374,8 @@ namespace JOYSTICK
     CHatDetector& GetHat(unsigned int hatIndex);
     CAxisDetector& GetAxis(unsigned int axisIndex, float position, const AxisConfiguration& initialConfig = AxisConfiguration());
     CKeyDetector& GetKey(XBMCKey keycode);
+    CMouseButtonDetector& GetMouseButton(MOUSE::BUTTON_ID buttonIndex);
+    CPointerDetector &GetPointer();
 
     // Construction parameters
     IButtonMapper* const m_buttonMapper;
@@ -320,6 +386,8 @@ namespace JOYSTICK
     std::map<unsigned int, CHatDetector> m_hats;
     std::map<unsigned int, CAxisDetector> m_axes;
     std::map<XBMCKey, CKeyDetector> m_keys;
+    std::map<MOUSE::BUTTON_ID, CMouseButtonDetector> m_mouseButtons;
+    std::unique_ptr<CPointerDetector> m_pointer;
     unsigned int m_lastAction;
     uint64_t m_frameCount;
   };

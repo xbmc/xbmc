@@ -605,6 +605,27 @@ void CPeripheral::UnregisterKeyboardHandler(KEYBOARD::IKeyboardInputHandler* han
   }
 }
 
+void CPeripheral::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler, bool bPromiscuous)
+{
+  auto it = m_mouseHandlers.find(handler);
+  if (it == m_mouseHandlers.end())
+  {
+    std::unique_ptr<CAddonInputHandling> addonInput(new CAddonInputHandling(m_manager, this, handler));
+    RegisterMouseDriverHandler(addonInput.get(), bPromiscuous);
+    m_mouseHandlers[handler] = std::move(addonInput);
+  }
+}
+
+void CPeripheral::UnregisterMouseHandler(MOUSE::IMouseInputHandler* handler)
+{
+  auto it = m_mouseHandlers.find(handler);
+  if (it != m_mouseHandlers.end())
+  {
+    UnregisterMouseDriverHandler(it->second.get());
+    m_mouseHandlers.erase(it);
+  }
+}
+
 void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 {
   auto it = m_buttonMappers.find(mapper);
@@ -614,6 +635,7 @@ void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 
     RegisterJoystickDriverHandler(addonMapping.get(), false);
     RegisterKeyboardDriverHandler(addonMapping.get(), false);
+    RegisterMouseDriverHandler(addonMapping.get(), false);
 
     m_buttonMappers[mapper] = std::move(addonMapping);
   }
@@ -624,6 +646,7 @@ void CPeripheral::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
   auto it = m_buttonMappers.find(mapper);
   if (it != m_buttonMappers.end())
   {
+    UnregisterMouseDriverHandler(it->second.get());
     UnregisterKeyboardDriverHandler(it->second.get());
     UnregisterJoystickDriverHandler(it->second.get());
 

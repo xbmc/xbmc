@@ -18,9 +18,9 @@
  *
  */
 
-#include "input/MouseStat.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/mouse/MouseStat.h"
 #include "Util.h"
 
 #import "IOSExternalTouchController.h"
