@@ -61,7 +61,7 @@ CRendererVTB::~CRendererVTB()
 
 void CRendererVTB::ReleaseBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
+  CPictureBuffer &buf = m_buffers[idx];
   if (buf.videoBuffer)
   {
     VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
@@ -92,7 +92,7 @@ bool CRendererVTB::LoadShadersHook()
 
 bool CRendererVTB::CreateTexture(int index)
 {
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
@@ -149,7 +149,7 @@ void CRendererVTB::DeleteTexture(int index)
 
 bool CRendererVTB::UploadTexture(int index)
 {
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
   VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
@@ -211,7 +211,7 @@ bool CRendererVTB::UploadTexture(int index)
 
 void CRendererVTB::AfterRenderHook(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
+  CPictureBuffer &buf = m_buffers[idx];
   VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)
   {
@@ -228,7 +228,7 @@ void CRendererVTB::AfterRenderHook(int idx)
 
 bool CRendererVTB::NeedBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
+  CPictureBuffer &buf = m_buffers[idx];
   VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)
   {

@@ -101,7 +101,7 @@ static const GLubyte stipple_weave[] = {
   0x00, 0x00, 0x00, 0x00,
 };
 
-CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
+CLinuxRendererGL::CPictureBuffer::CPictureBuffer()
 {
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
@@ -110,7 +110,7 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
   loaded = false;
 }
 
-CLinuxRendererGL::YUVBUFFER::~YUVBUFFER() = default;
+CLinuxRendererGL::CPictureBuffer::~CPictureBuffer() = default;
 
 CBaseRenderer* CLinuxRendererGL::Create(CVideoBuffer *buffer)
 {
@@ -192,7 +192,7 @@ bool CLinuxRendererGL::ValidateRenderer()
     return false;
 
   int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
 
   if (!buf.fields[FIELD_FULL][0].id)
     return false;
@@ -316,7 +316,7 @@ bool CLinuxRendererGL::ConfigChanged(const VideoPicture &picture)
 
 void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
   buf.loaded = false;
@@ -328,7 +328,7 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, d
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
+  CPictureBuffer &buf = m_buffers[idx];
   if (buf.videoBuffer)
   {
     buf.videoBuffer->Release();
@@ -358,7 +358,7 @@ void CLinuxRendererGL::GetPlaneTextureSize(YUVPLANE& plane)
 
 void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 {
-  YUVBUFFER& buf = m_buffers[source];
+  CPictureBuffer& buf = m_buffers[source];
   YuvImage* im  = &buf.image;
 
   // calculate the source rectangle
@@ -1052,7 +1052,7 @@ bool CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
@@ -1204,7 +1204,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
@@ -1805,7 +1805,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
-  YUVBUFFER &buf = m_buffers[index];
+  CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = m_buffers[index].image;
   GLuint *pbo = m_buffers[index].pbo;
 
@@ -1949,7 +1949,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 
 bool CLinuxRendererGL::UploadYV12Texture(int source)
 {
-  YUVBUFFER& buf = m_buffers[source];
+  CPictureBuffer& buf = m_buffers[source];
   YuvImage* im = &buf.image;
 
   bool deinterlacing;
@@ -2069,7 +2069,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 //********************************************************************************************************
 bool CLinuxRendererGL::UploadNV12Texture(int source)
 {
-  YUVBUFFER& buf = m_buffers[source];
+  CPictureBuffer& buf = m_buffers[source];
   YuvImage* im = &buf.image;
 
   bool deinterlacing;
@@ -2128,7 +2128,7 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
 bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
-  YUVBUFFER& buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   YuvImage &im = buf.image;
   GLuint *pbo = buf.pbo;
 
@@ -2259,7 +2259,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
 void CLinuxRendererGL::DeleteNV12Texture(int index)
 {
-  YUVBUFFER& buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   YuvImage &im = buf.image;
   GLuint *pbo = buf.pbo;
 
@@ -2310,7 +2310,7 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 
 bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
-  YUVBUFFER& buf = m_buffers[source];
+  CPictureBuffer& buf = m_buffers[source];
   YuvImage* im = &buf.image;
 
   bool deinterlacing;
@@ -2351,7 +2351,7 @@ bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 
 void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 {
-  YUVBUFFER& buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   YuvImage &im = buf.image;
   GLuint *pbo = buf.pbo;
 
@@ -2398,7 +2398,7 @@ void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
-  YUVBUFFER& buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   YuvImage &im = buf.image;
   GLuint *pbo = buf.pbo;
 
@@ -2515,7 +2515,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 {
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
   {
-    YUVBUFFER& buf = m_buffers[i];
+    CPictureBuffer& buf = m_buffers[i];
 
     for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
     {
@@ -2602,7 +2602,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   return false;
 }
 
-void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
+void CLinuxRendererGL::BindPbo(CPictureBuffer& buff)
 {
   bool pbo = false;
   for(int plane = 0; plane < YuvImage::MAX_PLANES; plane++)
@@ -2619,7 +2619,7 @@ void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
-void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
+void CLinuxRendererGL::UnBindPbo(CPictureBuffer& buff)
 {
   bool pbo = false;
   for(int plane = 0; plane < YuvImage::MAX_PLANES; plane++)

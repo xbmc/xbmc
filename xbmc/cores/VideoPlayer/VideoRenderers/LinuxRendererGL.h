@@ -203,10 +203,10 @@ protected:
     unsigned pixpertex_y;
   };
 
-  struct YUVBUFFER
+  struct CPictureBuffer
   {
-    YUVBUFFER();
-   ~YUVBUFFER();
+    CPictureBuffer();
+   ~CPictureBuffer();
 
     YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
@@ -224,7 +224,7 @@ protected:
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFER m_buffers[NUM_BUFFERS];
+  CPictureBuffer m_buffers[NUM_BUFFERS];
 
   void LoadPlane(YUVPLANE& plane, int type,
                  unsigned width,  unsigned height,
@@ -244,8 +244,8 @@ protected:
   // clear colour for "black" bars
   float m_clearColour;
 
-  void BindPbo(YUVBUFFER& buff);
-  void UnBindPbo(YUVBUFFER& buff);
+  void BindPbo(CPictureBuffer& buff);
+  void UnBindPbo(CPictureBuffer& buff);
   bool m_pboSupported;
   bool m_pboUsed;
 
