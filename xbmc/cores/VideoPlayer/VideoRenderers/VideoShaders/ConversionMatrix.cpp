@@ -473,7 +473,6 @@ void CConvertMatrix::GenMat()
   CTranslate trans(0, -0.5, -0.5);
   *m_pMat *= trans;
 
-  m_limitedSrc = 8;
   if (m_limitedSrc)
   {
     if (m_srcBits >= 12)
