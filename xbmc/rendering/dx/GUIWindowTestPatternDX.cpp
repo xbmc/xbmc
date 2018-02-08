@@ -31,6 +31,7 @@
 #include "DirectXPackedVector.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+using namespace Microsoft::WRL;
 
 DWORD D3DCOLOR_COLORVALUE(float r, float g, float b, float a)
 {
@@ -44,13 +45,13 @@ DWORD D3DCOLOR_COLORVALUE(float r, float g, float b, float a)
 
 CGUIWindowTestPatternDX::CGUIWindowTestPatternDX(void) : CGUIWindowTestPattern()
 {
-  m_vb = NULL;
+  m_vb = nullptr;
   m_bufferWidth = 0;
 }
 
 CGUIWindowTestPatternDX::~CGUIWindowTestPatternDX(void)
 {
-  SAFE_RELEASE(m_vb);
+  m_vb = nullptr;
   m_bufferWidth = 0;
 }
 
@@ -73,12 +74,12 @@ void CGUIWindowTestPatternDX::DrawVerticalLines(int top, int left, int bottom, i
   }
   UpdateVertexBuffer(vert, p);
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
   pGUIShader->Draw(p, 0);
 
@@ -104,12 +105,12 @@ void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom,
   }
   UpdateVertexBuffer(vert, p);
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
   pGUIShader->Draw(p, 0);
 
@@ -146,12 +147,12 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
   }
   UpdateVertexBuffer(vert, i);
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
   pGUIShader->Draw(i, 0);
 
@@ -229,12 +230,12 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   };
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
   pGUIShader->Draw(ARRAYSIZE(vert), 0);
 
@@ -303,19 +304,19 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
 
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
   pGUIShader->Draw(ARRAYSIZE(vert), 0);
 }
 
 void CGUIWindowTestPatternDX::BeginRender()
 {
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   ID3D11RenderTargetView* renderTarget;
 
   pContext->OMGetRenderTargets(1, &renderTarget, NULL);
@@ -346,12 +347,12 @@ void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2
 
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
   CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
-  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetVertexBuffers(0, 1, m_vb.GetAddressOf(), &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   pGUIShader->Draw(ARRAYSIZE(vert), 0);
 }
@@ -362,13 +363,13 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned coun
 
   if (!m_vb || width > m_bufferWidth) // create new
   {
-    SAFE_RELEASE(m_vb);
-
     CD3D11_BUFFER_DESC desc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = vertices;
     initData.SysMemPitch = width;
-    if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, &m_vb)))
+
+    ComPtr<ID3D11Device1> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+    if (SUCCEEDED(pDevice->CreateBuffer(&desc, &initData, m_vb.ReleaseAndGetAddressOf())))
     {
       m_bufferWidth = width;
     }
@@ -376,12 +377,12 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned coun
   }
   else // update 
   {
-    ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
+    ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
-    if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    if (SUCCEEDED(pContext->Map(m_vb.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
       memcpy(res.pData, vertices, sizeof(Vertex) * count);
-      pContext->Unmap(m_vb, 0);
+      pContext->Unmap(m_vb.Get(), 0);
     }
   }
 }
