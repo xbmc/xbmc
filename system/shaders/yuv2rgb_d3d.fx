@@ -24,7 +24,9 @@ texture2D  g_Texture[3];
 float4x4   g_ColorMatrix;
 float2     g_StepXY;
 float2     g_viewPort;
-
+float4x4   g_primMat;
+float      g_gammaDstInv;
+float      g_gammaSrc;
 
 SamplerState YUVSampler : IMMUTABLE
 {
@@ -125,7 +127,11 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
     float4 YUV    = float4(outY, outUV, 1.0);
 #endif
 
-  return output4(mul(YUV, g_ColorMatrix), In.TextureY);
+  float4 rgb = mul(YUV, g_ColorMatrix);
+#if defined(XBMC_COL_CONVERSION)
+  rgb.rgb = pow(mul(pow(rgb, g_gammaSrc), g_primMat), g_gammaDstInv).rgb;
+#endif
+  return output4(rgb, In.TextureY);
 }
 
 technique11 YUV2RGB_T

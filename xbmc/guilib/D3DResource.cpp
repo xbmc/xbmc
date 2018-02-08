@@ -634,11 +634,11 @@ bool CD3DEffect::SetFloatArray(LPCSTR handle, const float* val, unsigned int cou
   return false;
 }
 
-bool CD3DEffect::SetMatrix(LPCSTR handle, const XMFLOAT4X4* mat)
+bool CD3DEffect::SetMatrix(LPCSTR handle, const float* mat)
 {
   if (m_effect)
   {
-    return S_OK == m_effect->GetVariableByName(handle)->AsMatrix()->SetMatrix((float *)mat);
+    return S_OK == m_effect->GetVariableByName(handle)->AsMatrix()->SetMatrix(mat);
   }
   return false;
 }

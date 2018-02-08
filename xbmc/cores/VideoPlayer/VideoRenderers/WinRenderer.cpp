@@ -235,10 +235,11 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   m_bFilterInitialized = false;
 
   m_fps = fps;
-  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
-             GetFlagsColorPrimaries(picture.color_primaries) |
-             GetFlagsStereoMode(picture.stereoMode);
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position)
+           | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
+           | GetFlagsColorPrimaries(picture.color_primaries);
+
+  m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries), picture.iWidth, picture.iHeight);
   m_format = picture.videoBuffer->GetFormat();
   if (m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
@@ -269,21 +270,9 @@ int CWinRenderer::NextBuffer() const
 
 void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
-  unsigned flags = GetFlagsChromaPosition(picture.chroma_position)
-    | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
-    | GetFlagsColorPrimaries(picture.color_primaries);
-  if (picture.color_range == 1)
-    flags |= CONF_FLAGS_YUV_FULLRANGE;
-
-  m_renderBuffers[index].videoBuffer = picture.videoBuffer;
-  m_renderBuffers[index].videoBuffer->Acquire();
+  m_renderBuffers[index].AppendPicture(picture);
   m_renderBuffers[index].frameIdx = m_frameIdx;
-  m_renderBuffers[index].flags = flags;
   m_frameIdx += 2;
-
-  if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    m_renderBuffers[index].QueueCopyBuffer();
-  m_renderBuffers[index].loaded = false;
 }
 
 void CWinRenderer::Update()
@@ -374,12 +363,7 @@ void CWinRenderer::Flush()
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)
 {
-  unsigned int usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
-
-  DXGI_FORMAT format = DXGI_FORMAT_B8G8R8X8_UNORM;
-  if      (m_renderMethod == RENDER_DXVA)                                   format = DXGI_FORMAT_B8G8R8X8_UNORM;
-  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8X8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8X8_UNORM;
+  DXGI_FORMAT format = DX::Windowing().GetBackBuffer()->GetFormat();
 
   // don't create new one if it exists with requested size and format
   if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
@@ -615,7 +599,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   m_colorShader = new CYUV2RGBShader();
-  if (!m_colorShader->Create(m_bufferFormat, m_bUseHQScaler ? nullptr : m_outputShader.get()))
+  if (!m_colorShader->Create(m_bufferFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_bUseHQScaler ? nullptr : m_outputShader.get()))
   {
     if (m_bUseHQScaler)
     {
@@ -627,7 +611,9 @@ void CWinRenderer::UpdatePSVideoFilter()
 
     // we're in big trouble - fallback to sw method
     m_renderMethod = RENDER_SW;
-    if (m_NumYV12Buffers)
+    EBufferFormat oldFormat = m_bufferFormat;
+    m_bufferFormat = SelectBufferFormat(m_format, m_renderMethod);
+    if (oldFormat != m_bufferFormat && m_NumYV12Buffers > 0)
     {
       m_NumYV12Buffers = 0;
       ManageTextures();
@@ -697,12 +683,19 @@ void CWinRenderer::UpdateVideoFilter()
 
 void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
 {
-  if (!m_renderBuffers[m_iYV12RenderBuffer].loaded)
+  CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
+  if (!buf.loaded)
   {
-    if (!m_renderBuffers[m_iYV12RenderBuffer].UploadBuffer())
+    if (!buf.UploadBuffer())
       return;
   }
 
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.primaries, buf.GetWidth(), buf.GetHeight());
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_bFilterInitialized = false;
+  }
   UpdateVideoFilter();
 
   switch (m_renderMethod)
@@ -822,10 +815,12 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   }
 
   // render video frame
-  m_colorShader->Render(m_sourceRect, destPoints,
-                        m_videoSettings.m_Contrast,
-                        m_videoSettings.m_Brightness,
-                        &m_renderBuffers[m_iYV12RenderBuffer], target);
+  m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing().UseLimitedColor());
+  m_colorShader->SetColParams(m_renderBuffers[m_iYV12RenderBuffer].color_space
+                            , m_renderBuffers[m_iYV12RenderBuffer].bits
+                            , !m_renderBuffers[m_iYV12RenderBuffer].full_range
+                            , 8 /*TODO texBits depends on target*/);
+  m_colorShader->Render(m_sourceRect, destPoints, &m_renderBuffers[m_iYV12RenderBuffer], target);
   // Restore our view port.
   DX::Windowing().RestoreViewPort();
 }
@@ -1182,4 +1177,17 @@ bool CWinRenderer::LoadCLUT()
     m_clutLoaded = true;
   });
   return true;
+}
+
+AVColorPrimaries CWinRenderer::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height) const
+{
+  AVColorPrimaries ret = srcPrimaries;
+  if (ret == AVCOL_PRI_UNSPECIFIED)
+  {
+    if (width > 1024 || height >= 600)
+      ret = AVCOL_PRI_BT709;
+    else
+      ret = AVCOL_PRI_BT470BG;
+  }
+  return ret;
 }

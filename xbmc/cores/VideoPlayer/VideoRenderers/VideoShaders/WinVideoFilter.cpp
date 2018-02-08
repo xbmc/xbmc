@@ -18,95 +18,23 @@
  *
  */
 
+#include "WinVideoFilter.h"
 #include "ConvolutionKernels.h"
-#include "dither.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
+#include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "platform/win32/WIN32Util.h"
-#include "Util.h"
-#include "utils/log.h"
-#include "VideoRenderers/WinRenderBuffer.h"
 #include "rendering/dx/RenderContext.h"
 #include "rendering/dx/DeviceResources.h"
-#include "WinVideoFilter.h"
-#include "YUVMatrix.h"
+#include "Util.h"
+#include "utils/log.h"
 
 #include <DirectXPackedVector.h>
 #include <map>
 
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
-
-CYUV2RGBMatrix::CYUV2RGBMatrix()
-{
-  m_NeedRecalc = true;
-  m_blacklevel = 0.0f;
-  m_contrast = 0.0f;
-  m_flags = 0;
-  m_limitedRange = false;
-  m_format = BUFFER_FMT_NONE;
-}
-
-void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, EBufferFormat format)
-{
-  if (m_contrast != contrast)
-  {
-    m_NeedRecalc = true;
-    m_contrast = contrast;
-  }
-  if (m_blacklevel != blacklevel)
-  {
-    m_NeedRecalc = true;
-    m_blacklevel = blacklevel;
-  }
-  if (m_flags != flags)
-  {
-    m_NeedRecalc = true;
-    m_flags = flags;
-  }
-  if (m_format != format)
-  {
-    m_NeedRecalc = true;
-    m_format = format;
-  }
-  if (m_limitedRange != DX::Windowing().UseLimitedColor())
-  {
-    m_NeedRecalc = true;
-    m_limitedRange = DX::Windowing().UseLimitedColor();
-  }
-}
-
-XMFLOAT4X4* CYUV2RGBMatrix::Matrix()
-{
-  if (m_NeedRecalc)
-  {
-    TransformMatrix matrix;
-    EShaderFormat fmt = SHADER_NONE;
-    if (m_format == BUFFER_FMT_YUV420P10)
-      fmt = SHADER_YV12_10;
-    CalculateYUVMatrix(matrix, m_flags, fmt, m_blacklevel, m_contrast, m_limitedRange);
-
-    m_mat._11 = matrix.m[0][0];
-    m_mat._12 = matrix.m[1][0];
-    m_mat._13 = matrix.m[2][0];
-    m_mat._14 = 0.0f;
-    m_mat._21 = matrix.m[0][1];
-    m_mat._22 = matrix.m[1][1];
-    m_mat._23 = matrix.m[2][1];
-    m_mat._24 = 0.0f;
-    m_mat._31 = matrix.m[0][2];
-    m_mat._32 = matrix.m[1][2];
-    m_mat._33 = matrix.m[2][2];
-    m_mat._34 = 0.0f;
-    m_mat._41 = matrix.m[0][3];
-    m_mat._42 = matrix.m[1][3];
-    m_mat._43 = matrix.m[2][3];
-    m_mat._44 = 1.0f;
-
-    m_NeedRecalc = false;
-  }
-  return &m_mat;
-}
 
 //===================================================================
 
@@ -503,7 +431,7 @@ void COutputShader::CreateDitherView()
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
+bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pCLUT)
 {
   m_format = fmt;
   m_pOutShader = pCLUT;
@@ -537,6 +465,9 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
     return false;
   }
 
+  if (srcPrimaries != dstPrimaries)
+    defines["XBMC_COL_CONVERSION"] = "";
+
   if (m_pOutShader)
     m_pOutShader->GetDefines(defines);
 
@@ -562,14 +493,34 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
     CLog::Log(LOGERROR, __FUNCTION__": Failed to create input layout for Input Assembler.");
     return false;
   }
+
+  m_pConvMatrix.reset(new CConvertMatrix());
+  m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, CRenderBuffer* videoBuffer, CD3DTexture *target)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture *target)
 {
-  PrepareParameters(videoBuffer, sourceRect, dest, contrast, brightness);
+  PrepareParameters(videoBuffer, sourceRect, dest);
   SetShaderParameters(videoBuffer);
   Execute({ target }, 4);
+}
+
+void CYUV2RGBShader::SetParams(float contrast, float black, bool limited)
+{
+  m_pConvMatrix->SetParams(contrast * 0.02f, black * 0.01f - 0.5f, limited);
+}
+
+void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits)
+{
+  if (colSpace == AVCOL_SPC_UNSPECIFIED)
+  {
+    if (m_sourceWidth > 1024 || m_sourceHeight >= 600)
+      colSpace = AVCOL_SPC_BT709;
+    else
+      colSpace = AVCOL_SPC_BT470BG;
+  }
+  m_pConvMatrix->SetColParams(colSpace, bits, limited, textuteBits);
 }
 
 CYUV2RGBShader::CYUV2RGBShader()
@@ -585,8 +536,7 @@ CYUV2RGBShader::~CYUV2RGBShader()
 {
 }
 
-void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
-                                       float contrast, float brightness)
+void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[])
 {
   if (m_sourceRect != sourceRect
     || m_dest[0] != dest[0] || m_dest[1] != dest[1] 
@@ -645,11 +595,6 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
 
   m_texSteps[0] = 1.0f / texWidth;
   m_texSteps[1] = 1.0f / m_sourceHeight;
-
-  m_matrix.SetParameters(contrast * 0.02f,
-                         brightness * 0.01f - 0.5f,
-                         videoBuffer->flags,
-                         m_format);
 }
 
 void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
@@ -659,8 +604,24 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   for (unsigned i = 0, max_i = videoBuffer->GetActivePlanes(); i < max_i; i++)
     ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(i));
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetActivePlanes());
-  m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
+
+  float yuvMat[4][4]; 
+  m_pConvMatrix->GetYuvMat(yuvMat);
+  m_effect.SetMatrix("g_ColorMatrix", reinterpret_cast<float*>(yuvMat));
+
+  float primMat[3][3];
+  if (m_pConvMatrix->GetPrimMat(primMat))
+  {
+    // looks like FX11 doesn't like 3x3 matrix, so used 4x4 for its happiness
+    float dxMat[4][4] = { 0 };
+    dxMat[0][0] = primMat[0][0]; dxMat[0][1] = primMat[0][1]; dxMat[0][2] = primMat[0][2];
+    dxMat[1][0] = primMat[1][0]; dxMat[1][1] = primMat[1][1]; dxMat[1][2] = primMat[1][2];
+    dxMat[2][0] = primMat[2][0]; dxMat[2][1] = primMat[2][1]; dxMat[2][2] = primMat[2][2];
+    m_effect.SetMatrix("g_primMat", reinterpret_cast<float*>(dxMat));
+    m_effect.SetScalar("g_gammaSrc", m_pConvMatrix->GetGammaSrc());
+    m_effect.SetScalar("g_gammaDstInv", 1/m_pConvMatrix->GetGammaDst());
+  }
 
   UINT numPorts = 1;
   D3D11_VIEWPORT viewPort;

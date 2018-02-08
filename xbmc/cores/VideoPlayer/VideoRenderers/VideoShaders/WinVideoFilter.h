@@ -22,6 +22,7 @@
 
 
 #include "cores/IPlayer.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/ConversionMatrix.h"
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
@@ -29,27 +30,13 @@
 #include <vector>
 #include <wrl/client.h>
 
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
 enum EBufferFormat;
 class CRenderBuffer;
 
 using namespace DirectX;
-
-class CYUV2RGBMatrix
-{
-public:
-  CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags, EBufferFormat format);
-  XMFLOAT4X4* Matrix();
-
-private:
-  bool         m_NeedRecalc;
-  float        m_contrast;
-  float        m_blacklevel;
-  unsigned int m_flags;
-  bool         m_limitedRange;
-  EBufferFormat m_format;
-  XMFLOAT4X4   m_mat;
-};
 
 class CWinShader
 {
@@ -130,22 +117,24 @@ class CYUV2RGBShader : public CWinShader
 public:
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
-  virtual bool Create(EBufferFormat fmt, COutputShader *pOutShader = nullptr);
-  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, CRenderBuffer* videoBuffer, CD3DTexture *target);
+  bool Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pOutShader = nullptr);
+  void Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture *target);
+  void SetParams(float contrast, float black, bool limited);
+  void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits);
 
 protected:
-  void PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
-                         float contrast, float brightness);
+  void PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[]);
   void SetShaderParameters(CRenderBuffer* videoBuffer);
 
 private:
-  CYUV2RGBMatrix      m_matrix;
-  unsigned int        m_sourceWidth, m_sourceHeight;
-  CRect               m_sourceRect;
-  CPoint              m_dest[4];
-  EBufferFormat       m_format;
-  float               m_texSteps[2];
+  unsigned int m_sourceWidth;
+  unsigned int m_sourceHeight;
+  CRect m_sourceRect;
+  CPoint m_dest[4];
+  EBufferFormat m_format;
+  float m_texSteps[2];
   COutputShader *m_pOutShader;
+  std::shared_ptr<CConvertMatrix> m_pConvMatrix;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
