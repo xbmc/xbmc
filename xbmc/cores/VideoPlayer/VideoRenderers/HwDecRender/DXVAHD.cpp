@@ -362,6 +362,112 @@ static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
   delete[] stream_data.ppFutureSurfaces;
 }
 
+static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer* view) 
+{
+  if (view->color_space == AVCOL_SPC_RGB)
+  {
+    if (!view->full_range) 
+    {
+      if (view->primaries == AVCOL_PRI_BT2020) 
+      {
+        if (view->color_transfer == AVCOL_TRC_SMPTEST2084) 
+        {
+          return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+        }
+        else 
+        {
+          return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
+        }
+      }
+      else 
+      {
+        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
+      }
+    }
+    else 
+    {
+      if (view->primaries == AVCOL_PRI_BT2020) 
+      {
+        if (view->color_transfer == AVCOL_TRC_SMPTEST2084) 
+        {
+          return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+        }
+        else 
+        {
+          return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
+        }
+      }
+      else 
+      {
+        if (view->color_transfer == AVCOL_TRC_LINEAR ||
+            view->color_transfer == AVCOL_TRC_LOG) 
+        {
+          return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+        }
+        else 
+        {
+          return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+        }
+      }
+    }
+  }
+  else 
+  {
+    if (view->primaries == AVCOL_PRI_BT2020) // UHDTV
+    {
+      if (view->color_transfer == AVCOL_TRC_SMPTEST2084) // HDR
+      {
+        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+        // Could also be:
+        // DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020
+      }
+      else
+      {
+        if (view->full_range)
+        {
+          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
+        }
+        else
+        {
+          return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+          // Could also be:
+          // DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
+        }
+      }
+    }
+    else if (view->primaries == AVCOL_PRI_BT470BG ||
+             view->primaries == AVCOL_PRI_SMPTE170M) // SDTV
+    {
+      if (view->full_range)
+      {
+        return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
+      }
+      else
+      {
+        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
+      }
+    }
+    else // HDTV
+    {
+      if (view->full_range)
+      {
+        if (view->color_transfer == AVCOL_TRC_SMPTE170M)
+        {
+          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
+        }
+        else
+        {
+          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
+        }
+      }
+      else
+      {
+        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
+      }
+    }
+  }
+}
+
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
   HRESULT hr;
@@ -461,30 +567,46 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
   // input format
   m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, dxvaFrameFormat);
-  // input colorspace
-  D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
-  {
-    0,                                                  // 0 - Playback, 1 - Processing
-    0,                                                  // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
-    views[2]->flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // 0 - BT.601, 1 - BT.709
-    0,                                                  // 0 - Conventional YCbCr, 1 - xvYCC
-    views[2]->flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1, // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
-  };
-  m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
   // Source rect
   m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
   // Stream dest rect
   m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
   // Output rect
   m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
-  // Output color space
-  // don't apply any color range conversion, this will be fixed at later stage.
-  colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
-  colorSpace.RGB_Range     = DX::Windowing().UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
-  colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
-  colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-  colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
-  m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor.Get(), &colorSpace);
+
+  ComPtr<ID3D11VideoContext1> videoCtx1;
+  if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
+  {
+    videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, GetDXGIColorSpace(views[2]));
+    // TODO select color space depend on real output format
+    DXGI_COLOR_SPACE_TYPE colorSpace = DX::Windowing().UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709; 
+    videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), colorSpace);
+    // makes target available for processing in shaders
+    videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
+  }
+  else
+  {
+    // input colorspace
+    bool isBT601 = views[2]->color_space == AVCOL_SPC_BT470BG || views[2]->color_space == AVCOL_SPC_SMPTE170M;
+    D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
+    {
+      0,                                                    // 0 - Playback, 1 - Processing
+      views[2]->full_range ? 0 : 1,                         // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
+      isBT601 ? 1 : 0,                                      // 0 - BT.601, 1 - BT.709
+      0,                                                    // 0 - Conventional YCbCr, 1 - xvYCC
+      views[2]->full_range ? 2 : 1, // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
+    };
+    m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
+    // Output color space
+    // don't apply any color range conversion, this will be fixed at later stage.
+    colorSpace.Usage = 0;  // 0 - playback, 1 - video processing
+    colorSpace.RGB_Range = DX::Windowing().UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
+    colorSpace.YCbCr_Matrix = 1;  // 0 - BT.601, 1 = BT.709
+    colorSpace.YCbCr_xvYCC = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
+    colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
+    m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor.Get(), &colorSpace);
+  }
+
   // brightness
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
               brightness, 0, 100, 50);
@@ -497,6 +619,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // Rotation
   m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0
                                                  , static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
+
   // create output view for surface.
   D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
   ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
