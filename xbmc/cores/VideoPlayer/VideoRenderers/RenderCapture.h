@@ -24,6 +24,7 @@
 
 #ifdef HAS_DX
   #include "guilib/D3DResource.h"
+  #include <wrl/client.h>
 #endif
 
 #include "threads/Event.h"
@@ -194,7 +195,7 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
 
     unsigned int m_surfaceWidth;
     unsigned int m_surfaceHeight;
-    ID3D11Query* m_query;
+    Microsoft::WRL::ComPtr<ID3D11Query> m_query;
     CD3DTexture m_renderTex;
     CD3DTexture m_copyTex;
 };

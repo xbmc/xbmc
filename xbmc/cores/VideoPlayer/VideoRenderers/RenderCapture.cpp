@@ -304,8 +304,8 @@ int CRenderCaptureDX::GetCaptureFormat()
 
 void CRenderCaptureDX::BeginRender()
 {
-  ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
-  ID3D11Device* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
+  Microsoft::WRL::ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
   CD3D11_QUERY_DESC queryDesc(D3D11_QUERY_EVENT);
 
   if (!m_asyncChecked)
@@ -358,20 +358,20 @@ void CRenderCaptureDX::BeginRender()
     //generate an occlusion query if we don't have one
     if (!m_query)
     {
-      result = pDevice->CreateQuery(&queryDesc, &m_query);
+      result = pDevice->CreateQuery(&queryDesc, m_query.ReleaseAndGetAddressOf());
       if (FAILED(result))
       {
         CLog::LogF(LOGERROR, "CreateQuery failed %s",
                             DX::GetErrorDescription(result).c_str());
         m_asyncSupported = false;
-        SAFE_RELEASE(m_query);
+        m_query = nullptr;
       }
     }
   }
   else
   {
     //don't use an occlusion query, clean up any old one
-    SAFE_RELEASE(m_query);
+    m_query = nullptr;
   }
 }
 
@@ -380,13 +380,13 @@ void CRenderCaptureDX::EndRender()
   // send commands to the GPU queue
   auto deviceResources = DX::DeviceResources::Get();
   deviceResources->FinishCommandList();
-  ID3D11DeviceContext* pContext = deviceResources->GetImmediateContext();
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext = deviceResources->GetImmediateContext();
 
   pContext->CopyResource(m_copyTex.Get(), m_renderTex.Get());
 
   if (m_query)
   {
-    pContext->End(m_query);
+    pContext->End(m_query.Get());
   }
 
   if (m_flags & CAPTUREFLAG_IMMEDIATELY)
@@ -400,7 +400,7 @@ void CRenderCaptureDX::ReadOut()
   if (m_query)
   {
     //if the result of the occlusion query is available, the data is probably also written into m_copySurface
-    HRESULT result = DX::DeviceResources::Get()->GetImmediateContext()->GetData(m_query, nullptr, 0, 0);
+    HRESULT result = DX::DeviceResources::Get()->GetImmediateContext()->GetData(m_query.Get(), nullptr, 0, 0);
     if (SUCCEEDED(result))
     {
       if (S_OK == result)
@@ -453,7 +453,7 @@ void CRenderCaptureDX::CleanupDX()
 {
   m_renderTex.Release();
   m_copyTex.Release();
-  SAFE_RELEASE(m_query);
+  m_query = nullptr;
   m_surfaceWidth = 0;
   m_surfaceHeight = 0;
 }
