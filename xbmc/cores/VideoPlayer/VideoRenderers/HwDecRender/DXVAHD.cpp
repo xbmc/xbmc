@@ -34,6 +34,7 @@
 #include "rendering/dx/DeviceResources.h"
 
 using namespace DXVA;
+using namespace Microsoft::WRL;
 
 #define LOGIFERROR(a) \
 do { \
@@ -65,30 +66,28 @@ void CProcessorHD::UnInit()
 {
   CSingleLock lock(m_section);
   Close();
-  SAFE_RELEASE(m_pVideoDevice);
+  m_pVideoDevice = nullptr;
 }
 
 void CProcessorHD::Close()
 {
   CSingleLock lock(m_section);
-  SAFE_RELEASE(m_pEnumerator);
-  SAFE_RELEASE(m_pVideoProcessor);
-  SAFE_RELEASE(m_pVideoContext);
+  m_pEnumerator = nullptr;
+  m_pVideoProcessor = nullptr;
+  m_pVideoContext = nullptr;
 }
 
 bool CProcessorHD::PreInit()
 {
-  SAFE_RELEASE(m_pVideoDevice);
-
-  ID3D11Device* pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  if (FAILED(pD3DDevice->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice))))
+  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  if (FAILED(pD3DDevice.As(&m_pVideoDevice)))
   {
     CLog::Log(LOGWARNING, "%s: failed to get video device.", __FUNCTION__);
     return false;
   }
 
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1;
-  ZeroMemory(&desc1, sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC));
+  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1 = { };
+  memset(&desc1, 0, sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC));
   desc1.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   desc1.InputWidth = 640;
   desc1.InputHeight = 480;
@@ -97,23 +96,23 @@ bool CProcessorHD::PreInit()
   desc1.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
 
   // try to create video enum
-  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&desc1, &m_pEnumerator)))
+  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&desc1, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
     CLog::Log(LOGWARNING, "%s: failed to create Video Enumerator.", __FUNCTION__);
     return false;
   }
 
-  SAFE_RELEASE(m_pEnumerator);
+  m_pEnumerator = nullptr;
   return true;
 }
 
 bool CProcessorHD::InitProcessor()
 {
-  SAFE_RELEASE(m_pEnumerator);
-  SAFE_RELEASE(m_pVideoContext);
+  m_pEnumerator = nullptr;
+  m_pVideoContext = nullptr;
 
-  ID3D11DeviceContext1* pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
-  if (FAILED(pD3DDeviceContext->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_pVideoContext))))
+  ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
+  if (FAILED(pD3DDeviceContext.As(&m_pVideoContext)))
   {
     CLog::Log(LOGWARNING, "%s: Context initialization is failed.", __FUNCTION__);
     return false;
@@ -121,8 +120,8 @@ bool CProcessorHD::InitProcessor()
 
   CLog::Log(LOGDEBUG, "%s: Initing Video Enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
 
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc;
-  ZeroMemory(&contentDesc, sizeof(contentDesc));
+  D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc = {};
+  memset(&contentDesc, 0, sizeof(contentDesc));
   contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   contentDesc.InputWidth = m_width;
   contentDesc.InputHeight = m_height;
@@ -130,7 +129,7 @@ bool CProcessorHD::InitProcessor()
   contentDesc.OutputHeight = m_height;
   contentDesc.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
 
-  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, &m_pEnumerator)))
+  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
     CLog::Log(LOGWARNING, "%s: failed to init video enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
     return false;
@@ -230,7 +229,8 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
-  if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+  DXGI_FORMAT backBufferFormat = DX::Windowing().GetBackBuffer()->GetFormat();
+  if (!IsFormatSupported(backBufferFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
   return true;
 }
@@ -278,11 +278,10 @@ bool CProcessorHD::OpenProcessor()
   if (!m_pEnumerator && !ReInit())
     return false;
 
-  SAFE_RELEASE(m_pVideoProcessor);
   CLog::Log(LOGDEBUG, "%s: Creating processor.", __FUNCTION__);
 
   // create processor
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator, m_procIndex, &m_pVideoProcessor);
+  HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator.Get(), m_procIndex, m_pVideoProcessor.ReleaseAndGetAddressOf());
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s: Failed creating video processor with error %x.", __FUNCTION__, hr);
@@ -292,7 +291,7 @@ bool CProcessorHD::OpenProcessor()
   // Output background color (black)
   D3D11_VIDEO_COLOR color;
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
-  m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor, TRUE, &color);
+  m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor.Get(), TRUE, &color);
 
   return true;
 }
@@ -316,13 +315,14 @@ bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   else
     val = range.Default;
 
-  m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor, DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
+  m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
   return true;
 }
 
 ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
-  ID3D11VideoProcessorInputView* inputView = nullptr;
+  HRESULT hr = S_FALSE;
+  ComPtr<ID3D11VideoProcessorInputView> inputView;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D,{ 0, 0 } };
 
   if (view->format == BUFFER_FMT_D3D11_BYPASS)
@@ -335,38 +335,29 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
       return nullptr;
     }
 
-    ID3D11Resource* resource = nullptr;
+    ComPtr<ID3D11Resource> resource;
     D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovd;
     decoderView->GetDesc(&vdovd);
-    decoderView->GetResource(&resource);
+    decoderView->GetResource(resource.GetAddressOf());
     vpivd.Texture2D.ArraySlice = vdovd.Texture2D.ArraySlice;
 
-    if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(resource, m_pEnumerator, &vpivd, &inputView)))
-      CLog::Log(LOGERROR, "%s: cannot create processor input view.", __FUNCTION__);
-
-    resource->Release();
+    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_pEnumerator.Get(), &vpivd, inputView.GetAddressOf());
   }
   else if (view->format == BUFFER_FMT_D3D11_NV12
         || view->format == BUFFER_FMT_D3D11_P010
         || view->format == BUFFER_FMT_D3D11_P016)
   {
-    if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(view->GetResource(), m_pEnumerator, &vpivd, &inputView)))
-      CLog::Log(LOGERROR, "%s: cannot create processor input view.", __FUNCTION__);
+    hr = m_pVideoDevice->CreateVideoProcessorInputView(view->GetResource(), m_pEnumerator.Get(), &vpivd, inputView.GetAddressOf());
   }
 
-  return inputView;
+  if (FAILED(hr) || hr == S_FALSE)
+    CLog::Log(LOGERROR, "%s: cannot create processor input view.", __FUNCTION__);
+
+  return inputView.Detach();
 }
 
 static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
 {
-  SAFE_RELEASE(stream_data.pInputSurface);
-
-  for (size_t i = 0; i < stream_data.PastFrames; ++i)
-    SAFE_RELEASE(stream_data.ppPastSurfaces[i]);
-
-  for (size_t i = 0; i < stream_data.FutureFrames; ++i)
-    SAFE_RELEASE(stream_data.ppFutureSurfaces[i]);
-
   delete[] stream_data.ppPastSurfaces;
   delete[] stream_data.ppFutureSurfaces;
 }
@@ -412,7 +403,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   if (futureFrames)
     stream_data.ppFutureSurfaces = new ID3D11VideoProcessorInputView*[futureFrames];
 
-  ID3D11VideoProcessorInputView* view = nullptr;
+  std::vector<ComPtr<ID3D11VideoProcessorInputView>> comViews;
   int start = 2 - futureFrames;
   int end = 2 + pastFrames;
   int count = 0;
@@ -422,23 +413,28 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (!views[i])
       continue;
 
-    view = GetInputView(views[i]);
+    ComPtr<ID3D11VideoProcessorInputView> view;
+    view.Attach(GetInputView(views[i]));
+
     if (i > 2)
     {
       // frames order should be { ?, T-3, T-2, T-1 }
-      stream_data.ppPastSurfaces[2 + pastFrames - i] = view;
+      stream_data.ppPastSurfaces[2 + pastFrames - i] = view.Get();
     }
     else if (i == 2)
     {
-      stream_data.pInputSurface = view;
+      stream_data.pInputSurface = view.Get();
     }
     else if (i < 2)
     {
       // frames order should be { T+1, T+2, T+3, .. }
-      stream_data.ppFutureSurfaces[1 - i] = view;
+      stream_data.ppFutureSurfaces[1 - i] = view.Get();
     }
     if (view)
+    {
       count++;
+      comViews.push_back(view);
+    }
   }
 
   if (count != pastFrames + futureFrames + 1)
@@ -464,7 +460,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   stream_data.OutputIndex = flags & RENDER_FLAG_FIELD1 && !frameProgressive ? 1 : 0;
 
   // input format
-  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor, DEFAULT_STREAM_INDEX, dxvaFrameFormat);
+  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, dxvaFrameFormat);
   // input colorspace
   D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
   {
@@ -474,13 +470,13 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     0,                                                  // 0 - Conventional YCbCr, 1 - xvYCC
     views[2]->flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1, // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
   };
-  m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor, DEFAULT_STREAM_INDEX, &colorSpace);
+  m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
   // Source rect
-  m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor, DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
+  m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
   // Stream dest rect
-  m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor, DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
+  m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
   // Output rect
-  m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor, TRUE, &dstRECT);
+  m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
   // Output color space
   // don't apply any color range conversion, this will be fixed at later stage.
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
@@ -488,7 +484,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
   colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
-  m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
+  m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor.Get(), &colorSpace);
   // brightness
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
               brightness, 0, 100, 50);
@@ -499,25 +495,24 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
   // Rotation
-  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor, DEFAULT_STREAM_INDEX, rotation != 0
+  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0
                                                  , static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
   // create output view for surface.
   D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
-  ID3D11VideoProcessorOutputView* pOutputView = nullptr;
-  hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator, &OutputViewDesc, &pOutputView);
+  ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
+  hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, pOutputView.GetAddressOf());
   if (S_OK != hr)
     CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while creating processor output view.", __FUNCTION__, hr);
 
   if (SUCCEEDED(hr))
   {
-    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor, pOutputView, frameIdx, 1, &stream_data);
+    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
     if (S_OK != hr)
     {
       CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while VideoProcessorBlt execution.", __FUNCTION__, hr);
     }
   }
 
-  SAFE_RELEASE(pOutputView);
   ReleaseStream(stream_data);
 
   return !FAILED(hr);
