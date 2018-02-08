@@ -37,23 +37,28 @@ CRPBaseRenderer *CRendererFactoryOpenGL::CreateRenderer(const CRenderSettings &s
   return new CRPRendererOpenGL(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryOpenGL::CreateBufferPools()
+RenderBufferPoolVector CRendererFactoryOpenGL::CreateBufferPools(CRenderContext &context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGL>() };
+  return { std::make_shared<CRenderBufferPoolOpenGL>(context) };
 }
 
 // --- CRenderBufferOpenGL -----------------------------------------------------
 
-CRenderBufferOpenGL::CRenderBufferOpenGL(AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height) :
-  CRenderBufferOpenGLES(format, targetFormat, width, height)
+CRenderBufferOpenGL::CRenderBufferOpenGL(CRenderContext &context, AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height) :
+  CRenderBufferOpenGLES(context, format, targetFormat, width, height)
 {
 }
 
 // --- CRenderBufferPoolOpenGL -------------------------------------------------
 
+CRenderBufferPoolOpenGL::CRenderBufferPoolOpenGL(CRenderContext &context)
+  : CRenderBufferPoolOpenGLES(context)
+{
+}
+
 IRenderBuffer *CRenderBufferPoolOpenGL::CreateRenderBuffer(void *header /* = nullptr */)
 {
-  return new CRenderBufferOpenGL(m_format, m_targetFormat, m_width, m_height);
+  return new CRenderBufferOpenGL(m_context, m_format, m_targetFormat, m_width, m_height);
 }
 
 // --- CRPRendererOpenGL -------------------------------------------------------

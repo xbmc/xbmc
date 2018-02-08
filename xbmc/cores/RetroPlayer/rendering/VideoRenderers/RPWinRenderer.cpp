@@ -49,7 +49,7 @@ CRPBaseRenderer *CWinRendererFactory::CreateRenderer(const CRenderSettings &sett
   return new CRPWinRenderer(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CWinRendererFactory::CreateBufferPools()
+RenderBufferPoolVector CWinRendererFactory::CreateBufferPools(CRenderContext &context)
 {
   return { std::make_shared<CWinRenderBufferPool>() };
 }

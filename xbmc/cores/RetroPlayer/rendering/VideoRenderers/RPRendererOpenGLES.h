@@ -42,13 +42,13 @@ namespace RETRO
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;
     CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
-    RenderBufferPoolVector CreateBufferPools() override;
+    RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
 
   class CRenderBufferOpenGLES : public CRenderBufferSysMem
   {
   public:
-    CRenderBufferOpenGLES(AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height);
+    CRenderBufferOpenGLES(CRenderContext &context, AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height);
     ~CRenderBufferOpenGLES() override;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
@@ -58,6 +58,7 @@ namespace RETRO
 
   protected:
     // Construction parameters
+    CRenderContext &m_context;
     const AVPixelFormat m_format;
     const AVPixelFormat m_targetFormat;
     const unsigned int m_width;
@@ -74,7 +75,7 @@ namespace RETRO
   class CRenderBufferPoolOpenGLES : public CBaseRenderBufferPool
   {
   public:
-    CRenderBufferPoolOpenGLES() = default;
+    CRenderBufferPoolOpenGLES(CRenderContext &context);
     ~CRenderBufferPoolOpenGLES() override = default;
 
     // implementation of IRenderBufferPool via CRenderBufferPoolSysMem
@@ -87,6 +88,10 @@ namespace RETRO
     bool SetTargetFormat(AVPixelFormat targetFormat);
 
   protected:
+    // Construction parameters
+    CRenderContext &m_context;
+
+    // GLES parameters
     AVPixelFormat m_targetFormat = AV_PIX_FMT_NONE; //! @todo Change type to GLenum
   };
 

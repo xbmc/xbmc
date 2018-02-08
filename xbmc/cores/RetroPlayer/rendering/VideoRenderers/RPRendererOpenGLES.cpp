@@ -41,14 +41,15 @@ CRPBaseRenderer *CRendererFactoryOpenGLES::CreateRenderer(const CRenderSettings 
   return new CRPRendererOpenGLES(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools()
+RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext &context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGLES>() };
+  return { std::make_shared<CRenderBufferPoolOpenGLES>(context) };
 }
 
 // --- CRenderBufferOpenGLES ---------------------------------------------------
 
-CRenderBufferOpenGLES::CRenderBufferOpenGLES(AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height) :
+CRenderBufferOpenGLES::CRenderBufferOpenGLES(CRenderContext &context, AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height) :
+  m_context(context),
   m_format(format),
   m_targetFormat(targetFormat),
   m_width(width),
@@ -101,6 +102,11 @@ void CRenderBufferOpenGLES::DeleteTexture()
 
 // --- CRenderBufferPoolOpenGLES -----------------------------------------------
 
+CRenderBufferPoolOpenGLES::CRenderBufferPoolOpenGLES(CRenderContext &context)
+  : m_context(context)
+{
+}
+
 bool CRenderBufferPoolOpenGLES::IsCompatible(const CRenderVideoSettings &renderSettings) const
 {
   if (!CRPRendererOpenGLES::SupportsScalingMethod(renderSettings.GetScalingMethod()))
@@ -111,7 +117,7 @@ bool CRenderBufferPoolOpenGLES::IsCompatible(const CRenderVideoSettings &renderS
 
 IRenderBuffer *CRenderBufferPoolOpenGLES::CreateRenderBuffer(void *header /* = nullptr */)
 {
-  return new CRenderBufferOpenGLES(m_format, m_targetFormat, m_width, m_height);
+  return new CRenderBufferOpenGLES(m_context, m_format, m_targetFormat, m_width, m_height);
 }
 
 bool CRenderBufferPoolOpenGLES::SetTargetFormat(AVPixelFormat targetFormat)

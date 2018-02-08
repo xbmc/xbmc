@@ -36,7 +36,7 @@ CRPBaseRenderer *CRendererFactoryMMAL::CreateRenderer(const CRenderSettings &set
   return new CRPRendererMMAL(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryMMAL::CreateBufferPools()
+RenderBufferPoolVector CRendererFactoryMMAL::CreateBufferPools(CRenderContext &context)
 {
   return { std::make_shared<CRenderBufferPoolMMAL>() };
 }

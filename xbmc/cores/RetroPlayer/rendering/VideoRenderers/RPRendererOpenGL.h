@@ -38,20 +38,20 @@ namespace RETRO
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;
     CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
-    RenderBufferPoolVector CreateBufferPools() override;
+    RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
 
   class CRenderBufferOpenGL : public CRenderBufferOpenGLES
   {
   public:
-    CRenderBufferOpenGL(AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height);
+    CRenderBufferOpenGL(CRenderContext &context, AVPixelFormat format, AVPixelFormat targetFormat, unsigned int width, unsigned int height);
     ~CRenderBufferOpenGL() override = default;
   };
 
   class CRenderBufferPoolOpenGL : public CRenderBufferPoolOpenGLES
   {
   public:
-    CRenderBufferPoolOpenGL() = default;
+    CRenderBufferPoolOpenGL(CRenderContext &context);
     ~CRenderBufferPoolOpenGL() override = default;
 
     // implementation of CBaseRenderBufferPool via CRenderBufferPoolOpenGLES
