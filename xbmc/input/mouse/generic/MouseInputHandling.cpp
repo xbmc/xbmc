@@ -100,6 +100,11 @@ bool CMouseInputHandling::OnPosition(int x, int y)
       bHandled = m_handler->OnMotion(pointerName, dx, dy);
     }
   }
+  else
+  {
+    // Don't fall through - might disrupt the game
+    bHandled = true;
+  }
 
   m_x = x;
   m_y = y;
