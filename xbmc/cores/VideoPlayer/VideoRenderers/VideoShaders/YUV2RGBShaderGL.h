@@ -29,6 +29,7 @@
 
 extern "C" {
 #include "libavutil/pixfmt.h"
+#include "libavutil/mastering_display_metadata.h"
 }
 
 class CConvertMatrix;
@@ -40,6 +41,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 public:
   BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
                         AVColorPrimaries dst, AVColorPrimaries src,
+                        bool toneMap,
                         std::shared_ptr<GLSLOutput> output);
   virtual ~BaseYUV2RGBGLSLShader();
 
@@ -51,6 +53,8 @@ public:
   void SetBlack(float black) { m_black = black; }
   void SetContrast(float contrast) { m_contrast = contrast; }
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+  void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
+                          bool hasLightMetadata, AVContentLightMetadata lightMetadata);
 
   void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
 
@@ -74,6 +78,11 @@ protected:
   int m_width;
   int m_height;
   int m_field;
+  bool m_hasDisplayMetadata = false;
+  AVMasteringDisplayMetadata m_displayMetadata;
+  bool m_hasLightMetadata = false;
+  AVContentLightMetadata m_lightMetadata;
+  bool m_toneMapping = false;
 
   float m_black;
   float m_contrast;
@@ -98,6 +107,8 @@ protected:
   GLint m_hGammaSrc = -1;
   GLint m_hGammaDstInv = -1;
   GLint m_hPrimMat = -1;
+  GLint m_hToneP1 = -1;
+  GLint m_hCoefsDst = -1;
 
   // vertex shader attribute handles
   GLint m_hVertex = -1;
@@ -116,6 +127,7 @@ public:
                            EShaderFormat format,
                            bool stretch,
                            AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                           bool toneMap,
                            std::shared_ptr<GLSLOutput> output);
 };
 
@@ -126,6 +138,7 @@ public:
                        EShaderFormat format,
                        bool stretch,
                        AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                       bool toneMap,
                        ESCALINGMETHOD method,
                        std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;

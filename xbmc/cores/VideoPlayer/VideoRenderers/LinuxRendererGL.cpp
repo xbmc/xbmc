@@ -252,6 +252,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
 
   m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries),
                                    picture.iWidth, picture.iHeight);
+  m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -324,6 +325,11 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, d
   buf.m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
+
+  buf.hasDisplayMetadata = picture.hasDisplayMetadata;
+  buf.displayMetadata = picture.displayMetadata;
+  buf.hasLightMetadata = picture.hasLightMetadata;
+  buf.lightMetadata = picture.lightMetadata;
 }
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
@@ -916,6 +922,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
                                                 shaderFormat, m_nonLinStretch,
                                                 AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
+                                                m_toneMap,
                                                 m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -940,7 +947,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     {
       m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, shaderFormat,
                                                   m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, out);
+                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap, out);
 
       if (!m_cmsOn)
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -1062,6 +1069,13 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
     m_reloadShaders = true;
   }
 
+  bool toneMap = false;
+  if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    toneMap = true;
+  if (toneMap != m_toneMap)
+    m_reloadShaders = true;
+  m_toneMap = toneMap;
+
   if (m_reloadShaders)
   {
     LoadShaders(field);
@@ -1089,6 +1103,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
+  m_pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
+                                   buf.hasLightMetadata, buf.lightMetadata);
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
@@ -1213,6 +1229,13 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
     m_srcPrimaries = srcPrim;
     m_reloadShaders = true;
   }
+
+  bool toneMap = false;
+  if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    toneMap = true;
+  if (toneMap != m_toneMap)
+    m_reloadShaders = true;
+  m_toneMap = toneMap;
 
   if (m_reloadShaders)
   {

@@ -16,6 +16,8 @@ uniform sampler1D m_kernelTex;
 uniform mat3 m_primMat;
 uniform float m_gammaDstInv;
 uniform float m_gammaSrc;
+uniform float m_toneP1;
+uniform vec3 m_coefsDst;
 in vec2 m_cordY;
 in vec2 m_cordU;
 in vec2 m_cordV;
@@ -88,33 +90,37 @@ float filter_0(sampler2D sampler, vec2 coord)
 vec4 process()
 {
   vec4 rgb;
+  vec4 yuv;
+
 #if defined(XBMC_YV12)
 
-  vec4 yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
-                  texture(m_sampU, stretch(m_cordU)).r,
-                  texture(m_sampV, stretch(m_cordV)).r,
-                  1.0);
-
-  rgb = m_yuvmat * yuv;
-  rgb.a = m_alpha;
+  yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
+             texture(m_sampU, stretch(m_cordU)).r,
+             texture(m_sampV, stretch(m_cordV)).r,
+             1.0);
 
 #elif defined(XBMC_NV12)
 
-  vec4 yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
-                  texture(m_sampU, stretch(m_cordU)).rg,
-                  1.0);
-  rgb = m_yuvmat * yuv;
-  rgb.a = m_alpha;
+  yuv = vec4(filter_0(m_sampY, stretch(m_cordY)),
+             texture(m_sampU, stretch(m_cordU)).rg,
+             1.0);
+
 #endif
 
+  rgb = m_yuvmat * yuv;
+  rgb.a = m_alpha;
+
 #if defined(XBMC_COL_CONVERSION)
-  rgb.r = pow(rgb.r, m_gammaSrc);
-  rgb.g = pow(rgb.g, m_gammaSrc);
-  rgb.b = pow(rgb.b, m_gammaSrc);
+  rgb.rgb = pow(rgb.rgb, vec3(m_gammaSrc));
   rgb.rgb = m_primMat * rgb.rgb;
-  rgb.r = pow(rgb.r, m_gammaDstInv);
-  rgb.g = pow(rgb.g, m_gammaDstInv);
-  rgb.b = pow(rgb.b, m_gammaDstInv);
+  rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
+
+#if defined(XBMC_TONE_MAPPING)
+  float luma = dot(rgb.rgb, m_coefsDst);
+  rgb.rgb *= tonemap(luma) / luma;
 #endif
+
+#endif
+
   return rgb;
 }
