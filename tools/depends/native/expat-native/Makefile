@@ -14,8 +14,6 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; ./configure --prefix=
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

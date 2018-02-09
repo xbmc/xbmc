@@ -17,8 +17,6 @@ CONFIGURE=./configure --prefix=$(PREFIX)
 
 LIBDYLIB=$(PLATFORM)/bin/autoconf
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: $(PREFIX)/bin/$(LIBNAME)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

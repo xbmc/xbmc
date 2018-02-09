@@ -19,8 +19,6 @@ endif
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-indirect-deps --with-pc-path=$(PC_PATH) --with-internal-glib
 LIBDYLIB=$(PLATFORM)/pkg-config
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

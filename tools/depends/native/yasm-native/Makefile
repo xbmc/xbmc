@@ -13,8 +13,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) --disable-nls --disable-python
 
 APP=$(PLATFORM)/$(APPNAME)
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

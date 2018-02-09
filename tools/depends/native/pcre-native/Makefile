@@ -17,7 +17,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) --disable-cpp \
 
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).so
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 

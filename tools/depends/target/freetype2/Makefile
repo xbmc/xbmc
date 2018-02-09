@@ -15,8 +15,6 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) builds/unix; \
 
 LIBDYLIB=$(PLATFORM)/objs/.libs/lib$(LIBNAME).a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

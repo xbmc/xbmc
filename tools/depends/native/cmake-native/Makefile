@@ -23,8 +23,6 @@ endif
 
 APP=$(PLATFORM)/bin/$(APPNAME)
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

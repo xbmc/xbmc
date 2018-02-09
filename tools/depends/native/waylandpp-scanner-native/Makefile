@@ -10,7 +10,6 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 APP=$(PLATFORM)/wayland-scanner++
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 # Only this package uses CMake for build on native at the moment,
 # so there is no separate toolchain file. Still we have to unset

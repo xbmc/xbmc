@@ -37,8 +37,6 @@ endif
 
 LIBDYLIB=$(PLATFORM)/source3/bin/libsmbclient.a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

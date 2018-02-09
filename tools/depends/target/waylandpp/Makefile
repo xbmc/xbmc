@@ -8,7 +8,6 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 LIBDYLIB=$(PLATFORM)/src/libwayland-client++.so
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
