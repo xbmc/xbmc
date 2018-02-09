@@ -94,8 +94,10 @@ class CDXVAContext
 public:
   static bool EnsureContext(CDXVAContext **ctx, CDecoder *decoder);
   bool GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DECODER_CONFIG &config) const;
-  bool CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11VideoDecoderOutputView **surfaces) const;
-  bool CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, ID3D11VideoDecoder **decoder, ID3D11VideoContext **context);
+  bool CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const uint32_t count, const uint32_t alignment
+                    , ID3D11VideoDecoderOutputView **surfaces) const;
+  bool CreateDecoder(const D3D11_VIDEO_DECODER_DESC &format, const D3D11_VIDEO_DECODER_CONFIG &config
+                   , ID3D11VideoDecoder **decoder, ID3D11VideoContext **context);
   void Release(CDecoder *decoder);
   ID3D11VideoContext* GetVideoContext() const { return m_vcontext.Get(); }
 
@@ -106,7 +108,7 @@ private:
   void DestroyContext();
   void QueryCaps();
   bool IsValidDecoder(CDecoder *decoder);
-  bool GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO_DECODER_CONFIG &config) const;
+  bool GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DECODER_CONFIG &config) const;
 
   static CDXVAContext *m_context;
   static CCriticalSection m_section;

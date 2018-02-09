@@ -331,8 +331,8 @@ bool CDXVAContext::CreateContext()
 void CDXVAContext::DestroyContext()
 {
   delete[] m_input_list;
-  m_service.Reset();
-  m_vcontext.Reset();
+  m_service = nullptr;
+  m_vcontext = nullptr;
 }
 
 void CDXVAContext::QueryCaps()
@@ -396,6 +396,11 @@ bool CDXVAContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER
     CLog::LogFunction(LOGDEBUG, "DXVA", "trying '%s'.", mode.name);
     for (unsigned j = 0; render_targets_dxgi[j]; ++j)
     {
+      bool bHighBits = (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_HEVC_MAIN_10))
+                    || (avctx->codec_id == AV_CODEC_ID_VP9 && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_VP9_2));
+      if (bHighBits && render_targets_dxgi[j] < DXGI_FORMAT_P010)
+        continue;
+
       BOOL format_supported = FALSE;
       HRESULT res = m_service->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j], &format_supported);
       if (FAILED(res) || !format_supported)
@@ -412,7 +417,7 @@ bool CDXVAContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER
         avctx->coded_height,
         render_targets_dxgi[j]
       };
-      if (!GetConfig(&checkFormat, config))
+      if (!GetConfig(checkFormat, config))
         continue;
 
       // config is found, update decoder description
@@ -427,11 +432,11 @@ bool CDXVAContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER
   return false;
 }
 
-bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO_DECODER_CONFIG &config) const
+bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DECODER_CONFIG &config) const
 {
   // find what decode configs are available
   UINT cfg_count = 0;
-  HRESULT res = m_service->GetVideoDecoderConfigCount(format, &cfg_count);
+  HRESULT res = m_service->GetVideoDecoderConfigCount(&format, &cfg_count);
 
   if (FAILED(res))
   {
@@ -440,16 +445,16 @@ bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO
   }
   if (!cfg_count)
   {
-    CLog::LogF(LOGNOTICE, "no decoder configuration possible for %dx%d (%d).", format->SampleWidth, format->SampleHeight, format->OutputFormat);
+    CLog::LogF(LOGNOTICE, "no decoder configuration possible for %dx%d (%d).", format.SampleWidth, format.SampleHeight, format.OutputFormat);
     return false;
   }
 
-  config = {};
+  config = { 0 };
   unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
   for (unsigned i = 0; i< cfg_count; i++)
   {
     D3D11_VIDEO_DECODER_CONFIG pConfig = {0};
-    if (FAILED(m_service->GetVideoDecoderConfig(format, i, &pConfig)))
+    if (FAILED(m_service->GetVideoDecoderConfig(&format, i, &pConfig)))
     {
       CLog::LogF(LOGNOTICE, "failed getting decoder configuration.");
       return false;
@@ -476,7 +481,8 @@ bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO
   return true;
 }
 
-bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11VideoDecoderOutputView **surfaces) const
+bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const uint32_t count, const uint32_t alignment
+                                , ID3D11VideoDecoderOutputView **surfaces) const
 {
   HRESULT hr = S_OK;
   ComPtr<ID3D11Device> pD3DDevice(DX::DeviceResources::Get()->GetD3DDevice());
@@ -532,7 +538,8 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   return SUCCEEDED(hr);
 }
 
-bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, ID3D11VideoDecoder **decoder, ID3D11VideoContext **context)
+bool CDXVAContext::CreateDecoder(const D3D11_VIDEO_DECODER_DESC &format, const D3D11_VIDEO_DECODER_CONFIG &config
+                               , ID3D11VideoDecoder **decoder, ID3D11VideoContext **context)
 {
   CSingleLock lock(m_section);
 
@@ -542,7 +549,7 @@ bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_V
     if (!m_atiWorkaround || retry > 0)
     {
       ComPtr<ID3D11VideoDecoder> pDecoder;
-      HRESULT res = m_service->CreateVideoDecoder(format, config, pDecoder.GetAddressOf());
+      HRESULT res = m_service->CreateVideoDecoder(&format, &config, pDecoder.GetAddressOf());
       if (!FAILED(res))
       {
         *decoder = pDecoder.Detach();
@@ -633,8 +640,8 @@ void CDXVAOutputBuffer::SetRef(AVFrame* frame)
 void CDXVAOutputBuffer::Unref()
 {
   view = nullptr;
-  planes[0].Reset();
-  planes[1].Reset();
+  planes[0] = nullptr;
+  planes[1] = nullptr;
   av_frame_unref(m_pFrame);
 }
 
@@ -826,8 +833,8 @@ long CDecoder::Release()
 void CDecoder::Close()
 {
   CSingleLock lock(m_section);
-  m_decoder.Reset();
-  m_vcontext.Reset();
+  m_decoder = nullptr;
+  m_vcontext = nullptr;
   if (m_videoBuffer)
   {
     m_videoBuffer->Release();
@@ -1216,25 +1223,21 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
 bool CDecoder::OpenDecoder()
 {
+  m_decoder = nullptr;
+  m_vcontext = nullptr;
   m_context->decoder = nullptr;
   m_context->video_context = nullptr;
 
   m_context->surface_count = m_refs + m_shared; // refs + processor buffer
 
-  if (!m_dxva_context->CreateDecoder(&m_format, m_context->cfg, m_decoder.ReleaseAndGetAddressOf(), m_vcontext.ReleaseAndGetAddressOf()))
-    return false;
-
   if (!m_dxva_context->CreateSurfaces(m_format, m_context->surface_count, m_surface_alignment, m_context->surface))
-  {
-    m_decoder.Reset();
-    m_decoder.Reset();
     return false;
-  }
 
   for (unsigned i = 0; i < m_context->surface_count; i++)
-  {
     m_bufferPool->AddView(m_context->surface[i]);
-  }
+
+  if (!m_dxva_context->CreateDecoder(m_format, *m_context->cfg, m_decoder.GetAddressOf(), m_vcontext.GetAddressOf()))
+    return false;
 
   m_context->decoder = m_decoder.Get();
   m_context->video_context = m_vcontext.Get();
@@ -1319,5 +1322,5 @@ unsigned CDecoder::GetAllowedReferences()
 void CDecoder::CloseDXVADecoder()
 {
   CSingleLock lock(m_section);
-  m_decoder.Reset();
+  m_decoder = nullptr;
 }
