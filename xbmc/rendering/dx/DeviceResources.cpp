@@ -556,7 +556,7 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.SampleDesc.Quality = 0;
 
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC scFSDesc = { 0 }; // unused for uwp
-    scFSDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
+    scFSDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     scFSDesc.Windowed = windowed;
 
     ComPtr<IDXGISwapChain1> swapChain;
