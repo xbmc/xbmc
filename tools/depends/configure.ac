@@ -251,16 +251,7 @@ case $host in
       platform_os="linux"
     fi
   ;;
-  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
-    use_cpu=$host_cpu
-    use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-fPIC -DPIC"
-    optimize_flags="-O2"
-    platform_cxxflags="$platform_cflags"
-    platform_os="linux"
-    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
-  ;;
-  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
