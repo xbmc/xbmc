@@ -36,6 +36,11 @@ export __GL_YIELD=USLEEP
 # Fix wasting RAM due to fragmentation
 export MALLOC_MMAP_THRESHOLD_=131072
 
+# set OpenGL profile
+if [ -n "$MESA_GL_VERSION_OVERRIDE" ]; then
+export MESA_GL_VERSION_OVERRIDE=3.2
+fi
+
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
 do
