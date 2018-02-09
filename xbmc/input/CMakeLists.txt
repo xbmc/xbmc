@@ -26,6 +26,7 @@ set(SOURCES Action.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS hardware/IHardwareInput.h
+            remote/IRemoteControl.h
             Action.h
             ActionIDs.h
             ActionTranslator.h
