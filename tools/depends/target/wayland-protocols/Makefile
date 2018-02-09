@@ -23,8 +23,6 @@ endif
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

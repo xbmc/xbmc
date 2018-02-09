@@ -42,9 +42,6 @@ else
   ARCHIVE=$(LIBNAME)-$(GITREV).tar.gz
 endif
 
-
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)

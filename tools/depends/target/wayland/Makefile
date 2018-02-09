@@ -11,7 +11,6 @@ ARCHIVE=$(SOURCE).tar.xz
 CONFIGURE=./configure --prefix=$(PREFIX) --with-host-scanner --disable-documentation --disable-dtd-validation
 
 LIBDYLIB=$(PLATFORM)/.libs/libwayland-client.la
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 

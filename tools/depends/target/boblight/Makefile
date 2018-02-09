@@ -18,8 +18,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
 
 LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: $(LIBDYLIB) .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

@@ -14,8 +14,6 @@ export CFLAGS=-O3
 
 LIBDYLIB=$(PLATFORM)/.libs/libjpeg.a
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

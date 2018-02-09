@@ -13,7 +13,6 @@ ARCHIVE=$(SOURCE).tar.xz
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-libraries --disable-documentation --disable-dtd-validation
 
 APP=$(PLATFORM)/wayland-scanner
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 

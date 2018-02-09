@@ -13,8 +13,6 @@ CONFIGURE=./configure --prefix=$(NATIVEPREFIX)
 
 LIBDYLIB=$(PLATFORM)/bin/automake
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

@@ -15,8 +15,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) --without-alllang --without-x --disable
 
 LIBDYLIB=$(PLATFORM)/swig
 
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
-
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):

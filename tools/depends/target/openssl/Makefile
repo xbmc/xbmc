@@ -23,7 +23,6 @@ ifeq ($(OS), osx)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
-CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 
