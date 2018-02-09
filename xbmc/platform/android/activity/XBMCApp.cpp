@@ -259,6 +259,9 @@ void CXBMCApp::onPause()
     }
   }
 
+  if (m_hasReqVisible)
+    g_application.SwitchToFullScreen(true);
+
   EnableWakeLock(false);
   m_hasReqVisible = false;
 }
