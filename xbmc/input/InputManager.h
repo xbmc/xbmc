@@ -28,7 +28,7 @@
 #include "platform/linux/input/LIRC.h"
 #endif
 #if defined(HAS_IRSERVERSUITE)
-#include "input/windows/IRServerSuite.h"
+#include "platform/win32/input/IRServerSuite.h"
 #endif
 
 #include "Action.h"

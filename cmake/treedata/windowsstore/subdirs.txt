@@ -1,5 +1,4 @@
 xbmc/platform/win10          platform_win10
-xbmc/input/windows           input/windows
 xbmc/input/touch             input/touch
 xbmc/input/touch/generic     input/touch/generic
 xbmc/network/win10           network/win10
