@@ -34,7 +34,7 @@ public:
   /*!
    * \brief Loads Lircmap.xml/IRSSmap.xml
    */
-  void Load();
+  void Load(const std::string &irMapName);
 
   /*!
    * \brief Clears the map
@@ -49,8 +49,6 @@ public:
 private:
   bool LoadIRMap(const std::string &irMapPath);
   void MapRemote(TiXmlNode *pRemote, const std::string &szDevice);
-
-  static bool HasIR();
 
   // Construction parameters
   const CProfilesManager &m_profileManager;

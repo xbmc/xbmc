@@ -19,31 +19,35 @@
  *
  */
 
-#include <winsock2.h>
-#include <string>
-
 #include "IrssMessage.h"
+#include "input/remote/IRemoteControl.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 
-class CRemoteControl : CThread
+#include <winsock2.h>
+#include <string>
+
+class CRemoteControl : public KODI::REMOTE::IRemoteControl, CThread
 {
 public:
   CRemoteControl();
   virtual ~CRemoteControl();
-  void Initialize();
-  void Disconnect();
-  void Reset();
-  void Update();
-  WORD GetButton();
-  unsigned int GetHoldTime() const;
-  bool IsInitialized() {return m_bInitialized;}
+  void Initialize() override;
+  void Disconnect() override;
+  void Reset() override;
+  void Update() override;
+  uint16_t GetButton() const override;
+  uint32_t GetHoldTimeMs() const  override;
+  bool IsInitialized() const override { return m_bInitialized; }
+  std::string GetMapFile() override;
 
-  //lirc stuff, not implemented
-  bool IsInUse() {return false;}
-  void SetEnabled(bool) { }
-  void SetDeviceName(const std::string&) { }
-  void AddSendCommand(const std::string&) {}
+  void SetEnabled(bool) override { }
+  void SetDeviceName(const std::string&) override { }
+  void AddSendCommand(const std::string&) override { }
+  bool IsInUse() const override { return false; }
+
+  static IRemoteControl* CreateInstance();
+  static void Register();
 
 protected:
   virtual void Process();

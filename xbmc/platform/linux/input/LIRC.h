@@ -24,28 +24,33 @@
 #include <atomic>
 
 #include "system.h"
+#include "input/remote/IRemoteControl.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 
-class CRemoteControl :  CThread
+class CRemoteControl : public KODI::REMOTE::IRemoteControl, CThread
 {
 public:
   CRemoteControl();
   ~CRemoteControl() override;
-  void Initialize();
-  void Disconnect();
-  void Reset();
-  void Update();
-  unsigned short GetButton();
+  void Initialize() override;
+  void Disconnect() override;
+  void Reset() override;
+  void Update() override;
+  uint16_t GetButton() const override;
   /*! \brief retrieve the time in milliseconds that the button has been held
    \return time in milliseconds the button has been down
    */
-  unsigned int GetHoldTime() const;
-  void SetDeviceName(const std::string& value);
-  void SetEnabled(bool value);
-  bool IsInUse() const { return m_used; }
-  bool IsInitialized() const { return m_bInitialized; }
-  void AddSendCommand(const std::string& command);
+  uint32_t GetHoldTimeMs() const override;
+  void SetDeviceName(const std::string& name) override;
+  void SetEnabled(bool bEnabled) override;
+  bool IsInUse() const override { return m_used; }
+  bool IsInitialized() const override { return m_bInitialized; }
+  void AddSendCommand(const std::string& command) override;
+  std::string GetMapFile() override;
+
+  static IRemoteControl* CreateInstance();
+  static void Register();
 
 protected:
   void Process() override;

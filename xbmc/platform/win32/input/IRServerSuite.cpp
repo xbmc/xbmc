@@ -26,6 +26,17 @@
 #include <Ws2tcpip.h>
 
 #define IRSS_PORT 24000
+#define IRSS_MAP_FILENAME "IRSSmap.xml"
+
+KODI::REMOTE::IRemoteControl* CRemoteControl::CreateInstance()
+{
+  return new CRemoteControl();
+}
+
+void CRemoteControl::Register()
+{
+  CInputManager::RegisterRemoteControl(CRemoteControl::CreateInstance);
+}
 
 CRemoteControl::CRemoteControl()
   : CThread("RemoteControl")
@@ -39,6 +50,11 @@ CRemoteControl::CRemoteControl()
 CRemoteControl::~CRemoteControl()
 {
   Disconnect();
+}
+
+std::string CRemoteControl::GetMapFile()
+{
+  return IRSS_MAP_FILENAME;
 }
 
 void CRemoteControl::Disconnect()
@@ -471,12 +487,12 @@ bool CRemoteControl::ReadPacket(CIrssMessage &message)
   }
 }
 
-WORD CRemoteControl::GetButton()
+uint16_t CRemoteControl::GetButton() const
 {
   return m_button;
 }
 
-unsigned int CRemoteControl::GetHoldTime() const
+uint32_t CRemoteControl::GetHoldTimeMs() const
 {
   return 0;
 }

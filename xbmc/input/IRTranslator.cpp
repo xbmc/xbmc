@@ -36,28 +36,9 @@ CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
 {
 }
 
-bool CIRTranslator::HasIR()
+void CIRTranslator::Load(const std::string &irMapName)
 {
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  return true;
-#else
-  return false;
-#endif
-}
-
-void CIRTranslator::Load()
-{
-  if (!HasIR())
-    return;
-
   Clear();
-
-  std::string irMapName;
-#ifdef TARGET_POSIX
-  irMapName = "Lircmap.xml";
-#else
-  irMapName = "IRSSmap.xml";
-#endif
 
   bool success = false;
 
@@ -79,12 +60,9 @@ void CIRTranslator::Load()
 
 bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
 {
-  std::string remoteMapTag;
-#ifdef TARGET_POSIX
-  remoteMapTag = "lircmap";
-#else
-  remoteMapTag = "irssmap";
-#endif
+  std::string remoteMapTag = URIUtils::GetFileName(irMapPath);
+  URIUtils::RemoveExtension(remoteMapTag);
+  StringUtils::ToLower(remoteMapTag);
 
   // Load our xml file, and fill up our mapping tables
   CXBMCTinyXML xmlDoc;

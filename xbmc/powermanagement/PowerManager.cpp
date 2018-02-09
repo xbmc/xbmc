@@ -34,6 +34,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
+#include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "system.h"
@@ -184,10 +185,11 @@ void CPowerManager::OnSleep()
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   // stop lirc
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-  CBuiltins::GetInstance().Execute("LIRC.Stop");
-#endif
+  if (CBuiltins::GetInstance().HasCommand("LIRC.Stop"))
+  {
+    CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
+    CBuiltins::GetInstance().Execute("LIRC.Stop");
+  }
 
   CServiceBroker::GetPVRManager().OnSleep();
   StorePlayerState();
@@ -215,7 +217,7 @@ void CPowerManager::OnWake()
   if (CServiceBroker::GetWinSystem().IsFullScreen())
   {
 #if defined(TARGET_WINDOWS_DESKTOP)
-    ShowWindow(g_hWnd,SW_RESTORE);
+    ShowWindow(g_hWnd, SW_RESTORE);
     SetForegroundWindow(g_hWnd);
 #endif
   }
@@ -223,10 +225,11 @@ void CPowerManager::OnWake()
 #endif
 
   // restart lirc
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  CBuiltins::GetInstance().Execute("LIRC.Start");
-#endif
+  if (CBuiltins::GetInstance().HasCommand("LIRC.Start"))
+  {
+    CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
+    CBuiltins::GetInstance().Execute("LIRC.Start");
+  }
 
   CServiceBroker::GetActiveAE().Resume();
   g_application.UpdateLibraries();

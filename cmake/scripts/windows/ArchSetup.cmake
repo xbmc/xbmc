@@ -44,7 +44,7 @@ if(${ARCH} STREQUAL win32)
 endif()
 
 # Additional SYSTEM_DEFINES
-list(APPEND SYSTEM_DEFINES -DHAS_IRSERVERSUITE -DHAS_WIN32_NETWORK -DHAS_FILESYSTEM_SMB)
+list(APPEND SYSTEM_DEFINES -DHAS_WIN32_NETWORK -DHAS_FILESYSTEM_SMB)
 
 # Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")

@@ -29,6 +29,9 @@
 #if HAS_GLES
 #include "guilib/GUIFontTTFGL.h"
 #endif
+#if HAS_LIRC
+#include "platform/linux/input/LIRC.h"
+#endif
 
 CWinSystemBase::CWinSystemBase()
 {
@@ -41,6 +44,9 @@ CWinSystemBase::CWinSystemBase()
   m_nScreen = 0;
   m_bBlankOtherDisplay = false;
   m_fRefreshRate = 0.0f;
+#if HAS_LIRC
+  CRemoteControl::Register();
+#endif
 }
 
 CWinSystemBase::~CWinSystemBase() = default;
