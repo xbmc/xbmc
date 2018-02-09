@@ -238,20 +238,7 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
-  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
-    if test "$use_platform" = "auto"; then
-      if test "x$use_cpu" = "xauto"; then
-        use_cpu=$host_cpu
-      fi
-      use_toolchain="${use_toolchain:-/usr}"
-      platform_cflags="-fPIC -DPIC"
-      optimize_flags="-Os"
-      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
-      platform_cxxflags="$platform_cflags"
-      platform_os="linux"
-    fi
-  ;;
-  aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*|aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
     if test "$use_platform" = "auto"; then
       if test "x$use_cpu" = "xauto"; then
         use_cpu=$host_cpu
