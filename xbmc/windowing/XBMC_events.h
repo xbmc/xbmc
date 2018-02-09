@@ -42,7 +42,6 @@ typedef enum {
        XBMC_VIDEORESIZE,        /* User resized video mode */
        XBMC_VIDEOMOVE,          /* User moved the window */
        XBMC_MODECHANGE,         /* Video mode must be changed */
-       XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
        XBMC_TOUCH,
        XBMC_SETFOCUS,
        XBMC_USEREVENT,
