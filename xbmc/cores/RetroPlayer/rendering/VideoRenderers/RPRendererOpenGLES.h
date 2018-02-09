@@ -30,8 +30,6 @@
 #include <stdint.h>
 #include <vector>
 
-struct SwsContext;
-
 namespace KODI
 {
 namespace RETRO
@@ -58,9 +56,6 @@ namespace RETRO
     GLuint TextureID() const { return m_textureId; }
 
   protected:
-    bool CreateScalingContext();
-    void ScalePixels(uint8_t *source, size_t sourceSize, uint8_t *target, size_t targetSize);
-
     // Construction parameters
     const AVPixelFormat m_format;
     const AVPixelFormat m_targetFormat;
@@ -69,13 +64,10 @@ namespace RETRO
 
     const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
     GLuint m_textureId = 0;
-    std::vector<uint8_t> m_textureBuffer;
 
   private:
     void CreateTexture();
     void DeleteTexture();
-
-    SwsContext *m_swsContext = nullptr;
   };
 
   class CRenderBufferPoolOpenGLES : public CBaseRenderBufferPool
@@ -133,7 +125,6 @@ namespace RETRO
     AVPixelFormat m_targetFormat = AV_PIX_FMT_NONE;
     GLenum m_textureTarget = GL_TEXTURE_2D;
     float m_clearColour = 0.0f;
-    SwsContext *m_swsContext = nullptr;
   };
 }
 }
