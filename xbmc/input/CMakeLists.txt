@@ -27,6 +27,7 @@ set(SOURCES Action.cpp
 
 set(HEADERS hardware/IHardwareInput.h
             remote/IRemoteControl.h
+            remote/IRRemote.h
             Action.h
             ActionIDs.h
             ActionTranslator.h
@@ -58,7 +59,6 @@ set(HEADERS hardware/IHardwareInput.h
             TouchTranslator.h
             WindowTranslator.h
             WindowKeymap.h
-            XBIRRemote.h
             XBMC_keyboard.h
             XBMC_keysym.h
             XBMC_keytable.h

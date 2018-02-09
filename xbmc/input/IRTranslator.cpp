@@ -20,13 +20,13 @@
 
 #include "IRTranslator.h"
 #include "filesystem/File.h"
+#include "input/remote/IRRemote.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "system.h"
-#include "XBIRRemote.h"
 
 #include <stdlib.h>
 #include <vector>

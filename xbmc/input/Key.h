@@ -32,7 +32,7 @@
 #include <stdint.h>
 
 // Reserved 0 - 255
-//  XBIRRemote.h
+//  IRRemote.h
 //  XINPUT_IR_REMOTE-*
 
 /*
