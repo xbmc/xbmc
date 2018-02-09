@@ -1,5 +1,5 @@
-xbmc/platform/win32          platform_win32
-xbmc/input/windows           input/windows
+xbmc/platform/win32          platform/win32
+xbmc/platform/win32/input    platworm/win32/input
 xbmc/input/touch             input/touch
 xbmc/input/touch/generic     input/touch/generic
 xbmc/network/windows         network/windows
@@ -8,9 +8,9 @@ xbmc/peripherals/bus/win32   peripherals/bus/win32
 xbmc/powermanagement/windows powermanagement/windows
 xbmc/storage/windows         storage/windows
 xbmc/filesystem/win32        filesystem/win32
-xbmc/utils/win32             utils_win32
-xbmc/rendering/dx            rendering_dx
-xbmc/threads/platform/win    threads_win
+xbmc/utils/win32             utils/win32
+xbmc/rendering/dx            rendering/dx
+xbmc/threads/platform/win    threads/win
 xbmc/windowing/windows       windowing/windows
 xbmc/cores/RetroPlayer/process/windows cores/RetroPlayer/process/windows
 xbmc/cores/RetroPlayer/rendering/VideoShaders/windows cores/RetroPlayer/rendering/VideoShaders/windows

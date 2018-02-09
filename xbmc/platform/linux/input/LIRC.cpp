@@ -37,6 +37,18 @@
 #include "threads/SingleLock.h"
 #include "ServiceBroker.h"
 
+#define LIRC_MAP_FILENAME "Lircmap.xml"
+
+KODI::REMOTE::IRemoteControl* CRemoteControl::CreateInstance()
+{
+  return new CRemoteControl();
+}
+
+void CRemoteControl::Register()
+{
+  CInputManager::RegisterRemoteControl(CRemoteControl::CreateInstance);
+}
+
 CRemoteControl::CRemoteControl()
   : CThread("RemoteControl")
   , m_fd(-1)
@@ -61,10 +73,15 @@ CRemoteControl::~CRemoteControl()
     fclose(m_file);
 }
 
-void CRemoteControl::SetEnabled(bool value)
+std::string CRemoteControl::GetMapFile()
 {
-  m_used=value;
-  if (!value)
+  return LIRC_MAP_FILENAME;
+}
+
+void CRemoteControl::SetEnabled(bool bEnabled)
+{
+  m_used = bEnabled;
+  if (!bEnabled)
     CLog::Log(LOGINFO, "LIRC %s: disabled", __FUNCTION__);
 }
 
@@ -107,12 +124,12 @@ void CRemoteControl::Disconnect()
   }
 }
 
-void CRemoteControl::SetDeviceName(const std::string& value)
+void CRemoteControl::SetDeviceName(const std::string& name)
 {
-  if (value.length()>0)
-    m_deviceName=value;
+  if (name.length() > 0)
+    m_deviceName = name;
   else
-    m_deviceName=LIRC_DEVICE;
+    m_deviceName = LIRC_DEVICE;
 }
 
 void CRemoteControl::Initialize()
@@ -305,12 +322,12 @@ void CRemoteControl::Update()
   }
 }
 
-unsigned short CRemoteControl::GetButton()
+uint16_t CRemoteControl::GetButton() const
 {
   return m_button;
 }
 
-unsigned int CRemoteControl::GetHoldTime() const
+uint32_t CRemoteControl::GetHoldTimeMs() const
 {
   return m_holdTime;
 }

@@ -24,18 +24,12 @@
 #include <string>
 #include <vector>
 
-#if defined(HAS_LIRC)
-#include "platform/linux/input/LIRC.h"
-#endif
-#if defined(HAS_IRSERVERSUITE)
-#include "input/windows/IRServerSuite.h"
-#endif
-
 #include "Action.h"
 #include "windowing/XBMC_events.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "input/mouse/MouseStat.h"
 #include "input/KeyboardStat.h"
+#include "input/remote/IRemoteControl.h"
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -65,6 +59,7 @@ namespace MOUSE
 }
 }
 
+using CreateRemoteControlFunc = KODI::REMOTE::IRemoteControl* (*)();
 /// \addtogroup input
 /// \{
 
@@ -208,6 +203,12 @@ public:
    */
   void InitializeRemoteControl();
 
+  /*! \brief Check if the remote control exists
+   *
+   * \return true if remote control is exists, false otherwise 
+   */
+  bool HasRemoteControl();
+
   /*! \brief Check if the remote control is enabled
    *
    * \return true if remote control is enabled, false otherwise 
@@ -288,6 +289,7 @@ public:
   virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
 
+  static void RegisterRemoteControl(CreateRemoteControlFunc createFunc);
 private:
 
   /*! \brief Process keyboard event and translate into an action
@@ -342,10 +344,6 @@ private:
   CMouseStat m_Mouse;
   CKey m_LastKey;
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  CRemoteControl m_RemoteControl;
-#endif
-
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 
   std::vector<CAction> m_queuedActions;
@@ -358,11 +356,13 @@ private:
   std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
   std::unique_ptr<CJoystickMapper> m_joystickTranslator;
+  std::unique_ptr<KODI::REMOTE::IRemoteControl> m_RemoteControl;
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
+  static CreateRemoteControlFunc m_createRemoteControl;
 };
 
 /// \}

@@ -38,6 +38,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
 #include "VideoSyncD3D.h"
+#include "platform/win32/input/IRServerSuite.h"
 
 #include <tpcshrd.h>
 #include "guilib/GraphicContext.h"
@@ -68,6 +69,7 @@ CWinSystemWin32::CWinSystemWin32()
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
   CWin32PowerSyscall::Register();
+  CRemoteControl::Register();
 }
 
 CWinSystemWin32::~CWinSystemWin32()

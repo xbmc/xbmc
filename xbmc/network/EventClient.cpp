@@ -91,13 +91,16 @@ void CEventButtonState::Load()
       else if ( (m_mapName.length() > 3) &&
                 (StringUtils::StartsWith(m_mapName, "LI:")) ) // starts with LI: ?
       {
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-        std::string lircDevice = m_mapName.substr(3);
-        m_iKeyCode = CServiceBroker::GetInputManager().TranslateLircRemoteString( lircDevice.c_str(),
-                                                                   m_buttonName.c_str() );
-#else
-        CLog::Log(LOGERROR, "ES: LIRC support not enabled");
-#endif
+        if (CServiceBroker::GetInputManager().HasRemoteControl())
+        {
+          std::string lircDevice = m_mapName.substr(3);
+          m_iKeyCode = CServiceBroker::GetInputManager().TranslateLircRemoteString( lircDevice.c_str(),
+                                                                     m_buttonName.c_str() );
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "ES: LIRC support not enabled");
+        }
       }
       else
       {

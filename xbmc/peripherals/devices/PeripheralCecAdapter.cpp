@@ -21,7 +21,7 @@
 #include "system.h"
 #if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
-#include "input/XBIRRemote.h"
+#include "input/remote/IRRemote.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "DynamicDll.h"
