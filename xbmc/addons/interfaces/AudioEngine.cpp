@@ -81,7 +81,7 @@ AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, A
 {
   if (!kodiBase || !streamFormat)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamFormat='%p')", __FUNCTION__, kodiBase, streamFormat);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamFormat='%p')", __FUNCTION__, kodiBase, static_cast<void*>(streamFormat));
     return nullptr;
   }
 
@@ -119,7 +119,7 @@ bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, 
 {
   if (!kodiBase || !format)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', format='%p')", __FUNCTION__, kodiBase, format);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', format='%p')", __FUNCTION__, kodiBase, static_cast<void*>(format));
     return false;
   }
 

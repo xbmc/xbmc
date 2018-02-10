@@ -58,7 +58,7 @@ void Interface_GUIControlEdit::set_visible(void* kodiBase, void* handle, bool vi
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -72,7 +72,7 @@ void Interface_GUIControlEdit::set_enabled(void* kodiBase, void* handle, bool en
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -86,7 +86,7 @@ void Interface_GUIControlEdit::set_input_type(void* kodiBase, void* handle, int 
   if (!addon || !control || !heading)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p', heading='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, heading, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, heading, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -138,7 +138,7 @@ void Interface_GUIControlEdit::set_label(void* kodiBase, void* handle, const cha
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -152,7 +152,7 @@ char* Interface_GUIControlEdit::get_label(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -166,7 +166,7 @@ void Interface_GUIControlEdit::set_text(void* kodiBase, void* handle, const char
   if (!addon || !control || !text)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p', text='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, text, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, text, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -180,7 +180,7 @@ char* Interface_GUIControlEdit::get_text(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -194,7 +194,7 @@ void Interface_GUIControlEdit::set_cursor_position(void* kodiBase, void* handle,
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -208,7 +208,7 @@ unsigned int Interface_GUIControlEdit::get_cursor_position(void* kodiBase, void*
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlEdit::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return 0;
   }
 

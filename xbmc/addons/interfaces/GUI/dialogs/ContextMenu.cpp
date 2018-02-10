@@ -56,8 +56,11 @@ int Interface_GUIDialogContextMenu::open(void* kodiBase, const char *heading, co
   CGUIDialogContextMenu* dialog = g_windowManager.GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (!heading || !entries || !dialog)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogContextMenu::%s - invalid handler data (heading='%p', entries='%p', dialog='%p') on addon '%s'",
-                          __FUNCTION__, heading, entries, dialog, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogContextMenu::%s - invalid handler data (heading='%p', "
+              "entries='%p', dialog='%p') on addon '%s'",
+              __FUNCTION__, heading, static_cast<const void*>(entries), kodiBase,
+              addon->ID().c_str());
     return -1;
   }
 

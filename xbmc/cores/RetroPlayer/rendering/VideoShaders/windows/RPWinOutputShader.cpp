@@ -42,7 +42,7 @@ bool CRPWinOutputShader::Create(ESCALINGMETHOD scalingMethod)
 
   if (!LoadEffect(effectPath, &defines))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectPath.c_str());
+    CLog::LogF(LOGERROR, "Failed to load shader %s.", effectPath);
     return false;
   }
 

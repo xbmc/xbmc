@@ -50,8 +50,9 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(void* kodiBase, const
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !heading || !text)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogOK:%s - invalid data (addon='%p', heading='%p', text='%p')",
-                                        __FUNCTION__, addon, heading, text);
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogOK:%s - invalid data (addon='%p', heading='%p', text='%p')",
+              __FUNCTION__, kodiBase, heading, text);
     return;
   }
 
@@ -63,8 +64,10 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(void* kodiBase, const c
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !heading || !line0 || !line1 || !line2)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogOK::%s - invalid data (addon='%p', heading='%p', line0='%p', line1='%p', line2='%p')",
-                                        __FUNCTION__, addon, heading, line0, line1, line2);
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogOK::%s - invalid data (addon='%p', heading='%p', line0='%p', "
+              "line1='%p', line2='%p')",
+              __FUNCTION__, kodiBase, heading, line0, line1, line2);
     return;
   }
   HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ line0 }, CVariant{ line1 }, CVariant{ line2 });

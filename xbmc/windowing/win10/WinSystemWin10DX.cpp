@@ -25,7 +25,7 @@
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/SystemInfo.h"
-#include "utils/win32/Win32Log.h"
+#include "utils/log.h"
 #include "WinSystemWin10DX.h"
 
 #include <agile.h>

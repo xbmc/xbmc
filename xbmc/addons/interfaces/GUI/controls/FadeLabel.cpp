@@ -54,7 +54,7 @@ void Interface_GUIControlFadeLabel::set_visible(void* kodiBase, void* handle, bo
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -68,7 +68,7 @@ void Interface_GUIControlFadeLabel::add_label(void* kodiBase, void* handle, cons
   if (!addon || !control | !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -84,7 +84,7 @@ char* Interface_GUIControlFadeLabel::get_label(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -101,7 +101,7 @@ void Interface_GUIControlFadeLabel::set_scrolling(void* kodiBase, void* handle, 
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -115,7 +115,7 @@ void Interface_GUIControlFadeLabel::reset(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 

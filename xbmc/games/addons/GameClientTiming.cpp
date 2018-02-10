@@ -27,6 +27,8 @@
 using namespace KODI;
 using namespace GAME;
 
+const unsigned int CGameClientTiming::MAX_CORRECTION_FACTOR_PERCENT = 7;
+
 void CGameClientTiming::Reset()
 {
   m_framerate = 0.0;

@@ -65,8 +65,10 @@ bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(void* kodiBase, c
 
   if (!text_in || !text_out || !heading)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', text_out='%p', heading='%p') on addon '%s'",
-                          __FUNCTION__, text_in, text_out, heading, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', "
+              "text_out='%p', heading='%p') on addon '%s'",
+              __FUNCTION__, text_in, static_cast<void*>(text_out), heading, addon->ID().c_str());
     return false;
   }
 
@@ -88,8 +90,10 @@ bool Interface_GUIDialogKeyboard::show_and_get_input(void* kodiBase, const char*
 
   if (!text_in || !text_out)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', text_out='%p') on addon '%s'",
-                          __FUNCTION__, text_in, text_out, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', "
+              "text_out='%p') on addon '%s'",
+              __FUNCTION__, text_in, static_cast<void*>(text_out), addon->ID().c_str());
     return false;
   }
 
@@ -112,8 +116,11 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password_with_head(void* kodi
 
   if (!password_in || !password_out || !heading)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', password_out='%p', heading='%p') on addon '%s'",
-                          __FUNCTION__, password_in, password_out, heading, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', "
+              "password_out='%p', heading='%p') on addon '%s'",
+              __FUNCTION__, password_in, static_cast<void*>(password_out), heading,
+              addon->ID().c_str());
     return false;
   }
 
@@ -135,8 +142,10 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password(void* kodiBase, cons
 
   if (!password_in || !password_out)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', password_out='%p') on addon '%s'",
-                          __FUNCTION__, password_in, password_out, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', "
+              "password_out='%p') on addon '%s'",
+              __FUNCTION__, password_in, static_cast<void*>(password_out), addon->ID().c_str());
     return false;
   }
 
@@ -159,8 +168,10 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password_with_head(void* k
 
   if (!password_out || !heading)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (password_out='%p', heading='%p') on addon '%s'",
-                          __FUNCTION__, password_out, heading, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (password_out='%p', "
+              "heading='%p') on addon '%s'",
+              __FUNCTION__, static_cast<void*>(password_out), heading, addon->ID().c_str());
     return false;
   }
 
@@ -182,8 +193,10 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password(void* kodiBase, c
 
   if (!password_out)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (password_out='%p') on addon '%s'",
-                          __FUNCTION__, password_out, addon->ID().c_str());
+    CLog::Log(
+        LOGERROR,
+        "Interface_GUIDialogKeyboard::%s - invalid handler data (password_out='%p') on addon '%s'",
+        __FUNCTION__, static_cast<void*>(password_out), addon->ID().c_str());
     return false;
   }
 
@@ -205,8 +218,11 @@ int Interface_GUIDialogKeyboard::show_and_verify_password(void* kodiBase, const 
 
   if (!password_in || !password_out || !heading)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', password_out='%p', heading='%p') on addon '%s'",
-                          __FUNCTION__, password_in, password_out, heading, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (password_in='%p', "
+              "password_out='%p', heading='%p') on addon '%s'",
+              __FUNCTION__, password_in, static_cast<void*>(password_out), heading,
+              addon->ID().c_str());
     return false;
   }
 
@@ -228,8 +244,10 @@ bool Interface_GUIDialogKeyboard::show_and_get_filter(void* kodiBase, const char
 
   if (!text_in || !text_out)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', text_out='%p') on addon '%s'",
-                          __FUNCTION__, text_in, text_out, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogKeyboard::%s - invalid handler data (text_in='%p', "
+              "text_out='%p') on addon '%s'",
+              __FUNCTION__, text_in, static_cast<void*>(text_out), addon->ID().c_str());
     return false;
   }
 

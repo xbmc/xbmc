@@ -2254,7 +2254,8 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
       }
       if (omx_buffer != m_egl_buffer)
       {
-        CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.GetOutputBuffer (%p,%p)", CLASSNAME, __func__, omx_buffer, m_egl_buffer);
+        CLog::Log(LOGERROR, "%s::%s error m_omx_egl_render.GetOutputBuffer (%p,%p)", CLASSNAME,
+                  __func__, static_cast<void*>(omx_buffer), static_cast<void*>(m_egl_buffer));
         return false;
       }
 

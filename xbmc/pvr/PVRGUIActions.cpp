@@ -589,7 +589,7 @@ namespace PVR
                 break;
 
               default:
-                CLog::Log(LOGERROR, "PVRGUIActions - %s - unknown instant record action selection (%d), defaulting to fixed length recording.", __FUNCTION__, eSelected);
+                CLog::Log(LOGERROR, "PVRGUIActions - %s - unknown instant record action selection (%d), defaulting to fixed length recording.", __FUNCTION__, static_cast<int>(eSelected));
                 epgTag.reset();
                 break;
             }
@@ -821,7 +821,7 @@ namespace PVR
       }
       default:
       {
-        CLog::Log(LOGERROR, "CPVRGUIActions - %s - unhandled TimerOperationResult (%d)!", __FUNCTION__, result);
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - unhandled TimerOperationResult (%d)!", __FUNCTION__, static_cast<int>(result));
         break;
       }
     }

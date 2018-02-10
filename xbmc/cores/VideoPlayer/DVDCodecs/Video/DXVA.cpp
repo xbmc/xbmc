@@ -812,7 +812,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo)
 
 CDecoder::~CDecoder()
 {
-  CLog::LogF(LOGDEBUG, "destructing decoder, %p.", this);
+  CLog::LogF(LOGDEBUG, "destructing decoder, %p.", static_cast<void*>(this));
   DX::Windowing().Unregister(this);
   Close();
   free(m_context->surface);

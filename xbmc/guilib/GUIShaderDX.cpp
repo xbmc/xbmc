@@ -126,7 +126,7 @@ bool CGUIShaderDX::CreateBuffers()
   CD3D11_BUFFER_DESC bufferDesc(sizeof(Vertex) * 4, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
   if (FAILED(pDevice->CreateBuffer(&bufferDesc, NULL, m_pVertexBuffer.ReleaseAndGetAddressOf())))
   {
-    CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create GUI vertex buffer.");
+    CLog::LogF(LOGERROR, "Failed to create GUI vertex buffer.");
     return false;
   }
 
@@ -135,7 +135,7 @@ bool CGUIShaderDX::CreateBuffers()
   CD3D11_BUFFER_DESC cbbd(buffSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE); // it can change very frequently
   if (FAILED(pDevice->CreateBuffer(&cbbd, NULL, m_pWVPBuffer.ReleaseAndGetAddressOf())))
   {
-    CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create the constant buffer.");
+    CLog::LogF(LOGERROR, "Failed to create the constant buffer.");
     return false;
   }
   m_bIsWVPDirty = true;

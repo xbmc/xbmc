@@ -53,8 +53,10 @@ void Interface_GUIControlAddonRendering::set_callbacks(
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -76,8 +78,10 @@ void Interface_GUIControlAddonRendering::destroy(void* kodiBase, void* handle)
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 

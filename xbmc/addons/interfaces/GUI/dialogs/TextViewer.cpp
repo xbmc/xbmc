@@ -55,8 +55,10 @@ void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, co
   CGUIDialogTextViewer* dialog = g_windowManager.GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
   if (!heading || !text || !dialog)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogTextViewer::%s - invalid handler data (heading='%p', text='%p', dialog='%p') on addon '%s'", __FUNCTION__,
-                            heading, text, dialog, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogTextViewer::%s - invalid handler data (heading='%p', text='%p', "
+              "dialog='%p') on addon '%s'",
+              __FUNCTION__, heading, text, static_cast<void*>(dialog), addon->ID().c_str());
     return;
   }
 

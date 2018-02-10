@@ -21,10 +21,11 @@
 #include "Win32SMBDirectory.h"
 #include "FileItem.h"
 #include "platform/win32/WIN32Util.h"
+#include "platform/win32/CharsetConverter.h"
 #include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
 #include "URL.h"
-#include "utils/win32/Win32Log.h"
+#include "utils/log.h"
 #include "PasswordManager.h"
 #include "utils/auto_buffer.h"
 
@@ -42,6 +43,8 @@
 #include <cassert>
 
 using namespace XFILE;
+
+using KODI::PLATFORM::WINDOWS::FromW;
 
 // local helper
 static inline bool worthTryToConnect(const DWORD lastErr)
@@ -400,7 +403,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     if (localGetShares(basePathToScanPtr->lpRemoteName, urlPrefixForItems, items))
       return true;
 
-    CLog::LogFW(LOGNOTICE, L"Can't read shares for \"%ls\" by localGetShares(), fallback to standard method", basePathToScanPtr->lpRemoteName);
+    CLog::LogF(LOGNOTICE, "Can't read shares for \"%ls\" by localGetShares(), fallback to standard method", FromW(basePathToScanPtr->lpRemoteName));
   }
 
   HANDLE netEnum;
@@ -413,10 +416,11 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
       std::wstring providerName;
       if (basePathToScanPtr->lpProvider && basePathToScanPtr->lpProvider[0] != 0)
         providerName.assign(L" (provider \"").append(basePathToScanPtr->lpProvider).append(L"\")");
-      CLog::LogFW(LOGNOTICE, L"Can't open network enumeration for \"%ls\"%ls. Error: %lu", basePathToScanPtr->lpRemoteName, providerName.c_str(), (unsigned long)result);
+      CLog::LogF(LOGNOTICE, "Can't open network enumeration for \"%ls\"%ls. Error: %lu",
+                  FromW(basePathToScanPtr->lpRemoteName), FromW(providerName), static_cast<unsigned long>(result));
     }
     else
-      CLog::LogF(LOGERROR, "Can't open network enumeration for network root. Error: %lu", (unsigned long)result);
+      CLog::LogF(LOGERROR, "Can't open network enumeration for network root. Error: %lu", static_cast<unsigned long>(result));
 
     return false;
   }
@@ -460,10 +464,12 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                 items.Add(pItem);
               }
               else
-                CLog::LogFW(LOGERROR, L"Can't convert server wide string name \"%ls\" to UTF-8 encoding", remoteName.substr(2).c_str());
+                CLog::LogF(LOGERROR,
+                            "Can't convert server wide string name \"%ls\" to UTF-8 encoding",
+                            FromW(remoteName.substr(2)));
             }
             else
-              CLog::LogFW(LOGERROR, L"Skipping server name \"%ls\" without '\\' prefix", remoteName.c_str());
+              CLog::LogF(LOGERROR, "Skipping server name \"%ls\" without '\\' prefix", FromW(remoteName));
           }
           else
             CLog::LogF(LOGERROR, "Skipping server with empty remote name");
@@ -494,13 +500,24 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                   items.Add(pItem);
                 }
                 else
-                  CLog::LogFW(LOGERROR, L"Can't convert server and share wide string name \"%ls\" to UTF-8 encoding", serverShareName.substr(slashPos + 1).c_str());
+                {
+                  CLog::LogF(
+                      LOGERROR,
+                      "Can't convert server and share wide string name \"%ls\" to UTF-8 encoding",
+                      FromW(serverShareName.substr(slashPos + 1)));
+                }
               }
               else
-                CLog::LogFW(LOGERROR, L"Can't find name of share in remote name \"%ls\"", serverShareName.c_str());
+              {
+                CLog::LogF(LOGERROR, "Can't find name of share in remote name \"%ls\"",
+                            FromW(serverShareName));
+              }
             }
             else
-              CLog::LogFW(LOGERROR, L"Skipping name \"%ls\" without '\\' prefix", serverShareName.c_str());
+            {
+              CLog::LogF(LOGERROR, "Skipping name \"%ls\" without '\\' prefix",
+                         FromW(serverShareName));
+            }
           }
           else
             CLog::LogF(LOGERROR, "Skipping share with empty remote name");
@@ -513,7 +530,10 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
           if (curResource.lpRemoteName != NULL && curResource.lpRemoteName[0] != 0)
           {
             if (!localGetNetworkResources(&curResource, urlPrefixForItems, items, false))
-              CLog::LogFW(LOGNOTICE, L"Can't get servers from \"%ls\", skipping", curResource.lpRemoteName);
+            {
+              CLog::LogF(LOGNOTICE, "Can't get servers from \"%ls\", skipping",
+                         FromW(curResource.lpRemoteName));
+            }
           }
           else
             CLog::Log(LOGERROR, "%s: Skipping container with empty remote name", __FUNCTION__);
@@ -529,9 +549,15 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     if (basePathToScanPtr && basePathToScanPtr->lpRemoteName)
     {
       if (errorFlag)
-        CLog::LogFW(LOGERROR, L"Error loading content for \"%ls\"", basePathToScanPtr->lpRemoteName);
+      {
+        CLog::LogF(LOGERROR, "Error loading content for \"%ls\"",
+                   FromW(basePathToScanPtr->lpRemoteName));
+      }
       else
-        CLog::LogFW(LOGERROR, L"Error (%lu) loading content for \"%ls\"", (unsigned long)result, basePathToScanPtr->lpRemoteName);
+      {
+        CLog::LogF(LOGERROR, "Error (%lu) loading content for \"%ls\"",
+                   static_cast<unsigned long>(result), FromW(basePathToScanPtr->lpRemoteName));
+      }
     }
     else
     {

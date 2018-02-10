@@ -48,7 +48,7 @@ DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
 extern const char *WASAPIErrToStr(HRESULT err);
-#define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
+#define EXIT_ON_FAILURE(hr, reason) if(FAILED(hr)) {CLog::LogF(LOGERROR, reason " - HRESULT = %li ErrorMessage = %s", hr, WASAPIErrToStr(hr)); goto failed;}
 
 #define DS_SPEAKER_COUNT 8
 static const unsigned int DSChannelOrder[] = {SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT};
@@ -157,25 +157,30 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create the DirectSound device %s with error %s, trying the default device.", deviceFriendlyName.c_str(), dserr2str(hr));
+    CLog::LogF(
+        LOGERROR,
+        "Failed to create the DirectSound device %s with error %s, trying the default device.",
+        deviceFriendlyName, dserr2str(hr));
+
     hr = DirectSoundCreate(nullptr, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create the default DirectSound device with error %s.", dserr2str(hr));
+      CLog::LogF(LOGERROR, "Failed to create the default DirectSound device with error %s.",
+                 dserr2str(hr));
       return false;
     }
   }
 
   /* Dodge the null handle on first init by using desktop handle */
   HWND tmp_hWnd = g_hWnd == nullptr ? GetDesktopWindow() : g_hWnd;
-  CLog::Log(LOGDEBUG, __FUNCTION__": Using Window handle: %p", tmp_hWnd);
+  CLog::LogF(LOGDEBUG, "Using Window handle: %p", static_cast<void*>(tmp_hWnd));
 
   hr = m_pDSound->SetCooperativeLevel(tmp_hWnd, DSSCL_PRIORITY);
 
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create the DirectSound device cooperative level.");
-    CLog::Log(LOGERROR, __FUNCTION__": DSErr: %s", dserr2str(hr));
+    CLog::LogF(LOGERROR, "Failed to create the DirectSound device cooperative level.");
+    CLog::LogF(LOGERROR, "DSErr: %s", dserr2str(hr));
     m_pDSound = nullptr;
     return false;
   }
@@ -238,7 +243,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   {
     if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.", dserr2str(res));
+      CLog::LogF(LOGDEBUG, "Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.",
+                 dserr2str(res));
       // Try without DSBCAPS_LOCHARDWARE
       dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
       res = m_pDSound->CreateSoundBuffer(&dsbdesc, m_pBuffer.ReleaseAndGetAddressOf(), nullptr);
@@ -246,11 +252,11 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     if (res != DS_OK)
     {
       m_pBuffer = nullptr;
-      CLog::Log(LOGERROR, __FUNCTION__": cannot create secondary buffer (%s)", dserr2str(res));
+      CLog::LogF(LOGERROR, "cannot create secondary buffer (%s)", dserr2str(res));
       return false;
     }
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
+  CLog::LogF(LOGDEBUG, "secondary buffer created");
 
   m_pBuffer->Stop();
 
@@ -270,8 +276,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_initialized = true;
   m_isDirtyDS = false;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing DirectSound with the following parameters:");
-  CLog::Log(LOGDEBUG, "  Audio Device    : %s", ((std::string)deviceFriendlyName).c_str());
+  CLog::LogF(LOGDEBUG, "Initializing DirectSound with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Audio Device    : %s", ((std::string)deviceFriendlyName));
   CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
   CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
   CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
@@ -281,7 +287,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
   CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
   CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
+  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout));
   CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
   CLog::Log(LOGDEBUG, "  Frames          : %d", format.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size      : %d", format.m_frameSize);
@@ -294,7 +300,7 @@ void CAESinkDirectSound::Deinitialize()
   if (!m_initialized)
     return;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Cleaning up");
+  CLog::LogF(LOGDEBUG, "Cleaning up");
 
   if (m_pBuffer)
   {
@@ -322,12 +328,12 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
   DWORD bufferStatus = 0;
   if (m_pBuffer->GetStatus(&bufferStatus) != DS_OK)
   {
-    CLog::Log(LOGERROR, "%s: GetStatus() failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "GetStatus() failed");
     return 0;
   }
   if (bufferStatus & DSBSTATUS_BUFFERLOST)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__ ": Buffer allocation was lost. Restoring buffer.");
+    CLog::LogF(LOGDEBUG, "Buffer allocation was lost. Restoring buffer.");
     m_pBuffer->Restore();
   }
 
@@ -351,7 +357,7 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
     HRESULT res = m_pBuffer->Lock(m_BufferOffset, dwWriteBytes, &start, &size, &startWrap, &sizeWrap, 0);
     if (DS_OK != res)
     {
-      CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);
+      CLog::LogF(LOGERROR, "Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);
       m_isDirtyDS = true;
       return INT_MAX;
     }
@@ -395,7 +401,9 @@ void CAESinkDirectSound::Drain()
   HRESULT res = m_pBuffer->SetCurrentPosition(0);
   if (DS_OK != res)
   {
-    CLog::Log(LOGERROR,__FUNCTION__ ": SetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
+    CLog::LogF(LOGERROR,
+               "SetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x",
+               res);
     m_isDirtyDS = true;
     return;
   }
@@ -438,15 +446,15 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 
   /* Windows Vista or later - supporting WASAPI device probing */
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
+  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
 
   UINT uiCount = 0;
 
   hr = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, pEnumDevices.GetAddressOf());
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of audio endpoint enumeration failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")
 
   hr = pEnumDevices->GetCount(&uiCount);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of audio endpoint count failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint count failed.")
 
   for (UINT i = 0; i < uiCount; i++)
   {
@@ -462,21 +470,21 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     hr = pEnumDevices->Item(i, pDevice.GetAddressOf());
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint failed.");
+      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint failed.");
       goto failed;
     }
 
     hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint properties failed.");
+      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint properties failed.");
       goto failed;
     }
 
     hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint device name failed.");
+      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint device name failed.");
       goto failed;
     }
 
@@ -486,7 +494,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint GUID failed.");
+      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint GUID failed.");
       goto failed;
     }
 
@@ -496,7 +504,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint form factor failed.");
+      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint form factor failed.");
       goto failed;
     }
     std::string strWinDevType = winEndpoints[(EndpointFormFactor)varName.uiVal].winEndpointType;
@@ -507,11 +515,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     /* In shared mode Windows tells us what format the audio must be in. */
     ComPtr<IAudioClient> pClient;
     hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr, reinterpret_cast<void**>(pClient.GetAddressOf()));
-    if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Activate device failed (%s)", WASAPIErrToStr(hr));
-      goto failed;
-    }
+    EXIT_ON_FAILURE(hr, "Activate device failed.")
 
     //hr = pClient->GetMixFormat(&pwfxex);
     hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
@@ -535,7 +539,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     }
     else
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Getting DeviceFormat failed (%s)", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "Getting DeviceFormat failed (%s)", WASAPIErrToStr(hr));
     }
 
     deviceInfo.m_deviceName       = strDevName;
@@ -562,7 +566,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 failed:
 
   if (FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -572,16 +576,16 @@ void CAESinkDirectSound::CheckPlayStatus()
   DWORD status = 0;
   if (m_pBuffer->GetStatus(&status) != DS_OK)
   {
-    CLog::Log(LOGERROR, "%s: GetStatus() failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "GetStatus() failed");
     return;
   }
 
   if (!(status & DSBSTATUS_PLAYING) && m_CacheLen != 0) // If we have some data, see if we can start playback
   {
     HRESULT hr = m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
-    CLog::Log(LOGDEBUG,__FUNCTION__ ": Resuming Playback");
+    CLog::LogF(LOGDEBUG, "Resuming Playback");
     if (FAILED(hr))
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to play the DirectSound buffer: %s", dserr2str(hr));
+      CLog::LogF(LOGERROR, "Failed to play the DirectSound buffer: %s", dserr2str(hr));
   }
 }
 
@@ -593,7 +597,9 @@ bool CAESinkDirectSound::UpdateCacheStatus()
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
-    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
+    CLog::LogF(LOGERROR,
+               "GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x",
+               res);
     m_isDirtyDS = true;
     return false;
   }
@@ -619,7 +625,8 @@ bool CAESinkDirectSound::UpdateCacheStatus()
       (playCursor < m_BufferOffset && m_BufferOffset < writeCursor) || // (2)
       (playCursor > writeCursor && playCursor <  m_BufferOffset))      // (3)
   {
-    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:%u, P:%u, O:%u.", writeCursor, playCursor, m_BufferOffset);
+    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:%u, P:%u, O:%u.",
+              writeCursor, playCursor, m_BufferOffset);
     m_BufferOffset = writeCursor; // Catch up
     //m_pBuffer->Stop(); // Wait until someone gives us some data to restart playback (prevents glitches)
     m_BufferTimeouts++;
@@ -727,42 +734,23 @@ std::string CAESinkDirectSound::GetDefaultDevice()
   std::string strDevName = "default";
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %s", WASAPIErrToStr(hr));
-    goto failed;
-  }
+  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator")
 
   hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, pDevice.GetAddressOf());
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of audio endpoint enumeration failed.");
-    goto failed;
-  }
+  EXIT_ON_FAILURE(hr, "Retrival of audio endpoint enumeration failed.")
 
   hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint properties failed.");
-    goto failed;
-  }
+  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint properties failed.")
 
   PropVariantInit(&varName);
   hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint form factor failed.");
-    goto failed;
-  }
+  EXIT_ON_FAILURE(hr, "Retrival of DirectSound endpoint form factor failed.")
+
   AEDeviceType aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
   PropVariantClear(&varName);
 
   hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint GUID failed.");    
-    goto failed;
-  }
+  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint GUID failed")
 
   strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
   PropVariantClear(&varName);

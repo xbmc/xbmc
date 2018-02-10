@@ -23,6 +23,7 @@
 #include "input/InputManager.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
+#include "platform/win32/CharsetConverter.h"
 #include <Ws2tcpip.h>
 
 #define IRSS_PORT 24000
@@ -133,7 +134,8 @@ bool CRemoteControl::Connect(bool logMessages)
   if(res)
   {
     if (logMessages)
-      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s", gai_strerror(res));
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s",
+                KODI::PLATFORM::WINDOWS::FromW(gai_strerror(res)));
     return false;
   }
 

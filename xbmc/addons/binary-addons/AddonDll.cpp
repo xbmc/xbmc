@@ -626,7 +626,7 @@ bool CAddonDll::get_setting_bool(void* kodiBase, const char* id, bool* value)
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, addon, id, value);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -660,7 +660,7 @@ bool CAddonDll::get_setting_int(void* kodiBase, const char* id, int* value)
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, addon, id, value);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -694,7 +694,7 @@ bool CAddonDll::get_setting_float(void* kodiBase, const char* id, float* value)
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, addon, id, value);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -728,7 +728,7 @@ bool CAddonDll::get_setting_string(void* kodiBase, const char* id, char** value)
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, addon, id, value);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -762,7 +762,7 @@ bool CAddonDll::set_setting_bool(void* kodiBase, const char* id, bool value)
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, addon, id);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
 
     return false;
   }
@@ -787,7 +787,7 @@ bool CAddonDll::set_setting_int(void* kodiBase, const char* id, int value)
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, addon, id);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
 
     return false;
   }
@@ -812,7 +812,7 @@ bool CAddonDll::set_setting_float(void* kodiBase, const char* id, float value)
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, addon, id);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
 
     return false;
   }
@@ -837,7 +837,7 @@ bool CAddonDll::set_setting_string(void* kodiBase, const char* id, const char* v
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, addon, id, value);
+                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<const void*>(value));
 
     return false;
   }

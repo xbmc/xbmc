@@ -51,8 +51,10 @@ void Interface_GUIControlProgress::set_visible(void* kodiBase, void* handle, boo
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -65,8 +67,10 @@ void Interface_GUIControlProgress::set_percentage(void* kodiBase, void* handle, 
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -79,8 +83,10 @@ float Interface_GUIControlProgress::get_percentage(void* kodiBase, void* handle)
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlProgress::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return 0.0f;
   }
 

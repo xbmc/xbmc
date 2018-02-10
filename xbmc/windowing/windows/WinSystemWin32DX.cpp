@@ -22,8 +22,9 @@
 #include "guilib/GraphicContext.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/SystemInfo.h"
-#include "utils/win32/Win32Log.h"
+#include "utils/log.h"
 #include "WinSystemWin32DX.h"
+#include "platform/win32/CharsetConverter.h"
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")
@@ -34,6 +35,8 @@
 #pragma warning(disable: 4091)
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
+
+using KODI::PLATFORM::WINDOWS::FromW;
 
 // User Mode Driver hooks definitions
 void APIENTRY HookCreateResource(D3D10DDI_HDEVICE hDevice, const D3D10DDIARG_CREATERESOURCE* pResource, D3D10DDI_HRESOURCE hResource, D3D10DDI_HRTRESOURCE hRtResource);
@@ -235,7 +238,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   if (!deviceFound)
     return;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Hooking into UserModeDriver on device %S. ", displayDevice.DeviceKey);
+  CLog::LogF(LOGDEBUG, "Hooking into UserModeDriver on device %s. ", FromW(displayDevice.DeviceKey));
   wchar_t* keyName =
 #ifndef _M_X64
   // on x64 system and x32 build use UserModeDriverNameWow key
@@ -283,7 +286,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
           if (SUCCEEDED(LhInstallHook(s_fnOpenAdapter10_2, HookOpenAdapter10_2, nullptr, m_hHook))
             && SUCCEEDED(LhSetInclusiveACL(ACLEntries, 1, m_hHook)))
           {
-            CLog::Log(LOGDEBUG, __FUNCTION__": D3D11 hook installed and activated.");
+            CLog::LogF(LOGDEBUG, "D3D11 hook installed and activated.");
             break;
           }
           else
@@ -299,7 +302,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   }
 
   if (lstat != ERROR_SUCCESS)
-    CLog::Log(LOGDEBUG, __FUNCTION__": error open registry key with error %ld.", lstat);
+    CLog::LogF(LOGDEBUG, "error open registry key with error %ld.", lstat);
 
   if (hKey != nullptr)
     RegCloseKey(hKey);
@@ -347,7 +350,7 @@ HRESULT APIENTRY HookCreateDevice(D3D10DDI_HADAPTER hAdapter, D3D10DDIARG_CREATE
   HRESULT hr = s_fnCreateDeviceOrig(hAdapter, pCreateData);
   if (pCreateData->pDeviceFuncs->pfnCreateResource)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": hook into pCreateData->pDeviceFuncs->pfnCreateResource");
+    CLog::LogF(LOGDEBUG, "hook into pCreateData->pDeviceFuncs->pfnCreateResource");
     s_fnCreateResourceOrig = pCreateData->pDeviceFuncs->pfnCreateResource;
     pCreateData->pDeviceFuncs->pfnCreateResource = HookCreateResource;
   }
@@ -359,7 +362,7 @@ HRESULT APIENTRY HookOpenAdapter10_2(D3D10DDIARG_OPENADAPTER *pOpenData)
   HRESULT hr = s_fnOpenAdapter10_2(pOpenData);
   if (pOpenData->pAdapterFuncs->pfnCreateDevice)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": hook into pOpenData->pAdapterFuncs->pfnCreateDevice");
+    CLog::LogF(LOGDEBUG, "hook into pOpenData->pAdapterFuncs->pfnCreateDevice");
     s_fnCreateDeviceOrig = pOpenData->pAdapterFuncs->pfnCreateDevice;
     pOpenData->pAdapterFuncs->pfnCreateDevice = HookCreateDevice;
   }
