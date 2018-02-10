@@ -562,3 +562,35 @@ float CConvertMatrix::GetGammaDst()
 {
   return m_gammaDst;
 }
+
+bool CConvertMatrix::GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3])
+{
+  switch (colspace)
+  {
+    case AVCOL_SPC_BT709:
+      coefs[0] = BT709YCbCr.Kr;
+      coefs[1] = 1 - BT709YCbCr.Kr - BT709YCbCr.Kb;
+      coefs[2] = BT709YCbCr.Kb;
+      break;
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_SMPTE170M:
+      coefs[0] = BT601YCbCr.Kr;
+      coefs[1] = 1 - BT601YCbCr.Kr - BT601YCbCr.Kb;
+      coefs[2] = BT601YCbCr.Kb;
+      break;
+    case AVCOL_SPC_SMPTE240M:
+      coefs[0] = ST240YCbCr.Kr;
+      coefs[1] = 1 - ST240YCbCr.Kr - ST240YCbCr.Kb;
+      coefs[2] = ST240YCbCr.Kb;
+      break;
+    case AVCOL_SPC_BT2020_NCL:
+    case AVCOL_SPC_BT2020_CL:
+      coefs[0] = ST240YCbCr.Kr;
+      coefs[1] = 1 - ST240YCbCr.Kr - ST240YCbCr.Kb;
+      coefs[2] = ST240YCbCr.Kb;
+      break;
+    default:
+      return false;
+  }
+  return true;
+}

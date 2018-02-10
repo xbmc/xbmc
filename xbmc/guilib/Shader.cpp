@@ -89,6 +89,36 @@ bool CShader::AppendSource(const std::string& filename)
   return true;
 }
 
+bool CShader::InsertSource(const std::string& filename, const std::string& loc)
+{
+  if(filename.empty())
+    return true;
+
+  CFileStream file;
+  std::string temp;
+
+  std::string path = "special://xbmc/system/shaders/";
+  path += CServiceBroker::GetRenderSystem().GetShaderPath(filename);
+  path += filename;
+  if(!file.Open(path))
+  {
+    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file %s", filename.c_str());
+    return false;
+  }
+  getline(file, temp, '\0');
+
+  size_t locPos = m_source.find(loc);
+  if (locPos == std::string::npos)
+  {
+    CLog::Log(LOGERROR, "CShader::InsertSource - could not find location %s", loc.c_str());
+    return false;
+  }
+
+  m_source.insert(locPos, temp);
+
+  return true;
+}
+
 //////////////////////////////////////////////////////////////////////
 // CGLSLVertexShader
 //////////////////////////////////////////////////////////////////////

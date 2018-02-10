@@ -43,6 +43,7 @@ namespace Shaders {
     virtual void SetSource(const std::string& src) { m_source = src; }
     virtual bool LoadSource(const std::string& filename, const std::string& prefix = "");
     virtual bool AppendSource(const std::string& filename);
+    virtual bool InsertSource(const std::string& filename, const std::string& loc);
     bool OK() const { return m_compiled; }
 
   protected:
