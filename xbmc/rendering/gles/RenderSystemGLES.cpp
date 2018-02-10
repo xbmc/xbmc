@@ -34,7 +34,6 @@
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
 {
-  m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
   m_pShader.reset(new CGLESShader*[SM_MAX]);
 }
 
@@ -178,7 +177,7 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   return true;
 }
 
-bool CRenderSystemGLES::IsExtSupported(const char* extension)
+bool CRenderSystemGLES::IsExtSupported(const char* extension) const
 {
   if (strcmp( extension, "GL_EXT_framebuffer_object" ) == 0)
   {

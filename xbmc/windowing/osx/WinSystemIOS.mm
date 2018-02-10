@@ -332,7 +332,7 @@ void CWinSystemIOS::FillInVideoModes()
   }
 }
 
-bool CWinSystemIOS::IsExtSupported(const char* extension)
+bool CWinSystemIOS::IsExtSupported(const char* extension) const
 {
   if(strncmp(extension, "EGL_", 4) != 0)
     return CRenderSystemGLES::IsExtSupported(extension);

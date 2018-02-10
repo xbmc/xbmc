@@ -53,9 +53,7 @@ bool CRenderCaptureBase::UseOcclusionQuery()
 {
   if (m_flags & CAPTUREFLAG_IMMEDIATELY)
     return false;
-  else if ((g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0) ||
-           (g_advancedSettings.m_videoCaptureUseOcclusionQuery == -1 &&
-            CServiceBroker::GetRenderSystem().GetRenderQuirks() & RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY))
+  else if (g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0)
     return false;
   else
     return true;

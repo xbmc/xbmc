@@ -103,7 +103,7 @@ void CWinSystemX11GLContext::SetVSyncImpl(bool enable)
   m_pGLContext->SetVSync(enable);
 }
 
-bool CWinSystemX11GLContext::IsExtSupported(const char* extension)
+bool CWinSystemX11GLContext::IsExtSupported(const char* extension) const
 {
   if(strncmp(extension, m_pGLContext->ExtPrefix().c_str(), 4) != 0)
     return CRenderSystemGL::IsExtSupported(extension);
